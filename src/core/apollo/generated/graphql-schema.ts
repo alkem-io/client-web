@@ -1562,6 +1562,65 @@ export type Conversation = {
   virtualContributor?: Maybe<VirtualContributor>;
 };
 
+/** Event fired when a new conversation is created. Each member receives a personalized event with the other participant resolved via conversation.user or conversation.virtualContributor. */
+export type ConversationCreatedEvent = {
+  __typename?: 'ConversationCreatedEvent';
+  /** The conversation that was created. */
+  conversation: Conversation;
+  /** The first message in the conversation. Null when conversation is created without an initial message. */
+  message?: Maybe<Message>;
+};
+
+/** Payload for conversation subscription events. */
+export type ConversationEventSubscriptionResult = {
+  __typename?: 'ConversationEventSubscriptionResult';
+  /** Present when eventType is CONVERSATION_CREATED. */
+  conversationCreated?: Maybe<ConversationCreatedEvent>;
+  /** The type of event. Use this to determine which payload field is populated. */
+  eventType: ConversationEventType;
+  /** Present when eventType is MESSAGE_RECEIVED. */
+  messageReceived?: Maybe<ConversationMessageReceivedEvent>;
+  /** Present when eventType is MESSAGE_REMOVED. */
+  messageRemoved?: Maybe<ConversationMessageRemovedEvent>;
+  /** Present when eventType is READ_RECEIPT_UPDATED. */
+  readReceiptUpdated?: Maybe<ConversationReadReceiptUpdatedEvent>;
+};
+
+/** The type of conversation event. */
+export enum ConversationEventType {
+  ConversationCreated = 'CONVERSATION_CREATED',
+  MessageReceived = 'MESSAGE_RECEIVED',
+  MessageRemoved = 'MESSAGE_REMOVED',
+  ReadReceiptUpdated = 'READ_RECEIPT_UPDATED',
+}
+
+/** Event fired when a new message is received in a conversation. */
+export type ConversationMessageReceivedEvent = {
+  __typename?: 'ConversationMessageReceivedEvent';
+  /** The message that was received. */
+  message: Message;
+  /** The room ID where the message was received. */
+  roomId: Scalars['UUID']['output'];
+};
+
+/** Event fired when a message is removed from a conversation. */
+export type ConversationMessageRemovedEvent = {
+  __typename?: 'ConversationMessageRemovedEvent';
+  /** The ID of the message that was removed. */
+  messageId: Scalars['MessageID']['output'];
+  /** The room ID where the message was removed. */
+  roomId: Scalars['UUID']['output'];
+};
+
+/** Event fired when a read receipt is updated in a conversation. */
+export type ConversationReadReceiptUpdatedEvent = {
+  __typename?: 'ConversationReadReceiptUpdatedEvent';
+  /** The ID of the last read event (message). */
+  lastReadEventId: Scalars['MessageID']['output'];
+  /** The room ID where the read receipt was updated. */
+  roomId: Scalars['UUID']['output'];
+};
+
 export type ConversationVcAnswerRelevanceInput = {
   /** The ID of the conversation. */
   conversationID: Scalars['UUID']['input'];
@@ -4064,7 +4123,7 @@ export type Message = {
   /** The User or Virtual Contributor that created this Message */
   sender?: Maybe<Contributor>;
   /** The message being replied to */
-  threadID?: Maybe<Scalars['String']['output']>;
+  threadID?: Maybe<Scalars['MessageID']['output']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float']['output'];
 };
@@ -4396,6 +4455,8 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
+  /** Marks a message as read for the current user. */
+  markMessageAsReadInRoom: Scalars['Boolean']['output'];
   /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
@@ -4480,7 +4541,7 @@ export type Mutation = {
   updateCalloutsSortOrder: Array<Callout>;
   /** Updates a Tagset on a Classification. */
   updateClassificationTagset: Tagset;
-  /** Updates a Collaboration using the Space content from the specified Template. Behavior depends on parameter combinations: (1) Flow Only: deleteExistingCallouts=false, addCallouts=false - updates only InnovationFlow states; (2) Add Posts: deleteExistingCallouts=false, addCallouts=true - keeps existing and adds template callouts; (3) Replace All: deleteExistingCallouts=true, addCallouts=true - deletes existing then adds template callouts; (4) Delete Only: deleteExistingCallouts=true, addCallouts=false - deletes existing callouts. Execution order: delete (if requested) → update flow states → add (if requested). */
+  /** Updates a Collaboration using the Space content from the specified Template. Behavior depends on parameter combinations: (1) Flow Only: deleteExistingCallouts=false, addCallouts=false - updates only InnovationFlow states; (2) Add Posts: deleteExistingCallouts=false, addCallouts=true - keeps existing and adds template callouts; (3) Replace All: deleteExistingCallouts=true, addCallouts=true - deletes existing then adds template callouts; (4) Delete Only: deleteExistingCallouts=true, addCallouts=false - deletes existing callouts and updates InnovationFlow states. Execution order: delete (if requested) → update flow states (always) → add (if requested). */
   updateCollaborationFromSpaceTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
@@ -4926,6 +4987,10 @@ export type MutationJoinRoleSetArgs = {
 
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
+};
+
+export type MutationMarkMessageAsReadInRoomArgs = {
+  messageData: RoomMarkMessageReadInput;
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
@@ -6346,7 +6411,7 @@ export type RelayPaginatedSpace = {
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The sorting order for this Space within its parent. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Int']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -6746,16 +6811,28 @@ export type Room = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The display name of the Room. */
+  displayName: Scalars['String']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The last message sent to the Room. Useful for conversation previews. */
+  lastMessage?: Maybe<Message>;
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
-  messagesCount: Scalars['Float']['output'];
+  messagesCount: Scalars['Int']['output'];
+  /** Simple unread message count for the current user. Use unreadCounts for per-thread breakdown. */
+  unreadCount: Scalars['Int']['output'];
+  /** Unread message counts for the current user in this Room. */
+  unreadCounts: RoomUnreadCounts;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** Virtual Contributor Interactions in this Room. */
   vcInteractions: Array<VcInteraction>;
+};
+
+export type RoomUnreadCountsArgs = {
+  threadIds?: InputMaybe<Array<Scalars['MessageID']['input']>>;
 };
 
 export type RoomAddReactionToMessageInput = {
@@ -6778,6 +6855,15 @@ export type RoomEventSubscriptionResult = {
   room: Room;
   /** The identifier for the Room on which the event happened. */
   roomID: Scalars['String']['output'];
+};
+
+export type RoomMarkMessageReadInput = {
+  /** The message id that should be marked as read. */
+  messageID: Scalars['MessageID']['input'];
+  /** The Room to mark message as read in. */
+  roomID: Scalars['UUID']['input'];
+  /** The thread id if the message is in a thread. */
+  threadID?: InputMaybe<Scalars['MessageID']['input']>;
 };
 
 /** A message event happened in the subscribed room */
@@ -7073,7 +7159,7 @@ export type Space = {
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The sorting order for this Space within its parent. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Int']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -7355,6 +7441,8 @@ export type Subscription = {
   activityCreated: ActivityCreatedSubscriptionResult;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
+  /** Receive conversation events for the authenticated user. Includes new conversations, messages, and read receipts. */
+  conversationEvents: ConversationEventSubscriptionResult;
   /** Receive updates on Discussions */
   forumDiscussionUpdated: Discussion;
   /** New in-app notification received for the currently authenticated user. */
@@ -8247,10 +8335,19 @@ export type UpdateUserSettingsCommunicationInput = {
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  /** Settings related to Home Space. */
+  homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
   /** Settings related to this users Notifications preferences. */
   notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
   /** Settings related to Privacy. */
   privacy?: InputMaybe<UpdateUserSettingsPrivacyInput>;
+};
+
+export type UpdateUserSettingsHomeSpaceInput = {
+  /** Automatically redirect to home space instead of the dashboard. */
+  autoRedirect?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The ID of the Space to use as home. Set to null to clear. */
+  spaceID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type UpdateUserSettingsInput = {
@@ -8648,6 +8745,8 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The home space settings for this User. */
+  homeSpace: UserSettingsHomeSpace;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The notification settings for this User. */
@@ -8662,6 +8761,14 @@ export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsHomeSpace = {
+  __typename?: 'UserSettingsHomeSpace';
+  /** Automatically redirect to home space instead of the dashboard. */
+  autoRedirect: Scalars['Boolean']['output'];
+  /** The ID of the Space to use as home. Null if not set. */
+  spaceID?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserSettingsNotification = {
@@ -8794,7 +8901,7 @@ export type UsersWithAuthorizationCredentialInput = {
 export type VcInteraction = {
   __typename?: 'VcInteraction';
   /** The thread ID (Matrix message ID) where VC is engaged */
-  threadID: Scalars['String']['output'];
+  threadID: Scalars['MessageID']['output'];
   /** The actor ID (agent.id) of the Virtual Contributor */
   virtualContributorID: Scalars['String']['output'];
 };
@@ -9945,6 +10052,11 @@ export type UserPendingMembershipsQuery = {
                   type: TagsetType;
                 }>
               | undefined;
+          };
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
           };
         }
       | undefined;
@@ -20145,6 +20257,11 @@ export type UserDetailsFragment = {
         }>
       | undefined;
   };
+  settings: {
+    __typename?: 'UserSettings';
+    id: string;
+    homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+  };
 };
 
 export type UserDisplayNameFragment = {
@@ -20251,6 +20368,11 @@ export type UserQuery = {
                 }>
               | undefined;
           };
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
         }
       | undefined;
   };
@@ -20318,6 +20440,11 @@ export type UserModelFullQuery = {
                 }>
               | undefined;
           };
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
         }
       | undefined;
   };
@@ -20376,6 +20503,11 @@ export type UsersModelFullQuery = {
           }>
         | undefined;
     };
+    settings: {
+      __typename?: 'UserSettings';
+      id: string;
+      homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    };
   }>;
 };
 
@@ -20392,6 +20524,7 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       roles: Array<string>;
+      displayName: string;
       subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; level: SpaceLevel; roles: Array<string> }>;
     }>;
   };
@@ -20407,6 +20540,28 @@ export type UserOrganizationIdsQuery = {
     __typename?: 'ContributorRoles';
     id: string;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
+  };
+};
+
+export type HomeSpaceUrlQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type HomeSpaceUrlQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+          };
+        }
+      | undefined;
   };
 };
 
@@ -20462,6 +20617,11 @@ export type UpdateUserMutation = {
           }>
         | undefined;
     };
+    settings: {
+      __typename?: 'UserSettings';
+      id: string;
+      homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    };
   };
 };
 
@@ -20476,6 +20636,7 @@ export type UpdateUserSettingsMutation = {
     id: string;
     settings: {
       __typename?: 'UserSettings';
+      homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         user: {
@@ -20572,6 +20733,7 @@ export type UserSettingsFragmentFragment = {
   id: string;
   communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
   privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+  homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
   notification: {
     __typename?: 'UserSettingsNotification';
     platform: {
@@ -20674,6 +20836,7 @@ export type UserSettingsQuery = {
             id: string;
             communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               platform: {
@@ -20883,6 +21046,11 @@ export type CurrentUserFullQuery = {
                   type: TagsetType;
                 }>
               | undefined;
+          };
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
           };
         }
       | undefined;
@@ -22625,6 +22793,34 @@ export type PlatformLicensingPlansQuery = {
         licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
+  };
+};
+
+export type HomeRedirectDataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type HomeRedirectDataQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
+        }
+      | undefined;
+    spaceMembershipsHierarchical: Array<{
+      __typename?: 'CommunityMembershipResult';
+      id: string;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; url: string } };
+      };
+    }>;
   };
 };
 
@@ -37985,6 +38181,17 @@ export type DashboardWithMembershipsQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined };
+          };
+          profile: { __typename?: 'Profile'; url: string };
+        }
+      | undefined;
     spaceMembershipsHierarchical: Array<{
       __typename?: 'CommunityMembershipResult';
       id: string;
@@ -40994,6 +41201,64 @@ export type SpaceProfileCommunityDetailsFragment = {
   };
 };
 
+export type HomeSpaceLookupQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type HomeSpaceLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type RecentSpacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
 }>;
@@ -41002,6 +41267,17 @@ export type RecentSpacesQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined };
+          };
+          profile: { __typename?: 'Profile'; url: string };
+        }
+      | undefined;
     mySpaces: Array<{
       __typename?: 'MySpaceResults';
       space: {
