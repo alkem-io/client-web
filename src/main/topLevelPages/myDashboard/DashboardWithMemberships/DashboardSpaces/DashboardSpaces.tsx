@@ -19,12 +19,16 @@ import { useEffect } from 'react';
 import { Actions } from '@/core/ui/actions/Actions';
 import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
 import { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
+import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
 const DashboardSpaces = () => {
   const {
     data,
+    orderedMemberships,
+    homeSpaceId,
+    membershipSettingsUrl,
     hasMore,
     loading,
     fetchSpaces,
@@ -101,7 +105,7 @@ const DashboardSpaces = () => {
 
   return (
     <>
-      {data?.me.spaceMembershipsHierarchical?.map(({ space, childMemberships }, idx) => {
+      {orderedMemberships.map(({ space, childMemberships }, idx) => {
         if (!space) {
           return null;
         }
@@ -113,10 +117,16 @@ const DashboardSpaces = () => {
           },
         } = space;
         const hasChildMemberships = childMemberships?.length > 0;
+        const isHomeSpace = id === homeSpaceId;
 
         return (
           <PageContentBlock key={id}>
-            <Paper component={RouterLink} to={profile?.url}>
+            <Paper component={RouterLink} to={profile?.url} sx={{ position: 'relative' }}>
+              {isHomeSpace && (
+                <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 1 }}>
+                  <HomeSpacePinButton settingsUrl={membershipSettingsUrl} />
+                </Box>
+              )}
               <Card style={styles.spaceCard}>
                 <Avatar
                   variant="square"

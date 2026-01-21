@@ -113,6 +113,10 @@ export const buildUserAccountUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/account` : '';
 };
 
+export const buildMembershipSettingsUrl = (profileUrl?: string) => {
+  return profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
+};
+
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
 
 export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG_PARAM_VALUES.INVITATIONS}`;
