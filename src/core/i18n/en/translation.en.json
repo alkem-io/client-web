@@ -1416,7 +1416,8 @@
           "selectFailed": "Failed to set the default $t(common.template). Please try again.",
           "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
-      }
+      },
+      "importing": "Importing..."
     },
     "confirmation-dialog": {
       "delete-comment": {
