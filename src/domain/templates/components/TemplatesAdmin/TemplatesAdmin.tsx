@@ -24,6 +24,7 @@ import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import TemplateActionButton from '../Buttons/TemplateActionButton';
 import {
   toCreateTemplateFromSpaceMutationVariables,
   toCreateTemplateFromSpaceContentMutationVariables,
@@ -34,7 +35,6 @@ import useHandlePreviewImages from '../../utils/useHandlePreviewImages';
 import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
 import { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm';
 import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
@@ -504,11 +504,7 @@ const TemplatesAdmin = ({
           subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
           onSelectTemplate={handleImportTemplate}
           {...importTemplateOptions}
-          actionButton={() => (
-            <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-              {t('buttons.import')}
-            </Button>
-          )}
+          actionButton={() => <TemplateActionButton textKey="buttons.import" />}
         />
       )}
     </>

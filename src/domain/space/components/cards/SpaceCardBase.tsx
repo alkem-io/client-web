@@ -27,6 +27,7 @@ export interface SpaceCardProps extends ContributeCardProps {
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
   visual?: ReactNode;
   spaceId?: string;
+  iconOverlay?: ReactNode;
 }
 
 const SpaceCardBase = ({
@@ -40,6 +41,7 @@ const SpaceCardBase = ({
   actions,
   children,
   visual,
+  iconOverlay,
   ...containerProps
 }: PropsWithChildren<SpaceCardProps>) => {
   const { t } = useTranslation();
@@ -62,6 +64,7 @@ const SpaceCardBase = ({
             alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
             overlay={bannerOverlay}
           />
+          {iconOverlay && <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 1 }}>{iconOverlay}</Box>}
           {/* Gradient overlay on top of banner for smooth transition to footer */}
           <Box
             sx={{

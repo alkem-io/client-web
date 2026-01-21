@@ -118,6 +118,7 @@
     "see-more": "See more",
     "see-all": "More {{subject}}",
     "readMore": "Read more",
+    "ellipsisReadMore": "... Read more",
     "showLess": "Show less",
     "retry": "Try again",
     "home": "Home",
@@ -620,7 +621,8 @@
         "month_other": "{{count}} months",
         "year_one": "{{count}} year",
         "year_other": "{{count}} years"
-      }
+      },
+      "moreThan1Year": "> 1 year ago"
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
@@ -922,7 +924,8 @@
       "contributionsItemsCount_other": "{{count}} items in this $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} items in this $t(common.collection), <click>click here</click> to see all",
       "contributionsCollapse": "{{count}} items in this $t(common.collection), <click>click here</click> to hide some",
-      "noContributions": "No contributions yet, be the first to contribute!"
+      "noContributions": "No contributions yet, be the first to contribute!",
+      "contributions": "Contributions ({{count}})"
     },
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "This discussion is closed so you can no longer comment",
@@ -950,7 +953,7 @@
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)",
+      "clickToSee": "Click to see the full $t(common.whiteboard)",
       "emojiReaction": {
         "addEmoji": "Add emoji reaction",
         "title": "Add Emoji",
@@ -1348,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "Manage Flow",
+      "importing": "Importing in progress...",
       "buttonTooltip": "Manage Flow",
       "editProfileDialog": {
         "title": "Edit Details: Flow"
@@ -1358,6 +1362,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
@@ -1379,13 +1384,37 @@
           },
           "importCalloutsDialog": {
             "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
-            "yes": "Add $t(common.posts) from $t(common.template)",
-            "yesDescription": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones.",
-            "no": "Only Change the $t(common.innovation-flow)",
-            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current $t(common.posts) as they are.",
-            "apply": "Apply new $t(common.template)"
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Replace with new flow",
+              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirm Deletion",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Apply"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected $t(common.template):",
+        "noTemplate": "No default $t(common.template) set. Select a $t(common.template) to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default $t(common.template)?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -2442,6 +2471,15 @@
           "title": "Security",
           "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
           "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
+        },
+        "homeSpace": {
+          "title": "Home Space",
+          "description": "Here you can select which from the spaces or subspaces you are a member of which you want to use as a Home Space.  On Alkemio, your home space is always pinned on your dashboard as the first space.",
+          "selectLabel": "Select Home Space",
+          "noSelection": "No home space",
+          "autoRedirect": "<b>Home Space Redirect:</b> Set it so that Alkem.io redirects you to your home page instead of the dashboard.",
+          "autoRedirectDisabledHint": "Please select a home space first to enable the Home Space Redirect",
+          "pinButtonTooltip": "Press here to change your pinned space settings"
         }
       },
       "organization": {
@@ -2528,9 +2566,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.template)",
                 "title": "Change Default $t(common.subspace) $t(common.template)",
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you’re looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2591,7 +2630,7 @@
           },
           "copySpace": {
             "title": "Copy $t(common.subspace)",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
             "createTemplate": "Create $t(common.template)",
             "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Duplicate"
@@ -2815,7 +2854,11 @@
         },
         "recentSpaces": {
           "seeMore": "Explore all your $t(common.spaces)",
-          "seeMoreSubspaces": "See all $t(common.subspaces) I'm a $t(common.member) of"
+          "seeMoreSubspaces": "See all $t(common.subspaces) I'm a $t(common.member) of",
+          "homeSpacePlaceholder": {
+            "title": "No Pinned Space yet",
+            "subtitle": "Click here to assign one"
+          }
         },
         "campaignBlock": {
           "createYourVCButton": "Create your $t(common.virtualContributor)!",
@@ -2862,6 +2905,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
