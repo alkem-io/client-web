@@ -2,6 +2,10 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
   updateUserSettings(settingsData: $settingsData) {
     id
     settings {
+      homeSpace {
+        spaceID
+        autoRedirect
+      }
       notification {
         user {
           mentioned {

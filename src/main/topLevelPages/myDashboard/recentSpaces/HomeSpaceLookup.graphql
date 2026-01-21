@@ -1,0 +1,12 @@
+query HomeSpaceLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        ...SpaceAboutCardBanner
+        isContentPublic
+      }
+      level
+    }
+  }
+}
