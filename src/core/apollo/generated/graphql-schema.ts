@@ -986,8 +986,8 @@ export type Callout = {
   posts?: Maybe<Array<Post>>;
   /** The user that published this Callout */
   publishedBy?: Maybe<User>;
-  /** The timestamp for the publishing of this Callout. */
-  publishedDate?: Maybe<Scalars['Float']['output']>;
+  /** The Date of the publishing of this Callout. */
+  publishedDate?: Maybe<Scalars['DateTime']['output']>;
   /** The Callout Settings associated with this Callout. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
@@ -1655,9 +1655,9 @@ export type ConvertSpaceL1ToSpaceL0Input = {
 };
 
 export type ConvertSpaceL1ToSpaceL2Input = {
-  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2.  */
+  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2. */
   parentSpaceL1ID: Scalars['UUID']['input'];
-  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space.  */
+  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space. */
   spaceL1ID: Scalars['UUID']['input'];
 };
 
@@ -13090,6 +13090,7 @@ export type UpdateCalloutContentMutation = {
     id: string;
     sortOrder: number;
     activity: number;
+    publishedDate?: Date | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13443,6 +13444,9 @@ export type UpdateCalloutContentMutation = {
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
+    createdBy?:
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
   };
 };
 
@@ -13457,6 +13461,7 @@ export type UpdateCalloutVisibilityMutation = {
     id: string;
     sortOrder: number;
     activity: number;
+    publishedDate?: Date | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13810,6 +13815,9 @@ export type UpdateCalloutVisibilityMutation = {
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
+    createdBy?:
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
   };
 };
 
@@ -13892,7 +13900,20 @@ export type CalloutContributionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
                     }
                   | undefined;
               }
@@ -13908,7 +13929,20 @@ export type CalloutContributionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
                     }
                   | undefined;
               }
@@ -13922,7 +13956,20 @@ export type CalloutContributionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
                     }
                   | undefined;
                 comments: { __typename?: 'Room'; id: string; messagesCount: number };
@@ -14354,7 +14401,24 @@ export type CalloutPostCreatedSubscription = {
           | undefined;
       };
       createdBy?:
-        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'User';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          }
         | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -14452,7 +14516,20 @@ export type CalloutContributionsQuery = {
                     | {
                         __typename?: 'User';
                         id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
                       }
                     | undefined;
                 }
@@ -14468,7 +14545,20 @@ export type CalloutContributionsQuery = {
                     | {
                         __typename?: 'User';
                         id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
                       }
                     | undefined;
                 }
@@ -14499,7 +14589,20 @@ export type CalloutContributionsQuery = {
                     | {
                         __typename?: 'User';
                         id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
                       }
                     | undefined;
                   authorization?:
@@ -14513,6 +14616,34 @@ export type CalloutContributionsQuery = {
                 }
               | undefined;
           }>;
+          contributionsCount: {
+            __typename?: 'CalloutContributionsCountOutput';
+            link?: number;
+            whiteboard?: number;
+            memo?: number;
+            post?: number;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CalloutContributionsCountQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  includeLink?: Scalars['Boolean']['input'];
+  includeWhiteboard?: Scalars['Boolean']['input'];
+  includeMemo?: Scalars['Boolean']['input'];
+  includePost?: Scalars['Boolean']['input'];
+}>;
+
+export type CalloutContributionsCountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
           contributionsCount: {
             __typename?: 'CalloutContributionsCountOutput';
             link?: number;
@@ -14542,7 +14673,18 @@ export type CalloutContributionsWhiteboardCardFragment = {
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   createdBy?:
-    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
     | undefined;
 };
 
@@ -14553,7 +14695,18 @@ export type CalloutContributionsMemoCardFragment = {
   createdDate: Date;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   createdBy?:
-    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
     | undefined;
 };
 
@@ -14579,12 +14732,36 @@ export type CalloutContributionsPostCardFragment = {
       | undefined;
   };
   createdBy?:
-    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
     | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   comments: { __typename?: 'Room'; id: string; messagesCount: number };
+};
+
+export type ContributionAuthorFragment = {
+  __typename?: 'User';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | undefined;
+  };
 };
 
 export type CreateWhiteboardOnCalloutMutationVariables = Exact<{
@@ -14783,6 +14960,7 @@ export type CreateCalloutMutation = {
     id: string;
     sortOrder: number;
     activity: number;
+    publishedDate?: Date | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -15136,6 +15314,9 @@ export type CreateCalloutMutation = {
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
+    createdBy?:
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
   };
 };
 
@@ -15237,6 +15418,7 @@ export type CalloutDetailsQuery = {
           id: string;
           sortOrder: number;
           activity: number;
+          publishedDate?: Date | undefined;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -15653,6 +15835,9 @@ export type CalloutDetailsQuery = {
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
           };
+          createdBy?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
           classification?:
             | {
                 __typename?: 'Classification';
@@ -15699,6 +15884,7 @@ export type CalloutDetailsFragment = {
   id: string;
   sortOrder: number;
   activity: number;
+  publishedDate?: Date | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -16052,6 +16238,9 @@ export type CalloutDetailsFragment = {
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type MemoMarkdownQueryVariables = Exact<{

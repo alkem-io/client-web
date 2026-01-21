@@ -611,6 +611,19 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
+export const ContributionAuthorFragmentDoc = gql`
+  fragment ContributionAuthor on User {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
   fragment CalloutContributionsWhiteboardCard on Whiteboard {
     id
@@ -628,14 +641,11 @@ export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
     }
     createdDate
     createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...ContributionAuthor
     }
   }
   ${VisualModelFragmentDoc}
+  ${ContributionAuthorFragmentDoc}
 `;
 export const CalloutContributionsMemoCardFragmentDoc = gql`
   fragment CalloutContributionsMemoCard on Memo {
@@ -648,13 +658,10 @@ export const CalloutContributionsMemoCardFragmentDoc = gql`
     markdown
     createdDate
     createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...ContributionAuthor
     }
   }
+  ${ContributionAuthorFragmentDoc}
 `;
 export const CalloutContributionsPostCardFragmentDoc = gql`
   fragment CalloutContributionsPostCard on Post {
@@ -670,11 +677,7 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
     }
     createdDate
     createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...ContributionAuthor
     }
     authorization {
       id
@@ -686,6 +689,7 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
+  ${ContributionAuthorFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -1023,6 +1027,14 @@ export const CalloutDetailsFragmentDoc = gql`
     }
     settings {
       ...CalloutSettingsFull
+    }
+    publishedDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -7814,11 +7826,7 @@ export const CalloutContributionDocument = gql`
           }
           createdDate
           createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...ContributionAuthor
           }
         }
         memo @include(if: $includeMemo) {
@@ -7831,21 +7839,13 @@ export const CalloutContributionDocument = gql`
           markdown
           createdDate
           createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...ContributionAuthor
           }
         }
         post @include(if: $includePost) {
           id
           createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...ContributionAuthor
           }
           createdDate
           comments {
@@ -7876,6 +7876,7 @@ export const CalloutContributionDocument = gql`
   }
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${VisualModelFragmentDoc}
+  ${ContributionAuthorFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 
@@ -8656,6 +8657,99 @@ export type CalloutContributionsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutContributionsQuery(variables: SchemaTypes.CalloutContributionsQueryVariables) {
   return { query: CalloutContributionsDocument, variables: variables };
+}
+export const CalloutContributionsCountDocument = gql`
+  query CalloutContributionsCount(
+    $calloutId: UUID!
+    $includeLink: Boolean! = false
+    $includeWhiteboard: Boolean! = false
+    $includeMemo: Boolean! = false
+    $includePost: Boolean! = false
+  ) {
+    lookup {
+      callout(ID: $calloutId) {
+        id
+        contributionsCount {
+          link @include(if: $includeLink)
+          whiteboard @include(if: $includeWhiteboard)
+          memo @include(if: $includeMemo)
+          post @include(if: $includePost)
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutContributionsCountQuery__
+ *
+ * To run a query within a React component, call `useCalloutContributionsCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutContributionsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutContributionsCountQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      includeLink: // value for 'includeLink'
+ *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includeMemo: // value for 'includeMemo'
+ *      includePost: // value for 'includePost'
+ *   },
+ * });
+ */
+export function useCalloutContributionsCountQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutContributionsCountQuery,
+    SchemaTypes.CalloutContributionsCountQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutContributionsCountQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutContributionsCountQuery,
+    SchemaTypes.CalloutContributionsCountQueryVariables
+  >(CalloutContributionsCountDocument, options);
+}
+export function useCalloutContributionsCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutContributionsCountQuery,
+    SchemaTypes.CalloutContributionsCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutContributionsCountQuery,
+    SchemaTypes.CalloutContributionsCountQueryVariables
+  >(CalloutContributionsCountDocument, options);
+}
+export function useCalloutContributionsCountSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutContributionsCountQuery,
+        SchemaTypes.CalloutContributionsCountQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalloutContributionsCountQuery,
+    SchemaTypes.CalloutContributionsCountQueryVariables
+  >(CalloutContributionsCountDocument, options);
+}
+export type CalloutContributionsCountQueryHookResult = ReturnType<typeof useCalloutContributionsCountQuery>;
+export type CalloutContributionsCountLazyQueryHookResult = ReturnType<typeof useCalloutContributionsCountLazyQuery>;
+export type CalloutContributionsCountSuspenseQueryHookResult = ReturnType<
+  typeof useCalloutContributionsCountSuspenseQuery
+>;
+export type CalloutContributionsCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutContributionsCountQuery,
+  SchemaTypes.CalloutContributionsCountQueryVariables
+>;
+export function refetchCalloutContributionsCountQuery(variables: SchemaTypes.CalloutContributionsCountQueryVariables) {
+  return { query: CalloutContributionsCountDocument, variables: variables };
 }
 export const CreateWhiteboardOnCalloutDocument = gql`
   mutation CreateWhiteboardOnCallout($calloutId: UUID!, $whiteboard: CreateWhiteboardInput!) {

@@ -2,7 +2,6 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '@/domain/shared/components/References/References';
@@ -10,11 +9,11 @@ import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponen
 import CalloutHeader from '../calloutBlock/CalloutHeader';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import { gutters } from '@/core/ui/grid/utils';
+import ExpandableMarkdown from '@/core/ui/markdown/ExpandableMarkdown';
 
 const CalloutViewLayout = ({
   callout,
   children,
-  contributionsCount,
   expanded = false,
   contentRef,
   onExpand,
@@ -31,8 +30,6 @@ const CalloutViewLayout = ({
   if (dontShow) {
     return null;
   }
-
-  const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
   return (
     <Box
@@ -53,7 +50,6 @@ const CalloutViewLayout = ({
         )}
         <CalloutHeader
           callout={callout}
-          contributionsCount={contributionsCount}
           expanded={expanded}
           onExpand={onExpand}
           onCollapse={onCollapse}
@@ -61,7 +57,6 @@ const CalloutViewLayout = ({
           onOpenSettings={onOpenSettings}
           calloutActions={calloutActions}
         />
-        {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
       </Box>
 
       {/* scrollable content region */}
@@ -75,7 +70,7 @@ const CalloutViewLayout = ({
         }}
       >
         <Box sx={theme => ({ padding: theme.spacing(0, 2, 1) })}>
-          <WrapperMarkdown caption>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
+          <ExpandableMarkdown caption>{callout.framing.profile.description ?? ''}</ExpandableMarkdown>
         </Box>
         {!skipReferences && !!callout.framing.profile.references?.length && (
           <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>
