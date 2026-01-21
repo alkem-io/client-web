@@ -26,6 +26,11 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
 
+export interface ImportFlowOptions {
+  addCallouts?: boolean;
+  deleteExistingCallouts?: boolean;
+}
+
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
   skip?: boolean;
@@ -338,14 +343,15 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   };
 
   const [updateCollaborationFromSpaceTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
-  const handleImportInnovationFlowFromSpaceTemplate = (spaceTemplateId: string, addCallouts?: boolean) => {
+  const handleImportInnovationFlowFromSpaceTemplate = (spaceTemplateId: string, options?: ImportFlowOptions) => {
     const collaborationId = ensurePresence(collaboration?.id, 'Collaboration');
 
     return updateCollaborationFromSpaceTemplate({
       variables: {
         collaborationId,
         spaceTemplateId,
-        addCallouts,
+        addCallouts: options?.addCallouts,
+        deleteExistingCallouts: options?.deleteExistingCallouts,
       },
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({ collaborationId }),

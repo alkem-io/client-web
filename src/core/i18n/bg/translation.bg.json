@@ -156,8 +156,8 @@
     "accept-all-cookies": "Приеми всички бисквитки",
     "confirm-choice": "Потвърди избора",
     "confirm": "Потвърди",
-    "change-template": "Промени $t(common.template)",
-    "find-template": "Намери $t(common.template)",
+    "change-template": "Промени $t(common.Template)",
+    "find-template": "Намери $t(common.Template)",
     "change": "Промени",
     "share": "Сподели",
     "view": "Прегледай",
@@ -179,7 +179,7 @@
     "fullscreen": "Превключи на цял екран",
     "changeLanguage": "Смени език",
     "getHelp": "Получи помощ",
-    "saveAsTemplate": "Запази като $t(common.template)",
+    "saveAsTemplate": "Запази като $t(common.Template)",
     "skipLink": "Премини към следващия блок",
     "toggle": "Превключи {{entity}}",
     "toolsMenu": "Меню с инструменти",
@@ -439,8 +439,10 @@
     "help": "Помощ",
     "helpCenter": "Център за помощ",
     "loading": "Зареждане...",
-    "innovation-flow": "Поток на иновации",
-    "innovation-flows": "Потоци на иновации",
+    "InnovationFlow": "Поток на иновации",
+    "innovationFlow": "Поток на иновации",
+    "InnovationFlows": "Потоци на иновации",
+    "innovationFlows": "Потоци на иновации",
     "innovation-packs": "Пакети шаблони",
     "innovation-hub": "Център за иновации",
     "innovation-hubs": "Центрове за иновации",
@@ -522,8 +524,8 @@
         "SPACE_plural": "Шаблони на $t(common.spaces)",
         "COMMUNITY_GUIDELINES": "Шаблон на правила за $t(common.community)",
         "COMMUNITY_GUIDELINES_plural": "Шаблони на правила за $t(common.community)",
-        "INNOVATION_FLOW": "$t(common.innovation-flow)",
-        "INNOVATION_FLOW_plural": "Шаблони на $t(common.innovation-flow)",
+        "INNOVATION_FLOW": "$t(common.InnovationFlow)",
+        "INNOVATION_FLOW_plural": "Шаблони на $t(common.InnovationFlow)",
         "POST": "Шаблон на $t(common.Post)",
         "POST_plural": "Шаблони на $t(common.Posts)",
         "WHITEBOARD": "Шаблон на $t(common.Whiteboard)",
@@ -889,7 +891,7 @@
       "importTemplate": {
         "confirmOverwrite": {
           "title": "Презапис на настоящите данни?",
-          "content": "Ако импортирате $t(common.template), настоящите Ви данни могат да бъдат презаписани. Сигурни ли сте, че искате да продължите?"
+          "content": "Ако импортирате $t(common.Template), настоящите Ви данни могат да бъдат презаписани. Сигурни ли сте, че искате да продължите?"
         }
       },
       "notification": {
@@ -923,7 +925,7 @@
     "permission-help-text": "Използвайте превключвателя по-долу, за да затворите този $t(common.callout) за нови записи.",
     "callout-location": "Местоположение: ",
     "sortContributions": "Сортирай приносите",
-    "saveAsTemplate": "Запази като $t(common.template)",
+    "saveAsTemplate": "Запази като $t(common.Template)",
     "alkemio-link": "Кликнете тук, за да прочетете повече за публикациите на Alkemio",
     "link-collection": {
       "add-link": "Добави връзки или документи към {{title}}",
@@ -1117,7 +1119,7 @@
         "tooltip": "Етикети"
       },
       "template": {
-        "title": "$t(common.template):",
+        "title": "$t(common.Template):",
         "defaultTemplate": "Шаблон на Alkemio по подразбиране за $t(common.subspaces)"
       }
     },
@@ -1161,7 +1163,7 @@
         "title": "$t(common.subspace) Поток"
       },
       "template": {
-        "title": "$t(common.template):",
+        "title": "$t(common.Template):",
         "defaultTemplate": "Шаблон на Alkemio по подразбиране за $t(common.subspaces)"
       }
     }
@@ -1187,12 +1189,12 @@
   },
   "templateDialog": {
     "profile": {
-      "title": "$t(common.template) описание",
-      "help": "Това описание ще бъде видимо за всеки, който разглежда $t(common.templates). То не е част от фактическото съдържание на {{entityTypeName}}.",
+      "title": "$t(common.Template) описание",
+      "help": "Това описание ще бъде видимо за всеки, който разглежда $t(common.Templates). То не е част от фактическото съдържание на {{entityTypeName}}.",
       "fields": {
-        "displayName": "$t(common.template) заглавие",
-        "description": "$t(common.template) описание",
-        "tags": "$t(common.template) етикети"
+        "displayName": "$t(common.Template) заглавие",
+        "description": "$t(common.Template) описание",
+        "tags": "$t(common.Template) етикети"
       }
     }
   },
@@ -1210,7 +1212,7 @@
     "whiteboardTemplates": {
       "name": "$t(common.enums.templateType.WHITEBOARD)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
-      "editTemplateButton": "Редактирай $t(common.template)",
+      "editTemplateButton": "Редактирай $t(common.Template)",
       "editDialogTitle": "Редактирай $t(common.enums.templateType.WHITEBOARD)",
       "errorImporting": "Грешка при импортиране на $t(common.enums.templateType.WHITEBOARD)"
     },
@@ -1219,10 +1221,10 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "$t(common.subspace) URL",
-        "description": "Въведете URL адреса на $t(common.space) или $t(common.subspace), който искате да копирате като $t(common.template).",
+        "description": "Въведете URL адреса на $t(common.space) или $t(common.subspace), който искате да копирате като $t(common.Template).",
         "use": "Използвай този/тази $t(common.space)",
-        "urlRequired": "Моля, поставете тук URL адреса на $t(common.space), който искате да копирате като $t(common.template).",
-        "noRights": "Имате нужда от $t(common.admin) права в $t(common.space), който искате да копирате като $t(common.template).",
+        "urlRequired": "Моля, поставете тук URL адреса на $t(common.space), който искате да копирате като $t(common.Template).",
+        "noRights": "Имате нужда от $t(common.admin) права в $t(common.space), който искате да копирате като $t(common.Template).",
         "invalidUrl": "URL адресът не е разпознат като $t(common.space) URL.",
         "spaceNotFoundError": "$t(common.space) не е намерен",
         "selectAnother": "Актуализирайте сътрудничеството от друг $t(common.space)"
@@ -1230,8 +1232,8 @@
       "preview": {
         "info": "Винаги включени: Информация за секцията и $t(common.settings)"
       },
-      "recursive": "Включи също $t(common.subspaces) на избрания $t(common.space) в $t(common.template)",
-      "includesSubspaces": "Този $t(common.template) включва също тези $t(common.subspaces):"
+      "recursive": "Включи също $t(common.subspaces) на избрания $t(common.space) в $t(common.Template)",
+      "includesSubspaces": "Този $t(common.Template) включва също тези $t(common.subspaces):"
     },
     "communityGuidelinesTemplates": {
       "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
@@ -1240,29 +1242,29 @@
       "guidelinesTitle": "Заглавие",
       "guidelinesDescription": "Насоки"
     },
-    "platformTemplates": "$t(common.templates) на платформата",
-    "loadPlatformTemplates": "Или кликнете тук, за да разгледите всички $t(common.templates) на платформата",
-    "platformUseDisabled": "Моля, имайте предвид, че можете да използвате само $t(common.templates), които са избрани за тази $t(common.community) (вижте по-горе). Ако искате да използвате някой от $t(common.templates) по-долу, моля, помолете $t(common.admin) или $t(common.lead) на $t(common.space) да ги добави в секцията $t(common.template) на $t(common.space) $t(common.settings).",
-    "disabledTemplateInfo": "Моля, имайте предвид, че можете да използвате само $t(common.templates), които са избрани за тази $t(common.community), което този не е. Ако искате да използвате този $t(common.template), моля, помолете $t(common.admin) или $t(common.lead) на $t(common.space) да го добави в секцията $t(common.template) на $t(common.space) $t(common.settings).",
+    "platformTemplates": "$t(common.Templates) на платформата",
+    "loadPlatformTemplates": "Или кликнете тук, за да разгледите всички $t(common.Templates) на платформата",
+    "platformUseDisabled": "Моля, имайте предвид, че можете да използвате само $t(common.Templates), които са избрани за тази $t(common.community) (вижте по-горе). Ако искате да използвате някой от $t(common.Templates) по-долу, моля, помолете $t(common.admin) или $t(common.lead) на $t(common.space) да ги добави в секцията $t(common.Template) на $t(common.space) $t(common.settings).",
+    "disabledTemplateInfo": "Моля, имайте предвид, че можете да използвате само $t(common.Templates), които са избрани за тази $t(common.community), което този не е. Ако искате да използвате този $t(common.Template), моля, помолете $t(common.admin) или $t(common.lead) на $t(common.space) да го добави в секцията $t(common.Template) на $t(common.space) $t(common.settings).",
     "importTemplateDialog": {
       "confirmClose": {
-        "title": "Изхвърли $t(common.template)",
-        "description": "Сигурни ли сте, че искате да затворите този $t(common.template)? Незапазените промени ще бъдат загубени."
+        "title": "Изхвърли $t(common.Template)",
+        "description": "Сигурни ли сте, че искате да затворите този $t(common.Template)? Незапазените промени ще бъдат загубени."
       }
     },
     "notifications": {
-      "templateSaved": "$t(common.template) е запазен успешно"
+      "templateSaved": "$t(common.Template) е запазен успешно"
     }
   },
   "innovation-templates": {
     "states": {
       "title": "Дефиниция",
-      "placeholder": "Тук можете да поставите описанието на фазите, които да използвате за този $t(common.innovation-flow)"
+      "placeholder": "Тук можете да поставите описанието на фазите, които да използвате за този $t(common.InnovationFlow)"
     }
   },
   "components": {
     "calloutTemplateDialog": {
-      "typeReadonly": "Веднъж създаден $t(common.template), неговият тип не може да бъде променен. Ако ви е необходим различен тип, моля, създайте нов $t(common.template)."
+      "typeReadonly": "Веднъж създаден $t(common.Template), неговият тип не може да бъде променен. Ако ви е необходим различен тип, моля, създайте нов $t(common.Template)."
     },
     "shareSettings": {
       "description": "Базирано на $t(common.settings) на $t(common.space), в който се намира този/тази {{elementName}}, можете да редактирате с множество потребители едновременно. Ако не искате други да редактират, променете $t(common.settings) по-долу.",
@@ -1362,19 +1364,19 @@
           "activeStateWarning": "Тази фаза в момента е активна и не може да бъде изтрита. Винаги можете да я преименувате или да изберете друга като активна."
         },
         "selectDifferentFlow": {
-          "title": "Намери $t(common.space) $t(common.template)",
+          "title": "Намери $t(common.space) $t(common.Template)",
           "confirmationDialog": {
             "title": "Внимавайте при промяна на потока!",
-            "description": "- При промяна на $t(common.innovation-flow), **всички промени, направени в текущия поток, ще бъдат загубени**.\n- Всички съществуващи $t(common.posts) ще бъдат групирани под първата фаза на новия поток."
+            "description": "- При промяна на $t(common.InnovationFlow), **всички промени, направени в текущия поток, ще бъдат загубени**.\n- Всички съществуващи $t(common.posts) ще бъдат групирани под първата фаза на новия поток."
           },
           "importCalloutsDialog": {
-            "title": "Приложи нов $t(common.template)",
-            "description": "Вие се кандите да приложите нов $t(common.template). Това действие ще <b>изтрие перманентно</b> текущия Ви $t(common.innovation-flow). Съществуващите $t(common.posts), свързани с различни фази, ще останат и ще бъдат групирани под първата фаза на новата настройка.<br/><br/>Моля, изберете една от следните опции:",
-            "yes": "Добави $t(common.posts) от $t(common.template)",
-            "yesDescription": "Това ще включи новите $t(common.posts) от $t(common.template) в допълнение към съществуващите.",
-            "no": "Промени само $t(common.innovation-flow)",
-            "noDescription": "Това ще замени само $t(common.innovation-flow), запазвайки текущите Ви $t(common.posts) така, както са.",
-            "apply": "Приложи нов $t(common.template)"
+            "title": "Приложи нов $t(common.Template)",
+            "description": "Вие се кандите да приложите нов $t(common.Template). Това действие ще <b>изтрие перманентно</b> текущия Ви $t(common.InnovationFlow). Съществуващите $t(common.posts), свързани с различни фази, ще останат и ще бъдат групирани под първата фаза на новата настройка.<br/><br/>Моля, изберете една от следните опции:",
+            "yes": "Добави $t(common.posts) от $t(common.Template)",
+            "yesDescription": "Това ще включи новите $t(common.posts) от $t(common.Template) в допълнение към съществуващите.",
+            "no": "Промени само $t(common.InnovationFlow)",
+            "noDescription": "Това ще замени само $t(common.InnovationFlow), запазвайки текущите Ви $t(common.posts) така, както са.",
+            "apply": "Приложи нов $t(common.Template)"
           }
         }
       }
@@ -1537,7 +1539,7 @@
       "title": "Какво искате да попитате от вашата $t(common.community)?",
       "titleWithType": "Създай {{type}}",
       "post-type-label": "$t(common.Post) етикет",
-      "custom-template": "Персонализиран $t(common.template)",
+      "custom-template": "Персонализиран $t(common.Template)",
       "info-step": {
         "title": "Детайли",
         "description": "Описание",
@@ -1563,19 +1565,19 @@
         }
       },
       "template-step": {
-        "title": "$t(common.templates)",
+        "title": "$t(common.Templates)",
         "post-template-label": "Текст по подразбиране:",
         "post-template-text": "Добавете текст по подразбиране към $t(common.posts), например въпроси, на които искате хората да отговорят.",
         "post-template-default-description": "Описание по подразбиране",
-        "whiteboard-template-label": "$t(common.template):",
-        "whiteboard-empty-template": "Празен $t(common.template)",
-        "whiteboard-reset-template": "Нулирай празен $t(common.template)",
+        "whiteboard-template-label": "$t(common.Template):",
+        "whiteboard-empty-template": "Празен $t(common.Template)",
+        "whiteboard-reset-template": "Нулирай празен $t(common.Template)",
         "no-post-template-selected": "Моля, изберете $t(common.enums.templateType.WHITEBOARD)",
         "no-whiteboard-template-selected": "Моля, изберете $t(common.enums.templateType.WHITEBOARD)"
       },
       "create-step": {
         "title": "Създай",
-        "post-template-label": "Избери $t(common.post) $t(common.template)"
+        "post-template-label": "Избери $t(common.post) $t(common.Template)"
       },
       "closeDialog": {
         "title": "Изхвърли $t(common.post)",
@@ -2270,7 +2272,7 @@
     },
     "contribute": {
       "innovationFlow": {
-        "title": "Този {{entity}} се ръководи от <b>{{innovationFlowDisplayName}}</b>. Този $t(common.innovation-flow) структурира процеса и ви кани да предприемете специфични действия за всеки етап.",
+        "title": "Този {{entity}} се ръководи от <b>{{innovationFlowDisplayName}}</b>. Този $t(common.InnovationFlow) структурира процеса и ви кани да предприемете специфични действия за всеки етап.",
         "readMore": "Прочетете повече за <b>{{innovationFlowDisplayName}}</b>"
       },
       "no-posts": "Не са намерени $t(common.posts)"
@@ -2280,7 +2282,7 @@
       "fullName": "$t(common.templateLibrary)",
       "title": "$t(common.templateLibrary) на Alkemio",
       "subtitle": "Задайте движение на вашия $t(common.spaceSubspace) с тези готови за употреба инструменти. <click>Научете повече</click>.",
-      "useTemplateButton": "Достъпете този $t(common.template) от вашия $t(common.space), за да го използвате.",
+      "useTemplateButton": "Достъпете този $t(common.Template) от вашия $t(common.space), за да го използвате.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
         "dialogTitle": "$t(common.innovation-packs)"
@@ -2325,15 +2327,15 @@
             "description": "Тук можете да нагласите авторизационните $t(common.settings) за този {{entity}}."
           },
           "templates": {
-            "description": "Тук можете да създавате и редактирате $t(common.templates) за този {{entity}}.",
-            "delete-confirmation": "Сигурни ли сте, че искате да изтриете $t(common.template) '{{template}}'?",
+            "description": "Тук можете да създавате и редактирате $t(common.Templates) за този {{entity}}.",
+            "delete-confirmation": "Сигурни ли сте, че искате да изтриете $t(common.Template) '{{template}}'?",
             "import": {
               "defaultTitle": "$t(common.templateLibrary)",
               "title": "$t(common.templateLibrary): {{templateType}}",
-              "subtitle": "Намерете $t(common.templates) за използване в вашия $t(common.space) или $t(common.subspace). Изберете $t(common.template) и кликнете `Импортирай`, за да го добавите към вашия набор от $t(common.templates).",
-              "callout-template-import-subtitle": "Намерете $t(common.template) за хора да използват при допринасяне към вашия $t(common.callout)",
-              "noTemplates": "Няма $t(common.templates) в библиотеката на $t(common.space).",
-              "imported-successfully-notification": "$t(common.template) е импортиран успешно"
+              "subtitle": "Намерете $t(common.Templates) за използване в вашия $t(common.space) или $t(common.subspace). Изберете $t(common.Template) и кликнете `Импортирай`, за да го добавите към вашия набор от $t(common.Templates).",
+              "callout-template-import-subtitle": "Намерете $t(common.Template) за хора да използват при допринасяне към вашия $t(common.callout)",
+              "noTemplates": "Няма $t(common.Templates) в библиотеката на $t(common.space).",
+              "imported-successfully-notification": "$t(common.Template) е импортиран успешно"
             },
             "validation": {
               "spaceRequired": "Изберете съществуващ $t(common.spaceSubspace), за да продължите."
@@ -2384,7 +2386,7 @@
             "limitNotice": "За да увеличите ограниченията на вашия $t(common.account), попълнете формуляра в долната част на <contact>страницата за контакт</contact>.",
             "notAvailable": "Не е налично",
             "notAvailableNotice": "Свържете се с екипа на Alkemio, за да активирате тази функция в вашия $t(common.account)",
-            "noTemplates": "Този $t(common.innovationPack) все още няма $t(common.template)",
+            "noTemplates": "Този $t(common.innovationPack) все още няма $t(common.Template)",
             "customHomepages": "$t(common.customHomepages)",
             "hostTitle": "Домакин",
             "contactsLink": "Ако искате да промените някои от тези $t(common.settings), моля свържете се с екипа на Alkemio <click>тук</click>.",
@@ -2497,7 +2499,7 @@
           "subspace-created": "$t(common.subspace) е създаден успешно.",
           "subspace-removed": "$t(common.subspace) е премахнат успешно.",
           "subspace-updated": "$t(common.subspace) е актуализиран успешно.",
-          "templateSaved": "$t(common.template) е запазен успешно"
+          "templateSaved": "$t(common.Template) е запазен успешно"
         }
       },
       "space": {
@@ -2510,7 +2512,7 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Променете шаблона по подразбиране",
                 "title": "Променете шаблона по подразбиране за $t(common.subspace)",
-                "description": "Персонализирайте шаблона по подразбиране за новосъздадени $t(common.subspaces).<br/><br/>По-долу можете да изберете между $t(common.templates), събрани в $t(common.space) $t(common.templateLibrary). Ако търсите да създадете нови $t(common.templates) или да изследвате допълнителни $t(common.templates), <library>кликнете тук</library>, за да получите достъп до тази библиотека."
+                "description": "Персонализирайте шаблона по подразбиране за новосъздадени $t(common.subspaces).<br/><br/>По-долу можете да изберете между $t(common.Templates), събрани в $t(common.space) $t(common.templateLibrary). Ако търсите да създадете нови $t(common.Templates) или да изследвате допълнителни $t(common.Templates), <library>кликнете тук</library>, за да получите достъп до тази библиотека."
               }
             }
           }
@@ -2547,7 +2549,7 @@
             "title": "$t(common.space) Функции",
             "features": {
               "WHITEBOARD_MULTI_USER": "Мултипотребителски $t(common.Whiteboards)",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Създаване на $t(common.template) от $t(common.callout)",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Създаване на $t(common.Template) от $t(common.callout)",
               "VIRTUAL_CONTRIBUTORS": "Взаимодействие с $t(common.virtualContributors)"
             }
           },
@@ -2573,9 +2575,9 @@
           },
           "copySpace": {
             "title": "Копиране на $t(common.subspace)",
-            "description": "За да използвате тази настройка на $t(common.subspace), можете или да я дублирате в рамките на същия $t(common.space), или да я запазите като $t(common.template) за използване в цялата платформа. В двата случая $t(common.innovation-flow) и всички $t(common.posts) ще бъдат репликирани. Имайте предвид, че $t(common.comments) или допринасяния към инструмент няма да бъдат включени в шаблона или дублирания $t(common.subspace).",
-            "createTemplate": "Създай $t(common.template)",
-            "createTemplateTooltip": "За да създадете $t(common.template) от този $t(common.subspace), ви са необходими $t(common.space) $t(common.admin) права.",
+            "description": "За да използвате тази настройка на $t(common.subspace), можете или да я дублирате в рамките на същия $t(common.space), или да я запазите като $t(common.Template) за използване в цялата платформа. В двата случая $t(common.InnovationFlow) и всички $t(common.posts) ще бъдат репликирани. Имайте предвид, че $t(common.comments) или допринасяния към инструмент няма да бъдат включени в шаблона или дублирания $t(common.subspace).",
+            "createTemplate": "Създай $t(common.Template)",
+            "createTemplateTooltip": "За да създадете $t(common.Template) от този $t(common.subspace), ви са необходими $t(common.space) $t(common.admin) права.",
             "duplicate": "Дублирай"
           },
           "account": {
@@ -3045,7 +3047,7 @@
       "last-saved": "Автоматично запазване на последните промени: {{datetime}}",
       "unsuccessful-save": "<p><strong>{{warningMessage}} Неуспешно запазване на промените. Последно запазване: {{datetime}}.</strong></p> <p>Ако проблемът продължава, моля свържете се с екипа. За да избегнете загуба на прогрес, кликнете менюто в горния ляв ъгъл, за да запазите вашия $t(common.whiteboard) на локален диск.</p>",
       "state-actions": {
-        "save-as-template": "Запази като $t(common.template)",
+        "save-as-template": "Запази като $t(common.Template)",
         "save-and-check-in": "Запази и спри редактирането",
         "save": "Запази",
         "delete": "Изтрий"
@@ -3059,16 +3061,16 @@
         "confirmationText": "Сигурни ли сте, че искате да изтриете съдържанието на този $t(common.whiteboard)?"
       },
       "template": {
-        "header": "$t(common.templates), дефинирани в Alkemio",
-        "how-to": "За да създадете $t(common.template), създайте нов $t(common.whiteboard) или използвайте съществуващ и го запазете като $t(common.template)."
+        "header": "$t(common.Templates), дефинирани в Alkemio",
+        "how-to": "За да създадете $t(common.Template), създайте нов $t(common.whiteboard) или използвайте съществуващ и го запазете като $t(common.Template)."
       },
       "space": {
-        "templatesHeader": "$t(common.templates), дефинирани в този $t(common.space)",
-        "templatesSubheader": "$t(common.templates), дефинирани в този $t(common.space), могат да се използват във всеки $t(common.subspace), който този $t(common.space) хоства."
+        "templatesHeader": "$t(common.Templates), дефинирани в този $t(common.space)",
+        "templatesSubheader": "$t(common.Templates), дефинирани в този $t(common.space), могат да се използват във всеки $t(common.subspace), който този $t(common.space) хоства."
       },
       "subspace": {
-        "templatesHeader": "$t(common.templates), дефинирани в този $t(common.subspace)",
-        "templatesSubheader": "$t(common.templates), дефинирани в този $t(common.subspace) в неговата обхватност."
+        "templatesHeader": "$t(common.Templates), дефинирани в този $t(common.subspace)",
+        "templatesSubheader": "$t(common.Templates), дефинирани в този $t(common.subspace) в неговата обхватност."
       },
       "whiteboardDisconnected": {
         "title": "$t(common.Whiteboards) връзката е прекъсната",
@@ -3659,8 +3661,8 @@
     }
   },
   "innovation-edit": {
-    "new": "Нов $t(common.innovation-flow)",
-    "edit": "Редактирай $t(common.innovation-flow)"
+    "new": "Нов $t(common.InnovationFlow)",
+    "edit": "Редактирай $t(common.InnovationFlow)"
   },
   "contributors-section": {
     "title": "Допринасящи"
@@ -3776,7 +3778,7 @@
     "license": {
       "noPlansError": "Няма налични планове. Моля, свържете се с поддръжката."
     },
-    "innovationFlowError": "Този $t(common.template) не може да се използва за коренови $t(common.spaces). Моля, изберете друг $t(common.template)."
+    "innovationFlowError": "Този $t(common.Template) не може да се използва за коренови $t(common.spaces). Моля, изберете друг $t(common.Template)."
   },
   "plansTable": {
     "title": "Изберете план",
