@@ -233,7 +233,17 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 {options.dialogTitle ?? t('common.Whiteboard')}
                 <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
               </DialogHeader>
-              <DialogContent sx={{ pt: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <DialogContent
+                sx={{
+                  pt: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: 1,
+                  minHeight: 0,
+                  justifyContent: 'flex-start',
+                  alignItems: 'stretch',
+                }}
+              >
                 <WhiteboardImageFailureBanner
                   failureState={failureState}
                   onRetry={handleRetryFailedDownloads}
