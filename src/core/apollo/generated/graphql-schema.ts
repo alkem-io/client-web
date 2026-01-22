@@ -42235,6 +42235,19 @@ export type ConversationEventsSubscription = {
                               };
                             }
                           | undefined;
+                        reactions: Array<{
+                          __typename?: 'Reaction';
+                          id: string;
+                          emoji: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                              }
+                            | undefined;
+                        }>;
                       }
                     | undefined;
                 }
@@ -42282,6 +42295,19 @@ export type ConversationEventsSubscription = {
                       };
                     }
                   | undefined;
+                reactions: Array<{
+                  __typename?: 'Reaction';
+                  id: string;
+                  emoji: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }>;
               }
             | undefined;
         }
@@ -42318,6 +42344,19 @@ export type ConversationEventsSubscription = {
                   };
                 }
               | undefined;
+            reactions: Array<{
+              __typename?: 'Reaction';
+              id: string;
+              emoji: string;
+              timestamp: number;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            }>;
           };
         }
       | undefined;
