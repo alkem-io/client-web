@@ -232,6 +232,15 @@
     "signUp": {
       "signUpEmail": "Aanmelden met e-mail",
       "alreadyHaveAccount": "Heb je al een $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -415,6 +424,7 @@
     "notification": "melding",
     "notifications": "meldingen",
     "credentials": "Gegevens",
+    "security": "Security",
     "my-profile": "Mijn $t(common.profile)",
     "my-memberships": "Mijn $t(common.memberships)",
     "Profile": "Profiel",
@@ -1348,6 +1358,7 @@
         "editState": "Details Bewerken",
         "deleteState": "Verwijderen",
         "addState": "Fase Toevoegen",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "Een fase naam kan geen speciale tekens bevatten.",
         "noRepeatedStates": "Er bestaat al een fase met dezelfde naam.",
         "createDialog": {
@@ -1376,6 +1387,18 @@
             "noDescription": "Dit vervangt alleen de $t(common.innovation-flow), waarbij je huidige $t(common.posts) behouden blijven zoals ze zijn.",
             "apply": "Nieuw $t(common.template) toepassen"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected Template:",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default Template?",
+          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default template. Please try again.",
+          "removeFailed": "Failed to remove the default template. Please try again."
         }
       }
     },
@@ -2208,7 +2231,7 @@
     "feedback": "Feedback",
     "support": "Ondersteuning",
     "about": "Over",
-    "copyright": "© 2025 Alkemio B.V."
+    "copyright": "© 2026 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} $t(common.spaces)",
@@ -2324,6 +2347,9 @@
           "authorization": {
             "description": "Hier kan je de authorisatie $t(common.settings) aanpassen voor deze {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Hier kunt u $t(common.templates) maken en bewerken voor deze {{entity}}.",
             "delete-confirmation": "Weet je zeker dat je $t(common.template) '{{template}} wilt verwijderen?",
@@ -2424,6 +2450,11 @@
           "privacy": {
             "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
@@ -2510,9 +2541,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Wijzig standaard $t(common.template)",
                 "title": "Wijzig standaard $t(common.subspace) $t(common.template)",
-                "description": "Pas de standaard $t(common.template) aan voor nieuw aangemaakte $t(common.subspaces).<br/><br/>Hieronder kun je kiezen tussen de $t(common.templates) die zijn verzameld in de $t(common.space) $t(common.templateLibrary). Als je nieuwe $t(common.templates) wilt maken of extra $t(common.templates) wilt verkennen, klik dan <library>hier</library> om deze bibliotheek te openen."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2844,6 +2876,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "Welkom op Alkemio!",

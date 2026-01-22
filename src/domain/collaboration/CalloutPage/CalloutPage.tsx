@@ -33,6 +33,7 @@ export interface CalloutPageProps {
 }
 
 export const LocationStateKeyCachedCallout = 'LocationStateKeyCachedCallout';
+const SEARCH_PARAM_TAB = 'tab';
 
 export interface LocationStateCachedCallout extends NavigationState {
   [LocationStateKeyCachedCallout]?: CalloutDetailsModelExtended;
@@ -83,13 +84,13 @@ const CalloutPage = ({
 
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
-  let [searchParams, setSearchParams] = useSearchParams();
-  const currentSection = parseInt(searchParams.get('tab') || '-1') + 1;
+  let [searchParams] = useSearchParams();
 
   // Track previous contributionId to detect when we're navigating between contributions
   const prevContributionIdRef = useRef<string | undefined>(contributionId);
 
   useEffect(() => {
+    const currentSection = parseInt(searchParams.get(SEARCH_PARAM_TAB) || '-1') + 1;
     const isNavigatingBetweenContributions = prevContributionIdRef.current !== contributionId;
     prevContributionIdRef.current = contributionId;
 
@@ -105,9 +106,19 @@ const CalloutPage = ({
     }
 
     if (currentSection !== calloutSection) {
-      setSearchParams({ tab: `${calloutSection + 1}` }, { replace: true });
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set(SEARCH_PARAM_TAB, calloutSection.toString());
+
+      // Cannot use location from the react-router here because it's not updated yet, hence the document.location
+      navigate(
+        {
+          pathname: document.location.pathname,
+          search: newParams.toString(),
+        },
+        { replace: true }
+      ); // Use replace: true to avoid bloating history
     }
-  }, [calloutSection, currentSection, contributionId, setSearchParams]);
+  }, [calloutSection, contributionId]);
 
   if ((urlResolverLoading || calloutLoading) && !callout) {
     return <Loading />;

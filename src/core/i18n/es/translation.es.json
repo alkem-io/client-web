@@ -232,6 +232,15 @@
     "signUp": {
       "signUpEmail": "Registrarse con correo electrónico",
       "alreadyHaveAccount": "¿Ya tienes $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -415,6 +424,7 @@
     "notification": "notificación",
     "notifications": "notificaciones",
     "credentials": "Credenciales",
+    "security": "Security",
     "my-profile": "Mi $t(common.profile)",
     "my-memberships": "Mis $t(common.memberships)",
     "Profile": "Perfil",
@@ -1348,6 +1358,7 @@
         "editState": "Editar detalles",
         "deleteState": "Eliminar",
         "addState": "Añadir fase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "El nombre de una fase no puede contener caracteres especiales.",
         "noRepeatedStates": "Ya existe una fase con el mismo nombre.",
         "createDialog": {
@@ -1376,6 +1387,18 @@
             "noDescription": "Esto solo reemplazará el $t(common.innovation-flow), manteniendo tus $t(common.posts) actuales como están.",
             "apply": "Aplicar nueva $t(common.template)"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected Template:",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default Template?",
+          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default template. Please try again.",
+          "removeFailed": "Failed to remove the default template. Please try again."
         }
       }
     },
@@ -2208,7 +2231,7 @@
     "feedback": "Comentarios",
     "support": "Soporte",
     "about": "Acerca de",
-    "copyright": "© 2025 Alkemio B.V."
+    "copyright": "© 2026 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} $t(common.spaces)",
@@ -2324,6 +2347,9 @@
           "authorization": {
             "description": "Aquí puedes ajustar la configuración de autorización de este/esta {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Aquí puedes crear y editar $t(common.templates) para este/esta {{entity}}.",
             "delete-confirmation": "¿Estás seguro/a de que quieres eliminar la $t(common.template) '{{template}}'?",
@@ -2424,6 +2450,11 @@
           "privacy": {
             "contributorRolesVisible": "Mostrar roles de contribuyente a todos los usuarios registrados"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
@@ -2510,9 +2541,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Cambiar $t(common.template) predeterminado",
                 "title": "Cambiar $t(common.subspace) $t(common.template) predeterminado",
-                "description": "Personaliza la $t(common.template) predeterminada para los $t(common.subspaces) recién creados.<br/><br/>A continuación, puedes elegir entre las $t(common.templates) recopiladas en la $t(common.space) $t(common.templateLibrary). Si deseas crear nuevas $t(common.templates) o explorar $t(common.templates) adicionales, <library>haz clic aquí</library> para acceder a esta biblioteca."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2853,6 +2885,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "¡Bienvenido a Alkemio!",

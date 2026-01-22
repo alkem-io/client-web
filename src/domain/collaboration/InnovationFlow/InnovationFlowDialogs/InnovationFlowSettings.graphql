@@ -43,12 +43,14 @@ mutation UpdateCollaborationFromSpaceTemplate(
   $collaborationId: UUID!
   $spaceTemplateId: UUID!
   $addCallouts: Boolean
+  $deleteExistingCallouts: Boolean
 ) {
   updateCollaborationFromSpaceTemplate(
     updateData: {
       collaborationID: $collaborationId
       spaceTemplateID: $spaceTemplateId
       addCallouts: $addCallouts
+      deleteExistingCallouts: $deleteExistingCallouts
     }
   ) {
     id

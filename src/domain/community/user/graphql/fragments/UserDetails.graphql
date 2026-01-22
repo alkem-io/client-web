@@ -28,4 +28,11 @@ fragment UserDetails on User {
     }
     url
   }
+  settings {
+    id
+    homeSpace {
+      spaceID
+      autoRedirect
+    }
+  }
 }

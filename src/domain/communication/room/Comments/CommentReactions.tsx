@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 interface CommentReactionsReaction extends Identifiable {
   emoji: string;
+  timestamp: number;
   sender?: Identifiable & { profile: { displayName: string } };
 }
 
@@ -32,20 +33,31 @@ const CommentReactions = ({
   const { t } = useTranslation();
 
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {
-    const sortedReactions = sortBy(reactions, r => r.emoji);
+    // Group reactions by emoji
+    const grouped = groupBy(reactions, r => r.emoji);
 
-    // if the reaction sender is missing (e.g., due to a deleted user), we replace it with a placeholder from translation
-    return Object.entries(groupBy(sortedReactions, r => r.emoji)).map(([emoji, reactions]) => {
+    // Map to reaction view format with first timestamp for sorting
+    const reactionGroups = Object.entries(grouped).map(([emoji, emojiReactions]) => {
+      // Find the earliest timestamp (first reaction of this emoji)
+      const firstTimestamp = Math.min(...emojiReactions.map(r => r.timestamp));
+
       return {
         emoji,
-        count: reactions.length,
+        count: emojiReactions.length,
+        firstTimestamp,
+        // if the reaction sender is missing (e.g., due to a deleted user), we replace it with a placeholder from translation
         senders: compact(
-          reactions.map(r => r.sender || { id: 'deleted-user', profile: { displayName: t('messaging.missingAuthor') } })
+          emojiReactions.map(
+            r => r.sender || { id: 'deleted-user', profile: { displayName: t('messaging.missingAuthor') } }
+          )
         ),
-        ownReactionId: userId && reactions.find(reaction => reaction.sender?.id === userId)?.id,
+        ownReactionId: userId && emojiReactions.find(reaction => reaction.sender?.id === userId)?.id,
       };
     });
-  }, [reactions, userId]);
+
+    // Sort by first timestamp (chronological order of first reaction per emoji)
+    return sortBy(reactionGroups, g => g.firstTimestamp);
+  }, [reactions, userId, t]);
 
   const [isReactionDialogOpen, setIsReactionDialogOpen] = useState(false);
 

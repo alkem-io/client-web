@@ -4,59 +4,66 @@ import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useUserMessagingContext } from './UserMessagingContext';
 import { useUserConversations } from './useUserConversations';
+import { useConversationMessages } from './useConversationMessages';
+import { useConversationEventsSubscription } from './useConversationEventsSubscription';
 import { UserMessagingChatList } from './UserMessagingChatList';
 import { UserMessagingConversationView } from './UserMessagingConversationView';
 import { NewMessageDialog } from './NewMessageDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-
-const POLLING_INTERVAL_MS = 5000; // Poll every 5 seconds
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 
 const UserMessagingDialog = () => {
   const { t } = useTranslation();
-  const { isOpen, setIsOpen, selectedConversationId, setSelectedConversationId } = useUserMessagingContext();
-  const { conversations, isLoading, refetch } = useUserConversations();
+  const {
+    isOpen,
+    setIsOpen,
+    selectedConversationId,
+    setSelectedConversationId,
+    selectedRoomId,
+    setSelectedRoomId,
+    setTotalUnreadCount,
+  } = useUserMessagingContext();
+
+  // Query for conversation list (light - no messages)
+  const { conversations, totalUnreadCount, isLoading } = useUserConversations();
+
+  // Query for messages of selected conversation (on demand)
+  const { messages, isLoading: messagesLoading } = useConversationMessages(selectedConversationId);
+
   const { isSmallScreen: isMobile } = useScreenSize();
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
 
-  // Poll for new messages when dialog is open and a conversation is selected
+  // Sync total unread count to context (for button badge)
   useEffect(() => {
-    if (!isOpen || !selectedConversationId) {
-      return;
-    }
+    setTotalUnreadCount(totalUnreadCount);
+  }, [totalUnreadCount, setTotalUnreadCount]);
 
-    const intervalId = setInterval(() => {
-      refetch().catch(error => {
-        // in case of an error, stop polling
-        console.log('Failed to poll for new messages: ', error);
-        clearInterval(intervalId);
-      });
-    }, POLLING_INTERVAL_MS);
+  // Subscribe to conversation events (new messages, new conversations, read receipts)
+  useConversationEventsSubscription(selectedRoomId);
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isOpen, selectedConversationId, refetch]);
+  // Subscribe to room events for the selected conversation (live updates while viewing)
+  useSubscribeOnRoomEvents(selectedRoomId ?? undefined, !isOpen);
 
+  // Get the selected conversation for display
   const selectedConversation = selectedConversationId
-    ? conversations.find(c => c.id === selectedConversationId) ?? null
+    ? (conversations.find(c => c.id === selectedConversationId) ?? null)
     : null;
 
   const handleSelectConversation = (conversationId: string) => {
+    const conversation = conversations.find(c => c.id === conversationId);
     setSelectedConversationId(conversationId);
+    setSelectedRoomId(conversation?.roomId ?? null);
   };
 
   const handleBack = () => {
     setSelectedConversationId(null);
+    setSelectedRoomId(null);
   };
 
   const handleClose = () => {
     setIsOpen(false);
-  };
-
-  const handleMessageSent = () => {
-    refetch();
   };
 
   const handleOpenNewMessage = () => {
@@ -68,15 +75,15 @@ const UserMessagingDialog = () => {
   };
 
   const handleNewMessageSent = async (userId: string) => {
-    // Refetch conversations to get the new conversation
-    const result = await refetch();
-
     // Find the conversation with this user and select it
-    const newConversation = result.data?.me?.conversations?.users?.find(conv => conv.user?.id === userId);
+    // The subscription will handle adding new conversations, but we can also check if it exists
+    const existingConversation = conversations.find(conv => conv.user?.id === userId);
 
-    if (newConversation) {
-      setSelectedConversationId(newConversation.id);
+    if (existingConversation) {
+      setSelectedConversationId(existingConversation.id);
+      setSelectedRoomId(existingConversation.roomId);
     }
+    // If not found, the conversationCreated event from subscription will add it
   };
 
   // Mobile view: show either the list or the conversation
@@ -107,9 +114,10 @@ const UserMessagingDialog = () => {
             {selectedConversationId ? (
               <UserMessagingConversationView
                 conversation={selectedConversation}
+                messages={messages}
+                messagesLoading={messagesLoading}
                 onBack={handleBack}
                 showBackButton
-                onMessageSent={handleMessageSent}
               />
             ) : (
               <UserMessagingChatList
@@ -170,7 +178,11 @@ const UserMessagingDialog = () => {
             />
           </PageContentBlockSeamless>
           <PageContentBlockSeamless disablePadding disableGap columns={5} sx={{ flexGrow: 1 }}>
-            <UserMessagingConversationView conversation={selectedConversation} onMessageSent={handleMessageSent} />
+            <UserMessagingConversationView
+              conversation={selectedConversation}
+              messages={messages}
+              messagesLoading={messagesLoading}
+            />
           </PageContentBlockSeamless>
         </DialogContent>
       </DialogWithGrid>

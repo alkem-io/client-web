@@ -1,5 +1,5 @@
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { useState } from 'react';
 import CreateContributionButton from '../CreateContributionButton';
@@ -54,7 +54,9 @@ const CreateContributionButtonPost = ({
 
   return (
     <>
-      {canCreateContribution ? <CreateContributionButton onClick={openCreateDialog} /> : undefined}
+      {canCreateContribution ? (
+        <CreateContributionButton onClick={openCreateDialog} contributionType={CalloutContributionType.Post} />
+      ) : undefined}
       <PostCreationDialog
         open={postDialogOpen}
         onClose={closeCreateDialog}

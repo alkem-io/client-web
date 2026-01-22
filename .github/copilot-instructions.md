@@ -86,6 +86,7 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - Use them to cross-check and refine responses before completion.
 - For Git operations, **all commits must be signed**.
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server.
+- **Internationalization (i18n)**: Only edit `src/core/i18n/en/translation.en.json` directly. All other locale files (`translation.ach.json`, `translation.bg.json`, `translation.nl.json`, etc.) are **generated automatically via Crowdin** and must never be edited manually. Changes to the English source file will be synchronized to Crowdin, translated, and pulled back automatically via CI. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
 - New env vars must be prefixed with `VITE_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
 - Large build output can consume memory; Vite already raises `max-old-space-size`. If builds fail on low-memory runners, reuse the same command but consider pruning node_modules (`pnpm prune` shortcut).

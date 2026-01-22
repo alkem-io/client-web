@@ -7,17 +7,19 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { UserConversation, UserConversationMessage } from './useUserConversations';
-import { useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useRef, useEffect } from 'react';
+import { UserConversation } from './useUserConversations';
+import { ConversationMessage } from './useConversationMessages';
+import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 
 interface MessageBubbleProps {
-  message: UserConversationMessage;
+  message: ConversationMessage;
   isOwnMessage: boolean;
   canAddReaction: boolean;
   onAddReaction: (emoji: string) => void;
@@ -119,16 +121,18 @@ const MessageBubble = ({
 
 interface UserMessagingConversationViewProps {
   conversation: UserConversation | null;
+  messages: ConversationMessage[];
+  messagesLoading: boolean;
   onBack?: () => void;
   showBackButton?: boolean;
-  onMessageSent?: () => void;
 }
 
 export const UserMessagingConversationView = ({
   conversation,
+  messages,
+  messagesLoading,
   onBack,
   showBackButton = false,
-  onMessageSent,
 }: UserMessagingConversationViewProps) => {
   const { t } = useTranslation();
   const { userModel } = useCurrentUserContext();
@@ -137,11 +141,40 @@ export const UserMessagingConversationView = ({
   const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
   const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
   useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
+  const [markAsRead] = useMarkMessageAsReadMutation();
+
+  // Mark last message as read when conversation is opened or new messages arrive
+  const markConversationAsRead = useCallback(() => {
+    if (!conversation?.roomId || !messages.length || conversation.unreadCount === 0) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    markAsRead({
+      variables: {
+        messageData: {
+          roomID: conversation.roomId,
+          messageID: lastMessage.id,
+        },
+      },
+    }).catch(error => {
+      console.error('Failed to mark messages as read:', error);
+    });
+  }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead]);
+
+  // Mark as read when conversation is opened
+  useEffect(() => {
+    markConversationAsRead();
+  }, [markConversationAsRead]);
 
   // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversation?.messages.length]);
+  useLayoutEffect(() => {
+    const timeoutId = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [messages.length, conversation?.roomId]);
 
   const handleSendMessage = async (message: string) => {
     if (!conversation?.roomId || !message.trim()) {
@@ -157,7 +190,6 @@ export const UserMessagingConversationView = ({
           },
         },
       });
-      onMessageSent?.();
       return true; // Return true to reset the form
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -227,12 +259,16 @@ export const UserMessagingConversationView = ({
         flexDirection="column"
         sx={{ boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset' }}
       >
-        {conversation.messages.length === 0 ? (
+        {messagesLoading ? (
+          <Gutters alignItems="center" justifyContent="center" flex={1}>
+            <Loading />
+          </Gutters>
+        ) : messages.length === 0 ? (
           <Gutters alignItems="center" justifyContent="center" flex={1}>
             <Caption>{t('components.userMessaging.noMessages' as const)}</Caption>
           </Gutters>
         ) : (
-          conversation.messages.map(message => {
+          messages.map(message => {
             const isOwnMessage = message.sender?.id === userModel?.id;
             const canAddReaction = Boolean(conversation.roomId && message.message);
 

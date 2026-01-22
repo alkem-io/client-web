@@ -1,10 +1,8 @@
-import { useMemo, useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
+import { useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
 
 import { Box, Link } from '@mui/material';
-import { findKey, groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { NetworkStatus } from '@apollo/client';
-import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 
 import Gutters from '@/core/ui/grid/Gutters';
 import {
@@ -12,7 +10,6 @@ import {
   useSpaceUrlResolverQuery,
   useSearchScopeDetailsSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import {
   SearchQuery,
@@ -24,6 +21,8 @@ import {
   SearchResultSpaceFragment,
   SearchResultCalloutFragment,
   SearchResultOrganizationFragment,
+  SearchResultMemoFragment,
+  SearchResultWhiteboardFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -39,17 +38,20 @@ import {
   FilterConfig,
   FilterDefinition,
   calloutFilterConfig,
-  contributorFilterConfig,
+  framingFilterConfig,
   contributionFilterConfig,
+  contributorFilterConfig,
+  FILTER_OFF,
 } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
-import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
+import SearchResultsCalloutAndFramingCard from './searchResults/SearchResultsCalloutAndFramingCard';
 
 import { useSearchTerms } from './useSearchTerms';
 import { buildLoginUrl } from '../routing/urlBuilders';
 import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
 import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
+import SearchCategoriesMenu from './ui/SearchCategoriesMenu';
 
 export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
   ResultFragment & { type: Type };
@@ -60,7 +62,9 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
   | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Subspace, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>;
+  | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>
+  | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
+  | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
 
 interface SearchViewProps {
   searchRoute: string;
@@ -71,46 +75,67 @@ interface SearchViewProps {
 interface SearchViewSections {
   spaceResults?: SearchResultMetaType[];
   calloutResults?: SearchResultMetaType[];
+  framingResults?: SearchResultMetaType[]; // framingResults merged into calloutResults
   contributionResults?: SearchResultMetaType[];
   contributorResults?: SearchResultMetaType[];
 }
 
 type ResultsCursors = {
   spaceCursor: string | undefined;
-  collaborationCursor: string | undefined;
+  calloutCursor: string | undefined;
+  framingCursor: string | undefined;
   contributionCursor: string | undefined;
   contributorCursor: string | undefined;
-};
-
-const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultType[]> = {
-  spaceResults: [SearchResultType.Space, SearchResultType.Subspace],
-  calloutResults: [SearchResultType.Callout],
-  contributionResults: [SearchResultType.Post],
-  contributorResults: [SearchResultType.User, SearchResultType.Organization],
 };
 
 const SEARCH_RESULTS_COUNT = 4;
 export const MAX_TERMS_SEARCH = 5;
 const tagsetNames = ['skills', 'keywords'];
 
+const concatSearchResults = <T,>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
+
+const interlaceAndFilterArrays = <T extends { type: SearchResultType }>(
+  a: T[] = [],
+  b: T[] = [],
+  chunkSize: number = SEARCH_RESULTS_COUNT,
+  filter?: FilterDefinition
+): T[] => {
+  const result: T[] = [];
+  const maxLength = Math.max(a.length, b.length);
+
+  for (let i = 0; i < maxLength; i += chunkSize) {
+    result.push(...a.slice(i, i + chunkSize));
+    result.push(...b.slice(i, i + chunkSize));
+  }
+
+  if (!filter || filter.typename === FILTER_OFF) {
+    return result;
+  } else {
+    return result.filter(result => filter.value.includes(result.type));
+  }
+};
+
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: SearchViewProps) => {
   const [canSpaceLoadMore, setCanSpaceLoadMore] = useState(true);
-  const [canCalloutLoadMore, setCalloutCanLoadMore] = useState(true);
-  const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
+  const [canCalloutLoadMore, setCanCalloutLoadMore] = useState(true);
+  const [canFramingLoadMore, setCanFramingLoadMore] = useState(true);
   const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
+  const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
 
   const [resultsCursors, setResultsCursors] = useState<ResultsCursors>({
     spaceCursor: undefined,
-    contributorCursor: undefined,
+    calloutCursor: undefined,
+    framingCursor: undefined,
     contributionCursor: undefined,
-    collaborationCursor: undefined,
+    contributorCursor: undefined,
   });
   const [spaceFilter, setSpaceFilter] = useState<FilterDefinition>(spaceFilterConfig.all);
   const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
-  const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
+  const [framingFilter, setFramingFilter] = useState<FilterDefinition>(framingFilterConfig.all);
   const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
+  const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
 
   const navigate = useNavigate();
 
@@ -126,10 +151,11 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
 
   const handleTermsChange = useCallback(
     (newValue: string[]) => {
-      setCalloutCanLoadMore(true);
       setCanSpaceLoadMore(true);
-      setContributorCanLoadMore(true);
+      setCanCalloutLoadMore(true);
+      setCanFramingLoadMore(true);
       setCanContributionLoadMore(true);
+      setContributorCanLoadMore(true);
 
       const params = new URLSearchParams(
         Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
@@ -190,10 +216,17 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           {
             category: SearchCategory.CollaborationTools,
             size: SEARCH_RESULTS_COUNT,
+            types: calloutFilterConfig.all.value,
             cursor: undefined,
           },
           {
-            category: SearchCategory.Responses,
+            category: SearchCategory.Framings,
+            size: SEARCH_RESULTS_COUNT,
+            types: framingFilterConfig.all.value,
+            cursor: undefined,
+          },
+          {
+            category: SearchCategory.Contributions,
             size: SEARCH_RESULTS_COUNT,
             types: contributionFilterConfig.all.value,
             cursor: undefined,
@@ -211,12 +244,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     skip: hasNoTermsLength || resolvingSpace,
   });
 
-  const results = hasNoTermsLength ? undefined : toResultType(data);
-
-  const { spaceResults, contributionResults, contributorResults, calloutResults }: SearchViewSections = useMemo(
-    () => groupBy(results, ({ type }) => findKey(searchResultSectionTypes, types => types.includes(type))),
-    [results]
-  );
+  const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
+    toResultType(hasNoTermsLength ? undefined : data);
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
     variables: { spaceId: spaceId! },
@@ -243,15 +272,27 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               {
                 category: SearchCategory.CollaborationTools,
                 size: SEARCH_RESULTS_COUNT,
-                cursor: resultsCursors.collaborationCursor,
+                // types: calloutFilter.value,  // Callouts do not have type filter
+                cursor: resultsCursors.calloutCursor,
               },
             ];
           }
 
-          case SearchCategory.Responses: {
+          case SearchCategory.Framings: {
             return [
               {
-                category: SearchCategory.Responses,
+                category: SearchCategory.Framings,
+                size: SEARCH_RESULTS_COUNT,
+                types: framingFilter.value,
+                cursor: resultsCursors.framingCursor,
+              },
+            ];
+          }
+
+          case SearchCategory.Contributions: {
+            return [
+              {
+                category: SearchCategory.Contributions,
                 size: SEARCH_RESULTS_COUNT,
                 types: contributionFilter.value,
                 cursor: resultsCursors.contributionCursor,
@@ -281,10 +322,17 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               {
                 category: SearchCategory.CollaborationTools,
                 size: SEARCH_RESULTS_COUNT,
-                cursor: resultsCursors.collaborationCursor,
+                // types: calloutFilter.value,  // Callouts do not have type filter
+                cursor: resultsCursors.calloutCursor,
               },
               {
-                category: SearchCategory.Responses,
+                category: SearchCategory.Framings,
+                size: SEARCH_RESULTS_COUNT,
+                types: framingFilter.value,
+                cursor: resultsCursors.framingCursor,
+              },
+              {
+                category: SearchCategory.Contributions,
                 size: SEARCH_RESULTS_COUNT,
                 types: contributionFilter.value,
                 cursor: resultsCursors.contributionCursor,
@@ -318,11 +366,15 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
             }
 
             case SearchCategory.CollaborationTools: {
-              setCalloutCanLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
+              setCanCalloutLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
+              break;
+            }
+            case SearchCategory.Framings: {
+              setCanFramingLoadMore(fetchMoreResult?.search?.framingResults?.results?.length > 0);
               break;
             }
 
-            case SearchCategory.Responses: {
+            case SearchCategory.Contributions: {
               setCanContributionLoadMore(fetchMoreResult?.search?.contributionResults?.results?.length > 0);
               break;
             }
@@ -344,7 +396,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   spaceResults: {
                     ...fetchMoreResult.search.spaceResults,
-                    results: [...prev.search.spaceResults?.results, ...fetchMoreResult.search.spaceResults?.results],
+                    results: concatSearchResults(
+                      prev.search.spaceResults?.results,
+                      fetchMoreResult.search.spaceResults?.results
+                    ),
                   },
                 },
               };
@@ -356,25 +411,40 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   calloutResults: {
                     ...fetchMoreResult.search.calloutResults,
-                    results: [
-                      ...prev.search.calloutResults?.results,
-                      ...fetchMoreResult.search.calloutResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.calloutResults?.results,
+                      fetchMoreResult.search.calloutResults?.results
+                    ),
                   },
                 },
               };
             }
 
-            case SearchCategory.Responses: {
+            case SearchCategory.Framings: {
+              return {
+                search: {
+                  ...prev.search,
+                  framingResults: {
+                    ...fetchMoreResult.search.framingResults,
+                    results: concatSearchResults(
+                      prev.search.framingResults?.results,
+                      fetchMoreResult.search.framingResults?.results
+                    ),
+                  },
+                },
+              };
+            }
+
+            case SearchCategory.Contributions: {
               return {
                 search: {
                   ...prev.search,
                   contributionResults: {
                     ...fetchMoreResult.search.contributionResults,
-                    results: [
-                      ...prev.search.contributionResults?.results,
-                      ...fetchMoreResult.search.contributionResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.contributionResults?.results,
+                      fetchMoreResult.search.contributionResults?.results
+                    ),
                   },
                 },
               };
@@ -386,10 +456,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   contributorResults: {
                     ...fetchMoreResult.search.contributorResults,
-                    results: [
-                      ...prev.search.contributorResults?.results,
-                      ...fetchMoreResult.search.contributorResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.contributorResults?.results,
+                      fetchMoreResult.search.contributorResults?.results
+                    ),
                   },
                 },
               };
@@ -406,8 +476,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
       termsFromUrl,
       resultsCursors,
       spaceFilter.value,
-      contributorFilter.value,
+      calloutFilter.value,
+      framingFilter.value,
       contributionFilter.value,
+      contributorFilter.value,
       fetchMore,
     ]
   );
@@ -415,6 +487,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
   useEffect(() => {
     if (hasNoTermsLength) {
       setSpaceFilter(spaceFilterConfig.all);
+      setCalloutFilter(calloutFilterConfig.all);
+      setFramingFilter(framingFilterConfig.all);
       setContributionFilter(contributionFilterConfig.all);
       setContributorFilter(contributorFilterConfig.all);
     }
@@ -424,14 +498,14 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     if (data?.search && !isSearching)
       setResultsCursors({
         spaceCursor: data.search.spaceResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-        collaborationCursor: data.search.calloutResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
+        calloutCursor: data.search.calloutResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
+        framingCursor: data.search.framingResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
         contributionCursor: data.search.contributionResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
         contributorCursor: data.search.contributorResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
       });
   }, [data, isSearching]);
 
   const isSearchingForMore = networkStatus === NetworkStatus.fetchMore;
-  const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
 
   const filteredSpaceResults =
     spaceFilter.typename === 'all'
@@ -440,16 +514,36 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           spaceFilter.typename === 'space' ? space.type === 'SPACE' : space.type === 'SUBSPACE'
         );
 
+  const filteredCalloutAndFramingResults = interlaceAndFilterArrays(
+    calloutResults,
+    framingResults,
+    SEARCH_RESULTS_COUNT,
+    framingFilter // No type filter for callouts
+  );
+
   const filteredContributionResults =
     contributionFilter.typename === 'all'
       ? contributionResults
-      : contributionResults.filter(contribution => contribution.type === 'POST');
+      : contributionResults?.filter(contribution => {
+          switch (contributionFilter.typename) {
+            case 'post':
+              return contribution.type === SearchResultType.Post;
+            case 'memo':
+              return contribution.type === SearchResultType.Memo;
+            case 'whiteboard':
+              return contribution.type === SearchResultType.Whiteboard;
+            default:
+              return true;
+          }
+        });
 
   const filteredContributorResults =
     contributorFilter.typename === 'all'
       ? contributorResults
-      : contributorResults.filter(contributor =>
-          contributorFilter.typename === 'user' ? contributor.type === 'USER' : contributor.type === 'ORGANIZATION'
+      : contributorResults?.filter(contributor =>
+          contributorFilter.typename === 'user'
+            ? contributor.type === SearchResultType.User
+            : contributor.type === SearchResultType.Organization
         );
 
   return (
@@ -461,6 +555,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           top: 0,
           zIndex: 10,
           backgroundColor: '#fff',
+          marginTop: 0.5,
         }}
       >
         <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
@@ -493,76 +588,87 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
       )}
 
       <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
-        <FiltersDescriptionBlock />
+        <SearchCategoriesMenu results={data?.search} />
 
         <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="spaces"
-              title={spaceFilterTitle}
-              filterTitle={t('pages.search.filter.type.space')}
-              count={data?.search?.spaceResults?.total ?? 0}
-              filterConfig={spaceFilterConfig}
-              results={filteredSpaceResults}
-              currentFilter={spaceFilter}
-              onFilterChange={setSpaceFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canSpaceLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="collaboration-tools"
-              title={t('pages.search.filter.key.callout')}
-              filterTitle={t('common.type')}
-              count={data?.search?.calloutResults?.total ?? 0}
-              filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
-              results={convertedCalloutResults}
-              currentFilter={calloutFilter}
-              onFilterChange={setCalloutFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultsCalloutCard}
-              canLoadMore={canCalloutLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="responses"
-              title={t('pages.search.filter.key.response')}
-              filterTitle={t('pages.search.filter.type.contribution')}
-              count={data?.search?.contributionResults?.total ?? 0}
-              filterConfig={contributionFilterConfig}
-              results={filteredContributionResults}
-              currentFilter={contributionFilter}
-              onFilterChange={setContributionFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canContributionLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Responses)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="contributors"
-              title={t('common.contributors')}
-              filterTitle={t('pages.search.filter.type.contributor')}
-              count={data?.search?.contributorResults?.total ?? 0}
-              filterConfig={contributorFilterConfig}
-              results={filteredContributorResults}
-              currentFilter={contributorFilter}
-              onFilterChange={setContributorFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canContributorLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
-            />
-          </SectionWrapper>
+          {(data?.search?.spaceResults.results?.length ?? 0) > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="spaces"
+                title={spaceFilterTitle}
+                filterTitle={t('pages.search.filter.type.space')}
+                count={data?.search?.spaceResults?.total ?? 0}
+                filterConfig={spaceFilterConfig}
+                results={filteredSpaceResults}
+                currentFilter={spaceFilter}
+                onFilterChange={setSpaceFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canSpaceLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
+              />
+            </SectionWrapper>
+          )}
+          {((data?.search?.calloutResults.results?.length ?? 0) > 0 ||
+            (data?.search?.framingResults.results?.length ?? 0) > 0) && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="collaboration-tools"
+                title={t('pages.search.filter.key.callout')}
+                filterTitle={t('common.type')}
+                count={(data?.search?.calloutResults?.total ?? 0) + (data?.search?.framingResults?.total ?? 0)}
+                filterConfig={framingFilterConfig}
+                results={filteredCalloutAndFramingResults}
+                currentFilter={framingFilter}
+                onFilterChange={setFramingFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultsCalloutAndFramingCard}
+                canLoadMore={canCalloutLoadMore || canFramingLoadMore}
+                onClickLoadMore={() =>
+                  Promise.all([
+                    fetchNewResults(SearchCategory.CollaborationTools),
+                    fetchNewResults(SearchCategory.Framings),
+                  ])
+                }
+              />
+            </SectionWrapper>
+          )}
+          {(data?.search?.contributionResults.results?.length ?? 0) > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="contributions"
+                title={t('pages.search.filter.key.contribution')}
+                filterTitle={t('pages.search.filter.type.contribution')}
+                count={data?.search?.contributionResults?.total ?? 0}
+                filterConfig={contributionFilterConfig}
+                results={filteredContributionResults}
+                currentFilter={contributionFilter}
+                onFilterChange={setContributionFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canContributionLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Contributions)}
+              />
+            </SectionWrapper>
+          )}
+          {(data?.search?.contributorResults.results?.length ?? 0) > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="contributors"
+                title={t('common.contributors')}
+                filterTitle={t('pages.search.filter.type.contributor')}
+                count={data?.search?.contributorResults?.total ?? 0}
+                filterConfig={contributorFilterConfig}
+                results={filteredContributorResults}
+                currentFilter={contributorFilter}
+                onFilterChange={setContributorFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canContributorLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
+              />
+            </SectionWrapper>
+          )}
         </Gutters>
       </Gutters>
     </PageContentColumn>
@@ -571,78 +677,36 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
 
 export default SearchView;
 
-function toResultType(query?: SearchQuery): SearchResultMetaType[] {
-  if (!query) {
-    return [];
-  }
-
-  const spaceResults = (query.search.spaceResults?.results || []).map<SearchResultMetaType>(
+function toResultType(query?: SearchQuery): SearchViewSections {
+  const spaceResults = (query?.search.spaceResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const contributionResults = (query.search.contributionResults?.results || []).map<SearchResultMetaType>(
+  const calloutResults = (query?.search.calloutResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const contributorResults = (query.search.contributorResults?.results || []).map<SearchResultMetaType>(
+  const framingResults = (query?.search.framingResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const calloutResults = (query.search.calloutResults?.results || []).map<SearchResultMetaType>(
+  const contributionResults = (query?.search.contributionResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  return [...spaceResults, ...contributionResults, ...contributorResults, ...calloutResults];
+  const contributorResults = (query?.search.contributorResults?.results || []).map<SearchResultMetaType>(
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
+  );
+
+  return {
+    spaceResults,
+    calloutResults,
+    framingResults,
+    contributionResults,
+    contributorResults,
+  };
 }
 
 function SectionWrapper({ children }: PropsWithChildren) {
   return <Box sx={{ display: 'flex', flexDirection: 'row', gap: gutters(1) }}>{children}</Box>;
-}
-
-function FiltersDescriptionBlock() {
-  const { t } = useTranslation();
-
-  return (
-    <Gutters
-      disableGap
-      disablePadding
-      sx={theme => ({
-        position: 'sticky',
-        top: 80,
-
-        minWidth: 250,
-        borderRadius: 1,
-        height: 'fit-content',
-        border: `1px solid ${theme.palette.divider}`,
-      })}
-    >
-      <FiltersDescriptionBlockItem href="#spaces">
-        <HubOutlined />
-        <Caption>{t('components.searchDialog.spacesAndSubspaces')}</Caption>
-      </FiltersDescriptionBlockItem>
-
-      <FiltersDescriptionBlockItem href="#collaboration-tools">
-        <DrawOutlined />
-        <Caption>{t('pages.search.filter.key.callout')}</Caption>
-      </FiltersDescriptionBlockItem>
-
-      <FiltersDescriptionBlockItem href="#responses">
-        <LibraryBooksOutlined />
-        <Caption>{t('pages.search.filter.key.response')}</Caption>
-      </FiltersDescriptionBlockItem>
-
-      <FiltersDescriptionBlockItem href="#contributors">
-        <GroupOutlined />
-        <Caption>{t('common.contributors')}</Caption>
-      </FiltersDescriptionBlockItem>
-    </Gutters>
-  );
-}
-
-function FiltersDescriptionBlockItem({ children, href }: PropsWithChildren<{ href: string }>) {
-  return (
-    <Link href={href} underline="none">
-      <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}>{children}</Gutters>
-    </Link>
-  );
 }

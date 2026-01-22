@@ -5,6 +5,7 @@
     "dbaeumer.vscode-eslint",
     "graphql.vscode-graphql",
     "streetsidesoftware.code-spell-checker",
-    "streetsidesoftware.code-spell-checker-bundled-dictionaries"
+    "streetsidesoftware.code-spell-checker-bundled-dictionaries",
+    "coderabbit.coderabbit-vscode"
   ]
 }
