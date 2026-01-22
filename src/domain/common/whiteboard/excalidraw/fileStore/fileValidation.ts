@@ -49,3 +49,54 @@ export const validateWhiteboardImageFile = (file: File, config: ImageValidationC
 
   return { ok: true };
 };
+
+const bytesToMB = (bytes: number): number => bytes / (1024 * 1024);
+
+/**
+ * Keep only mime types that look like images.
+ */
+export const filterImageMimeTypes = (allowedMimeTypes?: readonly string[]): readonly string[] | undefined => {
+  if (!allowedMimeTypes) {
+    return undefined;
+  }
+  return allowedMimeTypes.filter(mime => mime.startsWith('image/'));
+};
+
+/**
+ * Convert bytes to a user-facing megabyte string.
+ * Uses MiB (1024^2) since the backend limit is in bytes.
+ */
+export const formatMaxFileSizeMb = (maxFileSizeBytes?: number): string | undefined => {
+  if (!maxFileSizeBytes) {
+    return undefined;
+  }
+
+  const mb = bytesToMB(maxFileSizeBytes);
+  const rounded = mb < 10 ? Math.round(mb * 10) / 10 : Math.round(mb);
+  return `${rounded} MB`;
+};
+
+export interface WhiteboardImageUploadI18nParams {
+  /** Comma-separated list of formats/mime types to show in copy. */
+  formats: string;
+  /** Formatted max size, e.g. "15 MB" */
+  maxSize: string;
+}
+
+/**
+ * Derive message params for the whiteboard image upload callouts.
+ * Designed to be used together with i18n keys under `callout.whiteboard.images.*`.
+ */
+export const getWhiteboardImageUploadI18nParams = (
+  validation: Extract<ImageValidationResult, { ok: false }>
+): Partial<WhiteboardImageUploadI18nParams> => {
+  const allowedImageMimeTypes = filterImageMimeTypes(validation.allowedMimeTypes) ?? DEFAULT_ALLOWED_IMAGE_MIME_TYPES;
+  const formats = allowedImageMimeTypes.join(', ');
+
+  const maxSize = formatMaxFileSizeMb(validation.maxFileSizeBytes);
+
+  return {
+    formats,
+    ...(maxSize ? { maxSize } : {}),
+  };
+};

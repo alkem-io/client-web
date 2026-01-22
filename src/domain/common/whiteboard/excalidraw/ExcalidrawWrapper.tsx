@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
+import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
@@ -65,10 +66,11 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     async (file: File): Promise<string> => {
       const validation = validateFile(file);
       if (!validation.ok) {
+        const params = getWhiteboardImageUploadI18nParams(validation);
         const message: string =
           validation.reason === 'unsupportedMimeType'
-            ? t('callout.whiteboard.images.unsupportedType')
-            : t('callout.whiteboard.images.tooLarge', { maxSize: '15MB' });
+            ? t('callout.whiteboard.images.unsupportedType', params)
+            : t('callout.whiteboard.images.tooLarge', params);
         notify(message, 'error');
         throw new Error(message);
       }

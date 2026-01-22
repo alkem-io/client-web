@@ -31,6 +31,7 @@ import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
@@ -126,10 +127,11 @@ const CollaborativeExcalidrawWrapper = ({
     async (file: File): Promise<string> => {
       const validation = filesManager.validateFile(file);
       if (!validation.ok) {
+        const params = getWhiteboardImageUploadI18nParams(validation);
         const message: string =
           validation.reason === 'unsupportedMimeType'
-            ? t('callout.whiteboard.images.unsupportedType')
-            : t('callout.whiteboard.images.tooLarge', { maxSize: '15MB' });
+            ? t('callout.whiteboard.images.unsupportedType', params)
+            : t('callout.whiteboard.images.tooLarge', params);
         notify(message, 'error');
         throw new Error(message);
       }

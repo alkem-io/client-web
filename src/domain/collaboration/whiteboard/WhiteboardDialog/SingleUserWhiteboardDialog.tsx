@@ -96,6 +96,8 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
     storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
+    allowedMimeTypes: whiteboard.profile?.storageBucket.allowedMimeTypes,
+    maxFileSize: whiteboard.profile?.storageBucket.maxFileSize,
     allowFallbackToAttached: options.allowFilesAttached,
   });
 

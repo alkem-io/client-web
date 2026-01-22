@@ -965,7 +965,7 @@
         "noEmojis": "No emojis available"
       },
       "images": {
-        "unsupportedType": "Unsupported image format. Please use PNG, JPEG, or WebP.",
+        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
         "uploadFailed": "Couldn't upload the image. Please try again.",
         "downloadFailed": "Couldn't load the image. Please try again.",
