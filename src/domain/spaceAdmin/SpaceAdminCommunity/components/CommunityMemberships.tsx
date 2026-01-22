@@ -222,7 +222,13 @@ const CommunityMemberships = ({
     {
       field: 'email',
       headerName: t('common.email'),
-      renderCell: ({ row }: RenderParams) => <>{row.email}</>,
+      renderCell: ({ row }: RenderParams) => {
+        // Hide email for pending/rejected invitations to existing users (privacy)
+        if (row.type === MembershipType.Invitation && row.state !== InvitationState.ACCEPTED) {
+          return NO_DATA_PLACEHOLDER;
+        }
+        return <>{row.email}</>;
+      },
       valueGetter: (_, row: GetterParams) => row?.email,
       filterable: false,
       flex: 1,
