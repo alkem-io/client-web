@@ -29,7 +29,7 @@ import {
 import { UserIdleState, isImageElement } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
-import { BinaryFilesWithOptionalUrl, BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { BinaryFilesWithOptionalUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import type {
   ReconciledExcalidrawElement,

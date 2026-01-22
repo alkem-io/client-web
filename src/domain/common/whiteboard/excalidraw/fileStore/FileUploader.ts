@@ -86,7 +86,7 @@ export class FileUploader {
       if (allowFallbackToAttached) {
         return { id: fileId, url: '' };
       }
-      const errorMessage = `Missing StorageBucket: Uploading images to this whiteboard is not supported`;
+      const errorMessage = 'Missing StorageBucket: Uploading images to this whiteboard is not supported';
       const failure: UploadFailure = {
         fileId,
         reason: 'no-storage-bucket',

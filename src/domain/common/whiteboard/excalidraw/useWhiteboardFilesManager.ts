@@ -15,7 +15,6 @@ import { FileDownloader, type DownloadFailure } from './fileStore/FileDownloader
 import {
   validateWhiteboardImageFile,
   type ImageValidationResult,
-  type ImageValidationConfig,
 } from './fileStore/fileValidation';
 import type {
   BinaryFileDataWithUrl,
