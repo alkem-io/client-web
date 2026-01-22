@@ -10,9 +10,8 @@ const SearchResultPostChooser = ({ result }: { result: SearchResultMetaType | un
     hydrateUserCard,
     hydrateOrganizationCard,
     hydrateContributionCard,
-    // TODO: Enable when server is ready
-    //hydrateWhiteboardCard,
-    //hydrateCalloutCard,
+    hydrateMemoCard,
+    hydrateWhiteboardCard,
   } = useHydrateCard();
 
   if (!result || !result.type) {
@@ -31,6 +30,10 @@ const SearchResultPostChooser = ({ result }: { result: SearchResultMetaType | un
       return hydrateOrganizationCard(result);
     case SearchResultType.Post:
       return hydrateContributionCard(result);
+    case SearchResultType.Memo:
+      return hydrateMemoCard(result);
+    case SearchResultType.Whiteboard:
+      return hydrateWhiteboardCard(result);
     default:
       return null;
   }

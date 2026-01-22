@@ -26,7 +26,7 @@ export interface WhiteboardContribution extends Identifiable {
 
 interface WhiteboardCardProps extends CalloutContributionCardComponentProps {}
 
-const WHITEBOARD_IMAGE_ASPECT_RATIO = '23/12';
+export const WHITEBOARD_IMAGE_ASPECT_RATIO = '23/12';
 
 const WhiteboardDefaultImageWrapper = styled(Box)({
   aspectRatio: WHITEBOARD_IMAGE_ASPECT_RATIO,
@@ -38,7 +38,7 @@ const WhiteboardDefaultImageWrapper = styled(Box)({
   },
 });
 
-const WhiteboardDefaultImage = () => {
+export const WhiteboardDefaultImage = () => {
   return (
     <WhiteboardDefaultImageWrapper>
       <AutoGraphOutlinedIcon color="primary" fontSize="large" />

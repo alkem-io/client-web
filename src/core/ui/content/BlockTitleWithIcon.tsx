@@ -35,10 +35,12 @@ const BlockTitleWithIcon = ({
     {icon && cloneElement(icon, { fontSize: 'small' })}
     {avatar}
     {title && typeof title === 'string' ? (
-      <BlockTitle variant={variant} noWrap color="textPrimary">
-        {title}
+      <Box>
+        <BlockTitle variant={variant} noWrap color="textPrimary">
+          {title}
+        </BlockTitle>
         <Caption>{subtitle}</Caption>
-      </BlockTitle>
+      </Box>
     ) : (
       <Caption noWrap>{title}</Caption>
     )}
