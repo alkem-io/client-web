@@ -96,6 +96,14 @@ const UserMessagingDialog = () => {
           fullScreen
           onClose={handleClose}
           aria-labelledby={t('components.userMessaging.title' as const)}
+          sx={{
+            '.MuiDialog-container': {
+              alignItems: 'stretch',
+            },
+            '.MuiDialog-paper': {
+              height: '100vh',
+            },
+          }}
         >
           {/* Close button */}
           <IconButton
@@ -110,7 +118,9 @@ const UserMessagingDialog = () => {
           >
             <CloseIcon />
           </IconButton>
-          <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <DialogContent
+            sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%' }}
+          >
             {selectedConversationId ? (
               <UserMessagingConversationView
                 conversation={selectedConversation}
