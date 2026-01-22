@@ -1583,6 +1583,7 @@ export type ISearchResultsKeySpecifier = (
   | 'calloutResults'
   | 'contributionResults'
   | 'contributorResults'
+  | 'framingResults'
   | 'spaceResults'
   | ISearchResultsKeySpecifier
 )[];
@@ -1590,6 +1591,7 @@ export type ISearchResultsFieldPolicy = {
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  framingResults?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationKeySpecifier = (
@@ -2724,6 +2726,7 @@ export type MutationKeySpecifier = (
   | 'updateSpace'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
+  | 'updateSubspacesSortOrder'
   | 'updateTagset'
   | 'updateTemplate'
   | 'updateTemplateContentSpace'
@@ -2912,6 +2915,7 @@ export type MutationFieldPolicy = {
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3614,6 +3618,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'nameID'
   | 'platformAccess'
   | 'settings'
+  | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
   | 'subspaceByNameID'
@@ -3639,6 +3644,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3915,6 +3921,27 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultMemoKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'isContribution'
+  | 'memo'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultMemoKeySpecifier
+)[];
+export type SearchResultMemoFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultOrganizationKeySpecifier = (
   | 'id'
   | 'organization'
@@ -3981,6 +4008,27 @@ export type SearchResultUserFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultWhiteboardKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | 'whiteboard'
+  | SearchResultWhiteboardKeySpecifier
+)[];
+export type SearchResultWhiteboardFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4009,6 +4057,7 @@ export type SpaceKeySpecifier = (
   | 'nameID'
   | 'platformAccess'
   | 'settings'
+  | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
   | 'subspaceByNameID'
@@ -4034,6 +4083,7 @@ export type SpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4687,6 +4737,7 @@ export type UserSettingsKeySpecifier = (
   | 'authorization'
   | 'communication'
   | 'createdDate'
+  | 'homeSpace'
   | 'id'
   | 'notification'
   | 'privacy'
@@ -4697,6 +4748,7 @@ export type UserSettingsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  homeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   notification?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4708,6 +4760,11 @@ export type UserSettingsCommunicationKeySpecifier = (
 )[];
 export type UserSettingsCommunicationFieldPolicy = {
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsHomeSpaceKeySpecifier = ('autoRedirect' | 'spaceID' | UserSettingsHomeSpaceKeySpecifier)[];
+export type UserSettingsHomeSpaceFieldPolicy = {
+  autoRedirect?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationKeySpecifier = (
   | 'organization'
@@ -6250,6 +6307,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
   };
+  SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
+    fields?: SearchResultMemoFieldPolicy;
+  };
   SearchResultOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultOrganizationKeySpecifier | (() => undefined | SearchResultOrganizationKeySpecifier);
     fields?: SearchResultOrganizationFieldPolicy;
@@ -6265,6 +6326,10 @@ export type StrictTypedTypePolicies = {
   SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
     fields?: SearchResultUserFieldPolicy;
+  };
+  SearchResultWhiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultWhiteboardKeySpecifier | (() => undefined | SearchResultWhiteboardKeySpecifier);
+    fields?: SearchResultWhiteboardFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);
@@ -6480,6 +6545,10 @@ export type StrictTypedTypePolicies = {
       | UserSettingsCommunicationKeySpecifier
       | (() => undefined | UserSettingsCommunicationKeySpecifier);
     fields?: UserSettingsCommunicationFieldPolicy;
+  };
+  UserSettingsHomeSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsHomeSpaceKeySpecifier | (() => undefined | UserSettingsHomeSpaceKeySpecifier);
+    fields?: UserSettingsHomeSpaceFieldPolicy;
   };
   UserSettingsNotification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsNotificationKeySpecifier | (() => undefined | UserSettingsNotificationKeySpecifier);

@@ -16,16 +16,22 @@ interface CalloutTemplateCardProps extends TemplateCardProps {
   template: CalloutTemplate;
 }
 
-const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
+const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({
+  template,
+  innovationPack,
+  loading,
+  isSelected,
+  ...props
+}) => {
   const tags = template?.profile.defaultTagset?.tags ?? [];
   const footerHeight = tags.length > 0 ? 2 : 0;
   const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
   return (
     <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName}>
+      <CardHeader title={template?.profile.displayName} contrast={isSelected}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri} contrast={isSelected}>
           {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>

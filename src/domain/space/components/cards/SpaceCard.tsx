@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import SpaceCardBase, { SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
@@ -26,6 +27,7 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   leadOrganizations?: LeadOrganization[];
   showLeads?: boolean;
   compact?: boolean;
+  iconOverlay?: ReactNode;
   onContactLead?: (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => void;
 }
 
@@ -42,6 +44,7 @@ const SpaceCard = ({
   showLeads = false,
   compact = false,
   tags,
+  iconOverlay,
   onContactLead,
   ...props
 }: SubspaceCardProps) => {
@@ -68,6 +71,7 @@ const SpaceCard = ({
         locked={isPrivate}
         visual={visualContent}
         bannerOverlay={tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact /> : undefined}
+        iconOverlay={iconOverlay}
         sx={{
           position: 'relative',
           height: '100%',

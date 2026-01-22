@@ -4,8 +4,8 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import TemplateActionButton from '../Buttons/TemplateActionButton';
 import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useSpaceDefaultTemplatesQuery,
@@ -172,19 +172,13 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
                 <>
                   <Tooltip title={t('createSpace.innovationFlowError')}>
                     <span>
-                      <Button startIcon={<SystemUpdateAltIcon />} variant="contained" disabled>
-                        {t('buttons.use')}
-                      </Button>
+                      <TemplateActionButton disabled />
                     </span>
                   </Tooltip>
                 </>
               );
             }
-            return (
-              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-                {t('buttons.use')}
-              </Button>
-            );
+            return <TemplateActionButton />;
           }}
           open={isDialogOpen}
           onSelectTemplate={handleSelectTemplate}

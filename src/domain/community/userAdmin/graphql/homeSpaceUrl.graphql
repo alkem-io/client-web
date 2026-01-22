@@ -1,0 +1,15 @@
+query HomeSpaceUrl($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        id
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+    }
+  }
+}

@@ -25,6 +25,13 @@ query SpaceTab($spaceId: UUID!) {
             settings {
               allowNewCallouts
             }
+            defaultCalloutTemplate {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
           }
         }
         calloutsSet {
