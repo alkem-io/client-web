@@ -17,7 +17,7 @@ export type ImageValidationResult =
     };
 
 export const isAllowedMimeType = (mimeType: string, allowedMimeTypes?: readonly string[]): boolean => {
-  const allowed = allowedMimeTypes ?? DEFAULT_ALLOWED_IMAGE_MIME_TYPES;
+  const allowed = allowedMimeTypes && allowedMimeTypes.length > 0 ? allowedMimeTypes : DEFAULT_ALLOWED_IMAGE_MIME_TYPES;
   return allowed.includes(mimeType);
 };
 
@@ -30,12 +30,14 @@ export const isWithinMaxFileSize = (sizeBytes: number, maxFileSizeBytes?: number
 
 export const validateWhiteboardImageFile = (file: File, config: ImageValidationConfig = {}): ImageValidationResult => {
   const { allowedMimeTypes, maxFileSizeBytes } = config;
+  const normalizedAllowedMimeTypes =
+    allowedMimeTypes && allowedMimeTypes.length > 0 ? allowedMimeTypes : DEFAULT_ALLOWED_IMAGE_MIME_TYPES;
 
-  if (!isAllowedMimeType(file.type, allowedMimeTypes)) {
+  if (!isAllowedMimeType(file.type, normalizedAllowedMimeTypes)) {
     return {
       ok: false,
       reason: 'unsupportedMimeType',
-      allowedMimeTypes: allowedMimeTypes ?? DEFAULT_ALLOWED_IMAGE_MIME_TYPES,
+      allowedMimeTypes: normalizedAllowedMimeTypes,
     };
   }
 
