@@ -1,9 +1,9 @@
 <!--
 Sync Impact Report
-Version change: 1.0.4 → 1.0.5 (expanded DRY to SOLID principles)
+Version change: 1.0.5 → 1.0.6 (added root cause analysis requirement)
 Modified principles: (none)
-Modified sections: Architecture Standards #6
-Added sections: Architecture Standards #6 (SOLID principles)
+Modified sections: Engineering Workflow
+Added sections: Engineering Workflow #5 (Root Cause Analysis Before Fixes)
 Removed sections: (none)
 Templates requiring updates: (none)
 Deferred TODOs: None
@@ -141,6 +141,13 @@ safeguards ensure sustainable delivery.
    implement UI. Skip steps only with documented exceptions approved during review.
 4. Accessibility, performance, and testing artifacts MUST be included in the PR description with
    evidence (e.g., screenshots, Lighthouse numbers, Jest results). Missing evidence blocks merge.
+5. **Root Cause Analysis Before Fixes**: NEVER apply fixes, duct tape, workarounds, or symptom-masking
+   code before understanding the root cause of a problem. Debugging MUST follow this sequence:
+   (a) Reproduce the issue reliably, (b) Investigate and identify the actual root cause,
+   (c) Apply the minimal fix addressing the root cause, (d) Verify the fix resolves the underlying
+   issue. Adding options like `fetchPolicy`, `nextFetchPolicy`, retry logic, or defensive guards
+   without understanding WHY they're needed is forbidden—such changes mask problems rather than solve
+   them and create hidden technical debt.
 
 ## Governance
 
@@ -161,4 +168,4 @@ Compliance expectations:
   violations remain unmitigated.
 - CI workflows SHOULD enforce linting, testing, and type generation steps aligned with these rules.
 
-**Version**: 1.0.5 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-11-04
+**Version**: 1.0.6 | **Ratified**: 2025-10-30 | **Last Amended**: 2026-01-17

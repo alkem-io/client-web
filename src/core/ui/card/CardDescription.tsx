@@ -4,7 +4,7 @@ import WrapperMarkdown from '../markdown/WrapperMarkdown';
 import OverflowGradient, { OverflowGradientProps } from '../overflow/OverflowGradient';
 import stopPropagationFromLinks from '../utils/stopPropagationFromLinks';
 
-export const DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS = 5;
+export const DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS = 4;
 
 export interface CardDescriptionProps extends BoxProps {
   children: string | undefined;

@@ -1583,6 +1583,7 @@ export type ISearchResultsKeySpecifier = (
   | 'calloutResults'
   | 'contributionResults'
   | 'contributorResults'
+  | 'framingResults'
   | 'spaceResults'
   | ISearchResultsKeySpecifier
 )[];
@@ -1590,6 +1591,7 @@ export type ISearchResultsFieldPolicy = {
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  framingResults?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationKeySpecifier = (
@@ -2495,19 +2497,6 @@ export type MessageFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageAnswerQuestionKeySpecifier = (
-  | 'error'
-  | 'id'
-  | 'question'
-  | 'success'
-  | MessageAnswerQuestionKeySpecifier
-)[];
-export type MessageAnswerQuestionFieldPolicy = {
-  error?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2594,7 +2583,6 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
-  | 'askVcQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
@@ -2665,7 +2653,6 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
-  | 'feedbackOnVcAnswerRelevance'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
@@ -2785,7 +2772,6 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVcQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2856,7 +2842,6 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
-  feedbackOnVcAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3936,6 +3921,27 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultMemoKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'isContribution'
+  | 'memo'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultMemoKeySpecifier
+)[];
+export type SearchResultMemoFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultOrganizationKeySpecifier = (
   | 'id'
   | 'organization'
@@ -4001,6 +4007,27 @@ export type SearchResultUserFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultWhiteboardKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | 'whiteboard'
+  | SearchResultWhiteboardKeySpecifier
+)[];
+export type SearchResultWhiteboardFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
@@ -5919,10 +5946,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
   };
-  MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
-    fields?: MessageAnswerQuestionFieldPolicy;
-  };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);
     fields?: MessageDetailsFieldPolicy;
@@ -6284,6 +6307,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
   };
+  SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
+    fields?: SearchResultMemoFieldPolicy;
+  };
   SearchResultOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultOrganizationKeySpecifier | (() => undefined | SearchResultOrganizationKeySpecifier);
     fields?: SearchResultOrganizationFieldPolicy;
@@ -6299,6 +6326,10 @@ export type StrictTypedTypePolicies = {
   SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
     fields?: SearchResultUserFieldPolicy;
+  };
+  SearchResultWhiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultWhiteboardKeySpecifier | (() => undefined | SearchResultWhiteboardKeySpecifier);
+    fields?: SearchResultWhiteboardFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);

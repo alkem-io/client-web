@@ -17,13 +17,7 @@ const SearchResultsCalloutCard = ({ result }: SearchResultsCalloutCardProps) => 
     return null;
   }
 
-  return (
-    <CalloutCard
-      callout={result.callout}
-      to={result.callout.framing.profile.url}
-      footer={<SearchResultsCalloutCardFooter {...result} />}
-    />
-  );
+  return <CalloutCard callout={result.callout} footer={<SearchResultsCalloutCardFooter {...result} />} />;
 };
 
 export default SearchResultsCalloutCard;

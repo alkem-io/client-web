@@ -9,29 +9,25 @@ import { ComponentType, useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { AnyContribution } from '../interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
-import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import PaginationExpander from './PaginationExpander';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
   contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
-  createContributionButtonComponent: ComponentType<CalloutContributionCreateButtonProps>;
-  calloutRestrictions?: CalloutRestrictions;
   onClickOnContribution: (contribution: AnyContribution) => void;
 }
 
-const NON_EXPANDED_PAGE_SIZE = 4;
-const EXPANDED_PAGE_SIZE = 5;
+const CONTRIBUTIONS_PER_ROW = 5;
+const GRID_COLUMNS_PER_CARD = 3;
 
 const ContributionsCardsExpandable = ({
   callout,
   contributionType,
   contributionCardComponent: Card,
-  createContributionButtonComponent: CreateContributionButton,
   onClickOnContribution,
-  calloutRestrictions,
   loading: loadingCallout,
   expanded: calloutExpanded,
   onCalloutUpdate,
@@ -39,14 +35,12 @@ const ContributionsCardsExpandable = ({
   const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const pageSize = calloutExpanded ? EXPANDED_PAGE_SIZE : NON_EXPANDED_PAGE_SIZE;
+  const pageSize = CONTRIBUTIONS_PER_ROW * 2; // 2 rows maximum
 
   const {
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
     loading: loadingContributions,
-    canCreateContribution,
-    onCalloutContributionsUpdate,
   } = useCalloutContributions({
     callout,
     contributionType,
@@ -67,47 +61,45 @@ const ContributionsCardsExpandable = ({
   }, [calloutExpanded, hasMore, setFetchAll, isCollapsed]);
 
   const gridColumns = (() => {
-    if (isSmallScreen) return 3;
-    if (isMediumSmallScreen) return 6;
-    if (calloutExpanded) return 10;
-    return 12;
+    if (isSmallScreen) return GRID_COLUMNS_PER_CARD; // 1 card per row
+    if (isMediumSmallScreen) return GRID_COLUMNS_PER_CARD * 3; // 3 cards per row
+    return GRID_COLUMNS_PER_CARD * 5; // 5 cards per row
   })();
 
   return (
     <>
-      <GridProvider columns={gridColumns} force>
-        <Gutters ref={inViewRef} disableVerticalPadding row flexWrap="wrap">
-          {contributions.map(contribution => (
-            <Card
-              key={contribution.id}
-              callout={callout}
-              columns={calloutExpanded ? 2 : 3}
-              contribution={contribution}
-              onClick={() => onClickOnContribution(contribution)}
-            />
-          ))}
-          {loadingContributions &&
-            times(pageSize, index => <ContributeCardSkeleton key={index} columns={calloutExpanded ? 2 : 3} />)}
-        </Gutters>
-      </GridProvider>
-      <Gutters display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
-        <PaginationExpander
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          totalContributions={totalContributions}
-          pageSize={pageSize}
-          isCollapsed={isCollapsed}
-          hasMore={hasMore}
-        />
-        {loadingCallout && <Loading />}
-        {!loadingCallout && (
-          <CreateContributionButton
-            callout={callout}
-            canCreateContribution={canCreateContribution}
-            onContributionCreated={onCalloutContributionsUpdate}
-            calloutRestrictions={calloutRestrictions}
+      {loadingCallout && <Loading />}
+      <AutomaticOverflowGradient
+        maxHeight={isCollapsed ? gutters(15) : undefined}
+        minHeight={0}
+        margin={gutters(-1)}
+        padding={gutters()}
+        expanderButton={
+          <PaginationExpander
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            totalContributions={totalContributions}
+            pageSize={CONTRIBUTIONS_PER_ROW}
+            isCollapsed={isCollapsed}
+            hasMore={hasMore}
           />
-        )}
-      </Gutters>
+        }
+      >
+        <GridProvider columns={gridColumns} force>
+          <Gutters ref={inViewRef} disablePadding row flexWrap="wrap">
+            {contributions.map(contribution => (
+              <Card
+                key={contribution.id}
+                callout={callout}
+                columns={GRID_COLUMNS_PER_CARD}
+                contribution={contribution}
+                onClick={() => onClickOnContribution(contribution)}
+              />
+            ))}
+            {loadingContributions &&
+              times(pageSize, index => <ContributeCardSkeleton key={index} columns={GRID_COLUMNS_PER_CARD} />)}
+          </Gutters>
+        </GridProvider>
+      </AutomaticOverflowGradient>
     </>
   );
 };
