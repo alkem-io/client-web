@@ -12,72 +12,107 @@ import { UserConversation, UserConversationMessage } from './useUserConversation
 import { useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useRef, useEffect } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
+import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
+import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 
 interface MessageBubbleProps {
   message: UserConversationMessage;
   isOwnMessage: boolean;
+  canAddReaction: boolean;
+  onAddReaction: (emoji: string) => void;
+  onRemoveReaction: (reactionId: string) => void;
 }
 
-const MessageBubble = ({ message, isOwnMessage }: MessageBubbleProps) => {
+const MessageBubble = ({
+  message,
+  isOwnMessage,
+  canAddReaction,
+  onAddReaction,
+  onRemoveReaction,
+}: MessageBubbleProps) => {
   const { t } = useTranslation();
 
   return (
     <Box
       display="flex"
-      flexDirection={isOwnMessage ? 'row-reverse' : 'row'}
-      alignItems="flex-start"
-      gap={gutters(0.5)}
+      flexDirection="column"
+      alignItems={isOwnMessage ? 'flex-end' : 'flex-start'}
+      gap={gutters(0.25)}
       marginY={gutters(0.5)}
     >
-      {!isOwnMessage && (
-        <Avatar
-          src={message.sender?.avatarUri}
-          alt={message.sender?.displayName ?? ''}
-          size="medium"
-          sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-        />
-      )}
       <Box
-        sx={{
-          maxWidth: '70%',
-          backgroundColor: isOwnMessage ? 'primary.main' : 'background.default',
-          color: isOwnMessage ? 'primary.contrastText' : 'text.primary',
-          borderRadius: theme => `${theme.shape.borderRadius}px`,
-          padding: gutters(0.5),
-          paddingX: gutters(),
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: gutters(0.5),
-        }}
+        display="flex"
+        flexDirection={isOwnMessage ? 'row-reverse' : 'row'}
+        alignItems="flex-start"
+        gap={gutters(0.5)}
       >
-        <WrapperMarkdown
+        {!isOwnMessage && (
+          <Avatar
+            src={message.sender?.avatarUri}
+            alt={message.sender?.displayName ?? ''}
+            size="medium"
+            sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+          />
+        )}
+        <Box
           sx={{
-            '& p': { margin: 0 },
-            flex: 1,
-            ...(isOwnMessage && {
-              '& a': {
-                color: 'inherit',
-                textDecoration: 'underline',
-                '&:hover': {
-                  color: 'rgba(255, 255, 255, 0.8)',
+            maxWidth: '70%',
+            backgroundColor: isOwnMessage ? 'primary.main' : 'background.default',
+            color: isOwnMessage ? 'primary.contrastText' : 'text.primary',
+            borderRadius: theme => `${theme.shape.borderRadius}px`,
+            padding: gutters(0.5),
+            paddingX: gutters(),
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: gutters(0.5),
+          }}
+        >
+          <WrapperMarkdown
+            sx={{
+              '& p': { margin: 0 },
+              flex: 1,
+              ...(isOwnMessage && {
+                '& a': {
+                  color: 'inherit',
+                  textDecoration: 'underline',
+                  '&:hover': {
+                    color: 'rgba(255, 255, 255, 0.8)',
+                  },
                 },
-              },
-            }),
-          }}
-        >
-          {message.message}
-        </WrapperMarkdown>
-        <Caption
-          sx={{
-            color: isOwnMessage ? 'rgba(255,255,255,0.7)' : 'neutral.light',
-            fontSize: '0.7rem',
-            whiteSpace: 'nowrap',
-            flexShrink: 0,
-          }}
-        >
-          {formatTimeElapsed(new Date(message.timestamp), t)}
-        </Caption>
+              }),
+            }}
+          >
+            {message.message}
+          </WrapperMarkdown>
+          <Caption
+            sx={{
+              color: isOwnMessage ? 'rgba(255,255,255,0.7)' : 'neutral.light',
+              fontSize: '0.7rem',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            {formatTimeElapsed(new Date(message.timestamp), t)}
+          </Caption>
+        </Box>
       </Box>
+
+      {(message.reactions.length > 0 || canAddReaction) && (
+        <Box
+          marginLeft={isOwnMessage ? 0 : gutters(4)}
+          marginRight={isOwnMessage ? gutters(0.5) : 0}
+          display="flex"
+          alignItems="center"
+        >
+          <CommentReactions
+            reactions={message.reactions}
+            canAddReaction={canAddReaction}
+            onAddReaction={onAddReaction}
+            onRemoveReaction={onRemoveReaction}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
@@ -100,6 +135,8 @@ export const UserMessagingConversationView = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
+  const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
+  useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -126,6 +163,20 @@ export const UserMessagingConversationView = ({
       console.error('Failed to send message:', error);
       return false;
     }
+  };
+
+  const handleAddReaction = (messageId: string) => (emoji: string) => {
+    if (!conversation?.roomId) {
+      return;
+    }
+    return addReaction({ emoji, messageId });
+  };
+
+  const handleRemoveReaction = (reactionId: string) => {
+    if (!conversation?.roomId) {
+      return;
+    }
+    return removeReaction(reactionId);
   };
 
   if (!conversation) {
@@ -181,9 +232,21 @@ export const UserMessagingConversationView = ({
             <Caption>{t('components.userMessaging.noMessages' as const)}</Caption>
           </Gutters>
         ) : (
-          conversation.messages.map(message => (
-            <MessageBubble key={message.id} message={message} isOwnMessage={message.sender?.id === userModel?.id} />
-          ))
+          conversation.messages.map(message => {
+            const isOwnMessage = message.sender?.id === userModel?.id;
+            const canAddReaction = Boolean(conversation.roomId && message.message);
+
+            return (
+              <MessageBubble
+                key={message.id}
+                message={message}
+                isOwnMessage={isOwnMessage}
+                canAddReaction={canAddReaction}
+                onAddReaction={handleAddReaction(message.id)}
+                onRemoveReaction={handleRemoveReaction}
+              />
+            );
+          })
         )}
         <div ref={messagesEndRef} />
       </Box>

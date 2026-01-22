@@ -27552,6 +27552,17 @@ export const UserConversationsDocument = gql`
                   }
                 }
               }
+              reactions {
+                id
+                emoji
+                sender {
+                  id
+                  profile {
+                    id
+                    displayName
+                  }
+                }
+              }
             }
             messagesCount
           }

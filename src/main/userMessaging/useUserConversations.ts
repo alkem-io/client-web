@@ -2,6 +2,17 @@ import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks'
 import { useUserMessagingContext } from './UserMessagingContext';
 import { useMemo } from 'react';
 
+export interface MessageReaction {
+  id: string;
+  emoji: string;
+  sender?: {
+    id: string;
+    profile: {
+      displayName: string;
+    };
+  };
+}
+
 export interface UserConversationMessage {
   id: string;
   message: string;
@@ -11,6 +22,7 @@ export interface UserConversationMessage {
     displayName: string;
     avatarUri?: string;
   };
+  reactions: MessageReaction[];
 }
 
 export interface UserConversation {
@@ -56,6 +68,18 @@ export const useUserConversations = () => {
                     avatarUri: msg.sender.profile?.avatar?.uri,
                   }
                 : undefined,
+            reactions: (msg.reactions ?? []).map(reaction => ({
+              id: reaction?.id ?? '',
+              emoji: reaction?.emoji ?? '',
+              sender: reaction?.sender
+                ? {
+                    id: reaction.sender.id,
+                    profile: {
+                      displayName: reaction.sender.profile?.displayName ?? '',
+                    },
+                  }
+                : undefined,
+            })),
           }));
 
           // Sort messages by timestamp
