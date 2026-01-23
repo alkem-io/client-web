@@ -24,6 +24,19 @@ query search($searchData: SearchInput!) {
       total
     }
 
+    framingResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultMemo
+        ...SearchResultWhiteboard
+      }
+      total
+    }
+
     contributionResults {
       cursor
       results {
@@ -32,7 +45,8 @@ query search($searchData: SearchInput!) {
         score
         terms
         ...SearchResultPost
-        ...SearchResultCallout
+        ...SearchResultMemo
+        ...SearchResultWhiteboard
       }
       total
     }
@@ -206,7 +220,6 @@ fragment SearchResultSpace on SearchResultSpace {
     level
     about {
       id
-      why
       profile {
         id
         url
@@ -220,9 +233,6 @@ fragment SearchResultSpace on SearchResultSpace {
         }
       }
       isContentPublic
-      membership {
-        myMembershipStatus
-      }
     }
     visibility
   }
@@ -242,6 +252,105 @@ query userRolesSearchCards($userId: UUID!) {
     organizations {
       id
       roles
+    }
+  }
+}
+
+fragment SearchResultMemo on SearchResultMemo {
+  memo {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+    markdown
+  }
+  ...MemoParent
+}
+
+fragment MemoParent on SearchResultMemo {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+
+fragment SearchResultWhiteboard on SearchResultWhiteboard {
+  whiteboard {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      preview: visual(type: WHITEBOARD_PREVIEW) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  ...WhiteboardParent
+}
+
+fragment WhiteboardParent on SearchResultWhiteboard {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
     }
   }
 }

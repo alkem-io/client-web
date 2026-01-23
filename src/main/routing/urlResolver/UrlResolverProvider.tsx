@@ -1,11 +1,14 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, UrlResolverResultState, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
+import { NotAuthorizedError, NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
-import { createContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { TabbedLayoutParams } from '../urlBuilders';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
+import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';
+import { useLocation } from 'react-router-dom';
+import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -113,6 +116,8 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
   const [currentUrl, setCurrentUrl] = useState<string>('');
+  const { isAuthenticated } = useContext(AuthenticationContext);
+  const location = useLocation();
 
   // Keep a stable ref of the last processed URL to avoid duplicate updates
   const lastProcessedUrlRef = useRef<string>('');
@@ -139,13 +144,24 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     loading: urlResolverLoading,
   } = useUrlResolverQuery({
     variables: {
-      url: currentUrl!,
+      url: currentUrl,
     },
     skip: !currentUrl,
   });
 
   if (!urlResolverLoading && error && isUrlResolverError(error)) {
+    // Normally the urlResolver doesn't throw an error, it returns a UrlResolverResult.Error instead
     throw new NotFoundError();
+  }
+  if (!urlResolverLoading && urlResolverData?.urlResolver.state === UrlResolverResultState.NotFound) {
+    throw new NotFoundError({ closestAncestor: urlResolverData.urlResolver.closestAncestor });
+  }
+  if (!urlResolverLoading && urlResolverData?.urlResolver.state === UrlResolverResultState.Forbidden) {
+    if (!isAuthenticated) {
+      const returnUrl = location.pathname + location.search + location.hash;
+      throw new NotAuthorizedError({ redirectUrl: `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(returnUrl)}` });
+    }
+    throw new NotAuthorizedError({ closestAncestor: urlResolverData.urlResolver.closestAncestor });
   }
 
   useEffect(() => {
@@ -176,7 +192,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
     const handleUrlChange = () => {
       // Get the normalized URL
-      let nextUrl = processUrl(window.location.origin + window.location.pathname);
+      let nextUrl = processUrl(globalThis.location.origin + globalThis.location.pathname);
 
       // Skip update if URL hasn't changed from the last processed URL
       if (nextUrl === lastProcessedUrlRef.current) {
@@ -189,10 +205,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     };
 
     // Set up event listeners
-    window.addEventListener('popstate', handleUrlChange);
-    const originalPushState = window.history.pushState;
-    window.history.pushState = function (...args) {
-      originalPushState.apply(window.history, args);
+    globalThis.addEventListener('popstate', handleUrlChange);
+    const originalPushState = globalThis.history.pushState;
+    globalThis.history.pushState = function (...args) {
+      originalPushState.apply(globalThis.history, args);
       handleUrlChange();
     };
 
@@ -200,9 +216,9 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     handleUrlChange();
 
     return () => {
-      window.removeEventListener('popstate', handleUrlChange);
+      globalThis.removeEventListener('popstate', handleUrlChange);
       // Restore original pushState
-      window.history.pushState = originalPushState;
+      globalThis.history.pushState = originalPushState;
     };
   }, []);
 
@@ -223,7 +239,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         spaceId: data.space?.id,
         spaceLevel: data.space?.level,
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
-        parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
+        parentSpaceId: (data.space?.parentSpaces ?? []).at(-1),
         spaceHierarchyPath: spaceHierarchyPath,
 
         // Collaboration:

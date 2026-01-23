@@ -106,7 +106,7 @@ const MemoDialog = ({
           </>
         }
       >
-        {t('common.memo')}
+        {memo?.profile.displayName || t('common.memo')}
       </DialogHeader>
       <DialogContent>
         <Box position="relative" height="100%" width="100%">

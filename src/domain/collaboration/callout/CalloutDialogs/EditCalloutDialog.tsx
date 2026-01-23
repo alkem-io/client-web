@@ -149,9 +149,15 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     };
 
     // And map the radio button allowed contribution types to an array
-    const settings: UpdateCalloutSettingsInput = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
+    const settingsTemp: UpdateCalloutSettingsInput = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
     // AllowedTypes is read-only for now, never send it to the server
-    delete settings?.contribution?.['allowedTypes'];
+    // TypeScript doesn't know about allowedTypes, but it exists at runtime
+    const contributionTemp = settingsTemp?.contribution as Record<string, unknown> | undefined;
+    const { allowedTypes: _, ...contribution } = contributionTemp ?? {};
+    const settings: UpdateCalloutSettingsInput = {
+      ...settingsTemp,
+      contribution: Object.keys(contribution).length > 0 ? contribution : undefined,
+    };
 
     // Clean up unneeded contributionDefaults
     // TODO: extract as used in CreateCalloutDialog
@@ -246,7 +252,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         entities={{
           titleId: 'components.callout-creation.closeDialog.title',
           contentId: 'components.callout-creation.closeDialog.text',
-          confirmButtonTextId: 'buttons.yes-close',
+          confirmButtonTextId: 'buttons.yesClose',
         }}
         options={{
           show: confirmCloseDialogOpen,

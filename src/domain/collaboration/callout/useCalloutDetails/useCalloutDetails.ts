@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { CalloutModelExtension } from '../models/CalloutModelLight';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
+import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 
 interface useCalloutDetailsProvided {
   callout: CalloutDetailsModelExtended | undefined;
@@ -34,7 +35,7 @@ const useCalloutDetails = ({
   const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
-  const calloutsCanBeSavedAsTemplate = entitlements?.entitledToSaveAsTemplate && permissions.canCreateTemplates;
+  const canBeSavedAsTemplate = permissions.canSaveAsTemplate && entitlements.entitledToSaveAsTemplate;
   const { canMoveCallouts } = useCalloutsSetAuthorization({ calloutsSetId });
 
   const { data, loading, refetch, error } = useCalloutDetailsQuery({
@@ -44,6 +45,9 @@ const useCalloutDetails = ({
     },
     skip: skip || !calloutId,
   });
+
+  // Use deep comparison for overrideCalloutSettings to avoid unnecessary rerenders
+  const memoizedOverrideCalloutSettings = useDeepCompareMemoize(overrideCalloutSettings);
 
   const result: CalloutDetailsModelExtended | undefined = useMemo(() => {
     const calloutDetails = data?.lookup.callout;
@@ -63,18 +67,11 @@ const useCalloutDetails = ({
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,
-      canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
+      canBeSavedAsTemplate,
       classificationTagsets: [],
-      ...overrideCalloutSettings,
+      ...memoizedOverrideCalloutSettings,
     };
-  }, [
-    data,
-    loading,
-    calloutsSetId,
-    canMoveCallouts,
-    calloutsCanBeSavedAsTemplate,
-    JSON.stringify(overrideCalloutSettings),
-  ]);
+  }, [data, loading, calloutsSetId, canMoveCallouts, canBeSavedAsTemplate, memoizedOverrideCalloutSettings]);
 
   return {
     callout: result,

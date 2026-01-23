@@ -17,16 +17,18 @@ import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
 import { useTranslation } from 'react-i18next';
 import PoweredBy from '../poweredBy/PoweredBy';
 import { PlatformNotificationsButton } from './PlatformNotificationsButton';
+import { UserMessagingButton } from '@/main/userMessaging/UserMessagingButton';
 
 export interface PlatformNavigationBarProps {
   breadcrumbs?: ReactElement<UncontrolledExpandable & { ref: Ref<Collapsible> }>;
+  staticPosition?: boolean;
 }
 
 const DEFAULT_BOUNDING_CLIENT_RECT = {
   right: 0,
 } as const;
 
-const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
+const PlatformNavigationBar = ({ breadcrumbs, staticPosition }: PlatformNavigationBarProps) => {
   const { isSmallScreen } = useScreenSize();
 
   const [areBreadcrumbsHidden, setAreBreadcrumbsHidden] = useState(false);
@@ -80,7 +82,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
   const { t } = useTranslation();
 
   return (
-    <NavigationBar>
+    <NavigationBar staticPosition={staticPosition}>
       <SkipLink anchor={() => document.querySelector('main')}>{t('components.navigation.skipMenu')}</SkipLink>
 
       <NavigationBarSideContent ref={buttonsContainerRef}>
@@ -99,6 +101,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
           <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch} compact={isSmallScreen}>
             <PlatformNavigationUncollapse ref={uncollapseButtonRef} visible={rightSideShift !== 0} />
           </PlatformSearch>
+          <UserMessagingButton />
           <PlatformNotificationsButton />
           {!isSmallScreen && <PlatformNavigationMenuButton />}
           <PlatformNavigationUserAvatar drawer={isSmallScreen}>

@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import * as yup from 'yup';
 import { SpaceAboutSegment, spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -12,8 +12,6 @@ interface SpaceAboutFormProps {
     profile?: { description?: string };
   };
   onSubmit: (formData: SpaceAboutEditFormValuesType) => void;
-  wireSubmit: (setter: () => void) => void;
-  isEdit: boolean;
   loading: boolean;
   spaceLevel?: SpaceLevel;
 }
@@ -24,40 +22,53 @@ export interface SpaceAboutEditFormValuesType {
   who?: string;
 }
 
-const SpaceAboutForm: FC<SpaceAboutFormProps> = ({ about, onSubmit, wireSubmit, loading, spaceLevel }) => {
-  const initialValues: SpaceAboutEditFormValuesType = {
-    description: about?.profile?.description ?? '',
-    why: about?.why ?? '',
-    who: about?.who ?? '',
-  };
+export interface SpaceAboutFormHandle {
+  submit: () => void;
+}
 
-  const validationSchema = yup.object().shape({
-    description: spaceAboutSegmentSchema.fields?.description || textLengthValidator(),
-    why: spaceAboutSegmentSchema.fields?.why || textLengthValidator(),
-    who: spaceAboutSegmentSchema.fields?.who || textLengthValidator(),
-  });
+const SpaceAboutForm = forwardRef<SpaceAboutFormHandle, SpaceAboutFormProps>(
+  ({ about, onSubmit, loading, spaceLevel }, ref) => {
+    const initialValues: SpaceAboutEditFormValuesType = {
+      description: about?.profile?.description ?? '',
+      why: about?.why ?? '',
+      who: about?.who ?? '',
+    };
 
-  let isSubmitWired = false;
+    const validationSchema = yup.object().shape({
+      description: spaceAboutSegmentSchema.fields?.description || textLengthValidator(),
+      why: spaceAboutSegmentSchema.fields?.why || textLengthValidator(),
+      who: spaceAboutSegmentSchema.fields?.who || textLengthValidator(),
+    });
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      onSubmit={async values => {
-        onSubmit(values);
-      }}
-    >
-      {({ handleSubmit }) => {
-        if (!isSubmitWired) {
-          wireSubmit(handleSubmit);
-          isSubmitWired = true;
-        }
+    const submitRef = useRef<(() => void) | null>(null);
 
-        return <SpaceAboutSegment loading={loading} spaceLevel={spaceLevel ?? SpaceLevel.L0} />;
-      }}
-    </Formik>
-  );
-};
+    // Expose submit method to parent component
+    useImperativeHandle(ref, () => ({
+      submit: () => {
+        submitRef.current?.();
+      },
+    }));
+
+    return (
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        onSubmit={async values => {
+          onSubmit(values);
+        }}
+      >
+        {({ handleSubmit }) => {
+          // Store handleSubmit in ref
+          submitRef.current = handleSubmit;
+
+          return <SpaceAboutSegment loading={loading} spaceLevel={spaceLevel ?? SpaceLevel.L0} />;
+        }}
+      </Formik>
+    );
+  }
+);
+
+SpaceAboutForm.displayName = 'SpaceAboutForm';
 
 export default SpaceAboutForm;

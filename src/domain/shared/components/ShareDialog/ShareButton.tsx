@@ -11,6 +11,7 @@ interface ShareButtonProps extends Omit<ShareComponentProps, 'url'> {
   tooltip?: string;
   tooltipIfDisabled?: string;
   sx?: IconButtonProps['sx'];
+  showShareOnAlkemio?: boolean;
 }
 
 const ShareButton: FC<ShareButtonProps> = ({
@@ -20,6 +21,7 @@ const ShareButton: FC<ShareButtonProps> = ({
   tooltip = '',
   tooltipIfDisabled = '',
   sx,
+  showShareOnAlkemio = true,
   ...dialogProps
 }) => {
   const { t } = useTranslation();
@@ -51,13 +53,19 @@ const ShareButton: FC<ShareButtonProps> = ({
             aria-haspopup="true"
             onClick={() => setDialogOpen(true)}
             disabled={disabled}
-            sx={{ color: theme => theme.palette.primary.main, ...sx }}
+            sx={{ color: theme => theme.palette.text.primary, ...sx }}
           >
             <ShareOutlinedIcon />
           </IconButton>
         )}
       </Tooltip>
-      <ShareDialog open={dialogOpen} url={url} {...dialogProps} onClose={() => setDialogOpen(false)} />
+      <ShareDialog
+        open={dialogOpen}
+        url={url}
+        showShareOnAlkemio={showShareOnAlkemio}
+        {...dialogProps}
+        onClose={() => setDialogOpen(false)}
+      />
     </>
   );
 };

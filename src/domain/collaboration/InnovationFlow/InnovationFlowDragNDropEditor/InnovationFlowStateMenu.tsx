@@ -2,7 +2,7 @@ import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import { Divider, ListItemIcon, Tooltip, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
+import { AddCircleOutline, StickyNote2Outlined, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 
 type InnovationFlowStateMenuProps = {
@@ -12,6 +12,7 @@ type InnovationFlowStateMenuProps = {
   onEdit: (stateId: string) => void;
   onDelete: (stateId: string) => void;
   onAddStateAfter: (stateBeforeId: string) => void;
+  onSetDefaultTemplate: (stateId: string) => void;
   disableStateNumberChange?: boolean;
   disableAddStateAfter?: boolean;
   disableRemoveState?: boolean;
@@ -24,10 +25,11 @@ export default function InnovationFlowStateMenu({
   onEdit,
   onDelete,
   onAddStateAfter,
+  onSetDefaultTemplate,
   disableStateNumberChange = false,
   disableAddStateAfter = false,
   disableRemoveState = false,
-}: InnovationFlowStateMenuProps) {
+}: Readonly<InnovationFlowStateMenuProps>) {
   const { t } = useTranslation();
 
   return (
@@ -62,6 +64,12 @@ export default function InnovationFlowStateMenu({
                 <EditOutlined fontSize="small" />
               </ListItemIcon>
               {t('components.innovationFlowSettings.stateEditor.editState')}
+            </MenuItem>
+            <MenuItem onClick={createMenuAction(onSetDefaultTemplate)}>
+              <ListItemIcon>
+                <StickyNote2Outlined fontSize="small" />
+              </ListItemIcon>
+              {t('components.innovationFlowSettings.stateEditor.setDefaultTemplate')}
             </MenuItem>
             {!disableStateNumberChange && (
               <>

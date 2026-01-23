@@ -1,18 +1,12 @@
-query GuidanceRoomId {
+query ConversationWithGuidanceVc {
   me {
-    user {
-      id
-      guidanceRoom {
+    conversations{
+      conversationGuidanceVc: virtualContributor(wellKnown: CHAT_GUIDANCE) {
+        room {
+          id
+        }
         id
       }
-    }
-  }
-}
-
-query GuidanceRoomMessages($roomId: UUID!) {
-  lookup {
-    room (ID: $roomId) {
-      ...CommentsWithMessages
     }
   }
 }

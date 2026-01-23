@@ -1,41 +1,40 @@
 import { useState } from 'react';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Paper, Drawer, MenuList } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import { gutters } from '@/core/ui/grid/utils';
-import { Paper } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import { Drawer } from '@mui/material';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { MenuList } from '@mui/material';
 import SpaceWelcomeBlock, { SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 interface SubspaceDrawerMenuProps {
   innovationFlowStates?: InnovationFlowStateModel[];
   selectedInnovationFlowState?: string;
-  currentInnovationFlowState?: string;
+  currentInnovationFlowStateDisplayName?: string;
   createButton?: React.ReactNode;
   onSelectState: (stateName: string) => void;
   about?: SpaceWelcomeBlockProps['spaceAbout'];
   isVideoCallEnabled?: boolean;
+  canEdit?: boolean;
 }
 
 export const SubspaceDrawerMenu = ({
   innovationFlowStates,
   selectedInnovationFlowState,
-  currentInnovationFlowState,
+  currentInnovationFlowStateDisplayName,
   createButton,
   onSelectState,
   about,
   isVideoCallEnabled = false,
+  canEdit = false,
 }: SubspaceDrawerMenuProps) => {
   const { isSmallScreen } = useScreenSize();
 
@@ -57,7 +56,7 @@ export const SubspaceDrawerMenu = ({
           {showInnovationFlowStates && (
             <InnovationFlowStates
               states={innovationFlowStates}
-              currentState={currentInnovationFlowState}
+              currentState={currentInnovationFlowStateDisplayName}
               selectedState={selectedInnovationFlowState}
               onSelectState={state => onSelectState(state.displayName)}
               visualizer={InnovationFlowVisualizerMobile}
@@ -77,7 +76,9 @@ export const SubspaceDrawerMenu = ({
             onClose={() => setIsInfoDrawerOpen(false)}
             sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
           >
-            <PageContentBlockSeamless>{about && <SpaceWelcomeBlock spaceAbout={about} />}</PageContentBlockSeamless>
+            <PageContentBlockSeamless>
+              {about && <SpaceWelcomeBlock spaceAbout={about} canEdit={canEdit} />}
+            </PageContentBlockSeamless>
             <MenuList sx={{ paddingTop: 0, paddingBottom: 1 }}>
               <DialogActionButton onClick={handleCloseDrawer} actionDisplay="menuItem" dialog={SubspaceDialog.About} />
               <DialogActionButton

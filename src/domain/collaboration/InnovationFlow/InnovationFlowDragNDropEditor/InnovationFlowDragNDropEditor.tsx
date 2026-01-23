@@ -12,14 +12,16 @@ import { Caption } from '@/core/ui/typography';
 import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { gutters } from '@/core/ui/grid/utils';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
-import InnovationFlowStateForm from './InnovationFlowStateForm';
+import InnovationFlowStateForm, { InnovationFlowStateFormValues } from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 import { Identifiable } from '@/core/utils/Identifiable';
+import SetDefaultTemplateDialog from '../InnovationFlowDialogs/SetDefaultTemplateDialog';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -51,11 +53,12 @@ export interface InnovationFlowDragNDropEditorProps {
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown>;
   onUpdateCurrentState?: (stateId: string) => void;
   onCreateFlowState: (
-    newState: InnovationFlowStateModel,
+    newState: InnovationFlowStateFormValues,
     options: { after: string; last: false } | { after?: never; last: true }
   ) => Promise<unknown>;
-  onEditFlowState: (stateId: string, newState: InnovationFlowStateModel) => Promise<unknown>;
+  onEditFlowState: (stateId: string, newState: InnovationFlowStateFormValues) => Promise<unknown>;
   onDeleteFlowState: (stateId: string) => Promise<unknown>;
+  onSetDefaultTemplate: (stateId: string, templateId: string | null) => Promise<unknown>;
   /**
    * Prevents the user from changing the number of states, adding or removing
    */
@@ -88,9 +91,13 @@ const InnovationFlowDragNDropEditor = ({
   onCreateFlowState,
   onEditFlowState,
   onDeleteFlowState,
+  onSetDefaultTemplate,
   disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
+  // eslint-disable-next-line react-compiler/react-compiler -- Required: @hello-pangea/dnd render props pattern breaks with React Compiler memoization
+  'use no memo';
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const innovationFlowStates = innovationFlow?.states;
   const currentStateId = innovationFlow?.currentState?.id;
 
@@ -100,6 +107,27 @@ const InnovationFlowDragNDropEditor = ({
   >(undefined);
   const [editFlowState, setEditFlowState] = useState<(Identifiable & InnovationFlowStateModel) | undefined>();
   const [deleteFlowStateId, setDeleteFlowStateId] = useState<string | undefined>();
+  const [setDefaultTemplateStateId, setSetDefaultTemplateStateId] = useState<string | undefined>();
+
+  // Track if we've already processed the editTab param to avoid re-triggering
+  const editTabProcessedRef = useRef<string | null>(null);
+
+  // Auto-open edit dialog if editTab URL param is present
+  useEffect(() => {
+    const editTabParam = searchParams.get('editTab');
+    // Only process if: param exists, states are loaded, and we haven't processed this exact param value yet
+    if (editTabParam !== null && innovationFlowStates && editTabProcessedRef.current !== editTabParam) {
+      editTabProcessedRef.current = editTabParam;
+      const tabIndex = Number.parseInt(editTabParam, 10);
+      if (!Number.isNaN(tabIndex) && tabIndex >= 0 && tabIndex < innovationFlowStates.length) {
+        setEditFlowState(innovationFlowStates[tabIndex]);
+      }
+      // Clear the URL param after processing - use a new URLSearchParams to avoid mutation issues
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('editTab');
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, [searchParams, innovationFlowStates, setSearchParams]);
 
   const handleDragEnd: OnDragEndResponder = (result, provided) => {
     const { draggableId, destination } = result;
@@ -120,7 +148,7 @@ const InnovationFlowDragNDropEditor = ({
 
   const canAddState =
     !disableStateNumberChange &&
-    !((innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0));
+    (innovationFlowStates ?? []).length < (innovationFlow?.settings.maximumNumberOfStates ?? 0);
 
   return (
     <>
@@ -161,6 +189,7 @@ const InnovationFlowDragNDropEditor = ({
                                 onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
                                 onEdit={() => setEditFlowState(state)}
                                 onDelete={() => setDeleteFlowStateId(state.id)}
+                                onSetDefaultTemplate={() => setSetDefaultTemplateStateId(state.id)}
                                 disableStateNumberChange={disableStateNumberChange}
                                 disableAddStateAfter={!canAddState}
                                 disableRemoveState={disableStateNumberChange}
@@ -255,6 +284,17 @@ const InnovationFlowDragNDropEditor = ({
           contentId: 'components.innovationFlowSettings.stateEditor.deleteDialog.text',
           confirmButtonTextId: 'buttons.delete',
         }}
+      />
+      <SetDefaultTemplateDialog
+        open={Boolean(setDefaultTemplateStateId)}
+        onClose={() => setSetDefaultTemplateStateId(undefined)}
+        onSelectTemplate={templateId => {
+          if (setDefaultTemplateStateId) {
+            return onSetDefaultTemplate(setDefaultTemplateStateId, templateId);
+          }
+          return Promise.resolve();
+        }}
+        currentTemplate={innovationFlowStates?.find(s => s.id === setDefaultTemplateStateId)?.defaultCalloutTemplate}
       />
     </>
   );

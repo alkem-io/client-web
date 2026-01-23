@@ -9,7 +9,7 @@ import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTa
 import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
+import { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
@@ -25,6 +25,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -53,6 +54,7 @@ interface ParentSpace extends Identifiable {
       displayName: string;
       avatar?: Visual;
       cardBanner?: Visual;
+      url: string;
     };
   };
 }
@@ -82,6 +84,21 @@ export const SpaceExplorerView = ({
   loadingSearchResults = null,
 }: SpaceExplorerViewProps) => {
   const { t } = useTranslation();
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  const handleContactLead = useCallback(
+    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+      sendMessage(leadType, {
+        id: leadId,
+        displayName: leadDisplayName,
+        avatarUri: leadAvatarUri,
+      });
+    },
+    [sendMessage]
+  );
+
   const spaceNameId = t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId');
   const { data: spaceIdData } = useSpaceUrlResolverQuery({
     variables: { spaceNameId: spaceNameId },
@@ -147,7 +164,7 @@ export const SpaceExplorerView = ({
       const parentInfo = space.parent
         ? {
             displayName: space.parent.about.profile.displayName,
-            url: `/${space.parent.id}`,
+            url: space.parent.about.profile.url,
             avatar: space.parent.about.profile.avatar
               ? {
                   id: '',
@@ -175,6 +192,7 @@ export const SpaceExplorerView = ({
           leadOrganizations={membershipWithLeads?.leadOrganizations}
           showLeads={authenticated}
           isPrivate={!isContentPublic}
+          onContactLead={handleContactLead}
         />
       );
     });
@@ -271,6 +289,7 @@ export const SpaceExplorerView = ({
           </DialogContent>
         </DialogWithGrid>
       )}
+      {directMessageDialog}
     </PageContentBlock>
   );
 };

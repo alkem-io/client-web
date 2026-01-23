@@ -1,13 +1,6 @@
-import { useMemo } from 'react';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { useCallback, useMemo } from 'react';
 import { useInviteUsersDialogQuery, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  UserSelectorQuery,
-  UserSelectorQueryVariables,
-  UserFilterInput,
-  RoleSetContributorType,
-  RoleName,
-} from '@/core/apollo/generated/graphql-schema';
+import { UserFilterInput, RoleSetContributorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 export interface ContributorItem {
@@ -68,18 +61,35 @@ export const useContributors = ({
     skip: !onlyUsersInRole || !parentSpaceId || !parentRoleSetId,
   });
 
+  // Call the query hook directly instead of passing it to usePaginatedQuery
   const {
     data: paginatedData,
     loading,
-    fetchMore,
-    hasMore,
-  } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
-    useQuery: useUserSelectorQuery,
-    getPageInfo: data => data.usersPaginated.pageInfo,
-    options: { skip: !filter || onlyUsersInRole },
-    pageSize,
-    variables: { filter },
+    fetchMore: fetchMoreRaw,
+  } = useUserSelectorQuery({
+    variables: {
+      first: pageSize,
+      filter,
+    },
+    skip: !filter || onlyUsersInRole,
   });
+
+  const pageInfo = paginatedData?.usersPaginated.pageInfo;
+  const hasMore = pageInfo?.hasNextPage ?? false;
+
+  const fetchMore = useCallback(async () => {
+    if (!paginatedData) {
+      return;
+    }
+
+    await fetchMoreRaw({
+      variables: {
+        first: pageSize,
+        after: pageInfo?.endCursor,
+        filter,
+      },
+    });
+  }, [paginatedData, fetchMoreRaw, pageInfo?.endCursor, pageSize, filter]);
 
   const roleSetData = useMemo(
     () =>

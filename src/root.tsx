@@ -5,12 +5,13 @@ import { UserGeoProvider } from '@/core/analytics/geo';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import '@/core/i18n/config';
-import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
-import { Error404 } from '@/core/pages/Errors/Error404';
+import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { Error40X } from './core/pages/Errors/Error40X';
 import ScrollToTop from '@/core/routing/ScrollToTop';
+import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { fontFamilySourceSans, fontFamilyVerdana, subHeading } from '@/core/ui/typography/themeTypographyOptions';
+import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
@@ -23,12 +24,18 @@ import { FC } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
-import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
-import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
+import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
-import { rem } from '@/core/ui/typography/utils';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { Suspense } from 'react';
+
+const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
+const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
+  () => import('./main/inAppNotifications/InAppNotificationsDialog')
+);
+const UserMessagingDialog = lazyWithGlobalErrorHandler(() => import('./main/userMessaging/UserMessagingDialog'));
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -68,27 +75,39 @@ const globalStyles = (theme: Theme) => ({
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
   },
-  '.tiptap p, .markdown p': {
-    fontFamily: fontFamilyVerdana,
-    fontSize: rem(12),
+  '.tiptap p, .markdown p, .tiptap table, .markdown table': {
+    margin: 0,
+    fontFamily: fontFamilySourceSans,
+    fontSize: 12,
+    lineHeight: '20px',
+    letterSpacing: '0.13px',
+  },
+  '.tiptap ul, .markdown ul, .tiptap ol, .markdown ol': {
+    margin: 0,
   },
   '.tiptap h1, .markdown h1': {
-    fontFamily: fontFamilyVerdana,
+    paddingTop: '10px',
+    fontFamily: fontFamilySourceSans,
     fontWeight: 'bold',
-    fontSize: rem(14),
-    lineHeight: rem(20),
+    fontSize: 14,
+    lineHeight: '20px',
+    letterSpacing: '0.13px',
   },
   '.tiptap h2, .markdown h2': {
-    fontFamily: fontFamilyVerdana,
+    paddingTop: '10px',
+    fontFamily: fontFamilySourceSans,
     fontWeight: 'bold',
-    fontSize: rem(13),
-    lineHeight: rem(20),
+    fontSize: 13,
+    lineHeight: '20px',
+    letterSpacing: '0.13px',
   },
   '.tiptap h3, .markdown h3': {
-    fontFamily: fontFamilyVerdana,
+    paddingTop: '10px',
+    fontFamily: fontFamilySourceSans,
     fontWeight: 'bold',
-    fontSize: rem(12),
-    lineHeight: rem(20),
+    fontSize: 12,
+    lineHeight: '20px',
+    letterSpacing: '0.13px',
   },
   '.excalidraw-modal-container': {
     zIndex: `${theme.zIndex.modal + 1} !important`,
@@ -114,21 +133,31 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
-                                    <ApmUserSetter />
-                                    <ScrollToTop />
-                                    <InAppNotificationsDialog />
-                                    <InAppNotificationCountSubscriber />
-                                    <VersionHandling />
-                                    <NotFoundErrorBoundary
-                                      errorComponent={
-                                        <TopLevelLayout>
-                                          <Error404 />
-                                        </TopLevelLayout>
-                                      }
-                                    >
-                                      <TopLevelRoutes />
-                                      <GlobalErrorDialog />
-                                    </NotFoundErrorBoundary>
+                                    <UserMessagingProvider>
+                                      <NavigationHistoryTracker />
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <Suspense fallback={null}>
+                                        <InAppNotificationsDialog />
+                                      </Suspense>
+                                      <InAppNotificationCountSubscriber />
+                                      <Suspense fallback={null}>
+                                        <UserMessagingDialog />
+                                      </Suspense>
+                                      <VersionHandling />
+                                      <Error40XBoundary
+                                        errorComponent={errorState => (
+                                          <TopLevelLayout>
+                                            <Error40X {...errorState} />
+                                          </TopLevelLayout>
+                                        )}
+                                      >
+                                        <TopLevelRoutes />
+                                        <Suspense fallback={null}>
+                                          <GlobalErrorDialog />
+                                        </Suspense>
+                                      </Error40XBoundary>
+                                    </UserMessagingProvider>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
                               </UserProvider>

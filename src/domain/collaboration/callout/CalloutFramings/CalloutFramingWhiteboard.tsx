@@ -2,6 +2,7 @@ import { useState } from 'react';
 import WhiteboardPreview from '../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
 import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
+import buildGuestShareUrl from '../../whiteboard/utils/buildGuestShareUrl';
 
 interface CalloutFramingWhiteboardProps {
   callout: CalloutDetailsModel;
@@ -19,6 +20,10 @@ const CalloutFramingWhiteboard = ({ callout, onCollapse }: CalloutFramingWhitebo
     return null;
   }
 
+  const guestShareUrl = buildGuestShareUrl(
+    callout.framing.whiteboard.id ?? callout.framing.whiteboard.nameID ?? undefined
+  );
+
   return (
     <>
       <WhiteboardPreview
@@ -31,6 +36,7 @@ const CalloutFramingWhiteboard = ({ callout, onCollapse }: CalloutFramingWhitebo
           whiteboardId={callout.framing.whiteboard?.id}
           backToWhiteboards={handleCloseWhiteboardDialog}
           whiteboardShareUrl={callout.framing.profile.url}
+          guestShareUrl={guestShareUrl}
           readOnlyDisplayName
           displayName={callout.framing.profile.displayName}
           preventWhiteboardDeletion

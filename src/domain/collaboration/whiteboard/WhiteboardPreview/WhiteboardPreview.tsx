@@ -1,11 +1,18 @@
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
-import { Box, Button, ButtonProps, styled, Theme } from '@mui/material';
+import { Box, BoxProps, Button, ButtonProps, styled } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
+import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
+import {
+  previewContainerStyles,
+  previewButtonStyles,
+  chipButtonPositionStyles,
+  previewContainerBottomGradientStyles,
+} from '../../common/PreviewStyles';
 
 type WhiteboardPreviewProps = {
   displayName?: string;
@@ -14,75 +21,44 @@ type WhiteboardPreviewProps = {
         profile: {
           preview?: { uri: string };
         };
+        guestContributionsAllowed?: boolean;
       }
     | undefined;
   onClick?: MouseEventHandler;
+  seamless?: boolean;
 };
 
-const Container = styled(Box)(({ theme, onClick }) => ({
-  position: 'relative',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  border: '1px solid',
-  borderColor: theme.palette.divider,
-  margin: gutters(1)(theme),
-  overflow: 'hidden',
-  cursor: onClick ? 'pointer' : 'default',
-  borderRadius: theme.shape.borderRadius,
-  // Button appearing only on hover:
-  '& .only-on-hover': {
-    display: 'none',
-  },
-  '&:hover .only-on-hover': {
-    display: 'block',
-  },
-  [theme.breakpoints.down('sm')]: {
-    // But always on small screens:
-    '& .only-on-hover': {
-      display: 'block',
-    },
-  },
-  // Background blur on hover
-  '&:hover::before': onClick
-    ? {
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        borderRadius: theme.shape.borderRadius,
-        backdropFilter: 'blur(3px)',
-        zIndex: 1,
-      }
-    : undefined,
-}));
+const Container = styled(Box, {
+  shouldForwardProp: prop => prop !== 'seamless',
+})<BoxProps & { seamless?: boolean }>(({ theme, onClick, seamless }) =>
+  previewContainerStyles(theme, onClick, seamless)
+);
 
-const ImageContainer = styled(Box)(() => ({
+const ImageContainer = styled(Box, {
+  shouldForwardProp: prop => prop !== 'seamless',
+})<BoxProps & { seamless?: boolean }>(({ theme, seamless }) => ({
   position: 'relative',
   width: '100%',
   display: 'flex',
-  aspectRatio: WhiteboardPreviewVisualDimensions.aspectRatio,
+  aspectRatio: seamless ? 6.5 : WhiteboardPreviewVisualDimensions.aspectRatio,
+  minHeight: gutters(8)(theme),
+  '& > img': {
+    objectFit: seamless ? 'cover' : 'contain',
+    width: '100%',
+    height: '100%',
+  },
+  ...previewContainerBottomGradientStyles(theme, seamless),
 }));
 
-// Common styles for the two buttons shown in the preview:
-// on top of the preview, with slightly less rounded corners and with background
-const buttonsInPreview = (theme: Theme) => ({
-  position: 'absolute',
-  borderColor: theme.palette.divider,
-  borderRadius: `${theme.shape.borderRadiusSquare}px`,
-  zIndex: 2,
-  backgroundColor: theme.palette.background.paper,
-  '&:hover': {
-    backgroundColor: theme.palette.background.default,
-  },
-});
-
-const OpenWhiteboardButton = (props: ButtonProps) => {
+const OpenWhiteboardButton = ({ seamless, ...props }: ButtonProps & { seamless?: boolean }) => {
   const { t } = useTranslation();
   return (
-    <Button variant="outlined" className="only-on-hover" sx={theme => buttonsInPreview(theme)} {...props}>
+    <Button
+      variant="outlined"
+      className={seamless ? undefined : 'only-on-hover'}
+      sx={theme => previewButtonStyles(theme, seamless)}
+      {...props}
+    >
       {t('callout.whiteboard.clickToSee')}
     </Button>
   );
@@ -97,14 +73,9 @@ const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disabl
       startIcon={<WhiteboardIcon />}
       size="small"
       sx={theme => ({
-        ...buttonsInPreview(theme),
-        top: gutters(1)(theme),
-        left: gutters(1)(theme),
-        textTransform: 'none',
+        ...previewButtonStyles(theme),
+        ...chipButtonPositionStyles(theme),
         pointerEvents: disableClick ? 'none' : 'auto',
-        [theme.breakpoints.down('sm')]: {
-          display: 'none',
-        },
       })}
       aria-label={
         disableClick ? t('pages.whiteboard.preview.ariaLabelDisabled') : t('pages.whiteboard.preview.ariaLabel')
@@ -116,20 +87,32 @@ const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disabl
   );
 };
 
-const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPreviewProps) => {
+const WhiteboardPreview = ({ displayName, whiteboard, onClick, seamless }: WhiteboardPreviewProps) => {
   const imageSrc = whiteboard?.profile.preview?.uri;
   const defaultImage = <WhiteboardIcon />;
+  const showGuestWarning = Boolean(whiteboard?.guestContributionsAllowed);
 
   return (
-    <Container onClick={onClick}>
-      <ImageContainer>
+    <Container onClick={onClick} seamless={seamless}>
+      {showGuestWarning && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          position="absolute"
+          top={gutters(0.5)}
+          left={gutters(1)}
+          right={gutters(1)}
+          zIndex={3}
+        >
+          <GuestVisibilityBadge data-testid="guest-visibility-badge-preview" />
+        </Box>
+      )}
+      <ImageContainer seamless={seamless}>
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
-        {imageSrc && (
-          <ImageFadeIn src={imageSrc} alt={displayName} width="100%" height="100%" sx={{ objectFit: 'contain' }} />
-        )}
+        {imageSrc && <ImageFadeIn src={imageSrc} alt={displayName} />}
       </ImageContainer>
-      <WhiteboardChipButton disableClick={!onClick} />
-      {onClick && <OpenWhiteboardButton />}
+      {!seamless && <WhiteboardChipButton disableClick={!onClick} />}
+      {onClick && <OpenWhiteboardButton seamless={seamless} />}
     </Container>
   );
 };

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
 import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 import {
@@ -10,12 +10,7 @@ import {
   usePlatformAdminUsersListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
-import {
-  LicensingCredentialBasedPlanType,
-  PlatformAdminUsersListQuery,
-  PlatformAdminUsersListQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
+import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -54,27 +49,41 @@ const useAdminGlobalUserList = ({
 
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Call the query hook directly instead of passing it to usePaginatedQuery
   const {
     data,
     loading,
     error,
-    fetchMore,
-    hasMore,
-    pageSize: actualPageSize,
-    firstPageSize,
-  } = usePaginatedQuery<PlatformAdminUsersListQuery, PlatformAdminUsersListQueryVariables>({
-    useQuery: usePlatformAdminUsersListQuery,
-    options: {
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-first',
-      skip,
-    },
+    fetchMore: fetchMoreRaw,
+  } = usePlatformAdminUsersListQuery({
     variables: {
+      first: pageSize,
       filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
     },
-    pageSize,
-    getPageInfo: result => result.platformAdmin.users.pageInfo,
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
+    skip,
   });
+
+  const pageInfo = data?.platformAdmin.users.pageInfo;
+  const hasMore = pageInfo?.hasNextPage ?? false;
+
+  const fetchMore = useCallback(
+    async (itemsNumber = pageSize) => {
+      if (!data) {
+        return;
+      }
+
+      await fetchMoreRaw({
+        variables: {
+          first: itemsNumber,
+          after: pageInfo?.endCursor,
+          filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
+        },
+      });
+    },
+    [data, fetchMoreRaw, pageInfo?.endCursor, pageSize, searchTerm]
+  );
 
   const platformLicensePlans = usePlatformLicensingPlansQuery();
 
@@ -155,7 +164,7 @@ const useAdminGlobalUserList = ({
           name: licensePlan.name,
           sortOrder: licensePlan.sortOrder,
         })) || [],
-    [data]
+    [platformLicensePlans]
   );
 
   return {
@@ -166,8 +175,8 @@ const useAdminGlobalUserList = ({
     onDelete,
     fetchMore,
     hasMore,
-    pageSize: actualPageSize,
-    firstPageSize,
+    pageSize,
+    firstPageSize: pageSize,
     searchTerm,
     licensePlans,
     assignLicensePlan,

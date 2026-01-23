@@ -1,0 +1,11 @@
+mutation UpdateVirtualContributorPlatformSettings($settingsData: UpdateVirtualContributorPlatformSettingsInput!) {
+  updateVirtualContributorPlatformSettings(settingsData: $settingsData) {
+    id
+    aiPersona {
+      id
+    }
+    platformSettings {
+      promptGraphEditingEnabled
+    }
+  }
+}

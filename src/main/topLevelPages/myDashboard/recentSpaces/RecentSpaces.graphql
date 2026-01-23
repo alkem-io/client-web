@@ -1,5 +1,16 @@
 query RecentSpaces($limit: Float) {
   me {
+    user {
+      id
+      settings {
+        homeSpace {
+          spaceID
+        }
+      }
+      profile {
+        url
+      }
+    }
     mySpaces(limit: $limit) {
       space {
         id

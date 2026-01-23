@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import { useSpace } from '@/domain/space/context/useSpace';
 import SearchBox from '@/core/ui/search/SearchBox';
 import useNavigate from '@/core/routing/useNavigate';
@@ -42,22 +42,19 @@ const PlatformSearch = ({
   const { space } = useSpace();
   const { about } = space;
 
-  const searchOptions = useMemo<SearchOption[] | undefined>(() => {
-    if (!space || !space.nameID) {
-      return undefined;
-    }
-
-    return [
-      {
-        value: SearchScope.Space,
-        label: t('components.search.scope.space', about.profile),
-      },
-      {
-        value: SearchScope.Platform,
-        label: t('components.search.scope.platform'),
-      },
-    ];
-  }, [t, about.profile, space]);
+  const searchOptions: SearchOption[] | undefined =
+    !space || !space.nameID
+      ? undefined
+      : [
+          {
+            value: SearchScope.Space,
+            label: t('components.search.scope.space', about.profile),
+          },
+          {
+            value: SearchScope.Platform,
+            label: t('components.search.scope.platform'),
+          },
+        ];
 
   const defaultSearchOption = space.nameID ? SearchScope.Space : SearchScope.Platform;
 
@@ -71,12 +68,9 @@ const PlatformSearch = ({
 
   const isTermValid = value.length >= MINIMUM_TERM_LENGTH;
 
-  const handleValueChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(event.target.value);
-    },
-    [setValue]
-  );
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
 
   const searchBoxRef = useCombinedRefs(null, forwardedRef);
 

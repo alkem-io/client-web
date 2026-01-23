@@ -81,7 +81,7 @@ const DataGridTable = <Item extends Identifiable>({
           ...column,
         };
       }),
-    [t, ...dependencies]
+    [t, columns, dependencies]
   );
 
   const actionsColumnDefinition = useMemo<GridColDef<Item> | undefined>(() => {
@@ -124,7 +124,7 @@ const DataGridTable = <Item extends Identifiable>({
         );
       },
     };
-  }, [actions, onDelete, canDelete, disableDelete, t, ...dependencies]);
+  }, [actions, onDelete, canDelete, disableDelete, t, dependencies]);
 
   const mergedColumnDefinitions = useMemo(
     () => (actionsColumnDefinition ? [...columnDefinitions, actionsColumnDefinition] : columnDefinitions),

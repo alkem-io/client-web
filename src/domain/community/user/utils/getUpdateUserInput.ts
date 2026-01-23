@@ -31,7 +31,7 @@ export const getUpdateProfileInput = (profile?: Partial<UserModel['profile']>): 
 };
 
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
-  const { id: userID, email, memberof, profile, ...rest } = user;
+  const { id: userID, email, memberof, profile, settings, ...rest } = user as UserModel & { settings?: unknown };
 
   const profileData = getUpdateProfileInput(user.profile);
 

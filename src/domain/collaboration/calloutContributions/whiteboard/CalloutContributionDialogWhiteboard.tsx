@@ -40,6 +40,7 @@ const CalloutContributionDialogWhiteboard = ({
           whiteboardId={entities.whiteboard?.id}
           backToWhiteboards={onClose}
           whiteboardShareUrl={entities.whiteboard?.profile.url ?? ''}
+          guestShareUrl={entities.guestShareUrl}
           whiteboard={entities.whiteboard}
           authorization={entities.whiteboard?.authorization}
           loadingWhiteboards={state.loadingWhiteboards}

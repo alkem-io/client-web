@@ -50,6 +50,7 @@ const SpaceAdminLayoutPage: FC<SpaceAdminLayoutPageProps> = ({ useL0Layout, rout
               onCreateFlowState={(state, options) => actions.createState(state, options.after)}
               onEditFlowState={actions.editState}
               onDeleteFlowState={actions.deleteState}
+              onSetDefaultTemplate={actions.setDefaultTemplate}
               disableStateNumberChange
             />
           </Box>

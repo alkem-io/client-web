@@ -40,7 +40,10 @@ const ReactionView = ({ reaction, onRemoveReaction }: ReactionViewProps) => {
         color={reaction.ownReactionId ? 'primary' : undefined}
         clickable={!!reaction.ownReactionId}
         onClick={handleRemoveReaction}
-        sx={{ height: theme => theme.spacing(1.5), borderRadius: theme => theme.spacing(1.2) }}
+        sx={{
+          borderRadius: theme => theme.spacing(1.2),
+          paddingY: theme => theme.spacing(0.25),
+        }}
         label={<CardText>{`${reaction.emoji} ${reaction.count}`}</CardText>}
       />
     </Tooltip>

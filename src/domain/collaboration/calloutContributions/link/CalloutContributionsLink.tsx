@@ -15,9 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
@@ -26,6 +24,7 @@ import LinkContributionsList from './LinksList';
 import { LinkContribution } from './models/LinkContribution';
 import { LinkDetails } from './models/LinkDetails';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import useCalloutCollaborationPermissions from '../useCalloutContributions/useCalloutCollaborationPermissions';
 
 const MAX_LINKS_COMPACT_VIEW = 8;
 
@@ -44,13 +43,17 @@ const CalloutContributionsLink = ({
   const {
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
-    canCreateContribution,
     onCalloutContributionsUpdate: refetchCalloutAndContributions,
   } = useCalloutContributions({
     callout,
     contributionType: CalloutContributionType.Link,
     onCalloutUpdate,
     pageSize: MAX_LINKS_COMPACT_VIEW,
+  });
+
+  const { canCreateContribution } = useCalloutCollaborationPermissions({
+    callout,
+    contributionType: CalloutContributionType.Link,
   });
 
   // Always show all Links in expanded mode:
@@ -81,45 +84,13 @@ const CalloutContributionsLink = ({
   const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
   const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
-  // New Links:
-  const getNewLinkId = async () => {
-    const { data } = await createLinkOnCallout({
-      variables: {
-        calloutId: callout.id,
-        link: {
-          uri: '',
-          profile: {
-            // Link names have to be unique, if everything goes well this name will never be shown:
-            displayName: t('callout.link-collection.new-temporary-reference', {
-              temp: uuid().slice(0, 4),
-            }),
-          },
-        },
-      },
-    });
-    if (!data?.createContributionOnCallout.link?.id) {
-      throw new Error('Error creating the new Link');
-    }
-    return data.createContributionOnCallout.link?.id;
-  };
-
-  const removeNewLink = (linkId: string) =>
-    deleteLink({
-      variables: {
-        input: {
-          ID: linkId,
-        },
-      },
-      update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
-    });
-
   const handleSaveNewLinks = async (links: CreateLinkFormValues[]) => {
     await Promise.all(
       links.map(link =>
-        updateLink({
+        createLinkOnCallout({
           variables: {
-            input: {
-              ID: link.id,
+            calloutId: callout.id,
+            link: {
               uri: link.uri,
               profile: {
                 displayName: link.name,
@@ -213,8 +184,6 @@ const CalloutContributionsLink = ({
         open={addNewLinkDialogOpen}
         title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
         onClose={closeAddNewDialog}
-        onAddMore={getNewLinkId}
-        onRemove={removeNewLink}
         onSave={handleSaveNewLinks}
       />
       <EditLinkDialog

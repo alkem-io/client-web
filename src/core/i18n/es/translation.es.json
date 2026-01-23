@@ -118,12 +118,15 @@
     "see-more": "Ver más",
     "see-all": "Más {{subject}}",
     "readMore": "Leer más",
+    "showLess": "Mostrar menos",
+    "retry": "Inténtelo de nuevo",
     "home": "Inicio",
     "take-me-home": "Llévame al inicio",
     "close": "Cerrar",
     "yes": "Sí",
     "no": "No",
-    "yes-close": "Sí, cerrar",
+    "yesClose": "Sí, cerrar",
+    "yesCancel": "Sí, cancelar",
     "yesContinue": "Sí, continuar",
     "yesReplace": "Sí, reemplazar",
     "yesDelete": "Sí, eliminar",
@@ -163,7 +166,7 @@
     "importing": "Importando...",
     "go-to-entity": "Ir a {{entity}}",
     "reply": "Responder",
-    "reset": "Reset",
+    "reset": "Restablecer",
     "select": "Seleccionar",
     "change-field": "Cambiar {{field}}",
     "send": "Enviar",
@@ -186,9 +189,12 @@
     "toolPosition": "Posición de la herramienta",
     "createOwnSpace": "...o haz clic aquí para crear tu propio $t(common.space)",
     "notifications": "Botón de $t(common.Notifications)",
+    "messages": "Botón de mensajes",
     "invite": "Invitar",
     "visit": "Visitar",
-    "returnToDashboard": "Volver al $t(common.dashboard) como invitado",
+    "returnToDashboardAsGuest": "Volver al $t(common.dashboard) como invitado",
+    "returnToDashboard": "Volver a $t(common.dashboard)",
+    "takeMeHome": "Volver a la página inicial",
     "approveApplication": "Aprobar solicitud",
     "rejectApplication": "Rechazar solicitud"
   },
@@ -220,12 +226,21 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "vidua": "Vidua. Vidua es un proveedor certificado eIDAS, que garantiza una autenticación segura y legalmente reconocida según los estándares de la UE."
+        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
       }
     },
     "signUp": {
       "signUpEmail": "Registrarse con correo electrónico",
       "alreadyHaveAccount": "¿Ya tienes $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -238,6 +253,7 @@
     "Account": "Cuenta",
     "account": "cuenta",
     "anonymous": "Anónimo",
+    "guestSuffix": "(invitado)",
     "all": "Todo",
     "knowledge-base": "Base de conocimientos",
     "or": "O",
@@ -408,6 +424,7 @@
     "notification": "notificación",
     "notifications": "notificaciones",
     "credentials": "Credenciales",
+    "security": "Security",
     "my-profile": "Mi $t(common.profile)",
     "my-memberships": "Mis $t(common.memberships)",
     "Profile": "Perfil",
@@ -555,12 +572,13 @@
     },
     "roles": {
       "ADMIN": "$t(common.Admin)",
-      "ANONYMOUS": "Anonymous",
-      "REGISTERED": "Registered",
+      "ANONYMOUS": "Anónimo",
+      "REGISTERED": "Registrado",
       "LEAD": "Responsable",
       "HOST": "Anfitrión",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Asociado",
+      "GUEST": "Invitado",
       "OWNER": "Propietario",
       "GLOBAL_ADMIN": "Administrador $t(common.global)",
       "GLOBAL_SUPPORT": "$t(common.Admin) de soporte",
@@ -858,6 +876,15 @@
               "text": "Descripción predeterminada"
             }
           },
+          "memo": {
+            "title": "$t(common.Memos)",
+            "tooltip": "Habilitar respuestas con $t(common.memos)",
+            "settings": {
+              "label": "Texto predeterminado:",
+              "explanation": "Agrega texto predeterminado a los $t(common.memos), por ejemplo, preguntas que te gustaría que las personas respondan.",
+              "text": "Descripción predeterminada"
+            }
+          },
           "whiteboard": {
             "title": "$t(common.Whiteboards)",
             "tooltip": "Habilitar respuestas con $t(common.whiteboards)",
@@ -923,7 +950,16 @@
       "new-temporary-reference": "ID de enlace temporal: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)"
+      "clickToSee": "Haz clic para abrir $t(common.whiteboard)",
+      "emojiReaction": {
+        "addEmoji": "Add emoji reaction",
+        "title": "Add Emoji",
+        "hint": "Select an emoji, then click on the canvas",
+        "clickToPlace": "Click on canvas to place {{emoji}}",
+        "placementMode": "Click to place emoji: {{emoji}}",
+        "gridLabel": "Select an emoji",
+        "noEmojis": "No emojis available"
+      }
     },
     "memo": {
       "clickToSee": "Haz clic para ver la $t(common.memo) completa"
@@ -957,6 +993,25 @@
     "title": "Copia el enlace a continuación para compartir este {{entity}}",
     "share-this": "Compartir este {{entity}}",
     "share-this-on": "Compartir este {{entity}} en {{platform}}",
+    "guest-access": {
+      "label": "Acceso de invitado",
+      "toggle-label": "Permitir el acceso como invitado",
+      "toggle-description": "Permitir que cualquiera con el enlace de invitado vea y contribuya a este $t(common.whiteboard).",
+      "disabled-tooltip": "No tiene permiso para cambiar el acceso de invitados.",
+      "url-label": "URL de acceso invitado",
+      "copy-url": "Copiar enlace de invitado",
+      "warning-title": "Los invitados pueden editar este $t(common.whiteboard)",
+      "warning-description": "Cualquiera con el enlace invitado puede ver y contribuir. Elimine el acceso cuando haya terminado de colaborar.",
+      "visibility-warning": "Este $t(common.whiteboard) es visible para los usuarios invitados.",
+      "errors": {
+        "PERMISSION_DENIED": "No tiene permiso para cambiar el acceso de invitados.",
+        "NETWORK": "Comprueba su conexión e inténtalo de nuevo.",
+        "UNKNOWN": "No pudimos actualizar el acceso de invitados. Por favor, inténtalo de nuevo.",
+        "NOT_AUTHORIZED": "No está autorizado a cambiar el acceso de invitados.",
+        "SPACE_GUEST_DISABLED": "El acceso del invitado está deshabilitado para este $t(common.space).",
+        "WHITEBOARD_NOT_FOUND": "Este $t(common.whiteboard) no pudo ser encontrado. Actualiza y vuelve a intentarlo."
+      }
+    },
     "or": "o",
     "url": "URL",
     "warning": "Ten en cuenta que tu correo electrónico personal será visible para el usuario cuando le envíes un mensaje.",
@@ -1222,6 +1277,7 @@
     "shareSettings": {
       "description": "Según los $t(common.settings) del $t(common.space) en el que se encuentra este {{elementName}}, puedes editar con varios usuarios a la vez. Si no quieres que otros editen, cambia los $t(common.settings) a continuación.",
       "disabled": "Según los $t(common.settings) del $t(common.space) en el que se encuentra este {{elementName}}, la colaboración en tiempo real no está habilitada. Esto significa que solo un usuario puede editar a la vez.",
+      "guestAccessWarning": "Nota: Si haces público este $t(common.whiteboard), todos en el $t(common.space) podrán editar el $t(common.whiteboard).",
       "ownedBy": {
         "title": "Este {{elementName}} es propiedad de:"
       },
@@ -1302,6 +1358,7 @@
         "editState": "Editar detalles",
         "deleteState": "Eliminar",
         "addState": "Añadir fase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "El nombre de una fase no puede contener caracteres especiales.",
         "noRepeatedStates": "Ya existe una fase con el mismo nombre.",
         "createDialog": {
@@ -1330,6 +1387,18 @@
             "noDescription": "Esto solo reemplazará el $t(common.innovation-flow), manteniendo tus $t(common.posts) actuales como están.",
             "apply": "Aplicar nueva $t(common.template)"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected Template:",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default Template?",
+          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default template. Please try again.",
+          "removeFailed": "Failed to remove the default template. Please try again."
         }
       }
     },
@@ -1379,7 +1448,21 @@
         "list.outdent": "Disminuir sangría",
         "remove.remove": "Eliminar",
         "embed.video": "Insertar video u otro medio",
-        "horizontal.line": "Insertar línea horizontal"
+        "horizontal.line": "Insertar línea horizontal",
+        "table.insert": "Insertar tabla",
+        "table.operations": "Operaciones de tabla",
+        "table.deleteTable": "Eliminar tabla",
+        "table.deleteConfirm": "¿Está seguro que desea eliminar esta tabla?",
+        "table.addColumnBefore": "Añadir columna antes",
+        "table.addColumnAfter": "Añadir columna después",
+        "table.deleteColumn": "Eliminar columna",
+        "table.addRowBefore": "Añadir fila antes",
+        "table.addRowAfter": "Añadir fila después",
+        "table.deleteRow": "Eliminar fila",
+        "table.custom": "Personalizar tamaño",
+        "table.columns": "Columnas",
+        "table.rows": "Filas",
+        "table.gridSize": "{{columns}} $t(components.wysiwyg-editor.toolbar.table.columns) x {{rows}} $t(components.wysiwyg-editor.toolbar.table.rows)"
       },
       "image": {
         "dialogHeader": "Insertar imagen"
@@ -1413,7 +1496,6 @@
       "contact-support-sentence": "Si este problema persiste, por favor contacta al soporte.",
       "buttons": {
         "reload": "Recargar",
-        "take-me-home": "Llévame al inicio",
         "contact-support": "Contactar con soporte"
       }
     },
@@ -1422,6 +1504,13 @@
         "invalidUrl": "URL no válida",
         "invalidUrlOrigin": "Origen de URL no válido",
         "invalidUrlFormat": "Formato de URL no válido"
+      },
+      "redirectDialog": {
+        "title": "Te estamos redirigiendo...",
+        "message": "No tienes permiso para acceder a este artículo o ya no existe.<br/>Estás siendo redirigido a la página más cercana a la que puedes acceder.",
+        "countdown": "Redirigiendo en {{seconds}} segundos...",
+        "cancelCountdown": "[Click para cancelar]",
+        "goNow": "Vaya ahora"
       }
     },
     "search-cards": {
@@ -1445,7 +1534,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " en <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1514,9 +1604,6 @@
         "title": "Descartar $t(common.post)",
         "text": "¿Estás seguro de que quieres cerrar este $t(common.post)? Los cambios no guardados se perderán."
       }
-    },
-    "calloutEdit": {
-      "titleWithType": "Editar {{type}}"
     },
     "post-creation": {
       "title": "Envía tu respuesta a {{calloutDisplayName}}",
@@ -1666,7 +1753,7 @@
       "uploadFile": "Subir archivo",
       "file-size-error": "El tamaño del archivo supera el límite de {{limit}} MB",
       "file-upload-success": "Archivo subido correctamente",
-      "file-upload-error": "Error occurred while uploading the file"
+      "file-upload-error": "Ocurrió un error al subir el archivo"
     },
     "editSpaceForm": {
       "host": {
@@ -1696,6 +1783,15 @@
         "title": "NameID",
         "placeholder": "Identificador textual único, usado para rutas de URL. Nota: no se puede modificar después de la creación."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} resultado",
+      "resultsCount_other": "{{count}} resultados",
+      "showMoreTags_one": "Mostrar etiqueta {{count}} más",
+      "showMoreTags_other": "Mostrar etiquetas {{count}} más",
+      "showFewerTags": "Mostrar menos etiquetas",
+      "filterByTag": "Filtrar publicaciones con etiqueta: {{tag}}",
+      "clearFilter": "Eliminar filtros"
     },
     "visualSegment": {
       "title": "Visual",
@@ -2006,7 +2102,7 @@
           "description": "Revisa la solicitud en la $t(common.space) $t(common.settings)"
         },
         "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "subject": "{{triggeredByName}} rechazó tu invitación a {{contributorName}} para unirse a {{spaceName}}",
           "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
@@ -2070,33 +2166,51 @@
           "description": "¡Ahora eres parte de una comunidad que crece a través de la colaboración! 🤝 Haz clic para explorar la Guía de Inicio y comienza a participar en $t(common.spaces), donde cada idea nos ayuda a avanzar. ¿Preguntas? Envía un correo a support@alkem.io"
         },
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "subject": "{{triggeredByName}} rechazó tu solicitud para unirse a {{spaceName}}",
           "description": ""
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
-          "subject": "New {{type}} scheduled in {{spaceName}}",
-          "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+          "subject": "Nuevo {{type}} programado en {{spaceName}}",
+          "description": "{{triggeredByName}} programó un nuevo {{type}} en el calendario {{spaceName}}: {{eventTitle}}"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "New comment on {{type}}: {{eventTitle}}",
-          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
+          "subject": "Nuevo $t(common.comment) en {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} dejó un $t(common.comment) en la {{eventTitle}} en el calendario {{spaceName}}"
         }
       },
       "emptyInbox": "No hay $t(common.notifications) pendientes",
       "markAllAsRead": "Marcar todo como leído",
-      "unknownUser": "Unknown $t(common.user)",
-      "unknownOrganization": "Unknown $t(common.organization)",
+      "unknownUser": "Desconocido $t(common.user)",
+      "unknownOrganization": "Desconocido $t(common.organization)",
       "filters": {
-        "all": "All",
-        "messagesAndReplies": "Messages & Replies",
-        "space": "Space notifications",
-        "platform": "Platform notifications"
+        "all": "Todo",
+        "messagesAndReplies": "Mensajes y Respuestas",
+        "space": "Notificaciones de espacio",
+        "platform": "Notificaciones de plataforma"
       }
+    },
+    "userMessaging": {
+      "title": "Mensajes",
+      "noConversations": "Aún no hay conversaciones",
+      "noMessages": "No hay mensajes",
+      "selectConversation": "Selecciona una conversación para empezar a enviar mensajes",
+      "typeMessage": "Escribe un mensaje",
+      "newMessage": "Nuevo mensaje",
+      "selectUser": "A",
+      "noUsersFound": "No se encontraron usuarios",
+      "startTyping": "Empezar a escribir para buscar usuarios",
+      "searchUsers": "Buscar usuarios...",
+      "searchConversations": "Buscar...",
+      "createChat": "Crear chat"
     },
     "spaceWelcomeDialog": {
       "title": "🎉 ¡Tu $t(common.space) está listo!",
       "description": "Ahora, hazlo tuyo:<br>⚙ <b>Configúralo</b> – Personaliza tu estructura y $t(common.settings).<br>📝 <b>Añade contenido</b> - Crea $t(common.whiteboards), $t(common.posts) y más.<br>🤝 <b>Invita a colaboradores</b> – Encuentra las invitaciones en la $t(common.space) $t(common.settings).<br>📚 <b>¿Necesitas ayuda?</b> Los tutoriales están disponibles en tu $t(common.space) si elegiste incluirlos.<br/><br/>✨ ¿Quieres más funciones? Actualiza a <b>Plus o Premium</b> en cualquier momento: <contact>contáctanos</contact>.",
       "button": "Empezar"
+    },
+    "spaceCard": {
+      "ledBy": "Dirigido por:",
+      "noLead": "Todavía no hay $t(common.lead)"
     }
   },
   "navigation": {
@@ -2117,7 +2231,7 @@
     "feedback": "Comentarios",
     "support": "Soporte",
     "about": "Acerca de",
-    "copyright": "© 2025 Alkemio B.V."
+    "copyright": "© 2026 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} $t(common.spaces)",
@@ -2233,6 +2347,9 @@
           "authorization": {
             "description": "Aquí puedes ajustar la configuración de autorización de este/esta {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Aquí puedes crear y editar $t(common.templates) para este/esta {{entity}}.",
             "delete-confirmation": "¿Estás seguro/a de que quieres eliminar la $t(common.template) '{{template}}'?",
@@ -2290,7 +2407,7 @@
             "innovationPacks": "$t(common.innovation-packs)",
             "genericUsageNotice": "Has creado {{usage}} de los {{limit}} {{type}} disponibles en tu $t(common.account).",
             "spaceUsageNotice": "De los $t(common.spaces) disponibles en tu $t(common.account), has creado:\n{{freeUsage}} de {{freeLimit}} $t(common.spaces) Gratis\n{{plusUsage}} de {{plusLimit}} $t(common.spaces) Plus\n{{premiumUsage}} de {{premiumLimit}} $t(common.spaces) Premium",
-            "limitNotice": "Contacta con el equipo de Alkemio para aumentar los límites de tu $t(common.account).",
+            "limitNotice": "Para aumentar los límites de tu $t(common.account), rellena el formulario en la parte inferior de <contact>la página de contacto</contact>.",
             "notAvailable": "No disponible",
             "notAvailableNotice": "Contacta con el equipo de Alkemio para habilitar esta función en tu $t(common.account).",
             "noTemplates": "Este $t(common.innovationPack) aún no tiene ninguna $t(common.template)",
@@ -2333,6 +2450,11 @@
           "privacy": {
             "contributorRolesVisible": "Mostrar roles de contribuyente a todos los usuarios registrados"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
@@ -2419,9 +2541,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Cambiar $t(common.template) predeterminado",
                 "title": "Cambiar $t(common.subspace) $t(common.template) predeterminado",
-                "description": "Personaliza la $t(common.template) predeterminada para los $t(common.subspaces) recién creados.<br/><br/>A continuación, puedes elegir entre las $t(common.templates) recopiladas en la $t(common.space) $t(common.templateLibrary). Si deseas crear nuevas $t(common.templates) o explorar $t(common.templates) adicionales, <library>haz clic aquí</library> para acceder a esta biblioteca."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2450,7 +2573,7 @@
             "public": "<b>Público:</b> Este $t(common.space) y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son $t(common.members).",
             "private": "<b>Privado:</b> Este $t(common.space) es visible para todos en la plataforma, pero el contenido solo es visible para los $t(common.members). Ten en cuenta que tanto la información en el $t(common.profile) como el contexto son públicamente visibles.",
             "publicSubspace": "<b>Público:</b> Este $t(common.subspace) y todo su contenido son visibles para todos los que tienen acceso al $t(common.space) al que pertenece. Si el $t(common.space) en sí es público, este $t(common.subspace) y su contenido serán visibles para todos los usuarios, incluyendo aquellos fuera del $t(common.space).",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
+            "privateSubspace": "<b>Privado:</b> Este $t(common.subspace) es visible para todos los $t(common.members) del $t(common.space), pero sus contenidos están restringidos y sólo pueden ser accedidos por $t(common.members) del $t(common.subspace)."
           },
           "license-features": {
             "title": "Funcionalidades del $t(common.space)",
@@ -2475,6 +2598,7 @@
             "createBlocks": "<b>Crear $t(common.posts):</b> Permitir que los $t(common.members) creen $t(common.posts). Si desactivas esto, los $t(common.members) aún podrán contribuir a los $t(common.posts) existentes, pero no podrán crear nuevos $t(common.posts).",
             "createSubspaces": "<b>Crear $t(common.subspaces):</b> Permitir que los $t(common.members) creen $t(common.subspaces) en este $t(common.space). Si desactivas esto, aún podrás crear $t(common.subspaces) tú mismo y añadir a otras personas como $t(common.admin) dentro del $t(common.subspace).",
             "videoCall": "<b>Videollamada:</b> Mostrar el botón de videollamada en el menú de pestañas. Todos los miembros de este Espacio pueden usar este botón para iniciar una videoconferencia de Jitsi. Lee más sobre Jitsi <jitsiInfoLink>aquí</jitsiInfoLink>.",
+            "guestContributions": "<b>Contribuciones de Invitado</b>: Permitir que $t(common.whiteboards) en este $t(common.space) sean compartidos con usuarios invitados (no miembros) para contribuciones colaborativas.",
             "eventsFromSubspaces": "<b>Eventos de $t(common.subspaces):</b> Permitir que los eventos de los $t(common.subspaces) también sean visibles en el calendario de este $t(common.space).",
             "inheritRights": "Permitir que los $t(common.members) de la $t(common.community) padre contribuyan sin necesidad de unirse primero.",
             "supportAsAdmin": "<b>Soporte de Alkemio:</b> Permitir que el equipo de Soporte de Alkemio actúe como $t(common.admin) en este $t(common.space)."
@@ -2489,7 +2613,8 @@
           "account": {
             "vc-section-title": "$t(common.virtualContributors) creados desde este $t(common.space)",
             "vc-create-button": "Crear $t(common.virtualContributor)"
-          }
+          },
+          "updateFailed": "Se ha producido un error al actualizar el $t(common.settings). Inténtalo de nuevo más tarde."
         }
       },
       "users": {
@@ -2532,7 +2657,7 @@
       },
       "innovationPack": {
         "notifications": {
-          "packRemoved": "$t(common.innovationPack) removed successfully."
+          "packRemoved": "$t(common.innovationPack) eliminado correctamente."
         }
       },
       "innovationHub": {
@@ -2543,7 +2668,7 @@
           }
         },
         "notifications": {
-          "hubRemoved": "$t(common.innovation-hub) removed successfully."
+          "hubRemoved": "$t(common.innovation-hub) eliminado correctamente."
         }
       }
     },
@@ -2582,8 +2707,8 @@
         "description1": "Resolución: {{width}} de ancho x {{height}} de alto (píxeles)"
       },
       "WHITEBOARD_PREVIEW": {
-        "title": "Whiteboard Preview",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+        "title": "Vista previa de pizarra",
+        "description1": "Resolución: {{width}} de ancho x {{height}} de alto (píxeles)"
       },
       "form": {
         "altText": {
@@ -2760,6 +2885,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "¡Bienvenido a Alkemio!",
@@ -2998,6 +3129,7 @@
         "noMembership": "Debes ser $t(common.member) del {{spaceLevel}} en el que está este $t(common.whiteboard) para poder editar. Haz clic aquí para <spacelink>unirte/solicitar</spacelink>",
         "unauthenticated": "Debes iniciar sesión y ser $t(common.member) del {{spaceLevel}} en el que está este $t(common.whiteboard) para poder editar. Haz clic aquí para <signinlink>iniciar sesión</signinlink>"
       },
+      "guestContributionsWarning": "Este $t(common.whiteboard) es visible para los usuarios invitados",
       "readonlyDialog": {
         "title": "Modo solo lectura",
         "reason": {
@@ -3009,34 +3141,74 @@
       },
       "restartCollaboration": "Continuar editando",
       "previewSettings": {
-        "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
-        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "title": "Vista previa de configuración",
+        "subtitle": "Elige cómo aparece tu vista previa de $t(common.whiteboard) en publicaciones y $t(common.spaces).",
+        "errorGeneratingPreview": "Error al generar vista previa para esta $t(common.whiteboard).",
         "modes": {
           "AUTO": {
-            "title": "Auto Preview",
-            "description": "We'll automatically generate the best preview from your whiteboard content."
+            "title": "Previsualización automática",
+            "description": "Generaremos automáticamente la mejor vista previa a partir de tu contenido $t(common.whiteboard)."
           },
           "CUSTOM": {
-            "title": "Manual Selection",
-            "description": "Choose exactly which part of your whiteboard to show as a preview."
+            "title": "Selección manual",
+            "description": "Elige exactamente qué parte de tu $t(common.whiteboard) mostrar como vista previa."
           },
           "FIXED": {
-            "title": "Fixed Selection",
-            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+            "title": "Selección fija",
+            "description": "Toma una captura de pantalla de tu Tablero $t(common.whiteboard) para usarla como vista previa. Esta captura de pantalla no se actualizará a medida que actualices el Tablero."
           }
         },
         "cropDialog": {
-          "previewArea": "Crop preview area",
+          "previewArea": "Recortar área previa",
           "reset": "$t(buttons.reset)",
           "cancel": "$t(buttons.cancel)",
-          "confirm": "Confirm Selection"
+          "confirm": "Confirmar Selección"
         }
       },
       "preview": {
-        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
-        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
-        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+        "errorGeneratingPreview": "Error al generar vista previa para esta $t(common.whiteboard).",
+        "ariaLabel": "Vista previa del $t(common.whiteboard). Haga clic para abrir el $t(common.whiteboard).",
+        "ariaLabelDisabled": "Vista previa del $t(common.whiteboard). Este $t(common.whiteboard) no se puede abrir."
+      }
+    },
+    "publicWhiteboard": {
+      "title": "$t(common.Whiteboard)",
+      "fallbackTitle": "Whiteboard"
+    },
+    "public": {
+      "whiteboard": {
+        "join": {
+          "welcome": "¡Bienvenido a Alkemio!",
+          "title": "Unirse a whiteboard",
+          "description": "Elige un apodo para unirte a este $t(common.whiteboard) como invitado",
+          "guestNameLabel": "Nombre del huésped",
+          "placeholder": "Introduzca su apodo",
+          "joinButton": "Unirse como invitado",
+          "joiningButton": "Uniéndose...",
+          "signInButton": "Iniciar sesión en Alkemio"
+        },
+        "guestSessionNotification": {
+          "title": "Has abandonado tu $t(common.whiteboard)",
+          "description": "Tu sesión de invitado sigue activa. Puedes volver a tu $t(common.whiteboard), o explorar lo que Alkemio tiene para ofrecer.",
+          "backButton": "Volver a $t(common.whiteboard)",
+          "websiteButton": "Ir a nuestro sitio web",
+          "contributeMoreTitle": "¿Quieres contribuir más?",
+          "contributeMoreDescription": "Regístrese en una cuenta Alkemio a la derecha para colaborar con equipos y acceder a herramientas avanzadas."
+        },
+        "error": {
+          "404": {
+            "title": "$t(common.Whiteboard) No encontrado",
+            "message": "El enlace $t(common.whiteboard) puede ser incorrecto o el $t(common.whiteboard) puede haber sido eliminado."
+          },
+          "403": {
+            "title": "Acceso denegado",
+            "message": "Este $t(common.whiteboard) no está disponible para el acceso de invitados. Póngase en contacto con el propietario de $t(common.whiteboard)."
+          },
+          "500": {
+            "title": "No se puede añadir $t(common.Whiteboard)",
+            "message": "Por favor, inténtalo de nuevo más tarde o comprueba tu conexión a Internet."
+          }
+        }
       }
     },
     "memo": {
@@ -3055,7 +3227,7 @@
           "multiUserNotAllowed": "No puedes editar este $t(common.memo) porque este $t(common.space) solo permite un editor de $t(common.memo) a la vez.",
           "roomCapacityReached": "No puedes editar este $t(common.memo) porque este $t(common.space) permite múltiples editores simultáneamente, pero se ha alcanzado el máximo.",
           "generic": "No puedes editar este $t(common.memo) por alguna de las siguientes razones:\n\n- No eres $t(common.member) del $t(common.space)\n- Este $t(common.space) solo permite un editor de $t(common.memo) a la vez\n- Este $t(common.space) permite más editores, pero se ha alcanzado el máximo.",
-          "notAuthenticated": "You have to be signed in to edit this $t(common.memo). Click here to <signinlink>sign in</signinlink>"
+          "notAuthenticated": "Debes iniciar sesión para editar esta $t(common.memo). Haz clic aquí para <signinlink>iniciar sesión</signinlink>"
         }
       }
     },
@@ -3151,13 +3323,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "Abandonar $t(common.space) {{space}}",
-            "text": "¿Estás seguro de que quieres abandonar <b>{{space}}</b>? <br /><br /> Ya no recibirás actualizaciones ni tendrás acceso a los recursos compartidos de este $t(common.space) o sus $t(common.subspaces). Si este $t(common.space) es público, puedes volver a unirte en cualquier momento; si es privado, necesitarás una invitación para volver a unirte. <br /><br />Ten en cuenta que si eres $t(common.member) de un $t(common.subspace) dentro de este $t(common.space), también serás eliminado automáticamente de allí."
+            "text": "¿Estás seguro de que quieres abandonar <b>{{space}}</b>? <br /><br />Ya no recibirás actualizaciones ni tendrás acceso a los recursos compartidos de este $t(common.space) ni de sus $t(common.subspaces). Si este $t(common.space) es público, puedes volver a unirte en cualquier momento, o si es privado, necesitarás una invitación para volver a unirte. <br /><br />Ten en cuenta que, si eres $t(common.member) de un $t(common.subspace) dentro de este $t(common.space), también se te eliminará automáticamente de allí."
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "Abandonar $t(common.subspace) {{space}}",
-            "text": "¿Estás seguro de que quieres abandonar <b>{{space}}</b>? <br /><br />Ya no recibirás actualizaciones ni tendrás acceso a los recursos compartidos de este $t(common.subspace) o sus $t(common.subspaces). Si este $t(common.subspace) es público, puedes volver a unirte en cualquier momento; si es privado, necesitarás una invitación para volver a unirte. <br /><br />Ten en cuenta que si eres $t(common.member) de un $t(common.subspace) dentro de este $t(common.subspace), también serás eliminado automáticamente de allí."
+            "text": "¿Estás seguro de que quieres abandonar <b>{{space}}</b>? <br /><br />Ya no recibirás actualizaciones ni tendrás acceso a los recursos compartidos de este $t(common.subspace) ni de sus $t(common.subspaces). Si este $t(common.subspace) es público, puedes volver a unirte en cualquier momento, o si es privado, necesitarás una invitación para volver a unirte. <br /><br />Ten en cuenta que, si eres $t(common.member) de un $t(common.subspace) dentro de este $t(common.subspace), también se te eliminará automáticamente de allí."
           }
         }
       },
@@ -3249,34 +3421,35 @@
           "saveBtn": "Guardar indicación"
         },
         "promptGraph": {
-          "saveBtn": "Save Prompt Graph",
-          "title": "Prompt Graph",
-          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
-          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
-          "stepsTitle": "Steps",
-          "systemNodeTooltip": "System Node - not editable",
-          "promptFieldTitle": "Prompt",
-          "statePropertiesTitle": "State Properties",
-          "noStateProperties": "No state properties",
-          "addButton": "Add",
-          "editBtn": "Edit Prompt Graph",
-          "advancedSettingsButton": "Prompt graph advanced mode",
+          "editingEnabledLabel": "Permitir la edición del gráfico de la línea de comandos (configuración de toda la plataforma)",
+          "saveBtn": "Guardar gráfico de promoción",
+          "title": "Guardar gráfico de promoción",
+          "infoText": "Define el comportamiento del $t(common.virtualContributor) mediante la creación de un gráfico indicativo. El gráfico consiste en nodos que representan diferentes acciones o condiciones, y bordes que definen el flujo entre estos nodos. Puede personalizar el gráfico de avisos para que se adapte a su caso y requerimientos de uso específicos.",
+          "warning": "Aviso: El modo Avanzado está diseñado sólo para usuarios experimentados. Configuraciones incorrectas o complejas pueden afectar negativamente al rendimiento del sistema y pueden romper la funcionalidad del colaborador virtual.",
+          "stepsTitle": "Pasos",
+          "systemNodeTooltip": "Nodo del sistema - no editable",
+          "promptFieldTitle": "Indicación",
+          "statePropertiesTitle": "Propiedades de Estado",
+          "noStateProperties": "No hay propiedades de estado",
+          "addButton": "Añadir",
+          "editBtn": "Guardar gráfico de promoción",
+          "advancedSettingsButton": "Modo avanzado del gráfico de avisos",
           "propertyTable": {
-            "title": "Output Properties",
+            "title": "Propiedades de salida",
             "columns": {
-              "name": "Name",
-              "type": "Type",
-              "optional": "Optional",
-              "description": "Description",
-              "actions": "Actions"
+              "name": "Nombre",
+              "type": "Tipo",
+              "optional": "Opcional",
+              "description": "Descripción",
+              "actions": "Acciones"
             },
-            "yes": "Yes",
+            "yes": "Sí",
             "no": "No",
-            "notAvailable": "N/A",
-            "addProperty": "Add Property",
+            "notAvailable": "N/D",
+            "addProperty": "Agregar propiedad",
             "typeOptions": {
-              "string": "string",
-              "number": "number",
+              "string": "cadena",
+              "number": "número",
               "boolean": "boolean"
             }
           }
@@ -3318,6 +3491,11 @@
       "subheader": "La página a la que intentas acceder solo está disponible para usuarios registrados.",
       "subheader2": "Por favor, inicia sesión para continuar. ¿No tienes una $t(common.account)? Regístrate gratis."
     },
+    "unauthorized": {
+      "header": "Acceso restringido",
+      "subheader": "La página a la que intentas acceder no está disponible para ti.",
+      "subheader2": "Por favor, confirme que tiene permisos para acceder a esta url."
+    },
     "userNotificationsSettings": {
       "general": {
         "title": "General",
@@ -3332,7 +3510,7 @@
           "collaborationCalloutContributionCreated": "Recibir una $t(common.notification) cuando se cree una nueva contribución ($t(common.whiteboard), $t(common.post), enlace, $t(common.memo), etc.) en una $t(common.community) de la que soy $t(common.member)",
           "collaborationCalloutComment": "Recibir una $t(common.notification) cuando se haga un $t(common.comment) en un $t(common.callout) en una $t(common.community) de la que soy $t(common.member)",
           "collaborationCalloutPostContributionComment": "Recibir una $t(common.notification) cuando se añada un nuevo $t(common.comment) a una contribución de $t(common.callout) en una $t(common.community) de la que soy $t(common.member)",
-          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
+          "communityCalendarEvents": "Recibir $t(common.notifications) de calendario de una $t(common.community) de la que soy $t(common.member)"
         }
       },
       "spaceAdmin": {
@@ -3452,8 +3630,8 @@
       "recovery-flow-expired": "Este enlace de restablecimiento de contraseña ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente",
       "verification-flow-continue": "Continuar",
       "login-flow-account-exists": "Este correo ya está asociado a una $t(common.account). Si te registraste previamente a través de LinkedIn, GitHub o Microsoft, usa ese método de inicio de sesión. De lo contrario, restablece tu contraseña",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
-      "claim-missing": "No has verificado tu identidad de Vidua. Verifica tu identidad e inténtalo de nuevo o prueba otro método de registro",
+      "invalid-credentials": "La dirección de correo electrónico o la contraseña que ingresaste no es válida. Por favor, comprueba tus credenciales e inténtalo de nuevo. ¿Estás intentando registrarte en su lugar? Puedes hacerlo haciendo clic en el enlace de arriba.",
+      "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Elige una contraseña para tu $t(common.account)"
     },
     "fields": {
@@ -3484,7 +3662,7 @@
       "BAD_USER_INPUT": "Entrada de usuario incorrecta: {{message}}",
       "NOT_SUPPORTED": "No soportado: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
-      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
+      "MESSAGING_NOT_ENABLED": "Este usuario ha desactivado la mensajería directa. No puede enviarle un mensaje en este momento."
     }
   },
   "dashboard-updates-section": {
@@ -3521,6 +3699,10 @@
     "closeConfirm": {
       "title": "Descartar $t(common.post)",
       "description": "¿Estás seguro de que quieres cerrar este $t(common.post)? Los cambios no guardados se perderán"
+    },
+    "cancelConfirm": {
+      "title": "Descartar $t(common.post)",
+      "description": "¿Está seguro de que desea cancelar este $t(common.post)? Los cambios no guardados se perderán."
     }
   },
   "innovation-edit": {
@@ -3601,7 +3783,7 @@
         "text": "Avatar de {{displayName}}: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "Avatar de {{displayName}} $t(common.innovationPack): {{altText}}"
       }
     }
   },
@@ -3626,7 +3808,7 @@
       "content": "Estás a punto de iniciar una videollamada usando Jitsi, un servicio seguro de videoconferencia de terceros. La llamada se abrirá en una nueva pestaña del navegador, fuera del entorno de Alkemio. Otros pueden unirse a través del mismo botón o usando la URL compartida.<br/><br/>Más información sobre Jitsi <jitsiLink>aquí</jitsiLink>, incluyendo cómo gestionar la configuración de acceso y privacidad."
     },
     "error": {
-      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
+      "emptyUrl": "No se puede generar la URL de videollamada. Por favor, actualiza la página e inténtalo de nuevo."
     }
   },
   "createSpace": {

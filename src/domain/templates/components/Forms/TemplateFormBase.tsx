@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -6,6 +6,7 @@ import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValid
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -75,6 +76,9 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
 }: TemplateFormBaseProps<T>) => {
   const { t } = useTranslation();
 
+  // Create FormikEffect instance for this generic type
+  const FormikEffect = FormikEffectFactory<T>();
+
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
       displayName: displayNameValidator({ required: true }),
@@ -107,6 +111,7 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
 
         return (
           <GridContainer disablePadding>
+            <FormikEffect onDirtyChange={actions.onDirtyChange} />
             <PageContentColumn columns={3}>
               <PageContentBlockSeamless disablePadding>
                 <BlockSectionTitleWithIcon

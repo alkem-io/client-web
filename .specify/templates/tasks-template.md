@@ -16,13 +16,6 @@ description: 'Task list template for feature implementation'
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
-- Tag Constitution coverage where relevant:
-  - `Domain` for updates in `src/domain`/`src/core` façades or `src/main` shells wiring them.
-  - `GraphQL` when queries, fragments, generated hooks, or `pnpm run codegen` are involved.
-  - `React19` for new components adopting Suspense/transitions/Actions or documenting legacy
-    concurrency risks.
-  - `Quality` for accessibility checks, performance safeguards, required tests, or observability
-    instrumentation.
 
 ## Path Conventions
 

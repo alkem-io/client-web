@@ -2,8 +2,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Box, Typography } from '@mui/material';
 import { Link } from '@mui/material';
-import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
+import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 
 export const AuthFormHeader = ({
   title,
@@ -15,6 +17,10 @@ export const AuthFormHeader = ({
   hideMessage?: boolean;
 }) => {
   const { t } = useTranslation();
+  const returnUrl = useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined;
+  const loginUrl = buildLoginUrl(returnUrl);
+  const signUpUrl = buildSignUpUrl(returnUrl);
+
   return (
     <Gutters row justifyContent="space-between" sx={{ paddingBottom: 0 }}>
       <Box>
@@ -30,7 +36,7 @@ export const AuthFormHeader = ({
           </Typography>
           <Link
             component={RouterLink}
-            to={haveAccountMessage ? _AUTH_LOGIN_PATH : AUTH_SIGN_UP_PATH}
+            to={haveAccountMessage ? loginUrl : signUpUrl}
             sx={{
               '&:hover': { color: theme => theme.palette.highlight.dark },
               color: theme => theme.palette.highlight.dark,

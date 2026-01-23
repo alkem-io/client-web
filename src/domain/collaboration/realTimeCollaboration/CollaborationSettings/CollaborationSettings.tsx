@@ -1,7 +1,7 @@
 import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Alert, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import GridItem from '@/core/ui/grid/GridItem';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import { Location } from '@/core/ui/location/getLocationString';
@@ -28,11 +28,12 @@ type CollaborationSettingsProps = {
       })
     | undefined;
   elementType: 'whiteboard' | 'memo';
+  guestAccessEnabled?: boolean;
 };
 
 const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
 
-const CollaborationSettings = ({ element, elementType }: CollaborationSettingsProps) => {
+const CollaborationSettings = ({ element, elementType, guestAccessEnabled }: CollaborationSettingsProps) => {
   const { t } = useTranslation();
   const { contentUpdatePolicy, loading, updating, onChange } = useContentUpdatePolicyManager({
     elementId: element?.id,
@@ -72,6 +73,11 @@ const CollaborationSettings = ({ element, elementType }: CollaborationSettingsPr
             <BlockSectionTitle id="rt-collaboration-share-settings">
               {t('components.shareSettings.editableBy.title', { elementName })}
             </BlockSectionTitle>
+            {guestAccessEnabled && (
+              <Alert severity="warning" sx={{ marginBottom: 1 }}>
+                {t('components.shareSettings.guestAccessWarning')}
+              </Alert>
+            )}
             <FormControl disabled={loading || updating}>
               <RadioGroup
                 aria-labelledby="rt-collaboration-share-settings"

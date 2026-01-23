@@ -12,10 +12,14 @@ export type MarkdownInputToolbarButtonProps = IconButtonProps & { tooltip: strin
 const MarkdownInputToolbarButton = ({
   ref,
   tooltip,
+  hidden,
   ...props
 }: MarkdownInputToolbarButtonProps & {
   ref?: React.Ref<HTMLButtonElement>;
 }) => {
+  if (hidden) {
+    return null;
+  }
   const curedProps = { ...props };
   const removeProps = ['indicator', 'fullWidth', 'selectionFollowsFocus', 'textColor'];
   removeProps.forEach(prop => prop in curedProps && delete curedProps[prop]);

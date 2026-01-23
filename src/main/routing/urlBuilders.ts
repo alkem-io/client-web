@@ -19,6 +19,10 @@ export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
+export const buildNotificationSettingsUrl = (entityUrl: string) => {
+  return `${entityUrl}/settings/notifications`;
+};
+
 export const buildSettingsCommunityUrl = (entityUrl: string) => {
   return `${buildSettingsUrl(entityUrl)}/community`;
 };
@@ -107,6 +111,10 @@ export const buildInnovationHubUrl = (subdomain: string): string => {
 
 export const buildUserAccountUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/account` : '';
+};
+
+export const buildMembershipSettingsUrl = (profileUrl?: string) => {
+  return profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
 };
 
 export const buildWelcomeSpaceUrl = () => '/welcome-space';

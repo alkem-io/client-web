@@ -10,6 +10,7 @@ import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/ma
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 interface CreateContributionButtonMemoProps extends CalloutContributionCreateButtonProps {}
 
@@ -23,7 +24,7 @@ const CreateContributionButtonMemo = ({
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [createMemo] = useCreateMemoOnCalloutMutation();
-  const [memoName, setMemoName] = useState(callout.contributionDefaults?.defaultDisplayName ?? t('common.memo'));
+  const [memoName, setMemoName] = useState(callout.contributionDefaults?.defaultDisplayName ?? t('common.Memo'));
 
   const [handleCreateMemo, creatingMemo] = useLoadingState(async () => {
     const memoNameMandatory = ensurePresence(memoName);
@@ -52,11 +53,14 @@ const CreateContributionButtonMemo = ({
         },
       });
     }
+    setDialogOpen(false);
   });
 
   return (
     <>
-      {canCreateContribution ? <CreateContributionButton onClick={() => setDialogOpen(true)} /> : undefined}
+      {canCreateContribution ? (
+        <CreateContributionButton onClick={() => setDialogOpen(true)} contributionType={CalloutContributionType.Memo} />
+      ) : undefined}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
         <DialogHeader
           onClose={() => setDialogOpen(false)}

@@ -10,8 +10,8 @@ import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hook
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import TemplateActionButton from '../Buttons/TemplateActionButton';
 
 interface WhiteboardTemplatesSelectorProps {
   name: string;
@@ -50,11 +50,7 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
           </Button>
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
-            actionButton={() => (
-              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-                {t('buttons.use')}
-              </Button>
-            )}
+            actionButton={() => <TemplateActionButton />}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}

@@ -1,36 +1,50 @@
 query CalloutContributions(
-  $calloutId: UUID!,
-  $includeLink: Boolean! = false,
-  $includeWhiteboard: Boolean! = false,
-  $includeMemo: Boolean! = false,
-  $includePost: Boolean! = false,
-  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST],
-  $limit: Int,
+  $calloutId: UUID!
+  $includeLink: Boolean! = false
+  $includeWhiteboard: Boolean! = false
+  $includeMemo: Boolean! = false
+  $includePost: Boolean! = false
+  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST]
+  $limit: Int
 ) {
   lookup {
     callout(ID: $calloutId) {
       id
-      contributions(
-        filter: {
-          types: $filter
-        },
-        limit: $limit
-      ) {
+      contributions(filter: { types: $filter }, limit: $limit) {
         id
         sortOrder
         link @include(if: $includeLink) {
           ...LinkDetailsWithAuthorization
         }
-        whiteboard @include(if: $includeWhiteboard)  {
+        whiteboard @include(if: $includeWhiteboard) {
           ...CalloutContributionsWhiteboardCard
         }
-        memo @include(if: $includeMemo)  {
+        memo @include(if: $includeMemo) {
           ...CalloutContributionsMemoCard
         }
-        post @include(if: $includePost)  {
+        post @include(if: $includePost) {
           ...CalloutContributionsPostCard
         }
       }
+      contributionsCount {
+        link @include(if: $includeLink)
+        whiteboard @include(if: $includeWhiteboard)
+        memo @include(if: $includeMemo)
+        post @include(if: $includePost)
+      }
+    }
+  }
+}
+query CalloutContributionsCount(
+  $calloutId: UUID!
+  $includeLink: Boolean! = false
+  $includeWhiteboard: Boolean! = false
+  $includeMemo: Boolean! = false
+  $includePost: Boolean! = false
+) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
       contributionsCount {
         link @include(if: $includeLink)
         whiteboard @include(if: $includeWhiteboard)
@@ -51,13 +65,13 @@ fragment CalloutContributionsWhiteboardCard on Whiteboard {
       ...VisualModel
     }
   }
+  authorization {
+    id
+    myPrivileges
+  }
   createdDate
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...ContributionAuthor
   }
 }
 
@@ -71,11 +85,7 @@ fragment CalloutContributionsMemoCard on Memo {
   markdown
   createdDate
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...ContributionAuthor
   }
 }
 
@@ -92,11 +102,7 @@ fragment CalloutContributionsPostCard on Post {
   }
   createdDate
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...ContributionAuthor
   }
   authorization {
     id
@@ -108,3 +114,13 @@ fragment CalloutContributionsPostCard on Post {
   }
 }
 
+fragment ContributionAuthor on User {
+  id
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+  }
+}

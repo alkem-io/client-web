@@ -1,8 +1,9 @@
+import { ReactNode } from 'react';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import SpaceCardBase, { SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
-import SpaceLeads, { Lead, LeadOrganization } from './components/SpaceLeads';
+import SpaceLeads, { Lead, LeadOrganization, LeadType } from './components/SpaceLeads';
 import SpaceParentInfo from './components/SpaceParentInfo';
 import { ParentInfo } from './utils/useSubspaceCardData';
 import StackedAvatar from './components/StackedAvatar';
@@ -26,6 +27,8 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   leadOrganizations?: LeadOrganization[];
   showLeads?: boolean;
   compact?: boolean;
+  iconOverlay?: ReactNode;
+  onContactLead?: (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => void;
 }
 
 const SpaceCard = ({
@@ -41,13 +44,15 @@ const SpaceCard = ({
   showLeads = false,
   compact = false,
   tags,
+  iconOverlay,
+  onContactLead,
   ...props
 }: SubspaceCardProps) => {
   const { t } = useTranslation();
   const isSubspace = level !== SpaceLevel.L0;
 
-  // Show avatarUris as visual in BadgeCardView (next to displayName) if provided
-  const hasAvatarUris = Boolean(avatarUris && avatarUris.length > 0);
+  // Show stacked avatars only for subspaces (L1, L2), not for L0 spaces
+  const hasAvatarUris = Boolean(isSubspace && avatarUris && avatarUris.length > 0);
   const visualContent = hasAvatarUris ? <StackedAvatar avatarUris={avatarUris!} /> : undefined;
 
   // Show leads at the bottom of the card if authenticated (and not in compact mode)
@@ -66,6 +71,7 @@ const SpaceCard = ({
         locked={isPrivate}
         visual={visualContent}
         bannerOverlay={tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact /> : undefined}
+        iconOverlay={iconOverlay}
         sx={{
           position: 'relative',
           height: '100%',
@@ -128,7 +134,12 @@ const SpaceCard = ({
             {hasLeads ? t('components.spaceCard.ledBy') : t('components.spaceCard.noLead')}
           </Caption>
           {hasLeads ? (
-            <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
+            <SpaceLeads
+              leadUsers={leadUsers}
+              leadOrganizations={leadOrganizations}
+              showLeads={showLeads}
+              onContactLead={onContactLead}
+            />
           ) : (
             <SpaceLeads showLeads={showLeads} />
           )}

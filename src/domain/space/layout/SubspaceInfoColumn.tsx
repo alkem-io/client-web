@@ -50,7 +50,7 @@ export enum MenuState {
 
 export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
   const { t } = useTranslation();
-  const { isSmallScreen, isMediumLargeScreen } = useScreenSize();
+  const { isSmallScreen } = useScreenSize();
   const { spaceId, spaceLevel } = useUrlResolver();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
@@ -93,14 +93,13 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
-  const areAllIconsVisible =
-    isVideoCallEnabled &&
-    subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) &&
-    !isCollapsed;
+  const canEdit = subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
   return (
     <InfoColumn collapsed={isCollapsed}>
-      {!isCollapsed && <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>}
+      {!isCollapsed && (
+        <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} canEdit={canEdit} />}</WelcomeBlock>
+      )}
       {!isCollapsed && (
         <FullWidthButton
           startIcon={<KeyboardTab />}
@@ -119,32 +118,35 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
         row={!isCollapsed}
         sx={{
           padding: isCollapsed ? gutters(0.5) : 0,
-          justifyContent: 'space-between',
-          columnGap: 0.1,
+          justifyContent: 'flex-start',
+          columnGap: 0.2,
           backgroundColor: isCollapsed ? undefined : 'transparent',
           border: isCollapsed ? undefined : 'transparent',
-          overflow: isCollapsed ? undefined : 'visible',
-          flexWrap: isMediumLargeScreen ? 'nowrap' : 'wrap',
-          rowGap: gutters(0.2),
-          ...(areAllIconsVisible && {
+          overflow: 'visible',
+          flexWrap: 'nowrap',
+          width: '100%',
+          ...(!isCollapsed && {
             '& > *': {
-              flex: '1 1 auto',
+              flex: '1 1 0',
               minWidth: 0,
+              maxWidth: '100%',
             },
           }),
         }}
       >
-        {isVideoCallEnabled && <DialogActionButton dialog={SubspaceDialog.VideoCall} />}
-        <DialogActionButton dialog={SubspaceDialog.Contributors} />
-        <DialogActionButton dialog={SubspaceDialog.Activity} />
-        <DialogActionButton dialog={SubspaceDialog.Timeline} />
-        {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
-          <DialogActionButton dialog={SubspaceDialog.ManageFlow} />
+        {!isCollapsed && (
+          <>
+            {isVideoCallEnabled && <DialogActionButton dialog={SubspaceDialog.VideoCall} />}
+            <DialogActionButton dialog={SubspaceDialog.Contributors} />
+            <DialogActionButton dialog={SubspaceDialog.Activity} />
+            <DialogActionButton dialog={SubspaceDialog.Timeline} />
+            {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
+              <DialogActionButton dialog={SubspaceDialog.ManageFlow} />
+            )}
+            {canEdit && <DialogActionButton dialog={SubspaceDialog.Settings} />}
+            <SubmenuActionButton dialogs={[SubspaceDialog.Index, SubspaceDialog.Subspaces, SubspaceDialog.Share]} />
+          </>
         )}
-        {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
-          <DialogActionButton dialog={SubspaceDialog.Settings} />
-        )}
-        <SubmenuActionButton dialogs={[SubspaceDialog.Index, SubspaceDialog.Subspaces, SubspaceDialog.Share]} />
         {isCollapsed && (
           <ButtonWithTooltip
             tooltip={t('buttons.expand')}

@@ -12,6 +12,7 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
       }
       whiteboard @include(if: $includeWhiteboard)  {
         id
+        guestContributionsAllowed
         profile {
           id
           url
@@ -22,11 +23,7 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
         }
         createdDate
         createdBy {
-          id
-          profile {
-            id
-            displayName
-          }
+          ...ContributionAuthor
         }
       }
       memo @include(if: $includeMemo)  {
@@ -39,21 +36,13 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
         markdown
         createdDate
         createdBy {
-          id
-          profile {
-            id
-            displayName
-          }
+          ...ContributionAuthor
         }
       }
       post @include(if: $includePost)  {
         id
         createdBy {
-          id
-          profile {
-            id
-            displayName
-          }
+          ...ContributionAuthor
         }
         createdDate
         comments {

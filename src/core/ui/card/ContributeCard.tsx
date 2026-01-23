@@ -13,6 +13,7 @@ export interface ContributeCardProps {
   // if you use onClick, the children of this component should not be clickable elements! a11y 4.1.2
   onClick?: MouseEventHandler;
   highlighted?: boolean;
+  isSelected?: boolean;
   sx?: SxProps<Theme>;
   columns?: number;
   to?: string;

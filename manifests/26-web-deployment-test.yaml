@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: alkemio-web
-          image: alkemio.azurecr.io/alkemio-web:latest
+          image: rg.nl-ams.scw.cloud/alkemio/alkemio-web:latest
           envFrom:
             - secretRef:
                 name: alkemio-secrets
