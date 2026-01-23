@@ -48,7 +48,7 @@ const UserMessagingDialog = () => {
 
   // Get the selected conversation for display
   const selectedConversation = selectedConversationId
-    ? conversations.find(c => c.id === selectedConversationId) ?? null
+    ? (conversations.find(c => c.id === selectedConversationId) ?? null)
     : null;
 
   const handleSelectConversation = (conversationId: string) => {
@@ -96,6 +96,14 @@ const UserMessagingDialog = () => {
           fullScreen
           onClose={handleClose}
           aria-labelledby={t('components.userMessaging.title' as const)}
+          sx={{
+            '.MuiDialog-container': {
+              alignItems: 'stretch',
+            },
+            '.MuiDialog-paper': {
+              height: '100vh',
+            },
+          }}
         >
           {/* Close button */}
           <IconButton
@@ -110,7 +118,9 @@ const UserMessagingDialog = () => {
           >
             <CloseIcon />
           </IconButton>
-          <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <DialogContent
+            sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%' }}
+          >
             {selectedConversationId ? (
               <UserMessagingConversationView
                 conversation={selectedConversation}
@@ -145,8 +155,18 @@ const UserMessagingDialog = () => {
       <DialogWithGrid
         open={isOpen}
         columns={8}
+        fullHeight
+        maxWidth={false}
         onClose={handleClose}
         aria-labelledby={t('components.userMessaging.title' as const)}
+        sx={{
+          '.MuiDialog-container': {
+            alignItems: 'stretch',
+          },
+          '.MuiDialog-paper': {
+            height: '100%',
+          },
+        }}
       >
         {/* Close button */}
         <IconButton
@@ -161,12 +181,13 @@ const UserMessagingDialog = () => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent sx={{ padding: 0, display: 'flex', minHeight: 500 }}>
+        <DialogContent sx={{ padding: 0, display: 'flex', height: '100%' }}>
           <PageContentBlockSeamless
             disablePadding
             columns={3}
             sx={{
               borderRight: theme => `1px solid ${theme.palette.divider}`,
+              height: '100%',
             }}
           >
             <UserMessagingChatList
@@ -177,7 +198,7 @@ const UserMessagingDialog = () => {
               onNewMessage={handleOpenNewMessage}
             />
           </PageContentBlockSeamless>
-          <PageContentBlockSeamless disablePadding disableGap columns={5} sx={{ flexGrow: 1 }}>
+          <PageContentBlockSeamless disablePadding disableGap columns={5} sx={{ flexGrow: 1, height: '100%' }}>
             <UserMessagingConversationView
               conversation={selectedConversation}
               messages={messages}
