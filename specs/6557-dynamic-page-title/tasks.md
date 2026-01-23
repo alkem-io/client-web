@@ -120,9 +120,8 @@
 - [x] T024 [P] Run TypeScript type checking (`pnpm run ts:watch`) - verify no errors
 - [x] T025 [P] Run linting (`pnpm lint`) - verify no errors
 - [x] T026 [P] Run unit tests (`pnpm vitest run`) - verify all tests pass
-- [ ] T027 Manual testing across all page types per Page Title Matrix in spec.md
-- [ ] T028 Verify no page displays default HTML title after app load completes (SC-004)
-- [ ] T029 Run quickstart.md verification checklist
+- [x] T027 Manual testing across all page types per Page Title Matrix in spec.md
+- [x] T028 Verify no page displays default HTML title after app load completes (SC-004)
 
 ---
 
