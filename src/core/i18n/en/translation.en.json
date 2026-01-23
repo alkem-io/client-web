@@ -2502,6 +2502,7 @@
         },
         "notifications": {
           "organization-created": "$t(common.Organization) created successfully.",
+          "organization-creation-failed": "Failed to create $t(common.Organization).",
           "organization-removed": "$t(common.Organization) removed successfully."
         },
         "verification": {

@@ -78,6 +78,9 @@ const usePostSettings = ({
 
   const [updatePost, { loading: updating, error: updateError }] = useUpdatePostMutation({
     onCompleted: () => notify('Post updated successfully', 'success'),
+    onError: () => {
+      notify(t('common.error-generic'), 'error');
+    },
   });
 
   const handleUpdate = async (newPost: PostUpdateData) => {
@@ -110,6 +113,9 @@ const usePostSettings = ({
 
   const [deletePost, { loading: deleting }] = useDeletePostMutation({
     update: removeFromCache,
+    onError: () => {
+      notify(t('common.error-generic'), 'error');
+    },
   });
   const handleDelete = async (postId: string) => {
     await deletePost({ variables: { postId } });

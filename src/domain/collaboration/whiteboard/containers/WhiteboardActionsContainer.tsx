@@ -11,6 +11,8 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { useCallback, useMemo } from 'react';
 import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useTranslation } from 'react-i18next';
 
 interface WhiteboardWithPreviewVisuals {
   nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals
@@ -54,7 +56,13 @@ interface WhiteboardChildProps {
 }
 
 const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<WhiteboardChildProps>) => {
-  const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
+  const notify = useNotification();
+  const { t } = useTranslation();
+  const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({
+    onError: () => {
+      notify(t('common.error-generic'), 'error');
+    },
+  });
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
   const handleCreateWhiteboard = useCallback(
@@ -107,7 +115,11 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
     [createWhiteboard]
   );
 
-  const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
+  const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({
+    onError: () => {
+      notify(t('common.error-generic'), 'error');
+    },
+  });
 
   const handleDeleteWhiteboard = useCallback(
     async (whiteboard: Identifiable) => {
@@ -149,7 +161,11 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
     []
   );
 
-  const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
+  const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({
+    onError: () => {
+      notify(t('common.error-generic'), 'error');
+    },
+  });
   const handleChangeDisplayName = useCallback(
     async (whiteboardId: string | undefined, displayName: string) => {
       if (!whiteboardId) {

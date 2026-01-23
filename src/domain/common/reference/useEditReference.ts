@@ -31,6 +31,9 @@ export const useEditReference = () => {
         });
       }
     },
+    onError: () => {
+      handleError();
+    },
   });
 
   const [deleteReferenceInt] = useDeleteReferenceMutation({
