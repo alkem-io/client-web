@@ -87,6 +87,8 @@ i18n
     ns: [defaultNS],
     defaultNS,
     preload: [defaultLang], // English is preloaded
+    // Required when mixing bundled resources with a backend for other languages
+    partialBundledLanguages: true,
     // Add English translations as initial resources for instant availability
     resources: {
       en: {
