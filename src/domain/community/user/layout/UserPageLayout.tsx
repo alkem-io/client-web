@@ -10,6 +10,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Settings } from '@mui/icons-material';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 interface UserPageLayoutProps {}
 
@@ -18,6 +19,9 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
   const { pathname } = useLocation();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
   const { userModel: user, loading } = useUserProvider(userId);
+
+  // Set browser tab title to "[User Name] | Alkemio"
+  usePageTitle(user?.profile.displayName);
 
   const settings = pathname.split('/').includes('settings');
 

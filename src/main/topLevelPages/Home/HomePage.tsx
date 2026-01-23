@@ -4,11 +4,16 @@ import Loading from '@/core/ui/loading/Loading';
 import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
 import PageContent from '@/core/ui/content/PageContent';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const MyDashboard = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/myDashboard/MyDashboard'));
-const InnovationHubHomePage = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage'));
+const InnovationHubHomePage = lazyWithGlobalErrorHandler(
+  () => import('@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage')
+);
 
 const HomePage = () => {
+  // Set browser tab title to just "Alkemio" for home page
+  usePageTitle('Alkemio', { skipSuffix: true });
   const { innovationHub, innovationHubLoading } = useInnovationHub();
 
   if (innovationHubLoading) {

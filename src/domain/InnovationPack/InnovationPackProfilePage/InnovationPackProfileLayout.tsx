@@ -9,6 +9,7 @@ import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { Settings } from '@mui/icons-material';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 interface InnovationPackProfileLayoutProps {
   innovationPack:
@@ -42,6 +43,12 @@ const InnovationPackProfileLayout = ({
   }, [innovationPack]);
 
   const { t } = useTranslation();
+
+  // Set browser tab title to "[Pack Name] | Template Library | Alkemio"
+  const packTitle = innovationPack?.profile?.displayName
+    ? `${innovationPack.profile.displayName} | ${t('pages.titles.templateLibrary')}`
+    : undefined;
+  usePageTitle(packTitle);
 
   return (
     <TopLevelLayout
