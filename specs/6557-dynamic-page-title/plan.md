@@ -60,7 +60,8 @@ specs/6557-dynamic-page-title/
 src/
 ├── core/
 │   ├── routing/
-│   │   └── usePageTitle.ts          # NEW: Core hook for setting page title
+│   │   ├── usePageTitle.ts          # NEW: Core hook for setting page title
+|   |   └── usePageTitle.test.ts     # NEW: Unit tests for hook
 │   └── i18n/
 │       └── en/
 │           └── translation.en.json   # MODIFIED: Add page title translation keys
@@ -82,21 +83,16 @@ src/
 │   └── communication/
 │       └── discussion/
 │           └── pages/ForumPage.tsx   # MODIFIED: Call usePageTitle
-├── main/
-│   ├── topLevelPages/
-│   │   ├── Home/HomePage.tsx         # MODIFIED: Call usePageTitle("Alkemio")
-│   │   ├── InnovationLibraryPage/    # MODIFIED: Call usePageTitle
-│   │   └── topLevelSpaces/SpaceExplorerPage.tsx # MODIFIED: Call usePageTitle
-│   ├── documentation/
-│   │   └── DocumentationPage.tsx     # MODIFIED: Call usePageTitle
-│   └── admin/
-│       └── PlatformAdminRoute.tsx    # MODIFIED: Call usePageTitle
+└── main/
+    ├── topLevelPages/
+    │   ├── Home/HomePage.tsx         # MODIFIED: Call usePageTitle("Alkemio")
+    │   ├── InnovationLibraryPage/    # MODIFIED: Call usePageTitle
+    │   └── topLevelSpaces/SpaceExplorerPage.tsx # MODIFIED: Call usePageTitle
+    ├── documentation/
+    │   └── DocumentationPage.tsx     # MODIFIED: Call usePageTitle
+    └── admin/
+        └── PlatformAdminRoute.tsx    # MODIFIED: Call usePageTitle
 
-tests/
-└── unit/
-    └── core/
-        └── routing/
-            └── usePageTitle.test.ts  # NEW: Unit tests for hook
 ```
 
 **Structure Decision**: Follows existing Alkemio architecture with cross-cutting hook in `src/core/routing`. Page-level integration happens at layout/route components where entity data is available via context.

@@ -34,7 +34,7 @@ interface UsePageTitleOptions {
 export const usePageTitle = (title: string | undefined, options?: UsePageTitleOptions): void => {
   const { t } = useTranslation();
   const separator = t('pages.titles.separator');
-  const { suffix = t('pages.titles.defaultSuffix'), skipSuffix = false } = options ?? {};
+  const { suffix = t('pages.titles.alkemio'), skipSuffix = false } = options ?? {};
 
   useEffect(() => {
     if (skipSuffix) {

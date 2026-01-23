@@ -5,6 +5,7 @@ import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovat
 import PageContent from '@/core/ui/content/PageContent';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 const MyDashboard = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/myDashboard/MyDashboard'));
 const InnovationHubHomePage = lazyWithGlobalErrorHandler(
@@ -12,8 +13,9 @@ const InnovationHubHomePage = lazyWithGlobalErrorHandler(
 );
 
 const HomePage = () => {
-  // Set browser tab title to just "Alkemio" for home page
-  usePageTitle('Alkemio', { skipSuffix: true });
+  const { t } = useTranslation();
+  usePageTitle(t('pages.titles.alkemio'), { skipSuffix: true });
+
   const { innovationHub, innovationHubLoading } = useInnovationHub();
 
   if (innovationHubLoading) {

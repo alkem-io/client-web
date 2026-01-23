@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { usePageTitle } from './usePageTitle';
+import '@/core/i18n/config'; // PageTitle needs translations
 
 describe('usePageTitle', () => {
   const originalTitle = document.title;
@@ -51,7 +52,7 @@ describe('usePageTitle', () => {
       expect(document.title).toBe('Alkemio');
     });
 
-    it('uses empty title when provided with skipSuffix', () => {
+    it('test skipSuffix', () => {
       renderHook(() => usePageTitle('Custom Brand', { skipSuffix: true }));
       expect(document.title).toBe('Custom Brand');
     });

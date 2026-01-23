@@ -68,7 +68,7 @@ export const ForumPage = ({
 }) => {
   const { t } = useTranslation();
 
-  // Set browser tab title to \"Forum | Alkemio\"
+  // Set browser tab title to "Forum | Alkemio"
   usePageTitle(t('pages.titles.forum'));
 
   const navigate = useNavigate();

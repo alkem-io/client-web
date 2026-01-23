@@ -46,7 +46,7 @@ const InnovationPackProfileLayout = ({
 
   // Set browser tab title to "[Pack Name] | Template Library | Alkemio"
   const packTitle = innovationPack?.profile?.displayName
-    ? `${innovationPack.profile.displayName} | ${t('pages.titles.templateLibrary')}`
+    ? `${innovationPack.profile.displayName}${t('pages.titles.separator')}${t('pages.titles.templateLibrary')}`
     : undefined;
   usePageTitle(packTitle);
 

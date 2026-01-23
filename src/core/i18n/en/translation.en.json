@@ -2262,7 +2262,7 @@
   },
   "pages": {
     "titles": {
-      "defaultSuffix": "Alkemio",
+      "alkemio": "Alkemio",
       "separator": " | ",
       "forum": "Forum",
       "spaces": "Spaces",
