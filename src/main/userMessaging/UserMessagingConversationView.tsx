@@ -35,11 +35,10 @@ const MessageBubble = ({
 }: MessageBubbleProps) => {
   const { t } = useTranslation();
   const [allReactionsAnchor, setAllReactionsAnchor] = useState<HTMLButtonElement | null>(null);
-  const [isAddButtonVisible, setIsAddButtonVisible] = useState(message.reactions.length > 0);
+  const hasReactions = message.reactions.length > 0;
+  const [isAddButtonVisible, setIsAddButtonVisible] = useState(hasReactions);
   const [isReactionPickerOpen, setIsReactionPickerOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-
-  const hasReactions = message.reactions.length > 0;
 
   const reactionGroups = useMemo(() => {
     const byEmoji = new Map<string, typeof message.reactions>();
@@ -76,9 +75,7 @@ const MessageBubble = ({
   const showOverlayAddButton = !showInlineReactions && canAddReaction && shouldShowAddButton;
 
   useEffect(() => {
-    if (hasReactions || isReactionPickerOpen) {
-      setIsAddButtonVisible(true);
-    }
+    setIsAddButtonVisible(hasReactions || isReactionPickerOpen);
   }, [hasReactions, isReactionPickerOpen]);
 
   const handleShowAddReaction = () => {
@@ -235,7 +232,7 @@ const MessageBubble = ({
                   .join(', ');
                 return (
                   <Box key={group.emoji} display="flex" flexDirection="column" gap={gutters(0.25)}>
-                    <Caption color="text.secondary">
+                    <Caption>
                       {group.emoji} {senderNames}
                     </Caption>
                   </Box>
