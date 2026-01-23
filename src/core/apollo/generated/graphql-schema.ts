@@ -1621,8 +1621,26 @@ export type ConversationReadReceiptUpdatedEvent = {
   roomId: Scalars['UUID']['output'];
 };
 
+export type ConversationVcAnswerRelevanceInput = {
+  /** The ID of the conversation. */
+  conversationID: Scalars['UUID']['input'];
+  /** The answer id. */
+  id: Scalars['String']['input'];
+  /** Is the answer relevant or not. */
+  relevant: Scalars['Boolean']['input'];
+};
+
+export type ConversationVcAskQuestionInput = {
+  /** The ID of the conversation. */
+  conversationID: Scalars['UUID']['input'];
+  /** The language of the answer. */
+  language?: InputMaybe<Scalars['String']['input']>;
+  /** The question that is being asked. */
+  question: Scalars['String']['input'];
+};
+
 export type ConversationVcResetInput = {
-  /** The ID of the Conversation to reset. */
+  /** The ID of the conversation. */
   conversationID: Scalars['UUID']['input'];
 };
 
@@ -4110,6 +4128,19 @@ export type Message = {
   timestamp: Scalars['Float']['output'];
 };
 
+/** A detailed answer to a question, typically from an AI service. */
+export type MessageAnswerQuestion = {
+  __typename?: 'MessageAnswerQuestion';
+  /** Error message if an error occurred */
+  error?: Maybe<Scalars['String']['output']>;
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']['output']>;
+  /** The original question */
+  question: Scalars['String']['output'];
+  /** Message successfully sent. If false, error will have the reason. */
+  success: Scalars['Boolean']['output'];
+};
+
 /** Details about a message, including the room it was sent in and the parent entity that is using the room. */
 export type MessageDetails = {
   __typename?: 'MessageDetails';
@@ -4270,6 +4301,8 @@ export type Mutation = {
   aiServerUpdateAiPersona: AiPersona;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
+  /** Ask the chat engine for guidance. */
+  askVcQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -4410,6 +4443,8 @@ export type Mutation = {
   eventOnInvitation: Invitation;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
+  /** User vote if a specific answer is relevant. */
+  feedbackOnVcAnswerRelevance: Scalars['Boolean']['output'];
   /** Grants an authorization credential to an Organization. */
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
@@ -4454,7 +4489,7 @@ export type Mutation = {
   removeRoleFromVirtualContributor: VirtualContributor;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
-  /** Resets the interaction with the VC by recreating the room. */
+  /** Resets the interaction with the chat engine. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Space;
@@ -4664,6 +4699,10 @@ export type MutationAiServerUpdateAiPersonaArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
+};
+
+export type MutationAskVcQuestionArgs = {
+  input: ConversationVcAskQuestionInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -4924,6 +4963,10 @@ export type MutationEventOnInvitationArgs = {
 
 export type MutationEventOnOrganizationVerificationArgs = {
   eventData: OrganizationVerificationEventInput;
+};
+
+export type MutationFeedbackOnVcAnswerRelevanceArgs = {
+  input: ConversationVcAnswerRelevanceInput;
 };
 
 export type MutationGrantCredentialToOrganizationArgs = {
@@ -42192,6 +42235,19 @@ export type ConversationEventsSubscription = {
                               };
                             }
                           | undefined;
+                        reactions: Array<{
+                          __typename?: 'Reaction';
+                          id: string;
+                          emoji: string;
+                          timestamp: number;
+                          sender?:
+                            | {
+                                __typename?: 'User';
+                                id: string;
+                                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                              }
+                            | undefined;
+                        }>;
                       }
                     | undefined;
                 }
@@ -42239,6 +42295,19 @@ export type ConversationEventsSubscription = {
                       };
                     }
                   | undefined;
+                reactions: Array<{
+                  __typename?: 'Reaction';
+                  id: string;
+                  emoji: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }>;
               }
             | undefined;
         }
@@ -42275,6 +42344,19 @@ export type ConversationEventsSubscription = {
                   };
                 }
               | undefined;
+            reactions: Array<{
+              __typename?: 'Reaction';
+              id: string;
+              emoji: string;
+              timestamp: number;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            }>;
           };
         }
       | undefined;
@@ -42329,6 +42411,19 @@ export type ConversationMessagesQuery = {
                         };
                       }
                     | undefined;
+                  reactions: Array<{
+                    __typename?: 'Reaction';
+                    id: string;
+                    emoji: string;
+                    timestamp: number;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        }
+                      | undefined;
+                  }>;
                 }>;
               }
             | undefined;
@@ -42402,6 +42497,19 @@ export type UserConversationsQuery = {
                           };
                         }
                       | undefined;
+                    reactions: Array<{
+                      __typename?: 'Reaction';
+                      id: string;
+                      emoji: string;
+                      timestamp: number;
+                      sender?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          }
+                        | undefined;
+                    }>;
                   }
                 | undefined;
             }
