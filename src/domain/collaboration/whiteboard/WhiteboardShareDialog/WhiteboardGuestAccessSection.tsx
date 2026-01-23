@@ -28,9 +28,11 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
       if (!guestAccess.canToggle || guestAccess.isMutating) {
         return;
       }
-      void Promise.resolve(guestAccess.onToggle(event.target.checked)).catch(() => undefined);
+      void Promise.resolve(guestAccess.onToggle(event.target.checked)).catch(() => {
+        notify(t('common.error-generic'), 'error');
+      });
     },
-    [guestAccess]
+    [guestAccess, notify, t]
   );
 
   const handleCopyGuestLink = useCallback(async () => {

@@ -17,6 +17,7 @@ import PostMessageToCommentsForm from '@/domain/communication/room/Comments/Post
 import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 interface MessageBubbleProps {
   message: ConversationMessage;
@@ -262,6 +263,7 @@ export const UserMessagingConversationView = ({
   showBackButton = false,
 }: UserMessagingConversationViewProps) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const { userModel } = useCurrentUserContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -286,6 +288,7 @@ export const UserMessagingConversationView = ({
       },
     }).catch(error => {
       console.error('Failed to mark messages as read:', error);
+      notify(t('common.error-generic'), 'error');
     });
   }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead]);
 

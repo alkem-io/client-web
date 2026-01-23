@@ -8,16 +8,20 @@ import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager'
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: RoleName }) => {
   const { t } = useTranslation();
+  const notify = useNotification();
 
   const { roleSetId } = useOrganizationContext();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
   const refetch = async () => {
     await refetchRoleSetAssignment();
-    availableUsersForRole.refetch();
+    await availableUsersForRole.refetch().catch(() => {
+      notify(t('common.error-generic'), 'error');
+    });
   };
 
   const {
