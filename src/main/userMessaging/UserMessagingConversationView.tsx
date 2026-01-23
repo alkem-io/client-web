@@ -35,6 +35,11 @@ const MessageBubble = ({
 }: MessageBubbleProps) => {
   const { t } = useTranslation();
   const [allReactionsAnchor, setAllReactionsAnchor] = useState<HTMLButtonElement | null>(null);
+  const [isAddButtonVisible, setIsAddButtonVisible] = useState(message.reactions.length > 0);
+  const [isReactionPickerOpen, setIsReactionPickerOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+
+  const hasReactions = message.reactions.length > 0;
 
   const reactionGroups = useMemo(() => {
     const byEmoji = new Map<string, typeof message.reactions>();
@@ -65,6 +70,31 @@ const MessageBubble = ({
 
   const extraReactionsCount = message.reactions.length - compactReactions.length;
 
+  const shouldShowAddButton = hasReactions || isAddButtonVisible || isReactionPickerOpen || isHovering;
+
+  const showInlineReactions = compactReactions.length > 0;
+  const showOverlayAddButton = !showInlineReactions && canAddReaction && shouldShowAddButton;
+
+  useEffect(() => {
+    if (hasReactions || isReactionPickerOpen) {
+      setIsAddButtonVisible(true);
+    }
+  }, [hasReactions, isReactionPickerOpen]);
+
+  const handleShowAddReaction = () => {
+    if (!hasReactions) {
+      setIsAddButtonVisible(true);
+    }
+    setIsHovering(true);
+  };
+
+  const handleHideAddReaction = () => {
+    if (!hasReactions && !isReactionPickerOpen) {
+      setIsAddButtonVisible(false);
+    }
+    setIsHovering(false);
+  };
+
   const handleOpenAllReactions = (event: MouseEvent<HTMLButtonElement>) => {
     setAllReactionsAnchor(event.currentTarget);
   };
@@ -78,6 +108,9 @@ const MessageBubble = ({
       alignItems={isOwnMessage ? 'flex-end' : 'flex-start'}
       gap={gutters(0.25)}
       marginY={gutters(0.5)}
+      onMouseEnter={handleShowAddReaction}
+      onMouseLeave={handleHideAddReaction}
+      onClick={handleShowAddReaction}
     >
       <Box
         display="flex"
@@ -101,6 +134,7 @@ const MessageBubble = ({
             padding: gutters(0.5),
             paddingX: gutters(),
             boxShadow: '0 1px 2px rgba(0,0,0,0.12)',
+            position: 'relative',
           }}
         >
           <Box display="inline-flex" alignItems="baseline" gap={gutters(0.5)} flexWrap="wrap" sx={{ width: '100%' }}>
@@ -131,10 +165,37 @@ const MessageBubble = ({
               {formatTimeElapsed(new Date(message.timestamp), t)}
             </Caption>
           </Box>
+          {showOverlayAddButton && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: gutters(0.25),
+                right: gutters(-0.25),
+                transform: 'translateY(-60%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'background.paper',
+                borderRadius: '50%',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
+              }}
+              onMouseEnter={handleShowAddReaction}
+              onMouseLeave={handleHideAddReaction}
+            >
+              <CommentReactions
+                reactions={[]}
+                canAddReaction={canAddReaction}
+                onAddReaction={onAddReaction}
+                onRemoveReaction={onRemoveReaction}
+                showAddButton
+                onPickerVisibilityChange={setIsReactionPickerOpen}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
 
-      {(compactReactions.length > 0 || canAddReaction) && (
+      {(showInlineReactions || (canAddReaction && shouldShowAddButton && !showOverlayAddButton)) && (
         <Box
           marginLeft={isOwnMessage ? 0 : gutters(2.5)}
           marginRight={isOwnMessage ? gutters(0.5) : 0}
@@ -146,6 +207,8 @@ const MessageBubble = ({
             canAddReaction={canAddReaction}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
+            showAddButton
+            onPickerVisibilityChange={setIsReactionPickerOpen}
           />
           {extraReactionsCount > 0 && (
             <IconButton

@@ -1,12 +1,12 @@
 # Feature Specification: Message Emoji Reactions for User-to-User Messaging
 
-**Feature Branch**: `001-message-emoji-reactions`  
-**Created**: 2026-01-20  
-**Status**: Draft  
-**GitHub Issue**: [#9163](https://github.com/alkem-io/client-web/issues/9163)  
+**Feature Branch**: `001-message-emoji-reactions`
+**Created**: 2026-01-20
+**Status**: Draft
+**GitHub Issue**: [#9163](https://github.com/alkem-io/client-web/issues/9163)
 **Input**: User description: "Emoji Reactions for User-to-User Messaging"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 <!--
   IMPORTANT: User stories are PRIORITIZED as user journeys ordered by importance.
@@ -28,6 +28,7 @@ As a user participating in a direct message conversation, I want to add an emoji
 2. **Given** I see the reaction trigger on a message, **When** I click it, **Then** an emoji picker opens (the same picker used for comment reactions).
 3. **Given** the emoji picker is open, **When** I select an emoji, **Then** the picker closes and my reaction is immediately added to the message.
 4. **Given** I have added a reaction to a message, **Then** the reaction displays below the message with a count of 1 and my emoji visible.
+5. **Given** a message has no reactions yet, **When** I hover (desktop) or tap (mobile) the message, **Then** the add-reaction control appears as an overlay aligned to the message without shifting the layout, and it stays visible while the picker is open.
 
 ---
 
@@ -105,7 +106,7 @@ As a user who navigates with a keyboard, I want to add and remove reactions usin
 - What happens when a user reacts while offline? → The reaction should queue and sync when connectivity returns, or fail gracefully with user notification.
 - What happens when two users add the same emoji simultaneously? → Both reactions should be recorded; the count should increment correctly.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -124,6 +125,7 @@ As a user who navigates with a keyboard, I want to add and remove reactions usin
 - **FR-013**: System MUST provide accessible labels for screen readers on reaction controls and emoji buttons.
 - **FR-014**: System MUST persist reactions correctly after page refresh or app restart.
 - **FR-015**: System MUST handle graceful degradation (retry or rollback) when network latency or failure occurs during reaction operations.
+- **FR-016**: System MUST render the add-reaction control for messages with zero reactions only on hover/tap as an overlay that does not shift surrounding layout and remains visible while the emoji picker is open.
 
 ### Key Entities
 
@@ -131,7 +133,7 @@ As a user who navigates with a keyboard, I want to add and remove reactions usin
 - **Reaction**: Represents a single emoji reaction on a message, containing: emoji character, sender identity, and unique identifier.
 - **Room**: The communication room for the direct message conversation; reactions are added/removed in the context of a specific room.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

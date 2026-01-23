@@ -1,22 +1,22 @@
 # Implementation Plan: Message Emoji Reactions for User-to-User Messaging
 
-**Branch**: `001-message-emoji-reactions` | **Date**: 2026-01-22 | **Spec**: [spec.md](./spec.md)  
+**Branch**: `001-message-emoji-reactions` | **Date**: 2026-01-22 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `specs/001-message-emoji-reactions/spec.md`
 
 ## Summary
 
-Port emoji reaction functionality from the existing `CommentsComponent` implementation to the `UserMessagingDialog`. The existing GraphQL mutations (`addReactionToMessageInRoom`, `removeReactionToMessageInRoom`), UI components (`CommentReactions`, `ReactionView`, `EmojiSelector`), and reaction hook (`useCommentReactionsMutations`) can be reused with minimal adaptation for the direct messaging context.
+Port emoji reaction functionality from the existing `CommentsComponent` implementation to the `UserMessagingDialog`. The existing GraphQL mutations (`addReactionToMessageInRoom`, `removeReactionToMessageInRoom`), UI components (`CommentReactions`, `ReactionView`, `EmojiSelector`), and reaction hook (`useCommentReactionsMutations`) can be reused with minimal adaptation for the direct messaging context. Refinement: for messages with zero reactions, the add-reaction control should appear as an overlay on hover/tap to avoid layout shifts and remain visible while the picker is open.
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x, React 19  
-**Primary Dependencies**: Apollo Client, MUI, emoji-picker-react, lodash  
-**Storage**: GraphQL API (Apollo cache)  
-**Testing**: Vitest  
-**Target Platform**: Web (Vite SPA)  
-**Project Type**: Web application (React SPA)  
-**Performance Goals**: < 1s reaction latency from user action to visual confirmation; < 2s real-time sync for other participants  
-**Constraints**: Visual/interaction parity with comment reactions; WCAG 2.1 AA accessibility compliance  
+**Language/Version**: TypeScript 5.x, React 19
+**Primary Dependencies**: Apollo Client, MUI, emoji-picker-react, lodash
+**Storage**: GraphQL API (Apollo cache)
+**Testing**: Vitest
+**Target Platform**: Web (Vite SPA)
+**Project Type**: Web application (React SPA)
+**Performance Goals**: < 1s reaction latency from user action to visual confirmation; < 2s real-time sync for other participants
+**Constraints**: Visual/interaction parity with comment reactions; WCAG 2.1 AA accessibility compliance
 **Scale/Scope**: All users with direct messaging access; messages with up to 20 unique emojis and 100 total reactions
 
 ## Constitution Check
@@ -112,7 +112,7 @@ src/
 
 1. Update `MessageBubble` component in `UserMessagingConversationView.tsx`:
    - Add reaction display below message bubble
-   - Add reaction trigger (add reaction button)
+   - Add reaction trigger (add reaction button) with overlay-on-hover behavior when there are zero reactions to prevent layout jumps
    - Integrate `CommentReactions` component
 2. Wire up `useCommentReactionsMutations` hook with conversation roomId
 3. Handle permissions (`canAddReaction` based on room participation)

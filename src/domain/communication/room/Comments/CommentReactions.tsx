@@ -20,6 +20,8 @@ interface CommentReactionsProps {
   canAddReaction: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: ReactionViewProps['onRemoveReaction'];
+  showAddButton?: boolean;
+  onPickerVisibilityChange?: (isOpen: boolean) => void;
 }
 
 const CommentReactions = ({
@@ -27,6 +29,8 @@ const CommentReactions = ({
   canAddReaction = true,
   onAddReaction,
   onRemoveReaction,
+  showAddButton = true,
+  onPickerVisibilityChange,
 }: CommentReactionsProps) => {
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
@@ -65,8 +69,19 @@ const CommentReactions = ({
 
   const handleEmojiClick = (emoji: string) => {
     setIsReactionDialogOpen(false);
+    onPickerVisibilityChange?.(false);
     const isReactionUsedByUser = reactions.find(r => r.emoji === emoji && r.sender?.id === userId);
     if (!isReactionUsedByUser) onAddReaction?.(emoji);
+  };
+
+  const handleOpenPicker = () => {
+    setIsReactionDialogOpen(true);
+    onPickerVisibilityChange?.(true);
+  };
+
+  const handleClosePicker = () => {
+    setIsReactionDialogOpen(false);
+    onPickerVisibilityChange?.(false);
   };
 
   return (
@@ -76,21 +91,23 @@ const CommentReactions = ({
           <ReactionView key={reaction.emoji} reaction={reaction} onRemoveReaction={onRemoveReaction} />
         ))}
       </Box>
-      <CardText>
-        <IconButton
-          ref={addEmojiButtonRef}
-          size="small"
-          disabled={!canAddReaction}
-          onClick={() => setIsReactionDialogOpen(true)}
-          aria-label={t('messaging.addReaction')}
-        >
-          <AddReactionOutlined fontSize="inherit" />
-        </IconButton>
-      </CardText>
+      {showAddButton && (
+        <CardText>
+          <IconButton
+            ref={addEmojiButtonRef}
+            size="small"
+            disabled={!canAddReaction}
+            onClick={handleOpenPicker}
+            aria-label={t('messaging.addReaction')}
+          >
+            <AddReactionOutlined fontSize="inherit" />
+          </IconButton>
+        </CardText>
+      )}
       <EmojiSelector
         anchorElement={addEmojiButtonRef.current}
         open={isReactionDialogOpen}
-        onClose={() => setIsReactionDialogOpen(false)}
+        onClose={handleClosePicker}
         onEmojiClick={handleEmojiClick}
       />
     </>

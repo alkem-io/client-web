@@ -50,6 +50,7 @@
 - [x] T009 [US1] Update `MessageBubble` props interface to accept `canAddReaction`, `onAddReaction`, and `reactions` in src/main/userMessaging/UserMessagingConversationView.tsx
 - [x] T010 [US1] Add `CommentReactions` component below message bubble with reaction trigger in src/main/userMessaging/UserMessagingConversationView.tsx
 - [x] T011 [US1] Pass reaction props to `MessageBubble` component in message list render in src/main/userMessaging/UserMessagingConversationView.tsx
+- [x] T010a [US1] Add overlay-on-hover reaction trigger for messages with zero reactions to avoid layout shifts and keep the trigger visible while the picker is open in src/main/userMessaging/UserMessagingConversationView.tsx
 
 **Checkpoint**: Users can add emoji reactions to messages. Reactions display with count of 1.
 
