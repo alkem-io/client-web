@@ -136,7 +136,7 @@ const PlatformNavigationUserMenu = ({
             {userModel && (
               <NavigatableMenuItem
                 iconComponent={AssignmentIndOutlined}
-                route={userModel.profile.url}
+                route="/user/me"
                 onClick={onClose}
               >
                 {t('pages.user-profile.title')}
@@ -145,7 +145,7 @@ const PlatformNavigationUserMenu = ({
             {userModel && (
               <NavigatableMenuItem
                 iconComponent={LocalOfferOutlinedIcon}
-                route={buildUserAccountUrl(userModel.profile.url)}
+                route={buildUserAccountUrl('/user/me')}
                 onClick={onClose}
               >
                 {t('pages.home.mainNavigation.myAccount')}

@@ -199,6 +199,14 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
+      // Skip URL resolution for /user/me routes - these are handled by MeUserContext
+      const pathname = globalThis.location.pathname;
+      if (pathname === '/user/me' || pathname.startsWith('/user/me/')) {
+        lastProcessedUrlRef.current = nextUrl;
+        setCurrentUrl('');
+        return;
+      }
+
       // Update the last processed URL and trigger URL resolution
       lastProcessedUrlRef.current = nextUrl;
       setCurrentUrl(nextUrl);
