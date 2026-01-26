@@ -153,7 +153,7 @@ const CommentsComponent = ({
     <>
       {!isShowingLastMessage && hasMessages && (
         <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
-          <Gutters gap={0}>
+          <Gutters disableSidePadding gap={0}>
             <MessagesThread
               messages={messages}
               vcInteractions={vcInteractions}
@@ -192,8 +192,7 @@ const CommentsComponent = ({
           placeholder={t('pages.post.dashboard.comment.placeholder')}
           onPostComment={handlePostComment}
           disabled={loading}
-          padding={gutters()}
-          paddingBottom={0}
+          paddingTop={gutters(0)}
         />
       )}
       {!canPostMessages && (

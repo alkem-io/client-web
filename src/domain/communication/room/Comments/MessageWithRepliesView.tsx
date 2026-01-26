@@ -7,6 +7,7 @@ import MessageView, { MessageViewProps } from './MessageView';
 const ChildMessageContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
+  gap: theme.spacing(3),
   borderLeft: `${theme.spacing(0.3)} ${theme.palette.background.default} solid`,
   paddingLeft: theme.spacing(1),
 }));
