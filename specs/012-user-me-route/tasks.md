@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/012-user-me-route/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: Not requested in feature specification - test tasks omitted.
+**Tests**: Covered in Phase 5 validation tasks.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

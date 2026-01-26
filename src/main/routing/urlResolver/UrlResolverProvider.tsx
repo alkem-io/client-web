@@ -234,6 +234,12 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Create cache for the resolver value
   const valueRef = useRef<UrlResolverContextValue>(emptyResult);
   const value = useMemo<UrlResolverContextValue>(() => {
+    // When URL is empty (e.g., /user/me routes), return empty non-loading context
+    if (!currentUrl) {
+      const cleared = { ...emptyResult, loading: false };
+      valueRef.current = cleared;
+      return cleared;
+    }
     // start generating the context value on successfull request
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
@@ -312,7 +318,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     }
     // if the value is not resolved and loading is complete return empty result
     return emptyResult;
-  }, [urlResolverData, urlResolverLoading]);
+  }, [urlResolverData, urlResolverLoading, currentUrl]);
 
   return <UrlResolverContext value={value}>{children}</UrlResolverContext>;
 };

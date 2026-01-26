@@ -1,6 +1,6 @@
 # Implementation Plan: Whiteboard Emoji Content
 
-**Branch**: `003-whiteboard-emoji-reactions` | **Date**: 2025-12-27 | **Spec**: [spec.md](spec.md)
+**Branch**: `006-whiteboard-emoji-reactions` | **Date**: 2025-12-27 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/006-whiteboard-emoji-reactions/spec.md`
 
 ## Summary

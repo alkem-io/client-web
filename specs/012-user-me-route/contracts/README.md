@@ -1,6 +1,6 @@
 # API Contracts: User "Me" Route Shortcut
 
-**Feature**: 001-user-me-route
+**Feature**: 012-user-me-route
 **Date**: 2026-01-26
 
 ## No New Contracts Required

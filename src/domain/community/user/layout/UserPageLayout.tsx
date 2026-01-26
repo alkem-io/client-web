@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { Settings } from '@mui/icons-material';
 import useUserRouteContext from '../routing/useUserRouteContext';
 
-interface UserPageLayoutProps {}
+type UserPageLayoutProps = Record<string, never>;
 
 const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
   const { t } = useTranslation();

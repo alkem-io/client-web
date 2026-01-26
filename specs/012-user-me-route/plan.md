@@ -10,7 +10,7 @@ Implement a `/user/me` route shortcut that displays the authenticated user's pro
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19
-**Primary Dependencies**: React Router v6, Apollo Client, MUI, react-i18next
+**Primary Dependencies**: React Router v7, Apollo Client, MUI, react-i18next
 **Storage**: N/A (uses existing Apollo cache)
 **Testing**: Vitest with jsdom environment
 **Target Platform**: Web browser (SPA)

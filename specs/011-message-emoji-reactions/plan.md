@@ -1,6 +1,6 @@
 # Implementation Plan: Message Emoji Reactions for User-to-User Messaging
 
-**Branch**: `001-message-emoji-reactions` | **Date**: 2026-01-22 | **Spec**: [spec.md](./spec.md)
+**Branch**: `011-message-emoji-reactions` | **Date**: 2026-01-22 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `specs/011-message-emoji-reactions/spec.md`
 
 ## Summary
