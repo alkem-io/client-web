@@ -13,7 +13,6 @@ import { CaptionSmall } from '@/core/ui/typography';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
-import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
 import { Box, BoxProps } from '@mui/material';
@@ -192,7 +191,7 @@ const CommentsComponent = ({
           placeholder={t('pages.post.dashboard.comment.placeholder')}
           onPostComment={handlePostComment}
           disabled={loading}
-          paddingTop={gutters(0)}
+          paddingTop={0}
         />
       )}
       {!canPostMessages && (
