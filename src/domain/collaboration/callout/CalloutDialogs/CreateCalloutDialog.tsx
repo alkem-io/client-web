@@ -4,7 +4,6 @@ import {
   CalloutContributionType,
   CalloutVisibility,
   TemplateType,
-  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -17,6 +16,8 @@ import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
+import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
@@ -62,6 +63,7 @@ const CreateCalloutDialog = ({
   const ensurePresence = useEnsurePresence();
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -114,9 +116,9 @@ const CreateCalloutDialog = ({
                 maxWidth: 1000,
                 minHeight: 100,
                 minWidth: 100,
-                name: VisualType.Card,
-                uri: item.uri,
-                alternativeText: item.name || '',
+                name: item.visualType ?? getMediaGalleryVisualType(item.file, item.uri),
+                uri: item.file ? undefined : item.uri,
+                alternativeText: item.altText || item.file?.name || '',
               })),
             }
           : undefined,
@@ -169,7 +171,13 @@ const CreateCalloutDialog = ({
         sendNotification,
       };
 
-      await handleCreateCallout(createCalloutInput);
+      const createdCallout = await handleCreateCallout(createCalloutInput);
+      if (createdCallout?.framing.mediaGallery?.visuals) {
+        await uploadMediaGalleryVisuals(
+          formData.framing.mediaGallery?.visuals,
+          createdCallout.framing.mediaGallery.visuals
+        );
+      }
       handleClose();
       setTimeout(scrollToTop, 100);
     }

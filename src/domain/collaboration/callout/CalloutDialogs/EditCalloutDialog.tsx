@@ -5,7 +5,6 @@ import {
   CalloutFramingType,
   UpdateCalloutEntityInput,
   UpdateCalloutSettingsInput,
-  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useCallback, useMemo, useState } from 'react';
@@ -28,6 +27,8 @@ import {
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
+import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -85,7 +86,9 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 calloutData.framing.mediaGallery.visuals?.map(v => ({
                   id: v.id,
                   uri: v.uri,
-                  name: v.alternativeText || '',
+                  name: v.alternativeText ?? '',
+                  altText: v.alternativeText ?? '',
+                  visualType: v.name,
                 })) ?? [],
             }
           : undefined,
@@ -119,6 +122,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   const [updateCalloutContent] = useUpdateCalloutContentMutation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput
@@ -138,12 +142,18 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       mediaGallery:
         formData.framing.type === CalloutFramingType.MediaGallery && formData.framing.mediaGallery?.visuals?.length
           ? {
-              visuals: formData.framing.mediaGallery.visuals.map(v => ({
-                uri: v.uri,
-                visualID: v.id ?? '',
-                name: VisualType.Card,
-                alternativeText: v.name || '',
-              })),
+              visuals: formData.framing.mediaGallery.visuals.map(v => {
+                const visualType = v.file
+                  ? getMediaGalleryVisualType(v.file, v.uri)
+                  : (v.visualType ?? getMediaGalleryVisualType(undefined, v.uri));
+
+                return {
+                  uri: v.file ? v.uri || '' : v.uri,
+                  visualID: v.id ?? '',
+                  name: visualType,
+                  alternativeText: v.altText || v.name || v.file?.name || '',
+                };
+              }),
             }
           : undefined,
     };
@@ -191,6 +201,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       },
       refetchQueries: ['CalloutsSetTags'],
     });
+    if (result.data?.updateCallout.framing.mediaGallery?.visuals) {
+      await uploadMediaGalleryVisuals(
+        formData.framing.mediaGallery?.visuals,
+        result.data.updateCallout.framing.mediaGallery.visuals
+      );
+    }
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {
         previewVisualId: result.data.updateCallout.framing.whiteboard?.profile.preview.id,
