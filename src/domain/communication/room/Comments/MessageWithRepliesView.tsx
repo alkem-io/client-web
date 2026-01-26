@@ -3,10 +3,12 @@ import { Box, ButtonBase, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { CardText } from '@/core/ui/typography';
 import MessageView, { MessageViewProps } from './MessageView';
+import { gutters } from '@/core/ui/grid/utils';
 
 const ChildMessageContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
+  gap: theme.spacing(0),
   borderLeft: `${theme.spacing(0.3)} ${theme.palette.background.default} solid`,
   paddingLeft: theme.spacing(1),
 }));
@@ -44,7 +46,7 @@ export const MessageWithRepliesView = ({
     >
       <ChildMessageContainer>
         {children}
-        {isReplyFormVisible && reply}
+        {isReplyFormVisible && <Box marginTop={gutters()}>{reply}</Box>}
       </ChildMessageContainer>
     </MessageView>
   );
