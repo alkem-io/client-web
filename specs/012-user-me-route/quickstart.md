@@ -1,6 +1,6 @@
 # Quickstart: User "Me" Route Shortcut
 
-**Feature**: 001-user-me-route
+**Feature**: 012-user-me-route
 **Date**: 2026-01-26
 
 ## Overview
@@ -72,6 +72,13 @@ pnpm start
    - Note your nameId from your profile
    - Compare `/user/me` with `/user/{your-nameId}`
    - Content should be identical
+
+5. **Test platform navigation (SC-005/SC-006/SC-007)**:
+   - Click "My Profile" in platform navigation → verify navigation to `/user/me`
+   - Click "My Account" in platform navigation → verify navigation to `/user/me/settings/account`
+   - While on `/user/me`, verify breadcrumbs show "Me" or similar (not nameId)
+   - While on `/user/me/settings`, verify settings sidebar links use `/user/me/*` paths
+   - Verify profile banner "Edit Profile" link uses `/user/me/settings/profile`
 
 ### Automated Tests
 

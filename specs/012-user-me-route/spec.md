@@ -1,6 +1,6 @@
 # Feature Specification: User "Me" Route Shortcut
 
-**Feature Branch**: `001-user-me-route`
+**Feature Branch**: `012-user-me-route`
 **Created**: 2026-01-26
 **Status**: Draft
 **Input**: User description: "Create a user `/user/me` route that points to the profile of the currently logged in user - e.g. for user with nameid valentinadmin-yanak-5936, going to `https://alkem.io/user/me` when that user is logged in renders the same page - `alkem.io/user/valentinadmin-yanak-5936`."
@@ -41,6 +41,24 @@ As an unauthenticated visitor, when I try to access `/user/me`, I should be redi
 
 ---
 
+### User Story 3 - Access Profile via Platform Navigation (Priority: P1)
+
+As an authenticated user, I want to click "My Profile" or "My Account" in the platform navigation menu and be taken to `/user/me` (or its sub-routes) so that I have a consistent entry point to my profile regardless of my nameId.
+
+**Why this priority**: The platform navigation menu is the primary way users access their profile. Using `/user/me` provides a consistent, memorable URL and aligns with the feature's core value proposition.
+
+**Independent Test**: Can be tested by logging in, opening the platform navigation menu, clicking "My Profile" or "My Account", and verifying navigation to `/user/me` or `/user/me/settings/account`.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user is logged in, **When** they click "My Profile" in the platform navigation menu, **Then** they navigate to `/user/me`
+
+2. **Given** a user is logged in, **When** they click "My Account" in the platform navigation menu, **Then** they navigate to `/user/me/settings/account`
+
+3. **Given** a user is logged in and on `/user/me`, **When** they view breadcrumbs or navigation elements, **Then** all links to their profile use `/user/me` (not `/user/{nameId}`)
+
+---
+
 ### Edge Cases
 
 - What happens when the user is authenticated but their profile data is still loading?
@@ -66,6 +84,8 @@ As an unauthenticated visitor, when I try to access `/user/me`, I should be redi
 - **FR-005**: System MUST preserve `/user/me` in the URL (not redirect to `/user/{nameId}`)
 - **FR-006**: System MUST support deep linking - `/user/me` saved as a bookmark or shared should work for any authenticated user to view their own profile
 - **FR-007**: System MUST support sub-paths under `/user/me/*` that mirror all existing `/user/{nameId}/*` routes (e.g., `/user/me/settings`, `/user/me/contributions`)
+- **FR-008**: System MUST preserve `/user/me` URL context in all navigation elements (breadcrumbs, settings links, profile banner) when user is on a `/user/me/*` route
+- **FR-009**: System MUST use `/user/me` as the target URL for "My Profile" and "My Account" links in the platform navigation menu
 
 ### Out of Scope
 
@@ -78,6 +98,7 @@ As an unauthenticated visitor, when I try to access `/user/me`, I should be redi
 
 - **Current User**: The authenticated user whose profile should be displayed when accessing `/user/me`. Retrieved from the existing authentication context.
 - **User Profile**: The profile data (display name, avatar, bio, etc.) displayed on the profile page. Same data structure used for all user profiles.
+- **User Route Context**: Abstraction that provides unified access to user ID and profile URL generation, handling both `/user/me` and `/user/{nameId}` routes transparently.
 
 ## Success Criteria *(mandatory)*
 
@@ -87,6 +108,9 @@ As an unauthenticated visitor, when I try to access `/user/me`, I should be redi
 - **SC-002**: 100% of unauthenticated users navigating to `/user/me` are redirected to the login flow
 - **SC-003**: `/user/me` renders identical content to `/user/{currentUserNameId}` for the same user
 - **SC-004**: The URL remains `/user/me` after navigation (no client-side redirect to `/user/{nameId}`)
+- **SC-005**: Platform navigation menu "My Profile" link navigates to `/user/me`
+- **SC-006**: Platform navigation menu "My Account" link navigates to `/user/me/settings/account`
+- **SC-007**: All navigation elements (breadcrumbs, settings links) preserve `/user/me` context when on me route
 
 ## Clarifications
 
@@ -96,6 +120,13 @@ As an unauthenticated visitor, when I try to access `/user/me`, I should be redi
 - Q: What happens if the authenticated user's profile data fails to load? → A: Show standard app error UI with retry option
 - Q: Should `/user/me` support sub-paths mirroring `/user/{nameId}/*`? → A: Yes, `/user/me/*` mirrors all sub-routes
 - Q: What should be explicitly out of scope? → A: Profile editing UI changes, new profile features, analytics tracking
+
+### Session 2026-01-26 (Post-Implementation Review)
+
+- Added User Story 3 (Platform Navigation) to capture implemented behavior: "My Profile" and "My Account" menu links now use `/user/me`
+- Added FR-008 (URL context preservation): Navigation elements preserve `/user/me` when on me route
+- Added FR-009 (Navigation menu targets): Platform navigation uses `/user/me` for profile/account links
+- Added SC-005, SC-006, SC-007 for new requirements
 
 ## Assumptions
 

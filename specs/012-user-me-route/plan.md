@@ -1,6 +1,6 @@
 # Implementation Plan: User "Me" Route Shortcut
 
-**Branch**: `001-user-me-route` | **Date**: 2026-01-26 | **Spec**: [spec.md](./spec.md)
+**Branch**: `012-user-me-route` | **Date**: 2026-01-26 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/012-user-me-route/spec.md`
 
 ## Summary

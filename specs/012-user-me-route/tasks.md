@@ -69,6 +69,22 @@ This feature uses the existing project structure and dependencies. No new packag
 
 ---
 
+## Phase 4.5: User Story 3 - Platform Navigation (Priority: P1)
+
+**Goal**: Platform navigation menu links ("My Profile", "My Account") use `/user/me` routes, and navigation elements preserve URL context
+
+**Independent Test**: Log in, open platform navigation menu, click "My Profile" → verify navigation to `/user/me`. Click "My Account" → verify navigation to `/user/me/settings/account`. While on `/user/me`, verify breadcrumbs and settings links use `/user/me` (not `/user/{nameId}`)
+
+### Implementation for User Story 3
+
+- [X] T012 [US3] Verify "My Profile" menu link targets `/user/me` in platform navigation component
+- [X] T013 [US3] Verify "My Account" menu link targets `/user/me/settings/account` in platform navigation component
+- [X] T014 [US3] Verify breadcrumbs and navigation elements preserve `/user/me` context when on me route
+
+**Checkpoint**: At this point, all three user stories should work independently
+
+---
+
 ## Phase 5: Polish & Cross-Cutting Concerns
 
 **Purpose**: Validation and cleanup that affect the complete feature
@@ -94,6 +110,7 @@ This feature uses the existing project structure and dependencies. No new packag
 
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
 - **User Story 2 (P1)**: Can start after Foundational (Phase 2) - Both US1 and US2 are P1 priority but US2 verification depends on US1 routes being in place
+- **User Story 3 (P1)**: Can start after User Story 1 (Phase 3) - Depends on routes existing; verifies navigation integration
 
 ### Within Each Phase
 
