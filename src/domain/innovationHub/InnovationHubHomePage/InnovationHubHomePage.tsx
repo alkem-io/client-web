@@ -1,4 +1,6 @@
 import { useCallback } from 'react';
+import { IconButton } from '@mui/material';
+import { SettingsOutlined } from '@mui/icons-material';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { InnovationHubAttrs } from './InnovationHubAttrs';
@@ -62,7 +64,18 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
       breadcrumbs={<TopLevelPageBreadcrumbs />}
     >
       <PageContent>
-        <PageContentBlock>
+        <PageContentBlock sx={{ position: 'relative', paddingRight: gutters(2) }}>
+          {innovationHub.settingsUrl && (
+            <IconButton
+              component={RouterLink}
+              to={innovationHub.settingsUrl}
+              size="small"
+              aria-label={t('common.settings')}
+              sx={{ position: 'absolute', top: gutters(0.5), right: gutters(0.5) }}
+            >
+              <SettingsOutlined />
+            </IconButton>
+          )}
           <WrapperMarkdown>{innovationHub.description ?? ''}</WrapperMarkdown>
         </PageContentBlock>
         <PageContentBlock>
