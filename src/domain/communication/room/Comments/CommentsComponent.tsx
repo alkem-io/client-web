@@ -17,6 +17,7 @@ import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
 import { Box, BoxProps } from '@mui/material';
 import useKeepElementScroll from '@/domain/shared/utils/scroll/useKeepElementScroll';
+import { gutters } from '@/core/ui/grid/utils';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -180,7 +181,7 @@ const CommentsComponent = ({
             canAddReaction={canAddReaction}
             {...commentReactionsMutations}
           />
-          <CaptionSmall textAlign="center" onClick={onClickMore}>
+          <CaptionSmall textAlign="center" onClick={onClickMore} sx={{ paddingBottom: gutters() }}>
             {t('common.show-all')}
           </CaptionSmall>
         </>
