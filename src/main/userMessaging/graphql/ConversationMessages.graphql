@@ -32,6 +32,18 @@ query ConversationMessages($conversationId: UUID!) {
               }
             }
           }
+          reactions {
+            id
+            emoji
+            timestamp
+            sender {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
         }
       }
     }
