@@ -7,9 +7,12 @@ import useUserContributions from '../userContributions/useUserContributions';
 import useUserOrganizationIds from '../userContributions/useUserOrganizationIds';
 import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
 import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useMeUserContext } from '../routing/MeUserContext';
 
 export const UserProfilePage = () => {
-  const { userId, loading: urlResolverLoading } = useUrlResolver();
+  const meContext = useMeUserContext();
+  const { userId: resolvedUserId, loading: urlResolverLoading } = useUrlResolver();
+  const userId = meContext?.userId ?? resolvedUserId;
 
   const { userModel: userModel, loading } = useUserProvider(userId);
 
@@ -24,7 +27,8 @@ export const UserProfilePage = () => {
 
   const organizationIds = useUserOrganizationIds(userModel?.id);
 
-  if (urlResolverLoading || loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
+  const isLoadingResolver = !meContext && urlResolverLoading;
+  if (isLoadingResolver || loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
 
   if (!userModel) {
     return <Error404 />;

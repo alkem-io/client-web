@@ -277,3 +277,4 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 - GraphQL header injection (`x-guest-name`)
 
 **Documentation**: See `specs/002-guest-whiteboard-access/` for full specification and implementation details.
+
