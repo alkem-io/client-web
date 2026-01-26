@@ -9,6 +9,7 @@ import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
 import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';
 import { useLocation } from 'react-router-dom';
 import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -201,7 +202,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
       // Skip URL resolution for /user/me routes - these are handled by MeUserContext
       const pathname = globalThis.location.pathname;
-      if (pathname === '/user/me' || pathname.startsWith('/user/me/')) {
+      if (pathname === ROUTE_USER_ME || pathname.startsWith(`${ROUTE_USER_ME}/`)) {
         lastProcessedUrlRef.current = nextUrl;
         setCurrentUrl('');
         return;

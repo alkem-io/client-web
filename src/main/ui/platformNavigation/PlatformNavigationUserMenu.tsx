@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import Gutters from '@/core/ui/grid/Gutters';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 import LanguageSelect from '@/core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
@@ -136,7 +136,7 @@ const PlatformNavigationUserMenu = ({
             {userModel && (
               <NavigatableMenuItem
                 iconComponent={AssignmentIndOutlined}
-                route="/user/me"
+                route={ROUTE_USER_ME}
                 onClick={onClose}
               >
                 {t('pages.user-profile.title')}
@@ -145,7 +145,7 @@ const PlatformNavigationUserMenu = ({
             {userModel && (
               <NavigatableMenuItem
                 iconComponent={LocalOfferOutlinedIcon}
-                route={buildUserAccountUrl('/user/me')}
+                route={buildUserAccountUrl(ROUTE_USER_ME)}
                 onClick={onClose}
               >
                 {t('pages.home.mainNavigation.myAccount')}
