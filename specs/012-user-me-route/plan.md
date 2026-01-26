@@ -143,5 +143,13 @@ The implementation follows a **wrapper component pattern**:
 |------|--------|---------|
 | `src/domain/community/user/routing/UserMeRoute.tsx` | CREATE | Wrapper providing current user's ID |
 | `src/domain/community/user/routing/MeUserContext.tsx` | CREATE | Context for "me" route user ID |
+| `src/domain/community/user/routing/useUserRouteContext.ts` | CREATE | Hook consolidating user route context |
 | `src/domain/community/user/routing/UserRoute.tsx` | MODIFY | Add `/me/*` route before `:userNameId/*` |
-| `src/domain/community/user/userProfilePage/UserProfilePage.tsx` | MODIFY | Check MeUserContext before useUrlResolver |
+| `src/domain/community/user/userProfilePage/UserProfilePage.tsx` | MODIFY | Use unified route context |
+| `src/domain/community/user/layout/UserPageLayout.tsx` | MODIFY | Preserve `/user/me` URL context |
+| `src/domain/community/user/layout/UserPageBanner.tsx` | MODIFY | Preserve `/user/me` URL context |
+| `src/main/routing/urlResolver/UrlResolverProvider.tsx` | MODIFY | Skip URL resolution for `/user/me` paths |
+| `src/main/ui/platformNavigation/PlatformNavigationUserMenu.tsx` | MODIFY | Navigation links point to `/user/me` |
+| `src/domain/platform/routes/constants.ts` | MODIFY | Add `ROUTE_USER_ME` constant |
+| `src/domain/community/userAdmin/tabs/*.tsx` | MODIFY | Use unified route context for admin pages |
+| `src/core/i18n/en/translation.en.json` | MODIFY | Add loading text translation key |

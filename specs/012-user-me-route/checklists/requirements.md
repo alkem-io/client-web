@@ -34,3 +34,4 @@
 - All checklist items pass validation
 - Spec is ready for `/speckit.clarify` or `/speckit.plan`
 - The Assumptions section references internal codebase patterns for context but does not prescribe implementation
+- See `.specify/memory/constitution.md` for project constitution and coding guidelines
