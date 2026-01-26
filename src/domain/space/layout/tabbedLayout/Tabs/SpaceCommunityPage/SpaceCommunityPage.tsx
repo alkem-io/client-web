@@ -188,6 +188,7 @@ const SpaceCommunityPage = () => {
           loading={loading}
           onSortOrderUpdate={onCalloutsSortOrderUpdate}
           onCalloutUpdate={refetchCallout}
+          defaultTemplateId={flowStateForTab?.defaultCalloutTemplate?.id}
         />
       </ContentColumn>
     </PageContent>

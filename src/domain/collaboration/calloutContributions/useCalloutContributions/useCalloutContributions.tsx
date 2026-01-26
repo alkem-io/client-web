@@ -1,7 +1,6 @@
 import { useCalloutContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  CalloutAllowedContributors,
   CalloutContributionsQuery,
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -50,7 +49,6 @@ export interface useCalloutContributionsProvided {
     total: number;
   };
 
-  canCreateContribution: boolean;
   subscriptionEnabled: boolean;
   loading?: boolean;
 
@@ -107,34 +105,6 @@ const useCalloutContributions = ({
     skip: !inView || !callout?.id || skip || contributionType !== CalloutContributionType.Post,
   });
 
-  const canCreateContribution = useMemo(() => {
-    if (
-      !callout ||
-      !callout.settings.contribution.enabled ||
-      callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.None)
-    ) {
-      return false;
-    }
-
-    const calloutPrivileges = callout.authorization?.myPrivileges ?? [];
-    const requiredPrivileges = [AuthorizationPrivilege.Contribute];
-
-    if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins)) {
-      requiredPrivileges.push(AuthorizationPrivilege.Update);
-    }
-
-    switch (contributionType) {
-      case CalloutContributionType.Whiteboard:
-        requiredPrivileges.push(AuthorizationPrivilege.CreateWhiteboard);
-        break;
-      case CalloutContributionType.Post:
-        requiredPrivileges.push(AuthorizationPrivilege.CreatePost);
-        break;
-    }
-
-    return requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
-  }, [callout, callout?.settings, callout?.authorization, contributionType]);
-
   // Use previousData while loading to avoid losing already shown items when the expanded query fires
   const effectiveData = useMemo(() => {
     if (loading) {
@@ -175,7 +145,6 @@ const useCalloutContributions = ({
       total: totalContributionsCount,
     },
     loading,
-    canCreateContribution,
     subscriptionEnabled: subscription.enabled,
     onCalloutContributionsUpdate: async () => {
       await onCalloutUpdate?.();

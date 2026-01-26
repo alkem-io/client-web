@@ -14,12 +14,18 @@ import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 // Lazy load page components to reduce initial bundle size
-const SpaceDashboardPage = lazyWithGlobalErrorHandler(() => import('../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage'));
+const SpaceDashboardPage = lazyWithGlobalErrorHandler(
+  () => import('../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage')
+);
 const SpaceAboutPage = lazyWithGlobalErrorHandler(() => import('@/domain/space/about/SpaceAboutPage'));
 const SpaceAdminL0Route = lazyWithGlobalErrorHandler(() => import('../../spaceAdmin/routing/SpaceAdminRouteL0'));
-const SpaceCommunityPage = lazyWithGlobalErrorHandler(() => import('../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage'));
+const SpaceCommunityPage = lazyWithGlobalErrorHandler(
+  () => import('../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage')
+);
 const SpaceSubspacesPage = lazyWithGlobalErrorHandler(() => import('../layout/tabbedLayout/Tabs/SpaceSubspacesPage'));
-const FlowStateTabPage = lazyWithGlobalErrorHandler(() => import('../layout/tabbedLayout/Tabs/FlowStateTabPage/FlowStateTabPage'));
+const SpaceCustomTabPage = lazyWithGlobalErrorHandler(
+  () => import('../layout/tabbedLayout/Tabs/SpaceCustomTabPage/SpaceCustomTabPage')
+);
 const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('./SubspaceRoutes'));
 const SpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('../pages/SpaceCalloutPage'));
 
@@ -87,7 +93,7 @@ export const SpaceTabbedPages = () => {
       {sectionIndex === '1' && <SpaceCommunityPage />}
       {sectionIndex === '2' && <SpaceSubspacesPage />}
       {currentSectionNumber >= 3 && currentSectionNumber < totalTabs && (
-        <FlowStateTabPage sectionIndex={currentSectionNumber} />
+        <SpaceCustomTabPage sectionIndex={currentSectionNumber} />
       )}
     </Suspense>
   );
@@ -99,13 +105,13 @@ const SpaceRoutes = () => {
       <Routes>
         {/* keep the logic around sections in one place - here*/}
         <Route path="/" element={<SpacePageLayout />}>
-          <Route 
-            path={EntityPageSection.About} 
+          <Route
+            path={EntityPageSection.About}
             element={
               <Suspense fallback={<Loading />}>
                 <SpaceAboutPage />
               </Suspense>
-            } 
+            }
           />
 
           <Route element={<SpaceProtectedRoutes />}>
@@ -128,21 +134,21 @@ const SpaceRoutes = () => {
                 </Suspense>
               }
             />
-            <Route 
-              path={`${EntityPageSection.Settings}/*`} 
+            <Route
+              path={`${EntityPageSection.Settings}/*`}
               element={
                 <Suspense fallback={<Loading />}>
                   <SpaceAdminL0Route />
                 </Suspense>
-              } 
+              }
             />
-            <Route 
-              path={`/:dialog?/:${nameOfUrl.calendarEventNameId}?`} 
+            <Route
+              path={`/:dialog?/:${nameOfUrl.calendarEventNameId}?`}
               element={
                 <Suspense fallback={<Loading />}>
                   <SpaceDashboardPage />
                 </Suspense>
-              } 
+              }
             />
           </Route>
           {/* subspaces have their own protections */}

@@ -6,6 +6,10 @@ fragment userSettingsFragment on UserSettings {
   privacy {
     contributionRolesPubliclyVisible
   }
+  homeSpace {
+    spaceID
+    autoRedirect
+  }
   notification {
     platform {
       admin {

@@ -1348,6 +1348,7 @@
     },
     "innovationFlowSettings": {
       "title": "crwdns18750:0crwdne18750:0",
+      "importing": "crwdns43636:0crwdne43636:0",
       "buttonTooltip": "crwdns18752:0crwdne18752:0",
       "editProfileDialog": {
         "title": "crwdns18754:0crwdne18754:0"
@@ -1380,12 +1381,24 @@
           },
           "importCalloutsDialog": {
             "title": "crwdns40982:0$t(common.template)crwdne40982:0",
-            "description": "crwdns42552:0$t(common.template)crwdnd42552:0$t(common.innovation-flow)crwdnd42552:0$t(common.posts)crwdne42552:0",
-            "yes": "crwdns42554:0$t(common.posts)crwdnd42554:0$t(common.template)crwdne42554:0",
-            "yesDescription": "crwdns42556:0$t(common.posts)crwdnd42556:0$t(common.template)crwdne42556:0",
-            "no": "crwdns40990:0$t(common.innovation-flow)crwdne40990:0",
-            "noDescription": "crwdns42558:0$t(common.innovation-flow)crwdnd42558:0$t(common.posts)crwdne42558:0",
-            "apply": "crwdns40994:0$t(common.template)crwdne40994:0"
+            "description": "crwdns43642:0$t(common.template)crwdnd43642:0$t(common.innovationFlow)crwdnd43642:0$t(common.posts)crwdne43642:0",
+            "option1": {
+              "label": "crwdns43644:0crwdne43644:0",
+              "description": "crwdns43646:0$t(common.innovationFlow)crwdnd43646:0$t(common.posts)crwdnd43646:0$t(common.template)crwdnd43646:0$t(common.posts)crwdne43646:0"
+            },
+            "option2": {
+              "label": "crwdns43648:0$t(common.template)crwdnd43648:0$t(common.posts)crwdne43648:0",
+              "description": "crwdns43650:0$t(common.posts)crwdnd43650:0$t(common.template)crwdne43650:0"
+            },
+            "option3": {
+              "label": "crwdns43652:0$t(common.template)crwdnd43652:0$t(common.posts)crwdne43652:0",
+              "description": "crwdns43654:0$t(common.innovationFlow)crwdnd43654:0$t(common.template)crwdnd43654:0$t(common.posts)crwdne43654:0"
+            },
+            "confirmDelete": {
+              "title": "crwdns43656:0crwdne43656:0",
+              "description": "crwdns43658:0$t(common.posts)crwdnd43658:0$t(common.posts)crwdnd43658:0$t(common.template)crwdne43658:0"
+            },
+            "apply": "crwdns43660:0crwdne43660:0"
           }
         }
       },

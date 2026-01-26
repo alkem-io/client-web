@@ -18,8 +18,9 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import SearchableList, { SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import { Cached, DeleteOutline, DownloadForOfflineOutlined, SwapVert } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import SubspacesSortDialog from './SubspacesSortDialog/SubspacesSortDialog';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
@@ -54,6 +55,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const [subspaceCreationDialogOpen, setSubspaceCreationDialogOpen] = useState(false);
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
   const [saveAsTemplateDialogSelectedSpace, setSaveAsTemplateDialogSelectedSpace] = useState<SearchableListItem>();
+  const [sortDialogOpen, setSortDialogOpen] = useState(false);
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId },
@@ -199,14 +201,18 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         <PageContentBlock>
           <PageContentBlockHeader title={t('common.subspaces')} />
           <Box display="flex" flexDirection="column">
-            <Button
-              startIcon={<AddOutlinedIcon />}
-              variant="contained"
-              onClick={() => setSubspaceCreationDialogOpen(true)}
-              sx={{ alignSelf: 'end', marginBottom: 2 }}
-            >
-              {t('buttons.create')}
-            </Button>
+            <Box display="flex" gap={1} justifyContent="flex-end" marginBottom={2}>
+              <Button startIcon={<SwapVert />} variant="outlined" onClick={() => setSortDialogOpen(true)}>
+                {t('pages.admin.space.sections.subspaces.reorderSubspaces')}
+              </Button>
+              <Button
+                startIcon={<AddOutlinedIcon />}
+                variant="contained"
+                onClick={() => setSubspaceCreationDialogOpen(true)}
+              >
+                {t('buttons.create')}
+              </Button>
+            </Box>
             <Gutters disablePadding>
               <SearchableList data={subspaces} getActions={getSubSpaceActions} loading={loading} />
             </Gutters>
@@ -241,6 +247,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
             templatesSetId={templatesSet.id}
           />
         )}
+        <SubspacesSortDialog open={sortDialogOpen} onClose={() => setSortDialogOpen(false)} spaceId={spaceId} />
       </>
     </LayoutSwitcher>
   );
