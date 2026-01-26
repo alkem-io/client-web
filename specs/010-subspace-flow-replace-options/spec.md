@@ -1,6 +1,6 @@
 # Feature Specification: SubSpace Innovation Flow Replace Options
 
-**Feature Branch**: `001-subspace-flow-replace-options`
+**Feature Branch**: `010-subspace-flow-replace-options`
 **Created**: 2026-01-15
 **Status**: Draft
 **Input**: User description: "When users want to change their SubSpace innovation flow template after already using one, they currently must manually delete all posts from the previous template before applying a new one, which creates unnecessary friction. This task implements three distinct options when editing SubSpace flows."

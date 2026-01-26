@@ -1,6 +1,6 @@
 # Implementation Plan: Homepage Redesign
 
-**Branch**: `001-homepage-redesign` | **Date**: 2026-01-14 | **Spec**: [spec.md](./spec.md)
+**Branch**: `008-homepage-redesign` | **Date**: 2026-01-14 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/008-homepage-redesign/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.

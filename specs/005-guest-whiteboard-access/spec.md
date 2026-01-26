@@ -1,6 +1,6 @@
 # Feature Specification: Guest Whiteboard Public Access Page
 
-**Feature Branch**: `002-guest-whiteboard-access`
+**Feature Branch**: `005-guest-whiteboard-access`
 **Created**: 2025-11-04
 **Status**: Draft
 **Input**: User description: "I need to add a feature to the application which displays Whiteboards to guest users. On that page only the Whiteboard should be displayed without anything else from the layout of the application. The page should reside on a separate URL like so: `public/whiteboard/:whiteboardId`. When a user lands on the page application should try to load the whiteboard from the server and if it can't the user should be presented with a popup that prompts him to join the whiteboard by providing a nickname - see the pasted image. After the user provides the nickname the application should store it in a cookie/session storage until the end of the session and send with every request to the server as `x-guest-name` header. The button `Sign in to Alkemio` should lead to the sign in form. When the whiteboard is displayed there should be a warning in the bottom right corner reading `This whiteboard is visible to guest users`."

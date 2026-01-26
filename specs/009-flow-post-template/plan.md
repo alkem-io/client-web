@@ -1,6 +1,6 @@
 # Implementation Plan: Default Post Template for Flow Steps
 
-**Branch**: `001-flow-post-template` | **Date**: 2026-01-09 | **Spec**: [spec.md](./spec.md)
+**Branch**: `009-flow-post-template` | **Date**: 2026-01-09 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/009-flow-post-template/spec.md`
 
 ## Summary

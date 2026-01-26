@@ -1,7 +1,7 @@
 # Implementation Tasks: Public Whiteboard Guest Access
 
 **Feature**: Public Whiteboard Guest Access Page
-**Branch**: `002-guest-whiteboard-access`
+**Branch**: `005-guest-whiteboard-access`
 **Spec**: `specs/005-guest-whiteboard-access/spec.md`
 **Plan**: `specs/005-guest-whiteboard-access/plan.md`
 **Data Model**: `specs/005-guest-whiteboard-access/data-model.md`

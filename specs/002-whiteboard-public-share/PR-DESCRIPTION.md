@@ -3,7 +3,7 @@
 ## Feature Diff Summary (Spec 001-002)
 
 **Base**: `develop`
-**Branch**: `001-002-whiteboard-public-share`
+**Branch**: `002-whiteboard-public-share`
 
 ---
 

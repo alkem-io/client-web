@@ -1,6 +1,6 @@
 # Implementation Plan: Tag Cloud Filter for Knowledge Base
 
-**Branch**: `002-tag-cloud-filter` | **Date**: 2025-11-04 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-tag-cloud` | **Date**: 2025-11-04 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/001-tag-cloud/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.

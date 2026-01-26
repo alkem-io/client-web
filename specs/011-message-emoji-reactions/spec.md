@@ -1,6 +1,6 @@
 # Feature Specification: Message Emoji Reactions for User-to-User Messaging
 
-**Feature Branch**: `001-message-emoji-reactions`
+**Feature Branch**: `011-message-emoji-reactions`
 **Created**: 2026-01-20
 **Status**: Draft
 **GitHub Issue**: [#9163](https://github.com/alkem-io/client-web/issues/9163)

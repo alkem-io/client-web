@@ -1,6 +1,6 @@
 # Feature Specification: Whiteboard PUBLIC_SHARE Privilege
 
-**Feature Branch**: `001-002-whiteboard-public-share`
+**Feature Branch**: `002-whiteboard-public-share`
 **Created**: 2025-01-20
 **Status**: Draft
 **Input**: User description: "Implement PUBLIC_SHARE privilege system for whiteboards. Backend grants privilege to space admins and whiteboard owners when allowGuestContributions is ON. Client checks authorization before showing Guest access toggle. No inheritance between space/subspace levels."

@@ -1,6 +1,6 @@
 # Feature Specification: Default Post Template for Flow Steps
 
-**Feature Branch**: `001-flow-post-template`
+**Feature Branch**: `009-flow-post-template`
 **Created**: 2026-01-09
 **Status**: Draft
 **Input**: User description: "Configure a default post template for a flow so that every new post starts from a consistent structure chosen by the admin. Add functionality in Layout Settings to let admins define a default post template for a flow. The option appears under the three-dot menu in the Layout section and opens a dialog where the admin can view, add, remove, or update the selected template. When set, this template automatically loads in the 'Add Post' dialog for members in the exact flow step, ensuring consistent post structure across the flow."

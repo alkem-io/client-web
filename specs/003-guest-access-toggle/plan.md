@@ -1,6 +1,6 @@
 # Implementation Plan: Whiteboard Guest Access Toggle
 
-**Branch**: `[001-guest-access-toggle]` | **Date**: 2025-11-17 | **Spec**: specs/003-guest-access-toggle/spec.md
+**Branch**: `003-guest-access-toggle` | **Date**: 2025-11-17 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/003-guest-access-toggle/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.

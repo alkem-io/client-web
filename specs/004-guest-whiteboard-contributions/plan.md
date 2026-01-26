@@ -1,6 +1,6 @@
 # Implementation Plan: Guest Whiteboard Contributions Toggle
 
-**Branch**: `client-8727` | **Date**: 2025-10-31 | **Spec**: [spec.md](./spec.md)
+**Branch**: `004-guest-whiteboard-contributions` | **Date**: 2025-10-31 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/004-guest-whiteboard-contributions/spec.md`
 
 ## Summary

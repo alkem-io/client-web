@@ -1,6 +1,6 @@
 # Quickstart Guide: Default Post Template for Flow Steps
 
-**Feature Branch**: `001-flow-post-template` | **Date**: 2026-01-09
+**Feature Branch**: `009-flow-post-template` | **Date**: 2026-01-09
 **Related**: [spec.md](./spec.md) | [plan.md](./plan.md)
 
 ## Overview

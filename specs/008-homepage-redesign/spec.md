@@ -1,6 +1,6 @@
 # Feature Specification: Homepage Redesign
 
-**Feature Branch**: `001-homepage-redesign`
+**Feature Branch**: `008-homepage-redesign`
 **Created**: 2026-01-14
 **Status**: Draft
 **Input**: User description: "Implement the new Homepage design according to the provided Figma design"

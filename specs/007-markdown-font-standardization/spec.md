@@ -1,6 +1,6 @@
 # Feature Specification: Markdown Typography Standardization
 
-**Feature Branch**: `001-markdown-font-standardization`
+**Feature Branch**: `007-markdown-font-standardization`
 **Created**: 2026-01-07
 **Status**: Draft
 **Input**: User description: "In our existing markdown components we need to change the fonts that we're using. We have MD input/s and markdown previews. Their styling is defined in different places and they should match as much as possible. Font specifications: H3: Montserrat regular, 15, LH 20; MD H1: Source Sans Pro Bold, 14, LH20, PH10, LS0.13px; MD H2: Source Sans Pro Bold, 13, LH 20, PH10, LS0.13px; MD H3: Source Sans Pro Bold, 12, LH 20, PH10, LS0.13px; MD Body: Source Sans Pro Regular, 12, LH 20, LS0.13px"

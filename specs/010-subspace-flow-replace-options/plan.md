@@ -1,6 +1,6 @@
 # Implementation Plan: SubSpace Innovation Flow Replace Options
 
-**Branch**: `001-subspace-flow-replace-options` | **Date**: 2026-01-15 | **Spec**: [spec.md](./spec.md)
+**Branch**: `010-subspace-flow-replace-options` | **Date**: 2026-01-15 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/010-subspace-flow-replace-options/spec.md`
 **Reference**: [GitHub Issue #8895](https://github.com/alkem-io/client-web/issues/8895)
 

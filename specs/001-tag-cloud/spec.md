@@ -1,6 +1,6 @@
 # Feature Specification: Tag Cloud Filter for Knowledge Base
 
-**Feature Branch**: `002-tag-cloud-filter`
+**Feature Branch**: `001-tag-cloud`
 **Created**: 2025-11-04
 **Status**: Draft
 **Input**: User description: "Show tag cloud on top of knowledge base"

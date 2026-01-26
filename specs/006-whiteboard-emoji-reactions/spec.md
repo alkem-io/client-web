@@ -1,6 +1,6 @@
 # Feature Specification: Whiteboard Emoji Content
 
-**Feature Branch**: `003-whiteboard-emoji-reactions`
+**Feature Branch**: `006-whiteboard-emoji-reactions`
 **Created**: 2025-12-26
 **Status**: Draft
 **Input**: User description: "I want to create a new feature to allow emoji reactions on whiteboards. The user should be able to click on an emoji selector outside the main whiteboard canvas, select an emoji and then place the emoji somewhere on the whiteboard canvas."

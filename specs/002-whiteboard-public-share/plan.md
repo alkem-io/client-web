@@ -1,6 +1,6 @@
 # Implementation Plan: Whiteboard PUBLIC_SHARE Privilege
 
-**Branch**: `001-002-whiteboard-public-share` | **Date**: 2025-11-06 | **Spec**: [spec.md](./spec.md)
+**Branch**: `002-whiteboard-public-share` | **Date**: 2025-11-06 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/002-whiteboard-public-share/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
