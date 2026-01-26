@@ -1,18 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import {
   ActivityLogResultType,
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import {
-  ActivityEventType,
-  ActivityFeedRoles,
-  LatestContributionsQuery,
-  LatestContributionsQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -96,14 +90,14 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
     return spaces;
   }, [spaceMemberships, t]);
 
-  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<
-    LatestContributionsQuery,
-    LatestContributionsQueryVariables
-  >({
-    useQuery: useLatestContributionsQuery,
-    getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: LATEST_CONTRIBUTIONS_PAGE_SIZE,
+  // Call the query hook directly instead of passing it to usePaginatedQuery
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreRaw,
+  } = useLatestContributionsQuery({
     variables: {
+      first: LATEST_CONTRIBUTIONS_PAGE_SIZE,
       filter: {
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
         roles: filter.role === ROLE_OPTION_ALL ? undefined : [filter.role],
@@ -111,6 +105,27 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
       },
     },
   });
+
+  const pageInfo = data?.activityFeed.pageInfo;
+  const hasMore = pageInfo?.hasNextPage ?? false;
+
+  const fetchMore = useCallback(async () => {
+    if (!data) {
+      return;
+    }
+
+    await fetchMoreRaw({
+      variables: {
+        first: LATEST_CONTRIBUTIONS_PAGE_SIZE,
+        after: pageInfo?.endCursor,
+        filter: {
+          spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
+          roles: filter.role === ROLE_OPTION_ALL ? undefined : [filter.role],
+          excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
+        },
+      },
+    });
+  }, [data, fetchMoreRaw, pageInfo?.endCursor, filter.space, filter.role, LATEST_CONTRIBUTIONS_PAGE_SIZE]);
 
   const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });
 

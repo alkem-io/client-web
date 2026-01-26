@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -6,8 +8,10 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
+import { BlockSectionTitle } from '@/core/ui/typography';
 
 const MyResources = () => {
+  const { t } = useTranslation();
   const { accountId } = useCurrentUserContext();
 
   const { data: accountData, loading: loadingAccount } = useMyResourcesQuery({
@@ -37,31 +41,52 @@ const MyResources = () => {
 
   return (
     <PageContentBlock>
-      {innovationHubs?.map(hub => (
-        <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />
-      ))}
-      {spaces.map(space => (
-        <SpaceCardHorizontal
-          key={space.id}
-          space={{ id: space.id, about: space.about, level: space.level }}
-          size="small"
-          deepness={0}
-          seamless
-          sx={{
-            display: 'inline-block',
-            maxWidth: '100%',
-            padding: 0,
-          }}
-          disableHoverState
-          disableTagline
-        />
-      ))}
-      {virtualContributors?.map(vc => (
-        <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" withUnifiedTitle seamless />
-      ))}
-      {innovationPacks?.map(pack => (
-        <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />
-      ))}
+      {innovationHubs.length > 0 && (
+        <Box>
+          <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.innovationHubs')}</BlockSectionTitle>
+          {innovationHubs?.map(hub => (
+            <InnovationHubCardHorizontal key={hub.id} {...hub} size="medium" />
+          ))}
+        </Box>
+      )}
+      {spaces.length > 0 && (
+        <Box>
+          <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.spaces')}</BlockSectionTitle>
+          {spaces.map(space => (
+            <SpaceCardHorizontal
+              key={space.id}
+              space={{ id: space.id, about: space.about, level: space.level }}
+              size="medium"
+              deepness={0}
+              withIcon={false}
+              seamless
+              sx={{
+                display: 'inline-block',
+                maxWidth: '100%',
+                padding: 0,
+              }}
+              disableHoverState
+              disableTagline
+            />
+          ))}
+        </Box>
+      )}
+      {virtualContributors.length > 0 && (
+        <Box>
+          <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.virtualContributors')}</BlockSectionTitle>
+          {virtualContributors.map(vc => (
+            <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="medium" withUnifiedTitle seamless />
+          ))}
+        </Box>
+      )}
+      {innovationPacks.length > 0 && (
+        <Box>
+          <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.innovationPacks')}</BlockSectionTitle>
+          {innovationPacks.map(pack => (
+            <InnovationPackCardHorizontal key={pack.id} {...pack} size="medium" />
+          ))}
+        </Box>
+      )}
     </PageContentBlock>
   );
 };

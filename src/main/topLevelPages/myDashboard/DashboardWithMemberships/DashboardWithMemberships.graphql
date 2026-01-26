@@ -1,5 +1,16 @@
 query DashboardWithMemberships($limit: Float! = 0) {
   me {
+    user {
+      id
+      settings {
+        homeSpace {
+          spaceID
+        }
+      }
+      profile {
+        url
+      }
+    }
     spaceMembershipsHierarchical(limit: $limit) {
       id
       space {

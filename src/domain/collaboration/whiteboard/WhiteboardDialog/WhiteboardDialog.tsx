@@ -13,6 +13,7 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
@@ -34,12 +35,24 @@ import {
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
+/** Extended CollabState that includes emoji reaction placement controls for headerActions */
+export interface WhiteboardHeaderState extends CollabState {
+  isReadOnly: boolean;
+  emojiPlacementInfo: EmojiReactionPlacementInfo | null;
+  onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
+}
+
 export interface WhiteboardDetails {
   id: string;
   nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
+  guestContributionsAllowed?: boolean;
   contentUpdatePolicy?: ContentUpdatePolicy;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
+    credentialRules?: Array<{
+      name?: string | null;
+      grantedPrivileges: AuthorizationPrivilege[];
+    }>;
   };
   profile: {
     id: string;
@@ -81,7 +94,7 @@ interface WhiteboardDialogProps {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    headerActions?: (state: CollabState) => ReactNode;
+    headerActions?: (state: WhiteboardHeaderState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
@@ -292,7 +305,17 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           onSceneInitChange: setSceneInitialized,
         }}
       >
-        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration }) => {
+        {({
+          children,
+          mode,
+          modeReason,
+          collaborating,
+          connecting,
+          restartCollaboration,
+          isReadOnly,
+          emojiPlacementInfo,
+          onEmojiPlacementModeChange,
+        }) => {
           return (
             <Formik
               innerRef={formikRef}
@@ -310,7 +333,15 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 fullScreen={options.fullscreen || columns <= 4}
               >
                 <DialogHeader
-                  actions={options.headerActions?.({ mode, modeReason, collaborating, connecting })}
+                  actions={options.headerActions?.({
+                    mode,
+                    modeReason,
+                    collaborating,
+                    connecting,
+                    isReadOnly,
+                    emojiPlacementInfo,
+                    onEmojiPlacementModeChange,
+                  })}
                   onClose={onClose}
                   titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
                 >
@@ -338,6 +369,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                   canUpdateContent={options.canEdit!}
                   createdBy={whiteboard?.createdBy}
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                  guestAccessEnabled={whiteboard?.guestContributionsAllowed}
                 />
               </Dialog>
             </Formik>

@@ -8,6 +8,7 @@ export interface AutomaticOverflowGradientProps extends BoxProps {
   lastLine?: boolean;
   backgroundColor?: BackgroundColor;
   overflowMarker?: ReactNode;
+  expanderButton?: ReactNode;
 }
 
 const AutomaticOverflowGradient = ({
@@ -15,6 +16,7 @@ const AutomaticOverflowGradient = ({
   backgroundColor,
   sx,
   overflowMarker,
+  expanderButton,
   children,
   ...props
 }: AutomaticOverflowGradientProps) => {
@@ -50,9 +52,12 @@ const AutomaticOverflowGradient = ({
         }}
         {...props}
       >
-        <Box ref={internalRef}>{children}</Box>
+        <Box ref={internalRef} sx={{ paddingBottom: gutters(0.5) }}>
+          {children}
+        </Box>
       </Box>
       {isOverflowing && overflowMarker}
+      {isOverflowing && expanderButton}
     </>
   );
 };

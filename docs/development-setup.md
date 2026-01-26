@@ -267,6 +267,8 @@ TBD
 
 TBD
 
-## Translation (i18)
+## Translation (i18n)
 
 Translation should happen in the container components. The presentational components shouldn't know about translation.
+
+- All user-facing copy must live in `src/core/i18n/en/translation.en.json`. Never pass a string literal as the fallback (second argument) to `t(...)`; doing so skips our localization pipeline. If a key is missing, add it to the English source file instead of hardcoding the text.

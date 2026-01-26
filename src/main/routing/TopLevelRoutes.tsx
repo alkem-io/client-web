@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
@@ -18,7 +17,10 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
+import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 
+const HomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/HomePage'));
+const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -58,6 +60,17 @@ export const TopLevelRoutes = () => {
       >
         <Route index element={<RedirectToLanding />} />
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
+        {/* Public routes - accessible without authentication */}
+        <Route
+          path={`${GUEST_SHARE_PATH}/:whiteboardId`}
+          element={
+            <WithApmTransaction path={`${GUEST_SHARE_PATH}/:whiteboardId`}>
+              <Suspense fallback={<Loading />}>
+                <PublicWhiteboardPage />
+              </Suspense>
+            </WithApmTransaction>
+          }
+        />
         {IdentityRoute()}
         {devRoute()}
         <Route
@@ -65,7 +78,9 @@ export const TopLevelRoutes = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={TopLevelRoutePath.Home}>
-                <HomePage />
+                <Suspense fallback={<Loading />}>
+                  <HomePage />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }

@@ -30,6 +30,7 @@ const searchResults: SearchResult[] = [
           tagset: {
             tags: ['callout', 'card'],
           },
+          url: '/demo-callout',
         },
       },
       contributions: [
@@ -61,6 +62,7 @@ const searchResults: SearchResult[] = [
           tagset: {
             tags: [],
           },
+          url: '/demo-callout-2',
         },
       },
       contributions: [

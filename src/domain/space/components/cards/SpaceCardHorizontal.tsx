@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { ParseKeys } from 'i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import {
@@ -52,6 +53,7 @@ export interface SpaceCardHorizontalProps {
     };
   };
   deepness?: number;
+  withIcon?: boolean;
   seamless?: boolean;
   sx?: PaperProps['sx'];
   actions?: ReactNode;
@@ -71,6 +73,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 const SpaceCardHorizontal = ({
   space,
   deepness = !space.level || space.level === SpaceLevel.L1 ? 0 : 1,
+  withIcon = true,
   seamless,
   sx,
   actions,
@@ -78,7 +81,7 @@ const SpaceCardHorizontal = ({
   disableHoverState = false,
   disableTagline = false,
 }: SpaceCardHorizontalProps) => {
-  const Icon = space.level ? spaceLevelIcon[space.level] : undefined;
+  const Icon = withIcon && space.level ? spaceLevelIcon[space.level] : undefined;
 
   const { t } = useTranslation();
 
@@ -114,25 +117,21 @@ const SpaceCardHorizontal = ({
         to={space.about.profile.url}
         actions={actions ? <ActionsMenu>{actions}</ActionsMenu> : undefined}
       >
-        <BlockTitleWithIcon
-          title={space.about.profile.displayName}
-          icon={Icon ? <Icon /> : undefined}
-          sx={{ height: gutters(1.5) }}
-        >
+        <BlockTitleWithIcon title={space.about.profile.displayName} icon={Icon ? <Icon /> : undefined}>
           <FlexSpacer />
 
           {spaceSubscriptionLevel && (
             <Chip
               variant="filled"
               color="default"
-              label={t(`common.enums.licenseEntitlementType.${spaceSubscriptionLevel}` as const)}
+              label={t(`common.enums.licenseEntitlementType.${spaceSubscriptionLevel}` as ParseKeys)}
             />
           )}
           {communityRole && (
             <Chip
               variant="filled"
               color="primary"
-              label={<Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>}
+              label={<Typography variant="button">{t(`common.roles.${communityRole}` as ParseKeys)}</Typography>}
             />
           )}
         </BlockTitleWithIcon>

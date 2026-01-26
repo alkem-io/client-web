@@ -1,5 +1,4 @@
 import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip, Box } from '@mui/material';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   CreateCalloutContributionInput,
   CalloutContributionType,
@@ -7,17 +6,18 @@ import {
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCalloutTemplateImport } from './useCalloutTemplateImport';
 import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
+import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
@@ -32,16 +32,19 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { mapCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
-import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
+import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
   onClose?: () => void;
 
   // Where to save the callout:
-  calloutsSetId: string | undefined;
-  calloutClassification?: ClassificationTagsetModel[] | undefined;
+  calloutsSetId?: string;
+  calloutClassification?: ClassificationTagsetModel[];
+
+  // Default template to pre-load (from innovation flow state):
+  defaultTemplateId?: string | null;
 
   calloutRestrictions?: CalloutRestrictions;
 }
@@ -51,89 +54,48 @@ const CreateCalloutDialog = ({
   onClose,
   calloutsSetId,
   calloutClassification,
+  defaultTemplateId,
   calloutRestrictions,
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
+  const { isSmallScreen: isMobile } = useScreenSize();
+
   const ensurePresence = useEnsurePresence();
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
   const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
 
-  const [importCalloutTemplateDialogOpen, setImportCalloutTemplateDialogOpen] = useState(false);
-  const [importCalloutTemplateConfirmDialogOpen, setImportCalloutTemplateConfirmDialogOpen] = useState(false);
-
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
-  const [templateSelected, setTemplateSelected] = useState<CalloutFormSubmittedValues | undefined>(undefined);
-  const [fetchTemplateContent] = useTemplateContentLazyQuery();
-  const normalizeTemplateMediaGallery = useCallback(
-    (formData: CalloutFormSubmittedValues | undefined): CalloutFormSubmittedValues | undefined => {
-      if (!formData?.framing.mediaGallery?.visuals) {
-        return formData;
-      }
-
-      return {
-        ...formData,
-        framing: {
-          ...formData.framing,
-          mediaGallery: {
-            ...formData.framing.mediaGallery,
-            visuals: formData.framing.mediaGallery.visuals.map(visual => ({
-              ...visual,
-              altText: visual.altText ?? '',
-            })),
-          },
-        },
-      };
-    },
-    []
-  );
-
-  const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
-    const { data } = await fetchTemplateContent({
-      variables: {
-        templateId,
-        includeCallout: true,
-      },
-    });
-
-    const template = data?.lookup.template;
-    const templateCallout = template?.callout;
-    setTemplateSelected(
-      normalizeTemplateMediaGallery(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions))
-    );
-    if (!template || !templateCallout) {
-      throw new Error("Couldn't load CalloutTemplate");
-    }
-
-    setImportCalloutTemplateDialogOpen(false);
-  };
-  const handleImportTemplateClick = () => {
-    if (isEmptyCalloutForm(calloutFormData)) {
-      setImportCalloutTemplateDialogOpen(true);
-    } else {
-      setImportCalloutTemplateConfirmDialogOpen(true);
-    }
-  };
+  const {
+    templateSelected,
+    importDialogOpen,
+    confirmDialogOpen,
+    setImportDialogOpen,
+    setConfirmDialogOpen,
+    handleSelectTemplate,
+    handleImportClick,
+    clearTemplate,
+    closeDialogs,
+  } = useCalloutTemplateImport({ calloutRestrictions, defaultTemplateId, dialogOpen: open });
 
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
 
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
   const handleCloseButtonClick = () => {
-    if (!isEmptyCalloutForm(calloutFormData)) {
-      setConfirmCloseDialogOpen(true);
-    } else {
+    if (isEmptyCalloutForm(calloutFormData)) {
       onClose?.();
+    } else {
+      setConfirmCloseDialogOpen(true);
     }
   };
   const handleClose = () => {
-    setTemplateSelected(undefined);
+    clearTemplate();
     setCalloutFormData(undefined);
     setConfirmCloseDialogOpen(false);
-    setImportCalloutTemplateDialogOpen(false);
-    setImportCalloutTemplateConfirmDialogOpen(false);
+    closeDialogs();
     onClose?.();
   };
 
@@ -223,13 +185,23 @@ const CreateCalloutDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth aria-labelledby="create-callout-dialog">
+      <DialogWithGrid
+        open={open}
+        onClose={handleCloseButtonClick}
+        fullWidth
+        fullScreen={isMobile}
+        aria-labelledby="create-callout-dialog"
+      >
         <DialogHeader
           id="create-callout-dialog"
           title={t('callout.create.dialogTitle')}
           onClose={handleCloseButtonClick}
           actions={
-            <Button variant="outlined" onClick={handleImportTemplateClick} startIcon={<TipsAndUpdatesOutlinedIcon />}>
+            <Button
+              variant="outlined"
+              onClick={() => handleImportClick(calloutFormData)}
+              startIcon={<TipsAndUpdatesOutlinedIcon />}
+            >
               {t('buttons.find-template')}
             </Button>
           }
@@ -284,14 +256,10 @@ const CreateCalloutDialog = ({
       </DialogWithGrid>
       <ImportTemplatesDialog
         templateType={TemplateType.Callout}
-        actionButton={() => (
-          <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-            {t('buttons.use')}
-          </Button>
-        )}
-        open={importCalloutTemplateDialogOpen}
+        actionButton={() => <TemplateActionButton />}
+        open={importDialogOpen}
         onSelectTemplate={handleSelectTemplate}
-        onClose={() => setImportCalloutTemplateDialogOpen(false)}
+        onClose={() => setImportDialogOpen(false)}
         enablePlatformTemplates
       />
       <ConfirmationDialog
@@ -301,21 +269,21 @@ const CreateCalloutDialog = ({
           confirmButtonTextId: 'buttons.yesContinue',
         }}
         options={{
-          show: importCalloutTemplateConfirmDialogOpen,
+          show: confirmDialogOpen,
         }}
         actions={{
           onConfirm: () => {
-            setImportCalloutTemplateDialogOpen(true);
-            setImportCalloutTemplateConfirmDialogOpen(false);
+            setImportDialogOpen(true);
+            setConfirmDialogOpen(false);
           },
-          onCancel: () => setImportCalloutTemplateConfirmDialogOpen(false),
+          onCancel: () => setConfirmDialogOpen(false),
         }}
       />
       <ConfirmationDialog
         entities={{
           titleId: 'components.callout-creation.closeDialog.title',
           contentId: 'components.callout-creation.closeDialog.text',
-          confirmButtonTextId: 'buttons.yes-close',
+          confirmButtonTextId: 'buttons.yesClose',
         }}
         options={{
           show: confirmCloseDialogOpen,

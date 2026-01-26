@@ -286,7 +286,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
       {openInviteDialog && selectedVirtualContributor?.id && (
         <InviteVirtualContributorDialog
           title={t('community.invitations.inviteContributorsDialog.vcs.dialogTitle')}
-          spaceDisplayName={''}
+          spaceDisplayName={about?.profile.displayName ?? ''}
           open={openInviteDialog}
           onClose={onCloseInvite}
           contributorId={selectedVirtualContributor.id!}

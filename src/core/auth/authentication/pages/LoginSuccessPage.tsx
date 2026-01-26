@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useGetReturnUrl } from '../utils/useSignUpReturnUrl';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { clearAllGuestSessionData } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 
 export const LoginSuccessPage = () => {
   const returnUrl = useGetReturnUrl();
@@ -14,7 +15,9 @@ export const LoginSuccessPage = () => {
 
   useEffect(() => {
     if (!loading && userModel && returnUrl) {
-      window.location.replace(returnUrl);
+      // Clear all guest session data (name, whiteboard URL) on successful authentication
+      clearAllGuestSessionData();
+      globalThis.location.replace(returnUrl);
     }
   }, [returnUrl, userModel, loading]);
 

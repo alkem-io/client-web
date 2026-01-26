@@ -4,7 +4,7 @@ import MicrosoftIcon from '../AuthProviders/microsoft.svg?react';
 import AppleIcon from '../AuthProviders/apple.svg?react';
 import LinkedInIcon from '../AuthProviders/linkedin.svg?react';
 import GithubIcon from '../AuthProviders/github.svg?react';
-import ViduaIcon from '../AuthProviders/vidua.svg?react';
+import CleverbaseIcon from '../AuthProviders/cleverbase.svg?react';
 
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
@@ -16,28 +16,34 @@ import { OverridableComponent } from '@mui/material/OverridableComponent';
 interface SocialCustomization {
   icon: FC<React.SVGProps<SVGSVGElement> & { title?: string }> | OverridableComponent<SvgIconTypeMap>;
   label: string;
+  sortOrder: number;
 }
 
-const socialCustomizations: Record<string, SocialCustomization> = {
+export const socialCustomizations: Record<string, SocialCustomization> = {
   linkedin: {
     icon: LinkedInIcon,
     label: 'linkedin',
+    sortOrder: 2,
   },
   microsoft: {
     icon: MicrosoftIcon,
     label: 'microsoft',
+    sortOrder: 1,
   },
   github: {
     icon: GithubIcon,
     label: 'github',
+    sortOrder: 4,
   },
   apple: {
     icon: AppleIcon,
     label: 'apple',
+    sortOrder: 3,
   },
-  vidua: {
-    icon: ViduaIcon,
-    label: 'vidua',
+  cleverbase: {
+    icon: CleverbaseIcon,
+    label: 'cleverbase',
+    sortOrder: 5,
   },
 };
 

@@ -83,7 +83,7 @@ const useCalloutsSet = ({
 
   // If we are not in a space, these will be just empty arrays
   const { permissions, entitlements } = useSpacePermissionsAndEntitlements();
-  const calloutsCanBeSavedAsTemplate = permissions.canCreateTemplates && entitlements.entitledToSaveAsTemplate;
+  const canBeSavedAsTemplate = permissions.canSaveAsTemplate && entitlements.entitledToSaveAsTemplate;
 
   const calloutsSet = calloutsData?.lookup.calloutsSet;
 
@@ -110,12 +110,12 @@ const useCalloutsSet = ({
             draft,
             editable,
             movable,
-            canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
+            canBeSavedAsTemplate,
             classificationTagsets,
           };
           return result;
         }),
-    [calloutsSet, calloutsCanBeSavedAsTemplate]
+    [calloutsSet, canBeSavedAsTemplate]
   );
 
   const submitCalloutsSortOrder = useCallback(

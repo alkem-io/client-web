@@ -13,7 +13,7 @@ export enum SettingsSection {
   Organizations = 'organizations',
   Notifications = 'notifications',
   Credentials = 'credentials',
-  InnovationFlow = 'innovation-flow',
+  Security = 'security',
   Account = 'account',
   Settings = 'settings',
   Layout = 'layout',

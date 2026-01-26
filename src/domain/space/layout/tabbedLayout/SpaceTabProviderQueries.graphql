@@ -13,6 +13,10 @@ query SpaceTab($spaceId: UUID!) {
         id
         innovationFlow {
           id
+          authorization {
+            id
+            myPrivileges
+          }
           states {
             id
             displayName
@@ -20,6 +24,13 @@ query SpaceTab($spaceId: UUID!) {
             sortOrder
             settings {
               allowNewCallouts
+            }
+            defaultCalloutTemplate {
+              id
+              profile {
+                id
+                displayName
+              }
             }
           }
         }

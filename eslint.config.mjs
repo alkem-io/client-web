@@ -3,9 +3,13 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import reactCompilerPlugin from 'eslint-plugin-react-compiler';
 import js from '@eslint/js';
 
 export default [
+  {
+    ignores: ['node_modules/', 'build/', 'dist/', 'coverage/', 'public/env-config.js', 'public/meta.json', '**/*.min.js'],
+  },
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -62,6 +66,7 @@ export default [
       react: reactPlugin,
       import: importPlugin,
       'jsx-a11y': jsxA11yPlugin,
+      'react-compiler': reactCompilerPlugin,
     },
     rules: {
       ...js.rules,
@@ -76,6 +81,8 @@ export default [
         { blankLine: 'always', prev: ['block-like', 'class', 'function'], next: 'export' },
         { blankLine: 'any', prev: 'export', next: 'export' },
       ],
+      // react compiler rules
+      'react-compiler/react-compiler': 'error',
       // react rules
       'react-hooks/exhaustive-deps': 'off',
       'react/jsx-pascal-case': 'error',

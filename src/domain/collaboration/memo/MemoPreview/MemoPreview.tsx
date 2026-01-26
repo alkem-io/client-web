@@ -3,12 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, ButtonBase, SxProps } from '@mui/material';
-import { alpha, styled } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
+import { Box, BoxProps, Button, ButtonProps, SxProps } from '@mui/material';
+import { styled } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
 import Centered from '@/core/ui/utils/Centered';
 import { Theme } from '@mui/material/styles';
+import {
+  previewContainerStyles,
+  previewButtonStyles,
+  chipButtonPositionStyles,
+  previewContainerBottomGradientStyles,
+} from '../../common/PreviewStyles';
 
 type MemoPreviewProps = {
   displayName?: string;
@@ -19,68 +24,104 @@ type MemoPreviewProps = {
     | undefined;
   onClick?: MouseEventHandler;
   onClose?: () => void;
+  seamless?: boolean;
   sx?: SxProps<Theme>;
 };
 
-const Container = styled(ButtonBase)(({ theme }) => ({
+const Container = styled(Box, {
+  shouldForwardProp: prop => prop !== 'seamless',
+})<BoxProps & { seamless?: boolean }>(({ theme, onClick, seamless }) =>
+  previewContainerStyles(theme, onClick, seamless)
+);
+
+const ContentContainer = styled(Box, {
+  shouldForwardProp: prop => prop !== 'seamless' && prop !== 'withMinHeight',
+})<BoxProps & { withMinHeight?: boolean; seamless?: boolean }>(({ theme, withMinHeight, seamless }) => ({
   position: 'relative',
-  height: gutters(13)(theme),
-  overflow: 'hidden',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: theme.shape.borderRadius,
   width: '100%',
-}));
-
-const CaptionContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
+  height: '100%',
   display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: gutters(2)(theme),
-  backgroundColor: alpha(theme.palette.common.white, 0.8),
+  minHeight: withMinHeight ? gutters(16)(theme) : undefined,
+  ...previewContainerBottomGradientStyles(theme, !!seamless),
 }));
 
-const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
+const OpenMemoButton = ({ seamless, ...props }: ButtonProps & { seamless?: boolean }) => {
   const { t } = useTranslation();
+  return (
+    <Button
+      variant="outlined"
+      className={seamless ? undefined : 'only-on-hover'}
+      sx={theme => previewButtonStyles(theme, seamless)}
+      {...props}
+    >
+      {t('callout.memo.clickToSee')}
+    </Button>
+  );
+};
+
+const MemoChipButton = (props: ButtonProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      variant="outlined"
+      startIcon={<MemoIcon />}
+      size="small"
+      sx={theme => ({
+        ...previewButtonStyles(theme),
+        ...chipButtonPositionStyles(theme),
+      })}
+      aria-label={t('common.Memo')}
+      {...props}
+    >
+      {t('common.Memo')}
+    </Button>
+  );
+};
+
+const MemoPreview = ({ memo, onClick, seamless, sx }: MemoPreviewProps) => {
+  // onClick presence distinguishes between response preview (onClick present) and framing preview (onClick absent)
+  const isInteractivePreview = Boolean(onClick);
+
   if (!memo?.markdown) {
     return (
-      <Container onClick={onClick} sx={{ cursor: 'pointer', ...sx }}>
-        <Centered>
-          <MemoIcon />
-        </Centered>
-        <CaptionContainer>
-          <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
-        </CaptionContainer>
+      <Container onClick={onClick} sx={sx}>
+        <ContentContainer withMinHeight={isInteractivePreview} seamless={seamless}>
+          <Centered>
+            <MemoIcon />
+          </Centered>
+        </ContentContainer>
+        {isInteractivePreview && <MemoChipButton />}
+        {isInteractivePreview && <OpenMemoButton seamless={seamless} />}
       </Container>
     );
   } else {
     // add quote styling at the start - avoid having double quote blocks
     const quotedMarkdown = memo.markdown.replace(/^(?!>)|^>>/gm, '> ');
     return (
-      <Gutters disablePadding onClick={onClick} sx={{ cursor: 'pointer', position: 'relative', ...sx }}>
-        <CroppedMarkdown
-          backgroundColor="paper"
-          minHeightGutters={3}
-          maxHeightGutters={10}
-          containerProps={{
-            marginX: gutters(1),
-          }}
-          overflowMarker={
-            onClick && (
-              <CaptionContainer>
-                <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
-              </CaptionContainer>
-            )
-          }
-        >
-          {quotedMarkdown}
-        </CroppedMarkdown>
-      </Gutters>
+      <Container onClick={onClick} sx={sx} seamless={seamless}>
+        <ContentContainer withMinHeight={isInteractivePreview} seamless={seamless}>
+          <Gutters disablePadding sx={{ width: '100%' }}>
+            <CroppedMarkdown
+              backgroundColor="paper"
+              minHeightGutters={3}
+              maxHeightGutters={16}
+              containerProps={
+                seamless
+                  ? undefined
+                  : {
+                      marginX: gutters(1),
+                      marginTop: gutters(1),
+                    }
+              }
+            >
+              {quotedMarkdown}
+            </CroppedMarkdown>
+          </Gutters>
+        </ContentContainer>
+        {isInteractivePreview && !seamless && <MemoChipButton />}
+        {isInteractivePreview && <OpenMemoButton seamless={seamless} />}
+      </Container>
     );
   }
 };

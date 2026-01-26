@@ -1,5 +1,5 @@
 query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
   spaces(filter: { visibilities: $visibilities }) {
-    ...SubspaceCard
+    ...SpaceCard
   }
 }

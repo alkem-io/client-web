@@ -3,6 +3,8 @@ import 'react-i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { env } from '@/main/env';
+// Eagerly import default English translation to bundle it with main chunk
+import translationEN from './en/translation.en.json';
 
 export const defaultNS = 'translation';
 
@@ -15,6 +17,7 @@ if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
 }
 
 // Lazy loading function for translations using dynamic imports
+// English is eagerly loaded above for better initial page performance
 const loadTranslation = async (lng: string) => {
   try {
     switch (lng) {
@@ -33,17 +36,20 @@ const loadTranslation = async (lng: string) => {
       case 'inContextTool':
         return (await import('./ach/translation.ach.json')).default;
       default:
-        return (await import('./en/translation.en.json')).default;
+        // Return eagerly loaded English translation
+        return translationEN;
     }
   } catch (error) {
     console.error(`Failed to load translation for language: ${lng}`, error);
-    // Fallback to English if loading fails
-    return (await import('./en/translation.en.json')).default;
+    // Fallback to English
+    return translationEN;
   }
 };
 
 // Cache for loaded translations
 const translationCache = new Map<string, Record<string, unknown>>();
+// Pre-populate cache with eagerly loaded English translation
+translationCache.set(`${defaultLang}-${defaultNS}`, translationEN);
 
 // Custom backend for lazy loading
 const lazyBackend = {
@@ -80,10 +86,20 @@ i18n
     supportedLngs,
     ns: [defaultNS],
     defaultNS,
-    preload: [defaultLang], // Only preload English
+    preload: [defaultLang], // English is preloaded
+    // Required when mixing bundled resources with a backend for other languages
+    partialBundledLanguages: true,
+    // Add English translations as initial resources for instant availability
+    resources: {
+      en: {
+        translation: translationEN,
+      },
+    },
     interpolation: {
       format: (value, format, _lng) => {
         if (format === 'lowercase') return value.toLowerCase();
+        if (format === 'capitalize') return value.charAt(0).toUpperCase() + value.slice(1);
+        if (format === 'uppercase') return value.toUpperCase();
       },
       escapeValue: false, // React already protects from XSS unless you use dangerouslySetInnerHTML (which we shouldn't)
     },

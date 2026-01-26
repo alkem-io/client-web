@@ -17,6 +17,46 @@ This client is based on React, and is intended to showcase how clients in genera
 
 Beyond the bootstrap configuration to point to the Alkemio server, all further configuration is obtained from the server configuration graphql schema.
 
+## Public Routes
+
+### Guest Whiteboard Access (`/public/whiteboard/:whiteboardId`)
+
+The client includes a public guest access route for whiteboards, allowing anonymous and authenticated users to view and **edit** whiteboards collaboratively without full platform authentication.
+
+**Route**: `/public/whiteboard/:whiteboardId`
+
+**Features**:
+
+- **Anonymous Access**: Guests prompted to enter a display name via dialog
+- **Authenticated Derivation**: Signed-in users automatically get an anonymized guest name (e.g., "Alice S.") derived from their profile
+- **Real-Time Collaboration**: Guest edits sync immediately with other users via WebSocket connections
+- **Full Editing Capabilities**: Guests can draw, add shapes, text, images, and export to disk
+- **Session Persistence**: Guest names persist across page refreshes using session storage (`alkemio_guest_name` key)
+- **GraphQL Header Injection**: All requests include `x-guest-name` header for server-side tracking
+- **Privacy-Safe Anonymization**: 4-tier algorithm (FirstName L. → FirstName → L. → manual prompt)
+- **Visibility Warning**: In-whiteboard indicator that content is publicly accessible and editable
+- **Stripped Layout**: No navigation/sidebars; focused whiteboard-only view
+
+**Implementation Details**:
+
+- **Context Provider**: `GuestSessionProvider` (React Context for guest state management)
+- **Custom Hooks**: `useGuestSession`, `useGuestWhiteboardAccess`
+- **Apollo Middleware**: `guestHeaderLink` (injects `x-guest-name` into all GraphQL requests)
+- **Storage**: Session storage (cleared on browser close, not persistent across sessions)
+- **Accessibility**: WCAG 2.1 AA compliant (keyboard navigation, screen reader support, ARIA labels)
+
+**Example Usage**:
+
+```text
+https://alkem.io/public/whiteboard/f47ac10b-58cc-4372-a567-0e02b2c3d479
+```
+
+**Documentation**:
+
+- Full specification: [`specs/002-guest-whiteboard-access/spec.md`](specs/002-guest-whiteboard-access/spec.md)
+- Developer quickstart: [`specs/002-guest-whiteboard-access/quickstart.md`](specs/002-guest-whiteboard-access/quickstart.md)
+- Implementation plan: [`specs/002-guest-whiteboard-access/plan.md`](specs/002-guest-whiteboard-access/plan.md)
+
 ## Launching the client
 
 To develop with the client, it is necessary to leverage the Alkemio server repository to get a working instance of the Alkemio server running. For details on getting a working Alkemio server running please [consult the following documentation](https://github.com/alkem-io/server/blob/develop/docs/Running.md).
@@ -55,8 +95,33 @@ The client development stack includes:
 - [React documentation](https://reactjs.org/).
 - Typescript
 - Apollo Client
+- React Compiler (automatic performance optimization)
 
 For Typescript, the Javascript generated is ES2016.
+
+### React Compiler
+
+The project uses the React Compiler (babel-plugin-react-compiler) to automatically optimize React components. The compiler adds automatic memoization to components and hooks, reducing the need for manual `useMemo`, `useCallback`, and `React.memo` calls.
+
+Benefits:
+
+- Automatic performance optimization
+- Cleaner code with less boilerplate
+- Works seamlessly with React 19
+
+For more details, see [docs/react-compiler.md](docs/react-compiler.md).
+
+### Bundle Analysis
+
+Analyze your bundle size and composition:
+
+```bash
+pnpm analyze        # Production build with analysis
+pnpm analyze:dev    # Development build with analysis
+pnpm analyze:sentry # Production build with Sentry + analysis
+```
+
+This generates an interactive visualization at `build/stats.html` showing module sizes, dependencies, and optimization opportunities. For more details, see [docs/bundle-analysis.md](docs/bundle-analysis.md).
 
 ## Supported web browsers
 

@@ -118,12 +118,16 @@
     "see-more": "See more",
     "see-all": "More {{subject}}",
     "readMore": "Read more",
+    "ellipsisReadMore": "... Read more",
+    "showLess": "Show less",
+    "retry": "Try again",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
     "yes": "Yes",
     "no": "No",
-    "yes-close": "Yes, close",
+    "yesClose": "Yes, close",
+    "yesCancel": "Yes, cancel",
     "yesContinue": "Yes, continue",
     "yesReplace": "Yes, replace",
     "yesDelete": "Yes, delete",
@@ -186,9 +190,12 @@
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own $t(common.space)",
     "notifications": "$t(common.Notifications) Button",
+    "messages": "Messages Button",
     "invite": "Invite",
     "visit": "Visit",
-    "returnToDashboard": "Return to $t(common.dashboard) as guest",
+    "returnToDashboardAsGuest": "Return to $t(common.dashboard) as guest",
+    "returnToDashboard": "Return to $t(common.dashboard)",
+    "takeMeHome": "Take me home",
     "approveApplication": "Approve application",
     "rejectApplication": "Reject application"
   },
@@ -220,12 +227,21 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
+        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
       }
     },
     "signUp": {
       "signUpEmail": "Sign up with E-Mail",
       "alreadyHaveAccount": "Already have an $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -238,6 +254,7 @@
     "Account": "Account",
     "account": "account",
     "anonymous": "Anonymous",
+    "guestSuffix": "(guest)",
     "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
@@ -261,6 +278,7 @@
     "callouts": "$t(common.posts)",
     "Callout": "$t(common.Post)",
     "Callouts": "$t(common.Posts)",
+    "framing": "Additional Content",
     "collaborationTools": "Collaboration Tools",
     "createdBy": "Created by",
     "Memo": "Memo",
@@ -408,6 +426,7 @@
     "notification": "notification",
     "notifications": "notifications",
     "credentials": "Credentials",
+    "security": "Security",
     "my-profile": "My $t(common.profile)",
     "my-memberships": "My $t(common.memberships)",
     "Profile": "Profile",
@@ -561,6 +580,7 @@
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Associate",
+      "GUEST": "Guest",
       "OWNER": "Owner",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_SUPPORT": "Support $t(common.Admin)",
@@ -602,7 +622,8 @@
         "month_other": "{{count}} months",
         "year_one": "{{count}} year",
         "year_other": "{{count}} years"
-      }
+      },
+      "moreThan1Year": "> 1 year ago"
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
@@ -794,7 +815,7 @@
       "createButtonTooltip": "Add $t(common.Callout)",
       "dialogTitle": "Add $t(common.Callout)",
       "framingSettings": {
-        "title": "Additional Content",
+        "title": "$t(common.framing)",
         "none": {
           "title": "None",
           "tooltip": "No additional content"
@@ -904,7 +925,8 @@
       "contributionsItemsCount_other": "{{count}} items in this $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} items in this $t(common.collection), <click>click here</click> to see all",
       "contributionsCollapse": "{{count}} items in this $t(common.collection), <click>click here</click> to hide some",
-      "noContributions": "No contributions yet, be the first to contribute!"
+      "noContributions": "No contributions yet, be the first to contribute!",
+      "contributions": "Contributions ({{count}})"
     },
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "This discussion is closed so you can no longer comment",
@@ -932,7 +954,16 @@
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)"
+      "clickToSee": "Click to see the full $t(common.whiteboard)",
+      "emojiReaction": {
+        "addEmoji": "Add emoji reaction",
+        "title": "Add Emoji",
+        "hint": "Select an emoji, then click on the canvas",
+        "clickToPlace": "Click on canvas to place {{emoji}}",
+        "placementMode": "Click to place emoji: {{emoji}}",
+        "gridLabel": "Select an emoji",
+        "noEmojis": "No emojis available"
+      }
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"
@@ -966,6 +997,25 @@
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
     "share-this-on": "Share this {{entity}} on {{platform}}",
+    "guest-access": {
+      "label": "Guest access",
+      "toggle-label": "Enable guest access",
+      "toggle-description": "Let anyone with the guest link view and contribute to this $t(common.whiteboard).",
+      "disabled-tooltip": "You don't have permission to change guest access.",
+      "url-label": "Guest Access URL",
+      "copy-url": "Copy guest link",
+      "warning-title": "Guests can edit this $t(common.whiteboard)",
+      "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
+      "visibility-warning": "This $t(common.whiteboard) is visible to guest users.",
+      "errors": {
+        "PERMISSION_DENIED": "You don't have permission to change guest access.",
+        "NETWORK": "Check your connection and try again.",
+        "UNKNOWN": "We couldn't update guest access. Please try again.",
+        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this $t(common.space).",
+        "WHITEBOARD_NOT_FOUND": "This $t(common.whiteboard) couldn't be found. Refresh and try again."
+      }
+    },
     "or": "or",
     "url": "URL",
     "warning": "Please note that your personal email will be visible for the user when you send them a message.",
@@ -1231,6 +1281,7 @@
     "shareSettings": {
       "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "guestAccessWarning": "Note: If you make this $t(common.whiteboard) public, everyone in the $t(common.space) will be able to edit the $t(common.whiteboard).",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
       },
@@ -1259,7 +1310,6 @@
     },
     "searchDialog": {
       "headerTitle": "Search results",
-      "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
       "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
@@ -1301,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "Manage Flow",
+      "importing": "Importing in progress...",
       "buttonTooltip": "Manage Flow",
       "editProfileDialog": {
         "title": "Edit Details: Flow"
@@ -1311,6 +1362,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
@@ -1332,13 +1384,37 @@
           },
           "importCalloutsDialog": {
             "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
-            "yes": "Add $t(common.posts) from $t(common.template)",
-            "yesDescription": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones.",
-            "no": "Only Change the $t(common.innovation-flow)",
-            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current $t(common.posts) as they are.",
-            "apply": "Apply new $t(common.template)"
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Replace with new flow",
+              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirm Deletion",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Apply"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected $t(common.template):",
+        "noTemplate": "No default $t(common.template) set. Select a $t(common.template) to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default $t(common.template)?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -1388,7 +1464,21 @@
         "list.outdent": "Remove indent",
         "remove.remove": "Remove",
         "embed.video": "Embed Video or other Media",
-        "horizontal.line": "Insert horizontal line"
+        "horizontal.line": "Insert horizontal line",
+        "table.insert": "Insert Table",
+        "table.operations": "Table Operations",
+        "table.deleteTable": "Delete Table",
+        "table.deleteConfirm": "Are you sure you want to delete this table?",
+        "table.addColumnBefore": "Add Column Before",
+        "table.addColumnAfter": "Add Column After",
+        "table.deleteColumn": "Delete Column",
+        "table.addRowBefore": "Add Row Before",
+        "table.addRowAfter": "Add Row After",
+        "table.deleteRow": "Delete Row",
+        "table.custom": "Custom size",
+        "table.columns": "Columns",
+        "table.rows": "Rows",
+        "table.gridSize": "{{columns}} $t(components.wysiwyg-editor.toolbar.table.columns) x {{rows}} $t(components.wysiwyg-editor.toolbar.table.rows)"
       },
       "image": {
         "dialogHeader": "Insert Image"
@@ -1422,7 +1512,6 @@
       "contact-support-sentence": "If this problem persists, please contact support.",
       "buttons": {
         "reload": "Reload",
-        "take-me-home": "Take me home",
         "contact-support": "Contact support"
       }
     },
@@ -1431,6 +1520,13 @@
         "invalidUrl": "Invalid URL",
         "invalidUrlOrigin": "Invalid URL origin",
         "invalidUrlFormat": "Invalid URL format"
+      },
+      "redirectDialog": {
+        "title": "We are redirecting you...",
+        "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
+        "countdown": "Redirecting in {{seconds}} seconds...",
+        "cancelCountdown": "[Click to cancel]",
+        "goNow": "Go now"
       }
     },
     "search-cards": {
@@ -1524,9 +1620,6 @@
         "title": "Discard $t(common.post)",
         "text": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
       }
-    },
-    "calloutEdit": {
-      "titleWithType": "Edit {{type}}"
     },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
@@ -2112,6 +2205,20 @@
         "platform": "Platform notifications"
       }
     },
+    "userMessaging": {
+      "title": "Messages",
+      "noConversations": "No conversations yet",
+      "noMessages": "No messages",
+      "selectConversation": "Select a conversation to start messaging",
+      "typeMessage": "Type a message",
+      "newMessage": "New Message",
+      "selectUser": "To",
+      "noUsersFound": "No users found",
+      "startTyping": "Start typing to search users",
+      "searchUsers": "Search users...",
+      "searchConversations": "Search...",
+      "createChat": "Create Chat"
+    },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
       "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>\uD83D\uDCDD <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
@@ -2140,7 +2247,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "About",
-    "copyright": "© 2025 Alkemio B.V."
+    "copyright": "© 2026 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} $t(common.spaces)",
@@ -2256,6 +2363,9 @@
           "authorization": {
             "description": "Here you can tweak authorization $t(common.settings) for this {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Here you can create and edit $t(common.templates) for this {{entity}}.",
             "delete-confirmation": "Are you sure you want to delete the $t(common.template) '{{template}}'?",
@@ -2313,7 +2423,7 @@
             "innovationPacks": "$t(common.innovation-packs)",
             "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your $t(common.account).",
             "spaceUsageNotice": "From the available $t(common.spaces) in your $t(common.account), you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
-            "limitNotice": "Contact the Alkemio team to increase the limits on your $t(common.account)",
+            "limitNotice": "To increase the limits on your $t(common.account), fill out the form at the bottom of <contact>the contact page</contact>.",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your $t(common.account)",
             "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.template) yet",
@@ -2356,6 +2466,20 @@
           "privacy": {
             "contributorRolesVisible": "Show contributor roles to all registered users"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
+        },
+        "homeSpace": {
+          "title": "Home Space",
+          "description": "Here you can select which from the spaces or subspaces you are a member of which you want to use as a Home Space.  On Alkemio, your home space is always pinned on your dashboard as the first space.",
+          "selectLabel": "Select Home Space",
+          "noSelection": "No home space",
+          "autoRedirect": "<b>Home Space Redirect:</b> Set it so that Alkem.io redirects you to your home page instead of the dashboard.",
+          "autoRedirectDisabledHint": "Please select a home space first to enable the Home Space Redirect",
+          "pinButtonTooltip": "Press here to change your pinned space settings"
         }
       },
       "organization": {
@@ -2442,9 +2566,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.template)",
                 "title": "Change Default $t(common.subspace) $t(common.template)",
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you’re looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2498,13 +2623,14 @@
             "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
             "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
             "videoCall": "<b>Video Call</b>: Show video call button in the tab menu. All members of this Space can use this button to start a Jitsi video conference. Read more about Jitsi <jitsiInfoLink>here</jitsiInfoLink>.",
+            "guestContributions": "<b>Guest Contributions</b>: Allow $t(common.whiteboards) in this $t(common.space) to be shared with guest users (non-members) for collaborative contributions.",
             "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space)."
           },
           "copySpace": {
             "title": "Copy $t(common.subspace)",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
             "createTemplate": "Create $t(common.template)",
             "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Duplicate"
@@ -2512,7 +2638,8 @@
           "account": {
             "vc-section-title": "$t(common.virtualContributors) created from this $t(common.space)",
             "vc-create-button": "Create $t(common.virtualContributor)"
-          }
+          },
+          "updateFailed": "An error occurred while updating the $t(common.settings). Please try again later."
         }
       },
       "users": {
@@ -2645,6 +2772,7 @@
       "filter": {
         "type": {
           "space": "$t(common.space) type",
+          "framing": "$t(common.framing) type",
           "contribution": "Contribution type",
           "contributor": "Contributor type"
         },
@@ -2652,13 +2780,23 @@
           "all": "All",
           "space": "$t(common.spaces)",
           "subspace": "$t(common.subspaces)",
+          "contributor": "$t(common.contributors)",
           "user": "Users",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.Posts)",
-          "whiteboard": "$t(common.Whiteboards) (available soon)",
           "callout": "$t(common.Callouts)",
-          "memo": "$t(common.Memos) (available soon)",
-          "response": "$t(common.Responses)"
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "memo": "$t(common.Memos)",
+          "post": "$t(common.Posts)",
+          "whiteboard": "$t(common.Whiteboards)"
+        },
+        "results": {
+          "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
+          "callout": "$t(common.Callouts)",
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "contributor": "$t(common.contributors)",
+          "noResults": "No results of this type matched your search terms."
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"
@@ -2727,7 +2865,11 @@
         },
         "recentSpaces": {
           "seeMore": "Explore all your $t(common.spaces)",
-          "seeMoreSubspaces": "See all $t(common.subspaces) I'm a $t(common.member) of"
+          "seeMoreSubspaces": "See all $t(common.subspaces) I'm a $t(common.member) of",
+          "homeSpacePlaceholder": {
+            "title": "No Pinned Space yet",
+            "subtitle": "Click here to assign one"
+          }
         },
         "campaignBlock": {
           "createYourVCButton": "Create your $t(common.virtualContributor)!",
@@ -2774,6 +2916,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
@@ -3012,6 +3160,7 @@
         "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
+      "guestContributionsWarning": "This $t(common.whiteboard) is visible to guest users",
       "readonlyDialog": {
         "title": "View only mode",
         "reason": {
@@ -3024,20 +3173,20 @@
       "restartCollaboration": "Continue Editing",
       "previewSettings": {
         "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and $t(common.spaces).",
+        "subtitle": "Choose how your $t(common.whiteboard) preview appears in posts and $t(common.spaces).",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
             "title": "Auto Preview",
-            "description": "We'll automatically generate the best preview from your whiteboard content."
+            "description": "We'll automatically generate the best preview from your $t(common.whiteboard) content."
           },
           "CUSTOM": {
             "title": "Manual Selection",
-            "description": "Choose exactly which part of your whiteboard to show as a preview."
+            "description": "Choose exactly which part of your $t(common.whiteboard) to show as a preview."
           },
           "FIXED": {
             "title": "Fixed Selection",
-            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+            "description": "Take a screenshot of your $t(common.whiteboard) to use as preview. This screenshot will not update as you update your board."
           }
         },
         "cropDialog": {
@@ -3049,8 +3198,48 @@
       },
       "preview": {
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
-        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
-        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+        "ariaLabel": "Preview of the $t(common.whiteboard). Click to open the $t(common.whiteboard).",
+        "ariaLabelDisabled": "Preview of the $t(common.whiteboard). This $t(common.whiteboard) cannot be opened."
+      }
+    },
+    "publicWhiteboard": {
+      "title": "$t(common.Whiteboard)",
+      "fallbackTitle": "Whiteboard"
+    },
+    "public": {
+      "whiteboard": {
+        "join": {
+          "welcome": "Welcome to Alkemio!",
+          "title": "Join Whiteboard",
+          "description": "Choose a nickname to join this $t(common.whiteboard) as a guest",
+          "guestNameLabel": "Guest Name",
+          "placeholder": "Enter your nickname",
+          "joinButton": "Join as guest",
+          "joiningButton": "Joining...",
+          "signInButton": "Sign in to Alkemio"
+        },
+        "guestSessionNotification": {
+          "title": "You've left your $t(common.whiteboard)",
+          "description": "Your guest session is still active. You can return to your $t(common.whiteboard), or explore what Alkemio has to offer.",
+          "backButton": "Back to $t(common.whiteboard)",
+          "websiteButton": "Go to our website",
+          "contributeMoreTitle": "Want to contribute more?",
+          "contributeMoreDescription": "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
+        },
+        "error": {
+          "404": {
+            "title": "$t(common.Whiteboard) Not Found",
+            "message": "The $t(common.whiteboard) link may be incorrect or the $t(common.whiteboard) may have been deleted."
+          },
+          "403": {
+            "title": "Access Denied",
+            "message": "This $t(common.whiteboard) is not available for guest access. Please contact the $t(common.whiteboard) owner."
+          },
+          "500": {
+            "title": "Unable to Load $t(common.Whiteboard)",
+            "message": "Please try again later or check your internet connection."
+          }
+        }
       }
     },
     "memo": {
@@ -3263,6 +3452,7 @@
           "saveBtn": "Save prompt"
         },
         "promptGraph": {
+          "editingEnabledLabel": "Allow editing of the prompt graph (platform-wide setting)",
           "saveBtn": "Save Prompt Graph",
           "title": "Prompt Graph",
           "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
@@ -3331,6 +3521,11 @@
       "header": "Access Restricted",
       "subheader": "The page you're trying to access is only available to registered users.",
       "subheader2": "Please sign in to continue. Don’t have an $t(common.account)? Sign up for free."
+    },
+    "unauthorized": {
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is not available for you.",
+      "subheader2": "Please confirm that you have permissions to access this url."
     },
     "userNotificationsSettings": {
       "general": {
@@ -3467,7 +3662,7 @@
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
-      "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
+      "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"
     },
     "fields": {
@@ -3535,6 +3730,10 @@
     "closeConfirm": {
       "title": "Discard $t(common.post)",
       "description": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
+    },
+    "cancelConfirm": {
+      "title": "Discard $t(common.post)",
+      "description": "Are you sure you want to cancel this $t(common.post)? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {

@@ -12,7 +12,7 @@ const ErrorTranslationMappings = (error: Error): TranslationKey => {
   return 'pages.error.errors.unknown';
 };
 
-export const GlobalErrorDialog: React.FC = () => {
+const GlobalErrorDialog: React.FC = () => {
   const { t } = useTranslation();
   const { error, setError } = useGlobalError();
 
@@ -50,3 +50,5 @@ export const GlobalErrorDialog: React.FC = () => {
     </Dialog>
   );
 };
+
+export default GlobalErrorDialog;

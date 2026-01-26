@@ -118,7 +118,7 @@ const SpaceDashboardView = ({
       <PageContent>
         <InfoColumn>
           <PageContentBlock accent>
-            <SpaceWelcomeBlock spaceAbout={space?.about!} description={tabDescription} />
+            <SpaceWelcomeBlock spaceAbout={space.about!} description={tabDescription} />
           </PageContentBlock>
 
           <FullWidthButton
@@ -148,6 +148,7 @@ const SpaceDashboardView = ({
             loading={calloutsSetProvided.loading}
             onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
             onCalloutUpdate={calloutsSetProvided.refetchCallout}
+            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
           />
         </ContentColumn>
         {tryVirtualContributorOpen && (

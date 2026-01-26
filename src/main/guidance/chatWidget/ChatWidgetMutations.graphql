@@ -1,21 +1,6 @@
-mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
-  updateAnswerRelevance(input: $input)
-}
-
-mutation resetChatGuidance {
-  resetChatGuidance
-}
-
-mutation createGuidanceRoom {
-  createChatGuidanceRoom {
+mutation resetConversationVc($input: ConversationVcResetInput!) {
+  resetConversationVc(input: $input) {
     id
-  }
-}
-
-mutation askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
-  askChatGuidanceQuestion(chatData: $chatData) {
-    id
-    success
   }
 }
 
