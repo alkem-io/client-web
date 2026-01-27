@@ -23,12 +23,7 @@ const useRoleSetAvailableUsersOnRoleSet = ({
   skip,
 }: useRoleSetAvailableUsersParams): useRoleSetAvailableUsersOnRoleSetProvided => {
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const {
-    data,
-    loading,
-    fetchMore: fetchMoreRaw,
-    refetch,
-  } = useAvailableUsersForElevatedRoleQuery({
+  const { data, loading, fetchMore: fetchMoreRaw, refetch } = useAvailableUsersForElevatedRoleQuery({
     variables: {
       first: AVAILABLE_USERS_PAGE_SIZE,
       roleSetId: roleSetId!,

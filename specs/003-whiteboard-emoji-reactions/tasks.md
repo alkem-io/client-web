@@ -1,6 +1,6 @@
 # Tasks: Whiteboard Emoji Reactions
 
-**Input**: Design documents from `/specs/003-whiteboard-emoji-reactions/`
+**Input**: Design documents from `/specs/006-whiteboard-emoji-reactions/`
 **Prerequisites**: plan.md ✓, spec.md ✓, research.md ✓, data-model.md ✓, contracts/ ✓
 
 **Tests**: Unit tests are included per Constitution Principle V (Experience Safeguards).
@@ -81,7 +81,7 @@
 - [ ] T019 [US2] Verify emoji text elements support move/drag operations (no code changes expected - validation task)
 - [ ] T020 [US2] Verify emoji text elements support resize via handles (no code changes expected - validation task)
 - [ ] T021 [US2] Verify emoji text elements support delete via keyboard and UI (no code changes expected - validation task)
-- [ ] T022 [US2] Document any Excalidraw element behavior limitations in `specs/003-whiteboard-emoji-reactions/research.md` if found
+- [ ] T022 [US2] Document any Excalidraw element behavior limitations in `specs/006-whiteboard-emoji-reactions/research.md` if found
 
 **Checkpoint**: User Story 2 complete - emojis behave as first-class whiteboard content
 
@@ -132,7 +132,7 @@
 - [ ] T035 [P] Add focus management - focus first emoji on open, return focus on close in `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` `Quality`
 - [ ] T036 [P] Add screen reader announcements for placement mode changes in `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` `Quality`
 - [ ] T037 [P] Integration test for emojiReaction placement flow in `src/domain/collaboration/whiteboard/reactionEmoji/WhiteboardEmojiReactionPicker.test.tsx` `Quality`
-- [ ] T038 [P] Update quickstart.md testing checklist with actual test results in `specs/003-whiteboard-emoji-reactions/quickstart.md`
+- [ ] T038 [P] Update quickstart.md testing checklist with actual test results in `specs/006-whiteboard-emoji-reactions/quickstart.md`
 - [ ] T039 Run manual accessibility testing (keyboard navigation, screen reader) and document results `Quality`
 
 ---
@@ -159,12 +159,12 @@ Phase 7 (Polish) → Accessibility & final quality
 
 ### User Story Dependencies
 
-| Story                   | Depends On       | Can Start After          |
-| ----------------------- | ---------------- | ------------------------ |
-| US1 (Add Emoji)         | Phase 2 complete | T008                     |
-| US2 (Manipulate)        | US1 complete     | T017                     |
-| US3 (Configurable)      | Phase 2 complete | T008 (parallel with US1) |
-| US4 (Search/Categories) | US1 complete     | T017                     |
+| Story | Depends On | Can Start After |
+|-------|------------|-----------------|
+| US1 (Add Emoji) | Phase 2 complete | T008 |
+| US2 (Manipulate) | US1 complete | T017 |
+| US3 (Configurable) | Phase 2 complete | T008 (parallel with US1) |
+| US4 (Search/Categories) | US1 complete | T017 |
 
 ### Within Each User Story
 
@@ -176,26 +176,22 @@ Phase 7 (Polish) → Accessibility & final quality
 ### Parallel Opportunities
 
 **Phase 1 (all [P] tasks):**
-
 ```
 T002 (types.ts) ↔ T003 (emojiReactionConfig.ts)
 ```
 
 **Phase 2 (after T004):**
-
 ```
 T005 (useEmojiReactionConfiguration) ↔ T006 (test createEmojiReactionElement) ↔ T007 (test hook) ↔ T008 (test config)
 ```
 
 **Phase 3 (models before UI):**
-
 ```
 T011 (useEmojiReactionPickerState) then T009, T010, T012-T016
 T017 (i18n) ↔ any task
 ```
 
 **Phase 7 (all [P] tasks):**
-
 ```
 T033 ↔ T034 ↔ T035 ↔ T036 ↔ T037 ↔ T038
 ```
@@ -226,13 +222,13 @@ T008: "Unit test for emojiReaction configuration validation"
 
 ### Incremental Delivery
 
-| Increment | Stories | Value Delivered                              |
-| --------- | ------- | -------------------------------------------- |
-| MVP       | US1     | Users can place emojis on whiteboards        |
-| +US2      | US1+US2 | Emojis behave like native whiteboard content |
-| +US3      | US1-US3 | Developers can customize emoji set           |
-| +US4      | US1-US4 | Full-featured picker with search/categories  |
-| +Polish   | All     | Accessible, keyboard-navigable, documented   |
+| Increment | Stories | Value Delivered |
+|-----------|---------|-----------------|
+| MVP | US1 | Users can place emojis on whiteboards |
+| +US2 | US1+US2 | Emojis behave like native whiteboard content |
+| +US3 | US1-US3 | Developers can customize emoji set |
+| +US4 | US1-US4 | Full-featured picker with search/categories |
+| +Polish | All | Accessible, keyboard-navigable, documented |
 
 ### Suggested MVP Scope
 

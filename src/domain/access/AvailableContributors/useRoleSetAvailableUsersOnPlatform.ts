@@ -21,12 +21,7 @@ const useRoleSetAvailableUsersOnPlatform = ({
   skip,
 }: useRoleSetAvailableUsersOnPlatformParams): useRoleSetAvailableUsersOnPlatformProvided => {
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const {
-    data,
-    loading,
-    fetchMore: fetchMoreRaw,
-    refetch,
-  } = usePlatformRoleAvailableUsersQuery({
+  const { data, loading, fetchMore: fetchMoreRaw, refetch } = usePlatformRoleAvailableUsersQuery({
     variables: {
       first: AVAILABLE_USERS_PAGE_SIZE,
       filter: { displayName: filter },

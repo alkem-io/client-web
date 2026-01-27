@@ -16,18 +16,7 @@ import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
-import {
-  guessVariant,
-  isAnchorNode,
-  isHiddenInput,
-  isInputNode,
-  isPasskeyAutocompleteInit,
-  isScriptNode,
-  isSubmitButton,
-  isTextNode,
-  isPasskeyTrigger,
-  isPasskeyMethodButton,
-} from './Kratos/helpers';
+import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isPasskeyAutocompleteInit, isScriptNode, isSubmitButton, isTextNode, isPasskeyTrigger, isPasskeyMethodButton } from './Kratos/helpers';
 import KratosPasskeyButton from './Kratos/KratosPasskeyButton';
 import KratosPasskeyIconButton from './Kratos/KratosPasskeyIconButton';
 import KratosText from './Kratos/KratosText';
@@ -171,16 +160,7 @@ export const KratosUI: FC<KratosUIProps> = ({
             return { ...acc, rest: [...acc.rest, node] };
         }
       },
-      {
-        default: [],
-        oidc: [],
-        password: [],
-        passkey: [],
-        passkeyCredentials: [],
-        rest: [],
-        submit: [],
-        hidden: [],
-      } as NodeGroups
+      { default: [], oidc: [], password: [], passkey: [], passkeyCredentials: [], rest: [], submit: [], hidden: [] } as NodeGroups
     );
   }, [renderedNodes]);
 
@@ -244,7 +224,12 @@ export const KratosUI: FC<KratosUIProps> = ({
     // Handle Passkey trigger buttons
     if ((node.group === 'webauthn' || node.group === 'passkey') && isPasskeyTrigger(node)) {
       return (
-        <KratosPasskeyButton key={key} node={node} isScriptLoaded={isPasskeyScriptReady} disabled={disableInputs} />
+        <KratosPasskeyButton
+          key={key}
+          node={node}
+          isScriptLoaded={isPasskeyScriptReady}
+          disabled={disableInputs}
+        />
       );
     }
 
@@ -258,7 +243,12 @@ export const KratosUI: FC<KratosUIProps> = ({
         // Check for Passkey triggers - these call Ory Passkey functions
         if (isPasskeyTrigger(node)) {
           return (
-            <KratosPasskeyButton key={key} node={node} isScriptLoaded={isPasskeyScriptReady} disabled={disableInputs} />
+            <KratosPasskeyButton
+              key={key}
+              node={node}
+              isScriptLoaded={isPasskeyScriptReady}
+              disabled={disableInputs}
+            />
           );
         }
         // Check for Passkey method buttons - these are regular submit buttons with icons

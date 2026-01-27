@@ -42,8 +42,7 @@ const PlatformSearch = ({
   const { space } = useSpace();
   const { about } = space;
 
-  const searchOptions: SearchOption[] | undefined =
-    !space || !space.nameID
+  const searchOptions: SearchOption[] | undefined = !space || !space.nameID
       ? undefined
       : [
           {

@@ -258,14 +258,12 @@ The guest contributions warning feature provides visual feedback to users when a
 #### GraphQL Schema
 
 The `guestContributionsAllowed` field is present in:
-
 - `PublicWhiteboardFragment` in `GetPublicWhiteboard.graphql`
 - Backend `Whiteboard` type (manually added, requires backend schema update)
 
 #### Visual Design
 
 The warning badge appears as:
-
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │ [Delete] Readonly message...          [🌐 Public] Warning text   │
