@@ -2207,6 +2207,7 @@
     },
     "userMessaging": {
       "title": "Messages",
+      "betaTooltip": "We wanted to share this early - still improving!",
       "noConversations": "No conversations yet",
       "noMessages": "No messages",
       "selectConversation": "Select a conversation to start messaging",
@@ -3355,6 +3356,7 @@
     },
     "user-profile": {
       "title": "My $t(common.profile)",
+      "loading": "Loading user profile...",
       "tooltips": {
         "settings": "User $t(common.profile) $t(common.settings)"
       },

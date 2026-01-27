@@ -1,6 +1,6 @@
 import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
-import { ConversationMessage, mapMessageSender } from './models';
+import { ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
 
 export type { ConversationMessage } from './models';
 
@@ -23,6 +23,7 @@ export const useConversationMessages = (conversationId: string | null) => {
         message: msg.message,
         timestamp: msg.timestamp,
         sender: mapMessageSender(msg.sender),
+        reactions: mapMessageReactions(msg.reactions),
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
   }, [data?.lookup?.conversation?.room?.messages]);

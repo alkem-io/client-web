@@ -36,6 +36,18 @@ subscription ConversationEvents {
                 }
               }
             }
+            reactions {
+              id
+              emoji
+              timestamp
+              sender {
+                id
+                profile {
+                  id
+                  displayName
+                }
+              }
+            }
           }
         }
         user {
@@ -79,6 +91,18 @@ subscription ConversationEvents {
             }
           }
         }
+        reactions {
+          id
+          emoji
+          timestamp
+          sender {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
       }
     }
     messageReceived {
@@ -108,6 +132,18 @@ subscription ConversationEvents {
                 id
                 uri
               }
+            }
+          }
+        }
+        reactions {
+          id
+          emoji
+          timestamp
+          sender {
+            id
+            profile {
+              id
+              displayName
             }
           }
         }

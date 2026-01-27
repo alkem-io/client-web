@@ -135,8 +135,6 @@ const ChatWidgetInner = () => {
           markAllMessagesRead();
           markAsRead();
         }
-      } else if (messages.length === 1) {
-        setBadgeCount(1);
       } else {
         markAllMessagesRead();
         markAsRead();

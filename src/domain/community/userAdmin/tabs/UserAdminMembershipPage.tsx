@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { ActionableContributionsView } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
@@ -27,10 +26,11 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
+import useUserRouteContext from '../../user/routing/useUserRouteContext';
 
 const UserAdminMembershipPage = () => {
   const { t } = useTranslation();
-  const { userId } = useUrlResolver();
+  const { userId } = useUserRouteContext();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const { data, loading, refetch } = useUserContributionsQuery({

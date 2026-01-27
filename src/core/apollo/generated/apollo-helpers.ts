@@ -2497,6 +2497,19 @@ export type MessageFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MessageAnswerQuestionKeySpecifier = (
+  | 'error'
+  | 'id'
+  | 'question'
+  | 'success'
+  | MessageAnswerQuestionKeySpecifier
+)[];
+export type MessageAnswerQuestionFieldPolicy = {
+  error?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2583,6 +2596,7 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
+  | 'askVcQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
@@ -2653,6 +2667,7 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
+  | 'feedbackOnVcAnswerRelevance'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
@@ -2772,6 +2787,7 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  askVcQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2842,6 +2858,7 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
+  feedbackOnVcAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5945,6 +5962,10 @@ export type StrictTypedTypePolicies = {
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
+  };
+  MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
+    fields?: MessageAnswerQuestionFieldPolicy;
   };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);

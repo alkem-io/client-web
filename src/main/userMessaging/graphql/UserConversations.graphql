@@ -35,6 +35,18 @@ query UserConversations {
                 }
               }
             }
+            reactions {
+              id
+              emoji
+              timestamp
+              sender {
+                id
+                profile {
+                  id
+                  displayName
+                }
+              }
+            }
           }
         }
         user {

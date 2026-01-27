@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import {
   Box,
+  Chip,
   List,
   ListItemButton,
   ListItemAvatar,
   ListItemText,
+  Tooltip,
   Typography,
   IconButton,
   InputBase,
@@ -97,7 +99,12 @@ export const UserMessagingChatList = ({
         borderBottom: theme => `1px solid ${theme.palette.divider}`,
       }}
     >
-      <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
+      <Box display="flex" alignItems="center" gap={1}>
+        <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
+        <Tooltip title={t('components.userMessaging.betaTooltip' as TranslationKey)} arrow placement="top">
+          <Chip label={t('common.beta')} size="small" color="primary" variant="outlined" />
+        </Tooltip>
+      </Box>
       <IconButton
         onClick={onNewMessage}
         size="small"
