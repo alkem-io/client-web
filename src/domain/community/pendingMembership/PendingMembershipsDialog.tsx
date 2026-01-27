@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { HdrStrongOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
-import { BlockSectionTitle } from '@/core/ui/typography';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import {
   ApplicationHydrator,
   InvitationHydrator,
@@ -22,6 +22,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
+import Loading from '@/core/ui/loading/Loading';
 
 const PendingMembershipsDialog = () => {
   const { t } = useTranslation();
@@ -40,10 +41,19 @@ const PendingMembershipsDialog = () => {
     });
   };
 
+  const isDialogOpen = Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? '');
+  const isPendingMembershipsList = openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList;
+
   // skip if the dialog is not open
-  const { invitations, applications } = usePendingMemberships({
-    skip: !Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? ''),
+  const { invitations, applications, loading, refetch } = usePendingMemberships({
+    skip: !isDialogOpen,
   });
+
+  useEffect(() => {
+    if (isPendingMembershipsList) {
+      refetch();
+    }
+  }, [isPendingMembershipsList, refetch]);
 
   const currentInvitation =
     openDialog?.type === PendingMembershipsDialogType.InvitationView
@@ -80,7 +90,7 @@ const PendingMembershipsDialog = () => {
     <>
       <DialogWithGrid
         columns={12}
-        open={openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList}
+        open={isPendingMembershipsList}
         onClose={closeDialog}
         aria-labelledby="pending-memberships-dialog"
       >
@@ -95,7 +105,12 @@ const PendingMembershipsDialog = () => {
           onClose={closeDialog}
         />
         <Gutters paddingTop={0}>
-          {nonVirtualContributorInvitations && nonVirtualContributorInvitations.length > 0 && (
+          {loading && <Loading />}
+          {!loading &&
+            (!nonVirtualContributorInvitations || nonVirtualContributorInvitations.length === 0) &&
+            (!virtualContributorInvitations || virtualContributorInvitations.length === 0) &&
+            (!applications || applications.length === 0) && <Caption>{t('community.pendingMembership.empty')}</Caption>}
+          {!loading && nonVirtualContributorInvitations && nonVirtualContributorInvitations.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.invitationsSectionTitle')}</BlockSectionTitle>
               {nonVirtualContributorInvitations?.map(invitation => (
@@ -110,7 +125,7 @@ const PendingMembershipsDialog = () => {
               ))}
             </>
           )}
-          {virtualContributorInvitations && virtualContributorInvitations.length > 0 && (
+          {!loading && virtualContributorInvitations && virtualContributorInvitations.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.virtualInvitationsSectionTitle')}</BlockSectionTitle>
               {virtualContributorInvitations?.map(invitation => (
@@ -125,7 +140,7 @@ const PendingMembershipsDialog = () => {
               ))}
             </>
           )}
-          {applications && applications.length > 0 && (
+          {!loading && applications && applications.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
               <ScrollableCardsLayoutContainer>

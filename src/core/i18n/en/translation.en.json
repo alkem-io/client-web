@@ -767,6 +767,7 @@
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending $t(common.Memberships)",
+      "empty": "You don't have any open invitations or applications at the moment.",
       "pendingMembershipsWithCount": "My Pending $t(common.Memberships) ({{count}})",
       "invitationsSectionTitle": "Invitations",
       "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtualContributor)",
