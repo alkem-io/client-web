@@ -96,14 +96,6 @@ const UserMessagingDialog = () => {
           fullScreen
           onClose={handleClose}
           aria-labelledby={t('components.userMessaging.title' as const)}
-          sx={{
-            '.MuiDialog-container': {
-              alignItems: 'stretch',
-            },
-            '.MuiDialog-paper': {
-              height: '100vh',
-            },
-          }}
         >
           {/* Close button */}
           <IconButton
