@@ -159,12 +159,12 @@ Phase 7 (Polish) → Accessibility & final quality
 
 ### User Story Dependencies
 
-| Story                   | Depends On       | Can Start After          |
-| ----------------------- | ---------------- | ------------------------ |
-| US1 (Add Emoji)         | Phase 2 complete | T008                     |
-| US2 (Manipulate)        | US1 complete     | T017                     |
-| US3 (Configurable)      | Phase 2 complete | T008 (parallel with US1) |
-| US4 (Search/Categories) | US1 complete     | T017                     |
+| Story | Depends On | Can Start After |
+|-------|------------|-----------------|
+| US1 (Add Emoji) | Phase 2 complete | T008 |
+| US2 (Manipulate) | US1 complete | T017 |
+| US3 (Configurable) | Phase 2 complete | T008 (parallel with US1) |
+| US4 (Search/Categories) | US1 complete | T017 |
 
 ### Within Each User Story
 
@@ -176,26 +176,22 @@ Phase 7 (Polish) → Accessibility & final quality
 ### Parallel Opportunities
 
 **Phase 1 (all [P] tasks):**
-
 ```
 T002 (types.ts) ↔ T003 (emojiReactionConfig.ts)
 ```
 
 **Phase 2 (after T004):**
-
 ```
 T005 (useEmojiReactionConfiguration) ↔ T006 (test createEmojiReactionElement) ↔ T007 (test hook) ↔ T008 (test config)
 ```
 
 **Phase 3 (models before UI):**
-
 ```
 T011 (useEmojiReactionPickerState) then T009, T010, T012-T016
 T017 (i18n) ↔ any task
 ```
 
 **Phase 7 (all [P] tasks):**
-
 ```
 T033 ↔ T034 ↔ T035 ↔ T036 ↔ T037 ↔ T038
 ```
@@ -226,13 +222,13 @@ T008: "Unit test for emojiReaction configuration validation"
 
 ### Incremental Delivery
 
-| Increment | Stories | Value Delivered                              |
-| --------- | ------- | -------------------------------------------- |
-| MVP       | US1     | Users can place emojis on whiteboards        |
-| +US2      | US1+US2 | Emojis behave like native whiteboard content |
-| +US3      | US1-US3 | Developers can customize emoji set           |
-| +US4      | US1-US4 | Full-featured picker with search/categories  |
-| +Polish   | All     | Accessible, keyboard-navigable, documented   |
+| Increment | Stories | Value Delivered |
+|-----------|---------|-----------------|
+| MVP | US1 | Users can place emojis on whiteboards |
+| +US2 | US1+US2 | Emojis behave like native whiteboard content |
+| +US3 | US1-US3 | Developers can customize emoji set |
+| +US4 | US1-US4 | Full-featured picker with search/categories |
+| +Polish | All | Accessible, keyboard-navigable, documented |
 
 ### Suggested MVP Scope
 

@@ -101,7 +101,9 @@ React Router matches routes in definition order. The `/me` route must be defined
   <Route path="me/*" element={<UserMeRoute />}>
     {/* nested routes */}
   </Route>
-  <Route path={`:${nameOfUrl.userNameId}/*`}>{/* existing routes */}</Route>
+  <Route path={`:${nameOfUrl.userNameId}/*`}>
+    {/* existing routes */}
+  </Route>
 </Routes>
 ```
 
@@ -123,9 +125,9 @@ TopLevelRoutes
 `UserProfilePage` resolves user ID with fallback:
 
 ```typescript
-const meContext = useMeUserContext(); // Set only in /me route
-const { userId: resolved } = useUrlResolver(); // Set for /:nameId route
-const userId = meContext?.userId ?? resolved; // Prefer me context
+const meContext = useMeUserContext();      // Set only in /me route
+const { userId: resolved } = useUrlResolver();  // Set for /:nameId route
+const userId = meContext?.userId ?? resolved;   // Prefer me context
 ```
 
 ## Common Issues
@@ -133,7 +135,7 @@ const userId = meContext?.userId ?? resolved; // Prefer me context
 ### Issue: /user/me shows 404
 
 **Cause**: Route order - `:userNameId` matching "me" as a nameId
-**Solution**: Ensure "me/_" route is defined before `:userNameId/_` in UserRoute.tsx
+**Solution**: Ensure "me/*" route is defined before `:userNameId/*` in UserRoute.tsx
 
 ### Issue: Loading spinner never resolves
 

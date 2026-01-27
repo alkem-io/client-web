@@ -21,34 +21,34 @@ Implement a `/user/me` route shortcut that displays the authenticated user's pro
 
 ## Constitution Check
 
-_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-| Principle                                     | Status  | Notes                                                                                                                                  |
-| --------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| I. Domain-Driven Frontend Boundaries          | ✅ PASS | New routing logic in `src/domain/community/user/routing/`, reuses existing domain façades (`useCurrentUserContext`, `useUserProvider`) |
-| II. React 19 Concurrent UX Discipline         | ✅ PASS | Uses existing Suspense boundaries, loading states follow established patterns                                                          |
-| III. GraphQL Contract Fidelity                | ✅ PASS | No new GraphQL operations needed; reuses `useCurrentUserFullQuery` (via context) and existing profile queries                          |
-| IV. State & Side-Effect Isolation             | ✅ PASS | No new state; uses React context for current user data                                                                                 |
-| V. Experience Quality & Safeguards            | ✅ PASS | Accessibility maintained (same components), no performance regression                                                                  |
-| Architecture Standard 3 (i18n)                | ✅ PASS | No new user-visible strings required                                                                                                   |
-| Architecture Standard 5 (Import Transparency) | ✅ PASS | Explicit file paths, no barrel exports                                                                                                 |
-| Architecture Standard 6 (SOLID)               | ✅ PASS | SRP: separate "me" route resolution from profile display; DIP: depends on abstractions (`useCurrentUserContext`)                       |
+| Principle | Status | Notes |
+|-----------|--------|-------|
+| I. Domain-Driven Frontend Boundaries | ✅ PASS | New routing logic in `src/domain/community/user/routing/`, reuses existing domain façades (`useCurrentUserContext`, `useUserProvider`) |
+| II. React 19 Concurrent UX Discipline | ✅ PASS | Uses existing Suspense boundaries, loading states follow established patterns |
+| III. GraphQL Contract Fidelity | ✅ PASS | No new GraphQL operations needed; reuses `useCurrentUserFullQuery` (via context) and existing profile queries |
+| IV. State & Side-Effect Isolation | ✅ PASS | No new state; uses React context for current user data |
+| V. Experience Quality & Safeguards | ✅ PASS | Accessibility maintained (same components), no performance regression |
+| Architecture Standard 3 (i18n) | ✅ PASS | No new user-visible strings required |
+| Architecture Standard 5 (Import Transparency) | ✅ PASS | Explicit file paths, no barrel exports |
+| Architecture Standard 6 (SOLID) | ✅ PASS | SRP: separate "me" route resolution from profile display; DIP: depends on abstractions (`useCurrentUserContext`) |
 
 **Pre-design violations**: None
 
 ### Post-Design Re-check (Phase 1 Complete)
 
-| Principle                                     | Status  | Notes                                                                                                                 |
-| --------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| I. Domain-Driven Frontend Boundaries          | ✅ PASS | `MeUserContext` in `src/domain/community/user/routing/`, orchestrates existing domain service `useCurrentUserContext` |
-| II. React 19 Concurrent UX Discipline         | ✅ PASS | No blocking operations; uses existing Suspense boundaries and loading patterns                                        |
-| III. GraphQL Contract Fidelity                | ✅ PASS | No new GraphQL operations; uses generated hooks exclusively                                                           |
-| IV. State & Side-Effect Isolation             | ✅ PASS | New context is pure data passing, no side effects                                                                     |
-| V. Experience Quality & Safeguards            | ✅ PASS | Same components = same accessibility; no performance regression (fewer queries for /me)                               |
-| Architecture Standard 5 (Import Transparency) | ✅ PASS | All imports use explicit paths, no index.ts barrels                                                                   |
-| Architecture Standard 6c (LSP)                | ✅ PASS | `UserProfilePage` behavior unchanged, context provides compatible userId type                                         |
-| Architecture Standard 6e (DIP)                | ✅ PASS | Profile page depends on context abstraction, not routing implementation details                                       |
-| Engineering Workflow 5 (Root Cause)           | ✅ PASS | Design addresses actual need (shortcut route) without workarounds                                                     |
+| Principle | Status | Notes |
+|-----------|--------|-------|
+| I. Domain-Driven Frontend Boundaries | ✅ PASS | `MeUserContext` in `src/domain/community/user/routing/`, orchestrates existing domain service `useCurrentUserContext` |
+| II. React 19 Concurrent UX Discipline | ✅ PASS | No blocking operations; uses existing Suspense boundaries and loading patterns |
+| III. GraphQL Contract Fidelity | ✅ PASS | No new GraphQL operations; uses generated hooks exclusively |
+| IV. State & Side-Effect Isolation | ✅ PASS | New context is pure data passing, no side effects |
+| V. Experience Quality & Safeguards | ✅ PASS | Same components = same accessibility; no performance regression (fewer queries for /me) |
+| Architecture Standard 5 (Import Transparency) | ✅ PASS | All imports use explicit paths, no index.ts barrels |
+| Architecture Standard 6c (LSP) | ✅ PASS | `UserProfilePage` behavior unchanged, context provides compatible userId type |
+| Architecture Standard 6e (DIP) | ✅ PASS | Profile page depends on context abstraction, not routing implementation details |
+| Engineering Workflow 5 (Root Cause) | ✅ PASS | Design addresses actual need (shortcut route) without workarounds |
 
 **Post-design violations**: None - design approved for implementation
 
@@ -125,14 +125,12 @@ The implementation follows a **wrapper component pattern**:
 ### Key Implementation Details
 
 **Route matching order** (React Router matches first valid route):
-
 ```
 /user/me/*        → UserMeRoute wrapper → UserPageLayout → UserProfilePage
 /user/:userNameId/* → standard UrlResolver → UserPageLayout → UserProfilePage
 ```
 
 **UserMeRoute component**:
-
 - Uses `useCurrentUserContext()` to get `userModel.id`
 - Provides this ID via a `MeUserContext`
 - `UserProfilePage` detects "me" context and uses provided ID instead of `useUrlResolver()`
@@ -141,17 +139,17 @@ The implementation follows a **wrapper component pattern**:
 
 ### Files to Create/Modify
 
-| File                                                            | Action | Purpose                                   |
-| --------------------------------------------------------------- | ------ | ----------------------------------------- |
-| `src/domain/community/user/routing/UserMeRoute.tsx`             | CREATE | Wrapper providing current user's ID       |
-| `src/domain/community/user/routing/MeUserContext.tsx`           | CREATE | Context for "me" route user ID            |
-| `src/domain/community/user/routing/useUserRouteContext.ts`      | CREATE | Hook consolidating user route context     |
-| `src/domain/community/user/routing/UserRoute.tsx`               | MODIFY | Add `/me/*` route before `:userNameId/*`  |
-| `src/domain/community/user/userProfilePage/UserProfilePage.tsx` | MODIFY | Use unified route context                 |
-| `src/domain/community/user/layout/UserPageLayout.tsx`           | MODIFY | Preserve `/user/me` URL context           |
-| `src/domain/community/user/layout/UserPageBanner.tsx`           | MODIFY | Preserve `/user/me` URL context           |
-| `src/main/routing/urlResolver/UrlResolverProvider.tsx`          | MODIFY | Skip URL resolution for `/user/me` paths  |
-| `src/main/ui/platformNavigation/PlatformNavigationUserMenu.tsx` | MODIFY | Navigation links point to `/user/me`      |
-| `src/domain/platform/routes/constants.ts`                       | MODIFY | Add `ROUTE_USER_ME` constant              |
-| `src/domain/community/userAdmin/tabs/*.tsx`                     | MODIFY | Use unified route context for admin pages |
-| `src/core/i18n/en/translation.en.json`                          | MODIFY | Add loading text translation key          |
+| File | Action | Purpose |
+|------|--------|---------|
+| `src/domain/community/user/routing/UserMeRoute.tsx` | CREATE | Wrapper providing current user's ID |
+| `src/domain/community/user/routing/MeUserContext.tsx` | CREATE | Context for "me" route user ID |
+| `src/domain/community/user/routing/useUserRouteContext.ts` | CREATE | Hook consolidating user route context |
+| `src/domain/community/user/routing/UserRoute.tsx` | MODIFY | Add `/me/*` route before `:userNameId/*` |
+| `src/domain/community/user/userProfilePage/UserProfilePage.tsx` | MODIFY | Use unified route context |
+| `src/domain/community/user/layout/UserPageLayout.tsx` | MODIFY | Preserve `/user/me` URL context |
+| `src/domain/community/user/layout/UserPageBanner.tsx` | MODIFY | Preserve `/user/me` URL context |
+| `src/main/routing/urlResolver/UrlResolverProvider.tsx` | MODIFY | Skip URL resolution for `/user/me` paths |
+| `src/main/ui/platformNavigation/PlatformNavigationUserMenu.tsx` | MODIFY | Navigation links point to `/user/me` |
+| `src/domain/platform/routes/constants.ts` | MODIFY | Add `ROUTE_USER_ME` constant |
+| `src/domain/community/userAdmin/tabs/*.tsx` | MODIFY | Use unified route context for admin pages |
+| `src/core/i18n/en/translation.en.json` | MODIFY | Add loading text translation key |

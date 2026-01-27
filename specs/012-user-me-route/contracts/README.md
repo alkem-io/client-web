@@ -20,19 +20,16 @@ This feature is a **frontend-only routing enhancement**. It does not introduce a
 ## Reused Contracts
 
 ### CurrentUserFullQuery
-
 **Location**: `src/core/apollo/generated/apollo-hooks.ts`
 
 Gets the authenticated user's profile data including their UUID.
 
 ### UserAccountQuery
-
 **Location**: `src/core/apollo/generated/apollo-hooks.ts`
 
 Fetches user profile details by user ID.
 
 ### UrlResolverQuery
-
 **Location**: `src/core/apollo/generated/apollo-hooks.ts`
 
 Used for standard `/user/{nameId}` routes but bypassed for `/user/me`.

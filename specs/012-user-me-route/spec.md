@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "Create a user `/user/me` route that points to the profile of the currently logged in user - e.g. for user with nameid valentinadmin-yanak-5936, going to `https://alkem.io/user/me` when that user is logged in renders the same page - `alkem.io/user/valentinadmin-yanak-5936`."
 
-## User Scenarios & Testing _(mandatory)_
+## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Access Own Profile via `/user/me` (Priority: P1)
 
@@ -73,7 +73,7 @@ As an authenticated user, I want to click "My Profile" or "My Account" in the pl
 - What happens if the authenticated user's profile data fails to load (network/server error)?
   - Display the standard app error UI with retry option, consistent with other data fetch failures
 
-## Requirements _(mandatory)_
+## Requirements *(mandatory)*
 
 ### Functional Requirements
 
@@ -100,7 +100,7 @@ As an authenticated user, I want to click "My Profile" or "My Account" in the pl
 - **User Profile**: The profile data (display name, avatar, bio, etc.) displayed on the profile page. Same data structure used for all user profiles.
 - **User Route Context**: Abstraction that provides unified access to user ID and profile URL generation, handling both `/user/me` and `/user/{nameId}` routes transparently.
 
-## Success Criteria _(mandatory)_
+## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 

@@ -18,22 +18,21 @@ This research documents the technical feasibility and integration approach for a
 The primary API for creating elements programmatically. Takes an `ExcalidrawElementSkeleton` array and returns fully formed `ExcalidrawElement` objects.
 
 ```typescript
-import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
+import { convertToExcalidrawElements } from "@excalidraw/excalidraw";
 
 // Create text element (emoji is just a text element with emoji character)
 const elements = convertToExcalidrawElements([
   {
-    type: 'text',
+    type: "text",
     x: 100,
     y: 100,
-    text: '👍', // Emoji character
+    text: "👍", // Emoji character
     fontSize: 48, // Large for visibility
   },
 ]);
 ```
 
 **Key Properties for Text Elements**:
-
 - `type: "text"` - Required
 - `x`, `y` - Position coordinates (required)
 - `text` - The emoji character string (required)
@@ -46,12 +45,17 @@ const elements = convertToExcalidrawElements([
 Used to add elements to an existing Excalidraw canvas:
 
 ```typescript
-const addEmojiToCanvas = (excalidrawAPI: ExcalidrawImperativeAPI, emoji: string, x: number, y: number) => {
+const addEmojiToCanvas = (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+  emoji: string,
+  x: number,
+  y: number
+) => {
   const currentElements = excalidrawAPI.getSceneElements();
 
   const newElements = convertToExcalidrawElements([
     {
-      type: 'text',
+      type: "text",
       x,
       y,
       text: emoji,
@@ -71,7 +75,11 @@ Excalidraw operates in scene coordinates, not screen coordinates. When user clic
 
 ```typescript
 // Get scene coordinates from screen click
-const getSceneCoordinates = (excalidrawAPI: ExcalidrawImperativeAPI, clientX: number, clientY: number) => {
+const getSceneCoordinates = (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+  clientX: number,
+  clientY: number
+) => {
   const appState = excalidrawAPI.getAppState();
   const { scrollX, scrollY, zoom } = appState;
 
@@ -103,13 +111,11 @@ type EmojiSelectorProps = {
 ### 2.1 Reuse Assessment
 
 **Can Reuse**:
-
 - Popper positioning logic
 - Click-away listener pattern
 - emoji-picker-react integration
 
 **Need to Modify/Extend**:
-
 - Filter emojis to configured subset (custom emoji data)
 - Styling to match whiteboard toolbar
 - Keyboard navigation enhancements
@@ -159,7 +165,6 @@ WhiteboardDialog
 ```
 
 **WhiteboardEmojiPicker** renders:
-
 1. Toolbar button to open emoji picker
 2. Emoji picker popover (10 configured emojis)
 3. Placement mode cursor indicator
@@ -201,13 +206,11 @@ const useEmojiPlacement = () => {
 ### 4.1 Approach Options
 
 **Option A: Overlay Click Handler**
-
 - Place invisible overlay when in placement mode
 - Capture click coordinates, convert to scene coordinates
 - Add element via updateScene
 
 **Option B: Excalidraw onPointerDown** (Preferred)
-
 - Use Excalidraw's pointer event handling
 - Events include converted scene coordinates
 - Cleaner integration with existing event flow
@@ -218,25 +221,26 @@ const useEmojiPlacement = () => {
 // In CollaborativeExcalidrawWrapper
 const { isPlacementMode, selectedEmoji, completePlacement } = useEmojiPlacement();
 
-const handlePointerDown = useCallback(
-  (activeTool: AppState['activeTool'], state: AppState, event: React.PointerEvent<HTMLCanvasElement>) => {
-    if (isPlacementMode && selectedEmoji && excalidrawApi) {
-      // Calculate scene coordinates
-      const { scrollX, scrollY, zoom } = state;
-      const x = (event.clientX - scrollX) / zoom.value;
-      const y = (event.clientY - scrollY) / zoom.value;
+const handlePointerDown = useCallback((
+  activeTool: AppState['activeTool'],
+  state: AppState,
+  event: React.PointerEvent<HTMLCanvasElement>
+) => {
+  if (isPlacementMode && selectedEmoji && excalidrawApi) {
+    // Calculate scene coordinates
+    const { scrollX, scrollY, zoom } = state;
+    const x = (event.clientX - scrollX) / zoom.value;
+    const y = (event.clientY - scrollY) / zoom.value;
 
-      // Add emoji element
-      addEmojiToCanvas(excalidrawApi, selectedEmoji, x, y);
-      completePlacement();
+    // Add emoji element
+    addEmojiToCanvas(excalidrawApi, selectedEmoji, x, y);
+    completePlacement();
 
-      // Prevent default Excalidraw action
-      return true;
-    }
-    return false;
-  },
-  [isPlacementMode, selectedEmoji, excalidrawApi, completePlacement]
-);
+    // Prevent default Excalidraw action
+    return true;
+  }
+  return false;
+}, [isPlacementMode, selectedEmoji, excalidrawApi, completePlacement]);
 ```
 
 **Note**: The exact event handling mechanism will need to be verified against `@alkemio/excalidraw` API. The Alkemio fork may have additional props/hooks.
@@ -294,7 +298,6 @@ export const defaultEmojiConfig: EmojiConfiguration = {
 ### 6.1 Keyboard Navigation
 
 The emoji picker must support:
-
 - Tab to focus picker button
 - Enter/Space to open picker
 - Arrow keys to navigate emojis (grid layout)
@@ -336,7 +339,9 @@ The emoji picker must support:
 Emoji picker component should be lazy-loaded:
 
 ```typescript
-const WhiteboardEmojiPicker = lazyWithGlobalErrorHandler(() => import('./WhiteboardEmojiPicker'));
+const WhiteboardEmojiPicker = lazyWithGlobalErrorHandler(
+  () => import('./WhiteboardEmojiPicker')
+);
 ```
 
 ### 7.2 Canvas Performance
@@ -348,17 +353,16 @@ const WhiteboardEmojiPicker = lazyWithGlobalErrorHandler(() => import('./Whitebo
 
 ## 8. Risks and Mitigations
 
-| Risk                                               | Likelihood | Impact | Mitigation                                            |
-| -------------------------------------------------- | ---------- | ------ | ----------------------------------------------------- |
-| Excalidraw API changes in @alkemio/excalidraw fork | Medium     | High   | Pin version, review changes before upgrade            |
-| Coordinate conversion edge cases (zoom/scroll)     | Medium     | Medium | Comprehensive testing at various zoom levels          |
-| Mobile touch events differ from pointer events     | Low        | Medium | Test on mobile, use pointer events polyfill if needed |
-| Emoji rendering inconsistency across browsers      | Low        | Low    | Use native emoji style, test on target browsers       |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Excalidraw API changes in @alkemio/excalidraw fork | Medium | High | Pin version, review changes before upgrade |
+| Coordinate conversion edge cases (zoom/scroll) | Medium | Medium | Comprehensive testing at various zoom levels |
+| Mobile touch events differ from pointer events | Low | Medium | Test on mobile, use pointer events polyfill if needed |
+| Emoji rendering inconsistency across browsers | Low | Low | Use native emoji style, test on target browsers |
 
 ## 9. Open Questions (Resolved)
 
 All open questions from spec have been resolved in clarification phase:
-
 - ✅ Configuration location: Bundled TypeScript module
 - ✅ Outside canvas click: Cancels placement
 - ✅ Permissions handling: Silently fail placement

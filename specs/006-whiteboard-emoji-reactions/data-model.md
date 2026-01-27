@@ -205,7 +205,6 @@ export function createEmojiElement(
 ```
 
 **Default Values**:
-
 - `fontSize`: 48 (visible at standard zoom)
 - `id`: Auto-generated UUID
 - `fontFamily`: 1 (Virgil - matches Excalidraw default)
