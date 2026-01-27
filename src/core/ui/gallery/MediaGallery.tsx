@@ -1,29 +1,15 @@
 import React from 'react';
-import LightGallery from 'lightgallery/react';
-import { Box, styled, GlobalStyles } from '@mui/material';
-
-// import styles
-import 'lightgallery/css/lightgallery.css';
-import 'lightgallery/css/lg-zoom.css';
-import 'lightgallery/css/lg-thumbnail.css';
-import 'lightgallery/css/lg-video.css';
-import 'lightgallery/css/lg-rotate.css';
-
-// import plugins
-import lgThumbnail from 'lightgallery/plugins/thumbnail';
-import lgZoom from 'lightgallery/plugins/zoom';
-import lgVideo from 'lightgallery/plugins/video';
-import lgRotate from 'lightgallery/plugins/rotate';
-
+import { Box, styled } from '@mui/material';
 import { MediaItem } from './types';
 import { gutters } from '../grid/utils';
+import DialogWithGrid from '../dialog/DialogWithGrid';
+import DialogHeader from '../dialog/DialogHeader';
+import GalleryPager from './GalleryPager';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
-  '& .custom-lightgallery': {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: gutters(0.5)(theme),
-  },
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: gutters(0.5)(theme),
 }));
 
 const GalleryItem = styled('a')(() => ({
@@ -46,29 +32,49 @@ const GalleryItem = styled('a')(() => ({
 }));
 
 interface MediaGalleryProps {
+  title?: string;
   items: MediaItem[];
 }
 
-const MediaGallery: React.FC<MediaGalleryProps> = ({ items }) => {
+const MediaGallery = ({ title, items }: MediaGalleryProps) => {
+  const [selectedItem, setSelectedItem] = React.useState<MediaItem>();
+  const [currentIndex, setCurrentIndex] = React.useState<number>(0);
+
+  const handleClose = () => {
+    setSelectedItem(undefined);
+    setCurrentIndex(0);
+  };
+
+  const handleItemClick = (item: MediaItem, index: number) => {
+    setSelectedItem(item);
+    setCurrentIndex(index);
+  };
+
+  const handlePrevious = React.useCallback(() => {
+    const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+    setSelectedItem(items[newIndex]);
+  }, [currentIndex, items]);
+
+  const handleNext = React.useCallback(() => {
+    const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+    setSelectedItem(items[newIndex]);
+  }, [currentIndex, items]);
+
+  const handleDotClick = (index: number) => {
+    setCurrentIndex(index);
+    setSelectedItem(items[index]);
+  };
+
   if (!items || items.length === 0) {
     return null;
   }
 
   return (
-    <GalleryWrapper>
-      <GlobalStyles
-        styles={{
-          '.lg-outer': { zIndex: '10000 !important' },
-          '.lg-backdrop': { zIndex: '9999 !important' },
-        }}
-      />
-      <LightGallery
-        speed={500}
-        plugins={[lgThumbnail, lgZoom, lgVideo, lgRotate]}
-        mode="lg-fade"
-        elementClassNames="custom-lightgallery"
-      >
-        {items.map(item => {
+    <>
+      <GalleryWrapper>
+        {items.map((item, index) => {
           const isVideo = item.type === 'video';
           const videoSource = isVideo
             ? JSON.stringify({
@@ -78,20 +84,37 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({ items }) => {
             : undefined;
 
           return (
-            <GalleryItem
-              key={item.id}
-              data-src={isVideo ? undefined : item.url}
-              data-video={videoSource}
-              data-sub-html={
-                item.title ? `<h4>${item.title}</h4>${item.description ? `<p>${item.description}</p>` : ''}` : undefined
-              }
-            >
-              <img src={item.thumbnailUrl || item.url} alt={item.alt || item.title || 'Gallery item'} />
+            <GalleryItem key={item.id} data-src={isVideo ? undefined : item.url} data-video={videoSource}>
+              <img
+                src={item.thumbnailUrl || item.url}
+                alt={item.alt || item.title || 'Gallery item'}
+                onClick={() => handleItemClick(item, index)}
+              />
             </GalleryItem>
           );
         })}
-      </LightGallery>
-    </GalleryWrapper>
+      </GalleryWrapper>
+      <DialogWithGrid open={!!selectedItem} onClose={handleClose} title={selectedItem?.title || ''}>
+        <DialogHeader onClose={handleClose}>{title || 'Media Gallery'}</DialogHeader>
+        {selectedItem && (
+          <Box position="relative">
+            <img
+              src={selectedItem.thumbnailUrl || selectedItem.url}
+              alt={selectedItem.alt || selectedItem.title || 'Gallery item'}
+              style={{ width: '100%', height: 'auto', maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+            />
+            <GalleryPager
+              containerProps={{ position: 'absolute', bottom: 0, width: '100%' }}
+              totalItems={items.length}
+              currentIndex={currentIndex}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              onDotClick={handleDotClick}
+            />
+          </Box>
+        )}
+      </DialogWithGrid>
+    </>
   );
 };
 

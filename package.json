@@ -145,7 +145,6 @@
     "i18next-browser-languagedetector": "7.2.2",
     "immer": "^10.1.1",
     "jsdom": "^26.0.0",
-    "lightgallery": "^2.9.0",
     "lodash": "^4.17.21",
     "markdown-it": "^14.1.0",
     "markdown-it-link-attributes": "^4.0.1",

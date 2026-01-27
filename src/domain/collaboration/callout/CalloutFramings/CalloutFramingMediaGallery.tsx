@@ -34,7 +34,7 @@ const CalloutFramingMediaGallery = ({ callout }: CalloutFramingMediaGalleryProps
     return null;
   }
 
-  return <MediaGallery items={mediaItems} />;
+  return <MediaGallery title={callout.framing.profile.displayName} items={mediaItems} />;
 };
 
 export default CalloutFramingMediaGallery;

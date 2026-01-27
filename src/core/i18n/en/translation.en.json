@@ -138,6 +138,7 @@
     "remove": "Remove",
     "cancel": "Cancel",
     "upload": "Upload",
+    "uploadMedia": "Upload Media",
     "explore-and-connect": "Explore and connect",
     "send-message": "Send message",
     "edit-members": "Edit $t(common.members)",
@@ -1599,6 +1600,9 @@
         "memo": {
           "name": "Content",
           "placeholder": "(Optional) Add some content to the $t(common.memo)"
+        },
+        "mediaGallery": {
+          "name": "Media Gallery"
         }
       },
       "template-step": {

@@ -1,6 +1,6 @@
 import { Box, BoxProps, SvgIconProps, TypographyProps } from '@mui/material';
 import { CaptionSmall } from '../typography';
-import { PropsWithChildren, ReactElement, ReactNode, useEffect, useState } from 'react';
+import { PropsWithChildren, ReactElement, ReactNode, useEffect, useRef, useState } from 'react';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
 import SkipLink from '../keyboardNavigation/SkipLink';
@@ -14,12 +14,9 @@ export interface PageContentBlockHeaderProps {
   titleId?: string;
   icon?: ReactElement<SvgIconProps>;
   actions?: ReactNode;
+  autoCollapseActions?: boolean;
   disclaimer?: ReactNode;
   fullWidth?: boolean;
-  /**
-   * Put actions as a sibling instead of inside the element if the screen is too small to put the actions in the header
-   */
-  autoCollapseActions?: boolean;
   variant?: TypographyProps['variant'];
 }
 
@@ -28,27 +25,39 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
   titleId,
   icon,
   actions,
+  autoCollapseActions = false,
   variant,
   disclaimer,
   fullWidth,
-  autoCollapseActions,
   children,
   ...props
 }: PropsWithChildren<PageContentBlockHeaderProps> & Omit<BoxProps<D, P>, 'title'>) => {
   const nextBlock = useNextBlockAnchor();
+
+  const { ref: actionsContainerRef, width } = useResizeDetector();
+  const actionsRef = useRef<HTMLDivElement>(null);
+
   const [actionsCollapsed, setActionsCollapsed] = useState(false);
-  const { ref: actionsRef, width } = useResizeDetector();
+  const actionsContent = actions ? (
+    <Actions ref={actionsRef} height={!actionsCollapsed ? gutters() : undefined} width="fit-content">
+      {actions}
+    </Actions>
+  ) : null;
 
   useEffect(() => {
-    if (!autoCollapseActions || !actions || !actionsRef.current) {
+    if (!actionsRef.current || !actionsContainerRef.current || !autoCollapseActions || !actions || !actionsContent) {
       return;
     }
-    if (actionsRef.current.scrollHeight > actionsRef.current.height) {
+    console.log({ width: actionsRef.current.clientWidth, containerWidth: actionsContainerRef.current.clientWidth });
+    if (actionsRef.current.clientWidth + 20 > actionsContainerRef.current.clientWidth) {
+      console.log('collapse actions');
       setActionsCollapsed(true);
     } else {
+      console.log('not collapse actions');
       setActionsCollapsed(false);
     }
   }, [width]);
+
   return (
     <>
       <Box
@@ -74,12 +83,11 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
           {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
           {children}
         </Box>
-        <Box height={gutters()}>
-          {actionsCollapsed ? 'collapsed' : 'not collapsed'}
-          {actions && !actionsCollapsed && <Actions ref={actionsRef} height={gutters()}>{actions}</Actions>}
+        <Box ref={actionsContainerRef} width="100%" display="flex" justifyContent="flex-end">
+          {actions && autoCollapseActions && !actionsCollapsed && actionsContent}
         </Box>
       </Box>
-      {actions && actionsCollapsed && <Actions ref={actionsRef} height={gutters()}>{actions}</Actions>}
+      {actions && autoCollapseActions && actionsCollapsed && <Box>{actionsContent}</Box>}
     </>
   );
 };

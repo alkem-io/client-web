@@ -1,6 +1,6 @@
 import BlockIcon from '@mui/icons-material/Block';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import PermMediaIcon from '@mui/icons-material/PermMedia';
+import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -153,7 +153,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           disabled: calloutRestrictions?.disableLinks,
         },
         {
-          icon: PermMediaIcon,
+          icon: BurstModeOutlinedIcon,
           value: CalloutFramingType.MediaGallery,
           label: 'Media Gallery', // TODO: Add translation
           tooltip: 'Create a media gallery', // TODO: Add translation
