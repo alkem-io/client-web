@@ -118,6 +118,7 @@
     "see-more": "Ver más",
     "see-all": "Más {{subject}}",
     "readMore": "Leer más",
+    "ellipsisReadMore": "... Read more",
     "showLess": "Mostrar menos",
     "retry": "Inténtelo de nuevo",
     "home": "Inicio",
@@ -156,8 +157,8 @@
     "accept-all-cookies": "Aceptar todas las cookies",
     "confirm-choice": "Confirmar elección",
     "confirm": "Confirmar",
-    "change-template": "Cambiar $t(common.template)",
-    "find-template": "Buscar $t(common.template)",
+    "change-template": "Change $t(common.template)",
+    "find-template": "Find $t(common.template)",
     "change": "Cambiar",
     "share": "Compartir",
     "view": "Ver",
@@ -179,7 +180,7 @@
     "fullscreen": "Pantalla completa",
     "changeLanguage": "Cambiar idioma",
     "getHelp": "Obtener ayuda",
-    "saveAsTemplate": "Guardar como $t(common.template)",
+    "saveAsTemplate": "Save as $t(common.template)",
     "skipLink": "Omitir este bloque",
     "toggle": "Alternar {{entity}}",
     "toolsMenu": "Menú de herramientas",
@@ -226,7 +227,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
+        "cleverbase": "Cleverbase: un proveedor de servicios de confianza cualificado de la UE, que emite identidades digitales reconocidas legalmente y autenticación segura."
       }
     },
     "signUp": {
@@ -234,13 +235,13 @@
       "alreadyHaveAccount": "¿Ya tienes $t(common.account)?"
     },
     "passkey": {
-      "sign-in": "Sign in with passkey",
-      "register": "Register passkey",
-      "not-supported": "Passkeys are not supported by your browser",
-      "script-loading": "Loading passkey support...",
-      "script-error": "Failed to load passkey functionality",
-      "unknown-error": "An error occurred with your passkey",
-      "remove-credential": "Remove passkey"
+      "sign-in": "Iniciar sesión con PassKey",
+      "register": "Registrar PassKey",
+      "not-supported": "Las PassKeys no son compatibles con su navegador",
+      "script-loading": "Leyendo PassKey...",
+      "script-error": "Error al cargar la funcionalidad de la PassKey",
+      "unknown-error": "Se ha producido un error con su PassKey",
+      "remove-credential": "Eliminar PassKey"
     }
   },
   "common": {
@@ -277,6 +278,7 @@
     "callouts": "$t(common.posts)",
     "Callout": "$t(common.Post)",
     "Callouts": "$t(common.Posts)",
+    "framing": "Additional Content",
     "collaborationTools": "Herramientas de colaboración",
     "createdBy": "Creado por",
     "Memo": "Nota",
@@ -364,10 +366,10 @@
     "role": "Rol",
     "agreement": "Acuerdo",
     "agreements": "Acuerdos",
-    "templates": "Plantillas",
+    "templates": "Templates",
     "noneTemplates": "Sin plantillas",
     "templateTypes": "Tipos de plantillas",
-    "template": "plantilla",
+    "template": "Template",
     "group": "Grupo",
     "groups": "Grupos",
     "user-group": "Grupo de usuarios",
@@ -424,7 +426,7 @@
     "notification": "notificación",
     "notifications": "notificaciones",
     "credentials": "Credenciales",
-    "security": "Security",
+    "security": "Seguridad",
     "my-profile": "Mi $t(common.profile)",
     "my-memberships": "Mis $t(common.memberships)",
     "Profile": "Perfil",
@@ -526,17 +528,17 @@
         "OTHER": "Otro"
       },
       "templateType": {
-        "CALLOUT": "Plantilla de herramienta de colaboración",
+        "CALLOUT": "Collaboration Tool $t(common.template)",
         "CALLOUT_plural": "Plantillas de herramientas de colaboración",
-        "SPACE": "Plantilla de $t(common.space)",
+        "SPACE": "$t(common.space) $t(common.template)",
         "SPACE_plural": "Plantillas de $t(common.space)",
-        "COMMUNITY_GUIDELINES": "Plantilla de directrices de $t(common.Community)",
+        "COMMUNITY_GUIDELINES": "$t(common.Community) Guidelines $t(common.template)",
         "COMMUNITY_GUIDELINES_plural": "Plantillas de directrices de $t(common.Community)",
-        "INNOVATION_FLOW": "Innovation Flow",
-        "INNOVATION_FLOW_plural": "Plantillas de Innovation Flow",
-        "POST": "Plantilla de Post",
+        "INNOVATION_FLOW": "$t(common.innovation-flow)",
+        "INNOVATION_FLOW_plural": "$t(common.innovation-flow) $t(common.templates)",
+        "POST": "Post $t(common.template)",
         "POST_plural": "Plantillas de Posts",
-        "WHITEBOARD": "Plantilla de $t(common.Whiteboard)",
+        "WHITEBOARD": "$t(common.Whiteboard) $t(common.template)",
         "WHITEBOARD_plural": "Plantillas de $t(common.Whiteboard)"
       },
       "calloutType": {
@@ -620,7 +622,8 @@
         "month_other": "{{count}} meses",
         "year_one": "{{count}} año",
         "year_other": "{{count}} años"
-      }
+      },
+      "moreThan1Year": "> 1 year ago"
     },
     "supportEmail": "support@alkem.io",
     "options": "Opciones",
@@ -812,7 +815,7 @@
       "createButtonTooltip": "Añadir $t(common.Post)",
       "dialogTitle": "Añadir $t(common.Post)",
       "framingSettings": {
-        "title": "Contenido adicional",
+        "title": "$t(common.framing)",
         "none": {
           "title": "Ninguno",
           "tooltip": "Sin contenido adicional"
@@ -899,7 +902,7 @@
       "importTemplate": {
         "confirmOverwrite": {
           "title": "¿Sobrescribir la entrada actual?",
-          "content": "Si importas una $t(common.template), tu entrada actual podría sobrescribirse. ¿Estás seguro de que quieres continuar?"
+          "content": "If you import a $t(common.template), your current input could be overwritten. Are you sure you want to continue?"
         }
       },
       "notification": {
@@ -922,7 +925,8 @@
       "contributionsItemsCount_other": "{{count}} elementos en este $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} elementos en esta $t(common.collection), <click>haz clic aquí</click> para ver todos",
       "contributionsCollapse": "{{count}} elementos en esta $t(common.collection), <click>haz clic aquí</click> para ocultar algunos",
-      "noContributions": "Todavía no hay contribuciones, ¡sé el primero en contribuir!"
+      "noContributions": "Todavía no hay contribuciones, ¡sé el primero en contribuir!",
+      "contributions": "Contributions ({{count}})"
     },
     "draftNotice": "BORRADOR - Solo visible para $t(common.admins)",
     "closed": "Esta discusión está cerrada, por lo que ya no puedes comentar",
@@ -933,7 +937,7 @@
     "permission-help-text": "Usa el interruptor de abajo para cerrar este $t(common.callout) a nuevas entradas.",
     "callout-location": "Ubicación: ",
     "sortContributions": "Ordenar contribuciones",
-    "saveAsTemplate": "Guardar como $t(common.template)",
+    "saveAsTemplate": "Save as $t(common.template)",
     "alkemio-link": "Haz clic aquí para leer más sobre los $t(common.posts) de Alkemio",
     "link-collection": {
       "add-link": "Añadir enlaces o documentos a {{title}}",
@@ -950,15 +954,15 @@
       "new-temporary-reference": "ID de enlace temporal: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Haz clic para abrir $t(common.whiteboard)",
+      "clickToSee": "Click to see the full $t(common.whiteboard)",
       "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
+        "addEmoji": "Reaccionar",
+        "title": "Añadir emoji",
+        "hint": "Selecciona un emoji, luego haz clic en el lienzo",
+        "clickToPlace": "Haz clic en el lienzo para colocar {{emoji}}",
+        "placementMode": "Clic para colocar emoji: {{emoji}}",
+        "gridLabel": "Selecciona un emoji",
+        "noEmojis": "No hay emojis disponibles"
       }
     },
     "memo": {
@@ -1086,7 +1090,7 @@
       },
       "template": {
         "title": "$t(common.template):",
-        "defaultTemplate": "$t(common.template) predeterminada de Alkemio para $t(common.spaces)"
+        "defaultTemplate": "Default Alkemio $t(common.template) for $t(common.spaces)"
       }
     },
     "L1": {
@@ -1128,7 +1132,7 @@
       },
       "template": {
         "title": "$t(common.template):",
-        "defaultTemplate": "$t(common.template) predeterminada de Alkemio para $t(common.subspaces)"
+        "defaultTemplate": "Default Alkemio $t(common.template) for $t(common.subspaces)"
       }
     },
     "L2": {
@@ -1172,7 +1176,7 @@
       },
       "template": {
         "title": "$t(common.template):",
-        "defaultTemplate": "$t(common.template) predeterminada de Alkemio para $t(common.subspaces)"
+        "defaultTemplate": "Default Alkemio $t(common.template) for $t(common.subspaces)"
       }
     }
   },
@@ -1197,12 +1201,12 @@
   },
   "templateDialog": {
     "profile": {
-      "title": "Descripción de la $t(common.template)",
+      "title": "$t(common.template) description",
       "help": "Esta descripción será visible para cualquier persona que navegue por las $t(common.templates). Sin embargo, no forma parte del contenido real del {{entityTypeName}}.",
       "fields": {
-        "displayName": "Título de la $t(common.template)",
-        "description": "Descripción de la $t(common.template)",
-        "tags": "Etiquetas de la $t(common.template)"
+        "displayName": "$t(common.template) title",
+        "description": "$t(common.template) description",
+        "tags": "$t(common.template) tags"
       }
     }
   },
@@ -1220,7 +1224,7 @@
     "whiteboardTemplates": {
       "name": "$t(common.enums.templateType.WHITEBOARD)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
-      "editTemplateButton": "Editar $t(common.template)",
+      "editTemplateButton": "Edit $t(common.template)",
       "editDialogTitle": "Editar $t(common.enums.templateType.WHITEBOARD)",
       "errorImporting": "Error al importar $t(common.enums.templateType.WHITEBOARD)"
     },
@@ -1229,10 +1233,10 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "URL del $t(common.space)",
-        "description": "Ingresa la URL del $t(common.space) o $t(common.subspace) que deseas copiar como $t(common.template).",
+        "description": "Enter the URL of the $t(common.space) or $t(common.subspace) you want to copy as a $t(common.template).",
         "use": "Usar este $t(common.space)",
-        "urlRequired": "Pega aquí la URL del $t(common.space) que deseas copiar como $t(common.template).",
-        "noRights": "Necesitas derechos de $t(common.admin) en el $t(common.space) que deseas copiar como $t(common.template).",
+        "urlRequired": "Please paste here the URL of the $t(common.space) you want to copy as a $t(common.template).",
+        "noRights": "You need $t(common.admin) rights in the $t(common.space) you want to copy as a $t(common.template).",
         "invalidUrl": "La URL no es reconocida como una URL de $t(common.space).",
         "spaceNotFoundError": "$t(common.space) no encontrado",
         "selectAnother": "Actualizar colaboración desde otro $t(common.space)"
@@ -1240,8 +1244,8 @@
       "preview": {
         "info": "Siempre incluido: información de \"Acerca de\" y $t(common.settings)"
       },
-      "recursive": "Incluir también los $t(common.subspaces) del $t(common.space) seleccionado en la $t(common.template)",
-      "includesSubspaces": "Esta $t(common.template) también incluye estos $t(common.subspaces):"
+      "recursive": "Also include $t(common.subspaces) of the selected $t(common.space) in the $t(common.template)",
+      "includesSubspaces": "This $t(common.template) also includes these $t(common.subspaces):"
     },
     "communityGuidelinesTemplates": {
       "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
@@ -1252,27 +1256,27 @@
     },
     "platformTemplates": "$t(common.templates) de la plataforma",
     "loadPlatformTemplates": "O haz clic aquí para explorar todas las $t(common.templates) de la plataforma",
-    "platformUseDisabled": "Ten en cuenta que solo puedes usar las $t(common.templates) seleccionadas para esta $t(common.community) (ver arriba). Si deseas usar alguna de las $t(common.templates) de abajo, pide al $t(common.admin) o al $t(common.lead) del $t(common.space) que las añada en la sección de $t(common.template) de los $t(common.settings) del $t(common.space).",
-    "disabledTemplateInfo": "Ten en cuenta que solo puedes usar las $t(common.templates) seleccionadas para esta $t(common.community), y esta no lo está. Si deseas usar esta $t(common.template), pide al $t(common.admin) o al $t(common.lead) del $t(common.space) que la añada en la sección de $t(common.template) de los $t(common.settings) del $t(common.space).",
+    "platformUseDisabled": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.template) section of the $t(common.space) Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community), which this is not. If you would like to use this $t(common.template), please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add it in the $t(common.template) section of the $t(common.space) $t(common.settings).",
     "importTemplateDialog": {
       "confirmClose": {
-        "title": "Descartar $t(common.template)",
-        "description": "¿Estás seguro de que quieres cerrar esta $t(common.template)? Los cambios no guardados se perderán."
+        "title": "Discard $t(common.template)",
+        "description": "Are you sure you want to close this $t(common.template)? Unsaved changes will be lost."
       }
     },
     "notifications": {
-      "templateSaved": "$t(common.template) guardada correctamente"
+      "templateSaved": "$t(common.template) saved successfully"
     }
   },
   "innovation-templates": {
     "states": {
       "title": "Definición",
-      "placeholder": "Aquí puedes pegar la descripción de las fases para usar en este $t(common.innovation-flow)"
+      "placeholder": "Here you can paste the description of the phases to use for this $t(common.innovation-flow)"
     }
   },
   "components": {
     "calloutTemplateDialog": {
-      "typeReadonly": "Una vez creada una $t(common.template), su tipo no puede cambiarse. Si necesitas un tipo diferente, crea una nueva $t(common.template)."
+      "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
     "shareSettings": {
       "description": "Según los $t(common.settings) del $t(common.space) en el que se encuentra este {{elementName}}, puedes editar con varios usuarios a la vez. Si no quieres que otros editen, cambia los $t(common.settings) a continuación.",
@@ -1306,7 +1310,6 @@
     },
     "searchDialog": {
       "headerTitle": "Resultados de búsqueda",
-      "spacesAndSubspaces": "$t(common.spaces) y $t(common.subspaces)",
       "collaborationTools": "Herramientas de colaboración"
     },
     "searchScope": {
@@ -1348,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "Gestionar flujo",
+      "importing": "Importando...",
       "buttonTooltip": "Gestionar flujo",
       "editProfileDialog": {
         "title": "Editar detalles: Flujo"
@@ -1358,7 +1362,7 @@
         "editState": "Editar detalles",
         "deleteState": "Eliminar",
         "addState": "Añadir fase",
-        "setDefaultTemplate": "Set Default Post Template",
+        "setDefaultTemplate": "Establecer plantilla por defecto",
         "invalidChars": "El nombre de una fase no puede contener caracteres especiales.",
         "noRepeatedStates": "Ya existe una fase con el mismo nombre.",
         "createDialog": {
@@ -1373,32 +1377,44 @@
           "activeStateWarning": "Esta fase es actualmente la activa y no puede eliminarse. Siempre puedes cambiarle el nombre o seleccionar otra como activa."
         },
         "selectDifferentFlow": {
-          "title": "Buscar $t(common.template) de $t(common.space)",
+          "title": "Find $t(common.space) $t(common.template)",
           "confirmationDialog": {
             "title": "¡Ten cuidado al cambiar el flujo!",
-            "description": "- Al cambiar el $t(common.innovation-flow), **todos los cambios realizados en el flujo actual se perderán**.\n- Todos los $t(common.posts) existentes se agruparán bajo la primera fase del nuevo flujo."
+            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
           },
           "importCalloutsDialog": {
             "title": "Aplicar nueva $t(common.template)",
-            "description": "Estás a punto de aplicar una nueva $t(common.template). Esta acción **eliminará permanentemente** tu $t(common.innovation-flow) actual. Sin embargo, los $t(common.posts) existentes vinculados a diferentes fases permanecerán y se agruparán bajo la primera fase de la nueva configuración.<br/><br/>Por favor, elige una de las siguientes opciones:",
-            "yes": "Añadir $t(common.posts) de la $t(common.template)",
-            "yesDescription": "Esto incluirá los nuevos $t(common.posts) de la $t(common.template) además de los existentes.",
-            "no": "Solo cambiar el $t(common.innovation-flow)",
-            "noDescription": "Esto solo reemplazará el $t(common.innovation-flow), manteniendo tus $t(common.posts) actuales como están.",
-            "apply": "Aplicar nueva $t(common.template)"
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Reemplazar con un nuevo flujo",
+              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirmar la eliminación",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Aplicar"
           }
         }
       },
       "defaultTemplate": {
-        "currentlySelected": "Currently Selected Template:",
-        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "currentlySelected": "$t(common.Template) seleccionada actualmente:",
+        "noTemplate": "No default $t(common.template) set. Select a $t(common.template) to pre-fill posts in this flow step.",
         "removeConfirmation": {
-          "title": "Remove Default Template?",
-          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+          "title": "¿Eliminar $t(common.template) predeterminada?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
         },
         "errors": {
-          "selectFailed": "Failed to set the default template. Please try again.",
-          "removeFailed": "Failed to remove the default template. Please try again."
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -1560,7 +1576,7 @@
       "title": "¿Qué quieres preguntarle a tu $t(common.community)?",
       "titleWithType": "Crear {{type}}",
       "post-type-label": "Etiqueta del $t(common.Post)",
-      "custom-template": "$t(common.template) personalizada",
+      "custom-template": "Custom $t(common.template)",
       "info-step": {
         "title": "Detalles",
         "description": "Descripción",
@@ -1591,14 +1607,14 @@
         "post-template-text": "Añade texto predeterminado a los $t(common.posts), por ejemplo, preguntas que te gustaría que la gente respondiera.",
         "post-template-default-description": "Descripción predeterminada",
         "whiteboard-template-label": "$t(common.template):",
-        "whiteboard-empty-template": "$t(common.template) vacía",
-        "whiteboard-reset-template": "Restablecer $t(common.template) vacía",
+        "whiteboard-empty-template": "Empty $t(common.template)",
+        "whiteboard-reset-template": "Reset Empty $t(common.template)",
         "no-post-template-selected": "Por favor, selecciona una $t(common.enums.templateType.WHITEBOARD)",
         "no-whiteboard-template-selected": "Por favor, selecciona una $t(common.enums.templateType.WHITEBOARD)"
       },
       "create-step": {
         "title": "Crear",
-        "post-template-label": "Elegir $t(common.template) de $t(common.post)"
+        "post-template-label": "Choose $t(common.post) $t(common.template)"
       },
       "closeDialog": {
         "title": "Descartar $t(common.post)",
@@ -2191,6 +2207,7 @@
     },
     "userMessaging": {
       "title": "Mensajes",
+      "betaTooltip": "We wanted to share this early - still improving!",
       "noConversations": "Aún no hay conversaciones",
       "noMessages": "No hay mensajes",
       "selectConversation": "Selecciona una conversación para empezar a enviar mensajes",
@@ -2293,7 +2310,7 @@
     },
     "contribute": {
       "innovationFlow": {
-        "title": "Este/esta {{entity}} está guiado por el <b>{{innovationFlowDisplayName}}</b>. Este $t(common.innovation-flow) estructura el proceso e invita a realizar acciones específicas por etapa.",
+        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This $t(common.innovation-flow) structures the process and invites you to take specified actions per stage.",
         "readMore": "Leer más sobre el <b>{{innovationFlowDisplayName}}</b>"
       },
       "no-posts": "No se encontraron $t(common.posts)"
@@ -2303,7 +2320,7 @@
       "fullName": "$t(common.templateLibrary)",
       "title": "$t(common.templateLibrary) de Alkemio",
       "subtitle": "Pon en marcha tu $t(common.spaceSubspace) con estas herramientas listas para usar. <click>Más información</click>.",
-      "useTemplateButton": "Accede a esta $t(common.template) desde tu $t(common.space) para usarla.",
+      "useTemplateButton": "Access this $t(common.template) from your $t(common.space) to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
         "dialogTitle": "$t(common.innovation-packs)"
@@ -2351,15 +2368,15 @@
             "description": "Here you can manage your security settings, including passkeys and security keys."
           },
           "templates": {
-            "description": "Aquí puedes crear y editar $t(common.templates) para este/esta {{entity}}.",
-            "delete-confirmation": "¿Estás seguro/a de que quieres eliminar la $t(common.template) '{{template}}'?",
+            "description": "Here you can create and edit $t(common.templates) for this {{entity}}.",
+            "delete-confirmation": "Are you sure you want to delete the $t(common.template) '{{template}}'?",
             "import": {
               "defaultTitle": "$t(common.templateLibrary)",
               "title": "$t(common.templateLibrary): {{templateType}}",
-              "subtitle": "Busca $t(common.templates) para usar en tu $t(common.space) o $t(common.subspace). Selecciona la $t(common.template) y haz clic en `Importar` para añadirla a tu conjunto de $t(common.templates).",
-              "callout-template-import-subtitle": "Busca una $t(common.template) para que las personas la usen al contribuir a tu $t(common.callout)",
-              "noTemplates": "No hay $t(common.templates) en la biblioteca del $t(common.space).",
-              "imported-successfully-notification": "$t(common.template) importada correctamente"
+              "subtitle": "Find $t(common.templates) to use in your $t(common.space) or $t(common.subspace). Select the $t(common.template) and click `Import` to add it to your $t(common.template) set.",
+              "callout-template-import-subtitle": "Find a $t(common.template) for people to use when contributing to your $t(common.callout)",
+              "noTemplates": "No $t(common.templates) in the $t(common.space) library.",
+              "imported-successfully-notification": "$t(common.template) imported successfully"
             },
             "validation": {
               "spaceRequired": "Selecciona un $t(common.spaceSubspace) existente para continuar."
@@ -2410,7 +2427,7 @@
             "limitNotice": "Para aumentar los límites de tu $t(common.account), rellena el formulario en la parte inferior de <contact>la página de contacto</contact>.",
             "notAvailable": "No disponible",
             "notAvailableNotice": "Contacta con el equipo de Alkemio para habilitar esta función en tu $t(common.account).",
-            "noTemplates": "Este $t(common.innovationPack) aún no tiene ninguna $t(common.template)",
+            "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.template) yet",
             "customHomepages": "$t(common.customHomepages)",
             "hostTitle": "Anfitrión",
             "contactsLink": "Si deseas cambiar alguna de estas configuraciones, por favor contacta con el equipo de Alkemio <a href='mailto:support@alkem.io'>aquí</a>.",
@@ -2452,9 +2469,18 @@
           }
         },
         "security": {
-          "title": "Security",
-          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
-          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
+          "title": "Seguridad",
+          "description": "Administre su configuración de seguridad, incluyendo PassKeys y claves de seguridad para autenticación de dos factores.",
+          "not-enabled": "La autenticación con PassKey y contraseña no está habilitada actualmente en esta plataforma. Póngase en contacto con su administrador para habilitar esta función."
+        },
+        "homeSpace": {
+          "title": "Home Space",
+          "description": "Here you can select which from the spaces or subspaces you are a member of which you want to use as a Home Space.  On Alkemio, your home space is always pinned on your dashboard as the first space.",
+          "selectLabel": "Select Home Space",
+          "noSelection": "No home space",
+          "autoRedirect": "<b>Home Space Redirect:</b> Set it so that Alkem.io redirects you to your home page instead of the dashboard.",
+          "autoRedirectDisabledHint": "Please select a home space first to enable the Home Space Redirect",
+          "pinButtonTooltip": "Press here to change your pinned space settings"
         }
       },
       "organization": {
@@ -2528,7 +2554,7 @@
           "subspace-created": "$t(common.subspace) creado correctamente.",
           "subspace-removed": "$t(common.subspace) eliminado correctamente.",
           "subspace-updated": "$t(common.subspace) actualizado correctamente.",
-          "templateSaved": "$t(common.template) guardada correctamente"
+          "templateSaved": "$t(common.template) saved successfully"
         }
       },
       "space": {
@@ -2536,15 +2562,15 @@
           "subspaces": {
             "description": "Aquí puedes editar los $t(common.subspaces) en este $t(common.space).",
             "defaultSettings": {
-              "title": "$t(common.subspace) $t(common.template) predeterminado",
+              "title": "Default $t(common.subspace) $t(common.template)",
               "description": "Elige la configuración predeterminada que se aplicará al crear un nuevo $t(common.subspace) dentro de este $t(common.space). Estas configuraciones pueden modificarse durante el proceso de creación o más tarde.",
               "defaultSpaceTemplate": {
-                "selectDifferentTemplate": "Cambiar $t(common.template) predeterminado",
-                "title": "Cambiar $t(common.subspace) $t(common.template) predeterminado",
+                "selectDifferentTemplate": "Change Default $t(common.template)",
+                "title": "Change Default $t(common.subspace) $t(common.template)",
                 "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
-            "reorderSubspaces": "Reorder $t(common.subspaces)"
+            "reorderSubspaces": "Reordenar $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2579,7 +2605,7 @@
             "title": "Funcionalidades del $t(common.space)",
             "features": {
               "WHITEBOARD_MULTI_USER": "$t(common.Whiteboards) multiusuario",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Crear $t(common.template) desde $t(common.callout)",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from $t(common.callout)",
               "VIRTUAL_CONTRIBUTORS": "Interactuar con $t(common.virtualContributors)"
             }
           },
@@ -2605,9 +2631,9 @@
           },
           "copySpace": {
             "title": "Copiar $t(common.subspace)",
-            "description": "Para utilizar esta configuración de $t(common.subspace), puedes duplicarlo dentro del mismo $t(common.space) o guardarlo como una $t(common.template) para usarlo en toda la plataforma. En ambos escenarios, el $t(common.innovation-flow) y todos los $t(common.posts) se replicarán. Ten en cuenta que los $t(common.comments) o contribuciones a una herramienta no se incluirán en la $t(common.template) o en el $t(common.subspace) duplicado.",
-            "createTemplate": "Crear $t(common.template)",
-            "createTemplateTooltip": "Para crear una $t(common.template) a partir de este $t(common.subspace), necesitas permisos de $t(common.admin) del $t(common.space).",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
+            "createTemplate": "Create $t(common.template)",
+            "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Duplicar"
           },
           "account": {
@@ -2747,6 +2773,7 @@
       "filter": {
         "type": {
           "space": "Tipo de $t(common.space)",
+          "framing": "$t(common.framing) type",
           "contribution": "Tipo de contribución",
           "contributor": "Tipo de contribuyente"
         },
@@ -2754,13 +2781,23 @@
           "all": "Todos",
           "space": "$t(common.spaces)",
           "subspace": "$t(common.subspaces)",
+          "contributor": "$t(common.contributors)",
           "user": "Usuarios",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.Posts)",
-          "whiteboard": "$t(common.Whiteboards) (próximamente)",
           "callout": "$t(common.Callouts)",
-          "memo": "$t(common.Memos) (próximamente)",
-          "response": "$t(common.Responses)"
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "memo": "$t(common.Memos)",
+          "post": "$t(common.Posts)",
+          "whiteboard": "$t(common.Whiteboards)"
+        },
+        "results": {
+          "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
+          "callout": "$t(common.Callouts)",
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "contributor": "$t(common.contributors)",
+          "noResults": "No results of this type matched your search terms."
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"
@@ -2829,7 +2866,11 @@
         },
         "recentSpaces": {
           "seeMore": "Explorar todos mis $t(common.spaces)",
-          "seeMoreSubspaces": "Ver todos los $t(common.subspaces) de los que soy $t(common.member)"
+          "seeMoreSubspaces": "Ver todos los $t(common.subspaces) de los que soy $t(common.member)",
+          "homeSpacePlaceholder": {
+            "title": "No Pinned Space yet",
+            "subtitle": "Click here to assign one"
+          }
         },
         "campaignBlock": {
           "createYourVCButton": "¡Crea tu $t(common.virtualContributor)!",
@@ -2887,7 +2928,7 @@
           }
         },
         "resources": {
-          "innovationHubs": "Starting pages",
+          "innovationHubs": "Página de inicio",
           "spaces": "$t(common.spaces)",
           "virtualContributors": "$t(common.virtualContributors)",
           "innovationPacks": "$t(common.innovation-packs)"
@@ -3092,7 +3133,7 @@
       "last-saved": "Últimos cambios guardados automáticamente: {{datetime}}",
       "unsuccessful-save": "<p><strong>{{warningMessage}} No se pudieron guardar los cambios. Último guardado: {{datetime}}.</strong></p> <p>Si el problema persiste, por favor contacta al equipo. Para evitar perder el progreso, haz clic en el menú de la esquina superior izquierda para guardar tu $t(common.whiteboard) en tu disco local.</p>",
       "state-actions": {
-        "save-as-template": "Guardar como $t(common.template)",
+        "save-as-template": "Save as $t(common.template)",
         "save-and-check-in": "Guardar y dejar de editar",
         "save": "Guardar",
         "delete": "Eliminar"
@@ -3106,16 +3147,16 @@
         "confirmationText": "¿Estás seguro de que quieres eliminar el contenido de este $t(common.whiteboard)?"
       },
       "template": {
-        "header": "$t(common.templates) definidas en Alkemio",
-        "how-to": "Para crear una $t(common.template), crea un nuevo $t(common.whiteboard) o usa uno existente y guárdalo como $t(common.template)."
+        "header": "$t(common.templates) defined in Alkemio",
+        "how-to": "To create a $t(common.template) create a new $t(common.whiteboard) or use an existing one and save it as a $t(common.template)."
       },
       "space": {
-        "templatesHeader": "$t(common.templates) definidas en este $t(common.space)",
-        "templatesSubheader": "Las $t(common.templates) definidas en este $t(common.space) pueden usarse en cada $t(common.subspace) que este $t(common.space) aloje."
+        "templatesHeader": "$t(common.templates) defined in this $t(common.space)",
+        "templatesSubheader": "The $t(common.templates) defined in this $t(common.space) can be used in every $t(common.subspace) that this $t(common.space) hosts."
       },
       "subspace": {
-        "templatesHeader": "$t(common.templates) definidas en este $t(common.subspace)",
-        "templatesSubheader": "Las $t(common.templates) definidas en este $t(common.subspace) dentro de su alcance."
+        "templatesHeader": "$t(common.templates) defined in this $t(common.subspace)",
+        "templatesSubheader": "The $t(common.templates) defined in this $t(common.subspace) within its scope."
       },
       "whiteboardDisconnected": {
         "title": "Conexión perdida con $t(common.Whiteboards)",
@@ -3309,6 +3350,7 @@
     },
     "user-profile": {
       "title": "Mi $t(common.profile)",
+      "loading": "Loading user profile...",
       "tooltips": {
         "settings": "$t(common.settings) de $t(common.profile) de usuario"
       },
@@ -3706,8 +3748,8 @@
     }
   },
   "innovation-edit": {
-    "new": "Nuevo $t(common.innovation-flow)",
-    "edit": "Editar $t(common.innovation-flow)"
+    "new": "New $t(common.innovation-flow)",
+    "edit": "Edit $t(common.innovation-flow)"
   },
   "contributors-section": {
     "title": "Contribuyentes"
@@ -3823,7 +3865,7 @@
     "license": {
       "noPlansError": "No hay planes disponibles. Por favor, contacta con soporte."
     },
-    "innovationFlowError": "Esta $t(common.template) no puede usarse para $t(common.spaces) raíz. Por favor, selecciona otra $t(common.template)."
+    "innovationFlowError": "This $t(common.template) cannot be used for root $t(common.spaces). Please, select another $t(common.template)."
   },
   "plansTable": {
     "title": "Elige un plan",
