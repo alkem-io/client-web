@@ -1,6 +1,6 @@
 # Tasks: Whiteboard Emoji Reactions
 
-**Input**: Design documents from `/specs/006-whiteboard-emoji-reactions/`
+**Input**: Design documents from `/specs/003-whiteboard-emoji-reactions/`
 **Prerequisites**: plan.md ✓, spec.md ✓, research.md ✓, data-model.md ✓, contracts/ ✓
 
 **Tests**: Unit tests are included per Constitution Principle V (Experience Safeguards).
@@ -81,7 +81,7 @@
 - [ ] T019 [US2] Verify emoji text elements support move/drag operations (no code changes expected - validation task)
 - [ ] T020 [US2] Verify emoji text elements support resize via handles (no code changes expected - validation task)
 - [ ] T021 [US2] Verify emoji text elements support delete via keyboard and UI (no code changes expected - validation task)
-- [ ] T022 [US2] Document any Excalidraw element behavior limitations in `specs/006-whiteboard-emoji-reactions/research.md` if found
+- [ ] T022 [US2] Document any Excalidraw element behavior limitations in `specs/003-whiteboard-emoji-reactions/research.md` if found
 
 **Checkpoint**: User Story 2 complete - emojis behave as first-class whiteboard content
 
@@ -132,7 +132,7 @@
 - [ ] T035 [P] Add focus management - focus first emoji on open, return focus on close in `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` `Quality`
 - [ ] T036 [P] Add screen reader announcements for placement mode changes in `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` `Quality`
 - [ ] T037 [P] Integration test for emojiReaction placement flow in `src/domain/collaboration/whiteboard/reactionEmoji/WhiteboardEmojiReactionPicker.test.tsx` `Quality`
-- [ ] T038 [P] Update quickstart.md testing checklist with actual test results in `specs/006-whiteboard-emoji-reactions/quickstart.md`
+- [ ] T038 [P] Update quickstart.md testing checklist with actual test results in `specs/003-whiteboard-emoji-reactions/quickstart.md`
 - [ ] T039 Run manual accessibility testing (keyboard navigation, screen reader) and document results `Quality`
 
 ---

@@ -13,7 +13,6 @@ import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWh
 import { useField, useFormikContext } from 'formik';
 import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
@@ -35,7 +34,6 @@ interface CalloutFormFramingSettingsProps {
 
 const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
-  const { isMediumSmallScreen } = useScreenSize();
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
@@ -187,9 +185,9 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
       <PageContentBlock sx={{ marginTop: gutters(-1) }}>
         <PageContentBlockHeader
           title={t('callout.create.framingSettings.title')}
-          actions={!isMediumSmallScreen && radioButtons}
+          actions={radioButtons}
+          autoCollapseActions
         />
-        {isMediumSmallScreen && radioButtons}
       </PageContentBlock>
 
       {framing.whiteboard && framing.type === CalloutFramingType.Whiteboard && (
