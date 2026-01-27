@@ -2,7 +2,6 @@ import React from 'react';
 import MediaGallery from '@/core/ui/gallery/MediaGallery';
 import { MediaItem } from '@/core/ui/gallery/types';
 import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 
 interface CalloutFramingMediaGalleryProps {
   callout: CalloutDetailsModel;
@@ -35,11 +34,7 @@ const CalloutFramingMediaGallery = ({ callout }: CalloutFramingMediaGalleryProps
     return null;
   }
 
-  return (
-    <PageContentBlock>
-      <MediaGallery items={mediaItems} />
-    </PageContentBlock>
-  );
+  return <MediaGallery items={mediaItems} />;
 };
 
 export default CalloutFramingMediaGallery;

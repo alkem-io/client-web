@@ -16,22 +16,22 @@ import lgVideo from 'lightgallery/plugins/video';
 import lgRotate from 'lightgallery/plugins/rotate';
 
 import { MediaItem } from './types';
+import { gutters } from '../grid/utils';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   '& .custom-lightgallery': {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: theme.spacing(2),
+    gap: gutters(0.5)(theme),
   },
 }));
 
 const GalleryItem = styled('a')(() => ({
   display: 'block',
-  height: '250px',
+  aspectRatio: '4 / 3',
   flex: '1 1 300px',
   maxWidth: '100%',
   overflow: 'hidden',
-  borderRadius: 16,
   cursor: 'pointer',
   position: 'relative',
   '& img': {
