@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react';
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
 import GridContainer from '../grid/GridContainer';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns, useScreenSize } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import GridItem, { GridItemProps } from '../grid/GridItem';
 
@@ -57,6 +57,13 @@ export interface DialogWithGridProps extends MuiDialogProps {
   columns?: GridItemProps['columns'];
   fullHeight?: boolean;
   centeredVertically?: boolean;
+
+  /**
+   * If true, forces fullScreen mode.
+   * If false, forces non-fullScreen mode, but means the dialog is quite big (whiteboards, memos...), and sets the height to 85vh.
+   * If undefined, fullScreen mode is automatically activated on small screens, height determined by the content and not 85vh on larger screens.
+   */
+  fullScreen?: boolean;
 }
 
 const DialogWithGrid = ({
@@ -68,6 +75,9 @@ const DialogWithGrid = ({
   ...dialogProps
 }: DialogWithGridProps) => {
   const { sx } = dialogProps;
+  const { isSmallScreen } = useScreenSize();
+
+  const isFullScreen = fullScreen ?? isSmallScreen;
 
   return (
     <MuiDialog
@@ -76,18 +86,21 @@ const DialogWithGrid = ({
         paper: {
           columns,
           centeredVertically,
-          fullScreen,
+          fullScreen: isFullScreen,
         } as PaperProps,
       }}
       onClose={onClose}
-      fullScreen={fullScreen}
+      fullScreen={isFullScreen}
       {...dialogProps}
       sx={{
+        '& > .MuiDialog-container > .MuiBox-root > .MuiPaper-root': {
+          ...(fullScreen === false ? { height: '85vh' } : fullScreen === true ? { height: 1, maxHeight: 1 } : {}), // fullScreen === undefined
+        },
         '.MuiDialog-paper': {
           maxWidth: '100vw',
           margin: 0,
           height: 'auto',
-          maxHeight: fullScreen ? '100vh' : '100%',
+          maxHeight: isFullScreen ? '100vh' : '100%',
           ...(fullHeight && {
             minHeight: 'auto',
           }),

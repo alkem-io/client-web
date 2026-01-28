@@ -191,9 +191,8 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
         aria-labelledby="whiteboard-dialog"
         maxWidth={false}
         fullWidth
-        sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
-        onClose={onClose}
         fullScreen={options.fullscreen}
+        onClose={onClose}
       >
         <Formik
           innerRef={formikRef}
@@ -211,7 +210,9 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 {options.dialogTitle ?? t('common.Whiteboard')}
                 <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
               </DialogHeader>
-              <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <DialogContent
+                sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}
+              >
                 {!state?.loadingWhiteboardContent && whiteboard && (
                   <ExcalidrawWrapper
                     entities={{

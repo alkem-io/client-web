@@ -118,6 +118,7 @@
     "see-more": "Lees verder",
     "see-all": "Meer {{subject}}",
     "readMore": "Meer lezen",
+    "ellipsisReadMore": "... Read more",
     "showLess": "Minder weergeven",
     "retry": "Probeer het opnieuw",
     "home": "Startpagina",
@@ -277,6 +278,7 @@
     "callouts": "$t(common.posts)",
     "Callout": "$t(common.Post)",
     "Callouts": "$t(common.Posts)",
+    "framing": "Aanvullende content",
     "collaborationTools": "Samenwerkingstools",
     "createdBy": "Gemaakt door",
     "Memo": "Memo",
@@ -424,7 +426,7 @@
     "notification": "melding",
     "notifications": "meldingen",
     "credentials": "Gegevens",
-    "security": "Security",
+    "security": "Beveiliging",
     "my-profile": "Mijn $t(common.profile)",
     "my-memberships": "Mijn $t(common.memberships)",
     "Profile": "Profiel",
@@ -620,7 +622,8 @@
         "month_other": "{{count}} maanden",
         "year_one": "{{count}} jaar",
         "year_other": "{{count}} jaar"
-      }
+      },
+      "moreThan1Year": "> 1 year ago"
     },
     "supportEmail": "support@alkem.io",
     "options": "Opties",
@@ -812,7 +815,7 @@
       "createButtonTooltip": "$t(common.Callout) toevoegen",
       "dialogTitle": "$t(common.Callout) toevoegen",
       "framingSettings": {
-        "title": "Aanvullende content",
+        "title": "$t(common.framing) ",
         "none": {
           "title": "Geen",
           "tooltip": "Geen extra content"
@@ -922,7 +925,8 @@
       "contributionsItemsCount_other": "{{count}} items in deze $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} items in deze $t(common.collection), <click>klik hier</click> om alle items te zien",
       "contributionsCollapse": "{{count}} items in deze $t(common.collection), <click>klik hier</click> om sommige te verbergen",
-      "noContributions": "Nog geen bijdragen, wees de eerste om bij te dragen!"
+      "noContributions": "Nog geen bijdragen, wees de eerste om bij te dragen!",
+      "contributions": "Contributions ({{count}})"
     },
     "draftNotice": "CONCEPT - Alleen zichtbaar voor $t(common.admins)",
     "closed": "Deze oproep is gesloten. Je kunt nog altijd commentaar geven op de individuele kaarten.",
@@ -950,7 +954,7 @@
       "new-temporary-reference": "Tijdelijke link ID: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Klik om het $t(common.whiteboard) te openen",
+      "clickToSee": "Klik om het volledige $t(common.whiteboard) te bekijken",
       "emojiReaction": {
         "addEmoji": "Add emoji reaction",
         "title": "Add Emoji",
@@ -1306,7 +1310,6 @@
     },
     "searchDialog": {
       "headerTitle": "Zoekresultaten",
-      "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
       "collaborationTools": "Samenwerkingstools"
     },
     "searchScope": {
@@ -1348,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "Instellingen Innovatieflow",
+      "importing": "Importing in progress...",
       "buttonTooltip": "Beheer Innovatie Flow",
       "editProfileDialog": {
         "title": "Details Bewerken: Innovatieflow"
@@ -1380,25 +1384,37 @@
           },
           "importCalloutsDialog": {
             "title": "Nieuw $t(common.template) toepassen",
-            "description": "Je staat op het punt een nieuw $t(common.template) toe te passen. Deze actie zal je huidige $t(common.innovation-flow) <b>permanent verwijderen</b>. De bestaande $t(common.posts) die gekoppeld zijn aan verschillende fasen blijven en worden gegroepeerd in de eerste fase van de nieuwe setup.<br/><br/>Kies een van de volgende opties:",
-            "yes": "Voeg $t(common.posts) van $t(common.template) toe",
-            "yesDescription": "Dit zal de nieuwe $t(common.posts) van de $t(common.template) bevatten naast je bestaanden.",
-            "no": "Alleen de $t(common.innovation-flow) wijzigen",
-            "noDescription": "Dit vervangt alleen de $t(common.innovation-flow), waarbij je huidige $t(common.posts) behouden blijven zoals ze zijn.",
-            "apply": "Nieuw $t(common.template) toepassen"
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Replace with new flow",
+              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "Dit zal de nieuwe $t(common.posts) van de $t(common.template) bevatten naast je bestaanden."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirm Deletion",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Schrijf in"
           }
         }
       },
       "defaultTemplate": {
-        "currentlySelected": "Currently Selected Template:",
-        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "currentlySelected": "Currently Selected $t(common.template):",
+        "noTemplate": "No default $t(common.template) set. Select a $t(common.template) to pre-fill posts in this flow step.",
         "removeConfirmation": {
-          "title": "Remove Default Template?",
-          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+          "title": "Remove Default $t(common.template)?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
         },
         "errors": {
-          "selectFailed": "Failed to set the default template. Please try again.",
-          "removeFailed": "Failed to remove the default template. Please try again."
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -2191,6 +2207,7 @@
     },
     "userMessaging": {
       "title": "Berichten",
+      "betaTooltip": "We wanted to share this early - still improving!",
       "noConversations": "Nog geen gesprekken",
       "noMessages": "Geen berichten",
       "selectConversation": "Selecteer een gesprek om een bericht te sturen",
@@ -2452,9 +2469,18 @@
           }
         },
         "security": {
-          "title": "Security",
+          "title": "Veiligheid",
           "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
           "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
+        },
+        "homeSpace": {
+          "title": "Home Space",
+          "description": "Here you can select which from the spaces or subspaces you are a member of which you want to use as a Home Space.  On Alkemio, your home space is always pinned on your dashboard as the first space.",
+          "selectLabel": "Select Home Space",
+          "noSelection": "No home space",
+          "autoRedirect": "<b>Home Space Redirect:</b> Set it so that Alkem.io redirects you to your home page instead of the dashboard.",
+          "autoRedirectDisabledHint": "Please select a home space first to enable the Home Space Redirect",
+          "pinButtonTooltip": "Press here to change your pinned space settings"
         }
       },
       "organization": {
@@ -2605,7 +2631,7 @@
           },
           "copySpace": {
             "title": "Kopieer $t(common.subspace)",
-            "description": "Om deze $t(common.subspace) setup te gebruiken, kun je deze dupliceren binnen dezelfde $t(common.space) of opslaan als een $t(common.template) voor gebruik op het hele platform. In beide scenario's zullen de $t(common.innovation-flow) en alle $t(common.posts) worden gekopieerd. Houd er rekening mee dat $t(common.comments) of bijdragen aan een tool niet in de template of gekopieerde $t(common.subspace) zullen worden opgenomen.",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
             "createTemplate": "Template maken",
             "createTemplateTooltip": "Om een $t(common.template) van deze $t(common.subspace) aan te maken, heb je $t(common.space) $t(common.admin) rechten nodig.",
             "duplicate": "Dupliceer"
@@ -2747,6 +2773,7 @@
       "filter": {
         "type": {
           "space": "$t(common.space) type",
+          "framing": "$t(common.framing) type",
           "contribution": "Type bijdrage",
           "contributor": "Type bijdrager"
         },
@@ -2754,13 +2781,23 @@
           "all": "Alles",
           "space": "$t(common.spaces)",
           "subspace": "$t(common.subspaces)",
+          "contributor": "$t(common.contributors)",
           "user": "Gebruikers",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.Posts)",
-          "whiteboard": "$t(common.Whiteboards) (binnekort beschikbaar)",
           "callout": "$t(common.Callouts)",
-          "memo": "$t(common.Memos) (binnenkort beschikbaar)",
-          "response": "$t(common.Responses)"
+          "framing": "$t(common.framing) ",
+          "contribution": "$t(common.Responses)",
+          "memo": "$t(common.Memos)",
+          "post": "$t(common.Posts)",
+          "whiteboard": "$t(common.Whiteboards)"
+        },
+        "results": {
+          "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
+          "callout": "$t(common.Callouts)",
+          "framing": "$t(common.framing) ",
+          "contribution": "$t(common.Responses)",
+          "contributor": "$t(common.contributors)",
+          "noResults": "No results of this type matched your search terms."
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"
@@ -2829,7 +2866,11 @@
         },
         "recentSpaces": {
           "seeMore": "Verken al je $t(common.spaces)",
-          "seeMoreSubspaces": "Bekijk alle $t(common.subspaces) waar ik lid $t(common.member) van ben"
+          "seeMoreSubspaces": "Bekijk alle $t(common.subspaces) waar ik lid $t(common.member) van ben",
+          "homeSpacePlaceholder": {
+            "title": "No Pinned Space yet",
+            "subtitle": "Click here to assign one"
+          }
         },
         "campaignBlock": {
           "createYourVCButton": "Maak je $t(common.virtualContributor)!",
@@ -2879,7 +2920,7 @@
         },
         "resources": {
           "innovationHubs": "Starting pages",
-          "spaces": "$t(common.spaces)",
+          "spaces": "$t(common.spaces) ",
           "virtualContributors": "$t(common.virtualContributors)",
           "innovationPacks": "$t(common.innovation-packs)"
         },
@@ -3300,6 +3341,7 @@
     },
     "user-profile": {
       "title": "Mijn $t(common.profile)",
+      "loading": "Loading user profile...",
       "tooltips": {
         "settings": "Gebruiker $t(common.profile) $t(common.settings)"
       },
