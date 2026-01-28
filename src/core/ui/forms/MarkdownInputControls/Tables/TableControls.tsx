@@ -53,6 +53,10 @@ const TableControls = ({ editor, isEditingTable }: TableControlsProps) => {
   const handleTableMenuClose = () => {
     setCurrentSelection(null);
     setTableOperationsMenuAnchorEl(null);
+    // Restore focus to editor after menu closes to maintain table context
+    requestAnimationFrame(() => {
+      editor?.commands.focus();
+    });
   };
 
   const handleInsertMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
