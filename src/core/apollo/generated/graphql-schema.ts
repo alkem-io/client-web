@@ -7878,7 +7878,6 @@ export type UpdateCalloutEntityInput = {
 
 export type UpdateCalloutFramingInput = {
   link?: InputMaybe<UpdateLinkInput>;
-  mediaGallery?: InputMaybe<UpdateMediaGalleryInput>;
   /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
@@ -8118,11 +8117,6 @@ export type UpdateLocationInput = {
   country?: InputMaybe<Scalars['String']['input']>;
   postalCode?: InputMaybe<Scalars['String']['input']>;
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdateMediaGalleryInput = {
-  /** The new list of visuals for the media gallery. Replaces existing ones. */
-  visuals: Array<UpdateVisualInput>;
 };
 
 export type UpdateMemoEntityInput = {
@@ -13911,6 +13905,15 @@ export type AddVisualToMediaGalleryMutation = {
     name: VisualType;
     alternativeText?: string | undefined;
   };
+};
+
+export type DeleteVisualFromMediaGalleryMutationVariables = Exact<{
+  deleteData: DeleteVisualFromMediaGalleryInput;
+}>;
+
+export type DeleteVisualFromMediaGalleryMutation = {
+  __typename?: 'Mutation';
+  deleteVisualFromMediaGallery: { __typename?: 'Visual'; id: string };
 };
 
 export type CalloutSettingsFullFragment = {

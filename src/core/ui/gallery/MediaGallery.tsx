@@ -1,15 +1,16 @@
 import React from 'react';
-import { Box, styled } from '@mui/material';
+import { Box, Dialog, styled } from '@mui/material';
 import { MediaItem } from './types';
 import { gutters } from '../grid/utils';
-import DialogWithGrid from '../dialog/DialogWithGrid';
 import DialogHeader from '../dialog/DialogHeader';
 import GalleryPager from './GalleryPager';
+import { useTranslation } from 'react-i18next';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
   gap: gutters(0.5)(theme),
+  marginBottom: gutters(1)(theme),
 }));
 
 const GalleryItem = styled('a')(() => ({
@@ -31,12 +32,31 @@ const GalleryItem = styled('a')(() => ({
   },
 }));
 
+const ImageContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  width: 'auto',
+  height: 'auto',
+  minHeight: gutters(10)(theme),
+  minWidth: gutters(20)(theme),
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '& > img': {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    width: 'auto',
+    height: 'auto',
+    objectFit: 'contain',
+  },
+}));
+
 interface MediaGalleryProps {
   title?: string;
   items: MediaItem[];
 }
 
 const MediaGallery = ({ title, items }: MediaGalleryProps) => {
+  const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = React.useState<MediaItem>();
   const [currentIndex, setCurrentIndex] = React.useState<number>(0);
 
@@ -87,21 +107,25 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
             <GalleryItem key={item.id} data-src={isVideo ? undefined : item.url} data-video={videoSource}>
               <img
                 src={item.thumbnailUrl || item.url}
-                alt={item.alt || item.title || 'Gallery item'}
+                alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
                 onClick={() => handleItemClick(item, index)}
               />
             </GalleryItem>
           );
         })}
       </GalleryWrapper>
-      <DialogWithGrid open={!!selectedItem} onClose={handleClose} title={selectedItem?.title || ''}>
+      <Dialog open={!!selectedItem} onClose={handleClose} maxWidth="lg">
         <DialogHeader onClose={handleClose}>{title || 'Media Gallery'}</DialogHeader>
         {selectedItem && (
-          <Box position="relative">
-            <img
+          <ImageContainer>
+            <Box
+              component="img"
               src={selectedItem.thumbnailUrl || selectedItem.url}
-              alt={selectedItem.alt || selectedItem.title || 'Gallery item'}
-              style={{ width: '100%', height: 'auto', maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+              alt={
+                selectedItem.alt ||
+                selectedItem.title ||
+                t('components.callout-creation.framing.mediaGallery.galleryItem')
+              }
             />
             <GalleryPager
               containerProps={{ position: 'absolute', bottom: 0, width: '100%' }}
@@ -111,9 +135,9 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
               onNext={handleNext}
               onDotClick={handleDotClick}
             />
-          </Box>
+          </ImageContainer>
         )}
-      </DialogWithGrid>
+      </Dialog>
     </>
   );
 };

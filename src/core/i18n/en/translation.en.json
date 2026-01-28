@@ -1602,7 +1602,8 @@
           "placeholder": "(Optional) Add some content to the $t(common.memo)"
         },
         "mediaGallery": {
-          "name": "Media Gallery"
+          "name": "Media Gallery",
+          "galleryItem": "Gallery Image"
         }
       },
       "template-step": {

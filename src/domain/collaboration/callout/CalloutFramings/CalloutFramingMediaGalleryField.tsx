@@ -34,7 +34,7 @@ const CalloutFramingMediaGalleryField = () => {
         uri: '',
         file,
         previewUrl: URL.createObjectURL(file),
-        altText: '',
+        alternativeText: '',
         visualType: getMediaGalleryVisualType(file),
       });
     }
@@ -88,7 +88,7 @@ const CalloutFramingMediaGalleryField = () => {
                     <Box
                       component="img"
                       src={visual.previewUrl || visual.uri}
-                      alt={visual.altText || visual.name || 'Image'}
+                      alt={visual.alternativeText || visual.name || 'Image'}
                       sx={{
                         position: 'absolute',
                         top: 0,

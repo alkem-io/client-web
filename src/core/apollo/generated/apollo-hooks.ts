@@ -7863,6 +7863,54 @@ export type AddVisualToMediaGalleryMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AddVisualToMediaGalleryMutation,
   SchemaTypes.AddVisualToMediaGalleryMutationVariables
 >;
+export const DeleteVisualFromMediaGalleryDocument = gql`
+  mutation deleteVisualFromMediaGallery($deleteData: DeleteVisualFromMediaGalleryInput!) {
+    deleteVisualFromMediaGallery(deleteData: $deleteData) {
+      id
+    }
+  }
+`;
+export type DeleteVisualFromMediaGalleryMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+  SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+>;
+
+/**
+ * __useDeleteVisualFromMediaGalleryMutation__
+ *
+ * To run a mutation, you first call `useDeleteVisualFromMediaGalleryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVisualFromMediaGalleryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVisualFromMediaGalleryMutation, { data, loading, error }] = useDeleteVisualFromMediaGalleryMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteVisualFromMediaGalleryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+    SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+    SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+  >(DeleteVisualFromMediaGalleryDocument, options);
+}
+export type DeleteVisualFromMediaGalleryMutationHookResult = ReturnType<typeof useDeleteVisualFromMediaGalleryMutation>;
+export type DeleteVisualFromMediaGalleryMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteVisualFromMediaGalleryMutation>;
+export type DeleteVisualFromMediaGalleryMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+  SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+>;
 export const CalloutContributionDocument = gql`
   query CalloutContribution(
     $contributionId: UUID!
