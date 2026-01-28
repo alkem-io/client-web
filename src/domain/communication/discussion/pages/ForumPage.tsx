@@ -27,6 +27,7 @@ import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { BlockTitle } from '@/core/ui/typography';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 
@@ -66,6 +67,10 @@ export const ForumPage = ({
   categorySelected?: DiscussionCategoryExt;
 }) => {
   const { t } = useTranslation();
+
+  // Set browser tab title to "Forum | Alkemio"
+  usePageTitle(t('pages.titles.forum'));
+
   const navigate = useNavigate();
   const { platformPrivilegeWrapper: { hasPlatformPrivilege } = {}, loading: loadingUser } = useCurrentUserContext();
 

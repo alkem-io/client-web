@@ -9,9 +9,14 @@ import { PageTitle, Tagline } from '@/core/ui/typography';
 import PageContent from '@/core/ui/content/PageContent';
 import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 export const Error403 = () => {
   const { t } = useTranslation();
+
+  // Set browser tab title to "Access Restricted | Alkemio"
+  usePageTitle(t('pages.titles.restricted'));
+
   const homeUrl = `/${TopLevelRoutePath.Home}`;
 
   return (

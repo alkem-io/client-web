@@ -6,6 +6,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
 import useOrganizationProvider from '../useOrganization/useOrganization';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 interface OrganizationPageLayoutProps {}
 
@@ -13,6 +14,9 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
   const { t } = useTranslation();
 
   const { loading, organization, permissions, handleSendMessage } = useOrganizationProvider();
+
+  // Set browser tab title to "[Organization Name] | Alkemio"
+  usePageTitle(organization?.profile.displayName);
 
   return (
     <TopLevelLayout

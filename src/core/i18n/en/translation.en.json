@@ -2263,6 +2263,21 @@
     "remove": "Remove from hub"
   },
   "pages": {
+    "titles": {
+      "alkemio": "Alkemio",
+      "separator": " | ",
+      "forum": "Forum",
+      "spaces": "Spaces",
+      "contributors": "Contributors",
+      "templateLibrary": "Template Library",
+      "globalAdmin": "Global Administration",
+      "admin": "Administration",
+      "documentation": "Documentation",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "notFound": "Page Not Found",
+      "restricted": "Access Restricted"
+    },
     "generic": {
       "sections": {
         "dashboard": {

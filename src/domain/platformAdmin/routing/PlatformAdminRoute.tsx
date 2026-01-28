@@ -11,9 +11,15 @@ import AdminInnovationHubsRoutes from '@/domain/platformAdmin/domain/innovationH
 import VirtualContributorsRoutes from '../domain/virtual-contributors/VirtualContributorsRoutes';
 import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
 import AdminOrganizationsRoutes from '../domain/organizations/AdminOrganizationsRoutes';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 const PlatformAdminRoute = () => {
   useTransactionScope({ type: 'admin' });
+  const { t } = useTranslation();
+
+  // Set browser tab title to "Global Administration | Alkemio"
+  usePageTitle(t('pages.titles.globalAdmin'));
 
   return (
     <NoIdentityRedirect>
