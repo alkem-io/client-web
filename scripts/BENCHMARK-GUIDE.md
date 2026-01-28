@@ -50,13 +50,13 @@ pnpm install
 
 ````bash
 # For "before" and "after" build
-npm run build:sentry
+pnpm run build:sentry
 
 3. Serve your build on `localhost:3000`:
 
 ```bash
 # Use any static server, e.g.:
-npm run serve:dev  # This serves on port 3001, you may need to adjust
+pnpm run serve:dev  # This serves on port 3001, you may need to adjust
 
 ````
 
@@ -68,7 +68,7 @@ npm run serve:dev  # This serves on port 3001, you may need to adjust
 2. Run the benchmark:
 
 ```bash
-npm run benchmark before
+pnpm run benchmark before
 ```
 
 This will:
@@ -86,7 +86,7 @@ This will:
 3. Run the benchmark:
 
 ```bash
-npm run benchmark after
+pnpm run benchmark after
 ```
 
 Results saved to `performance-results/after-{timestamp}.json`
@@ -94,7 +94,7 @@ Results saved to `performance-results/after-{timestamp}.json`
 ### Step 3: Compare Results
 
 ```bash
-npm run benchmark:compare
+pnpm run benchmark:compare
 ```
 
 This automatically compares the two most recent benchmarks and generates a detailed markdown report with:
@@ -107,7 +107,7 @@ This automatically compares the two most recent benchmarks and generates a detai
 You can also specify which files to compare:
 
 ```bash
-npm run benchmark:compare before-1234567890.json after-1234567891.json
+pnpm run benchmark:compare before-1234567890.json after-1234567891.json
 ```
 
 ## Customizing Benchmarks
