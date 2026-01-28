@@ -49,10 +49,12 @@ query CalloutContent($calloutId: UUID!) {
           ...LinkDetails
         }
         mediaGallery {
+          id
           visuals {
             id
             uri
             name
+            alternativeText
           }
         }
       }

@@ -92,7 +92,7 @@ fragment CalloutDetails on Callout {
       ...LinkDetails
     }
     mediaGallery {
-      nameID
+      id
       visuals {
         id
         uri

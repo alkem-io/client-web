@@ -8,7 +8,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 import { gutters } from '@/core/ui/grid/utils';
-import { getMediaGalleryVisualType } from './mediaGalleryVisualType';
+import { getMediaGalleryVisualType } from '../mediaGallery/mediaGalleryVisualType';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import AddIcon from '@mui/icons-material/Add';
 

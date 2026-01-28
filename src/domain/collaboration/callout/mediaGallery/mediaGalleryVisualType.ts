@@ -1,6 +1,6 @@
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
-const DEFAULT_VISUAL_TYPE = VisualType.Card;
+const DEFAULT_VISUAL_TYPE = VisualType.MediaGalleryImage;
 const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'avif']);
 const VIDEO_EXTENSIONS = new Set(['mp4', 'mov', 'm4v', 'avi', 'webm', 'mkv', 'ogg']);
 

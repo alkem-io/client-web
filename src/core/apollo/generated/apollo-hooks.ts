@@ -1004,7 +1004,7 @@ export const CalloutDetailsFragmentDoc = gql`
         ...LinkDetails
       }
       mediaGallery {
-        nameID
+        id
         visuals {
           id
           uri
@@ -7586,10 +7586,12 @@ export const CalloutContentDocument = gql`
             ...LinkDetails
           }
           mediaGallery {
+            id
             visuals {
               id
               uri
               name
+              alternativeText
             }
           }
         }
@@ -7810,6 +7812,56 @@ export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.Dele
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
+>;
+export const AddVisualToMediaGalleryDocument = gql`
+  mutation addVisualToMediaGallery($addData: AddVisualToMediaGalleryInput!) {
+    addVisualToMediaGallery(addData: $addData) {
+      id
+      uri
+      name
+      alternativeText
+    }
+  }
+`;
+export type AddVisualToMediaGalleryMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddVisualToMediaGalleryMutation,
+  SchemaTypes.AddVisualToMediaGalleryMutationVariables
+>;
+
+/**
+ * __useAddVisualToMediaGalleryMutation__
+ *
+ * To run a mutation, you first call `useAddVisualToMediaGalleryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddVisualToMediaGalleryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addVisualToMediaGalleryMutation, { data, loading, error }] = useAddVisualToMediaGalleryMutation({
+ *   variables: {
+ *      addData: // value for 'addData'
+ *   },
+ * });
+ */
+export function useAddVisualToMediaGalleryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddVisualToMediaGalleryMutation,
+    SchemaTypes.AddVisualToMediaGalleryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AddVisualToMediaGalleryMutation,
+    SchemaTypes.AddVisualToMediaGalleryMutationVariables
+  >(AddVisualToMediaGalleryDocument, options);
+}
+export type AddVisualToMediaGalleryMutationHookResult = ReturnType<typeof useAddVisualToMediaGalleryMutation>;
+export type AddVisualToMediaGalleryMutationResult = Apollo.MutationResult<SchemaTypes.AddVisualToMediaGalleryMutation>;
+export type AddVisualToMediaGalleryMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddVisualToMediaGalleryMutation,
+  SchemaTypes.AddVisualToMediaGalleryMutationVariables
 >;
 export const CalloutContributionDocument = gql`
   query CalloutContribution(

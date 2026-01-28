@@ -507,6 +507,13 @@ export type ActivityLogInput = {
   types?: InputMaybe<Array<ActivityEventType>>;
 };
 
+export type AddVisualToMediaGalleryInput = {
+  /** The ID of the media gallery. */
+  mediaGalleryID: Scalars['String']['input'];
+  /** The type of visual to add (e.g. MEDIA_GALLERY_IMAGE, MEDIA_GALLERY_VIDEO). */
+  visualType: VisualType;
+};
+
 export type AdminAuthenticationIdBackfillResult = {
   __typename?: 'AdminAuthenticationIDBackfillResult';
   /** Total users examined during the backfill run */
@@ -1078,7 +1085,7 @@ export type CalloutFraming = {
   id: Scalars['UUID']['output'];
   /** The Link for framing the associated Callout. */
   link?: Maybe<Link>;
-  /** Media gallery attached to this callout framing. */
+  /** The media gallery associated with the callout framing */
   mediaGallery?: Maybe<MediaGallery>;
   /** The Memo for framing the associated Callout. */
   memo?: Maybe<Memo>;
@@ -1256,6 +1263,16 @@ export type CommunicationAdminMembershipResult = {
   id: Scalars['String']['output'];
   /** Rooms in this Communication */
   rooms: Array<CommunicationAdminRoomMembershipResult>;
+};
+
+export type CommunicationAdminMigrateRoomsResult = {
+  __typename?: 'CommunicationAdminMigrateRoomsResult';
+  /** Errors encountered during migration */
+  errors: Array<Scalars['String']['output']>;
+  /** Number of conversations that failed to have rooms created */
+  failed: Scalars['Int']['output'];
+  /** Number of conversations that had rooms created */
+  migrated: Scalars['Int']['output'];
 };
 
 export type CommunicationAdminOrphanedUsageResult = {
@@ -1625,26 +1642,8 @@ export type ConversationReadReceiptUpdatedEvent = {
   roomId: Scalars['UUID']['output'];
 };
 
-export type ConversationVcAnswerRelevanceInput = {
-  /** The ID of the conversation. */
-  conversationID: Scalars['UUID']['input'];
-  /** The answer id. */
-  id: Scalars['String']['input'];
-  /** Is the answer relevant or not. */
-  relevant: Scalars['Boolean']['input'];
-};
-
-export type ConversationVcAskQuestionInput = {
-  /** The ID of the conversation. */
-  conversationID: Scalars['UUID']['input'];
-  /** The language of the answer. */
-  language?: InputMaybe<Scalars['String']['input']>;
-  /** The question that is being asked. */
-  question: Scalars['String']['input'];
-};
-
 export type ConversationVcResetInput = {
-  /** The ID of the conversation. */
+  /** The ID of the Conversation to reset. */
   conversationID: Scalars['UUID']['input'];
 };
 
@@ -1754,7 +1753,6 @@ export type CreateCalloutData = {
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   link?: Maybe<CreateLinkData>;
-  mediaGallery?: Maybe<CreateMediaGalleryData>;
   memo?: Maybe<CreateMemoData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
@@ -1765,7 +1763,6 @@ export type CreateCalloutFramingData = {
 
 export type CreateCalloutFramingInput = {
   link?: InputMaybe<CreateLinkInput>;
-  mediaGallery?: InputMaybe<CreateMediaGalleryInput>;
   memo?: InputMaybe<CreateMemoInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -2065,21 +2062,6 @@ export type CreateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type CreateMediaGalleryData = {
-  __typename?: 'CreateMediaGalleryData';
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: Maybe<Scalars['NameID']['output']>;
-  /** The visuals to be added to the media gallery. */
-  visuals: Array<CreateVisualData>;
-};
-
-export type CreateMediaGalleryInput = {
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** The visuals to be added to the media gallery. */
-  visuals: Array<CreateVisualInput>;
-};
-
 export type CreateMemoData = {
   __typename?: 'CreateMemoData';
   markdown?: Maybe<Scalars['Markdown']['output']>;
@@ -2353,45 +2335,6 @@ export type CreateVirtualContributorOnAccountInput = {
   profileData: CreateProfileInput;
 };
 
-export type CreateVisualData = {
-  __typename?: 'CreateVisualData';
-  /** Alternative text for the visual. */
-  alternativeText?: Maybe<Scalars['String']['output']>;
-  /** Dimensions ratio width / height. */
-  aspectRatio: Scalars['Float']['output'];
-  /** Maximum allowed height for the visual. */
-  maxHeight: Scalars['Float']['output'];
-  /** Maximum allowed width for the visual. */
-  maxWidth: Scalars['Float']['output'];
-  /** Minimum allowed height for the visual. */
-  minHeight: Scalars['Float']['output'];
-  /** Minimum allowed width for the visual. */
-  minWidth: Scalars['Float']['output'];
-  /** Type of visual to create (e.g. banner, avatar). */
-  name: VisualType;
-  /** URI for the visual. */
-  uri?: Maybe<Scalars['String']['output']>;
-};
-
-export type CreateVisualInput = {
-  /** Alternative text for the visual. */
-  alternativeText?: InputMaybe<Scalars['String']['input']>;
-  /** Dimensions ratio width / height. */
-  aspectRatio: Scalars['Float']['input'];
-  /** Maximum allowed height for the visual. */
-  maxHeight: Scalars['Float']['input'];
-  /** Maximum allowed width for the visual. */
-  maxWidth: Scalars['Float']['input'];
-  /** Minimum allowed height for the visual. */
-  minHeight: Scalars['Float']['input'];
-  /** Minimum allowed width for the visual. */
-  minWidth: Scalars['Float']['input'];
-  /** Type of visual to create (e.g. banner, avatar). */
-  name: VisualType;
-  /** URI for the visual. */
-  uri?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type CreateVisualOnProfileData = {
   __typename?: 'CreateVisualOnProfileData';
   /** The type of visual. */
@@ -2616,6 +2559,13 @@ export type DeleteUserInput = {
 
 export type DeleteVirtualContributorInput = {
   ID: Scalars['UUID']['input'];
+};
+
+export type DeleteVisualFromMediaGalleryInput = {
+  /** The ID of the media gallery. */
+  mediaGalleryID: Scalars['String']['input'];
+  /** The ID of the visual to delete. */
+  visualID: Scalars['String']['input'];
 };
 
 export type DeleteWhiteboardInput = {
@@ -4154,8 +4104,8 @@ export type MediaGallery = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID']['output'];
+  /** The storage bucket associated with this media gallery. */
+  storageBucket?: Maybe<StorageBucket>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** The visuals contained in this media gallery. */
@@ -4203,19 +4153,6 @@ export type Message = {
   threadID?: Maybe<Scalars['MessageID']['output']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float']['output'];
-};
-
-/** A detailed answer to a question, typically from an AI service. */
-export type MessageAnswerQuestion = {
-  __typename?: 'MessageAnswerQuestion';
-  /** Error message if an error occurred */
-  error?: Maybe<Scalars['String']['output']>;
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']['output']>;
-  /** The original question */
-  question: Scalars['String']['output'];
-  /** Message successfully sent. If false, error will have the reason. */
-  success: Scalars['Boolean']['output'];
 };
 
 /** Details about a message, including the room it was sent in and the parent entity that is using the room. */
@@ -4338,10 +4275,14 @@ export type Mutation = {
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
+  /** Adds a new visual to the specified media gallery. */
+  addVisualToMediaGallery: Visual;
   /** Populate authenticationID for existing users by querying Kratos Admin API */
   adminBackfillAuthenticationIDs: AdminAuthenticationIdBackfillResult;
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean']['output'];
+  /** Create rooms for legacy conversations that were created without one (from lazy room creation era). */
+  adminCommunicationMigrateOrphanedConversations: CommunicationAdminMigrateRoomsResult;
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean']['output'];
   /** Allow updating the state flags of a particular rule. */
@@ -4378,8 +4319,6 @@ export type Mutation = {
   aiServerUpdateAiPersona: AiPersona;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
-  /** Ask the chat engine for guidance. */
-  askVcQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -4512,6 +4451,8 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Deletes the specified VirtualContributor. */
   deleteVirtualContributor: VirtualContributor;
+  /** Deletes a visual from the specified media gallery. */
+  deleteVisualFromMediaGallery: Visual;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Trigger an event on the Application. */
@@ -4520,8 +4461,6 @@ export type Mutation = {
   eventOnInvitation: Invitation;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
-  /** User vote if a specific answer is relevant. */
-  feedbackOnVcAnswerRelevance: Scalars['Boolean']['output'];
   /** Grants an authorization credential to an Organization. */
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
@@ -4566,7 +4505,7 @@ export type Mutation = {
   removeRoleFromVirtualContributor: VirtualContributor;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
-  /** Resets the interaction with the chat engine. */
+  /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Space;
@@ -4722,6 +4661,10 @@ export type MutationAddReactionToMessageInRoomArgs = {
   reactionData: RoomAddReactionToMessageInput;
 };
 
+export type MutationAddVisualToMediaGalleryArgs = {
+  addData: AddVisualToMediaGalleryInput;
+};
+
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
 };
@@ -4776,10 +4719,6 @@ export type MutationAiServerUpdateAiPersonaArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
-};
-
-export type MutationAskVcQuestionArgs = {
-  input: ConversationVcAskQuestionInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -5026,6 +4965,10 @@ export type MutationDeleteVirtualContributorArgs = {
   deleteData: DeleteVirtualContributorInput;
 };
 
+export type MutationDeleteVisualFromMediaGalleryArgs = {
+  deleteData: DeleteVisualFromMediaGalleryInput;
+};
+
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
 };
@@ -5040,10 +4983,6 @@ export type MutationEventOnInvitationArgs = {
 
 export type MutationEventOnOrganizationVerificationArgs = {
   eventData: OrganizationVerificationEventInput;
-};
-
-export type MutationFeedbackOnVcAnswerRelevanceArgs = {
-  input: ConversationVcAnswerRelevanceInput;
 };
 
 export type MutationGrantCredentialToOrganizationArgs = {
@@ -8602,7 +8541,6 @@ export type UpdateVirtualContributorSettingsPrivacyInput = {
 
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<VisualType>;
   uri: Scalars['String']['input'];
   visualID: Scalars['String']['input'];
 };
@@ -13143,7 +13081,16 @@ export type CalloutContentQuery = {
             mediaGallery?:
               | {
                   __typename?: 'MediaGallery';
-                  visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: VisualType }> | undefined;
+                  id: string;
+                  visuals?:
+                    | Array<{
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }>
+                    | undefined;
                 }
               | undefined;
           };
@@ -13369,7 +13316,7 @@ export type UpdateCalloutContentMutation = {
       mediaGallery?:
         | {
             __typename?: 'MediaGallery';
-            nameID: string;
+            id: string;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -13756,7 +13703,7 @@ export type UpdateCalloutVisibilityMutation = {
       mediaGallery?:
         | {
             __typename?: 'MediaGallery';
-            nameID: string;
+            id: string;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -13950,6 +13897,21 @@ export type DeleteCalloutMutationVariables = Exact<{
 }>;
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
+
+export type AddVisualToMediaGalleryMutationVariables = Exact<{
+  addData: AddVisualToMediaGalleryInput;
+}>;
+
+export type AddVisualToMediaGalleryMutation = {
+  __typename?: 'Mutation';
+  addVisualToMediaGallery: {
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    name: VisualType;
+    alternativeText?: string | undefined;
+  };
+};
 
 export type CalloutSettingsFullFragment = {
   __typename?: 'CalloutSettings';
@@ -15272,7 +15234,7 @@ export type CreateCalloutMutation = {
       mediaGallery?:
         | {
             __typename?: 'MediaGallery';
-            nameID: string;
+            id: string;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -15781,7 +15743,7 @@ export type CalloutDetailsQuery = {
             mediaGallery?:
               | {
                   __typename?: 'MediaGallery';
-                  nameID: string;
+                  id: string;
                   visuals?:
                     | Array<{
                         __typename?: 'Visual';
@@ -16228,7 +16190,7 @@ export type CalloutDetailsFragment = {
     mediaGallery?:
       | {
           __typename?: 'MediaGallery';
-          nameID: string;
+          id: string;
           visuals?:
             | Array<{
                 __typename?: 'Visual';

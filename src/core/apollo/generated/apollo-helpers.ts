@@ -883,6 +883,17 @@ export type CommunicationAdminMembershipResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   rooms?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunicationAdminMigrateRoomsResultKeySpecifier = (
+  | 'errors'
+  | 'failed'
+  | 'migrated'
+  | CommunicationAdminMigrateRoomsResultKeySpecifier
+)[];
+export type CommunicationAdminMigrateRoomsResultFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  failed?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunicationAdminOrphanedUsageResultKeySpecifier = (
   | 'rooms'
   | CommunicationAdminOrphanedUsageResultKeySpecifier
@@ -1224,7 +1235,6 @@ export type CreateCalloutDataFieldPolicy = {
 };
 export type CreateCalloutFramingDataKeySpecifier = (
   | 'link'
-  | 'mediaGallery'
   | 'memo'
   | 'profile'
   | 'tags'
@@ -1234,7 +1244,6 @@ export type CreateCalloutFramingDataKeySpecifier = (
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
   link?: FieldPolicy<any> | FieldReadFunction<any>;
-  mediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1340,11 +1349,6 @@ export type CreateLocationDataFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateMediaGalleryDataKeySpecifier = ('nameID' | 'visuals' | CreateMediaGalleryDataKeySpecifier)[];
-export type CreateMediaGalleryDataFieldPolicy = {
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type CreateMemoDataKeySpecifier = ('markdown' | 'profile' | CreateMemoDataKeySpecifier)[];
 export type CreateMemoDataFieldPolicy = {
   markdown?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1386,27 +1390,6 @@ export type CreateTagsetDataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CreateVisualDataKeySpecifier = (
-  | 'alternativeText'
-  | 'aspectRatio'
-  | 'maxHeight'
-  | 'maxWidth'
-  | 'minHeight'
-  | 'minWidth'
-  | 'name'
-  | 'uri'
-  | CreateVisualDataKeySpecifier
-)[];
-export type CreateVisualDataFieldPolicy = {
-  alternativeText?: FieldPolicy<any> | FieldReadFunction<any>;
-  aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
-  maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
-  maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
-  minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
-  minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-  uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateVisualOnProfileDataKeySpecifier = ('name' | 'uri' | CreateVisualOnProfileDataKeySpecifier)[];
 export type CreateVisualOnProfileDataFieldPolicy = {
@@ -2488,7 +2471,7 @@ export type MediaGalleryKeySpecifier = (
   | 'createdBy'
   | 'createdDate'
   | 'id'
-  | 'nameID'
+  | 'storageBucket'
   | 'updatedDate'
   | 'visuals'
   | MediaGalleryKeySpecifier
@@ -2498,7 +2481,7 @@ export type MediaGalleryFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2545,19 +2528,6 @@ export type MessageFieldPolicy = {
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MessageAnswerQuestionKeySpecifier = (
-  | 'error'
-  | 'id'
-  | 'question'
-  | 'success'
-  | MessageAnswerQuestionKeySpecifier
-)[];
-export type MessageAnswerQuestionFieldPolicy = {
-  error?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
@@ -2625,8 +2595,10 @@ export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
+  | 'addVisualToMediaGallery'
   | 'adminBackfillAuthenticationIDs'
   | 'adminCommunicationEnsureAccessToCommunications'
+  | 'adminCommunicationMigrateOrphanedConversations'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
   | 'adminIdentityDeleteKratosIdentity'
@@ -2645,7 +2617,6 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
-  | 'askVcQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
@@ -2712,11 +2683,11 @@ export type MutationKeySpecifier = (
   | 'deleteUserApplication'
   | 'deleteUserGroup'
   | 'deleteVirtualContributor'
+  | 'deleteVisualFromMediaGallery'
   | 'deleteWhiteboard'
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
-  | 'feedbackOnVcAnswerRelevance'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
@@ -2816,8 +2787,10 @@ export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminBackfillAuthenticationIDs?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationMigrateOrphanedConversations?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2836,7 +2809,6 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVcQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2903,11 +2875,11 @@ export type MutationFieldPolicy = {
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteVisualFromMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
-  feedbackOnVcAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5427,6 +5399,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CommunicationAdminMembershipResultKeySpecifier);
     fields?: CommunicationAdminMembershipResultFieldPolicy;
   };
+  CommunicationAdminMigrateRoomsResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunicationAdminMigrateRoomsResultKeySpecifier
+      | (() => undefined | CommunicationAdminMigrateRoomsResultKeySpecifier);
+    fields?: CommunicationAdminMigrateRoomsResultFieldPolicy;
+  };
   CommunicationAdminOrphanedUsageResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5631,10 +5610,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
     fields?: CreateLocationDataFieldPolicy;
   };
-  CreateMediaGalleryData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateMediaGalleryDataKeySpecifier | (() => undefined | CreateMediaGalleryDataKeySpecifier);
-    fields?: CreateMediaGalleryDataFieldPolicy;
-  };
   CreateMemoData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateMemoDataKeySpecifier | (() => undefined | CreateMemoDataKeySpecifier);
     fields?: CreateMemoDataFieldPolicy;
@@ -5654,10 +5629,6 @@ export type StrictTypedTypePolicies = {
   CreateTagsetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateTagsetDataKeySpecifier | (() => undefined | CreateTagsetDataKeySpecifier);
     fields?: CreateTagsetDataFieldPolicy;
-  };
-  CreateVisualData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateVisualDataKeySpecifier | (() => undefined | CreateVisualDataKeySpecifier);
-    fields?: CreateVisualDataFieldPolicy;
   };
   CreateVisualOnProfileData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -6023,10 +5994,6 @@ export type StrictTypedTypePolicies = {
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
-  };
-  MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
-    fields?: MessageAnswerQuestionFieldPolicy;
   };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);

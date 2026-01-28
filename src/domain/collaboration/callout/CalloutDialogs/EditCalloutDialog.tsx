@@ -27,8 +27,8 @@ import {
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
-import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
-import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
+import useUploadMediaGalleryVisuals from '../mediaGallery/useUploadMediaGalleryVisuals';
+import { getMediaGalleryVisualType } from '../mediaGallery/mediaGalleryVisualType';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -201,10 +201,10 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       },
       refetchQueries: ['CalloutsSetTags'],
     });
-    if (result.data?.updateCallout.framing.mediaGallery?.visuals) {
+    if (result.data?.updateCallout.framing.mediaGallery?.id && formData.framing.mediaGallery?.visuals) {
       await uploadMediaGalleryVisuals(
-        formData.framing.mediaGallery?.visuals,
-        result.data.updateCallout.framing.mediaGallery.visuals
+        result.data.updateCallout.framing.mediaGallery.id,
+        formData.framing.mediaGallery.visuals
       );
     }
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {

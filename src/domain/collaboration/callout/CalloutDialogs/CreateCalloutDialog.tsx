@@ -16,8 +16,7 @@ import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
-import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
+import useUploadMediaGalleryVisuals from '../mediaGallery/useUploadMediaGalleryVisuals';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
@@ -103,25 +102,12 @@ const CreateCalloutDialog = ({
     async (visibility: CalloutVisibility = CalloutVisibility.Published) => {
       const formData = ensurePresence(calloutFormData);
       // Map the profile to CreateProfileInput
+      const { mediaGallery, ...framingData } = formData.framing;
       const framing = {
-        ...formData.framing,
-        profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
-        tags: mapProfileTagsToCreateTags(formData.framing.profile),
+        ...framingData,
+        profile: mapProfileModelToCreateProfileInput(framingData.profile),
+        tags: mapProfileTagsToCreateTags(framingData.profile),
         // Map media gallery items to CreateMediaGalleryInput
-        mediaGallery: formData.framing.mediaGallery
-          ? {
-              visuals: formData.framing.mediaGallery.visuals.map(item => ({
-                aspectRatio: 1.5,
-                maxHeight: 1000,
-                maxWidth: 1000,
-                minHeight: 100,
-                minWidth: 100,
-                name: item.visualType ?? getMediaGalleryVisualType(item.file, item.uri),
-                uri: item.file ? undefined : item.uri,
-                alternativeText: item.altText || item.file?.name || '',
-              })),
-            }
-          : undefined,
       };
 
       // And map the radio button allowed contribution types to an array
@@ -172,11 +158,8 @@ const CreateCalloutDialog = ({
       };
 
       const createdCallout = await handleCreateCallout(createCalloutInput);
-      if (createdCallout?.framing.mediaGallery?.visuals) {
-        await uploadMediaGalleryVisuals(
-          formData.framing.mediaGallery?.visuals,
-          createdCallout.framing.mediaGallery.visuals
-        );
+      if (mediaGallery?.visuals?.length) {
+        await uploadMediaGalleryVisuals(createdCallout?.framing.mediaGallery?.id, mediaGallery.visuals);
       }
       handleClose();
       setTimeout(scrollToTop, 100);
