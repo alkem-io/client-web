@@ -210,7 +210,9 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 {options.dialogTitle ?? t('common.Whiteboard')}
                 <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
               </DialogHeader>
-              <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <DialogContent
+                sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}
+              >
                 {!state?.loadingWhiteboardContent && whiteboard && (
                   <ExcalidrawWrapper
                     entities={{
