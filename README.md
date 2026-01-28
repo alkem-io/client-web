@@ -53,9 +53,9 @@ https://alkem.io/public/whiteboard/f47ac10b-58cc-4372-a567-0e02b2c3d479
 
 **Documentation**:
 
-- Full specification: [`specs/002-guest-whiteboard-access/spec.md`](specs/002-guest-whiteboard-access/spec.md)
-- Developer quickstart: [`specs/002-guest-whiteboard-access/quickstart.md`](specs/002-guest-whiteboard-access/quickstart.md)
-- Implementation plan: [`specs/002-guest-whiteboard-access/plan.md`](specs/002-guest-whiteboard-access/plan.md)
+- Full specification: [`specs/005-guest-whiteboard-access/spec.md`](specs/005-guest-whiteboard-access/spec.md)
+- Developer quickstart: [`specs/005-guest-whiteboard-access/quickstart.md`](specs/005-guest-whiteboard-access/quickstart.md)
+- Implementation plan: [`specs/005-guest-whiteboard-access/plan.md`](specs/005-guest-whiteboard-access/plan.md)
 
 ## Launching the client
 

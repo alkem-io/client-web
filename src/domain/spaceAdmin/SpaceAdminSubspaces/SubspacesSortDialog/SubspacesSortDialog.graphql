@@ -1,0 +1,6 @@
+mutation UpdateSubspacesSortOrder($spaceID: UUID!, $subspaceIds: [UUID!]!) {
+  updateSubspacesSortOrder(sortOrderData: { spaceID: $spaceID, subspaceIDs: $subspaceIds }) {
+    id
+    sortOrder
+  }
+}

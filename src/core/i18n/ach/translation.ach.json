@@ -118,6 +118,7 @@
     "see-more": "crwdns17502:0crwdne17502:0",
     "see-all": "crwdns17504:0{{subject}}crwdne17504:0",
     "readMore": "crwdns17506:0crwdne17506:0",
+    "ellipsisReadMore": "crwdns43758:0crwdne43758:0",
     "showLess": "crwdns43482:0crwdne43482:0",
     "retry": "crwdns43302:0crwdne43302:0",
     "home": "crwdns17508:0crwdne17508:0",
@@ -156,8 +157,8 @@
     "accept-all-cookies": "crwdns17566:0crwdne17566:0",
     "confirm-choice": "crwdns17568:0crwdne17568:0",
     "confirm": "crwdns17570:0crwdne17570:0",
-    "change-template": "crwdns40512:0$t(common.template)crwdne40512:0",
-    "find-template": "crwdns40514:0$t(common.template)crwdne40514:0",
+    "change-template": "crwdns43766:0$t(common.template)crwdne43766:0",
+    "find-template": "crwdns43768:0$t(common.template)crwdne43768:0",
     "change": "crwdns17576:0crwdne17576:0",
     "share": "crwdns17578:0crwdne17578:0",
     "view": "crwdns17580:0crwdne17580:0",
@@ -179,7 +180,7 @@
     "fullscreen": "crwdns17610:0crwdne17610:0",
     "changeLanguage": "crwdns17612:0crwdne17612:0",
     "getHelp": "crwdns17614:0crwdne17614:0",
-    "saveAsTemplate": "crwdns40516:0$t(common.template)crwdne40516:0",
+    "saveAsTemplate": "crwdns43770:0$t(common.template)crwdne43770:0",
     "skipLink": "crwdns17618:0crwdne17618:0",
     "toggle": "crwdns42926:0{{entity}}crwdne42926:0",
     "toolsMenu": "crwdns17620:0crwdne17620:0",
@@ -277,6 +278,7 @@
     "callouts": "crwdns42512:0$t(common.posts)crwdne42512:0",
     "Callout": "crwdns42514:0$t(common.Post)crwdne42514:0",
     "Callouts": "crwdns42516:0$t(common.Posts)crwdne42516:0",
+    "framing": "crwdns43922:0crwdne43922:0",
     "collaborationTools": "crwdns17714:0crwdne17714:0",
     "createdBy": "crwdns17716:0crwdne17716:0",
     "Memo": "crwdns40534:0crwdne40534:0",
@@ -364,10 +366,10 @@
     "role": "crwdns17822:0crwdne17822:0",
     "agreement": "crwdns17824:0crwdne17824:0",
     "agreements": "crwdns17826:0crwdne17826:0",
-    "templates": "crwdns17828:0crwdne17828:0",
+    "templates": "crwdns43772:0crwdne43772:0",
     "noneTemplates": "crwdns42526:0crwdne42526:0",
     "templateTypes": "crwdns42450:0crwdne42450:0",
-    "template": "crwdns17830:0crwdne17830:0",
+    "template": "crwdns43774:0crwdne43774:0",
     "group": "crwdns17832:0crwdne17832:0",
     "groups": "crwdns17834:0crwdne17834:0",
     "user-group": "crwdns17836:0crwdne17836:0",
@@ -449,8 +451,8 @@
     "help": "crwdns17952:0crwdne17952:0",
     "helpCenter": "crwdns17954:0crwdne17954:0",
     "loading": "crwdns17956:0crwdne17956:0",
-    "innovation-flow": "crwdns40658:0crwdne40658:0",
-    "innovation-flows": "crwdns17960:0crwdne17960:0",
+    "innovation-flow": "crwdns43776:0crwdne43776:0",
+    "innovation-flows": "crwdns43778:0crwdne43778:0",
     "innovation-packs": "crwdns17962:0crwdne17962:0",
     "innovation-hub": "crwdns17964:0crwdne17964:0",
     "innovation-hubs": "crwdns17966:0crwdne17966:0",
@@ -526,17 +528,17 @@
         "OTHER": "crwdns18062:0crwdne18062:0"
       },
       "templateType": {
-        "CALLOUT": "crwdns40666:0$t(common.template)crwdne40666:0",
+        "CALLOUT": "crwdns43780:0$t(common.template)crwdne43780:0",
         "CALLOUT_plural": "crwdns40668:0$t(common.templates)crwdne40668:0",
-        "SPACE": "crwdns40670:0$t(common.space)crwdnd40670:0$t(common.template)crwdne40670:0",
+        "SPACE": "crwdns43782:0$t(common.space)crwdnd43782:0$t(common.template)crwdne43782:0",
         "SPACE_plural": "crwdns40672:0$t(common.space)crwdnd40672:0$t(common.templates)crwdne40672:0",
-        "COMMUNITY_GUIDELINES": "crwdns40674:0$t(common.Community)crwdnd40674:0$t(common.template)crwdne40674:0",
+        "COMMUNITY_GUIDELINES": "crwdns43784:0$t(common.Community)crwdnd43784:0$t(common.template)crwdne43784:0",
         "COMMUNITY_GUIDELINES_plural": "crwdns40676:0$t(common.Community)crwdnd40676:0$t(common.templates)crwdne40676:0",
-        "INNOVATION_FLOW": "crwdns40678:0$t(common.innovation-flow)crwdne40678:0",
-        "INNOVATION_FLOW_plural": "crwdns40680:0$t(common.innovation-flow)crwdnd40680:0$t(common.templates)crwdne40680:0",
-        "POST": "crwdns40682:0$t(common.template)crwdne40682:0",
+        "INNOVATION_FLOW": "crwdns43786:0$t(common.innovation-flow)crwdne43786:0",
+        "INNOVATION_FLOW_plural": "crwdns43788:0$t(common.innovation-flow)crwdnd43788:0$t(common.templates)crwdne43788:0",
+        "POST": "crwdns43790:0$t(common.template)crwdne43790:0",
         "POST_plural": "crwdns40684:0$t(common.templates)crwdne40684:0",
-        "WHITEBOARD": "crwdns40686:0$t(common.Whiteboard)crwdnd40686:0$t(common.template)crwdne40686:0",
+        "WHITEBOARD": "crwdns43792:0$t(common.Whiteboard)crwdnd43792:0$t(common.template)crwdne43792:0",
         "WHITEBOARD_plural": "crwdns40688:0$t(common.Whiteboard)crwdnd40688:0$t(common.templates)crwdne40688:0"
       },
       "calloutType": {
@@ -620,7 +622,8 @@
         "month_other": "crwdns42982:0{{count}}crwdne42982:0",
         "year_one": "crwdns42984:0{{count}}crwdne42984:0",
         "year_other": "crwdns42986:0{{count}}crwdne42986:0"
-      }
+      },
+      "moreThan1Year": "crwdns43760:0crwdne43760:0"
     },
     "supportEmail": "crwdns28750:0crwdne28750:0",
     "options": "crwdns37118:0crwdne37118:0",
@@ -812,7 +815,7 @@
       "createButtonTooltip": "crwdns42534:0$t(common.Callout)crwdne42534:0",
       "dialogTitle": "crwdns42536:0$t(common.Callout)crwdne42536:0",
       "framingSettings": {
-        "title": "crwdns37196:0crwdne37196:0",
+        "title": "crwdns43924:0$t(common.framing)crwdne43924:0",
         "none": {
           "title": "crwdns37198:0crwdne37198:0",
           "tooltip": "crwdns37200:0crwdne37200:0"
@@ -899,7 +902,7 @@
       "importTemplate": {
         "confirmOverwrite": {
           "title": "crwdns37326:0crwdne37326:0",
-          "content": "crwdns40876:0$t(common.template)crwdne40876:0"
+          "content": "crwdns43794:0$t(common.template)crwdne43794:0"
         }
       },
       "notification": {
@@ -922,7 +925,8 @@
       "contributionsItemsCount_other": "crwdns43004:0{{count}}crwdnd43004:0$t(common.collection)crwdne43004:0",
       "contributionsItemsCountExpand": "crwdns43006:0{{count}}crwdnd43006:0$t(common.collection)crwdne43006:0",
       "contributionsCollapse": "crwdns43008:0{{count}}crwdnd43008:0$t(common.collection)crwdne43008:0",
-      "noContributions": "crwdns43000:0crwdne43000:0"
+      "noContributions": "crwdns43000:0crwdne43000:0",
+      "contributions": "crwdns43762:0{{count}}crwdne43762:0"
     },
     "draftNotice": "crwdns40882:0$t(common.admins)crwdne40882:0",
     "closed": "crwdns18342:0crwdne18342:0",
@@ -933,7 +937,7 @@
     "permission-help-text": "crwdns42544:0$t(common.callout)crwdne42544:0",
     "callout-location": "crwdns18354:0crwdne18354:0",
     "sortContributions": "crwdns18356:0crwdne18356:0",
-    "saveAsTemplate": "crwdns40890:0$t(common.template)crwdne40890:0",
+    "saveAsTemplate": "crwdns43796:0$t(common.template)crwdne43796:0",
     "alkemio-link": "crwdns42546:0$t(common.posts)crwdne42546:0",
     "link-collection": {
       "add-link": "crwdns18362:0{{title}}crwdne18362:0",
@@ -950,7 +954,7 @@
       "new-temporary-reference": "crwdns18384:0{{temp}}crwdne18384:0"
     },
     "whiteboard": {
-      "clickToSee": "crwdns43074:0$t(common.whiteboard)crwdne43074:0",
+      "clickToSee": "crwdns43764:0$t(common.whiteboard)crwdne43764:0",
       "emojiReaction": {
         "addEmoji": "crwdns43488:0crwdne43488:0",
         "title": "crwdns43490:0crwdne43490:0",
@@ -1086,7 +1090,7 @@
       },
       "template": {
         "title": "crwdns37366:0crwdne37366:0",
-        "defaultTemplate": "crwdns40896:0$t(common.template)crwdnd40896:0$t(common.spaces)crwdne40896:0"
+        "defaultTemplate": "crwdns43798:0$t(common.template)crwdnd43798:0$t(common.spaces)crwdne43798:0"
       }
     },
     "L1": {
@@ -1127,8 +1131,8 @@
         "tooltip": "crwdns28878:0crwdne28878:0"
       },
       "template": {
-        "title": "crwdns40898:0$t(common.template)crwdne40898:0",
-        "defaultTemplate": "crwdns40900:0$t(common.template)crwdnd40900:0$t(common.subspaces)crwdne40900:0"
+        "title": "crwdns43800:0$t(common.template)crwdne43800:0",
+        "defaultTemplate": "crwdns43802:0$t(common.template)crwdnd43802:0$t(common.subspaces)crwdne43802:0"
       }
     },
     "L2": {
@@ -1171,8 +1175,8 @@
         "title": "crwdns40904:0$t(common.subspace)crwdne40904:0"
       },
       "template": {
-        "title": "crwdns40906:0$t(common.template)crwdne40906:0",
-        "defaultTemplate": "crwdns40908:0$t(common.template)crwdnd40908:0$t(common.subspaces)crwdne40908:0"
+        "title": "crwdns43804:0$t(common.template)crwdne43804:0",
+        "defaultTemplate": "crwdns43806:0$t(common.template)crwdnd43806:0$t(common.subspaces)crwdne43806:0"
       }
     }
   },
@@ -1197,12 +1201,12 @@
   },
   "templateDialog": {
     "profile": {
-      "title": "crwdns40912:0$t(common.template)crwdne40912:0",
+      "title": "crwdns43808:0$t(common.template)crwdne43808:0",
       "help": "crwdns40914:0$t(common.templates)crwdnd40914:0{{entityTypeName}}crwdne40914:0",
       "fields": {
-        "displayName": "crwdns40916:0$t(common.template)crwdne40916:0",
-        "description": "crwdns40918:0$t(common.template)crwdne40918:0",
-        "tags": "crwdns40920:0$t(common.template)crwdne40920:0"
+        "displayName": "crwdns43810:0$t(common.template)crwdne43810:0",
+        "description": "crwdns43812:0$t(common.template)crwdne43812:0",
+        "tags": "crwdns43814:0$t(common.template)crwdne43814:0"
       }
     }
   },
@@ -1220,7 +1224,7 @@
     "whiteboardTemplates": {
       "name": "crwdns18628:0$t(common.enums.templateType.WHITEBOARD)crwdne18628:0",
       "title": "crwdns18630:0$t(common.templateLibrary)crwdnd18630:0$t(common.enums.templateType.WHITEBOARD_plural)crwdne18630:0",
-      "editTemplateButton": "crwdns40924:0$t(common.template)crwdne40924:0",
+      "editTemplateButton": "crwdns43816:0$t(common.template)crwdne43816:0",
       "editDialogTitle": "crwdns40926:0$t(common.enums.templateType.WHITEBOARD)crwdne40926:0",
       "errorImporting": "crwdns40928:0$t(common.enums.templateType.WHITEBOARD)crwdne40928:0"
     },
@@ -1229,10 +1233,10 @@
       "title": "crwdns37126:0$t(common.templateLibrary)crwdnd37126:0$t(common.enums.templateType.COLLABORATION_plural)crwdne37126:0",
       "findByUrl": {
         "title": "crwdns40930:0$t(common.subspace)crwdne40930:0",
-        "description": "crwdns40932:0$t(common.space)crwdnd40932:0$t(common.subspace)crwdnd40932:0$t(common.template)crwdne40932:0",
+        "description": "crwdns43818:0$t(common.space)crwdnd43818:0$t(common.subspace)crwdnd43818:0$t(common.template)crwdne43818:0",
         "use": "crwdns40248:0$t(common.space)crwdne40248:0",
-        "urlRequired": "crwdns40934:0$t(common.space)crwdnd40934:0$t(common.template)crwdne40934:0",
-        "noRights": "crwdns40936:0$t(common.admin)crwdnd40936:0$t(common.space)crwdnd40936:0$t(common.template)crwdne40936:0",
+        "urlRequired": "crwdns43820:0$t(common.space)crwdnd43820:0$t(common.template)crwdne43820:0",
+        "noRights": "crwdns43822:0$t(common.admin)crwdnd43822:0$t(common.space)crwdnd43822:0$t(common.template)crwdne43822:0",
         "invalidUrl": "crwdns40254:0$t(common.space)crwdne40254:0",
         "spaceNotFoundError": "crwdns40256:0$t(common.space)crwdne40256:0",
         "selectAnother": "crwdns40258:0$t(common.space)crwdne40258:0"
@@ -1240,8 +1244,8 @@
       "preview": {
         "info": "crwdns40938:0$t(common.settings)crwdne40938:0"
       },
-      "recursive": "crwdns40940:0$t(common.subspaces)crwdnd40940:0$t(common.space)crwdnd40940:0$t(common.template)crwdne40940:0",
-      "includesSubspaces": "crwdns40942:0$t(common.template)crwdnd40942:0$t(common.subspaces)crwdne40942:0"
+      "recursive": "crwdns43824:0$t(common.subspaces)crwdnd43824:0$t(common.space)crwdnd43824:0$t(common.template)crwdne43824:0",
+      "includesSubspaces": "crwdns43826:0$t(common.template)crwdnd43826:0$t(common.subspaces)crwdne43826:0"
     },
     "communityGuidelinesTemplates": {
       "name": "crwdns18654:0$t(common.enums.templateType.COMMUNITY_GUIDELINES)crwdne18654:0",
@@ -1252,27 +1256,27 @@
     },
     "platformTemplates": "crwdns40944:0$t(common.templates)crwdne40944:0",
     "loadPlatformTemplates": "crwdns40946:0$t(common.templates)crwdne40946:0",
-    "platformUseDisabled": "crwdns40948:0$t(common.templates)crwdnd40948:0$t(common.community)crwdnd40948:0$t(common.templates)crwdnd40948:0$t(common.admin)crwdnd40948:0$t(common.lead)crwdnd40948:0$t(common.space)crwdnd40948:0$t(common.template)crwdnd40948:0$t(common.space)crwdne40948:0",
-    "disabledTemplateInfo": "crwdns40950:0$t(common.templates)crwdnd40950:0$t(common.community)crwdnd40950:0$t(common.template)crwdnd40950:0$t(common.admin)crwdnd40950:0$t(common.lead)crwdnd40950:0$t(common.space)crwdnd40950:0$t(common.template)crwdnd40950:0$t(common.space)crwdnd40950:0$t(common.settings)crwdne40950:0",
+    "platformUseDisabled": "crwdns43828:0$t(common.templates)crwdnd43828:0$t(common.community)crwdnd43828:0$t(common.templates)crwdnd43828:0$t(common.admin)crwdnd43828:0$t(common.lead)crwdnd43828:0$t(common.space)crwdnd43828:0$t(common.template)crwdnd43828:0$t(common.space)crwdne43828:0",
+    "disabledTemplateInfo": "crwdns43830:0$t(common.templates)crwdnd43830:0$t(common.community)crwdnd43830:0$t(common.template)crwdnd43830:0$t(common.admin)crwdnd43830:0$t(common.lead)crwdnd43830:0$t(common.space)crwdnd43830:0$t(common.template)crwdnd43830:0$t(common.space)crwdnd43830:0$t(common.settings)crwdne43830:0",
     "importTemplateDialog": {
       "confirmClose": {
-        "title": "crwdns40952:0$t(common.template)crwdne40952:0",
-        "description": "crwdns40954:0$t(common.template)crwdne40954:0"
+        "title": "crwdns43832:0$t(common.template)crwdne43832:0",
+        "description": "crwdns43834:0$t(common.template)crwdne43834:0"
       }
     },
     "notifications": {
-      "templateSaved": "crwdns40956:0$t(common.template)crwdne40956:0"
+      "templateSaved": "crwdns43836:0$t(common.template)crwdne43836:0"
     }
   },
   "innovation-templates": {
     "states": {
       "title": "crwdns18678:0crwdne18678:0",
-      "placeholder": "crwdns40958:0$t(common.innovation-flow)crwdne40958:0"
+      "placeholder": "crwdns43838:0$t(common.innovation-flow)crwdne43838:0"
     }
   },
   "components": {
     "calloutTemplateDialog": {
-      "typeReadonly": "crwdns40960:0$t(common.template)crwdnd40960:0$t(common.template)crwdne40960:0"
+      "typeReadonly": "crwdns43840:0$t(common.template)crwdnd43840:0$t(common.template)crwdne43840:0"
     },
     "shareSettings": {
       "description": "crwdns42622:0$t(common.settings)crwdnd42622:0$t(common.space)crwdnd42622:0{{elementName}}crwdnd42622:0$t(common.settings)crwdne42622:0",
@@ -1306,7 +1310,6 @@
     },
     "searchDialog": {
       "headerTitle": "crwdns18710:0crwdne18710:0",
-      "spacesAndSubspaces": "crwdns40970:0$t(common.spaces)crwdnd40970:0$t(common.subspaces)crwdne40970:0",
       "collaborationTools": "crwdns36775:0crwdne36775:0"
     },
     "searchScope": {
@@ -1348,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "crwdns18750:0crwdne18750:0",
+      "importing": "crwdns43636:0crwdne43636:0",
       "buttonTooltip": "crwdns18752:0crwdne18752:0",
       "editProfileDialog": {
         "title": "crwdns18754:0crwdne18754:0"
@@ -1373,32 +1377,44 @@
           "activeStateWarning": "crwdns36799:0crwdne36799:0"
         },
         "selectDifferentFlow": {
-          "title": "crwdns40978:0$t(common.space)crwdnd40978:0$t(common.template)crwdne40978:0",
+          "title": "crwdns43842:0$t(common.space)crwdnd43842:0$t(common.template)crwdne43842:0",
           "confirmationDialog": {
             "title": "crwdns18780:0crwdne18780:0",
-            "description": "crwdns42550:0$t(common.innovation-flow)crwdnd42550:0$t(common.posts)crwdne42550:0"
+            "description": "crwdns43844:0$t(common.innovation-flow)crwdnd43844:0$t(common.posts)crwdne43844:0"
           },
           "importCalloutsDialog": {
             "title": "crwdns40982:0$t(common.template)crwdne40982:0",
-            "description": "crwdns42552:0$t(common.template)crwdnd42552:0$t(common.innovation-flow)crwdnd42552:0$t(common.posts)crwdne42552:0",
-            "yes": "crwdns42554:0$t(common.posts)crwdnd42554:0$t(common.template)crwdne42554:0",
-            "yesDescription": "crwdns42556:0$t(common.posts)crwdnd42556:0$t(common.template)crwdne42556:0",
-            "no": "crwdns40990:0$t(common.innovation-flow)crwdne40990:0",
-            "noDescription": "crwdns42558:0$t(common.innovation-flow)crwdnd42558:0$t(common.posts)crwdne42558:0",
-            "apply": "crwdns40994:0$t(common.template)crwdne40994:0"
+            "description": "crwdns43846:0$t(common.template)crwdnd43846:0$t(common.innovation-flow)crwdnd43846:0$t(common.posts)crwdne43846:0",
+            "option1": {
+              "label": "crwdns43644:0crwdne43644:0",
+              "description": "crwdns43848:0$t(common.innovation-flow)crwdnd43848:0$t(common.posts)crwdnd43848:0$t(common.template)crwdnd43848:0$t(common.posts)crwdne43848:0"
+            },
+            "option2": {
+              "label": "crwdns43648:0$t(common.template)crwdnd43648:0$t(common.posts)crwdne43648:0",
+              "description": "crwdns43650:0$t(common.posts)crwdnd43650:0$t(common.template)crwdne43650:0"
+            },
+            "option3": {
+              "label": "crwdns43652:0$t(common.template)crwdnd43652:0$t(common.posts)crwdne43652:0",
+              "description": "crwdns43850:0$t(common.innovation-flow)crwdnd43850:0$t(common.template)crwdnd43850:0$t(common.posts)crwdne43850:0"
+            },
+            "confirmDelete": {
+              "title": "crwdns43656:0crwdne43656:0",
+              "description": "crwdns43658:0$t(common.posts)crwdnd43658:0$t(common.posts)crwdnd43658:0$t(common.template)crwdne43658:0"
+            },
+            "apply": "crwdns43660:0crwdne43660:0"
           }
         }
       },
       "defaultTemplate": {
-        "currentlySelected": "crwdns43536:0crwdne43536:0",
-        "noTemplate": "crwdns43538:0crwdne43538:0",
+        "currentlySelected": "crwdns43662:0$t(common.template)crwdne43662:0",
+        "noTemplate": "crwdns43852:0$t(common.template)crwdnd43852:0$t(common.template)crwdne43852:0",
         "removeConfirmation": {
-          "title": "crwdns43540:0crwdne43540:0",
-          "description": "crwdns43542:0crwdne43542:0"
+          "title": "crwdns43664:0$t(common.template)crwdne43664:0",
+          "description": "crwdns43666:0$t(common.template)crwdnd43666:0$t(common.template)crwdne43666:0"
         },
         "errors": {
-          "selectFailed": "crwdns43544:0crwdne43544:0",
-          "removeFailed": "crwdns43546:0crwdne43546:0"
+          "selectFailed": "crwdns43668:0$t(common.template)crwdne43668:0",
+          "removeFailed": "crwdns43670:0$t(common.template)crwdne43670:0"
         }
       }
     },
@@ -1560,7 +1576,7 @@
       "title": "crwdns41010:0$t(common.community)crwdne41010:0",
       "titleWithType": "crwdns19002:0{{type}}crwdne19002:0",
       "post-type-label": "crwdns42560:0$t(common.Post)crwdne42560:0",
-      "custom-template": "crwdns41014:0$t(common.template)crwdne41014:0",
+      "custom-template": "crwdns43854:0$t(common.template)crwdne43854:0",
       "info-step": {
         "title": "crwdns19008:0crwdne19008:0",
         "description": "crwdns19010:0crwdne19010:0",
@@ -1586,19 +1602,19 @@
         }
       },
       "template-step": {
-        "title": "crwdns41034:0$t(common.templates)crwdne41034:0",
+        "title": "crwdns43856:0$t(common.templates)crwdne43856:0",
         "post-template-label": "crwdns19032:0crwdne19032:0",
         "post-template-text": "crwdns41036:0$t(common.posts)crwdne41036:0",
         "post-template-default-description": "crwdns19036:0crwdne19036:0",
-        "whiteboard-template-label": "crwdns41038:0$t(common.template)crwdne41038:0",
-        "whiteboard-empty-template": "crwdns41040:0$t(common.template)crwdne41040:0",
-        "whiteboard-reset-template": "crwdns41042:0$t(common.template)crwdne41042:0",
+        "whiteboard-template-label": "crwdns43858:0$t(common.template)crwdne43858:0",
+        "whiteboard-empty-template": "crwdns43860:0$t(common.template)crwdne43860:0",
+        "whiteboard-reset-template": "crwdns43862:0$t(common.template)crwdne43862:0",
         "no-post-template-selected": "crwdns41044:0$t(common.enums.templateType.WHITEBOARD)crwdne41044:0",
         "no-whiteboard-template-selected": "crwdns41046:0$t(common.enums.templateType.WHITEBOARD)crwdne41046:0"
       },
       "create-step": {
         "title": "crwdns19048:0crwdne19048:0",
-        "post-template-label": "crwdns41048:0$t(common.post)crwdnd41048:0$t(common.template)crwdne41048:0"
+        "post-template-label": "crwdns43864:0$t(common.post)crwdnd43864:0$t(common.template)crwdne43864:0"
       },
       "closeDialog": {
         "title": "crwdns41050:0$t(common.post)crwdne41050:0",
@@ -2191,6 +2207,7 @@
     },
     "userMessaging": {
       "title": "crwdns43392:0crwdne43392:0",
+      "betaTooltip": "crwdns43952:0crwdne43952:0",
       "noConversations": "crwdns43394:0crwdne43394:0",
       "noMessages": "crwdns43396:0crwdne43396:0",
       "selectConversation": "crwdns43398:0crwdne43398:0",
@@ -2231,7 +2248,7 @@
     "feedback": "crwdns19526:0crwdne19526:0",
     "support": "crwdns19528:0crwdne19528:0",
     "about": "crwdns19530:0crwdne19530:0",
-    "copyright": "crwdns36839:0crwdne36839:0"
+    "copyright": "crwdns43950:0crwdne43950:0"
   },
   "innovationHub": {
     "selectedSpaces": "crwdns41178:0{{space}}crwdnd41178:0$t(common.spaces)crwdne41178:0",
@@ -2293,7 +2310,7 @@
     },
     "contribute": {
       "innovationFlow": {
-        "title": "crwdns41198:0{{entity}}crwdnd41198:0{{innovationFlowDisplayName}}crwdnd41198:0$t(common.innovation-flow)crwdne41198:0",
+        "title": "crwdns43866:0{{entity}}crwdnd43866:0{{innovationFlowDisplayName}}crwdnd43866:0$t(common.innovation-flow)crwdne43866:0",
         "readMore": "crwdns19594:0{{innovationFlowDisplayName}}crwdne19594:0"
       },
       "no-posts": "crwdns41200:0$t(common.posts)crwdne41200:0"
@@ -2303,7 +2320,7 @@
       "fullName": "crwdns41202:0$t(common.templateLibrary)crwdne41202:0",
       "title": "crwdns41204:0$t(common.templateLibrary)crwdne41204:0",
       "subtitle": "crwdns41206:0$t(common.spaceSubspace)crwdne41206:0",
-      "useTemplateButton": "crwdns41208:0$t(common.template)crwdnd41208:0$t(common.space)crwdne41208:0",
+      "useTemplateButton": "crwdns43868:0$t(common.template)crwdnd43868:0$t(common.space)crwdne43868:0",
       "innovationPacks": {
         "headerTitle": "crwdns19608:0$t(common.innovation-packs)crwdne19608:0",
         "dialogTitle": "crwdns19610:0$t(common.innovation-packs)crwdne19610:0"
@@ -2351,15 +2368,15 @@
             "description": "crwdns43518:0crwdne43518:0"
           },
           "templates": {
-            "description": "crwdns41224:0$t(common.templates)crwdnd41224:0{{entity}}crwdne41224:0",
-            "delete-confirmation": "crwdns41226:0$t(common.template)crwdnd41226:0{{template}}crwdne41226:0",
+            "description": "crwdns43870:0$t(common.templates)crwdnd43870:0{{entity}}crwdne43870:0",
+            "delete-confirmation": "crwdns43872:0$t(common.template)crwdnd43872:0{{template}}crwdne43872:0",
             "import": {
               "defaultTitle": "crwdns41228:0$t(common.templateLibrary)crwdne41228:0",
               "title": "crwdns19636:0$t(common.templateLibrary)crwdnd19636:0{{templateType}}crwdne19636:0",
-              "subtitle": "crwdns41230:0$t(common.templates)crwdnd41230:0$t(common.space)crwdnd41230:0$t(common.subspace)crwdnd41230:0$t(common.template)crwdnd41230:0$t(common.template)crwdne41230:0",
-              "callout-template-import-subtitle": "crwdns41232:0$t(common.template)crwdnd41232:0$t(common.callout)crwdne41232:0",
-              "noTemplates": "crwdns41234:0$t(common.templates)crwdnd41234:0$t(common.space)crwdne41234:0",
-              "imported-successfully-notification": "crwdns41236:0$t(common.template)crwdne41236:0"
+              "subtitle": "crwdns43874:0$t(common.templates)crwdnd43874:0$t(common.space)crwdnd43874:0$t(common.subspace)crwdnd43874:0$t(common.template)crwdnd43874:0$t(common.template)crwdne43874:0",
+              "callout-template-import-subtitle": "crwdns43876:0$t(common.template)crwdnd43876:0$t(common.callout)crwdne43876:0",
+              "noTemplates": "crwdns43878:0$t(common.templates)crwdnd43878:0$t(common.space)crwdne43878:0",
+              "imported-successfully-notification": "crwdns43880:0$t(common.template)crwdne43880:0"
             },
             "validation": {
               "spaceRequired": "crwdns41238:0$t(common.spaceSubspace)crwdne41238:0"
@@ -2410,7 +2427,7 @@
             "limitNotice": "crwdns43450:0$t(common.account)crwdne43450:0",
             "notAvailable": "crwdns19692:0crwdne19692:0",
             "notAvailableNotice": "crwdns41262:0$t(common.account)crwdne41262:0",
-            "noTemplates": "crwdns42452:0$t(common.innovationPack)crwdnd42452:0$t(common.template)crwdne42452:0",
+            "noTemplates": "crwdns43882:0$t(common.innovationPack)crwdnd43882:0$t(common.template)crwdne43882:0",
             "customHomepages": "crwdns41266:0$t(common.customHomepages)crwdne41266:0",
             "hostTitle": "crwdns19700:0crwdne19700:0",
             "contactsLink": "crwdns41268:0$t(common.settings)crwdne41268:0",
@@ -2455,6 +2472,15 @@
           "title": "crwdns43520:0crwdne43520:0",
           "description": "crwdns43522:0crwdne43522:0",
           "not-enabled": "crwdns43524:0crwdne43524:0"
+        },
+        "homeSpace": {
+          "title": "crwdns43740:0crwdne43740:0",
+          "description": "crwdns43742:0crwdne43742:0",
+          "selectLabel": "crwdns43744:0crwdne43744:0",
+          "noSelection": "crwdns43746:0crwdne43746:0",
+          "autoRedirect": "crwdns43748:0crwdne43748:0",
+          "autoRedirectDisabledHint": "crwdns43750:0crwdne43750:0",
+          "pinButtonTooltip": "crwdns43752:0crwdne43752:0"
         }
       },
       "organization": {
@@ -2528,7 +2554,7 @@
           "subspace-created": "crwdns41316:0$t(common.subspace)crwdne41316:0",
           "subspace-removed": "crwdns41318:0$t(common.subspace)crwdne41318:0",
           "subspace-updated": "crwdns41320:0$t(common.subspace)crwdne41320:0",
-          "templateSaved": "crwdns41322:0$t(common.template)crwdne41322:0"
+          "templateSaved": "crwdns43884:0$t(common.template)crwdne43884:0"
         }
       },
       "space": {
@@ -2536,12 +2562,12 @@
           "subspaces": {
             "description": "crwdns42634:0$t(common.subspaces)crwdnd42634:0$t(common.space)crwdne42634:0",
             "defaultSettings": {
-              "title": "crwdns41326:0$t(common.subspace)crwdnd41326:0$t(common.template)crwdne41326:0",
+              "title": "crwdns43886:0$t(common.subspace)crwdnd43886:0$t(common.template)crwdne43886:0",
               "description": "crwdns41328:0$t(common.settings)crwdnd41328:0$t(common.subspace)crwdnd41328:0$t(common.space)crwdnd41328:0$t(common.settings)crwdne41328:0",
               "defaultSpaceTemplate": {
-                "selectDifferentTemplate": "crwdns41330:0$t(common.template)crwdne41330:0",
-                "title": "crwdns41332:0$t(common.subspace)crwdnd41332:0$t(common.template)crwdne41332:0",
-                "description": "crwdns43548:0$t(common.template)crwdnd43548:0$t(common.subspaces)crwdnd43548:0$t(common.templates)crwdnd43548:0$t(common.space)crwdnd43548:0$t(common.templateLibrary)crwdnd43548:0$t(common.templates)crwdnd43548:0$t(common.templates)crwdne43548:0"
+                "selectDifferentTemplate": "crwdns43888:0$t(common.template)crwdne43888:0",
+                "title": "crwdns43890:0$t(common.subspace)crwdnd43890:0$t(common.template)crwdne43890:0",
+                "description": "crwdns43892:0$t(common.template)crwdnd43892:0$t(common.subspaces)crwdnd43892:0$t(common.templates)crwdnd43892:0$t(common.space)crwdnd43892:0$t(common.templateLibrary)crwdnd43892:0$t(common.templates)crwdnd43892:0$t(common.templates)crwdne43892:0"
               }
             },
             "reorderSubspaces": "crwdns43550:0$t(common.subspaces)crwdne43550:0"
@@ -2579,7 +2605,7 @@
             "title": "crwdns40342:0$t(common.space)crwdne40342:0",
             "features": {
               "WHITEBOARD_MULTI_USER": "crwdns41350:0$t(common.Whiteboards)crwdne41350:0",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "crwdns42588:0$t(common.template)crwdnd42588:0$t(common.callout)crwdne42588:0",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "crwdns43894:0$t(common.template)crwdnd43894:0$t(common.callout)crwdne43894:0",
               "VIRTUAL_CONTRIBUTORS": "crwdns41354:0$t(common.virtualContributors)crwdne41354:0"
             }
           },
@@ -2605,9 +2631,9 @@
           },
           "copySpace": {
             "title": "crwdns41380:0$t(common.subspace)crwdne41380:0",
-            "description": "crwdns42592:0$t(common.subspace)crwdnd42592:0$t(common.space)crwdnd42592:0$t(common.template)crwdnd42592:0$t(common.innovation-flow)crwdnd42592:0$t(common.posts)crwdnd42592:0$t(common.comments)crwdnd42592:0$t(common.subspace)crwdne42592:0",
-            "createTemplate": "crwdns41384:0$t(common.template)crwdne41384:0",
-            "createTemplateTooltip": "crwdns41386:0$t(common.template)crwdnd41386:0$t(common.subspace)crwdnd41386:0$t(common.space)crwdnd41386:0$t(common.admin)crwdne41386:0",
+            "description": "crwdns43896:0$t(common.subspace)crwdnd43896:0$t(common.space)crwdnd43896:0$t(common.template)crwdnd43896:0$t(common.innovation-flow)crwdnd43896:0$t(common.posts)crwdnd43896:0$t(common.comments)crwdnd43896:0$t(common.template)crwdnd43896:0$t(common.subspace)crwdne43896:0",
+            "createTemplate": "crwdns43898:0$t(common.template)crwdne43898:0",
+            "createTemplateTooltip": "crwdns43900:0$t(common.template)crwdnd43900:0$t(common.subspace)crwdnd43900:0$t(common.space)crwdnd43900:0$t(common.admin)crwdne43900:0",
             "duplicate": "crwdns19878:0crwdne19878:0"
           },
           "account": {
@@ -2747,6 +2773,7 @@
       "filter": {
         "type": {
           "space": "crwdns40374:0$t(common.space)crwdne40374:0",
+          "framing": "crwdns43926:0$t(common.framing)crwdne43926:0",
           "contribution": "crwdns20002:0crwdne20002:0",
           "contributor": "crwdns20004:0crwdne20004:0"
         },
@@ -2754,13 +2781,23 @@
           "all": "crwdns20006:0crwdne20006:0",
           "space": "crwdns41420:0$t(common.spaces)crwdne41420:0",
           "subspace": "crwdns41422:0$t(common.subspaces)crwdne41422:0",
+          "contributor": "crwdns43928:0$t(common.contributors)crwdne43928:0",
           "user": "crwdns20012:0crwdne20012:0",
           "organization": "crwdns41424:0$t(common.Organizations)crwdne41424:0",
-          "post": "crwdns42594:0$t(common.Posts)crwdne42594:0",
-          "whiteboard": "crwdns41428:0$t(common.Whiteboards)crwdne41428:0",
           "callout": "crwdns42596:0$t(common.Callouts)crwdne42596:0",
-          "memo": "crwdns41430:0$t(common.Memos)crwdne41430:0",
-          "response": "crwdns42598:0$t(common.Responses)crwdne42598:0"
+          "framing": "crwdns43930:0$t(common.framing)crwdne43930:0",
+          "contribution": "crwdns43932:0$t(common.Responses)crwdne43932:0",
+          "memo": "crwdns43934:0$t(common.Memos)crwdne43934:0",
+          "post": "crwdns42594:0$t(common.Posts)crwdne42594:0",
+          "whiteboard": "crwdns43936:0$t(common.Whiteboards)crwdne43936:0"
+        },
+        "results": {
+          "spacesAndSubspaces": "crwdns43938:0$t(common.spaces)crwdnd43938:0$t(common.subspaces)crwdne43938:0",
+          "callout": "crwdns43940:0$t(common.Callouts)crwdne43940:0",
+          "framing": "crwdns43942:0$t(common.framing)crwdne43942:0",
+          "contribution": "crwdns43944:0$t(common.Responses)crwdne43944:0",
+          "contributor": "crwdns43946:0$t(common.contributors)crwdne43946:0",
+          "noResults": "crwdns43948:0crwdne43948:0"
         }
       },
       "spaceFilterTitle": "crwdns36892:0$t(common.spaces)crwdne36892:0"
@@ -2829,7 +2866,11 @@
         },
         "recentSpaces": {
           "seeMore": "crwdns41462:0$t(common.spaces)crwdne41462:0",
-          "seeMoreSubspaces": "crwdns41464:0$t(common.subspaces)crwdnd41464:0$t(common.member)crwdne41464:0"
+          "seeMoreSubspaces": "crwdns41464:0$t(common.subspaces)crwdnd41464:0$t(common.member)crwdne41464:0",
+          "homeSpacePlaceholder": {
+            "title": "crwdns43754:0crwdne43754:0",
+            "subtitle": "crwdns43756:0crwdne43756:0"
+          }
         },
         "campaignBlock": {
           "createYourVCButton": "crwdns42348:0$t(common.virtualContributor)crwdne42348:0",
@@ -3092,7 +3133,7 @@
       "last-saved": "crwdns36744:0{{datetime}}crwdne36744:0",
       "unsuccessful-save": "crwdns41568:0{{warningMessage}}crwdnd41568:0{{datetime}}crwdnd41568:0$t(common.whiteboard)crwdne41568:0",
       "state-actions": {
-        "save-as-template": "crwdns41570:0$t(common.template)crwdne41570:0",
+        "save-as-template": "crwdns43902:0$t(common.template)crwdne43902:0",
         "save-and-check-in": "crwdns20366:0crwdne20366:0",
         "save": "crwdns20368:0crwdne20368:0",
         "delete": "crwdns20370:0crwdne20370:0"
@@ -3106,16 +3147,16 @@
         "confirmationText": "crwdns41578:0$t(common.whiteboard)crwdne41578:0"
       },
       "template": {
-        "header": "crwdns41580:0$t(common.templates)crwdne41580:0",
-        "how-to": "crwdns41582:0$t(common.template)crwdnd41582:0$t(common.whiteboard)crwdnd41582:0$t(common.template)crwdne41582:0"
+        "header": "crwdns43904:0$t(common.templates)crwdne43904:0",
+        "how-to": "crwdns43906:0$t(common.template)crwdnd43906:0$t(common.whiteboard)crwdnd43906:0$t(common.template)crwdne43906:0"
       },
       "space": {
-        "templatesHeader": "crwdns41584:0$t(common.templates)crwdnd41584:0$t(common.space)crwdne41584:0",
-        "templatesSubheader": "crwdns41586:0$t(common.templates)crwdnd41586:0$t(common.space)crwdnd41586:0$t(common.subspace)crwdnd41586:0$t(common.space)crwdne41586:0"
+        "templatesHeader": "crwdns43908:0$t(common.templates)crwdnd43908:0$t(common.space)crwdne43908:0",
+        "templatesSubheader": "crwdns43910:0$t(common.templates)crwdnd43910:0$t(common.space)crwdnd43910:0$t(common.subspace)crwdnd43910:0$t(common.space)crwdne43910:0"
       },
       "subspace": {
-        "templatesHeader": "crwdns41588:0$t(common.templates)crwdnd41588:0$t(common.subspace)crwdne41588:0",
-        "templatesSubheader": "crwdns41590:0$t(common.templates)crwdnd41590:0$t(common.subspace)crwdne41590:0"
+        "templatesHeader": "crwdns43912:0$t(common.templates)crwdnd43912:0$t(common.subspace)crwdne43912:0",
+        "templatesSubheader": "crwdns43914:0$t(common.templates)crwdnd43914:0$t(common.subspace)crwdne43914:0"
       },
       "whiteboardDisconnected": {
         "title": "crwdns41592:0$t(common.Whiteboards)crwdne41592:0",
@@ -3309,6 +3350,7 @@
     },
     "user-profile": {
       "title": "crwdns41652:0$t(common.profile)crwdne41652:0",
+      "loading": "crwdns43954:0crwdne43954:0",
       "tooltips": {
         "settings": "crwdns41654:0$t(common.profile)crwdnd41654:0$t(common.settings)crwdne41654:0"
       },
@@ -3706,8 +3748,8 @@
     }
   },
   "innovation-edit": {
-    "new": "crwdns41836:0$t(common.innovation-flow)crwdne41836:0",
-    "edit": "crwdns41838:0$t(common.innovation-flow)crwdne41838:0"
+    "new": "crwdns43916:0$t(common.innovation-flow)crwdne43916:0",
+    "edit": "crwdns43918:0$t(common.innovation-flow)crwdne43918:0"
   },
   "contributors-section": {
     "title": "crwdns20768:0crwdne20768:0"
@@ -3823,7 +3865,7 @@
     "license": {
       "noPlansError": "crwdns37400:0crwdne37400:0"
     },
-    "innovationFlowError": "crwdns41852:0$t(common.template)crwdnd41852:0$t(common.spaces)crwdnd41852:0$t(common.template)crwdne41852:0"
+    "innovationFlowError": "crwdns43920:0$t(common.template)crwdnd43920:0$t(common.spaces)crwdnd43920:0$t(common.template)crwdne43920:0"
   },
   "plansTable": {
     "title": "crwdns20874:0crwdne20874:0",

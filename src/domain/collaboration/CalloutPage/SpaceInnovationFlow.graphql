@@ -1,0 +1,25 @@
+query SpaceInnovationFlow($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        id
+        innovationFlow {
+          id
+          states {
+            id
+            displayName
+            defaultCalloutTemplate {
+              id
+              profile {
+                id
+                displayName
+              }
+              type
+            }
+          }
+        }
+      }
+    }
+  }
+}

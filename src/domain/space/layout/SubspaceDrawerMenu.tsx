@@ -18,7 +18,7 @@ import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/
 interface SubspaceDrawerMenuProps {
   innovationFlowStates?: InnovationFlowStateModel[];
   selectedInnovationFlowState?: string;
-  currentInnovationFlowState?: string;
+  currentInnovationFlowStateDisplayName?: string;
   createButton?: React.ReactNode;
   onSelectState: (stateName: string) => void;
   about?: SpaceWelcomeBlockProps['spaceAbout'];
@@ -29,7 +29,7 @@ interface SubspaceDrawerMenuProps {
 export const SubspaceDrawerMenu = ({
   innovationFlowStates,
   selectedInnovationFlowState,
-  currentInnovationFlowState,
+  currentInnovationFlowStateDisplayName,
   createButton,
   onSelectState,
   about,
@@ -56,7 +56,7 @@ export const SubspaceDrawerMenu = ({
           {showInnovationFlowStates && (
             <InnovationFlowStates
               states={innovationFlowStates}
-              currentState={currentInnovationFlowState}
+              currentState={currentInnovationFlowStateDisplayName}
               selectedState={selectedInnovationFlowState}
               onSelectState={state => onSelectState(state.displayName)}
               visualizer={InnovationFlowVisualizerMobile}

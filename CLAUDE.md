@@ -140,7 +140,9 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to `src/core/i18n/en/translation.en.json`
-- Only the English source file may be edited; other locale files are generated downstream
+- The project uses Crowdin for translations
+- Only edit `translation.en.json`; all other locale files are generated automatically via Crowdin and must never be edited manually
+- If you need to change a non-English translation file, do it from Crowdin, not in the codebase
 
 ## Environment Variables
 
@@ -276,4 +278,4 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 - Session persistence via session storage (`alkemio_guest_name` key)
 - GraphQL header injection (`x-guest-name`)
 
-**Documentation**: See `specs/002-guest-whiteboard-access/` for full specification and implementation details.
+**Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.

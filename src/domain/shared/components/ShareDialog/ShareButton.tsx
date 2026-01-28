@@ -3,6 +3,7 @@ import { Button, IconButton, IconButtonProps, Tooltip } from '@mui/material';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { ShareDialog, ShareComponentProps } from './ShareDialog';
 import { useTranslation } from 'react-i18next';
+import SwapColors from '@/core/ui/palette/SwapColors';
 
 interface ShareButtonProps extends Omit<ShareComponentProps, 'url'> {
   url: string | undefined;
@@ -12,6 +13,7 @@ interface ShareButtonProps extends Omit<ShareComponentProps, 'url'> {
   tooltipIfDisabled?: string;
   sx?: IconButtonProps['sx'];
   showShareOnAlkemio?: boolean;
+  resetDialogTheme?: boolean;
 }
 
 const ShareButton: FC<ShareButtonProps> = ({
@@ -22,6 +24,7 @@ const ShareButton: FC<ShareButtonProps> = ({
   tooltipIfDisabled = '',
   sx,
   showShareOnAlkemio = true,
+  resetDialogTheme = false,
   ...dialogProps
 }) => {
   const { t } = useTranslation();
@@ -53,19 +56,21 @@ const ShareButton: FC<ShareButtonProps> = ({
             aria-haspopup="true"
             onClick={() => setDialogOpen(true)}
             disabled={disabled}
-            sx={{ color: theme => theme.palette.primary.main, ...sx }}
+            sx={{ color: theme => theme.palette.text.primary, ...sx }}
           >
             <ShareOutlinedIcon />
           </IconButton>
         )}
       </Tooltip>
-      <ShareDialog
-        open={dialogOpen}
-        url={url}
-        showShareOnAlkemio={showShareOnAlkemio}
-        {...dialogProps}
-        onClose={() => setDialogOpen(false)}
-      />
+      <SwapColors swap={resetDialogTheme}>
+        <ShareDialog
+          open={dialogOpen}
+          url={url}
+          showShareOnAlkemio={showShareOnAlkemio}
+          {...dialogProps}
+          onClose={() => setDialogOpen(false)}
+        />
+      </SwapColors>
     </>
   );
 };

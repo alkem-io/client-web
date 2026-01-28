@@ -8,5 +8,13 @@ fragment InnovationFlowStates on InnovationFlow {
     settings {
       allowNewCallouts
     }
+    defaultCalloutTemplate {
+      id
+      profile {
+        id
+        displayName
+      }
+      type
+    }
   }
 }

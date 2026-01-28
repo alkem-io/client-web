@@ -17,7 +17,6 @@ interface CalloutHeaderProps {
   onCollapse?: () => void;
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
-  contributionsCount: number | undefined;
   calloutActions?: boolean;
 }
 
@@ -28,14 +27,11 @@ const CalloutHeader = ({
   onExpand,
   settingsOpen = false,
   onOpenSettings,
-  contributionsCount,
   calloutActions = true,
 }: CalloutHeaderProps) => {
   const { t } = useTranslation();
 
   const nextBlockAnchor = useNextBlockAnchor();
-
-  const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
   const collapsedActions = () => (
     <>
@@ -54,6 +50,7 @@ const CalloutHeader = ({
       >
         <MoreVertIcon color="primary" />
       </IconButton>
+      <Authorship author={callout.createdBy} date={callout.publishedDate} />
     </>
   );
 
@@ -63,24 +60,9 @@ const CalloutHeader = ({
       titleContainerProps={{ display: 'block', position: 'relative' }}
       id="callout-title"
     >
-      {hasCalloutDetails && (
-        <Authorship
-          authorAvatarUri={callout.authorAvatarUri}
-          date={callout.publishedAt}
-          authorName={callout.authorName}
-        >
-          {contributionsCount !== undefined &&
-            `${callout.authorName} • ${t('callout.contributions.contributionsCount', {
-              count: contributionsCount,
-            })}`}
-          {contributionsCount === undefined && callout.authorName}
-        </Authorship>
-      )}
-      {!hasCalloutDetails && (
-        <BlockTitle noWrap onClick={() => onExpand?.(callout)} sx={{ cursor: 'pointer' }}>
-          {callout.framing.profile.displayName}
-        </BlockTitle>
-      )}
+      <BlockTitle noWrap onClick={() => onExpand?.(callout)} sx={{ cursor: 'pointer' }}>
+        {callout.framing.profile.displayName}
+      </BlockTitle>
       <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
     </DialogHeader>
   );
