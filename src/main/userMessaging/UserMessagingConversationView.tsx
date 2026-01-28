@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton, Popover } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -12,7 +12,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { UserConversation } from './useUserConversations';
 import { ConversationMessage } from './useConversationMessages';
 import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useRef, useEffect, useCallback, useLayoutEffect, useMemo, useState, MouseEvent } from 'react';
+import { useRef, useEffect, useCallback, useLayoutEffect, useState } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
@@ -34,44 +34,14 @@ const MessageBubble = ({
   onRemoveReaction,
 }: MessageBubbleProps) => {
   const { t } = useTranslation();
-  const [allReactionsAnchor, setAllReactionsAnchor] = useState<HTMLButtonElement | null>(null);
   const hasReactions = message.reactions.length > 0;
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(hasReactions);
   const [isReactionPickerOpen, setIsReactionPickerOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-  const reactionGroups = useMemo(() => {
-    const byEmoji = new Map<string, typeof message.reactions>();
-    const orderedEmojis: string[] = [];
-
-    message.reactions.forEach(reaction => {
-      if (!byEmoji.has(reaction.emoji)) {
-        orderedEmojis.push(reaction.emoji);
-        byEmoji.set(reaction.emoji, []);
-      }
-      byEmoji.get(reaction.emoji)!.push(reaction);
-    });
-
-    return orderedEmojis.map(emoji => {
-      const reactions = byEmoji.get(emoji) ?? [];
-      const firstTimestamp = reactions.length ? Math.min(...reactions.map(r => r.timestamp ?? 0)) : 0;
-      return { emoji, reactions, firstTimestamp };
-    });
-  }, [message.reactions]);
-
-  // Keep reactions compact: preserve counts but only render up to two distinct emojis (based on first use order)
-  const compactReactions = useMemo(() => {
-    return reactionGroups
-      .slice(0, 2)
-      .flatMap(group => group.reactions)
-      .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0));
-  }, [reactionGroups]);
-
-  const extraReactionsCount = message.reactions.length - compactReactions.length;
-
   const shouldShowAddButton = hasReactions || isAddButtonVisible || isReactionPickerOpen || isHovering;
 
-  const showInlineReactions = compactReactions.length > 0;
+  const showInlineReactions = hasReactions;
   const showOverlayAddButton = !showInlineReactions && canAddReaction && shouldShowAddButton;
 
   useEffect(() => {
@@ -91,12 +61,6 @@ const MessageBubble = ({
     }
     setIsHovering(false);
   };
-
-  const handleOpenAllReactions = (event: MouseEvent<HTMLButtonElement>) => {
-    setAllReactionsAnchor(event.currentTarget);
-  };
-
-  const handleCloseAllReactions = () => setAllReactionsAnchor(null);
 
   return (
     <Box
@@ -200,46 +164,13 @@ const MessageBubble = ({
           alignItems="center"
         >
           <CommentReactions
-            reactions={compactReactions}
+            reactions={message.reactions}
             canAddReaction={canAddReaction}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
             showAddButton
             onPickerVisibilityChange={setIsReactionPickerOpen}
           />
-          {extraReactionsCount > 0 && (
-            <IconButton
-              size="small"
-              onClick={handleOpenAllReactions}
-              aria-label={t('buttons.readMore')}
-              sx={{ height: gutters(1.5), width: gutters(1.5) }}
-            >
-              <Caption fontWeight={700}>{`+${extraReactionsCount}`}</Caption>
-            </IconButton>
-          )}
-          <Popover
-            open={Boolean(allReactionsAnchor)}
-            anchorEl={allReactionsAnchor}
-            onClose={handleCloseAllReactions}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-          >
-            <Box padding={gutters(0.75)} minWidth={240} display="flex" flexDirection="column" gap={gutters(0.5)}>
-              {reactionGroups.map(group => {
-                const senderNames = group.reactions
-                  .map(r => r.sender?.profile.displayName)
-                  .filter(Boolean)
-                  .join(', ');
-                return (
-                  <Box key={group.emoji} display="flex" flexDirection="column" gap={gutters(0.25)}>
-                    <Caption>
-                      {group.emoji} {senderNames}
-                    </Caption>
-                  </Box>
-                );
-              })}
-            </Box>
-          </Popover>
         </Box>
       )}
     </Box>

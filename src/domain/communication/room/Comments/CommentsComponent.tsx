@@ -13,11 +13,11 @@ import { CaptionSmall } from '@/core/ui/typography';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
-import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
 import { Box, BoxProps } from '@mui/material';
 import useKeepElementScroll from '@/domain/shared/utils/scroll/useKeepElementScroll';
+import { gutters } from '@/core/ui/grid/utils';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -153,7 +153,7 @@ const CommentsComponent = ({
     <>
       {!isShowingLastMessage && hasMessages && (
         <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
-          <Gutters gap={0}>
+          <Gutters disableSidePadding gap={0}>
             <MessagesThread
               messages={messages}
               vcInteractions={vcInteractions}
@@ -181,7 +181,7 @@ const CommentsComponent = ({
             canAddReaction={canAddReaction}
             {...commentReactionsMutations}
           />
-          <CaptionSmall textAlign="center" onClick={onClickMore}>
+          <CaptionSmall textAlign="center" onClick={onClickMore} sx={{ paddingBottom: gutters() }}>
             {t('common.show-all')}
           </CaptionSmall>
         </>
@@ -192,8 +192,7 @@ const CommentsComponent = ({
           placeholder={t('pages.post.dashboard.comment.placeholder')}
           onPostComment={handlePostComment}
           disabled={loading}
-          padding={gutters()}
-          paddingBottom={0}
+          paddingTop={0}
         />
       )}
       {!canPostMessages && (

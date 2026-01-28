@@ -300,7 +300,7 @@ const CalloutView = ({
 
           {/* Framing Comments */}
           {callout.comments && (
-            <Gutters disableVerticalPadding>
+            <Gutters disableVerticalPadding disableGap>
               <CommentsComponent
                 {...calloutComments}
                 externalScrollRef={expanded ? scrollerRef : undefined}

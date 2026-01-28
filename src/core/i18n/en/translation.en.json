@@ -3345,6 +3345,7 @@
     },
     "user-profile": {
       "title": "My $t(common.profile)",
+      "loading": "Loading user profile...",
       "tooltips": {
         "settings": "User $t(common.profile) $t(common.settings)"
       },

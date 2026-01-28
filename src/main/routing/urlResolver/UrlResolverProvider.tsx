@@ -9,6 +9,7 @@ import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
 import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';
 import { useLocation } from 'react-router-dom';
 import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -199,6 +200,14 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
+      // Skip URL resolution for /user/me routes - these are handled by MeUserContext
+      const pathname = globalThis.location.pathname;
+      if (pathname === ROUTE_USER_ME || pathname.startsWith(`${ROUTE_USER_ME}/`)) {
+        lastProcessedUrlRef.current = nextUrl;
+        setCurrentUrl('');
+        return;
+      }
+
       // Update the last processed URL and trigger URL resolution
       lastProcessedUrlRef.current = nextUrl;
       setCurrentUrl(nextUrl);
@@ -225,6 +234,12 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Create cache for the resolver value
   const valueRef = useRef<UrlResolverContextValue>(emptyResult);
   const value = useMemo<UrlResolverContextValue>(() => {
+    // When URL is empty (e.g., /user/me routes), return empty non-loading context
+    if (!currentUrl) {
+      const cleared = { ...emptyResult, loading: false };
+      valueRef.current = cleared;
+      return cleared;
+    }
     // start generating the context value on successfull request
     if (urlResolverData?.urlResolver.type) {
       const type = urlResolverData.urlResolver.type;
@@ -303,7 +318,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     }
     // if the value is not resolved and loading is complete return empty result
     return emptyResult;
-  }, [urlResolverData, urlResolverLoading]);
+  }, [urlResolverData, urlResolverLoading, currentUrl]);
 
   return <UrlResolverContext value={value}>{children}</UrlResolverContext>;
 };

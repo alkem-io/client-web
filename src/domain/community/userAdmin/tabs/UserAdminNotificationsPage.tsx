@@ -1,8 +1,8 @@
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { useMemo } from 'react';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
+import useUserRouteContext from '../../user/routing/useUserRouteContext';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import PageContent from '@/core/ui/content/PageContent';
@@ -75,7 +75,7 @@ const preserveChannel = (channel?: NotificationChannels): NotificationChannels =
  */
 const UserAdminNotificationsPage = () => {
   // User profile being viewed
-  const { userId } = useUrlResolver();
+  const { userId } = useUserRouteContext();
   const { userModel: userProfile, loading: isLoadingUser } = useUserProvider(userId);
 
   // Current authenticated user
