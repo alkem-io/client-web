@@ -20,6 +20,7 @@ import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 interface LoginPageProps {
   flow?: string;
@@ -47,6 +48,10 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const navigate = useNavigate();
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
+
+  // Set browser tab title to "Sign In | Alkemio"
+  usePageTitle(t('pages.titles.signIn'));
+
   const params = useQueryParams();
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();

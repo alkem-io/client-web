@@ -34,6 +34,7 @@ import { AuthFormHeader } from '../components/AuthFormHeader';
 import { sortBy } from 'lodash';
 import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
 import GuestSessionNotification from '@/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const getMinimalSocialLoginNodes = (ui: UiContainer) =>
   ui.nodes.filter(
@@ -49,6 +50,9 @@ const SignUp = () => {
   const { flow } = useKratosFlow(FlowTypeName.Registration, undefined);
 
   const { t } = useTranslation();
+
+  // Set browser tab title to "Sign Up | Alkemio"
+  usePageTitle(t('pages.titles.signUp'));
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [firstName, setFirstName] = useState('');

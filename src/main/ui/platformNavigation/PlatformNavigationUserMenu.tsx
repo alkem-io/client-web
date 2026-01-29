@@ -134,11 +134,7 @@ const PlatformNavigationUserMenu = ({
               {t('pages.home.title')}
             </NavigatableMenuItem>
             {userModel && (
-              <NavigatableMenuItem
-                iconComponent={AssignmentIndOutlined}
-                route={ROUTE_USER_ME}
-                onClick={onClose}
-              >
+              <NavigatableMenuItem iconComponent={AssignmentIndOutlined} route={ROUTE_USER_ME} onClick={onClose}>
                 {t('pages.user-profile.title')}
               </NavigatableMenuItem>
             )}
