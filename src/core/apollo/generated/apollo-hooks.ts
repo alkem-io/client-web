@@ -27840,6 +27840,18 @@ export const ConversationEventsDocument = gql`
                   }
                 }
               }
+              reactions {
+                id
+                emoji
+                timestamp
+                sender {
+                  id
+                  profile {
+                    id
+                    displayName
+                  }
+                }
+              }
             }
           }
           user {
@@ -27883,6 +27895,18 @@ export const ConversationEventsDocument = gql`
               }
             }
           }
+          reactions {
+            id
+            emoji
+            timestamp
+            sender {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
         }
       }
       messageReceived {
@@ -27912,6 +27936,18 @@ export const ConversationEventsDocument = gql`
                   id
                   uri
                 }
+              }
+            }
+          }
+          reactions {
+            id
+            emoji
+            timestamp
+            sender {
+              id
+              profile {
+                id
+                displayName
               }
             }
           }
@@ -27991,6 +28027,18 @@ export const ConversationMessagesDocument = gql`
                     id
                     uri
                   }
+                }
+              }
+            }
+            reactions {
+              id
+              emoji
+              timestamp
+              sender {
+                id
+                profile {
+                  id
+                  displayName
                 }
               }
             }
@@ -28196,6 +28244,18 @@ export const UserConversationsDocument = gql`
                       id
                       uri
                     }
+                  }
+                }
+              }
+              reactions {
+                id
+                emoji
+                timestamp
+                sender {
+                  id
+                  profile {
+                    id
+                    displayName
                   }
                 }
               }

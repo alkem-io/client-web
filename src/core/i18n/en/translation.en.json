@@ -370,6 +370,7 @@
     "noneTemplates": "No templates",
     "templateTypes": "Template types",
     "template": "Template",
+    "template-lowercase": "template",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -1393,23 +1394,23 @@
             "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
           },
           "importCalloutsDialog": {
-            "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "title": "Apply new $t(common.template-lowercase)",
+            "description": "You are about to apply a new $t(common.template-lowercase). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
             "option1": {
               "label": "Replace with new flow",
               "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
             },
             "option2": {
-              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
-              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+              "label": "Replace and add $t(common.template-lowercase) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template-lowercase) in addition to your existing ones."
             },
             "option3": {
-              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
-              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+              "label": "Replace flow without adding $t(common.template-lowercase) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template-lowercase) $t(common.posts)."
             },
             "confirmDelete": {
               "title": "Confirm Deletion",
-              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template-lowercase). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
             },
             "apply": "Apply"
           }
@@ -2217,6 +2218,7 @@
     },
     "userMessaging": {
       "title": "Messages",
+      "betaTooltip": "We wanted to share this early - still improving!",
       "noConversations": "No conversations yet",
       "noMessages": "No messages",
       "selectConversation": "Select a conversation to start messaging",
@@ -2271,6 +2273,21 @@
     "remove": "Remove from hub"
   },
   "pages": {
+    "titles": {
+      "alkemio": "Alkemio",
+      "separator": " | ",
+      "forum": "Forum",
+      "spaces": "Spaces",
+      "contributors": "Contributors",
+      "templateLibrary": "Template Library",
+      "globalAdmin": "Global Administration",
+      "admin": "Administration",
+      "documentation": "Documentation",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "notFound": "Page Not Found",
+      "restricted": "Access Restricted"
+    },
     "generic": {
       "sections": {
         "dashboard": {
@@ -3350,6 +3367,7 @@
     },
     "user-profile": {
       "title": "My $t(common.profile)",
+      "loading": "Loading user profile...",
       "tooltips": {
         "settings": "User $t(common.profile) $t(common.settings)"
       },

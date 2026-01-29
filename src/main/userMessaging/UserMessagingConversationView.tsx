@@ -12,74 +12,167 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { UserConversation } from './useUserConversations';
 import { ConversationMessage } from './useConversationMessages';
 import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
+import { useRef, useEffect, useCallback, useLayoutEffect, useState } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
+import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
+import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 
 interface MessageBubbleProps {
   message: ConversationMessage;
   isOwnMessage: boolean;
+  canAddReaction: boolean;
+  onAddReaction: (emoji: string) => void;
+  onRemoveReaction: (reactionId: string) => void;
 }
 
-const MessageBubble = ({ message, isOwnMessage }: MessageBubbleProps) => {
+const MessageBubble = ({
+  message,
+  isOwnMessage,
+  canAddReaction,
+  onAddReaction,
+  onRemoveReaction,
+}: MessageBubbleProps) => {
   const { t } = useTranslation();
+  const hasReactions = message.reactions.length > 0;
+  const [isAddButtonVisible, setIsAddButtonVisible] = useState(hasReactions);
+  const [isReactionPickerOpen, setIsReactionPickerOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+
+  const shouldShowAddButton = hasReactions || isAddButtonVisible || isReactionPickerOpen || isHovering;
+
+  const showInlineReactions = hasReactions;
+  const showOverlayAddButton = !showInlineReactions && canAddReaction && shouldShowAddButton;
+
+  useEffect(() => {
+    setIsAddButtonVisible(hasReactions || isReactionPickerOpen);
+  }, [hasReactions, isReactionPickerOpen]);
+
+  const handleShowAddReaction = () => {
+    if (!hasReactions) {
+      setIsAddButtonVisible(true);
+    }
+    setIsHovering(true);
+  };
+
+  const handleHideAddReaction = () => {
+    if (!hasReactions && !isReactionPickerOpen) {
+      setIsAddButtonVisible(false);
+    }
+    setIsHovering(false);
+  };
 
   return (
     <Box
       display="flex"
-      flexDirection={isOwnMessage ? 'row-reverse' : 'row'}
-      alignItems="flex-start"
-      gap={gutters(0.5)}
+      flexDirection="column"
+      alignItems={isOwnMessage ? 'flex-end' : 'flex-start'}
+      gap={gutters(0.25)}
       marginY={gutters(0.5)}
+      onMouseEnter={handleShowAddReaction}
+      onMouseLeave={handleHideAddReaction}
+      onClick={handleShowAddReaction}
     >
-      {!isOwnMessage && (
-        <Avatar
-          src={message.sender?.avatarUri}
-          alt={message.sender?.displayName ?? ''}
-          size="medium"
-          sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-        />
-      )}
       <Box
-        sx={{
-          maxWidth: '70%',
-          backgroundColor: isOwnMessage ? 'primary.main' : 'background.default',
-          color: isOwnMessage ? 'primary.contrastText' : 'text.primary',
-          borderRadius: theme => `${theme.shape.borderRadius}px`,
-          padding: gutters(0.5),
-          paddingX: gutters(),
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: gutters(0.5),
-        }}
+        display="flex"
+        flexDirection={isOwnMessage ? 'row-reverse' : 'row'}
+        alignItems="flex-start"
+        gap={gutters(0.5)}
       >
-        <WrapperMarkdown
+        {!isOwnMessage && (
+          <Avatar
+            src={message.sender?.avatarUri}
+            alt={message.sender?.displayName ?? ''}
+            size="medium"
+            sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+          />
+        )}
+        <Box
           sx={{
-            '& p': { margin: 0 },
-            flex: 1,
-            ...(isOwnMessage && {
-              '& a': {
-                color: 'inherit',
-                textDecoration: 'underline',
-                '&:hover': {
-                  color: 'rgba(255, 255, 255, 0.8)',
-                },
-              },
-            }),
+            backgroundColor: isOwnMessage ? 'primary.main' : 'background.default',
+            color: isOwnMessage ? 'primary.contrastText' : 'text.primary',
+            borderRadius: theme => `${theme.shape.borderRadius}px`,
+            padding: gutters(0.5),
+            paddingX: gutters(),
+            boxShadow: '0 1px 2px rgba(0,0,0,0.12)',
+            position: 'relative',
           }}
         >
-          {message.message}
-        </WrapperMarkdown>
-        <Caption
-          sx={{
-            color: isOwnMessage ? 'rgba(255,255,255,0.7)' : 'neutral.light',
-            fontSize: '0.7rem',
-            whiteSpace: 'nowrap',
-            flexShrink: 0,
-          }}
-        >
-          {formatTimeElapsed(new Date(message.timestamp), t)}
-        </Caption>
+          <Box display="inline-flex" alignItems="baseline" gap={gutters(0.5)} flexWrap="wrap" sx={{ width: '100%' }}>
+            <WrapperMarkdown
+              sx={{
+                display: 'inline',
+                '& p': { margin: 0 },
+                wordBreak: 'break-word',
+                ...(isOwnMessage && {
+                  '& a': {
+                    color: 'inherit',
+                    textDecoration: 'underline',
+                    '&:hover': {
+                      color: 'rgba(255, 255, 255, 0.8)',
+                    },
+                  },
+                }),
+              }}
+            >
+              {message.message}
+            </WrapperMarkdown>
+            <Caption
+              sx={{
+                color: isOwnMessage ? 'rgba(255,255,255,0.8)' : 'neutral.light',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {formatTimeElapsed(new Date(message.timestamp), t)}
+            </Caption>
+          </Box>
+          {showOverlayAddButton && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: gutters(0.25),
+                right: gutters(-0.25),
+                transform: 'translateY(-60%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'background.paper',
+                borderRadius: '50%',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
+              }}
+              onMouseEnter={handleShowAddReaction}
+              onMouseLeave={handleHideAddReaction}
+            >
+              <CommentReactions
+                reactions={[]}
+                canAddReaction={canAddReaction}
+                onAddReaction={onAddReaction}
+                onRemoveReaction={onRemoveReaction}
+                showAddButton
+                onPickerVisibilityChange={setIsReactionPickerOpen}
+              />
+            </Box>
+          )}
+        </Box>
       </Box>
+
+      {(showInlineReactions || (canAddReaction && shouldShowAddButton && !showOverlayAddButton)) && (
+        <Box
+          marginLeft={isOwnMessage ? 0 : gutters(2.5)}
+          marginRight={isOwnMessage ? gutters(0.5) : 0}
+          display="flex"
+          alignItems="center"
+        >
+          <CommentReactions
+            reactions={message.reactions}
+            canAddReaction={canAddReaction}
+            onAddReaction={onAddReaction}
+            onRemoveReaction={onRemoveReaction}
+            showAddButton
+            onPickerVisibilityChange={setIsReactionPickerOpen}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
@@ -104,6 +197,8 @@ export const UserMessagingConversationView = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
+  const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
+  useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
   const [markAsRead] = useMarkMessageAsReadMutation();
 
   // Mark last message as read when conversation is opened or new messages arrive
@@ -158,6 +253,20 @@ export const UserMessagingConversationView = ({
       console.error('Failed to send message:', error);
       return false;
     }
+  };
+
+  const handleAddReaction = (messageId: string) => (emoji: string) => {
+    if (!conversation?.roomId) {
+      return;
+    }
+    return addReaction({ emoji, messageId });
+  };
+
+  const handleRemoveReaction = (reactionId: string) => {
+    if (!conversation?.roomId) {
+      return;
+    }
+    return removeReaction(reactionId);
   };
 
   if (!conversation) {
@@ -217,9 +326,21 @@ export const UserMessagingConversationView = ({
             <Caption>{t('components.userMessaging.noMessages' as const)}</Caption>
           </Gutters>
         ) : (
-          messages.map(message => (
-            <MessageBubble key={message.id} message={message} isOwnMessage={message.sender?.id === userModel?.id} />
-          ))
+          messages.map(message => {
+            const isOwnMessage = message.sender?.id === userModel?.id;
+            const canAddReaction = Boolean(conversation.roomId && message.message);
+
+            return (
+              <MessageBubble
+                key={message.id}
+                message={message}
+                isOwnMessage={isOwnMessage}
+                canAddReaction={canAddReaction}
+                onAddReaction={handleAddReaction(message.id)}
+                onRemoveReaction={handleRemoveReaction}
+              />
+            );
+          })
         )}
         <div ref={messagesEndRef} />
       </Box>

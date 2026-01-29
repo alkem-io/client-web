@@ -213,9 +213,8 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
         aria-labelledby="whiteboard-dialog"
         maxWidth={false}
         fullWidth
-        sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
-        onClose={onClose}
         fullScreen={options.fullscreen}
+        onClose={onClose}
       >
         <Formik
           innerRef={formikRef}
@@ -242,6 +241,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                   minHeight: 0,
                   justifyContent: 'flex-start',
                   alignItems: 'stretch',
+                  height: '70vh'
                 }}
               >
                 <WhiteboardImageFailureBanner
