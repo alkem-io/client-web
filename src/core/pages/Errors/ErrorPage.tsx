@@ -1,9 +1,16 @@
 import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
 import { Button, Container, Link, Typography } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
+import { generateSupportMailtoUrl } from '@/core/ui/notifications/generateSupportMailtoUrl';
 
-export const ErrorPage = ({ error }: { error: Error }) => {
+type ErrorPageProps = {
+  error: Error;
+  numericCode?: number;
+};
+
+export const ErrorPage = ({ error, numericCode }: ErrorPageProps) => {
   const { t } = useTranslation();
+  const mailtoUrl = generateSupportMailtoUrl({ numericCode, t });
 
   return (
     <Container maxWidth="lg">
@@ -19,6 +26,11 @@ export const ErrorPage = ({ error }: { error: Error }) => {
           }}
         />
       </Typography>
+      {numericCode !== undefined && (
+        <Typography variant="h4" mb={2} fontWeight="medium" color="neutral.main">
+          {t('apollo.errors.support.emailSubject', { code: numericCode })}
+        </Typography>
+      )}
       <Typography variant="h3" mb={2} fontWeight="medium" color="neutral.main">
         {t('pages.error.line2', { graphQLEndpoint: privateGraphQLEndpoint })}
       </Typography>
@@ -27,7 +39,7 @@ export const ErrorPage = ({ error }: { error: Error }) => {
         <Trans
           i18nKey="pages.error.line3"
           components={{
-            contact: <Link href={`mailto:${t('common.supportEmail')}`} />,
+            contact: <Link href={mailtoUrl} />,
           }}
         />
       </Typography>

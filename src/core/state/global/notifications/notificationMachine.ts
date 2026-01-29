@@ -3,10 +3,11 @@ import { assign, createMachine } from 'xstate';
 
 export type Severity = 'info' | 'warning' | 'error' | 'success';
 
-type Notification = {
+export type Notification = {
   id: string;
   severity: Severity;
   message: string;
+  numericCode?: number;
 };
 
 export const PUSH_NOTIFICATION = 'PUSH';
@@ -16,7 +17,7 @@ export type NotificationsContext = {
   notifications: Notification[];
 };
 export type NotificationsEvent =
-  | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity } }
+  | { type: typeof PUSH_NOTIFICATION; payload: { message: string; severity?: Severity; numericCode?: number } }
   | { type: typeof CLEAR_NOTIFICATION; payload: { id: string } };
 
 type NotificationMachineTypes = {
@@ -38,7 +39,12 @@ export const notificationMachine = createMachine({
           actions: assign({
             notifications: ({ context, event }) => [
               ...context.notifications,
-              { id: v4(), message: event.payload.message, severity: event.payload.severity || 'info' },
+              {
+                id: v4(),
+                message: event.payload.message,
+                severity: event.payload.severity || 'info',
+                numericCode: event.payload.numericCode,
+              },
             ],
           }),
         },

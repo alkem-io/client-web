@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { HdrStrongOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
-import { BlockSectionTitle } from '@/core/ui/typography';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import {
   ApplicationHydrator,
   InvitationHydrator,
@@ -22,6 +22,28 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
+import Loading from '@/core/ui/loading/Loading';
+
+interface SectionProps<T> {
+  title: string;
+  items: T[] | undefined;
+  children: (item: T) => ReactNode;
+}
+
+const Section = <T extends { id: string }>({ title, items, children }: SectionProps<T>) => {
+  if (!items?.length) {
+    return null;
+  }
+
+  return (
+    <>
+      <BlockSectionTitle>{title}</BlockSectionTitle>
+      {items.map(item => (
+        <React.Fragment key={item.id}>{children(item)}</React.Fragment>
+      ))}
+    </>
+  );
+};
 
 const PendingMembershipsDialog = () => {
   const { t } = useTranslation();
@@ -40,10 +62,19 @@ const PendingMembershipsDialog = () => {
     });
   };
 
+  const isDialogOpen = Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? '');
+  const isPendingMembershipsList = openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList;
+
   // skip if the dialog is not open
-  const { invitations, applications } = usePendingMemberships({
-    skip: !Object.values(PendingMembershipsDialogType).includes(openDialog?.type ?? ''),
+  const { invitations, applications, loading, refetch } = usePendingMemberships({
+    skip: !isDialogOpen,
   });
+
+  useEffect(() => {
+    if (isPendingMembershipsList) {
+      refetch();
+    }
+  }, [isPendingMembershipsList, refetch]);
 
   const currentInvitation =
     openDialog?.type === PendingMembershipsDialogType.InvitationView
@@ -57,6 +88,9 @@ const PendingMembershipsDialog = () => {
   const nonVirtualContributorInvitations = invitations?.filter(
     invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
   );
+
+  const isEmpty =
+    !nonVirtualContributorInvitations?.length && !virtualContributorInvitations?.length && !applications?.length;
 
   const handleSpaceCardClick = (spaceUrl: string) => {
     closeDialog();
@@ -80,7 +114,7 @@ const PendingMembershipsDialog = () => {
     <>
       <DialogWithGrid
         columns={12}
-        open={openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList}
+        open={isPendingMembershipsList}
         onClose={closeDialog}
         aria-labelledby="pending-memberships-dialog"
       >
@@ -95,58 +129,66 @@ const PendingMembershipsDialog = () => {
           onClose={closeDialog}
         />
         <Gutters paddingTop={0}>
-          {nonVirtualContributorInvitations && nonVirtualContributorInvitations.length > 0 && (
+          {loading && <Loading />}
+          {!loading && isEmpty && <Caption>{t('community.pendingMembership.empty')}</Caption>}
+          {!loading && (
             <>
-              <BlockSectionTitle>{t('community.pendingMembership.invitationsSectionTitle')}</BlockSectionTitle>
-              {nonVirtualContributorInvitations?.map(invitation => (
-                <InvitationHydrator key={invitation.id} invitation={invitation}>
-                  {({ invitation }) => (
-                    <InvitationCardHorizontal
-                      invitation={invitation}
-                      onClick={() => invitation && handleInvitationCardClick(invitation)}
-                    />
-                  )}
-                </InvitationHydrator>
-              ))}
-            </>
-          )}
-          {virtualContributorInvitations && virtualContributorInvitations.length > 0 && (
-            <>
-              <BlockSectionTitle>{t('community.pendingMembership.virtualInvitationsSectionTitle')}</BlockSectionTitle>
-              {virtualContributorInvitations?.map(invitation => (
-                <InvitationHydrator key={invitation.id} invitation={invitation}>
-                  {({ invitation }) => (
-                    <InvitationCardHorizontal
-                      invitation={invitation}
-                      onClick={() => invitation && handleInvitationCardClick(invitation)}
-                    />
-                  )}
-                </InvitationHydrator>
-              ))}
-            </>
-          )}
-          {applications && applications.length > 0 && (
-            <>
-              <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
-              <ScrollableCardsLayoutContainer>
-                {applications?.map(application => (
-                  <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
-                    {({ application: hydratedApplication }) =>
-                      hydratedApplication && (
-                        <SpaceCardBase
-                          header={hydratedApplication.space.about.profile.displayName}
-                          tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
-                          banner={hydratedApplication.space.about.profile.cardBanner}
-                          spaceUri={hydratedApplication.space.about.profile.url}
-                          onClick={() => handleSpaceCardClick(hydratedApplication.space.about.profile.url)}
-                        >
-                          <SpaceCardTagline>{hydratedApplication.space.about.profile.tagline ?? ''}</SpaceCardTagline>
-                        </SpaceCardBase>
-                      )
-                    }
-                  </ApplicationHydrator>
-                ))}
-              </ScrollableCardsLayoutContainer>
+              <Section
+                title={t('community.pendingMembership.invitationsSectionTitle')}
+                items={nonVirtualContributorInvitations}
+              >
+                {invitation => (
+                  <InvitationHydrator invitation={invitation}>
+                    {({ invitation }) => (
+                      <InvitationCardHorizontal
+                        invitation={invitation}
+                        onClick={() => invitation && handleInvitationCardClick(invitation)}
+                      />
+                    )}
+                  </InvitationHydrator>
+                )}
+              </Section>
+              <Section
+                title={t('community.pendingMembership.virtualInvitationsSectionTitle')}
+                items={virtualContributorInvitations}
+              >
+                {invitation => (
+                  <InvitationHydrator invitation={invitation}>
+                    {({ invitation }) => (
+                      <InvitationCardHorizontal
+                        invitation={invitation}
+                        onClick={() => invitation && handleInvitationCardClick(invitation)}
+                      />
+                    )}
+                  </InvitationHydrator>
+                )}
+              </Section>
+              {applications?.length ? (
+                <>
+                  <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
+                  <ScrollableCardsLayoutContainer>
+                    {applications.map(application => (
+                      <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
+                        {({ application: hydratedApplication }) =>
+                          hydratedApplication && (
+                            <SpaceCardBase
+                              header={hydratedApplication.space.about.profile.displayName}
+                              tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
+                              banner={hydratedApplication.space.about.profile.cardBanner}
+                              spaceUri={hydratedApplication.space.about.profile.url}
+                              onClick={() => handleSpaceCardClick(hydratedApplication.space.about.profile.url)}
+                            >
+                              <SpaceCardTagline>
+                                {hydratedApplication.space.about.profile.tagline ?? ''}
+                              </SpaceCardTagline>
+                            </SpaceCardBase>
+                          )
+                        }
+                      </ApplicationHydrator>
+                    ))}
+                  </ScrollableCardsLayoutContainer>
+                </>
+              ) : null}
             </>
           )}
         </Gutters>
