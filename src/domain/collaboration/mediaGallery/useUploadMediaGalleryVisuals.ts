@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useApolloClient } from '@apollo/client';
 import {
   useUploadVisualMutation,
   useAddVisualToMediaGalleryMutation,
@@ -29,15 +30,10 @@ interface uploadMediaGalleryVisualsParams {
 }
 
 const useUploadMediaGalleryVisuals = () => {
-  const [addVisual] = useAddVisualToMediaGalleryMutation({
-    refetchQueries: ['CalloutDetails'],
-  });
-  const [uploadVisual, { loading: uploadLoading }] = useUploadVisualMutation({
-    refetchQueries: ['CalloutDetails'],
-  });
-  const [deleteVisual, { loading: deleteLoading }] = useDeleteVisualFromMediaGalleryMutation({
-    refetchQueries: ['CalloutDetails'],
-  });
+  const apolloClient = useApolloClient();
+  const [addVisual] = useAddVisualToMediaGalleryMutation();
+  const [uploadVisual, { loading: uploadLoading }] = useUploadVisualMutation();
+  const [deleteVisual, { loading: deleteLoading }] = useDeleteVisualFromMediaGalleryMutation();
 
   const uploadMediaGalleryVisuals = useCallback(
     async ({ mediaGalleryId, visuals, existingVisualIds, reuploadVisuals }: uploadMediaGalleryVisualsParams) => {
@@ -144,8 +140,13 @@ const useUploadMediaGalleryVisuals = () => {
         }) ?? [];
 
       await Promise.all([...deleteOperations, ...uploadOperations]);
+
+      // Refetch relevant queries to update the UI only when all the images have been processed
+      await apolloClient.refetchQueries({
+        include: ['CalloutDetails'],
+      });
     },
-    [addVisual, uploadVisual, deleteVisual]
+    [addVisual, uploadVisual, deleteVisual, apolloClient]
   );
 
   return { uploadMediaGalleryVisuals, uploading: uploadLoading || deleteLoading };
