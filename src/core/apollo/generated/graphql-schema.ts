@@ -4111,7 +4111,7 @@ export type MediaGallery = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** The visuals contained in this media gallery. */
-  visuals?: Maybe<Array<Visual>>;
+  visuals: Array<Visual>;
 };
 
 export type Memo = {
@@ -13079,15 +13079,14 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'MediaGallery';
                   id: string;
-                  visuals?:
-                    | Array<{
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: VisualType;
-                        alternativeText?: string | undefined;
-                      }>
-                    | undefined;
+                  visuals: Array<{
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                    sortOrder?: number | undefined;
+                  }>;
                 }
               | undefined;
           };
@@ -13314,16 +13313,14 @@ export type UpdateCalloutContentMutation = {
         | {
             __typename?: 'MediaGallery';
             id: string;
-            visuals?:
-              | Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                  sortOrder?: number | undefined;
-                }>
-              | undefined;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              sortOrder?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -13702,16 +13699,14 @@ export type UpdateCalloutVisibilityMutation = {
         | {
             __typename?: 'MediaGallery';
             id: string;
-            visuals?:
-              | Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                  sortOrder?: number | undefined;
-                }>
-              | undefined;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              sortOrder?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -13896,30 +13891,6 @@ export type DeleteCalloutMutationVariables = Exact<{
 }>;
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
-
-export type AddVisualToMediaGalleryMutationVariables = Exact<{
-  addData: AddVisualToMediaGalleryInput;
-}>;
-
-export type AddVisualToMediaGalleryMutation = {
-  __typename?: 'Mutation';
-  addVisualToMediaGallery: {
-    __typename?: 'Visual';
-    id: string;
-    uri: string;
-    name: VisualType;
-    alternativeText?: string | undefined;
-  };
-};
-
-export type DeleteVisualFromMediaGalleryMutationVariables = Exact<{
-  deleteData: DeleteVisualFromMediaGalleryInput;
-}>;
-
-export type DeleteVisualFromMediaGalleryMutation = {
-  __typename?: 'Mutation';
-  deleteVisualFromMediaGallery: { __typename?: 'Visual'; id: string };
-};
 
 export type CalloutSettingsFullFragment = {
   __typename?: 'CalloutSettings';
@@ -15243,16 +15214,14 @@ export type CreateCalloutMutation = {
         | {
             __typename?: 'MediaGallery';
             id: string;
-            visuals?:
-              | Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                  sortOrder?: number | undefined;
-                }>
-              | undefined;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              sortOrder?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -15753,16 +15722,14 @@ export type CalloutDetailsQuery = {
               | {
                   __typename?: 'MediaGallery';
                   id: string;
-                  visuals?:
-                    | Array<{
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: VisualType;
-                        alternativeText?: string | undefined;
-                        sortOrder?: number | undefined;
-                      }>
-                    | undefined;
+                  visuals: Array<{
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                    sortOrder?: number | undefined;
+                  }>;
                 }
               | undefined;
           };
@@ -16201,16 +16168,14 @@ export type CalloutDetailsFragment = {
       | {
           __typename?: 'MediaGallery';
           id: string;
-          visuals?:
-            | Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: VisualType;
-                alternativeText?: string | undefined;
-                sortOrder?: number | undefined;
-              }>
-            | undefined;
+          visuals: Array<{
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            sortOrder?: number | undefined;
+          }>;
         }
       | undefined;
   };
@@ -16387,6 +16352,43 @@ export type CalloutDetailsFragment = {
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
+};
+
+export type AddVisualToMediaGalleryMutationVariables = Exact<{
+  addData: AddVisualToMediaGalleryInput;
+}>;
+
+export type AddVisualToMediaGalleryMutation = {
+  __typename?: 'Mutation';
+  addVisualToMediaGallery: {
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    name: VisualType;
+    alternativeText?: string | undefined;
+  };
+};
+
+export type DeleteVisualFromMediaGalleryMutationVariables = Exact<{
+  deleteData: DeleteVisualFromMediaGalleryInput;
+}>;
+
+export type DeleteVisualFromMediaGalleryMutation = {
+  __typename?: 'Mutation';
+  deleteVisualFromMediaGallery: { __typename?: 'Visual'; id: string };
+};
+
+export type MediaGalleryVisualsFragment = {
+  __typename?: 'MediaGallery';
+  id: string;
+  visuals: Array<{
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    name: VisualType;
+    alternativeText?: string | undefined;
+    sortOrder?: number | undefined;
+  }>;
 };
 
 export type MemoMarkdownQueryVariables = Exact<{
@@ -29408,6 +29410,20 @@ export type TemplateContentQuery = {
                         profile: { __typename?: 'Profile'; id: string; displayName: string };
                       }
                     | undefined;
+                  mediaGallery?:
+                    | {
+                        __typename?: 'MediaGallery';
+                        id: string;
+                        visuals: Array<{
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                          sortOrder?: number | undefined;
+                        }>;
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -30025,6 +30041,20 @@ export type CalloutTemplateContentFragment = {
           id: string;
           markdown?: string | undefined;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+    mediaGallery?:
+      | {
+          __typename?: 'MediaGallery';
+          id: string;
+          visuals: Array<{
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            sortOrder?: number | undefined;
+          }>;
         }
       | undefined;
   };
@@ -30667,6 +30697,7 @@ export type CreateTemplateMutation = {
                   };
                 }
               | undefined;
+            mediaGallery?: { __typename?: 'MediaGallery'; id: string } | undefined;
           };
         }
       | undefined;
@@ -30766,6 +30797,7 @@ export type UpdateCalloutTemplateMutation = {
           }
         | undefined;
       memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
+      mediaGallery?: { __typename?: 'MediaGallery'; id: string } | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';

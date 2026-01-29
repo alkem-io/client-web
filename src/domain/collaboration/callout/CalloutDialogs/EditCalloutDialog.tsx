@@ -27,7 +27,7 @@ import {
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
-import useUploadMediaGalleryVisuals from '../mediaGallery/useUploadMediaGalleryVisuals';
+import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -189,11 +189,11 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       refetchQueries: ['CalloutsSetTags'],
     });
     if (result.data?.updateCallout.framing.mediaGallery?.id && formData.framing.mediaGallery?.visuals) {
-      await uploadMediaGalleryVisuals(
-        result.data.updateCallout.framing.mediaGallery.id,
-        formData.framing.mediaGallery.visuals,
-        originalVisualIds
-      );
+      await uploadMediaGalleryVisuals({
+        mediaGalleryId: result.data.updateCallout.framing.mediaGallery.id,
+        visuals: formData.framing.mediaGallery.visuals,
+        existingVisualIds: originalVisualIds,
+      });
     }
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {
@@ -238,6 +238,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                   disableMemos: true,
                   disableWhiteboards: true,
                   disableLinks: true,
+                  disableMediaGallery: true,
                 }}
               />
             </StorageConfigContextProvider>

@@ -157,6 +157,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           value: CalloutFramingType.MediaGallery,
           label: 'Media Gallery', // TODO: Add translation
           tooltip: 'Create a media gallery', // TODO: Add translation
+          disabled: calloutRestrictions?.disableMediaGallery,
         },
       ]}
       onChange={handleFramingTypeChange}

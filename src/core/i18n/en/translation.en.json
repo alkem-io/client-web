@@ -2757,6 +2757,14 @@
         "title": "Whiteboard Preview",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
+      "MEDIA_GALLERY_IMAGE": {
+        "title": "Media Gallery Image",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_VIDEO": {
+        "title": "Media Gallery Video",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
       "form": {
         "altText": {
           "placeholder": "Example: Multiple snow covered mountains",

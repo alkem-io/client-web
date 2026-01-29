@@ -40,6 +40,7 @@ import { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm
 import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
 import { SpaceTemplate } from '../../models/SpaceTemplate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -91,6 +92,7 @@ const TemplatesAdmin = ({
   const notify = useNotification();
   const backToTemplates = useBackWithDefaultUrl(baseUrl);
   const { handlePreviewTemplates } = useHandlePreviewImages();
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
 
   // Read Template
   const { data, loading } = useAllTemplatesInTemplatesSetQuery({
@@ -146,6 +148,13 @@ const TemplatesAdmin = ({
         (values as TemplateCalloutFormSubmittedValues).callout?.framing.whiteboard?.previewImages,
         result.data?.updateCallout.framing.whiteboard
       );
+      // update media gallery visuals
+      await uploadMediaGalleryVisuals({
+        mediaGalleryId: result.data?.updateCallout.framing.mediaGallery?.id,
+        visuals: (values as TemplateCalloutFormSubmittedValues).callout?.framing.mediaGallery?.visuals,
+        existingVisualIds: [], //!!
+        reuploadVisuals: true,
+      });
     }
     if (updateCommunityGuidelinesVariables) {
       await updateCommunityGuidelines({
@@ -212,16 +221,21 @@ const TemplatesAdmin = ({
     });
     if (creatingTemplateType === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(
+      await handlePreviewTemplates(
         (values as TemplateWhiteboardFormSubmittedValues).whiteboardPreviewImages,
         result.data?.createTemplate
       );
     } else if (creatingTemplateType === TemplateType.Callout) {
       // update whiteboard (framing) visuals
-      handlePreviewTemplates(
+      await handlePreviewTemplates(
         (values as TemplateCalloutFormSubmittedValues).callout?.framing.whiteboard?.previewImages,
         result.data?.createTemplate.callout?.framing.whiteboard
       );
+      await uploadMediaGalleryVisuals({
+        mediaGalleryId: result.data?.createTemplate.callout?.framing.mediaGallery?.id,
+        visuals: (values as TemplateCalloutFormSubmittedValues).callout?.framing.mediaGallery?.visuals,
+        reuploadVisuals: true,
+      });
     }
     setCreatingTemplateType(undefined);
   };

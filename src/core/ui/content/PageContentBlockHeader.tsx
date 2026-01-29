@@ -48,12 +48,9 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
     if (!actionsRef.current || !actionsContainerRef.current || !autoCollapseActions || !actions || !actionsContent) {
       return;
     }
-    console.log({ width: actionsRef.current.clientWidth, containerWidth: actionsContainerRef.current.clientWidth });
     if (actionsRef.current.clientWidth + 20 > actionsContainerRef.current.clientWidth) {
-      console.log('collapse actions');
       setActionsCollapsed(true);
     } else {
-      console.log('not collapse actions');
       setActionsCollapsed(false);
     }
   }, [width]);

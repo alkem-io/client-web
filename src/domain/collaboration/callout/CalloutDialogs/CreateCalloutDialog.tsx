@@ -16,7 +16,7 @@ import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import useUploadMediaGalleryVisuals from '../mediaGallery/useUploadMediaGalleryVisuals';
+import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
@@ -159,7 +159,11 @@ const CreateCalloutDialog = ({
 
       const createdCallout = await handleCreateCallout(createCalloutInput);
       if (mediaGallery?.visuals?.length) {
-        await uploadMediaGalleryVisuals(createdCallout?.framing.mediaGallery?.id, mediaGallery.visuals);
+        await uploadMediaGalleryVisuals({
+          mediaGalleryId: createdCallout?.framing.mediaGallery?.id,
+          visuals: mediaGallery.visuals,
+          reuploadVisuals: true,
+        });
       }
       handleClose();
       setTimeout(scrollToTop, 100);

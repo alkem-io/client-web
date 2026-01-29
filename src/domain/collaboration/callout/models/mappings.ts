@@ -1,7 +1,6 @@
 import {
   CalloutContributionType,
   CalloutFramingType,
-  MediaGallery,
   UpdateLinkInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -44,7 +43,9 @@ export const mapCalloutTemplateToCalloutForm = (
           displayName: string;
         };
       };
-      mediaGallery?: MediaGallery;
+      mediaGallery?: {
+        visuals?: VisualModel[];
+      };
     };
     settings: CalloutSettingsModelFull;
     contributionDefaults: {

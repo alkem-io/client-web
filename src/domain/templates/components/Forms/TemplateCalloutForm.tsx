@@ -71,6 +71,12 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 },
               }
             : undefined,
+          mediaGallery: template.callout?.framing?.mediaGallery
+            ? {
+                id: template.callout.framing.mediaGallery.id ?? '',
+                visuals: template.callout.framing.mediaGallery.visuals ?? [],
+              }
+            : undefined,
         },
         contributionDefaults: {
           defaultDisplayName: template.callout?.contributionDefaults?.defaultDisplayName ?? '',

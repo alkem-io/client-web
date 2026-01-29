@@ -1,4 +1,4 @@
-import { CalloutFramingType, MediaGallery } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
@@ -10,6 +10,7 @@ import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
+import { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {
@@ -28,7 +29,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
     whiteboard?: WhiteboardDetails;
     memo?: MemoModel;
     link?: LinkDetails;
-    mediaGallery?: MediaGallery;
+    mediaGallery?: MediaGalleryModel;
   };
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;
