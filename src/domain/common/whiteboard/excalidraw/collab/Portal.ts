@@ -91,7 +91,7 @@ class Portal {
             }
           }
         } catch (error) {
-          warn(`Failed to read guest name from session storage: ${error}`, { category: TagCategoryValues.WHITEBOARD });`
+          warn(`Failed to read guest name from session storage: ${error}`, { category: TagCategoryValues.WHITEBOARD });
         }
       }
 

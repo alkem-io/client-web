@@ -56,7 +56,6 @@ export interface FileFailureState {
 export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
   validateFile: (file: File) => ImageValidationResult;
-  upgradeFilesToRemote: () => Promise<{ upgraded: number; failed: number }>;
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
   getUploadedFiles: (filesInExcalidraw: BinaryFiles) => Promise<BinaryFilesWithOptionalUrl>;
   pushFilesToExcalidraw: () => Promise<void>;
@@ -131,52 +130,12 @@ const useWhiteboardFilesManager = ({
 
   /**
    * Register a new file locally and return its ID (side-effect free: no network).
-   * File is immediately usable via dataURL; upload happens asynchronously via upgradeFilesToRemote.
+   * File is immediately usable via dataURL; upload happens via getUploadedFiles during sync.
    */
   const addNewFile = async (file: File): Promise<string> => {
     const fileData = await uploader.createFileData(file);
     cache.set(fileData.id, fileData);
     return fileData.id;
-  };
-
-  /**
-   * Asynchronously upload all cached files that have dataURL but no URL.
-   * Updates the cache with the new URL; subsequent broadcasts will include the URL.
-   * Returns the count of successfully upgraded files.
-   */
-  const upgradeFilesToRemote = async (): Promise<{ upgraded: number; failed: number }> => {
-    const filesToUpgrade = cache.getAllArray().filter(file => file.dataURL && !file.url);
-
-    if (filesToUpgrade.length === 0) {
-      return { upgraded: 0, failed: 0 };
-    }
-
-    const { storageBucketId: bucketId } = configRef.current;
-    if (!bucketId) {
-      // No storage bucket - cannot upgrade
-      return { upgraded: 0, failed: filesToUpgrade.length };
-    }
-
-    let upgraded = 0;
-    let failed = 0;
-
-    for (const file of filesToUpgrade) {
-      try {
-        const fileObject = await dataUrlToFile(file.dataURL!, '', file.mimeType, file.created);
-        const { url } = await uploader.upload(fileObject);
-        cache.set(file.id, { ...file, url });
-        upgraded++;
-      } catch (e) {
-        // Log but don't throw - file remains usable via dataURL
-        error(`Failed to upgrade file ${file.id} to remote: ${e instanceof Error ? e.message : 'Unknown error'}`, {
-          category: TagCategoryValues.WHITEBOARD,
-          label: 'upgrade-to-remote-failed',
-        });
-        failed++;
-      }
-    }
-
-    return { upgraded, failed };
   };
 
   /**
@@ -450,7 +409,6 @@ const useWhiteboardFilesManager = ({
     () => ({
       addNewFile,
       validateFile,
-      upgradeFilesToRemote,
       loadFiles,
       getUploadedFiles,
       pushFilesToExcalidraw,
