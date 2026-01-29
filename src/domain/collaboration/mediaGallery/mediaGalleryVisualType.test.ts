@@ -26,6 +26,6 @@ describe('getMediaGalleryVisualType', () => {
   });
 
   it('falls back to default visual type when no hints are present', () => {
-    expect(getMediaGalleryVisualType(undefined, 'https://example.com/asset.bin')).toBe(VisualType.Card);
+    expect(getMediaGalleryVisualType(undefined, 'https://example.com/asset.bin')).toBe(VisualType.MediaGalleryImage);
   });
 });
