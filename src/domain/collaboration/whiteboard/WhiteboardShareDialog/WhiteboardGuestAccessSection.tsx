@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, useCallback, useId, MouseEvent } from 'react';
-import { Alert, Box, IconButton, Switch, TextField, Typography } from '@mui/material';
+import { Alert, Box, CircularProgress, IconButton, Switch, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { gutters } from '@/core/ui/grid/utils';
@@ -25,7 +25,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
 
   const handleToggleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      if (!guestAccess.canToggle || guestAccess.isMutating) {
+      if (!guestAccess.canToggle || guestAccess.isUpdating) {
         return;
       }
       void Promise.resolve(guestAccess.onToggle(event.target.checked)).catch(() => undefined);
@@ -77,16 +77,19 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
               {t('share-dialog.guest-access.toggle-description')}
             </Typography>
           </Box>
-          <Switch
-            checked={guestAccess.enabled}
-            onChange={handleToggleChange}
-            color="primary"
-            disabled={guestAccess.isMutating}
-            inputProps={{
-              'aria-label': t('share-dialog.guest-access.toggle-label'),
-              'aria-labelledby': guestAccessLabelId,
-            }}
-          />
+          {guestAccess.isUpdating ? (
+            <CircularProgress size={24} sx={{ marginRight: gutters(0.5) }} />
+          ) : (
+            <Switch
+              checked={guestAccess.enabled}
+              onChange={handleToggleChange}
+              color="primary"
+              inputProps={{
+                'aria-label': t('share-dialog.guest-access.toggle-label'),
+                'aria-labelledby': guestAccessLabelId,
+              }}
+            />
+          )}
         </Box>
       )}
       {guestAccess.hasError && (

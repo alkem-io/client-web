@@ -82,9 +82,9 @@ export const InAppYourNewNotificationView = (notification: InAppNotificationMode
 ##### End-to-end Local Setup
 
 1. Start the notifications service
-2. In notifications/lib run `npm link`
-3. In notifications/service run `npm link @alkemio/notifications-lib`
-4. In the server root run `npm link @alkemio/notifications-lib`
+2. In notifications/lib run `pnpm link`
+3. In notifications/service run `pnpm link @alkemio/notifications-lib`
+4. In the server root run `pnpm link @alkemio/notifications-lib`
 
 ##### Best Practices
 

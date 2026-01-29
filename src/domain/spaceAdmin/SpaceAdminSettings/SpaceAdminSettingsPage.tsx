@@ -127,6 +127,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
             {privateSettingsEnabled && (
               <VisibilitySettings
                 currentMode={currentSettings?.privacy?.mode}
+                currentMembershipPolicy={currentSettings?.membership?.policy}
                 level={level}
                 onUpdate={privacyMode => updateSettings({ privacyMode })}
               />
