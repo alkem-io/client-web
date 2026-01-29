@@ -52,8 +52,9 @@ describe('fileValidation', () => {
     });
     expect(validation.ok).toBe(false);
     if (!validation.ok) {
-      expect(getWhiteboardImageUploadI18nParams(validation)).toEqual({
+      expect(getWhiteboardImageUploadI18nParams(validation, 'fallback')).toEqual({
         formats: 'image/png, image/webp',
+        maxSize: 'fallback',
       });
     }
   });

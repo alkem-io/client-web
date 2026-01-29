@@ -88,17 +88,21 @@ export interface WhiteboardImageUploadI18nParams {
 /**
  * Derive message params for the whiteboard image upload callouts.
  * Designed to be used together with i18n keys under `callout.whiteboard.images.*`.
+ * Always provides both `formats` and `maxSize` to ensure i18n strings render correctly.
+ * @param validation
+ * @param maxSizeFallback - Fallback string when maxFileSizeBytes is not configured (use t('callout.whiteboard.images.maxSizeFallback'))
  */
 export const getWhiteboardImageUploadI18nParams = (
-  validation: Extract<ImageValidationResult, { ok: false }>
-): Partial<WhiteboardImageUploadI18nParams> => {
+  validation: Extract<ImageValidationResult, { ok: false }>,
+  maxSizeFallback: string
+): { formats: string; maxSize: string } => {
   const allowedImageMimeTypes = filterImageMimeTypes(validation.allowedMimeTypes) ?? DEFAULT_ALLOWED_IMAGE_MIME_TYPES;
   const formats = allowedImageMimeTypes.join(', ');
 
-  const maxSize = formatMaxFileSizeMb(validation.maxFileSizeBytes);
+  const maxSize = formatMaxFileSizeMb(validation.maxFileSizeBytes) ?? maxSizeFallback;
 
   return {
     formats,
-    ...(maxSize ? { maxSize } : {}),
+    maxSize,
   };
 };

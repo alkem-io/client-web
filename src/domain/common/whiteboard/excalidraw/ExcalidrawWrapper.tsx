@@ -66,7 +66,8 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     async (file: File): Promise<string> => {
       const validation = validateFile(file);
       if (!validation.ok) {
-        const params = getWhiteboardImageUploadI18nParams(validation);
+        const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
+        const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
         const message: string =
           validation.reason === 'unsupportedMimeType'
             ? t('callout.whiteboard.images.unsupportedType', params)
