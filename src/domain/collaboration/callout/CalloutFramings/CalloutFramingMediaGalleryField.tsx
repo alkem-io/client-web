@@ -1,6 +1,19 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { FieldArray, useFormikContext } from 'formik';
-import { Box, IconButton, Button, Stack, Tooltip } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  Button,
+  Stack,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -11,16 +24,30 @@ import { gutters } from '@/core/ui/grid/utils';
 import { getMediaGalleryVisualType } from '../../mediaGallery/mediaGalleryVisualType';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import AddIcon from '@mui/icons-material/Add';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 type VisualInMediaGallerySubmittedValue = NonNullable<
   CalloutFormSubmittedValues['framing']['mediaGallery']
 >['visuals'][number];
+
+interface ValidationError {
+  fileName: string;
+  errors: string[];
+}
 
 const CalloutFramingMediaGalleryField = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { values } = useFormikContext<CalloutFormSubmittedValues>();
   const mediaVisuals = values.framing.mediaGallery?.visuals || [];
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+
+  const { data: constraintsData, loading } = useDefaultVisualTypeConstraintsQuery({
+    variables: { visualType: VisualType.MediaGalleryImage },
+  });
+  const imageConstraints = constraintsData?.platform.configuration.defaultVisualTypeConstraints;
 
   const revokePreviewUrl = (url?: string) => {
     if (url) {
@@ -28,14 +55,111 @@ const CalloutFramingMediaGalleryField = () => {
     }
   };
 
-  const handleFilesSelected = (files: FileList, push: (obj: VisualInMediaGallerySubmittedValue) => void) => {
+  const validateFile = (file: File): Promise<string[]> => {
+    const errors: string[] = [];
+
+    if (!imageConstraints) {
+      errors.push(t('components.callout-creation.framing.mediaGallery.errors.missingConstraints'));
+      return Promise.resolve(errors);
+    }
+
+    // Check file type
+    if (imageConstraints.allowedTypes && imageConstraints.allowedTypes.length > 0) {
+      if (!imageConstraints.allowedTypes.includes(file.type)) {
+        errors.push(
+          t('components.callout-creation.framing.mediaGallery.errors.invalidFileType', {
+            fileType: file.type,
+            allowedTypes: imageConstraints.allowedTypes.join(', '),
+          })
+        );
+        return Promise.resolve(errors);
+      }
+    }
+
+    return new Promise(resolve => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = e => {
+        img.onload = () => {
+          const errors: string[] = [];
+          const checks = [
+            { key: 'minWidth', value: 'width', op: (img, constraint) => img < constraint },
+            { key: 'minHeight', value: 'height', op: (img, constraint) => img < constraint },
+            { key: 'maxWidth', value: 'width', op: (img, constraint) => img > constraint },
+            { key: 'maxHeight', value: 'height', op: (img, constraint) => img > constraint },
+          ] as const;
+
+          for (const check of checks) {
+            if (imageConstraints[check.key] && check.op(img[check.value], imageConstraints[check.key])) {
+              errors.push(
+                t(`components.callout-creation.framing.mediaGallery.errors.imageDimensions.${check.key}`, {
+                  imagePx: img[check.value],
+                  constraintPx: imageConstraints[check.key],
+                })
+              );
+            }
+          }
+          resolve(errors);
+        };
+
+        img.onerror = () => {
+          resolve([t('components.callout-creation.framing.mediaGallery.errors.invalidImage')]);
+        };
+
+        if (e.target?.result) {
+          img.src = e.target.result as string;
+        }
+      };
+
+      reader.onerror = () => {
+        resolve([t('components.callout-creation.framing.mediaGallery.errors.failedToReadFile')]);
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFilesSelected = async (files: FileList, push: (obj: VisualInMediaGallerySubmittedValue) => void) => {
+    if (!imageConstraints) {
+      return;
+    }
+
+    const newErrors: ValidationError[] = [];
+    const validFiles: Array<{ file: File; previewUrl: string }> = [];
+
     for (const file of files) {
-      push({
-        uri: '',
+      const fileValidationErrors = await validateFile(file);
+
+      if (fileValidationErrors.length > 0) {
+        newErrors.push({
+          fileName: file.name,
+          errors: fileValidationErrors,
+        });
+        continue;
+      }
+
+      // File is valid
+      validFiles.push({
         file,
         previewUrl: URL.createObjectURL(file),
+      });
+    }
+
+    // Show error dialog if there are any validation errors
+    if (newErrors.length > 0) {
+      setValidationErrors(newErrors);
+      setErrorDialogOpen(true);
+    }
+
+    // Add valid files to the gallery
+    for (const validFile of validFiles) {
+      push({
+        uri: '',
+        file: validFile.file,
+        previewUrl: validFile.previewUrl,
         alternativeText: '',
-        visualType: getMediaGalleryVisualType(file),
+        visualType: getMediaGalleryVisualType(validFile.file),
       });
     }
   };
@@ -125,7 +249,12 @@ const CalloutFramingMediaGalleryField = () => {
               ))}
               <Box display="flex" alignItems="end" justifyContent="flex-start">
                 {mediaVisuals.length === 0 && (
-                  <Button variant="contained" onClick={handleUploadClick} startIcon={<AddPhotoAlternateOutlinedIcon />}>
+                  <Button
+                    variant="contained"
+                    onClick={handleUploadClick}
+                    startIcon={<AddPhotoAlternateOutlinedIcon />}
+                    loading={loading}
+                  >
                     {t('buttons.uploadMedia')}
                   </Button>
                 )}
@@ -154,6 +283,38 @@ const CalloutFramingMediaGalleryField = () => {
           </Stack>
         )}
       />
+
+      {/* Validation Error Dialog */}
+      <Dialog open={errorDialogOpen} onClose={() => setErrorDialogOpen(false)}>
+        <DialogTitle>{t('components.callout-creation.framing.mediaGallery.errors.title')}</DialogTitle>
+        <DialogContent>
+          <List sx={{ pt: 0 }}>
+            {validationErrors.map((error, index) => (
+              <Box key={`${error.fileName}-${index}`}>
+                <ListItem disableGutters>
+                  <ListItemText
+                    primary={error.fileName}
+                    secondary={
+                      <Stack component="ul" sx={{ pl: 2, m: 0 }}>
+                        {error.errors.map((err, errIndex) => (
+                          <Box component="li" key={errIndex} sx={{ fontSize: '0.875rem' }}>
+                            {err}
+                          </Box>
+                        ))}
+                      </Stack>
+                    }
+                  />
+                </ListItem>
+              </Box>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDialogOpen(false)} variant="contained">
+            {t('buttons.close', { defaultValue: 'Close' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PageContentBlock>
   );
 };

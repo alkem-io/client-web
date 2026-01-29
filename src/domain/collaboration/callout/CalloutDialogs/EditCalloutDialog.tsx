@@ -272,23 +272,3 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 };
 
 export default EditCalloutDialog;
-
-/*
-//!!
-        formData.framing.type === CalloutFramingType.MediaGallery && formData.framing.mediaGallery?.visuals?.length
-          ? {
-              visuals: formData.framing.mediaGallery.visuals.map(v => {
-                const visualType = v.file
-                  ? getMediaGalleryVisualType(v.file, v.uri)
-                  : (v.visualType ?? getMediaGalleryVisualType(undefined, v.uri));
-
-                return {
-                  uri: v.file ? v.uri || '' : v.uri,
-                  visualID: v.id ?? '',
-                  name: visualType,
-                  alternativeText: v.alternativeText || v.name || v.file?.name || '',
-                };
-              }),
-            }
-          : undefined,
-          */

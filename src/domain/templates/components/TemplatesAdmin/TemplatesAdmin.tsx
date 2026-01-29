@@ -41,6 +41,8 @@ import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboa
 import { SpaceTemplate } from '../../models/SpaceTemplate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
+import { CalloutTemplate } from '../../models/CalloutTemplate';
+import { compact } from 'lodash';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -152,7 +154,9 @@ const TemplatesAdmin = ({
       await uploadMediaGalleryVisuals({
         mediaGalleryId: result.data?.updateCallout.framing.mediaGallery?.id,
         visuals: (values as TemplateCalloutFormSubmittedValues).callout?.framing.mediaGallery?.visuals,
-        existingVisualIds: [], //!!
+        existingVisualIds: compact(
+          (selectedTemplate as CalloutTemplate).callout?.framing.mediaGallery?.visuals?.map(item => item.id)
+        ),
         reuploadVisuals: true,
       });
     }
