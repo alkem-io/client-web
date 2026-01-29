@@ -11,7 +11,7 @@ import { PropsWithChildren } from 'react';
 const extractNumericCode = (error: unknown): number | undefined => {
   if (error && typeof error === 'object' && 'numericCode' in error) {
     const code = (error as { numericCode: unknown }).numericCode;
-    return typeof code === 'number' ? code : undefined;
+    return Number.isFinite(code) ? (code as number) : undefined;
   }
   return undefined;
 };

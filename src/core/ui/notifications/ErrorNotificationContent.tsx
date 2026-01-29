@@ -29,6 +29,7 @@ export const ErrorNotificationContent = ({ message, numericCode }: ErrorNotifica
         href={mailtoUrl}
         variant="body2"
         onClick={e => {
+          e.preventDefault();
           e.stopPropagation();
           // Explicitly open mailto to ensure it works inside Snackbar
           window.location.href = mailtoUrl;

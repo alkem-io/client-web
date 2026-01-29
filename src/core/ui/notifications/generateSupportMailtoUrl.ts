@@ -12,13 +12,15 @@ type SupportMailtoOptions = {
 export const generateSupportMailtoUrl = ({ numericCode, t }: SupportMailtoOptions): string => {
   const email = t('common.supportEmail');
 
-  const subject = numericCode
-    ? t('apollo.errors.support.emailSubject', { code: numericCode })
-    : t('apollo.errors.support.emailSubjectGeneric');
+  const subject =
+    numericCode !== undefined
+      ? t('apollo.errors.support.emailSubject', { code: numericCode })
+      : t('apollo.errors.support.emailSubjectGeneric');
 
-  const body = numericCode
-    ? t('apollo.errors.support.emailBody', { code: numericCode })
-    : t('apollo.errors.support.emailBodyGeneric');
+  const body =
+    numericCode !== undefined
+      ? t('apollo.errors.support.emailBody', { code: numericCode })
+      : t('apollo.errors.support.emailBodyGeneric');
 
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };

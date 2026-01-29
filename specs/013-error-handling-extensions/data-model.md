@@ -216,7 +216,7 @@ Server Error Response
 
 ## Server-Client Key Mapping
 
-The server will send `userMessage` values that map to client translation keys:
+The server sends `userMessage` values as fully-qualified i18n key paths that the client uses directly:
 
 | Server userMessage                                         | Client i18n Key |
 | ---------------------------------------------------------- | --------------- |
@@ -224,11 +224,11 @@ The server will send `userMessage` values that map to client translation keys:
 | `apollo.errors.userMessages.authorization.unauthenticated` | Same            |
 | ...                                                        | ...             |
 
-Server currently sends plain text; after client translations are in place, server will be updated to send the i18n key paths directly.
+**Important**: The server sends fully-qualified keys (e.g., `apollo.errors.userMessages.notFound.entity`). The client resolver uses these keys directly without any prefixing. Do not add additional prefixes like `apollo.errors.` to the incoming `userMessage` value.
 
 ## Validation Rules
 
-1. **numericCode**: Must be a positive integer when present
+1. **numericCode**: Must be an integer when present (can be zero or negative)
 2. **userMessage**: Must be a valid i18n key path when present
 3. **Fallback chain**:
    - Try `userMessage` key first

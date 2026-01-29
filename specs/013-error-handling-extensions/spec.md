@@ -17,8 +17,8 @@ When an error occurs during any operation, the user sees a clear, localized erro
 
 **Acceptance Scenarios**:
 
-1. **Given** a server error with `extensions.userMessage` set to `"errors.space.not.found"`, **When** the error is processed, **Then** the notification displays the translated message from i18n using that key.
-2. **Given** a server error with `extensions.userMessage` that has no corresponding translation key, **When** the error is processed, **Then** the notification displays the existing fallback message (generic error with code).
+1. **Given** a server error with `extensions.userMessage` set to `"userMessages.notFound.entity"`, **When** the error is processed, **Then** the notification displays the translated message from i18n using the key `apollo.errors.userMessages.notFound.entity`.
+2. **Given** a server error with `extensions.userMessage` set to a key that has no corresponding translation, **When** the error is processed, **Then** the notification displays the existing fallback message (generic error with code).
 3. **Given** a server error without `extensions.userMessage`, **When** the error is processed, **Then** the notification displays using the current behavior (code-based or generic message).
 
 ---
@@ -72,7 +72,7 @@ When a catastrophic error triggers the error boundary fallback page, the user se
 ### Edge Cases
 
 - What happens when `userMessage` translation key exists but has no value? Falls back to generic message.
-- What happens when `numericCode` is 0 or negative? Treated as valid code, included in mailto.
+- What happens when `numericCode` is 0 or negative? Treated as a valid code and included in mailto subject/body.
 - What happens when both `userMessage` and existing `code` translations exist? `userMessage` takes precedence as it's more specific.
 - What happens when user's email client is not configured? Standard browser behavior applies (may show error or do nothing).
 - What happens when notification queue has multiple errors? Each notification displays independently with its own 15-second timer and support link.

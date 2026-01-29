@@ -67,18 +67,33 @@ export interface GraphQLErrorExtensions {
 // ============================================================================
 
 export type SupportMailtoOptions = {
-  email: string;
-  subject: string;
-  body: string;
+  numericCode?: number;
+  t: (key: string, options?: Record<string, unknown>) => string;
 };
 
 /**
- * Generates a properly encoded mailto URL for support contact.
+ * Generates a mailto URL for contacting support with pre-filled subject and body.
+ * The helper composes translated subject/body using the provided translation function (t)
+ * and numericCode. When numericCode is provided (including 0), includes it in the
+ * subject and body for reference. When numericCode is undefined, uses generic templates.
  *
- * @param options - Email, subject, and body strings (already translated)
+ * @param options.numericCode - Optional error code to include in the email
+ * @param options.t - Translation function from react-i18next
  * @returns Encoded mailto URL
  */
 export function generateSupportMailtoUrl(options: SupportMailtoOptions): string {
-  const { email, subject, body } = options;
+  const { numericCode, t } = options;
+  const email = t('common.supportEmail');
+
+  const subject =
+    numericCode !== undefined
+      ? t('apollo.errors.support.emailSubject', { code: numericCode })
+      : t('apollo.errors.support.emailSubjectGeneric');
+
+  const body =
+    numericCode !== undefined
+      ? t('apollo.errors.support.emailBody', { code: numericCode })
+      : t('apollo.errors.support.emailBodyGeneric');
+
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
