@@ -7,11 +7,46 @@ import { useTranslation } from 'react-i18next';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
+/**
+ * Attempts to translate using the server-provided userMessage as an i18n key.
+ * The userMessage from the server is expected to be a partial key (e.g., "userMessages.validation.invalidStateTransition")
+ * which gets prefixed with "apollo.errors." to form the full i18n key.
+ * Returns the translated message if the key exists, otherwise returns undefined.
+ */
+const getTranslationForUserMessage = (
+  userMessage: string | undefined,
+  t: TFunction,
+  i18n: i18n,
+  meta: Record<string, unknown>
+): string | undefined => {
+  if (!userMessage) {
+    return undefined;
+  }
+
+  // Server sends partial keys like "userMessages.validation.invalidStateTransition"
+  // Full i18n keys are under "apollo.errors.userMessages.*"
+  const key = `apollo.errors.${userMessage}` as TranslationKey;
+  if (i18n.exists(key)) {
+    return t(key, meta);
+  }
+
+  return undefined;
+};
+
 const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
   const code = error.extensions?.code as string;
-  const meta = { code, message };
+  const userMessage = error.extensions?.userMessage as string | undefined;
+  const numericCode = error.extensions?.numericCode as number | undefined;
+  const meta = { code, message, errorId: numericCode };
 
+  // First, try to use userMessage as an i18n key (server-provided translation key)
+  const userMessageTranslation = getTranslationForUserMessage(userMessage, t, i18n, meta);
+  if (userMessageTranslation) {
+    return userMessageTranslation;
+  }
+
+  // Fall back to existing code-based translation logic
   if (!code) {
     // if code missing send a generic error text
     return t('apollo.errors.generic', meta);
@@ -49,9 +84,10 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
   const handleGraphQLErrors = (error: ApolloError) => {
     const graphqlErrors = error.graphQLErrors;
 
-    graphqlErrors.forEach((error: GraphQLFormattedError) => {
-      const translation = getTranslationForCode(error, t, i18n);
-      notify(translation, severity);
+    graphqlErrors.forEach((graphqlError: GraphQLFormattedError) => {
+      const translation = getTranslationForCode(graphqlError, t, i18n);
+      const numericCode = graphqlError.extensions?.numericCode as number | undefined;
+      notify(translation, severity, numericCode);
     });
   };
 
