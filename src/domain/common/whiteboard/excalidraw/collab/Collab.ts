@@ -30,7 +30,7 @@ import { UserIdleState, isImageElement } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { BinaryFilesWithOptionalUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
@@ -220,7 +220,7 @@ class Collab {
                   maxZoom: 1, // 100% zoom, in the whiteboard
                 });
               } catch (error) {
-                console.warn('Error trying to fit to content:', error, ' - ignoring');
+                logWarn(`Error trying to fit to content: ${error}`, { category: TagCategoryValues.WHITEBOARD });
               }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {

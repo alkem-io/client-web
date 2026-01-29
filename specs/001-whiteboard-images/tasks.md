@@ -87,10 +87,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Extend FileDownloader to return structured failure info and support targeted retries in src/domain/common/whiteboard/excalidraw/fileStore/FileDownloader.ts
-- [ ] T028 [US3] Extend FileUploader to return structured failure info (no storage bucket, upload failed) for UI consumption in src/domain/common/whiteboard/excalidraw/fileStore/FileUploader.ts
-- [ ] T029 [US3] Extend WhiteboardFilesManager to track failed uploads/downloads and expose retry APIs in src/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager.ts
-- [ ] T030 [US3] Add a user-visible banner/action for missing images with Retry (download and/or upload) in src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx and src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialogFooter.tsx
+- [X] T027 [US3] Extend FileDownloader to return structured failure info and support targeted retries in src/domain/common/whiteboard/excalidraw/fileStore/FileDownloader.ts
+- [X] T028 [US3] Extend FileUploader to return structured failure info (no storage bucket, upload failed) for UI consumption in src/domain/common/whiteboard/excalidraw/fileStore/FileUploader.ts
+- [X] T029 [US3] Extend WhiteboardFilesManager to track failed uploads/downloads and expose retry APIs in src/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager.ts
+- [X] T030 [US3] Add a user-visible banner/action for missing images with Retry (download and/or upload) in src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx and src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialogFooter.tsx
 - [ ] T031 [US3] Add Sentry logging for key lifecycle/failure events without logging image content (labels per spec/contracts) in src/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager.ts and src/domain/common/whiteboard/excalidraw/collab/Portal.ts
 
 **Checkpoint**: US3 complete; validate scenarios 3 and 6 plus failure injection checks in specs/001-whiteboard-images/quickstart.md.

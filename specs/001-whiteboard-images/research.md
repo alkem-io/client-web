@@ -195,4 +195,4 @@ See `plan.md` for a phased remediation plan.
 Ran on 2026-01-21:
 
 - `pnpm lint`: PASS (one existing warning: unused eslint-disable directive in `src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx`)
-- `pnpm vitest run --reporter=basic`: FAIL (Vitest startup error: reporter `basic` cannot be loaded)
+- `pnpm vitest run`: PASS

@@ -1,5 +1,5 @@
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { TagCategoryValues, error as logError, warn as logWarn } from '@/core/logging/sentry/log';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
@@ -123,7 +123,9 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     // Surface unrecoverable files - these will be lost
     if (unrecoverableFiles.length > 0) {
-      console.warn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved (no URL or dataURL)`);
+      logWarn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved (no URL or dataURL)`, {
+        category: TagCategoryValues.WHITEBOARD,
+      });
     }
 
     const { appState, elements, files } = convertedState;

@@ -43,7 +43,7 @@ const WhiteboardImageFailureBanner = ({ failureState, onRetry, retrying = false 
         <Warning fontSize="small" color="warning" />
         <Caption>
           {totalFailures === 1
-            ? t('callout.whiteboard.images.singleFailure', 'An image could not be loaded')
+                ? t('callout.whiteboard.images.singleFailure')
             : t('callout.whiteboard.images.multipleFailures', { count: totalFailures })}
         </Caption>
       </Box>
@@ -55,7 +55,7 @@ const WhiteboardImageFailureBanner = ({ failureState, onRetry, retrying = false 
           disabled={retrying}
           sx={{ textTransform: 'none', minWidth: 'auto' }}
         >
-          {retrying ? t('common.retrying', 'Retrying...') : t('callout.whiteboard.images.retry')}
+          {retrying ? t('common.retrying') : t('callout.whiteboard.images.retry')}
         </Button>
       )}
     </Box>
