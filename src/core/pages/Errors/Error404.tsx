@@ -13,6 +13,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { gutters } from '@/core/ui/grid/utils';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import { useLocation } from 'react-router-dom';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 export const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -80,6 +81,10 @@ export const Error404 = () => {
   useEffect(() => log404NotFound(), [pathname]);
 
   const { t } = useTranslation();
+
+  // Set browser tab title to "Page Not Found | Alkemio"
+  usePageTitle(t('pages.titles.notFound'));
+
   const { locations } = useConfig();
 
   return (

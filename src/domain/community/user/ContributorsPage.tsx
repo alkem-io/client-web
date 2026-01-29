@@ -26,6 +26,7 @@ import {
 import { arrayShuffle } from '@/core/utils/array.shuffle';
 import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
 import { ApolloError } from '@apollo/client';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 export interface VirtualContributors {
   items: VirtualContributorModelBase[] | undefined;
@@ -44,6 +45,9 @@ export interface PaginatedResult<T> {
 
 const ContributorsPage = () => {
   const { t } = useTranslation();
+
+  // Set browser tab title to "Contributors | Alkemio"
+  usePageTitle(t('pages.titles.contributors'));
 
   // temporary disable the search (server #4545)
   const [searchEnabled] = useState(false);

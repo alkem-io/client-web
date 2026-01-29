@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 import MemoDialog from '@/domain/collaboration/memo/MemoDialog/MemoDialog';
 import { useDeleteContributionMutation, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -14,11 +15,18 @@ const CalloutContributionDialogMemo = ({
 }: CalloutContributionDialogMemoProps) => {
   const ensurePresence = useEnsurePresence();
   const memoId = contribution?.memo?.id;
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isDeletingRef = useRef(false);
 
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
 
   const handleMemoDeleted = async () => {
+    isDeletingRef.current = true;
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
     const contributionId = ensurePresence(contribution?.id, 'ContributionId');
     await deleteContribution({
       variables: {
@@ -33,13 +41,14 @@ const CalloutContributionDialogMemo = ({
   };
 
   const handleClose = () => {
-    if (memoId) {
+    if (memoId && !isDeletingRef.current) {
       // Refresh immediately to catch already-saved content
       void fetchMarkdown({ variables: { id: memoId } });
 
       // Also refresh after 2.5 seconds to catch any pending autosave
-      setTimeout(() => {
+      refreshTimeoutRef.current = setTimeout(() => {
         void fetchMarkdown({ variables: { id: memoId } });
+        refreshTimeoutRef.current = null;
       }, 2500);
     }
 

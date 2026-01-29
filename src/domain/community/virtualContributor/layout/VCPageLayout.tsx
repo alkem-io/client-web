@@ -10,6 +10,7 @@ import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { Settings } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 interface VCPageLayoutProps {}
 
@@ -22,6 +23,9 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
     skip: !vcId,
   });
   const vc = data?.lookup.virtualContributor;
+
+  // Set browser tab title to "[VC Name] | Alkemio"
+  usePageTitle(vc?.profile.displayName);
 
   const settings = pathname.split('/').includes('settings');
 

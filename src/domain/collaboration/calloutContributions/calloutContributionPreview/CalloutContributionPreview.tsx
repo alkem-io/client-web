@@ -166,6 +166,7 @@ const CalloutContributionPreview = ({
               <ShareButton
                 url={contributionUrl}
                 entityTypeName={calloutContributionTypeToShareDialogKey(contributionType)}
+                resetDialogTheme
               />
             )}
             <IconButton
