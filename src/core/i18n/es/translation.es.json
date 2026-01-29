@@ -118,6 +118,7 @@
     "see-more": "Ver más",
     "see-all": "Más {{subject}}",
     "readMore": "Leer más",
+    "ellipsisReadMore": "... Read more",
     "showLess": "Mostrar menos",
     "retry": "Inténtelo de nuevo",
     "home": "Inicio",
@@ -226,7 +227,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
+        "cleverbase": "Cleverbase: un proveedor de servicios de confianza cualificado de la UE, que emite identidades digitales reconocidas legalmente y autenticación segura."
       }
     },
     "signUp": {
@@ -234,13 +235,13 @@
       "alreadyHaveAccount": "¿Ya tienes $t(common.account)?"
     },
     "passkey": {
-      "sign-in": "Sign in with passkey",
-      "register": "Register passkey",
-      "not-supported": "Passkeys are not supported by your browser",
-      "script-loading": "Loading passkey support...",
-      "script-error": "Failed to load passkey functionality",
-      "unknown-error": "An error occurred with your passkey",
-      "remove-credential": "Remove passkey"
+      "sign-in": "Iniciar sesión con PassKey",
+      "register": "Registrar PassKey",
+      "not-supported": "Las PassKeys no son compatibles con su navegador",
+      "script-loading": "Leyendo PassKey...",
+      "script-error": "Error al cargar la funcionalidad de la PassKey",
+      "unknown-error": "Se ha producido un error con su PassKey",
+      "remove-credential": "Eliminar PassKey"
     }
   },
   "common": {
@@ -277,6 +278,7 @@
     "callouts": "$t(common.posts)",
     "Callout": "$t(common.Post)",
     "Callouts": "$t(common.Posts)",
+    "framing": "Contenido adicional",
     "collaborationTools": "Herramientas de colaboración",
     "createdBy": "Creado por",
     "Memo": "Nota",
@@ -424,7 +426,7 @@
     "notification": "notificación",
     "notifications": "notificaciones",
     "credentials": "Credenciales",
-    "security": "Security",
+    "security": "Seguridad",
     "my-profile": "Mi $t(common.profile)",
     "my-memberships": "Mis $t(common.memberships)",
     "Profile": "Perfil",
@@ -620,7 +622,8 @@
         "month_other": "{{count}} meses",
         "year_one": "{{count}} año",
         "year_other": "{{count}} años"
-      }
+      },
+      "moreThan1Year": "> 1 year ago"
     },
     "supportEmail": "support@alkem.io",
     "options": "Opciones",
@@ -812,7 +815,7 @@
       "createButtonTooltip": "Añadir $t(common.Post)",
       "dialogTitle": "Añadir $t(common.Post)",
       "framingSettings": {
-        "title": "Contenido adicional",
+        "title": "$t(common.framing)",
         "none": {
           "title": "Ninguno",
           "tooltip": "Sin contenido adicional"
@@ -922,7 +925,8 @@
       "contributionsItemsCount_other": "{{count}} elementos en este $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} elementos en esta $t(common.collection), <click>haz clic aquí</click> para ver todos",
       "contributionsCollapse": "{{count}} elementos en esta $t(common.collection), <click>haz clic aquí</click> para ocultar algunos",
-      "noContributions": "Todavía no hay contribuciones, ¡sé el primero en contribuir!"
+      "noContributions": "Todavía no hay contribuciones, ¡sé el primero en contribuir!",
+      "contributions": "Contributions ({{count}})"
     },
     "draftNotice": "BORRADOR - Solo visible para $t(common.admins)",
     "closed": "Esta discusión está cerrada, por lo que ya no puedes comentar",
@@ -950,15 +954,15 @@
       "new-temporary-reference": "ID de enlace temporal: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Haz clic para abrir $t(common.whiteboard)",
+      "clickToSee": "Haz clic para ver el $t(common.whiteboard) completo",
       "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
+        "addEmoji": "Reaccionar",
+        "title": "Añadir emoji",
+        "hint": "Selecciona un emoji, luego haz clic en el lienzo",
+        "clickToPlace": "Haz clic en el lienzo para colocar {{emoji}}",
+        "placementMode": "Clic para colocar emoji: {{emoji}}",
+        "gridLabel": "Selecciona un emoji",
+        "noEmojis": "No hay emojis disponibles"
       }
     },
     "memo": {
@@ -1306,7 +1310,6 @@
     },
     "searchDialog": {
       "headerTitle": "Resultados de búsqueda",
-      "spacesAndSubspaces": "$t(common.spaces) y $t(common.subspaces)",
       "collaborationTools": "Herramientas de colaboración"
     },
     "searchScope": {
@@ -1348,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "Gestionar flujo",
+      "importing": "Importando...",
       "buttonTooltip": "Gestionar flujo",
       "editProfileDialog": {
         "title": "Editar detalles: Flujo"
@@ -1358,7 +1362,7 @@
         "editState": "Editar detalles",
         "deleteState": "Eliminar",
         "addState": "Añadir fase",
-        "setDefaultTemplate": "Set Default Post Template",
+        "setDefaultTemplate": "Establecer plantilla por defecto",
         "invalidChars": "El nombre de una fase no puede contener caracteres especiales.",
         "noRepeatedStates": "Ya existe una fase con el mismo nombre.",
         "createDialog": {
@@ -1380,25 +1384,37 @@
           },
           "importCalloutsDialog": {
             "title": "Aplicar nueva $t(common.template)",
-            "description": "Estás a punto de aplicar una nueva $t(common.template). Esta acción **eliminará permanentemente** tu $t(common.innovation-flow) actual. Sin embargo, los $t(common.posts) existentes vinculados a diferentes fases permanecerán y se agruparán bajo la primera fase de la nueva configuración.<br/><br/>Por favor, elige una de las siguientes opciones:",
-            "yes": "Añadir $t(common.posts) de la $t(common.template)",
-            "yesDescription": "Esto incluirá los nuevos $t(common.posts) de la $t(common.template) además de los existentes.",
-            "no": "Solo cambiar el $t(common.innovation-flow)",
-            "noDescription": "Esto solo reemplazará el $t(common.innovation-flow), manteniendo tus $t(common.posts) actuales como están.",
-            "apply": "Aplicar nueva $t(common.template)"
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Reemplazar con un nuevo flujo",
+              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "Esto incluirá los nuevos $t(common.posts) de la $t(common.template) además de los existentes."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirmar la eliminación",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Aplicar"
           }
         }
       },
       "defaultTemplate": {
-        "currentlySelected": "Currently Selected Template:",
-        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "currentlySelected": "$t(common.Template) seleccionada actualmente:",
+        "noTemplate": "No default $t(common.template) set. Select a $t(common.template) to pre-fill posts in this flow step.",
         "removeConfirmation": {
-          "title": "Remove Default Template?",
-          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+          "title": "¿Eliminar $t(common.template) predeterminada?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
         },
         "errors": {
-          "selectFailed": "Failed to set the default template. Please try again.",
-          "removeFailed": "Failed to remove the default template. Please try again."
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -2191,6 +2207,7 @@
     },
     "userMessaging": {
       "title": "Mensajes",
+      "betaTooltip": "We wanted to share this early - still improving!",
       "noConversations": "Aún no hay conversaciones",
       "noMessages": "No hay mensajes",
       "selectConversation": "Selecciona una conversación para empezar a enviar mensajes",
@@ -2452,9 +2469,18 @@
           }
         },
         "security": {
-          "title": "Security",
-          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
-          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
+          "title": "Seguridad",
+          "description": "Administre su configuración de seguridad, incluyendo PassKeys y claves de seguridad para autenticación de dos factores.",
+          "not-enabled": "La autenticación con PassKey y contraseña no está habilitada actualmente en esta plataforma. Póngase en contacto con su administrador para habilitar esta función."
+        },
+        "homeSpace": {
+          "title": "Home Space",
+          "description": "Here you can select which from the spaces or subspaces you are a member of which you want to use as a Home Space.  On Alkemio, your home space is always pinned on your dashboard as the first space.",
+          "selectLabel": "Select Home Space",
+          "noSelection": "No home space",
+          "autoRedirect": "<b>Home Space Redirect:</b> Set it so that Alkem.io redirects you to your home page instead of the dashboard.",
+          "autoRedirectDisabledHint": "Please select a home space first to enable the Home Space Redirect",
+          "pinButtonTooltip": "Press here to change your pinned space settings"
         }
       },
       "organization": {
@@ -2544,7 +2570,7 @@
                 "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
-            "reorderSubspaces": "Reorder $t(common.subspaces)"
+            "reorderSubspaces": "Reordenar $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2605,7 +2631,7 @@
           },
           "copySpace": {
             "title": "Copiar $t(common.subspace)",
-            "description": "Para utilizar esta configuración de $t(common.subspace), puedes duplicarlo dentro del mismo $t(common.space) o guardarlo como una $t(common.template) para usarlo en toda la plataforma. En ambos escenarios, el $t(common.innovation-flow) y todos los $t(common.posts) se replicarán. Ten en cuenta que los $t(common.comments) o contribuciones a una herramienta no se incluirán en la $t(common.template) o en el $t(common.subspace) duplicado.",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
             "createTemplate": "Crear $t(common.template)",
             "createTemplateTooltip": "Para crear una $t(common.template) a partir de este $t(common.subspace), necesitas permisos de $t(common.admin) del $t(common.space).",
             "duplicate": "Duplicar"
@@ -2747,6 +2773,7 @@
       "filter": {
         "type": {
           "space": "Tipo de $t(common.space)",
+          "framing": "Tipo de $t(common.framing)",
           "contribution": "Tipo de contribución",
           "contributor": "Tipo de contribuyente"
         },
@@ -2754,13 +2781,23 @@
           "all": "Todos",
           "space": "$t(common.spaces)",
           "subspace": "$t(common.subspaces)",
+          "contributor": "$t(common.contributors)",
           "user": "Usuarios",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.Posts)",
-          "whiteboard": "$t(common.Whiteboards) (próximamente)",
           "callout": "$t(common.Callouts)",
-          "memo": "$t(common.Memos) (próximamente)",
-          "response": "$t(common.Responses)"
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "memo": "$t(common.Memos)",
+          "post": "$t(common.Posts)",
+          "whiteboard": "$t(common.Whiteboards)"
+        },
+        "results": {
+          "spacesAndSubspaces": "$t(common.spaces) y $t(common.subspaces)",
+          "callout": "$t(common.Callouts)",
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "contributor": "$t(common.contributors)",
+          "noResults": "No results of this type matched your search terms."
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"
@@ -2829,7 +2866,11 @@
         },
         "recentSpaces": {
           "seeMore": "Explorar todos mis $t(common.spaces)",
-          "seeMoreSubspaces": "Ver todos los $t(common.subspaces) de los que soy $t(common.member)"
+          "seeMoreSubspaces": "Ver todos los $t(common.subspaces) de los que soy $t(common.member)",
+          "homeSpacePlaceholder": {
+            "title": "No Pinned Space yet",
+            "subtitle": "Click here to assign one"
+          }
         },
         "campaignBlock": {
           "createYourVCButton": "¡Crea tu $t(common.virtualContributor)!",
@@ -2887,7 +2928,7 @@
           }
         },
         "resources": {
-          "innovationHubs": "Starting pages",
+          "innovationHubs": "Página de inicio",
           "spaces": "$t(common.spaces)",
           "virtualContributors": "$t(common.virtualContributors)",
           "innovationPacks": "$t(common.innovation-packs)"
@@ -3309,6 +3350,7 @@
     },
     "user-profile": {
       "title": "Mi $t(common.profile)",
+      "loading": "Loading user profile...",
       "tooltips": {
         "settings": "$t(common.settings) de $t(common.profile) de usuario"
       },

@@ -8,11 +8,11 @@ import Loading from '@/core/ui/loading/Loading';
 import { useMemo } from 'react';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import useUserRouteContext from '../../user/routing/useUserRouteContext';
 
 export const UserAdminSettingsPage = () => {
-  const { userId } = useUrlResolver();
+  const { userId } = useUserRouteContext();
   const { userModel: userModel, loading: isLoadingUser } = useUserProvider(userId);
 
   const { t } = useTranslation();

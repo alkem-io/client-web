@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
@@ -9,6 +8,8 @@ import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCar
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 import { BlockSectionTitle } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 
 const MyResources = () => {
   const { t } = useTranslation();
@@ -42,15 +43,15 @@ const MyResources = () => {
   return (
     <PageContentBlock>
       {innovationHubs.length > 0 && (
-        <Box>
+        <Gutters disablePadding>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.innovationHubs')}</BlockSectionTitle>
           {innovationHubs?.map(hub => (
             <InnovationHubCardHorizontal key={hub.id} {...hub} size="medium" />
           ))}
-        </Box>
+        </Gutters>
       )}
       {spaces.length > 0 && (
-        <Box>
+        <Gutters disablePadding gap={gutters(0.5)}>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.spaces')}</BlockSectionTitle>
           {spaces.map(space => (
             <SpaceCardHorizontal
@@ -69,23 +70,23 @@ const MyResources = () => {
               disableTagline
             />
           ))}
-        </Box>
+        </Gutters>
       )}
       {virtualContributors.length > 0 && (
-        <Box>
+        <Gutters disablePadding gap={gutters(0.5)}>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.virtualContributors')}</BlockSectionTitle>
           {virtualContributors.map(vc => (
             <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="medium" withUnifiedTitle seamless />
           ))}
-        </Box>
+        </Gutters>
       )}
       {innovationPacks.length > 0 && (
-        <Box>
+        <Gutters disablePadding gap={gutters(0.5)}>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.innovationPacks')}</BlockSectionTitle>
           {innovationPacks.map(pack => (
             <InnovationPackCardHorizontal key={pack.id} {...pack} size="medium" />
           ))}
-        </Box>
+        </Gutters>
       )}
     </PageContentBlock>
   );

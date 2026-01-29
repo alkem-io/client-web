@@ -28,6 +28,7 @@ const TableControls = ({ editor, isEditingTable }: TableControlsProps) => {
   const [tableOperationsMenuAnchorEl, setTableOperationsMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteTableDialogOpen, setIsDeleteTableDialogOpen] = useState(false);
   const [currentSelection, setCurrentSelection] = useState<null | { from: number; to: number }>(null);
+  const [canDeleteTable, setCanDeleteTable] = useState(false);
 
   const updateCurrentSelection = () => {
     if (editor?.state.selection) {
@@ -45,12 +46,17 @@ const TableControls = ({ editor, isEditingTable }: TableControlsProps) => {
 
   const handleTableMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     updateCurrentSelection();
+    setCanDeleteTable(editor?.can().deleteTable() ?? false);
     setTableOperationsMenuAnchorEl(event.currentTarget);
   };
 
   const handleTableMenuClose = () => {
     setCurrentSelection(null);
     setTableOperationsMenuAnchorEl(null);
+    // Restore focus to editor after menu closes to maintain table context
+    requestAnimationFrame(() => {
+      editor?.commands.focus();
+    });
   };
 
   const handleInsertMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -107,7 +113,7 @@ const TableControls = ({ editor, isEditingTable }: TableControlsProps) => {
         open={Boolean(tableOperationsMenuAnchorEl)}
         onClose={handleTableMenuClose}
       >
-        <MenuItem onClick={openDeleteTableDialog} disabled={!editor?.can().deleteTable()}>
+        <MenuItem onClick={openDeleteTableDialog} disabled={!canDeleteTable}>
           <ListItemIcon>
             <DeleteForever fontSize="small" />
           </ListItemIcon>
