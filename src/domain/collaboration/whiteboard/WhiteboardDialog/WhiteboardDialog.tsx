@@ -13,7 +13,6 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
-import WhiteboardImageFailureBanner from '@/domain/collaboration/whiteboard/components/WhiteboardImageFailureBanner';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
@@ -126,7 +125,6 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const [lastSaveError, setLastSaveError] = useState<string | undefined>();
   const [isSceneInitialized, setSceneInitialized] = useState(false);
-  const [retrying, setRetrying] = useState(false);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -138,14 +136,17 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const failureState = filesManager.getFailureState();
 
-  const handleRetryFailedDownloads = useCallback(async () => {
-    setRetrying(true);
-    try {
-      await filesManager.retryFailedDownloads();
-    } finally {
-      setRetrying(false);
+  // Show notification when image failures occur
+  useEffect(() => {
+    if (failureState.hasFailures) {
+      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
+      const message =
+        totalFailures === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
+      notify(message, 'warning');
     }
-  }, [filesManager]);
+  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
@@ -373,11 +374,6 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                   />
                 </DialogHeader>
                 <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>
-                  <WhiteboardImageFailureBanner
-                    failureState={failureState}
-                    onRetry={handleRetryFailedDownloads}
-                    retrying={retrying}
-                  />
                   {children}
                 </DialogContent>
                 <WhiteboardDialogFooter

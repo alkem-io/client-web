@@ -11,7 +11,6 @@ import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawW
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import WhiteboardImageFailureBanner from '@/domain/collaboration/whiteboard/components/WhiteboardImageFailureBanner';
 import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw'; // @alkemio/excalidraw/dist/types/excalidraw/data/json
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
@@ -20,7 +19,7 @@ import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import React, { ReactNode, useMemo, useRef, useState, useCallback } from 'react';
+import React, { ReactNode, useMemo, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
@@ -101,17 +100,19 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
-  const [retrying, setRetrying] = useState(false);
   const failureState = filesManager.getFailureState();
 
-  const handleRetryFailedDownloads = useCallback(async () => {
-    setRetrying(true);
-    try {
-      await filesManager.retryFailedDownloads();
-    } finally {
-      setRetrying(false);
+  // Show notification when image failures occur
+  useEffect(() => {
+    if (failureState.hasFailures) {
+      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
+      const message =
+        totalFailures === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
+      notify(message, 'warning');
     }
-  }, [filesManager]);
+  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
   const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
@@ -252,11 +253,6 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                   minHeight: 0,
                 }}
               >
-                <WhiteboardImageFailureBanner
-                  failureState={failureState}
-                  onRetry={handleRetryFailedDownloads}
-                  retrying={retrying}
-                />
                 {!state?.loadingWhiteboardContent && whiteboard && (
                   <ExcalidrawWrapper
                     entities={{
