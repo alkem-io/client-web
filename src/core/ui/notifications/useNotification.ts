@@ -6,12 +6,13 @@ export const useNotification = () => {
   const { notificationsService } = useGlobalState();
 
   return useCallback(
-    (message: string, severity: Severity = 'info') => {
+    (message: string, severity: Severity = 'info', numericCode?: number) => {
       notificationsService.send({
         type: PUSH_NOTIFICATION,
         payload: {
           message,
           severity,
+          numericCode,
         },
       });
     },
