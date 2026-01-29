@@ -110,6 +110,7 @@ const InvitationDialog = ({
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
                       banner={invitation.space.about.profile.cardBanner}
+                      spaceId={invitation.space.id}
                       spaceUri={invitation.space.about.profile.url}
                       onClick={() => onCardClick(invitation.space.about.profile.url)}
                     >

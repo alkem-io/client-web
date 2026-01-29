@@ -157,6 +157,7 @@ const SpaceAboutDialog = ({
     <DialogWithGrid
       open={open}
       columns={8}
+      fullScreen={false} // Never go full screen even on mobile, to keep visible the Space banner
       sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
       aria-labelledby="space-about-dialog"

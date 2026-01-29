@@ -32,6 +32,7 @@ import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { useVideoCall } from '../hooks/useVideoCall';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
@@ -39,7 +40,11 @@ const CreateCalloutDialog = lazyWithGlobalErrorHandler(
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
-  const { permissions } = useSubSpace();
+  const { permissions, subspace: subspaceContext } = useSubSpace();
+
+  // Set browser tab title to subspace name for L1/L2 subspaces
+  usePageTitle(subspaceContext.about.profile.displayName);
+
   const { spaceLevel, spaceId, parentSpaceId } = useUrlResolver();
   const { selectedInnovationFlowState: selectedFlowStateName, setSelectedInnovationFlowState } =
     useContext(InnovationFlowStateContext);
