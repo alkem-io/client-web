@@ -83,7 +83,7 @@
 
 ### Tests for User Story 3
 
-- [ ] T026 [P] [US3] Add unit tests for retry state transitions (upload/download failure → retry → success) in src/domain/common/whiteboard/excalidraw/tests/fileRetry.spec.ts
+- [X] T026 [P] [US3] Add unit tests for retry state transitions (upload/download failure → retry → success) in src/domain/common/whiteboard/excalidraw/tests/fileRetry.spec.ts
 
 ### Implementation for User Story 3
 

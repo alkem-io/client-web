@@ -1,154 +1,503 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { FileId } from '@alkemio/excalidraw/dist/types/element/src/types';
+import { FileDownloader, type DownloadFailure } from '../fileStore/FileDownloader';
+import { FileUploader, type UploadFailure } from '../fileStore/FileUploader';
+import type { BinaryFileDataWithOptionalUrl } from '../types';
+
+// Mock the dependencies
+vi.mock('../fileStore/fileConverters', () => ({
+  fetchFileToDataURL: vi.fn(),
+  blobToDataURL: vi.fn(),
+}));
+
+vi.mock('../collab/utils', () => ({
+  generateIdFromFile: vi.fn(),
+  excalidrawFileMimeType: vi.fn((type: string) => type),
+}));
+
+vi.mock('@/core/logging/sentry/log', () => ({
+  error: vi.fn(),
+  TagCategoryValues: { WHITEBOARD: 'whiteboard' },
+}));
+
+// Import mocked modules
+import { fetchFileToDataURL, blobToDataURL } from '../fileStore/fileConverters';
+import { generateIdFromFile } from '../collab/utils';
 
 /**
- * Tests for file retry state transitions (T026)
+ * Implementation tests for file retry mechanisms (T026)
  *
- * Tests verify:
- * - Upload failure → retry → success transitions
- * - Download failure → retry → success transitions
- * - Failure tracking and clearing
+ * These tests verify the actual implementation of:
+ * - FileDownloader: download failures, tracking, and retry
+ * - FileUploader: upload failures, tracking, and recovery
  */
 
-describe('File retry state transitions', () => {
-  describe('Download failure → retry → success', () => {
-    it('should track failed downloads with structured failure info', () => {
-      const failure = {
-        fileId: 'file-1',
-        url: 'https://example.com/image.png',
-        error: 'Network error',
-        timestamp: Date.now(),
-      };
+// Test data factories
+const createMockFile = (
+  id: string,
+  options: { url?: string; dataURL?: DataURL } = {}
+): BinaryFileDataWithOptionalUrl =>
+  ({
+    id,
+    mimeType: 'image/png',
+    created: Date.now(),
+    ...options,
+  }) as BinaryFileDataWithOptionalUrl;
 
-      expect(failure).toHaveProperty('fileId');
-      expect(failure).toHaveProperty('url');
-      expect(failure).toHaveProperty('error');
-      expect(failure).toHaveProperty('timestamp');
+describe('FileDownloader implementation', () => {
+  let downloader: FileDownloader;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    downloader = new FileDownloader();
+  });
+
+  describe('downloadFile', () => {
+    it('downloads file successfully and returns file with dataURL', async () => {
+      const file = createMockFile('file-1', { url: 'https://example.com/image.png' });
+      const mockDataURL = 'data:image/png;base64,abc123' as DataURL;
+      vi.mocked(fetchFileToDataURL).mockResolvedValue(mockDataURL);
+
+      const result = await downloader.downloadFile(file);
+
+      expect(result.id).toBe('file-1');
+      expect(result.url).toBe('https://example.com/image.png');
+      expect(result.dataURL).toBe(mockDataURL);
+      expect(fetchFileToDataURL).toHaveBeenCalledWith('https://example.com/image.png', {});
     });
 
-    it('should clear failure record on successful retry', () => {
-      const failures = new Map<string, { fileId: string; error: string }>();
-      failures.set('file-1', { fileId: 'file-1', error: 'Network error' });
+    it('passes guest name header when provided', async () => {
+      const file = createMockFile('file-1', { url: 'https://example.com/image.png' });
+      vi.mocked(fetchFileToDataURL).mockResolvedValue('data:image/png;base64,abc' as DataURL);
 
-      expect(failures.has('file-1')).toBe(true);
+      await downloader.downloadFile(file, { guestName: 'Alice' });
 
-      // Simulate successful retry
-      failures.delete('file-1');
-
-      expect(failures.has('file-1')).toBe(false);
+      expect(fetchFileToDataURL).toHaveBeenCalledWith('https://example.com/image.png', expect.objectContaining({
+        'x-guest-name': expect.any(String),
+      }));
     });
 
-    it('should support retry of specific failed files', () => {
-      const failedFileIds = ['file-1', 'file-2'];
-      const filesToRetry = failedFileIds.filter(id => id === 'file-1');
+    it('throws and tracks failure when file has no URL', async () => {
+      const file = createMockFile('file-1', {}); // No URL
 
-      expect(filesToRetry).toContain('file-1');
-      expect(filesToRetry).not.toContain('file-2');
+      await expect(downloader.downloadFile(file)).rejects.toThrow('Cannot download: file-1');
+
+      const failures = downloader.getFailedDownloads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].fileId).toBe('file-1');
+      expect(failures[0].error).toBe('Missing URL');
+    });
+
+    it('throws and tracks failure when fetch fails', async () => {
+      const file = createMockFile('file-1', { url: 'https://example.com/image.png' });
+      vi.mocked(fetchFileToDataURL).mockRejectedValue(new Error('Network error'));
+
+      await expect(downloader.downloadFile(file)).rejects.toThrow('Network error');
+
+      const failures = downloader.getFailedDownloads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].fileId).toBe('file-1');
+      expect(failures[0].url).toBe('https://example.com/image.png');
+      expect(failures[0].error).toBe('Network error');
+    });
+
+    it('clears failure record on successful download after previous failure', async () => {
+      const file = createMockFile('file-1', { url: 'https://example.com/image.png' });
+
+      // First attempt fails
+      vi.mocked(fetchFileToDataURL).mockRejectedValueOnce(new Error('Network error'));
+      await expect(downloader.downloadFile(file)).rejects.toThrow();
+      expect(downloader.getFailedDownloads()).toHaveLength(1);
+
+      // Second attempt succeeds
+      vi.mocked(fetchFileToDataURL).mockResolvedValueOnce('data:image/png;base64,abc' as DataURL);
+      await downloader.downloadFile(file);
+
+      expect(downloader.getFailedDownloads()).toHaveLength(0);
     });
   });
 
-  describe('Upload failure → retry → success', () => {
-    it('should track upload failure reasons', () => {
-      const noStorageBucketFailure = {
-        fileId: 'file-1',
-        reason: 'no-storage-bucket' as const,
-        error: 'Missing StorageBucket',
-        timestamp: Date.now(),
-      };
+  describe('downloadMultiple', () => {
+    it('downloads multiple files successfully', async () => {
+      const files = [
+        createMockFile('file-1', { url: 'https://example.com/1.png' }),
+        createMockFile('file-2', { url: 'https://example.com/2.png' }),
+      ];
+      vi.mocked(fetchFileToDataURL)
+        .mockResolvedValueOnce('data:image/png;base64,1' as DataURL)
+        .mockResolvedValueOnce('data:image/png;base64,2' as DataURL);
 
-      const uploadFailedFailure = {
-        fileId: 'file-2',
-        reason: 'upload-failed' as const,
-        error: 'Server returned 500',
-        timestamp: Date.now(),
-      };
+      const result = await downloader.downloadMultiple(files);
 
-      const networkErrorFailure = {
-        fileId: 'file-3',
-        reason: 'network-error' as const,
-        error: 'Connection refused',
-        timestamp: Date.now(),
-      };
-
-      expect(noStorageBucketFailure.reason).toBe('no-storage-bucket');
-      expect(uploadFailedFailure.reason).toBe('upload-failed');
-      expect(networkErrorFailure.reason).toBe('network-error');
+      expect(result.succeeded).toHaveLength(2);
+      expect(result.failed).toHaveLength(0);
+      expect(result.succeeded[0].id).toBe('file-1');
+      expect(result.succeeded[1].id).toBe('file-2');
     });
 
-    it('should preserve file with dataURL when upload fails', () => {
-      const fileWithDataUrl = {
-        id: 'file-1',
-        mimeType: 'image/png',
-        dataURL: 'data:image/png;base64,abc123',
-        url: undefined, // Upload failed, no URL
-      };
+    it('handles partial failures and tracks them', async () => {
+      const files = [
+        createMockFile('file-1', { url: 'https://example.com/1.png' }),
+        createMockFile('file-2', { url: 'https://example.com/2.png' }),
+        createMockFile('file-3', { url: 'https://example.com/3.png' }),
+      ];
+      vi.mocked(fetchFileToDataURL)
+        .mockResolvedValueOnce('data:image/png;base64,1' as DataURL)
+        .mockRejectedValueOnce(new Error('File not found'))
+        .mockResolvedValueOnce('data:image/png;base64,3' as DataURL);
 
-      // File should still be usable via dataURL
-      expect(fileWithDataUrl.dataURL).toBeTruthy();
-      expect(fileWithDataUrl.url).toBeUndefined();
+      const result = await downloader.downloadMultiple(files);
+
+      expect(result.succeeded).toHaveLength(2);
+      expect(result.failed).toHaveLength(1);
+      expect(result.failed[0].fileId).toBe('file-2');
+      expect(result.failed[0].error).toBe('File not found');
+
+      // Verify failure is tracked
+      const trackedFailures = downloader.getFailedDownloads();
+      expect(trackedFailures).toHaveLength(1);
+      expect(trackedFailures[0].fileId).toBe('file-2');
     });
 
-    it('should update file with URL on successful retry', () => {
-      const fileAfterRetry = {
-        id: 'file-1',
-        mimeType: 'image/png',
-        dataURL: 'data:image/png;base64,abc123',
-        url: 'https://storage.example.com/file-1.png',
-      };
+    it('returns empty results for empty input', async () => {
+      const result = await downloader.downloadMultiple([]);
 
-      expect(fileAfterRetry.url).toBeTruthy();
-      expect(fileAfterRetry.dataURL).toBeTruthy();
+      expect(result.succeeded).toHaveLength(0);
+      expect(result.failed).toHaveLength(0);
     });
   });
 
-  describe('FileFailureState aggregation', () => {
-    it('should aggregate upload and download failures', () => {
-      const failureState = {
-        uploadFailures: [
-          { fileId: 'upload-1', reason: 'upload-failed' as const, error: 'Error', timestamp: Date.now() },
-        ],
-        downloadFailures: [
-          { fileId: 'download-1', url: 'https://example.com/img.png', error: 'Error', timestamp: Date.now() },
-        ],
-        hasFailures: true,
-      };
+  describe('retryFailed', () => {
+    it('retries only previously failed downloads', async () => {
+      const file1 = createMockFile('file-1', { url: 'https://example.com/1.png' });
+      const file2 = createMockFile('file-2', { url: 'https://example.com/2.png' });
 
-      expect(failureState.hasFailures).toBe(true);
-      expect(failureState.uploadFailures).toHaveLength(1);
-      expect(failureState.downloadFailures).toHaveLength(1);
+      // Initial download - file-2 fails
+      vi.mocked(fetchFileToDataURL)
+        .mockResolvedValueOnce('data:image/png;base64,1' as DataURL)
+        .mockRejectedValueOnce(new Error('Network error'));
+      await downloader.downloadMultiple([file1, file2]);
+
+      expect(downloader.getFailedDownloads()).toHaveLength(1);
+
+      // Retry - file-2 succeeds
+      vi.mocked(fetchFileToDataURL).mockResolvedValueOnce('data:image/png;base64,2' as DataURL);
+      const getFile = (id: string) => (id === 'file-2' ? file2 : undefined);
+      const result = await downloader.retryFailed(getFile);
+
+      expect(result.succeeded).toHaveLength(1);
+      expect(result.succeeded[0].id).toBe('file-2');
+      expect(downloader.getFailedDownloads()).toHaveLength(0);
     });
 
-    it('should report no failures when lists are empty', () => {
-      const failureState = {
-        uploadFailures: [],
-        downloadFailures: [],
-        hasFailures: false,
-      };
+    it('returns empty result when no failures to retry', async () => {
+      const result = await downloader.retryFailed(() => undefined);
 
-      expect(failureState.hasFailures).toBe(false);
+      expect(result.succeeded).toHaveLength(0);
+      expect(result.failed).toHaveLength(0);
+    });
+
+    it('skips files that cannot be resolved by getFile', async () => {
+      // Create initial failure
+      const file = createMockFile('file-1', { url: 'https://example.com/1.png' });
+      vi.mocked(fetchFileToDataURL).mockRejectedValueOnce(new Error('Error'));
+      await downloader.downloadMultiple([file]);
+
+      // Retry but getFile returns undefined
+      const result = await downloader.retryFailed(() => undefined);
+
+      expect(result.succeeded).toHaveLength(0);
+      expect(result.failed).toHaveLength(0);
+    });
+
+    it('updates failure tracking on retry failure', async () => {
+      const file = createMockFile('file-1', { url: 'https://example.com/1.png' });
+
+      // Initial failure
+      vi.mocked(fetchFileToDataURL).mockRejectedValueOnce(new Error('First error'));
+      await downloader.downloadMultiple([file]);
+
+      const firstFailure = downloader.getFailedDownloads()[0];
+      expect(firstFailure.error).toBe('First error');
+
+      // Retry also fails with different error
+      vi.mocked(fetchFileToDataURL).mockRejectedValueOnce(new Error('Second error'));
+      await downloader.retryFailed(id => (id === 'file-1' ? file : undefined));
+
+      const secondFailure = downloader.getFailedDownloads()[0];
+      expect(secondFailure.error).toBe('Second error');
+      expect(secondFailure.timestamp).toBeGreaterThanOrEqual(firstFailure.timestamp);
     });
   });
 
-  describe('Retry API contract', () => {
-    it('should expose retryFailedDownloads returning success/fail counts', async () => {
-      // Contract: retryFailedDownloads returns { succeeded: number, failed: number }
-      const mockRetryResult = { succeeded: 2, failed: 1 };
+  describe('failure tracking methods', () => {
+    it('getFailedDownloads returns all tracked failures', async () => {
+      const files = [
+        createMockFile('file-1', { url: 'https://example.com/1.png' }),
+        createMockFile('file-2', { url: 'https://example.com/2.png' }),
+      ];
+      vi.mocked(fetchFileToDataURL)
+        .mockRejectedValueOnce(new Error('Error 1'))
+        .mockRejectedValueOnce(new Error('Error 2'));
 
-      expect(mockRetryResult).toHaveProperty('succeeded');
-      expect(mockRetryResult).toHaveProperty('failed');
-      expect(typeof mockRetryResult.succeeded).toBe('number');
-      expect(typeof mockRetryResult.failed).toBe('number');
+      await downloader.downloadMultiple(files);
+
+      const failures = downloader.getFailedDownloads();
+      expect(failures).toHaveLength(2);
+      expect(failures.map(f => f.fileId)).toContain('file-1');
+      expect(failures.map(f => f.fileId)).toContain('file-2');
     });
 
-    it('should expose clearFailures to reset failure state', () => {
-      // Contract: clearFailures resets all tracked failures
-      const failures = new Map();
-      failures.set('file-1', { error: 'test' });
-      failures.set('file-2', { error: 'test' });
+    it('clearFailure removes specific failure', async () => {
+      const files = [
+        createMockFile('file-1', { url: 'https://example.com/1.png' }),
+        createMockFile('file-2', { url: 'https://example.com/2.png' }),
+      ];
+      vi.mocked(fetchFileToDataURL)
+        .mockRejectedValueOnce(new Error('Error 1'))
+        .mockRejectedValueOnce(new Error('Error 2'));
+      await downloader.downloadMultiple(files);
 
-      // Simulate clearFailures
-      failures.clear();
+      downloader.clearFailure('file-1');
 
-      expect(failures.size).toBe(0);
+      const failures = downloader.getFailedDownloads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].fileId).toBe('file-2');
     });
+
+    it('clearAllFailures removes all failures', async () => {
+      const files = [
+        createMockFile('file-1', { url: 'https://example.com/1.png' }),
+        createMockFile('file-2', { url: 'https://example.com/2.png' }),
+      ];
+      vi.mocked(fetchFileToDataURL)
+        .mockRejectedValueOnce(new Error('Error 1'))
+        .mockRejectedValueOnce(new Error('Error 2'));
+      await downloader.downloadMultiple(files);
+
+      downloader.clearAllFailures();
+
+      expect(downloader.getFailedDownloads()).toHaveLength(0);
+    });
+  });
+});
+
+describe('FileUploader implementation', () => {
+  let uploader: FileUploader;
+  let mockUploadMutation: Mock;
+  let mockGetConfig: Mock;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockUploadMutation = vi.fn();
+    mockGetConfig = vi.fn().mockReturnValue({ storageBucketId: 'bucket-123' });
+    uploader = new FileUploader(mockGetConfig, mockUploadMutation);
+
+    // Default mocks for file processing
+    vi.mocked(generateIdFromFile).mockResolvedValue('generated-id' as FileId);
+    vi.mocked(blobToDataURL).mockResolvedValue('data:image/png;base64,xyz' as DataURL);
+  });
+
+  describe('upload', () => {
+    it('uploads file successfully and returns URL', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+      mockUploadMutation.mockResolvedValue({
+        data: { uploadFileOnStorageBucket: { url: 'https://storage.example.com/file.png' } },
+      });
+
+      const result = await uploader.upload(file);
+
+      expect(result.id).toBe('generated-id');
+      expect(result.url).toBe('https://storage.example.com/file.png');
+      expect(mockUploadMutation).toHaveBeenCalledWith({
+        file,
+        uploadData: { storageBucketId: 'bucket-123' },
+      });
+    });
+
+    it('clears failure record on successful upload after previous failure', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+
+      // First attempt fails
+      mockUploadMutation.mockRejectedValueOnce(new Error('Network error'));
+      await expect(uploader.upload(file)).rejects.toThrow();
+      expect(uploader.getFailedUploads()).toHaveLength(1);
+
+      // Second attempt succeeds
+      mockUploadMutation.mockResolvedValueOnce({
+        data: { uploadFileOnStorageBucket: { url: 'https://storage.example.com/file.png' } },
+      });
+      await uploader.upload(file);
+
+      expect(uploader.getFailedUploads()).toHaveLength(0);
+    });
+
+    it('throws and tracks no-storage-bucket failure', async () => {
+      mockGetConfig.mockReturnValue({ storageBucketId: undefined });
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+
+      await expect(uploader.upload(file)).rejects.toThrow('Missing StorageBucket');
+
+      const failures = uploader.getFailedUploads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].reason).toBe('no-storage-bucket');
+      expect(failures[0].fileId).toBe('generated-id');
+    });
+
+    it('allows fallback when allowFallbackToAttached is true', async () => {
+      mockGetConfig.mockReturnValue({ storageBucketId: undefined, allowFallbackToAttached: true });
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+
+      const result = await uploader.upload(file);
+
+      expect(result.id).toBe('generated-id');
+      expect(result.url).toBe('');
+      expect(uploader.getFailedUploads()).toHaveLength(0);
+    });
+
+    it('throws and tracks upload-failed when mutation returns error', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+      mockUploadMutation.mockResolvedValue({
+        data: null,
+        errors: [{ message: 'Storage quota exceeded' }],
+      });
+
+      await expect(uploader.upload(file)).rejects.toThrow('Storage quota exceeded');
+
+      const failures = uploader.getFailedUploads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].reason).toBe('upload-failed');
+      expect(failures[0].error).toBe('Storage quota exceeded');
+    });
+
+    it('throws and tracks network-error when mutation throws', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+      mockUploadMutation.mockRejectedValue(new Error('Connection refused'));
+
+      await expect(uploader.upload(file)).rejects.toThrow('Connection refused');
+
+      const failures = uploader.getFailedUploads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].reason).toBe('network-error');
+      expect(failures[0].error).toBe('Connection refused');
+    });
+  });
+
+  describe('createFileData', () => {
+    it('creates file data without uploading', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+      vi.mocked(blobToDataURL).mockResolvedValue('data:image/png;base64,content' as DataURL);
+
+      const result = await uploader.createFileData(file);
+
+      expect(result.id).toBe('generated-id');
+      expect(result.mimeType).toBe('image/png');
+      expect(result.dataURL).toBe('data:image/png;base64,content');
+      expect(result.url).toBeUndefined();
+      expect(mockUploadMutation).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('uploadAndCreateFileData', () => {
+    it('uploads and returns complete file data', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+      mockUploadMutation.mockResolvedValue({
+        data: { uploadFileOnStorageBucket: { url: 'https://storage.example.com/file.png' } },
+      });
+
+      const result = await uploader.uploadAndCreateFileData(file);
+
+      expect(result.id).toBe('generated-id');
+      expect(result.url).toBe('https://storage.example.com/file.png');
+      expect(result.dataURL).toBe('data:image/png;base64,xyz');
+      expect(result.mimeType).toBe('image/png');
+    });
+  });
+
+  describe('failure tracking methods', () => {
+    it('getFailedUploads returns all tracked failures', async () => {
+      const file1 = new File(['1'], 'test1.png', { type: 'image/png' });
+      const file2 = new File(['2'], 'test2.png', { type: 'image/png' });
+
+      vi.mocked(generateIdFromFile)
+        .mockResolvedValueOnce('file-1' as FileId)
+        .mockResolvedValueOnce('file-2' as FileId);
+      mockUploadMutation
+        .mockRejectedValueOnce(new Error('Error 1'))
+        .mockRejectedValueOnce(new Error('Error 2'));
+
+      await expect(uploader.upload(file1)).rejects.toThrow();
+      await expect(uploader.upload(file2)).rejects.toThrow();
+
+      const failures = uploader.getFailedUploads();
+      expect(failures).toHaveLength(2);
+      expect(failures.map(f => f.fileId)).toContain('file-1');
+      expect(failures.map(f => f.fileId)).toContain('file-2');
+    });
+
+    it('clearFailure removes specific failure', async () => {
+      const file1 = new File(['1'], 'test1.png', { type: 'image/png' });
+      const file2 = new File(['2'], 'test2.png', { type: 'image/png' });
+
+      vi.mocked(generateIdFromFile)
+        .mockResolvedValueOnce('file-1' as FileId)
+        .mockResolvedValueOnce('file-2' as FileId);
+      mockUploadMutation
+        .mockRejectedValueOnce(new Error('Error 1'))
+        .mockRejectedValueOnce(new Error('Error 2'));
+
+      await expect(uploader.upload(file1)).rejects.toThrow();
+      await expect(uploader.upload(file2)).rejects.toThrow();
+
+      uploader.clearFailure('file-1');
+
+      const failures = uploader.getFailedUploads();
+      expect(failures).toHaveLength(1);
+      expect(failures[0].fileId).toBe('file-2');
+    });
+
+    it('clearAllFailures removes all failures', async () => {
+      const file = new File(['content'], 'test.png', { type: 'image/png' });
+      mockUploadMutation.mockRejectedValue(new Error('Error'));
+
+      await expect(uploader.upload(file)).rejects.toThrow();
+      expect(uploader.getFailedUploads()).toHaveLength(1);
+
+      uploader.clearAllFailures();
+
+      expect(uploader.getFailedUploads()).toHaveLength(0);
+    });
+  });
+});
+
+describe('Failure type structure validation', () => {
+  it('DownloadFailure has required properties', () => {
+    const failure: DownloadFailure = {
+      fileId: 'file-1',
+      url: 'https://example.com/image.png',
+      error: 'Network error',
+      timestamp: Date.now(),
+    };
+
+    expect(failure).toHaveProperty('fileId');
+    expect(failure).toHaveProperty('error');
+    expect(failure).toHaveProperty('timestamp');
+    expect(typeof failure.timestamp).toBe('number');
+  });
+
+  it('UploadFailure has required properties including reason', () => {
+    const failure: UploadFailure = {
+      fileId: 'file-1',
+      reason: 'upload-failed',
+      error: 'Server error',
+      timestamp: Date.now(),
+    };
+
+    expect(failure).toHaveProperty('fileId');
+    expect(failure).toHaveProperty('reason');
+    expect(failure).toHaveProperty('error');
+    expect(failure).toHaveProperty('timestamp');
+    expect(['no-storage-bucket', 'upload-failed', 'network-error']).toContain(failure.reason);
   });
 });
