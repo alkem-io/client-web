@@ -228,11 +228,11 @@
     "@rollup/rollup-win32-x64-msvc": "^4.40.0"
   },
   "engines": {
-    "node": ">=20.19.0",
-    "pnpm": ">=10.17.1"
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
   },
   "packageManager": "pnpm@10.17.1",
   "volta": {
-    "node": "20.19.0"
+    "node": "22.21.1"
   }
 }
