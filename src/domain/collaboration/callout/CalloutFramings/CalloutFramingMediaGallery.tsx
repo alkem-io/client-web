@@ -1,6 +1,6 @@
 import React from 'react';
 import MediaGallery from '@/core/ui/gallery/MediaGallery';
-import { MediaItem } from '@/core/ui/gallery/types';
+import { MediaGalleryItem } from '@/core/ui/gallery/types';
 import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingMediaGalleryProps {
@@ -9,9 +9,9 @@ interface CalloutFramingMediaGalleryProps {
 }
 
 /**
- * Converts callout media gallery visuals to MediaItem format
+ * Converts callout media gallery visuals to MediaGalleryItem format
  */
-const convertVisualsToMediaItems = (callout: CalloutDetailsModel): MediaItem[] => {
+const convertVisualsToMediaItems = (callout: CalloutDetailsModel): MediaGalleryItem[] => {
   const visuals = callout.framing.mediaGallery?.visuals;
 
   if (!visuals) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Dialog, styled } from '@mui/material';
-import { MediaItem } from './types';
+import { MediaGalleryItem } from './types';
 import { gutters } from '../grid/utils';
 import DialogHeader from '../dialog/DialogHeader';
 import GalleryPager from './GalleryPager';
@@ -56,12 +56,12 @@ const ImageContainer = styled(Box)(({ theme }) => ({
 
 interface MediaGalleryProps {
   title?: string;
-  items: MediaItem[];
+  items: MediaGalleryItem[];
 }
 
 const MediaGallery = ({ title, items }: MediaGalleryProps) => {
   const { t } = useTranslation();
-  const [selectedItem, setSelectedItem] = React.useState<MediaItem>();
+  const [selectedItem, setSelectedItem] = React.useState<MediaGalleryItem>();
   const [currentIndex, setCurrentIndex] = React.useState<number>(0);
 
   const handleClose = () => {
@@ -69,7 +69,7 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
     setCurrentIndex(0);
   };
 
-  const handleItemClick = (item: MediaItem, index: number) => {
+  const handleItemClick = (item: MediaGalleryItem, index: number) => {
     setSelectedItem(item);
     setCurrentIndex(index);
   };

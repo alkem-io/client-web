@@ -1,4 +1,4 @@
-export interface MediaItem {
+export interface MediaGalleryItem {
   id: string;
   type: 'image' | 'video';
   url: string;

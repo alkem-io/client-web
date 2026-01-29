@@ -81,9 +81,18 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
           {children}
         </Box>
         <Box ref={actionsContainerRef} width="100%" display="flex" justifyContent="flex-end">
-          {actions && autoCollapseActions && !actionsCollapsed && actionsContent}
+          {actions &&
+            (autoCollapseActions
+              ? !actionsCollapsed && actionsContent
+              : // If !autoCollapseActions, always show actions
+                actionsContent)}
         </Box>
       </Box>
+      {/**
+       * If actions are occupy more space than available and
+       * autoCollapseActions is true,
+       * show actions in a separate box
+       **/}
       {actions && autoCollapseActions && actionsCollapsed && <Box>{actionsContent}</Box>}
     </>
   );

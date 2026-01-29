@@ -4,12 +4,12 @@ import '@testing-library/jest-dom/vitest';
 // @vitest-environment jsdom
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import MediaGallery from './MediaGallery';
-import { MediaItem } from './types';
+import { MediaGalleryItem } from './types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const theme = createTheme();
 
-const mockItems: MediaItem[] = [
+const mockItems: MediaGalleryItem[] = [
   {
     id: '1',
     type: 'image',

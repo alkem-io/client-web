@@ -124,7 +124,7 @@ export const mapCalloutTemplateToCalloutForm = (
       templateFraming.type = CalloutFramingType.None;
       templateFraming.memo = undefined;
     }
-    // TODO: Add restriction handling for MediaGallery if needed
+
     if (
       calloutRestrictions?.disableWhiteboards &&
       templateSettings.contribution.allowedTypes === CalloutContributionType.Whiteboard
@@ -132,6 +132,7 @@ export const mapCalloutTemplateToCalloutForm = (
       templateSettings.contribution.allowedTypes = 'none';
       templateContributionDefaults.whiteboardContent = undefined;
     }
+
     if (calloutRestrictions?.disableComments) {
       templateSettings.contribution.commentsEnabled = false;
       templateSettings.framing.commentsEnabled = false;
