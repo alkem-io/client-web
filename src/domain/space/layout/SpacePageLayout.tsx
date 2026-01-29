@@ -19,18 +19,24 @@ import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { useSectionIndex } from './useSectionIndex';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import { SpaceVisibilityNotice } from '@/domain/space/layout/tabbedLayout/layout/SpaceVisibilityNotice';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = () => {
   const { spaceId, spaceHierarchyPath, spaceLevel } = useUrlResolver();
+  const { space } = useSpace();
+
+  // Set browser tab title to space name only for L0 spaces
+  // SubspacePageLayout handles titles for L1/L2 subspaces
+  const isLevelZero = spaceLevel === SpaceLevel.L0;
+  usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
   const sectionIndex = useSectionIndex({ spaceId, spaceLevel });
 
   const { isSmallScreen } = useScreenSize();
 
   const [isTabsMenuOpen, setTabsMenuOpen] = useState(false);
-
-  const isLevelZero = spaceLevel === SpaceLevel.L0;
 
   return (
     <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
