@@ -16,6 +16,10 @@ import {
   validateWhiteboardImageFile,
   type ImageValidationResult,
 } from './fileStore/fileValidation';
+import {
+  convertLocalFilesToRemoteInWhiteboard as convertFilesInWhiteboard,
+  type ConversionResult,
+} from './fileStore/convertLocalFilesToRemote';
 import type {
   BinaryFileDataWithUrl,
   BinaryFileDataWithOptionalUrl,
@@ -32,6 +36,7 @@ export type {
   BinaryFilesWithOptionalUrl,
   WhiteboardWithFiles,
 } from './types';
+export type { ConversionResult } from './fileStore/convertLocalFilesToRemote';
 
 interface Props {
   storageBucketId?: string;
@@ -39,12 +44,6 @@ interface Props {
   maxFileSize?: number;
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   allowFallbackToAttached?: boolean;
-}
-
-export interface ConversionResult<W> {
-  whiteboard: W;
-  failedConversions: string[];
-  unrecoverableFiles: string[];
 }
 
 export interface FileFailureState {
@@ -281,64 +280,32 @@ const useWhiteboardFilesManager = ({
   const convertLocalFilesToRemoteInWhiteboard = async <W extends WhiteboardWithFiles>(
     whiteboard: W
   ): Promise<{ whiteboard: W; failedConversions: string[]; unrecoverableFiles: string[] }> => {
-    if (!whiteboard?.files) {
-      return { whiteboard, failedConversions: [], unrecoverableFiles: [] };
-    }
-
-    const { files, ...rest } = whiteboard;
-    const filesNext: Record<string, BinaryFileDataWithUrl | BinaryFileData> = {};
-    const failedConversions: string[] = []; // files that failed to get URL but have dataURL
-    const unrecoverableFiles: string[] = []; // files with neither URL nor dataURL
-
-    await Promise.all(
-      Object.keys(files).map(async fileId => {
-        const file = files[fileId];
-        const normalizedFile = await convertLocalFileToRemote(file);
-
-        if (normalizedFile) {
-          // Successfully converted to remote
-          filesNext[fileId] = normalizedFile;
-        } else if (file.dataURL) {
-          // Conversion failed but file has dataURL - preserve for rendering
-          filesNext[fileId] = file;
-          failedConversions.push(fileId);
-          error(
-            `File conversion failed but preserved with dataURL: ${fileId}`,
-            { category: TagCategoryValues.WHITEBOARD, label: 'file-preserved-with-dataurl' }
-          );
-        } else if (file.url) {
-          // File already has URL - preserve it
-          filesNext[fileId] = file;
-        } else {
-          // No URL and no dataURL - file is unrecoverable
-          unrecoverableFiles.push(fileId);
-          error(
-            `File has no retrieval path (no url, no dataURL) and will be dropped: ${fileId}`,
-            { category: TagCategoryValues.WHITEBOARD, label: 'file-unrecoverable' }
-          );
-        }
-      })
-    );
-
-    if (failedConversions.length > 0) {
-      error(
-        `${failedConversions.length} of ${Object.keys(files).length} files failed remote conversion but preserved with dataURL: [${failedConversions.join(', ')}]`,
-        { category: TagCategoryValues.WHITEBOARD, label: 'files-conversion-partial' }
-      );
-    }
-
-    if (unrecoverableFiles.length > 0) {
-      error(
-        `${unrecoverableFiles.length} of ${Object.keys(files).length} files dropped (unrecoverable): [${unrecoverableFiles.join(', ')}]`,
-        { category: TagCategoryValues.WHITEBOARD, label: 'files-dropped-unrecoverable' }
-      );
-    }
-
-    return {
-      whiteboard: { files: filesNext, ...rest } as W,
-      failedConversions,
-      unrecoverableFiles,
-    };
+    return convertFilesInWhiteboard(whiteboard, convertLocalFileToRemote, {
+      onFilePreservedWithDataUrl: fileId => {
+        error(`File conversion failed but preserved with dataURL: ${fileId}`, {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'file-preserved-with-dataurl',
+        });
+      },
+      onFileUnrecoverable: fileId => {
+        error(`File has no retrieval path (no url, no dataURL) and will be dropped: ${fileId}`, {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'file-unrecoverable',
+        });
+      },
+      onConversionPartial: (failedCount, totalCount, failedIds) => {
+        error(
+          `${failedCount} of ${totalCount} files failed remote conversion but preserved with dataURL: [${failedIds.join(', ')}]`,
+          { category: TagCategoryValues.WHITEBOARD, label: 'files-conversion-partial' }
+        );
+      },
+      onFilesDropped: (droppedCount, totalCount, droppedIds) => {
+        error(`${droppedCount} of ${totalCount} files dropped (unrecoverable): [${droppedIds.join(', ')}]`, {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'files-dropped-unrecoverable',
+        });
+      },
+    });
   };
 
   /**

@@ -63,7 +63,7 @@
 
 ### Tests for User Story 2
 
-- [ ] T022 [P] [US2] Add unit tests to ensure persistence conversion never drops files and preserves a retrieval path (url or dataURL) in src/domain/common/whiteboard/excalidraw/tests/convertLocalFilesToRemoteInWhiteboard.spec.ts
+- [X] T022 [P] [US2] Add unit tests to ensure persistence conversion never drops files and preserves a retrieval path (url or dataURL) in src/domain/common/whiteboard/excalidraw/tests/convertLocalFilesToRemoteInWhiteboard.spec.ts
 
 ### Implementation for User Story 2
 
