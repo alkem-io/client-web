@@ -185,8 +185,8 @@ const useWhiteboardFilesManager = ({
       const url = cachedFile?.url;
 
       if (url) {
-        // File already has URL - use it
-        result[id] = { ...files[id], url } as BinaryFileDataWithUrl;
+        // File already has URL - use cached file to preserve all properties including dataURL
+        result[id] = cachedFile as BinaryFileDataWithUrl;
         continue;
       }
 
