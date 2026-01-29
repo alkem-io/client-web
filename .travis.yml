@@ -1,7 +1,7 @@
 dist: focal
 language: node_js
 node_js:
-  - v20.15.1
+  - v22.21.1
 cache:
   directories:
     - node_modules
@@ -12,6 +12,6 @@ before_install:
 install:
   - pnpm install
 script:
-  - npm run lint:prod
-  - npm run test:upload
-  - CI=false npm run build
+  - pnpm run lint:prod
+  - pnpm run test:upload
+  - CI=false pnpm run build
