@@ -33,6 +33,7 @@ const GalleryItem = styled('a')(() => ({
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
+  userSelect: 'none',
   position: 'relative',
   width: 'auto',
   height: 'auto',
@@ -41,6 +42,9 @@ const ImageContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  '& *': {
+    userSelect: 'none',
+  },
   '& > img': {
     maxWidth: '100%',
     maxHeight: '100%',
@@ -70,21 +74,36 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
     setCurrentIndex(index);
   };
 
-  const handlePrevious = React.useCallback(() => {
+  const handlePrevious = () => {
     const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
     setSelectedItem(items[newIndex]);
-  }, [currentIndex, items]);
+  };
 
-  const handleNext = React.useCallback(() => {
+  const handleNext = () => {
     const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
     setSelectedItem(items[newIndex]);
-  }, [currentIndex, items]);
+  };
 
   const handleDotClick = (index: number) => {
     setCurrentIndex(index);
     setSelectedItem(items[index]);
+  };
+
+  const handleClickOnImage = (e: React.MouseEvent<HTMLDivElement>) => {
+    const img = e.currentTarget;
+    const rect = img.getBoundingClientRect();
+
+    // Determine if click is on left or right half
+    const clickX = e.clientX - rect.left;
+    const isLeft = clickX < rect.width / 2;
+
+    if (isLeft) {
+      handlePrevious();
+    } else {
+      handleNext();
+    }
   };
 
   if (!items || items.length === 0) {
@@ -117,7 +136,7 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
       <Dialog open={!!selectedItem} onClose={handleClose} maxWidth="lg">
         <DialogHeader onClose={handleClose}>{title || 'Media Gallery'}</DialogHeader>
         {selectedItem && (
-          <ImageContainer>
+          <ImageContainer onClick={handleClickOnImage}>
             <Box
               component="img"
               src={selectedItem.thumbnailUrl || selectedItem.url}
@@ -128,7 +147,7 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
               }
             />
             <GalleryPager
-              containerProps={{ position: 'absolute', bottom: 0, width: '100%' }}
+              containerProps={{ position: 'absolute', bottom: 0, width: '100%', onClick: e => e.stopPropagation() }}
               totalItems={items.length}
               currentIndex={currentIndex}
               onPrevious={handlePrevious}
