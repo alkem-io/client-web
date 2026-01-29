@@ -215,6 +215,15 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
         fullWidth
         fullScreen={options.fullscreen}
         onClose={onClose}
+        slotProps={{
+          paper: {
+            sx: {
+              display: 'flex',
+              flexDirection: 'column',
+              height: options.fullscreen ? '100vh' : '85vh',
+            },
+          },
+        }}
       >
         <Formik
           innerRef={formikRef}
@@ -239,9 +248,6 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                   flexDirection: 'column',
                   flex: 1,
                   minHeight: 0,
-                  justifyContent: 'flex-start',
-                  alignItems: 'stretch',
-                  height: '70vh'
                 }}
               >
                 <WhiteboardImageFailureBanner
