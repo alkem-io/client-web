@@ -2616,7 +2616,7 @@
             "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to $t(common.members). Please note that both the information in the $t(common.profile) and the context are publicly visible.",
             "publicSubspace": "<b>Public:</b> This $t(common.subspace) and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this $t(common.subspace) and its contents will be visible to all users, including those outside the $t(common.space).",
             "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace).",
-            "membershipWarning": "<b>Please note that users can join this $t(common.space) without explicit approval. You can change this in the membership settings below.</b>"
+            "membershipWarning": "<b>Please note that users can join this {{entity}} without explicit approval. You can change this in the membership settings below.</b>"
           },
           "license-features": {
             "title": "$t(common.space) Features",

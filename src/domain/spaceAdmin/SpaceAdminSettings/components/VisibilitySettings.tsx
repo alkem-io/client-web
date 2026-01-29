@@ -56,7 +56,11 @@ export const VisibilitySettings: FC<VisibilitySettingsProps> = ({
         <Gutters disablePadding row alignItems="flex-start" gap={gutters(0.5)}>
           <GppMaybeOutlinedIcon fontSize="small" color="error" />
           <Caption>
-            <Trans i18nKey={'pages.admin.space.settings.visibility.membershipWarning'} components={{ b: <strong /> }} />
+            <Trans
+              i18nKey={'pages.admin.space.settings.visibility.membershipWarning'}
+              components={{ b: <strong /> }}
+              values={{ entity: t(isSubspace(level) ? 'common.subspace' : 'common.space') }}
+            />
           </Caption>
         </Gutters>
       )}
