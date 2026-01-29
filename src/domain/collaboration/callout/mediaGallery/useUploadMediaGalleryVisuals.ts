@@ -14,6 +14,7 @@ interface MediaGalleryFormVisual {
   name?: string;
   altText?: string;
   visualType?: VisualType;
+  sortOrder?: number;
 }
 
 const useUploadMediaGalleryVisuals = () => {
@@ -54,7 +55,7 @@ const useUploadMediaGalleryVisuals = () => {
 
       // Step 2: Process all visuals in parallel: create + upload for new files, or update existing
       const uploadOperations =
-        formVisuals?.map(async visual => {
+        formVisuals?.map(async (visual, index) => {
           // Case 1: New visual with file - create visual on media gallery and upload image
           if (visual.file && !visual.id) {
             const visualType = visual.visualType ?? getMediaGalleryVisualType(visual.file, visual.uri);
@@ -65,6 +66,7 @@ const useUploadMediaGalleryVisuals = () => {
                 addData: {
                   mediaGalleryID: mediaGalleryId,
                   visualType,
+                  sortOrder: visual.sortOrder ?? index,
                 },
               },
             });

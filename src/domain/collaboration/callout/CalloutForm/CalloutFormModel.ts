@@ -44,6 +44,7 @@ export interface CalloutFormSubmittedValues {
         name?: string;
         alternativeText?: string;
         visualType?: VisualType;
+        sortOrder?: number;
       }[];
     };
   };

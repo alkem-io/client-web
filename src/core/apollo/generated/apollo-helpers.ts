@@ -5059,6 +5059,7 @@ export type VisualKeySpecifier = (
   | 'minHeight'
   | 'minWidth'
   | 'name'
+  | 'sortOrder'
   | 'updatedDate'
   | 'uri'
   | VisualKeySpecifier
@@ -5075,6 +5076,7 @@ export type VisualFieldPolicy = {
   minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };

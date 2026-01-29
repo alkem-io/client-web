@@ -18,13 +18,15 @@ const convertVisualsToMediaItems = (callout: CalloutDetailsModel): MediaItem[] =
     return [];
   }
 
-  return visuals.map(visual => ({
-    id: visual.id,
-    type: 'image', // TODO: Handle video type if available in Visual
-    url: visual.uri,
-    title: visual.name,
-    alt: visual.alternativeText || visual.name,
-  }));
+  return [...visuals]
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    .map(visual => ({
+      id: visual.id,
+      type: 'image', // TODO: Handle video type if available in Visual
+      url: visual.uri,
+      title: visual.name,
+      alt: visual.alternativeText || visual.name,
+    }));
 };
 
 const CalloutFramingMediaGallery = ({ callout }: CalloutFramingMediaGalleryProps) => {

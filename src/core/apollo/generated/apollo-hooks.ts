@@ -1010,6 +1010,7 @@ export const CalloutDetailsFragmentDoc = gql`
           uri
           name
           alternativeText
+          sortOrder
         }
       }
     }

@@ -98,6 +98,7 @@ fragment CalloutDetails on Callout {
         uri
         name
         alternativeText
+        sortOrder
       }
     }
   }

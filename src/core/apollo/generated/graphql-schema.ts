@@ -510,6 +510,8 @@ export type ActivityLogInput = {
 export type AddVisualToMediaGalleryInput = {
   /** The ID of the media gallery. */
   mediaGalleryID: Scalars['String']['input'];
+  /** The sort order of the visual within the media gallery. */
+  sortOrder?: InputMaybe<Scalars['Float']['input']>;
   /** The type of visual to add (e.g. MEDIA_GALLERY_IMAGE, MEDIA_GALLERY_VIDEO). */
   visualType: VisualType;
 };
@@ -9111,6 +9113,7 @@ export type Visual = {
   /** Minimum width resolution. */
   minWidth: Scalars['Float']['output'];
   name: VisualType;
+  sortOrder?: Maybe<Scalars['Float']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   uri: Scalars['String']['output'];
@@ -13318,6 +13321,7 @@ export type UpdateCalloutContentMutation = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  sortOrder?: number | undefined;
                 }>
               | undefined;
           }
@@ -13705,6 +13709,7 @@ export type UpdateCalloutVisibilityMutation = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  sortOrder?: number | undefined;
                 }>
               | undefined;
           }
@@ -15245,6 +15250,7 @@ export type CreateCalloutMutation = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  sortOrder?: number | undefined;
                 }>
               | undefined;
           }
@@ -15754,6 +15760,7 @@ export type CalloutDetailsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        sortOrder?: number | undefined;
                       }>
                     | undefined;
                 }
@@ -16201,6 +16208,7 @@ export type CalloutDetailsFragment = {
                 uri: string;
                 name: VisualType;
                 alternativeText?: string | undefined;
+                sortOrder?: number | undefined;
               }>
             | undefined;
         }
