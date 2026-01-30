@@ -43,6 +43,7 @@ const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/In
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
+const HubRoute = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/routing/HubRoute'));
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 
 export const TopLevelRoutes = () => {
@@ -212,6 +213,16 @@ export const TopLevelRoutes = () => {
                       <WithApmTransaction path={TopLevelRoutePath.InnovationHubs}>
                         <Suspense fallback={<Loading />}>
                           <InnovationHubsRoutes />
+                        </Suspense>
+                      </WithApmTransaction>
+                    }
+                  />
+                  <Route
+                    path={`${TopLevelRoutePath.Hub}/*`}
+                    element={
+                      <WithApmTransaction path={TopLevelRoutePath.Hub}>
+                        <Suspense fallback={<Loading />}>
+                          <HubRoute />
                         </Suspense>
                       </WithApmTransaction>
                     }
