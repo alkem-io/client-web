@@ -79,12 +79,17 @@ const UserMessagingDialog = () => {
     setIsNewMessageDialogOpen(false);
   };
 
-  const handleNewMessageSent = (conversationId: string, roomId: string) => {
-    // Immediately select the new conversation using the IDs from the mutation result
-    setSelectedConversationId(conversationId);
-    setSelectedRoomId(roomId);
+  const handleNewConvMessageSent = (conversationId: string, roomId: string) => {
     // Track the newly created conversation so it appears at the top of the list
     setNewlyCreatedConversationId(conversationId);
+
+    // Verify the conversation exists in our list before selecting
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (conversation) {
+      setSelectedConversationId(conversationId);
+      setSelectedRoomId(roomId);
+    }
+    // If not found yet, the subscription will add it to the list
   };
 
   // Mobile view: show either the list or the conversation
@@ -136,7 +141,7 @@ const UserMessagingDialog = () => {
         <NewMessageDialog
           open={isNewMessageDialogOpen}
           onClose={handleCloseNewMessage}
-          onConversationCreated={handleNewMessageSent}
+          onConversationCreated={handleNewConvMessageSent}
         />
       </>
     );
@@ -203,7 +208,7 @@ const UserMessagingDialog = () => {
       <NewMessageDialog
         open={isNewMessageDialogOpen}
         onClose={handleCloseNewMessage}
-        onConversationCreated={handleNewMessageSent}
+        onConversationCreated={handleNewConvMessageSent}
       />
     </>
   );
