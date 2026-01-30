@@ -13,6 +13,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { useUnreadConversationsCount } from './useUnreadConversationsCount';
 
 const UserMessagingDialog = () => {
   const { t } = useTranslation();
@@ -26,7 +27,10 @@ const UserMessagingDialog = () => {
     setTotalUnreadCount,
   } = useUserMessagingContext();
 
-  // Query for conversation list (light - no messages)
+  // Lightweight query for badge count on app load (no messages, no user profiles)
+  const initialUnreadCount = useUnreadConversationsCount();
+
+  // Full query for conversation list (only when dialog is open)
   const { conversations, totalUnreadCount, isLoading } = useUserConversations();
 
   // Query for messages of selected conversation (on demand)
@@ -35,10 +39,10 @@ const UserMessagingDialog = () => {
   const { isSmallScreen: isMobile } = useScreenSize();
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
 
-  // Sync total unread count to context (for button badge)
+  // Sync unread count to context: use full query count when dialog is open, lightweight count otherwise
   useEffect(() => {
-    setTotalUnreadCount(totalUnreadCount);
-  }, [totalUnreadCount, setTotalUnreadCount]);
+    setTotalUnreadCount(isOpen ? totalUnreadCount : initialUnreadCount);
+  }, [isOpen, totalUnreadCount, initialUnreadCount, setTotalUnreadCount]);
 
   // Subscribe to conversation events (new messages, new conversations, read receipts)
   useConversationEventsSubscription(selectedRoomId);
