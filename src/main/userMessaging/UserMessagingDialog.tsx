@@ -25,6 +25,7 @@ const UserMessagingDialog = () => {
     selectedRoomId,
     setSelectedRoomId,
     setTotalUnreadCount,
+    setNewlyCreatedConversationId,
   } = useUserMessagingContext();
 
   // Lightweight query for badge count on app load (no messages, no user profiles)
@@ -78,16 +79,12 @@ const UserMessagingDialog = () => {
     setIsNewMessageDialogOpen(false);
   };
 
-  const handleNewMessageSent = async (userId: string) => {
-    // Find the conversation with this user and select it
-    // The subscription will handle adding new conversations, but we can also check if it exists
-    const existingConversation = conversations.find(conv => conv.user?.id === userId);
-
-    if (existingConversation) {
-      setSelectedConversationId(existingConversation.id);
-      setSelectedRoomId(existingConversation.roomId);
-    }
-    // If not found, the conversationCreated event from subscription will add it
+  const handleNewMessageSent = (conversationId: string, roomId: string) => {
+    // Immediately select the new conversation using the IDs from the mutation result
+    setSelectedConversationId(conversationId);
+    setSelectedRoomId(roomId);
+    // Track the newly created conversation so it appears at the top of the list
+    setNewlyCreatedConversationId(conversationId);
   };
 
   // Mobile view: show either the list or the conversation
