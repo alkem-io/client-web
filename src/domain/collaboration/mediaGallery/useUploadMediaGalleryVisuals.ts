@@ -146,7 +146,7 @@ const useUploadMediaGalleryVisuals = () => {
 
       // Refetch relevant queries to update the UI only when all the images have been processed
       await apolloClient.refetchQueries({
-        include: ['CalloutDetails'],
+        include: ['CalloutDetails', 'TemplateContent'],
       });
     },
     [addVisual, uploadVisual, deleteVisual, apolloClient]
