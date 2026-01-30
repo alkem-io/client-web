@@ -203,7 +203,7 @@ const CalloutFramingMediaGalleryField = () => {
                       opacity: 0,
                       transition: 'opacity 0.2s',
                     },
-                    '&:hover .only-on-hover': {
+                    '&:hover .only-on-hover, &:focus-within .only-on-hover': {
                       opacity: 1,
                     },
                   }}
@@ -212,7 +212,7 @@ const CalloutFramingMediaGalleryField = () => {
                     <Box
                       component="img"
                       src={visual.previewUrl || visual.uri}
-                      alt={visual.alternativeText || visual.name || 'Image'}
+                      alt={visual.alternativeText || visual.name || t('common.image')}
                       sx={{
                         position: 'absolute',
                         top: 0,
@@ -224,27 +224,29 @@ const CalloutFramingMediaGalleryField = () => {
                       }}
                     />
                   )}
-                  <IconButton
-                    className="only-on-hover"
-                    onClick={() => {
-                      revokePreviewUrl(visual.previewUrl);
-                      arrayHelpers.remove(index);
-                    }}
-                    aria-label="remove media item"
-                    sx={{
-                      position: 'absolute',
-                      bottom: gutters(0.5),
-                      right: gutters(0.5),
-                      backgroundColor: 'background.default',
-                      border: 1,
-                      borderColor: 'divider',
-                      '&:hover': {
-                        backgroundColor: 'background.paper',
-                      },
-                    }}
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
+                  <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>
+                    <IconButton
+                      className="only-on-hover"
+                      onClick={() => {
+                        revokePreviewUrl(visual.previewUrl);
+                        arrayHelpers.remove(index);
+                      }}
+                      aria-label={t('callout.create.framingSettings.mediaGallery.deleteItem')}
+                      sx={{
+                        position: 'absolute',
+                        bottom: gutters(0.5),
+                        right: gutters(0.5),
+                        backgroundColor: 'background.default',
+                        border: 1,
+                        borderColor: 'divider',
+                        '&:hover': {
+                          backgroundColor: 'background.paper',
+                        },
+                      }}
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               ))}
               <Box display="flex" alignItems="end" justifyContent="flex-start">
@@ -311,7 +313,7 @@ const CalloutFramingMediaGalleryField = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setErrorDialogOpen(false)} variant="contained">
-            {t('buttons.close', { defaultValue: 'Close' })}
+            {t('buttons.close')}
           </Button>
         </DialogActions>
       </Dialog>

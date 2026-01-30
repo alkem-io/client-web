@@ -75,8 +75,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         memo: {
           ...framingData.memo,
           id: undefined,
-          profile: framingData.whiteboard?.profile ?? { displayName: '' },
-          content: framingData.whiteboard?.content ?? '',
+          profile: framingData.memo?.profile ?? { displayName: '' },
+          markdown: framingData.memo?.markdown ?? '',
           previewImages: [],
         },
         link: framingData.link,

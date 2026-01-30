@@ -134,7 +134,9 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
         })}
       </GalleryWrapper>
       <Dialog open={!!selectedItem} onClose={handleClose} maxWidth="lg">
-        <DialogHeader onClose={handleClose}>{title || 'Media Gallery'}</DialogHeader>
+        <DialogHeader onClose={handleClose}>
+          {title || t('components.callout-creation.framing.mediaGallery.name')}
+        </DialogHeader>
         {selectedItem && (
           <ImageContainer onClick={handleClickOnImage}>
             <Box

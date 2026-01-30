@@ -155,8 +155,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
         {
           icon: BurstModeOutlinedIcon,
           value: CalloutFramingType.MediaGallery,
-          label: 'Media Gallery', // TODO: Add translation
-          tooltip: 'Create a media gallery', // TODO: Add translation
+          label: t('callout.create.framingSettings.mediaGallery.title'),
+          tooltip: t('callout.create.framingSettings.mediaGallery.tooltip'),
           disabled: calloutRestrictions?.disableMediaGallery,
         },
       ]}

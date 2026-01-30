@@ -37,7 +37,7 @@ const useUploadMediaGalleryVisuals = () => {
 
   const uploadMediaGalleryVisuals = useCallback(
     async ({ mediaGalleryId, visuals, existingVisualIds, reuploadVisuals }: uploadMediaGalleryVisualsParams) => {
-      if (!mediaGalleryId) {
+      if (!mediaGalleryId || !visuals) {
         return;
       }
 

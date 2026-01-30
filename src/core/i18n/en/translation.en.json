@@ -412,6 +412,7 @@
     "Community": "Community",
     "community": "community",
     "library": "Library",
+    "image": "Image",
     "templateLibrary": "Template Library",
     "people": "People",
     "Settings": "Settings",
@@ -835,6 +836,11 @@
         "link": {
           "title": "Call To Action",
           "tooltip": "Add a call to action to this $t(common.post)"
+        },
+        "mediaGallery": {
+          "title": "Media Gallery",
+          "tooltip": "Add an image gallery to this $t(common.post)",
+          "deleteItem": "Remove image from gallery"
         }
       },
       "contributionSettings": {
@@ -1606,6 +1612,12 @@
         "mediaGallery": {
           "name": "Media Gallery",
           "galleryItem": "Gallery Image",
+          "navigation": {
+            "ariaLabel": "Gallery navigation",
+            "previous": "Previous image",
+            "next": "Next image",
+            "goToImage": "Go to image {{number}}"
+          },
           "errors": {
             "title": "Image Upload Errors",
             "missingConstraints": "Unable to load media gallery items image constraints.",

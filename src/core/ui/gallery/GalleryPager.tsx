@@ -4,6 +4,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { BoxProps } from '@mui/system';
 import { gutters } from '../grid/utils';
+import { useTranslation } from 'react-i18next';
 
 const PagerContainer = styled(Box)(() => ({
   display: 'flex',
@@ -19,7 +20,7 @@ const DotsContainer = styled(Box)(() => ({
   gap: '8px',
 }));
 
-const Dot = styled(Box)<{ selected: boolean }>(({ selected }) => ({
+const Dot = styled('button')<{ selected: boolean }>(({ selected }) => ({
   boxSizing: 'content-box',
   backgroundClip: 'padding-box',
   width: '8px',
@@ -30,8 +31,13 @@ const Dot = styled(Box)<{ selected: boolean }>(({ selected }) => ({
   cursor: 'pointer',
   filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.6))',
   transition: 'all 0.2s ease',
+  padding: 0,
   '&:hover': {
     transform: 'scale(1.2)',
+  },
+  '&:focus-visible': {
+    outline: '2px solid white',
+    outlineOffset: '2px',
   },
   boxShadow: selected ? '0 0 0 1px white' : 'none',
 }));
@@ -66,6 +72,7 @@ const GalleryPager = ({
   containerProps,
   disableKeyboardNavigation,
 }: GalleryPagerProps) => {
+  const { t } = useTranslation();
   useEffect(() => {
     if (disableKeyboardNavigation) {
       return;
@@ -91,16 +98,36 @@ const GalleryPager = ({
   }
 
   return (
-    <PagerContainer {...containerProps}>
-      <NavButton onClick={onPrevious} size="small">
+    <PagerContainer
+      role="navigation"
+      aria-label={t('components.callout-creation.framing.mediaGallery.navigation.ariaLabel')}
+      {...containerProps}
+    >
+      <NavButton
+        onClick={onPrevious}
+        size="small"
+        aria-label={t('components.callout-creation.framing.mediaGallery.navigation.previous')}
+      >
         <ChevronLeftIcon />
       </NavButton>
       <DotsContainer>
         {Array.from({ length: totalItems }).map((_, index) => (
-          <Dot key={index} selected={index === currentIndex} onClick={() => onDotClick(index)} />
+          <Dot
+            key={index}
+            selected={index === currentIndex}
+            onClick={() => onDotClick(index)}
+            aria-label={t('components.callout-creation.framing.mediaGallery.navigation.goToImage', {
+              number: index + 1,
+            })}
+            aria-current={index === currentIndex ? 'true' : 'false'}
+          />
         ))}
       </DotsContainer>
-      <NavButton onClick={onNext} size="small">
+      <NavButton
+        onClick={onNext}
+        size="small"
+        aria-label={t('components.callout-creation.framing.mediaGallery.navigation.next')}
+      >
         <ChevronRightIcon />
       </NavButton>
     </PagerContainer>
