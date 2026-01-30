@@ -24286,6 +24286,9 @@ export const UpdateCalloutTemplateDocument = gql`
         }
         mediaGallery {
           id
+          visuals {
+            id
+          }
         }
       }
       contributionDefaults {

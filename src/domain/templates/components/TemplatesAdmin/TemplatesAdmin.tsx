@@ -41,7 +41,6 @@ import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboa
 import { SpaceTemplate } from '../../models/SpaceTemplate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
-import { CalloutTemplate } from '../../models/CalloutTemplate';
 import { compact } from 'lodash';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
@@ -133,6 +132,7 @@ const TemplatesAdmin = ({
     const {
       updateTemplateVariables,
       updateCalloutVariables,
+      updateCalloutMediaGallery,
       updateCommunityGuidelinesVariables,
       updateSpaceContentTemplateVariables,
       updateWhiteboardVariables,
@@ -153,11 +153,9 @@ const TemplatesAdmin = ({
       // update media gallery visuals
       await uploadMediaGalleryVisuals({
         mediaGalleryId: result.data?.updateCallout.framing.mediaGallery?.id,
-        visuals: (values as TemplateCalloutFormSubmittedValues).callout?.framing.mediaGallery?.visuals,
-        existingVisualIds: compact(
-          (selectedTemplate as CalloutTemplate).callout?.framing.mediaGallery?.visuals?.map(item => item.id)
-        ),
-        reuploadVisuals: true,
+        visuals: updateCalloutMediaGallery?.visuals,
+        existingVisualIds: compact(result.data?.updateCallout.framing.mediaGallery?.visuals.map(visual => visual.id)),
+        reuploadVisuals: false,
       });
     }
     if (updateCommunityGuidelinesVariables) {

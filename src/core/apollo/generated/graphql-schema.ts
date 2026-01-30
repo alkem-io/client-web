@@ -30837,7 +30837,9 @@ export type UpdateCalloutTemplateMutation = {
           }
         | undefined;
       memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
-      mediaGallery?: { __typename?: 'MediaGallery'; id: string } | undefined;
+      mediaGallery?:
+        | { __typename?: 'MediaGallery'; id: string; visuals: Array<{ __typename?: 'Visual'; id: string }> }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';

@@ -164,6 +164,9 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
       }
       mediaGallery {
         id
+        visuals {
+          id # Used to upload only the images that have changed in the gallery
+        }
       }
     }
     contributionDefaults {
