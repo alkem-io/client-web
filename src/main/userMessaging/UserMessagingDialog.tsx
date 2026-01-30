@@ -25,6 +25,7 @@ const UserMessagingDialog = () => {
     selectedRoomId,
     setSelectedRoomId,
     setTotalUnreadCount,
+    setNewlyCreatedConversationId,
   } = useUserMessagingContext();
 
   // Lightweight query for badge count on app load (no messages, no user profiles)
@@ -78,16 +79,17 @@ const UserMessagingDialog = () => {
     setIsNewMessageDialogOpen(false);
   };
 
-  const handleNewMessageSent = async (userId: string) => {
-    // Find the conversation with this user and select it
-    // The subscription will handle adding new conversations, but we can also check if it exists
-    const existingConversation = conversations.find(conv => conv.user?.id === userId);
+  const handleNewConvMessageSent = (conversationId: string, roomId: string) => {
+    // Track the newly created conversation so it appears at the top of the list
+    setNewlyCreatedConversationId(conversationId);
 
-    if (existingConversation) {
-      setSelectedConversationId(existingConversation.id);
-      setSelectedRoomId(existingConversation.roomId);
+    // Verify the conversation exists in our list before selecting
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (conversation) {
+      setSelectedConversationId(conversationId);
+      setSelectedRoomId(roomId);
     }
-    // If not found, the conversationCreated event from subscription will add it
+    // If not found yet, the subscription will add it to the list
   };
 
   // Mobile view: show either the list or the conversation
@@ -139,7 +141,7 @@ const UserMessagingDialog = () => {
         <NewMessageDialog
           open={isNewMessageDialogOpen}
           onClose={handleCloseNewMessage}
-          onConversationCreated={handleNewMessageSent}
+          onConversationCreated={handleNewConvMessageSent}
         />
       </>
     );
@@ -206,7 +208,7 @@ const UserMessagingDialog = () => {
       <NewMessageDialog
         open={isNewMessageDialogOpen}
         onClose={handleCloseNewMessage}
-        onConversationCreated={handleNewMessageSent}
+        onConversationCreated={handleNewConvMessageSent}
       />
     </>
   );
