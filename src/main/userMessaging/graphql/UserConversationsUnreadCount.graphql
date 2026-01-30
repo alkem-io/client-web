@@ -1,0 +1,13 @@
+query UserConversationsUnreadCount {
+  me {
+    conversations {
+      users {
+        id
+        room {
+          id
+          unreadCount
+        }
+      }
+    }
+  }
+}
