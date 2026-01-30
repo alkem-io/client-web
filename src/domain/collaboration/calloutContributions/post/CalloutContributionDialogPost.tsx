@@ -73,6 +73,9 @@ const CalloutContributionDialogPost = ({
       onCompleted: data => {
         onContributionDeleted(data.deleteContribution.id);
       },
+      onError: () => {
+        notify(t('common.error-generic'), 'error');
+      },
     });
   };
 
@@ -87,7 +90,11 @@ const CalloutContributionDialogPost = ({
 
   const canMoveCard = postSettings.post?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MovePost);
 
-  const [moveContributionToCallout, { loading: isMovingContribution }] = useMoveContributionToCalloutMutation({});
+  const [moveContributionToCallout, { loading: isMovingContribution }] = useMoveContributionToCalloutMutation({
+    onError: () => {
+      notify(t('post-edit.postLocation.error'), 'error');
+    },
+  });
 
   const [targetCalloutId, setTargetCalloutId] = useState(postSettings.parentCallout?.id);
 
@@ -150,15 +157,13 @@ const CalloutContributionDialogPost = ({
     }
 
     if (isMoveEnabled) {
-      const { data, errors } = await moveContributionToCallout({
+      const { data } = await moveContributionToCallout({
         variables: {
           contributionId,
           calloutId: targetCalloutId!, // ensured by isMoveEnabled
         },
       });
-      if (errors) {
-        notify(t('post-edit.postLocation.error'), 'error');
-      } else if (!shouldUpdate) {
+      if (!shouldUpdate) {
         notify(t('post-edit.postLocation.success'), 'success');
       }
       await refetchCallouts();

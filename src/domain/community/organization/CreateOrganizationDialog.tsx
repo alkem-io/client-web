@@ -28,6 +28,9 @@ export const CreateOrganizationDialog = ({ open, onClose }: CreateOrganizationDi
       notify(t('pages.admin.organization.notifications.organization-created'), 'success');
       navigate(organizationURL);
     },
+    onError: () => {
+      notify(t('pages.admin.organization.notifications.organization-creation-failed'), 'error');
+    },
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
 
