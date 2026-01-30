@@ -27,7 +27,7 @@ import {
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
 import { UserIdleState, isImageElement } from './utils';
-import { getCollabServer, SocketUpdateDataSource } from './data';
+import { getCollabServer, SocketUpdateData, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { BinaryFilesWithOptionalUrl, BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -52,6 +52,7 @@ export interface CollabProps {
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   onSceneInitChange: (initialized: boolean) => void;
+  onIncomingFloatingEmoji?: OnIncomingFloatingEmojiCallback;
 }
 
 type IncomingClientBroadcastData = {
@@ -60,6 +61,9 @@ type IncomingClientBroadcastData = {
     [key: string]: unknown;
   };
 };
+
+// Callback type for incoming floating emoji events
+export type OnIncomingFloatingEmojiCallback = (payload: { id: string; emoji: string; x: number; y: number }) => void;
 
 // List of used functions from Excalidraw that will be lazy loaded
 type ExcalidrawUtils = {
@@ -83,6 +87,7 @@ class Collab {
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
+  private onIncomingFloatingEmoji?: OnIncomingFloatingEmojiCallback;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
   private collaborationMode: CollaboratorMode | undefined = undefined;
 
@@ -104,6 +109,7 @@ class Collab {
     this.filesManager = props.filesManager;
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.onSceneInitChange = props.onSceneInitChange;
+    this.onIncomingFloatingEmoji = props.onIncomingFloatingEmoji;
     this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
   }
 
@@ -155,6 +161,27 @@ class Collab {
       elements,
       captureUpdate: CaptureUpdateAction.NEVER,
     });
+  };
+
+  /**
+   * Broadcast an ephemeral floating emoji to other clients.
+   * Uses reliable channel so reactions always land for all peers.
+   */
+  broadcastFloatingEmoji = async (emoji: string, x: number, y: number) => {
+    try {
+      const data = {
+        type: WS_SCENE_EVENT_TYPES.FLOATING_EMOJI,
+        payload: {
+          emoji,
+          x,
+          y,
+          id: `${this.portal.roomId}_${Date.now()}`,
+        },
+      } as SocketUpdateData;
+      await this.portal._broadcastSocketData(data, { volatile: true });
+    } catch (e) {
+      console.error('Failed to broadcast floating emoji:', e);
+    }
   };
 
   public isCollaborating = () => {
@@ -254,6 +281,21 @@ class Collab {
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles)
                 );
+                return;
+              }
+              if (isFloatingEmojiPayload(data)) {
+                try {
+                  const { emoji, x, y, id } = data.payload;
+                  // Forward to callback to display (optional subscriber)
+                  this.onIncomingFloatingEmoji?.({
+                    id: id || `${data.type}_${Date.now()}`,
+                    emoji,
+                    x,
+                    y,
+                  });
+                } catch (e) {
+                  console.error('Failed to handle incoming floating emoji:', e);
+                }
                 return;
               }
             },
@@ -481,3 +523,5 @@ const isMouseLocationPayload = (data: IncomingClientBroadcastData): data is Sock
   data.type === WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
 const isSceneUpdatePayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_UPDATE'] =>
   data.type === WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
+const isFloatingEmojiPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['FLOATING_EMOJI'] =>
+  data.type === WS_SCENE_EVENT_TYPES.FLOATING_EMOJI;

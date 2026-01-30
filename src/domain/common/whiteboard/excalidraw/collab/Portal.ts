@@ -176,7 +176,7 @@ class Portal {
     return !!(this.sceneInitialized && this.socket && this.roomId);
   }
 
-  private _broadcastSocketData(data: SocketUpdateData, { volatile = false }: BroadcastOptions = {}) {
+  public _broadcastSocketData(data: SocketUpdateData, { volatile = false }: BroadcastOptions = {}) {
     return this._broadcastEvent(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, data);
   }
 
