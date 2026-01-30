@@ -56,7 +56,11 @@ export interface WhiteboardDetails {
   profile: {
     id: string;
     displayName: string;
-    storageBucket: { id: string };
+    storageBucket: {
+      id: string;
+      allowedMimeTypes: string[];
+      maxFileSize: number;
+    };
     visual?: Identifiable & PreviewImageDimensions;
     preview?: Identifiable & PreviewImageDimensions;
     url?: string;
@@ -125,8 +129,24 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    allowedMimeTypes: whiteboard?.profile?.storageBucket.allowedMimeTypes,
+    maxFileSize: whiteboard?.profile?.storageBucket.maxFileSize,
     allowFallbackToAttached: options.allowFilesAttached,
   });
+
+  const failureState = filesManager.getFailureState();
+
+  // Show notification when image failures occur
+  useEffect(() => {
+    if (failureState.hasFailures) {
+      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
+      const message =
+        totalFailures === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
+      notify(message, 'warning');
+    }
+  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
@@ -353,7 +373,9 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     onImportTemplate={handleImportTemplate}
                   />
                 </DialogHeader>
-                <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
+                <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>
+                  {children}
+                </DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
                   whiteboardUrl={whiteboard.profile.url}

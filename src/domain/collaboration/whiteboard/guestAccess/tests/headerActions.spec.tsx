@@ -72,6 +72,8 @@ const mockWhiteboardData = {
         url: 'http://test.url',
         storageBucket: {
           id: 'bucket-id',
+          allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+          maxFileSize: 15728640,
         },
       },
       createdDate: '2023-01-01T00:00:00Z',

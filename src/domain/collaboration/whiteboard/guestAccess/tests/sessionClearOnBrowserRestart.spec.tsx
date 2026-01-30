@@ -22,6 +22,13 @@ import {
   setSessionStorageImplementation,
 } from './utils/sessionStorageMock';
 
+// Mock the Sentry logging module
+const mockLogWarn = vi.fn();
+vi.mock('@/core/logging/sentry/log', () => ({
+  warn: (message: string, options?: unknown) => mockLogWarn(message, options),
+  TagCategoryValues: { AUTH: 'auth' },
+}));
+
 type BrowserTabSession = {
   storage: SessionStorageMock;
   activate: () => void;
@@ -92,6 +99,7 @@ describe('Session Clear on Browser Restart', () => {
   beforeEach(() => {
     cleanup();
     vi.clearAllMocks();
+    mockLogWarn.mockClear();
     startBrowserSession();
     sessionStorage.clear();
     localStorage.clear();
@@ -309,8 +317,6 @@ describe('Session Clear on Browser Restart', () => {
     });
 
     it('should handle session storage disabled/unavailable', () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
       // Mock sessionStorage.getItem to throw
       const storage = getActiveSessionStorage();
       const getItemSpy = vi.spyOn(storage, 'getItem').mockImplementation(() => {
@@ -319,20 +325,20 @@ describe('Session Clear on Browser Restart', () => {
 
       renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-unavailable" />);
 
-      // Should warn about unavailable storage
-      expect(consoleWarnSpy).toHaveBeenCalledWith('Session storage unavailable:', expect.any(Error));
+      // Should warn about unavailable storage via Sentry logging
+      expect(mockLogWarn).toHaveBeenCalledWith(
+        expect.stringContaining('Session storage unavailable'),
+        expect.objectContaining({ category: 'auth' })
+      );
 
       // Should gracefully handle and show no guest name
       expect(screen.getByTestId('guest-name')).toHaveTextContent('No guest name');
 
       // Restore
       getItemSpy.mockRestore();
-      consoleWarnSpy.mockRestore();
     });
 
     it('should start fresh if session storage fails to read', () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
       // Mock to throw on getItem but succeed on setItem
       const storage = getActiveSessionStorage();
       const originalGetItem = storage.getItem;
@@ -352,7 +358,6 @@ describe('Session Clear on Browser Restart', () => {
 
       // Restore
       getItemSpy.mockRestore();
-      consoleWarnSpy.mockRestore();
     });
   });
 });

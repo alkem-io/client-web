@@ -69,6 +69,7 @@ const useCalloutDetails = ({
       movable: canMoveCallouts,
       canBeSavedAsTemplate,
       classificationTagsets: [],
+      publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
       ...memoizedOverrideCalloutSettings,
     };
   }, [data, loading, calloutsSetId, canMoveCallouts, canBeSavedAsTemplate, memoizedOverrideCalloutSettings]);

@@ -17,8 +17,6 @@ export const useGuestSessionReturn = (): UseGuestSessionReturnResult => {
   const whiteboardUrl = getGuestWhiteboardUrl();
   const shouldShowNotification = Boolean(guestName && whiteboardUrl);
 
-  console.log('useGuestSessionReturn:', { guestName, whiteboardUrl, shouldShowNotification });
-
   const handleBackToWhiteboard = useCallback(() => {
     if (whiteboardUrl) {
       navigate(whiteboardUrl);

@@ -140,8 +140,7 @@ const WhiteboardDialogFooter = ({
   const canRestart =
     readonlyReason === ReadonlyReason.Readonly &&
     (!collaboratorModeReason ||
-      collaboratorModeReason === CollaboratorModeReasons.INACTIVITY ||
-      collaboratorModeReason === CollaboratorModeReasons.ROOM_CAPACITY_REACHED);
+      collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
 
   return (
     <>

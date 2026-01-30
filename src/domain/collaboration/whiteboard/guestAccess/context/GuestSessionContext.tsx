@@ -1,5 +1,7 @@
 import { createContext, FC, ReactNode, useState, useEffect, useContext } from 'react';
+import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { clearGuestWhiteboardUrl } from '../utils/sessionStorage';
+
 
 const STORAGE_KEY = 'alkemio_guest_name';
 
@@ -32,7 +34,7 @@ export const GuestSessionProvider: FC<GuestSessionProviderProps> = ({ children }
         setGuestNameState(stored);
       }
     } catch (error) {
-      console.warn('Session storage unavailable:', error);
+      logWarn(`Session storage unavailable: ${error}`, { category: TagCategoryValues.AUTH });
       setIsStorageAvailable(false);
     }
   }, []);
@@ -42,7 +44,7 @@ export const GuestSessionProvider: FC<GuestSessionProviderProps> = ({ children }
     try {
       sessionStorage.setItem(STORAGE_KEY, name);
     } catch (error) {
-      console.warn('Failed to persist guest name:', error);
+      logWarn(`Failed to persist guest name: ${error}`, { category: TagCategoryValues.AUTH });
     }
   };
 
@@ -53,7 +55,7 @@ export const GuestSessionProvider: FC<GuestSessionProviderProps> = ({ children }
       // Also clear stored whiteboard URL when guest session ends
       clearGuestWhiteboardUrl();
     } catch (error) {
-      console.warn('Failed to clear guest session:', error);
+      logWarn(`Failed to clear guest session: ${error}`, { category: TagCategoryValues.AUTH });
     }
   };
 
