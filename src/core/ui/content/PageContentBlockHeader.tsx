@@ -53,7 +53,7 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
     } else {
       setActionsCollapsed(false);
     }
-  }, [width]);
+  }, [width, autoCollapseActions, actions]);
 
   return (
     <>

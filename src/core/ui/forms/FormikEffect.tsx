@@ -19,7 +19,7 @@ const FormikEffectFactory = <T,>() => {
 
     const { values, isValid, dirty } = formik;
 
-    useDeepCompareEffect(() => onChange && onChange(values), [values]);
+    useDeepCompareEffect(() => onChange && onChange(values), [values, onChange]);
     useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
     useEffect(() => onDirtyChange && onDirtyChange(dirty), [dirty, onDirtyChange]);
     useEffect(() => canSave && canSave(isValid && dirty), [isValid, dirty, canSave]);

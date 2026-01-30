@@ -3,7 +3,7 @@ import { Box, styled, IconButton } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { BoxProps } from '@mui/system';
-import { gutters } from '../grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 
 const PagerContainer = styled(Box)(() => ({

@@ -105,7 +105,8 @@ export const mapCalloutTemplateToCalloutForm = (
               calloutTemplate.framing.mediaGallery.visuals?.map(v => ({
                 id: v.id,
                 uri: v.uri,
-                name: v.alternativeText || '',
+                name: v.name,
+                alternativeText: v.alternativeText || '',
               })) ?? [],
           }
         : undefined,

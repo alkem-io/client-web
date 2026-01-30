@@ -106,6 +106,9 @@ const useUploadMediaGalleryVisuals = () => {
           else if (reuploadVisuals && visual.id && visual.uri && !visual.file) {
             // Get the file from the URI
             const response = await fetch(visual.uri);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch visual from ${visual.uri}: ${response.status} ${response.statusText}`);
+            }
             const blob = await response.blob();
             const file = new File([blob], visual.name || 'visual', { type: blob.type });
             const visualType = visual.visualType ?? getMediaGalleryVisualType(file, visual.uri);
