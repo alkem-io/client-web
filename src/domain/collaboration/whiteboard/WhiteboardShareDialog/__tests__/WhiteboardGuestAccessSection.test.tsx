@@ -8,7 +8,7 @@ import { UseWhiteboardGuestAccessResult } from '../../hooks/useWhiteboardGuestAc
 const buildGuestAccess = (overrides: Partial<UseWhiteboardGuestAccessResult> = {}): UseWhiteboardGuestAccessResult => ({
   enabled: false,
   canToggle: true,
-  isMutating: false,
+  isUpdating: false,
   guestLink: 'https://example.com/guest',
   hasError: false,
   onToggle: vi.fn(() => Promise.resolve()),
