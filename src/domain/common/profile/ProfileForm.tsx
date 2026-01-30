@@ -37,66 +37,67 @@ type ProfileFormProps = {
 
 const ProfileForm = forwardRef<ProfileFormHandle, ProfileFormProps>(
   ({ profile, onSubmit, spaceLevel = SpaceLevel.L0 }, ref) => {
-  const { t } = useTranslation();
+    const { t } = useTranslation();
 
-  const initialValues: ProfileFormValues = {
-    displayName: profile?.displayName ?? '',
-    tagline: profile?.tagline ?? '',
-    location: profile.location ?? EmptyLocationMapped,
-    references: profile?.references ?? [],
-    tagsets: profile?.tagsets ? profile.tagsets : profile?.tagset ? [profile.tagset] : [EmptyTagset],
-  };
+    const initialValues: ProfileFormValues = {
+      displayName: profile?.displayName ?? '',
+      tagline: profile?.tagline ?? '',
+      location: profile.location ?? EmptyLocationMapped,
+      references: profile?.references ?? [],
+      tagsets: profile?.tagsets ? profile.tagsets : profile?.tagset ? [profile.tagset] : [EmptyTagset],
+    };
 
-  const validationSchema = yup.object().shape({
-    displayName: nameSegmentSchema.fields.displayName,
-    tagline: spaceAboutSegmentSchema.fields?.tagline || textLengthValidator(),
-    location: yup.object().shape({
-      city: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
-    }),
-    references: referenceSegmentSchema,
-    tagsets: tagsetsSegmentSchema,
-  });
+    const validationSchema = yup.object().shape({
+      displayName: nameSegmentSchema.fields.displayName,
+      tagline: spaceAboutSegmentSchema.fields?.tagline || textLengthValidator(),
+      location: yup.object().shape({
+        city: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
+      }),
+      references: referenceSegmentSchema,
+      tagsets: tagsetsSegmentSchema,
+    });
 
-  const submitRef = useRef<(() => void) | null>(null);
+    const submitRef = useRef<(() => void) | null>(null);
 
-  // Expose submit method to parent component
-  useImperativeHandle(ref, () => ({
-    submit: () => {
-      submitRef.current?.();
-    },
-  }));
+    // Expose submit method to parent component
+    useImperativeHandle(ref, () => ({
+      submit: () => {
+        submitRef.current?.();
+      },
+    }));
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      onSubmit={async values => {
-        onSubmit(values);
-      }}
-    >
-      {({ values: { references }, handleSubmit }) => {
-        // Store handleSubmit in ref
-        submitRef.current = handleSubmit;
+    return (
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        onSubmit={async values => {
+          onSubmit(values);
+        }}
+      >
+        {({ values: { references }, handleSubmit }) => {
+          // Store handleSubmit in ref
+          submitRef.current = handleSubmit;
 
-        return (
-          <>
-            <FormikInputField name="displayName" title={t('components.nameSegment.name')} required />
-            <FormikInputField
-              name={'tagline'}
-              title={t(`context.${spaceLevel}.tagline.title` as const)}
-              rows={3}
-              maxLength={SMALL_TEXT_LENGTH}
-            />
-            <LocationSegment cityFieldName="location.city" countryFieldName="location.country" />
-            <TagsetSegment title={t('common.tags')} />
-            <ContextReferenceSegment references={references || []} profileId={profile?.id} />
-          </>
-        );
-      }}
-    </Formik>
-  );
-});
+          return (
+            <>
+              <FormikInputField name="displayName" title={t('components.nameSegment.name')} required />
+              <FormikInputField
+                name={'tagline'}
+                title={t(`context.${spaceLevel}.tagline.title` as const)}
+                rows={3}
+                maxLength={SMALL_TEXT_LENGTH}
+              />
+              <LocationSegment cityFieldName="location.city" countryFieldName="location.country" />
+              <TagsetSegment title={t('common.tags')} />
+              <ContextReferenceSegment references={references || []} profileId={profile?.id} />
+            </>
+          );
+        }}
+      </Formik>
+    );
+  }
+);
 
 ProfileForm.displayName = 'ProfileForm';
 

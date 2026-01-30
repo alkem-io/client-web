@@ -1,7 +1,7 @@
 query CalloutsOnCalloutsSetUsingClassification(
   $calloutsSetId: UUID!
-  $classificationTagsets: [TagsetArgs!] = [],
-  $withClassification: Boolean = true,
+  $classificationTagsets: [TagsetArgs!] = []
+  $withClassification: Boolean = true
   $tagsFilter: [String!]
 ) {
   lookup {
@@ -90,6 +90,9 @@ fragment CalloutDetails on Callout {
     }
     link {
       ...LinkDetails
+    }
+    mediaGallery {
+      ...MediaGalleryVisuals
     }
   }
   contributionDefaults {

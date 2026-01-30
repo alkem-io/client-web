@@ -27,6 +27,7 @@ import {
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -50,34 +51,44 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   const callout = useMemo<CalloutFormSubmittedValues | undefined>(() => {
     const calloutData = data?.lookup.callout;
     if (!calloutData) return undefined;
+    const { mediaGallery, ...framingData } = calloutData.framing;
     return {
       ...calloutData,
       id: undefined,
       framing: {
-        ...calloutData.framing,
+        ...framingData,
         id: undefined,
         profile: {
-          ...calloutData.framing.profile,
-          description: calloutData.framing.profile.description ?? '',
-          tagsets: calloutData.framing.profile.tagsets ?? [EmptyTagset],
-          references: calloutData.framing.profile.references ?? [],
+          ...framingData.profile,
+          description: framingData.profile.description ?? '',
+          tagsets: framingData.profile.tagsets ?? [EmptyTagset],
+          references: framingData.profile.references ?? [],
         },
         whiteboard: {
-          ...calloutData.framing.whiteboard,
+          ...framingData.whiteboard,
           id: undefined,
-          profile: calloutData.framing.whiteboard?.profile ?? { displayName: '' },
-          content: calloutData.framing.whiteboard?.content ?? '',
+          profile: framingData.whiteboard?.profile ?? { displayName: '' },
+          content: framingData.whiteboard?.content ?? '',
           previewImages: [],
-          previewSettings: calloutData.framing.whiteboard?.previewSettings,
+          previewSettings: framingData.whiteboard?.previewSettings,
         },
         memo: {
-          ...calloutData.framing.memo,
+          ...framingData.memo,
           id: undefined,
-          profile: calloutData.framing.whiteboard?.profile ?? { displayName: '' },
-          content: calloutData.framing.whiteboard?.content ?? '',
+          profile: framingData.memo?.profile ?? { displayName: '' },
+          markdown: framingData.memo?.markdown ?? '',
           previewImages: [],
         },
-        link: calloutData.framing.link,
+        link: framingData.link,
+        mediaGallery: {
+          ...mediaGallery,
+          visuals:
+            mediaGallery?.visuals?.map(v => ({
+              ...v,
+              previewUrl: '',
+              file: undefined,
+            })) || [],
+        },
       },
       settings: mapCalloutSettingsModelToCalloutSettingsFormValues(calloutData.settings),
       contributionDefaults: {
@@ -86,6 +97,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       },
     };
   }, [data?.lookup.callout, loadingCallout]);
+
+  // Track original visual IDs to detect deletions
+  const originalVisualIds = useMemo(
+    () => data?.lookup.callout?.framing.mediaGallery?.visuals?.map(v => v.id) ?? [],
+    [data?.lookup.callout?.framing.mediaGallery?.visuals]
+  );
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -108,12 +125,13 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   const [updateCalloutContent] = useUpdateCalloutContentMutation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput
-    const { memo, ...framingWithoutMemo } = formData.framing;
+    const { memo, mediaGallery, ...framingData } = formData.framing;
     const framing = {
-      ...framingWithoutMemo,
+      ...framingData,
       profile: mapProfileModelToUpdateProfileInput(formData.framing.profile),
       whiteboard: undefined,
       whiteboardContent:
@@ -124,6 +142,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         formData.framing.type === CalloutFramingType.Link
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
           : undefined,
+      // mediaGallery is updated separately image by image
     };
 
     // And map the radio button allowed contribution types to an array
@@ -169,6 +188,13 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       },
       refetchQueries: ['CalloutsSetTags'],
     });
+    if (result.data?.updateCallout.framing.mediaGallery?.id && formData.framing.mediaGallery?.visuals) {
+      await uploadMediaGalleryVisuals({
+        mediaGalleryId: result.data.updateCallout.framing.mediaGallery.id,
+        visuals: formData.framing.mediaGallery.visuals,
+        existingVisualIds: originalVisualIds,
+      });
+    }
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {
         previewVisualId: result.data.updateCallout.framing.whiteboard?.profile.preview.id,
@@ -208,10 +234,11 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                   temporaryLocation: false,
                   readOnlyContributions: true,
                   onlyRealTimeWhiteboardFraming: true,
-                  // disable the change of framing for now
+                  // disable the change of framing type for now, but allow editing content
                   disableMemos: true,
                   disableWhiteboards: true,
                   disableLinks: true,
+                  disableMediaGallery: true,
                 }}
               />
             </StorageConfigContextProvider>

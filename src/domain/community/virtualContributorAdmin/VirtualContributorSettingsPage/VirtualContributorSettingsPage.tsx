@@ -47,9 +47,7 @@ const VirtualContributorSettingsPage = () => {
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <VisibilityForm vc={vc} />
         <BodyOfKnowledgeManagement vc={vc} />
-        {canShowPromptGraphSection && (
-          <PromptGraphConfig vc={vc} isPlatformAdmin={!!isPlatformAdmin} />
-        )}
+        {canShowPromptGraphSection && <PromptGraphConfig vc={vc} isPlatformAdmin={!!isPlatformAdmin} />}
         {isPromptConfigAvailable && <PromptConfig vc={vc} />}
         {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
       </VCSettingsPageLayout>

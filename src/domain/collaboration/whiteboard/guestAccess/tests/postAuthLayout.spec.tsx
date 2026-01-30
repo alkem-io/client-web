@@ -213,10 +213,8 @@ describe('Post-Authentication Layout Persistence', () => {
         <div key="error">Error State</div>,
       ];
 
-      contents.forEach((content) => {
-        const { container, unmount } = render(
-          <PublicWhiteboardLayout>{content}</PublicWhiteboardLayout>
-        );
+      contents.forEach(content => {
+        const { container, unmount } = render(<PublicWhiteboardLayout>{content}</PublicWhiteboardLayout>);
 
         const layoutBox = container.querySelector('div[class*="MuiBox"]');
         if (layoutBox) {

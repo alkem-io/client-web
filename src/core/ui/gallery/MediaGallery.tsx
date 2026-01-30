@@ -1,0 +1,166 @@
+import React from 'react';
+import { Box, Dialog, styled } from '@mui/material';
+import { MediaGalleryItem } from './types';
+import { gutters } from '../grid/utils';
+import DialogHeader from '../dialog/DialogHeader';
+import GalleryPager from './GalleryPager';
+import { useTranslation } from 'react-i18next';
+
+const GalleryWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: gutters(0.5)(theme),
+  marginBottom: gutters(1)(theme),
+}));
+
+const GalleryItem = styled('a')(() => ({
+  display: 'block',
+  aspectRatio: '4 / 3',
+  flex: '1 1 300px',
+  maxWidth: '100%',
+  overflow: 'hidden',
+  cursor: 'pointer',
+  position: 'relative',
+  '& img': {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    transition: 'transform 0.3s ease',
+  },
+  '&:hover img': {
+    transform: 'scale(1.05)',
+  },
+}));
+
+const ImageContainer = styled(Box)(({ theme }) => ({
+  userSelect: 'none',
+  position: 'relative',
+  width: 'auto',
+  height: 'auto',
+  minHeight: gutters(10)(theme),
+  minWidth: gutters(20)(theme),
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '& *': {
+    userSelect: 'none',
+  },
+  '& > img': {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    width: 'auto',
+    height: 'auto',
+    objectFit: 'contain',
+  },
+}));
+
+interface MediaGalleryProps {
+  title?: string;
+  items: MediaGalleryItem[];
+}
+
+const MediaGallery = ({ title, items }: MediaGalleryProps) => {
+  const { t } = useTranslation();
+  const [selectedItem, setSelectedItem] = React.useState<MediaGalleryItem>();
+  const [currentIndex, setCurrentIndex] = React.useState<number>(0);
+
+  const handleClose = () => {
+    setSelectedItem(undefined);
+    setCurrentIndex(0);
+  };
+
+  const handleItemClick = (item: MediaGalleryItem, index: number) => {
+    setSelectedItem(item);
+    setCurrentIndex(index);
+  };
+
+  const handlePrevious = () => {
+    const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+    setSelectedItem(items[newIndex]);
+  };
+
+  const handleNext = () => {
+    const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+    setSelectedItem(items[newIndex]);
+  };
+
+  const handleDotClick = (index: number) => {
+    setCurrentIndex(index);
+    setSelectedItem(items[index]);
+  };
+
+  const handleClickOnImage = (e: React.MouseEvent<HTMLDivElement>) => {
+    const img = e.currentTarget;
+    const rect = img.getBoundingClientRect();
+
+    // Determine if click is on left or right half
+    const clickX = e.clientX - rect.left;
+    const isLeft = clickX < rect.width / 2;
+
+    if (isLeft) {
+      handlePrevious();
+    } else {
+      handleNext();
+    }
+  };
+
+  if (!items || items.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <GalleryWrapper>
+        {items.map((item, index) => {
+          const isVideo = item.type === 'video';
+          const videoSource = isVideo
+            ? JSON.stringify({
+                source: [{ src: item.url, type: 'video/mp4' }],
+                attributes: { preload: false, controls: true },
+              })
+            : undefined;
+
+          return (
+            <GalleryItem key={item.id} data-src={isVideo ? undefined : item.url} data-video={videoSource}>
+              <img
+                src={item.thumbnailUrl || item.url}
+                alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
+                onClick={() => handleItemClick(item, index)}
+              />
+            </GalleryItem>
+          );
+        })}
+      </GalleryWrapper>
+      <Dialog open={!!selectedItem} onClose={handleClose} maxWidth="lg">
+        <DialogHeader onClose={handleClose}>
+          {title || t('components.callout-creation.framing.mediaGallery.name')}
+        </DialogHeader>
+        {selectedItem && (
+          <ImageContainer onClick={handleClickOnImage}>
+            <Box
+              component="img"
+              src={selectedItem.thumbnailUrl || selectedItem.url}
+              alt={
+                selectedItem.alt ||
+                selectedItem.title ||
+                t('components.callout-creation.framing.mediaGallery.galleryItem')
+              }
+            />
+            <GalleryPager
+              containerProps={{ position: 'absolute', bottom: 0, width: '100%', onClick: e => e.stopPropagation() }}
+              totalItems={items.length}
+              currentIndex={currentIndex}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              onDotClick={handleDotClick}
+            />
+          </ImageContainer>
+        )}
+      </Dialog>
+    </>
+  );
+};
+
+export default MediaGallery;

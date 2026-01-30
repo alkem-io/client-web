@@ -93,13 +93,13 @@ const DialogWithGrid = ({
       fullScreen={isFullScreen}
       {...dialogProps}
       sx={{
-        '& > .MuiDialog-container > .MuiBox-root > .MuiPaper-root': {
+        '& .MuiDialog-container > .MuiBox-root > .MuiPaper-root': {
           ...(fullScreen === false ? { height: '85vh' } : fullScreen === true ? { height: 1, maxHeight: 1 } : {}), // fullScreen === undefined
         },
         '.MuiDialog-paper': {
           maxWidth: '100vw',
           margin: 0,
-          height: 'auto',
+          // height: 'auto',
           maxHeight: isFullScreen ? '100vh' : '100%',
           ...(fullHeight && {
             minHeight: 'auto',

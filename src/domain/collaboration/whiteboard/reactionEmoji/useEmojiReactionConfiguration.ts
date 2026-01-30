@@ -9,10 +9,7 @@
 
 import { useMemo } from 'react';
 import { EmojiReactionConfiguration } from './types';
-import {
-  defaultEmojiReactionConfig,
-  isValidEmojiReactionConfig,
-} from './emojiReactionConfig';
+import { defaultEmojiReactionConfig, isValidEmojiReactionConfig } from './emojiReactionConfig';
 
 /**
  * Hook to access the emoji reaction configuration.

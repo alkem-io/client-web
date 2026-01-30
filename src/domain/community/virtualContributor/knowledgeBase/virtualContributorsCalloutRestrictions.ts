@@ -6,4 +6,5 @@ export const virtualContributorsCalloutRestrictions: CalloutRestrictions = {
   disableMemos: true,
   disableComments: true,
   disableCommentsToContributions: true,
+  disableMediaGallery: true,
 };

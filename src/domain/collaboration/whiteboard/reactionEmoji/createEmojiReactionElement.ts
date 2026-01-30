@@ -39,9 +39,7 @@ import {
  * });
  * ```
  */
-export function createEmojiReactionElement(
-  options: CreateEmojiReactionElementOptions
-): ExcalidrawTextElementSkeleton {
+export function createEmojiReactionElement(options: CreateEmojiReactionElementOptions): ExcalidrawTextElementSkeleton {
   const { emoji, x, y, fontSize = DEFAULT_EMOJI_REACTION_FONT_SIZE } = options;
 
   return {

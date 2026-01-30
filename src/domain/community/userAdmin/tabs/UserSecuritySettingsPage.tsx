@@ -89,11 +89,7 @@ export const UserSecuritySettingsPage = () => {
           {settingsFlow?.ui && (
             <Box sx={{ mt: 2 }}>
               <KratosForm ui={settingsFlow.ui}>
-                <KratosUI
-                  ui={settingsFlow.ui}
-                  removedFields={REMOVED_FIELDS}
-                  flowType="settings"
-                />
+                <KratosUI ui={settingsFlow.ui} removedFields={REMOVED_FIELDS} flowType="settings" />
               </KratosForm>
             </Box>
           )}

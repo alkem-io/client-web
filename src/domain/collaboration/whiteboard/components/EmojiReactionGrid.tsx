@@ -22,12 +22,7 @@ interface EmojiReactionGridProps {
  * Displays a grid of emoji buttons from the configuration.
  * Each button has an accessible label and visual feedback on hover/selection.
  */
-const EmojiReactionGrid = ({
-  config,
-  onSelect,
-  selectedEmoji,
-  className,
-}: EmojiReactionGridProps) => {
+const EmojiReactionGrid = ({ config, onSelect, selectedEmoji, className }: EmojiReactionGridProps) => {
   const { t } = useTranslation();
 
   const handleEmojiClick = (entry: EmojiReactionConfigEntry) => {
@@ -77,9 +72,7 @@ const EmojiReactionGrid = ({
                 width: 40,
                 height: 40,
                 borderRadius: 1,
-                backgroundColor: isSelected
-                  ? theme.palette.action.selected
-                  : 'transparent',
+                backgroundColor: isSelected ? theme.palette.action.selected : 'transparent',
                 '&:hover': {
                   backgroundColor: theme.palette.action.hover,
                 },

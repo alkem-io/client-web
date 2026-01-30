@@ -95,6 +95,9 @@ fragment CalloutTemplateContent on Callout {
     memo {
       ...MemoTemplateDetails
     }
+    mediaGallery {
+      ...MediaGalleryVisuals
+    }
   }
   settings {
     ...CalloutSettingsFull

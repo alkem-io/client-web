@@ -1,0 +1,7 @@
+mutation updateVisual($updateData: UpdateVisualInput!) {
+  updateVisual(updateData: $updateData) {
+    id
+    uri
+    alternativeText
+  }
+}

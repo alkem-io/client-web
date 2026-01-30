@@ -103,13 +103,10 @@ export const useGuestAnalytics = () => {
         transaction?.end();
       }
 
-      logInfo(
-        `Derived guest name used: ${derivedName} (method: ${derivationMethod}) for whiteboard ${whiteboardId}`,
-        {
-          category: TagCategoryValues.WHITEBOARD,
-          label: 'derived_name_used',
-        }
-      );
+      logInfo(`Derived guest name used: ${derivedName} (method: ${derivationMethod}) for whiteboard ${whiteboardId}`, {
+        category: TagCategoryValues.WHITEBOARD,
+        label: 'derived_name_used',
+      });
     },
     [apm]
   );

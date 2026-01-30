@@ -28,6 +28,10 @@ export interface CalloutRestrictions {
    */
   disableLinks?: boolean;
   /**
+   * Disables Media Gallery feature in the callout framing.
+   */
+  disableMediaGallery?: boolean;
+  /**
    * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;
