@@ -160,6 +160,7 @@ const CalloutFramingMediaGalleryField = () => {
         previewUrl: validFile.previewUrl,
         alternativeText: '',
         visualType: getMediaGalleryVisualType(validFile.file),
+        sortOrder: Math.max(0, ...mediaVisuals.map(v => v.sortOrder ?? 0)) + 1,
       });
     }
   };

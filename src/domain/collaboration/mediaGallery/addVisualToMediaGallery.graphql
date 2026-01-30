@@ -4,5 +4,6 @@ mutation addVisualToMediaGallery($addData: AddVisualToMediaGalleryInput!) {
     uri
     name
     alternativeText
+    sortOrder
   }
 }

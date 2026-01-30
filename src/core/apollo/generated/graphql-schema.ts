@@ -16366,6 +16366,7 @@ export type AddVisualToMediaGalleryMutation = {
     uri: string;
     name: VisualType;
     alternativeText?: string | undefined;
+    sortOrder?: number | undefined;
   };
 };
 

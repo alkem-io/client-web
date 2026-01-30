@@ -9265,6 +9265,7 @@ export const AddVisualToMediaGalleryDocument = gql`
       uri
       name
       alternativeText
+      sortOrder
     }
   }
 `;
