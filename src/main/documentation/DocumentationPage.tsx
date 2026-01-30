@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import useNavigate from '@/core/routing/useNavigate';
 import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const DEFAULT_HEIGHT = '100vh';
 const enum SupportedMessageTypes {
@@ -25,6 +26,10 @@ const getCurrentOriginWithoutPort = () => {
 
 const DocumentationPage = () => {
   const { t } = useTranslation();
+
+  // Set browser tab title to "Documentation | Alkemio"
+  usePageTitle(t('pages.titles.documentation'));
+
   const { locations } = useConfig();
   const { pathname } = useLocation();
   const navigate = useNavigate();

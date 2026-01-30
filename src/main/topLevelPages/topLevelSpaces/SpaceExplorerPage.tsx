@@ -6,9 +6,13 @@ import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubO
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const SpaceExplorerPage = () => {
   const { t } = useTranslation();
+
+  // Set browser tab title to "Spaces | Alkemio"
+  usePageTitle(t('pages.titles.spaces'));
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.subspaces' });
 
