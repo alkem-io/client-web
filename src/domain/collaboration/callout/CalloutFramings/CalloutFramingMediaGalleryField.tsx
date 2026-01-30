@@ -152,15 +152,17 @@ const CalloutFramingMediaGalleryField = () => {
       setErrorDialogOpen(true);
     }
 
+    const minSortOrder = Math.max(0, ...mediaVisuals.map(v => v.sortOrder ?? 0)) + 1;
     // Add valid files to the gallery
-    for (const validFile of validFiles) {
+    for (let i = 0; i < validFiles.length; i++) {
+      const validFile = validFiles[i];
       push({
         uri: '',
         file: validFile.file,
         previewUrl: validFile.previewUrl,
         alternativeText: '',
         visualType: getMediaGalleryVisualType(validFile.file),
-        sortOrder: Math.max(0, ...mediaVisuals.map(v => v.sortOrder ?? 0)) + 1,
+        sortOrder: minSortOrder + i,
       });
     }
   };
