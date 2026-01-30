@@ -1,0 +1,8 @@
+query InnovationHubById($id: UUID!) {
+  platform {
+    id
+    innovationHub(id: $id) {
+      ...InnovationHubHomeInnovationHub
+    }
+  }
+}

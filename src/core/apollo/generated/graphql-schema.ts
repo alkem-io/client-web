@@ -22456,6 +22456,38 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type InnovationHubByIdQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type InnovationHubByIdQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline?: string | undefined;
+            description?: string | undefined;
+            banner?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubBannerWideQuery = {
@@ -23001,6 +23033,7 @@ export type InnovationHubQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
+          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -23011,6 +23044,9 @@ export type InnovationHubQuery = {
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
@@ -23019,6 +23055,7 @@ export type InnovationHubQuery = {
 export type InnovationHubHomeInnovationHubFragment = {
   __typename?: 'InnovationHub';
   id: string;
+  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -23027,6 +23064,9 @@ export type InnovationHubHomeInnovationHubFragment = {
     description?: string | undefined;
     banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
