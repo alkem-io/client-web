@@ -23,9 +23,12 @@ const FormikEffectFactory = <T,>() => {
       if (onChange) {
         // Not the cleanest, but without this setTimeout the page crashes sometimes
         // See client-web#9262
-        window.setTimeout(() => {
+        const timeout = window.setTimeout(() => {
           onChange(values);
         }, 10);
+        return () => {
+          window.clearTimeout(timeout);
+        };
       }
     }, [values]);
     useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
