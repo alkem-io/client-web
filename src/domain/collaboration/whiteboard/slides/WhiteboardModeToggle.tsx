@@ -1,6 +1,6 @@
 import { IconButton, Tooltip } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import CopresentOutlinedIcon from '@mui/icons-material/CopresentOutlined';
+import SlideshowOutlinedIcon from '@mui/icons-material/SlideshowOutlined';
 import { useTranslation } from 'react-i18next';
 import { WhiteboardMode } from './types';
 
@@ -44,7 +44,7 @@ const WhiteboardModeToggle = ({ mode, onModeChange, disabled = false }: Whiteboa
             },
           })}
         >
-          {isWhiteboardMode ? <CopresentOutlinedIcon /> : <EditOutlinedIcon />}
+          {isWhiteboardMode ? <SlideshowOutlinedIcon /> : <EditOutlinedIcon />}
         </IconButton>
       </span>
     </Tooltip>
