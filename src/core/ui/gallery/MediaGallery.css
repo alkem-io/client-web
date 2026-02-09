@@ -1,0 +1,93 @@
+.image-gallery-fullscreen-button,
+.image-gallery-play-button {
+  bottom: unset;
+  top: 0;
+  padding: 1em;
+  }
+  
+  /* Prevent gallery from causing dialog scroll */
+  .MuiDialogContent-root:has(.image-gallery) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .image-gallery {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow: hidden;
+  }
+  
+  .image-gallery-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .image-gallery-slide-wrapper {
+    flex: 1;
+    min-height: 0;
+  }
+  
+  .image-gallery-swipe {
+    height: 100%;
+  display: flex;
+    align-items: center;
+}
+
+.image-gallery-slides {
+  height: 100%;
+  display: flex;
+    align-items: center;
+  }
+  
+  .image-gallery-slides-container {
+    height: 100%;
+    align-items: center;
+}
+
+.image-gallery-slide {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-gallery-image {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Thumbnails: uniform height, variable width */
+.image-gallery-thumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.image-gallery-thumbnails-container {
+  display: flex;
+  gap: 4px;
+}
+
+.image-gallery-thumbnail {
+  width: auto;
+  height: 70px;
+  display: flex;
+}
+
+.image-gallery-thumbnail-inner {
+  width: auto;
+  height: 100%;
+}
+
+.image-gallery-thumbnail-image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+}
