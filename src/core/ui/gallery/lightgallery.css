@@ -1,0 +1,25 @@
+.lg-outer {
+  z-index: 10000 !important;
+}
+
+.lg-backdrop {
+  z-index: 9999 !important;
+}
+
+.lg-outer .lg-thumb-item {
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+.lg-outer .lg-thumb-item.active, .lg-outer .lg-thumb-item:hover {
+  cursor: pointer;
+  border-color: #fff;
+}
+
+.lg-outer .lg-thumb-item:hover img {
+    transition: scale 0.3s;
+  scale: 1.05;
+}
+
+.lg-outer .lg-thumb-outer.lg-grab .lg-thumb-item {
+  cursor: pointer;
+}
