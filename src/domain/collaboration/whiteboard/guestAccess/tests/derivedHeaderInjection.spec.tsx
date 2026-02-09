@@ -107,6 +107,8 @@ const createWhiteboard = ({
     storageBucket: {
       __typename: 'StorageBucket' as const,
       id: storageBucketId,
+      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+      maxFileSize: 15728640,
     },
   },
   createdDate: '2024-01-01T00:00:00.000Z',

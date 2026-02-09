@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.127.2",
+  "version": "0.128.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -204,6 +204,7 @@
     "@vitest/browser": "^4.0.16",
     "@vitest/coverage-istanbul": "^4.0.16",
     "babel-plugin-react-compiler": "^1.0.0",
+    "baseline-browser-mapping": "^2.9.17",
     "chrome-launcher": "^1.2.1",
     "eslint": "^9.2.0",
     "eslint-plugin-import": "^2.31.0",

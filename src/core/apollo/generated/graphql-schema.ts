@@ -996,8 +996,8 @@ export type Callout = {
   posts?: Maybe<Array<Post>>;
   /** The user that published this Callout */
   publishedBy?: Maybe<User>;
-  /** The Date of the publishing of this Callout. */
-  publishedDate?: Maybe<Scalars['DateTime']['output']>;
+  /** The timestamp for the publishing of this Callout. */
+  publishedDate?: Maybe<Scalars['Float']['output']>;
   /** The Callout Settings associated with this Callout. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
@@ -1660,9 +1660,9 @@ export type ConvertSpaceL1ToSpaceL0Input = {
 };
 
 export type ConvertSpaceL1ToSpaceL2Input = {
-  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2. */
+  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2.  */
   parentSpaceL1ID: Scalars['UUID']['input'];
-  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space. */
+  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space.  */
   spaceL1ID: Scalars['UUID']['input'];
 };
 
@@ -13125,7 +13125,7 @@ export type UpdateCalloutContentMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    publishedDate?: Date | undefined;
+    publishedDate?: number | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13205,7 +13205,12 @@ export type UpdateCalloutContentMutation = {
                     type: TagsetType;
                   }
                 | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+              };
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -13511,7 +13516,7 @@ export type UpdateCalloutVisibilityMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    publishedDate?: Date | undefined;
+    publishedDate?: number | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13591,7 +13596,12 @@ export type UpdateCalloutVisibilityMutation = {
                     type: TagsetType;
                   }
                 | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+              };
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -14893,7 +14903,12 @@ export type CreateWhiteboardOnCalloutMutation = {
                   type: TagsetType;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -15026,7 +15041,7 @@ export type CreateCalloutMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    publishedDate?: Date | undefined;
+    publishedDate?: number | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -15106,7 +15121,12 @@ export type CreateCalloutMutation = {
                     type: TagsetType;
                   }
                 | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+              };
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -15499,7 +15519,7 @@ export type CalloutDetailsQuery = {
           id: string;
           sortOrder: number;
           activity: number;
-          publishedDate?: Date | undefined;
+          publishedDate?: number | undefined;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -15585,7 +15605,12 @@ export type CalloutDetailsQuery = {
                           type: TagsetType;
                         }
                       | undefined;
-                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                    };
                   };
                   authorization?:
                     | {
@@ -15980,7 +16005,7 @@ export type CalloutDetailsFragment = {
   id: string;
   sortOrder: number;
   activity: number;
-  publishedDate?: Date | undefined;
+  publishedDate?: number | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -16060,7 +16085,12 @@ export type CalloutDetailsFragment = {
                   type: TagsetType;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -16908,7 +16938,7 @@ export type WhiteboardProfileFragment = {
         type: TagsetType;
       }
     | undefined;
-  storageBucket: { __typename?: 'StorageBucket'; id: string };
+  storageBucket: { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number };
 };
 
 export type WhiteboardDetailsFragment = {
@@ -16964,7 +16994,7 @@ export type WhiteboardDetailsFragment = {
           type: TagsetType;
         }
       | undefined;
-    storageBucket: { __typename?: 'StorageBucket'; id: string };
+    storageBucket: { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17066,7 +17096,12 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
-                storageBucket: { __typename?: 'StorageBucket'; id: string };
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                };
               };
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17168,7 +17203,12 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
-                storageBucket: { __typename?: 'StorageBucket'; id: string };
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                };
               };
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17289,7 +17329,12 @@ export type WhiteboardFromCalloutQuery = {
                           type: TagsetType;
                         }
                       | undefined;
-                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                    };
                   };
                   authorization?:
                     | {
@@ -17411,7 +17456,12 @@ export type GetPublicWhiteboardQuery = {
             displayName: string;
             description?: string | undefined;
             url: string;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
         }
       | undefined;
@@ -17431,7 +17481,7 @@ export type PublicWhiteboardFragmentFragment = {
     displayName: string;
     description?: string | undefined;
     url: string;
-    storageBucket: { __typename?: 'StorageBucket'; id: string };
+    storageBucket: { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number };
   };
 };
 
@@ -29377,7 +29427,12 @@ export type TemplateContentQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
-                          storageBucket: { __typename?: 'StorageBucket'; id: string };
+                          storageBucket: {
+                            __typename?: 'StorageBucket';
+                            id: string;
+                            allowedMimeTypes: Array<string>;
+                            maxFileSize: number;
+                          };
                         };
                         authorization?:
                           | {
@@ -30030,7 +30085,12 @@ export type CalloutTemplateContentFragment = {
                   type: TagsetType;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
