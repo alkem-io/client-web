@@ -9,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import {  UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   ContributorItem,

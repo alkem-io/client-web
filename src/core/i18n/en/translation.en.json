@@ -117,6 +117,7 @@
     "expandWindow": "Expand Window",
     "see-more": "See more",
     "see-all": "More {{subject}}",
+    "showAll": "Show all",
     "readMore": "Read more",
     "ellipsisReadMore": "... Read more",
     "showLess": "Show less",
@@ -124,6 +125,7 @@
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
+    "download": "Download",
     "yes": "Yes",
     "no": "No",
     "yesClose": "Yes, close",
@@ -138,6 +140,7 @@
     "remove": "Remove",
     "cancel": "Cancel",
     "upload": "Upload",
+    "uploadMedia": "Upload Media",
     "explore-and-connect": "Explore and connect",
     "send-message": "Send message",
     "edit-members": "Edit $t(common.members)",
@@ -411,6 +414,7 @@
     "Community": "Community",
     "community": "community",
     "library": "Library",
+    "image": "Image",
     "templateLibrary": "Template Library",
     "people": "People",
     "Settings": "Settings",
@@ -835,6 +839,12 @@
         "link": {
           "title": "Call To Action",
           "tooltip": "Add a call to action to this $t(common.post)"
+        },
+        "mediaGallery": {
+          "title": "Media Gallery",
+          "tooltip": "Add an image gallery to this $t(common.post)",
+          "nItems": "{{count}} images in the gallery",
+          "deleteItem": "Remove image from gallery"
         }
       },
       "contributionSettings": {
@@ -1613,6 +1623,29 @@
         "memo": {
           "name": "Content",
           "placeholder": "(Optional) Add some content to the $t(common.memo)"
+        },
+        "mediaGallery": {
+          "name": "Media Gallery",
+          "galleryItem": "Gallery Image",
+          "navigation": {
+            "ariaLabel": "Gallery navigation",
+            "previous": "Previous image",
+            "next": "Next image",
+            "goToImage": "Go to image {{number}}"
+          },
+          "errors": {
+            "title": "Image Upload Errors",
+            "missingConstraints": "Unable to load media gallery items image constraints.",
+            "invalidFileType": "Invalid file type: {{fileType}}. Supported types are: {{allowedTypes}}.",
+            "imageDimensions": {
+              "minWidth": "Image width is too small ({{imagePx}}px). Minimum width is {{constraintPx}}px.",
+              "maxWidth": "Image width is too large ({{imagePx}}px). Maximum width is {{constraintPx}}px.",
+              "minHeight": "Image height is too small ({{imagePx}}px). Minimum height is {{constraintPx}}px.",
+              "maxHeight": "Image height is too large ({{imagePx}}px). Maximum height is {{constraintPx}}px."
+            },
+            "invalidImage": "The uploaded file is not a valid image.",
+            "failedToReadFile": "Failed to read the uploaded file."
+          }
         }
       },
       "template-step": {
@@ -2764,6 +2797,14 @@
       },
       "WHITEBOARD_PREVIEW": {
         "title": "Whiteboard Preview",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_IMAGE": {
+        "title": "Media Gallery Image",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_VIDEO": {
+        "title": "Media Gallery Video",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {

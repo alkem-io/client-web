@@ -159,6 +159,7 @@
     "react-i18next": "^15.5.1",
     "react-image-crop": "^10.1.8",
     "react-image-file-resizer": "^0.4.7",
+    "react-image-gallery": "^2.0.7",
     "react-intersection-observer": "^9.1.0",
     "react-markdown": "^10.1.0",
     "react-mentions": "^4.4.7",

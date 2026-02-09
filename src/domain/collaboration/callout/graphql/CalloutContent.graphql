@@ -27,7 +27,7 @@ query CalloutContent($calloutId: UUID!) {
               uri
             }
           }
-          content  # Get the whiteboard content to be able to edit it in single user mode
+          content # Get the whiteboard content to be able to edit it in single user mode
           previewSettings {
             ...whiteboardPreviewSettings
           }
@@ -43,10 +43,13 @@ query CalloutContent($calloutId: UUID!) {
               uri
             }
           }
-          markdown  # Get the memo content to be able to edit it in single user mode
+          markdown # Get the memo content to be able to edit it in single user mode
         }
         link {
           ...LinkDetails
+        }
+        mediaGallery {
+          ...MediaGalleryVisuals
         }
       }
       contributionDefaults {

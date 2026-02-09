@@ -1,0 +1,10 @@
+fragment MediaGalleryVisuals on MediaGallery {
+  id
+  visuals {
+    id
+    uri
+    name
+    alternativeText
+    sortOrder
+  }
+}

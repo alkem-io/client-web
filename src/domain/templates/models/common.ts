@@ -50,6 +50,7 @@ export const getNewTemplate = (
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
             link: data?.callout?.framing.link ?? undefined,
             memo: data?.callout?.framing.memo ?? undefined,
+            mediaGallery: data?.callout?.framing.mediaGallery ?? undefined,
           },
           settings: {
             contribution: {

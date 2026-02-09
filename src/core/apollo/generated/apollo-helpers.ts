@@ -740,6 +740,7 @@ export type CalloutFramingKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'mediaGallery'
   | 'memo'
   | 'profile'
   | 'type'
@@ -752,6 +753,7 @@ export type CalloutFramingFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  mediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2464,6 +2466,25 @@ export type MeQueryResultsFieldPolicy = {
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MediaGalleryKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | 'storageBucket'
+  | 'updatedDate'
+  | 'visuals'
+  | MediaGalleryKeySpecifier
+)[];
+export type MediaGalleryFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MemoKeySpecifier = (
   | 'authorization'
   | 'content'
@@ -2574,6 +2595,7 @@ export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
+  | 'addVisualToMediaGallery'
   | 'adminBackfillAuthenticationIDs'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationMigrateOrphanedConversations'
@@ -2661,6 +2683,7 @@ export type MutationKeySpecifier = (
   | 'deleteUserApplication'
   | 'deleteUserGroup'
   | 'deleteVirtualContributor'
+  | 'deleteVisualFromMediaGallery'
   | 'deleteWhiteboard'
   | 'eventOnApplication'
   | 'eventOnInvitation'
@@ -2764,6 +2787,7 @@ export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminBackfillAuthenticationIDs?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMigrateOrphanedConversations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2851,6 +2875,7 @@ export type MutationFieldPolicy = {
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteVisualFromMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5034,6 +5059,7 @@ export type VisualKeySpecifier = (
   | 'minHeight'
   | 'minWidth'
   | 'name'
+  | 'sortOrder'
   | 'updatedDate'
   | 'uri'
   | VisualKeySpecifier
@@ -5050,6 +5076,7 @@ export type VisualFieldPolicy = {
   minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5957,6 +5984,10 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
+  };
+  MediaGallery?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MediaGalleryKeySpecifier | (() => undefined | MediaGalleryKeySpecifier);
+    fields?: MediaGalleryFieldPolicy;
   };
   Memo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MemoKeySpecifier | (() => undefined | MemoKeySpecifier);

@@ -868,6 +868,18 @@ export const LinkDetailsFragmentDoc = gql`
     }
   }
 `;
+export const MediaGalleryVisualsFragmentDoc = gql`
+  fragment MediaGalleryVisuals on MediaGallery {
+    id
+    visuals {
+      id
+      uri
+      name
+      alternativeText
+      sortOrder
+    }
+  }
+`;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
   fragment LinkDetailsWithAuthorization on Link {
     id
@@ -1005,6 +1017,9 @@ export const CalloutDetailsFragmentDoc = gql`
       link {
         ...LinkDetails
       }
+      mediaGallery {
+        ...MediaGalleryVisuals
+      }
     }
     contributionDefaults {
       id
@@ -1045,6 +1060,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${MemoDetailsFragmentDoc}
   ${LinkDetailsFragmentDoc}
+  ${MediaGalleryVisualsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
@@ -2603,6 +2619,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
       memo {
         ...MemoTemplateDetails
       }
+      mediaGallery {
+        ...MediaGalleryVisuals
+      }
     }
     settings {
       ...CalloutSettingsFull
@@ -2619,6 +2638,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsFragmentDoc}
   ${MemoTemplateDetailsFragmentDoc}
+  ${MediaGalleryVisualsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
@@ -7584,6 +7604,9 @@ export const CalloutContentDocument = gql`
           link {
             ...LinkDetails
           }
+          mediaGallery {
+            ...MediaGalleryVisuals
+          }
         }
         contributionDefaults {
           id
@@ -7601,6 +7624,7 @@ export const CalloutContentDocument = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardPreviewSettingsFragmentDoc}
   ${LinkDetailsFragmentDoc}
+  ${MediaGalleryVisualsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 
@@ -9238,6 +9262,105 @@ export type CalloutDetailsQueryResult = Apollo.QueryResult<
 export function refetchCalloutDetailsQuery(variables: SchemaTypes.CalloutDetailsQueryVariables) {
   return { query: CalloutDetailsDocument, variables: variables };
 }
+export const AddVisualToMediaGalleryDocument = gql`
+  mutation addVisualToMediaGallery($addData: AddVisualToMediaGalleryInput!) {
+    addVisualToMediaGallery(addData: $addData) {
+      id
+      uri
+      name
+      alternativeText
+      sortOrder
+    }
+  }
+`;
+export type AddVisualToMediaGalleryMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddVisualToMediaGalleryMutation,
+  SchemaTypes.AddVisualToMediaGalleryMutationVariables
+>;
+
+/**
+ * __useAddVisualToMediaGalleryMutation__
+ *
+ * To run a mutation, you first call `useAddVisualToMediaGalleryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddVisualToMediaGalleryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addVisualToMediaGalleryMutation, { data, loading, error }] = useAddVisualToMediaGalleryMutation({
+ *   variables: {
+ *      addData: // value for 'addData'
+ *   },
+ * });
+ */
+export function useAddVisualToMediaGalleryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddVisualToMediaGalleryMutation,
+    SchemaTypes.AddVisualToMediaGalleryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AddVisualToMediaGalleryMutation,
+    SchemaTypes.AddVisualToMediaGalleryMutationVariables
+  >(AddVisualToMediaGalleryDocument, options);
+}
+export type AddVisualToMediaGalleryMutationHookResult = ReturnType<typeof useAddVisualToMediaGalleryMutation>;
+export type AddVisualToMediaGalleryMutationResult = Apollo.MutationResult<SchemaTypes.AddVisualToMediaGalleryMutation>;
+export type AddVisualToMediaGalleryMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddVisualToMediaGalleryMutation,
+  SchemaTypes.AddVisualToMediaGalleryMutationVariables
+>;
+export const DeleteVisualFromMediaGalleryDocument = gql`
+  mutation deleteVisualFromMediaGallery($deleteData: DeleteVisualFromMediaGalleryInput!) {
+    deleteVisualFromMediaGallery(deleteData: $deleteData) {
+      id
+    }
+  }
+`;
+export type DeleteVisualFromMediaGalleryMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+  SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+>;
+
+/**
+ * __useDeleteVisualFromMediaGalleryMutation__
+ *
+ * To run a mutation, you first call `useDeleteVisualFromMediaGalleryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVisualFromMediaGalleryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVisualFromMediaGalleryMutation, { data, loading, error }] = useDeleteVisualFromMediaGalleryMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteVisualFromMediaGalleryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+    SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+    SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+  >(DeleteVisualFromMediaGalleryDocument, options);
+}
+export type DeleteVisualFromMediaGalleryMutationHookResult = ReturnType<typeof useDeleteVisualFromMediaGalleryMutation>;
+export type DeleteVisualFromMediaGalleryMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteVisualFromMediaGalleryMutation>;
+export type DeleteVisualFromMediaGalleryMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteVisualFromMediaGalleryMutation,
+  SchemaTypes.DeleteVisualFromMediaGalleryMutationVariables
+>;
 export const MemoMarkdownDocument = gql`
   query MemoMarkdown($id: UUID!) {
     lookup {
@@ -10542,6 +10665,52 @@ export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTy
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
   SchemaTypes.CreateTagsetOnProfileMutationVariables
+>;
+export const UpdateVisualDocument = gql`
+  mutation updateVisual($updateData: UpdateVisualInput!) {
+    updateVisual(updateData: $updateData) {
+      id
+      uri
+      alternativeText
+    }
+  }
+`;
+export type UpdateVisualMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateVisualMutation,
+  SchemaTypes.UpdateVisualMutationVariables
+>;
+
+/**
+ * __useUpdateVisualMutation__
+ *
+ * To run a mutation, you first call `useUpdateVisualMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVisualMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVisualMutation, { data, loading, error }] = useUpdateVisualMutation({
+ *   variables: {
+ *      updateData: // value for 'updateData'
+ *   },
+ * });
+ */
+export function useUpdateVisualMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateVisualMutation, SchemaTypes.UpdateVisualMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateVisualMutation, SchemaTypes.UpdateVisualMutationVariables>(
+    UpdateVisualDocument,
+    options
+  );
+}
+export type UpdateVisualMutationHookResult = ReturnType<typeof useUpdateVisualMutation>;
+export type UpdateVisualMutationResult = Apollo.MutationResult<SchemaTypes.UpdateVisualMutation>;
+export type UpdateVisualMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateVisualMutation,
+  SchemaTypes.UpdateVisualMutationVariables
 >;
 export const UploadVisualDocument = gql`
   mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
@@ -23820,6 +23989,9 @@ export const CreateTemplateDocument = gql`
               }
             }
           }
+          mediaGallery {
+            id
+          }
         }
       }
     }
@@ -24116,6 +24288,12 @@ export const UpdateCalloutTemplateDocument = gql`
         memo {
           id
           markdown
+        }
+        mediaGallery {
+          id
+          visuals {
+            id
+          }
         }
       }
       contributionDefaults {
