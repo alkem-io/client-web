@@ -1,0 +1,57 @@
+.whiteboard-slides-toolbar {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  min-width: 200px;
+  height: 100%;
+  background-color: var(--mui-palette-background-paper, #fff);
+  border-left: 1px solid var(--mui-palette-divider, #e0e0e0);
+}
+
+.whiteboard-slides-toolbar__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.whiteboard-slides-toolbar__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 16px;
+}
+
+.whiteboard-slides-toolbar__item {
+  width: 100%;
+}
+
+.whiteboard-slides-toolbar__actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+}
+
+.whiteboard-slides-toolbar__navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+/* Container styles for slides mode */
+.whiteboard-container.slides-mode {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.whiteboard-container.slides-mode .whiteboard-canvas {
+  flex: 1;
+  min-width: 0;
+}

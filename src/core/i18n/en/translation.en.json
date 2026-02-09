@@ -977,6 +977,19 @@
         "singleFailure": "An image could not be loaded",
         "multipleFailures_one": "{{count}} image could not be loaded",
         "multipleFailures_other": "{{count}} images could not be loaded"
+      },
+      "slides": {
+        "modeWhiteboard": "Whiteboard mode",
+        "modeSlides": "Slides mode",
+        "toggleToSlides": "Switch to slides mode",
+        "toggleToWhiteboard": "Switch to whiteboard mode",
+        "addSlide": "Add slide",
+        "slideNumber": "Slide {{number}}",
+        "noSlides": "No slides yet. Add a frame to create your first slide.",
+        "previousSlide": "Previous slide",
+        "nextSlide": "Next slide",
+        "startPresentation": "Start presentation",
+        "stopPresentation": "Exit presentation"
       }
     },
     "memo": {

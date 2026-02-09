@@ -15,7 +15,7 @@
 }
 
 /* Small button in sidebar when search is open */
-.excalidraw .excalidraw-button.sidebar-tab-trigger[aria-controls$=":-content-library"] {
+.excalidraw .excalidraw-button.sidebar-tab-trigger[aria-controls$=':-content-library'] {
   display: none;
 }
 
@@ -25,12 +25,12 @@
 }
 
 /* Add to library context menu item */
-.excalidraw li[data-testid="addToLibrary"] {
+.excalidraw li[data-testid='addToLibrary'] {
   display: none;
 }
 
 /* Separator after Add to library context menu item */
-.excalidraw li[data-testid="addToLibrary"]+hr.context-menu-item-separator {
+.excalidraw li[data-testid='addToLibrary'] + hr.context-menu-item-separator {
   display: none;
 }
 
@@ -44,4 +44,34 @@
 
 .excalidraw.excalidraw-container.excalidraw--view-mode.excalidraw--mobile .App-bottom-bar .App-toolbar-content {
   display: none;
+}
+
+/**
+ * Hide UI clutter during presentation mode
+ * Keep drawing toolbar and properties toolbar visible so presenters can annotate
+ */
+
+/* Hide hamburger menu (upper left corner - Import, Export, Settings) */
+[data-presentation-mode='true'] .excalidraw .App-menu {
+  display: none !important;
+}
+
+/* Hide zoom controls (bottom of canvas - zoom in/out/reset/fit) */
+[data-presentation-mode='true'] .excalidraw .zoom-actions {
+  display: none !important;
+}
+
+/* Hide help button (bottom right corner - question mark icon) */
+[data-presentation-mode='true'] .excalidraw .help-icon {
+  display: none !important;
+}
+
+/* Hide entire bottom toolbar on mobile (includes any additional controls) */
+[data-presentation-mode='true'] .excalidraw .App-bottom-bar {
+  display: none !important;
+}
+
+/* Hide footer elements that might still be visible */
+[data-presentation-mode='true'] .excalidraw .App-menu_bottom {
+  display: none !important;
 }

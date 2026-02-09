@@ -114,6 +114,7 @@ const WhiteboardView = ({
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
+            onRequestFullscreen: setFullscreen,
             previewSettingsDialogOpen: previewSettingsDialogOpen,
             headerActions: (collabState: WhiteboardHeaderState) => (
               <>

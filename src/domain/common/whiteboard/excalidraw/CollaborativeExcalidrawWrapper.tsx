@@ -15,6 +15,9 @@ import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import { createEmojiReactionElement } from '@/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement';
 import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
 import WhiteboardEmojiReactionPicker from '@/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker';
+import { WhiteboardMode, SlideInfo } from '@/domain/collaboration/whiteboard/slides/types';
+import useWhiteboardSlides from '@/domain/collaboration/whiteboard/slides/useWhiteboardSlides';
+import WhiteboardSlidesToolbar from '@/domain/collaboration/whiteboard/slides/WhiteboardSlidesToolbar';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
@@ -71,6 +74,7 @@ export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
   onRemoteSave?: (error?: string) => void;
+  onRequestFullscreen?: (fullscreen: boolean) => void;
 }
 
 export interface WhiteboardWhiteboardEvents {}
@@ -83,6 +87,21 @@ interface CollaborativeExcalidrawWrapperProvided extends CollabState {
   isReadOnly: boolean;
   emojiPlacementInfo: EmojiReactionPlacementInfo | null;
   onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
+  // Whiteboard/Slides mode controls
+  whiteboardMode: WhiteboardMode;
+  onWhiteboardModeChange: (mode: WhiteboardMode) => void;
+  slides: SlideInfo[];
+  currentSlideIndex: number;
+  onSlideChange: (index: number) => void;
+  isSceneInitialized: boolean;
+  // Presentation mode controls
+  isPresentingSlides: boolean;
+  onStartPresentation: () => void;
+  onStopPresentation: () => void;
+  onPreviousSlide: () => void;
+  onNextSlide: () => void;
+  canGoPrevious: boolean;
+  canGoNext: boolean;
 }
 
 export interface WhiteboardWhiteboardProps {
@@ -113,6 +132,40 @@ const CollaborativeExcalidrawWrapper = ({
 
   // Emoji reaction placement state
   const [emojiPlacementInfo, setEmojiPlacementInfo] = useState<EmojiReactionPlacementInfo | null>(null);
+
+  // Whiteboard/Slides mode state
+  const [whiteboardMode, setWhiteboardMode] = useState<WhiteboardMode>('whiteboard');
+
+  // Presentation mode state
+  const [isPresentingSlides, setIsPresentingSlides] = useState(false);
+
+  // Ref for onRequestFullscreen to avoid stale closure in fullscreenchange handler
+  const onRequestFullscreenRef = useRef(actions.onRequestFullscreen);
+  useEffect(() => {
+    onRequestFullscreenRef.current = actions.onRequestFullscreen;
+  }, [actions.onRequestFullscreen]);
+
+  // Track whether user was in fullscreen before starting presentation
+  // Used to restore the correct state when exiting presentation
+  const wasFullscreenBeforePresentationRef = useRef<boolean>(false);
+
+  // Sync presentation mode with browser fullscreen state
+  // When user exits fullscreen (via ESC, F11, browser button), exit presentation too
+  useEffect(() => {
+    if (!isPresentingSlides) return;
+
+    const handleFullscreenChange = () => {
+      // If fullscreen exited while presenting, exit presentation mode
+      if (!document.fullscreenElement) {
+        // Restore the pre-presentation fullscreen state (same as Stop button)
+        onRequestFullscreenRef.current?.(wasFullscreenBeforePresentationRef.current);
+        setIsPresentingSlides(false);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, [isPresentingSlides]);
 
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
@@ -217,9 +270,27 @@ const CollaborativeExcalidrawWrapper = ({
     },
   });
 
+  // Track previous frame signature (count + names) to detect changes
+  const prevFrameSignatureRef = useRef<string>('');
+
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
+
+    // Build signature from frame count and names to detect any frame metadata changes
+    const frames = elements.filter(el => el.type === 'frame' && !el.isDeleted);
+    const frameSignature = frames
+      .map(f => `${f.id}:${(f as { name?: string }).name ?? ''}`)
+      .sort()
+      .join('|');
+
+    if (frameSignature !== prevFrameSignatureRef.current) {
+      prevFrameSignatureRef.current = frameSignature;
+      refreshSlides();
+    }
+
+    // Refresh thumbnails on any content change (debounced to avoid excessive regeneration)
+    debouncedRefreshThumbnails();
   };
 
   const isOnline = useOnlineStatus();
@@ -263,6 +334,75 @@ const CollaborativeExcalidrawWrapper = ({
 
   // Determine if whiteboard is in read-only mode
   const isReadOnly = !collaborating || mode === 'read' || !isSceneInitialized;
+
+  // Slides mode management
+  const {
+    slides,
+    currentSlideIndex,
+    goToSlide,
+    nextSlide,
+    previousSlide,
+    addSlide,
+    refreshSlides,
+    refreshThumbnails,
+    canGoNext,
+    canGoPrevious,
+  } = useWhiteboardSlides({
+    excalidrawApi,
+    isReadOnly,
+    isPresentingSlides,
+  });
+
+  // Debounced thumbnail refresh to avoid excessive regeneration during editing
+  const debouncedRefreshThumbnails = useMemo(() => debounce(() => refreshThumbnails(), 1000), [refreshThumbnails]);
+
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedRefreshThumbnails.cancel();
+    };
+  }, [debouncedRefreshThumbnails]);
+
+  // Handle whiteboard mode changes
+  const handleWhiteboardModeChange = useCallback(
+    (newMode: WhiteboardMode) => {
+      setWhiteboardMode(newMode);
+      // If switching to slides mode and there are slides, navigate to the first one
+      if (newMode === 'slides' && slides.length > 0 && currentSlideIndex < 0) {
+        goToSlide(0);
+      }
+    },
+    [slides.length, currentSlideIndex, goToSlide]
+  );
+
+  // Presentation mode handlers
+  const handleStartPresentation = useCallback(() => {
+    if (slides.length === 0) return;
+
+    // Save current fullscreen state before entering presentation
+    // This allows us to restore to the correct state when exiting
+    wasFullscreenBeforePresentationRef.current = !!document.fullscreenElement;
+
+    // Enter fullscreen using the same mechanism as header button
+    actions.onRequestFullscreen?.(true);
+
+    setIsPresentingSlides(true);
+
+    // Navigate to first slide with delay to ensure frame is ready for scrollToContent
+    // (same pattern used in addSlide function)
+    const targetIndex = currentSlideIndex < 0 ? 0 : currentSlideIndex;
+    setTimeout(() => {
+      goToSlide(targetIndex);
+    }, 50);
+  }, [slides.length, currentSlideIndex, goToSlide, actions]);
+
+  const handleStopPresentation = useCallback(() => {
+    // Restore the fullscreen state that was active before starting presentation
+    // If user was in fullscreen before, stay in fullscreen (editable mode)
+    // If user was in dialog view before, exit fullscreen back to dialog
+    actions.onRequestFullscreen?.(wasFullscreenBeforePresentationRef.current);
+    setIsPresentingSlides(false);
+  }, [actions]);
 
   // Handle placement mode changes from emoji picker
   const handleEmojiPlacementModeChange = useCallback((placementInfo: EmojiReactionPlacementInfo | null) => {
@@ -347,76 +487,94 @@ const CollaborativeExcalidrawWrapper = ({
   );
 
   const children = (
-    <Box ref={canvasContainerRef} sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
-      {/* Floating emoji picker button - positioned top-right below header (as per Figma design) */}
-      {!isReadOnly && (
-        <WhiteboardEmojiReactionPicker
-          disabled={isReadOnly}
-          onPlacementModeChange={handleEmojiPlacementModeChange}
-          emojiPlacementInfo={emojiPlacementInfo}
-          className="floating-emoji-picker"
-        />
-      )}
-      <Suspense fallback={<Loading />}>
-        <LoadingScene enabled={!isSceneInitialized} />
-        {whiteboard && (
-          <Excalidraw
-            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            excalidrawAPI={handleInitializeApi}
-            initialData={whiteboardDefaults}
-            UIOptions={mergedUIOptions}
-            isCollaborating={collaborating}
-            viewModeEnabled={isReadOnly}
-            onChange={onChange}
-            onPointerUpdate={collabApi?.onPointerUpdate}
-            detectScroll={false}
-            autoFocus
-            generateIdForFile={handleGenerateIdForFile}
-            aiEnabled={false}
-            {...restOptions}
+    <Box sx={{ display: 'flex', height: 1, flexGrow: 1 }}>
+      <Box ref={canvasContainerRef} sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
+        {/* Floating emoji picker button - positioned top-right below header (as per Figma design) */}
+        {/* Hidden during presentation mode to avoid UI clutter */}
+        {!isReadOnly && !isPresentingSlides && (
+          <WhiteboardEmojiReactionPicker
+            disabled={isReadOnly}
+            onPlacementModeChange={handleEmojiPlacementModeChange}
+            emojiPlacementInfo={emojiPlacementInfo}
+            className="floating-emoji-picker"
           />
         )}
-      </Suspense>
-      {/* Emoji placement overlay - captures clicks when in placement mode (T013, T014) */}
-      {emojiPlacementInfo?.isActive && (
-        <>
-          <Box
-            onClick={handleEmojiPlacementClick}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              cursor: 'none', // Hide default cursor
-              zIndex: 10,
-              // Semi-transparent to indicate placement mode (T014)
-              backgroundColor: 'rgba(0, 0, 0, 0.02)',
-            }}
-            aria-label={t('whiteboard.emojiReaction.placementMode', 'Click to place emoji: {{emoji}}', {
-              emoji: emojiPlacementInfo.emoji,
-            })}
-          />
-          {/* Floating emoji cursor that follows mouse position */}
-          {cursorPosition && (
-            <Box
-              sx={{
-                position: 'fixed',
-                left: cursorPosition.x,
-                top: cursorPosition.y,
-                fontSize: '24px',
-                lineHeight: 1,
-                pointerEvents: 'none',
-                zIndex: 11,
-                transform: 'translate(-50%, -50%)',
-                userSelect: 'none',
-              }}
-              aria-hidden="true"
-            >
-              {emojiPlacementInfo.emoji}
-            </Box>
+        <Suspense fallback={<Loading />}>
+          <LoadingScene enabled={!isSceneInitialized} />
+          {whiteboard && (
+            <Excalidraw
+              key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+              excalidrawAPI={handleInitializeApi}
+              initialData={whiteboardDefaults}
+              UIOptions={mergedUIOptions}
+              isCollaborating={collaborating}
+              viewModeEnabled={isReadOnly}
+              onChange={onChange}
+              onPointerUpdate={collabApi?.onPointerUpdate}
+              detectScroll={false}
+              autoFocus
+              generateIdForFile={handleGenerateIdForFile}
+              aiEnabled={false}
+              {...restOptions}
+            />
           )}
-        </>
+        </Suspense>
+        {/* Emoji placement overlay - captures clicks when in placement mode (T013, T014) */}
+        {emojiPlacementInfo?.isActive && (
+          <>
+            <Box
+              onClick={handleEmojiPlacementClick}
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                cursor: 'none', // Hide default cursor
+                zIndex: 10,
+                // Semi-transparent to indicate placement mode (T014)
+                backgroundColor: 'rgba(0, 0, 0, 0.02)',
+              }}
+              aria-label={t('whiteboard.emojiReaction.placementMode', 'Click to place emoji: {{emoji}}', {
+                emoji: emojiPlacementInfo.emoji,
+              })}
+            />
+            {/* Floating emoji cursor that follows mouse position */}
+            {cursorPosition && (
+              <Box
+                sx={{
+                  position: 'fixed',
+                  left: cursorPosition.x,
+                  top: cursorPosition.y,
+                  fontSize: '24px',
+                  lineHeight: 1,
+                  pointerEvents: 'none',
+                  zIndex: 11,
+                  transform: 'translate(-50%, -50%)',
+                  userSelect: 'none',
+                }}
+                aria-hidden="true"
+              >
+                {emojiPlacementInfo.emoji}
+              </Box>
+            )}
+          </>
+        )}
+      </Box>
+      {/* Slides toolbar - shown when in slides mode (but not during presentation) */}
+      {whiteboardMode === 'slides' && !isPresentingSlides && (
+        <WhiteboardSlidesToolbar
+          slides={slides}
+          currentSlideIndex={currentSlideIndex}
+          onSlideSelect={goToSlide}
+          onAddSlide={addSlide}
+          onPreviousSlide={previousSlide}
+          onNextSlide={nextSlide}
+          onStartPresentation={handleStartPresentation}
+          canGoPrevious={canGoPrevious}
+          canGoNext={canGoNext}
+          isReadOnly={isReadOnly}
+        />
       )}
     </Box>
   );
@@ -434,6 +592,21 @@ const CollaborativeExcalidrawWrapper = ({
         isReadOnly,
         emojiPlacementInfo,
         onEmojiPlacementModeChange: handleEmojiPlacementModeChange,
+        // Whiteboard/Slides mode controls
+        whiteboardMode,
+        onWhiteboardModeChange: handleWhiteboardModeChange,
+        slides,
+        currentSlideIndex,
+        onSlideChange: goToSlide,
+        isSceneInitialized,
+        // Presentation mode controls
+        isPresentingSlides,
+        onStartPresentation: handleStartPresentation,
+        onStopPresentation: handleStopPresentation,
+        onPreviousSlide: previousSlide,
+        onNextSlide: nextSlide,
+        canGoPrevious,
+        canGoNext,
       })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />

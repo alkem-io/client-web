@@ -13,6 +13,9 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
+import { WhiteboardMode, SlideInfo } from '@/domain/collaboration/whiteboard/slides/types';
+import WhiteboardModeToggle from '@/domain/collaboration/whiteboard/slides/WhiteboardModeToggle';
+import PresentationModeControls from '@/domain/collaboration/whiteboard/slides/PresentationModeControls';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
@@ -34,11 +37,18 @@ import {
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
-/** Extended CollabState that includes emoji reaction placement controls for headerActions */
+/** Extended CollabState that includes emoji reaction placement controls and slides mode for headerActions */
 export interface WhiteboardHeaderState extends CollabState {
   isReadOnly: boolean;
   emojiPlacementInfo: EmojiReactionPlacementInfo | null;
   onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
+  // Whiteboard/Slides mode controls
+  whiteboardMode: WhiteboardMode;
+  onWhiteboardModeChange: (mode: WhiteboardMode) => void;
+  slides: SlideInfo[];
+  currentSlideIndex: number;
+  onSlideChange: (index: number) => void;
+  isSceneInitialized: boolean;
 }
 
 export interface WhiteboardDetails {
@@ -100,6 +110,7 @@ interface WhiteboardDialogProps {
     headerActions?: (state: WhiteboardHeaderState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
+    onRequestFullscreen?: (fullscreen: boolean) => void;
     allowFilesAttached?: boolean;
     readOnlyDisplayName?: boolean;
     editDisplayName?: boolean;
@@ -124,7 +135,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
   const editModeEnabled = options.canEdit;
 
   const [lastSaveError, setLastSaveError] = useState<string | undefined>();
-  const [isSceneInitialized, setSceneInitialized] = useState(false);
+  const [, setSceneInitialized] = useState(false);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -320,6 +331,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
             }
           },
           onSceneInitChange: setSceneInitialized,
+          onRequestFullscreen: options.onRequestFullscreen,
         }}
       >
         {({
@@ -332,6 +344,18 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           isReadOnly,
           emojiPlacementInfo,
           onEmojiPlacementModeChange,
+          whiteboardMode,
+          onWhiteboardModeChange,
+          slides,
+          currentSlideIndex,
+          onSlideChange,
+          isSceneInitialized: sceneInitialized,
+          isPresentingSlides,
+          onStopPresentation,
+          onPreviousSlide,
+          onNextSlide,
+          canGoPrevious,
+          canGoNext,
         }) => {
           return (
             <Formik
@@ -345,50 +369,86 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 aria-labelledby="whiteboard-dialog"
                 maxWidth={false}
                 fullWidth
-                fullScreen={options.fullscreen}
-                onClose={onClose}
+                fullScreen={options.fullscreen || isPresentingSlides}
+                onClose={isPresentingSlides ? onStopPresentation : onClose}
               >
-                <DialogHeader
-                  actions={options.headerActions?.({
-                    mode,
-                    modeReason,
-                    collaborating,
-                    connecting,
-                    isReadOnly,
-                    emojiPlacementInfo,
-                    onEmojiPlacementModeChange,
-                  })}
-                  onClose={onClose}
-                  titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
+                {!isPresentingSlides && (
+                  <DialogHeader
+                    actions={
+                      <>
+                        <WhiteboardModeToggle
+                          mode={whiteboardMode}
+                          onModeChange={onWhiteboardModeChange}
+                          disabled={!sceneInitialized}
+                        />
+                        {options.headerActions?.({
+                          mode,
+                          modeReason,
+                          collaborating,
+                          connecting,
+                          isReadOnly,
+                          emojiPlacementInfo,
+                          onEmojiPlacementModeChange,
+                          whiteboardMode,
+                          onWhiteboardModeChange,
+                          slides,
+                          currentSlideIndex,
+                          onSlideChange,
+                          isSceneInitialized: sceneInitialized,
+                        })}
+                      </>
+                    }
+                    onClose={onClose}
+                    titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
+                  >
+                    <WhiteboardDisplayName
+                      displayName={whiteboard?.profile?.displayName}
+                      readOnlyDisplayName={options.readOnlyDisplayName}
+                      editDisplayName={options.editDisplayName}
+                      onChangeDisplayName={newDisplayName =>
+                        actions.onChangeDisplayName(whiteboard?.id, newDisplayName)
+                      }
+                    />
+                    <WhiteboardDialogTemplatesLibrary
+                      editModeEnabled={editModeEnabled && mode === 'write'}
+                      disabled={!sceneInitialized}
+                      onImportTemplate={handleImportTemplate}
+                    />
+                  </DialogHeader>
+                )}
+                <DialogContent
+                  sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}
+                  data-presentation-mode={isPresentingSlides ? 'true' : undefined}
                 >
-                  <WhiteboardDisplayName
-                    displayName={whiteboard?.profile?.displayName}
-                    readOnlyDisplayName={options.readOnlyDisplayName}
-                    editDisplayName={options.editDisplayName}
-                    onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
-                  />
-                  <WhiteboardDialogTemplatesLibrary
-                    editModeEnabled={editModeEnabled && mode === 'write'}
-                    disabled={!isSceneInitialized}
-                    onImportTemplate={handleImportTemplate}
-                  />
-                </DialogHeader>
-                <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>
                   {children}
+                  {isPresentingSlides && (
+                    <PresentationModeControls
+                      currentSlideIndex={currentSlideIndex}
+                      totalSlides={slides.length}
+                      onPreviousSlide={onPreviousSlide}
+                      onNextSlide={onNextSlide}
+                      onSlideChange={onSlideChange}
+                      onStop={onStopPresentation}
+                      canGoPrevious={canGoPrevious}
+                      canGoNext={canGoNext}
+                    />
+                  )}
                 </DialogContent>
-                <WhiteboardDialogFooter
-                  collaboratorMode={mode}
-                  whiteboardUrl={whiteboard.profile.url}
-                  collaboratorModeReason={modeReason}
-                  lastSaveError={lastSaveError}
-                  onDelete={() => setDeleteDialogOpen(true)}
-                  canDelete={options.canDelete}
-                  onRestart={restartCollaboration}
-                  canUpdateContent={options.canEdit!}
-                  createdBy={whiteboard?.createdBy}
-                  contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
-                  guestAccessEnabled={whiteboard?.guestContributionsAllowed}
-                />
+                {!isPresentingSlides && (
+                  <WhiteboardDialogFooter
+                    collaboratorMode={mode}
+                    whiteboardUrl={whiteboard.profile.url}
+                    collaboratorModeReason={modeReason}
+                    lastSaveError={lastSaveError}
+                    onDelete={() => setDeleteDialogOpen(true)}
+                    canDelete={options.canDelete}
+                    onRestart={restartCollaboration}
+                    canUpdateContent={options.canEdit!}
+                    createdBy={whiteboard?.createdBy}
+                    contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                    guestAccessEnabled={whiteboard?.guestContributionsAllowed}
+                  />
+                )}
               </DialogWithGrid>
             </Formik>
           );

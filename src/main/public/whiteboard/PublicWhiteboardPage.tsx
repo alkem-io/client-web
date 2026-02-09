@@ -181,6 +181,7 @@ const PublicWhiteboardPageContent: FC = () => {
           canDelete: false, // Guests cannot delete
           dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
           fullscreen,
+          onRequestFullscreen: setFullscreen,
           previewSettingsDialogOpen: previewSettingsDialogOpen,
           readOnlyDisplayName: true, // Guests cannot edit display name
           headerActions: () => (
