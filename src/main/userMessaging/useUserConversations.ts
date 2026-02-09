@@ -18,10 +18,10 @@ export interface UserConversation {
 }
 
 export const useUserConversations = () => {
-  const { isEnabled } = useUserMessagingContext();
+  const { isEnabled, isOpen } = useUserMessagingContext();
 
   const { data, loading, error } = useUserConversationsQuery({
-    skip: !isEnabled,
+    skip: !isEnabled || !isOpen,
     fetchPolicy: 'cache-and-network',
   });
 
