@@ -753,6 +753,8 @@ export const WhiteboardProfileFragmentDoc = gql`
     }
     storageBucket {
       id
+      allowedMimeTypes
+      maxFileSize
     }
   }
   ${VisualModelFullFragmentDoc}
@@ -1143,6 +1145,8 @@ export const PublicWhiteboardFragmentFragmentDoc = gql`
       url
       storageBucket {
         id
+        allowedMimeTypes
+        maxFileSize
       }
     }
     createdDate
