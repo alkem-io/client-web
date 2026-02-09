@@ -142,7 +142,7 @@ const ApplicationDialog = ({
                     <FormikInputField
                       key={i}
                       title={x.question}
-                      name={`['${x.question}']`}
+                      name={`['${x.question.replace(/'/g, "\\'")}']`}
                       rows={2}
                       multiline
                       required={x.required}
