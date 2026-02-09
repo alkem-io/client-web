@@ -18,7 +18,7 @@ export interface UserConversation {
 }
 
 export const useUserConversations = () => {
-  const { isEnabled, isOpen } = useUserMessagingContext();
+  const { isEnabled, isOpen, newlyCreatedConversationId } = useUserMessagingContext();
 
   const { data, loading, error } = useUserConversationsQuery({
     skip: !isEnabled || !isOpen,
@@ -59,8 +59,12 @@ export const useUserConversations = () => {
             },
           };
         })
-        // Sort conversations: unread first, then by last message timestamp
+        // Sort conversations: newly created first, then unread, then by last message timestamp
         .sort((a, b) => {
+          // Newly created conversation always at the top
+          if (a.id === newlyCreatedConversationId) return -1;
+          if (b.id === newlyCreatedConversationId) return 1;
+
           // Unread conversations first
           if (a.unreadCount > 0 && b.unreadCount === 0) return -1;
           if (a.unreadCount === 0 && b.unreadCount > 0) return 1;
@@ -73,7 +77,7 @@ export const useUserConversations = () => {
           return b.lastMessage.timestamp - a.lastMessage.timestamp;
         })
     );
-  }, [data?.me?.conversations?.users]);
+  }, [data?.me?.conversations?.users, newlyCreatedConversationId]);
 
   const totalUnreadCount = useMemo(() => {
     return conversations.filter(conv => conv.unreadCount > 0).length;
