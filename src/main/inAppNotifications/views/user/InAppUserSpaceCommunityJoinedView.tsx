@@ -18,6 +18,7 @@ export const InAppUserSpaceCommunityJoinedView = (notification: InAppNotificatio
       notification={notification}
       values={notificationTextValues}
       url={payload.space?.about?.profile?.url}
+      forceReload
     />
   );
 };
