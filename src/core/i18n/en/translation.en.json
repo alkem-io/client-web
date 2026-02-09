@@ -117,6 +117,7 @@
     "expandWindow": "Expand Window",
     "see-more": "See more",
     "see-all": "More {{subject}}",
+    "showAll": "Show all",
     "readMore": "Read more",
     "ellipsisReadMore": "... Read more",
     "showLess": "Show less",
@@ -124,6 +125,7 @@
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
+    "download": "Download",
     "yes": "Yes",
     "no": "No",
     "yesClose": "Yes, close",
@@ -138,6 +140,7 @@
     "remove": "Remove",
     "cancel": "Cancel",
     "upload": "Upload",
+    "uploadMedia": "Upload Media",
     "explore-and-connect": "Explore and connect",
     "send-message": "Send message",
     "edit-members": "Edit $t(common.members)",
@@ -411,6 +414,7 @@
     "Community": "Community",
     "community": "community",
     "library": "Library",
+    "image": "Image",
     "templateLibrary": "Template Library",
     "people": "People",
     "Settings": "Settings",
@@ -419,6 +423,7 @@
     "search": "Search",
     "Storage": "Storage",
     "storage": "storage",
+    "retrying": "Retrying...",
     "type": "Type",
     "reference": "Reference",
     "references": "References",
@@ -768,6 +773,7 @@
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending $t(common.Memberships)",
+      "empty": "You don't have any open invitations or applications at the moment.",
       "pendingMembershipsWithCount": "My Pending $t(common.Memberships) ({{count}})",
       "invitationsSectionTitle": "Invitations",
       "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtualContributor)",
@@ -833,6 +839,12 @@
         "link": {
           "title": "Call To Action",
           "tooltip": "Add a call to action to this $t(common.post)"
+        },
+        "mediaGallery": {
+          "title": "Media Gallery",
+          "tooltip": "Add an image gallery to this $t(common.post)",
+          "nItems": "{{count}} images in the gallery",
+          "deleteItem": "Remove image from gallery"
         }
       },
       "contributionSettings": {
@@ -964,6 +976,17 @@
         "placementMode": "Click to place emoji: {{emoji}}",
         "gridLabel": "Select an emoji",
         "noEmojis": "No emojis available"
+      },
+      "images": {
+        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
+        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
+        "maxSizeFallback": "the allowed limit",
+        "uploadFailed": "Couldn't upload the image. Please try again.",
+        "downloadFailed": "Couldn't load the image. Please try again.",
+        "retry": "Retry",
+        "singleFailure": "An image could not be loaded",
+        "multipleFailures_one": "{{count}} image could not be loaded",
+        "multipleFailures_other": "{{count}} images could not be loaded"
       }
     },
     "memo": {
@@ -1600,6 +1623,29 @@
         "memo": {
           "name": "Content",
           "placeholder": "(Optional) Add some content to the $t(common.memo)"
+        },
+        "mediaGallery": {
+          "name": "Media Gallery",
+          "galleryItem": "Gallery Image",
+          "navigation": {
+            "ariaLabel": "Gallery navigation",
+            "previous": "Previous image",
+            "next": "Next image",
+            "goToImage": "Go to image {{number}}"
+          },
+          "errors": {
+            "title": "Image Upload Errors",
+            "missingConstraints": "Unable to load media gallery items image constraints.",
+            "invalidFileType": "Invalid file type: {{fileType}}. Supported types are: {{allowedTypes}}.",
+            "imageDimensions": {
+              "minWidth": "Image width is too small ({{imagePx}}px). Minimum width is {{constraintPx}}px.",
+              "maxWidth": "Image width is too large ({{imagePx}}px). Maximum width is {{constraintPx}}px.",
+              "minHeight": "Image height is too small ({{imagePx}}px). Minimum height is {{constraintPx}}px.",
+              "maxHeight": "Image height is too large ({{imagePx}}px). Maximum height is {{constraintPx}}px."
+            },
+            "invalidImage": "The uploaded file is not a valid image.",
+            "failedToReadFile": "Failed to read the uploaded file."
+          }
         }
       },
       "template-step": {
@@ -2263,6 +2309,21 @@
     "remove": "Remove from hub"
   },
   "pages": {
+    "titles": {
+      "alkemio": "Alkemio",
+      "separator": " | ",
+      "forum": "Forum",
+      "spaces": "Spaces",
+      "contributors": "Contributors",
+      "templateLibrary": "Template Library",
+      "globalAdmin": "Global Administration",
+      "admin": "Administration",
+      "documentation": "Documentation",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "notFound": "Page Not Found",
+      "restricted": "Access Restricted"
+    },
     "generic": {
       "sections": {
         "dashboard": {
@@ -2600,7 +2661,8 @@
             "public": "<b>Public:</b> This $t(common.space) and its contents are visible for everyone on the platform. Users can only contribute if they are a $t(common.member).",
             "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to $t(common.members). Please note that both the information in the $t(common.profile) and the context are publicly visible.",
             "publicSubspace": "<b>Public:</b> This $t(common.subspace) and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this $t(common.subspace) and its contents will be visible to all users, including those outside the $t(common.space).",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
+            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace).",
+            "membershipWarning": "<b>Please note that users can join this {{entity}} without explicit approval. You can change this in the membership settings below.</b>"
           },
           "license-features": {
             "title": "$t(common.space) Features",
@@ -2735,6 +2797,14 @@
       },
       "WHITEBOARD_PREVIEW": {
         "title": "Whiteboard Preview",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_IMAGE": {
+        "title": "Media Gallery Image",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_VIDEO": {
+        "title": "Media Gallery Video",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
@@ -3696,7 +3766,98 @@
       "BAD_USER_INPUT": "Bad user input: {{message}}",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
-      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
+      "userMessages": {
+        "notFound": {
+          "entity": "Couldn't find what you were looking for.",
+          "resource": "Resource not found.",
+          "account": "Account not found.",
+          "license": "License not found.",
+          "storageBucket": "Storage bucket not found.",
+          "tagset": "Tagset not found.",
+          "mimeType": "MIME type not found.",
+          "matrixEntity": "Matrix entity not found.",
+          "userIdentity": "User identity not found.",
+          "pagination": "Pagination cursor not found."
+        },
+        "authorization": {
+          "unauthenticated": "You might not be logged in.",
+          "unauthorized": "Access denied.",
+          "forbidden": "Access denied.",
+          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenLicensePolicy": "License restriction.",
+          "invalidPolicy": "Invalid authorization policy.",
+          "authorizationReset": "Authorization reset in progress.",
+          "userNotVerified": "User is not verified.",
+          "subscriptionNotAuthenticated": "Subscription requires authentication.",
+          "apiRestricted": "API access restricted.",
+          "invalidToken": "Invalid token.",
+          "bearerToken": "Bearer token error.",
+          "sessionExpired": "Session expired.",
+          "sessionExtend": "Unable to extend session.",
+          "loginFlow": "Login flow error.",
+          "loginFlowInit": "Unable to initialize login flow."
+        },
+        "validation": {
+          "badUserInput": "{{message}}",
+          "inputValidation": "Input validation error.",
+          "invalidUuid": "Invalid identifier format.",
+          "formatNotSupported": "Format not supported.",
+          "invalidStateTransition": "Invalid state transition.",
+          "invalidTemplateType": "Invalid template type.",
+          "groupNotInitialized": "Group not initialized.",
+          "entityNotInitialized": "Entity not initialized.",
+          "relationNotLoaded": "Relation not loaded.",
+          "paginationOutOfBound": "Pagination input out of bounds.",
+          "paginationParamNotFound": "Pagination parameter not found.",
+          "forumDiscussionCategory": "Invalid discussion category.",
+          "notSupported": "Operation not supported."
+        },
+        "operations": {
+          "operationNotAllowed": "Operation not allowed.",
+          "notEnabled": "Feature not enabled.",
+          "messagingNotEnabled": "Messaging not enabled.",
+          "roleSetRole": "Role set error.",
+          "roleSetInvitation": "Invitation error.",
+          "roleLimitsViolated": "Role limits exceeded.",
+          "licenseEntitlementNotAvailable": "License entitlement not available.",
+          "licenseEntitlementNotSupported": "License entitlement not supported.",
+          "calloutClosed": "Callout is closed.",
+          "userAlreadyRegistered": "User already registered.",
+          "userNotRegistered": "User not registered.",
+          "noAgentForUser": "No agent for user.",
+          "userIdentityDeletionFailed": "User identity deletion failed."
+        },
+        "system": {
+          "bootstrapFailed": "System initialization failed.",
+          "notificationPayloadBuilder": "Notification error.",
+          "geoLocationError": "Geolocation error.",
+          "geoServiceNotAvailable": "Geolocation service not available.",
+          "geoServiceError": "Geolocation service error.",
+          "geoServiceRequestLimit": "Geolocation request limit exceeded.",
+          "storageDisabled": "Storage is disabled.",
+          "storageUploadFailed": "Upload failed.",
+          "localStorageSaveFailed": "Local storage save failed.",
+          "localStorageReadFailed": "Local storage read failed.",
+          "localStorageDeleteFailed": "Local storage delete failed.",
+          "documentSaveFailed": "Document save failed.",
+          "documentReadFailed": "Document read failed.",
+          "documentDeleteFailed": "Document delete failed.",
+          "urlResolverError": "URL resolver error.",
+          "excalidrawAmqpResult": "Excalidraw service error.",
+          "excalidrawRedisAdapterInit": "Excalidraw initialization error.",
+          "excalidrawServerInit": "Excalidraw server initialization error."
+        },
+        "fallback": "An unexpected error occurred. Reference: {{errorId}}"
+      },
+      "support": {
+        "linkText": "Contact Support",
+        "errorCode": "Error Code: {{code}}",
+        "emailSubject": "Support Request - Error {{code}}",
+        "emailSubjectGeneric": "Support Request",
+        "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
+        "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you."
+      }
     }
   },
   "dashboard-updates-section": {

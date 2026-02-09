@@ -67,6 +67,8 @@ describe('Guest Whiteboard Access - Disabled guest contributions', () => {
                   storageBucket: {
                     __typename: 'StorageBucket',
                     id: 'bucket-id',
+                    allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+                    maxFileSize: 15728640,
                   },
                   url: null,
                 },

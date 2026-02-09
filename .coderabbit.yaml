@@ -25,7 +25,7 @@ reviews:
         - Authoritative docs: README.md, docs/development-setup.md, .specify/memory/constitution.md, agents.md, .github/copilot-instructions.md.
 
         Environment & bootstrap:
-        1. Ensure Node >=20.9.0 (Volta pins 20.15.1) and pnpm >=10.17.1.
+        1. Ensure Node >=22.0.0 (Volta pins 22.21.1) and pnpm >=10.17.1.
         2. Keep .env (checked in) present; override locally via .env.local.
         3. `pnpm install` (validated 2025-10-30, ~1s with cached deps). pnpm warns about ignored build scripts (@sentry/cli, esbuild, husky, msw); ignore or run `pnpm approve-builds` if required.
 

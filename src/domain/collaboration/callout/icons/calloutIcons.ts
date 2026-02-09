@@ -2,6 +2,7 @@ import { ComponentType } from 'react';
 import { SvgIconProps, Tooltip } from '@mui/material';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { LibraryBooksOutlined } from '@mui/icons-material';
+import PermMediaIcon from '@mui/icons-material/PermMedia';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { ReferenceIcon } from '@/domain/shared/components/References/icons/ReferenceIcon';
 import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
@@ -17,6 +18,7 @@ export const calloutFramingIcons: Record<CalloutFramingType, ComponentType<SvgIc
   [CalloutFramingType.Memo]: MemoIcon,
   [CalloutFramingType.Whiteboard]: WhiteboardIcon,
   [CalloutFramingType.Link]: CtaIcon,
+  [CalloutFramingType.MediaGallery]: PermMediaIcon,
 };
 
 export const contributionIcons: Record<CalloutContributionType, ComponentType<SvgIconProps>> = {
@@ -50,7 +52,7 @@ const getCalloutIconLabelKey = (
   allowedTypes?: CalloutContributionType[]
 ): TranslationKey => {
   if (framingType !== CalloutFramingType.None) {
-    return `common.calloutType.${framingType}`;
+    return `common.calloutType.${framingType}` as TranslationKey;
   }
 
   if (allowedTypes && allowedTypes.length > 0) {

@@ -35,6 +35,8 @@ interface ApplicationWithMeta extends Identifiable {
 interface UsePendingMembershipsProvided {
   applications: PendingApplicationItem[] | undefined;
   invitations: PendingInvitationItem[] | undefined;
+  loading: boolean;
+  refetch: () => void;
 }
 
 type PendingMembershipsProps = {
@@ -43,13 +45,15 @@ type PendingMembershipsProps = {
 
 export const usePendingMemberships = ({ skip = false }: PendingMembershipsProps): UsePendingMembershipsProvided => {
   const { isAuthenticated } = useAuthenticationContext();
-  const { data } = useUserPendingMembershipsQuery({
+  const { data, loading, refetch } = useUserPendingMembershipsQuery({
     skip: !isAuthenticated || skip,
   });
 
   return {
     invitations: data?.me.communityInvitations,
     applications: data?.me.communityApplications,
+    loading,
+    refetch,
   };
 };
 

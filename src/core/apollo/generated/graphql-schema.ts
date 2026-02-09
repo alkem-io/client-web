@@ -507,6 +507,15 @@ export type ActivityLogInput = {
   types?: InputMaybe<Array<ActivityEventType>>;
 };
 
+export type AddVisualToMediaGalleryInput = {
+  /** The ID of the media gallery. */
+  mediaGalleryID: Scalars['String']['input'];
+  /** The sort order of the visual within the media gallery. */
+  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** The type of visual to add (e.g. MEDIA_GALLERY_IMAGE, MEDIA_GALLERY_VIDEO). */
+  visualType: VisualType;
+};
+
 export type AdminAuthenticationIdBackfillResult = {
   __typename?: 'AdminAuthenticationIDBackfillResult';
   /** Total users examined during the backfill run */
@@ -804,6 +813,7 @@ export enum AuthorizationPolicyType {
   LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
+  MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
@@ -986,8 +996,8 @@ export type Callout = {
   posts?: Maybe<Array<Post>>;
   /** The user that published this Callout */
   publishedBy?: Maybe<User>;
-  /** The Date of the publishing of this Callout. */
-  publishedDate?: Maybe<Scalars['DateTime']['output']>;
+  /** The timestamp for the publishing of this Callout. */
+  publishedDate?: Maybe<Scalars['Float']['output']>;
   /** The Callout Settings associated with this Callout. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
@@ -1077,6 +1087,8 @@ export type CalloutFraming = {
   id: Scalars['UUID']['output'];
   /** The Link for framing the associated Callout. */
   link?: Maybe<Link>;
+  /** The media gallery associated with the callout framing */
+  mediaGallery?: Maybe<MediaGallery>;
   /** The Memo for framing the associated Callout. */
   memo?: Maybe<Memo>;
   /** The Profile for framing the associated Callout. */
@@ -1091,6 +1103,7 @@ export type CalloutFraming = {
 
 export enum CalloutFramingType {
   Link = 'LINK',
+  MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
   None = 'NONE',
   Whiteboard = 'WHITEBOARD',
@@ -1252,6 +1265,16 @@ export type CommunicationAdminMembershipResult = {
   id: Scalars['String']['output'];
   /** Rooms in this Communication */
   rooms: Array<CommunicationAdminRoomMembershipResult>;
+};
+
+export type CommunicationAdminMigrateRoomsResult = {
+  __typename?: 'CommunicationAdminMigrateRoomsResult';
+  /** Errors encountered during migration */
+  errors: Array<Scalars['String']['output']>;
+  /** Number of conversations that failed to have rooms created */
+  failed: Scalars['Int']['output'];
+  /** Number of conversations that had rooms created */
+  migrated: Scalars['Int']['output'];
 };
 
 export type CommunicationAdminOrphanedUsageResult = {
@@ -1621,26 +1644,8 @@ export type ConversationReadReceiptUpdatedEvent = {
   roomId: Scalars['UUID']['output'];
 };
 
-export type ConversationVcAnswerRelevanceInput = {
-  /** The ID of the conversation. */
-  conversationID: Scalars['UUID']['input'];
-  /** The answer id. */
-  id: Scalars['String']['input'];
-  /** Is the answer relevant or not. */
-  relevant: Scalars['Boolean']['input'];
-};
-
-export type ConversationVcAskQuestionInput = {
-  /** The ID of the conversation. */
-  conversationID: Scalars['UUID']['input'];
-  /** The language of the answer. */
-  language?: InputMaybe<Scalars['String']['input']>;
-  /** The question that is being asked. */
-  question: Scalars['String']['input'];
-};
-
 export type ConversationVcResetInput = {
-  /** The ID of the conversation. */
+  /** The ID of the Conversation to reset. */
   conversationID: Scalars['UUID']['input'];
 };
 
@@ -1655,9 +1660,9 @@ export type ConvertSpaceL1ToSpaceL0Input = {
 };
 
 export type ConvertSpaceL1ToSpaceL2Input = {
-  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2. */
+  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2.  */
   parentSpaceL1ID: Scalars['UUID']['input'];
-  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space. */
+  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space.  */
   spaceL1ID: Scalars['UUID']['input'];
 };
 
@@ -2556,6 +2561,13 @@ export type DeleteUserInput = {
 
 export type DeleteVirtualContributorInput = {
   ID: Scalars['UUID']['input'];
+};
+
+export type DeleteVisualFromMediaGalleryInput = {
+  /** The ID of the media gallery. */
+  mediaGalleryID: Scalars['String']['input'];
+  /** The ID of the visual to delete. */
+  visualID: Scalars['String']['input'];
 };
 
 export type DeleteWhiteboardInput = {
@@ -4085,6 +4097,23 @@ export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type MediaGallery = {
+  __typename?: 'MediaGallery';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  createdBy?: Maybe<Scalars['String']['output']>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The storage bucket associated with this media gallery. */
+  storageBucket?: Maybe<StorageBucket>;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+  /** The visuals contained in this media gallery. */
+  visuals: Array<Visual>;
+};
+
 export type Memo = {
   __typename?: 'Memo';
   /** The authorization rules for the entity */
@@ -4126,19 +4155,6 @@ export type Message = {
   threadID?: Maybe<Scalars['MessageID']['output']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float']['output'];
-};
-
-/** A detailed answer to a question, typically from an AI service. */
-export type MessageAnswerQuestion = {
-  __typename?: 'MessageAnswerQuestion';
-  /** Error message if an error occurred */
-  error?: Maybe<Scalars['String']['output']>;
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']['output']>;
-  /** The original question */
-  question: Scalars['String']['output'];
-  /** Message successfully sent. If false, error will have the reason. */
-  success: Scalars['Boolean']['output'];
 };
 
 /** Details about a message, including the room it was sent in and the parent entity that is using the room. */
@@ -4261,10 +4277,14 @@ export type Mutation = {
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
+  /** Adds a new visual to the specified media gallery. */
+  addVisualToMediaGallery: Visual;
   /** Populate authenticationID for existing users by querying Kratos Admin API */
   adminBackfillAuthenticationIDs: AdminAuthenticationIdBackfillResult;
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean']['output'];
+  /** Create rooms for legacy conversations that were created without one (from lazy room creation era). */
+  adminCommunicationMigrateOrphanedConversations: CommunicationAdminMigrateRoomsResult;
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean']['output'];
   /** Allow updating the state flags of a particular rule. */
@@ -4301,8 +4321,6 @@ export type Mutation = {
   aiServerUpdateAiPersona: AiPersona;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
-  /** Ask the chat engine for guidance. */
-  askVcQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -4435,6 +4453,8 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Deletes the specified VirtualContributor. */
   deleteVirtualContributor: VirtualContributor;
+  /** Deletes a visual from the specified media gallery. */
+  deleteVisualFromMediaGallery: Visual;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Trigger an event on the Application. */
@@ -4443,8 +4463,6 @@ export type Mutation = {
   eventOnInvitation: Invitation;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
-  /** User vote if a specific answer is relevant. */
-  feedbackOnVcAnswerRelevance: Scalars['Boolean']['output'];
   /** Grants an authorization credential to an Organization. */
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
@@ -4489,7 +4507,7 @@ export type Mutation = {
   removeRoleFromVirtualContributor: VirtualContributor;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
-  /** Resets the interaction with the chat engine. */
+  /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Space;
@@ -4645,6 +4663,10 @@ export type MutationAddReactionToMessageInRoomArgs = {
   reactionData: RoomAddReactionToMessageInput;
 };
 
+export type MutationAddVisualToMediaGalleryArgs = {
+  addData: AddVisualToMediaGalleryInput;
+};
+
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
   communicationData: CommunicationAdminEnsureAccessInput;
 };
@@ -4699,10 +4721,6 @@ export type MutationAiServerUpdateAiPersonaArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
-};
-
-export type MutationAskVcQuestionArgs = {
-  input: ConversationVcAskQuestionInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -4949,6 +4967,10 @@ export type MutationDeleteVirtualContributorArgs = {
   deleteData: DeleteVirtualContributorInput;
 };
 
+export type MutationDeleteVisualFromMediaGalleryArgs = {
+  deleteData: DeleteVisualFromMediaGalleryInput;
+};
+
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
 };
@@ -4963,10 +4985,6 @@ export type MutationEventOnInvitationArgs = {
 
 export type MutationEventOnOrganizationVerificationArgs = {
   eventData: OrganizationVerificationEventInput;
-};
-
-export type MutationFeedbackOnVcAnswerRelevanceArgs = {
-  input: ConversationVcAnswerRelevanceInput;
 };
 
 export type MutationGrantCredentialToOrganizationArgs = {
@@ -9095,6 +9113,7 @@ export type Visual = {
   /** Minimum width resolution. */
   minWidth: Scalars['Float']['output'];
   name: VisualType;
+  sortOrder?: Maybe<Scalars['Float']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   uri: Scalars['String']['output'];
@@ -9121,6 +9140,8 @@ export enum VisualType {
   Banner = 'BANNER',
   BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
+  MediaGalleryImage = 'MEDIA_GALLERY_IMAGE',
+  MediaGalleryVideo = 'MEDIA_GALLERY_VIDEO',
   WhiteboardPreview = 'WHITEBOARD_PREVIEW',
 }
 
@@ -13054,6 +13075,20 @@ export type CalloutContentQuery = {
                   };
                 }
               | undefined;
+            mediaGallery?:
+              | {
+                  __typename?: 'MediaGallery';
+                  id: string;
+                  visuals: Array<{
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                    sortOrder?: number | undefined;
+                  }>;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -13090,7 +13125,7 @@ export type UpdateCalloutContentMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    publishedDate?: Date | undefined;
+    publishedDate?: number | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13170,7 +13205,12 @@ export type UpdateCalloutContentMutation = {
                     type: TagsetType;
                   }
                 | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+              };
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -13272,6 +13312,20 @@ export type UpdateCalloutContentMutation = {
             id: string;
             uri: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      mediaGallery?:
+        | {
+            __typename?: 'MediaGallery';
+            id: string;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              sortOrder?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -13462,7 +13516,7 @@ export type UpdateCalloutVisibilityMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    publishedDate?: Date | undefined;
+    publishedDate?: number | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13542,7 +13596,12 @@ export type UpdateCalloutVisibilityMutation = {
                     type: TagsetType;
                   }
                 | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+              };
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -13644,6 +13703,20 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             uri: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      mediaGallery?:
+        | {
+            __typename?: 'MediaGallery';
+            id: string;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              sortOrder?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -14830,7 +14903,12 @@ export type CreateWhiteboardOnCalloutMutation = {
                   type: TagsetType;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -14963,7 +15041,7 @@ export type CreateCalloutMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    publishedDate?: Date | undefined;
+    publishedDate?: number | undefined;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -15043,7 +15121,12 @@ export type CreateCalloutMutation = {
                     type: TagsetType;
                   }
                 | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              storageBucket: {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+              };
             };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -15145,6 +15228,20 @@ export type CreateCalloutMutation = {
             id: string;
             uri: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      mediaGallery?:
+        | {
+            __typename?: 'MediaGallery';
+            id: string;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              sortOrder?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -15422,7 +15519,7 @@ export type CalloutDetailsQuery = {
           id: string;
           sortOrder: number;
           activity: number;
-          publishedDate?: Date | undefined;
+          publishedDate?: number | undefined;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -15508,7 +15605,12 @@ export type CalloutDetailsQuery = {
                           type: TagsetType;
                         }
                       | undefined;
-                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                    };
                   };
                   authorization?:
                     | {
@@ -15639,6 +15741,20 @@ export type CalloutDetailsQuery = {
                     displayName: string;
                     description?: string | undefined;
                   };
+                }
+              | undefined;
+            mediaGallery?:
+              | {
+                  __typename?: 'MediaGallery';
+                  id: string;
+                  visuals: Array<{
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                    sortOrder?: number | undefined;
+                  }>;
                 }
               | undefined;
           };
@@ -15889,7 +16005,7 @@ export type CalloutDetailsFragment = {
   id: string;
   sortOrder: number;
   activity: number;
-  publishedDate?: Date | undefined;
+  publishedDate?: number | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -15969,7 +16085,12 @@ export type CalloutDetailsFragment = {
                   type: TagsetType;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -16071,6 +16192,20 @@ export type CalloutDetailsFragment = {
           id: string;
           uri: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    mediaGallery?:
+      | {
+          __typename?: 'MediaGallery';
+          id: string;
+          visuals: Array<{
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            sortOrder?: number | undefined;
+          }>;
         }
       | undefined;
   };
@@ -16247,6 +16382,44 @@ export type CalloutDetailsFragment = {
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
+};
+
+export type AddVisualToMediaGalleryMutationVariables = Exact<{
+  addData: AddVisualToMediaGalleryInput;
+}>;
+
+export type AddVisualToMediaGalleryMutation = {
+  __typename?: 'Mutation';
+  addVisualToMediaGallery: {
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    name: VisualType;
+    alternativeText?: string | undefined;
+    sortOrder?: number | undefined;
+  };
+};
+
+export type DeleteVisualFromMediaGalleryMutationVariables = Exact<{
+  deleteData: DeleteVisualFromMediaGalleryInput;
+}>;
+
+export type DeleteVisualFromMediaGalleryMutation = {
+  __typename?: 'Mutation';
+  deleteVisualFromMediaGallery: { __typename?: 'Visual'; id: string };
+};
+
+export type MediaGalleryVisualsFragment = {
+  __typename?: 'MediaGallery';
+  id: string;
+  visuals: Array<{
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    name: VisualType;
+    alternativeText?: string | undefined;
+    sortOrder?: number | undefined;
+  }>;
 };
 
 export type MemoMarkdownQueryVariables = Exact<{
@@ -16765,7 +16938,7 @@ export type WhiteboardProfileFragment = {
         type: TagsetType;
       }
     | undefined;
-  storageBucket: { __typename?: 'StorageBucket'; id: string };
+  storageBucket: { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number };
 };
 
 export type WhiteboardDetailsFragment = {
@@ -16821,7 +16994,7 @@ export type WhiteboardDetailsFragment = {
           type: TagsetType;
         }
       | undefined;
-    storageBucket: { __typename?: 'StorageBucket'; id: string };
+    storageBucket: { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -16923,7 +17096,12 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
-                storageBucket: { __typename?: 'StorageBucket'; id: string };
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                };
               };
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17025,7 +17203,12 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                       type: TagsetType;
                     }
                   | undefined;
-                storageBucket: { __typename?: 'StorageBucket'; id: string };
+                storageBucket: {
+                  __typename?: 'StorageBucket';
+                  id: string;
+                  allowedMimeTypes: Array<string>;
+                  maxFileSize: number;
+                };
               };
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17146,7 +17329,12 @@ export type WhiteboardFromCalloutQuery = {
                           type: TagsetType;
                         }
                       | undefined;
-                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                    };
                   };
                   authorization?:
                     | {
@@ -17268,7 +17456,12 @@ export type GetPublicWhiteboardQuery = {
             displayName: string;
             description?: string | undefined;
             url: string;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
         }
       | undefined;
@@ -17288,7 +17481,7 @@ export type PublicWhiteboardFragmentFragment = {
     displayName: string;
     description?: string | undefined;
     url: string;
-    storageBucket: { __typename?: 'StorageBucket'; id: string };
+    storageBucket: { __typename?: 'StorageBucket'; id: string; allowedMimeTypes: Array<string>; maxFileSize: number };
   };
 };
 
@@ -17397,6 +17590,15 @@ export type VisualModelFullFragment = {
   minHeight: number;
   minWidth: number;
   alternativeText?: string | undefined;
+};
+
+export type UpdateVisualMutationVariables = Exact<{
+  updateData: UpdateVisualInput;
+}>;
+
+export type UpdateVisualMutation = {
+  __typename?: 'Mutation';
+  updateVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
 };
 
 export type UploadVisualMutationVariables = Exact<{
@@ -22305,6 +22507,38 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type InnovationHubByIdQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type InnovationHubByIdQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline?: string | undefined;
+            description?: string | undefined;
+            banner?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type InnovationHubBannerWideQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubBannerWideQuery = {
@@ -22850,6 +23084,7 @@ export type InnovationHubQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
+          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -22860,6 +23095,9 @@ export type InnovationHubQuery = {
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
@@ -22868,6 +23106,7 @@ export type InnovationHubQuery = {
 export type InnovationHubHomeInnovationHubFragment = {
   __typename?: 'InnovationHub';
   id: string;
+  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -22876,6 +23115,9 @@ export type InnovationHubHomeInnovationHubFragment = {
     description?: string | undefined;
     banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
@@ -29185,7 +29427,12 @@ export type TemplateContentQuery = {
                                 type: TagsetType;
                               }
                             | undefined;
-                          storageBucket: { __typename?: 'StorageBucket'; id: string };
+                          storageBucket: {
+                            __typename?: 'StorageBucket';
+                            id: string;
+                            allowedMimeTypes: Array<string>;
+                            maxFileSize: number;
+                          };
                         };
                         authorization?:
                           | {
@@ -29257,6 +29504,20 @@ export type TemplateContentQuery = {
                         id: string;
                         markdown?: string | undefined;
                         profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                  mediaGallery?:
+                    | {
+                        __typename?: 'MediaGallery';
+                        id: string;
+                        visuals: Array<{
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                          sortOrder?: number | undefined;
+                        }>;
                       }
                     | undefined;
                 };
@@ -29824,7 +30085,12 @@ export type CalloutTemplateContentFragment = {
                   type: TagsetType;
                 }
               | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -29876,6 +30142,20 @@ export type CalloutTemplateContentFragment = {
           id: string;
           markdown?: string | undefined;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+    mediaGallery?:
+      | {
+          __typename?: 'MediaGallery';
+          id: string;
+          visuals: Array<{
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            sortOrder?: number | undefined;
+          }>;
         }
       | undefined;
   };
@@ -30518,6 +30798,7 @@ export type CreateTemplateMutation = {
                   };
                 }
               | undefined;
+            mediaGallery?: { __typename?: 'MediaGallery'; id: string } | undefined;
           };
         }
       | undefined;
@@ -30617,6 +30898,9 @@ export type UpdateCalloutTemplateMutation = {
           }
         | undefined;
       memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
+      mediaGallery?:
+        | { __typename?: 'MediaGallery'; id: string; visuals: Array<{ __typename?: 'Visual'; id: string }> }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';

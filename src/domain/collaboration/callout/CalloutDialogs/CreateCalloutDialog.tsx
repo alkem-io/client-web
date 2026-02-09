@@ -16,6 +16,7 @@ import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
@@ -31,7 +32,6 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
-import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -56,11 +56,11 @@ const CreateCalloutDialog = ({
   calloutRestrictions,
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
-  const { isSmallScreen: isMobile } = useScreenSize();
 
   const ensurePresence = useEnsurePresence();
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -100,10 +100,12 @@ const CreateCalloutDialog = ({
     async (visibility: CalloutVisibility = CalloutVisibility.Published) => {
       const formData = ensurePresence(calloutFormData);
       // Map the profile to CreateProfileInput
+      const { mediaGallery, ...framingData } = formData.framing;
       const framing = {
-        ...formData.framing,
-        profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
-        tags: mapProfileTagsToCreateTags(formData.framing.profile),
+        ...framingData,
+        profile: mapProfileModelToCreateProfileInput(framingData.profile),
+        tags: mapProfileTagsToCreateTags(framingData.profile),
+        // Map media gallery items to CreateMediaGalleryInput
       };
 
       // And map the radio button allowed contribution types to an array
@@ -153,7 +155,14 @@ const CreateCalloutDialog = ({
         sendNotification,
       };
 
-      await handleCreateCallout(createCalloutInput);
+      const createdCallout = await handleCreateCallout(createCalloutInput);
+      if (mediaGallery?.visuals?.length) {
+        await uploadMediaGalleryVisuals({
+          mediaGalleryId: createdCallout?.framing.mediaGallery?.id,
+          visuals: mediaGallery.visuals,
+          reuploadVisuals: true,
+        });
+      }
       handleClose();
       setTimeout(scrollToTop, 100);
     }
@@ -161,13 +170,7 @@ const CreateCalloutDialog = ({
 
   return (
     <>
-      <DialogWithGrid
-        open={open}
-        onClose={handleCloseButtonClick}
-        fullWidth
-        fullScreen={isMobile}
-        aria-labelledby="create-callout-dialog"
-      >
+      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth aria-labelledby="create-callout-dialog">
         <DialogHeader
           id="create-callout-dialog"
           title={t('callout.create.dialogTitle')}

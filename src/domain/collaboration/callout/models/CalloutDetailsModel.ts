@@ -10,6 +10,7 @@ import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
+import { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {
@@ -28,6 +29,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
     whiteboard?: WhiteboardDetails;
     memo?: MemoModel;
     link?: LinkDetails;
+    mediaGallery?: MediaGalleryModel;
   };
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;

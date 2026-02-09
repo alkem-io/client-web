@@ -42,6 +42,7 @@ import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/refer
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
+import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 
 interface EntityWithProfile {
   profile: {
@@ -402,6 +403,7 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateWhiteboardVariables?: UpdateWhiteboardMutationVariables;
   updateCalloutVariables?: UpdateCalloutTemplateMutationVariables;
+  updateCalloutMediaGallery?: CalloutFormSubmittedValues['framing']['mediaGallery'];
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
   updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
@@ -447,9 +449,17 @@ export const toUpdateTemplateMutationVariables = (
         delete updateCalloutVariables.calloutData?.contributionDefaults?.whiteboardContent;
       }
 
+      const updateCalloutMediaGallery =
+        calloutTemplateData.callout?.framing.type === CalloutFramingType.MediaGallery
+          ? {
+              visuals: calloutTemplateData.callout?.framing.mediaGallery?.visuals ?? [],
+            }
+          : undefined;
+
       return {
         updateTemplateVariables,
         updateCalloutVariables,
+        updateCalloutMediaGallery,
       };
     }
     case TemplateType.Space: {
