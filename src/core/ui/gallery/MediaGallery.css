@@ -82,6 +82,7 @@
   width: auto;
   height: 70px;
   display: flex;
+  cursor: pointer;
 }
 
 .image-gallery-thumbnail-inner {
