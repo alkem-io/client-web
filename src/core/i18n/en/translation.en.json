@@ -117,6 +117,7 @@
     "expandWindow": "Expand Window",
     "see-more": "See more",
     "see-all": "More {{subject}}",
+    "showAll": "Show all",
     "readMore": "Read more",
     "ellipsisReadMore": "... Read more",
     "showLess": "Show less",
@@ -842,6 +843,7 @@
         "mediaGallery": {
           "title": "Media Gallery",
           "tooltip": "Add an image gallery to this $t(common.post)",
+          "nItems": "{{count}} images in the gallery",
           "deleteItem": "Remove image from gallery"
         }
       },

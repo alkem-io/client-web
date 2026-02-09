@@ -75,14 +75,21 @@
 
 .image-gallery-thumbnails-container {
   display: flex;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 2px;
+  max-height: 30vh;
+  overflow-y: auto;
 }
 
 .image-gallery-thumbnail {
   width: auto;
+  max-height: 70px;
   height: 70px;
   display: flex;
   cursor: pointer;
+}
+.image-gallery-thumbnails-wrapper.thumbnails-swipe-horizontal {
+  touch-action: none;
 }
 
 .image-gallery-thumbnail-inner {

@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Box, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
+import React, { useRef, useState } from 'react';
+import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
 import { MediaGalleryItem } from './types';
 import { gutters } from '../grid/utils';
 import DialogHeader from '../dialog/DialogHeader';
@@ -17,6 +17,7 @@ const ImageGallery = lazyWithGlobalErrorHandler(async () => {
   return { default: ImageGallery.default };
 });
 import type { GalleryItem, ImageGalleryRef } from 'react-image-gallery';
+import { Caption } from '../typography';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -49,12 +50,14 @@ interface MediaGalleryProps {
   items: MediaGalleryItem[];
 }
 
+const MAX_VISIBLE_THUMBNAILS = 6;
+
 const MediaGallery = ({ title, items }: MediaGalleryProps) => {
   const { t } = useTranslation();
   const galleryRef = useRef<ImageGalleryRef>(null);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(undefined);
-  const [fullscreen, setFullscreen] = React.useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
+  const [fullscreen, setFullscreen] = useState<boolean>(false);
 
   const handleClose = () => {
     if (fullscreen) {
@@ -116,10 +119,18 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
     description: item.description,
   }));
 
+  const hasMoreThumbnails = items.length > MAX_VISIBLE_THUMBNAILS;
+  const visibleThumbnails = items.slice(0, MAX_VISIBLE_THUMBNAILS);
+
+  const handleShowMore = () => {
+    setSelectedIndex(0);
+    setDialogOpen(true);
+  };
+
   return (
     <>
       <GalleryWrapper>
-        {items.map((item, index) => {
+        {visibleThumbnails.map((item, index) => {
           const isVideo = item.type === 'video';
           const videoSource = isVideo
             ? JSON.stringify({
@@ -139,6 +150,14 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
           );
         })}
       </GalleryWrapper>
+      {hasMoreThumbnails && (
+        <Box display="flex" justifyContent="end" alignItems="center" gap={gutters()} margin={gutters(1)}>
+          <Caption>{t('callout.create.framingSettings.mediaGallery.nItems', { count: items.length })}</Caption>
+          <Button variant="outlined" onClick={handleShowMore}>
+            {t('buttons.showAll')}
+          </Button>
+        </Box>
+      )}
       <DialogWithGrid
         open={dialogOpen}
         onClose={handleClose}
@@ -186,6 +205,8 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
             onSlide={currentIndex => setSelectedIndex(currentIndex)}
             showFullscreenButton={fullscreen}
             onScreenChange={fullscreen => setFullscreen(fullscreen)}
+            disableThumbnailScroll
+            disableThumbnailSwipe
           />
         </DialogContent>
       </DialogWithGrid>
