@@ -117,6 +117,7 @@
     "expandWindow": "Venster vergroten",
     "see-more": "Lees verder",
     "see-all": "Meer {{subject}}",
+    "showAll": "Show all",
     "readMore": "Meer lezen",
     "ellipsisReadMore": "... Read more",
     "showLess": "Minder weergeven",
@@ -124,6 +125,7 @@
     "home": "Startpagina",
     "take-me-home": "Terug naar startpagina",
     "close": "Sluit",
+    "download": "Download",
     "yes": "Ja",
     "no": "Nee",
     "yesClose": "Ja, sluiten",
@@ -138,6 +140,7 @@
     "remove": "Verwijder",
     "cancel": "Annuleer",
     "upload": "Upload",
+    "uploadMedia": "Upload Media",
     "explore-and-connect": "Verken en verbind",
     "send-message": "Verstuur bericht",
     "edit-members": "Bewerk $t(common.members)",
@@ -370,6 +373,7 @@
     "noneTemplates": "Geen templates",
     "templateTypes": "Template types",
     "template": "Template",
+    "template-lowercase": "template",
     "group": "Groep",
     "groups": "Groepen",
     "user-group": "Gebruikersgroep",
@@ -410,6 +414,7 @@
     "Community": "Community",
     "community": "community",
     "library": "Bibliotheek",
+    "image": "Image",
     "templateLibrary": "Template Bibliotheek",
     "people": "Personen",
     "Settings": "Instellingen",
@@ -418,6 +423,7 @@
     "search": "Zoek...",
     "Storage": "Opslag",
     "storage": "opslag",
+    "retrying": "Retrying...",
     "type": "Type",
     "reference": "Referentie",
     "references": "Referenties",
@@ -767,6 +773,7 @@
     },
     "pendingMembership": {
       "pendingMemberships": "Mijn open $t(common.memberships)",
+      "empty": "You don't have any open invitations or applications at the moment.",
       "pendingMembershipsWithCount": "Mijn open $t(common.memberships) ({{count}})",
       "invitationsSectionTitle": "Uitnodigingen",
       "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn $t(common.virtualContributor)",
@@ -832,6 +839,12 @@
         "link": {
           "title": "Oproep tot actie",
           "tooltip": "Voeg een oproep tot actietoe aan deze $t(common.post)"
+        },
+        "mediaGallery": {
+          "title": "Media Gallery",
+          "tooltip": "Add an image gallery to this $t(common.post)",
+          "nItems": "{{count}} images in the gallery",
+          "deleteItem": "Remove image from gallery"
         }
       },
       "contributionSettings": {
@@ -963,6 +976,17 @@
         "placementMode": "Click to place emoji: {{emoji}}",
         "gridLabel": "Select an emoji",
         "noEmojis": "No emojis available"
+      },
+      "images": {
+        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
+        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
+        "maxSizeFallback": "the allowed limit",
+        "uploadFailed": "Couldn't upload the image. Please try again.",
+        "downloadFailed": "Couldn't load the image. Please try again.",
+        "retry": "Retry",
+        "singleFailure": "An image could not be loaded",
+        "multipleFailures_one": "{{count}} image could not be loaded",
+        "multipleFailures_other": "{{count}} images could not be loaded"
       }
     },
     "memo": {
@@ -1383,23 +1407,23 @@
             "description": "- Door het wijzigen van de $t(common.innovation-flow) **gaan alle veranderingen die in de huidige flow zijn aangebracht verloren**.\n- Alle bestaande $t(common.posts) zullen gegroepeerd worden onder de eerste fase van de nieuwe flow."
           },
           "importCalloutsDialog": {
-            "title": "Nieuw $t(common.template) toepassen",
-            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "title": "Apply new $t(common.template-lowercase)",
+            "description": "You are about to apply a new $t(common.template-lowercase). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
             "option1": {
               "label": "Replace with new flow",
               "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
             },
             "option2": {
-              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
-              "description": "Dit zal de nieuwe $t(common.posts) van de $t(common.template) bevatten naast je bestaanden."
+              "label": "Replace and add $t(common.template-lowercase) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template-lowercase) in addition to your existing ones."
             },
             "option3": {
-              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
-              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+              "label": "Replace flow without adding $t(common.template-lowercase) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template-lowercase) $t(common.posts)."
             },
             "confirmDelete": {
               "title": "Confirm Deletion",
-              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template-lowercase). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
             },
             "apply": "Schrijf in"
           }
@@ -1599,6 +1623,29 @@
         "memo": {
           "name": "Inhoud",
           "placeholder": "(Optioneel) Voeg wat inhoud toe aan de $t(common.memo)"
+        },
+        "mediaGallery": {
+          "name": "Media Gallery",
+          "galleryItem": "Gallery Image",
+          "navigation": {
+            "ariaLabel": "Gallery navigation",
+            "previous": "Previous image",
+            "next": "Next image",
+            "goToImage": "Go to image {{number}}"
+          },
+          "errors": {
+            "title": "Image Upload Errors",
+            "missingConstraints": "Unable to load media gallery items image constraints.",
+            "invalidFileType": "Invalid file type: {{fileType}}. Supported types are: {{allowedTypes}}.",
+            "imageDimensions": {
+              "minWidth": "Image width is too small ({{imagePx}}px). Minimum width is {{constraintPx}}px.",
+              "maxWidth": "Image width is too large ({{imagePx}}px). Maximum width is {{constraintPx}}px.",
+              "minHeight": "Image height is too small ({{imagePx}}px). Minimum height is {{constraintPx}}px.",
+              "maxHeight": "Image height is too large ({{imagePx}}px). Maximum height is {{constraintPx}}px."
+            },
+            "invalidImage": "The uploaded file is not a valid image.",
+            "failedToReadFile": "Failed to read the uploaded file."
+          }
         }
       },
       "template-step": {
@@ -2262,6 +2309,21 @@
     "remove": "Verwijderen uit de Space"
   },
   "pages": {
+    "titles": {
+      "alkemio": "Alkemio",
+      "separator": " | ",
+      "forum": "Forum",
+      "spaces": "Spaces",
+      "contributors": "Contributors",
+      "templateLibrary": "Template Library",
+      "globalAdmin": "Global Administration",
+      "admin": "Administration",
+      "documentation": "Documentation",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "notFound": "Page Not Found",
+      "restricted": "Access Restricted"
+    },
     "generic": {
       "sections": {
         "dashboard": {
@@ -2599,7 +2661,8 @@
             "public": "<b>Openbaar:</b> deze $t(common.space) en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Alleen $t(common.members) kunnen bijdragen.",
             "private": "<b>Privé:</b> Deze $t(common.space) is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor $t(common.members). Houd er rekening mee dat zowel de informatie in het $t(common.profile) als de context openbaar zichtbaar zijn.",
             "publicSubspace": "<b>Publiek:</b> Deze $t(common.subspace) en alle bijbehorende inhoud zijn zichtbaar voor iedereen die toegang heeft tot de $t(common.space) waartoe hij behoort. Als de $t(common.space) zelf openbaar is, zal deze $t(common.subspace) en de inhoud ervan zichtbaar zijn voor alle gebruikers, inclusief degenen buiten de $t(common.space).",
-            "privateSubspace": "<b>Privé:</b> Deze $t(common.subspace) is zichtbaar voor alle $t(common.members) van de $t(common.space), maar de inhoud is beperkt en kan alleen worden geopend door $t(common.members) van de $t(common.subspace)."
+            "privateSubspace": "<b>Privé:</b> Deze $t(common.subspace) is zichtbaar voor alle $t(common.members) van de $t(common.space), maar de inhoud is beperkt en kan alleen worden geopend door $t(common.members) van de $t(common.subspace).",
+            "membershipWarning": "<b>Please note that users can join this {{entity}} without explicit approval. You can change this in the membership settings below.</b>"
           },
           "license-features": {
             "title": "$t(common.space) functies",
@@ -2735,6 +2798,14 @@
       "WHITEBOARD_PREVIEW": {
         "title": "Whiteboard Voorvertoning",
         "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)"
+      },
+      "MEDIA_GALLERY_IMAGE": {
+        "title": "Media Gallery Image",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_VIDEO": {
+        "title": "Media Gallery Video",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
         "altText": {
@@ -3695,7 +3766,98 @@
       "BAD_USER_INPUT": "Verkeerde gebruikersinvoer: {{message}}",
       "NOT_SUPPORTED": "Niet ondersteund: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
-      "MESSAGING_NOT_ENABLED": "Deze gebruiker heeft direct berichten uitgeschakeld. Je kunt hen op dit moment geen bericht sturen."
+      "MESSAGING_NOT_ENABLED": "Deze gebruiker heeft direct berichten uitgeschakeld. Je kunt hen op dit moment geen bericht sturen.",
+      "userMessages": {
+        "notFound": {
+          "entity": "Couldn't find what you were looking for.",
+          "resource": "Resource not found.",
+          "account": "Account not found.",
+          "license": "License not found.",
+          "storageBucket": "Storage bucket not found.",
+          "tagset": "Tagset not found.",
+          "mimeType": "MIME type not found.",
+          "matrixEntity": "Matrix entity not found.",
+          "userIdentity": "User identity not found.",
+          "pagination": "Pagination cursor not found."
+        },
+        "authorization": {
+          "unauthenticated": "You might not be logged in.",
+          "unauthorized": "Access denied.",
+          "forbidden": "Access denied.",
+          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenLicensePolicy": "License restriction.",
+          "invalidPolicy": "Invalid authorization policy.",
+          "authorizationReset": "Authorization reset in progress.",
+          "userNotVerified": "User is not verified.",
+          "subscriptionNotAuthenticated": "Subscription requires authentication.",
+          "apiRestricted": "API access restricted.",
+          "invalidToken": "Invalid token.",
+          "bearerToken": "Bearer token error.",
+          "sessionExpired": "Session expired.",
+          "sessionExtend": "Unable to extend session.",
+          "loginFlow": "Login flow error.",
+          "loginFlowInit": "Unable to initialize login flow."
+        },
+        "validation": {
+          "badUserInput": "{{message}}",
+          "inputValidation": "Input validation error.",
+          "invalidUuid": "Invalid identifier format.",
+          "formatNotSupported": "Format not supported.",
+          "invalidStateTransition": "Invalid state transition.",
+          "invalidTemplateType": "Invalid template type.",
+          "groupNotInitialized": "Group not initialized.",
+          "entityNotInitialized": "Entity not initialized.",
+          "relationNotLoaded": "Relation not loaded.",
+          "paginationOutOfBound": "Pagination input out of bounds.",
+          "paginationParamNotFound": "Pagination parameter not found.",
+          "forumDiscussionCategory": "Invalid discussion category.",
+          "notSupported": "Operation not supported."
+        },
+        "operations": {
+          "operationNotAllowed": "Operation not allowed.",
+          "notEnabled": "Feature not enabled.",
+          "messagingNotEnabled": "Messaging not enabled.",
+          "roleSetRole": "Role set error.",
+          "roleSetInvitation": "Invitation error.",
+          "roleLimitsViolated": "Role limits exceeded.",
+          "licenseEntitlementNotAvailable": "License entitlement not available.",
+          "licenseEntitlementNotSupported": "License entitlement not supported.",
+          "calloutClosed": "Callout is closed.",
+          "userAlreadyRegistered": "User already registered.",
+          "userNotRegistered": "User not registered.",
+          "noAgentForUser": "No agent for user.",
+          "userIdentityDeletionFailed": "User identity deletion failed."
+        },
+        "system": {
+          "bootstrapFailed": "System initialization failed.",
+          "notificationPayloadBuilder": "Notification error.",
+          "geoLocationError": "Geolocation error.",
+          "geoServiceNotAvailable": "Geolocation service not available.",
+          "geoServiceError": "Geolocation service error.",
+          "geoServiceRequestLimit": "Geolocation request limit exceeded.",
+          "storageDisabled": "Storage is disabled.",
+          "storageUploadFailed": "Upload failed.",
+          "localStorageSaveFailed": "Local storage save failed.",
+          "localStorageReadFailed": "Local storage read failed.",
+          "localStorageDeleteFailed": "Local storage delete failed.",
+          "documentSaveFailed": "Document save failed.",
+          "documentReadFailed": "Document read failed.",
+          "documentDeleteFailed": "Document delete failed.",
+          "urlResolverError": "URL resolver error.",
+          "excalidrawAmqpResult": "Excalidraw service error.",
+          "excalidrawRedisAdapterInit": "Excalidraw initialization error.",
+          "excalidrawServerInit": "Excalidraw server initialization error."
+        },
+        "fallback": "An unexpected error occurred. Reference: {{errorId}}"
+      },
+      "support": {
+        "linkText": "Contact Support",
+        "errorCode": "Error Code: {{code}}",
+        "emailSubject": "Support Request - Error {{code}}",
+        "emailSubjectGeneric": "Support Request",
+        "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
+        "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you."
+      }
     }
   },
   "dashboard-updates-section": {
