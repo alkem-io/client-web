@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  createEmojiReactionElement,
-  createEmojiReactionElements,
-} from './createEmojiReactionElement';
+import { createEmojiReactionElement, createEmojiReactionElements } from './createEmojiReactionElement';
 import { DEFAULT_EMOJI_REACTION_FONT_SIZE } from './types';
 
 describe('createEmojiReactionElement', () => {

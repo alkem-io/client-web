@@ -4,11 +4,18 @@ import Loading from '@/core/ui/loading/Loading';
 import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
 import PageContent from '@/core/ui/content/PageContent';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 const MyDashboard = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/myDashboard/MyDashboard'));
-const InnovationHubHomePage = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage'));
+const InnovationHubHomePage = lazyWithGlobalErrorHandler(
+  () => import('@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage')
+);
 
 const HomePage = () => {
+  const { t } = useTranslation();
+  usePageTitle(t('pages.titles.alkemio'), { skipSuffix: true });
+
   const { innovationHub, innovationHubLoading } = useInnovationHub();
 
   if (innovationHubLoading) {

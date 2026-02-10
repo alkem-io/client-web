@@ -29,6 +29,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src", "@types", "vite.config.mjs", "eslint.config.mjs"],
+  "include": ["src", "@types", "vite.config.mjs", "eslint.config.mjs", "specs"],
   "exclude": ["node_modules"]
 }

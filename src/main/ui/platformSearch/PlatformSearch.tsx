@@ -43,17 +43,17 @@ const PlatformSearch = ({
   const { about } = space;
 
   const searchOptions: SearchOption[] | undefined = !space || !space.nameID
-    ? undefined
-    : [
-        {
-          value: SearchScope.Space,
-          label: t('components.search.scope.space', about.profile),
-        },
-        {
-          value: SearchScope.Platform,
-          label: t('components.search.scope.platform'),
-        },
-      ];
+      ? undefined
+      : [
+          {
+            value: SearchScope.Space,
+            label: t('components.search.scope.space', about.profile),
+          },
+          {
+            value: SearchScope.Platform,
+            label: t('components.search.scope.platform'),
+          },
+        ];
 
   const defaultSearchOption = space.nameID ? SearchScope.Space : SearchScope.Platform;
 

@@ -6,7 +6,7 @@
 
 - React + TypeScript single-page app served by Vite; design system built on MUI and Emotion, GraphQL data layer via Apollo Client.
 - Repository is large (≈18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`. GraphQL documents live alongside features and generate strongly-typed hooks in `src/core/apollo/generated`.
-- Requires Node ≥20.9.0 and pnpm ≥10.17.1 (workspace is pinned to Node 20.15.1 via Volta). Always use pnpm; the lockfile is authoritative.
+- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (workspace is pinned to Node 22.21.1 via Volta). Always use pnpm; the lockfile is authoritative.
 
 ## Governance & Workflow
 

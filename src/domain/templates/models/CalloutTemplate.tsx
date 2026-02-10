@@ -44,6 +44,14 @@ export interface CalloutTemplate extends TemplateBase {
           displayName: string;
         };
       };
+      mediaGallery?: {
+        id?: string;
+        visuals?: {
+          id?: string;
+          uri: string;
+          sortOrder?: number;
+        }[];
+      };
     };
     contributionDefaults?: {
       defaultDisplayName?: string;

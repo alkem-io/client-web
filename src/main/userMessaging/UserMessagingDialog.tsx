@@ -83,13 +83,10 @@ const UserMessagingDialog = () => {
     // Track the newly created conversation so it appears at the top of the list
     setNewlyCreatedConversationId(conversationId);
 
-    // Verify the conversation exists in our list before selecting
-    const conversation = conversations.find(c => c.id === conversationId);
-    if (conversation) {
-      setSelectedConversationId(conversationId);
-      setSelectedRoomId(roomId);
-    }
-    // If not found yet, the subscription will add it to the list
+    // Select immediately — the subscription will add the conversation to the cache
+    // and selectedConversation will resolve on the next render
+    setSelectedConversationId(conversationId);
+    setSelectedRoomId(roomId);
   };
 
   // Mobile view: show either the list or the conversation

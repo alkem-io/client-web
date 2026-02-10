@@ -110,8 +110,6 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
       <Card
         sx={{
           maxWidth: { xs: '100%', sm: '100%', md: '444px' },
-          minWidth: '375px',
-          marginTop: { xs: 1, sm: 1, md: 20 },
           height: 'fit-content',
         }}
       >

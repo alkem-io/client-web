@@ -7,11 +7,7 @@
  */
 
 import { useReducer, useCallback } from 'react';
-import {
-  EmojiReactionPickerState,
-  EmojiReactionPickerStateModel,
-  EmojiReactionPickerAction,
-} from './types';
+import { EmojiReactionPickerState, EmojiReactionPickerStateModel, EmojiReactionPickerAction } from './types';
 
 /**
  * Initial state for the emoji picker.

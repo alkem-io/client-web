@@ -1,0 +1,6 @@
+node_modules/
+build/
+dist/
+coverage/
+public/env-config.js
+*.min.js

@@ -19,7 +19,18 @@ const FormikEffectFactory = <T,>() => {
 
     const { values, isValid, dirty } = formik;
 
-    useDeepCompareEffect(() => onChange && onChange(values), [values]);
+    useDeepCompareEffect(() => {
+      if (onChange) {
+        // Not the cleanest, but without this setTimeout the page crashes sometimes
+        // See client-web#9262
+        const timeout = window.setTimeout(() => {
+          onChange(values);
+        }, 10);
+        return () => {
+          window.clearTimeout(timeout);
+        };
+      }
+    }, [values]);
     useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
     useEffect(() => onDirtyChange && onDirtyChange(dirty), [dirty, onDirtyChange]);
     useEffect(() => canSave && canSave(isValid && dirty), [isValid, dirty, canSave]);

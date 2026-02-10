@@ -6,10 +6,7 @@ import {
   ActivityLogResultType,
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import {
-  ActivityEventType,
-  ActivityFeedRoles,
-} from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -94,7 +91,11 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   }, [spaceMemberships, t]);
 
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const { data, loading, fetchMore: fetchMoreRaw } = useLatestContributionsQuery({
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreRaw,
+  } = useLatestContributionsQuery({
     variables: {
       first: LATEST_CONTRIBUTIONS_PAGE_SIZE,
       filter: {
