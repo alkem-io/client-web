@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
-- Requires Node ≥20.19.0 and pnpm ≥10.17.1 (pinned via Volta to Node 20.19.0)
+- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 22.21.1)
 - Always use pnpm; the lockfile is authoritative
 - All commits must be signed
 
@@ -140,7 +140,9 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to `src/core/i18n/en/translation.en.json`
-- Only the English source file may be edited; other locale files are generated downstream
+- The project uses Crowdin for translations
+- Only edit `translation.en.json`; all other locale files are generated automatically via Crowdin and must never be edited manually
+- If you need to change a non-English translation file, do it from Crowdin, not in the codebase
 
 ## Environment Variables
 
@@ -166,11 +168,13 @@ Execution typically completes in ~1.2s with 19 files / 247 tests passing.
 The project uses React 19 with the React Compiler (babel-plugin-react-compiler) for automatic optimization.
 
 **React 19 patterns to use:**
+
 - `useTransition` and `useOptimistic` for long-running mutations
 - Suspense boundaries for data fetching
 - Treat rendering as pure and concurrency-safe
 
 **React Compiler benefits:**
+
 - Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
 - Cleaner code with less boilerplate
 
@@ -201,6 +205,17 @@ Husky runs lint-staged on commit:
 - Formats code with Prettier
 - Runs ESLint with auto-fix
 - Run `pnpm lint` before committing to catch issues early
+
+## Debugging & Root Cause Analysis
+
+**CRITICAL**: NEVER apply fixes, duct tape, workarounds, or mask symptoms before understanding the root cause of a problem. When investigating bugs:
+
+1. **Reproduce first** - Confirm the issue exists and is reproducible
+2. **Understand the root cause** - Investigate WHY the problem occurs, not just WHAT is happening
+3. **Only then fix** - Apply the minimal fix that addresses the actual root cause
+4. **Verify the fix** - Confirm the root cause is addressed, not just the symptoms masked
+
+Adding `fetchPolicy`, `nextFetchPolicy`, debug flags, or other workarounds without understanding why they're needed creates technical debt and hides real issues. If you don't know why something works, you don't have a fix—you have a time bomb.
 
 ## Practical Tips & Gotchas
 
@@ -263,4 +278,4 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 - Session persistence via session storage (`alkemio_guest_name` key)
 - GraphQL header injection (`x-guest-name`)
 
-**Documentation**: See `specs/002-guest-whiteboard-access/` for full specification and implementation details.
+**Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.

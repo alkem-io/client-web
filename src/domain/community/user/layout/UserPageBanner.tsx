@@ -4,11 +4,11 @@ import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useUserProvider } from '../hooks/useUserProvider';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useUserRouteContext from '../routing/useUserRouteContext';
 
 const UserPageBanner = () => {
   const { userModel: currentUser } = useCurrentUserContext();
-  const { userId, loading: urlResolverLoading } = useUrlResolver();
+  const { userId, loading: routeLoading, getProfileUrl } = useUserRouteContext();
   const { userModel: user, loading } = useUserProvider(userId);
 
   const isCurrentUser = useMemo(() => user?.id === currentUser?.id, [user, currentUser]);
@@ -40,8 +40,8 @@ const UserPageBanner = () => {
       entityId={userId}
       profile={profile}
       onSendMessage={handleSendMessage}
-      settingsUri={user && isCurrentUser ? buildSettingsUrl(user?.profile.url ?? '') : undefined}
-      loading={loading || urlResolverLoading}
+      settingsUri={user && isCurrentUser ? buildSettingsUrl(getProfileUrl(user?.profile.url) ?? '') : undefined}
+      loading={loading || routeLoading}
     />
   );
 };

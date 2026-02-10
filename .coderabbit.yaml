@@ -25,7 +25,7 @@ reviews:
         - Authoritative docs: README.md, docs/development-setup.md, .specify/memory/constitution.md, agents.md, .github/copilot-instructions.md.
 
         Environment & bootstrap:
-        1. Ensure Node >=20.9.0 (Volta pins 20.15.1) and pnpm >=10.17.1.
+        1. Ensure Node >=22.0.0 (Volta pins 22.21.1) and pnpm >=10.17.1.
         2. Keep .env (checked in) present; override locally via .env.local.
         3. `pnpm install` (validated 2025-10-30, ~1s with cached deps). pnpm warns about ignored build scripts (@sentry/cli, esbuild, husky, msw); ignore or run `pnpm approve-builds` if required.
 
@@ -49,6 +49,7 @@ reviews:
         - Follow the hierarchy: constitution → agents.md → .github/copilot-instructions.md.
         - Require `pnpm codegen` and schema diff summaries when `*.graphql` changes; prohibit ad-hoc `useQuery` usage.
         - Enforce React 19 concurrency hygiene, WCAG 2.1 AA accessibility, and localization via `react-i18next` (no hard-coded copy).
+        - **i18n/Crowdin**: Only `src/core/i18n/en/translation.en.json` may be edited directly. All other locale files are generated via Crowdin and must never be modified manually. Reject PRs that change non-English translation files.
         - Reject commits containing build artifacts (`.build/`, `public/env-config.js`, `build/`) or missing validation evidence.
         - Ensure new env vars use the `VITE_APP_*` prefix and flow through `buildConfiguration.js` into `window._env_`.
 

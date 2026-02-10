@@ -23,9 +23,9 @@ function Loader({ typing }: Props) {
     >
       <Box
         sx={{
-          bgcolor: theme => theme.palette.grey[200],
+          bgcolor: theme => theme.palette.background.default,
           borderRadius: '10px',
-          padding: '15px',
+          padding: '0 15px 15px', // 0 top, 15px left/right, 15px bottom
           maxWidth: 215,
           textAlign: 'left',
         }}
@@ -38,7 +38,7 @@ function Loader({ typing }: Props) {
               height: 4,
               width: 4,
               borderRadius: '50%',
-              bgcolor: theme => theme.palette.grey[50],
+              bgcolor: theme => theme.palette.text.primary,
               marginRight: 0.25,
               animation: `${bounce} 0.5s ease infinite alternate`,
               animationDelay: `${delay}s`,

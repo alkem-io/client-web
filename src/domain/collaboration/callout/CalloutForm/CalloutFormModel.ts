@@ -2,6 +2,7 @@ import {
   CalloutAllowedContributors,
   CalloutFramingType,
   CalloutVisibility,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
@@ -29,6 +30,22 @@ export interface CalloutFormSubmittedValues {
       profile: {
         displayName: string;
       };
+    };
+    mediaGallery?: {
+      visuals: {
+        id?: string;
+        uri: string | undefined;
+        /**
+         * Optional local file to upload as part of the media gallery visual.
+         * When present, the uri is only used for local preview purposes.
+         */
+        file?: File;
+        previewUrl?: string;
+        name?: string;
+        alternativeText?: string;
+        visualType?: VisualType;
+        sortOrder?: number;
+      }[];
     };
   };
   contributionDefaults: ContributionDefaultsModel;
@@ -61,6 +78,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     whiteboard: undefined,
     memo: undefined,
     link: undefined,
+    mediaGallery: { visuals: [] },
   },
   contributionDefaults: {
     defaultDisplayName: '',

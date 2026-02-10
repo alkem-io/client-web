@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import {
   Box,
+  Chip,
   List,
   ListItemButton,
   ListItemAvatar,
   ListItemText,
+  Tooltip,
   Typography,
   IconButton,
   InputBase,
@@ -22,6 +24,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { UserConversation } from './useUserConversations';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 
 interface UserMessagingChatListProps {
   conversations: UserConversation[];
@@ -96,7 +99,12 @@ export const UserMessagingChatList = ({
         borderBottom: theme => `1px solid ${theme.palette.divider}`,
       }}
     >
-      <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
+      <Box display="flex" alignItems="center" gap={1}>
+        <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
+        <Tooltip title={t('components.userMessaging.betaTooltip' as TranslationKey)} arrow placement="top">
+          <Chip label={t('common.beta')} size="small" color="primary" variant="outlined" />
+        </Tooltip>
+      </Box>
       <IconButton
         onClick={onNewMessage}
         size="small"
@@ -166,16 +174,42 @@ export const UserMessagingChatList = ({
                   <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
                     {conversation.user.displayName}
                   </Typography>
-                  {conversation.lastMessage && (
-                    <Caption color="neutral.light">
-                      {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
-                    </Caption>
-                  )}
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="flex-end"
+                    gap={0.5}
+                    sx={{ position: 'relative' }}
+                  >
+                    {conversation.lastMessage && (
+                      <Caption color="neutral.light">
+                        {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
+                      </Caption>
+                    )}
+                    {conversation.unreadCount > 0 && (
+                      <BadgeCounter
+                        count={conversation.unreadCount}
+                        size="small"
+                        aria-label={`${conversation.unreadCount} unread messages`}
+                        sx={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 2,
+                          backgroundColor: theme => theme.palette.primary.main,
+                        }}
+                      />
+                    )}
+                  </Box>
                 </Box>
               }
               secondary={
                 conversation.lastMessage ? (
-                  <Typography variant="body2" color="neutral.main" noWrap sx={{ maxWidth: '90%' }}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={conversation.unreadCount > 0 ? 600 : 400}
+                    noWrap
+                    sx={{ maxWidth: '90%' }}
+                  >
                     {conversation.lastMessage.message}
                   </Typography>
                 ) : (

@@ -3,6 +3,7 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Caption, Text } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
@@ -31,6 +32,7 @@ import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
 
 /**
  * Extended ExcalidrawProps to include the new floating emoji broadcast callback.
@@ -128,6 +130,29 @@ const CollaborativeExcalidrawWrapper = ({
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
+  const notify = useNotification();
+
+  /**
+   * Validate file before adding to whiteboard.
+   * Rejects invalid files with a user-visible notification.
+   */
+  const handleGenerateIdForFile = useCallback(
+    async (file: File): Promise<string> => {
+      const validation = filesManager.validateFile(file);
+      if (!validation.ok) {
+        const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
+        const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
+        const message: string =
+          validation.reason === 'unsupportedMimeType'
+            ? t('callout.whiteboard.images.unsupportedType', params)
+            : t('callout.whiteboard.images.tooLarge', params);
+        notify(message, 'error');
+        throw new Error(message);
+      }
+      return filesManager.addNewFile(file);
+    },
+    [filesManager, t, notify]
+  );
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
@@ -369,7 +394,7 @@ const CollaborativeExcalidrawWrapper = ({
             onRequestBroadcastFloatingEmoji={handleRequestBroadcastFloatingEmoji}
             detectScroll={false}
             autoFocus
-            generateIdForFile={filesManager.addNewFile}
+            generateIdForFile={handleGenerateIdForFile}
             aiEnabled={false}
             {...restOptions}
           />

@@ -3,7 +3,6 @@ import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/gener
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -17,7 +16,7 @@ import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/re
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +56,11 @@ export interface WhiteboardDetails {
   profile: {
     id: string;
     displayName: string;
-    storageBucket: { id: string };
+    storageBucket: {
+      id: string;
+      allowedMimeTypes: string[];
+      maxFileSize: number;
+    };
     visual?: Identifiable & PreviewImageDimensions;
     preview?: Identifiable & PreviewImageDimensions;
     url?: string;
@@ -120,16 +123,30 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
 
-  const columns = useGlobalGridColumns();
-
   const [lastSaveError, setLastSaveError] = useState<string | undefined>();
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    allowedMimeTypes: whiteboard?.profile?.storageBucket.allowedMimeTypes,
+    maxFileSize: whiteboard?.profile?.storageBucket.maxFileSize,
     allowFallbackToAttached: options.allowFilesAttached,
   });
+
+  const failureState = filesManager.getFailureState();
+
+  // Show notification when image failures occur
+  useEffect(() => {
+    if (failureState.hasFailures) {
+      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
+      const message =
+        totalFailures === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
+      notify(message, 'warning');
+    }
+  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
@@ -305,7 +322,17 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           onSceneInitChange: setSceneInitialized,
         }}
       >
-        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly, emojiPlacementInfo, onEmojiPlacementModeChange }) => {
+        {({
+          children,
+          mode,
+          modeReason,
+          collaborating,
+          connecting,
+          restartCollaboration,
+          isReadOnly,
+          emojiPlacementInfo,
+          onEmojiPlacementModeChange,
+        }) => {
           return (
             <Formik
               innerRef={formikRef}
@@ -313,17 +340,24 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
               onSubmit={() => {}}
               validationSchema={whiteboardValidationSchema}
             >
-              <Dialog
+              <DialogWithGrid
                 open={options.show}
                 aria-labelledby="whiteboard-dialog"
                 maxWidth={false}
                 fullWidth
-                sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
+                fullScreen={options.fullscreen}
                 onClose={onClose}
-                fullScreen={options.fullscreen || columns <= 4}
               >
                 <DialogHeader
-                  actions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly, emojiPlacementInfo, onEmojiPlacementModeChange })}
+                  actions={options.headerActions?.({
+                    mode,
+                    modeReason,
+                    collaborating,
+                    connecting,
+                    isReadOnly,
+                    emojiPlacementInfo,
+                    onEmojiPlacementModeChange,
+                  })}
                   onClose={onClose}
                   titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
                 >
@@ -339,7 +373,9 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     onImportTemplate={handleImportTemplate}
                   />
                 </DialogHeader>
-                <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
+                <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>
+                  {children}
+                </DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
                   whiteboardUrl={whiteboard.profile.url}
@@ -353,7 +389,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
                   guestAccessEnabled={whiteboard?.guestContributionsAllowed}
                 />
-              </Dialog>
+              </DialogWithGrid>
             </Formik>
           );
         }}

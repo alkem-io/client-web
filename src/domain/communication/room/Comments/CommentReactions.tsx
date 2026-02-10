@@ -3,14 +3,17 @@ import { compact, groupBy, sortBy } from 'lodash';
 import { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Popover } from '@mui/material';
 import { AddReactionOutlined } from '@mui/icons-material';
-import { CardText } from '@/core/ui/typography/components';
+import { Caption, CardText } from '@/core/ui/typography/components';
 import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '@/core/ui/grid/utils';
+import useReactionsOverflow from './useReactionsOverflow';
 
 interface CommentReactionsReaction extends Identifiable {
   emoji: string;
+  timestamp: number;
   sender?: Identifiable & { profile: { displayName: string } };
 }
 
@@ -19,6 +22,8 @@ interface CommentReactionsProps {
   canAddReaction: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: ReactionViewProps['onRemoveReaction'];
+  showAddButton?: boolean;
+  onPickerVisibilityChange?: (isOpen: boolean) => void;
 }
 
 const CommentReactions = ({
@@ -26,26 +31,53 @@ const CommentReactions = ({
   canAddReaction = true,
   onAddReaction,
   onRemoveReaction,
+  showAddButton = true,
+  onPickerVisibilityChange,
 }: CommentReactionsProps) => {
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
   const { t } = useTranslation();
 
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {
-    const sortedReactions = sortBy(reactions, r => r.emoji);
+    // Group reactions by emoji
+    const grouped = groupBy(reactions, r => r.emoji);
 
-    // if the reaction sender is missing (e.g., due to a deleted user), we replace it with a placeholder from translation
-    return Object.entries(groupBy(sortedReactions, r => r.emoji)).map(([emoji, reactions]) => {
+    // Map to reaction view format with first timestamp for sorting
+    const reactionGroups = Object.entries(grouped).map(([emoji, emojiReactions]) => {
+      // Find the earliest timestamp (first reaction of this emoji)
+      const firstTimestamp = Math.min(...emojiReactions.map(r => r.timestamp));
+
       return {
         emoji,
-        count: reactions.length,
+        count: emojiReactions.length,
+        firstTimestamp,
+        // if the reaction sender is missing (e.g., due to a deleted user), we replace it with a placeholder from translation
         senders: compact(
-          reactions.map(r => r.sender || { id: 'deleted-user', profile: { displayName: t('messaging.missingAuthor') } })
+          emojiReactions.map(
+            r => r.sender || { id: 'deleted-user', profile: { displayName: t('messaging.missingAuthor') } }
+          )
         ),
-        ownReactionId: userId && reactions.find(reaction => reaction.sender?.id === userId)?.id,
+        ownReactionId: userId && emojiReactions.find(reaction => reaction.sender?.id === userId)?.id,
       };
     });
-  }, [reactions, userId]);
+
+    // Sort by first timestamp (chronological order of first reaction per emoji)
+    return sortBy(reactionGroups, g => g.firstTimestamp);
+  }, [reactions, userId, t]);
+
+  const {
+    visibleReactions,
+    overflowReactions,
+    overflowCount,
+    hasOverflow,
+    overflowAnchor,
+    handleOpenOverflow,
+    handleCloseOverflow,
+    isOverflowOpen,
+  } = useReactionsOverflow({
+    reactions: reactionsWithCount,
+    getCount: r => r.count,
+  });
 
   const [isReactionDialogOpen, setIsReactionDialogOpen] = useState(false);
 
@@ -53,34 +85,78 @@ const CommentReactions = ({
 
   const handleEmojiClick = (emoji: string) => {
     setIsReactionDialogOpen(false);
+    onPickerVisibilityChange?.(false);
     const isReactionUsedByUser = reactions.find(r => r.emoji === emoji && r.sender?.id === userId);
     if (!isReactionUsedByUser) onAddReaction?.(emoji);
+  };
+
+  const handleOpenPicker = () => {
+    setIsReactionDialogOpen(true);
+    onPickerVisibilityChange?.(true);
+  };
+
+  const handleClosePicker = () => {
+    setIsReactionDialogOpen(false);
+    onPickerVisibilityChange?.(false);
   };
 
   return (
     <>
       <Box display="flex" gap={0.5} alignItems="center">
-        {reactionsWithCount.map(reaction => (
+        {visibleReactions.map(reaction => (
           <ReactionView key={reaction.emoji} reaction={reaction} onRemoveReaction={onRemoveReaction} />
         ))}
+        {hasOverflow && (
+          <IconButton
+            size="small"
+            onClick={handleOpenOverflow}
+            aria-label={t('buttons.readMore')}
+            sx={{ height: gutters(1.5), width: gutters(1.5) }}
+          >
+            <Caption fontWeight={700}>{`+${overflowCount}`}</Caption>
+          </IconButton>
+        )}
       </Box>
-      <CardText>
-        <IconButton
-          ref={addEmojiButtonRef}
-          size="small"
-          disabled={!canAddReaction}
-          onClick={() => setIsReactionDialogOpen(true)}
-          aria-label={t('messaging.addReaction')}
-        >
-          <AddReactionOutlined fontSize="inherit" />
-        </IconButton>
-      </CardText>
+      {showAddButton && (
+        <CardText>
+          <IconButton
+            ref={addEmojiButtonRef}
+            size="small"
+            disabled={!canAddReaction}
+            onClick={handleOpenPicker}
+            aria-label={t('messaging.addReaction')}
+          >
+            <AddReactionOutlined fontSize="inherit" />
+          </IconButton>
+        </CardText>
+      )}
       <EmojiSelector
         anchorElement={addEmojiButtonRef.current}
         open={isReactionDialogOpen}
-        onClose={() => setIsReactionDialogOpen(false)}
+        onClose={handleClosePicker}
         onEmojiClick={handleEmojiClick}
       />
+      <Popover
+        open={isOverflowOpen}
+        anchorEl={overflowAnchor}
+        onClose={handleCloseOverflow}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Box padding={gutters(0.75)} minWidth={200} display="flex" flexDirection="column" gap={gutters(0.5)}>
+          {overflowReactions.map(reaction => {
+            const senderNames = reaction.senders.map(s => s.profile.displayName).join(', ');
+            return (
+              <Box key={reaction.emoji} display="flex" alignItems="center" gap={gutters(0.5)}>
+                <Caption>
+                  {reaction.emoji} {reaction.count}
+                </Caption>
+                <Caption color="text.secondary">{senderNames}</Caption>
+              </Box>
+            );
+          })}
+        </Box>
+      </Popover>
     </>
   );
 };

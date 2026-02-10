@@ -132,13 +132,13 @@ Tests nameId validation that also excludes reserved route paths.
 
 ```bash
 # Run all validator tests
-npm test -- validator
+pnpm test -- validator
 
 # Run specific validator test
-npm test -- textLengthValidator.test.ts
+pnpm test -- textLengthValidator.test.ts
 
 # Run with coverage
-npm test -- --coverage validator
+pnpm test -- --coverage validator
 ```
 
 ## Test Framework

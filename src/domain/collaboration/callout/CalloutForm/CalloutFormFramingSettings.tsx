@@ -1,5 +1,6 @@
 import BlockIcon from '@mui/icons-material/Block';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -12,7 +13,6 @@ import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWh
 import { useField, useFormikContext } from 'formik';
 import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
@@ -23,6 +23,7 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import CalloutFramingMediaGalleryField from '../CalloutFramings/CalloutFramingMediaGalleryField';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -33,7 +34,6 @@ interface CalloutFormFramingSettingsProps {
 
 const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
-  const { isMediumSmallScreen } = useScreenSize();
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
@@ -62,10 +62,23 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           type: newType,
           whiteboard: undefined,
           link: undefined,
+          mediaGallery: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
             markdown: undefined,
           },
+        };
+        break;
+      case CalloutFramingType.MediaGallery:
+        newFraming = {
+          ...framing,
+          type: newType,
+          mediaGallery: {
+            visuals: [],
+          },
+          whiteboard: undefined,
+          memo: undefined,
+          link: undefined,
         };
         break;
       case CalloutFramingType.Link:
@@ -80,6 +93,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           },
           whiteboard: undefined,
           memo: undefined,
+          mediaGallery: undefined,
         };
         break;
       case CalloutFramingType.None:
@@ -90,6 +104,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           whiteboard: undefined,
           memo: undefined,
           link: undefined,
+          mediaGallery: undefined,
         };
         break;
     }
@@ -137,6 +152,13 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           tooltip: t('callout.create.framingSettings.link.tooltip'),
           disabled: calloutRestrictions?.disableLinks,
         },
+        {
+          icon: BurstModeOutlinedIcon,
+          value: CalloutFramingType.MediaGallery,
+          label: t('callout.create.framingSettings.mediaGallery.title'),
+          tooltip: t('callout.create.framingSettings.mediaGallery.tooltip'),
+          disabled: calloutRestrictions?.disableMediaGallery,
+        },
       ]}
       onChange={handleFramingTypeChange}
     />
@@ -164,9 +186,9 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
       <PageContentBlock sx={{ marginTop: gutters(-1) }}>
         <PageContentBlockHeader
           title={t('callout.create.framingSettings.title')}
-          actions={!isMediumSmallScreen && radioButtons}
+          actions={radioButtons}
+          autoCollapseActions
         />
-        {isMediumSmallScreen && radioButtons}
       </PageContentBlock>
 
       {framing.whiteboard && framing.type === CalloutFramingType.Whiteboard && (
@@ -217,6 +239,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           </>
         </PageContentBlockSeamless>
       )}
+
+      {framing.type === CalloutFramingType.MediaGallery && <CalloutFramingMediaGalleryField />}
     </>
   );
 };

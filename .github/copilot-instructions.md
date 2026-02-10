@@ -6,7 +6,7 @@
 
 - React + TypeScript single-page app served by Vite; design system built on MUI and Emotion, GraphQL data layer via Apollo Client.
 - Repository is large (≈18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`. GraphQL documents live alongside features and generate strongly-typed hooks in `src/core/apollo/generated`.
-- Requires Node ≥20.9.0 and pnpm ≥10.17.1 (workspace is pinned to Node 20.15.1 via Volta). Always use pnpm; the lockfile is authoritative.
+- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (workspace is pinned to Node 22.21.1 via Volta). Always use pnpm; the lockfile is authoritative.
 
 ## Governance & Workflow
 
@@ -86,6 +86,7 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - Use them to cross-check and refine responses before completion.
 - For Git operations, **all commits must be signed**.
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server.
+- **Internationalization (i18n)**: Only edit `src/core/i18n/en/translation.en.json` directly. All other locale files (`translation.ach.json`, `translation.bg.json`, `translation.nl.json`, etc.) are **generated automatically via Crowdin** and must never be edited manually. Changes to the English source file will be synchronized to Crowdin, translated, and pulled back automatically via CI. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
 - New env vars must be prefixed with `VITE_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
 - Large build output can consume memory; Vite already raises `max-old-space-size`. If builds fail on low-memory runners, reuse the same command but consider pruning node_modules (`pnpm prune` shortcut).

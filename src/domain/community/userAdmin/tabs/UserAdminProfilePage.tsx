@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { UserForm } from '../../user/userForm/UserForm';
 import Loading from '@/core/ui/loading/Loading';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
@@ -18,10 +17,11 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import useUserRouteContext from '../../user/routing/useUserRouteContext';
 
 export const UserAdminProfilePage = () => {
   const navigate = useNavigate();
-  const { userId } = useUrlResolver();
+  const { userId, getProfileUrl } = useUserRouteContext();
 
   const { userModel: currentUser } = useCurrentUserContext();
 
@@ -78,7 +78,7 @@ export const UserAdminProfilePage = () => {
       },
     });
 
-    const currentUserUrl = currentUser?.profile.url || '';
+    const currentUserUrl = getProfileUrl(currentUser?.profile.url) || '';
     if (currentUser) {
       navigate(currentUserUrl, { replace: true });
     }

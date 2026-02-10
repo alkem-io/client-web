@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  defaultEmojiReactionConfig,
-  isValidEmojiReactionConfig,
-} from './emojiReactionConfig';
+import { defaultEmojiReactionConfig, isValidEmojiReactionConfig } from './emojiReactionConfig';
 import { EmojiReactionConfiguration } from './types';
 
 describe('defaultEmojiReactionConfig', () => {

@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.124.1",
+  "version": "0.128.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -159,6 +159,7 @@
     "react-i18next": "^15.5.1",
     "react-image-crop": "^10.1.8",
     "react-image-file-resizer": "^0.4.7",
+    "react-image-gallery": "^2.0.7",
     "react-intersection-observer": "^9.1.0",
     "react-markdown": "^10.1.0",
     "react-mentions": "^4.4.7",
@@ -204,6 +205,7 @@
     "@vitest/browser": "^4.0.16",
     "@vitest/coverage-istanbul": "^4.0.16",
     "babel-plugin-react-compiler": "^1.0.0",
+    "baseline-browser-mapping": "^2.9.17",
     "chrome-launcher": "^1.2.1",
     "eslint": "^9.2.0",
     "eslint-plugin-import": "^2.31.0",
@@ -227,11 +229,11 @@
     "@rollup/rollup-win32-x64-msvc": "^4.40.0"
   },
   "engines": {
-    "node": ">=20.19.0",
-    "pnpm": ">=10.17.1"
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
   },
   "packageManager": "pnpm@10.17.1",
   "volta": {
-    "node": "20.19.0"
+    "node": "22.21.1"
   }
 }

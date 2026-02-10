@@ -12,6 +12,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import InnovationLibraryIcon from './InnovationLibraryIcon';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const InnovationLibraryPage = () => {
   const { data: innovationLibraryData, loading: innovationLibraryLoading } = useInnovationLibraryQuery();
@@ -20,6 +21,10 @@ const InnovationLibraryPage = () => {
   const templates = innovationLibraryData?.platform.library.templates;
 
   const { t } = useTranslation();
+
+  // Set browser tab title to "Template Library | Alkemio"
+  usePageTitle(t('pages.titles.templateLibrary'));
+
   const { locations } = useConfig();
   const tLinks = TranslateWithElements(<Link underline="always" target="_blank" rel="noopener noreferrer" />);
   const subtitleText = tLinks('pages.innovationLibrary.subtitle', {

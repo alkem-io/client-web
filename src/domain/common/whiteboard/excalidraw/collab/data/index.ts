@@ -2,7 +2,7 @@ import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excal
 import type { AppState, CollaboratorPointer, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DELETED_ELEMENT_TIMEOUT, WS_SCENE_EVENT_TYPES } from '../excalidrawAppConstants';
 import { env } from '@/main/env';
-import { BinaryFilesWithUrl } from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { BinaryFilesWithOptionalUrl } from '@/domain/common/whiteboard/excalidraw/types';
 import type { MakeBrand } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
 import type { UserIdleState, isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw';
 export type SyncableExcalidrawElement = OrderedExcalidrawElement & MakeBrand<'SyncableExcalidrawElement'>;
@@ -44,14 +44,14 @@ export type SocketUpdateDataSource = {
     type: 'SCENE_INIT';
     payload: {
       elements: readonly ExcalidrawElement[];
-      files: BinaryFilesWithUrl;
+      files: BinaryFilesWithOptionalUrl;
     };
   };
   SCENE_UPDATE: {
     type: WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
     payload: {
       elements: readonly ExcalidrawElement[];
-      files: BinaryFilesWithUrl;
+      files: BinaryFilesWithOptionalUrl;
     };
   };
   MOUSE_LOCATION: {

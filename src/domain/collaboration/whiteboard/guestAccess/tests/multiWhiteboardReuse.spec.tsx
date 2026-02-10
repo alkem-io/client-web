@@ -18,6 +18,13 @@ import { I18nextProvider } from 'react-i18next';
 import userEvent from '@testing-library/user-event';
 import { sessionStorageMock } from './utils/sessionStorageMock';
 
+// Mock the Sentry logging module
+const mockLogWarn = vi.fn();
+vi.mock('@/core/logging/sentry/log', () => ({
+  warn: (message: string, options?: unknown) => mockLogWarn(message, options),
+  TagCategoryValues: { AUTH: 'auth' },
+}));
+
 const Providers: FC<PropsWithChildren> = ({ children }) => (
   <MockedProvider mocks={[]} cache={new InMemoryCache()}>
     <RootThemeProvider>
@@ -73,6 +80,7 @@ const TestComponentWithGuestNameUpdate: FC = () => {
 describe('Multi-Whiteboard Guest Session Reuse', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockLogWarn.mockClear();
     sessionStorageMock.clear();
     cleanup();
   });
@@ -259,12 +267,13 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
         });
       }
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
       renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-unavailable" />);
 
-      // Should warn about unavailable storage
-      expect(consoleWarnSpy).toHaveBeenCalledWith('Session storage unavailable:', expect.any(Error));
+      // Should warn about unavailable storage via Sentry logging
+      expect(mockLogWarn).toHaveBeenCalledWith(
+        expect.stringContaining('Session storage unavailable'),
+        expect.objectContaining({ category: 'auth' })
+      );
 
       // Restore
       Object.defineProperty(globalThis, 'sessionStorage', {
@@ -280,12 +289,9 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
           writable: true,
         });
       }
-      consoleWarnSpy.mockRestore();
     });
 
     it('should handle session storage quota exceeded gracefully', async () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
       // Mock setItem to throw quota exceeded error
       const setItemSpy = vi.spyOn(sessionStorageMock, 'setItem').mockImplementation(() => {
         throw new Error('QuotaExceededError');
@@ -297,12 +303,14 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
-        expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to persist guest name:', expect.any(Error));
+        expect(mockLogWarn).toHaveBeenCalledWith(
+          expect.stringContaining('Failed to persist guest name'),
+          expect.objectContaining({ category: 'auth' })
+        );
       });
 
       // Restore
       setItemSpy.mockRestore();
-      consoleWarnSpy.mockRestore();
     });
   });
 

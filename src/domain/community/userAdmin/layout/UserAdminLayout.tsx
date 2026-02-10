@@ -2,6 +2,8 @@ import EntitySettingsLayout from '@/domain/platformAdmin/layout/EntitySettingsLa
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { FC, PropsWithChildren } from 'react';
 import { UserAdminTabs } from '../UserAdminTabs';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useTranslation } from 'react-i18next';
 
 const tabs = [
   SettingsSection.MyProfile,
@@ -21,6 +23,11 @@ interface UserAdminLayoutProps extends PropsWithChildren {
 }
 
 const UserAdminLayout: FC<UserAdminLayoutProps> = props => {
+  const { t } = useTranslation();
+
+  // Set browser tab title to "Administration | Alkemio"
+  usePageTitle(t('pages.titles.admin'));
+
   // if (isFeatureEnabled(PlatformFeatureFlagName.Ssi)) {
   //   tabs.push(UserAdminTabs.find(tab => tab.section === SettingsSection.Credentials)!);
   // }

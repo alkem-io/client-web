@@ -48,6 +48,9 @@ mutation CreateTemplate(
             }
           }
         }
+        mediaGallery {
+          id # Used to upload the images to the media gallery after creating the template
+        }
       }
     }
   }
@@ -158,6 +161,12 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
       memo {
         id
         markdown
+      }
+      mediaGallery {
+        id
+        visuals {
+          id # Used to upload only the images that have changed in the gallery
+        }
       }
     }
     contributionDefaults {

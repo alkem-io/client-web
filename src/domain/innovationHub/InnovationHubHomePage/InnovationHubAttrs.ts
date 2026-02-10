@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
-import { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 export interface InnovationHubAttrs {
   displayName: string;
   tagline?: string;
   description: string | undefined;
   banner: Visual | undefined;
+  settingsUrl: string | undefined;
 }
 
 const useInnovationHubAttrs = (innovationHub: InnovationHubHomeInnovationHubFragment | undefined) =>
@@ -16,14 +18,19 @@ const useInnovationHubAttrs = (innovationHub: InnovationHubHomeInnovationHubFrag
     }
 
     const {
+      nameID,
       profile: { displayName, tagline, description, banner },
+      authorization,
     } = innovationHub;
+
+    const canEdit = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
     return {
       displayName,
       tagline,
       description,
       banner,
+      settingsUrl: canEdit ? buildSettingsUrl(`/hub/${nameID}`) : undefined,
     };
   }, [innovationHub]);
 

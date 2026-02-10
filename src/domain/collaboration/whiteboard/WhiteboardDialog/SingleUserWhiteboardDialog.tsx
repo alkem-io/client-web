@@ -1,5 +1,5 @@
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { TagCategoryValues, error as logError, warn as logWarn } from '@/core/logging/sentry/log';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
@@ -19,7 +19,7 @@ import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
@@ -95,8 +95,24 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
     storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
+    allowedMimeTypes: whiteboard.profile?.storageBucket.allowedMimeTypes,
+    maxFileSize: whiteboard.profile?.storageBucket.maxFileSize,
     allowFallbackToAttached: options.allowFilesAttached,
   });
+
+  const failureState = filesManager.getFailureState();
+
+  // Show notification when image failures occur
+  useEffect(() => {
+    if (failureState.hasFailures) {
+      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
+      const message =
+        totalFailures === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
+      notify(message, 'warning');
+    }
+  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
   const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
@@ -104,7 +120,16 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     }
     const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
-    const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
+    const { whiteboard: convertedState, unrecoverableFiles } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
+
+    // Surface unrecoverable files - these will be lost
+    if (unrecoverableFiles.length > 0) {
+      logWarn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved (no URL or dataURL)`, {
+        category: TagCategoryValues.WHITEBOARD,
+      });
+    }
+
+    const { appState, elements, files } = convertedState;
 
     const previewImages = await generateWhiteboardVisuals(whiteboard, true, options.previewImagesSettings);
 
@@ -191,9 +216,17 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
         aria-labelledby="whiteboard-dialog"
         maxWidth={false}
         fullWidth
-        sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
-        onClose={onClose}
         fullScreen={options.fullscreen}
+        onClose={onClose}
+        slotProps={{
+          paper: {
+            sx: {
+              display: 'flex',
+              flexDirection: 'column',
+              height: options.fullscreen ? '100vh' : '85vh',
+            },
+          },
+        }}
       >
         <Formik
           innerRef={formikRef}
@@ -211,7 +244,15 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 {options.dialogTitle ?? t('common.Whiteboard')}
                 <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
               </DialogHeader>
-              <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <DialogContent
+                sx={{
+                  pt: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flex: 1,
+                  minHeight: 0,
+                }}
+              >
                 {!state?.loadingWhiteboardContent && whiteboard && (
                   <ExcalidrawWrapper
                     entities={{

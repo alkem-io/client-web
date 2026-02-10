@@ -251,6 +251,9 @@ importers:
       react-image-file-resizer:
         specifier: ^0.4.7
         version: 0.4.8
+      react-image-gallery:
+        specifier: ^2.0.7
+        version: 2.0.7(react@19.2.1)
       react-intersection-observer:
         specifier: ^9.1.0
         version: 9.16.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -381,6 +384,9 @@ importers:
       babel-plugin-react-compiler:
         specifier: ^1.0.0
         version: 1.0.0
+      baseline-browser-mapping:
+        specifier: ^2.9.17
+        version: 2.9.17
       chrome-launcher:
         specifier: ^1.2.1
         version: 1.2.1
@@ -3385,8 +3391,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.8.9:
-    resolution: {integrity: sha512-hY/u2lxLrbecMEWSB0IpGzGyDyeoMFQhCvZd2jGFSE5I17Fh01sYUBPCJtkWERw7zrac9+cIghxm/ytJa2X8iA==}
+  baseline-browser-mapping@2.9.17:
+    resolution: {integrity: sha512-agD0MgJFUP/4nvjqzIB29zRPUuCF7Ge6mEv9s8dHrtYD7QWXRcx75rOADE/d5ah1NI+0vkDl0yorDd5U852IQQ==}
     hasBin: true
 
   basic-ftp@5.1.0:
@@ -6371,6 +6377,11 @@ packages:
 
   react-image-file-resizer@0.4.8:
     resolution: {integrity: sha512-Ue7CfKnSlsfJ//SKzxNMz8avDgDSpWQDOnTKOp/GNRFJv4dO9L5YGHNEnj40peWkXXAK2OK0eRIoXhOYpUzUTQ==}
+
+  react-image-gallery@2.0.7:
+    resolution: {integrity: sha512-JP+EKjf+PKIbNMbKlDUCIIz4zV+ZKfFlHHxwMOF+3ztkNTGI44fsrAUVpjXcSOr44lbnNXwdWwqEPbtxf7+ksQ==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-intersection-observer@9.16.0:
     resolution: {integrity: sha512-w9nJSEp+DrW9KmQmeWHQyfaP6b03v+TdXynaoA964Wxt7mdR3An11z4NNCQgL4gKSK7y1ver2Fq+JKH6CWEzUA==}
@@ -11325,7 +11336,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.8.9: {}
+  baseline-browser-mapping@2.9.17: {}
 
   basic-ftp@5.1.0: {}
 
@@ -11367,7 +11378,7 @@ snapshots:
 
   browserslist@4.26.2:
     dependencies:
-      baseline-browser-mapping: 2.8.9
+      baseline-browser-mapping: 2.9.17
       caniuse-lite: 1.0.30001745
       electron-to-chromium: 1.5.227
       node-releases: 2.0.21
@@ -15030,6 +15041,10 @@ snapshots:
       react: 19.2.1
 
   react-image-file-resizer@0.4.8: {}
+
+  react-image-gallery@2.0.7(react@19.2.1):
+    dependencies:
+      react: 19.2.1
 
   react-intersection-observer@9.16.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
     dependencies:

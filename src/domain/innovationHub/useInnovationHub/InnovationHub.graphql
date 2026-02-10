@@ -9,6 +9,7 @@ query InnovationHub($subdomain: String) {
 
 fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
+  nameID
   profile {
     id
     displayName
@@ -19,5 +20,8 @@ fragment InnovationHubHomeInnovationHub on InnovationHub {
       uri
       alternativeText
     }
+  }
+  authorization {
+    myPrivileges
   }
 }
