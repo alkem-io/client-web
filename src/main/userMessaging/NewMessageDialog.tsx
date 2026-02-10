@@ -22,7 +22,7 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 interface NewMessageDialogProps {
   open: boolean;
   onClose: () => void;
-  onConversationCreated: (userId: string) => void;
+  onConversationCreated: (conversationId: string, roomId: string) => void;
 }
 
 interface SelectedUser {
@@ -88,7 +88,7 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
   const [handleCreateChat, isCreating] = useLoadingState(async () => {
     if (!selectedUser) return;
 
-    await createConversation({
+    const result = await createConversation({
       variables: {
         conversationData: {
           userID: selectedUser.id,
@@ -96,7 +96,12 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
       },
     });
 
-    onConversationCreated(selectedUser.id);
+    const conversationId = result.data?.createConversation.id;
+    const roomId = result.data?.createConversation.room?.id;
+
+    if (conversationId && roomId) {
+      onConversationCreated(conversationId, roomId);
+    }
     handleClose();
   });
 
