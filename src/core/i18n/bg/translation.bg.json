@@ -2221,7 +2221,7 @@
           "description": ""
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
-          "subject": "{{triggeredByName}} създаде нов $t(common.space)",
+          "subject": "{{triggeredByName}} създаде новo $t(common.space)",
           "description": "{{spaceName}}"
         },
         "USER_SIGN_UP_WELCOME": {
