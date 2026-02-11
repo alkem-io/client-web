@@ -83,7 +83,6 @@ export type SocketUpdateDataSource = {
       x: number; // sceneX (whiteboard coordinates)
       y: number; // sceneY (whiteboard coordinates)
       id?: string;
-      seed?: number;
     };
   };
 };
