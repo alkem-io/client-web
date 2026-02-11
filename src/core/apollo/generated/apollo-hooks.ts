@@ -9495,6 +9495,58 @@ export type MemoDetailsQueryResult = Apollo.QueryResult<
 export function refetchMemoDetailsQuery(variables: SchemaTypes.MemoDetailsQueryVariables) {
   return { query: MemoDetailsDocument, variables: variables };
 }
+export const UpdateMemoDisplayNameDocument = gql`
+  mutation updateMemoDisplayName($memoId: UUID!, $displayName: String!) {
+    updateMemo(memoData: { ID: $memoId, profile: { displayName: $displayName } }) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type UpdateMemoDisplayNameMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateMemoDisplayNameMutation,
+  SchemaTypes.UpdateMemoDisplayNameMutationVariables
+>;
+
+/**
+ * __useUpdateMemoDisplayNameMutation__
+ *
+ * To run a mutation, you first call `useUpdateMemoDisplayNameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMemoDisplayNameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMemoDisplayNameMutation, { data, loading, error }] = useUpdateMemoDisplayNameMutation({
+ *   variables: {
+ *      memoId: // value for 'memoId'
+ *      displayName: // value for 'displayName'
+ *   },
+ * });
+ */
+export function useUpdateMemoDisplayNameMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateMemoDisplayNameMutation,
+    SchemaTypes.UpdateMemoDisplayNameMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateMemoDisplayNameMutation,
+    SchemaTypes.UpdateMemoDisplayNameMutationVariables
+  >(UpdateMemoDisplayNameDocument, options);
+}
+export type UpdateMemoDisplayNameMutationHookResult = ReturnType<typeof useUpdateMemoDisplayNameMutation>;
+export type UpdateMemoDisplayNameMutationResult = Apollo.MutationResult<SchemaTypes.UpdateMemoDisplayNameMutation>;
+export type UpdateMemoDisplayNameMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateMemoDisplayNameMutation,
+  SchemaTypes.UpdateMemoDisplayNameMutationVariables
+>;
 export const CalloutSettingsDocument = gql`
   query CalloutSettings($calloutId: UUID!) {
     lookup {
@@ -28591,4 +28643,89 @@ export type UserConversationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserConversationsQuery(variables?: SchemaTypes.UserConversationsQueryVariables) {
   return { query: UserConversationsDocument, variables: variables };
+}
+export const UserConversationsUnreadCountDocument = gql`
+  query UserConversationsUnreadCount {
+    me {
+      conversations {
+        users {
+          id
+          room {
+            id
+            unreadCount
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserConversationsUnreadCountQuery__
+ *
+ * To run a query within a React component, call `useUserConversationsUnreadCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserConversationsUnreadCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserConversationsUnreadCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserConversationsUnreadCountQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.UserConversationsUnreadCountQuery,
+    SchemaTypes.UserConversationsUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.UserConversationsUnreadCountQuery,
+    SchemaTypes.UserConversationsUnreadCountQueryVariables
+  >(UserConversationsUnreadCountDocument, options);
+}
+export function useUserConversationsUnreadCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserConversationsUnreadCountQuery,
+    SchemaTypes.UserConversationsUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserConversationsUnreadCountQuery,
+    SchemaTypes.UserConversationsUnreadCountQueryVariables
+  >(UserConversationsUnreadCountDocument, options);
+}
+export function useUserConversationsUnreadCountSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UserConversationsUnreadCountQuery,
+        SchemaTypes.UserConversationsUnreadCountQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.UserConversationsUnreadCountQuery,
+    SchemaTypes.UserConversationsUnreadCountQueryVariables
+  >(UserConversationsUnreadCountDocument, options);
+}
+export type UserConversationsUnreadCountQueryHookResult = ReturnType<typeof useUserConversationsUnreadCountQuery>;
+export type UserConversationsUnreadCountLazyQueryHookResult = ReturnType<
+  typeof useUserConversationsUnreadCountLazyQuery
+>;
+export type UserConversationsUnreadCountSuspenseQueryHookResult = ReturnType<
+  typeof useUserConversationsUnreadCountSuspenseQuery
+>;
+export type UserConversationsUnreadCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserConversationsUnreadCountQuery,
+  SchemaTypes.UserConversationsUnreadCountQueryVariables
+>;
+export function refetchUserConversationsUnreadCountQuery(
+  variables?: SchemaTypes.UserConversationsUnreadCountQueryVariables
+) {
+  return { query: UserConversationsUnreadCountDocument, variables: variables };
 }
