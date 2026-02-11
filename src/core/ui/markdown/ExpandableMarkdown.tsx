@@ -36,19 +36,26 @@ const ExpandableMarkdown = ({
         backgroundColor={backgroundColor}
         overflowMarker={overflowMarker}
         expanderButton={
-          <Box textAlign="right">
-            {!expanded && (
+          !expanded ? (
+            <Box textAlign="right">
               <Button variant="text" onClick={() => setExpanded(true)}>
                 {t('buttons.ellipsisReadMore')}
               </Button>
-            )}
-          </Box>
+            </Box>
+          ) : undefined
         }
       >
         <WrapperMarkdown card {...props}>
           {children}
         </WrapperMarkdown>
       </AutomaticOverflowGradient>
+      {expanded && (
+        <Box textAlign="right">
+          <Button variant="text" onClick={() => setExpanded(false)}>
+            {t('buttons.showLess')}
+          </Button>
+        </Box>
+      )}
     </>
   );
 };
