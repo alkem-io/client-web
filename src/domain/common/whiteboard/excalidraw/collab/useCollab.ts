@@ -29,6 +29,7 @@ export interface CollabState {
   connecting: boolean;
   mode: CollaboratorMode | null;
   modeReason: CollaboratorModeReasons | null;
+  isReadOnly: boolean;
 }
 
 const useCollab = ({
@@ -45,6 +46,8 @@ const useCollab = ({
   const [isConnecting, setIsConnecting] = useState(false);
 
   const [isCollaborating, setIsCollaborating] = useState(false);
+
+  const [isSceneInitialized, setIsSceneInitialized] = useState(false);
 
   const [collaboratorMode, setCollaboratorMode] = useState<CollaboratorMode | null>(null);
 
@@ -63,6 +66,7 @@ const useCollab = ({
   };
 
   const handleSceneInitChange = (initialized: boolean) => {
+    setIsSceneInitialized(initialized);
     onSceneInitChange?.(initialized);
   };
 
@@ -118,6 +122,7 @@ const useCollab = ({
       collaborating: isCollaborating && collaboratorMode !== null,
       mode: collaboratorMode,
       modeReason: collaboratorModeReason,
+      isReadOnly: isConnecting || !isCollaborating || collaboratorMode === 'read' || !isSceneInitialized,
     },
   ];
 };
