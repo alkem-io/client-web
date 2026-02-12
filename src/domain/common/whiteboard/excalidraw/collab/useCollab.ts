@@ -11,6 +11,7 @@ export interface CollabAPI {
   isCollaborating: () => boolean;
   /** Broadcast ephemeral floating emoji to other collaborators */
   broadcastEmojiReaction: CollabInstance['broadcastEmojiReaction'];
+  broadcastCountdownTimer: CollabInstance['broadcastCountdownTimer'];
 }
 
 type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => void, CollabState];
@@ -91,6 +92,7 @@ const useCollab = ({
       syncScene: collabRef.current.syncScene,
       isCollaborating: collabRef.current.isCollaborating,
       broadcastEmojiReaction: collabRef.current.broadcastEmojiReaction,
+      broadcastCountdownTimer: collabRef.current.broadcastCountdownTimer,
     };
 
     (async () => {

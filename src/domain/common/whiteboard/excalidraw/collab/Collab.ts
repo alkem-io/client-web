@@ -53,6 +53,7 @@ export interface CollabProps {
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   onSceneInitChange: (initialized: boolean) => void;
   onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
+  onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
 }
 
 type IncomingClientBroadcastData = {
@@ -64,6 +65,12 @@ type IncomingClientBroadcastData = {
 
 // Callback type for incoming emoji reaction events
 export type OnIncomingEmojiReactionCallback = (payload: { id: string; emoji: string; x: number; y: number }) => void;
+// Callback type for incoming countdown timer events
+export type OnIncomingCountdownTimerCallback = (payload: {
+  active: boolean;
+  remainingSeconds: number;
+  startedBy: string;
+}) => void;
 
 // List of used functions from Excalidraw that will be lazy loaded
 type ExcalidrawUtils = {
@@ -88,6 +95,7 @@ class Collab {
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
   private onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
+  private onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
   private collaborationMode: CollaboratorMode | undefined = undefined;
 
@@ -110,6 +118,7 @@ class Collab {
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.onSceneInitChange = props.onSceneInitChange;
     this.onIncomingEmojiReaction = props.onIncomingEmojiReaction;
+    this.onIncomingCountdownTimer = props.onIncomingCountdownTimer;
     this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
   }
 
@@ -176,6 +185,26 @@ class Collab {
           x,
           y,
           id: `${this.portal.roomId}_${Date.now()}`,
+        },
+      } as SocketUpdateData;
+      await this.portal._broadcastSocketData(data, { volatile: true });
+    } catch (e) {
+      console.error('Failed to broadcast emoji reaction:', e);
+    }
+  };
+
+  /**
+   * Broadcast an ephemeral floating emoji reactions to other clients.
+   * Uses reliable channel so reactions always land for all peers.
+   */
+  broadcastCountdownTimer = async (remainingSeconds: number, active: boolean, startedBy: string) => {
+    try {
+      const data = {
+        type: WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER,
+        payload: {
+          remainingSeconds,
+          active,
+          startedBy,
         },
       } as SocketUpdateData;
       await this.portal._broadcastSocketData(data, { volatile: true });
@@ -295,6 +324,21 @@ class Collab {
                   });
                 } catch (e) {
                   console.error('Failed to handle incoming emoji reaction:', e);
+                }
+                return;
+              }
+              if (isCountdownTimerPayload(data)) {
+                try {
+                  console.log('Received countdown timer event:', data.payload);
+                  const { remainingSeconds, active, startedBy } = data.payload;
+                  // Forward to callback to display (optional subscriber)
+                  this.onIncomingCountdownTimer?.({
+                    remainingSeconds,
+                    active,
+                    startedBy,
+                  });
+                } catch (e) {
+                  console.error('Failed to handle incoming countdown timer:', e);
                 }
                 return;
               }
@@ -525,3 +569,6 @@ const isSceneUpdatePayload = (data: IncomingClientBroadcastData): data is Socket
   data.type === WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
 const isEmojiReactionPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['EMOJI_REACTION'] =>
   data.type === WS_SCENE_EVENT_TYPES.EMOJI_REACTION;
+const isCountdownTimerPayload = (
+  data: IncomingClientBroadcastData
+): data is SocketUpdateDataSource['COUNTDOWN_TIMER'] => data.type === WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER;

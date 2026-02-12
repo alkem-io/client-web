@@ -208,12 +208,21 @@ const CollaborativeExcalidrawWrapper = ({
       actions.onSceneInitChange?.(initialized);
     },
     onIncomingEmojiReaction: excalidrawApi?.dispatchIncomingEmojiReaction,
+    onIncomingCountdownTimer: excalidrawApi?.dispatchIncomingCountdownTimer,
   });
 
   // Handler for broadcasting emoji reactions to collaborators
   const handleRequestBroadcastEmojiReaction = useCallback(
     (emoji: string, x: number, y: number) => {
       return collabApi?.broadcastEmojiReaction?.(emoji, x, y);
+    },
+    [collabApi]
+  );
+
+  // Handler for broadcasting Countdown Timer to collaborators
+  const handleRequestBroadcastCountdownTimer = useCallback(
+    (remainingSeconds: number, startedBy: string, active: boolean) => {
+      return collabApi?.broadcastCountdownTimer?.(remainingSeconds, active, startedBy);
     },
     [collabApi]
   );
@@ -277,6 +286,7 @@ const CollaborativeExcalidrawWrapper = ({
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
             onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
+            onRequestBroadcastCountdownTimer={handleRequestBroadcastCountdownTimer}
             detectScroll={false}
             autoFocus
             generateIdForFile={handleGenerateIdForFile}

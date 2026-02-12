@@ -85,6 +85,15 @@ export type SocketUpdateDataSource = {
       id?: string;
     };
   };
+  COUNTDOWN_TIMER: {
+    type: WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER;
+    payload: {
+      active: boolean;
+      remainingSeconds: number;
+      startedBy: string;
+      id?: string;
+    };
+  };
 };
 
 export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
