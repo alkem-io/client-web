@@ -28,6 +28,8 @@ import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import ImagePlaceholder from '@/core/ui/image/ImagePlaceholder';
 
+const HEIC_TYPES = ['image/heic', 'image/heif'];
+
 type VisualInMediaGallerySubmittedValue = NonNullable<
   CalloutFormSubmittedValues['framing']['mediaGallery']
 >['visuals'][number];
@@ -77,8 +79,6 @@ const CalloutFramingMediaGalleryField = () => {
       }
     }
 
-    // After the allowedTypes check, before the new Image() block:
-    const HEIC_TYPES = ['image/heic', 'image/heif'];
     if (HEIC_TYPES.includes(file.type)) {
       // Browsers can't decode HEIC — skip dimension validation.
       // The server converts HEIC to JPEG before storing.
@@ -149,7 +149,6 @@ const CalloutFramingMediaGalleryField = () => {
       }
 
       // File is valid
-      const HEIC_TYPES = ['image/heic', 'image/heif'];
       const isHeic = HEIC_TYPES.includes(file.type);
 
       validFiles.push({
@@ -223,7 +222,7 @@ const CalloutFramingMediaGalleryField = () => {
                     },
                   }}
                 >
-                  {(visual.previewUrl && visual.previewUrl !== '') || (visual.uri && visual.uri !== '') ? (
+                  {Boolean(visual.previewUrl || visual.uri) ? (
                     <Box
                       component="img"
                       src={visual.previewUrl || visual.uri}

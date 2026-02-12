@@ -139,8 +139,8 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
                 attributes: { preload: false, controls: true },
               })
             : undefined;
-          const hasValidUrl = item.url && item.url !== '';
-          const hasValidThumbnail = item.thumbnailUrl && item.thumbnailUrl !== '';
+          const hasValidUrl = Boolean(item.url);
+          const hasValidThumbnail = Boolean(item.thumbnailUrl);
 
           return (
             <GalleryThumbnail key={item.id} data-src={isVideo ? undefined : item.url} data-video={videoSource}>
