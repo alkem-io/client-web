@@ -35,6 +35,7 @@ interface InAppNotificationBaseViewProps {
   notification: InAppNotificationModel;
   values: Record<string, string | undefined>;
   url: string | undefined;
+  forceReload?: boolean;
 }
 
 const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
@@ -48,7 +49,12 @@ const getSpaceAvatar = (space?: {
   return space?.about?.profile?.avatar?.uri || space?.about?.profile?.cardBanner?.uri || null;
 };
 
-export const InAppNotificationBaseView = ({ notification, values, url }: InAppNotificationBaseViewProps) => {
+export const InAppNotificationBaseView = ({
+  notification,
+  values,
+  url,
+  forceReload,
+}: InAppNotificationBaseViewProps) => {
   const { id, state, triggeredAt, triggeredBy, payload, type } = notification;
 
   const { t } = useTranslation();
@@ -62,8 +68,11 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
     }
     if (url) {
       setIsOpen(false);
+      if (forceReload) {
+        window.location.href = url;
+      }
     }
-  }, [id, url, state]);
+  }, [id, url, state, forceReload]);
 
   const getReadAction = useCallback(() => {
     switch (state) {
@@ -158,7 +167,7 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
     <>
       <BadgeCardView
         component={Wrapper}
-        to={url}
+        to={forceReload ? undefined : url}
         onClick={onNotificationClick}
         paddingLeft={isMobile ? gutters(0.5) : gutters(2)}
         paddingY={gutters(0.5)}

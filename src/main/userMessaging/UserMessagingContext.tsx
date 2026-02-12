@@ -11,6 +11,8 @@ interface UserMessagingContextProps {
   setSelectedRoomId: (id: string | null) => void;
   totalUnreadCount: number;
   setTotalUnreadCount: (count: number) => void;
+  newlyCreatedConversationId: string | null;
+  setNewlyCreatedConversationId: (id: string | null) => void;
 }
 
 const defaultState: UserMessagingContextProps = {
@@ -23,6 +25,8 @@ const defaultState: UserMessagingContextProps = {
   setSelectedRoomId: () => {},
   totalUnreadCount: 0,
   setTotalUnreadCount: () => {},
+  newlyCreatedConversationId: null,
+  setNewlyCreatedConversationId: () => {},
 };
 
 const UserMessagingContext = createContext<UserMessagingContextProps>(defaultState);
@@ -33,6 +37,7 @@ export const UserMessagingProvider = ({ children }: { children: ReactNode }) => 
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
+  const [newlyCreatedConversationId, setNewlyCreatedConversationId] = useState<string | null>(null);
 
   // Feature is enabled for all registered users
   const isEnabled = !!userModel?.id;
@@ -42,6 +47,7 @@ export const UserMessagingProvider = ({ children }: { children: ReactNode }) => 
     if (!open) {
       setSelectedConversationId(null);
       setSelectedRoomId(null);
+      setNewlyCreatedConversationId(null);
     }
   };
 
@@ -57,6 +63,8 @@ export const UserMessagingProvider = ({ children }: { children: ReactNode }) => 
         setSelectedRoomId,
         totalUnreadCount,
         setTotalUnreadCount,
+        newlyCreatedConversationId,
+        setNewlyCreatedConversationId,
       }}
     >
       {children}
