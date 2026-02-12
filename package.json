@@ -81,7 +81,7 @@
     }
   },
   "dependencies": {
-    "@alkemio/excalidraw": "0.18.0-864353b-alkemio-8-emojis",
+    "@alkemio/excalidraw": "0.18.0-864353b-alkemio-10",
     "@apollo/client": "^3.10.8",
     "@atlaskit/pragmatic-drag-and-drop": "1.5.2",
     "@elastic/apm-rum": "^5.12.0",
