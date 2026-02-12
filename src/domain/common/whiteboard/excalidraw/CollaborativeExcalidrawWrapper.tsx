@@ -207,13 +207,13 @@ const CollaborativeExcalidrawWrapper = ({
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
     },
-    onIncomingFloatingEmoji: excalidrawApi?.dispatchIncomingFloatingEmoji,
+    onIncomingEmojiReaction: excalidrawApi?.dispatchIncomingEmojiReaction,
   });
 
-  // Handler for broadcasting floating emojis to collaborators
-  const handleRequestBroadcastFloatingEmoji = useCallback(
+  // Handler for broadcasting emoji reactions to collaborators
+  const handleRequestBroadcastEmojiReaction = useCallback(
     (emoji: string, x: number, y: number) => {
-      return collabApi?.broadcastFloatingEmoji?.(emoji, x, y);
+      return collabApi?.broadcastEmojiReaction?.(emoji, x, y);
     },
     [collabApi]
   );
@@ -276,7 +276,7 @@ const CollaborativeExcalidrawWrapper = ({
             viewModeEnabled={isReadOnly}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
-            onRequestBroadcastFloatingEmoji={handleRequestBroadcastFloatingEmoji}
+            onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
             detectScroll={false}
             autoFocus
             generateIdForFile={handleGenerateIdForFile}

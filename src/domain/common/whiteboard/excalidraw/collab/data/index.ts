@@ -76,8 +76,8 @@ export type SocketUpdateDataSource = {
     type: 'INVALID_RESPONSE';
     payload: never;
   };
-  FLOATING_EMOJI: {
-    type: WS_SCENE_EVENT_TYPES.FLOATING_EMOJI;
+  EMOJI_REACTION: {
+    type: WS_SCENE_EVENT_TYPES.EMOJI_REACTION;
     payload: {
       emoji: string;
       x: number; // sceneX (whiteboard coordinates)

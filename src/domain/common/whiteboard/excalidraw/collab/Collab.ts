@@ -52,7 +52,7 @@ export interface CollabProps {
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   onSceneInitChange: (initialized: boolean) => void;
-  onIncomingFloatingEmoji?: OnIncomingFloatingEmojiCallback;
+  onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
 }
 
 type IncomingClientBroadcastData = {
@@ -62,8 +62,8 @@ type IncomingClientBroadcastData = {
   };
 };
 
-// Callback type for incoming floating emoji events
-export type OnIncomingFloatingEmojiCallback = (payload: { id: string; emoji: string; x: number; y: number }) => void;
+// Callback type for incoming emoji reaction events
+export type OnIncomingEmojiReactionCallback = (payload: { id: string; emoji: string; x: number; y: number }) => void;
 
 // List of used functions from Excalidraw that will be lazy loaded
 type ExcalidrawUtils = {
@@ -87,7 +87,7 @@ class Collab {
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
-  private onIncomingFloatingEmoji?: OnIncomingFloatingEmojiCallback;
+  private onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
   private collaborationMode: CollaboratorMode | undefined = undefined;
 
@@ -109,7 +109,7 @@ class Collab {
     this.filesManager = props.filesManager;
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.onSceneInitChange = props.onSceneInitChange;
-    this.onIncomingFloatingEmoji = props.onIncomingFloatingEmoji;
+    this.onIncomingEmojiReaction = props.onIncomingEmojiReaction;
     this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
   }
 
@@ -164,13 +164,13 @@ class Collab {
   };
 
   /**
-   * Broadcast an ephemeral floating emoji to other clients.
+   * Broadcast an ephemeral floating emoji reactions to other clients.
    * Uses reliable channel so reactions always land for all peers.
    */
-  broadcastFloatingEmoji = async (emoji: string, x: number, y: number) => {
+  broadcastEmojiReaction = async (emoji: string, x: number, y: number) => {
     try {
       const data = {
-        type: WS_SCENE_EVENT_TYPES.FLOATING_EMOJI,
+        type: WS_SCENE_EVENT_TYPES.EMOJI_REACTION,
         payload: {
           emoji,
           x,
@@ -180,7 +180,7 @@ class Collab {
       } as SocketUpdateData;
       await this.portal._broadcastSocketData(data, { volatile: true });
     } catch (e) {
-      console.error('Failed to broadcast floating emoji:', e);
+      console.error('Failed to broadcast emoji reaction:', e);
     }
   };
 
@@ -283,18 +283,18 @@ class Collab {
                 );
                 return;
               }
-              if (isFloatingEmojiPayload(data)) {
+              if (isEmojiReactionPayload(data)) {
                 try {
                   const { emoji, x, y, id } = data.payload;
                   // Forward to callback to display (optional subscriber)
-                  this.onIncomingFloatingEmoji?.({
+                  this.onIncomingEmojiReaction?.({
                     id: id || `${data.type}_${Date.now()}`,
                     emoji,
                     x,
                     y,
                   });
                 } catch (e) {
-                  console.error('Failed to handle incoming floating emoji:', e);
+                  console.error('Failed to handle incoming emoji reaction:', e);
                 }
                 return;
               }
@@ -523,5 +523,5 @@ const isMouseLocationPayload = (data: IncomingClientBroadcastData): data is Sock
   data.type === WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
 const isSceneUpdatePayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_UPDATE'] =>
   data.type === WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
-const isFloatingEmojiPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['FLOATING_EMOJI'] =>
-  data.type === WS_SCENE_EVENT_TYPES.FLOATING_EMOJI;
+const isEmojiReactionPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['EMOJI_REACTION'] =>
+  data.type === WS_SCENE_EVENT_TYPES.EMOJI_REACTION;

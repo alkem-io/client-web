@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import Collab, { CollabProps, OnIncomingFloatingEmojiCallback } from './Collab';
+import Collab, { CollabProps, OnIncomingEmojiReactionCallback } from './Collab';
 import { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
 type CollabInstance = InstanceType<typeof Collab>;
@@ -10,14 +10,14 @@ export interface CollabAPI {
   syncScene: CollabInstance['syncScene'];
   isCollaborating: () => boolean;
   /** Broadcast ephemeral floating emoji to other collaborators */
-  broadcastFloatingEmoji: CollabInstance['broadcastFloatingEmoji'];
+  broadcastEmojiReaction: CollabInstance['broadcastEmojiReaction'];
 }
 
 type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => void, CollabState];
 
 interface UseCollabProps extends Omit<CollabProps, 'excalidrawApi' | 'onCollaboratorModeChange'> {
   onInitialize?: (collabApi: CollabAPI) => void;
-  onIncomingFloatingEmoji?: OnIncomingFloatingEmojiCallback;
+  onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
 }
 
 interface InitProps extends Pick<CollabProps, 'excalidrawApi'> {
@@ -81,7 +81,7 @@ const useCollab = ({
         setCollaboratorModeReason(reason);
       },
       onSceneInitChange: handleSceneInitChange,
-      onIncomingFloatingEmoji: collabProps.onIncomingFloatingEmoji,
+      onIncomingEmojiReaction: collabProps.onIncomingEmojiReaction,
     });
 
     collabRef.current.init();
@@ -90,7 +90,7 @@ const useCollab = ({
       onPointerUpdate: collabRef.current.onPointerUpdate,
       syncScene: collabRef.current.syncScene,
       isCollaborating: collabRef.current.isCollaborating,
-      broadcastFloatingEmoji: collabRef.current.broadcastFloatingEmoji,
+      broadcastEmojiReaction: collabRef.current.broadcastEmojiReaction,
     };
 
     (async () => {
