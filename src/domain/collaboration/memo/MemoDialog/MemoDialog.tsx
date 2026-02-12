@@ -13,7 +13,9 @@ import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
 import { MemoStatus, RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
 import MemoFooter from './MemoFooter';
+import MemoDisplayName from './MemoDisplayName';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
@@ -44,6 +46,7 @@ const MemoDialog = ({
   const { fullscreen, setFullscreen } = useFullscreen();
 
   const { memo, loading } = useMemoManager({ id: memoId });
+  const [updateMemoDisplayName] = useUpdateMemoDisplayNameMutation();
 
   const handleClose = () => {
     if (fullscreen) {
@@ -58,6 +61,10 @@ const MemoDialog = ({
     // Close dialog before deleting to prevent errors
     onClose?.();
     await onDelete?.();
+  };
+
+  const handleChangeDisplayName = async (displayName: string) => {
+    await updateMemoDisplayName({ variables: { memoId, displayName } });
   };
 
   const hasUpdatePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
@@ -80,6 +87,7 @@ const MemoDialog = ({
       <DialogHeader
         onClose={handleClose}
         id="memo-dialog-title"
+        titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
         actions={
           <>
             {isContribution && hasDeletePrivileges && onDelete && (
@@ -106,7 +114,11 @@ const MemoDialog = ({
           </>
         }
       >
-        {memo?.profile.displayName || t('common.memo')}
+        <MemoDisplayName
+          displayName={memo?.profile.displayName || t('common.memo')}
+          readOnlyDisplayName={!isContribution || !hasUpdatePrivileges}
+          onChangeDisplayName={handleChangeDisplayName}
+        />
       </DialogHeader>
       <DialogContent>
         <Box position="relative" height="100%" width="100%">
