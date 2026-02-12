@@ -26,6 +26,7 @@ import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import AddIcon from '@mui/icons-material/Add';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
+import ImagePlaceholder from '@/core/ui/image/ImagePlaceholder';
 
 type VisualInMediaGallerySubmittedValue = NonNullable<
   CalloutFormSubmittedValues['framing']['mediaGallery']
@@ -74,6 +75,14 @@ const CalloutFramingMediaGalleryField = () => {
         );
         return Promise.resolve(errors);
       }
+    }
+
+    // After the allowedTypes check, before the new Image() block:
+    const HEIC_TYPES = ['image/heic', 'image/heif'];
+    if (HEIC_TYPES.includes(file.type)) {
+      // Browsers can't decode HEIC — skip dimension validation.
+      // The server converts HEIC to JPEG before storing.
+      return Promise.resolve([]);
     }
 
     return new Promise(resolve => {
@@ -140,9 +149,12 @@ const CalloutFramingMediaGalleryField = () => {
       }
 
       // File is valid
+      const HEIC_TYPES = ['image/heic', 'image/heif'];
+      const isHeic = HEIC_TYPES.includes(file.type);
+
       validFiles.push({
         file,
-        previewUrl: URL.createObjectURL(file),
+        previewUrl: isHeic ? '' : URL.createObjectURL(file),
       });
     }
 
@@ -211,7 +223,7 @@ const CalloutFramingMediaGalleryField = () => {
                     },
                   }}
                 >
-                  {(visual.previewUrl || visual.uri) && (
+                  {(visual.previewUrl && visual.previewUrl !== '') || (visual.uri && visual.uri !== '') ? (
                     <Box
                       component="img"
                       src={visual.previewUrl || visual.uri}
@@ -225,6 +237,14 @@ const CalloutFramingMediaGalleryField = () => {
                         objectFit: 'cover',
                         borderRadius: 0.5,
                       }}
+                    />
+                  ) : (
+                    <ImagePlaceholder
+                      text={
+                        visual.file
+                          ? t('components.callout-creation.framing.mediaGallery.previewNotAvailable')
+                          : t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
+                      }
                     />
                   )}
                   <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>

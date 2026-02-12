@@ -18,6 +18,7 @@ const ImageGallery = lazyWithGlobalErrorHandler(async () => {
 });
 import type { GalleryItem, ImageGalleryRef } from 'react-image-gallery';
 import { Caption } from '../typography';
+import ImagePlaceholder from '../image/ImagePlaceholder';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -138,14 +139,20 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
                 attributes: { preload: false, controls: true },
               })
             : undefined;
+          const hasValidUrl = item.url && item.url !== '';
+          const hasValidThumbnail = item.thumbnailUrl && item.thumbnailUrl !== '';
 
           return (
             <GalleryThumbnail key={item.id} data-src={isVideo ? undefined : item.url} data-video={videoSource}>
-              <img
-                src={item.thumbnailUrl || item.url}
-                alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
-                onClick={() => handleItemClick(item, index)}
-              />
+              {hasValidUrl || hasValidThumbnail ? (
+                <img
+                  src={item.thumbnailUrl || item.url}
+                  alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
+                  onClick={() => handleItemClick(item, index)}
+                />
+              ) : (
+                <ImagePlaceholder text={t('components.callout-creation.framing.mediaGallery.imageNotAvailable')} />
+              )}
             </GalleryThumbnail>
           );
         })}
