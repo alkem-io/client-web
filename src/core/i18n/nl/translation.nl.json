@@ -117,9 +117,9 @@
     "expandWindow": "Venster vergroten",
     "see-more": "Lees verder",
     "see-all": "Meer {{subject}}",
-    "showAll": "Show all",
+    "showAll": "Toon alles",
     "readMore": "Meer lezen",
-    "ellipsisReadMore": "... Read more",
+    "ellipsisReadMore": "... Meer lezen",
     "showLess": "Minder weergeven",
     "retry": "Probeer het opnieuw",
     "home": "Startpagina",
@@ -140,7 +140,7 @@
     "remove": "Verwijder",
     "cancel": "Annuleer",
     "upload": "Upload",
-    "uploadMedia": "Upload Media",
+    "uploadMedia": "Media Uploaden",
     "explore-and-connect": "Verken en verbind",
     "send-message": "Verstuur bericht",
     "edit-members": "Bewerk $t(common.members)",
@@ -230,7 +230,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
+        "cleverbase": "Cleverbase: een EU-gecertificeerde vertrouwensdienstverlener die juridisch erkende digitale identiteiten en veilige authenticatie uitgeeft."
       }
     },
     "signUp": {
@@ -238,13 +238,13 @@
       "alreadyHaveAccount": "Heb je al een $t(common.account)?"
     },
     "passkey": {
-      "sign-in": "Sign in with passkey",
-      "register": "Register passkey",
-      "not-supported": "Passkeys are not supported by your browser",
-      "script-loading": "Loading passkey support...",
-      "script-error": "Failed to load passkey functionality",
-      "unknown-error": "An error occurred with your passkey",
-      "remove-credential": "Remove passkey"
+      "sign-in": "Inloggen met passkey",
+      "register": "Passkey registreren",
+      "not-supported": "Passkeys worden niet ondersteund door je browser",
+      "script-loading": "Passkey ondersteuning laden...",
+      "script-error": "Fout bij het laden van Passkey functionaliteit",
+      "unknown-error": "Er is een fout opgetreden met je Passkey",
+      "remove-credential": "Passkey verwijderen"
     }
   },
   "common": {
@@ -414,7 +414,7 @@
     "Community": "Community",
     "community": "community",
     "library": "Bibliotheek",
-    "image": "Image",
+    "image": "Afbeelding",
     "templateLibrary": "Template Bibliotheek",
     "people": "Personen",
     "Settings": "Instellingen",
@@ -423,7 +423,7 @@
     "search": "Zoek...",
     "Storage": "Opslag",
     "storage": "opslag",
-    "retrying": "Retrying...",
+    "retrying": "Opnieuw proberen...",
     "type": "Type",
     "reference": "Referentie",
     "references": "Referenties",
@@ -629,7 +629,7 @@
         "year_one": "{{count}} jaar",
         "year_other": "{{count}} jaar"
       },
-      "moreThan1Year": "> 1 year ago"
+      "moreThan1Year": "> 1 jaar geleden"
     },
     "supportEmail": "support@alkem.io",
     "options": "Opties",
@@ -773,7 +773,7 @@
     },
     "pendingMembership": {
       "pendingMemberships": "Mijn open $t(common.memberships)",
-      "empty": "You don't have any open invitations or applications at the moment.",
+      "empty": "Je hebt momenteel geen open uitnodigingen of aanmeldingen.",
       "pendingMembershipsWithCount": "Mijn open $t(common.memberships) ({{count}})",
       "invitationsSectionTitle": "Uitnodigingen",
       "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn $t(common.virtualContributor)",
@@ -841,10 +841,10 @@
           "tooltip": "Voeg een oproep tot actietoe aan deze $t(common.post)"
         },
         "mediaGallery": {
-          "title": "Media Gallery",
-          "tooltip": "Add an image gallery to this $t(common.post)",
-          "nItems": "{{count}} images in the gallery",
-          "deleteItem": "Remove image from gallery"
+          "title": "Mediagallerij",
+          "tooltip": "Voeg een galerij met afbeeldingen toe aan deze $t(common.post)",
+          "nItems": "{{count}} afbeeldingen in de galerij",
+          "deleteItem": "Verwijder afbeelding uit galerij"
         }
       },
       "contributionSettings": {
@@ -939,7 +939,7 @@
       "contributionsItemsCountExpand": "{{count}} items in deze $t(common.collection), <click>klik hier</click> om alle items te zien",
       "contributionsCollapse": "{{count}} items in deze $t(common.collection), <click>klik hier</click> om sommige te verbergen",
       "noContributions": "Nog geen bijdragen, wees de eerste om bij te dragen!",
-      "contributions": "Contributions ({{count}})"
+      "contributions": "Bijdragen ({{count}})"
     },
     "draftNotice": "CONCEPT - Alleen zichtbaar voor $t(common.admins)",
     "closed": "Deze oproep is gesloten. Je kunt nog altijd commentaar geven op de individuele kaarten.",
@@ -969,24 +969,24 @@
     "whiteboard": {
       "clickToSee": "Klik om het volledige $t(common.whiteboard) te bekijken",
       "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
+        "addEmoji": "Emoji reactie toevoegen",
+        "title": "Emoji toevoegen",
+        "hint": "Selecteer een emoji en klik vervolgens op het canvas",
+        "clickToPlace": "Klik op canvas om {{emoji}} te plaatsen",
+        "placementMode": "Klik om emoji te plaatsen: {{emoji}}",
+        "gridLabel": "Emoji selecteren",
+        "noEmojis": "Geen emojis beschikbaar"
       },
       "images": {
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "maxSizeFallback": "the allowed limit",
-        "uploadFailed": "Couldn't upload the image. Please try again.",
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded"
+        "unsupportedType": "Dit afbeeldingsformaat wordt niet ondersteund. Gebruik {{formats}}.",
+        "tooLarge": "Deze afbeelding is te groot. Maximale grootte is {{maxSize}}.",
+        "maxSizeFallback": "de toegestane limiet",
+        "uploadFailed": "Kan de afbeelding niet uploaden. Probeer het nogmaals.",
+        "downloadFailed": "Kan de afbeelding niet laden. Probeer het nogmaals.",
+        "retry": "Probeer opnieuw",
+        "singleFailure": "Een afbeelding kon niet geladen worden",
+        "multipleFailures_one": "{{count}} afbeelding kon niet worden geladen",
+        "multipleFailures_other": "{{count}} afbeeldingen konden niet geladen worden"
       }
     },
     "memo": {
@@ -1375,7 +1375,7 @@
     },
     "innovationFlowSettings": {
       "title": "Instellingen Innovatieflow",
-      "importing": "Importing in progress...",
+      "importing": "Bezig met importeren...",
       "buttonTooltip": "Beheer Innovatie Flow",
       "editProfileDialog": {
         "title": "Details Bewerken: Innovatieflow"
@@ -1386,7 +1386,7 @@
         "editState": "Details Bewerken",
         "deleteState": "Verwijderen",
         "addState": "Fase Toevoegen",
-        "setDefaultTemplate": "Set Default Post Template",
+        "setDefaultTemplate": "Stel standaard post template in",
         "invalidChars": "Een fase naam kan geen speciale tekens bevatten.",
         "noRepeatedStates": "Er bestaat al een fase met dezelfde naam.",
         "createDialog": {
@@ -1407,23 +1407,23 @@
             "description": "- Door het wijzigen van de $t(common.innovation-flow) **gaan alle veranderingen die in de huidige flow zijn aangebracht verloren**.\n- Alle bestaande $t(common.posts) zullen gegroepeerd worden onder de eerste fase van de nieuwe flow."
           },
           "importCalloutsDialog": {
-            "title": "Apply new $t(common.template-lowercase)",
-            "description": "You are about to apply a new $t(common.template-lowercase). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "title": "Nieuw $t(common.template-lowercase) toepassen",
+            "description": "Je staat op het punt een nieuw $t(common.template-lowercase) toe te passen. Deze actie zal je huidige $t(common.innovation-flow) <br/>permanent verwijderen<br/>. De bestaande $t(common.posts) die gekoppeld zijn aan verschillende fasen blijven bestaan en worden gegroepeerd in de eerste fase van de nieuwe setup. Kies een van de volgende opties:",
             "option1": {
-              "label": "Replace with new flow",
-              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+              "label": "Vervang door nieuwe flow",
+              "description": "Dit zal je huidige $t(common.innovation-flow) met alle bestaande $t(common.posts) verwijderen en vervangen door de nieuwe flow, inclusief de $t(common.template) $t(common.posts)."
             },
             "option2": {
-              "label": "Replace and add $t(common.template-lowercase) $t(common.posts) to existing ones",
-              "description": "This will include the new $t(common.posts) from the $t(common.template-lowercase) in addition to your existing ones."
+              "label": "Vervang en voeg $t(common.template-lowercase) $t(common.posts) toe",
+              "description": "Dit zal de nieuwe $t(common.posts) uit de $t(common.template-lowercase) bevatten, naast de bestaande."
             },
             "option3": {
-              "label": "Replace flow without adding $t(common.template-lowercase) $t(common.posts)",
-              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template-lowercase) $t(common.posts)."
+              "label": "Vervang flow zonder $t(common.template-lowercase) $t(common.posts) toe te voegen",
+              "description": "Vervang alleen $t(common.innovation-flow) zonder $t(common.template-lowercase) $t(common.posts) toe te voegen."
             },
             "confirmDelete": {
-              "title": "Confirm Deletion",
-              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template-lowercase). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+              "title": "Verwijderen bevestigen",
+              "description": "Deze actie verwijdert <strong>permanent alle bestaande $t(common.posts)</strong> en vervangt ze door $t(common.posts) van de $t(common.template-lowercase). Dit <strong>kan niet ongedaan worden gemaakt</strong>. Weet je zeker dat je wilt doorgaan?"
             },
             "apply": "Schrijf in"
           }
