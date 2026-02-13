@@ -12,7 +12,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
 import Loading from '@/core/ui/loading/Loading';
-import { Button } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogActions } from '@mui/material';
 import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
@@ -50,6 +50,7 @@ const TransferCalloutPage = () => {
 
   const [calloutUrl, setCalloutUrl] = useState('');
   const [spaceUrl, setSpaceUrl] = useState('');
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
   // Step 1: Resolve callout URL to get callout ID
   const { data: calloutResolveData, loading: calloutResolveLoading } = useCalloutUrlResolveQuery({
@@ -111,7 +112,7 @@ const TransferCalloutPage = () => {
       await transferCallout({
         variables: { calloutId: callout.id, targetCalloutsSetId: calloutsSetId },
       });
-      notify('Callout transferred successfully', 'success');
+      setSuccessDialogOpen(true);
     } catch (error) {
       notify('Failed to transfer callout', 'error');
     }
@@ -252,6 +253,17 @@ const TransferCalloutPage = () => {
           )}
         </PageContentColumn>
       </PageContent>
+      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+        <DialogContent>
+          <BlockTitle>Transfer Successful</BlockTitle>
+          <span>
+            Callout "{callout?.framing.profile.displayName}" has been transferred to "{space?.about.profile.displayName}".
+          </span>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSuccessDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </TopLevelLayout>
   );
 };
