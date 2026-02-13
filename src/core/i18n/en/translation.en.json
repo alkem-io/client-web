@@ -2862,7 +2862,8 @@
           "noResults": "No results of this type matched your search terms."
         }
       },
-      "spaceFilterTitle": "$t(common.spaces)"
+      "spaceFilterTitle": "$t(common.spaces)",
+      "loading": "Searching..."
     },
     "exploreSpaces": {
       "fullName": "Explore $t(common.spaces)",
