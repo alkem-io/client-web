@@ -67,8 +67,8 @@ type IncomingClientBroadcastData = {
 export type OnIncomingEmojiReactionCallback = (payload: { id: string; emoji: string; x: number; y: number }) => void;
 // Callback type for incoming countdown timer events
 export type OnIncomingCountdownTimerCallback = (payload: {
-  active: boolean;
   remainingSeconds: number;
+  active: boolean;
   startedBy: string;
 }) => void;
 
@@ -174,7 +174,7 @@ class Collab {
 
   /**
    * Broadcast an ephemeral floating emoji reactions to other clients.
-   * Uses reliable channel so reactions always land for all peers.
+   * Uses volatile channel for real-time animations; missing packets won't cause issues.
    */
   broadcastEmojiReaction = async (emoji: string, x: number, y: number) => {
     try {
@@ -194,8 +194,8 @@ class Collab {
   };
 
   /**
-   * Broadcast an ephemeral floating emoji reactions to other clients.
-   * Uses reliable channel so reactions always land for all peers.
+   * Broadcast countdown timer state to other clients.
+   * Uses volatile channel for real-time updates; missing packets won't cause issues.
    */
   broadcastCountdownTimer = async (remainingSeconds: number, active: boolean, startedBy: string) => {
     try {
@@ -209,7 +209,7 @@ class Collab {
       } as SocketUpdateData;
       await this.portal._broadcastSocketData(data, { volatile: true });
     } catch (e) {
-      console.error('Failed to broadcast emoji reaction:', e);
+      console.error('Failed to broadcast countdown timer:', e);
     }
   };
 
@@ -329,7 +329,6 @@ class Collab {
               }
               if (isCountdownTimerPayload(data)) {
                 try {
-                  console.log('Received countdown timer event:', data.payload);
                   const { remainingSeconds, active, startedBy } = data.payload;
                   // Forward to callback to display (optional subscriber)
                   this.onIncomingCountdownTimer?.({

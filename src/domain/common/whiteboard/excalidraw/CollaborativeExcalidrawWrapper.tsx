@@ -221,7 +221,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   // Handler for broadcasting Countdown Timer to collaborators
   const handleRequestBroadcastCountdownTimer = useCallback(
-    (remainingSeconds: number, startedBy: string, active: boolean) => {
+    (remainingSeconds: number, active: boolean, startedBy: string) => {
       return collabApi?.broadcastCountdownTimer?.(remainingSeconds, active, startedBy);
     },
     [collabApi]

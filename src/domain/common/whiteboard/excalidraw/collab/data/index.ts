@@ -88,10 +88,10 @@ export type SocketUpdateDataSource = {
   COUNTDOWN_TIMER: {
     type: WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER;
     payload: {
-      active: boolean;
-      remainingSeconds: number;
-      startedBy: string;
       id?: string;
+      remainingSeconds: number;
+      active: boolean;
+      startedBy: string;
     };
   };
 };
