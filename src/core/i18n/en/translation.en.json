@@ -968,15 +968,6 @@
     },
     "whiteboard": {
       "clickToSee": "Click to see the full $t(common.whiteboard)",
-      "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
-      },
       "images": {
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
@@ -1511,7 +1502,7 @@
         "dialogHeader": "Convert selection to Hyperlink"
       },
       "validation": {
-        "maxLength": "The resulting text goes beyond the size accepted by the server."
+        "maxLength": "This text exceeds the length limits for this field."
       },
       "embed": {
         "iframeAria": "{{title}}",
