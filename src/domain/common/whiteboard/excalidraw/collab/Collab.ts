@@ -122,6 +122,18 @@ class Collab {
     this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
   }
 
+  /**
+   * Update incoming-event callbacks after construction.
+   * Needed because excalidrawApi may be null at construction time and become available later.
+   */
+  updateIncomingCallbacks(callbacks: {
+    onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
+    onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
+  }) {
+    this.onIncomingEmojiReaction = callbacks.onIncomingEmojiReaction;
+    this.onIncomingCountdownTimer = callbacks.onIncomingCountdownTimer;
+  }
+
   init() {
     window.addEventListener(EVENT.UNLOAD, this.onUnload);
   }

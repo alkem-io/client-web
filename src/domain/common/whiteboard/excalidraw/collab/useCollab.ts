@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Collab, { CollabProps, OnIncomingEmojiReactionCallback } from './Collab';
 import { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
@@ -82,7 +82,6 @@ const useCollab = ({
         setCollaboratorModeReason(reason);
       },
       onSceneInitChange: handleSceneInitChange,
-      onIncomingEmojiReaction: collabProps.onIncomingEmojiReaction,
     });
 
     collabRef.current.init();
@@ -115,6 +114,16 @@ const useCollab = ({
       collabApiRef.current = null;
     };
   };
+
+  // Keep incoming-event callbacks in sync with the Collab instance.
+  // excalidrawApi may be null at construction time; this ensures the Collab
+  // picks up the real dispatcher once the API becomes available.
+  useEffect(() => {
+    collabRef.current?.updateIncomingCallbacks({
+      onIncomingEmojiReaction: collabProps.onIncomingEmojiReaction,
+      onIncomingCountdownTimer: collabProps.onIncomingCountdownTimer,
+    });
+  }, [collabProps.onIncomingEmojiReaction, collabProps.onIncomingCountdownTimer]);
 
   return [
     collabApiRef.current,
