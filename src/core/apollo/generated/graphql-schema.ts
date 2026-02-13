@@ -23685,6 +23685,33 @@ export type PlatformRoleSetQuery = {
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
 };
 
+export type CalloutUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type CalloutUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    space?:
+      | {
+          __typename?: 'UrlResolverQueryResultSpace';
+          id: string;
+          collaboration: {
+            __typename?: 'UrlResolverQueryResultCollaboration';
+            calloutsSet: {
+              __typename?: 'UrlResolverQueryResultCalloutsSet';
+              id: string;
+              calloutId?: string | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type CalloutLookupQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;
@@ -23703,6 +23730,33 @@ export type CalloutLookupQuery = {
           framing: {
             __typename?: 'CalloutFraming';
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type SpaceUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    space?:
+      | {
+          __typename?: 'UrlResolverQueryResultSpace';
+          id: string;
+          level: SpaceLevel;
+          collaboration: {
+            __typename?: 'UrlResolverQueryResultCollaboration';
+            calloutsSet: { __typename?: 'UrlResolverQueryResultCalloutsSet'; id: string };
           };
         }
       | undefined;
@@ -23723,7 +23777,16 @@ export type SpaceCalloutsSetLookupQuery = {
           id: string;
           level: SpaceLevel;
           about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
-          collaboration: { __typename?: 'Collaboration'; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
+          collaboration: {
+            __typename?: 'Collaboration';
+            calloutsSet: {
+              __typename?: 'CalloutsSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
         }
       | undefined;
   };

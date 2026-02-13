@@ -1,3 +1,19 @@
+query CalloutUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      collaboration {
+        calloutsSet {
+          id
+          calloutId
+        }
+      }
+    }
+  }
+}
+
 query CalloutLookup($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
@@ -12,6 +28,25 @@ query CalloutLookup($calloutId: UUID!) {
         }
       }
       createdDate
+      authorization {
+        myPrivileges
+      }
+    }
+  }
+}
+
+query SpaceUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      level
+      collaboration {
+        calloutsSet {
+          id
+        }
+      }
     }
   }
 }
@@ -30,6 +65,9 @@ query SpaceCalloutsSetLookup($spaceId: UUID!) {
       collaboration {
         calloutsSet {
           id
+          authorization {
+            myPrivileges
+          }
         }
       }
     }

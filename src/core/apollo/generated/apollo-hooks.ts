@@ -18962,6 +18962,86 @@ export type PlatformRoleSetQueryResult = Apollo.QueryResult<
 export function refetchPlatformRoleSetQuery(variables?: SchemaTypes.PlatformRoleSetQueryVariables) {
   return { query: PlatformRoleSetDocument, variables: variables };
 }
+export const CalloutUrlResolveDocument = gql`
+  query CalloutUrlResolve($url: String!) {
+    urlResolver(url: $url) {
+      state
+      type
+      space {
+        id
+        collaboration {
+          calloutsSet {
+            id
+            calloutId
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useCalloutUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useCalloutUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutUrlResolveQuery,
+    SchemaTypes.CalloutUrlResolveQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutUrlResolveQuery, SchemaTypes.CalloutUrlResolveQueryVariables>(
+    CalloutUrlResolveDocument,
+    options
+  );
+}
+export function useCalloutUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutUrlResolveQuery,
+    SchemaTypes.CalloutUrlResolveQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutUrlResolveQuery, SchemaTypes.CalloutUrlResolveQueryVariables>(
+    CalloutUrlResolveDocument,
+    options
+  );
+}
+export function useCalloutUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutUrlResolveQuery, SchemaTypes.CalloutUrlResolveQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutUrlResolveQuery, SchemaTypes.CalloutUrlResolveQueryVariables>(
+    CalloutUrlResolveDocument,
+    options
+  );
+}
+export type CalloutUrlResolveQueryHookResult = ReturnType<typeof useCalloutUrlResolveQuery>;
+export type CalloutUrlResolveLazyQueryHookResult = ReturnType<typeof useCalloutUrlResolveLazyQuery>;
+export type CalloutUrlResolveSuspenseQueryHookResult = ReturnType<typeof useCalloutUrlResolveSuspenseQuery>;
+export type CalloutUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutUrlResolveQuery,
+  SchemaTypes.CalloutUrlResolveQueryVariables
+>;
+export function refetchCalloutUrlResolveQuery(variables: SchemaTypes.CalloutUrlResolveQueryVariables) {
+  return { query: CalloutUrlResolveDocument, variables: variables };
+}
 export const CalloutLookupDocument = gql`
   query CalloutLookup($calloutId: UUID!) {
     lookup {
@@ -18977,6 +19057,9 @@ export const CalloutLookupDocument = gql`
           }
         }
         createdDate
+        authorization {
+          myPrivileges
+        }
       }
     }
   }
@@ -19038,6 +19121,80 @@ export type CalloutLookupQueryResult = Apollo.QueryResult<
 export function refetchCalloutLookupQuery(variables: SchemaTypes.CalloutLookupQueryVariables) {
   return { query: CalloutLookupDocument, variables: variables };
 }
+export const SpaceUrlResolveDocument = gql`
+  query SpaceUrlResolve($url: String!) {
+    urlResolver(url: $url) {
+      state
+      type
+      space {
+        id
+        level
+        collaboration {
+          calloutsSet {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useSpaceUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useSpaceUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceUrlResolveQuery, SchemaTypes.SpaceUrlResolveQueryVariables> &
+    ({ variables: SchemaTypes.SpaceUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceUrlResolveQuery, SchemaTypes.SpaceUrlResolveQueryVariables>(
+    SpaceUrlResolveDocument,
+    options
+  );
+}
+export function useSpaceUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceUrlResolveQuery, SchemaTypes.SpaceUrlResolveQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceUrlResolveQuery, SchemaTypes.SpaceUrlResolveQueryVariables>(
+    SpaceUrlResolveDocument,
+    options
+  );
+}
+export function useSpaceUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.SpaceUrlResolveQuery, SchemaTypes.SpaceUrlResolveQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.SpaceUrlResolveQuery, SchemaTypes.SpaceUrlResolveQueryVariables>(
+    SpaceUrlResolveDocument,
+    options
+  );
+}
+export type SpaceUrlResolveQueryHookResult = ReturnType<typeof useSpaceUrlResolveQuery>;
+export type SpaceUrlResolveLazyQueryHookResult = ReturnType<typeof useSpaceUrlResolveLazyQuery>;
+export type SpaceUrlResolveSuspenseQueryHookResult = ReturnType<typeof useSpaceUrlResolveSuspenseQuery>;
+export type SpaceUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceUrlResolveQuery,
+  SchemaTypes.SpaceUrlResolveQueryVariables
+>;
+export function refetchSpaceUrlResolveQuery(variables: SchemaTypes.SpaceUrlResolveQueryVariables) {
+  return { query: SpaceUrlResolveDocument, variables: variables };
+}
 export const SpaceCalloutsSetLookupDocument = gql`
   query SpaceCalloutsSetLookup($spaceId: UUID!) {
     lookup {
@@ -19053,6 +19210,9 @@ export const SpaceCalloutsSetLookupDocument = gql`
         collaboration {
           calloutsSet {
             id
+            authorization {
+              myPrivileges
+            }
           }
         }
       }
