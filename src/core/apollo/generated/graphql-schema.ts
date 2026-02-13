@@ -23714,6 +23714,7 @@ export type CalloutUrlResolveQuery = {
 
 export type CalloutLookupQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
+  sourceCalloutsSetId: Scalars['UUID']['input'];
 }>;
 
 export type CalloutLookupQuery = {
@@ -23731,6 +23732,12 @@ export type CalloutLookupQuery = {
             __typename?: 'CalloutFraming';
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           };
+        }
+      | undefined;
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;

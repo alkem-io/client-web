@@ -19043,7 +19043,7 @@ export function refetchCalloutUrlResolveQuery(variables: SchemaTypes.CalloutUrlR
   return { query: CalloutUrlResolveDocument, variables: variables };
 }
 export const CalloutLookupDocument = gql`
-  query CalloutLookup($calloutId: UUID!) {
+  query CalloutLookup($calloutId: UUID!, $sourceCalloutsSetId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         id
@@ -19057,6 +19057,9 @@ export const CalloutLookupDocument = gql`
           }
         }
         createdDate
+      }
+      calloutsSet(ID: $sourceCalloutsSetId) {
+        id
         authorization {
           myPrivileges
         }
@@ -19078,6 +19081,7 @@ export const CalloutLookupDocument = gql`
  * const { data, loading, error } = useCalloutLookupQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
+ *      sourceCalloutsSetId: // value for 'sourceCalloutsSetId'
  *   },
  * });
  */

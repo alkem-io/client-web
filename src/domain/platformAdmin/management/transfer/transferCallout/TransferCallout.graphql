@@ -14,7 +14,7 @@ query CalloutUrlResolve($url: String!) {
   }
 }
 
-query CalloutLookup($calloutId: UUID!) {
+query CalloutLookup($calloutId: UUID!, $sourceCalloutsSetId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -28,6 +28,9 @@ query CalloutLookup($calloutId: UUID!) {
         }
       }
       createdDate
+    }
+    calloutsSet(ID: $sourceCalloutsSetId) {
+      id
       authorization {
         myPrivileges
       }

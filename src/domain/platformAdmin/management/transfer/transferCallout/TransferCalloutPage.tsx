@@ -59,15 +59,18 @@ const TransferCalloutPage = () => {
 
   const calloutResolved = calloutResolveData?.urlResolver;
   const resolvedCalloutId = calloutResolved?.space?.collaboration?.calloutsSet?.calloutId;
+  const sourceCalloutsSetId = calloutResolved?.space?.collaboration?.calloutsSet?.id;
 
-  // Step 2: Fetch callout details using resolved ID
+  // Step 2: Fetch callout details and source calloutsSet privileges
   const { data: calloutData, loading: calloutLoading } = useCalloutLookupQuery({
-    variables: { calloutId: resolvedCalloutId! },
-    skip: !resolvedCalloutId,
+    variables: { calloutId: resolvedCalloutId!, sourceCalloutsSetId: sourceCalloutsSetId! },
+    skip: !resolvedCalloutId || !sourceCalloutsSetId,
   });
 
   const callout = calloutData?.lookup.callout;
-  const hasTransferOffer = callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceOffer);
+  const hasTransferOffer = calloutData?.lookup.calloutsSet?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.TransferResourceOffer
+  );
 
   // Step 1: Resolve space URL to get space ID
   const { data: spaceResolveData, loading: spaceResolveLoading } = useSpaceUrlResolveQuery({
