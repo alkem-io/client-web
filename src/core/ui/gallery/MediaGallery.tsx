@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
 import { MediaGalleryItem } from './types';
 import { gutters } from '../grid/utils';
@@ -18,7 +18,7 @@ const ImageGallery = lazyWithGlobalErrorHandler(async () => {
 });
 import type { GalleryItem, ImageGalleryRef } from 'react-image-gallery';
 import { Caption } from '../typography';
-import ImagePlaceholder from '../image/ImagePlaceholder';
+import ImagePlaceholder, { createPlaceholderImageDataUri } from '../image/ImagePlaceholder';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -55,6 +55,10 @@ const MAX_VISIBLE_THUMBNAILS = 6;
 
 const MediaGallery = ({ title, items }: MediaGalleryProps) => {
   const { t } = useTranslation();
+  const placeholderImage = useMemo(
+    () => createPlaceholderImageDataUri(t('components.callout-creation.framing.mediaGallery.imageNotAvailable')),
+    [t]
+  );
   const galleryRef = useRef<ImageGalleryRef>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
@@ -89,6 +93,9 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
       return;
     }
     const item = items[selectedIndex];
+    if (!item.url) {
+      return; // Can't download placeholder images
+    }
     const response = await fetch(item.url);
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
@@ -112,13 +119,24 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
     return null;
   }
 
-  const galleryItems: GalleryItem[] = items.map(item => ({
-    original: item.url,
-    thumbnail: item.thumbnailUrl || item.url,
-    originalAlt: title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
-    thumbnailAlt: title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
-    description: item.description,
-  }));
+  const galleryItems: GalleryItem[] = useMemo(
+    () =>
+      items.map(item => {
+        const hasValidUrl = Boolean(item.url);
+        const hasValidThumbnail = Boolean(item.thumbnailUrl);
+
+        return {
+          original: hasValidUrl ? item.url : placeholderImage,
+          thumbnail: hasValidThumbnail ? item.thumbnailUrl : hasValidUrl ? item.url : placeholderImage,
+          originalAlt:
+            title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
+          thumbnailAlt:
+            title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
+          description: item.description,
+        };
+      }),
+    [items, title, placeholderImage, t]
+  );
 
   const hasMoreThumbnails = items.length > MAX_VISIBLE_THUMBNAILS;
   const visibleThumbnails = items.slice(0, MAX_VISIBLE_THUMBNAILS);

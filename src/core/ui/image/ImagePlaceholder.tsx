@@ -5,6 +5,18 @@ interface ImagePlaceholderProps {
   text: string;
 }
 
+export const createPlaceholderImageDataUri = (text: string): string => {
+  const encoded = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&apos;')
+    .replace(/"/g, '&quot;');
+
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23f5f5f5'/><text x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif' font-size='16' fill='%23666'>${encoded}</text></svg>`;
+  return `data:image/svg+xml,${svg}`;
+};
+
 const ImagePlaceholder = ({ text }: ImagePlaceholderProps) => {
   return (
     <Box
