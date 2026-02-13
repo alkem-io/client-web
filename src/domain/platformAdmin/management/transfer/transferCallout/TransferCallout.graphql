@@ -18,8 +18,6 @@ query CalloutLookup($calloutId: UUID!, $sourceCalloutsSetId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
-      nameID
-      activity
       framing {
         profile {
           id
@@ -27,7 +25,19 @@ query CalloutLookup($calloutId: UUID!, $sourceCalloutsSetId: UUID!) {
           description
         }
       }
-      createdDate
+      createdBy {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      contributionsCount {
+        post
+        whiteboard
+        link
+        memo
+      }
     }
     calloutsSet(ID: $sourceCalloutsSetId) {
       id

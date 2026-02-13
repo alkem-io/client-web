@@ -177,23 +177,20 @@ const TransferCalloutPage = () => {
                 <BlockSectionTitle>Name</BlockSectionTitle>
                 <span>{callout.framing.profile.displayName}</span>
               </Gutters>
-              {callout.framing.profile.description && (
-                <Gutters disablePadding>
-                  <BlockSectionTitle>Description</BlockSectionTitle>
-                  <span>{callout.framing.profile.description}</span>
-                </Gutters>
-              )}
               <Gutters disablePadding>
-                <BlockSectionTitle>Activity</BlockSectionTitle>
-                <span>{callout.activity}</span>
+                <BlockSectionTitle>Description</BlockSectionTitle>
+                <span>{callout.framing.profile.description}</span>
               </Gutters>
               <Gutters disablePadding>
-                <BlockSectionTitle>Created Date</BlockSectionTitle>
-                <span>{String(callout.createdDate)}</span>
+                <BlockSectionTitle>Created By</BlockSectionTitle>
+                <span>{callout.createdBy?.profile.displayName ?? 'Unknown'}</span>
               </Gutters>
               <Gutters disablePadding>
-                <BlockSectionTitle>Name ID</BlockSectionTitle>
-                <span>{callout.nameID}</span>
+                <BlockSectionTitle>Contributions</BlockSectionTitle>
+                <span>
+                  {callout.contributionsCount.post} posts, {callout.contributionsCount.whiteboard} whiteboards,{' '}
+                  {callout.contributionsCount.link} links, {callout.contributionsCount.memo} memos
+                </span>
               </Gutters>
               {hasTransferOffer === false && (
                 <Caption color="error">Missing TransferResourceOffer privilege on this callout</Caption>

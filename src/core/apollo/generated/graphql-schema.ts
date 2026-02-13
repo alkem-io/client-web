@@ -23725,12 +23725,19 @@ export type CalloutLookupQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          nameID: string;
-          activity: number;
-          createdDate: Date;
           framing: {
             __typename?: 'CalloutFraming';
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+          createdBy?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
+          contributionsCount: {
+            __typename?: 'CalloutContributionsCountOutput';
+            post: number;
+            whiteboard: number;
+            link: number;
+            memo: number;
           };
         }
       | undefined;

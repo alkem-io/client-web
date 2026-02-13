@@ -19047,8 +19047,6 @@ export const CalloutLookupDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        nameID
-        activity
         framing {
           profile {
             id
@@ -19056,7 +19054,19 @@ export const CalloutLookupDocument = gql`
             description
           }
         }
-        createdDate
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        contributionsCount {
+          post
+          whiteboard
+          link
+          memo
+        }
       }
       calloutsSet(ID: $sourceCalloutsSetId) {
         id
