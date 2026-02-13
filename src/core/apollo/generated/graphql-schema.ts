@@ -4209,6 +4209,8 @@ export enum MimeType {
   Doc = 'DOC',
   Docx = 'DOCX',
   Gif = 'GIF',
+  Heic = 'HEIC',
+  Heif = 'HEIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
   Odp = 'ODP',
@@ -23299,13 +23301,6 @@ export type HomeRedirectDataQuery = {
   };
 };
 
-export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformRoleSetQuery = {
-  __typename?: 'Query';
-  platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
-};
-
 export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformAdminInnovationHubsQuery = {
@@ -23681,6 +23676,67 @@ export type PlatformAdminVirtualContributorsListQuery = {
       };
     }>;
   };
+};
+
+export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformRoleSetQuery = {
+  __typename?: 'Query';
+  platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
+};
+
+export type CalloutLookupQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type CalloutLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          activity: number;
+          createdDate: Date;
+          framing: {
+            __typename?: 'CalloutFraming';
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceCalloutsSetLookupQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceCalloutsSetLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+          collaboration: { __typename?: 'Collaboration'; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
+        }
+      | undefined;
+  };
+};
+
+export type TransferCalloutMutationVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  targetCalloutsSetId: Scalars['UUID']['input'];
+}>;
+
+export type TransferCalloutMutation = {
+  __typename?: 'Mutation';
+  transferCallout: { __typename?: 'Callout'; id: string; nameID: string };
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{

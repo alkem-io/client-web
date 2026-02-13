@@ -1,0 +1,44 @@
+query CalloutLookup($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      nameID
+      activity
+      framing {
+        profile {
+          id
+          displayName
+          description
+        }
+      }
+      createdDate
+    }
+  }
+}
+
+query SpaceCalloutsSetLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        profile {
+          id
+          displayName
+        }
+      }
+      level
+      collaboration {
+        calloutsSet {
+          id
+        }
+      }
+    }
+  }
+}
+
+mutation TransferCallout($calloutId: UUID!, $targetCalloutsSetId: UUID!) {
+  transferCallout(transferData: { calloutID: $calloutId, targetCalloutsSetID: $targetCalloutsSetId }) {
+    id
+    nameID
+  }
+}
