@@ -176,6 +176,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  key={contributionId}
                   ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
@@ -272,6 +273,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  key={contributionId}
                   ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}

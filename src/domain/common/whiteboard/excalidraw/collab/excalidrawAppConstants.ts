@@ -60,6 +60,8 @@ export const WS_EVENTS = {
 export enum WS_SCENE_EVENT_TYPES {
   SCENE_UPDATE = 'SCENE_UPDATE',
   MOUSE_LOCATION = 'MOUSE_LOCATION',
+  EMOJI_REACTION = 'EMOJI_REACTION',
+  COUNTDOWN_TIMER = 'COUNTDOWN_TIMER',
 }
 
 export enum CollaboratorModeReasons {

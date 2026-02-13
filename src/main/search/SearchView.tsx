@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
 
-import { Box, Link } from '@mui/material';
+import { Box, CircularProgress, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { NetworkStatus } from '@apollo/client';
 
@@ -591,6 +591,14 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
         <SearchCategoriesMenu results={data?.search} />
 
         <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
+          {isSearching && !isSearchingForMore && !hasNoTermsLength && (
+            <Box display="flex" justifyContent="center" alignItems="center" paddingY={4} gap={1}>
+              <CircularProgress size={20} />
+              <Box component="span" color="primary.main" fontSize="0.875rem">
+                {t('pages.search.loading')}
+              </Box>
+            </Box>
+          )}
           {(data?.search?.spaceResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection

@@ -136,6 +136,10 @@ export default defineConfig({
   ].filter(Boolean),
   resolve: {
     alias: {
+      // These aliases ensure that all parts of the app use the same React instance,
+      // preventing issues with multiple React versions in node_modules. (Excalidraw)
+      react: path.resolve("./node_modules/react"),
+      "react-dom": path.resolve("./node_modules/react-dom"),
       '@': path.resolve(__dirname, './src'),
     },
   },

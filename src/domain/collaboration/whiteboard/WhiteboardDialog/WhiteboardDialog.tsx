@@ -12,7 +12,6 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
@@ -33,13 +32,6 @@ import {
 } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
-
-/** Extended CollabState that includes emoji reaction placement controls for headerActions */
-export interface WhiteboardHeaderState extends CollabState {
-  isReadOnly: boolean;
-  emojiPlacementInfo: EmojiReactionPlacementInfo | null;
-  onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
-}
 
 export interface WhiteboardDetails {
   id: string;
@@ -97,7 +89,7 @@ interface WhiteboardDialogProps {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    headerActions?: (state: WhiteboardHeaderState) => ReactNode;
+    headerActions?: (state: CollabState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
@@ -322,17 +314,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           onSceneInitChange: setSceneInitialized,
         }}
       >
-        {({
-          children,
-          mode,
-          modeReason,
-          collaborating,
-          connecting,
-          restartCollaboration,
-          isReadOnly,
-          emojiPlacementInfo,
-          onEmojiPlacementModeChange,
-        }) => {
+        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
           return (
             <Formik
               innerRef={formikRef}
@@ -355,8 +337,6 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     collaborating,
                     connecting,
                     isReadOnly,
-                    emojiPlacementInfo,
-                    onEmojiPlacementModeChange,
                   })}
                   onClose={onClose}
                   titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
@@ -373,9 +353,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     onImportTemplate={handleImportTemplate}
                   />
                 </DialogHeader>
-                <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>
-                  {children}
-                </DialogContent>
+                <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>{children}</DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
                   whiteboardUrl={whiteboard.profile.url}

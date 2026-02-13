@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import Collab, { CollabProps } from './Collab';
+import { useEffect, useRef, useState } from 'react';
+import Collab, { CollabProps, OnIncomingEmojiReactionCallback } from './Collab';
 import { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
 type CollabInstance = InstanceType<typeof Collab>;
@@ -9,12 +9,16 @@ export interface CollabAPI {
   onPointerUpdate: CollabInstance['onPointerUpdate'];
   syncScene: CollabInstance['syncScene'];
   isCollaborating: () => boolean;
+  /** Broadcast ephemeral floating emoji to other collaborators */
+  broadcastEmojiReaction: CollabInstance['broadcastEmojiReaction'];
+  broadcastCountdownTimer: CollabInstance['broadcastCountdownTimer'];
 }
 
 type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => void, CollabState];
 
 interface UseCollabProps extends Omit<CollabProps, 'excalidrawApi' | 'onCollaboratorModeChange'> {
   onInitialize?: (collabApi: CollabAPI) => void;
+  onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
 }
 
 interface InitProps extends Pick<CollabProps, 'excalidrawApi'> {
@@ -26,6 +30,7 @@ export interface CollabState {
   connecting: boolean;
   mode: CollaboratorMode | null;
   modeReason: CollaboratorModeReasons | null;
+  isReadOnly: boolean;
 }
 
 const useCollab = ({
@@ -42,6 +47,8 @@ const useCollab = ({
   const [isConnecting, setIsConnecting] = useState(false);
 
   const [isCollaborating, setIsCollaborating] = useState(false);
+
+  const [isSceneInitialized, setIsSceneInitialized] = useState(false);
 
   const [collaboratorMode, setCollaboratorMode] = useState<CollaboratorMode | null>(null);
 
@@ -60,6 +67,7 @@ const useCollab = ({
   };
 
   const handleSceneInitChange = (initialized: boolean) => {
+    setIsSceneInitialized(initialized);
     onSceneInitChange?.(initialized);
   };
 
@@ -82,6 +90,8 @@ const useCollab = ({
       onPointerUpdate: collabRef.current.onPointerUpdate,
       syncScene: collabRef.current.syncScene,
       isCollaborating: collabRef.current.isCollaborating,
+      broadcastEmojiReaction: collabRef.current.broadcastEmojiReaction,
+      broadcastCountdownTimer: collabRef.current.broadcastCountdownTimer,
     };
 
     (async () => {
@@ -105,6 +115,16 @@ const useCollab = ({
     };
   };
 
+  // Keep incoming-event callbacks in sync with the Collab instance.
+  // excalidrawApi may be null at construction time; this ensures the Collab
+  // picks up the real dispatcher once the API becomes available.
+  useEffect(() => {
+    collabRef.current?.updateIncomingCallbacks({
+      onIncomingEmojiReaction: collabProps.onIncomingEmojiReaction,
+      onIncomingCountdownTimer: collabProps.onIncomingCountdownTimer,
+    });
+  }, [collabProps.onIncomingEmojiReaction, collabProps.onIncomingCountdownTimer]);
+
   return [
     collabApiRef.current,
     initialize,
@@ -113,6 +133,7 @@ const useCollab = ({
       collaborating: isCollaborating && collaboratorMode !== null,
       mode: collaboratorMode,
       modeReason: collaboratorModeReason,
+      isReadOnly: isConnecting || !isCollaborating || collaboratorMode === 'read' || !isSceneInitialized,
     },
   ];
 };
