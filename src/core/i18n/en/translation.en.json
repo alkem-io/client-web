@@ -1617,6 +1617,8 @@
         },
         "mediaGallery": {
           "name": "Media Gallery",
+          "previewNotAvailable": "Preview available after save.",
+          "imageNotAvailable": "Image not available",
           "galleryItem": "Gallery Image",
           "navigation": {
             "ariaLabel": "Gallery navigation",
