@@ -1626,7 +1626,7 @@
         },
         "mediaGallery": {
           "name": "Media Gallery",
-          "previewNotAvailable": "Preview not available at the moment",
+          "previewNotAvailable": "Preview available after save.",
           "imageNotAvailable": "Image not available",
           "galleryItem": "Gallery Image",
           "navigation": {
