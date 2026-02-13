@@ -197,7 +197,7 @@ class Collab {
    * Broadcast countdown timer state to other clients.
    * Uses volatile channel for real-time updates; missing packets won't cause issues.
    */
-  broadcastCountdownTimer = async (remainingSeconds: number, active: boolean, startedBy: string) => {
+  broadcastCountdownTimer = async (remainingSeconds: number, startedBy: string, active: boolean) => {
     try {
       const data = {
         type: WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER,
