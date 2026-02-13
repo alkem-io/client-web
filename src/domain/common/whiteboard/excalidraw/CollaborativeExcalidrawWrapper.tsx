@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
@@ -12,9 +12,6 @@ import { useTick } from '@/core/utils/time/tick';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { createEmojiReactionElement } from '@/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement';
-import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
-import WhiteboardEmojiReactionPicker from '@/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
@@ -79,10 +76,6 @@ export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
 interface CollaborativeExcalidrawWrapperProvided extends CollabState {
   restartCollaboration: () => void;
-  // Emoji reaction placement controls
-  isReadOnly: boolean;
-  emojiPlacementInfo: EmojiReactionPlacementInfo | null;
-  onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
 }
 
 export interface WhiteboardWhiteboardProps {
@@ -110,9 +103,6 @@ const CollaborativeExcalidrawWrapper = ({
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
-
-  // Emoji reaction placement state
-  const [emojiPlacementInfo, setEmojiPlacementInfo] = useState<EmojiReactionPlacementInfo | null>(null);
 
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
@@ -191,7 +181,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-  const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
+  const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason, isReadOnly }] = useCollab({
     username,
     filesManager,
     onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
@@ -209,13 +199,33 @@ const CollaborativeExcalidrawWrapper = ({
       });
     },
     onInitialize: collabApi => {
+      // @ts-ignore — combinedCollabApiRef is a combined ref; mutating .current is intentional
+      // eslint-disable-next-line react-compiler/react-compiler
       combinedCollabApiRef.current = collabApi;
     },
     onSceneInitChange: (initialized: boolean) => {
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
     },
+    onIncomingEmojiReaction: excalidrawApi?.dispatchIncomingEmojiReaction,
+    onIncomingCountdownTimer: excalidrawApi?.dispatchIncomingCountdownTimer,
   });
+
+  // Handler for broadcasting emoji reactions to collaborators
+  const handleRequestBroadcastEmojiReaction = useCallback(
+    (emoji: string, x: number, y: number) => {
+      return collabApi?.broadcastEmojiReaction?.(emoji, x, y);
+    },
+    [collabApi]
+  );
+
+  // Handler for broadcasting Countdown Timer to collaborators
+  const handleRequestBroadcastCountdownTimer = useCallback(
+    (remainingSeconds: number, startedBy: string, active: boolean) => {
+      return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
+    },
+    [collabApi]
+  );
 
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     const uploadedFiles = await filesManager.getUploadedFiles(files);
@@ -261,102 +271,8 @@ const CollaborativeExcalidrawWrapper = ({
     [actions.onInitApi]
   );
 
-  // Determine if whiteboard is in read-only mode
-  const isReadOnly = !collaborating || mode === 'read' || !isSceneInitialized;
-
-  // Handle placement mode changes from emoji picker
-  const handleEmojiPlacementModeChange = useCallback((placementInfo: EmojiReactionPlacementInfo | null) => {
-    setEmojiPlacementInfo(placementInfo);
-  }, []);
-
-  // Ref for canvas container to detect outside clicks (T015)
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
-
-  // State for emoji cursor position (tracks mouse while in placement mode)
-  const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number } | null>(null);
-
-  // Track mouse position when in placement mode
-  useEffect(() => {
-    if (!emojiPlacementInfo?.isActive) {
-      setCursorPosition(null);
-      return;
-    }
-
-    const handleMouseMove = (event: MouseEvent) => {
-      setCursorPosition({ x: event.clientX, y: event.clientY });
-    };
-
-    globalThis.addEventListener('mousemove', handleMouseMove);
-    return () => globalThis.removeEventListener('mousemove', handleMouseMove);
-  }, [emojiPlacementInfo?.isActive]);
-
-  // Cancel placement mode when clicking outside canvas (T015)
-  useEffect(() => {
-    if (!emojiPlacementInfo?.isActive) {
-      return;
-    }
-
-    const handleDocumentClick = (event: MouseEvent) => {
-      // If click is outside the canvas container, cancel placement
-      if (canvasContainerRef.current && !canvasContainerRef.current.contains(event.target as Node)) {
-        setEmojiPlacementInfo(null);
-      }
-    };
-
-    // Use capture phase to catch clicks before they propagate
-    document.addEventListener('click', handleDocumentClick, true);
-    return () => document.removeEventListener('click', handleDocumentClick, true);
-  }, [emojiPlacementInfo?.isActive]);
-
-  // Handle canvas click for emoji placement (T013)
-  const handleEmojiPlacementClick = useCallback(
-    async (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!emojiPlacementInfo?.isActive || !emojiPlacementInfo.emoji || !excalidrawApi) {
-        return;
-      }
-
-      // Get the app state for coordinate conversion
-      const appState = excalidrawApi.getAppState();
-
-      // Use Excalidraw's utility function for accurate coordinate conversion
-      // This correctly handles zoom, scroll, and canvas offset at all zoom levels
-      const { viewportCoordsToSceneCoords } = await import('@alkemio/excalidraw');
-      const sceneCoords = viewportCoordsToSceneCoords({ clientX: event.clientX, clientY: event.clientY }, appState);
-
-      // Create emoji element
-      const elementSkeleton = createEmojiReactionElement({
-        emoji: emojiPlacementInfo.emoji,
-        x: sceneCoords.x,
-        y: sceneCoords.y,
-      });
-
-      // Dynamically import to avoid loading excalidraw in tests
-      const { convertToExcalidrawElements } = await import('@alkemio/excalidraw');
-
-      // Convert skeleton to full Excalidraw element and add to scene
-      const elements = convertToExcalidrawElements([elementSkeleton]);
-      const currentElements = excalidrawApi.getSceneElements();
-      excalidrawApi.updateScene({
-        elements: [...currentElements, ...elements],
-      });
-
-      // Clear placement mode
-      setEmojiPlacementInfo(null);
-    },
-    [emojiPlacementInfo, excalidrawApi]
-  );
-
   const children = (
-    <Box ref={canvasContainerRef} sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
-      {/* Floating emoji picker button - positioned top-right below header (as per Figma design) */}
-      {!isReadOnly && (
-        <WhiteboardEmojiReactionPicker
-          disabled={isReadOnly}
-          onPlacementModeChange={handleEmojiPlacementModeChange}
-          emojiPlacementInfo={emojiPlacementInfo}
-          className="floating-emoji-picker"
-        />
-      )}
+    <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
       <Suspense fallback={<Loading />}>
         <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
@@ -369,6 +285,8 @@ const CollaborativeExcalidrawWrapper = ({
             viewModeEnabled={isReadOnly}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
+            onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
+            onRequestBroadcastCountdownTimer={handleRequestBroadcastCountdownTimer}
             detectScroll={false}
             autoFocus
             generateIdForFile={handleGenerateIdForFile}
@@ -377,47 +295,6 @@ const CollaborativeExcalidrawWrapper = ({
           />
         )}
       </Suspense>
-      {/* Emoji placement overlay - captures clicks when in placement mode (T013, T014) */}
-      {emojiPlacementInfo?.isActive && (
-        <>
-          <Box
-            onClick={handleEmojiPlacementClick}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              cursor: 'none', // Hide default cursor
-              zIndex: 10,
-              // Semi-transparent to indicate placement mode (T014)
-              backgroundColor: 'rgba(0, 0, 0, 0.02)',
-            }}
-            aria-label={t('whiteboard.emojiReaction.placementMode', 'Click to place emoji: {{emoji}}', {
-              emoji: emojiPlacementInfo.emoji,
-            })}
-          />
-          {/* Floating emoji cursor that follows mouse position */}
-          {cursorPosition && (
-            <Box
-              sx={{
-                position: 'fixed',
-                left: cursorPosition.x,
-                top: cursorPosition.y,
-                fontSize: '24px',
-                lineHeight: 1,
-                pointerEvents: 'none',
-                zIndex: 11,
-                transform: 'translate(-50%, -50%)',
-                userSelect: 'none',
-              }}
-              aria-hidden="true"
-            >
-              {emojiPlacementInfo.emoji}
-            </Box>
-          )}
-        </>
-      )}
     </Box>
   );
 
@@ -430,10 +307,7 @@ const CollaborativeExcalidrawWrapper = ({
         mode,
         modeReason,
         restartCollaboration,
-        // Emoji reaction controls
         isReadOnly,
-        emojiPlacementInfo,
-        onEmojiPlacementModeChange: handleEmojiPlacementModeChange,
       })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
