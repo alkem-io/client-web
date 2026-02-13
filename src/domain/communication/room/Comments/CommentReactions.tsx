@@ -148,9 +148,7 @@ const CommentReactions = ({
             const senderNames = reaction.senders.map(s => s.profile.displayName).join(', ');
             return (
               <Box key={reaction.emoji} display="flex" alignItems="center" gap={gutters(0.5)}>
-                <Caption>
-                  {reaction.emoji} {reaction.count}
-                </Caption>
+                <ReactionView reaction={reaction} onRemoveReaction={onRemoveReaction} />
                 <Caption color="text.secondary">{senderNames}</Caption>
               </Box>
             );
