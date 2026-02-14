@@ -2416,6 +2416,35 @@
         "unknown": "Unknown",
         "urlRequired": "URL is required"
       },
+      "transferSpace": {
+        "sectionTitle": "Transfer Space",
+        "spaceUrl": "Space URL",
+        "spaceUrlPlaceholder": "Paste L0 space URL or path",
+        "targetAccountUrl": "Target Account Owner URL",
+        "targetAccountUrlPlaceholder": "Paste user or organization URL",
+        "lookup": "Lookup",
+        "spaceInfo": "Space Info",
+        "targetAccountInfo": "Target Account Info",
+        "description": "Description",
+        "level": "Level",
+        "accountId": "Account ID",
+        "accountOwnerType": "Account Owner Type",
+        "accountOwnerTypeUser": "User",
+        "accountOwnerTypeOrganization": "Organization",
+        "transferButton": "Transfer Space",
+        "transferring": "Transferring...",
+        "urlNotFound": "URL not found",
+        "urlNotSpace": "URL does not resolve to a space",
+        "notL0Space": "Only L0 (top-level) spaces can be transferred",
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "missingTransferOffer": "Missing TransferResourceOffer privilege on the space's account",
+        "missingTransferAccept": "Missing TransferResourceAccept privilege on the target account",
+        "successTitle": "Transfer Successful",
+        "successMessage": "Space \"{{spaceName}}\" has been transferred to \"{{accountOwnerName}}\".",
+        "transferFailed": "Failed to transfer space",
+        "close": "Close",
+        "urlRequired": "URL is required"
+      },
       "generic": {
         "sections": {
           "profile": {

@@ -8,6 +8,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { useTranslation } from 'react-i18next';
 import TransferCalloutSection from './transferCallout/TransferCalloutSection';
+import TransferSpaceSection from './transferSpace/TransferSpaceSection';
 
 const currentTab = AdminSection.Transfer;
 
@@ -36,6 +37,7 @@ const TransferPage = () => {
       <PageContent>
         <PageContentColumn columns={12}>
           <TransferCalloutSection />
+          <TransferSpaceSection />
         </PageContentColumn>
       </PageContent>
     </TopLevelLayout>

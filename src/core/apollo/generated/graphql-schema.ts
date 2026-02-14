@@ -23816,6 +23816,128 @@ export type TransferCalloutMutation = {
   transferCallout: { __typename?: 'Callout'; id: string; nameID: string };
 };
 
+export type SpaceTransferUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type SpaceTransferUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    space?: { __typename?: 'UrlResolverQueryResultSpace'; id: string; level: SpaceLevel } | undefined;
+  };
+};
+
+export type SpaceTransferLookupQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceTransferLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type AccountOwnerUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type AccountOwnerUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    userId?: string | undefined;
+    organizationId?: string | undefined;
+  };
+};
+
+export type UserAccountLookupQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+export type UserAccountLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type OrganizationAccountLookupQueryVariables = Exact<{
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+export type OrganizationAccountLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    organization?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type TransferSpaceToAccountMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  targetAccountId: Scalars['UUID']['input'];
+}>;
+
+export type TransferSpaceToAccountMutation = {
+  __typename?: 'Mutation';
+  transferSpaceToAccount: { __typename?: 'Space'; id: string };
+};
+
 export type ShareLinkWithUserMutationVariables = Exact<{
   messageData: CommunicationSendMessageToUsersInput;
 }>;
