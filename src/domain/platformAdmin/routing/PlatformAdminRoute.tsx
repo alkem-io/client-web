@@ -10,7 +10,7 @@ import AdminInnovationPacksRoutes from '@/domain/platformAdmin/domain/innovation
 import AdminInnovationHubsRoutes from '@/domain/platformAdmin/domain/innovationHubs/InnovationHubsAdminRoutes';
 import VirtualContributorsRoutes from '../domain/virtual-contributors/VirtualContributorsRoutes';
 import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
-import TransferCalloutPage from '@/domain/platformAdmin/management/transfer/transferCallout/TransferCalloutPage';
+import TransferPage from '@/domain/platformAdmin/management/transfer/TransferPage';
 import AdminOrganizationsRoutes from '../domain/organizations/AdminOrganizationsRoutes';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +35,7 @@ const PlatformAdminRoute = () => {
           <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />
           <Route path="innovation-hubs/*" element={<AdminInnovationHubsRoutes />} />
           <Route path="virtual-contributors/*" element={<VirtualContributorsRoutes />} />
-          <Route path="transfer-callout/*" element={<TransferCalloutPage />} />
+          <Route path="transfer/*" element={<TransferPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </NonPlatformAdminRedirect>

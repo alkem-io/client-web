@@ -268,7 +268,7 @@
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
     "authorizationPolicies": "Authorization Policies",
-    "transferCallout": "Transfer Callout",
+    "transfer": "Transfer",
     "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Name",
@@ -2388,6 +2388,7 @@
     },
     "admin": {
       "transferCallout": {
+        "sectionTitle": "Transfer Callout",
         "calloutUrl": "Callout URL",
         "calloutUrlPlaceholder": "Paste callout URL or path",
         "targetSpaceUrl": "Target Space URL",

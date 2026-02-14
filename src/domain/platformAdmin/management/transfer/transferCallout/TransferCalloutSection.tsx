@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
 import { Form, Formik } from 'formik';
 import Gutters from '@/core/ui/grid/Gutters';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
@@ -8,23 +7,16 @@ import Loading from '@/core/ui/loading/Loading';
 import { Button, Dialog, DialogContent, DialogActions } from '@mui/material';
 import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
-import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
-import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
-import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
-import AdminBreadcrumbs from '@/main/admin/AdminBreadcrumbs';
-import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useTransferCallout from './useTransferCallout';
 
-const currentTab = AdminSection.TransferCallout;
 const T_PREFIX = 'pages.admin.transferCallout';
 
-const TransferCalloutPage = () => {
+const TransferCalloutSection = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
@@ -69,25 +61,9 @@ const TransferCalloutPage = () => {
   };
 
   return (
-    <TopLevelLayout
-      header={
-        <>
-          <SpacePageBanner title={t('common.administration')} isAdmin />
-          <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>
-            {adminTabs.map(tab => (
-              <HeaderNavigationTab
-                key={tab.route}
-                label={t(`common.${tab.section}` as const)}
-                value={tab.section}
-                to={tab.route}
-              />
-            ))}
-          </HeaderNavigationTabs>
-        </>
-      }
-      breadcrumbs={<AdminBreadcrumbs />}
-    >
-      <PageContent>
+    <PageContentBlock>
+      <BlockTitle>{t(`${T_PREFIX}.sectionTitle`)}</BlockTitle>
+      <Gutters row disablePadding>
         <PageContentColumn columns={6}>
           <PageContentBlockSeamless disablePadding>
             <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={onCalloutSubmit}>
@@ -202,7 +178,7 @@ const TransferCalloutPage = () => {
             </PageContentBlock>
           )}
         </PageContentColumn>
-      </PageContent>
+      </Gutters>
       <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
         <DialogContent>
           <BlockTitle>{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
@@ -217,8 +193,8 @@ const TransferCalloutPage = () => {
           <Button onClick={() => setSuccessDialogOpen(false)}>{t(`${T_PREFIX}.close`)}</Button>
         </DialogActions>
       </Dialog>
-    </TopLevelLayout>
+    </PageContentBlock>
   );
 };
 
-export default TransferCalloutPage;
+export default TransferCalloutSection;

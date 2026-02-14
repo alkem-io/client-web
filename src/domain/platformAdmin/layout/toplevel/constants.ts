@@ -15,7 +15,7 @@ export enum AdminSection {
   VirtualContributors = 'virtualContributors',
   Authorization = 'authorization',
   AuthorizationPolicies = 'authorizationPolicies',
-  TransferCallout = 'transferCallout',
+  Transfer = 'transfer',
 }
 
 export const adminTabs: TabDefinition<AdminSection>[] = [
@@ -60,8 +60,8 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
     icon: GppGoodOutlinedIcon,
   },
   {
-    section: AdminSection.TransferCallout,
-    route: '/admin/transfer-callout',
+    section: AdminSection.Transfer,
+    route: '/admin/transfer',
     icon: SwapHorizIcon,
   },
 ];
