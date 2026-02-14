@@ -24,7 +24,13 @@ const CreateContributionButtonMemo = ({
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [createMemo] = useCreateMemoOnCalloutMutation();
-  const [memoName, setMemoName] = useState(callout.contributionDefaults?.defaultDisplayName ?? t('common.Memo'));
+  const defaultMemoName = callout.contributionDefaults?.defaultDisplayName ?? t('common.Memo');
+  const [memoName, setMemoName] = useState(defaultMemoName);
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setMemoName(defaultMemoName);
+  };
 
   const [handleCreateMemo, creatingMemo] = useLoadingState(async () => {
     const memoNameMandatory = ensurePresence(memoName);
@@ -53,7 +59,7 @@ const CreateContributionButtonMemo = ({
         },
       });
     }
-    setDialogOpen(false);
+    handleCloseDialog();
   });
 
   return (
@@ -61,11 +67,8 @@ const CreateContributionButtonMemo = ({
       {canCreateContribution ? (
         <CreateContributionButton onClick={() => setDialogOpen(true)} contributionType={CalloutContributionType.Memo} />
       ) : undefined}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogHeader
-          onClose={() => setDialogOpen(false)}
-          title={t('common.create-new-entity', { entity: t('common.memo') })}
-        />
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogHeader onClose={handleCloseDialog} title={t('common.create-new-entity', { entity: t('common.memo') })} />
         <DialogContent>
           <TextField
             fullWidth
@@ -77,7 +80,7 @@ const CreateContributionButtonMemo = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={() => setDialogOpen(false)} disabled={creatingMemo}>
+          <Button variant="text" onClick={handleCloseDialog} disabled={creatingMemo}>
             {t('buttons.cancel')}
           </Button>
           <Button variant="contained" onClick={handleCreateMemo} disabled={!memoName.trim()} loading={creatingMemo}>

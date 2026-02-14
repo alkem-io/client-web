@@ -25,9 +25,14 @@ const CreateContributionButtonWhiteboard = ({
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
-  const [whiteboardName, setWhiteboardName] = useState(
-    callout.contributionDefaults?.defaultDisplayName ?? t('pages.whiteboard.defaultWhiteboardDisplayName')
-  );
+  const defaultWhiteboardName =
+    callout.contributionDefaults?.defaultDisplayName ?? t('pages.whiteboard.defaultWhiteboardDisplayName');
+  const [whiteboardName, setWhiteboardName] = useState(defaultWhiteboardName);
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setWhiteboardName(defaultWhiteboardName);
+  };
 
   const [handleCreateWhiteboard, creatingWhiteboard] = useLoadingState(async () => {
     const whiteboardNameMandatory = ensurePresence(whiteboardName);
@@ -56,7 +61,7 @@ const CreateContributionButtonWhiteboard = ({
         },
       });
     }
-    setDialogOpen(false);
+    handleCloseDialog();
   });
 
   return (
@@ -67,9 +72,9 @@ const CreateContributionButtonWhiteboard = ({
           contributionType={CalloutContributionType.Whiteboard}
         />
       ) : undefined}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogHeader
-          onClose={() => setDialogOpen(false)}
+          onClose={handleCloseDialog}
           title={t('common.create-new-entity', { entity: t('common.whiteboard') })}
         />
         <DialogContent>
@@ -83,7 +88,7 @@ const CreateContributionButtonWhiteboard = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={() => setDialogOpen(false)} disabled={creatingWhiteboard}>
+          <Button variant="text" onClick={handleCloseDialog} disabled={creatingWhiteboard}>
             {t('buttons.cancel')}
           </Button>
           <Button
