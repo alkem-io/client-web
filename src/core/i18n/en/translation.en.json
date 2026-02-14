@@ -2387,6 +2387,34 @@
       }
     },
     "admin": {
+      "transferCallout": {
+        "calloutUrl": "Callout URL",
+        "calloutUrlPlaceholder": "Paste callout URL or path",
+        "targetSpaceUrl": "Target Space URL",
+        "targetSpaceUrlPlaceholder": "Paste space URL or path",
+        "lookup": "Lookup",
+        "calloutInfo": "Callout Info",
+        "targetSpaceInfo": "Target Space Info",
+        "description": "Description",
+        "createdBy": "Created By",
+        "contributions": "Contributions",
+        "contributionsSummary": "{{posts}} posts, {{whiteboards}} whiteboards, {{links}} links, {{memos}} memos",
+        "level": "Level",
+        "calloutsSetId": "CalloutsSet ID",
+        "transferButton": "Transfer Callout",
+        "transferring": "Transferring...",
+        "urlNotFound": "URL not found",
+        "urlNotCallout": "URL does not resolve to a callout",
+        "urlNotSpace": "URL does not resolve to a space",
+        "missingTransferOffer": "Missing TransferResourceOffer privilege on source calloutsSet",
+        "missingTransferAccept": "Missing TransferResourceAccept privilege on target calloutsSet",
+        "successTitle": "Transfer Successful",
+        "successMessage": "Callout \"{{calloutName}}\" has been transferred to \"{{spaceName}}\".",
+        "transferFailed": "Failed to transfer callout",
+        "close": "Close",
+        "unknown": "Unknown",
+        "urlRequired": "URL is required"
+      },
       "generic": {
         "sections": {
           "profile": {

@@ -1,11 +1,4 @@
 import { useState } from 'react';
-import {
-  useCalloutUrlResolveQuery,
-  useCalloutLookupQuery,
-  useSpaceUrlResolveQuery,
-  useSpaceCalloutsSetLookupQuery,
-  useTransferCalloutMutation,
-} from '@/core/apollo/generated/apollo-hooks';
 import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
 import { Form, Formik } from 'formik';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -26,111 +19,54 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { AuthorizationPrivilege, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';
+import useTransferCallout from './useTransferCallout';
 
 const currentTab = AdminSection.TransferCallout;
-
-const toFullUrl = (input: string): string => {
-  try {
-    new URL(input);
-    return input;
-  } catch {
-    const path = input.startsWith('/') ? input : `/${input}`;
-    return `${globalThis.location.origin}${path}`;
-  }
-};
-
-const urlValidator = yup.object().shape({
-  url: yup.string().required('URL is required'),
-});
+const T_PREFIX = 'pages.admin.transferCallout';
 
 const TransferCalloutPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-
-  const [calloutUrl, setCalloutUrl] = useState('');
-  const [spaceUrl, setSpaceUrl] = useState('');
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
-  // Step 1: Resolve callout URL to get callout ID
-  const { data: calloutResolveData, loading: calloutResolveLoading } = useCalloutUrlResolveQuery({
-    variables: { url: calloutUrl },
-    skip: !calloutUrl,
+  const {
+    callout,
+    space,
+    calloutsSetId,
+    hasTransferOffer,
+    hasTransferAccept,
+    calloutLoading,
+    spaceLoading,
+    transferLoading,
+    calloutError,
+    spaceError,
+    handleCalloutSubmit,
+    handleSpaceSubmit,
+    handleTransfer,
+  } = useTransferCallout();
+
+  const urlValidator = yup.object().shape({
+    url: yup.string().required(t(`${T_PREFIX}.urlRequired`)),
   });
 
-  const calloutResolved = calloutResolveData?.urlResolver;
-  const resolvedCalloutId = calloutResolved?.space?.collaboration?.calloutsSet?.calloutId;
-  const sourceCalloutsSetId = calloutResolved?.space?.collaboration?.calloutsSet?.id;
-
-  // Step 2: Fetch callout details and source calloutsSet privileges
-  const { data: calloutData, loading: calloutLoading } = useCalloutLookupQuery({
-    variables: { calloutId: resolvedCalloutId!, sourceCalloutsSetId: sourceCalloutsSetId! },
-    skip: !resolvedCalloutId || !sourceCalloutsSetId,
-  });
-
-  const callout = calloutData?.lookup.callout;
-  const hasTransferOffer = calloutData?.lookup.calloutsSet?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.TransferResourceOffer
-  );
-
-  // Step 1: Resolve space URL to get space ID
-  const { data: spaceResolveData, loading: spaceResolveLoading } = useSpaceUrlResolveQuery({
-    variables: { url: spaceUrl },
-    skip: !spaceUrl,
-  });
-
-  const spaceResolved = spaceResolveData?.urlResolver;
-  const resolvedSpaceId = spaceResolved?.space?.id;
-
-  // Step 2: Fetch space details using resolved ID
-  const { data: spaceData, loading: spaceLoading } = useSpaceCalloutsSetLookupQuery({
-    variables: { spaceId: resolvedSpaceId! },
-    skip: !resolvedSpaceId,
-  });
-
-  const space = spaceData?.lookup.space;
-  const calloutsSetId = space?.collaboration?.calloutsSet?.id;
-  const hasTransferAccept = space?.collaboration?.calloutsSet?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.TransferResourceAccept
-  );
-
-  const [transferCallout, { loading: transferLoading }] = useTransferCalloutMutation();
-
-  const handleCalloutSubmit = ({ url }: { url: string }) => {
-    setCalloutUrl(toFullUrl(url));
+  const onCalloutSubmit = ({ url }: { url: string }) => {
+    handleCalloutSubmit(url);
     return Promise.resolve();
   };
 
-  const handleSpaceSubmit = ({ url }: { url: string }) => {
-    setSpaceUrl(toFullUrl(url));
+  const onSpaceSubmit = ({ url }: { url: string }) => {
+    handleSpaceSubmit(url);
     return Promise.resolve();
   };
 
-  const handleTransfer = async () => {
-    if (!callout?.id || !calloutsSetId) return;
+  const onTransfer = async () => {
     try {
-      await transferCallout({
-        variables: { calloutId: callout.id, targetCalloutsSetId: calloutsSetId },
-      });
+      await handleTransfer();
       setSuccessDialogOpen(true);
-    } catch (error) {
-      notify('Failed to transfer callout', 'error');
+    } catch {
+      notify(t(`${T_PREFIX}.transferFailed`), 'error');
     }
   };
-
-  const calloutError =
-    calloutResolved?.state === UrlResolverResultState.NotFound
-      ? 'URL not found'
-      : calloutResolved && !resolvedCalloutId
-        ? 'URL does not resolve to a callout'
-        : undefined;
-
-  const spaceError =
-    spaceResolved?.state === UrlResolverResultState.NotFound
-      ? 'URL not found'
-      : spaceResolved && !resolvedSpaceId
-        ? 'URL does not resolve to a space'
-        : undefined;
 
   return (
     <TopLevelLayout
@@ -154,89 +90,103 @@ const TransferCalloutPage = () => {
       <PageContent>
         <PageContentColumn columns={6}>
           <PageContentBlockSeamless disablePadding>
-            <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={handleCalloutSubmit}>
+            <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={onCalloutSubmit}>
               {formik => (
                 <Form>
                   <Gutters row disablePadding>
-                    <FormikInputField name="url" title="Callout URL" placeholder="Paste callout URL or path" fullWidth />
-                    <FormikSubmitButtonPure formik={formik}>Lookup</FormikSubmitButtonPure>
+                    <FormikInputField
+                      name="url"
+                      title={t(`${T_PREFIX}.calloutUrl`)}
+                      placeholder={t(`${T_PREFIX}.calloutUrlPlaceholder`)}
+                      fullWidth
+                    />
+                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
             </Formik>
           </PageContentBlockSeamless>
-          {(calloutResolveLoading || calloutLoading) && <Loading />}
+          {calloutLoading && <Loading />}
           {calloutError && (
             <PageContentBlock>
-              <Caption>{calloutError}</Caption>
+              <Caption>{t(calloutError)}</Caption>
             </PageContentBlock>
           )}
           {callout && (
             <PageContentBlock>
-              <BlockTitle>Callout Info</BlockTitle>
+              <BlockTitle>{t(`${T_PREFIX}.calloutInfo`)}</BlockTitle>
               <Gutters disablePadding>
-                <BlockSectionTitle>Name</BlockSectionTitle>
+                <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{callout.framing.profile.displayName}</span>
               </Gutters>
               <Gutters disablePadding>
-                <BlockSectionTitle>Description</BlockSectionTitle>
+                <BlockSectionTitle>{t(`${T_PREFIX}.description`)}</BlockSectionTitle>
                 <span>{callout.framing.profile.description}</span>
               </Gutters>
               <Gutters disablePadding>
-                <BlockSectionTitle>Created By</BlockSectionTitle>
-                <span>{callout.createdBy?.profile.displayName ?? 'Unknown'}</span>
+                <BlockSectionTitle>{t(`${T_PREFIX}.createdBy`)}</BlockSectionTitle>
+                <span>{callout.createdBy?.profile.displayName ?? t(`${T_PREFIX}.unknown`)}</span>
               </Gutters>
               <Gutters disablePadding>
-                <BlockSectionTitle>Contributions</BlockSectionTitle>
+                <BlockSectionTitle>{t(`${T_PREFIX}.contributions`)}</BlockSectionTitle>
                 <span>
-                  {callout.contributionsCount.post} posts, {callout.contributionsCount.whiteboard} whiteboards,{' '}
-                  {callout.contributionsCount.link} links, {callout.contributionsCount.memo} memos
+                  {t(`${T_PREFIX}.contributionsSummary`, {
+                    posts: callout.contributionsCount.post,
+                    whiteboards: callout.contributionsCount.whiteboard,
+                    links: callout.contributionsCount.link,
+                    memos: callout.contributionsCount.memo,
+                  })}
                 </span>
               </Gutters>
               {hasTransferOffer === false && (
-                <Caption color="error">Missing TransferResourceOffer privilege on this callout</Caption>
+                <Caption color="error">{t(`${T_PREFIX}.missingTransferOffer`)}</Caption>
               )}
             </PageContentBlock>
           )}
         </PageContentColumn>
         <PageContentColumn columns={6}>
           <PageContentBlockSeamless disablePadding>
-            <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={handleSpaceSubmit}>
+            <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={onSpaceSubmit}>
               {formik => (
                 <Form>
                   <Gutters row disablePadding>
-                    <FormikInputField name="url" title="Target Space URL" placeholder="Paste space URL or path" fullWidth />
-                    <FormikSubmitButtonPure formik={formik}>Lookup</FormikSubmitButtonPure>
+                    <FormikInputField
+                      name="url"
+                      title={t(`${T_PREFIX}.targetSpaceUrl`)}
+                      placeholder={t(`${T_PREFIX}.targetSpaceUrlPlaceholder`)}
+                      fullWidth
+                    />
+                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
             </Formik>
           </PageContentBlockSeamless>
-          {(spaceResolveLoading || spaceLoading) && <Loading />}
+          {spaceLoading && <Loading />}
           {spaceError && (
             <PageContentBlock>
-              <Caption>{spaceError}</Caption>
+              <Caption>{t(spaceError)}</Caption>
             </PageContentBlock>
           )}
           {space && (
             <PageContentBlock>
-              <BlockTitle>Target Space Info</BlockTitle>
+              <BlockTitle>{t(`${T_PREFIX}.targetSpaceInfo`)}</BlockTitle>
               <Gutters disablePadding>
-                <BlockSectionTitle>Name</BlockSectionTitle>
+                <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{space.about.profile.displayName}</span>
               </Gutters>
               <Gutters disablePadding>
-                <BlockSectionTitle>Level</BlockSectionTitle>
+                <BlockSectionTitle>{t(`${T_PREFIX}.level`)}</BlockSectionTitle>
                 <span>{space.level}</span>
               </Gutters>
               {calloutsSetId && (
                 <Gutters disablePadding>
-                  <BlockSectionTitle>CalloutsSet ID</BlockSectionTitle>
+                  <BlockSectionTitle>{t(`${T_PREFIX}.calloutsSetId`)}</BlockSectionTitle>
                   <span>{calloutsSetId}</span>
                 </Gutters>
               )}
               {hasTransferAccept === false && (
-                <Caption color="error">Missing TransferResourceAccept privilege on target calloutsSet</Caption>
+                <Caption color="error">{t(`${T_PREFIX}.missingTransferAccept`)}</Caption>
               )}
             </PageContentBlock>
           )}
@@ -244,10 +194,10 @@ const TransferCalloutPage = () => {
             <PageContentBlock>
               <Button
                 variant="contained"
-                onClick={handleTransfer}
+                onClick={onTransfer}
                 disabled={transferLoading || !hasTransferOffer || !hasTransferAccept}
               >
-                {transferLoading ? 'Transferring...' : 'Transfer Callout'}
+                {transferLoading ? t(`${T_PREFIX}.transferring`) : t(`${T_PREFIX}.transferButton`)}
               </Button>
             </PageContentBlock>
           )}
@@ -255,13 +205,16 @@ const TransferCalloutPage = () => {
       </PageContent>
       <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
         <DialogContent>
-          <BlockTitle>Transfer Successful</BlockTitle>
+          <BlockTitle>{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
           <span>
-            Callout "{callout?.framing.profile.displayName}" has been transferred to "{space?.about.profile.displayName}".
+            {t(`${T_PREFIX}.successMessage`, {
+              calloutName: callout?.framing.profile.displayName,
+              spaceName: space?.about.profile.displayName,
+            })}
           </span>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSuccessDialogOpen(false)}>Close</Button>
+          <Button onClick={() => setSuccessDialogOpen(false)}>{t(`${T_PREFIX}.close`)}</Button>
         </DialogActions>
       </Dialog>
     </TopLevelLayout>
