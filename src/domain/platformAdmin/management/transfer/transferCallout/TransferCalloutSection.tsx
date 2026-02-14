@@ -179,9 +179,9 @@ const TransferCalloutSection = () => {
           )}
         </PageContentColumn>
       </Gutters>
-      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)} aria-labelledby="transfer-callout-success-title">
         <DialogContent>
-          <BlockTitle>{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
+          <BlockTitle id="transfer-callout-success-title">{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
           <span>
             {t(`${T_PREFIX}.successMessage`, {
               calloutName: callout?.framing.profile.displayName,

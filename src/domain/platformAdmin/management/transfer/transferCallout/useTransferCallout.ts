@@ -7,16 +7,7 @@ import {
   useTransferCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';
-
-const toFullUrl = (input: string): string => {
-  try {
-    new URL(input);
-    return input;
-  } catch {
-    const path = input.startsWith('/') ? input : `/${input}`;
-    return `${globalThis.location.origin}${path}`;
-  }
-};
+import toFullUrl from '../toFullUrl';
 
 const useTransferCallout = () => {
   const [calloutUrl, setCalloutUrl] = useState('');
@@ -67,18 +58,22 @@ const useTransferCallout = () => {
   const [transferCalloutMutation, { loading: transferLoading }] = useTransferCalloutMutation();
 
   const calloutError =
-    calloutResolved?.state === UrlResolverResultState.NotFound
-      ? ('pages.admin.transferCallout.urlNotFound' as const)
-      : calloutResolved && !resolvedCalloutId
-        ? ('pages.admin.transferCallout.urlNotCallout' as const)
-        : undefined;
+    calloutResolveLoading || calloutLoading
+      ? undefined
+      : calloutResolved?.state === UrlResolverResultState.NotFound
+        ? ('pages.admin.transferCallout.urlNotFound' as const)
+        : calloutResolved && !resolvedCalloutId
+          ? ('pages.admin.transferCallout.urlNotCallout' as const)
+          : undefined;
 
   const spaceError =
-    spaceResolved?.state === UrlResolverResultState.NotFound
-      ? ('pages.admin.transferCallout.urlNotFound' as const)
-      : spaceResolved && !resolvedSpaceId
-        ? ('pages.admin.transferCallout.urlNotSpace' as const)
-        : undefined;
+    spaceResolveLoading || spaceLoading
+      ? undefined
+      : spaceResolved?.state === UrlResolverResultState.NotFound
+        ? ('pages.admin.transferCallout.urlNotFound' as const)
+        : spaceResolved && !resolvedSpaceId
+          ? ('pages.admin.transferCallout.urlNotSpace' as const)
+          : undefined;
 
   const handleCalloutSubmit = (url: string) => {
     setCalloutUrl(toFullUrl(url));
@@ -90,9 +85,12 @@ const useTransferCallout = () => {
 
   const handleTransfer = async () => {
     if (!callout?.id || !calloutsSetId) return;
-    await transferCalloutMutation({
+    const result = await transferCalloutMutation({
       variables: { calloutId: callout.id, targetCalloutsSetId: calloutsSetId },
     });
+    if (!result.data?.transferCallout?.id) {
+      throw new Error('Transfer failed');
+    }
   };
 
   return {

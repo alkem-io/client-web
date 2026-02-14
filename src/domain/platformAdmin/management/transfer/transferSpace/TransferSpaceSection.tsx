@@ -174,9 +174,9 @@ const TransferSpaceSection = () => {
           )}
         </PageContentColumn>
       </Gutters>
-      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)} aria-labelledby="transfer-space-success-title">
         <DialogContent>
-          <BlockTitle>{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
+          <BlockTitle id="transfer-space-success-title">{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
           <span>
             {t(`${T_PREFIX}.successMessage`, {
               spaceName: space?.about.profile.displayName,
