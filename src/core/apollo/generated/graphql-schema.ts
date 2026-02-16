@@ -4209,6 +4209,8 @@ export enum MimeType {
   Doc = 'DOC',
   Docx = 'DOCX',
   Gif = 'GIF',
+  Heic = 'HEIC',
+  Heif = 'HEIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
   Odp = 'ODP',

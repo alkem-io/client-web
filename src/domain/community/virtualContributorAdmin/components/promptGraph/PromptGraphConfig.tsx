@@ -38,7 +38,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   });
   const aiPersona = data?.virtualContributor?.aiPersona;
 
-  const [updateAiPersona] = useUpdateAiPersonaMutation();
+  const [updateAiPersona, { loading: isResetting }] = useUpdateAiPersonaMutation();
   const [updatePlatformSettings, { loading: updatingPlatformSettings }] =
     useUpdateVirtualContributorPlatformSettingsMutation();
 
@@ -90,6 +90,24 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
       onCompleted: () => {
         notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
       },
+    });
+  };
+
+  const handleReset = () => {
+    if (!aiPersona) return;
+
+    updateAiPersona({
+      variables: {
+        aiPersonaData: {
+          ID: aiPersona.id,
+          // @ts-expect-error - Sending null to trigger server default reset, but type expects undefined
+          promptGraph: null,
+        },
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.settings.promptGraph.resetSuccess'), 'success');
+      },
+      refetchQueries: ['AiPersona'],
     });
   };
 
@@ -147,6 +165,8 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
                 setIsValid={setIsValid}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
+                handleReset={handleReset}
+                isResetting={isResetting}
               />
             </Formik>
           )}

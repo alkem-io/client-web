@@ -3520,6 +3520,8 @@
         "promptGraph": {
           "editingEnabledLabel": "Allow editing of the prompt graph (platform-wide setting)",
           "saveBtn": "Save Prompt Graph",
+          "resetBtn": "Reset to Default",
+          "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Prompt Graph",
           "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
           "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
