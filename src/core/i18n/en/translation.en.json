@@ -612,7 +612,9 @@
         "month_one": "{{count}}mo",
         "month_other": "{{count}}mo",
         "year_one": "{{count}}y",
-        "year_other": "{{count}}y"
+        "year_other": "{{count}}y",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y"
       },
       "long": {
         "timeAgo": "{{time}} ago",
@@ -627,9 +629,10 @@
         "month_one": "{{count}} month",
         "month_other": "{{count}} months",
         "year_one": "{{count}} year",
-        "year_other": "{{count}} years"
-      },
-      "moreThan1Year": "> 1 year ago"
+        "year_other": "{{count}} years",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years"
+      }
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",

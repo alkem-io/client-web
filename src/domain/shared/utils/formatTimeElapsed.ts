@@ -6,7 +6,6 @@ const ONE_HOUR = 60 * ONE_MINUTE;
 const ONE_DAY = 24 * ONE_HOUR;
 const ONE_MONTH = 30 * ONE_DAY;
 const ONE_YEAR = 365 * ONE_DAY;
-const TWO_YEARS = 2 * ONE_YEAR;
 
 export const formatTimeElapsed = (date: Date | string, t: TFunction, format: 'short' | 'long' = 'short'): string => {
   const currentDate = new Date();
@@ -14,16 +13,10 @@ export const formatTimeElapsed = (date: Date | string, t: TFunction, format: 'sh
 
   const diffInTime = Math.max(0, currentDate.getTime() - formatCandidate.getTime());
 
-  if (diffInTime > TWO_YEARS) {
-    return t(`common.time.${format}.timeAgo` as const, {
-      time: t('common.time.moreThan1Year'),
-    });
-  }
-
   if (diffInTime > ONE_YEAR) {
-    const timeDiff = Math.round(diffInTime / ONE_YEAR);
+    const timeDiff = Math.floor(diffInTime / ONE_YEAR);
     return t(`common.time.${format}.timeAgo` as const, {
-      time: t(`common.time.${format}.year` as const, { count: timeDiff }),
+      time: t(`common.time.${format}.moreThanYears` as const, { count: timeDiff }),
     });
   }
 
