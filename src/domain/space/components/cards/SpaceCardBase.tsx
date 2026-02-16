@@ -57,7 +57,7 @@ const SpaceCardBase = ({
   // Compact tile mode - banner fills entire card, footer overlaid at bottom with BadgeCardView
   if (header === null) {
     return (
-      <ContributeCard sx={{ position: 'relative', overflow: 'hidden' }} {...containerProps}>
+      <ContributeCard sx={{ position: 'relative', overflow: 'hidden', minWidth: 200 }} {...containerProps}>
         <Box {...wrapperProps} sx={{ position: 'relative', height: '100%' }}>
           <CardBanner
             src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
@@ -111,7 +111,7 @@ const SpaceCardBase = ({
 
   // Regular mode - standard card layout with header and content
   return (
-    <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
+    <ContributeCard sx={{ position: 'relative', minWidth: 200 }} {...containerProps}>
       <Box {...wrapperProps}>
         <CardBanner
           src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}

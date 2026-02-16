@@ -72,7 +72,8 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
           minWidth={0}
           display="flex"
           flexDirection="row"
-          rowGap={gutters(0.5)}
+          alignItems="center"
+          gap={1}
           justifyContent="space-between"
           flexWrap="wrap"
         >
@@ -80,7 +81,7 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
           {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
           {children}
         </Box>
-        <Box ref={actionsContainerRef} width="100%" display="flex" justifyContent="flex-end">
+        <Box ref={actionsContainerRef} flexShrink={0} display="flex" justifyContent="flex-end">
           {actions &&
             (autoCollapseActions
               ? !actionsCollapsed && actionsContent
