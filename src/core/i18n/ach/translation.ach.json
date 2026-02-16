@@ -968,15 +968,6 @@
     },
     "whiteboard": {
       "clickToSee": "crwdns43764:0$t(common.whiteboard)crwdne43764:0",
-      "emojiReaction": {
-        "addEmoji": "crwdns43488:0crwdne43488:0",
-        "title": "crwdns43490:0crwdne43490:0",
-        "hint": "crwdns43492:0crwdne43492:0",
-        "clickToPlace": "crwdns43494:0{{emoji}}crwdne43494:0",
-        "placementMode": "crwdns43496:0{{emoji}}crwdne43496:0",
-        "gridLabel": "crwdns43498:0crwdne43498:0",
-        "noEmojis": "crwdns43500:0crwdne43500:0"
-      },
       "images": {
         "unsupportedType": "crwdns44160:0{{formats}}crwdne44160:0",
         "tooLarge": "crwdns44162:0{{maxSize}}crwdne44162:0",
@@ -1511,7 +1502,7 @@
         "dialogHeader": "crwdns18912:0crwdne18912:0"
       },
       "validation": {
-        "maxLength": "crwdns18914:0crwdne18914:0"
+        "maxLength": "crwdns44236:0crwdne44236:0"
       },
       "embed": {
         "iframeAria": "crwdns18916:0{{title}}crwdne18916:0",
@@ -1626,6 +1617,8 @@
         },
         "mediaGallery": {
           "name": "crwdns44194:0crwdne44194:0",
+          "previewNotAvailable": "crwdns44238:0crwdne44238:0",
+          "imageNotAvailable": "crwdns44240:0crwdne44240:0",
           "galleryItem": "crwdns44196:0crwdne44196:0",
           "navigation": {
             "ariaLabel": "crwdns44198:0crwdne44198:0",
@@ -2871,7 +2864,8 @@
           "noResults": "crwdns43948:0crwdne43948:0"
         }
       },
-      "spaceFilterTitle": "crwdns36892:0$t(common.spaces)crwdne36892:0"
+      "spaceFilterTitle": "crwdns36892:0$t(common.spaces)crwdne36892:0",
+      "loading": "crwdns44234:0crwdne44234:0"
     },
     "exploreSpaces": {
       "fullName": "crwdns41432:0$t(common.spaces)crwdne41432:0",
@@ -3324,6 +3318,7 @@
       }
     },
     "memo": {
+      "editDisplayName": "crwdns44232:0crwdne44232:0",
       "readonlyReason": {
         "readonly": "crwdns37458:0crwdne37458:0",
         "contentUpdatePolicy": "crwdns41614:0$t(common.memo)crwdnd41614:0{{ownerName}}crwdnd41614:0$t(common.settings)crwdne41614:0",
