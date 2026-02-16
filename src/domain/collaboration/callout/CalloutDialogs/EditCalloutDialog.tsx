@@ -28,6 +28,7 @@ import {
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -126,6 +127,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   const [updateCalloutContent] = useUpdateCalloutContentMutation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
+  const notify = useNotification();
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput
@@ -189,11 +191,15 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       refetchQueries: ['CalloutsSetTags'],
     });
     if (result.data?.updateCallout.framing.mediaGallery?.id && formData.framing.mediaGallery?.visuals) {
-      await uploadMediaGalleryVisuals({
-        mediaGalleryId: result.data.updateCallout.framing.mediaGallery.id,
-        visuals: formData.framing.mediaGallery.visuals,
-        existingVisualIds: originalVisualIds,
-      });
+      try {
+        await uploadMediaGalleryVisuals({
+          mediaGalleryId: result.data.updateCallout.framing.mediaGallery.id,
+          visuals: formData.framing.mediaGallery.visuals,
+          existingVisualIds: originalVisualIds,
+        });
+      } catch {
+        notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: t('common.callout') }), 'error');
+      }
     }
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {
