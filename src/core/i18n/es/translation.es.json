@@ -968,15 +968,6 @@
     },
     "whiteboard": {
       "clickToSee": "Haz clic para ver el $t(common.whiteboard) completo",
-      "emojiReaction": {
-        "addEmoji": "Reaccionar",
-        "title": "Añadir emoji",
-        "hint": "Selecciona un emoji, luego haz clic en el lienzo",
-        "clickToPlace": "Haz clic en el lienzo para colocar {{emoji}}",
-        "placementMode": "Clic para colocar emoji: {{emoji}}",
-        "gridLabel": "Selecciona un emoji",
-        "noEmojis": "No hay emojis disponibles"
-      },
       "images": {
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
@@ -1511,7 +1502,7 @@
         "dialogHeader": "Convertir selección en hipervínculo"
       },
       "validation": {
-        "maxLength": "El texto resultante supera el tamaño aceptado por el servidor."
+        "maxLength": "This text exceeds the length limits for this field."
       },
       "embed": {
         "iframeAria": "{{title}}",
@@ -1626,6 +1617,8 @@
         },
         "mediaGallery": {
           "name": "Media Gallery",
+          "previewNotAvailable": "Preview available after save.",
+          "imageNotAvailable": "Image not available",
           "galleryItem": "Gallery Image",
           "navigation": {
             "ariaLabel": "Gallery navigation",
@@ -2871,7 +2864,8 @@
           "noResults": "No results of this type matched your search terms."
         }
       },
-      "spaceFilterTitle": "$t(common.spaces)"
+      "spaceFilterTitle": "$t(common.spaces)",
+      "loading": "Searching..."
     },
     "exploreSpaces": {
       "fullName": "Explorar $t(common.spaces)",
@@ -3324,6 +3318,7 @@
       }
     },
     "memo": {
+      "editDisplayName": "Edit title",
       "readonlyReason": {
         "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",
         "contentUpdatePolicy": "No tienes derechos para editar este $t(common.memo). Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido si deseas contribuir.",
