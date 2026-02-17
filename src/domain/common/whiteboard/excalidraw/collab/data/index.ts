@@ -76,6 +76,24 @@ export type SocketUpdateDataSource = {
     type: 'INVALID_RESPONSE';
     payload: never;
   };
+  EMOJI_REACTION: {
+    type: WS_SCENE_EVENT_TYPES.EMOJI_REACTION;
+    payload: {
+      emoji: string;
+      x: number; // sceneX (whiteboard coordinates)
+      y: number; // sceneY (whiteboard coordinates)
+      id?: string;
+    };
+  };
+  COUNTDOWN_TIMER: {
+    type: WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER;
+    payload: {
+      id?: string;
+      remainingSeconds: number;
+      active: boolean;
+      startedBy: string;
+    };
+  };
 };
 
 export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {

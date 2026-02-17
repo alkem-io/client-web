@@ -105,6 +105,12 @@ const DialogWithGrid = ({
             minHeight: 'auto',
           }),
         },
+        '& .MuiDialog-container > .MuiBox-root': {
+          ...(isFullScreen ? { padding: 0 } : {}),
+        },
+        '& .MuiDialogContent-root.MuiDialogContent-dividers': {
+          ...(isFullScreen ? { border: 0 } : {}),
+        },
         ...sx,
       }}
     />

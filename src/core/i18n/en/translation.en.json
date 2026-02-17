@@ -612,7 +612,9 @@
         "month_one": "{{count}}mo",
         "month_other": "{{count}}mo",
         "year_one": "{{count}}y",
-        "year_other": "{{count}}y"
+        "year_other": "{{count}}y",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y"
       },
       "long": {
         "timeAgo": "{{time}} ago",
@@ -627,9 +629,10 @@
         "month_one": "{{count}} month",
         "month_other": "{{count}} months",
         "year_one": "{{count}} year",
-        "year_other": "{{count}} years"
-      },
-      "moreThan1Year": "> 1 year ago"
+        "year_other": "{{count}} years",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years"
+      }
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
@@ -968,15 +971,6 @@
     },
     "whiteboard": {
       "clickToSee": "Click to see the full $t(common.whiteboard)",
-      "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
-      },
       "images": {
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
@@ -1511,7 +1505,7 @@
         "dialogHeader": "Convert selection to Hyperlink"
       },
       "validation": {
-        "maxLength": "The resulting text goes beyond the size accepted by the server."
+        "maxLength": "This text exceeds the length limits for this field."
       },
       "embed": {
         "iframeAria": "{{title}}",
@@ -1626,6 +1620,8 @@
         },
         "mediaGallery": {
           "name": "Media Gallery",
+          "previewNotAvailable": "Preview available after save.",
+          "imageNotAvailable": "Image not available",
           "galleryItem": "Gallery Image",
           "navigation": {
             "ariaLabel": "Gallery navigation",
@@ -2871,7 +2867,8 @@
           "noResults": "No results of this type matched your search terms."
         }
       },
-      "spaceFilterTitle": "$t(common.spaces)"
+      "spaceFilterTitle": "$t(common.spaces)",
+      "loading": "Searching..."
     },
     "exploreSpaces": {
       "fullName": "Explore $t(common.spaces)",

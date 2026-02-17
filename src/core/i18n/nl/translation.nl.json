@@ -968,15 +968,6 @@
     },
     "whiteboard": {
       "clickToSee": "Klik om het volledige $t(common.whiteboard) te bekijken",
-      "emojiReaction": {
-        "addEmoji": "Emoji reactie toevoegen",
-        "title": "Emoji toevoegen",
-        "hint": "Selecteer een emoji en klik vervolgens op het canvas",
-        "clickToPlace": "Klik op canvas om {{emoji}} te plaatsen",
-        "placementMode": "Klik om emoji te plaatsen: {{emoji}}",
-        "gridLabel": "Emoji selecteren",
-        "noEmojis": "Geen emojis beschikbaar"
-      },
       "images": {
         "unsupportedType": "Dit afbeeldingsformaat wordt niet ondersteund. Gebruik {{formats}}.",
         "tooLarge": "Deze afbeelding is te groot. Maximale grootte is {{maxSize}}.",
@@ -1430,15 +1421,15 @@
         }
       },
       "defaultTemplate": {
-        "currentlySelected": "Currently Selected $t(common.template):",
-        "noTemplate": "No default $t(common.template) set. Select a $t(common.template) to pre-fill posts in this flow step.",
+        "currentlySelected": "Momenteel geselecteerde $t(common.template):",
+        "noTemplate": "Geen standaard $t(common.template) ingesteld. Selecteer een $t(common.template) om posts vooraf in deze fase van de flow in te vullen.",
         "removeConfirmation": {
-          "title": "Remove Default $t(common.template)?",
-          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
+          "title": "Verwijder standaard $t(common.template)?",
+          "description": "Hiermee wordt de standaard $t(common.template) voor deze flow stap verwijderd. Nieuwe berichten worden niet langer vooraf gevuld met $t(common.template) inhoud."
         },
         "errors": {
-          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
-          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
+          "selectFailed": "Fout bij het instellen van de standaard $t(common.template). Probeer het opnieuw.",
+          "removeFailed": "Het verwijderen van de standaard $t(common.template) is mislukt. Probeer het opnieuw."
         }
       }
     },
@@ -1511,7 +1502,7 @@
         "dialogHeader": "Selectie omzetten naar Hyperlink"
       },
       "validation": {
-        "maxLength": "De resulterende tekst gaat verder dan de grootte die door de server is geaccepteerd."
+        "maxLength": "This text exceeds the length limits for this field."
       },
       "embed": {
         "iframeAria": "{{title}}",
@@ -1625,26 +1616,28 @@
           "placeholder": "(Optioneel) Voeg wat inhoud toe aan de $t(common.memo)"
         },
         "mediaGallery": {
-          "name": "Media Gallery",
-          "galleryItem": "Gallery Image",
+          "name": "Mediagallerij",
+          "previewNotAvailable": "Preview available after save.",
+          "imageNotAvailable": "Image not available",
+          "galleryItem": "Galerij afbeelding",
           "navigation": {
-            "ariaLabel": "Gallery navigation",
-            "previous": "Previous image",
-            "next": "Next image",
-            "goToImage": "Go to image {{number}}"
+            "ariaLabel": "Galerij navigatie",
+            "previous": "Vorige afbeelding",
+            "next": "Volgende afbeelding",
+            "goToImage": "Ga naar afbeelding {{number}}"
           },
           "errors": {
-            "title": "Image Upload Errors",
+            "title": "Afbeeldingsupload fouten",
             "missingConstraints": "Unable to load media gallery items image constraints.",
-            "invalidFileType": "Invalid file type: {{fileType}}. Supported types are: {{allowedTypes}}.",
+            "invalidFileType": "Ongeldig bestandstype: {{fileType}}. Ondersteunde typen zijn: {{allowedTypes}}.",
             "imageDimensions": {
-              "minWidth": "Image width is too small ({{imagePx}}px). Minimum width is {{constraintPx}}px.",
-              "maxWidth": "Image width is too large ({{imagePx}}px). Maximum width is {{constraintPx}}px.",
-              "minHeight": "Image height is too small ({{imagePx}}px). Minimum height is {{constraintPx}}px.",
-              "maxHeight": "Image height is too large ({{imagePx}}px). Maximum height is {{constraintPx}}px."
+              "minWidth": "Afbeeldingsbreedte is te klein ({{imagePx}}px). De minimale breedte is {{constraintPx}}px.",
+              "maxWidth": "Afbeeldingsbreedte is te groot ({{imagePx}}px). Maximale breedte is {{constraintPx}}px.",
+              "minHeight": "Afbeeldingshoogte is te klein ({{imagePx}}px). Minimale hoogte is {{constraintPx}}px.",
+              "maxHeight": "Afbeeldingshoogte is te groot ({{imagePx}}px). Maximale hoogte is {{constraintPx}}px."
             },
-            "invalidImage": "The uploaded file is not a valid image.",
-            "failedToReadFile": "Failed to read the uploaded file."
+            "invalidImage": "Het geüploade bestand is geen geldige afbeelding.",
+            "failedToReadFile": "Lezen van het geüploade bestand is mislukt."
           }
         }
       },
@@ -2254,7 +2247,7 @@
     },
     "userMessaging": {
       "title": "Berichten",
-      "betaTooltip": "We wanted to share this early - still improving!",
+      "betaTooltip": "We wilden dit alvast delen - maar zijn nog steeds aan het verbeteren!",
       "noConversations": "Nog geen gesprekken",
       "noMessages": "Geen berichten",
       "selectConversation": "Selecteer een gesprek om een bericht te sturen",
@@ -2871,7 +2864,8 @@
           "noResults": "No results of this type matched your search terms."
         }
       },
-      "spaceFilterTitle": "$t(common.spaces)"
+      "spaceFilterTitle": "$t(common.spaces)",
+      "loading": "Searching..."
     },
     "exploreSpaces": {
       "fullName": "Verken $t(common.spaces)",
@@ -3315,6 +3309,7 @@
       }
     },
     "memo": {
+      "editDisplayName": "Edit title",
       "readonlyReason": {
         "readonly": "<strong>Alleen lezen modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om deze $t(common.memo) te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de $t(common.settings) te wijzigen als je wilt bijdragen.",
