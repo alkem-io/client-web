@@ -968,15 +968,6 @@
     },
     "whiteboard": {
       "clickToSee": "Click to see the full $t(common.whiteboard)",
-      "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
-      },
       "images": {
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
@@ -1511,7 +1502,7 @@
         "dialogHeader": "Convertir la sélection en lien hypertexte"
       },
       "validation": {
-        "maxLength": "Le texte qui en résulte va au-delà de la taille acceptée par le serveur."
+        "maxLength": "This text exceeds the length limits for this field."
       },
       "embed": {
         "iframeAria": "{{title}}",
@@ -1626,6 +1617,8 @@
         },
         "mediaGallery": {
           "name": "Media Gallery",
+          "previewNotAvailable": "Preview available after save.",
+          "imageNotAvailable": "Image not available",
           "galleryItem": "Gallery Image",
           "navigation": {
             "ariaLabel": "Gallery navigation",
@@ -2871,7 +2864,8 @@
           "noResults": "No results of this type matched your search terms."
         }
       },
-      "spaceFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)"
+      "spaceFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)",
+      "loading": "Searching..."
     },
     "exploreSpaces": {
       "fullName": "Explore $t(common.spaces)",
@@ -3324,6 +3318,7 @@
       }
     },
     "memo": {
+      "editDisplayName": "Edit title",
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this $t(common.memo). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
