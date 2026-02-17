@@ -4,6 +4,7 @@ import {
   useUpdateAiPersonaMutation,
   useUpdateVirtualContributorPlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { UpdateAiPersonaInput, PromptGraphInput } from '@/core/apollo/generated/graphql-schema';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContent from '@/core/ui/content/PageContent';
@@ -24,6 +25,11 @@ type PromptGraphConfigProps = {
     } | null;
   };
   isPlatformAdmin?: boolean;
+};
+
+// Local override: Server accepts null for promptGraph (to trigger reset), but codegen only generates T | undefined
+type UpdateAiPersonaInputWithNull = Omit<UpdateAiPersonaInput, 'promptGraph'> & {
+  promptGraph?: PromptGraphInput | null;
 };
 
 const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigProps) => {
@@ -96,13 +102,19 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   const handleReset = () => {
     if (!aiPersona) return;
 
+    // Server accepts null for promptGraph to trigger reset (see UpdateAiPersonaInput on server)
+    // Cast required: codegen only generates T | undefined, not T | null | undefined
+    // Note: codegen.yml could be configured (maybeValue/inputMaybeValue: T | null | undefined) to support null globally,
+    // but this would be a breaking change affecting all generated types across the codebase. Many places may assume
+    // optional fields cannot be null, leading to runtime errors. The local override is safer and more explicit.
+    const resetData: UpdateAiPersonaInputWithNull = {
+      ID: aiPersona.id,
+      promptGraph: null,
+    };
+
     updateAiPersona({
       variables: {
-        aiPersonaData: {
-          ID: aiPersona.id,
-          // @ts-expect-error - Sending null to trigger server default reset, but type expects undefined
-          promptGraph: null,
-        },
+        aiPersonaData: resetData as UpdateAiPersonaInput,
       },
       onCompleted: () => {
         notify(t('pages.virtualContributorProfile.settings.promptGraph.resetSuccess'), 'success');
