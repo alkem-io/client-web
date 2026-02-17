@@ -27,6 +27,12 @@ interface uploadMediaGalleryVisualsParams {
    * Reupload visuals even if they have existing id, used for creating and using callout templates in Create forms
    */
   reuploadVisuals?: boolean;
+
+  /**
+   * Original sortOrder values for existing visuals (keyed by visual id).
+   * When a visual's sortOrder differs from the original, it will be deleted and re-added with the new sortOrder.
+   */
+  originalSortOrders?: Record<string, number>;
 }
 
 const useUploadMediaGalleryVisuals = () => {
@@ -36,7 +42,13 @@ const useUploadMediaGalleryVisuals = () => {
   const [deleteVisual, { loading: deleteLoading }] = useDeleteVisualFromMediaGalleryMutation();
 
   const uploadMediaGalleryVisuals = useCallback(
-    async ({ mediaGalleryId, visuals, existingVisualIds, reuploadVisuals }: uploadMediaGalleryVisualsParams) => {
+    async ({
+      mediaGalleryId,
+      visuals,
+      existingVisualIds,
+      reuploadVisuals,
+      originalSortOrders,
+    }: uploadMediaGalleryVisualsParams) => {
       if (!mediaGalleryId || !visuals) {
         return;
       }
@@ -56,6 +68,42 @@ const useUploadMediaGalleryVisuals = () => {
         })
       );
 
+      // Fetches an image from a URI, creates a new visual on the media gallery, and uploads the image to it.
+      const fetchAndCreateVisual = async (visual: MediaGalleryFormVisual, sortOrder: number) => {
+        const response = await fetch(visual.uri!);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch visual from ${visual.uri}: ${response.status} ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        const file = new File([blob], visual.name || 'visual', { type: blob.type });
+        const visualType = visual.visualType ?? getMediaGalleryVisualType(file, visual.uri);
+
+        const { data } = await addVisual({
+          variables: {
+            addData: {
+              mediaGalleryID: mediaGalleryId,
+              visualType,
+              sortOrder,
+            },
+          },
+        });
+
+        const createdVisualId = data?.addVisualToMediaGallery?.id;
+        if (!createdVisualId) {
+          throw new Error('Failed to create visual on media gallery');
+        }
+
+        await uploadVisual({
+          variables: {
+            file,
+            uploadData: {
+              visualID: createdVisualId,
+              alternativeText: visual.altText ?? visual.name ?? file.name,
+            },
+          },
+        });
+      };
+
       // Step 2: Process all visuals in parallel: create + upload for new files, or update existing
       const uploadOperations =
         visuals?.map(async (visual, index) => {
@@ -63,7 +111,6 @@ const useUploadMediaGalleryVisuals = () => {
           if (visual.file && !visual.id) {
             const visualType = visual.visualType ?? getMediaGalleryVisualType(visual.file, visual.uri);
 
-            // Create the visual on the media gallery
             const { data } = await addVisual({
               variables: {
                 addData: {
@@ -79,7 +126,6 @@ const useUploadMediaGalleryVisuals = () => {
               throw new Error('Failed to create visual on media gallery');
             }
 
-            // Upload the image to the created visual
             await uploadVisual({
               variables: {
                 file: visual.file,
@@ -104,47 +150,38 @@ const useUploadMediaGalleryVisuals = () => {
           }
           // Case 3: Visuals without files (URLs only) are reuploaded - for creating callout templates and applying callout templates
           else if (reuploadVisuals && visual.id && visual.uri && !visual.file) {
-            // Get the file from the URI
-            const response = await fetch(visual.uri);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch visual from ${visual.uri}: ${response.status} ${response.statusText}`);
-            }
-            const blob = await response.blob();
-            const file = new File([blob], visual.name || 'visual', { type: blob.type });
-            const visualType = visual.visualType ?? getMediaGalleryVisualType(file, visual.uri);
-
-            // Create the visual on the media gallery
-            const { data } = await addVisual({
+            await fetchAndCreateVisual(visual, visual.sortOrder ?? index);
+          }
+          // Case 4: Existing visual with changed sortOrder - delete and re-add with new sortOrder.
+          // TODO: Replace with a dedicated updateVisualSortOrder mutation when the server supports it.
+          else if (
+            originalSortOrders &&
+            visual.id &&
+            visual.uri &&
+            !visual.file &&
+            visual.sortOrder !== undefined &&
+            originalSortOrders[visual.id] !== undefined &&
+            visual.sortOrder !== originalSortOrders[visual.id]
+          ) {
+            await deleteVisual({
               variables: {
-                addData: {
+                deleteData: {
                   mediaGalleryID: mediaGalleryId,
-                  visualType,
-                  sortOrder: visual.sortOrder ?? index,
+                  visualID: visual.id,
                 },
               },
             });
-
-            const createdVisualId = data?.addVisualToMediaGallery?.id;
-            if (!createdVisualId) {
-              throw new Error('Failed to create visual on media gallery');
-            }
-
-            // Upload the image to the created visual
-            await uploadVisual({
-              variables: {
-                file,
-                uploadData: {
-                  visualID: createdVisualId,
-                  alternativeText: visual.altText ?? visual.name ?? file.name,
-                },
-              },
-            });
+            await fetchAndCreateVisual(visual, visual.sortOrder);
           }
         }) ?? [];
 
-      await Promise.all([...deleteOperations, ...uploadOperations]);
+      // Use allSettled so all operations are attempted even if some fail.
+      // Individual mutation errors are already handled by the global Apollo error handler
+      // which shows notifications with proper error codes (numericCode) to the user.
+      await Promise.allSettled([...deleteOperations, ...uploadOperations]);
 
-      // Refetch relevant queries to update the UI only when all the images have been processed
+      // Refetch relevant queries to update the UI regardless of individual failures,
+      // so that successfully processed visuals are reflected in the cache.
       await apolloClient.refetchQueries({
         include: ['CalloutDetails', 'TemplateContent'],
       });

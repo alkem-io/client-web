@@ -49,11 +49,12 @@ const GalleryThumbnail = styled('a')(() => ({
 interface MediaGalleryProps {
   title?: string;
   items: MediaGalleryItem[];
+  actions?: React.ReactNode;
 }
 
 const MAX_VISIBLE_THUMBNAILS = 6;
 
-const MediaGallery = ({ title, items }: MediaGalleryProps) => {
+const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   const { t } = useTranslation();
   const placeholderImage = useMemo(
     () => createPlaceholderImageDataUri(t('components.callout-creation.framing.mediaGallery.imageNotAvailable')),
@@ -175,12 +176,17 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
           );
         })}
       </GalleryWrapper>
-      {hasMoreThumbnails && (
+      {(hasMoreThumbnails || actions) && (
         <Box display="flex" justifyContent="end" alignItems="center" gap={gutters()} margin={gutters(1)}>
-          <Caption>{t('callout.create.framingSettings.mediaGallery.nItems', { count: items.length })}</Caption>
-          <Button variant="outlined" onClick={handleShowMore}>
-            {t('buttons.showAll')}
-          </Button>
+          {hasMoreThumbnails && (
+            <>
+              <Caption>{t('callout.create.framingSettings.mediaGallery.nItems', { count: items.length })}</Caption>
+              <Button variant="outlined" onClick={handleShowMore}>
+                {t('buttons.showAll')}
+              </Button>
+            </>
+          )}
+          {actions}
         </Box>
       )}
       <DialogWithGrid

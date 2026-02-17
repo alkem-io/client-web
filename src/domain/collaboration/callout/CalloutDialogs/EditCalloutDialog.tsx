@@ -104,6 +104,13 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     [data?.lookup.callout?.framing.mediaGallery?.visuals]
   );
 
+  // Track original sort orders to detect reordering
+  const originalSortOrders = useMemo(
+    () =>
+      Object.fromEntries(data?.lookup.callout?.framing.mediaGallery?.visuals?.map(v => [v.id, v.sortOrder ?? 0]) ?? []),
+    [data?.lookup.callout?.framing.mediaGallery?.visuals]
+  );
+
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
@@ -188,11 +195,15 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       },
       refetchQueries: ['CalloutsSetTags'],
     });
+    // Media gallery uploads use allSettled internally — individual failures are handled
+    // by the global Apollo error handler which shows notifications with proper error codes.
+    // The dialog always closes so successfully uploaded images aren't duplicated on retry.
     if (result.data?.updateCallout.framing.mediaGallery?.id && formData.framing.mediaGallery?.visuals) {
       await uploadMediaGalleryVisuals({
         mediaGalleryId: result.data.updateCallout.framing.mediaGallery.id,
         visuals: formData.framing.mediaGallery.visuals,
         existingVisualIds: originalVisualIds,
+        originalSortOrders,
       });
     }
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {

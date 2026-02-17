@@ -139,7 +139,13 @@ const CalloutView = ({
           {callout.framing.type === CalloutFramingType.Link && <CalloutFramingLink callout={callout} />}
 
           {/* Media Gallery framing */}
-          {callout.framing.type === CalloutFramingType.MediaGallery && <CalloutFramingMediaGallery callout={callout} />}
+          {callout.framing.type === CalloutFramingType.MediaGallery && (
+            <CalloutFramingMediaGallery
+              callout={callout}
+              canEdit={callout.editable}
+              calloutRestrictions={calloutRestrictions}
+            />
+          )}
 
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
