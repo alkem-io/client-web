@@ -77,8 +77,10 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
           justifyContent="space-between"
           flexWrap="wrap"
         >
-          <BlockTitleWithIcon title={title} titleId={titleId} icon={icon} variant={variant} />
-          {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
+          <Box flexGrow={1} minWidth={0}>
+            <BlockTitleWithIcon title={title} titleId={titleId} icon={icon} variant={variant} />
+            {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
+          </Box>
           {children}
         </Box>
         <Box ref={actionsContainerRef} flexShrink={0} display="flex" justifyContent="flex-end">
