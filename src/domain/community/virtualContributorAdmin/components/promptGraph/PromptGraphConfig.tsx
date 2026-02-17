@@ -4,6 +4,7 @@ import {
   useUpdateAiPersonaMutation,
   useUpdateVirtualContributorPlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { UpdateAiPersonaInput, PromptGraphInput } from '@/core/apollo/generated/graphql-schema';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContent from '@/core/ui/content/PageContent';
@@ -26,6 +27,11 @@ type PromptGraphConfigProps = {
   isPlatformAdmin?: boolean;
 };
 
+// Local override: Server accepts null for promptGraph (to trigger reset), but codegen only generates T | undefined
+type UpdateAiPersonaInputWithNull = Omit<UpdateAiPersonaInput, 'promptGraph'> & {
+  promptGraph?: PromptGraphInput | null;
+};
+
 const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -38,7 +44,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   });
   const aiPersona = data?.virtualContributor?.aiPersona;
 
-  const [updateAiPersona] = useUpdateAiPersonaMutation();
+  const [updateAiPersona, { loading: isResetting }] = useUpdateAiPersonaMutation();
   const [updatePlatformSettings, { loading: updatingPlatformSettings }] =
     useUpdateVirtualContributorPlatformSettingsMutation();
 
@@ -90,6 +96,30 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
       onCompleted: () => {
         notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
       },
+    });
+  };
+
+  const handleReset = () => {
+    if (!aiPersona) return;
+
+    // Server accepts null for promptGraph to trigger reset (see UpdateAiPersonaInput on server)
+    // Cast required: codegen only generates T | undefined, not T | null | undefined
+    // Note: codegen.yml could be configured (maybeValue/inputMaybeValue: T | null | undefined) to support null globally,
+    // but this would be a breaking change affecting all generated types across the codebase. Many places may assume
+    // optional fields cannot be null, leading to runtime errors. The local override is safer and more explicit.
+    const resetData: UpdateAiPersonaInputWithNull = {
+      ID: aiPersona.id,
+      promptGraph: null,
+    };
+
+    updateAiPersona({
+      variables: {
+        aiPersonaData: resetData as UpdateAiPersonaInput,
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.settings.promptGraph.resetSuccess'), 'success');
+      },
+      refetchQueries: ['AiPersona'],
     });
   };
 
@@ -147,6 +177,8 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
                 setIsValid={setIsValid}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
+                handleReset={handleReset}
+                isResetting={isResetting}
               />
             </Formik>
           )}
