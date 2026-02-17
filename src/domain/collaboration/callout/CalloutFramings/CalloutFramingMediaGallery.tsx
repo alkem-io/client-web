@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { ButtonBase, IconButton, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import MediaGallery from '@/core/ui/gallery/MediaGallery';
@@ -61,20 +61,22 @@ const CalloutFramingMediaGallery = ({
   return (
     <>
       {mediaItems.length === 0 && canEdit ? (
-        <Box
+        <ButtonBase
           sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            width: '100%',
             aspectRatio: '16 / 5',
             backgroundColor: theme => theme.palette.grey[100],
             borderRadius: 0.5,
             cursor: 'pointer',
           }}
           onClick={() => setEditDialogOpen(true)}
+          aria-label={t('callout.create.framingSettings.mediaGallery.emptyGallery')}
         >
           <ImagePlaceholder text={t('callout.create.framingSettings.mediaGallery.emptyGallery')} />
-        </Box>
+        </ButtonBase>
       ) : (
         <MediaGallery title={callout.framing.profile.displayName} items={mediaItems} actions={addButton} />
       )}
