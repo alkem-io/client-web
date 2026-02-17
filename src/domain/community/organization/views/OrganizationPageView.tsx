@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import {
   AssociatesView,
@@ -24,6 +23,7 @@ import { RoleType } from '@/domain/community/user/constants/RoleType';
 import Loading from '@/core/ui/loading/Loading';
 import { UseOrganizationProvided } from '../useOrganization/useOrganization';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { isVerifiedOrganization } from '../model/OrganizationModelLightweight';
 
 type OrganizationPageViewProps = {
   organizationProvided: UseOrganizationProvided;
@@ -43,6 +43,8 @@ export const OrganizationPageView = ({
   const { permissions, references, organization, capabilities, keywords, associates, contributions } =
     organizationProvided;
 
+  const isVerified = isVerifiedOrganization(organization?.verification);
+
   const tagsets = useMemo(
     () => [
       { name: t('components.profile.fields.keywords.title'), tags: keywords },
@@ -59,12 +61,12 @@ export const OrganizationPageView = ({
         settingsTooltip: t('pages.organization.settings.tooltip'),
         settingsUrl: buildSettingsUrl(organization?.profile.url ?? ''),
         bio: organization?.profile.description,
-        verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
+        verified: isVerified,
         tagsets,
         references,
         location: organization?.profile.location,
       }) as OrganizationProfileViewEntity,
-    [organization, tagsets, references, t]
+    [organization, tagsets, references, t, isVerified]
   );
 
   const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [RoleType.Lead]);
@@ -72,6 +74,7 @@ export const OrganizationPageView = ({
   const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
 
   const hasAccountResources =
+    isVerified &&
     accountResources &&
     (accountResources.spaces?.length > 0 ||
       accountResources.innovationPacks?.length > 0 ||
@@ -94,22 +97,24 @@ export const OrganizationPageView = ({
             accountResources={accountResources}
           />
         )}
-        {filteredMemberships.length > 0 && (
+        {isVerified && filteredMemberships.length > 0 && (
           <TilesContributionsView
             title={t('components.contributions.leadSpacesTitle')}
             contributions={filteredMemberships}
           />
         )}
-        {remainingMemberships.length > 0 ? (
-          <TilesContributionsView
-            title={t('components.contributions.allMembershipsTitle')}
-            contributions={remainingMemberships}
-          />
-        ) : (
-          <PageContentBlock>
-            <PageContentBlockHeader title={t('components.contributions.allMembershipsTitle')} />
-            <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
-          </PageContentBlock>
+        {isVerified && (
+          remainingMemberships.length > 0 ? (
+            <TilesContributionsView
+              title={t('components.contributions.allMembershipsTitle')}
+              contributions={remainingMemberships}
+            />
+          ) : (
+            <PageContentBlock>
+              <PageContentBlockHeader title={t('components.contributions.allMembershipsTitle')} />
+              <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
+            </PageContentBlock>
+          )
         )}
       </PageContentColumn>
     </PageContent>

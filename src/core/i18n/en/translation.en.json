@@ -2459,6 +2459,15 @@
       },
       "organization": {
         "create-organization": "Create $t(common.organization)",
+        "create": {
+          "typeSelection": {
+            "label": "Organization Type",
+            "lightweight": "Basic Profile",
+            "lightweightDescription": "Simple identity with name, avatar, and description. No resource management or admin controls.",
+            "verified": "Verified Organization",
+            "verifiedDescription": "Full organization account with resource management, team administration, and verification badge."
+          }
+        },
         "authorization": {
           "title": "Authorization",
           "subtitle": "This section allows you to modify the $t(common.organization)'s authorization"
