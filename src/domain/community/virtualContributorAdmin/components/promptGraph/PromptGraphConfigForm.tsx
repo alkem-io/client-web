@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handleSubmit }) => {
+export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handleSubmit, handleReset, isResetting }) => {
   const { t } = useTranslation();
   const { values, setFieldValue } = useFormikContext<FormValueType>();
   const [editingProperty, setEditingProperty] = useState<{ nodeName: string; index: number; data: DataPoint } | null>(
@@ -264,7 +264,10 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
           {/* </Button> */}
         </Box>
         <Actions>
-          <Button variant="contained" disabled={!isValid} onClick={() => handleSubmit(values)}>
+          <Button variant="outlined" color="warning" onClick={handleReset} disabled={isResetting}>
+            {t('pages.virtualContributorProfile.settings.promptGraph.resetBtn')}
+          </Button>
+          <Button variant="contained" disabled={!isValid || isResetting} onClick={() => handleSubmit(values)}>
             {t('pages.virtualContributorProfile.settings.promptGraph.saveBtn')}
           </Button>
         </Actions>
