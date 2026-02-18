@@ -9,6 +9,7 @@ export interface AutomaticOverflowGradientProps extends BoxProps {
   backgroundColor?: BackgroundColor;
   overflowMarker?: ReactNode;
   expanderButton?: ReactNode;
+  onOverflowChange?: (isOverflowing: boolean) => void;
 }
 
 const AutomaticOverflowGradient = ({
@@ -17,6 +18,7 @@ const AutomaticOverflowGradient = ({
   sx,
   overflowMarker,
   expanderButton,
+  onOverflowChange,
   children,
   ...props
 }: AutomaticOverflowGradientProps) => {
@@ -25,9 +27,11 @@ const AutomaticOverflowGradient = ({
   const outerRef = useRef<HTMLElement>(null);
   useEffect(() => {
     if (outerRef.current && internalRef.current) {
-      setIsOverflowing(internalRef.current.scrollHeight > outerRef.current.clientHeight);
+      const overflowing = internalRef.current.scrollHeight > outerRef.current.clientHeight;
+      setIsOverflowing(overflowing);
+      onOverflowChange?.(overflowing);
     }
-  }, [outerRef, internalRef, height, children]);
+  }, [outerRef, internalRef, height, children, onOverflowChange]);
 
   return (
     <>
