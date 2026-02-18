@@ -22,8 +22,7 @@ import ImagePlaceholder, { createPlaceholderImageDataUri } from '../image/ImageP
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
-  flexDirection: 'row-reverse',
-  flexWrap: 'wrap-reverse',
+  flexWrap: 'wrap',
   marginBottom: gutters(1)(theme),
   gap: gutters(0.5)(theme),
 }));
@@ -151,10 +150,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   return (
     <>
       <GalleryWrapper>
-        {[...visibleThumbnails].reverse().map((item, index) => {
-          // done so that we order correctly the items rendered in wrap-reverse
-          // and preserving the index
-          const originalIndex = visibleThumbnails.length - 1 - index;
+        {visibleThumbnails.map((item, index) => {
           const isVideo = item.type === 'video';
           const videoSource = isVideo
             ? JSON.stringify({
@@ -171,7 +167,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
                 <img
                   src={item.thumbnailUrl || item.url}
                   alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
-                  onClick={() => handleItemClick(item, originalIndex)}
+                  onClick={() => handleItemClick(item, index)}
                 />
               ) : (
                 <ImagePlaceholder text={t('components.callout-creation.framing.mediaGallery.imageNotAvailable')} />

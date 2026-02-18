@@ -298,8 +298,7 @@ const CalloutFramingMediaGalleryField = () => {
   const containerSx = useMemo(
     () => ({
       display: 'flex',
-      flexDirection: 'row-reverse',
-      flexWrap: 'wrap-reverse',
+      flexWrap: 'wrap',
       gap: gutters(),
     }),
     []
