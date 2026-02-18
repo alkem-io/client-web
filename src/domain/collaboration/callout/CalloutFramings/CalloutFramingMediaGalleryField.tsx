@@ -75,6 +75,11 @@ const SortableVisualItem = ({ id, visual, onRemove }: SortableVisualItemProps) =
         '&:hover .only-on-hover, &:focus-within .only-on-hover': {
           opacity: 1,
         },
+        '@media (pointer: coarse)': {
+          '& .only-on-hover': {
+            opacity: 1,
+          },
+        },
       }}
     >
       {Boolean(visual.previewUrl || visual.uri) ? (
@@ -112,6 +117,7 @@ const SortableVisualItem = ({ id, visual, onRemove }: SortableVisualItemProps) =
             border: 1,
             borderColor: 'divider',
             cursor: 'grab',
+            touchAction: 'none',
             '&:hover': {
               backgroundColor: 'background.paper',
             },
