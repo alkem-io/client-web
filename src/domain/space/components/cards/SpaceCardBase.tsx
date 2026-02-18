@@ -15,6 +15,9 @@ import CardTags from '@/core/ui/card/CardTags';
 
 export const CARD_FOOTER_HEIGHT = gutters(3);
 
+// Minimum card width to prevent content (avatar, title, tags) from collapsing on narrow viewports
+const CARD_MIN_WIDTH = 230;
+
 export interface SpaceCardProps extends ContributeCardProps {
   header: ReactNode | null;
   banner?: SpaceCardBanner;
@@ -57,7 +60,7 @@ const SpaceCardBase = ({
   // Compact tile mode - banner fills entire card, footer overlaid at bottom with BadgeCardView
   if (header === null) {
     return (
-      <ContributeCard sx={{ position: 'relative', overflow: 'hidden', minWidth: 230 }} {...containerProps}>
+      <ContributeCard sx={{ position: 'relative', overflow: 'hidden', minWidth: CARD_MIN_WIDTH }} {...containerProps}>
         <Box {...wrapperProps} sx={{ position: 'relative', height: '100%' }}>
           <CardBanner
             src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
@@ -111,7 +114,7 @@ const SpaceCardBase = ({
 
   // Regular mode - standard card layout with header and content
   return (
-    <ContributeCard sx={{ position: 'relative', minWidth: 230 }} {...containerProps}>
+    <ContributeCard sx={{ position: 'relative', minWidth: CARD_MIN_WIDTH }} {...containerProps}>
       <Box {...wrapperProps}>
         <CardBanner
           src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
