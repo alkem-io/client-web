@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { Suspense, useMemo, useRef, useState } from 'react';
 import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
 import { MediaGalleryItem } from './types';
 import { gutters } from '../grid/utils';
@@ -19,11 +19,11 @@ const ImageGallery = lazyWithGlobalErrorHandler(async () => {
 import type { GalleryItem, ImageGalleryRef } from 'react-image-gallery';
 import { Caption } from '../typography';
 import ImagePlaceholder, { createPlaceholderImageDataUri } from '../image/ImagePlaceholder';
+import Loading from '../loading/Loading';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
-  flexDirection: 'row-reverse',
-  flexWrap: 'wrap-reverse',
+  flexWrap: 'wrap',
   marginBottom: gutters(1)(theme),
   gap: gutters(0.5)(theme),
 }));
@@ -151,10 +151,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   return (
     <>
       <GalleryWrapper>
-        {[...visibleThumbnails].reverse().map((item, index) => {
-          // done so that we order correctly the items rendered in wrap-reverse
-          // and preserving the index
-          const originalIndex = visibleThumbnails.length - 1 - index;
+        {visibleThumbnails.map((item, index) => {
           const isVideo = item.type === 'video';
           const videoSource = isVideo
             ? JSON.stringify({
@@ -171,7 +168,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
                 <img
                   src={item.thumbnailUrl || item.url}
                   alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
-                  onClick={() => handleItemClick(item, originalIndex)}
+                  onClick={() => handleItemClick(item, index)}
                 />
               ) : (
                 <ImagePlaceholder text={t('components.callout-creation.framing.mediaGallery.imageNotAvailable')} />
@@ -233,16 +230,18 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
           {title || t('components.callout-creation.framing.mediaGallery.name')}
         </DialogHeader>
         <DialogContent sx={{ padding: 0 }}>
-          <ImageGallery
-            ref={galleryRef}
-            items={galleryItems}
-            showPlayButton={false}
-            onSlide={currentIndex => setSelectedIndex(currentIndex)}
-            showFullscreenButton={fullscreen}
-            onScreenChange={fullscreen => setFullscreen(fullscreen)}
-            disableThumbnailScroll
-            disableThumbnailSwipe
-          />
+          <Suspense fallback={<Loading />}>
+            <ImageGallery
+              ref={galleryRef}
+              items={galleryItems}
+              showPlayButton={false}
+              onSlide={currentIndex => setSelectedIndex(currentIndex)}
+              showFullscreenButton={fullscreen}
+              onScreenChange={fullscreen => setFullscreen(fullscreen)}
+              disableThumbnailScroll
+              disableThumbnailSwipe
+            />
+          </Suspense>
         </DialogContent>
       </DialogWithGrid>
     </>
