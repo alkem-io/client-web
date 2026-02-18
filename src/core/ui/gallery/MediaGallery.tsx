@@ -22,7 +22,8 @@ import ImagePlaceholder, { createPlaceholderImageDataUri } from '../image/ImageP
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
-  flexWrap: 'wrap',
+  flexDirection: 'row-reverse',
+  flexWrap: 'wrap-reverse',
   marginBottom: gutters(1)(theme),
   gap: gutters(0.5)(theme),
 }));
@@ -49,11 +50,12 @@ const GalleryThumbnail = styled('a')(() => ({
 interface MediaGalleryProps {
   title?: string;
   items: MediaGalleryItem[];
+  actions?: React.ReactNode;
 }
 
 const MAX_VISIBLE_THUMBNAILS = 6;
 
-const MediaGallery = ({ title, items }: MediaGalleryProps) => {
+const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   const { t } = useTranslation();
   const placeholderImage = useMemo(
     () => createPlaceholderImageDataUri(t('components.callout-creation.framing.mediaGallery.imageNotAvailable')),
@@ -149,7 +151,10 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
   return (
     <>
       <GalleryWrapper>
-        {visibleThumbnails.map((item, index) => {
+        {[...visibleThumbnails].reverse().map((item, index) => {
+          // done so that we order correctly the items rendered in wrap-reverse
+          // and preserving the index
+          const originalIndex = visibleThumbnails.length - 1 - index;
           const isVideo = item.type === 'video';
           const videoSource = isVideo
             ? JSON.stringify({
@@ -166,7 +171,7 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
                 <img
                   src={item.thumbnailUrl || item.url}
                   alt={item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem')}
-                  onClick={() => handleItemClick(item, index)}
+                  onClick={() => handleItemClick(item, originalIndex)}
                 />
               ) : (
                 <ImagePlaceholder text={t('components.callout-creation.framing.mediaGallery.imageNotAvailable')} />
@@ -175,12 +180,17 @@ const MediaGallery = ({ title, items }: MediaGalleryProps) => {
           );
         })}
       </GalleryWrapper>
-      {hasMoreThumbnails && (
+      {(hasMoreThumbnails || actions) && (
         <Box display="flex" justifyContent="end" alignItems="center" gap={gutters()} margin={gutters(1)}>
-          <Caption>{t('callout.create.framingSettings.mediaGallery.nItems', { count: items.length })}</Caption>
-          <Button variant="outlined" onClick={handleShowMore}>
-            {t('buttons.showAll')}
-          </Button>
+          {hasMoreThumbnails && (
+            <>
+              <Caption>{t('callout.create.framingSettings.mediaGallery.nItems', { count: items.length })}</Caption>
+              <Button variant="outlined" onClick={handleShowMore}>
+                {t('buttons.showAll')}
+              </Button>
+            </>
+          )}
+          {actions}
         </Box>
       )}
       <DialogWithGrid

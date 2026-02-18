@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import {
   Box,
@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +28,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import ImagePlaceholder from '@/core/ui/image/ImagePlaceholder';
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 
 const HEIC_TYPES = ['image/heic', 'image/heif'];
 
@@ -42,7 +44,7 @@ interface ValidationError {
 const CalloutFramingMediaGalleryField = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { values } = useFormikContext<CalloutFormSubmittedValues>();
+  const { values, setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
   const mediaVisuals = values.framing.mediaGallery?.visuals || [];
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
@@ -197,6 +199,28 @@ const CalloutFramingMediaGalleryField = () => {
     []
   );
 
+  const handleDragEnd =
+    (arrayHelpers: { move: (from: number, to: number) => void }): OnDragEndResponder =>
+    result => {
+      if (!result.destination) {
+        return;
+      }
+      const sourceIndex = result.source.index;
+      const destinationIndex = result.destination.index;
+      if (sourceIndex === destinationIndex) {
+        return;
+      }
+      arrayHelpers.move(sourceIndex, destinationIndex);
+
+      // Recompute sortOrder for all visuals based on new array positions
+      const reordered = [...mediaVisuals];
+      const [moved] = reordered.splice(sourceIndex, 1);
+      reordered.splice(destinationIndex, 0, moved);
+      reordered.forEach((_, i) => {
+        setFieldValue(`framing.mediaGallery.visuals.${i}.sortOrder`, i);
+      });
+    };
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('components.callout-creation.framing.mediaGallery.name')} />
@@ -205,105 +229,140 @@ const CalloutFramingMediaGalleryField = () => {
         name="framing.mediaGallery.visuals"
         render={arrayHelpers => (
           <Stack gap={gutters()}>
-            <Box sx={columns.container}>
-              {mediaVisuals.map((visual, index) => (
-                <Box
-                  key={`${visual.id ?? 'visual'}-${index}`}
-                  sx={{
-                    position: 'relative',
-                    paddingTop: '56.25%',
-                    backgroundColor: theme => theme.palette.grey[100],
-                    '& .only-on-hover': {
-                      opacity: 0,
-                      transition: 'opacity 0.2s',
-                    },
-                    '&:hover .only-on-hover, &:focus-within .only-on-hover': {
-                      opacity: 1,
-                    },
-                  }}
-                >
-                  {Boolean(visual.previewUrl || visual.uri) ? (
-                    <Box
-                      component="img"
-                      src={visual.previewUrl || visual.uri}
-                      alt={visual.alternativeText || visual.name || t('common.image')}
-                      sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: 0.5,
-                      }}
-                    />
-                  ) : (
-                    <ImagePlaceholder
-                      text={
-                        visual.file
-                          ? t('components.callout-creation.framing.mediaGallery.previewNotAvailable')
-                          : t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
-                      }
-                    />
-                  )}
-                  <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>
-                    <IconButton
-                      className="only-on-hover"
-                      onClick={() => {
-                        revokePreviewUrl(visual.previewUrl);
-                        arrayHelpers.remove(index);
-                      }}
-                      aria-label={t('callout.create.framingSettings.mediaGallery.deleteItem')}
-                      sx={{
-                        position: 'absolute',
-                        bottom: gutters(0.5),
-                        right: gutters(0.5),
-                        backgroundColor: 'background.default',
-                        border: 1,
-                        borderColor: 'divider',
-                        '&:hover': {
-                          backgroundColor: 'background.paper',
-                        },
-                      }}
-                    >
-                      <DeleteOutlineIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ))}
-              <Box display="flex" alignItems="end" justifyContent="flex-start">
-                {mediaVisuals.length === 0 && (
-                  <Button
-                    variant="contained"
-                    onClick={handleUploadClick}
-                    startIcon={<AddPhotoAlternateOutlinedIcon />}
-                    loading={loading}
-                  >
-                    {t('buttons.uploadMedia')}
-                  </Button>
+            <DragDropContext onDragEnd={handleDragEnd(arrayHelpers)}>
+              <Droppable droppableId="media-gallery-visuals" direction="horizontal">
+                {provided => (
+                  <Box sx={columns.container} ref={provided.innerRef} {...provided.droppableProps}>
+                    {mediaVisuals.map((visual, index) => (
+                      <Draggable
+                        key={`${visual.id ?? 'visual'}-${index}`}
+                        draggableId={`${visual.id ?? 'visual'}-${index}`}
+                        index={index}
+                      >
+                        {draggableProvided => (
+                          <Box
+                            ref={draggableProvided.innerRef}
+                            {...draggableProvided.draggableProps}
+                            sx={{
+                              position: 'relative',
+                              aspectRatio: '16 / 9',
+                              backgroundColor: theme => theme.palette.grey[100],
+                              overflow: 'hidden',
+                              '& .only-on-hover': {
+                                opacity: 0,
+                                transition: 'opacity 0.2s',
+                              },
+                              '&:hover .only-on-hover, &:focus-within .only-on-hover': {
+                                opacity: 1,
+                              },
+                            }}
+                          >
+                            {Boolean(visual.previewUrl || visual.uri) ? (
+                              <Box
+                                component="img"
+                                src={visual.previewUrl || visual.uri}
+                                alt={visual.alternativeText || visual.name || t('common.image')}
+                                sx={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  borderRadius: 0.5,
+                                }}
+                              />
+                            ) : (
+                              <ImagePlaceholder
+                                text={
+                                  visual.file
+                                    ? t('components.callout-creation.framing.mediaGallery.previewNotAvailable')
+                                    : t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
+                                }
+                              />
+                            )}
+                            <Tooltip title={t('callout.sortContributions')} arrow>
+                              <IconButton
+                                className="only-on-hover"
+                                {...draggableProvided.dragHandleProps}
+                                aria-label={t('callout.sortContributions')}
+                                sx={{
+                                  position: 'absolute',
+                                  top: gutters(0.5),
+                                  left: gutters(0.5),
+                                  backgroundColor: 'background.default',
+                                  border: 1,
+                                  borderColor: 'divider',
+                                  cursor: 'grab',
+                                  '&:hover': {
+                                    backgroundColor: 'background.paper',
+                                  },
+                                }}
+                              >
+                                <DragIndicatorIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>
+                              <IconButton
+                                className="only-on-hover"
+                                onClick={() => {
+                                  revokePreviewUrl(visual.previewUrl);
+                                  arrayHelpers.remove(index);
+                                }}
+                                aria-label={t('callout.create.framingSettings.mediaGallery.deleteItem')}
+                                sx={{
+                                  position: 'absolute',
+                                  bottom: gutters(0.5),
+                                  right: gutters(0.5),
+                                  backgroundColor: 'background.default',
+                                  border: 1,
+                                  borderColor: 'divider',
+                                  '&:hover': {
+                                    backgroundColor: 'background.paper',
+                                  },
+                                }}
+                              >
+                                <DeleteOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    <Box display="flex" alignItems="end" justifyContent="flex-start">
+                      {mediaVisuals.length === 0 && (
+                        <Button
+                          variant="contained"
+                          onClick={handleUploadClick}
+                          startIcon={<AddPhotoAlternateOutlinedIcon />}
+                          loading={loading}
+                        >
+                          {t('buttons.uploadMedia')}
+                        </Button>
+                      )}
+                      {mediaVisuals.length > 0 && (
+                        <Tooltip title={t('buttons.uploadMedia')} arrow>
+                          <IconButton aria-label={t('buttons.uploadMedia')} size="small" onClick={handleUploadClick}>
+                            <RoundedIcon component={AddIcon} size="medium" iconSize="small" color="primary.main" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        style={{ display: 'none' }}
+                        onChange={event => {
+                          const files = event.target.files;
+                          if (files) {
+                            handleFilesSelected(files, arrayHelpers.push);
+                          }
+                        }}
+                      />
+                    </Box>
+                  </Box>
                 )}
-                {mediaVisuals.length > 0 && (
-                  <Tooltip title={t('buttons.uploadMedia')} arrow>
-                    <IconButton aria-label={t('buttons.uploadMedia')} size="small" onClick={handleUploadClick}>
-                      <RoundedIcon component={AddIcon} size="medium" iconSize="small" color="primary.main" />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  style={{ display: 'none' }}
-                  onChange={event => {
-                    const files = event.target.files;
-                    if (files) {
-                      handleFilesSelected(files, arrayHelpers.push);
-                    }
-                  }}
-                />
-              </Box>
-            </Box>
+              </Droppable>
+            </DragDropContext>
           </Stack>
         )}
       />
