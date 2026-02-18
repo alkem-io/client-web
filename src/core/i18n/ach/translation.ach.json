@@ -612,7 +612,9 @@
         "month_one": "crwdns42956:0{{count}}crwdne42956:0",
         "month_other": "crwdns42958:0{{count}}crwdne42958:0",
         "year_one": "crwdns42960:0{{count}}crwdne42960:0",
-        "year_other": "crwdns42962:0{{count}}crwdne42962:0"
+        "year_other": "crwdns42962:0{{count}}crwdne42962:0",
+        "moreThanYears_one": "crwdns44246:0{{count}}crwdne44246:0",
+        "moreThanYears_other": "crwdns44248:0{{count}}crwdne44248:0"
       },
       "long": {
         "timeAgo": "crwdns18154:0{{time}}crwdne18154:0",
@@ -627,9 +629,10 @@
         "month_one": "crwdns42980:0{{count}}crwdne42980:0",
         "month_other": "crwdns42982:0{{count}}crwdne42982:0",
         "year_one": "crwdns42984:0{{count}}crwdne42984:0",
-        "year_other": "crwdns42986:0{{count}}crwdne42986:0"
-      },
-      "moreThan1Year": "crwdns43760:0crwdne43760:0"
+        "year_other": "crwdns42986:0{{count}}crwdne42986:0",
+        "moreThanYears_one": "crwdns44250:0{{count}}crwdne44250:0",
+        "moreThanYears_other": "crwdns44252:0{{count}}crwdne44252:0"
+      }
     },
     "supportEmail": "crwdns28750:0crwdne28750:0",
     "options": "crwdns37118:0crwdne37118:0",
@@ -3531,6 +3534,8 @@
         "promptGraph": {
           "editingEnabledLabel": "crwdns43300:0crwdne43300:0",
           "saveBtn": "crwdns43160:0crwdne43160:0",
+          "resetBtn": "crwdns44242:0crwdne44242:0",
+          "resetSuccess": "crwdns44244:0crwdne44244:0",
           "title": "crwdns43162:0crwdne43162:0",
           "infoText": "crwdns43164:0$t(common.virtualContributor)crwdne43164:0",
           "warning": "crwdns43166:0crwdne43166:0",

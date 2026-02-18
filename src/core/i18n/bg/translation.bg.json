@@ -612,7 +612,9 @@
         "month_one": "{{count}}м",
         "month_other": "{{count}}м",
         "year_one": "{{count}}г",
-        "year_other": "{{count}}г"
+        "year_other": "{{count}}г",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y"
       },
       "long": {
         "timeAgo": "преди {{time}}",
@@ -627,9 +629,10 @@
         "month_one": "{{count}} месец",
         "month_other": "{{count}} месеца",
         "year_one": "{{count}} година",
-        "year_other": "{{count}} години"
-      },
-      "moreThan1Year": "> 1 year ago"
+        "year_other": "{{count}} години",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years"
+      }
     },
     "supportEmail": "support@alkem.io",
     "options": "Опции",
@@ -3522,6 +3525,8 @@
         "promptGraph": {
           "editingEnabledLabel": "Разрешаване на редактиране на графа на подкани (глобална настройка на платформата)",
           "saveBtn": "Запазете графа на подкани",
+          "resetBtn": "Reset to Default",
+          "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Граф на подкани",
           "infoText": "Определете поведението на $t(common.virtualContributor), като създадете граф на подкани. Графът се състои от възли, които представляват различни действия или условия, и ребра, които определят потока между тези възли. Можете да персонализирате графа на подкани, за да отговаря на вашия конкретен случай на употреба и на вашите изисквания.",
           "warning": "Предупреждение: Разширеният режим е предназначен само за опитни потребители. Неправилни или сложни конфигурации могат да повлияят отрицателно на производителността на системата и да нарушат функционалността на Virtual Contributor.",
