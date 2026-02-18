@@ -32,6 +32,7 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -61,6 +62,7 @@ const CreateCalloutDialog = ({
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
   const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
+  const notify = useNotification();
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -157,11 +159,15 @@ const CreateCalloutDialog = ({
 
       const createdCallout = await handleCreateCallout(createCalloutInput);
       if (mediaGallery?.visuals?.length) {
-        await uploadMediaGalleryVisuals({
-          mediaGalleryId: createdCallout?.framing.mediaGallery?.id,
-          visuals: mediaGallery.visuals,
-          reuploadVisuals: true,
-        });
+        try {
+          await uploadMediaGalleryVisuals({
+            mediaGalleryId: createdCallout?.framing.mediaGallery?.id,
+            visuals: mediaGallery.visuals,
+            reuploadVisuals: true,
+          });
+        } catch {
+          notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: t('common.callout') }), 'error');
+        }
       }
       handleClose();
       setTimeout(scrollToTop, 100);
