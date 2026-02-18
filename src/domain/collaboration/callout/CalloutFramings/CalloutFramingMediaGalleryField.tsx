@@ -28,7 +28,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import ImagePlaceholder from '@/core/ui/image/ImagePlaceholder';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
+import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, rectSortingStrategy, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
 const HEIC_TYPES = ['image/heic', 'image/heif'];
 
@@ -40,6 +42,107 @@ interface ValidationError {
   fileName: string;
   errors: string[];
 }
+
+interface SortableVisualItemProps {
+  id: string;
+  visual: VisualInMediaGallerySubmittedValue;
+  onRemove: () => void;
+}
+
+const SortableVisualItem = ({ id, visual, onRemove }: SortableVisualItemProps) => {
+  const { t } = useTranslation();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+
+  return (
+    <Box
+      ref={setNodeRef}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        transition,
+      }}
+      sx={{
+        flex: '1 1 300px',
+        position: 'relative',
+        aspectRatio: '4 / 3',
+        backgroundColor: theme => theme.palette.grey[100],
+        overflow: 'hidden',
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 1 : 'auto',
+        '& .only-on-hover': {
+          opacity: 0,
+          transition: 'opacity 0.2s',
+        },
+        '&:hover .only-on-hover, &:focus-within .only-on-hover': {
+          opacity: 1,
+        },
+      }}
+    >
+      {Boolean(visual.previewUrl || visual.uri) ? (
+        <Box
+          component="img"
+          src={visual.previewUrl || visual.uri}
+          alt={visual.alternativeText || visual.name || t('common.image')}
+          sx={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            borderRadius: 0.5,
+          }}
+        />
+      ) : (
+        <ImagePlaceholder
+          text={
+            visual.file
+              ? t('components.callout-creation.framing.mediaGallery.previewNotAvailable')
+              : t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
+          }
+        />
+      )}
+      <Tooltip title={t('callout.sortContributions')} arrow>
+        <IconButton
+          className="only-on-hover"
+          {...listeners}
+          {...attributes}
+          aria-label={t('callout.sortContributions')}
+          sx={{
+            position: 'absolute',
+            top: gutters(0.5),
+            left: gutters(0.5),
+            backgroundColor: 'background.default',
+            border: 1,
+            borderColor: 'divider',
+            cursor: 'grab',
+            '&:hover': {
+              backgroundColor: 'background.paper',
+            },
+          }}
+        >
+          <DragIndicatorIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>
+        <IconButton
+          className="only-on-hover"
+          onClick={onRemove}
+          aria-label={t('callout.create.framingSettings.mediaGallery.deleteItem')}
+          sx={{
+            position: 'absolute',
+            bottom: gutters(0.5),
+            right: gutters(0.5),
+            backgroundColor: 'background.default',
+            border: 1,
+            borderColor: 'divider',
+            '&:hover': {
+              backgroundColor: 'background.paper',
+            },
+          }}
+        >
+          <DeleteOutlineIcon />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
+};
 
 const CalloutFramingMediaGalleryField = () => {
   const { t } = useTranslation();
@@ -53,6 +156,11 @@ const CalloutFramingMediaGalleryField = () => {
     variables: { visualType: VisualType.MediaGalleryImage },
   });
   const imageConstraints = constraintsData?.platform.configuration.defaultVisualTypeConstraints;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   const revokePreviewUrl = (url?: string) => {
     if (url) {
@@ -187,35 +295,33 @@ const CalloutFramingMediaGalleryField = () => {
     }
   };
 
-  const columns = useMemo(
+  const containerSx = useMemo(
     () => ({
-      container: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-        gap: gutters(),
-        alignItems: 'stretch',
-      },
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      flexWrap: 'wrap-reverse',
+      gap: gutters(),
     }),
     []
   );
 
   const handleDragEnd =
-    (arrayHelpers: { move: (from: number, to: number) => void }): OnDragEndResponder =>
-    result => {
-      if (!result.destination) {
+    (arrayHelpers: { move: (from: number, to: number) => void }, itemIds: string[]) => (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) {
         return;
       }
-      const sourceIndex = result.source.index;
-      const destinationIndex = result.destination.index;
-      if (sourceIndex === destinationIndex) {
+      const oldIndex = itemIds.indexOf(String(active.id));
+      const newIndex = itemIds.indexOf(String(over.id));
+      if (oldIndex === -1 || newIndex === -1) {
         return;
       }
-      arrayHelpers.move(sourceIndex, destinationIndex);
+      arrayHelpers.move(oldIndex, newIndex);
 
       // Recompute sortOrder for all visuals based on new array positions
       const reordered = [...mediaVisuals];
-      const [moved] = reordered.splice(sourceIndex, 1);
-      reordered.splice(destinationIndex, 0, moved);
+      const [moved] = reordered.splice(oldIndex, 1);
+      reordered.splice(newIndex, 0, moved);
       reordered.forEach((_, i) => {
         setFieldValue(`framing.mediaGallery.visuals.${i}.sortOrder`, i);
       });
@@ -227,144 +333,67 @@ const CalloutFramingMediaGalleryField = () => {
 
       <FieldArray
         name="framing.mediaGallery.visuals"
-        render={arrayHelpers => (
-          <Stack gap={gutters()}>
-            <DragDropContext onDragEnd={handleDragEnd(arrayHelpers)}>
-              <Droppable droppableId="media-gallery-visuals" direction="horizontal">
-                {provided => (
-                  <Box sx={columns.container} ref={provided.innerRef} {...provided.droppableProps}>
+        render={arrayHelpers => {
+          const itemIds = mediaVisuals.map((visual, index) => visual.id || `new-${index}`);
+
+          return (
+            <Stack gap={gutters()}>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd(arrayHelpers, itemIds)}
+              >
+                <SortableContext items={itemIds} strategy={rectSortingStrategy}>
+                  <Box sx={containerSx}>
                     {mediaVisuals.map((visual, index) => (
-                      <Draggable
-                        key={`${visual.id ?? 'visual'}-${index}`}
-                        draggableId={`${visual.id ?? 'visual'}-${index}`}
-                        index={index}
-                      >
-                        {draggableProvided => (
-                          <Box
-                            ref={draggableProvided.innerRef}
-                            {...draggableProvided.draggableProps}
-                            sx={{
-                              position: 'relative',
-                              aspectRatio: '16 / 9',
-                              backgroundColor: theme => theme.palette.grey[100],
-                              overflow: 'hidden',
-                              '& .only-on-hover': {
-                                opacity: 0,
-                                transition: 'opacity 0.2s',
-                              },
-                              '&:hover .only-on-hover, &:focus-within .only-on-hover': {
-                                opacity: 1,
-                              },
-                            }}
-                          >
-                            {Boolean(visual.previewUrl || visual.uri) ? (
-                              <Box
-                                component="img"
-                                src={visual.previewUrl || visual.uri}
-                                alt={visual.alternativeText || visual.name || t('common.image')}
-                                sx={{
-                                  width: '100%',
-                                  height: '100%',
-                                  objectFit: 'cover',
-                                  borderRadius: 0.5,
-                                }}
-                              />
-                            ) : (
-                              <ImagePlaceholder
-                                text={
-                                  visual.file
-                                    ? t('components.callout-creation.framing.mediaGallery.previewNotAvailable')
-                                    : t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
-                                }
-                              />
-                            )}
-                            <Tooltip title={t('callout.sortContributions')} arrow>
-                              <IconButton
-                                className="only-on-hover"
-                                {...draggableProvided.dragHandleProps}
-                                aria-label={t('callout.sortContributions')}
-                                sx={{
-                                  position: 'absolute',
-                                  top: gutters(0.5),
-                                  left: gutters(0.5),
-                                  backgroundColor: 'background.default',
-                                  border: 1,
-                                  borderColor: 'divider',
-                                  cursor: 'grab',
-                                  '&:hover': {
-                                    backgroundColor: 'background.paper',
-                                  },
-                                }}
-                              >
-                                <DragIndicatorIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>
-                              <IconButton
-                                className="only-on-hover"
-                                onClick={() => {
-                                  revokePreviewUrl(visual.previewUrl);
-                                  arrayHelpers.remove(index);
-                                }}
-                                aria-label={t('callout.create.framingSettings.mediaGallery.deleteItem')}
-                                sx={{
-                                  position: 'absolute',
-                                  bottom: gutters(0.5),
-                                  right: gutters(0.5),
-                                  backgroundColor: 'background.default',
-                                  border: 1,
-                                  borderColor: 'divider',
-                                  '&:hover': {
-                                    backgroundColor: 'background.paper',
-                                  },
-                                }}
-                              >
-                                <DeleteOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                    <Box display="flex" alignItems="end" justifyContent="flex-start">
-                      {mediaVisuals.length === 0 && (
-                        <Button
-                          variant="contained"
-                          onClick={handleUploadClick}
-                          startIcon={<AddPhotoAlternateOutlinedIcon />}
-                          loading={loading}
-                        >
-                          {t('buttons.uploadMedia')}
-                        </Button>
-                      )}
-                      {mediaVisuals.length > 0 && (
-                        <Tooltip title={t('buttons.uploadMedia')} arrow>
-                          <IconButton aria-label={t('buttons.uploadMedia')} size="small" onClick={handleUploadClick}>
-                            <RoundedIcon component={AddIcon} size="medium" iconSize="small" color="primary.main" />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        style={{ display: 'none' }}
-                        onChange={event => {
-                          const files = event.target.files;
-                          if (files) {
-                            handleFilesSelected(files, arrayHelpers.push);
-                          }
+                      <SortableVisualItem
+                        key={itemIds[index]}
+                        id={itemIds[index]}
+                        visual={visual}
+                        onRemove={() => {
+                          revokePreviewUrl(visual.previewUrl);
+                          arrayHelpers.remove(index);
                         }}
                       />
-                    </Box>
+                    ))}
                   </Box>
+                </SortableContext>
+              </DndContext>
+              <Box display="flex" alignItems="end" justifyContent="flex-start">
+                {mediaVisuals.length === 0 && (
+                  <Button
+                    variant="contained"
+                    onClick={handleUploadClick}
+                    startIcon={<AddPhotoAlternateOutlinedIcon />}
+                    loading={loading}
+                  >
+                    {t('buttons.uploadMedia')}
+                  </Button>
                 )}
-              </Droppable>
-            </DragDropContext>
-          </Stack>
-        )}
+                {mediaVisuals.length > 0 && (
+                  <Tooltip title={t('buttons.uploadMedia')} arrow>
+                    <IconButton aria-label={t('buttons.uploadMedia')} size="small" onClick={handleUploadClick}>
+                      <RoundedIcon component={AddIcon} size="medium" iconSize="small" color="primary.main" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={event => {
+                    const files = event.target.files;
+                    if (files) {
+                      handleFilesSelected(files, arrayHelpers.push);
+                    }
+                  }}
+                />
+              </Box>
+            </Stack>
+          );
+        }}
       />
 
       {/* Validation Error Dialog */}
