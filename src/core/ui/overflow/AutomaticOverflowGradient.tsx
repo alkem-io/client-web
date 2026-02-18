@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { BackgroundColor, overflowBorderGradient } from './utils';
@@ -25,11 +25,15 @@ const AutomaticOverflowGradient = ({
   const [isOverflowing, setIsOverflowing] = useState(false);
   const { ref: internalRef, height } = useResizeDetector();
   const outerRef = useRef<HTMLElement>(null);
-  useEffect(() => {
+  const prevOverflowingRef = useRef<boolean | null>(null);
+  useLayoutEffect(() => {
     if (outerRef.current && internalRef.current) {
       const overflowing = internalRef.current.scrollHeight > outerRef.current.clientHeight;
       setIsOverflowing(overflowing);
-      onOverflowChange?.(overflowing);
+      if (prevOverflowingRef.current !== overflowing) {
+        prevOverflowingRef.current = overflowing;
+        onOverflowChange?.(overflowing);
+      }
     }
   }, [outerRef, internalRef, height, children, onOverflowChange]);
 
