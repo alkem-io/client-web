@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { Suspense, useMemo, useRef, useState } from 'react';
 import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
 import { MediaGalleryItem } from './types';
 import { gutters } from '../grid/utils';
@@ -19,6 +19,7 @@ const ImageGallery = lazyWithGlobalErrorHandler(async () => {
 import type { GalleryItem, ImageGalleryRef } from 'react-image-gallery';
 import { Caption } from '../typography';
 import ImagePlaceholder, { createPlaceholderImageDataUri } from '../image/ImagePlaceholder';
+import Loading from '../loading/Loading';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -229,16 +230,18 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
           {title || t('components.callout-creation.framing.mediaGallery.name')}
         </DialogHeader>
         <DialogContent sx={{ padding: 0 }}>
-          <ImageGallery
-            ref={galleryRef}
-            items={galleryItems}
-            showPlayButton={false}
-            onSlide={currentIndex => setSelectedIndex(currentIndex)}
-            showFullscreenButton={fullscreen}
-            onScreenChange={fullscreen => setFullscreen(fullscreen)}
-            disableThumbnailScroll
-            disableThumbnailSwipe
-          />
+          <Suspense fallback={<Loading />}>
+            <ImageGallery
+              ref={galleryRef}
+              items={galleryItems}
+              showPlayButton={false}
+              onSlide={currentIndex => setSelectedIndex(currentIndex)}
+              showFullscreenButton={fullscreen}
+              onScreenChange={fullscreen => setFullscreen(fullscreen)}
+              disableThumbnailScroll
+              disableThumbnailSwipe
+            />
+          </Suspense>
         </DialogContent>
       </DialogWithGrid>
     </>

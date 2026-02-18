@@ -278,6 +278,7 @@ const CalloutFramingMediaGalleryField = () => {
     for (let i = 0; i < validFiles.length; i++) {
       const validFile = validFiles[i];
       push({
+        clientId: crypto.randomUUID(),
         uri: '',
         file: validFile.file,
         previewUrl: validFile.previewUrl,
@@ -333,7 +334,7 @@ const CalloutFramingMediaGalleryField = () => {
       <FieldArray
         name="framing.mediaGallery.visuals"
         render={arrayHelpers => {
-          const itemIds = mediaVisuals.map((visual, index) => visual.id || `new-${index}`);
+          const itemIds = mediaVisuals.map(visual => visual.id || visual.clientId!);
 
           return (
             <Stack gap={gutters()}>

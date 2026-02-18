@@ -34,6 +34,8 @@ export interface CalloutFormSubmittedValues {
     mediaGallery?: {
       visuals: {
         id?: string;
+        /** Stable client-side identifier for new visuals that don't yet have a server id. Used as React key and @dnd-kit sortable id. */
+        clientId?: string;
         uri: string | undefined;
         /**
          * Optional local file to upload as part of the media gallery visual.
