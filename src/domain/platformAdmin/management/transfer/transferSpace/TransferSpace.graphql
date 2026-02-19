@@ -1,0 +1,83 @@
+query SpaceTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      level
+    }
+  }
+}
+
+query SpaceTransferLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        profile {
+          id
+          displayName
+          description
+        }
+      }
+      level
+      account {
+        id
+        authorization {
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+
+query AccountOwnerUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    userId
+    organizationId
+  }
+}
+
+query UserAccountLookup($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      account {
+        id
+        authorization {
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+
+query OrganizationAccountLookup($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      account {
+        id
+        authorization {
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+
+mutation TransferSpaceToAccount($spaceId: UUID!, $targetAccountId: UUID!) {
+  transferSpaceToAccount(transferData: { spaceID: $spaceId, targetAccountID: $targetAccountId }) {
+    id
+  }
+}

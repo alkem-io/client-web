@@ -1,8 +1,8 @@
 import React from 'react';
-import AdminLayout from '../layout/toplevel/AdminLayout';
+import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { Box, Tab, Tabs } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { AdminSection } from '../layout/toplevel/constants';
+import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -10,7 +10,7 @@ import Loading from '@/core/ui/loading/Loading';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
-import EditMemberUsers from '../components/Community/EditMembersUsers';
+import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
 
 interface AdminAuthorizationPageProps {
   selectedRole?: RoleName;
