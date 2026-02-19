@@ -1,10 +1,9 @@
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CalloutContributionType,
   CalloutFramingType,
   CommunityMembershipStatus,
 } from '@/core/apollo/generated/graphql-schema';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
@@ -42,6 +41,7 @@ import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../..
 import useNavigate from '@/core/routing/useNavigate';
 import { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
+import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -61,8 +61,6 @@ interface CalloutViewProps extends BaseCalloutViewProps {
   contributionId?: string; // Selected contributionId
   calloutActions?: boolean;
 }
-
-const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CalloutView = ({
   callout,
@@ -86,10 +84,26 @@ const CalloutView = ({
   const myMembershipStatus =
     subspace?.about.membership?.myMembershipStatus ?? space?.about.membership?.myMembershipStatus;
 
-  const { isSmallScreen } = useScreenSize();
-  const lastMessageOnly = isSmallScreen && !expanded;
-
   const calloutComments = useCalloutComments(callout);
+
+  const isPostContribution = callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post);
+  const contributionForComments =
+    contributionId && isPostContribution ? { id: contributionId, post: { id: contributionId } } : undefined;
+
+  const contributionComments = useCalloutContributionComments({
+    callout: callout ?? { settings: { contribution: { commentsEnabled: false } } },
+    contribution: contributionForComments,
+  });
+
+  const [commentsCollapsed, setCommentsCollapsed] = useState(true);
+
+  useEffect(() => {
+    setCommentsCollapsed(true);
+  }, [contributionId]);
+
+  const toggleCommentsCollapse = useCallback(() => {
+    setCommentsCollapsed(prev => !prev);
+  }, []);
 
   if (!callout || loading) {
     return <CalloutViewSkeleton />;
@@ -300,17 +314,26 @@ const CalloutView = ({
             </CalloutContributionsBlock>
           )}
 
-          {/* Framing Comments */}
-          {callout.comments && (
+          {/* Comments: show contribution comments when a Post is selected, callout comments otherwise, hide for non-Post contributions */}
+          {!(contributionId && !contributionForComments) && (callout.comments || contributionForComments) && (
             <Gutters disableVerticalPadding disableGap>
               <CommentsComponent
-                {...calloutComments}
-                externalScrollRef={expanded ? scrollerRef : undefined}
-                commentsEnabled={calloutComments.commentsEnabled}
-                loading={loading || calloutComments.loading}
-                last={lastMessageOnly}
-                maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                onClickMore={() => onExpand?.(callout)}
+                {...(contributionForComments && contributionComments.commentsId
+                  ? contributionComments
+                  : calloutComments)}
+                commentsEnabled={
+                  contributionForComments && contributionComments.commentsId
+                    ? contributionComments.commentsEnabled
+                    : calloutComments.commentsEnabled
+                }
+                loading={
+                  loading ||
+                  (contributionForComments && contributionComments.commentsId
+                    ? contributionComments.loading
+                    : calloutComments.loading)
+                }
+                collapsed={commentsCollapsed}
+                onToggleCollapse={toggleCommentsCollapse}
                 isMember={myMembershipStatus === CommunityMembershipStatus.Member}
               />
             </Gutters>
