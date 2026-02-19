@@ -1,0 +1,95 @@
+query CalloutUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      collaboration {
+        calloutsSet {
+          id
+          calloutId
+        }
+      }
+    }
+  }
+}
+
+query CalloutLookup($calloutId: UUID!, $sourceCalloutsSetId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        profile {
+          id
+          displayName
+          description
+        }
+      }
+      createdBy {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      contributionsCount {
+        post
+        whiteboard
+        link
+        memo
+      }
+    }
+    calloutsSet(ID: $sourceCalloutsSetId) {
+      id
+      authorization {
+        myPrivileges
+      }
+    }
+  }
+}
+
+query SpaceUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      level
+      collaboration {
+        calloutsSet {
+          id
+        }
+      }
+    }
+  }
+}
+
+query SpaceCalloutsSetLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        profile {
+          id
+          displayName
+        }
+      }
+      level
+      collaboration {
+        calloutsSet {
+          id
+          authorization {
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation TransferCallout($calloutId: UUID!, $targetCalloutsSetId: UUID!) {
+  transferCallout(transferData: { calloutID: $calloutId, targetCalloutsSetID: $targetCalloutsSetId }) {
+    id
+    nameID
+  }
+}
