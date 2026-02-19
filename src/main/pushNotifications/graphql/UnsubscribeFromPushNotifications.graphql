@@ -1,0 +1,3 @@
+mutation UnsubscribeFromPushNotifications($endpoint: String!) {
+  unsubscribeFromPushNotifications(endpoint: $endpoint)
+}

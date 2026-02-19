@@ -13,6 +13,7 @@ import { CombinedSpaceNotificationsSettings } from './components/CombinedSpaceNo
 import { CombinedUserNotificationsSettings } from './components/CombinedUserNotificationsSettings';
 import { OrganizationNotificationsSettings } from './components/OrganizationNotificationsSettings';
 import { CombinedPlatformNotificationsSettings } from './components/CombinedPlatformNotificationsSettings';
+import { PushNotificationSettings } from '@/main/pushNotifications/PushNotificationSettings';
 import {
   NotificationSettings,
   SpaceNotificationSettings,
@@ -395,6 +396,11 @@ const UserAdminNotificationsPage = () => {
         {loading && <Loading />}
         {!loading && (
           <>
+            {notificationPageForCurrentUser && (
+              <PageContentColumn columns={12}>
+                <PushNotificationSettings />
+              </PageContentColumn>
+            )}
             <PageContentColumn columns={6}>
               {/* 1. Combined Space settings (includes regular space + space admin with divider) */}
               <CombinedSpaceNotificationsSettings

@@ -2512,7 +2512,14 @@
             "description": "Here you can see the $t(common.organizations) that your user is associated with."
           },
           "notifications": {
-            "description": "Here you can edit your $t(common.notifications) preferences."
+            "description": "Here you can edit your $t(common.notifications) preferences.",
+            "push": {
+              "title": "Push Notifications",
+              "description": "Receive notifications in your browser even when the tab is not active.",
+              "enable": "Enable",
+              "unsupported": "Push notifications are not supported by your browser.",
+              "denied": "Push notifications are blocked. To enable them, update your browser notification settings for this site."
+            }
           },
           "credentials": {
             "description": "Here you can see credentials."

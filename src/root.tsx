@@ -28,6 +28,7 @@ import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotif
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
+import { PushNotificationSubscriber } from '@/main/pushNotifications/PushNotificationSubscriber';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { Suspense } from 'react';
 
@@ -141,6 +142,7 @@ const Root: FC = () => {
                                         <InAppNotificationsDialog />
                                       </Suspense>
                                       <InAppNotificationCountSubscriber />
+                                      <PushNotificationSubscriber />
                                       <Suspense fallback={null}>
                                         <UserMessagingDialog />
                                       </Suspense>
