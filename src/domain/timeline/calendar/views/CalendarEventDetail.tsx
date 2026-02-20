@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import AddToCalendarButton from '../components/AddToCalendarButton';
 import CalendarEventDetailView from './CalendarEventDetailView';
 import useCalendarEvent from './useCalendarEvent';
 
@@ -22,7 +23,24 @@ const CalendarEventDetail = ({ eventId, onClose, actions, dialogTitleId }: Calen
       <DialogHeader
         titleContainerProps={{ id: dialogTitleId }}
         onClose={onClose}
-        actions={<>{event && <ShareButton url={event.profile.url} entityTypeName="event" />}</>}
+        actions={
+          <>
+            {event && (
+              <AddToCalendarButton
+                event={{
+                  title: event.profile.displayName,
+                  startDate: event.startDate,
+                  durationMinutes: event.durationMinutes,
+                  durationDays: event.durationDays,
+                  wholeDay: event.wholeDay,
+                  description: event.profile.description,
+                  location: event.profile.location?.city,
+                }}
+              />
+            )}
+            {event && <ShareButton url={event.profile.url} entityTypeName="event" />}
+          </>
+        }
       >
         <BlockTitle>
           {t('common.event')}: {event?.profile.displayName}
