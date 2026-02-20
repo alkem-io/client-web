@@ -12,7 +12,10 @@ export interface NonDeletedMessage extends Message {
 
 export type MaybeDeletedMessage = DeletedMessage | NonDeletedMessage;
 
-const useRestoredMessages = (messages: Message[] | undefined): MaybeDeletedMessage[] | undefined => {
+const useRestoredMessages = (
+  messages: Message[] | undefined,
+  sortOrder: 'asc' | 'desc' = 'desc'
+): MaybeDeletedMessage[] | undefined => {
   return useMemo(() => {
     if (!messages) {
       return undefined;
@@ -47,8 +50,12 @@ const useRestoredMessages = (messages: Message[] | undefined): MaybeDeletedMessa
       return restored;
     }, {});
 
-    return sortBy([...nonDeletedMessages, ...Object.values(restoredMessagesById)], message => message.createdAt);
-  }, [messages]);
+    const sorted = sortBy(
+      [...nonDeletedMessages, ...Object.values(restoredMessagesById)],
+      message => message.createdAt
+    );
+    return sortOrder === 'desc' ? sorted.reverse() : sorted;
+  }, [messages, sortOrder]);
 };
 
 export default useRestoredMessages;

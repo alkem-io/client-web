@@ -132,6 +132,7 @@ const CalendarEventDetailView = ({ eventId }: CalendarEventDetailViewProps) => {
                   canDeleteMessage={permissions.canDeleteComment}
                   onDeleteMessage={onDeleteComment}
                   canAddReaction={permissions.canAddReaction}
+                  sortOrder="asc"
                   {...commentReactionsMutations}
                 />
               </Gutters>

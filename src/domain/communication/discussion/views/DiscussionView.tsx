@@ -1,19 +1,20 @@
 import { FetchResult } from '@apollo/client';
 import { Box, GridLegacy, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Filter from '@/domain/platformAdmin/components/Common/Filter';
+
 import MessageView from '@/domain/communication/room/Comments/MessageView';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import { Message } from '@/domain/communication/room/models/Message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
+import { BlockTitle } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import Gutters from '@/core/ui/grid/Gutters';
 import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';
+import CollapsibleCommentsThread from '@/domain/communication/room/Comments/CollapsibleCommentsThread';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
@@ -59,6 +60,9 @@ export const DiscussionView = ({
 
   const commentReactionsMutations = useCommentReactionsMutations(discussion.comments.id);
 
+  const [collapsed, setCollapsed] = useState(true);
+  const toggleCollapse = useCallback(() => setCollapsed(prev => !prev), []);
+
   return (
     <GridLegacy container spacing={2} alignItems="stretch" wrap="nowrap">
       <GridLegacy item xs={12} container direction="column">
@@ -79,37 +83,6 @@ export const DiscussionView = ({
         <GridLegacy item>
           {comments && (
             <>
-              <Box paddingY={2}>
-                <BlockSectionTitle>
-                  {t('components.discussion.summary', {
-                    comment: comments.messagesCount,
-                  })}
-                </BlockSectionTitle>
-              </Box>
-              <Filter data={comments.messages}>
-                {filteredComments => {
-                  if (filteredComments.length === 0) return null;
-                  return (
-                    <Gutters>
-                      <MessagesThread
-                        canPostMessages={canPostMessages}
-                        messages={filteredComments}
-                        canDeleteMessage={canDeleteComment}
-                        onDeleteMessage={onDeleteComment}
-                        onReply={postReply}
-                        canAddReaction={canAddReaction}
-                        {...commentReactionsMutations}
-                      />
-                    </Gutters>
-                  );
-                }}
-              </Filter>
-            </>
-          )}
-        </GridLegacy>
-        <GridLegacy item container spacing={2}>
-          <GridLegacy item xs={12}>
-            <Box paddingY={2}>
               {canPostMessages && (
                 <PostMessageToCommentsForm
                   onPostComment={comment => postMessage?.(comment)}
@@ -118,12 +91,33 @@ export const DiscussionView = ({
                 />
               )}
               {!canPostMessages && (
-                <Box paddingY={4} display="flex" justifyContent="center">
+                <Box paddingY={2} display="flex" justifyContent="center">
                   <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
                 </Box>
               )}
-            </Box>
-          </GridLegacy>
+              {comments.messages.length > 0 && (
+                <CollapsibleCommentsThread
+                  itemCount={comments.messages.length}
+                  collapsed={collapsed}
+                  onToggleCollapse={toggleCollapse}
+                  id={`discussion-comments-${id}`}
+                >
+                  <Gutters disablePadding>
+                    <MessagesThread
+                      canPostMessages={canPostMessages}
+                      messages={comments.messages}
+                      canDeleteMessage={canDeleteComment}
+                      onDeleteMessage={onDeleteComment}
+                      onReply={postReply}
+                      canAddReaction={canAddReaction}
+                      sortOrder="desc"
+                      {...commentReactionsMutations}
+                    />
+                  </Gutters>
+                </CollapsibleCommentsThread>
+              )}
+            </>
+          )}
         </GridLegacy>
       </GridLegacy>
     </GridLegacy>

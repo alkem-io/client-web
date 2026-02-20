@@ -18,6 +18,7 @@ export interface MessagesThreadProps {
   canAddReaction: MessageViewProps['canAddReaction'];
   addReaction: MessageViewProps['addReaction'];
   removeReaction: MessageViewProps['removeReaction'];
+  sortOrder?: 'asc' | 'desc';
 }
 
 const MessagesThread = ({
@@ -32,10 +33,11 @@ const MessagesThread = ({
   canAddReaction,
   addReaction,
   removeReaction,
+  sortOrder,
 }: MessagesThreadProps) => {
   const { t } = useTranslation();
 
-  const messagesWithRestored = useRestoredMessages(messages);
+  const messagesWithRestored = useRestoredMessages(messages, sortOrder);
 
   const rootMessages = useMessagesTree(messagesWithRestored);
 
