@@ -67,6 +67,7 @@ const CommentsComponent = ({
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const hasMessages = messages.length > 0;
+  const commentsThreadId = commentsId ? `comments-thread-${commentsId}` : undefined;
 
   return (
     <>
@@ -84,6 +85,7 @@ const CommentsComponent = ({
       {hasMessages && (
         <Box position="relative">
           <Box
+            id={commentsThreadId}
             sx={{
               ...(collapsed
                 ? {
@@ -123,7 +125,12 @@ const CommentsComponent = ({
         </Box>
       )}
       {hasMessages && onToggleCollapse && (
-        <ButtonBase onClick={onToggleCollapse} sx={{ justifyContent: 'flex-start', paddingY: 1 }}>
+        <ButtonBase
+          onClick={onToggleCollapse}
+          aria-expanded={!collapsed}
+          aria-controls={commentsThreadId}
+          sx={{ justifyContent: 'flex-start', paddingY: 1 }}
+        >
           <Typography variant="caption" color="primary">
             {collapsed ? t('comments.expandAll', { count: messages.length }) : t('comments.collapse')}
           </Typography>

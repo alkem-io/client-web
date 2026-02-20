@@ -100,6 +100,7 @@ export const DiscussionView = ({
                 <>
                   <Box position="relative">
                     <Box
+                      id={`discussion-comments-${id}`}
                       sx={{
                         ...(collapsed
                           ? {
@@ -136,7 +137,12 @@ export const DiscussionView = ({
                       />
                     )}
                   </Box>
-                  <ButtonBase onClick={toggleCollapse} sx={{ justifyContent: 'flex-start', paddingY: 1 }}>
+                  <ButtonBase
+                    onClick={toggleCollapse}
+                    aria-expanded={!collapsed}
+                    aria-controls={`discussion-comments-${id}`}
+                    sx={{ justifyContent: 'flex-start', paddingY: 1 }}
+                  >
                     <Typography variant="caption" color="primary">
                       {collapsed
                         ? t('comments.expandAll', { count: comments.messages.length })

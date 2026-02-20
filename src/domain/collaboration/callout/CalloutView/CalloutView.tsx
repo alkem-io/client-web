@@ -86,14 +86,18 @@ const CalloutView = ({
 
   const calloutComments = useCalloutComments(callout);
 
-  const isPostContribution = callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post);
-  const contributionForComments =
-    contributionId && isPostContribution ? { id: contributionId, post: { id: contributionId } } : undefined;
+  // Always pass the contribution to the hook when a contributionId is selected.
+  // The hook queries the contribution and only resolves commentsId for Posts;
+  // for non-Post contributions (Whiteboard/Memo), commentsId stays undefined.
+  const contributionForComments = contributionId ? { id: contributionId, post: { id: contributionId } } : undefined;
 
   const contributionComments = useCalloutContributionComments({
     callout: callout ?? { settings: { contribution: { commentsEnabled: false } } },
     contribution: contributionForComments,
   });
+
+  const showContributionComments = Boolean(contributionForComments && contributionComments.commentsId);
+  const isContributionCommentsLoading = Boolean(contributionForComments && contributionComments.loading);
 
   const [commentsCollapsed, setCommentsCollapsed] = useState(true);
 
@@ -320,24 +324,12 @@ const CalloutView = ({
             </CalloutContributionsBlock>
           )}
 
-          {/* Comments: show contribution comments when a Post is selected, callout comments otherwise, hide for non-Post contributions */}
-          {!(contributionId && !contributionForComments) && (callout.comments || contributionForComments) && (
+          {/* Comments: contribution comments for Posts, callout comments when no contribution, hidden for non-Post contributions and during loading */}
+          {!isContributionCommentsLoading && (showContributionComments || (!contributionId && callout.comments)) && (
             <Gutters disableVerticalPadding disableGap>
               <CommentsComponent
-                {...(contributionForComments && contributionComments.commentsId
-                  ? contributionComments
-                  : calloutComments)}
-                commentsEnabled={
-                  contributionForComments && contributionComments.commentsId
-                    ? contributionComments.commentsEnabled
-                    : calloutComments.commentsEnabled
-                }
-                loading={
-                  loading ||
-                  (contributionForComments && contributionComments.commentsId
-                    ? contributionComments.loading
-                    : calloutComments.loading)
-                }
+                {...(showContributionComments ? contributionComments : calloutComments)}
+                loading={loading || (showContributionComments ? contributionComments.loading : calloutComments.loading)}
                 collapsed={commentsCollapsed}
                 onToggleCollapse={toggleCommentsCollapse}
                 isMember={myMembershipStatus === CommunityMembershipStatus.Member}
