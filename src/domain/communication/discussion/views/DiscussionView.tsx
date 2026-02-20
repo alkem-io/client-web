@@ -1,5 +1,5 @@
 import { FetchResult } from '@apollo/client';
-import { Box, ButtonBase, GridLegacy, Typography } from '@mui/material';
+import { Box, GridLegacy, Typography } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,8 +14,7 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import Gutters from '@/core/ui/grid/Gutters';
 import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';
-
-const DEFAULT_COLLAPSED_HEIGHT = 250;
+import CollapsibleCommentsThread from '@/domain/communication/room/Comments/CollapsibleCommentsThread';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
@@ -97,59 +96,25 @@ export const DiscussionView = ({
                 </Box>
               )}
               {comments.messages.length > 0 && (
-                <>
-                  <Box position="relative">
-                    <Box
-                      id={`discussion-comments-${id}`}
-                      sx={{
-                        ...(collapsed
-                          ? {
-                              maxHeight: DEFAULT_COLLAPSED_HEIGHT,
-                              overflow: 'hidden',
-                            }
-                          : {}),
-                      }}
-                    >
-                      <Gutters disablePadding>
-                        <MessagesThread
-                          canPostMessages={canPostMessages}
-                          messages={comments.messages}
-                          canDeleteMessage={canDeleteComment}
-                          onDeleteMessage={onDeleteComment}
-                          onReply={postReply}
-                          canAddReaction={canAddReaction}
-                          sortOrder="desc"
-                          {...commentReactionsMutations}
-                        />
-                      </Gutters>
-                    </Box>
-                    {collapsed && (
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          height: 80,
-                          background: theme => `linear-gradient(transparent, ${theme.palette.background.paper})`,
-                          pointerEvents: 'none',
-                        }}
-                      />
-                    )}
-                  </Box>
-                  <ButtonBase
-                    onClick={toggleCollapse}
-                    aria-expanded={!collapsed}
-                    aria-controls={`discussion-comments-${id}`}
-                    sx={{ justifyContent: 'flex-start', paddingY: 1 }}
-                  >
-                    <Typography variant="caption" color="primary">
-                      {collapsed
-                        ? t('comments.expandAll', { count: comments.messages.length })
-                        : t('comments.collapse')}
-                    </Typography>
-                  </ButtonBase>
-                </>
+                <CollapsibleCommentsThread
+                  itemCount={comments.messages.length}
+                  collapsed={collapsed}
+                  onToggleCollapse={toggleCollapse}
+                  id={`discussion-comments-${id}`}
+                >
+                  <Gutters disablePadding>
+                    <MessagesThread
+                      canPostMessages={canPostMessages}
+                      messages={comments.messages}
+                      canDeleteMessage={canDeleteComment}
+                      onDeleteMessage={onDeleteComment}
+                      onReply={postReply}
+                      canAddReaction={canAddReaction}
+                      sortOrder="desc"
+                      {...commentReactionsMutations}
+                    />
+                  </Gutters>
+                </CollapsibleCommentsThread>
               )}
             </>
           )}

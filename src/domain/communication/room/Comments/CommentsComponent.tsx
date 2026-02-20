@@ -9,9 +9,7 @@ import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
 import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
-import { Box, ButtonBase, Typography } from '@mui/material';
-
-const DEFAULT_COLLAPSED_HEIGHT = 250;
+import CollapsibleCommentsThread from './CollapsibleCommentsThread';
 
 export interface CommentsComponentProps {
   messages: Message[] | undefined;
@@ -47,7 +45,7 @@ const CommentsComponent = ({
   commentsEnabled,
   collapsed,
   onToggleCollapse,
-  collapsedHeight = DEFAULT_COLLAPSED_HEIGHT,
+  collapsedHeight,
 }: CommentsComponentProps) => {
   const { t } = useTranslation();
 
@@ -67,7 +65,6 @@ const CommentsComponent = ({
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const hasMessages = messages.length > 0;
-  const commentsThreadId = commentsId ? `comments-thread-${commentsId}` : undefined;
 
   return (
     <>
@@ -83,58 +80,27 @@ const CommentsComponent = ({
         <CalloutClosedMarginal messagesCount={messages?.length ?? 0} disabled={!commentsEnabled} isMember={isMember} />
       )}
       {hasMessages && (
-        <Box position="relative">
-          <Box
-            id={commentsThreadId}
-            sx={{
-              ...(collapsed
-                ? {
-                    maxHeight: collapsedHeight,
-                    overflow: 'hidden',
-                  }
-                : {}),
-            }}
-          >
-            <Gutters disableSidePadding gap={0}>
-              <MessagesThread
-                messages={messages}
-                vcInteractions={vcInteractions}
-                canPostMessages={canPostMessages}
-                onReply={handlePostReply}
-                canDeleteMessage={canDeleteMessage}
-                onDeleteMessage={onDeleteComment}
-                canAddReaction={canAddReaction}
-                loading={loading}
-                {...commentReactionsMutations}
-              />
-            </Gutters>
-          </Box>
-          {collapsed && (
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 80,
-                background: theme => `linear-gradient(transparent, ${theme.palette.background.paper})`,
-                pointerEvents: 'none',
-              }}
-            />
-          )}
-        </Box>
-      )}
-      {hasMessages && onToggleCollapse && (
-        <ButtonBase
-          onClick={onToggleCollapse}
-          aria-expanded={!collapsed}
-          aria-controls={commentsThreadId}
-          sx={{ justifyContent: 'flex-start', paddingY: 1 }}
+        <CollapsibleCommentsThread
+          itemCount={messages.length}
+          collapsed={Boolean(collapsed)}
+          onToggleCollapse={onToggleCollapse}
+          collapsedHeight={collapsedHeight}
+          id={commentsId ? `comments-thread-${commentsId}` : undefined}
         >
-          <Typography variant="caption" color="primary">
-            {collapsed ? t('comments.expandAll', { count: messages.length }) : t('comments.collapse')}
-          </Typography>
-        </ButtonBase>
+          <Gutters disableSidePadding gap={0}>
+            <MessagesThread
+              messages={messages}
+              vcInteractions={vcInteractions}
+              canPostMessages={canPostMessages}
+              onReply={handlePostReply}
+              canDeleteMessage={canDeleteMessage}
+              onDeleteMessage={onDeleteComment}
+              canAddReaction={canAddReaction}
+              loading={loading}
+              {...commentReactionsMutations}
+            />
+          </Gutters>
+        </CollapsibleCommentsThread>
       )}
       <ConfirmationDialog
         actions={{
