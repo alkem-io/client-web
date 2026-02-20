@@ -46,7 +46,7 @@ const MemoDialog = ({
   const dialogRef = useRef<HTMLDivElement>(null);
   const { fullscreen, setFullscreen } = useFullscreen();
   const { isSmallScreen } = useScreenSize();
-  const effectiveFullscreen = fullscreen || isSmallScreen;
+  const isFullscreen = fullscreen || isSmallScreen;
 
   const { memo, loading } = useMemoManager({ id: memoId });
   const [updateMemoDisplayName] = useUpdateMemoDisplayNameMutation();
@@ -84,7 +84,7 @@ const MemoDialog = ({
       onClose={handleClose}
       fullWidth
       fullHeight
-      fullScreen={effectiveFullscreen}
+      fullScreen={isFullscreen}
       aria-labelledby="memo-dialog-title"
     >
       <DialogHeader

@@ -52,7 +52,7 @@ const PublicWhiteboardPageContent: FC = () => {
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
   const { isSmallScreen } = useScreenSize();
   const { fullscreen, setFullscreen } = useFullscreen();
-  const effectiveFullscreen = fullscreen || isSmallScreen;
+  const isFullscreen = fullscreen || isSmallScreen;
   const { t } = useTranslation();
 
   const whiteboardDetails = useMemo<WhiteboardDetails | undefined>(() => {
@@ -183,7 +183,7 @@ const PublicWhiteboardPageContent: FC = () => {
           canEdit: true, // Guests can edit via collaboration
           canDelete: false, // Guests cannot delete
           dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
-          fullscreen: effectiveFullscreen,
+          fullscreen: isFullscreen,
           previewSettingsDialogOpen: previewSettingsDialogOpen,
           readOnlyDisplayName: true, // Guests cannot edit display name
           headerActions: () => (

@@ -58,7 +58,7 @@ const WhiteboardView = ({
   const { fullscreen, setFullscreen } = useFullscreen();
   const { isSmallScreen } = useScreenSize();
 
-  const effectiveFullscreen = fullscreen || isSmallScreen;
+  const isFullscreen = fullscreen || isSmallScreen;
 
   const handleCancel = () => {
     backToWhiteboards();
@@ -118,7 +118,7 @@ const WhiteboardView = ({
             show: Boolean(whiteboardId),
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
-            fullscreen: effectiveFullscreen,
+            fullscreen: isFullscreen,
             previewSettingsDialogOpen: previewSettingsDialogOpen,
             headerActions: (collabState: CollabState) => (
               <>
