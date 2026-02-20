@@ -29135,7 +29135,7 @@ export type ImportTemplateDialogQuery = {
                     profile: {
                       __typename?: 'Profile';
                       id: string;
-                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     };
                   };
                   collaboration: {
@@ -29210,7 +29210,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   };
                 };
                 collaboration: {
@@ -38575,6 +38575,29 @@ export type InnovationLibraryQuery = {
           id: string;
           type: TemplateType;
           callout?: { __typename?: 'Callout'; id: string } | undefined;
+          contentSpace?:
+            | {
+                __typename?: 'TemplateContentSpace';
+                id: string;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
