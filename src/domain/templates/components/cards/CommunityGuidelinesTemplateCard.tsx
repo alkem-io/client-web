@@ -1,16 +1,10 @@
-import React, { FC } from 'react';
-import { Skeleton } from '@mui/material';
-import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
-import ContributeCard from '@/core/ui/card/ContributeCard';
-import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
-import CardHeader from '@/core/ui/card/CardHeader';
-import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
-import CardDetails from '@/core/ui/card/CardDetails';
-import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
-import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
-import { Caption } from '@/core/ui/typography';
+import { FC } from 'react';
+import { Box } from '@mui/material';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import stopPropagationFromLinks from '@/core/ui/utils/stopPropagationFromLinks';
 import { TemplateCardProps } from './TemplateCard';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
+import TemplateCardLayout from './TemplateCardLayout';
 
 interface CommunityGuidelinesTemplateCardProps extends TemplateCardProps {
   template: CommunityGuidelinesTemplate;
@@ -23,25 +17,17 @@ const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> 
   ...props
 }) => {
   return (
-    <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName} iconComponent={CommunityGuidelinesIcon}>
-        {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
-          {innovationPack?.provider?.profile.displayName}
-        </CardHeaderCaption>
-      </CardHeader>
-      <CardDetails>
-        <CardDescriptionWithTags tags={template?.profile.defaultTagset?.tags}>
-          {template?.profile.description}
-        </CardDescriptionWithTags>
-      </CardDetails>
-      {innovationPack?.profile && (
-        <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
-        </CardSegmentCaption>
-      )}
-      {loading && <Skeleton />}
-    </ContributeCard>
+    <TemplateCardLayout
+      templateName={template?.profile.displayName}
+      innovationPack={innovationPack}
+      tags={template?.profile.defaultTagset?.tags ?? []}
+      loading={loading}
+      {...props}
+    >
+      <Box paddingX={1.5} paddingY={1} onClick={stopPropagationFromLinks}>
+        <WrapperMarkdown>{template?.profile.description ?? ''}</WrapperMarkdown>
+      </Box>
+    </TemplateCardLayout>
   );
 };
 
