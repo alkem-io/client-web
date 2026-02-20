@@ -16,6 +16,7 @@ import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
 import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
 import { gutters } from '@/core/ui/grid/utils';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -55,6 +56,9 @@ const WhiteboardView = ({
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
 
   const { fullscreen, setFullscreen } = useFullscreen();
+  const { isSmallScreen } = useScreenSize();
+
+  const isFullscreen = fullscreen || isSmallScreen;
 
   const handleCancel = () => {
     backToWhiteboards();
@@ -114,7 +118,7 @@ const WhiteboardView = ({
             show: Boolean(whiteboardId),
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
-            fullscreen,
+            fullscreen: isFullscreen,
             previewSettingsDialogOpen: previewSettingsDialogOpen,
             headerActions: (collabState: CollabState) => (
               <>
@@ -136,7 +140,7 @@ const WhiteboardView = ({
                   )}
                 </ShareButton>
 
-                <FullscreenButton />
+                {!isSmallScreen && <FullscreenButton />}
 
                 <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 

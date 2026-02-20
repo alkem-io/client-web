@@ -21,6 +21,7 @@ import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 /**
  * Inner component that uses guest session context
@@ -49,7 +50,9 @@ const PublicWhiteboardPageContent: FC = () => {
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
+  const { isSmallScreen } = useScreenSize();
   const { fullscreen, setFullscreen } = useFullscreen();
+  const isFullscreen = fullscreen || isSmallScreen;
   const { t } = useTranslation();
 
   const whiteboardDetails = useMemo<WhiteboardDetails | undefined>(() => {
@@ -180,7 +183,7 @@ const PublicWhiteboardPageContent: FC = () => {
           canEdit: true, // Guests can edit via collaboration
           canDelete: false, // Guests cannot delete
           dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
-          fullscreen,
+          fullscreen: isFullscreen,
           previewSettingsDialogOpen: previewSettingsDialogOpen,
           readOnlyDisplayName: true, // Guests cannot edit display name
           headerActions: () => (
@@ -192,7 +195,7 @@ const PublicWhiteboardPageContent: FC = () => {
                 showShareOnAlkemio={false}
               />
 
-              <FullscreenButton />
+              {!isSmallScreen && <FullscreenButton />}
 
               <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
             </>

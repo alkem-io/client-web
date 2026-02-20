@@ -853,7 +853,8 @@
           "title": "Media Gallery",
           "tooltip": "Add an image gallery to this $t(common.post)",
           "nItems": "{{count}} images in the gallery",
-          "deleteItem": "Remove image from gallery"
+          "deleteItem": "Remove image from gallery",
+          "emptyGallery": "No images yet. Click the + button to add images."
         }
       },
       "contributionSettings": {
