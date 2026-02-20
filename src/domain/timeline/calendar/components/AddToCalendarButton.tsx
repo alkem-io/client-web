@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import { useTranslation } from 'react-i18next';
+import { AppleIcon, GoogleCalendarIcon, OutlookCalendarIcon, CalendarIcon } from './icons/AddToCalendarIcons';
 
 interface AddToCalendarEvent {
   title: string;
@@ -64,9 +65,7 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
     `&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}` +
     `&body=${description}&location=${location}${wholeDay ? '&allday=true' : ''}`;
 
-  const yahooUrl =
-    `https://calendar.yahoo.com/?v=60&title=${title}&st=${startStr}&et=${endStr}` +
-    `&desc=${description}&in_loc=${location}`;
+  // Apple = iCal format
 
   const dtStartLine = wholeDay ? `DTSTART;VALUE=DATE:${startStr}` : `DTSTART:${startStr}`;
   const dtEndLine = wholeDay ? `DTEND;VALUE=DATE:${endStr}` : `DTEND:${endStr}`;
@@ -93,9 +92,9 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
 
   return (
     <>
-      <Tooltip title={t('calendar.add-to-calendar.button')} arrow placement="top">
+      <Tooltip title={t('calendar.addToCalendar.button')} arrow placement="top">
         <IconButton
-          aria-label={t('calendar.add-to-calendar.button')}
+          aria-label={t('calendar.addToCalendar.button')}
           aria-haspopup="true"
           onClick={e => setAnchor(e.currentTarget)}
           sx={{ color: theme => theme.palette.text.primary }}
@@ -105,16 +104,28 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
       </Tooltip>
       <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={handleClose}>
         <MenuItem component="a" href={googleUrl} target="_blank" rel="noopener noreferrer" onClick={handleClose}>
-          {t('calendar.add-to-calendar.google')}
+          <ListItemIcon>
+            <GoogleCalendarIcon />
+          </ListItemIcon>
+          {t('calendar.addToCalendar.google')}
         </MenuItem>
         <MenuItem component="a" href={outlookUrl} target="_blank" rel="noopener noreferrer" onClick={handleClose}>
-          {t('calendar.add-to-calendar.outlook')}
-        </MenuItem>
-        <MenuItem component="a" href={yahooUrl} target="_blank" rel="noopener noreferrer" onClick={handleClose}>
-          {t('calendar.add-to-calendar.yahoo')}
+          <ListItemIcon>
+            <OutlookCalendarIcon />
+          </ListItemIcon>
+          {t('calendar.addToCalendar.outlook')}
         </MenuItem>
         <MenuItem component="a" href={icsHref} download={icsFilename} onClick={handleClose}>
-          {t('calendar.add-to-calendar.ical')}
+          <ListItemIcon>
+            <AppleIcon />
+          </ListItemIcon>
+          {t('calendar.addToCalendar.apple')}
+        </MenuItem>
+        <MenuItem component="a" href={icsHref} download={icsFilename} onClick={handleClose}>
+          <ListItemIcon>
+            <CalendarIcon />
+          </ListItemIcon>
+          {t('calendar.addToCalendar.ical')}
         </MenuItem>
       </Menu>
     </>
