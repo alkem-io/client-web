@@ -114,9 +114,7 @@ const TransferCalloutSection = () => {
                   })}
                 </span>
               </Gutters>
-              {hasTransferOffer === false && (
-                <Caption color="error">{t(`${T_PREFIX}.missingTransferOffer`)}</Caption>
-              )}
+              {hasTransferOffer === false && <Caption color="error">{t(`${T_PREFIX}.missingTransferOffer`)}</Caption>}
             </PageContentBlock>
           )}
         </PageContentColumn>
@@ -161,9 +159,7 @@ const TransferCalloutSection = () => {
                   <span>{calloutsSetId}</span>
                 </Gutters>
               )}
-              {hasTransferAccept === false && (
-                <Caption color="error">{t(`${T_PREFIX}.missingTransferAccept`)}</Caption>
-              )}
+              {hasTransferAccept === false && <Caption color="error">{t(`${T_PREFIX}.missingTransferAccept`)}</Caption>}
             </PageContentBlock>
           )}
           {callout && calloutsSetId && (
@@ -179,7 +175,11 @@ const TransferCalloutSection = () => {
           )}
         </PageContentColumn>
       </Gutters>
-      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)} aria-labelledby="transfer-callout-success-title">
+      <Dialog
+        open={successDialogOpen}
+        onClose={() => setSuccessDialogOpen(false)}
+        aria-labelledby="transfer-callout-success-title"
+      >
         <DialogContent>
           <BlockTitle id="transfer-callout-success-title">{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
           <span>

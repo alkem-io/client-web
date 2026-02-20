@@ -72,15 +72,18 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
           minWidth={0}
           display="flex"
           flexDirection="row"
-          rowGap={gutters(0.5)}
+          alignItems="center"
+          gap={1}
           justifyContent="space-between"
           flexWrap="wrap"
         >
-          <BlockTitleWithIcon title={title} titleId={titleId} icon={icon} variant={variant} />
-          {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
+          <Box flexGrow={1} minWidth={0}>
+            <BlockTitleWithIcon title={title} titleId={titleId} icon={icon} variant={variant} />
+            {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
+          </Box>
           {children}
         </Box>
-        <Box ref={actionsContainerRef} width="100%" display="flex" justifyContent="flex-end">
+        <Box ref={actionsContainerRef} flexShrink={0} display="flex" justifyContent="flex-end">
           {actions &&
             (autoCollapseActions
               ? !actionsCollapsed && actionsContent

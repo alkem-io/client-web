@@ -12,6 +12,9 @@ import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
 import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/core/i18n/config';
 import '@testing-library/jest-dom/vitest';
 
 const buildCurrentUserMock = (): MockedResponse => ({
@@ -60,18 +63,22 @@ describe('Guest Whiteboard Access - 404 Error Handling', () => {
     ]);
 
     render(
-      <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
-        <Routes>
-          <Route
-            path="/public/whiteboard/:whiteboardId"
-            element={
-              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
-                <PublicWhiteboardPage />
-              </MockedProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
+      <RootThemeProvider>
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
+            <Routes>
+              <Route
+                path="/public/whiteboard/:whiteboardId"
+                element={
+                  <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
+                    <PublicWhiteboardPage />
+                  </MockedProvider>
+                }
+              />
+            </Routes>
+          </MemoryRouter>
+        </I18nextProvider>
+      </RootThemeProvider>
     );
 
     // Wait for error state to appear
@@ -109,18 +116,22 @@ describe('Guest Whiteboard Access - 404 Error Handling', () => {
     ]);
 
     render(
-      <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
-        <Routes>
-          <Route
-            path="/public/whiteboard/:whiteboardId"
-            element={
-              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
-                <PublicWhiteboardPage />
-              </MockedProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
+      <RootThemeProvider>
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
+            <Routes>
+              <Route
+                path="/public/whiteboard/:whiteboardId"
+                element={
+                  <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
+                    <PublicWhiteboardPage />
+                  </MockedProvider>
+                }
+              />
+            </Routes>
+          </MemoryRouter>
+        </I18nextProvider>
+      </RootThemeProvider>
     );
 
     // Wait for error state
@@ -151,18 +162,22 @@ describe('Guest Whiteboard Access - 404 Error Handling', () => {
     ]);
 
     render(
-      <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
-        <Routes>
-          <Route
-            path="/public/whiteboard/:whiteboardId"
-            element={
-              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
-                <PublicWhiteboardPage />
-              </MockedProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
+      <RootThemeProvider>
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
+            <Routes>
+              <Route
+                path="/public/whiteboard/:whiteboardId"
+                element={
+                  <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
+                    <PublicWhiteboardPage />
+                  </MockedProvider>
+                }
+              />
+            </Routes>
+          </MemoryRouter>
+        </I18nextProvider>
+      </RootThemeProvider>
     );
 
     // Should show 404-specific error message

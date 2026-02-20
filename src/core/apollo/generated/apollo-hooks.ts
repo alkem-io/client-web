@@ -24320,7 +24320,7 @@ export const ImportTemplateDialogDocument = gql`
               id
               profile {
                 id
-                visual(type: CARD) {
+                cardBanner: visual(type: CARD) {
                   id
                   uri
                 }
@@ -24430,7 +24430,7 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
                 id
                 profile {
                   id
-                  visual(type: CARD) {
+                  cardBanner: visual(type: CARD) {
                     id
                     uri
                   }
@@ -26850,6 +26850,18 @@ export const InnovationLibraryDocument = gql`
             callout {
               id
             }
+            contentSpace {
+              id
+              about {
+                id
+                profile {
+                  id
+                  cardBanner: visual(type: CARD) {
+                    ...VisualModel
+                  }
+                }
+              }
+            }
           }
           innovationPack {
             id
@@ -26899,6 +26911,7 @@ export const InnovationLibraryDocument = gql`
     }
   }
   ${TemplateProfileInfoFragmentDoc}
+  ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;

@@ -16,14 +16,19 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import CalloutFramingMediaGalleryField from '../CalloutFramings/CalloutFramingMediaGalleryField';
+import Loading from '@/core/ui/loading/Loading';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const CalloutFramingMediaGalleryField = lazyWithGlobalErrorHandler(
+  () => import('../CalloutFramings/CalloutFramingMediaGalleryField')
+);
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -240,7 +245,11 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
         </PageContentBlockSeamless>
       )}
 
-      {framing.type === CalloutFramingType.MediaGallery && <CalloutFramingMediaGalleryField />}
+      {framing.type === CalloutFramingType.MediaGallery && (
+        <Suspense fallback={<Loading />}>
+          <CalloutFramingMediaGalleryField />
+        </Suspense>
+      )}
     </>
   );
 };

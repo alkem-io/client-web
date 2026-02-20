@@ -87,27 +87,25 @@ const useTransferSpace = () => {
 
   const isLoading = spaceResolveLoading || spaceLoading;
 
-  const spaceError =
-    isLoading
-      ? undefined
-      : spaceResolved?.state === UrlResolverResultState.NotFound
-        ? ('pages.admin.transferSpace.urlNotFound' as const)
-        : spaceResolved && !resolvedSpaceId
-          ? ('pages.admin.transferSpace.urlNotSpace' as const)
-          : resolvedSpaceLevel !== undefined && resolvedSpaceLevel !== SpaceLevel.L0
-            ? ('pages.admin.transferSpace.notL0Space' as const)
-            : undefined;
+  const spaceError = isLoading
+    ? undefined
+    : spaceResolved?.state === UrlResolverResultState.NotFound
+      ? ('pages.admin.transferSpace.urlNotFound' as const)
+      : spaceResolved && !resolvedSpaceId
+        ? ('pages.admin.transferSpace.urlNotSpace' as const)
+        : resolvedSpaceLevel !== undefined && resolvedSpaceLevel !== SpaceLevel.L0
+          ? ('pages.admin.transferSpace.notL0Space' as const)
+          : undefined;
 
   const ownerIsLoading = ownerResolveLoading || userLoading || orgLoading;
 
-  const ownerError =
-    ownerIsLoading
-      ? undefined
-      : ownerResolved?.state === UrlResolverResultState.NotFound
-        ? ('pages.admin.transferSpace.urlNotFound' as const)
-        : ownerResolved && !resolvedUserId && !resolvedOrganizationId
-          ? ('pages.admin.transferSpace.urlNotUserOrOrg' as const)
-          : undefined;
+  const ownerError = ownerIsLoading
+    ? undefined
+    : ownerResolved?.state === UrlResolverResultState.NotFound
+      ? ('pages.admin.transferSpace.urlNotFound' as const)
+      : ownerResolved && !resolvedUserId && !resolvedOrganizationId
+        ? ('pages.admin.transferSpace.urlNotUserOrOrg' as const)
+        : undefined;
 
   const handleSpaceSubmit = (url: string) => {
     setSpaceUrl(toFullUrl(url));

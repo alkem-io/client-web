@@ -3,10 +3,12 @@ import { gutters } from '../grid/utils';
 import { OverflowGradientProps } from '../overflow/OverflowGradient';
 import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
 import { Box, Button } from '@mui/material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_MAX_HEIGHT_GUTTERS = 6;
+
+type OverflowState = 'detecting' | 'no-overflow' | 'expanded' | 'collapsed';
 
 interface ExpandableMarkdownProps extends WrapperMarkdownProps {
   children: string;
@@ -25,8 +27,20 @@ const ExpandableMarkdown = ({
   ...props
 }: ExpandableMarkdownProps) => {
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
-  const maxHeight = expanded ? undefined : gutters(maxHeightGutters);
+  // Start collapsed to measure overflow, then decide
+  const [state, setState] = useState<OverflowState>('detecting');
+
+  const isCollapsed = state === 'detecting' || state === 'collapsed';
+  const maxHeight = isCollapsed ? gutters(maxHeightGutters) : undefined;
+
+  const handleOverflowChange = useCallback(
+    (isOverflowing: boolean) => {
+      if (state === 'detecting') {
+        setState(isOverflowing ? 'expanded' : 'no-overflow');
+      }
+    },
+    [state]
+  );
 
   return (
     <>
@@ -35,10 +49,11 @@ const ExpandableMarkdown = ({
         minHeight={gutters(minHeightGutters)}
         backgroundColor={backgroundColor}
         overflowMarker={overflowMarker}
+        onOverflowChange={handleOverflowChange}
         expanderButton={
-          !expanded ? (
+          state === 'collapsed' ? (
             <Box textAlign="right">
-              <Button variant="text" onClick={() => setExpanded(true)}>
+              <Button variant="text" onClick={() => setState('expanded')}>
                 {t('buttons.ellipsisReadMore')}
               </Button>
             </Box>
@@ -49,9 +64,9 @@ const ExpandableMarkdown = ({
           {children}
         </WrapperMarkdown>
       </AutomaticOverflowGradient>
-      {expanded && (
+      {state === 'expanded' && (
         <Box textAlign="right">
-          <Button variant="text" onClick={() => setExpanded(false)}>
+          <Button variant="text" onClick={() => setState('collapsed')}>
             {t('buttons.showLess')}
           </Button>
         </Box>

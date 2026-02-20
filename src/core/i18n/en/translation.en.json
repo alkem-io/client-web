@@ -1,4 +1,9 @@
 {
+  "comments": {
+    "expandAll_one": "{{count}} comment on this post, click here to see all",
+    "expandAll_other": "{{count}} comments on this post, click here to see all",
+    "collapse": "Collapse comments"
+  },
   "chatbot": {
     "title": "Help",
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
@@ -855,7 +860,8 @@
           "title": "Media Gallery",
           "tooltip": "Add an image gallery to this $t(common.post)",
           "nItems": "{{count}} images in the gallery",
-          "deleteItem": "Remove image from gallery"
+          "deleteItem": "Remove image from gallery",
+          "emptyGallery": "No images yet. Click the + button to add images."
         }
       },
       "contributionSettings": {

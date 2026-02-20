@@ -60,7 +60,8 @@ const TransferSpaceSection = () => {
     }
   };
 
-  const canTransfer = space && isL0Space && accountOwner?.accountId && hasSpaceTransferOffer && hasAccountTransferAccept;
+  const canTransfer =
+    space && isL0Space && accountOwner?.accountId && hasSpaceTransferOffer && hasAccountTransferAccept;
 
   return (
     <PageContentBlock>
@@ -163,18 +164,18 @@ const TransferSpaceSection = () => {
           )}
           {canTransfer && (
             <PageContentBlock>
-              <Button
-                variant="contained"
-                onClick={onTransfer}
-                disabled={transferLoading}
-              >
+              <Button variant="contained" onClick={onTransfer} disabled={transferLoading}>
                 {transferLoading ? t(`${T_PREFIX}.transferring`) : t(`${T_PREFIX}.transferButton`)}
               </Button>
             </PageContentBlock>
           )}
         </PageContentColumn>
       </Gutters>
-      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)} aria-labelledby="transfer-space-success-title">
+      <Dialog
+        open={successDialogOpen}
+        onClose={() => setSuccessDialogOpen(false)}
+        aria-labelledby="transfer-space-success-title"
+      >
         <DialogContent>
           <BlockTitle id="transfer-space-success-title">{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
           <span>

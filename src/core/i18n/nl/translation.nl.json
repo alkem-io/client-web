@@ -612,7 +612,9 @@
         "month_one": "{{count}}mnd",
         "month_other": "{{count}}mnd",
         "year_one": "{{count}}j",
-        "year_other": "{{count}}j"
+        "year_other": "{{count}}j",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y"
       },
       "long": {
         "timeAgo": "{{time}} geleden",
@@ -627,9 +629,10 @@
         "month_one": "{{count}} maand",
         "month_other": "{{count}} maanden",
         "year_one": "{{count}} jaar",
-        "year_other": "{{count}} jaar"
-      },
-      "moreThan1Year": "> 1 jaar geleden"
+        "year_other": "{{count}} jaar",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years"
+      }
     },
     "supportEmail": "support@alkem.io",
     "options": "Opties",
@@ -1502,7 +1505,7 @@
         "dialogHeader": "Selectie omzetten naar Hyperlink"
       },
       "validation": {
-        "maxLength": "This text exceeds the length limits for this field."
+        "maxLength": "Deze tekst overschrijdt de maximale lengte voor dit veld."
       },
       "embed": {
         "iframeAria": "{{title}}",
@@ -1617,8 +1620,8 @@
         },
         "mediaGallery": {
           "name": "Mediagallerij",
-          "previewNotAvailable": "Preview available after save.",
-          "imageNotAvailable": "Image not available",
+          "previewNotAvailable": "Voorbeeld beschikbaar na opslaan.",
+          "imageNotAvailable": "Afbeelding niet beschikbaar",
           "galleryItem": "Galerij afbeelding",
           "navigation": {
             "ariaLabel": "Galerij navigatie",
@@ -3522,6 +3525,8 @@
         "promptGraph": {
           "editingEnabledLabel": "Bewerken van de prompt grafiek toestaan (platform-wide instelling)",
           "saveBtn": "Prompts opslaan",
+          "resetBtn": "Reset to Default",
+          "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Prompt grafiek",
           "infoText": "Definieer het gedrag van de $t(common.virtualContributor) door een prompt grafiek te maken. De grafiek bestaat uit knooppunten die verschillende acties of voorwaarden vertegenwoordigen en de randen die de stroom tussen deze knooppunten definiëren. Je kunt de prompte grafiek aanpassen aan uw specifieke gebruiksvoorwaarden.",
           "warning": "Waarschuwing: De geavanceerde modus is alleen bedoeld voor ervaren gebruikers. Onjuiste of complexe configuraties kunnen een negatieve invloed hebben op de systeemprestaties en kunnen de functionaliteit van de Virtual Contributor beschadigen.",

@@ -65,7 +65,7 @@ const CalloutViewLayout = ({
         sx={{
           flex: expanded ? '1 1 auto' : '0 0 auto',
           minHeight: 0,
-          maxHeight: expanded ? 'calc(100% - 120px)' : 'none',
+          maxHeight: expanded ? 'calc(100% - 60px)' : 'none',
           overflowY: expanded ? 'auto' : 'visible',
         }}
       >
