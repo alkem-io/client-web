@@ -26,10 +26,17 @@ type useCalendarEventProvided = {
         id: string;
         createdDate?: string | Date;
         type?: string;
+        startDate?: Date;
+        durationDays?: number | undefined;
+        durationMinutes: number;
+        wholeDay?: boolean;
         profile: {
           displayName: string;
           description?: string;
           url: string;
+          location?: {
+            city?: string;
+          };
           references?: {
             id: string;
             name: string;
@@ -44,8 +51,6 @@ type useCalendarEventProvided = {
             uri: string;
           };
         };
-        durationDays?: number | undefined;
-        durationMinutes: number;
         createdBy?: {
           profile: {
             displayName: string;

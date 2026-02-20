@@ -84,6 +84,13 @@
         "positive": "Event End Time can't be before event Start Time"
       }
     },
+    "add-to-calendar": {
+      "button": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "yahoo": "Yahoo Calendar",
+      "ical": "Apple Calendar / iCal"
+    },
     "no-data": "No events found",
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
     "past-events": "Past Events",
