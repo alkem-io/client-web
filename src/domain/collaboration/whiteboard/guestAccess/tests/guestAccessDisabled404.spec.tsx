@@ -11,6 +11,9 @@ import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
 import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/core/i18n/config';
 import '@testing-library/jest-dom/vitest';
 
 const mockWhiteboardId = 'guest-disabled-whiteboard';
@@ -83,18 +86,22 @@ describe('Guest Whiteboard Access - Disabled guest contributions', () => {
     ]);
 
     render(
-      <MemoryRouter initialEntries={[`/public/whiteboard/${mockWhiteboardId}`]}>
-        <Routes>
-          <Route
-            path="/public/whiteboard/:whiteboardId"
-            element={
-              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
-                <PublicWhiteboardPage />
-              </MockedProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
+      <RootThemeProvider>
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={[`/public/whiteboard/${mockWhiteboardId}`]}>
+            <Routes>
+              <Route
+                path="/public/whiteboard/:whiteboardId"
+                element={
+                  <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
+                    <PublicWhiteboardPage />
+                  </MockedProvider>
+                }
+              />
+            </Routes>
+          </MemoryRouter>
+        </I18nextProvider>
+      </RootThemeProvider>
     );
 
     const errorTitle = await screen.findByText(/Whiteboard Not Found/i, {}, { timeout: 3000 });
