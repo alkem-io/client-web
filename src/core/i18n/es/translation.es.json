@@ -612,7 +612,9 @@
         "month_one": "{{count}}mo",
         "month_other": "{{count}}mo",
         "year_one": "{{count}}y",
-        "year_other": "{{count}}y"
+        "year_other": "{{count}}y",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y"
       },
       "long": {
         "timeAgo": "hace {{time}}",
@@ -627,9 +629,10 @@
         "month_one": "{{count}} mes",
         "month_other": "{{count}} meses",
         "year_one": "{{count}} año",
-        "year_other": "{{count}} años"
-      },
-      "moreThan1Year": "> 1 year ago"
+        "year_other": "{{count}} años",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years"
+      }
     },
     "supportEmail": "support@alkem.io",
     "options": "Opciones",
@@ -3531,6 +3534,8 @@
         "promptGraph": {
           "editingEnabledLabel": "Permitir la edición del gráfico de la línea de comandos (configuración de toda la plataforma)",
           "saveBtn": "Guardar gráfico de promoción",
+          "resetBtn": "Reset to Default",
+          "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Guardar gráfico de promoción",
           "infoText": "Define el comportamiento del $t(common.virtualContributor) mediante la creación de un gráfico indicativo. El gráfico consiste en nodos que representan diferentes acciones o condiciones, y bordes que definen el flujo entre estos nodos. Puede personalizar el gráfico de avisos para que se adapte a su caso y requerimientos de uso específicos.",
           "warning": "Aviso: El modo Avanzado está diseñado sólo para usuarios experimentados. Configuraciones incorrectas o complejas pueden afectar negativamente al rendimiento del sistema y pueden romper la funcionalidad del colaborador virtual.",

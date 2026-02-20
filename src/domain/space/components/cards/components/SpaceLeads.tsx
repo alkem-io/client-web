@@ -63,9 +63,10 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads, onConta
   // Show only first 2 leads if we have more than 3, to leave room for the "+N" indicator
   const visibleLeads = totalCount > MAX_VISIBLE_LEADS ? allLeads.slice(0, MAX_VISIBLE_LEADS - 1) : allLeads;
   const overflowCount = totalCount > MAX_VISIBLE_LEADS ? totalCount - (MAX_VISIBLE_LEADS - 1) : 0;
+  const visibleItemCount = visibleLeads.length + (overflowCount > 0 ? 1 : 0);
 
   return (
-    <Box display="flex" flexWrap="wrap" gap={1} paddingLeft={1.5}>
+    <Box display="flex" flexWrap="nowrap" gap={visibleItemCount >= 3 ? 0.5 : 1} paddingLeft={1.5}>
       {visibleLeads.map(typedLead => {
         const lead = typedLead.data;
         const isUser = typedLead.type === 'user';

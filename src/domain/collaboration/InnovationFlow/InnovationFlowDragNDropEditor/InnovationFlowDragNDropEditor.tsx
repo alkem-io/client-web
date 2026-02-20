@@ -176,8 +176,12 @@ const InnovationFlowDragNDropEditor = ({
                         >
                           <PageContentBlockHeader
                             title={
-                              <Caption {...parentProvider.dragHandleProps}>
-                                <>{getStateName(state.displayName)}</>
+                              <Caption
+                                noWrap
+                                sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                {...parentProvider.dragHandleProps}
+                              >
+                                {getStateName(state.displayName)}
                               </Caption>
                             }
                             sx={{ userSelect: 'none' }}
@@ -198,7 +202,12 @@ const InnovationFlowDragNDropEditor = ({
                           />
                           {state.description?.trim() &&
                             (croppedDescriptions ? (
-                              <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3} minHeightGutters={1}>
+                              <CroppedMarkdown
+                                automaticOverflowDetector
+                                backgroundColor="paper"
+                                maxHeightGutters={3}
+                                minHeightGutters={1}
+                              >
                                 {state.description}
                               </CroppedMarkdown>
                             ) : (
