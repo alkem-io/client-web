@@ -21,6 +21,7 @@ import CollaborationSettings from '../../realTimeCollaboration/CollaborationSett
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface MemoDialogProps {
   open?: boolean;
@@ -44,6 +45,8 @@ const MemoDialog = ({
   const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const { fullscreen, setFullscreen } = useFullscreen();
+  const { isSmallScreen } = useScreenSize();
+  const isFullscreen = fullscreen || isSmallScreen;
 
   const { memo, loading } = useMemoManager({ id: memoId });
   const [updateMemoDisplayName] = useUpdateMemoDisplayNameMutation();
@@ -81,7 +84,7 @@ const MemoDialog = ({
       onClose={handleClose}
       fullWidth
       fullHeight
-      fullScreen={fullscreen}
+      fullScreen={isFullscreen}
       aria-labelledby="memo-dialog-title"
     >
       <DialogHeader
@@ -104,7 +107,7 @@ const MemoDialog = ({
             <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
               {hasUpdatePrivileges && <CollaborationSettings element={memo} elementType="memo" />}
             </ShareButton>
-            <FullscreenButton />
+            {!isSmallScreen && <FullscreenButton />}
             <UserPresencing
               collaborationState={collaborationState}
               hideSaveRequestIndicator={
