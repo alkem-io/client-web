@@ -1,16 +1,10 @@
-import { Skeleton } from '@mui/material';
-import React, { FC } from 'react';
-import CardHeader from '@/core/ui/card/CardHeader';
-import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
-import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
-import ContributeCard from '@/core/ui/card/ContributeCard';
-import { Caption } from '@/core/ui/typography/components';
-import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
-import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
-import CardDetails from '@/core/ui/card/CardDetails';
-import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import { FC } from 'react';
+import { Box } from '@mui/material';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import stopPropagationFromLinks from '@/core/ui/utils/stopPropagationFromLinks';
 import { PostTemplate } from '@/domain/templates/models/PostTemplate';
 import { TemplateCardProps } from './TemplateCard';
+import TemplateCardLayout from './TemplateCardLayout';
 
 interface PostTemplateCardProps extends TemplateCardProps {
   template: PostTemplate;
@@ -18,25 +12,17 @@ interface PostTemplateCardProps extends TemplateCardProps {
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   return (
-    <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
-        {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
-          {innovationPack?.provider?.profile.displayName}
-        </CardHeaderCaption>
-      </CardHeader>
-      <CardDetails>
-        <CardDescriptionWithTags tags={template?.profile.defaultTagset?.tags}>
-          {template?.profile.description}
-        </CardDescriptionWithTags>
-      </CardDetails>
-      {innovationPack?.profile.displayName && (
-        <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
-        </CardSegmentCaption>
-      )}
-      {loading && <Skeleton />}
-    </ContributeCard>
+    <TemplateCardLayout
+      templateName={template?.profile.displayName}
+      innovationPack={innovationPack}
+      tags={template?.profile.defaultTagset?.tags ?? []}
+      loading={loading}
+      {...props}
+    >
+      <Box paddingX={1.5} paddingY={1} onClick={stopPropagationFromLinks}>
+        <WrapperMarkdown>{template?.profile.description ?? ''}</WrapperMarkdown>
+      </Box>
+    </TemplateCardLayout>
   );
 };
 
