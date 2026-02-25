@@ -128,3 +128,19 @@ mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
     id
   }
 }
+
+query CalendarEventImportUrls($eventId: UUID!) {
+  lookup {
+    calendarEvent(ID: $eventId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      googleCalendarUrl
+      outlookCalendarUrl
+      appleCalendarUrl
+      icsDownloadUrl
+    }
+  }
+}

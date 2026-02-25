@@ -25766,6 +25766,89 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
+export const CalendarEventImportUrlsDocument = gql`
+  query CalendarEventImportUrls($eventId: UUID!) {
+    lookup {
+      calendarEvent(ID: $eventId) {
+        id
+        profile {
+          id
+          displayName
+        }
+        googleCalendarUrl
+        outlookCalendarUrl
+        appleCalendarUrl
+        icsDownloadUrl
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalendarEventImportUrlsQuery__
+ *
+ * To run a query within a React component, call `useCalendarEventImportUrlsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarEventImportUrlsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarEventImportUrlsQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useCalendarEventImportUrlsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalendarEventImportUrlsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalendarEventImportUrlsQuery, SchemaTypes.CalendarEventImportUrlsQueryVariables>(
+    CalendarEventImportUrlsDocument,
+    options
+  );
+}
+export function useCalendarEventImportUrlsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  >(CalendarEventImportUrlsDocument, options);
+}
+export function useCalendarEventImportUrlsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalendarEventImportUrlsQuery,
+        SchemaTypes.CalendarEventImportUrlsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  >(CalendarEventImportUrlsDocument, options);
+}
+export type CalendarEventImportUrlsQueryHookResult = ReturnType<typeof useCalendarEventImportUrlsQuery>;
+export type CalendarEventImportUrlsLazyQueryHookResult = ReturnType<typeof useCalendarEventImportUrlsLazyQuery>;
+export type CalendarEventImportUrlsSuspenseQueryHookResult = ReturnType<typeof useCalendarEventImportUrlsSuspenseQuery>;
+export type CalendarEventImportUrlsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalendarEventImportUrlsQuery,
+  SchemaTypes.CalendarEventImportUrlsQueryVariables
+>;
+export function refetchCalendarEventImportUrlsQuery(variables: SchemaTypes.CalendarEventImportUrlsQueryVariables) {
+  return { query: CalendarEventImportUrlsDocument, variables: variables };
+}
 export const AuthorizationPolicyDocument = gql`
   query AuthorizationPolicy($authorizationPolicyId: UUID!) {
     lookup {

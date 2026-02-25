@@ -25,19 +25,7 @@ const CalendarEventDetail = ({ eventId, onClose, actions, dialogTitleId }: Calen
         onClose={onClose}
         actions={
           <>
-            {event && (
-              <AddToCalendarButton
-                event={{
-                  title: event.profile.displayName,
-                  startDate: event.startDate,
-                  durationMinutes: event.durationMinutes,
-                  durationDays: event.durationDays,
-                  wholeDay: event.wholeDay,
-                  description: event.profile.description,
-                  location: event.profile.location?.city,
-                }}
-              />
-            )}
+            {event && <AddToCalendarButton event={event} />}
             {event && <ShareButton url={event.profile.url} entityTypeName="event" />}
           </>
         }

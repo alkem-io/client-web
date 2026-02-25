@@ -601,15 +601,19 @@ export type CalendarFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalendarEventKeySpecifier = (
+  | 'appleCalendarUrl'
   | 'authorization'
   | 'comments'
   | 'createdBy'
   | 'createdDate'
   | 'durationDays'
   | 'durationMinutes'
+  | 'googleCalendarUrl'
+  | 'icsDownloadUrl'
   | 'id'
   | 'multipleDays'
   | 'nameID'
+  | 'outlookCalendarUrl'
   | 'profile'
   | 'startDate'
   | 'subspace'
@@ -620,15 +624,19 @@ export type CalendarEventKeySpecifier = (
   | CalendarEventKeySpecifier
 )[];
 export type CalendarEventFieldPolicy = {
+  appleCalendarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   durationDays?: FieldPolicy<any> | FieldReadFunction<any>;
   durationMinutes?: FieldPolicy<any> | FieldReadFunction<any>;
+  googleCalendarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  icsDownloadUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   multipleDays?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  outlookCalendarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   startDate?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
