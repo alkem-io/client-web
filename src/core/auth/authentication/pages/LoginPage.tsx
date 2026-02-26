@@ -57,9 +57,9 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const { setReturnUrl } = useReturnUrl();
 
   const isLockedOut = params.get('lockout') === 'true';
-  const retryAfterSeconds = parseInt(params.get('retry_after') ?? '0', 10);
+  const retryAfterRaw = Number(params.get('retry_after'));
+  const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
   const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
-
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
