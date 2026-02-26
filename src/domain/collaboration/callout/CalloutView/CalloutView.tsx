@@ -1,10 +1,9 @@
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CalloutContributionType,
   CalloutFramingType,
   CommunityMembershipStatus,
 } from '@/core/apollo/generated/graphql-schema';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
@@ -42,6 +41,7 @@ import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../..
 import useNavigate from '@/core/routing/useNavigate';
 import { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
+import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -61,8 +61,6 @@ interface CalloutViewProps extends BaseCalloutViewProps {
   contributionId?: string; // Selected contributionId
   calloutActions?: boolean;
 }
-
-const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CalloutView = ({
   callout,
@@ -86,10 +84,30 @@ const CalloutView = ({
   const myMembershipStatus =
     subspace?.about.membership?.myMembershipStatus ?? space?.about.membership?.myMembershipStatus;
 
-  const { isSmallScreen } = useScreenSize();
-  const lastMessageOnly = isSmallScreen && !expanded;
-
   const calloutComments = useCalloutComments(callout);
+
+  // Always pass the contribution to the hook when a contributionId is selected.
+  // The hook queries the contribution and only resolves commentsId for Posts;
+  // for non-Post contributions (Whiteboard/Memo), commentsId stays undefined.
+  const contributionForComments = contributionId ? { id: contributionId, post: { id: contributionId } } : undefined;
+
+  const contributionComments = useCalloutContributionComments({
+    callout: callout ?? { settings: { contribution: { commentsEnabled: false } } },
+    contribution: contributionForComments,
+  });
+
+  const showContributionComments = Boolean(contributionForComments && contributionComments.commentsId);
+  const isContributionCommentsLoading = Boolean(contributionForComments && contributionComments.loading);
+
+  const [commentsCollapsed, setCommentsCollapsed] = useState(true);
+
+  useEffect(() => {
+    setCommentsCollapsed(true);
+  }, [contributionId]);
+
+  const toggleCommentsCollapse = useCallback(() => {
+    setCommentsCollapsed(prev => !prev);
+  }, []);
 
   if (!callout || loading) {
     return <CalloutViewSkeleton />;
@@ -306,17 +324,14 @@ const CalloutView = ({
             </CalloutContributionsBlock>
           )}
 
-          {/* Framing Comments */}
-          {callout.comments && (
+          {/* Comments: contribution comments for Posts, callout comments when no contribution, hidden for non-Post contributions and during loading */}
+          {!isContributionCommentsLoading && (showContributionComments || (!contributionId && callout.comments)) && (
             <Gutters disableVerticalPadding disableGap>
               <CommentsComponent
-                {...calloutComments}
-                externalScrollRef={expanded ? scrollerRef : undefined}
-                commentsEnabled={calloutComments.commentsEnabled}
-                loading={loading || calloutComments.loading}
-                last={lastMessageOnly}
-                maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                onClickMore={() => onExpand?.(callout)}
+                {...(showContributionComments ? contributionComments : calloutComments)}
+                loading={loading || (showContributionComments ? contributionComments.loading : calloutComments.loading)}
+                collapsed={commentsCollapsed}
+                onToggleCollapse={toggleCommentsCollapse}
                 isMember={myMembershipStatus === CommunityMembershipStatus.Member}
               />
             </Gutters>

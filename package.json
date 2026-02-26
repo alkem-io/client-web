@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.132.3",
+  "version": "0.133.3",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -81,7 +81,7 @@
     }
   },
   "dependencies": {
-    "@alkemio/excalidraw": "0.18.0-864353b-alkemio-15",
+    "@alkemio/excalidraw": "0.18.0-864353b-alkemio-16",
     "@apollo/client": "^3.10.8",
     "@atlaskit/pragmatic-drag-and-drop": "1.5.2",
     "@dnd-kit/core": "^6.3.1",
