@@ -9,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog/CommunityApplicationDialog';
 import { CommunityInvitationDialog } from './CommunityInvitationDialog/CommunityInvitationDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -132,12 +132,12 @@ const CreatePendingMembershipForApplication = (application: ApplicationModel) =>
   const result: MembershipTableItem = {
     id: application.id,
     type: MembershipType.Application,
-    contributorType: RoleSetContributorType.User,
-    displayName: applicant.profile.displayName,
-    url: applicant.profile.url,
+    contributorType: ActorType.User,
+    displayName: applicant.profile?.displayName ?? '',
+    url: applicant.profile?.url ?? '',
     state: application.state,
     nextEvents: application.nextEvents || [],
-    email: (applicant as User).email,
+    email: applicant.profile?.email,
     createdDate: new Date(application.createdDate),
     updatedDate: new Date(application.updatedDate),
     contributor: applicant,
@@ -151,11 +151,11 @@ const CreatePendingMembershipForInvitation = (invitation: InvitationModel) => {
     id: invitation.id,
     type: MembershipType.Invitation,
     contributorType: invitation.contributorType,
-    displayName: contributor.profile.displayName,
+    displayName: contributor.profile?.displayName ?? '',
     nextEvents: invitation.nextEvents || [],
-    url: contributor.profile.url,
+    url: contributor.profile?.url ?? '',
     state: invitation.state,
-    email: (contributor as User).email,
+    email: contributor.profile?.email,
     createdDate: new Date(invitation.createdDate),
     updatedDate: new Date(invitation.updatedDate),
     contributor: contributor,
@@ -167,7 +167,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: PlatformInvita
   const result: MembershipTableItem = {
     id: invitation.id,
     type: MembershipType.PlatformInvitation,
-    contributorType: RoleSetContributorType.User,
+    contributorType: ActorType.User,
     nextEvents: [],
     displayName: invitation.email,
     url: '',

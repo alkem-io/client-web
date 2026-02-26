@@ -57,8 +57,8 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
   size: document.size,
   uploadedBy: document.createdBy
     ? {
-        url: document.createdBy.profile.url,
-        displayName: document.createdBy.profile.displayName,
+        url: document.createdBy.profile?.url ?? '',
+        displayName: document.createdBy.profile?.displayName ?? '',
       }
     : undefined,
   uploadedAt: document.uploadedDate,

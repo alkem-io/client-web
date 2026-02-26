@@ -110,7 +110,7 @@ const SpaceAboutDialog = ({
       return <Loading />;
     }
 
-    const providerType = provider.profile.type;
+    const providerType = provider.profile?.type;
     const isOrganization = providerType === ProfileType.Organization;
 
     return (
@@ -136,10 +136,10 @@ const SpaceAboutDialog = ({
 
               return sendMessage(getMessageType(providerType), {
                 id: provider.id,
-                displayName: provider.profile.displayName,
-                avatarUri: provider.profile.avatar?.uri,
-                country: provider.profile.location?.country,
-                city: provider.profile.location?.city,
+                displayName: provider.profile?.displayName,
+                avatarUri: provider.profile?.avatar?.uri,
+                country: provider.profile?.location?.country,
+                city: provider.profile?.location?.city,
               });
             }}
             sx={{ cursor: 'pointer' }}

@@ -1,5 +1,5 @@
 query UserContributions($userId: UUID!) {
-  rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+  rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {
       id

@@ -30,7 +30,7 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceAdminCollaborationCalloutContribution,
   NotificationEvent.SpaceAdminCommunityApplication,
   NotificationEvent.SpaceAdminCommunityNewMember,
-  NotificationEvent.SpaceAdminVirtualContributorCommunityInvitationDeclined,
+  NotificationEvent.SpaceAdminVirtualCommunityInvitationDeclined,
   NotificationEvent.SpaceCollaborationCalloutComment,
   NotificationEvent.SpaceCollaborationCalloutContribution,
   NotificationEvent.SpaceCollaborationCalloutPostContributionComment,
@@ -54,7 +54,7 @@ const PLATFORM_NOTIFICATION_TYPES: NotificationEvent[] = [
 
 // Virtual Contributor notifications
 const VIRTUAL_CONTRIBUTOR_NOTIFICATION_TYPES: NotificationEvent[] = [
-  NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation,
+  NotificationEvent.VirtualAdminSpaceCommunityInvitation,
 ];
 
 // Messages & Replies filter combines User and Organization notifications

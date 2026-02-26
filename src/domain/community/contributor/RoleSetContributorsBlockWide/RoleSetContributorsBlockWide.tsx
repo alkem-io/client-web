@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import RoleSetContributorsBlockWideContent from './RoleSetContributorsBlockWideContent';
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import { useScreenSize } from '@/core/ui/grid/constants';
@@ -23,7 +23,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
-type RoleSetContributorTypesBlockWideProps = {
+type ActorTypesBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   level?: SpaceLevel;
@@ -36,15 +36,15 @@ type RoleSetContributorTypesBlockWideProps = {
 const config = [
   {
     label: 'common.people',
-    value: RoleSetContributorType.User,
+    value: ActorType.User,
   },
   {
     label: 'common.organizations',
-    value: RoleSetContributorType.Organization,
+    value: ActorType.Organization,
   },
 ] as const;
 
-const RoleSetContributorTypesBlockWide = ({
+const ActorTypesBlockWide = ({
   users,
   showUsers,
   organizations,
@@ -52,12 +52,12 @@ const RoleSetContributorTypesBlockWide = ({
   hasInvitePrivilege,
   isDialogView = false,
   isLoading = false,
-}: RoleSetContributorTypesBlockWideProps) => {
+}: ActorTypesBlockWideProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
 
-  const [contributorType, setContributorType] = useState(RoleSetContributorType.User);
+  const [contributorType, setContributorType] = useState(ActorType.User);
   const [filter, onFilterChange] = useState<string[]>([]);
 
   // People that can be invited to the community
@@ -93,7 +93,7 @@ const RoleSetContributorTypesBlockWide = ({
         {hasInvitePrivilege && (
           <Box textAlign="right">
             <InviteContributorsWizard
-              contributorType={RoleSetContributorType.User}
+              contributorType={ActorType.User}
               filterContributors={filterInviteeContributors}
               onlyFromParentCommunity={level === SpaceLevel.L2}
             />
@@ -202,4 +202,4 @@ const RoleSetContributorTypesBlockWide = ({
   );
 };
 
-export default RoleSetContributorTypesBlockWide;
+export default ActorTypesBlockWide;

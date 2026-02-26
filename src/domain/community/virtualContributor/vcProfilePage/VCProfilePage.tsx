@@ -24,7 +24,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
  */
 interface VirtualContributorProvided {
   id: string;
-  profile: {
+  profile?: {
     displayName: string;
     url: string;
   };

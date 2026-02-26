@@ -12,7 +12,9 @@ query PendingInvitations {
       invitation {
         id
         welcomeMessage
-        contributorType
+        contributor {
+          type
+        }
         createdBy {
           id
         }

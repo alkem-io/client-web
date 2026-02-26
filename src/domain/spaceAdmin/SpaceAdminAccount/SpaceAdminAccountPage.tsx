@@ -3,7 +3,11 @@ import {
   useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
+import {
+  ActorType,
+  AuthorizationPrivilege,
+  LicensingCredentialBasedPlanType,
+} from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import PageContent from '@/core/ui/content/PageContent';
@@ -65,10 +69,9 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
   const provider = data?.lookup.space?.about.provider;
   const [isHost, setIsHost] = useState(false);
   useEffect(() => {
-    // TODO: After server #4471 we should be able to see account.type to check if the space provider is a User or an Organization, and this __typename can be removed from the query
-    if (provider?.__typename === 'User') {
+    if (provider?.type === ActorType.User) {
       setIsHost(provider?.id === userModel?.id);
-    } else if (provider?.__typename === 'Organization') {
+    } else if (provider?.type === ActorType.Organization) {
       if (!organizationData) {
         fetchOrganizationAuthorization({
           variables: {
@@ -163,11 +166,11 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                 {space.about.provider && (
                   <ContributorCardHorizontal
                     profile={{
-                      displayName: space.about.provider.profile.displayName,
-                      avatar: space.about.provider.profile.avatar,
-                      location: space.about.provider.profile.location,
+                      displayName: space.about.provider.profile?.displayName ?? '',
+                      avatar: space.about.provider.profile?.avatar,
+                      location: space.about.provider.profile?.location,
                       tagsets: undefined,
-                      url: space.about.provider.profile.url,
+                      url: space.about.provider.profile?.url ?? '',
                     }}
                     seamless
                   />

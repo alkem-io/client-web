@@ -22,7 +22,7 @@ export interface PostContribution extends Identifiable {
       tagset?: { tags: string[] };
     };
     bannerNarrow?: VisualModel;
-    createdBy?: { profile: { displayName: string } };
+    createdBy?: { profile?: { displayName: string } };
     comments?: { messagesCount: number };
     createdDate: string | Date; // Apollo says Date while actually it's a string
   };

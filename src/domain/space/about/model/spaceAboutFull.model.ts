@@ -2,7 +2,7 @@ import { AuthorizationPrivilege, ProfileType, TagsetType } from '@/core/apollo/g
 
 export type ContributorModel = {
   id: string;
-  profile: {
+  profile?: {
     id: string;
     displayName: string;
     url: string;

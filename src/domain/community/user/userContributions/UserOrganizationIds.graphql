@@ -1,5 +1,5 @@
 query UserOrganizationIds($userId: UUID!) {
-  rolesUser(rolesData: { userID: $userId }) {
+  rolesUser(rolesData: { actorID: $userId }) {
     id
     organizations {
       id

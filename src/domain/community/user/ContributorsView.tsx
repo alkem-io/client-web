@@ -1,6 +1,6 @@
 import {
   OrganizationContributorFragment,
-  RoleSetContributorType,
+  ActorType,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -29,43 +29,43 @@ export const ITEMS_PER_PAGE = 32;
 const userToContributorCard = (user: UserContributorFragment): ContributorCardSquareProps => {
   return {
     id: user.id,
-    displayName: user.userProfile.displayName,
-    avatar: user.userProfile.visual?.uri ?? '',
-    url: user.userProfile.url,
+    displayName: user.userProfile?.displayName ?? '',
+    avatar: user.userProfile?.visual?.uri ?? '',
+    url: user.userProfile?.url ?? '',
     tooltip: {
       tags: (user.userProfile?.tagsets || []).flatMap(y => y.tags),
       city: user.userProfile?.location?.city || '',
       country: user.userProfile?.location?.country || '',
     },
     isContactable: user.isContactable,
-    contributorType: RoleSetContributorType.User,
+    contributorType: ActorType.User,
   };
 };
 
 const organizationToContributorCard = (org: OrganizationContributorFragment): ContributorCardSquareProps => {
   return {
     id: org.id,
-    displayName: org.orgProfile.displayName,
-    avatar: org.orgProfile.visual?.uri ?? '',
-    url: org.orgProfile.url,
+    displayName: org.orgProfile?.displayName ?? '',
+    avatar: org.orgProfile?.visual?.uri ?? '',
+    url: org.orgProfile?.url ?? '',
     isContactable: true,
-    contributorType: RoleSetContributorType.Organization,
+    contributorType: ActorType.Organization,
   };
 };
 
 const vcToContributorCard = (vc: VirtualContributorModelBase): ContributorCardSquareProps => {
   return {
     id: vc.id,
-    displayName: vc.profile.displayName,
-    avatar: vc.profile.avatar?.uri ?? '',
-    url: vc.profile.url ?? '',
+    displayName: vc.profile?.displayName ?? '',
+    avatar: vc.profile?.avatar?.uri ?? '',
+    url: vc.profile?.url ?? '',
     tooltip: {
       tags: (vc.profile?.tagsets ?? []).flatMap(y => y.tags),
       city: vc.profile?.location?.city ?? '',
       country: vc.profile?.location?.country ?? '',
     },
     isContactable: false,
-    contributorType: RoleSetContributorType.Virtual,
+    contributorType: ActorType.VirtualContributor,
   };
 };
 

@@ -8,7 +8,7 @@ query VCMemberships($virtualContributorId: UUID!) {
       }
     }
   }
-  rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
+  rolesVirtualContributor(rolesData: { actorID: $virtualContributorId }) {
     spaces {
       id
       subspaces {

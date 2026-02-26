@@ -2,7 +2,7 @@ import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export type VirtualContributorModelBase = {
   id: string;
-  profile: {
+  profile?: {
     displayName: string;
     url: string;
     tagsets?: TagsetModel[];

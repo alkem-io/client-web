@@ -96,7 +96,7 @@ const AdminInnovationPackPage = () => {
                 <PageContentBlock>
                   <InnovationPackForm
                     profile={innovationPack.profile}
-                    avatar={innovationPack.profile.avatar}
+                    avatar={innovationPack.profile?.avatar}
                     provider={innovationPack.provider}
                     onSubmit={handleSubmit}
                     loading={updatingProfile}
@@ -107,7 +107,7 @@ const AdminInnovationPackPage = () => {
                 <TemplatesAdmin
                   templatesSetId={templatesSetId}
                   templateId={templateId}
-                  baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
+                  baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile?.url ?? '')}
                   alwaysEditTemplate // When editing an Template pack, we don't want to see template preview, just go to Edit mode always
                   canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}
                   canEditTemplates={templateType => TemplateTypePermissions.edit.includes(templateType)}

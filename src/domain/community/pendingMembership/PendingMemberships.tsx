@@ -106,7 +106,7 @@ export const InvitationHydrator = ({
     skip: !userId,
   });
 
-  const userDisplayName = userData?.lookup.user?.profile.displayName ?? 'This user no longer exists on the platform!';
+  const userDisplayName = userData?.lookup.user?.profile?.displayName ?? 'This user no longer exists on the platform!';
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
     if (!invitation) {

@@ -18,7 +18,7 @@ const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueTyp
   values: compact([
     template.template.profile.displayName,
     template.innovationPack?.profile.displayName,
-    template.innovationPack?.provider?.profile.displayName,
+    template.innovationPack?.provider?.profile?.displayName,
     ...(template.template.profile.defaultTagset?.tags ?? []),
   ]),
 });
