@@ -22,7 +22,7 @@ export const useCreateSpaceLink = () => {
     ].some(entitlement => accountEntitlements.includes(entitlement));
 
     if (accountPrivileges.includes(AuthorizationPrivilege.CreateSpace) && isEntitledToCreateSpace) {
-      return buildUserAccountUrl(userModel?.profile.url);
+      return buildUserAccountUrl(userModel?.profile?.url);
     }
 
     return STATIC_PAGE_LINK;

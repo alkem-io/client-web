@@ -48,7 +48,7 @@ const initialState: GridInitialState = {
 
 interface Entity extends Identifiable {
   email?: string;
-  profile: {
+  profile?: {
     displayName: string;
   };
 }
@@ -83,11 +83,11 @@ const CommunityVirtualContributors = ({
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
-          {row.profile.displayName}
+        <Link href={row.profile?.url} target="_blank">
+          {row.profile?.displayName}
         </Link>
       ),
-      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile?.displayName,
       filterable: false,
       flex: 1,
     },

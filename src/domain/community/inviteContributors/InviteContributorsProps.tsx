@@ -1,6 +1,6 @@
 import {
   AiPersonaEngine,
-  RoleSetContributorType,
+  ActorType,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -8,7 +8,7 @@ import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface InviteContributorsDialogProps {
-  type: RoleSetContributorType;
+  type: ActorType;
   filterContributors?: (contributor: Identifiable) => boolean;
   open: boolean;
   onClose: () => void;
@@ -17,7 +17,7 @@ export interface InviteContributorsDialogProps {
 
 export interface ContributorProps extends Identifiable {
   email?: string;
-  profile: {
+  profile?: {
     displayName: string;
     description?: string;
     avatar?: {

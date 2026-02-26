@@ -25,7 +25,7 @@ interface MemoFooterProps {
   memoUrl: string | undefined;
   createdBy:
     | (Identifiable & {
-        profile: {
+        profile?: {
           displayName: string;
           url: string;
           avatar?: Visual;
@@ -150,8 +150,8 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
     if (createdBy) {
       sendMessage('user', {
         id: createdBy.id,
-        displayName: createdBy.profile.displayName,
-        avatarUri: createdBy.profile.avatar?.uri,
+        displayName: createdBy.profile?.displayName ?? '',
+        avatarUri: createdBy.profile?.avatar?.uri,
       });
     }
   };
@@ -171,10 +171,10 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
               i18nKey={`pages.memo.readonlyReason.${delayedReadonlyReason}` as const}
               values={{
                 spaceLevel: t(`common.space-level.${spaceLevel}`),
-                ownerName: createdBy?.profile.displayName,
+                ownerName: createdBy?.profile?.displayName,
               }}
               components={{
-                ownerlink: createdBy ? (
+                ownerlink: createdBy?.profile ? (
                   <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
                 ) : (
                   <span />
@@ -213,10 +213,10 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
               i18nKey={`pages.memo.readonlyDialog.reason.${collaborationState?.readOnlyCode ?? 'generic'}` as const}
               values={{
                 spaceLevel: t(`common.space-level.${spaceLevel}`),
-                ownerName: createdBy?.profile.displayName,
+                ownerName: createdBy?.profile?.displayName,
               }}
               components={{
-                ownerlink: createdBy ? (
+                ownerlink: createdBy?.profile ? (
                   <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
                 ) : (
                   <span />

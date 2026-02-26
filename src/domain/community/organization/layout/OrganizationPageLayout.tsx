@@ -16,7 +16,7 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
   const { loading, organization, permissions, handleSendMessage } = useOrganizationProvider();
 
   // Set browser tab title to "[Organization Name] | Alkemio"
-  usePageTitle(organization?.profile.displayName);
+  usePageTitle(organization?.profile?.displayName);
 
   return (
     <TopLevelLayout
@@ -25,11 +25,11 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
           <BreadcrumbsItem iconComponent={Diversity3Outlined}>{t('common.organizations')}</BreadcrumbsItem>
           <BreadcrumbsItem
             loading={loading}
-            avatar={organization?.profile.avatar}
+            avatar={organization?.profile?.avatar}
             iconComponent={Diversity3Outlined}
-            uri={organization?.profile.url}
+            uri={organization?.profile?.url}
           >
-            {organization?.profile.displayName}
+            {organization?.profile?.displayName}
           </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }

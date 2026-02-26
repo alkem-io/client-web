@@ -11,7 +11,7 @@ export interface UserModel {
   email: string;
   phone?: string;
   agent?: {};
-  profile: {
+  profile?: {
     id?: string;
     displayName: string;
     description?: string;
@@ -84,7 +84,7 @@ export interface UserFormGenerated {
 
 export interface Member {
   id: string;
-  profile: { id: string; displayName: string };
+  profile?: { id: string; displayName: string };
   firstName: string;
   lastName: string;
   email: string;

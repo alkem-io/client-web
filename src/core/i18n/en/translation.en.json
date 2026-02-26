@@ -577,7 +577,9 @@
       "roleSetContributorType": {
         "USER": "User",
         "ORGANIZATION": "$t(common.Organization)",
-        "VIRTUAL": "$t(common.virtualContributor)"
+        "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)",
+        "ACCOUNT": "Account",
+        "SPACE": "$t(common.space)"
       }
     },
     "blocks": {
@@ -706,7 +708,10 @@
       "inviteButton": {
         "USER": "Invite people to this $t(common.space)",
         "ORGANIZATION": "Invite people to this $t(common.space)",
-        "VIRTUAL": "Invite $t(common.virtualContributor)"
+        "VIRTUAL": "Invite $t(common.virtualContributor)",
+        "VIRTUAL_CONTRIBUTOR": "Invite $t(common.virtualContributor)",
+        "ACCOUNT": "Invite to this $t(common.space)",
+        "SPACE": "Invite to this $t(common.space)"
       },
       "inviteToRole": "Invite to be a: ",
       "inviteContributorsDialog": {

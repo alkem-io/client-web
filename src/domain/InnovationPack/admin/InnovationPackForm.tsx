@@ -48,7 +48,7 @@ type InnovationPackFormProps = {
     references?: ReferenceModel[];
   };
   avatar?: VisualModelFull;
-  provider?: { id: string; profile: { displayName: string } };
+  provider?: { id: string; profile?: { displayName: string } };
   listedInStore?: boolean;
   searchVisibility?: SearchVisibility;
   loading?: boolean;
@@ -125,7 +125,7 @@ const InnovationPackForm = ({
                       <TextField
                         title={t('pages.admin.innovation-packs.fields.provider')}
                         label={t('pages.admin.innovation-packs.fields.provider')}
-                        value={provider?.profile.displayName ?? ''}
+                        value={provider?.profile?.displayName ?? ''}
                         disabled
                         placeholder={t('pages.admin.innovation-packs.fields.provider')}
                       />

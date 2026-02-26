@@ -101,7 +101,7 @@ const TransferCalloutSection = () => {
               </Gutters>
               <Gutters disablePadding>
                 <BlockSectionTitle>{t(`${T_PREFIX}.createdBy`)}</BlockSectionTitle>
-                <span>{callout.createdBy?.profile.displayName ?? t(`${T_PREFIX}.unknown`)}</span>
+                <span>{callout.createdBy?.profile?.displayName ?? t(`${T_PREFIX}.unknown`)}</span>
               </Gutters>
               <Gutters disablePadding>
                 <BlockSectionTitle>{t(`${T_PREFIX}.contributions`)}</BlockSectionTitle>

@@ -12,7 +12,7 @@ export interface Message {
     timestamp: number;
     sender?: {
       id: string;
-      profile: { displayName: string };
+      profile?: { displayName: string };
     };
   }[];
 }

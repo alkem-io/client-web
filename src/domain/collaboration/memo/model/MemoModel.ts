@@ -9,7 +9,7 @@ export interface MemoModel {
   markdown?: string;
   createdBy?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       url: string;
       avatar?: { id: string; uri: string };

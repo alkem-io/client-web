@@ -40,7 +40,7 @@ export interface AccountResourcesProps {
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile;
+    profile?: AccountProfile;
   }[];
   innovationPacks: {
     id: string;

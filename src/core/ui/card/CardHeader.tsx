@@ -6,7 +6,7 @@ import RoundedIcon from '../icon/RoundedIcon';
 import BadgeCardView from '../list/BadgeCardView';
 import Avatar from '../avatar/Avatar';
 import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import SwapColors from '../palette/SwapColors';
 
 type CardTitleSectionProps = {
@@ -15,7 +15,7 @@ type CardTitleSectionProps = {
   iconComponent?: ComponentType<SvgIconProps>;
   author?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       avatar?: {
         uri: string;
@@ -31,8 +31,8 @@ const CardHeader = ({
   author,
   children,
 }: PropsWithChildren<CardTitleSectionProps>) => {
-  const avatar = author?.profile.avatar?.uri ? (
-    <ContributorTooltip contributorId={author.id} contributorType={RoleSetContributorType.User}>
+  const avatar = author?.profile?.avatar?.uri ? (
+    <ContributorTooltip contributorId={author.id} contributorType={ActorType.User}>
       <Avatar size="xsmall" src={author.profile.avatar.uri} alt={author.profile.displayName} />
     </ContributorTooltip>
   ) : undefined;

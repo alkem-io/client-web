@@ -135,7 +135,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   const { userModel } = useCurrentUserContext();
   const username = useMemo(() => {
-    if (userModel?.profile.displayName) {
+    if (userModel?.profile?.displayName) {
       return userModel.profile.displayName;
     }
 
@@ -144,7 +144,7 @@ const CollaborativeExcalidrawWrapper = ({
     return guestSuffix ? `${guestName} ${guestSuffix}` : guestName;
     // getGuestName() is intentionally omitted from dependencies - guest names are set once per session
     // and don't change dynamically. Including it would cause unnecessary re-renders without benefit.
-  }, [t, userModel?.profile.displayName]);
+  }, [t, userModel?.profile?.displayName]);
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 

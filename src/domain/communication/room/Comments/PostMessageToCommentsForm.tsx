@@ -46,7 +46,7 @@ const PostMessageToCommentsForm = ({
 
   const { userModel } = useCurrentUserContext();
 
-  const userAvatarUri = userModel?.profile.avatar?.uri;
+  const userAvatarUri = userModel?.profile?.avatar?.uri;
 
   const initialValues: formValues = {
     post: '',
@@ -72,7 +72,7 @@ const PostMessageToCommentsForm = ({
       <UserAvatar
         src={userAvatarUri}
         variant="rounded"
-        alt={t('common.avatar-of', { user: userModel?.profile.displayName })}
+        alt={t('common.avatar-of', { user: userModel?.profile?.displayName })}
       />
       <Box flexGrow={1} minWidth={0}>
         <Formik

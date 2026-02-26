@@ -40,10 +40,10 @@ export const CommunityInvitationDialog = ({
           data?.lookup.platformInvitation?.email
         ) : (
           <ProfileChip
-            displayName={contributor?.profile.displayName}
-            avatarUrl={contributor?.profile.avatar?.uri}
-            city={contributor?.profile.location?.city}
-            country={contributor?.profile.location?.country}
+            displayName={contributor?.profile?.displayName}
+            avatarUrl={contributor?.profile?.avatar?.uri}
+            city={contributor?.profile?.location?.city}
+            country={contributor?.profile?.location?.country}
           />
         )}
       </DialogHeader>

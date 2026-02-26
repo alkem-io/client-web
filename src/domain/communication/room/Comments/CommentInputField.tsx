@@ -165,8 +165,8 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
   const subspaceRoleSetId = subspace.about.membership?.roleSetID;
   const roleSetId = subspaceRoleSetId ? subspaceRoleSetId : spaceRoleSetId;
 
-  const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>
-    currentMentionedUsersRef.current.some(mention => mention.id === profile.url);
+  const isAlreadyMentioned = ({ profile }: { profile?: { url: string } }) =>
+    currentMentionedUsersRef.current.some(mention => mention.id === profile?.url);
 
   const hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
 
@@ -196,11 +196,11 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
 
     if (!hasVcInteraction && vcEnabled) {
       data?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.forEach(vc => {
-        if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
+        if (!isAlreadyMentioned(vc) && vc.profile?.displayName.toLowerCase().includes(search.toLowerCase())) {
           mentionableContributors.push({
-            id: vc.profile.url,
-            display: vc.profile.displayName,
-            avatarUrl: vc.profile.avatar?.uri,
+            id: vc.profile?.url ?? '',
+            display: vc.profile?.displayName ?? '',
+            avatarUrl: vc.profile?.avatar?.uri,
             virtualContributor: true,
           });
         }
@@ -210,11 +210,11 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
     data?.usersPaginated.users.forEach(user => {
       if (!isAlreadyMentioned(user)) {
         mentionableContributors.push({
-          id: user.profile.url,
-          display: user.profile.displayName,
-          avatarUrl: user.profile.avatar?.uri,
-          city: user.profile.location?.city,
-          country: user.profile.location?.country,
+          id: user.profile?.url ?? '',
+          display: user.profile?.displayName ?? '',
+          avatarUrl: user.profile?.avatar?.uri,
+          city: user.profile?.location?.city,
+          country: user.profile?.location?.country,
         });
       }
     });

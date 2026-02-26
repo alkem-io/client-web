@@ -13,7 +13,7 @@ export type SpaceAboutLightModel = {
     communityID?: string;
     leadUsers?: Array<{
       id: string;
-      profile: {
+      profile?: {
         id: string;
         url: string;
         displayName: string;
@@ -25,7 +25,7 @@ export type SpaceAboutLightModel = {
     }>;
     leadOrganizations?: Array<{
       id: string;
-      profile: {
+      profile?: {
         id: string;
         url: string;
         displayName: string;

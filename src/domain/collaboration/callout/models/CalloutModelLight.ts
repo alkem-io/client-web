@@ -48,7 +48,7 @@ export type CalloutModelExtension<T> = T & {
   createdBy?:
     | {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
         };
       }

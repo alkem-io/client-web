@@ -31,18 +31,9 @@ export interface ConversationMessage {
 }
 
 // GraphQL sender type (from generated types)
+// Sender is now Actor type with id, type, and nullable profile
 type GraphQLSender =
-  | { __typename?: 'Organization' }
   | {
-      __typename?: 'User';
-      id: string;
-      profile?: {
-        displayName?: string;
-        avatar?: { uri: string } | null;
-      } | null;
-    }
-  | {
-      __typename?: 'VirtualContributor';
       id: string;
       profile?: {
         displayName?: string;
@@ -76,15 +67,11 @@ export const mapMessageSender = (sender: GraphQLSender): MessageSender | undefin
     return undefined;
   }
 
-  if (sender.__typename === 'User' || sender.__typename === 'VirtualContributor') {
-    return {
-      id: sender.id,
-      displayName: sender.profile?.displayName ?? '',
-      avatarUri: sender.profile?.avatar?.uri,
-    };
-  }
-
-  return undefined;
+  return {
+    id: sender.id,
+    displayName: sender.profile?.displayName ?? '',
+    avatarUri: sender.profile?.avatar?.uri,
+  };
 };
 
 export const mapMessageReactions = (reactions: GraphQLReaction[] | null | undefined): MessageReaction[] => {
