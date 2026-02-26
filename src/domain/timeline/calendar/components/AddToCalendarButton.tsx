@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
-import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
+import { IconButton, ListItemIcon as MUIListItemIcon, Menu, MenuItem, Tooltip, styled } from '@mui/material';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { useTranslation } from 'react-i18next';
 import { AppleIcon, GoogleCalendarIcon, OutlookCalendarIcon, CalendarIcon } from './icons/AddToCalendarIcons';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useCalendarEventImportUrlsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface AddToCalendarButtonProps {
   event: Identifiable;
 }
+
+const ListItemIcon = styled(MUIListItemIcon)(({ theme }) => ({
+  marginRight: gutters(0.5)(theme),
+}));
 
 const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
   const { t } = useTranslation();
@@ -38,7 +43,7 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
           onClick={e => setAnchor(e.currentTarget)}
           sx={{ color: theme => theme.palette.text.primary }}
         >
-          <EventOutlinedIcon />
+          <FileDownloadOutlinedIcon />
         </IconButton>
       </Tooltip>
       <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={handleClose}>

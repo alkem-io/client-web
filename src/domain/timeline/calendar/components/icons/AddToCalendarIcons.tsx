@@ -1,27 +1,46 @@
-import TodayIcon from '@mui/icons-material/Today';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { Suspense } from 'react';
+import { Box, Skeleton, useTheme } from '@mui/material';
 
+const ICON_SIZE = 24;
 const OutlookLogo = lazyWithGlobalErrorHandler(() => import('./outlook.svg?react'));
 const GoogleLogo = lazyWithGlobalErrorHandler(() => import('./google.svg?react'));
 const AppleLogo = lazyWithGlobalErrorHandler(() => import('./apple.svg?react'));
 
-export const GoogleCalendarIcon = () => (
-  <Suspense fallback={null}>
-    <GoogleLogo height="24px" />
-  </Suspense>
-);
+export const GoogleCalendarIcon = () => {
+  const theme = useTheme();
+  return (
+    <Box height={`${ICON_SIZE}px`} width={`${ICON_SIZE}px`} textAlign="center">
+      <Suspense fallback={<Skeleton variant="rectangular" width="100%" height="100%" />}>
+        <GoogleLogo height="100%" fill={theme.palette.primary.main} />
+      </Suspense>
+    </Box>
+  );
+};
 
-export const OutlookCalendarIcon = () => (
-  <Suspense fallback={null}>
-    <OutlookLogo height="24px" />
-  </Suspense>
-);
+export const OutlookCalendarIcon = () => {
+  const theme = useTheme();
+  return (
+    <Box height={`${ICON_SIZE}px`} width={`${ICON_SIZE}px`} textAlign="center">
+      <Suspense fallback={null}>
+        <OutlookLogo height="100%" fill={theme.palette.primary.main} />
+      </Suspense>
+    </Box>
+  );
+};
 
-export const AppleIcon = () => (
-  <Suspense fallback={null}>
-    <AppleLogo height="24px" />
-  </Suspense>
-);
+export const AppleIcon = () => {
+  const theme = useTheme();
+  return (
+    <Box height={`${ICON_SIZE}px`} width={`${ICON_SIZE}px`} textAlign="center">
+      <Suspense fallback={null}>
+        <AppleLogo height="100%" fill={theme.palette.primary.main} />
+      </Suspense>
+    </Box>
+  );
+};
 
-export const CalendarIcon = () => <TodayIcon height="24px" />;
+export const CalendarIcon = () => {
+  return <CalendarMonthIcon height="24px" color="primary" />;
+};
