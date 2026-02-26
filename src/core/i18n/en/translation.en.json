@@ -2423,7 +2423,13 @@
         "transferFailed": "Failed to transfer callout",
         "close": "Close",
         "unknown": "Unknown",
-        "urlRequired": "URL is required"
+        "urlRequired": "URL is required",
+        "confirmTitle": "Are you sure?",
+        "confirmWarning1": "Ensure the same Innovation State (e.g., Home) exists in the space you are transferring the callout to.",
+        "confirmWarning2": "Note that any existing links to this callout in activity or notifications may become broken.",
+        "confirmWarning3": "If the callout contains Virtual Contributions and the particular Virtual Contributor is not part of the target space, the callout will be broken.",
+        "confirmWarning4": "The callout creator will remain unchanged, even if they are not part of the target community.",
+        "confirmButton": "Transfer"
       },
       "transferSpace": {
         "sectionTitle": "Transfer Space",
@@ -2452,7 +2458,10 @@
         "successMessage": "Space \"{{spaceName}}\" has been transferred to \"{{accountOwnerName}}\".",
         "transferFailed": "Failed to transfer space",
         "close": "Close",
-        "urlRequired": "URL is required"
+        "urlRequired": "URL is required",
+        "confirmTitle": "Are you sure?",
+        "confirmWarning1": "After the transfer, ensure the new owner (or organization Admins) are added as admins in the community.",
+        "confirmButton": "Transfer"
       },
       "generic": {
         "sections": {
