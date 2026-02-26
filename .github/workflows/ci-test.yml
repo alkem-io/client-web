@@ -20,9 +20,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '22.22.0'
-
-      - name: Verify pnpm store location
-        run: pnpm store path
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
