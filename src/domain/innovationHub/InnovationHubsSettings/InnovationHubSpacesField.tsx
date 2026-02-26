@@ -84,8 +84,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
     {
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
-      renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile.displayName}</>,
-      valueGetter: (_, row: GetterParams) => row?.about.provider?.profile.displayName,
+      renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile?.displayName}</>,
+      valueGetter: (_, row: GetterParams) => row?.about.provider?.profile?.displayName,
       filterable: false,
       flex: 1,
     },
@@ -202,7 +202,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                         >
                           <TableCell>{space.about.profile.displayName}</TableCell>
                           <TableCell>{space.visibility}</TableCell>
-                          <TableCell>{space.about.provider?.profile.displayName}</TableCell>
+                          <TableCell>{space.about.provider?.profile?.displayName}</TableCell>
                           <TableCell>
                             <IconButton
                               color="warning"

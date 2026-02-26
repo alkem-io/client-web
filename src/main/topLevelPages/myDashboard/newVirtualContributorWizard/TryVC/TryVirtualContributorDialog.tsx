@@ -160,7 +160,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
               <Caption alignSelf="center">
                 <Trans
                   i18nKey="createVirtualContributorWizard.trySection.subTitle"
-                  values={{ vcName: vcData?.lookup.virtualContributor?.profile.displayName ?? '' }}
+                  values={{ vcName: vcData?.lookup.virtualContributor?.profile?.displayName ?? '' }}
                   components={{
                     b: <strong />,
                     br: <br />,

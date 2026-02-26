@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { RoleName, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -54,7 +54,7 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
 
   const handleLeaveCommunity = useCallback(async () => {
     switch (contributorType) {
-      case RoleSetContributorType.User: {
+      case ActorType.User: {
         if (details?.roleSetId && userId) {
           await userLeaveCommunity({
             variables: {
@@ -67,7 +67,7 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
         }
         break;
       }
-      case RoleSetContributorType.Virtual: {
+      case ActorType.VirtualContributor: {
         if (details?.roleSetId && contributorId) {
           await vcLeaveCommunity({
             variables: {

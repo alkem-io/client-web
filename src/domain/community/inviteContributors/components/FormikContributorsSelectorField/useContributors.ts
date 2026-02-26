@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useInviteUsersDialogQuery, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { UserFilterInput, RoleSetContributorType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { UserFilterInput, ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 export interface ContributorItem {
   id: string;
-  profile: {
+  profile?: {
     displayName: string;
     description?: string;
     location?: {
@@ -56,7 +56,7 @@ export const useContributors = ({
   const { usersByRole, loading: loadingUsersByRoleSet } = useRoleSetManager({
     roleSetId: parentRoleSetId,
     relevantRoles: [RoleName.Member],
-    contributorTypes: [RoleSetContributorType.User],
+    contributorTypes: [ActorType.User],
     fetchContributors: true,
     skip: !onlyUsersInRole || !parentSpaceId || !parentRoleSetId,
   });
@@ -95,10 +95,12 @@ export const useContributors = ({
     () =>
       (usersByRole[RoleName.Member] ?? []).map(user => ({
         ...user,
-        profile: {
-          ...user.profile,
-          visual: user.profile.avatar, // to match the expected shape
-        },
+        profile: user.profile
+          ? {
+              ...user.profile,
+              visual: user.profile.avatar, // to match the expected shape
+            }
+          : undefined,
       })),
     [usersByRole]
   );

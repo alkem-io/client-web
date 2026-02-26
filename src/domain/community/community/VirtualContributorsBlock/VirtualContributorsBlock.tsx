@@ -13,7 +13,7 @@ import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIco
 import Gutters from '@/core/ui/grid/Gutters';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
 import InviteContributorsDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 
 export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
@@ -57,20 +57,20 @@ const VirtualContributorsBlock = ({
         )}
         {visibleVCs?.map(vc => (
           <BadgeCardView
-            key={vc.profile.displayName}
+            key={vc.profile?.displayName}
             variant="rounded"
             visual={
               <Avatar
-                src={vc.profile.avatar?.uri}
+                src={vc.profile?.avatar?.uri}
                 alt={
-                  vc.profile.displayName ? t('common.avatar-of', { user: vc.profile.displayName }) : t('common.avatar')
+                  vc.profile?.displayName ? t('common.avatar-of', { user: vc.profile.displayName }) : t('common.avatar')
                 }
               />
             }
             component={RouterLink}
-            to={vc.profile.url}
+            to={vc.profile?.url ?? ''}
           >
-            <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
+            <BlockSectionTitle>{vc.profile?.displayName}</BlockSectionTitle>
           </BadgeCardView>
         ))}
       </Gutters>
@@ -82,7 +82,7 @@ const VirtualContributorsBlock = ({
         <InviteContributorsDialog
           open={inviteDialogOpen}
           onClose={closeInviteDialog}
-          type={RoleSetContributorType.Virtual}
+          type={ActorType.VirtualContributor}
         />
       )}
     </PageContentBlock>

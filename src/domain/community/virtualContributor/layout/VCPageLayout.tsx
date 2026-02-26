@@ -25,7 +25,7 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
   const vc = data?.lookup.virtualContributor;
 
   // Set browser tab title to "[VC Name] | Alkemio"
-  usePageTitle(vc?.profile.displayName);
+  usePageTitle(vc?.profile?.displayName);
 
   const settings = pathname.split('/').includes('settings');
 
@@ -38,11 +38,11 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={urlResolverLoading || loading}
-            avatar={vc?.profile.avatar}
+            avatar={vc?.profile?.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={vc?.profile.url ?? ''}
+            uri={vc?.profile?.url ?? ''}
           >
-            {vc?.profile.displayName}
+            {vc?.profile?.displayName}
           </BreadcrumbsItem>
           {settings && (
             <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>

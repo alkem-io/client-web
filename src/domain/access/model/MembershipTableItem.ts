@@ -1,10 +1,10 @@
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { MembershipType } from './MembershipType';
 
 export type MembershipTableItem = {
   id: string;
   type: MembershipType;
-  contributorType: RoleSetContributorType;
+  contributorType: ActorType;
   url: string;
   displayName: string;
   state?: string;
@@ -14,7 +14,7 @@ export type MembershipTableItem = {
   updatedDate?: Date;
   contributor?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
     };
   };

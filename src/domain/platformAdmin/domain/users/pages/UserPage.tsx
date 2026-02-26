@@ -66,8 +66,8 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
   const isSaving = updateMutationLoading;
 
   const handleSave = async (editedUser: UserModel) => {
-    const profileId = editedUser.profile.id;
-    const tagsetsToAdd = editedUser.profile.tagsets?.filter(x => !x.id) ?? [];
+    const profileId = editedUser.profile?.id;
+    const tagsetsToAdd = editedUser.profile?.tagsets?.filter(x => !x.id) ?? [];
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({
@@ -112,7 +112,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
         editMode={readOnly ? EditMode.readOnly : EditMode.edit}
         onSave={handleSave}
         user={user}
-        avatar={user?.profile.avatar}
+        avatar={user?.profile?.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <ConfirmationDialog

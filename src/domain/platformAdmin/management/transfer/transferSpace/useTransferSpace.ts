@@ -61,7 +61,7 @@ const useTransferSpace = () => {
     if (resolvedUserId) {
       const user = userData?.lookup.user;
       return {
-        name: user?.profile.displayName,
+        name: user?.profile?.displayName,
         accountId: user?.account?.id,
         accountAuthorization: user?.account?.authorization,
         type: 'user' as const,
@@ -70,7 +70,7 @@ const useTransferSpace = () => {
     if (resolvedOrganizationId) {
       const org = orgData?.lookup.organization;
       return {
-        name: org?.profile.displayName,
+        name: org?.profile?.displayName,
         accountId: org?.account?.id,
         accountAuthorization: org?.account?.authorization,
         type: 'organization' as const,

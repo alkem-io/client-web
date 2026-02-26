@@ -4,7 +4,7 @@ import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/c
 import {
   AuthorizationPrivilege,
   RoleName,
-  RoleSetContributorType,
+  ActorType,
   RoleSetMemberOrganizationFragment,
   RoleSetMemberUserFragment,
   RoleSetMemberVirtualContributorFragment,
@@ -70,7 +70,7 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
 type useRoleSetManagerParams = {
   roleSetId: string | undefined;
   relevantRoles: readonly RoleName[];
-  contributorTypes?: readonly RoleSetContributorType[];
+  contributorTypes?: readonly ActorType[];
   fetchContributors?: boolean;
   fetchRoleDefinitions?: boolean;
   onChange?: () => void;
@@ -82,7 +82,7 @@ const useRoleSetManager = ({
   relevantRoles,
   fetchContributors = false,
   fetchRoleDefinitions = false,
-  contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
+  contributorTypes = [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
   onChange,
   skip,
 }: useRoleSetManagerParams): useRoleSetManagerProvided => {
@@ -122,9 +122,9 @@ const useRoleSetManager = ({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
-      includeUsers: fetchContributors && contributorTypes.includes(RoleSetContributorType.User),
-      includeOrganizations: fetchContributors && contributorTypes.includes(RoleSetContributorType.Organization),
-      includeVirtualContributors: fetchContributors && contributorTypes.includes(RoleSetContributorType.Virtual),
+      includeUsers: fetchContributors && contributorTypes.includes(ActorType.User),
+      includeOrganizations: fetchContributors && contributorTypes.includes(ActorType.Organization),
+      includeVirtualContributors: fetchContributors && contributorTypes.includes(ActorType.VirtualContributor),
       includeRoleDefinitions: fetchRoleDefinitions,
     },
     skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,

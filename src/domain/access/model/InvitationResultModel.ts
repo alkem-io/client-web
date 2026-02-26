@@ -6,7 +6,7 @@ type InvitationResultModel = {
     id: string;
     contributor: {
       id: string;
-      profile: { displayName: string };
+      profile?: { displayName: string };
     };
   };
   platformInvitation?: {

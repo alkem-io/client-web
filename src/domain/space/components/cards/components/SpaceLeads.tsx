@@ -1,11 +1,11 @@
 import { Box, Avatar, Typography } from '@mui/material';
 import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 
 export interface Lead {
   id: string;
-  profile: {
+  profile?: {
     id: string;
     url: string;
     displayName: string;
@@ -18,7 +18,7 @@ export interface Lead {
 
 export interface LeadOrganization {
   id: string;
-  profile: {
+  profile?: {
     id: string;
     url: string;
     displayName: string;
@@ -71,7 +71,7 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads, onConta
         const lead = typedLead.data;
         const isUser = typedLead.type === 'user';
         const leadType: LeadType = isUser ? 'user' : 'organization';
-        const contributorType = isUser ? RoleSetContributorType.User : RoleSetContributorType.Organization;
+        const contributorType = isUser ? ActorType.User : ActorType.Organization;
         const hasContactCallback = Boolean(onContactLead);
 
         return (
@@ -81,15 +81,15 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads, onConta
             contributorType={contributorType}
             onContact={
               hasContactCallback
-                ? () => onContactLead?.(leadType, lead.id, lead.profile.displayName, lead.profile.avatar?.uri)
+                ? () => onContactLead?.(leadType, lead.id, lead.profile?.displayName ?? '', lead.profile?.avatar?.uri)
                 : undefined
             }
           >
             <Avatar
               component={RouterLink}
-              to={lead.profile.url}
-              src={lead.profile.avatar?.uri}
-              alt={lead.profile.avatar?.alternativeText || lead.profile.displayName}
+              to={lead.profile?.url ?? ''}
+              src={lead.profile?.avatar?.uri}
+              alt={lead.profile?.avatar?.alternativeText || lead.profile?.displayName}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               sx={{
                 width: 36,

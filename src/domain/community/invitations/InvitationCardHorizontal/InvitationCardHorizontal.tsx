@@ -48,7 +48,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
               spaceLevel={invitation.space.level}
               createdDate={invitation.invitation.createdDate}
               author={{ displayName: invitation.userDisplayName }}
-              type={invitation.invitation.contributorType}
+              type={invitation.invitation.contributor?.type}
             />
           </BlockSectionTitle>
           <CardText

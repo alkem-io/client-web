@@ -5,13 +5,13 @@ import { gutters } from '../grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormattedDate from '../date/FormattedDate';
 import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 
 type AuthorshipProps = {
   author:
     | {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
           avatar?: {
             uri: string | undefined;
@@ -30,7 +30,7 @@ const Authorship = ({ author, date, component: Component = Caption, children }: 
   }
   return (
     <Box display="flex" gap={gutters(0.5)}>
-      <ContributorTooltip contributorId={author.id} contributorType={RoleSetContributorType.User}>
+      <ContributorTooltip contributorId={author.id} contributorType={ActorType.User}>
         <Box display="flex" gap={gutters(0.5)}>
           {author?.profile?.avatar?.uri && (
             <Box
@@ -43,10 +43,10 @@ const Authorship = ({ author, date, component: Component = Caption, children }: 
               role="img"
             />
           )}
-          <Component style={{ cursor: 'default', whiteSpace: 'nowrap' }}>{author.profile.displayName}</Component>
+          <Component style={{ cursor: 'default', whiteSpace: 'nowrap' }}>{author.profile?.displayName}</Component>
         </Box>
       </ContributorTooltip>
-      {author.profile.displayName && date && ' · '}
+      {author.profile?.displayName && date && ' · '}
       <FormattedDate date={date} component={Component} />
       <Component>{children}</Component>
     </Box>

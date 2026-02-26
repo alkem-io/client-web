@@ -7,7 +7,7 @@ import {
 import { Caption } from '@/core/ui/typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import ContributorTooltip from '../../../contributor/ContributorTooltip/ContributorTooltip';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 
 interface ContributorChipProps {
@@ -45,11 +45,7 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
   switch (contributor.type) {
     case ContributorSelectorType.User:
       return (
-        <ContributorTooltip
-          contributorId={contributor.id}
-          contributorType={RoleSetContributorType.User}
-          override={validationError}
-        >
+        <ContributorTooltip contributorId={contributor.id} contributorType={ActorType.User} override={validationError}>
           <StyledChip invalid={!!validationError}>
             <Caption>{contributor.displayName}</Caption>
             {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
