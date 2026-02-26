@@ -2,7 +2,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 
 // TODO clean up fetched data
 export interface ContributorViewModel extends Identifiable {
-  profile: {
+  profile?: {
     displayName: string;
     avatar?: {
       uri: string;

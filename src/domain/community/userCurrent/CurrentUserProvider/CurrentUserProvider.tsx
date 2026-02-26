@@ -24,7 +24,7 @@ const CurrentUserContext = createContext<CurrentUserModel>({
 });
 
 const CurrentUserProvider = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
+  const { isAuthenticated, loading: loadingAuthentication, verified, session } = useAuthenticationContext();
 
   const {
     data: meData,
@@ -44,10 +44,20 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError) {
-      createUserProfile();
+    const email = (session?.identity?.traits as Record<string, unknown> | undefined)?.email as string | undefined;
+    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError && email) {
+      createUserProfile({
+        variables: {
+          userData: {
+            email,
+            profileData: {
+              displayName: email,
+            },
+          },
+        },
+      });
     }
-  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error]);
+  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error, session]);
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 

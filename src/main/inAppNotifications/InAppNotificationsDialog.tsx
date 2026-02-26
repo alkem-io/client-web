@@ -38,7 +38,7 @@ const InAppNotificationsDialog = () => {
                 <DraftsOutlinedIcon />
               </IconButton>
             </Tooltip>
-            {userModel?.profile.url && (
+            {userModel?.profile?.url && (
               <Tooltip title={t('common.settings')} placement="top">
                 <IconButton component={RouterLink} to={buildNotificationSettingsUrl(userModel.profile.url)}>
                   <SettingsOutlinedIcon />

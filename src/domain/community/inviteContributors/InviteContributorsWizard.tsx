@@ -1,4 +1,4 @@
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 interface InviteContributorsWizardProps extends ButtonProps {
-  contributorType: RoleSetContributorType;
+  contributorType: ActorType;
   filterContributors?: (contributor: Identifiable) => boolean;
   onlyFromParentCommunity?: boolean;
 }

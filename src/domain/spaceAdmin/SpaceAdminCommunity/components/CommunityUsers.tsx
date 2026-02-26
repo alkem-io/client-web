@@ -85,11 +85,11 @@ const CommunityUsers = ({
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
-          {row.profile.displayName}
+        <Link href={row.profile?.url} target="_blank">
+          {row.profile?.displayName}
         </Link>
       ),
-      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile?.displayName,
       flex: 1,
       filterable: false,
     },

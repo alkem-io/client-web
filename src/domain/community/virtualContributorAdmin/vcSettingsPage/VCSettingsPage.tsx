@@ -28,13 +28,13 @@ export const VCSettingsPage = () => {
     skip: !vcId,
   });
 
+  const vc = data?.lookup.virtualContributor;
+
   const { data: bokProfile } = useSpaceBodyOfKnowledgeAboutQuery({
     variables: {
-      spaceId: data?.lookup.virtualContributor?.bodyOfKnowledgeID!,
+      spaceId: vc?.bodyOfKnowledgeID!,
     },
-    skip:
-      !data?.lookup.virtualContributor?.bodyOfKnowledgeID ||
-      data?.lookup.virtualContributor?.bodyOfKnowledgeType !== VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
+    skip: !vc?.bodyOfKnowledgeID || vc?.bodyOfKnowledgeType !== VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
@@ -62,19 +62,16 @@ export const VCSettingsPage = () => {
   }
 
   return (
-    <StorageConfigContextProvider
-      locationType="virtualContributor"
-      virtualContributorId={data?.lookup.virtualContributor?.id ?? ''}
-    >
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vc?.id ?? ''}>
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
-              {data?.lookup.virtualContributor && (
+              {vc && vc.profile && (
                 <VirtualContributorForm
-                  virtualContributor={data?.lookup.virtualContributor}
+                  virtualContributor={{ ...vc, profile: vc.profile }}
                   bokProfile={bokProfile?.lookup.space?.about.profile}
-                  avatar={data?.lookup.virtualContributor.profile.avatar}
+                  avatar={vc.profile?.avatar}
                   onSave={handleUpdate}
                 />
               )}

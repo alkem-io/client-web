@@ -1,0 +1,27 @@
+query ActorDetails($actorId: UUID!) {
+  actor(id: $actorId) {
+    id
+    type
+    nameID
+    profile {
+      id
+      displayName
+      url
+    }
+    ... on User {
+      email
+      firstName
+      lastName
+      phone
+      isContactable
+    }
+    ... on Organization {
+      contactEmail
+      domain
+      legalEntityName
+    }
+    ... on VirtualContributor {
+      bodyOfKnowledgeType
+    }
+  }
+}

@@ -44,7 +44,7 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
                     contributor={{
                       type: ContributorSelectorType.User,
                       id: invite.invitation.contributor.id,
-                      displayName: invite.invitation.contributor.profile.displayName,
+                      displayName: invite.invitation.contributor.profile?.displayName ?? '',
                     }}
                   />
                 ) : invite.platformInvitation ? (
@@ -67,7 +67,7 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
               {failedInvitations.map(invite =>
                 invite.invitation ? (
                   <li key={invite.invitation.id}>
-                    <Caption display="inline">{invite.invitation.contributor.profile.displayName}</Caption>
+                    <Caption display="inline">{invite.invitation.contributor.profile?.displayName}</Caption>
                     <CaptionSmall marginLeft={gutters()} display="inline">
                       {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
                     </CaptionSmall>

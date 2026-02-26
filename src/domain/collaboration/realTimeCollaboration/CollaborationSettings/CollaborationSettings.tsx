@@ -15,7 +15,7 @@ type CollaborationSettingsProps = {
     | (Identifiable & {
         createdBy?:
           | {
-              profile: {
+              profile?: {
                 displayName: string;
                 location?: Location;
                 avatar?: {
@@ -65,7 +65,7 @@ const CollaborationSettings = ({ element, elementType, guestAccessEnabled }: Col
         <GridItem columns={4}>
           <Gutters disablePadding>
             <BlockSectionTitle>{t('components.shareSettings.ownedBy.title', { elementName })}</BlockSectionTitle>
-            {element?.createdBy && <ContributorCardHorizontal profile={element.createdBy.profile} seamless />}
+            {element?.createdBy?.profile && <ContributorCardHorizontal profile={element.createdBy.profile} seamless />}
           </Gutters>
         </GridItem>
         <GridItem columns={4}>

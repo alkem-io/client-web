@@ -162,7 +162,7 @@ const FormikContributorsSelectorField = ({
     hasMore,
   ]);
 
-  const handleSelect = (value: (Identifiable & { profile: { displayName: string } }) | string | null) => {
+  const handleSelect = (value: (Identifiable & { profile?: { displayName: string } }) | string | null) => {
     helpers.setTouched(true);
     if (!value) {
       return;
@@ -178,11 +178,11 @@ const FormikContributorsSelectorField = ({
     setInputValue('');
   };
 
-  const onAddUser = (user: Identifiable & { profile: { displayName: string } }) => {
+  const onAddUser = (user: Identifiable & { profile?: { displayName: string } }) => {
     const fieldValue = Array.isArray(field.value) ? field.value : [];
     setFieldValue([
       ...fieldValue,
-      { type: ContributorSelectorType.User, id: user.id, displayName: user.profile.displayName },
+      { type: ContributorSelectorType.User, id: user.id, displayName: user.profile?.displayName ?? '' },
     ]);
   };
 
@@ -252,7 +252,7 @@ const FormikContributorsSelectorField = ({
           if (typeof option === 'string') {
             return option;
           }
-          return option?.profile.displayName;
+          return option?.profile?.displayName ?? '';
         }}
         // @ts-ignore
         filterOptions={onlyFromParentCommunity ? defaultFilter : options => options}
@@ -281,10 +281,10 @@ const FormikContributorsSelectorField = ({
             return (
               <li {...props} key={user.id}>
                 <ProfileChipView
-                  displayName={user.profile.displayName}
-                  avatarUrl={user.profile.visual?.uri}
-                  city={user.profile.location?.city}
-                  country={user.profile.location?.country}
+                  displayName={user.profile?.displayName ?? ''}
+                  avatarUrl={user.profile?.visual?.uri}
+                  city={user.profile?.location?.city}
+                  country={user.profile?.location?.country}
                   width="100%"
                 >
                   <FlexSpacer />

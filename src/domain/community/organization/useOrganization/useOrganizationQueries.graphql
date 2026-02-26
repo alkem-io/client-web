@@ -1,5 +1,5 @@
 query rolesOrganization($organizationId: UUID!) {
-  rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+  rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {
       id

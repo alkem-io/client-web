@@ -19,14 +19,14 @@ export const useAuthorsDetails = (authorIds: string[]) => {
       authorData?.users.map<AuthorModel>(author => {
         return {
           id: author.id,
-          displayName: author.profile.displayName,
+          displayName: author.profile?.displayName ?? '',
           firstName: author.firstName,
           lastName: author.lastName,
-          avatarUrl: author.profile.avatar?.uri ?? '',
-          url: author.profile.url,
-          tags: author.profile.tagsets?.flatMap(x => x.tags),
-          city: author.profile.location?.city,
-          country: COUNTRIES_BY_CODE[author.profile.location?.country || ''],
+          avatarUrl: author.profile?.avatar?.uri ?? '',
+          url: author.profile?.url ?? '',
+          tags: author.profile?.tagsets?.flatMap(x => x.tags),
+          city: author.profile?.location?.city,
+          country: COUNTRIES_BY_CODE[author.profile?.location?.country || ''],
         };
       }),
     [authorData]

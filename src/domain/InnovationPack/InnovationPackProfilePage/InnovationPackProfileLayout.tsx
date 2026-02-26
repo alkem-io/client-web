@@ -16,7 +16,7 @@ interface InnovationPackProfileLayoutProps {
     | (Identifiable & {
         profile: ProfilePageBannerProps['profile'];
         provider: {
-          profile: {
+          profile?: {
             displayName: string;
             avatar?: Visual;
           };
@@ -38,7 +38,7 @@ const InnovationPackProfileLayout = ({
   const profile = useMemo(() => {
     return {
       ...innovationPack?.profile,
-      tagline: innovationPack?.provider?.profile.displayName,
+      tagline: innovationPack?.provider?.profile?.displayName,
     } as ProfilePageBannerProps['profile'];
   }, [innovationPack]);
 

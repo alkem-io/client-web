@@ -55,7 +55,7 @@ mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
   }
 }
 
-fragment InnovationPackProviderProfileWithAvatar on Contributor {
+fragment InnovationPackProviderProfileWithAvatar on Actor {
   id
   profile {
     id

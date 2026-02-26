@@ -1,9 +1,5 @@
 import { useCalloutContributionQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CalloutContributionType,
-  RoleSetContributorType,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutContributionType, ActorType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
 import { gutters } from '@/core/ui/grid/utils';
@@ -91,8 +87,8 @@ const CalloutContributionPreview = ({
     (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdBy) ||
     undefined;
 
-  const authorAvatar = author?.profile.avatar?.uri ? (
-    <ContributorTooltip contributorId={author.id} contributorType={RoleSetContributorType.User}>
+  const authorAvatar = author?.profile?.avatar?.uri ? (
+    <ContributorTooltip contributorId={author.id} contributorType={ActorType.User}>
       <Avatar size="small" src={author.profile.avatar.uri} alt={author.profile.avatar.alternativeText} />
     </ContributorTooltip>
   ) : undefined;
@@ -140,7 +136,7 @@ const CalloutContributionPreview = ({
       <PageContentBlockHeaderCardLike
         avatar={authorAvatar}
         title={displayName}
-        subtitle={author?.profile.displayName}
+        subtitle={author?.profile?.displayName}
         selected
         actions={
           <>

@@ -57,21 +57,17 @@ export const UserForm = ({
   const isReadOnlyMode = editMode === EditMode.readOnly;
   const { isSmallScreen } = useScreenSize();
 
+  const { firstName, lastName, email, phone, profile } = currentUser;
+
   const {
-    firstName,
-    lastName,
-    email,
-    phone,
-    profile: {
-      id: profileId,
-      displayName,
-      description: bio,
-      tagline,
-      references,
-      location: { city, country } = {},
-      tagsets,
-    },
-  } = currentUser;
+    id: profileId,
+    displayName,
+    description: bio,
+    tagline,
+    references,
+    location: { city, country } = {},
+    tagsets,
+  } = profile ?? {};
 
   const { blueSkyRef, githubRef, linkedinRef } = useMemo(
     () => ({

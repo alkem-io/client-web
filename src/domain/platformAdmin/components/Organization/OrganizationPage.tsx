@@ -37,7 +37,7 @@ const OrganizationPage = ({ mode }: Props) => {
     ...(organizationData ?? EmptyOrganizationModel),
     profile: {
       ...(organizationData?.profile ?? EmptyProfileModel),
-      location: formatLocation(organizationData?.profile.location),
+      location: formatLocation(organizationData?.profile?.location),
     },
   };
 
@@ -51,9 +51,11 @@ const OrganizationPage = ({ mode }: Props) => {
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
-      const organizationURL = data.createOrganization.profile.url;
+      const organizationURL = data.createOrganization.profile?.url;
       notify(t('pages.admin.organization.notifications.organization-created'), 'success');
-      navigate(organizationURL);
+      if (organizationURL) {
+        navigate(organizationURL);
+      }
     },
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
@@ -98,7 +100,7 @@ const OrganizationPage = ({ mode }: Props) => {
         legalEntityName,
         website,
       } = editedOrganization as UpdateOrganizationInput;
-      const profileId = organization?.profile.id;
+      const profileId = organization?.profile?.id;
       const references = profileData?.references;
       const tagsetsToAdd = profileData?.tagsets?.filter(x => !x.ID) || [];
 
