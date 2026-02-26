@@ -56,12 +56,24 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
+  const isLockedOut = params.get('lockout') === 'true';
+  const retryAfterSeconds = parseInt(params.get('retry_after') ?? '0', 10);
+  const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
+
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
     produce(loginFlow.ui, ui => {
       if (kratosErrors) {
         ui.messages = kratosErrors;
+      }
+      if (isLockedOut) {
+        const lockoutMessage = {
+          id: 9000429,
+          type: 'error' as const,
+          text: t('authentication.lockout', { minutes: lockoutMinutes }),
+        };
+        ui.messages = [...(ui.messages ?? []), lockoutMessage];
       }
     });
 
