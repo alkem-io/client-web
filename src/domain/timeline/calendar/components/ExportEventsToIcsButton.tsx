@@ -2,6 +2,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { IconButton, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
+import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 
 type ExportEventsToIcsButtonProps = {
   events: {
@@ -52,7 +53,8 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
       );
 
       if (event.profile.description) {
-        lines.push(`DESCRIPTION:${escapeText(event.profile.description)}`);
+        const plainTextDescription = markdownToPlainText(event.profile.description);
+        lines.push(`DESCRIPTION:${escapeText(plainTextDescription)}`);
       }
 
       if (event.profile.url) {
@@ -88,7 +90,7 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
 
   return (
     <Tooltip title={t('calendar.addToCalendar.exportAll')} arrow>
-      <IconButton onClick={handleExport} size="small">
+      <IconButton onClick={handleExport} size="small" aria-label={t('calendar.addToCalendar.exportAll')}>
         <FileDownloadOutlinedIcon color="primary" />
       </IconButton>
     </Tooltip>
