@@ -6,14 +6,18 @@ import AdminBreadcrumbs from '@/main/admin/AdminBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import TransferCalloutSection from './transferCallout/TransferCalloutSection';
 import TransferSpaceSection from './transferSpace/TransferSpaceSection';
+import { Caption } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const currentTab = AdminSection.Transfer;
 
 const TransferPage = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
     <TopLevelLayout
@@ -36,6 +40,11 @@ const TransferPage = () => {
     >
       <PageContent>
         <PageContentColumn columns={12}>
+          <Gutters padding={0} gap={0} alignItems={'center'} flex={1}>
+            <Caption sx={{ color: theme.palette.error.main }} title={t('components.deleteEntity.title')}>
+              {t('components.deleteEntity.title')}
+            </Caption>
+          </Gutters>
           <TransferCalloutSection />
           <TransferSpaceSection />
         </PageContentColumn>
