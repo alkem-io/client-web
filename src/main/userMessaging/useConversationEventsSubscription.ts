@@ -58,16 +58,14 @@ const MessageCacheFragment = gql`
     }
     threadID
     sender {
-      ... on User {
+      id
+      type
+      profile {
         id
-        __typename
-        profile {
+        displayName
+        avatar: visual(type: AVATAR) {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
+          uri
         }
       }
     }

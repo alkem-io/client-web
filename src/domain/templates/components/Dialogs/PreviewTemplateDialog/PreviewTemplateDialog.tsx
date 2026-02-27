@@ -83,20 +83,20 @@ const PreviewTemplateDialog = ({
                 <BadgeCardView
                   visual={
                     <Avatar
-                      src={innovationPack.provider.profile.avatar?.uri}
+                      src={innovationPack.provider.profile?.avatar?.uri}
                       alt={
-                        innovationPack.provider.profile.displayName
+                        innovationPack.provider.profile?.displayName
                           ? t('common.avatar-of', { user: innovationPack.provider.profile.displayName })
                           : t('common.avatar')
                       }
                     >
-                      {innovationPack.provider.profile.displayName[0]}
+                      {innovationPack.provider.profile?.displayName?.[0]}
                     </Avatar>
                   }
                   component={StyledLink}
-                  to={innovationPack.provider.profile.url}
+                  to={innovationPack.provider.profile?.url}
                 >
-                  <BlockSectionTitle>{innovationPack.provider.profile.displayName}</BlockSectionTitle>
+                  <BlockSectionTitle>{innovationPack.provider.profile?.displayName}</BlockSectionTitle>
                 </BadgeCardView>
               </PageContentBlockSeamless>
             )}

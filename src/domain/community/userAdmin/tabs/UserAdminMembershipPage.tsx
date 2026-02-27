@@ -4,7 +4,7 @@ import { ActionableContributionsView } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import {
   useUserContributionsQuery,
   useUserPendingMembershipsQuery,
@@ -73,7 +73,7 @@ const UserAdminMembershipPage = () => {
         id: space.id,
         spaceLevel: SpaceLevel.L0,
         contributorId: userId!,
-        contributorType: RoleSetContributorType.User,
+        contributorType: ActorType.User,
       };
       acc.push(currentSpace);
 
@@ -82,7 +82,7 @@ const UserAdminMembershipPage = () => {
         spaceID: subspace.id,
         spaceLevel: subspace.level,
         contributorId: userId!,
-        contributorType: RoleSetContributorType.User,
+        contributorType: ActorType.User,
         parentSpaceId: space.id,
       }));
 
@@ -101,7 +101,7 @@ const UserAdminMembershipPage = () => {
         spaceID: application.spacePendingMembershipInfo.id,
         spaceLevel: application.spacePendingMembershipInfo.level,
         contributorId: userId,
-        contributorType: RoleSetContributorType.User,
+        contributorType: ActorType.User,
       }));
     }
   }, [userId, pendingMembershipsData]);

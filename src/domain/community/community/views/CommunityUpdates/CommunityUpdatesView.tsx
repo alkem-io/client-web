@@ -233,7 +233,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                       </Link>
                     )
                   }
-                  title={member?.displayName || m.sender?.profile.displayName}
+                  title={member?.displayName || m.sender?.profile?.displayName}
                   subheader={new Date(m.timestamp).toLocaleString()}
                   action={
                     canEdit ? (

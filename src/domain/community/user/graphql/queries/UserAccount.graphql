@@ -6,13 +6,6 @@ query UserAccount($userId: UUID!) {
         id
         displayName
       }
-      agent {
-        id
-        credentials {
-          id
-          type
-        }
-      }
       account {
         id
       }

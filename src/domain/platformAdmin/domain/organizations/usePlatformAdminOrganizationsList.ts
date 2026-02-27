@@ -162,10 +162,10 @@ export const usePlatformAdminOrganizationsList = () => {
       data?.platformAdmin.organizations?.organization.map(org => ({
         id: org.id,
         accountId: org.account?.id,
-        value: org.profile.displayName,
-        url: buildSettingsUrl(org.profile.url),
+        value: org.profile?.displayName ?? '',
+        url: buildSettingsUrl(org.profile?.url ?? ''),
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
-        avatar: org.profile.visual,
+        avatar: org.profile?.visual,
         activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)

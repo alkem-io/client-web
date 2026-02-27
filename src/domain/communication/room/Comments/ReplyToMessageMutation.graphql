@@ -3,12 +3,8 @@ mutation ReplyToMessage($roomId: UUID!, $message: String!, $threadId: MessageID!
     id
     message
     sender {
-      ... on User {
-        id
-      }
-      ... on VirtualContributor {
-        id
-      }
+      id
+      type
     }
     timestamp
   }

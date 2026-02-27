@@ -54,7 +54,7 @@ export const mapToAssociatedOrganization = (
     seamless: true,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-    url: organization?.profile.url,
+    url: organization?.profile?.url,
     ...state,
   };
 };

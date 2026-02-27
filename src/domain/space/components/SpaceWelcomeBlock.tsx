@@ -1,9 +1,4 @@
-import {
-  CommunityMembershipStatus,
-  RoleName,
-  RoleSetContributorType,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, RoleName, ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -39,7 +34,7 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: Sp
   const { organizations: leadOrganizations, users: leadUsers } = useRoleSetManager({
     roleSetId: spaceAbout?.membership?.roleSetID,
     relevantRoles: [RoleName.Lead],
-    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    contributorTypes: [ActorType.User, ActorType.Organization],
     fetchContributors: true,
   });
 
@@ -92,10 +87,10 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: Sp
               onContact={() => {
                 sendMessage('organization', {
                   id: org.id,
-                  displayName: org.profile.displayName,
-                  avatarUri: org.profile.avatar?.uri,
-                  country: org.profile.location?.country,
-                  city: org.profile.location?.city,
+                  displayName: org.profile?.displayName,
+                  avatarUri: org.profile?.avatar?.uri,
+                  country: org.profile?.location?.country,
+                  city: org.profile?.location?.city,
                 });
               }}
               seamless

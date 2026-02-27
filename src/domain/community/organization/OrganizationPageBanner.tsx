@@ -5,7 +5,7 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 type OrganizationPageBannerProps = {
   organization:
     | (Identifiable & {
-        profile: ProfilePageBannerProps['profile'] & { url: string };
+        profile?: ProfilePageBannerProps['profile'] & { url: string };
       })
     | undefined;
   onSendMessage: ProfilePageBannerProps['onSendMessage'];
@@ -19,7 +19,7 @@ const OrganizationPageBanner = ({
   canEdit,
   loading = false,
 }: OrganizationPageBannerProps) => {
-  const settingsUri = canEdit && organization ? buildSettingsUrl(organization.profile.url) : undefined;
+  const settingsUri = canEdit && organization?.profile ? buildSettingsUrl(organization.profile.url) : undefined;
 
   return (
     <ProfilePageBanner

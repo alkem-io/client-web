@@ -86,9 +86,9 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppUserSpaceCommunityInvitationView {...item} />;
     case NotificationEvent.UserSpaceCommunityApplicationDeclined:
       return <InAppUserSpaceCommunityApplicationDeclined {...item} />;
-    case NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation:
+    case NotificationEvent.VirtualAdminSpaceCommunityInvitation:
       return <InAppVirtualContributorAdminSpaceCommunityInvitationView {...item} />;
-    case NotificationEvent.SpaceAdminVirtualContributorCommunityInvitationDeclined:
+    case NotificationEvent.SpaceAdminVirtualCommunityInvitationDeclined:
       return <InAppSpaceAdminVirtualContributorCommunityInvitationDeclinedView {...item} />;
     case NotificationEvent.SpaceCommunityCalendarEventCreated:
       return <InAppSpaceCommunityCalendarEventCreatedView {...item} />;

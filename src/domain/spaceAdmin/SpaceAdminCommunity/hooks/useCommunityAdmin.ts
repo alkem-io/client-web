@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   RoleName,
-  RoleSetContributorType,
+  ActorType,
   RoleSetMemberOrganizationFragment,
   RoleSetMemberUserFragment,
 } from '@/core/apollo/generated/graphql-schema';
@@ -32,7 +32,7 @@ export interface useCommunityAdminProvided {
     getAvailable: (filter: string | undefined) => Promise<
       {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
         };
         email?: string;
@@ -48,7 +48,7 @@ export interface useCommunityAdminProvided {
     getAvailable: (filter: string | undefined) => Promise<
       {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
         };
       }[]
@@ -107,11 +107,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
-    contributorTypes: [
-      RoleSetContributorType.User,
-      RoleSetContributorType.Organization,
-      RoleSetContributorType.Virtual,
-    ],
+    contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
     fetchRoleDefinitions: true,
     onChange: () => refetchAvailableContributors(),

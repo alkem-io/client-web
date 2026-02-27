@@ -36,8 +36,8 @@ fragment InvitationData on CommunityInvitationResult {
     createdDate
     contributor {
       id
+      type
     }
-    contributorType
   }
 }
 

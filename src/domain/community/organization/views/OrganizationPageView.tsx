@@ -54,15 +54,15 @@ export const OrganizationPageView = ({
   const entity = useMemo(
     () =>
       ({
-        avatar: organization?.profile.avatar?.uri,
-        displayName: organization?.profile.displayName || '',
+        avatar: organization?.profile?.avatar?.uri,
+        displayName: organization?.profile?.displayName || '',
         settingsTooltip: t('pages.organization.settings.tooltip'),
-        settingsUrl: buildSettingsUrl(organization?.profile.url ?? ''),
-        bio: organization?.profile.description,
+        settingsUrl: buildSettingsUrl(organization?.profile?.url ?? ''),
+        bio: organization?.profile?.description,
         verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
         tagsets,
         references,
-        location: organization?.profile.location,
+        location: organization?.profile?.location,
       }) as OrganizationProfileViewEntity,
     [organization, tagsets, references, t]
   );

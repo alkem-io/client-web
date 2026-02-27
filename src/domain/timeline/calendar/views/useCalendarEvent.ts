@@ -52,7 +52,7 @@ type useCalendarEventProvided = {
           };
         };
         createdBy?: {
-          profile: {
+          profile?: {
             displayName: string;
             avatar?: {
               id: string;

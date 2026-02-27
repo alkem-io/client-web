@@ -32,7 +32,7 @@ const OrganizationProvider = ({ children }: PropsWithChildren) => {
     skip: !organizationId || isUserLoading,
   });
   const organization = data?.lookup.organization;
-  const displayName = organization?.profile.displayName || '';
+  const displayName = organization?.profile?.displayName || '';
 
   return (
     <OrganizationContext

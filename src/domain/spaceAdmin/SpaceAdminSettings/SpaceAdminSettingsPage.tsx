@@ -137,7 +137,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               <MembershipSettings
                 currentPolicy={currentSettings?.membership?.policy}
                 hostOrganizationTrusted={currentSettings.hostOrganizationTrusted}
-                providerDisplayName={provider?.profile.displayName}
+                providerDisplayName={provider?.profile?.displayName}
                 level={level}
                 onUpdate={updateSettings}
               />

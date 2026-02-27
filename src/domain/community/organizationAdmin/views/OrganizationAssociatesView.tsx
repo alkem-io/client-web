@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { useTranslation } from 'react-i18next';
-import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, ActorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -23,7 +23,7 @@ export const OrganizationAssociatesView: FC = () => {
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Associate],
-    contributorTypes: [RoleSetContributorType.User],
+    contributorTypes: [ActorType.User],
     fetchContributors: true,
   });
 

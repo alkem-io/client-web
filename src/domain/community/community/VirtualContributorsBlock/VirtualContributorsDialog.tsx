@@ -15,7 +15,7 @@ import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIco
 export interface VirtualContributorProps {
   id: string;
   searchVisibility?: SearchVisibility;
-  profile: {
+  profile?: {
     displayName: string;
     tagline?: string;
     avatar?: {
@@ -43,7 +43,7 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
     () =>
       (virtualContributors.length > 0 && filter.length > 0
         ? virtualContributors.filter((virtualContributor: VirtualContributorProps) =>
-            virtualContributor.profile.displayName.toLowerCase().includes(filter.toLowerCase())
+            (virtualContributor.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase())
           )
         : virtualContributors) ?? [],
     [virtualContributors, filter]
@@ -71,20 +71,20 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
               variant="rounded"
               visual={
                 <Avatar
-                  src={vc.profile.avatar?.uri}
+                  src={vc.profile?.avatar?.uri}
                   alt={
-                    vc.profile.displayName
+                    vc.profile?.displayName
                       ? t('common.avatar-of', { user: vc.profile.displayName })
                       : t('common.avatar')
                   }
                 />
               }
               component={Wrapper}
-              to={vc.profile.url}
+              to={vc.profile?.url ?? ''}
               key={vc.id}
             >
-              <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
-              <BlockSectionTitle>{vc.profile.tagline}</BlockSectionTitle>
+              <BlockSectionTitle>{vc.profile?.displayName}</BlockSectionTitle>
+              <BlockSectionTitle>{vc.profile?.tagline}</BlockSectionTitle>
             </BadgeCardView>
           ))}
         </Gutters>

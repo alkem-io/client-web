@@ -124,7 +124,7 @@ export const FormikUserSelector = ({
             inputValue={inputValue}
             onInputChange={(event, value) => setInputValue(value)}
             autoHighlight
-            getOptionLabel={option => option.profile.displayName}
+            getOptionLabel={option => option.profile?.displayName ?? ''}
             noOptionsText={t('components.user-selector.tooltip')}
             popupIcon={<SearchIcon />}
             sx={{
@@ -140,10 +140,10 @@ export const FormikUserSelector = ({
               return (
                 <li key={`${key}-${user.id}`} {...otherProps}>
                   <ProfileChipView
-                    displayName={user.profile.displayName}
-                    avatarUrl={user.profile.visual?.uri}
-                    city={user.profile.location?.city}
-                    country={user.profile.location?.country}
+                    displayName={user.profile?.displayName ?? ''}
+                    avatarUrl={user.profile?.visual?.uri}
+                    city={user.profile?.location?.city}
+                    country={user.profile?.location?.country}
                     width="100%"
                   >
                     <FlexSpacer />

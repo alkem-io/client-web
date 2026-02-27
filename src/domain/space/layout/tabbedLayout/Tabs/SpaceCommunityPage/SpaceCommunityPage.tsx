@@ -15,7 +15,7 @@ import {
   AuthorizationPrivilege,
   LicenseEntitlementType,
   RoleName,
-  RoleSetContributorType,
+  ActorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
@@ -72,11 +72,7 @@ const SpaceCommunityPage = () => {
   } = useRoleSetManager({
     roleSetId: membership?.roleSetID,
     relevantRoles: [RoleName.Member, RoleName.Lead],
-    contributorTypes: [
-      RoleSetContributorType.User,
-      RoleSetContributorType.Organization,
-      RoleSetContributorType.Virtual,
-    ],
+    contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member];
@@ -102,10 +98,10 @@ const SpaceCommunityPage = () => {
     () =>
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
         id: user.id,
-        displayName: user.profile.displayName,
-        country: user.profile.location?.country,
-        city: user.profile.location?.city,
-        avatarUri: user.profile.avatar?.uri,
+        displayName: user.profile?.displayName ?? '',
+        country: user.profile?.location?.country,
+        city: user.profile?.location?.city,
+        avatarUri: user.profile?.avatar?.uri,
       })),
     [leadUsers]
   );
@@ -152,7 +148,7 @@ const SpaceCommunityPage = () => {
         </ContactLeadsButton>
         {hasInvitePrivilege && (
           <InviteContributorsWizard
-            contributorType={RoleSetContributorType.User}
+            contributorType={ActorType.User}
             sx={{ width: '100%' }}
             filterContributors={filterInviteeContributors}
           />

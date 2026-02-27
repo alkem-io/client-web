@@ -4,7 +4,7 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { spaceLevelIcon } from '../../../space/icons/SpaceIconByLevel';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
@@ -19,7 +19,7 @@ export interface ActivityDescriptionProps {
     url?: string;
   };
   withLinkToParent?: boolean;
-  type?: RoleSetContributorType;
+  type?: ActorType;
 }
 
 const PARENT_NAME_MAX_LENGTH = 20;
@@ -58,7 +58,7 @@ const DetailedActivityDescription = ({
     mergedValues['space'] = spaceDisplayName;
 
     mergedValues['invitedEntity'] =
-      type === RoleSetContributorType.Virtual
+      type === ActorType.VirtualContributor
         ? t('community.pendingMembership.vc')
         : t('community.pendingMembership.you');
 

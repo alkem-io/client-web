@@ -23,10 +23,12 @@ export const CreateOrganizationDialog = ({ open, onClose }: CreateOrganizationDi
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
-      const organizationURL = data.createOrganization.profile.url;
+      const organizationURL = data.createOrganization.profile?.url;
 
       notify(t('pages.admin.organization.notifications.organization-created'), 'success');
-      navigate(organizationURL);
+      if (organizationURL) {
+        navigate(organizationURL);
+      }
     },
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });

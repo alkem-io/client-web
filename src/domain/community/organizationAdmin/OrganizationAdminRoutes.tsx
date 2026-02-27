@@ -31,10 +31,10 @@ const OrganizationAdminRoutes: FC = () => {
       adminPrivilege={AuthorizationPrivilege.Update}
       loading={loading}
       ancestorFallback={
-        organization?.profile.url
+        organization?.profile?.url
           ? {
               type: UrlType.Organization,
-              url: organization.profile.url,
+              url: organization?.profile?.url ?? '',
             }
           : undefined
       }
