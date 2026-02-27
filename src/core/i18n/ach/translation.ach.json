@@ -1,4 +1,9 @@
 {
+  "comments": {
+    "expandAll_one": "crwdns44366:0{{count}}crwdne44366:0",
+    "expandAll_other": "crwdns44368:0{{count}}crwdne44368:0",
+    "collapse": "crwdns44370:0crwdne44370:0"
+  },
   "chatbot": {
     "title": "crwdns17356:0crwdne17356:0",
     "intro": "crwdns17358:0crwdne17358:0",
@@ -268,6 +273,7 @@
     "avatar": "crwdns17686:0crwdne17686:0",
     "avatar-of": "crwdns17688:0{{user}}crwdne17688:0",
     "authorizationPolicies": "crwdns17690:0crwdne17690:0",
+    "transfer": "crwdns44254:0crwdne44254:0",
     "beta": "crwdns17692:0crwdne17692:0",
     "inspiration": "crwdns17694:0crwdne17694:0",
     "name": "crwdns17696:0crwdne17696:0",
@@ -847,7 +853,8 @@
           "title": "crwdns44186:0crwdne44186:0",
           "tooltip": "crwdns44188:0$t(common.post)crwdne44188:0",
           "nItems": "crwdns44190:0{{count}}crwdne44190:0",
-          "deleteItem": "crwdns44192:0crwdne44192:0"
+          "deleteItem": "crwdns44192:0crwdne44192:0",
+          "emptyGallery": "crwdns44364:0crwdne44364:0"
         }
       },
       "contributionSettings": {
@@ -2389,6 +2396,64 @@
       }
     },
     "admin": {
+      "transferCallout": {
+        "sectionTitle": "crwdns44256:0crwdne44256:0",
+        "calloutUrl": "crwdns44258:0crwdne44258:0",
+        "calloutUrlPlaceholder": "crwdns44260:0crwdne44260:0",
+        "targetSpaceUrl": "crwdns44262:0crwdne44262:0",
+        "targetSpaceUrlPlaceholder": "crwdns44264:0crwdne44264:0",
+        "lookup": "crwdns44266:0crwdne44266:0",
+        "calloutInfo": "crwdns44268:0crwdne44268:0",
+        "targetSpaceInfo": "crwdns44270:0crwdne44270:0",
+        "description": "crwdns44272:0crwdne44272:0",
+        "createdBy": "crwdns44274:0crwdne44274:0",
+        "contributions": "crwdns44276:0crwdne44276:0",
+        "contributionsSummary": "crwdns44278:0{{posts}}crwdnd44278:0{{whiteboards}}crwdnd44278:0{{links}}crwdnd44278:0{{memos}}crwdne44278:0",
+        "level": "crwdns44280:0crwdne44280:0",
+        "calloutsSetId": "crwdns44282:0crwdne44282:0",
+        "transferButton": "crwdns44284:0crwdne44284:0",
+        "transferring": "crwdns44286:0crwdne44286:0",
+        "urlNotFound": "crwdns44288:0crwdne44288:0",
+        "urlNotCallout": "crwdns44290:0crwdne44290:0",
+        "urlNotSpace": "crwdns44292:0crwdne44292:0",
+        "missingTransferOffer": "crwdns44294:0crwdne44294:0",
+        "missingTransferAccept": "crwdns44296:0crwdne44296:0",
+        "successTitle": "crwdns44298:0crwdne44298:0",
+        "successMessage": "crwdns44300:0{{calloutName}}crwdnd44300:0{{spaceName}}crwdne44300:0",
+        "transferFailed": "crwdns44302:0crwdne44302:0",
+        "close": "crwdns44304:0crwdne44304:0",
+        "unknown": "crwdns44306:0crwdne44306:0",
+        "urlRequired": "crwdns44308:0crwdne44308:0"
+      },
+      "transferSpace": {
+        "sectionTitle": "crwdns44310:0crwdne44310:0",
+        "spaceUrl": "crwdns44312:0crwdne44312:0",
+        "spaceUrlPlaceholder": "crwdns44314:0crwdne44314:0",
+        "targetAccountUrl": "crwdns44316:0crwdne44316:0",
+        "targetAccountUrlPlaceholder": "crwdns44318:0crwdne44318:0",
+        "lookup": "crwdns44320:0crwdne44320:0",
+        "spaceInfo": "crwdns44322:0crwdne44322:0",
+        "targetAccountInfo": "crwdns44324:0crwdne44324:0",
+        "description": "crwdns44326:0crwdne44326:0",
+        "level": "crwdns44328:0crwdne44328:0",
+        "accountId": "crwdns44330:0crwdne44330:0",
+        "accountOwnerType": "crwdns44332:0crwdne44332:0",
+        "accountOwnerTypeUser": "crwdns44334:0crwdne44334:0",
+        "accountOwnerTypeOrganization": "crwdns44336:0crwdne44336:0",
+        "transferButton": "crwdns44338:0crwdne44338:0",
+        "transferring": "crwdns44340:0crwdne44340:0",
+        "urlNotFound": "crwdns44342:0crwdne44342:0",
+        "urlNotSpace": "crwdns44344:0crwdne44344:0",
+        "notL0Space": "crwdns44346:0crwdne44346:0",
+        "urlNotUserOrOrg": "crwdns44348:0crwdne44348:0",
+        "missingTransferOffer": "crwdns44350:0crwdne44350:0",
+        "missingTransferAccept": "crwdns44352:0crwdne44352:0",
+        "successTitle": "crwdns44354:0crwdne44354:0",
+        "successMessage": "crwdns44356:0{{spaceName}}crwdnd44356:0{{accountOwnerName}}crwdne44356:0",
+        "transferFailed": "crwdns44358:0crwdne44358:0",
+        "close": "crwdns44360:0crwdne44360:0",
+        "urlRequired": "crwdns44362:0crwdne44362:0"
+      },
       "generic": {
         "sections": {
           "profile": {

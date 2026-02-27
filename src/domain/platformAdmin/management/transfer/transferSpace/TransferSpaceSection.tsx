@@ -4,7 +4,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
 import Loading from '@/core/ui/loading/Loading';
-import { Button, Dialog, DialogContent, DialogActions } from '@mui/material';
+import { Button } from '@mui/material';
 import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useTransferSpace from './useTransferSpace';
 
 const T_PREFIX = 'pages.admin.transferSpace';
@@ -19,7 +20,7 @@ const T_PREFIX = 'pages.admin.transferSpace';
 const TransferSpaceSection = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const {
     space,
@@ -51,10 +52,21 @@ const TransferSpaceSection = () => {
     return Promise.resolve();
   };
 
-  const onTransfer = async () => {
+  const onTransfer = () => {
+    setConfirmDialogOpen(true);
+  };
+
+  const onConfirmTransfer = async () => {
+    setConfirmDialogOpen(false);
     try {
       await handleTransfer();
-      setSuccessDialogOpen(true);
+      notify(
+        t(`${T_PREFIX}.successMessage`, {
+          spaceName: space?.about.profile.displayName,
+          accountOwnerName: accountOwner?.name,
+        }),
+        'success'
+      );
     } catch {
       notify(t(`${T_PREFIX}.transferFailed`), 'error');
     }
@@ -171,24 +183,19 @@ const TransferSpaceSection = () => {
           )}
         </PageContentColumn>
       </Gutters>
-      <Dialog
-        open={successDialogOpen}
-        onClose={() => setSuccessDialogOpen(false)}
-        aria-labelledby="transfer-space-success-title"
-      >
-        <DialogContent>
-          <BlockTitle id="transfer-space-success-title">{t(`${T_PREFIX}.successTitle`)}</BlockTitle>
-          <span>
-            {t(`${T_PREFIX}.successMessage`, {
-              spaceName: space?.about.profile.displayName,
-              accountOwnerName: accountOwner?.name,
-            })}
-          </span>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSuccessDialogOpen(false)}>{t(`${T_PREFIX}.close`)}</Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        entities={{
+          title: t(`${T_PREFIX}.confirmTitle`),
+          content: t(`${T_PREFIX}.confirmWarning1`),
+          confirmButtonText: t(`${T_PREFIX}.confirmButton`),
+        }}
+        actions={{
+          onConfirm: onConfirmTransfer,
+          onCancel: () => setConfirmDialogOpen(false),
+        }}
+        options={{ show: confirmDialogOpen }}
+        state={{ isLoading: transferLoading }}
+      />
     </PageContentBlock>
   );
 };
