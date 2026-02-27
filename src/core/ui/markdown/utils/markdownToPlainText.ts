@@ -18,7 +18,7 @@ export const markdownToPlainText = (markdown: string): string => {
     .use(remarkParse)
     .use(remarkGfm)
     .use(() => (tree: Root) => {
-      visit(tree, node => {
+      visit(tree, (node, _index, parent) => {
         // Extract text from text nodes
         if (node.type === 'text') {
           textParts.push((node as Text).value);
@@ -28,7 +28,7 @@ export const markdownToPlainText = (markdown: string): string => {
           textParts.push((node as { value: string }).value);
         }
         // Add newlines for paragraph breaks
-        else if (node.type === 'paragraph') {
+        else if (node.type === 'paragraph' && parent?.type !== 'listItem') {
           textParts.push('\n');
         }
         // Add newlines for breaks

@@ -10,7 +10,7 @@ type ExportEventsToIcsButtonProps = {
     type?: string;
     startDate?: Date;
     durationDays?: number | undefined;
-    durationMinutes: number;
+    durationMinutes: number | undefined;
     profile: {
       url: string;
       displayName: string;
@@ -35,7 +35,7 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
       if (!event.startDate) return;
 
       const startDate = dayjs(event.startDate);
-      const endDate = startDate.add(event.durationMinutes || 60, 'minute');
+      const endDate = startDate.add(event.durationMinutes ?? 60, 'minute');
 
       const formatDateTime = (date: dayjs.Dayjs) => date.format('YYYYMMDDTHHmmss');
 
