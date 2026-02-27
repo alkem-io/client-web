@@ -19,6 +19,7 @@ query RecentSpaces($limit: Float) {
           isContentPublic
         }
         level
+        visibility
         __typename # do not remove
       }
     }

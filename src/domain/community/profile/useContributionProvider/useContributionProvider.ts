@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { RoleName, ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, ActorType, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -14,6 +14,7 @@ export interface ContributionDetails {
   about: SpaceAboutLightModel;
   roleSetId?: string;
   level: SpaceLevel;
+  visibility: SpaceVisibility;
 }
 
 interface UseContributionParams {
@@ -48,6 +49,7 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
         about: space.about,
         roleSetId: space.about.membership.roleSetID,
         level: space.level,
+        visibility: space.visibility,
       };
     }
   }, [spaceData, spaceLevel]);

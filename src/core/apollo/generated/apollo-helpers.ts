@@ -434,6 +434,7 @@ export type ActorKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'nameID'
   | 'profile'
   | 'type'
   | 'updatedDate'
@@ -443,6 +444,7 @@ export type ActorFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -85,7 +85,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
         banner={details.about.profile.cardBanner}
         tags={details.about.profile.tagset?.tags}
         spaceUri={details.about.profile.url}
-        spaceVisibility={undefined}
+        spaceVisibility={details.visibility}
         level={details.level}
         member={details.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member}
         isPrivate={!details.about.isContentPublic}

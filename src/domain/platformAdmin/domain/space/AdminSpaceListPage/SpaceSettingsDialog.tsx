@@ -67,6 +67,10 @@ const SpaceSettingsDialog = ({ open, onClose, space }: SpaceSettingsDialogProps)
           id: SpaceVisibility.Demo,
           name: t(`common.enums.space-visibility.${SpaceVisibility.Demo}` as const) as string,
         },
+        {
+          id: SpaceVisibility.Inactive,
+          name: t(`common.enums.space-visibility.${SpaceVisibility.Inactive}` as const) as string,
+        },
       ] as const,
     [t]
   );
