@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGuestSessionContext } from '../context/GuestSessionContext';
 import { anonymizeGuestName } from '../utils/anonymizeGuestName';
-import { useCurrentUserFullQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
 import { clearAllGuestSessionData } from '../utils/sessionStorage';
 
 /**
@@ -17,7 +17,7 @@ export const useGuestSession = () => {
   const hasAuthCookie = typeof document !== 'undefined' && document.cookie.includes('ory_kratos_session=');
 
   // Fetch current user data only if authenticated
-  const { data: userData, error: userError } = useCurrentUserFullQuery({
+  const { data: userData, error: userError } = useCurrentUserLightQuery({
     skip: !hasAuthCookie || !!context.guestName || derivationAttempted,
   });
 
