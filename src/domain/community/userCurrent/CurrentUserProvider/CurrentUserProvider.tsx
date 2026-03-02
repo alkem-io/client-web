@@ -35,7 +35,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
-    usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated });
+    usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
     refetchQueries: [refetchCurrentUserFullQuery()],
