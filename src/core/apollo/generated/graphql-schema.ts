@@ -60,7 +60,7 @@ export type Account = ActorFull & {
   license: License;
   /** A name identifier of the Account, unique within the platform. */
   nameID: Scalars['NameID']['output'];
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The Spaces within this Account. */
   spaces: Array<Space>;
@@ -522,8 +522,12 @@ export type Actor = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The credentials held by this Actor. */
+  credentials?: Maybe<Array<Credential>>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID']['output'];
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The type of Actor */
@@ -548,7 +552,7 @@ export type ActorFull = {
   id: Scalars['UUID']['output'];
   /** A name identifier of the Actor, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The type of Actor */
   type: ActorType;
@@ -3055,7 +3059,7 @@ export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload
 
 export type InAppNotificationPayloadVirtualContributor = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadVirtualContributor';
-  contributor: VirtualContributor;
+  actor: VirtualContributor;
   /** The Space related to the notification */
   space: Space;
   /** The payload type. */
@@ -5569,7 +5573,7 @@ export type Organization = ActorFull &
     metrics?: Maybe<Array<Nvp>>;
     /** A name identifier of the entity, unique within a given scope. */
     nameID: Scalars['NameID']['output'];
-    /** The profile for this Actor. Note: Not all actor types have profiles. */
+    /** The profile for this Actor. */
     profile?: Maybe<Profile>;
     /** The RoleSet for this Organization. */
     roleSet: RoleSet;
@@ -6039,6 +6043,7 @@ export type ProfileVisualArgs = {
 };
 
 export enum ProfileType {
+  Account = 'ACCOUNT',
   CalendarEvent = 'CALENDAR_EVENT',
   CalloutFraming = 'CALLOUT_FRAMING',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
@@ -6051,6 +6056,7 @@ export enum ProfileType {
   Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
+  Space = 'SPACE',
   SpaceAbout = 'SPACE_ABOUT',
   Template = 'TEMPLATE',
   User = 'USER',
@@ -6463,7 +6469,7 @@ export type RelayPaginatedSpace = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** The calculated platform access for this Space. */
   platformAccess: PlatformRolesAccess;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this Space. */
   settings: SpaceSettings;
@@ -7205,7 +7211,7 @@ export type Space = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** The calculated platform access for this Space. */
   platformAccess: PlatformRolesAccess;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this Space. */
   settings: SpaceSettings;
@@ -8742,7 +8748,7 @@ export type User = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** The phone number for this User. */
   phone?: Maybe<Scalars['String']['output']>;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this User. */
   settings: UserSettings;
@@ -9003,7 +9009,7 @@ export type VirtualContributor = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** Platform-level settings of this Virtual Contributor, modifiable only by platform admins. */
   platformSettings: VirtualContributorPlatformSettings;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** Prompt graph definition for this Virtual Contributor. */
   promptGraphDefinition?: Maybe<PromptGraphDefinition>;
@@ -32309,9 +32315,10 @@ export type InAppNotificationReceivedSubscription = {
               };
             };
           };
-          contributor: {
+          actor: {
             __typename?: 'VirtualContributor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -33262,9 +33269,10 @@ export type InAppNotificationsQuery = {
                   };
                 };
               };
-              contributor: {
+              actor: {
                 __typename?: 'VirtualContributor';
                 id: string;
+                type: ActorType;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -34221,9 +34229,10 @@ export type InAppNotificationAllTypesFragment = {
             };
           };
         };
-        contributor: {
+        actor: {
           __typename?: 'VirtualContributor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -34781,9 +34790,10 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
       };
     };
   };
-  contributor: {
+  actor: {
     __typename?: 'VirtualContributor';
     id: string;
+    type: ActorType;
     profile?:
       | {
           __typename?: 'Profile';

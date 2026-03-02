@@ -433,7 +433,9 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
 export type ActorKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'credentials'
   | 'id'
+  | 'nameID'
   | 'profile'
   | 'type'
   | 'updatedDate'
@@ -442,7 +444,9 @@ export type ActorKeySpecifier = (
 export type ActorFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1858,13 +1862,13 @@ export type InAppNotificationPayloadUserMessageDirectFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadVirtualContributorKeySpecifier = (
-  | 'contributor'
+  | 'actor'
   | 'space'
   | 'type'
   | InAppNotificationPayloadVirtualContributorKeySpecifier
 )[];
 export type InAppNotificationPayloadVirtualContributorFieldPolicy = {
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
