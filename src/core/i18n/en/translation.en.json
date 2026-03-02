@@ -236,6 +236,7 @@
     "validation": {
       "fill-fields": "Please fill required fields!"
     },
+    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
     "social-login": {
       "connect": "Connect with {{provider}}",
       "providers": {
