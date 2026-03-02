@@ -8,7 +8,7 @@ import {
 
 export interface InAppNotificationPayloadModel {
   type: NotificationEventPayload;
-  contributor?: {
+  actor?: {
     type?: ActorType;
     profile?:
       | {
