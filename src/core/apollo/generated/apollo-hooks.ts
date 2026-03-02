@@ -3316,8 +3316,9 @@ export const InAppNotificationPayloadVirtualContributorFragmentDoc = gql`
     space {
       ...spaceNotification
     }
-    contributor {
+    actor {
       id
+      type
       profile {
         id
         displayName
