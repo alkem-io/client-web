@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DialogContent, DialogActions, TextField, Chip, CircularProgress, Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';

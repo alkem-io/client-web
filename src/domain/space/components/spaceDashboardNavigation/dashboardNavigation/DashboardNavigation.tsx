@@ -19,7 +19,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
 import { findCurrentPath } from './utils';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { debounce, difference } from 'lodash';
+import { debounce, difference } from 'lodash-es';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 

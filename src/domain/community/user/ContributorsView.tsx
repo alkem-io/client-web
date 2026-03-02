@@ -13,7 +13,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import { Box, GridLegacy } from '@mui/material';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { ComponentType, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorCardSquare, {

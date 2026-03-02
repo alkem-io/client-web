@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSpaceBreadcrumbsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 
 export interface BreadcrumbsItem {
   displayName: string;

@@ -156,6 +156,21 @@ export default defineConfig({
         entryFileNames: 'assets/[name][hash].js',
         chunkFileNames: 'assets/[name][hash].js',
         assetFileNames: 'assets/[name][hash].[ext]',
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('@mui/icons-material')) return 'vendor-mui-icons';
+          if (id.includes('@mui/x-data-grid') || id.includes('@mui/x-date-pickers')) return 'vendor-mui-extended';
+          if (id.includes('@mui/') || id.includes('@emotion/')) return 'vendor-mui-core';
+          if (id.includes('@apollo/client') || id.includes('apollo-upload-client')) return 'vendor-apollo';
+          if (id.includes('@tiptap/')) return 'vendor-tiptap';
+          if (id.includes('/yjs/') || id.includes('y-prosemirror') || id.includes('socket.io-client')) return 'vendor-realtime';
+          if (id.includes('@sentry/') || id.includes('@elastic/apm-rum')) return 'vendor-monitoring';
+          if (
+            id.includes('lodash-es') || id.includes('/formik/') || id.includes('/yup/') ||
+            id.includes('/date-fns/') || id.includes('/axios/') || id.includes('react-router') ||
+            id.includes('react-i18next') || id.includes('/i18next/')
+          ) return 'vendor-utils';
+        },
       },
     },
   },

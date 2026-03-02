@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { useUsersModelFullQuery } from '@/core/apollo/generated/apollo-hooks';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 

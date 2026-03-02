@@ -1,6 +1,6 @@
 import React, { cloneElement, ReactElement } from 'react';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 import { Trans } from 'react-i18next';
 
 type ElementProps<Props extends {}> = Record<string, Partial<Props> | true>;

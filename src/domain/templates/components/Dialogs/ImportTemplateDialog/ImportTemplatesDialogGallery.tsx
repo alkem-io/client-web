@@ -5,7 +5,7 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import SearchField from '@/core/ui/search/SearchField';
 import React, { useMemo, useState } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';

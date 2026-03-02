@@ -3,7 +3,7 @@ import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/Sear
 import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
 import Delete from '@mui/icons-material/Delete';
 import { Button, FormControl, IconButton, InputLabel, List, OutlinedInput } from '@mui/material';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import React, { ComponentType, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

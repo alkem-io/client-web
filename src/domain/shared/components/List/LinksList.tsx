@@ -1,6 +1,6 @@
 import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import { ReactNode } from 'react';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { SvgIconComponent } from '@mui/icons-material';

@@ -5,7 +5,7 @@ import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './Template
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';

@@ -16,7 +16,7 @@ import { useInnovationHubAvailableSpacesQuery } from '@/core/apollo/generated/ap
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { sortBy, without } from 'lodash';
+import { sortBy, without } from 'lodash-es';
 import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
 import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';

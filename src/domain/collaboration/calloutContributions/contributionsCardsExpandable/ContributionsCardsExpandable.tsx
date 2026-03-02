@@ -4,7 +4,7 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { ComponentType, useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { AnyContribution } from '../interfaces/AnyContributionType';
