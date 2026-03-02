@@ -88,9 +88,9 @@ As any user, I want the application to only establish real-time connections (Web
 - **FR-003**: The application MUST defer WebSocket connection establishment until a component that requires real-time data (subscriptions) is actually rendered.
 - **FR-004**: The application MUST NOT establish WebSocket connections on authentication pages (login, signup, signin). (Specific validation criterion of FR-003.)
 - **FR-005**: The application MUST NOT make geo-location or analytics initialization calls on authentication pages.
-- **FR-006**: The application MUST reduce the initial retry delay for failed requests to provide faster recovery from transient failures.
+- **FR-006**: The application MUST reduce the initial retry delay for failed requests from 1000ms to 300ms to provide faster recovery from transient failures.
 - **FR-007**: The application MUST NOT fetch the same data (platform roles, user credentials) in multiple separate queries on the home page when it can be consolidated.
-- **FR-008**: The application MUST batch the home space details query with the recent spaces query into a single network round-trip using client-side Apollo query batching, rather than executing them as a cascading request.
+- **FR-008**: The application MUST eliminate the cascading dependency between the home space details query and the recent spaces query by reading `homeSpaceId` from the already-loaded user context, allowing both queries to fire independently and be batched automatically by the Apollo link chain.
 - **FR-009**: The application MUST maintain all existing functionality and user-visible behavior after these optimizations (no regressions).
 - **FR-010**: The application MUST continue to properly skip user-specific queries on unauthenticated pages.
 - **FR-011**: The application MUST NOT fire the InnovationHubBannerWide query separately when the same data is available from the InnovationHub query or Apollo cache.
