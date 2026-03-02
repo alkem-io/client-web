@@ -135,7 +135,7 @@ The repo is also set up to generate a Docker image.
 
 - To create the docker image: `docker build -t alkemio/client-web:[tag]` where [tag] can be any value
 - To add build arguments - docker build --build-arg [argument]=[value]
-  - Argument can be the following: ARG_GRAPHQL_ENDPOINT
+  - Argument can be the following: ARG_BUILD_ENVIRONMENT
 - To run a container based on the image: `docker container run -p 80:80 alkemio/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
 
 ## Pushing code the dockerspace
