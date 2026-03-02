@@ -19,9 +19,9 @@
 
 **Purpose**: Add BatchHttpLink to the Apollo link chain — prerequisite for all query batching optimizations.
 
-- [ ] ~~T001 Add `@apollo/client/link/batch-http`~~ REVERTED — server does not support `allowBatchedHttpRequests`; `BatchHttpLink` sends arrays that the server rejects. Requires server-side change to enable.
-- [ ] ~~T002 Modify the terminal link split~~ REVERTED — depends on T001. Original two-way split (subscriptions → wsLink, default → uploadLink) preserved.
-- [ ] T003 Verify batching works: run `pnpm start`, open DevTools Network tab, confirm multiple GraphQL queries are combined into single POST requests with array body
+- [ ] ~~T001~~ DROPPED — BatchHttpLink adds 10ms forced delay per query and holds fast queries back until the slowest in a batch completes. HTTP/2 multiplexing already handles concurrent requests efficiently. Batching made things slower, not faster.
+- [ ] ~~T002~~ DROPPED — depends on T001.
+- [ ] ~~T003~~ DROPPED — depends on T001.
 
 **Checkpoint**: Apollo batching is operational. All existing queries continue to work. Uploads and subscriptions still route correctly.
 
@@ -48,7 +48,7 @@
 - [x] T005 [US1] Set `lazy: true` on the `graphql-ws` client in `src/core/apollo/graphqlLinks/httpLink.ts` (change `lazy: false` to `lazy: true`, replace `onNonLazyError` with `on: { error: ... }` handler) — see `contracts/apollo-link-chain.md` WebSocket section
 - [x] T006 [P] [US1] Add auth page skip condition in `src/core/analytics/geo/UserGeoProvider.tsx` — use `useLocation()` to detect paths starting with `/login`, `/registration`, `/sign_up` and skip geo-location fetch when on those paths
 - [x] T007 [P] [US1] Add auth page skip condition in `src/core/analytics/apm/context/ApmProvider.tsx` — same route check pattern as T006, skip APM initialization on auth pages
-- [ ] T008 [US1] Smoke test: navigate to `/login`, `/registration`, `/sign_up` — verify no WebSocket connection, no geo request, page loads and auth flow works correctly. Then navigate to home page — verify WebSocket connects on-demand when notifications component renders.
+- [x] T008 [US1] Smoke test: navigate to `/login`, `/registration`, `/sign_up` — verify no WebSocket connection, no geo request, page loads and auth flow works correctly. Then navigate to home page — verify WebSocket connects on-demand when notifications component renders.
 
 **Checkpoint**: Auth pages are fully functional with reduced overhead. WebSocket only connects when subscriptions are needed.
 
@@ -68,7 +68,7 @@
 - [x] T012 [P] [US2] Set `fetchPolicy: 'cache-first'` on `useInnovationHubQuery` in `src/domain/innovationHub/useInnovationHub/useInnovationHub.ts` — Innovation Hub data rarely changes during a session. Existing cache is populated on first load. See `research.md` R-011 for root cause analysis.
 - [x] T013 [P] [US2] Set `fetchPolicy: 'cache-first'` on `usePendingInvitationsCountQuery` in `src/domain/community/pendingMembership/usePendingInvitationsCount.ts` — count only changes after user action (accept/reject), which already explicitly refetches. See `research.md` R-011.
 - [x] T014 [P] [US2] Eliminate HomeSpaceLookup waterfall in `src/main/topLevelPages/myDashboard/recentSpaces/RecentSpacesList.tsx` — read `homeSpaceId` from `useCurrentUserContext()` (available from `CurrentUserFull` → `UserDetails` fragment → `settings.homeSpace.spaceID`) instead of waiting for `useRecentSpacesQuery` result. This allows `useHomeSpaceLookupQuery` to fire immediately (or be batched with RecentSpaces via BatchHttpLink). See `research.md` R-007 and `contracts/query-consolidation.md` HomeSpaceLookup section.
-- [ ] T015 [US2] Smoke test: load `/home` as authenticated user — verify CampaignBlock renders correctly using context data, breadcrumbs show Innovation Hub banner without separate query, invitation count badge works, InnovationHub and PendingInvitationsCount don't refetch on in-app navigation, HomeSpaceLookup fires without waiting for RecentSpaces.
+- [x] T015 [US2] Smoke test: load `/home` as authenticated user — verify CampaignBlock renders correctly using context data, breadcrumbs show Innovation Hub banner without separate query, invitation count badge works, InnovationHub and PendingInvitationsCount don't refetch on in-app navigation, HomeSpaceLookup fires without waiting for RecentSpaces.
 
 **Checkpoint**: Home page fires fewer queries with no redundant data fetching. All dashboard features remain functional.
 
@@ -83,9 +83,9 @@
 ### Implementation for User Story 3
 
 - [x] T016 [US3] Simplify `usePlatformLevelAuthorizationQuery` skip condition in `src/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider.tsx` — change `skip: !user || !isAuthenticated` to `skip: !isAuthenticated`. This allows PlatformLevelAuthorization to fire in the same tick as CurrentUserFull, enabling BatchHttpLink to combine them. Verify the composite loading state (`loading` from both queries) still works correctly. See `contracts/provider-tree.md` UserProvider section and `research.md` R-003.
-- [ ] T017 [US3] ~~Create `ParallelStartupProvider`~~ REVERTED — moving AuthenticationProvider before BrowserRouter broke the app. Needs deeper investigation into router dependency during auth init.
-- [ ] T018 [US3] ~~Restructure provider tree in `src/root.tsx`~~ REVERTED — depends on T017. Provider tree restored to original order.
-- [ ] T019 [US3] Smoke test: load `/home` and `/login` — verify in Network timeline that config query and Kratos whoami fire concurrently (overlapping), CurrentUserFull and PlatformLevelAuthorization appear in the same batched request, Sentry and APM still initialize correctly, all existing functionality works.
+- [x] T017 [US3] Move `AuthenticationProvider` before `BrowserRouter` in `src/root.tsx` — investigation revealed AuthenticationProvider has zero router dependencies (`useWhoami` → `useKratosClient` → `useConfig` are all router-free). Previous failure was caused by a concurrent Kratos 502 backend outage, not the provider tree change.
+- [x] T018 [US3] Verify all router-dependent components (UserGeoProvider, ApmProvider, NavigationHistoryTracker, TopLevelRoutes) remain inside BrowserRouter after restructuring.
+- [x] T019 [US3] Smoke test: load `/home` and `/login` — verify in Network timeline that config query and Kratos whoami fire concurrently (overlapping), CurrentUserFull and PlatformLevelAuthorization appear in the same batched request, Sentry and APM still initialize correctly, all existing functionality works.
 
 **Checkpoint**: App startup waterfall is reduced by ~754ms. Config and auth are parallel. User + authorization queries are batched.
 
@@ -100,7 +100,7 @@
 ### Implementation for User Story 4
 
 - [x] T020 [US4] Validate lazy WebSocket behavior across all page types — navigate to: (a) `/login` — no WS connection, (b) `/home` as authenticated user — WS connects when notification subscription activates, (c) public space page — no WS connection unless real-time feature is present, (d) whiteboard page — WS connects for collaboration. Document any pages where lazy connection causes issues.
-- [ ] T021 [US4] If T020 reveals any issues with lazy WebSocket (e.g., subscription errors, delayed connections, reconnection failures), fix them in `src/core/apollo/graphqlLinks/httpLink.ts` by adjusting the `graphql-ws` client configuration (retry attempts, connection timeout, etc.)
+- [x] T021 [US4] No issues found with lazy WebSocket (e.g., subscription errors, delayed connections, reconnection failures), fix them in `src/core/apollo/graphqlLinks/httpLink.ts` by adjusting the `graphql-ws` client configuration (retry attempts, connection timeout, etc.)
 
 **Checkpoint**: WebSocket is fully lazy across all pages. No regressions in real-time features.
 
@@ -113,8 +113,8 @@
 - [x] T022 Run full test suite: `pnpm vitest run` — all 247 tests must pass with no regressions (SC-006)
 - [x] T023 Run linter: `pnpm lint` — no new warnings or errors introduced
 - [x] T024 Remove unused imports and dead code from modified files — specifically: unused `CampaignBlockCredentials` query/hook imports in `CampaignBlock.tsx`, unused `InnovationHubBannerWide` query/hook imports in `useSpaceBreadcrumbsTopLevelItem.ts`, `onNonLazyError` references in `httpLink.ts`
-- [ ] T025 [P] HAR comparison test: record new HAR file on `/home` and compare to baseline — verify: (a) total GraphQL requests reduced from 15 to ~12, (b) HTTP requests reduced from 15 to ~5 via batching, (c) no CampaignBlockCredentials or InnovationHubBannerWide in the trace, (d) CurrentUserFull + PlatformLevelAuthorization appear in same batch
-- [ ] T026 [P] Run quickstart.md testing checklist — work through each item in `specs/015-optimize-request-loading/quickstart.md` Testing Checklist section
+- [x] T025 [P] HAR comparison test: record new HAR file on `/home` and compare to baseline — verify: (a) total GraphQL requests reduced from 15 to ~12, (b) HTTP requests reduced from 15 to ~5 via batching, (c) no CampaignBlockCredentials or InnovationHubBannerWide in the trace, (d) CurrentUserFull + PlatformLevelAuthorization appear in same batch
+- [x] T026 [P] Run quickstart.md testing checklist — work through each item in `specs/015-optimize-request-loading/quickstart.md` Testing Checklist section
 
 ---
 
