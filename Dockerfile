@@ -6,9 +6,6 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
-ARG ARG_GRAPHQL_ENDPOINT=/graphql
-ENV VITE_APP_GRAPHQL_ENDPOINT=${ARG_GRAPHQL_ENDPOINT}
-
 # set build version, date and revision
 ARG ARG_BUILD_ENVIRONMENT=development
 ARG ARG_BUILD_VERSION=dev
@@ -32,7 +29,7 @@ RUN pnpm install
 # Everything for now
 COPY . .
 
-# Conditionally run pnpm run build based on ARG_GRAPHQL_ENDPOINT
+# Conditionally run pnpm run build based on ARG_BUILD_ENVIRONMENT
 RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
   pnpm run-script build:dev; \
   else \

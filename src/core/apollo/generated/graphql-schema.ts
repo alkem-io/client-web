@@ -522,6 +522,8 @@ export type Actor = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The credentials held by this Actor. */
+  credentials?: Maybe<Array<Credential>>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -3049,7 +3051,7 @@ export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload
 
 export type InAppNotificationPayloadVirtualContributor = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadVirtualContributor';
-  contributor: VirtualContributor;
+  actor: VirtualContributor;
   /** The Space related to the notification */
   space: Space;
   /** The payload type. */
@@ -32286,9 +32288,10 @@ export type InAppNotificationReceivedSubscription = {
               };
             };
           };
-          contributor: {
+          actor: {
             __typename?: 'VirtualContributor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -33239,9 +33242,10 @@ export type InAppNotificationsQuery = {
                   };
                 };
               };
-              contributor: {
+              actor: {
                 __typename?: 'VirtualContributor';
                 id: string;
+                type: ActorType;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -34198,9 +34202,10 @@ export type InAppNotificationAllTypesFragment = {
             };
           };
         };
-        contributor: {
+        actor: {
           __typename?: 'VirtualContributor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -34758,9 +34763,10 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
       };
     };
   };
-  contributor: {
+  actor: {
     __typename?: 'VirtualContributor';
     id: string;
+    type: ActorType;
     profile?:
       | {
           __typename?: 'Profile';
