@@ -1,69 +1,52 @@
 # Contract: Apollo Link Chain Restructuring
 
-**Date**: 2026-02-26
+**Date**: 2026-02-26 | **Updated**: 2026-03-03 (post-implementation)
 
-## Current Link Chain
+## Current Link Chain (unchanged)
 
 ```
 omitTypenameLink → consoleLink → guestHeaderLink → errorLoggerLink → errorHandlerLink → retryLink → redirectLink → httpLink(uploadLink | wsLink)
 ```
 
-## Proposed Link Chain
+> **Note**: The originally proposed `BatchHttpLink` was dropped. The link chain structure is unchanged — only the WebSocket and retry configurations were modified.
 
-```
-omitTypenameLink → consoleLink → guestHeaderLink → errorLoggerLink → errorHandlerLink → retryLink → redirectLink → split(isUpload → uploadLink, isSub → wsLink(lazy), default → batchHttpLink)
-```
+## ~~Proposed Link Chain~~ (DROPPED — BatchHttpLink not used)
 
-## Changes
+~~`split(isUpload → uploadLink, isSub → wsLink(lazy), default → batchHttpLink)`~~
 
-### 1. Add BatchHttpLink (terminating link)
+BatchHttpLink adds 10ms forced delay per query and holds fast queries back until the slowest in a batch completes. HTTP/2 multiplexing already handles concurrent requests efficiently. Batching made things slower, not faster.
 
-```typescript
-// New: BatchHttpLink for non-upload, non-subscription operations
-const batchLink = new BatchHttpLink({
-  uri: graphQLEndpoint,
-  credentials: 'include',
-  headers: { 'apollo-require-preflight': 'true' },
-  batchInterval: 10, // ms — batch queries within 10ms window
-  batchMax: 10, // max operations per batch
-});
-```
+## Changes (implemented)
 
-### 2. Modify Terminal Link Split
+### ~~1. Add BatchHttpLink~~ (DROPPED)
+
+Not implemented. See note above.
+
+### 2. WebSocket Configuration
 
 ```typescript
-// Current: split(isSubscription → wsLink, default → uploadLink)
-// Proposed: three-way split
-const terminalLink = split(
-  isSubscription,
-  wsLink, // lazy: true
-  split(isUpload, uploadLink, batchLink)
-);
-```
-
-### 3. WebSocket Configuration
-
-```typescript
-// Current
+// Before
 { lazy: false, onNonLazyError: ... }
 
-// Proposed
+// After
 { lazy: true, on: { error: ... } }
 ```
 
-### 4. Retry Link Configuration
+WebSocket now connects lazily — only when the first subscription is activated. This eliminates ~1014ms connection overhead on auth pages and read-only pages.
+
+### 3. Retry Link Configuration
 
 ```typescript
-// Current
+// Before
 { delay: { initial: 1000, max: 5000, jitter: true }, attempts: { max: 5 } }
 
-// Proposed
+// After
 { delay: { initial: 300, max: 5000, jitter: true }, attempts: { max: 5 } }
 ```
 
 ## Backward Compatibility
 
-- All existing queries continue to work — batching is transparent to consumers
+- All existing queries continue to work — no link chain structural changes
 - Upload mutations route to existing `uploadLink` (unchanged)
 - Subscriptions route to `wsLink` (now lazy, but functionally identical once connected)
-- The `from([...])` chain is unchanged except for the terminal link
+- The `from([...])` chain is unchanged
