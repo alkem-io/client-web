@@ -1,6 +1,8 @@
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { AUTH_PAGE_PREFIXES } from '@/core/auth/authentication/constants/authentication.constants';
 
 const skipOnLocal = process.env.NODE_ENV !== 'production';
 
@@ -30,13 +32,15 @@ export const UserGeoProvider = ({ children }: PropsWithChildren) => {
   const { geo } = useConfig();
   const geoEndpoint = geo?.endpoint;
   const enabled = geo?.enabled;
+  const { pathname } = useLocation();
+  const isAuthPage = AUTH_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
   const [data, setGeo] = useState<UserGeoData | undefined>();
 
   useEffect(() => {
-    if (skipOnLocal || !geoEndpoint || !enabled) {
+    if (skipOnLocal || !geoEndpoint || !enabled || isAuthPage) {
       setLoading(false);
       setGeo(undefined);
       setError(undefined);
@@ -52,7 +56,7 @@ export const UserGeoProvider = ({ children }: PropsWithChildren) => {
       }
       setLoading(false);
     })();
-  }, [skipOnLocal, geoEndpoint, enabled]);
+  }, [skipOnLocal, geoEndpoint, enabled, isAuthPage]);
 
   return <UserGeoContext value={{ data, loading, error }}>{children}</UserGeoContext>;
 };

@@ -9,7 +9,7 @@ const retryIf = (error: any) => {
 
 export const retryLink = new RetryLink({
   delay: {
-    initial: 1000,
+    initial: 300,
     max: 5000,
     jitter: true,
   },

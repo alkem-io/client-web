@@ -1,4 +1,4 @@
-import { useInnovationHubBannerWideQuery } from '@/core/apollo/generated/apollo-hooks';
+import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
 
 interface TopLevelBreadcrumbsItem {
   profile?: {
@@ -11,17 +11,20 @@ interface TopLevelBreadcrumbsItem {
 }
 
 const useBreadcrumbsTopLevelItem = (): TopLevelBreadcrumbsItem => {
-  const { data, loading } = useInnovationHubBannerWideQuery();
+  const { innovationHub, innovationHubLoading } = useInnovationHub();
 
-  const innovationHub = data?.platform.innovationHub;
-
-  if (loading) {
-    return { loading };
+  if (innovationHubLoading) {
+    return { loading: true };
   }
 
   return {
-    profile: innovationHub?.profile,
-    loading,
+    profile: innovationHub
+      ? {
+          displayName: innovationHub.displayName,
+          bannerWide: innovationHub.banner,
+        }
+      : undefined,
+    loading: false,
   };
 };
 
