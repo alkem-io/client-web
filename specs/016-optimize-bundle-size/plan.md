@@ -10,7 +10,7 @@ Reduce initial JS payload by lazy-loading the Tiptap editor (~2.5MB), separating
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19, ES2023 target
-**Primary Dependencies**: Vite 7.3.0 (Rollup), @tiptap/\* 3.11.0, lodash 4.17.21, @mui/material 7.1.0, @apollo/client 3.14.0
+**Primary Dependencies**: Vite 7.3.0 (Rollup), @tiptap/\* 3.11.0, lodash-es ^4.17.23, @mui/material 7.1.0, @apollo/client ^3.10.8
 **Storage**: N/A (client-side bundle optimization)
 **Testing**: Vitest (516 tests), ESLint, production build verification, bundle analysis (`pnpm analyze`)
 **Target Platform**: Modern browsers (ES2023), HTTP/2 assumed
