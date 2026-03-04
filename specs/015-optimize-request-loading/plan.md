@@ -1,11 +1,13 @@
 # Implementation Plan: Optimize Request Loading Performance
 
-**Branch**: `015-optimize-request-loading` | **Date**: 2026-02-26 | **Updated**: 2026-02-27 (HAR analysis) | **Spec**: [spec.md](./spec.md)
+**Branch**: `015-optimize-request-loading` | **Date**: 2026-02-26 | **Updated**: 2026-03-03 (post-implementation) | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/015-optimize-request-loading/spec.md`
 
 ## Summary
 
-Reduce page load times for home, login, signup, and signin pages by eliminating request waterfalls, removing redundant queries, enabling Apollo query batching, deferring WebSocket connections, and parallelizing the app startup sequence. All changes are client-only — no server-side modifications required.
+Reduce page load times for home, login, signup, and signin pages by eliminating request waterfalls, removing redundant queries, deferring WebSocket connections, and restructuring the provider tree to parallelize the app startup sequence. All changes are client-only — no server-side modifications required.
+
+> **Note**: Apollo BatchHttpLink was explored during implementation but dropped — it added a 10ms forced delay per query and held fast queries back until the slowest in a batch completed. HTTP/2 multiplexing already handles concurrent requests efficiently. The ParallelStartupProvider component was also not needed — moving `AuthenticationProvider` above `BrowserRouter` in root.tsx achieved the same goal with a simpler change.
 
 ### HAR Baseline (Real Measurements)
 
@@ -21,7 +23,7 @@ From `localhost.har` — authenticated home page load:
 
 - Waterfall elimination: ~754ms (Config→Auth 204ms + CurrentUserFull→PlatformLevelAuth 550ms)
 - Query elimination: 2-3 fewer queries (CampaignBlockCredentials, InnovationHubBannerWide, conditional PendingInvitations)
-- Batching: 15 HTTP requests → ~5 HTTP requests (67% reduction)
+- ~~Batching: 15 HTTP requests → ~5 HTTP requests (67% reduction)~~ DROPPED — HTTP/2 multiplexing is sufficient
 - WebSocket defer: ~1014ms connection overhead removed from auth pages
 
 ## Technical Context
@@ -34,25 +36,25 @@ From `localhost.har` — authenticated home page load:
 **Project Type**: Web (single SPA, no separate backend changes)
 **Performance Goals**: 30% TTI improvement on auth pages (SC-001), 25%+ reduction in home page requests (SC-002), 200ms+ reduction in startup waterfall (SC-004)
 **Constraints**: Client-only changes; no GraphQL schema modifications; no server-side changes; must preserve all existing functionality (FR-009)
-**Scale/Scope**: 13 files modified, 1 new component (ParallelStartupProvider), 2 queries eliminated, 1 query conditionally skipped, 1 waterfall eliminated (HomeSpaceLookup), 2 waterfalls removed, 1 link added to Apollo chain, 2 fetch policies optimized
+**Scale/Scope**: 12 files modified, 2 queries eliminated, 1 query conditionally skipped, 2 waterfalls removed (Config→Auth via provider tree reorder, CurrentUserFull→PlatformLevelAuth via skip condition simplification), 2 fetch policies optimized, WebSocket set to lazy, retry delay reduced
 
 ## Constitution Check
 
 _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle                               | Status | Notes                                                                                                                                                                                                           |
-| --------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| I. Domain-Driven Frontend Boundaries    | PASS   | Changes respect domain boundaries: Apollo config in `src/core/apollo`, providers in `src/domain/platform` and `src/core/auth`, dashboard components in `src/main`                                               |
-| II. React 19 Concurrent UX Discipline   | PASS   | No new blocking renders; parallelization improves concurrency. Loading states preserved.                                                                                                                        |
-| III. GraphQL Contract Fidelity          | PASS   | All queries use generated hooks from `apollo-hooks.ts`. No raw `useQuery`. `BatchHttpLink` is transparent to generated hooks. CampaignBlock replacement uses context data that originates from generated hooks. |
-| IV. State & Side-Effect Isolation       | PASS   | Side effects (WebSocket, geo, APM) are deferred via existing provider patterns. New `ParallelStartupProvider` follows context/provider pattern in `src/core`.                                                   |
-| V. Experience Quality & Safeguards      | PASS   | Performance improvement is the goal. No accessibility changes. All tests must pass (SC-006).                                                                                                                    |
-| Architecture Std 1 (directory taxonomy) | PASS   | New component goes in `src/core` (shared infrastructure). No new domain directories.                                                                                                                            |
-| Architecture Std 5 (no barrel exports)  | PASS   | All imports use explicit file paths.                                                                                                                                                                            |
-| Architecture Std 6 (SOLID)              | PASS   | SRP: each change has single responsibility. DIP: CampaignBlock switches from query to context abstraction. DRY: eliminates duplicate platform roles/entitlements fetching.                                      |
-| Engineering Workflow 5 (Root Cause)     | PASS   | Each optimization addresses a specific identified root cause (blocking provider, waterfall skip condition, eager WebSocket, redundant query, aggressive retry). No duct tape.                                   |
+| Principle                               | Status | Notes                                                                                                                                                                         |
+| --------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| I. Domain-Driven Frontend Boundaries    | PASS   | Changes respect domain boundaries: Apollo config in `src/core/apollo`, providers in `src/domain/platform` and `src/core/auth`, dashboard components in `src/main`             |
+| II. React 19 Concurrent UX Discipline   | PASS   | No new blocking renders; parallelization improves concurrency. Loading states preserved.                                                                                      |
+| III. GraphQL Contract Fidelity          | PASS   | All queries use generated hooks from `apollo-hooks.ts`. No raw `useQuery`. CampaignBlock replacement uses context data that originates from generated hooks.                  |
+| IV. State & Side-Effect Isolation       | PASS   | Side effects (WebSocket, geo, APM) are deferred via existing provider patterns. Provider tree reordering in root.tsx follows established patterns.                            |
+| V. Experience Quality & Safeguards      | PASS   | Performance improvement is the goal. No accessibility changes. All tests must pass (SC-006).                                                                                  |
+| Architecture Std 1 (directory taxonomy) | PASS   | New component goes in `src/core` (shared infrastructure). No new domain directories.                                                                                          |
+| Architecture Std 5 (no barrel exports)  | PASS   | All imports use explicit file paths.                                                                                                                                          |
+| Architecture Std 6 (SOLID)              | PASS   | SRP: each change has single responsibility. DIP: CampaignBlock switches from query to context abstraction. DRY: eliminates duplicate platform roles/entitlements fetching.    |
+| Engineering Workflow 5 (Root Cause)     | PASS   | Each optimization addresses a specific identified root cause (blocking provider, waterfall skip condition, eager WebSocket, redundant query, aggressive retry). No duct tape. |
 
-**Post-Phase 1 Re-check**: All principles continue to hold. The `ParallelStartupProvider` pattern is consistent with existing provider patterns in the codebase. `BatchHttpLink` integration preserves the existing link chain architecture.
+**Post-implementation Re-check**: All principles continue to hold. Provider tree reordering in root.tsx is minimal and follows established patterns. BatchHttpLink was dropped (no link chain changes beyond lazy WebSocket).
 
 ## Project Structure
 
@@ -68,7 +70,7 @@ specs/015-optimize-request-loading/
 ├── contracts/
 │   ├── apollo-link-chain.md    # Apollo link chain restructuring
 │   ├── provider-tree.md        # Provider tree restructuring
-│   └── query-consolidation.md  # Query elimination and batching (HAR-validated)
+│   └── query-consolidation.md  # Query elimination and optimization (HAR-validated)
 └── checklists/
     └── requirements.md  # Spec quality checklist
 ```
@@ -79,60 +81,53 @@ specs/015-optimize-request-loading/
 src/
 ├── core/
 │   ├── apollo/
-│   │   ├── graphqlLinks/
-│   │   │   ├── httpLink.ts          # MODIFY: add BatchHttpLink, lazy WebSocket
-│   │   │   └── retryLink.ts         # MODIFY: reduce initial delay (1000→300ms)
-│   │   └── hooks/
-│   │       └── useGraphQLClient.ts  # MODIFY: update link chain split
-│   ├── startup/
-│   │   └── ParallelStartupProvider.tsx  # NEW: parallel config+auth coordinator
+│   │   └── graphqlLinks/
+│   │       ├── httpLink.ts          # MODIFIED: lazy WebSocket, error handler update
+│   │       └── retryLink.ts         # MODIFIED: reduce initial delay (1000→300ms)
 │   ├── auth/
 │   │   └── authentication/
-│   │       └── context/
-│   │           └── AuthenticationProvider.tsx  # MODIFY: extract for parallel startup
+│   │       └── constants/
+│   │           └── authentication.constants.ts  # MODIFIED: add AUTH_PAGE_PREFIXES
 │   └── analytics/
 │       ├── geo/
-│       │   └── UserGeoProvider.tsx   # MODIFY: add auth page skip
+│       │   └── UserGeoProvider.tsx   # MODIFIED: add auth page skip
 │       └── apm/
 │           └── context/
-│               └── ApmProvider.tsx   # MODIFY: add auth page skip
+│               └── ApmProvider.tsx   # MODIFIED: add auth page skip
 ├── domain/
-│   ├── platform/
-│   │   └── config/
-│   │       └── ConfigProvider.tsx    # MODIFY: extract for parallel startup
 │   ├── community/
 │   │   ├── userCurrent/
 │   │   │   └── CurrentUserProvider/
-│   │   │       └── CurrentUserProvider.tsx  # MODIFY: simplify PlatformLevelAuth skip
+│   │   │       └── CurrentUserProvider.tsx  # MODIFIED: simplify PlatformLevelAuth skip
 │   │   └── pendingMembership/
-│   │       └── usePendingInvitationsCount.ts  # MODIFY: cache-first fetch policy
+│   │       └── usePendingInvitationsCount.ts  # MODIFIED: cache-first fetch policy
 │   └── innovationHub/
 │       ├── useInnovationHub/
-│       │   └── useInnovationHub.ts   # MODIFY: cache-first fetch policy
-│       └── useSpaceBreadcrumbsTopLevelItem.ts  # MODIFY: read from cache instead of InnovationHubBannerWide
+│       │   └── useInnovationHub.ts   # MODIFIED: cache-first fetch policy
+│       └── useSpaceBreadcrumbsTopLevelItem.ts  # MODIFIED: read from useInnovationHub instead of InnovationHubBannerWide
 └── main/
     ├── topLevelPages/
     │   └── myDashboard/
     │       ├── Campaigns/
-    │       │   └── CampaignBlock.tsx  # MODIFY: replace query with context
-    │       ├── recentSpaces/
-    │       │   └── RecentSpacesList.tsx  # MODIFY: read homeSpaceId from context
+    │       │   └── CampaignBlock.tsx  # MODIFIED: replace query with context
     │       └── InvitationsBlock/
-    │           └── InvitationsBlock.tsx  # MODIFY: skip query when count=0
-    └── root.tsx                      # MODIFY: restructure provider tree
+    │           └── InvitationsBlock.tsx  # MODIFIED: skip query when count=0
+    └── root.tsx                      # MODIFIED: move AuthenticationProvider above BrowserRouter
 ```
 
-**Structure Decision**: All changes are modifications to existing files within the established directory structure. One new component (`ParallelStartupProvider`) will be created in `src/core/` or inline in `root.tsx`, following existing provider patterns.
+**Structure Decision**: All changes are modifications to existing files within the established directory structure. No new components were needed — the provider tree parallelization was achieved by reordering providers in `root.tsx`.
+
+> **Dropped from plan**: `useGraphQLClient.ts` (BatchHttpLink not needed), `ParallelStartupProvider.tsx` (not needed — simple reorder in root.tsx sufficed), `ConfigProvider.tsx` / `AuthenticationProvider.tsx` (not modified), `RecentSpacesList.tsx` (HomeSpaceLookup waterfall not applicable to measured user path).
 
 ## Change Summary by Impact
 
 ### High Impact (waterfall elimination)
 
-| Change                                       | File                                                           | HAR Evidence                    | Savings        |
-| -------------------------------------------- | -------------------------------------------------------------- | ------------------------------- | -------------- |
-| Parallel Config + Auth                       | `root.tsx`, `ConfigProvider.tsx`, `AuthenticationProvider.tsx` | 204ms gap at T+151→T+355        | ~204ms         |
-| Parallel CurrentUserFull + PlatformLevelAuth | `CurrentUserProvider.tsx`                                      | 550ms waterfall at T+603→T+1355 | ~550ms         |
-| Apollo BatchHttpLink                         | `httpLink.ts`, `useGraphQLClient.ts`                           | 15 individual HTTP requests     | 15→~5 requests |
+| Change                                          | File                      | HAR Evidence                    | Savings | Status      |
+| ----------------------------------------------- | ------------------------- | ------------------------------- | ------- | ----------- |
+| Move AuthenticationProvider above BrowserRouter | `root.tsx`                | 204ms gap at T+151→T+355        | ~204ms  | Implemented |
+| Parallel CurrentUserFull + PlatformLevelAuth    | `CurrentUserProvider.tsx` | 550ms waterfall at T+603→T+1355 | ~550ms  | Implemented |
+| ~~Apollo BatchHttpLink~~                        | ~~`httpLink.ts`~~         | ~~15 individual HTTP requests~~ | —       | DROPPED     |
 
 ### Medium Impact (query elimination/deferral)
 

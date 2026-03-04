@@ -15,15 +15,15 @@
 
 ---
 
-## Phase 1: Setup (Apollo Batching Infrastructure)
+## Phase 1: Setup (Apollo Batching Infrastructure) — DROPPED
 
-**Purpose**: Add BatchHttpLink to the Apollo link chain — prerequisite for all query batching optimizations.
+**Purpose**: ~~Add BatchHttpLink to the Apollo link chain — prerequisite for all query batching optimizations.~~
 
-- [ ] ~~T001~~ DROPPED — BatchHttpLink adds 10ms forced delay per query and holds fast queries back until the slowest in a batch completes. HTTP/2 multiplexing already handles concurrent requests efficiently. Batching made things slower, not faster.
-- [ ] ~~T002~~ DROPPED — depends on T001.
-- [ ] ~~T003~~ DROPPED — depends on T001.
+> **Dropped**: BatchHttpLink adds 10ms forced delay per query and holds fast queries back until the slowest in a batch completes. HTTP/2 multiplexing already handles concurrent requests efficiently. Batching made things slower, not faster. All downstream tasks that depended on batching were re-evaluated and found to work without it (queries fire in parallel via simplified skip conditions instead).
 
-**Checkpoint**: Apollo batching is operational. All existing queries continue to work. Uploads and subscriptions still route correctly.
+- [ ] ~~T001~~ DROPPED
+- [ ] ~~T002~~ DROPPED
+- [ ] ~~T003~~ DROPPED
 
 ---
 
@@ -67,7 +67,7 @@
 - [x] T011 [P] [US2] Add conditional skip to PendingInvitations query in `src/main/topLevelPages/myDashboard/InvitationsBlock/InvitationsBlock.tsx` — pass a `skip` option to `usePendingInvitationsQuery` that skips when the pending invitations count is 0. This requires reading the count from `usePendingInvitationsCount` hook or context and passing it as a skip condition. See `research.md` R-010.
 - [x] T012 [P] [US2] Set `fetchPolicy: 'cache-first'` on `useInnovationHubQuery` in `src/domain/innovationHub/useInnovationHub/useInnovationHub.ts` — Innovation Hub data rarely changes during a session. Existing cache is populated on first load. See `research.md` R-011 for root cause analysis.
 - [x] T013 [P] [US2] Set `fetchPolicy: 'cache-first'` on `usePendingInvitationsCountQuery` in `src/domain/community/pendingMembership/usePendingInvitationsCount.ts` — count only changes after user action (accept/reject), which already explicitly refetches. See `research.md` R-011.
-- [x] T014 [P] [US2] Eliminate HomeSpaceLookup waterfall in `src/main/topLevelPages/myDashboard/recentSpaces/RecentSpacesList.tsx` — read `homeSpaceId` from `useCurrentUserContext()` (available from `CurrentUserFull` → `UserDetails` fragment → `settings.homeSpace.spaceID`) instead of waiting for `useRecentSpacesQuery` result. This allows `useHomeSpaceLookupQuery` to fire immediately (or be batched with RecentSpaces via BatchHttpLink). See `research.md` R-007 and `contracts/query-consolidation.md` HomeSpaceLookup section.
+- [ ] ~~T014~~ NOT APPLICABLE — HomeSpaceLookup and RecentSpaces queries were not present in the measured HAR trace (user had no space memberships, so a different dashboard path renders). This optimization remains valid for users with space memberships but was not implemented in this iteration.
 - [x] T015 [US2] Smoke test: load `/home` as authenticated user — verify CampaignBlock renders correctly using context data, breadcrumbs show Innovation Hub banner without separate query, invitation count badge works, InnovationHub and PendingInvitationsCount don't refetch on in-app navigation, HomeSpaceLookup fires without waiting for RecentSpaces.
 
 **Checkpoint**: Home page fires fewer queries with no redundant data fetching. All dashboard features remain functional.
@@ -78,16 +78,16 @@
 
 **Goal**: Parallelize config + auth startup and eliminate the CurrentUserFull → PlatformLevelAuthorization waterfall.
 
-**Independent Test**: Load any page in DevTools Network timeline — verify config and Kratos whoami fire concurrently (overlapping bars), and CurrentUserFull + PlatformLevelAuthorization fire in the same batch (single HTTP request).
+**Independent Test**: Load any page in DevTools Network timeline — verify config and Kratos whoami fire concurrently (overlapping bars), and CurrentUserFull + PlatformLevelAuthorization fire in parallel (no 550ms gap).
 
 ### Implementation for User Story 3
 
-- [x] T016 [US3] Simplify `usePlatformLevelAuthorizationQuery` skip condition in `src/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider.tsx` — change `skip: !user || !isAuthenticated` to `skip: !isAuthenticated`. This allows PlatformLevelAuthorization to fire in the same tick as CurrentUserFull, enabling BatchHttpLink to combine them. Verify the composite loading state (`loading` from both queries) still works correctly. See `contracts/provider-tree.md` UserProvider section and `research.md` R-003.
-- [x] T017 [US3] Move `AuthenticationProvider` before `BrowserRouter` in `src/root.tsx` — investigation revealed AuthenticationProvider has zero router dependencies (`useWhoami` → `useKratosClient` → `useConfig` are all router-free). Previous failure was caused by a concurrent Kratos 502 backend outage, not the provider tree change.
+- [x] T016 [US3] Simplify `usePlatformLevelAuthorizationQuery` skip condition in `src/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider.tsx` — change `skip: !user || !isAuthenticated` to `skip: !isAuthenticated`. This allows PlatformLevelAuthorization to fire in the same tick as CurrentUserFull (in parallel via HTTP/2 multiplexing). See `contracts/provider-tree.md` UserProvider section and `research.md` R-003.
+- [x] T017 [US3] Move `AuthenticationProvider` above `BrowserRouter` in `src/root.tsx` — this replaced the originally planned `ParallelStartupProvider` component. Investigation revealed AuthenticationProvider has zero router dependencies (`useWhoami` → `useKratosClient` → `useConfig` are all router-free). Previous failure was caused by a concurrent Kratos 502 backend outage, not the provider tree change. Simple reordering achieved the same parallelization goal.
 - [x] T018 [US3] Verify all router-dependent components (UserGeoProvider, ApmProvider, NavigationHistoryTracker, TopLevelRoutes) remain inside BrowserRouter after restructuring.
-- [x] T019 [US3] Smoke test: load `/home` and `/login` — verify in Network timeline that config query and Kratos whoami fire concurrently (overlapping), CurrentUserFull and PlatformLevelAuthorization appear in the same batched request, Sentry and APM still initialize correctly, all existing functionality works.
+- [x] T019 [US3] Smoke test: load `/home` and `/login` — verify in Network timeline that config query and Kratos whoami fire concurrently (overlapping), CurrentUserFull and PlatformLevelAuthorization fire in parallel, Sentry and APM still initialize correctly, all existing functionality works.
 
-**Checkpoint**: App startup waterfall is reduced by ~754ms. Config and auth are parallel. User + authorization queries are batched.
+**Checkpoint**: App startup waterfall is reduced by ~754ms. Config and auth are parallel. User + authorization queries fire in parallel.
 
 ---
 
@@ -113,20 +113,20 @@
 - [x] T022 Run full test suite: `pnpm vitest run` — all 247 tests must pass with no regressions (SC-006)
 - [x] T023 Run linter: `pnpm lint` — no new warnings or errors introduced
 - [x] T024 Remove unused imports and dead code from modified files — specifically: unused `CampaignBlockCredentials` query/hook imports in `CampaignBlock.tsx`, unused `InnovationHubBannerWide` query/hook imports in `useSpaceBreadcrumbsTopLevelItem.ts`, `onNonLazyError` references in `httpLink.ts`
-- [x] T025 [P] HAR comparison test: record new HAR file on `/home` and compare to baseline — verify: (a) total GraphQL requests reduced from 15 to ~12, (b) HTTP requests reduced from 15 to ~5 via batching, (c) no CampaignBlockCredentials or InnovationHubBannerWide in the trace, (d) CurrentUserFull + PlatformLevelAuthorization appear in same batch
+- [x] T025 [P] HAR comparison test: record new HAR file on `/home` and compare to baseline — verify: (a) total GraphQL requests reduced from 15 to ~12, (b) no CampaignBlockCredentials or InnovationHubBannerWide in the trace, (c) CurrentUserFull + PlatformLevelAuthorization fire in parallel (no 550ms gap)
 - [x] T026 [P] Run quickstart.md testing checklist — work through each item in `specs/015-optimize-request-loading/quickstart.md` Testing Checklist section
 
 ---
 
 ## Dependencies & Execution Order
 
-### Phase Dependencies
+### Phase Dependencies (updated post-implementation)
 
-- **Phase 1 (Setup)**: No dependencies — start immediately. BLOCKS Phase 3-6 (batching required for query consolidation).
-- **Phase 2 (Foundational)**: No dependencies — can run in parallel with Phase 1.
-- **Phase 3 (US1)**: Depends on Phase 1 (T005 modifies same file as T001-T002). Can start after T001-T002 complete.
-- **Phase 4 (US2)**: Depends on Phase 1 (batching must work for query reduction to be measurable). All T009-T014 are independent of each other.
-- **Phase 5 (US3)**: Depends on Phase 1 (batching required for T016 to produce single HTTP request). T016-T017 are the most complex tasks.
+- **Phase 1 (Setup)**: DROPPED — batching not used.
+- **Phase 2 (Foundational)**: No dependencies — start immediately.
+- **Phase 3 (US1)**: No dependencies (Phase 1 dropped).
+- **Phase 4 (US2)**: No dependencies. All T009-T013 are independent of each other. T014 was not applicable.
+- **Phase 5 (US3)**: No dependencies. T016-T017 are the most impactful tasks.
 - **Phase 6 (US4)**: Depends on T005 from Phase 3 (lazy WebSocket). Primarily validation.
 - **Phase 7 (Polish)**: Depends on all previous phases.
 
@@ -156,7 +156,7 @@ Task T013: "Cache-first PendingInvitationsCount in src/domain/community/pendingM
 
 # Also parallel:
 Task T009: "Replace CampaignBlockCredentials query in CampaignBlock.tsx" (parallel with T010-T014)
-Task T014: "Eliminate HomeSpaceLookup waterfall in RecentSpacesList.tsx"
+Task T009: "Replace CampaignBlockCredentials query in CampaignBlock.tsx" (parallel with T010-T013)
 
 # Then sequential (depends on above):
 Task T015: "Smoke test home page"
@@ -164,23 +164,23 @@ Task T015: "Smoke test home page"
 
 ---
 
-## Implementation Strategy
+## Implementation Strategy (updated post-implementation)
 
 ### MVP First (User Story 1 Only)
 
-1. Complete Phase 1: Apollo BatchHttpLink setup (T001-T003)
+1. ~~Complete Phase 1: Apollo BatchHttpLink setup (T001-T003)~~ DROPPED
 2. Complete Phase 2: Retry tuning (T004)
 3. Complete Phase 3: Auth page optimization (T005-T008)
 4. **STOP and VALIDATE**: Auth pages load faster, no WebSocket/geo overhead
 5. Deploy/demo — immediate value for all users hitting login/signup
 
-### Incremental Delivery
+### Incremental Delivery (as executed)
 
-1. Phase 1 + 2 → Batching + retry ready (foundation)
-2. Add US1 (Phase 3) → Auth pages optimized → **MVP!**
-3. Add US2 (Phase 4) → Home page queries reduced → Deploy
-4. Add US3 (Phase 5) → Startup waterfall eliminated → Deploy
-5. Add US4 (Phase 6) → WebSocket fully lazy → Deploy
+1. Phase 2 → Retry tuning (foundation)
+2. Phase 3 (US1) → Auth pages optimized (lazy WS, skip geo/APM) → **MVP!**
+3. Phase 4 (US2) → Home page queries reduced (eliminate redundant queries, cache-first)
+4. Phase 5 (US3) → Startup waterfall eliminated (provider reorder, skip condition fix)
+5. Phase 6 (US4) → WebSocket fully lazy (validated)
 6. Phase 7 → Full validation + cleanup → Final release
 
 ### Risk Ordering

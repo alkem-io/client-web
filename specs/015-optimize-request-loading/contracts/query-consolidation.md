@@ -1,6 +1,6 @@
 # Contract: Query Consolidation
 
-**Date**: 2026-02-26 | **Updated**: 2026-02-27 (HAR analysis)
+**Date**: 2026-02-26 | **Updated**: 2026-03-03 (post-implementation)
 
 ## HAR Baseline (Real Measurements)
 
@@ -84,13 +84,13 @@ T+4582ms   latestReleaseDiscussion         114ms             ███
 1. Fire `useCurrentUserFullQuery({ skip: !isAuthenticated })` → wait for user
 2. Fire `usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated })`
 
-**Proposed**:
+**Implemented**:
 
 1. Fire `useCurrentUserFullQuery({ skip: !isAuthenticated })`
 2. Fire `usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated })` ← simplified skip
-3. Both fire in the same tick → batched by `BatchHttpLink`
+3. Both fire in the same tick → handled concurrently via HTTP/2 multiplexing
 
-**Impact**: Saves ~550ms waterfall. Both queries execute in parallel within one HTTP request.
+**Impact**: Saves ~550ms waterfall. Both queries execute in parallel.
 
 ### PendingInvitations (conditional on PendingInvitationsCount)
 
@@ -146,18 +146,17 @@ Count only changes after user action (accept/reject invitation). Switch to `cach
 | 6     | T+4579ms | ExploreAllSpaces              | 107ms    | none             | ok                 |
 | 6     | T+4582ms | latestReleaseDiscussion       | 114ms    | auth             | ok                 |
 
-### After: batched, reduced, no waterfalls
+### After: reduced queries, no waterfalls, parallel execution
 
-| Batch     | Offset    | Queries                                                                                                | Requests                |
-| --------- | --------- | ------------------------------------------------------------------------------------------------------ | ----------------------- |
-| 1         | T+0ms     | Configuration + Kratos whoami (parallel)                                                               | 2 (different endpoints) |
-| 2         | T+~250ms  | CurrentUserFull + PlatformLevelAuthorization + InAppNotificationsUnreadCount                           | 1 (batched)             |
-| 3         | T+~1000ms | InnovationHub + PendingInvitationsCount + LatestContributionsSpacesFlat + UserConversationsUnreadCount | 1 (batched)             |
-| 4         | T+~1100ms | MyResources + ExploreAllSpaces + latestReleaseDiscussion + PendingInvitations (conditional)            | 1 (batched)             |
-| **Total** |           | **12-13 queries in 4-5 requests** (down from 15 queries in 15 requests)                                | **~5 requests**         |
+| Chain     | Offset    | Queries                                                                                                | Notes                                           |
+| --------- | --------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| 1         | T+0ms     | Configuration                                                                                          | Blocks React tree                               |
+| 1         | T+~150ms  | Kratos whoami                                                                                          | Starts after config (AuthProvider above Router) |
+| 2         | T+~400ms  | CurrentUserFull + PlatformLevelAuthorization + InAppNotificationsUnreadCount                           | All fire in parallel (HTTP/2 multiplexing)      |
+| 3         | T+~1800ms | InnovationHub + PendingInvitationsCount + LatestContributionsSpacesFlat + UserConversationsUnreadCount | Dashboard component mounts                      |
+| 4         | T+~2200ms | MyResources + ExploreAllSpaces + latestReleaseDiscussion + PendingInvitations (conditional)            | Later dashboard sections                        |
+| **Total** |           | **12-13 queries** (down from 15)                                                                       | Individual HTTP requests (HTTP/2 multiplexed)   |
 
 **Eliminated**: CampaignBlockCredentials (-1), InnovationHubBannerWide (-1), PendingInvitations when count=0 (-1 conditional)
-**Waterfall saved**: ~550ms (PlatformLevelAuth) + ~204ms (config→auth parallel) = ~754ms
-**Request reduction**: 15 → ~5 HTTP requests (67% reduction)
-
-Note: Exact batching depends on query timing within the 10ms batch window. The rendering gaps between chains (1487ms, 395ms) are JS execution time that batching cannot eliminate, but the earlier waterfall savings cascade into earlier component mounts.
+**Waterfall saved**: ~550ms (PlatformLevelAuth) + provider tree reorder (AuthProvider moved above BrowserRouter) = ~750ms+
+**Note**: Apollo BatchHttpLink was explored but dropped — HTTP/2 multiplexing already handles concurrent requests efficiently. The 10ms batch window added latency and held fast queries back until the slowest completed.

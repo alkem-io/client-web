@@ -16,9 +16,11 @@ Real measurements from `localhost.har` (authenticated home page load):
 
 ---
 
-## R-001: Apollo Query Batching Strategy
+## R-001: Apollo Query Batching Strategy — DROPPED
 
-**Decision**: Use Apollo `BatchHttpLink` to combine multiple independent GraphQL queries into a single HTTP request, replacing the current single `HttpLink` (via `createUploadLink`).
+> **Post-implementation update**: This approach was implemented and tested but **dropped**. BatchHttpLink adds a 10ms forced delay per query and holds fast queries back until the slowest in a batch completes. HTTP/2 multiplexing already handles concurrent requests efficiently. Batching made things slower, not faster.
+
+**Original Decision**: Use Apollo `BatchHttpLink` to combine multiple independent GraphQL queries into a single HTTP request, replacing the current single `HttpLink` (via `createUploadLink`).
 
 **Rationale**: The project currently has no batching configured. All queries fire as individual HTTP requests. Apollo's `BatchHttpLink` can transparently batch queries dispatched within the same event loop tick into a single POST, reducing network round-trips without requiring server schema changes. The server must support array-based batched queries (standard in most GraphQL servers including Apollo Server).
 
@@ -58,22 +60,22 @@ Real measurements from `localhost.har` (authenticated home page load):
 
 ---
 
-## R-003: User + Authorization Query Batching
+## R-003: User + Authorization Query Parallelization
 
-**Decision**: Remove the `skip: !user` condition from `usePlatformLevelAuthorizationQuery` and instead use `skip: !isAuthenticated` (same as `useCurrentUserFullQuery`), allowing both queries to fire simultaneously and be batched into a single HTTP request by `BatchHttpLink`.
+**Decision**: Remove the `skip: !user` condition from `usePlatformLevelAuthorizationQuery` and instead use `skip: !isAuthenticated` (same as `useCurrentUserFullQuery`), allowing both queries to fire simultaneously in parallel via HTTP/2 multiplexing.
 
 **Rationale**: The current waterfall exists because `PlatformLevelAuthorization` has `skip: !user || !isAuthenticated` — it waits for the user object from `CurrentUserFull`. However, `PlatformLevelAuthorization` queries `platform.roleSet.myRoles` and `platform.authorization.myPrivileges`, which are server-resolved based on the authenticated session (cookies), not on any user ID passed as a variable. Therefore, the `!user` skip condition is unnecessary — `!isAuthenticated` alone is sufficient.
 
 **Alternatives considered**:
 
 - **Merge into single GraphQL document**: Combine `CurrentUserFull` and `PlatformLevelAuthorization` into one `.graphql` file. Rejected — violates separation of concerns, makes cache invalidation harder, and requires codegen changes.
-- **Keep waterfall, just batch other queries**: Leave this waterfall as-is and only batch home page queries. Rejected — this waterfall affects every authenticated page load, not just the home page; fixing it has the broadest impact.
+- **Keep waterfall, only optimize other queries**: Leave this waterfall as-is and only optimize home page queries. Rejected — this waterfall affects every authenticated page load, not just the home page; fixing it has the broadest impact.
 
 **Key implementation details**:
 
 - Change `CurrentUserProvider.tsx:37-38` from `skip: !user || !isAuthenticated` to `skip: !isAuthenticated`
 - Both queries will fire in the same tick when `isAuthenticated` becomes `true`
-- `BatchHttpLink` will combine them into a single HTTP request
+- HTTP/2 multiplexing handles them as concurrent requests
 - Authorization data arrives slightly earlier; `user` object may arrive slightly later — the composite `loading` state already handles this correctly
 
 ---
@@ -139,9 +141,11 @@ Real measurements from `localhost.har` (authenticated home page load):
 
 ---
 
-## R-007: RecentSpaces + HomeSpaceLookup Waterfall
+## R-007: RecentSpaces + HomeSpaceLookup Waterfall — NOT APPLICABLE
 
-**Decision**: Eliminate the `HomeSpaceLookup` waterfall by reading `homeSpaceId` from `useCurrentUserContext()` (available from `CurrentUserFull` via `UserDetails` fragment) and either pre-fetching the home space data or restructuring the component to avoid the cascade.
+> **Post-implementation update**: HAR analysis showed RecentSpaces and HomeSpaceLookup queries were not present in the measured trace (user had no space memberships, so a different dashboard path renders). This optimization remains valid for users with space memberships but was not implemented in this iteration.
+
+**Original Decision**: Eliminate the `HomeSpaceLookup` waterfall by reading `homeSpaceId` from `useCurrentUserContext()` (available from `CurrentUserFull` via `UserDetails` fragment) and either pre-fetching the home space data or restructuring the component to avoid the cascade.
 
 **Rationale**: Currently `RecentSpacesList.tsx:27` fires `useRecentSpacesQuery` which returns `homeSpaceId`, then `useHomeSpaceLookupQuery` fires at line 30-33 with that ID. However, `homeSpaceId` is already available from `CurrentUserFull` → `UserDetails` fragment → `settings.homeSpace.spaceID`. By reading it from context instead of from the RecentSpaces query result, the HomeSpaceLookup query can fire immediately (or be batched with RecentSpaces) rather than waiting.
 
@@ -154,7 +158,7 @@ Real measurements from `localhost.har` (authenticated home page load):
 
 - Read `homeSpaceId` from `useCurrentUserContext()` (or `useRecentSpacesQuery` result — whichever is available first via Apollo cache)
 - Fire `useHomeSpaceLookupQuery` with `skip: !homeSpaceId` where `homeSpaceId` comes from context instead of from the RecentSpaces query
-- With batching enabled, both RecentSpaces and HomeSpaceLookup can fire in the same batch if `homeSpaceId` is already known from context
+- Both RecentSpaces and HomeSpaceLookup can fire in parallel via HTTP/2 multiplexing if `homeSpaceId` is already known from context
 
 ---
 

@@ -1,8 +1,8 @@
 # Contract: Provider Tree Restructuring
 
-**Date**: 2026-02-26
+**Date**: 2026-02-26 | **Updated**: 2026-03-03 (post-implementation)
 
-## Current Provider Nesting (root.tsx)
+## Previous Provider Nesting (root.tsx)
 
 ```
 StyledEngineProvider
@@ -23,64 +23,49 @@ StyledEngineProvider
                               └─ ...children
 ```
 
-## Proposed Provider Nesting
+## Implemented Provider Nesting
 
 ```
 StyledEngineProvider
   └─ RootThemeProvider
     └─ GlobalStyles
       └─ CookiesProvider
-        └─ ParallelStartupProvider   ★ NEW — runs config + auth concurrently
+        └─ ConfigProvider          ★ BLOCKS until config loads
           └─ SentryTransactionScope
             └─ SentryErrorBoundary
               └─ GlobalStateProvider
                 └─ GlobalErrorProvider
-                  └─ BrowserRouter
-                    └─ UserGeoProvider        (skips on auth pages)
-                      └─ ApmProvider          (skips on auth pages)
-                        └─ AlkemioApolloProvider
-                          └─ UserProvider     ★ FIXED — fires both queries on !isAuthenticated
-                            └─ ...children
+                  └─ AuthenticationProvider   ★ MOVED — now above BrowserRouter
+                    └─ BrowserRouter
+                      └─ UserGeoProvider        (skips on auth pages)
+                        └─ ApmProvider          (skips on auth pages)
+                          └─ AlkemioApolloProvider
+                            └─ UserProvider     ★ FIXED — fires both queries on !isAuthenticated
+                              └─ ...children
 ```
 
-## ParallelStartupProvider
-
-New component that wraps both `ConfigProvider` and `AuthenticationProvider`, running them concurrently:
-
-```typescript
-// Conceptual contract — not final implementation
-type ParallelStartupContext = {
-  config: Configuration | undefined;
-  serverMetadata: ServerMetadata | undefined;
-  isAuthenticated: boolean;
-  loading: boolean; // true until BOTH config and auth are resolved
-  session: Session | undefined;
-  verified: boolean;
-};
-```
-
-**Behavior**:
-
-- Starts config fetch and Kratos session check simultaneously
-- Shows loading spinner until both complete
-- Provides combined context to children
-- Preserves existing `useConfig()` and `useAuthenticationContext()` hooks by providing their contexts
+> **Note**: The originally planned `ParallelStartupProvider` component was not needed. Investigation revealed that `AuthenticationProvider` has zero router dependencies (`useWhoami` → `useKratosClient` → `useConfig` are all router-free), so simply moving it above `BrowserRouter` in `root.tsx` achieved the same goal. A previous test failure was caused by a concurrent Kratos 502 backend outage, not the provider tree change.
 
 ## UserProvider Skip Condition Change
 
 ```typescript
-// Current (waterfall)
+// Before (waterfall)
 usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated });
 
-// Proposed (parallel, batchable)
+// After (parallel)
 usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
 ```
+
+Both `CurrentUserFull` and `PlatformLevelAuthorization` now fire in the same tick when `isAuthenticated` becomes true. HTTP/2 multiplexing handles them as concurrent requests.
 
 ## Auth Page Skip Conditions
 
 ```typescript
+// AUTH_PAGE_PREFIXES = ['/login', '/registration', '/sign_up']
+
 // UserGeoProvider: skip when on auth pages
-const isAuthPage = ['/login', '/registration', '/sign_up'].some(p => pathname.startsWith(p));
+const { pathname } = useLocation();
+const isAuthPage = AUTH_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
 // Skip if: isAuthPage || !production || !geoEndpoint || !enabled
 
 // ApmProvider: skip when on auth pages
