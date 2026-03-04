@@ -31,7 +31,7 @@
 
 ## Notes
 
-- All items pass validation. Spec is ready for `/speckit.clarify` or `/speckit.plan`.
+- All items pass validation. Spec is ready for `/speckit.tasks`.
 - The spec references specific library names (Tiptap, Lodash, MUI, Apollo) as domain context, not as implementation prescriptions — the requirements describe WHAT should be optimized, not HOW.
 - Concrete baseline data was gathered from codebase analysis: 32 static Tiptap imports, ~100 Lodash imports, 73 existing lazy-loaded components, no manualChunks config.
 - Excalidraw is explicitly noted as already optimized (lazy-loaded) and out of scope for further work.

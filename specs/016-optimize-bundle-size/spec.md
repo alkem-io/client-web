@@ -1,6 +1,6 @@
 # Feature Specification: Optimize Bundle Size & Loading Performance
 
-**Feature Branch**: `015-optimize-request-loading` (co-located with request optimization work)
+**Feature Branch**: `016-optimize-bundle-size`
 **Created**: 2026-03-02
 **Status**: Draft
 **Input**: User description: "Bundle size optimization and loading performance: reduce JS payload size, optimize vendor chunk splitting, improve initial page load times through better code splitting, tree-shaking, prefetching, and lazy loading of heavy components (Excalidraw, Tiptap, etc.)"

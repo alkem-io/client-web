@@ -96,11 +96,11 @@ pnpm start
 
 ## Key Files
 
-| File                                            | Purpose                                        |
-| ----------------------------------------------- | ---------------------------------------------- |
-| `vite.config.mjs`                               | manualChunks configuration                     |
-| `vite.sentry.config.mjs`                        | Must mirror manualChunks from main config      |
-| `src/core/ui/forms/MarkdownInput/`              | Primary Tiptap entry point                     |
-| `src/core/ui/forms/CollaborativeMarkdownInput/` | Collaborative editor entry point               |
-| `src/core/ui/forms/FormikMarkdownField.tsx`     | Main consumer wrapper used by 37+ domain forms |
-| `package.json`                                  | lodash → lodash-es dependency swap             |
+| File                                                      | Purpose                                        |
+| --------------------------------------------------------- | ---------------------------------------------- |
+| `vite.config.mjs`                                         | manualChunks configuration                     |
+| `vite.sentry.config.mjs`                                  | Must mirror manualChunks from main config      |
+| `src/core/ui/forms/MarkdownInput/`                        | Primary Tiptap entry point                     |
+| `src/core/ui/forms/CollaborativeMarkdownInput/`           | Collaborative editor entry point               |
+| `src/core/ui/forms/MarkdownInput/FormikMarkdownField.tsx` | Main consumer wrapper used by 37+ domain forms |
+| `package.json`                                            | lodash → lodash-es dependency swap             |

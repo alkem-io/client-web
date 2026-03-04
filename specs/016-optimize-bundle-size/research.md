@@ -7,7 +7,7 @@
 
 **Decision**: Lazy-load MarkdownInput and CollaborativeMarkdownInput using existing `lazyWithGlobalErrorHandler` pattern.
 
-**Rationale**: Only 5 of 16 files with Tiptap imports contain runtime code — the other 8 are type-only imports (erased at build time). The two editor entry-point components (`MarkdownInput`, `CollaborativeMarkdownInput`) are the only points where Tiptap is actually instantiated. Wrapping these with lazy imports moves ~2.5MB of Tiptap + ProseMirror out of the initial bundle.
+**Rationale**: Only 7 of 16 files with Tiptap imports contain runtime code — the other 9 are type-only imports (erased at build time). The two editor entry-point components (`MarkdownInput`, `CollaborativeMarkdownInput`) are the only points where Tiptap is actually instantiated. Wrapping these with lazy imports moves ~2.5MB of Tiptap + ProseMirror out of the initial bundle.
 
 **Alternatives considered**:
 
@@ -18,8 +18,8 @@
 **Key findings**:
 
 - 16 files import from `@tiptap/*`
-- 8 files use type-only imports (no runtime impact)
-- 5 files have runtime imports: `useEditorConfig.ts`, `MarkdownInput.tsx`, `useMarkdownEditor.ts`, `useImageUpload.ts`, `CollaborativeMarkdownInput.tsx`, `useCollaboration.ts`, `Iframe.ts`
+- 9 files use type-only imports (no runtime impact)
+- 7 files have runtime imports: `useEditorConfig.ts`, `MarkdownInput.tsx`, `useMarkdownEditor.ts`, `useImageUpload.ts`, `CollaborativeMarkdownInput.tsx`, `useCollaboration.ts`, `Iframe.ts`
 - 42 consumer files import MarkdownInput/CollaborativeMarkdownInput
 - Excalidraw is already lazy-loaded using the same `lazyWithGlobalErrorHandler` pattern — proven approach
 

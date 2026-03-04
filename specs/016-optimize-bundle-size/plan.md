@@ -1,6 +1,6 @@
 # Implementation Plan: Optimize Bundle Size & Loading Performance
 
-**Branch**: `015-optimize-request-loading` (co-located) | **Date**: 2026-03-02 | **Spec**: [spec.md](./spec.md)
+**Branch**: `016-optimize-bundle-size` | **Date**: 2026-03-02 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/016-optimize-bundle-size/spec.md`
 
 ## Summary
@@ -126,7 +126,7 @@ src/core/ui/markdown/components/index.ts     # Example — convert to explicit i
 **Why third**: Depends on vendor chunks being properly set up. Touches the most files (~25 consumers).
 
 1. Create lazy wrapper for `FormikMarkdownField`:
-   ```
+   ```tsx
    src/core/ui/forms/FormikMarkdownFieldLazy.tsx
    → lazyWithGlobalErrorHandler(() => import('./FormikMarkdownField'))
    ```
