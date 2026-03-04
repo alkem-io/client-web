@@ -11,6 +11,7 @@ import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails'
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
+import { PollDetailsModel } from '../../poll/models/PollModels';
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {
@@ -30,6 +31,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
     memo?: MemoModel;
     link?: LinkDetails;
     mediaGallery?: MediaGalleryModel;
+    poll?: PollDetailsModel;
   };
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;

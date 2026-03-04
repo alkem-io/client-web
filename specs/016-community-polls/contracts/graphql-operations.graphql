@@ -1,0 +1,198 @@
+"""
+Community Polls & Voting — Client GraphQL Operations
+Branch: 016-community-polls | Date: 2026-03-03
+
+This file defines the GraphQL fragments, queries, and mutations the client
+will use to interact with the Poll feature. These operations consume the
+server-defined schema from specs/server/contracts/schema.graphql.
+
+After codegen, generated hooks will be available in:
+  src/core/apollo/generated/apollo-hooks.ts
+"""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FRAGMENTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+"""
+Core poll settings fragment — used wherever poll configuration is needed.
+"""
+fragment PollSettingsFields on PollSettings {
+  minResponses
+  maxResponses
+  resultsVisibility
+  resultsDetail
+}
+
+"""
+Poll option fragment with all result fields.
+Nullable fields (voteCount, votePercentage, voters) are returned as null
+by the server when the visibility gate is not passed or detail level excludes them.
+"""
+fragment PollOptionFields on PollOption {
+  id
+  createdDate
+  updatedDate
+  text
+  sortOrder
+  voteCount
+  votePercentage
+  voters {
+    id
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+"""
+Current user's vote fragment.
+"""
+fragment PollVoteFields on PollVote {
+  id
+  createdDate
+  updatedDate
+  createdBy
+  selectedOptions {
+    id
+  }
+}
+
+"""
+Full poll fragment for display purposes.
+Includes settings, all options with results, and the current user's vote.
+"""
+fragment PollDetails on Poll {
+  id
+  createdDate
+  updatedDate
+  title
+  status
+  settings {
+    ...PollSettingsFields
+  }
+  deadline
+  totalVotes
+  canSeeDetailedResults
+  options {
+    ...PollOptionFields
+  }
+  myVote {
+    ...PollVoteFields
+  }
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CALLOUT CONTENT EXTENSION
+# ─────────────────────────────────────────────────────────────────────────────
+
+"""
+This fragment extends the existing CalloutContent.graphql to include
+the poll field on CalloutFraming. In implementation, the poll field will be
+added to the existing framing query alongside whiteboard, memo, link, and
+mediaGallery.
+
+  framing {
+    ...existing fields...
+    poll {
+      ...PollDetails
+    }
+  }
+"""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MUTATIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+"""
+Cast or update a vote on a poll.
+Requires CONTRIBUTE privilege on the poll (space membership).
+If the user has already voted, their entire vote is replaced.
+Returns the full updated Poll for cache update.
+"""
+mutation CastPollVote($voteData: CastPollVoteInput!) {
+  castPollVote(voteData: $voteData) {
+    ...PollDetails
+  }
+}
+
+"""
+Add a new option to an existing poll.
+Requires UPDATE privilege on the parent callout.
+The new option is appended at the end.
+Returns the full updated Poll for cache update.
+"""
+mutation AddPollOption($optionData: AddPollOptionInput!) {
+  addPollOption(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+"""
+Update the display text of a poll option.
+Requires UPDATE privilege on the parent callout.
+Votes for this option are deleted by the server.
+Returns the full updated Poll for cache update.
+"""
+mutation UpdatePollOption($optionData: UpdatePollOptionInput!) {
+  updatePollOption(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+"""
+Remove a poll option.
+Requires UPDATE privilege on the parent callout.
+All votes containing this option are deleted by the server.
+Returns the full updated Poll for cache update.
+"""
+mutation RemovePollOption($optionData: RemovePollOptionInput!) {
+  removePollOption(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+"""
+Reorder all options in a poll.
+Requires UPDATE privilege on the parent callout.
+Does not affect vote counts or results ranking.
+Returns the full updated Poll for cache update.
+"""
+mutation ReorderPollOptions($reorderData: ReorderPollOptionsInput!) {
+  reorderPollOptions(reorderData: $reorderData) {
+    ...PollDetails
+  }
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POLL CREATION
+# ─────────────────────────────────────────────────────────────────────────────
+
+"""
+Poll creation is NOT a separate mutation.
+It happens via the existing createCallout mutation by setting:
+
+  framing: {
+    type: POLL
+    profile: { displayName: "Callout Title", description: "Poll prompt text" }
+    poll: {
+      title: "Poll Title"
+      settings: {
+        minResponses: 1
+        maxResponses: 1
+        resultsVisibility: VISIBLE
+        resultsDetail: FULL
+      }
+      options: ["Option A", "Option B", "Option C"]
+    }
+  }
+
+The existing createCallout mutation in calloutCreation.graphql already
+returns ...CalloutDetails, which will include the poll fragment once the
+CalloutContent.graphql is updated.
+"""

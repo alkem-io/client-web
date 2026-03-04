@@ -1,3 +1,4 @@
+import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import BlockIcon from '@mui/icons-material/Block';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
@@ -6,7 +7,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
@@ -25,6 +26,7 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import PollFormFields from '@/domain/collaboration/poll/PollFormFields';
 
 const CalloutFramingMediaGalleryField = lazyWithGlobalErrorHandler(
   () => import('../CalloutFramings/CalloutFramingMediaGalleryField')
@@ -59,6 +61,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           },
           memo: undefined,
           link: undefined,
+          poll: undefined,
         };
         break;
       case CalloutFramingType.Memo:
@@ -68,6 +71,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           whiteboard: undefined,
           link: undefined,
           mediaGallery: undefined,
+          poll: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
             markdown: undefined,
@@ -84,6 +88,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           whiteboard: undefined,
           memo: undefined,
           link: undefined,
+          poll: undefined,
         };
         break;
       case CalloutFramingType.Link:
@@ -99,6 +104,27 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           whiteboard: undefined,
           memo: undefined,
           mediaGallery: undefined,
+          poll: undefined,
+        };
+        break;
+      case CalloutFramingType.Poll:
+        newFraming = {
+          ...framing,
+          type: newType,
+          poll: {
+            title: '',
+            options: ['', ''],
+            settings: {
+              minResponses: 1,
+              maxResponses: 1,
+              resultsVisibility: PollResultsVisibility.Visible,
+              resultsDetail: PollResultsDetail.Full,
+            },
+          },
+          whiteboard: undefined,
+          memo: undefined,
+          link: undefined,
+          mediaGallery: undefined,
         };
         break;
       case CalloutFramingType.None:
@@ -110,6 +136,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           memo: undefined,
           link: undefined,
           mediaGallery: undefined,
+          poll: undefined,
         };
         break;
     }
@@ -163,6 +190,13 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           label: t('callout.create.framingSettings.mediaGallery.title'),
           tooltip: t('callout.create.framingSettings.mediaGallery.tooltip'),
           disabled: calloutRestrictions?.disableMediaGallery,
+        },
+        {
+          icon: BallotOutlinedIcon,
+          value: CalloutFramingType.Poll,
+          label: t('callout.create.framingSettings.poll.title'),
+          tooltip: t('callout.create.framingSettings.poll.tooltip'),
+          disabled: calloutRestrictions?.disablePolls,
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -249,6 +283,12 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
         <Suspense fallback={<Loading />}>
           <CalloutFramingMediaGalleryField />
         </Suspense>
+      )}
+
+      {framing.poll && framing.type === CalloutFramingType.Poll && (
+        <PageContentBlock>
+          <PollFormFields />
+        </PageContentBlock>
       )}
     </>
   );

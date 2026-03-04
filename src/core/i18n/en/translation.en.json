@@ -651,7 +651,8 @@
       "POST": "$t(common.Post)",
       "WHITEBOARD": "$t(common.Whiteboard)",
       "MEMO": "$t(common.Memo)",
-      "NONE": "$t(common.Post)"
+      "NONE": "$t(common.Post)",
+      "POLL": "Poll"
     }
   },
   "community": {
@@ -861,6 +862,10 @@
           "nItems": "{{count}} images in the gallery",
           "deleteItem": "Remove image from gallery",
           "emptyGallery": "No images yet. Click the + button to add images."
+        },
+        "poll": {
+          "title": "Poll",
+          "tooltip": "Create a poll for community voting"
         }
       },
       "contributionSettings": {
@@ -2317,6 +2322,56 @@
     "goToMainPage": "Interested in collaborating in other $t(common.spaces)? Click here to see them all on the universal Alkemio homepage.",
     "remove": "Remove from hub"
   },
+  "poll": {
+    "vote": {
+      "button": "Vote",
+      "changeButton": "Change Vote",
+      "cancelButton": "Cancel",
+      "submitted": "Your vote has been recorded",
+      "minRequired": "Select at least {{min}} option(s)",
+      "maxReached": "Maximum {{max}} selections allowed"
+    },
+    "results": {
+      "noVotes": "No votes yet",
+      "totalVotes": "{{count}} vote(s)",
+      "voters": "Voters"
+    },
+    "options": {
+      "add": "Add Option",
+      "remove": "Remove Option",
+      "edit": "Edit Option",
+      "reorder": "Reorder Options",
+      "minRequired": "At least 2 options are required",
+      "confirmEdit": "Editing this option will delete all votes for it. Continue?",
+      "confirmRemove": "Removing this option will delete all votes for it. Continue?"
+    },
+    "create": {
+      "title": "Poll Title",
+      "options": "Options",
+      "settings": "Advanced Settings",
+      "minResponses": "Minimum selections",
+      "maxResponses": "Maximum selections",
+      "maxResponsesUnlimited": "0 = unlimited",
+      "resultsVisibility": "Results visibility",
+      "resultsVisibilityVISIBLE": "Always visible",
+      "resultsVisibilityHIDDEN": "Hidden until voted",
+      "resultsVisibilityTOTAL_ONLY": "Total count only until voted",
+      "resultsDetail": "Results detail level",
+      "resultsDetailFULL": "Full (counts, percentages, and voters)",
+      "resultsDetailCOUNT": "Counts only",
+      "resultsDetailPERCENTAGE": "Percentages only"
+    },
+    "manage": {
+      "editPoll": "Edit Poll",
+      "done": "Done"
+    },
+    "error": {
+      "voteFailed": "Failed to submit your vote. Please try again.",
+      "staleOption": "This poll has been updated. Please refresh and try again.",
+      "networkError": "Network error. Please check your connection and try again.",
+      "optionActionFailed": "Failed to update poll options. Please try again."
+    }
+  },
   "pages": {
     "titles": {
       "alkemio": "Alkemio",
@@ -3694,7 +3749,11 @@
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of",
-          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
+          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of",
+          "collaborationPollVoteCastOnOwnPoll": "Someone votes on a poll I created",
+          "collaborationPollVoteCastOnPollIVotedOn": "Someone votes on a poll I also voted on",
+          "collaborationPollModifiedOnPollIVotedOn": "A poll I voted on is modified",
+          "collaborationPollVoteAffectedByOptionChange": "My vote is affected by a poll option change"
         }
       },
       "spaceAdmin": {

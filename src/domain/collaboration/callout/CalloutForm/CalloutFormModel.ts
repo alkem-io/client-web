@@ -11,6 +11,7 @@ import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedVal
 import { CalloutStructuredResponseType } from './CalloutForm';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
+import { PollFormValues } from '../../poll/models/PollModels';
 
 export interface CalloutFormSubmittedValues {
   framing: {
@@ -49,6 +50,7 @@ export interface CalloutFormSubmittedValues {
         sortOrder?: number;
       }[];
     };
+    poll?: PollFormValues;
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {

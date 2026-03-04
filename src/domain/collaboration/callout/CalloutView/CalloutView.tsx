@@ -16,6 +16,7 @@ import CalloutViewLayout from './CalloutViewLayout';
 import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
+import CalloutFramingPoll from '../CalloutFramings/CalloutFramingPoll';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { CardHeader, Skeleton } from '@mui/material';
 import ContributeCard from '@/core/ui/card/ContributeCard';
@@ -164,6 +165,9 @@ const CalloutView = ({
               calloutRestrictions={calloutRestrictions}
             />
           )}
+
+          {/* Poll framing */}
+          {callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}
 
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (

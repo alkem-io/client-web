@@ -279,3 +279,12 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 - GraphQL header injection (`x-guest-name`)
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
+
+## Active Technologies
+
+- TypeScript 5.x, React 19 + MUI (theming + components), Apollo Client (GraphQL), Formik (forms), react-i18next (i18n) (016-community-polls)
+- Apollo Client normalized cache (no local persistence) (016-community-polls)
+
+## Recent Changes
+
+- 016-community-polls: Added TypeScript 5.x, React 19 + MUI (theming + components), Apollo Client (GraphQL), Formik (forms), react-i18next (i18n)

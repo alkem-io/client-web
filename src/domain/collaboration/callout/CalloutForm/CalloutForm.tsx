@@ -65,6 +65,23 @@ export const calloutValidationSchema = yup.object().shape({
             .required()
         : schema.nullable();
     }),
+    poll: yup.object().when(['type'], ([type], schema) => {
+      return type === CalloutFramingType.Poll
+        ? schema
+            .shape({
+              title: displayNameValidator({ required: true }),
+              options: yup.array().of(yup.string().required()).min(2).required(),
+              settings: yup
+                .object()
+                .shape({
+                  minResponses: yup.number().min(1).required(),
+                  maxResponses: yup.number().min(0).required(),
+                })
+                .required(),
+            })
+            .required()
+        : schema.nullable();
+    }),
   }),
   contributionDefaults: yup.object().shape({
     defaultDisplayName: displayNameValidator().optional().nullable(),

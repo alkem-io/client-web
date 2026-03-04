@@ -15,6 +15,7 @@ import {
 import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
+import { PollFormValues } from '../../poll/models/PollModels';
 
 export interface CalloutCreationType {
   classification?: {
@@ -43,6 +44,7 @@ export interface CalloutCreationType {
         alternativeText?: string;
       }[];
     };
+    poll?: PollFormValues;
   };
   settings?: {
     framing?: {
