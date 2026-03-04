@@ -3,9 +3,11 @@ import InvitationActionsContainer from '@/domain/community/invitations/Invitatio
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useNavigate from '@/core/routing/useNavigate';
+import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 
 export const InvitationsBlock = () => {
-  const { data } = usePendingInvitationsQuery();
+  const { count } = usePendingInvitationsCount();
+  const { data } = usePendingInvitationsQuery({ skip: count === 0 });
   const navigate = useNavigate();
 
   const communityInvitations = data?.me.communityInvitations ?? [];

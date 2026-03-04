@@ -5,6 +5,7 @@ export const usePendingInvitationsCount = () => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
   const { data: invitesData } = usePendingInvitationsCountQuery({
     skip: !isAuthenticated || !userModel,
+    fetchPolicy: 'cache-first',
   });
 
   return {

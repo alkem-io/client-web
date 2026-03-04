@@ -278,8 +278,9 @@ fragment InAppNotificationPayloadVirtualContributor on InAppNotificationPayloadV
   space {
     ...spaceNotification
   }
-  contributor {
+  actor {
     id
+    type
     profile {
       id
       displayName
