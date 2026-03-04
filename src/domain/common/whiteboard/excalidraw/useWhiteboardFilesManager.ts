@@ -404,8 +404,9 @@ const useWhiteboardFilesManager = ({
     }),
     // Note: uploadingFile is intentionally excluded. Including it caused an infinite re-render loop
     // when uploads fail (e.g. permission denied): failed upload toggles loading state → new filesManager
-    // reference → component re-render → onChange fires → upload retry → loop. The loading state is still
-    // accessible via the returned object but won't trigger filesManager recreation.
+    // reference → component re-render → onChange fires → upload retry → loop. The loading.uploadingFile
+    // value in the returned object will be stale (captured at memoization time); consumers needing
+    // real-time upload status should use the Apollo mutation state directly.
     [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, guestName]
   );
 };
