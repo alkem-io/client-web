@@ -228,6 +228,10 @@ const CollaborativeExcalidrawWrapper = ({
   );
 
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    if (isReadOnly) {
+      collabApi?.syncScene(elements, files);
+      return;
+    }
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };

@@ -255,11 +255,23 @@ const useWhiteboardFilesManager = ({
 
       // Upload file if it has dataURL and we have storage
       if (file.dataURL && storageBucketId) {
-        const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
-        const { url } = await uploader.upload(fileObject);
-        const result = { ...file, url } as BinaryFileDataWithUrl;
-        cache.set(file.id, result);
-        return result;
+        // Skip files that have already permanently failed (e.g. permission denied)
+        if (uploader.getFailedUploads().some(f => f.fileId === file.id)) {
+          return undefined;
+        }
+        try {
+          const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
+          const { url } = await uploader.upload(fileObject);
+          const result = { ...file, url } as BinaryFileDataWithUrl;
+          cache.set(file.id, result);
+          return result;
+        } catch (e) {
+          error(
+            `Failed to upload file ${file.id}: ${e instanceof Error ? e.message : 'Unknown error'}`,
+            { category: TagCategoryValues.WHITEBOARD, label: 'convert-upload-failed' }
+          );
+          return undefined;
+        }
       }
 
       // Cannot convert
@@ -390,7 +402,11 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, uploadingFile, guestName]
+    // Note: uploadingFile is intentionally excluded. Including it caused an infinite re-render loop
+    // when uploads fail (e.g. permission denied): failed upload toggles loading state → new filesManager
+    // reference → component re-render → onChange fires → upload retry → loop. The loading state is still
+    // accessible via the returned object but won't trigger filesManager recreation.
+    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, guestName]
   );
 };
 
