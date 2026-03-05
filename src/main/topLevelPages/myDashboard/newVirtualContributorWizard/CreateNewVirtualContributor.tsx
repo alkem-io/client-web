@@ -18,7 +18,7 @@ import GridItem from '@/core/ui/grid/GridItem';
 import { Actions } from '@/core/ui/actions/Actions';
 import { theme } from '@/core/ui/themes/default/Theme';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';

@@ -7,6 +7,7 @@ import PoweredBy from '../poweredBy/PoweredBy';
 import { Box, Paper } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import usePrefetchRoutes from '@/core/routing/usePrefetchRoutes';
 
 const SearchDialog = lazyWithGlobalErrorHandler(() => import('@/main/search/SearchDialog'));
 
@@ -24,6 +25,8 @@ const TopLevelLayout = ({
   addWatermark,
   children,
 }: PropsWithChildren<TopLevelDesktopLayoutProps>) => {
+  usePrefetchRoutes();
+
   return (
     <>
       <PlatformNavigationBar breadcrumbs={breadcrumbs} />

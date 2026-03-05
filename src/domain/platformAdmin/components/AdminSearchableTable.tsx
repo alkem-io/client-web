@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContent from '@/core/ui/content/PageContent';
 import { BlockTitle, CardTitle } from '@/core/ui/typography';

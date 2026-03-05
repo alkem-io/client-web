@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {

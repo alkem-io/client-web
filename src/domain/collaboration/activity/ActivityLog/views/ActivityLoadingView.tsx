@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { ActivityBaseView } from './ActivityBaseView';
 
 export const ActivityLoadingView = ({ rows }: { rows: number }) => (

@@ -10,7 +10,7 @@ import {
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { Identifiable } from '@/core/utils/Identifiable';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 

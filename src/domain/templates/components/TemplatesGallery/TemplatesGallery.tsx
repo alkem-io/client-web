@@ -5,7 +5,7 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import TemplateCard from '../cards/TemplateCard';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 
 type TemplatesGalleryProps = {
   headerText: string;

@@ -12,7 +12,7 @@ import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import { Caption } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 
 /* todo add jobTitle */
 export interface UserCardProps {

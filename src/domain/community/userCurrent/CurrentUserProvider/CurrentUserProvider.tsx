@@ -1,8 +1,8 @@
 import {
-  refetchCurrentUserFullQuery,
+  refetchCurrentUserLightQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
-  useCurrentUserFullQuery,
+  useCurrentUserLightQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
@@ -30,15 +30,15 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     data: meData,
     loading: loadingMe,
     error: userProviderError,
-  } = useCurrentUserFullQuery({ skip: !isAuthenticated });
+  } = useCurrentUserLightQuery({ skip: !isAuthenticated });
 
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
-    usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated });
+    usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchCurrentUserFullQuery()],
+    refetchQueries: [refetchCurrentUserLightQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });

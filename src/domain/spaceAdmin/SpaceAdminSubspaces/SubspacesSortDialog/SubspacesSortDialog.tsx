@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { Box, DialogContent, Paper } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';

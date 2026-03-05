@@ -41,7 +41,7 @@ import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboa
 import { SpaceTemplate } from '../../models/SpaceTemplate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;

@@ -1,4 +1,4 @@
-import { countBy, sortBy } from 'lodash';
+import { countBy, sortBy } from 'lodash-es';
 
 const uniqSortedByOccurrences = (tags: string[]): string[] => {
   if (!tags.length) {

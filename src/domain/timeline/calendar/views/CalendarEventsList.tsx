@@ -11,7 +11,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import { startOfDay } from '@/core/utils/time/utils';
-import { first, groupBy, sortBy } from 'lodash';
+import { first, groupBy, sortBy } from 'lodash-es';
 import dayjs from 'dayjs';
 import { Identifiable } from '@/core/utils/Identifiable';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';

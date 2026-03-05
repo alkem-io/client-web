@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useInnovationHubSettingsQuery, useUpdateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';

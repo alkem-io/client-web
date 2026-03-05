@@ -31,7 +31,7 @@ import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
 import { useReturnUrl } from '../utils/useSignUpReturnUrl';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { AuthFormHeader } from '../components/AuthFormHeader';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
 import GuestSessionNotification from '@/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification';
 import { usePageTitle } from '@/core/routing/usePageTitle';
