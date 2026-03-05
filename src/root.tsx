@@ -125,8 +125,8 @@ const Root: FC = () => {
               <SentryErrorBoundaryProvider>
                 <GlobalStateProvider>
                   <GlobalErrorProvider>
-                    <BrowserRouter>
-                      <AuthenticationProvider>
+                    <AuthenticationProvider>
+                      <BrowserRouter>
                         <UserGeoProvider>
                           <ApmProvider>
                             <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
@@ -164,8 +164,8 @@ const Root: FC = () => {
                             </AlkemioApolloProvider>
                           </ApmProvider>
                         </UserGeoProvider>
-                      </AuthenticationProvider>
-                    </BrowserRouter>
+                      </BrowserRouter>
+                    </AuthenticationProvider>
                   </GlobalErrorProvider>
                 </GlobalStateProvider>
               </SentryErrorBoundaryProvider>

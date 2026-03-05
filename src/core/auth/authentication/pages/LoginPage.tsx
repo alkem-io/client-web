@@ -27,6 +27,9 @@ interface LoginPageProps {
 }
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
+// Custom client-side message ID for account lockout (HTTP 429 Too Many Requests).
+// Not from Ory Kratos — prefixed with 9xxx to avoid collisions with Kratos message IDs.
+const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 
 const isEmailNotVerified = (flow: LoginFlow) => {
   return (flow.ui?.messages ?? []).some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
@@ -56,12 +59,24 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
+  const isLockedOut = params.get('lockout') === 'true';
+  const retryAfterRaw = Number(params.get('retry_after'));
+  const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
+  const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
     produce(loginFlow.ui, ui => {
       if (kratosErrors) {
         ui.messages = kratosErrors;
+      }
+      if (isLockedOut) {
+        const lockoutMessage = {
+          id: ACCOUNT_LOCKOUT_MESSAGE_ID,
+          type: 'error' as const,
+          text: t('authentication.lockout', { minutes: lockoutMinutes }),
+        };
+        ui.messages = [...(ui.messages ?? []), lockoutMessage];
       }
     });
 

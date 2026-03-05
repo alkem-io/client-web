@@ -1,8 +1,8 @@
 import {
-  refetchCurrentUserFullQuery,
+  refetchCurrentUserLightQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
-  useCurrentUserFullQuery,
+  useCurrentUserLightQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
@@ -24,30 +24,40 @@ const CurrentUserContext = createContext<CurrentUserModel>({
 });
 
 const CurrentUserProvider = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
+  const { isAuthenticated, loading: loadingAuthentication, verified, session } = useAuthenticationContext();
 
   const {
     data: meData,
     loading: loadingMe,
     error: userProviderError,
-  } = useCurrentUserFullQuery({ skip: !isAuthenticated });
+  } = useCurrentUserLightQuery({ skip: !isAuthenticated });
 
   const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
-    usePlatformLevelAuthorizationQuery({ skip: !user || !isAuthenticated });
+    usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
-    refetchQueries: [refetchCurrentUserFullQuery()],
+    refetchQueries: [refetchCurrentUserLightQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => {},
   });
 
   useEffect(() => {
-    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError) {
-      createUserProfile();
+    const email = (session?.identity?.traits as Record<string, unknown> | undefined)?.email as string | undefined;
+    if (isAuthenticated && !loadingMe && !user && !loadingCreateUser && !error && !userProviderError && email) {
+      createUserProfile({
+        variables: {
+          userData: {
+            email,
+            profileData: {
+              displayName: email,
+            },
+          },
+        },
+      });
     }
-  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error]);
+  }, [user, loadingMe, createUserProfile, isAuthenticated, loadingCreateUser, error, session]);
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 

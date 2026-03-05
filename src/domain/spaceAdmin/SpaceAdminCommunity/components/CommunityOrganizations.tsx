@@ -90,11 +90,11 @@ const CommunityOrganizations = ({
       sortable: false,
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
+        <Link href={row.profile?.url} target="_blank">
           <Avatar
-            src={row.profile.avatar?.uri}
+            src={row.profile?.avatar?.uri}
             alt={
-              row.profile.displayName ? t('common.avatar-of', { user: row.profile.displayName }) : t('common.avatar')
+              row.profile?.displayName ? t('common.avatar-of', { user: row.profile.displayName }) : t('common.avatar')
             }
           />
         </Link>
@@ -104,11 +104,11 @@ const CommunityOrganizations = ({
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
-          {row.profile.displayName}
+        <Link href={row.profile?.url} target="_blank">
+          {row.profile?.displayName}
         </Link>
       ),
-      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile?.displayName,
       flex: 1,
       filterable: false,
     },

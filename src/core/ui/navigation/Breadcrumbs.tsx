@@ -12,7 +12,7 @@ import { Box, ClickAwayListener } from '@mui/material';
 import { DoubleArrow } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 import { Expandable } from './Expandable';
-import { some } from 'lodash';
+import { some } from 'lodash-es';
 import { Collapsible } from './Collapsible';
 import { UncontrolledExpandable } from './UncontrolledExpandable';
 import flattenChildren from '../utils/flattenChildren';

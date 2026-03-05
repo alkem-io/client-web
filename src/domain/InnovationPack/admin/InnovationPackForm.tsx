@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import ContextReferenceSegment from '@/domain/platformAdmin/components/Common/ContextReferenceSegment';
 import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
@@ -48,7 +48,7 @@ type InnovationPackFormProps = {
     references?: ReferenceModel[];
   };
   avatar?: VisualModelFull;
-  provider?: { id: string; profile: { displayName: string } };
+  provider?: { id: string; profile?: { displayName: string } };
   listedInStore?: boolean;
   searchVisibility?: SearchVisibility;
   loading?: boolean;
@@ -125,7 +125,7 @@ const InnovationPackForm = ({
                       <TextField
                         title={t('pages.admin.innovation-packs.fields.provider')}
                         label={t('pages.admin.innovation-packs.fields.provider')}
-                        value={provider?.profile.displayName ?? ''}
+                        value={provider?.profile?.displayName ?? ''}
                         disabled
                         placeholder={t('pages.admin.innovation-packs.fields.provider')}
                       />

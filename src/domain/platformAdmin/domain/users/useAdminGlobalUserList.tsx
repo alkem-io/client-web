@@ -92,9 +92,9 @@ const useAdminGlobalUserList = ({
       (data?.platformAdmin.users.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
         id,
         accountId: account?.id,
-        value: `${profile.displayName} (${email})`,
-        url: buildSettingsUrl(profile.url),
-        avatar: profile.visual,
+        value: `${profile?.displayName ?? ''} (${email})`,
+        url: buildSettingsUrl(profile?.url ?? ''),
+        avatar: profile?.visual,
         activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)

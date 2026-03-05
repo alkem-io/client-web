@@ -27,7 +27,7 @@ export const CommunityApplicationDialog = ({
   });
 
   const application = data?.lookup.application;
-  const contributor = application?.contributor;
+  const contributor = application?.actor;
   const questions = application?.questions ?? [];
   const nextEvents = application?.nextEvents ?? [];
 
@@ -35,10 +35,10 @@ export const CommunityApplicationDialog = ({
     <Dialog open maxWidth="md" fullWidth aria-labelledby="dialog-title">
       <DialogHeader onClose={onClose}>
         <ProfileChip
-          displayName={contributor?.profile.displayName}
-          avatarUrl={contributor?.profile.avatar?.uri}
-          city={contributor?.profile.location?.city}
-          country={contributor?.profile.location?.country}
+          displayName={contributor?.profile?.displayName}
+          avatarUrl={contributor?.profile?.avatar?.uri}
+          city={contributor?.profile?.location?.city}
+          country={contributor?.profile?.location?.country}
         />
       </DialogHeader>
       {!loading && (

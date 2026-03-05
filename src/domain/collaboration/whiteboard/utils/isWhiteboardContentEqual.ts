@@ -1,4 +1,4 @@
-import { isEqual, omit } from 'lodash';
+import { isEqual, omit } from 'lodash-es';
 
 const IGNORED_PROPERTIES = ['source', 'appState'];
 const isWhiteboardContentEqual = (lWhiteboardContent: string | undefined, rWhiteboardContent: string | undefined) => {

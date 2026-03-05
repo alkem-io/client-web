@@ -1,6 +1,6 @@
 import {
   CreateSpaceMutationOptions,
-  refetchCurrentUserFullQuery,
+  refetchCurrentUserLightQuery,
   useCreateSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useCallback } from 'react';
@@ -36,7 +36,7 @@ export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {
   const { uploadVisuals } = useUploadVisualsOnCreate({ entityName: t('common.space') });
 
   const {
-    refetchQueries = [refetchCurrentUserFullQuery()], // default to refetching user provider
+    refetchQueries = [refetchCurrentUserLightQuery()], // default to refetching user provider
     ...restMutationOptions
   } = mutationOptions;
 

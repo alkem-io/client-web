@@ -64,7 +64,7 @@ const getNextState = (state: LinesFitterState, action: HandledAction): LinesFitt
       return {
         ...state,
         stage: Stage.REMOVING_CHILDREN,
-        itemsToDisplayCount: state.itemsToDisplayCount - 1,
+        itemsToDisplayCount: Math.max(0, state.itemsToDisplayCount - 1),
       };
     }
     case ActionTypes.Finish: {
@@ -166,7 +166,7 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
         return;
       }
       case Stage.REMOVING_CHILDREN: {
-        if (height > state.expectedHeight) {
+        if (height > state.expectedHeight && state.itemsToDisplayCount > 0) {
           dispatch({
             type: ActionTypes.RemoveChild,
           });

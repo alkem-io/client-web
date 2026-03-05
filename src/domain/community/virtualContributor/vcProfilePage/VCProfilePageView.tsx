@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { Button, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';

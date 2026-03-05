@@ -102,14 +102,14 @@ const PlatformNavigationUserMenu = ({
           <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
             <Avatar
               size="large"
-              src={userModel.profile.avatar?.uri}
+              src={userModel.profile?.avatar?.uri}
               alt={
                 userModel.profile?.displayName
                   ? t('common.avatar-of', { user: userModel.profile?.displayName })
                   : t('common.avatar')
               }
             />
-            <BlockTitle lineHeight={gutters(2)}>{userModel.profile.displayName}</BlockTitle>
+            <BlockTitle lineHeight={gutters(2)}>{userModel.profile?.displayName}</BlockTitle>
             {role && (
               <Caption color="neutralMedium.main" textTransform="uppercase">
                 {role}

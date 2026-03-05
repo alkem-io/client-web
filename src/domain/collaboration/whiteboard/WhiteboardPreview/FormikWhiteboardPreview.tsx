@@ -16,7 +16,7 @@ import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/Whiteboa
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { DefaultWhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;

@@ -1,5 +1,5 @@
 import { Identifiable } from '@/core/utils/Identifiable';
-import { compact, groupBy, sortBy } from 'lodash';
+import { compact, groupBy, sortBy } from 'lodash-es';
 import { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -14,7 +14,7 @@ import useReactionsOverflow from './useReactionsOverflow';
 interface CommentReactionsReaction extends Identifiable {
   emoji: string;
   timestamp: number;
-  sender?: Identifiable & { profile: { displayName: string } };
+  sender?: Identifiable & { profile?: { displayName: string } };
 }
 
 interface CommentReactionsProps {
@@ -145,7 +145,7 @@ const CommentReactions = ({
       >
         <Box padding={gutters(0.75)} minWidth={200} display="flex" flexDirection="column" gap={gutters(0.5)}>
           {overflowReactions.map(reaction => {
-            const senderNames = reaction.senders.map(s => s.profile.displayName).join(', ');
+            const senderNames = reaction.senders.map(s => s.profile?.displayName).join(', ');
             return (
               <Box key={reaction.emoji} display="flex" alignItems="center" gap={gutters(0.5)}>
                 <ReactionView reaction={reaction} onRemoveReaction={onRemoveReaction} />

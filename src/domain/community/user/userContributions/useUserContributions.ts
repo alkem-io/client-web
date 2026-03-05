@@ -1,5 +1,5 @@
 import { useUserContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import { useMemo } from 'react';
 
@@ -24,7 +24,7 @@ const useUserContributions = (userId: string | undefined) => {
         id: e.id,
         spaceLevel: SpaceLevel.L0,
         contributorId: userId!,
-        contributorType: RoleSetContributorType.User,
+        contributorType: ActorType.User,
         roles: e.roles,
       });
 
@@ -34,7 +34,7 @@ const useUserContributions = (userId: string | undefined) => {
           spaceID: ss.id,
           spaceLevel: ss.level,
           contributorId: userId!,
-          contributorType: RoleSetContributorType.User,
+          contributorType: ActorType.User,
           roles: ss.roles,
           parentSpaceId: e.id, // Track parent space for subspaces
         });

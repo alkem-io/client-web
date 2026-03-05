@@ -10,7 +10,7 @@ import {
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { GridLegacy, styled } from '@mui/material';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserModel } from '../../user/models/UserModel';
@@ -28,12 +28,12 @@ const OTHER_LINK_GROUP = 'other';
 export const UserProfileView = ({ userModel }: UserProfileViewProps) => {
   const { t } = useTranslation();
   const keywords =
-    userModel.profile.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())?.tags ??
+    userModel.profile?.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())?.tags ??
     [];
   const skills =
-    userModel.profile.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Skills.toLowerCase())?.tags ?? [];
-  const references = userModel.profile.references;
-  const bio = userModel.profile.description;
+    userModel.profile?.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Skills.toLowerCase())?.tags ?? [];
+  const references = userModel.profile?.references;
+  const bio = userModel.profile?.description;
   const links = useMemo(() => {
     return groupBy(references, reference =>
       isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP

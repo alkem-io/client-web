@@ -9,26 +9,14 @@ query ConversationMessages($conversationId: UUID!) {
           message
           timestamp
           sender {
-            ... on User {
+            id
+            type
+            profile {
               id
-              profile {
+              displayName
+              avatar: visual(type: AVATAR) {
                 id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
-              }
-            }
-            ... on VirtualContributor {
-              id
-              profile {
-                id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
+                uri
               }
             }
           }

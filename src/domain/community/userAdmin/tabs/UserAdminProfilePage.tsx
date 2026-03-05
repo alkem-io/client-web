@@ -57,8 +57,8 @@ export const UserAdminProfilePage = () => {
   const user = data?.lookup.user;
 
   const handleSave = async (userToUpdate: UserModel) => {
-    const profileId = userToUpdate.profile.id;
-    const tagsetsToAdd = userToUpdate.profile.tagsets?.filter(x => !x.id) ?? [];
+    const profileId = userToUpdate.profile?.id;
+    const tagsetsToAdd = userToUpdate.profile?.tagsets?.filter(x => !x.id) ?? [];
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({
@@ -78,7 +78,7 @@ export const UserAdminProfilePage = () => {
       },
     });
 
-    const currentUserUrl = getProfileUrl(currentUser?.profile.url) || '';
+    const currentUserUrl = getProfileUrl(currentUser?.profile?.url) || '';
     if (currentUser) {
       navigate(currentUserUrl, { replace: true });
     }
@@ -89,7 +89,7 @@ export const UserAdminProfilePage = () => {
       <UserAdminLayout currentTab={SettingsSection.MyProfile}>
         <PageContentColumn columns={12}>
           <PageContentBlock>
-            <UserForm user={user} avatar={user?.profile.avatar} editMode={editMode} onSave={handleSave} />
+            <UserForm user={user} avatar={user?.profile?.avatar} editMode={editMode} onSave={handleSave} />
           </PageContentBlock>
         </PageContentColumn>
       </UserAdminLayout>

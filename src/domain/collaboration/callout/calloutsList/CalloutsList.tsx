@@ -2,7 +2,7 @@ import { List, ListItem, ListItemButton, ListItemIcon, Skeleton, useTheme } from
 import { ReactNode, useMemo, useState } from 'react';
 import { CalloutIcon } from '../icons/calloutIcons';
 import { useTranslation } from 'react-i18next';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';

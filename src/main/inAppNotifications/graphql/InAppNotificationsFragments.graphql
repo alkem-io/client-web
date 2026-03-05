@@ -44,8 +44,8 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCollaborationCallout {
       ...InAppNotificationPayloadSpaceCollaborationCallout
     }
-    ... on InAppNotificationPayloadSpaceCommunityContributor {
-      ...InAppNotificationSpaceCommunityContributor
+    ... on InAppNotificationPayloadSpaceCommunityActor {
+      ...InAppNotificationSpaceCommunityActor
     }
     ... on InAppNotificationPayloadSpaceCommunityApplication {
       ...InAppNotificationPayloadSpaceCommunityApplication
@@ -100,13 +100,13 @@ fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationP
   }
 }
 
-fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
+fragment InAppNotificationSpaceCommunityActor on InAppNotificationPayloadSpaceCommunityActor {
   space {
     ...spaceNotification
   }
-  contributor {
+  actor {
     id
-    __typename # do not remove
+    type
     profile {
       id
       displayName
@@ -233,7 +233,7 @@ fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationP
   application {
     id
     createdDate
-    contributor {
+    actor {
       id
       profile {
         id
@@ -278,8 +278,9 @@ fragment InAppNotificationPayloadVirtualContributor on InAppNotificationPayloadV
   space {
     ...spaceNotification
   }
-  contributor {
+  actor {
     id
+    type
     profile {
       id
       displayName

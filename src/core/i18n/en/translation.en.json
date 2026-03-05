@@ -228,6 +228,7 @@
     "validation": {
       "fill-fields": "Please fill required fields!"
     },
+    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
     "social-login": {
       "connect": "Connect with {{provider}}",
       "providers": {
@@ -515,7 +516,8 @@
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
-        "DEMO": "Demo"
+        "DEMO": "Demo",
+        "INACTIVE": "Inactive"
       },
       "searchVisibility": {
         "ACCOUNT": "$t(common.Account)",
@@ -577,7 +579,9 @@
       "roleSetContributorType": {
         "USER": "User",
         "ORGANIZATION": "$t(common.Organization)",
-        "VIRTUAL": "$t(common.virtualContributor)"
+        "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)",
+        "ACCOUNT": "Account",
+        "SPACE": "$t(common.space)"
       }
     },
     "blocks": {
@@ -706,7 +710,10 @@
       "inviteButton": {
         "USER": "Invite people to this $t(common.space)",
         "ORGANIZATION": "Invite people to this $t(common.space)",
-        "VIRTUAL": "Invite $t(common.virtualContributor)"
+        "VIRTUAL": "Invite $t(common.virtualContributor)",
+        "VIRTUAL_CONTRIBUTOR": "Invite $t(common.virtualContributor)",
+        "ACCOUNT": "Invite to this $t(common.space)",
+        "SPACE": "Invite to this $t(common.space)"
       },
       "inviteToRole": "Invite to be a: ",
       "inviteContributorsDialog": {
@@ -1548,7 +1555,7 @@
       },
       "redirectDialog": {
         "title": "We are redirecting you...",
-        "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
+        "message": "It looks like you don’t have permission to view this item, or it may have been moved or deleted.<br/> We’re taking you to the nearest available page.",
         "countdown": "Redirecting in {{seconds}} seconds...",
         "cancelCountdown": "[Click to cancel]",
         "goNow": "Go now"
@@ -2371,6 +2378,10 @@
       "demoNotice": {
         "demoSpace": "Demo $t(common.space)",
         "demoSubspace": "This {{space}} is within a Demo $t(common.space)."
+      },
+      "inactiveNotice": {
+        "inactiveSpace": "Inactive Space",
+        "inactiveSubspace": "This {{space}} is within an Inactive Space."
       }
     },
     "contribute": {

@@ -15,7 +15,7 @@ import SendButton from '@/core/ui/actions/SendButton';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { useState } from 'react';
 import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import InvitationsResultDialogContent from './InvitationsResultDialogContent';
@@ -77,7 +77,7 @@ const InviteUsersDialog = ({
 
   const [onSubmit, invitingUsers] = useLoadingState(async (data: InviteUsersData) => {
     const requiredRoleSetId = ensurePresence(roleSetId);
-    const invitedContributorIds = compact(
+    const invitedActorIds = compact(
       data.selectedContributors.map(contributor =>
         contributor.type === ContributorSelectorType.User ? contributor.id : undefined
       )
@@ -89,7 +89,7 @@ const InviteUsersDialog = ({
     );
     const result = await inviteContributorsOnRoleSet({
       roleSetId: requiredRoleSetId,
-      invitedContributorIds,
+      invitedActorIds,
       invitedUserEmails,
       welcomeMessage: data.welcomeMessage,
       extraRoles: data.extraRoles,

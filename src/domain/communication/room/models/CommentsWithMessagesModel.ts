@@ -5,7 +5,7 @@ import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 type ContributorModel = {
   __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
   id: string;
-  profile: {
+  profile?: {
     id: string;
     displayName: string;
     url: string;
@@ -32,7 +32,7 @@ export type CommentsWithMessagesModel = {
       id: string;
       emoji: string;
       timestamp: number;
-      sender?: { id: string; profile: { displayName: string } };
+      sender?: { id: string; profile?: { displayName: string } };
     }[];
     sender?: ContributorModel;
   }[];

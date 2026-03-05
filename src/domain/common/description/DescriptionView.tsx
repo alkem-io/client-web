@@ -1,6 +1,6 @@
 import { Box, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';

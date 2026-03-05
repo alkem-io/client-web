@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { from, InMemoryCache, NormalizedCacheObject, ApolloClient } from '@apollo/client';
-import { once } from 'lodash';
+import { once } from 'lodash-es';
 import { env } from '@/main/env';
 import {
   omitTypenameLink,

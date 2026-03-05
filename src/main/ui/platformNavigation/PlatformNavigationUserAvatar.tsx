@@ -35,7 +35,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
           <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative" overflow="visible">
             <Paper
               component={Avatar}
-              src={userModel?.profile.avatar?.uri}
+              src={userModel?.profile?.avatar?.uri}
               sx={{
                 padding: 0,
                 cursor: 'pointer',

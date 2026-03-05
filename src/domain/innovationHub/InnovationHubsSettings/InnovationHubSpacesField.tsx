@@ -16,7 +16,7 @@ import { useInnovationHubAvailableSpacesQuery } from '@/core/apollo/generated/ap
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { sortBy, without } from 'lodash';
+import { sortBy, without } from 'lodash-es';
 import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
 import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -84,8 +84,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
     {
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
-      renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile.displayName}</>,
-      valueGetter: (_, row: GetterParams) => row?.about.provider?.profile.displayName,
+      renderCell: ({ row }: RenderParams) => <>{row.about.provider?.profile?.displayName}</>,
+      valueGetter: (_, row: GetterParams) => row?.about.provider?.profile?.displayName,
       filterable: false,
       flex: 1,
     },
@@ -202,7 +202,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                         >
                           <TableCell>{space.about.profile.displayName}</TableCell>
                           <TableCell>{space.visibility}</TableCell>
-                          <TableCell>{space.about.provider?.profile.displayName}</TableCell>
+                          <TableCell>{space.about.provider?.profile?.displayName}</TableCell>
                           <TableCell>
                             <IconButton
                               color="warning"

@@ -7,9 +7,10 @@ import {
   useEventOnApplicationMutation,
   useInvitationStateEventMutation,
   useInviteForEntryRoleOnRoleSetMutation,
+  useActorDetailsLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { useMemo } from 'react';
+import { AuthorizationPrivilege, RoleName, ActorType, ActorDetailsQuery } from '@/core/apollo/generated/graphql-schema';
+import { useEffect, useMemo, useState } from 'react';
 import { ApplicationModel } from '../model/ApplicationModel';
 import { InvitationModel } from '../model/InvitationModel';
 import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
@@ -31,7 +32,7 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   applicationStateChange: (applicationId: string, eventName: string) => Promise<unknown>;
   inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
-    invitedContributorIds: string[];
+    invitedActorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
@@ -44,25 +45,15 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   isApplying: boolean;
 };
 
-const addContributorType = (
-  typename: 'User' | 'Organization' | 'VirtualContributor' | undefined
-): RoleSetContributorType => {
-  switch (typename) {
-    case 'User':
-      return RoleSetContributorType.User;
-    case 'Organization':
-      return RoleSetContributorType.Organization;
-    case 'VirtualContributor':
-      return RoleSetContributorType.Virtual;
-    default: {
-      return RoleSetContributorType.User;
-    }
-  }
+const getContributorType = (type: ActorType | undefined): ActorType => {
+  return type ?? ActorType.User;
 };
 
 const useRoleSetApplicationsAndInvitations = ({
   roleSetId,
 }: useRoleSetApplicationsAndInvitationsParams): useRoleSetApplicationsAndInvitationsProvided => {
+  const [fetchActorDetails] = useActorDetailsLazyQuery();
+
   const {
     data,
     loading,
@@ -79,21 +70,70 @@ const useRoleSetApplicationsAndInvitations = ({
     }
   };
 
+  // Fetch actor-specific details for application/invitation contributors
+  type ActorDetail = NonNullable<ActorDetailsQuery['actor']>;
+  const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
+
+  const contributorIds = useMemo(() => {
+    const appIds = data?.lookup.roleSet?.applications.map(app => app.actor.id) ?? [];
+    const invIds = data?.lookup.roleSet?.invitations.map(inv => inv.actor.id) ?? [];
+    return [...new Set([...appIds, ...invIds])];
+  }, [data]);
+
+  useEffect(() => {
+    if (contributorIds.length === 0) {
+      return;
+    }
+
+    const fetchAll = async () => {
+      const results = await Promise.all(contributorIds.map(actorId => fetchActorDetails({ variables: { actorId } })));
+      const newMap: Record<string, ActorDetail> = {};
+      for (const result of results) {
+        const actor = result.data?.actor;
+        if (actor) {
+          newMap[actor.id] = actor;
+        }
+      }
+      setActorDetailsMap(newMap);
+    };
+    fetchAll();
+  }, [contributorIds, fetchActorDetails]);
+
+  const getActorEmail = (actorDetail: ActorDetail | undefined): string | undefined => {
+    if (!actorDetail) return undefined;
+    if (actorDetail.type === ActorType.User && 'email' in actorDetail) return actorDetail.email;
+    if (actorDetail.type === ActorType.Organization && 'contactEmail' in actorDetail)
+      return actorDetail.contactEmail ?? undefined;
+    return undefined;
+  };
+
   const { applications, invitations, platformInvitations } = useMemo(() => {
     return {
       applications:
         data?.lookup.roleSet?.applications.map(app => ({
           ...app,
-          contributorType: addContributorType(app.contributor.__typename),
+          contributorType: getContributorType(app.actor.type),
+          actor: {
+            ...app.actor,
+            profile: app.actor.profile
+              ? { ...app.actor.profile, email: getActorEmail(actorDetailsMap[app.actor.id]) }
+              : undefined,
+          },
         })) ?? [],
       invitations:
         data?.lookup.roleSet?.invitations.map(inv => ({
           ...inv,
-          contributorType: addContributorType(inv.contributor.__typename),
+          contributorType: getContributorType(inv.actor.type),
+          actor: {
+            ...inv.actor,
+            profile: inv.actor.profile
+              ? { ...inv.actor.profile, email: getActorEmail(actorDetailsMap[inv.actor.id]) }
+              : undefined,
+          },
         })) ?? [],
       platformInvitations: data?.lookup.roleSet?.platformInvitations ?? [],
     };
-  }, [data]);
+  }, [data, actorDetailsMap]);
 
   const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation();
   const handleApplyForEntryRoleOnRoleSet = (
@@ -151,13 +191,13 @@ const useRoleSetApplicationsAndInvitations = ({
   const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
   const handleInviteContributorsOnRoleSet = async ({
     roleSetId,
-    invitedContributorIds,
+    invitedActorIds,
     invitedUserEmails,
     welcomeMessage,
     extraRoles,
   }: {
     roleSetId: string;
-    invitedContributorIds: string[];
+    invitedActorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
@@ -168,7 +208,7 @@ const useRoleSetApplicationsAndInvitations = ({
     const result = await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
-        invitedContributorIds,
+        invitedActorIds,
         invitedUserEmails,
         welcomeMessage,
         extraRoles: filteredExtraRoles,

@@ -21,7 +21,7 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
   const { userModel: user, loading } = useUserProvider(userId);
 
   // Set browser tab title to "[User Name] | Alkemio"
-  usePageTitle(user?.profile.displayName);
+  usePageTitle(user?.profile?.displayName);
 
   const settings = pathname.split('/').includes('settings');
 
@@ -34,11 +34,11 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={routeLoading || loading || !user}
-            avatar={user?.profile.avatar}
+            avatar={user?.profile?.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={getProfileUrl(user?.profile.url)}
+            uri={getProfileUrl(user?.profile?.url)}
           >
-            {user?.profile.displayName}
+            {user?.profile?.displayName}
           </BreadcrumbsItem>
           {settings && (
             <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>

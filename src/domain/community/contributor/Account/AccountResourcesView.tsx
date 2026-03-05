@@ -4,7 +4,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
@@ -36,11 +36,12 @@ export interface AccountResourcesProps {
   id: string;
   spaces: {
     id: string;
+    visibility: SpaceVisibility;
     about: SpaceAboutLightModel;
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile;
+    profile?: AccountProfile;
   }[];
   innovationPacks: {
     id: string;
@@ -110,6 +111,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
                   displayName={contributionItem.about.profile.displayName}
                   banner={contributionItem.about.profile.cardBanner}
                   spaceUri={contributionItem.about.profile.url}
+                  spaceVisibility={contributionItem.visibility}
                   isPrivate={!contributionItem.about.isContentPublic}
                   level={SpaceLevel.L0}
                   avatarUris={avatarUris}

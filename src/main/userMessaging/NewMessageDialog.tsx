@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DialogContent, DialogActions, TextField, Chip, CircularProgress, Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
@@ -71,10 +71,10 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
     if (value) {
       setSelectedUser({
         id: value.id,
-        displayName: value.profile.displayName,
-        avatarUri: value.profile.visual?.uri,
-        city: value.profile.location?.city,
-        country: value.profile.location?.country,
+        displayName: value.profile?.displayName ?? '',
+        avatarUri: value.profile?.visual?.uri,
+        city: value.profile?.location?.city,
+        country: value.profile?.location?.country,
       });
       setInputValue('');
       setFilter(undefined);
@@ -141,7 +141,7 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
             ) : (
               <Autocomplete
                 options={filteredContributors}
-                getOptionLabel={option => option.profile.displayName}
+                getOptionLabel={option => option.profile?.displayName ?? ''}
                 inputValue={inputValue}
                 onInputChange={handleInputChange}
                 onChange={handleUserSelect}
@@ -173,10 +173,10 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
                 renderOption={(props, option) => (
                   <li {...props} key={option.id}>
                     <ProfileChipView
-                      displayName={option.profile.displayName}
-                      avatarUrl={option.profile.visual?.uri}
-                      city={option.profile.location?.city}
-                      country={option.profile.location?.country}
+                      displayName={option.profile?.displayName ?? ''}
+                      avatarUrl={option.profile?.visual?.uri}
+                      city={option.profile?.location?.city}
+                      country={option.profile?.location?.country}
                     />
                   </li>
                 )}

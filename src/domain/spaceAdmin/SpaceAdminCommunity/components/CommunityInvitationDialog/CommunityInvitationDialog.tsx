@@ -31,7 +31,7 @@ export const CommunityInvitationDialog = ({
     skip: !invitationId,
   });
   const invitation = isPlatformInvitation ? data?.lookup.platformInvitation : data?.lookup.invitation;
-  const contributor = data?.lookup.invitation?.contributor;
+  const contributor = data?.lookup.invitation?.actor;
 
   return (
     <DialogWithGrid open maxWidth="md" fullWidth aria-labelledby="community-invitation-dialog" onClose={onClose}>
@@ -40,10 +40,10 @@ export const CommunityInvitationDialog = ({
           data?.lookup.platformInvitation?.email
         ) : (
           <ProfileChip
-            displayName={contributor?.profile.displayName}
-            avatarUrl={contributor?.profile.avatar?.uri}
-            city={contributor?.profile.location?.city}
-            country={contributor?.profile.location?.country}
+            displayName={contributor?.profile?.displayName}
+            avatarUrl={contributor?.profile?.avatar?.uri}
+            city={contributor?.profile?.location?.city}
+            country={contributor?.profile?.location?.country}
           />
         )}
       </DialogHeader>

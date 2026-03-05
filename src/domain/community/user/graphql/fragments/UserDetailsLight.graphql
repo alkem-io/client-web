@@ -1,0 +1,21 @@
+fragment UserDetailsLight on User {
+  id
+  firstName
+  lastName
+  email
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+    url
+  }
+  settings {
+    id
+    homeSpace {
+      spaceID
+      autoRedirect
+    }
+  }
+}

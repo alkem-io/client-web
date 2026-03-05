@@ -86,7 +86,7 @@ export interface AccountTabResourcesProps {
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile & {
+    profile?: AccountProfile & {
       tagline?: string;
     };
   }[];
@@ -207,7 +207,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace);
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
-  const canCreateVirtualContributor = privileges.includes(AuthorizationPrivilege.CreateVirtualContributor);
+  const canCreateVirtualContributor = privileges.includes(AuthorizationPrivilege.CreateVirtual);
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 

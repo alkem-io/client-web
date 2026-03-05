@@ -78,7 +78,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
   const [createdVc, setCreatedVc] = useState<
-    { id: string; profile: { url: string; avatar?: { id: string } } } | undefined
+    { id: string; profile?: { url: string; avatar?: { id: string } } } | undefined
   >();
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
@@ -184,7 +184,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           accountID: myAccountId!,
           about: {
             profileData: {
-              displayName: `${accountName || userModel?.profile.displayName} - ${t('common.space')}`,
+              displayName: `${accountName || userModel?.profile?.displayName} - ${t('common.space')}`,
             },
           },
           collaborationData: {
@@ -531,7 +531,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
       // navigate to VC page
       if (createdVc) {
-        navigate(createdVc.profile.url);
+        navigate(createdVc.profile?.url ?? '');
       }
     }
   };
@@ -587,7 +587,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             <TryVcInfo
               titleId="virtual-contributor-wizard"
               vcName={virtualContributorInput?.name ?? ''}
-              url={createdVc?.profile.url}
+              url={createdVc?.profile?.url}
               onClose={handleCloseWizard}
             />
           )}

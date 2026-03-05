@@ -39,8 +39,8 @@ const TemplateCardLayout = ({
       {hasProvider ? (
         <CardHeader title={templateName} contrast={isSelected}>
           {loading && <Skeleton />}
-          <CardHeaderCaption logoUrl={innovationPack.provider!.profile.avatar?.uri} contrast={isSelected}>
-            {innovationPack.provider!.profile.displayName}
+          <CardHeaderCaption logoUrl={innovationPack.provider!.profile?.avatar?.uri} contrast={isSelected}>
+            {innovationPack.provider!.profile?.displayName}
           </CardHeaderCaption>
         </CardHeader>
       ) : (
