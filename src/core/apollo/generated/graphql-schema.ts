@@ -429,7 +429,9 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
 
 export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryMemberJoined';
-  /** The type of the Contributor that joined the Community. */
+  /** The Actor that joined the Community. */
+  actor: Actor;
+  /** The type of the Actor that joined the Community. */
   actorType: ActorType;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
   child: Scalars['Boolean']['output'];
@@ -437,8 +439,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   collaborationID: Scalars['UUID']['output'];
   /** The community that was joined. */
   community: Community;
-  /** The Contributor that joined the Community. */
-  actor: Actor;
   /** The timestamp for the Activity. */
   createdDate: Scalars['DateTime']['output'];
   /** The text details for this Activity. */
@@ -575,7 +575,7 @@ export type ActorRoles = {
   id: Scalars['UUID']['output'];
   /** The invitations for the specified user; only accessible for platform admins */
   invitations: Array<CommunityInvitationForRoleResult>;
-  /** Details of the roles the contributor has in Organizations */
+  /** Details of the roles the actor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
   spaces: Array<RolesResultSpace>;
@@ -662,10 +662,10 @@ export type AiServerAiPersonaArgs = {
 
 export type Application = {
   __typename?: 'Application';
+  /** The Actor for this Application. */
+  actor: Actor;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The User for this Application. */
-  actor: Actor;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1055,7 +1055,7 @@ export type CalloutContributionsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export enum CalloutAllowedContributors {
+export enum CalloutAllowedActors {
   Admins = 'ADMINS',
   Members = 'MEMBERS',
   None = 'NONE',
@@ -1179,7 +1179,7 @@ export type CalloutSettingsContribution = {
   /** The allowed contribution types for this callout. */
   allowedTypes: Array<CalloutContributionType>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions: CalloutAllowedContributors;
+  canAddContributions: CalloutAllowedActors;
   /** Can comment to contributions callout. */
   commentsEnabled: Scalars['Boolean']['output'];
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1799,7 +1799,7 @@ export type CreateCalloutSettingsContributionData = {
   /** Allowed Contribution types. */
   allowedTypes?: Maybe<Array<CalloutContributionType>>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: Maybe<CalloutAllowedContributors>;
+  canAddContributions?: Maybe<CalloutAllowedActors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1810,7 +1810,7 @@ export type CreateCalloutSettingsContributionInput = {
   /** Allowed Contribution types. */
   allowedTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
+  canAddContributions?: InputMaybe<CalloutAllowedActors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -2802,12 +2802,12 @@ export type ISearchCategoryResult = {
 
 export type ISearchResults = {
   __typename?: 'ISearchResults';
+  /** The search results for actors (Users, Organizations). */
+  actorResults: ISearchCategoryResult;
   /** The search results for Callouts. */
   calloutResults: ISearchCategoryResult;
   /** The search results for contributions (Posts, Whiteboards, Memos). */
   contributionResults: ISearchCategoryResult;
-  /** The search results for contributors (Users, Organizations). */
-  actorResults: ISearchCategoryResult;
   /** The search results callout framings (Whiteboards, Memos as additional content). */
   framingResults: ISearchCategoryResult;
   /** The search results for Spaces / Subspaces. */
@@ -2837,7 +2837,7 @@ export type InAppNotification = {
   state: NotificationEventInAppState;
   /** The triggered date of the notification event. */
   triggeredAt: Scalars['DateTime']['output'];
-  /** The Contributor who triggered the notification. */
+  /** The Actor who triggered the notification. */
   triggeredBy?: Maybe<Actor>;
   /** The type of the notification event. */
   type: NotificationEvent;
@@ -3223,19 +3223,19 @@ export type InputCreatorQueryResultsWhiteboardArgs = {
 
 export type Invitation = {
   __typename?: 'Invitation';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
   /** The Actor who is invited. */
   actor: Actor;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The User who triggered the invitation. */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  /** Additional roles to assign to the Actor, in addition to the entry Role. */
   extraRoles: Array<RoleName>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** Whether to also add the invited contributor to the parent community. */
+  /** Whether to also add the invited actor to the parent community. */
   invitedToParent: Scalars['Boolean']['output'];
   /** Is this lifecycle in a final state (done). */
   isFinalized: Scalars['Boolean']['output'];
@@ -3257,7 +3257,7 @@ export type InvitationEventInput = {
 export type InviteForEntryRoleOnRoleSetInput = {
   /** Additional roles to assign in addition to the entry Role. */
   extraRoles: Array<RoleName>;
-  /** The identifiers for the contributors being invited. */
+  /** The identifiers for the actors being invited. */
   invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
@@ -4315,7 +4315,7 @@ export type Mutation = {
   assignLicensePlanToSpace: Space;
   /** Assigns a User to a role on the Platform. */
   assignPlatformRoleToUser: User;
-  /** Assigns a Contributor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
+  /** Assigns an Actor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
   assignRole: Actor;
   /** Assigns an Organization a Role in the specified Community. */
   assignRoleToOrganization: Organization;
@@ -4489,7 +4489,7 @@ export type Mutation = {
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
-  /** Removes a Contributor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
+  /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
   removeRole: Actor;
   /** Removes an Organization from a Role in the specified Community. */
   removeRoleFromOrganization: Organization;
@@ -5881,7 +5881,7 @@ export type PlatformInvitation = {
   platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean']['output'];
-  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  /** Additional roles to assign to the Actor, in addition to the entry Role. */
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
@@ -6778,7 +6778,7 @@ export type RolesResult = {
   id: Scalars['String']['output'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
 };
 
@@ -6792,7 +6792,7 @@ export type RolesResultCommunity = {
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
 };
 
@@ -6806,7 +6806,7 @@ export type RolesResultOrganization = {
   nameID: Scalars['NameID']['output'];
   /** The Organization ID. */
   organizationID: Scalars['String']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
@@ -6822,7 +6822,7 @@ export type RolesResultSpace = {
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
   /** The Space ID */
   spaceID: Scalars['String']['output'];
@@ -7919,7 +7919,7 @@ export type UpdateCalloutPublishInfoInput = {
 
 export type UpdateCalloutSettingsContributionInput = {
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
+  canAddContributions?: InputMaybe<CalloutAllowedActors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -12881,7 +12881,7 @@ export type CalloutContentQuery = {
               __typename?: 'CalloutSettingsContribution';
               enabled: boolean;
               allowedTypes: Array<CalloutContributionType>;
-              canAddContributions: CalloutAllowedContributors;
+              canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13226,7 +13226,7 @@ export type UpdateCalloutContentMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedContributors;
+        canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13576,7 +13576,7 @@ export type UpdateCalloutVisibilityMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedContributors;
+        canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13604,7 +13604,7 @@ export type CalloutSettingsFullFragment = {
     __typename?: 'CalloutSettingsContribution';
     enabled: boolean;
     allowedTypes: Array<CalloutContributionType>;
-    canAddContributions: CalloutAllowedContributors;
+    canAddContributions: CalloutAllowedActors;
     commentsEnabled: boolean;
   };
   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15040,7 +15040,7 @@ export type CreateCalloutMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedContributors;
+        canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15515,7 +15515,7 @@ export type CalloutDetailsQuery = {
               __typename?: 'CalloutSettingsContribution';
               enabled: boolean;
               allowedTypes: Array<CalloutContributionType>;
-              canAddContributions: CalloutAllowedContributors;
+              canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15897,7 +15897,7 @@ export type CalloutDetailsFragment = {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
       allowedTypes: Array<CalloutContributionType>;
-      canAddContributions: CalloutAllowedContributors;
+      canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -28655,7 +28655,7 @@ export type TemplateContentQuery = {
                     __typename?: 'CalloutSettingsContribution';
                     enabled: boolean;
                     allowedTypes: Array<CalloutContributionType>;
-                    canAddContributions: CalloutAllowedContributors;
+                    canAddContributions: CalloutAllowedActors;
                     commentsEnabled: boolean;
                   };
                   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -29300,7 +29300,7 @@ export type CalloutTemplateContentFragment = {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
       allowedTypes: Array<CalloutContributionType>;
-      canAddContributions: CalloutAllowedContributors;
+      canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
