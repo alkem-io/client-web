@@ -110,6 +110,12 @@ const useWhiteboardFilesManager = ({
   const downloader = useRef(new FileDownloader()).current;
   const semaphore = useRef(new Semaphore(1)).current;
 
+  // Clear failed uploads when storageBucketId changes so files aren't permanently blocked
+  // after switching whiteboards (each whiteboard has its own storage bucket)
+  useEffect(() => {
+    uploader.clearAllFailures();
+  }, [storageBucketId, uploader]);
+
   // Force re-render when cache changes
   const [cacheVersion, setCacheVersion] = useState(0);
   useEffect(() => {
