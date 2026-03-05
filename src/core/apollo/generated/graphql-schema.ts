@@ -964,8 +964,6 @@ export type CalendarEventArgs = {
 
 export type CalendarEvent = {
   __typename?: 'CalendarEvent';
-  /** ICS download URL for adding this CalendarEvent to Apple Calendar. */
-  appleCalendarUrl?: Maybe<Scalars['String']['output']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The comments for this CalendarEvent */
@@ -31397,7 +31395,6 @@ export type CalendarEventImportUrlsQuery = {
           id: string;
           googleCalendarUrl?: string | undefined;
           outlookCalendarUrl?: string | undefined;
-          appleCalendarUrl?: string | undefined;
           icsDownloadUrl?: string | undefined;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
         }

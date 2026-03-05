@@ -139,7 +139,6 @@ query CalendarEventImportUrls($eventId: UUID!) {
       }
       googleCalendarUrl
       outlookCalendarUrl
-      appleCalendarUrl
       icsDownloadUrl
     }
   }

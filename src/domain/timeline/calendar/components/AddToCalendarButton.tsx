@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { IconButton, ListItemIcon as MUIListItemIcon, Menu, MenuItem, Tooltip, styled } from '@mui/material';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { useTranslation } from 'react-i18next';
-import { AppleIcon, GoogleCalendarIcon, OutlookCalendarIcon, CalendarIcon } from './icons/AddToCalendarIcons';
+import {
+  GoogleCalendarIcon,
+  OutlookCalendarIcon,
+  ExportCalendarEventIcon,
+  IcsDownloadIcon,
+} from './icons/AddToCalendarIcons';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useCalendarEventImportUrlsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
@@ -43,7 +47,7 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
           onClick={e => setAnchor(e.currentTarget)}
           sx={{ color: theme => theme.palette.text.primary }}
         >
-          <FileDownloadOutlinedIcon />
+          <ExportCalendarEventIcon />
         </IconButton>
       </Tooltip>
       <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={handleClose}>
@@ -77,15 +81,9 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
               </ListItemIcon>
               {t('calendar.addToCalendar.outlook')}
             </MenuItem>
-            <MenuItem component="a" href={eventData.appleCalendarUrl} download={icsFilename} onClick={handleClose}>
-              <ListItemIcon>
-                <AppleIcon />
-              </ListItemIcon>
-              {t('calendar.addToCalendar.apple')}
-            </MenuItem>
             <MenuItem component="a" href={eventData.icsDownloadUrl} download={icsFilename} onClick={handleClose}>
               <ListItemIcon>
-                <CalendarIcon />
+                <IcsDownloadIcon />
               </ListItemIcon>
               {t('calendar.addToCalendar.iCal')}
             </MenuItem>

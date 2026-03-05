@@ -1,9 +1,9 @@
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { IconButton, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { escapeIcsText, foldLine, formatDateTimeUtc } from '@/domain/timeline/calendar/utils/icsUtils';
+import { ExportCalendarEventIcon } from './icons/AddToCalendarIcons';
 
 type ExportEventsToIcsButtonProps = {
   events: {
@@ -86,7 +86,7 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
   return (
     <Tooltip title={t('calendar.addToCalendar.exportAll')} arrow>
       <IconButton onClick={handleExport} size="small" aria-label={t('calendar.addToCalendar.exportAll')}>
-        <FileDownloadOutlinedIcon color="primary" />
+        <ExportCalendarEventIcon />
       </IconButton>
     </Tooltip>
   );

@@ -93,8 +93,7 @@
       "button": "Add to calendar",
       "google": "Google Calendar",
       "outlook": "Outlook",
-      "apple": "Apple Calendar",
-      "iCal": "iCalendar File",
+      "iCal": "Apple calendar & Other apps",
       "exportAll": "Export all future events to calendar"
     },
     "no-data": "No events found",

@@ -6,7 +6,7 @@ import { Box, Skeleton, useTheme } from '@mui/material';
 const ICON_SIZE = 24;
 const OutlookLogo = lazyWithGlobalErrorHandler(() => import('./outlook.svg?react'));
 const GoogleLogo = lazyWithGlobalErrorHandler(() => import('./google.svg?react'));
-const AppleLogo = lazyWithGlobalErrorHandler(() => import('./apple.svg?react'));
+const ExportIcon = lazyWithGlobalErrorHandler(() => import('./download-calendar.svg?react'));
 
 export const GoogleCalendarIcon = () => {
   const theme = useTheme();
@@ -30,17 +30,17 @@ export const OutlookCalendarIcon = () => {
   );
 };
 
-export const AppleIcon = () => {
+export const IcsDownloadIcon = () => {
+  return <CalendarMonthIcon height={ICON_SIZE} color="primary" />;
+};
+
+export const ExportCalendarEventIcon = () => {
   const theme = useTheme();
   return (
     <Box height={`${ICON_SIZE}px`} width={`${ICON_SIZE}px`} textAlign="center">
       <Suspense fallback={null}>
-        <AppleLogo height="100%" fill={theme.palette.primary.main} />
+        <ExportIcon height="100%" fill={theme.palette.primary.main} />
       </Suspense>
     </Box>
   );
-};
-
-export const CalendarIcon = () => {
-  return <CalendarMonthIcon height="24px" color="primary" />;
 };

@@ -641,7 +641,6 @@ export type CalendarFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalendarEventKeySpecifier = (
-  | 'appleCalendarUrl'
   | 'authorization'
   | 'comments'
   | 'createdBy'
@@ -664,7 +663,6 @@ export type CalendarEventKeySpecifier = (
   | CalendarEventKeySpecifier
 )[];
 export type CalendarEventFieldPolicy = {
-  appleCalendarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -25946,7 +25946,6 @@ export const CalendarEventImportUrlsDocument = gql`
         }
         googleCalendarUrl
         outlookCalendarUrl
-        appleCalendarUrl
         icsDownloadUrl
       }
     }
