@@ -80,7 +80,7 @@ export default defineConfig({
         version,
         create: process.env.NODE_ENV === 'production',
       },
-      authToken: process.env.VITE_APP_SENTRY_AUTH_TOKEN,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
     }),
     // Plugin to generate meta.json with version info
     {
