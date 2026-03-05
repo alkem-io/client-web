@@ -27,7 +27,7 @@ export const CommunityApplicationDialog = ({
   });
 
   const application = data?.lookup.application;
-  const contributor = application?.contributor;
+  const contributor = application?.actor;
   const questions = application?.questions ?? [];
   const nextEvents = application?.nextEvents ?? [];
 
