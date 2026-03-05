@@ -13,7 +13,7 @@ export interface PendingInvitationItem extends Identifiable {
     welcomeMessage?: string;
     createdDate: Date | string;
     state?: string;
-    contributor?: {
+    actor?: {
       type: ActorType;
     };
   };

@@ -51,7 +51,7 @@ const SingleInvitationFull = ({
   const { isSmallScreen } = useScreenSize();
 
   const getTitle = (invitation: InvitationWithMeta) => {
-    if (invitation.invitation.contributor?.type === ActorType.VirtualContributor) {
+    if (invitation.invitation.actor?.type === ActorType.VirtualContributor) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
         space: invitation?.space.about.profile.displayName,
       });
@@ -63,7 +63,7 @@ const SingleInvitationFull = ({
   };
 
   const getAcceptLabel = (invitation: InvitationWithMeta) => {
-    if (invitation.invitation.contributor?.type === ActorType.VirtualContributor) {
+    if (invitation.invitation.actor?.type === ActorType.VirtualContributor) {
       return t('community.pendingMembership.invitationDialog.actions.accept');
     }
 
@@ -103,7 +103,7 @@ const SingleInvitationFull = ({
                         spaceLevel={invitation.space.level}
                         createdDate={invitation.invitation.createdDate}
                         author={{ displayName: invitation.userDisplayName }}
-                        type={invitation.invitation.contributor?.type}
+                        type={invitation.invitation.actor?.type}
                       />
                     </Caption>
                     {invitation.invitation.welcomeMessage && <Text>{invitation.invitation.welcomeMessage}</Text>}

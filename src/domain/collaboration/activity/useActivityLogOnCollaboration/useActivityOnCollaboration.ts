@@ -83,8 +83,8 @@ const useActivityOnCollaboration = (
     return [
       ...new Set(
         entries
-          .filter((e): e is typeof e & { contributor: { id: string } } => 'contributor' in e)
-          .map(e => e.contributor.id)
+          .filter((e): e is typeof e & { actor: { id: string } } => 'actor' in e)
+          .map(e => e.actor.id)
       ),
     ];
   }, [activityLogData]);
@@ -127,10 +127,10 @@ const useActivityOnCollaboration = (
     }
 
     return activityLogData.activityLogOnCollaboration.map(entry => {
-      if ('contributor' in entry) {
-        const extra = getExtraContributorFields(actorDetailsMap[entry.contributor.id]);
+      if ('actor' in entry) {
+        const extra = getExtraContributorFields(actorDetailsMap[entry.actor.id]);
         if (Object.keys(extra).length > 0) {
-          return { ...entry, contributor: { ...entry.contributor, ...extra } } as ActivityLogResultType;
+          return { ...entry, actor: { ...entry.actor, ...extra } } as ActivityLogResultType;
         }
       }
       return entry as ActivityLogResultType;

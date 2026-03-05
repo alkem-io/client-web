@@ -7,7 +7,7 @@ export type ApplicationModel = {
   state: string;
   nextEvents: Array<string>;
   contributorType: ActorType;
-  contributor: {
+  actor: {
     id: string;
     profile?: {
       displayName: string;

@@ -24,7 +24,7 @@ fragment AdminCommunityApplication on Application {
   updatedDate
   state
   nextEvents
-  contributor {
+  actor {
     ...AdminCommunityCandidateMember
   }
 }
@@ -35,7 +35,7 @@ fragment AdminCommunityInvitation on Invitation {
   updatedDate
   state
   nextEvents
-  contributor {
+  actor {
     ...AdminCommunityCandidateMember
   }
 }
