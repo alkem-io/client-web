@@ -7375,6 +7375,7 @@ export enum SpaceVisibility {
   Active = 'ACTIVE',
   Archived = 'ARCHIVED',
   Demo = 'DEMO',
+  Inactive = 'INACTIVE',
 }
 
 export type StorageAggregator = {
@@ -18843,6 +18844,7 @@ export type AccountResourcesInfoQuery = {
           spaces: Array<{
             __typename?: 'Space';
             id: string;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -19631,6 +19633,7 @@ export type SpaceContributionDetailsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -19873,6 +19876,30 @@ export type UserDetailsFragment = {
               allowedValues: Array<string>;
               type: TagsetType;
             }>
+          | undefined;
+      }
+    | undefined;
+  settings: {
+    __typename?: 'UserSettings';
+    id: string;
+    homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+  };
+};
+
+export type UserDetailsLightFragment = {
+  __typename?: 'User';
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
       }
     | undefined;
@@ -20728,6 +20755,64 @@ export type EntitlementDetailsFragment = {
   isAvailable: boolean;
   dataType: LicenseEntitlementDataType;
   enabled: boolean;
+};
+
+export type CurrentUserLightQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CurrentUserLightQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+                };
+              }
+            | undefined;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
+        }
+      | undefined;
+  };
 };
 
 export type CommunityAvailableVCsQueryVariables = Exact<{
@@ -37207,6 +37292,7 @@ export type DashboardSpaceMembershipFragment = {
 
 export type ExploreSpacesSearchQueryVariables = Exact<{
   searchData: SearchInput;
+  skipLeads?: Scalars['Boolean']['input'];
 }>;
 
 export type ExploreSpacesSearchQuery = {
@@ -37264,7 +37350,7 @@ export type ExploreSpacesSearchQuery = {
                 membership: {
                   __typename?: 'SpaceAboutMembership';
                   myMembershipStatus?: CommunityMembershipStatus | undefined;
-                  leadUsers: Array<{
+                  leadUsers?: Array<{
                     __typename?: 'User';
                     id: string;
                     profile?:
@@ -37285,7 +37371,7 @@ export type ExploreSpacesSearchQuery = {
                         }
                       | undefined;
                   }>;
-                  leadOrganizations: Array<{
+                  leadOrganizations?: Array<{
                     __typename?: 'Organization';
                     id: string;
                     profile?:
@@ -37344,7 +37430,7 @@ export type ExploreSpacesSearchFragment = {
       membership: {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
-        leadUsers: Array<{
+        leadUsers?: Array<{
           __typename?: 'User';
           id: string;
           profile?:
@@ -37365,7 +37451,7 @@ export type ExploreSpacesSearchFragment = {
               }
             | undefined;
         }>;
-        leadOrganizations: Array<{
+        leadOrganizations?: Array<{
           __typename?: 'Organization';
           id: string;
           profile?:
@@ -37391,7 +37477,9 @@ export type ExploreSpacesSearchFragment = {
   };
 };
 
-export type ExploreAllSpacesQueryVariables = Exact<{ [key: string]: never }>;
+export type ExploreAllSpacesQueryVariables = Exact<{
+  skipLeads?: Scalars['Boolean']['input'];
+}>;
 
 export type ExploreAllSpacesQuery = {
   __typename?: 'Query';
@@ -37420,7 +37508,7 @@ export type ExploreAllSpacesQuery = {
       membership: {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
-        leadUsers: Array<{
+        leadUsers?: Array<{
           __typename?: 'User';
           id: string;
           profile?:
@@ -37441,7 +37529,7 @@ export type ExploreAllSpacesQuery = {
               }
             | undefined;
         }>;
-        leadOrganizations: Array<{
+        leadOrganizations?: Array<{
           __typename?: 'Organization';
           id: string;
           profile?:
@@ -37469,6 +37557,7 @@ export type ExploreAllSpacesQuery = {
 
 export type WelcomeSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
+  skipLeads?: Scalars['Boolean']['input'];
 }>;
 
 export type WelcomeSpaceQuery = {
@@ -37513,7 +37602,7 @@ export type WelcomeSpaceQuery = {
             membership: {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-              leadUsers: Array<{
+              leadUsers?: Array<{
                 __typename?: 'User';
                 id: string;
                 profile?:
@@ -37534,7 +37623,7 @@ export type WelcomeSpaceQuery = {
                     }
                   | undefined;
               }>;
-              leadOrganizations: Array<{
+              leadOrganizations?: Array<{
                 __typename?: 'Organization';
                 id: string;
                 profile?:
@@ -37587,7 +37676,7 @@ export type ExploreSpacesFragment = {
     membership: {
       __typename?: 'SpaceAboutMembership';
       myMembershipStatus?: CommunityMembershipStatus | undefined;
-      leadUsers: Array<{
+      leadUsers?: Array<{
         __typename?: 'User';
         id: string;
         profile?:
@@ -37608,7 +37697,7 @@ export type ExploreSpacesFragment = {
             }
           | undefined;
       }>;
-      leadOrganizations: Array<{
+      leadOrganizations?: Array<{
         __typename?: 'Organization';
         id: string;
         profile?:
@@ -39321,29 +39410,7 @@ export type LatestContributionsSpacesFlatQuery = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            cardBanner?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
         };
       };
     }>;
@@ -40060,6 +40127,7 @@ export type HomeSpaceLookupQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             isContentPublic: boolean;
@@ -40130,6 +40198,7 @@ export type RecentSpacesQuery = {
         __typename: 'Space';
         id: string;
         level: SpaceLevel;
+        visibility: SpaceVisibility;
         about: {
           __typename?: 'SpaceAbout';
           isContentPublic: boolean;

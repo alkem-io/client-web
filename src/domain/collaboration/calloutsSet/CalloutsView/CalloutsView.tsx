@@ -10,7 +10,7 @@ import {
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
-import { times, without } from 'lodash';
+import { times, without } from 'lodash-es';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
 import CalloutInViewWrapper from './CalloutsInViewWrapper';

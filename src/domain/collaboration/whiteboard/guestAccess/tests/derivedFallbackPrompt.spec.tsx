@@ -14,7 +14,7 @@ import { InMemoryCache } from '@apollo/client';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/core/i18n/config';
-import { CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import { CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
 import { sessionStorageMock } from './utils/sessionStorageMock';
@@ -46,7 +46,7 @@ const buildUserMock = ({
 }): MockedResponse[] => [
   {
     request: {
-      query: CurrentUserFullDocument,
+      query: CurrentUserLightDocument,
     },
     result: {
       data: {
@@ -57,23 +57,17 @@ const buildUserMock = ({
                 firstName,
                 lastName,
                 email: 'user@example.com',
-                phone: '',
                 profile: {
                   id: `${id}-profile`,
                   displayName: 'Test User',
-                  tagline: null,
-                  location: {
-                    id: `${id}-location`,
-                    country: null,
-                    city: null,
-                    __typename: 'Location',
-                  },
-                  description: null,
                   avatar: null,
-                  references: [],
-                  tagsets: [],
-                  url: null,
+                  url: '',
                   __typename: 'Profile',
+                },
+                settings: {
+                  id: `${id}-settings`,
+                  homeSpace: { spaceID: undefined, autoRedirect: false, __typename: 'UserSettingsHomeSpace' },
+                  __typename: 'UserSettings',
                 },
                 account: {
                   id: `${id}-account`,
@@ -165,7 +159,7 @@ describe('Guest whiteboard fallback prompt derivation', () => {
     const mocks: MockedResponse[] = [
       {
         request: {
-          query: CurrentUserFullDocument,
+          query: CurrentUserLightDocument,
         },
         error: new Error('Network error fetching user data'),
       },

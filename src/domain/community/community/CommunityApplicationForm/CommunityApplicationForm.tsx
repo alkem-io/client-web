@@ -4,14 +4,14 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { max, pullAt, slice, sortBy } from 'lodash';
+import { max, pullAt, slice, sortBy } from 'lodash-es';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import {
   refetchRoleSetApplicationFormQuery,
   useRoleSetApplicationFormQuery,
   useUpdateApplicationFormOnRoleSetMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import FormQuestionField, { questionSchema } from './views/FormQuestionField';
 import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
 import { useNotification } from '@/core/ui/notifications/useNotification';

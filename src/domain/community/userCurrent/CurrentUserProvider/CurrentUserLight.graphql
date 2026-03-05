@@ -1,0 +1,18 @@
+query CurrentUserLight {
+  me {
+    user {
+      ...UserDetailsLight
+      account {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        license {
+          id
+          availableEntitlements
+        }
+      }
+    }
+  }
+}

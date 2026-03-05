@@ -1,5 +1,5 @@
 import { Identifiable } from '@/core/utils/Identifiable';
-import { compact, groupBy, sortBy } from 'lodash';
+import { compact, groupBy, sortBy } from 'lodash-es';
 import { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';

@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';

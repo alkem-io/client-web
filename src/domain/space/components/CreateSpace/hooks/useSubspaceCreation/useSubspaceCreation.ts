@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import {
   CreateSubspaceMutationOptions,
-  refetchCurrentUserFullQuery,
+  refetchCurrentUserLightQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -49,7 +49,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const {
-    refetchQueries = [refetchCurrentUserFullQuery()], // default to refetching user provider
+    refetchQueries = [refetchCurrentUserLightQuery()], // default to refetching user provider
     ...restMutationOptions
   } = mutationOptions;
 

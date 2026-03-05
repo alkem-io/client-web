@@ -70,7 +70,12 @@ const SpaceCard = ({
         spaceId={props.spaceId}
         locked={isPrivate}
         visual={visualContent}
-        bannerOverlay={tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact /> : undefined}
+        bannerOverlay={
+          <>
+            {showVisibilityBanner && <SpaceVisibilityBanner visibility={spaceVisibility} />}
+            {tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact /> : undefined}
+          </>
+        }
         iconOverlay={iconOverlay}
         sx={{
           position: 'relative',

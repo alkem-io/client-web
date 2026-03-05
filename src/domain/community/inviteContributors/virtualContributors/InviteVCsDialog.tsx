@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';

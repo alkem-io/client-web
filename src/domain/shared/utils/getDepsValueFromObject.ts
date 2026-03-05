@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 
 /**
  * If you want a hook to be re-run when object property values change, you can pass the flattened array of its sorted entries as deps.

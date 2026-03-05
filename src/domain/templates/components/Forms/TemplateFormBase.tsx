@@ -9,7 +9,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { TemplateType, Visual } from '@/core/apollo/generated/graphql-schema';

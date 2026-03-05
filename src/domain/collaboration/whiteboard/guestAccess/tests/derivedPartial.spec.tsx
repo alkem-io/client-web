@@ -12,7 +12,7 @@ import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
 import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
-import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import { GetPublicWhiteboardDocument, CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GlobalErrorProvider } from '@/core/lazyLoading/GlobalErrorContext';
@@ -40,7 +40,7 @@ const buildCurrentUserMock = ({
   email?: string;
 }): MockedResponse => ({
   request: {
-    query: CurrentUserFullDocument,
+    query: CurrentUserLightDocument,
   },
   result: {
     data: {
@@ -51,23 +51,17 @@ const buildCurrentUserMock = ({
           firstName,
           lastName,
           email,
-          phone: '',
           profile: {
             id: `${id}-profile`,
             displayName: `${firstName ?? lastName ?? 'Guest'} Profile`,
-            tagline: null,
-            location: {
-              id: `${id}-location`,
-              country: null,
-              city: null,
-              __typename: 'Location',
-            },
-            description: null,
             avatar: null,
-            references: [],
-            tagsets: [],
-            url: null,
+            url: '',
             __typename: 'Profile',
+          },
+          settings: {
+            id: `${id}-settings`,
+            homeSpace: { spaceID: undefined, autoRedirect: false, __typename: 'UserSettingsHomeSpace' },
+            __typename: 'UserSettings',
           },
           account: {
             id: `${id}-account`,

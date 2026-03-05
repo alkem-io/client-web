@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Theme } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { identity } from 'lodash';
+import { identity } from 'lodash-es';
 
 const swapColors = (theme: Theme): Theme => {
   const primaryColor = theme.palette.primary.main;

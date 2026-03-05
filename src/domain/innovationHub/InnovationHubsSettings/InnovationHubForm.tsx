@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';

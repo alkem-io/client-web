@@ -4,7 +4,7 @@ import { EditorContent, useEditor, Editor } from '@tiptap/react';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { gutters } from '@/core/ui/grid/utils';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { useEditorConfig } from '../MarkdownInput/hooks/useEditorConfig';
 import { useImageUpload } from '../MarkdownInput/hooks/useImageUpload';

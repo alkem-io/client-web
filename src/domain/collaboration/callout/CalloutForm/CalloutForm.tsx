@@ -7,7 +7,7 @@ import {
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
@@ -20,7 +20,7 @@ import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import { Box } from '@mui/material';
 import { Formik, FormikConfig } from 'formik';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';

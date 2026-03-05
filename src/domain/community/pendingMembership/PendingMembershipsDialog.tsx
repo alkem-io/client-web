@@ -21,7 +21,7 @@ import { ActorType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
-import { defer } from 'lodash';
+import { defer } from 'lodash-es';
 import Loading from '@/core/ui/loading/Loading';
 
 interface SectionProps<T> {

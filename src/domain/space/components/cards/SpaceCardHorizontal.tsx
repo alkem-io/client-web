@@ -18,7 +18,7 @@ import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
 import { LicenseEntitlementType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import { intersection } from 'lodash';
+import { intersection } from 'lodash-es';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import SpaceAvatar from '../SpaceAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';

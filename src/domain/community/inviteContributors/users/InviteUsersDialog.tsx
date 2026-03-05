@@ -15,7 +15,7 @@ import SendButton from '@/core/ui/actions/SendButton';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { useState } from 'react';
 import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import InvitationsResultDialogContent from './InvitationsResultDialogContent';

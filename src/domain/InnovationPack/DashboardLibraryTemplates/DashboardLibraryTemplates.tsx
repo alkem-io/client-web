@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useState } from 'react';
 import filterFn, { ValueType } from '@/core/utils/filtering/filterFn';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';

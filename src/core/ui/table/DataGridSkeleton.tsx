@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { StyledDataGrid } from './DataGridTable';
 import { GridColDef } from '@mui/x-data-grid';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 
 const DataGridSkeleton = ({ rowsCount = 5 }: { rowsCount?: number }) => {
   const columns: GridColDef[] = [

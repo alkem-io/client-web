@@ -8,7 +8,7 @@ import { DiscussionListView } from '../views/DiscussionsListView';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import { ForumDiscussionUpdatedDocument, usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion, useDiscussionMapper } from '../models/Discussion';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import {
   AuthorizationPrivilege,
   ForumDiscussionUpdatedSubscription,

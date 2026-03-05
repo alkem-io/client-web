@@ -7,7 +7,7 @@ import CardFooter from '@/core/ui/card/CardFooter';
 import MessageCounter from '@/core/ui/card/MessageCounter';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 import { formatDate } from '@/core/utils/time/utils';

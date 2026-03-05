@@ -44,6 +44,9 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
           alkemio: { href: origin },
         });
       }
+      if (visibility === SpaceVisibility.Inactive) {
+        return t('pages.generic.inactiveNotice.inactiveSpace');
+      }
     }
 
     if (visibility === SpaceVisibility.Demo) {
@@ -54,6 +57,12 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
         },
         { space: t(`common.space-level.${spaceLevel || SpaceLevel.L0}`) }
       );
+    }
+
+    if (visibility === SpaceVisibility.Inactive) {
+      return t('pages.generic.inactiveNotice.inactiveSubspace', {
+        space: t(`common.space-level.${spaceLevel || SpaceLevel.L0}`),
+      });
     }
 
     return null;
