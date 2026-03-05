@@ -7367,6 +7367,7 @@ export enum SpaceVisibility {
   Active = 'ACTIVE',
   Archived = 'ARCHIVED',
   Demo = 'DEMO',
+  Inactive = 'INACTIVE',
 }
 
 export type StorageAggregator = {
@@ -18835,6 +18836,7 @@ export type AccountResourcesInfoQuery = {
           spaces: Array<{
             __typename?: 'Space';
             id: string;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -19623,6 +19625,7 @@ export type SpaceContributionDetailsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -40094,6 +40097,7 @@ export type HomeSpaceLookupQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             isContentPublic: boolean;
@@ -40164,6 +40168,7 @@ export type RecentSpacesQuery = {
         __typename: 'Space';
         id: string;
         level: SpaceLevel;
+        visibility: SpaceVisibility;
         about: {
           __typename?: 'SpaceAbout';
           isContentPublic: boolean;

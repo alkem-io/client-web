@@ -58,6 +58,7 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
               displayName={homeSpace.about.profile.displayName}
               banner={homeSpace.about.profile.cardBanner}
               spaceUri={homeSpace.about.profile.url ?? ''}
+              spaceVisibility={homeSpace.visibility}
               isPrivate={!homeSpace.about.isContentPublic}
               compact
               iconOverlay={<HomeSpacePinButton settingsUrl={membershipSettingsUrl} />}
@@ -75,6 +76,7 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
               displayName={result.space.about.profile.displayName}
               banner={result.space.about.profile.cardBanner}
               spaceUri={result.space.about.profile.url}
+              spaceVisibility={result.space.visibility}
               isPrivate={!result.space.about.isContentPublic}
               compact
             />

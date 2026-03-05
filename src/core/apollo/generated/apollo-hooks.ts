@@ -12854,6 +12854,7 @@ export const AccountResourcesInfoDocument = gql`
         id
         spaces {
           id
+          visibility
           about {
             id
             profile {
@@ -13413,7 +13414,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 }
 export const RolesOrganizationDocument = gql`
   query rolesOrganization($organizationId: UUID!) {
-    rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -14081,6 +14082,7 @@ export const SpaceContributionDetailsDocument = gql`
       space(ID: $spaceId) {
         id
         level
+        visibility
         about {
           id
           profile {
@@ -14723,7 +14725,7 @@ export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFull
 }
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID!) {
-    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -17378,7 +17380,7 @@ export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
-    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
       ...InnovationHubSpace
     }
   }
@@ -18528,7 +18530,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 export const PlatformAdminSpacesListDocument = gql`
   query platformAdminSpacesList {
     platformAdmin {
-      spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+      spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
         id
         nameID
         visibility
@@ -26835,7 +26837,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 }
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID!) {
-    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -28521,6 +28523,7 @@ export const HomeSpaceLookupDocument = gql`
           isContentPublic
         }
         level
+        visibility
       }
     }
   }
@@ -28605,6 +28608,7 @@ export const RecentSpacesDocument = gql`
             isContentPublic
           }
           level
+          visibility
           __typename
         }
       }

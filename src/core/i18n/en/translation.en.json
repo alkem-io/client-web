@@ -516,7 +516,8 @@
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
-        "DEMO": "Demo"
+        "DEMO": "Demo",
+        "INACTIVE": "Inactive"
       },
       "searchVisibility": {
         "ACCOUNT": "$t(common.Account)",
@@ -2377,6 +2378,10 @@
       "demoNotice": {
         "demoSpace": "Demo $t(common.space)",
         "demoSubspace": "This {{space}} is within a Demo $t(common.space)."
+      },
+      "inactiveNotice": {
+        "inactiveSpace": "Inactive Space",
+        "inactiveSubspace": "This {{space}} is within an Inactive Space."
       }
     },
     "contribute": {
