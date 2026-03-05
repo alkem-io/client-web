@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 import { Chip, TextField } from '@mui/material';
-import { delay, uniq } from 'lodash';
+import { delay, uniq } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
 import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';

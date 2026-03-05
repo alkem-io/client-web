@@ -1,5 +1,5 @@
 import { Ref, useEffect, useRef } from 'react';
-import { defer } from 'lodash';
+import { defer } from 'lodash-es';
 
 /**
  * Triggers scroll to an element with matching alias.

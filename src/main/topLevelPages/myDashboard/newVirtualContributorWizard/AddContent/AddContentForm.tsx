@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { pullAt } from 'lodash';
+import { pullAt } from 'lodash-es';
 import * as yup from 'yup';
 import { Box, Button, Tooltip } from '@mui/material';
 import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';

@@ -10,7 +10,7 @@ import { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
 import SpaceMetrics from '@/domain/space/components/SpaceMetrics';
 import useMetricsItems from '@/domain/platform/metrics/utils/useMetricsItems';
 import { EditOutlined } from '@mui/icons-material';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 export interface AboutDescriptionProps extends PropsWithChildren {

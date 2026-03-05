@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import { BlockTitle } from '@/core/ui/typography';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
 
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {

@@ -1,6 +1,6 @@
 import { cloneElement, MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
 import { Box, ClickAwayListener, Drawer, Grow, ModalProps, Popper, PopperProps } from '@mui/material';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { gutters } from '../grid/utils';
 
 export interface TriggerProps {

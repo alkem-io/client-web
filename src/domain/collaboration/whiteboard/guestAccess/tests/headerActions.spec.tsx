@@ -11,7 +11,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
 import { MockedProvider } from '@apollo/client/testing';
 import { InMemoryCache } from '@apollo/client';
-import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import { GetPublicWhiteboardDocument, CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { sessionStorageMock } from './utils/sessionStorageMock';
 
@@ -97,7 +97,7 @@ const mocks = [
   },
   {
     request: {
-      query: CurrentUserFullDocument,
+      query: CurrentUserLightDocument,
       variables: {},
     },
     result: {

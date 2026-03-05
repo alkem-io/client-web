@@ -1,4 +1,4 @@
-import { groupBy, last, pull } from 'lodash';
+import { groupBy, last, pull } from 'lodash-es';
 
 export interface SortCalloutsParams {
   callouts: {

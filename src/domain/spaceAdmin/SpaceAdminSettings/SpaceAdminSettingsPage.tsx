@@ -18,7 +18,7 @@ import CommunityApplicationForm from '@/domain/community/community/CommunityAppl
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDeleteDialog';

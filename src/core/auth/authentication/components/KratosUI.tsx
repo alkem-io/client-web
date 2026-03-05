@@ -2,7 +2,7 @@ import { Text } from '@/core/ui/typography';
 import { Alert, Box, Button } from '@mui/material';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import { UiContainer, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
-import { isMatch, some } from 'lodash';
+import { isMatch, some } from 'lodash-es';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
@@ -16,7 +16,18 @@ import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
-import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isPasskeyAutocompleteInit, isScriptNode, isSubmitButton, isTextNode, isPasskeyTrigger, isPasskeyMethodButton } from './Kratos/helpers';
+import {
+  guessVariant,
+  isAnchorNode,
+  isHiddenInput,
+  isInputNode,
+  isPasskeyAutocompleteInit,
+  isScriptNode,
+  isSubmitButton,
+  isTextNode,
+  isPasskeyTrigger,
+  isPasskeyMethodButton,
+} from './Kratos/helpers';
 import KratosPasskeyButton from './Kratos/KratosPasskeyButton';
 import KratosPasskeyIconButton from './Kratos/KratosPasskeyIconButton';
 import KratosText from './Kratos/KratosText';
@@ -160,7 +171,16 @@ export const KratosUI: FC<KratosUIProps> = ({
             return { ...acc, rest: [...acc.rest, node] };
         }
       },
-      { default: [], oidc: [], password: [], passkey: [], passkeyCredentials: [], rest: [], submit: [], hidden: [] } as NodeGroups
+      {
+        default: [],
+        oidc: [],
+        password: [],
+        passkey: [],
+        passkeyCredentials: [],
+        rest: [],
+        submit: [],
+        hidden: [],
+      } as NodeGroups
     );
   }, [renderedNodes]);
 
@@ -224,12 +244,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     // Handle Passkey trigger buttons
     if ((node.group === 'webauthn' || node.group === 'passkey') && isPasskeyTrigger(node)) {
       return (
-        <KratosPasskeyButton
-          key={key}
-          node={node}
-          isScriptLoaded={isPasskeyScriptReady}
-          disabled={disableInputs}
-        />
+        <KratosPasskeyButton key={key} node={node} isScriptLoaded={isPasskeyScriptReady} disabled={disableInputs} />
       );
     }
 
@@ -243,12 +258,7 @@ export const KratosUI: FC<KratosUIProps> = ({
         // Check for Passkey triggers - these call Ory Passkey functions
         if (isPasskeyTrigger(node)) {
           return (
-            <KratosPasskeyButton
-              key={key}
-              node={node}
-              isScriptLoaded={isPasskeyScriptReady}
-              disabled={disableInputs}
-            />
+            <KratosPasskeyButton key={key} node={node} isScriptLoaded={isPasskeyScriptReady} disabled={disableInputs} />
           );
         }
         // Check for Passkey method buttons - these are regular submit buttons with icons

@@ -10,6 +10,7 @@ import { ExploreSpacesSearchFragment, SearchCategory, SearchResultType } from '@
 import { TypedSearchResult } from '@/main/search/SearchView';
 import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 type FiltersConfigTranslation = {
   key: string;
@@ -19,6 +20,8 @@ type FiltersConfigTranslation = {
 
 const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: ExploreSpacesContainerProps) => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useCurrentUserContext();
+  const skipLeads = !isAuthenticated;
   const filtersConfigRaw = t('spaces-filter.config', { returnObjects: true });
   const filtersConfig: FiltersConfigTranslation[] = Array.isArray(filtersConfigRaw)
     ? filtersConfigRaw
@@ -37,6 +40,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
   const { data: welcomeSpaceData } = useWelcomeSpaceQuery({
     variables: {
       spaceId: welcomeSpaceId!,
+      skipLeads,
     },
     skip: shouldSearch || !welcomeSpaceId,
   });
@@ -72,6 +76,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
           },
         ],
       },
+      skipLeads,
     },
     fetchPolicy: 'no-cache',
     skip: !shouldSearch,
@@ -92,6 +97,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
     },
   });*/
   const { data: spacesData, loading: isLoadingSpaces } = useExploreAllSpacesQuery({
+    variables: { skipLeads },
     skip: shouldSearch,
   });
 

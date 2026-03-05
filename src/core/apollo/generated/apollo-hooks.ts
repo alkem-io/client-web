@@ -1558,6 +1558,30 @@ export const UserDetailsFragmentDoc = gql`
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const UserDetailsLightFragmentDoc = gql`
+  fragment UserDetailsLight on User {
+    id
+    firstName
+    lastName
+    email
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      url
+    }
+    settings {
+      id
+      homeSpace {
+        spaceID
+        autoRedirect
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
     id
@@ -3891,7 +3915,7 @@ export const ExploreSpacesFragmentDoc = gql`
       }
       membership {
         myMembershipStatus
-        leadUsers {
+        leadUsers @skip(if: $skipLeads) {
           id
           profile {
             id
@@ -3902,7 +3926,7 @@ export const ExploreSpacesFragmentDoc = gql`
             }
           }
         }
-        leadOrganizations {
+        leadOrganizations @skip(if: $skipLeads) {
           id
           profile {
             id
@@ -15284,6 +15308,85 @@ export type CurrentUserFullQueryResult = Apollo.QueryResult<
 >;
 export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
   return { query: CurrentUserFullDocument, variables: variables };
+}
+export const CurrentUserLightDocument = gql`
+  query CurrentUserLight {
+    me {
+      user {
+        ...UserDetailsLight
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          license {
+            id
+            availableEntitlements
+          }
+        }
+      }
+    }
+  }
+  ${UserDetailsLightFragmentDoc}
+`;
+
+/**
+ * __useCurrentUserLightQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserLightQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserLightQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserLightQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserLightQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export function useCurrentUserLightLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CurrentUserLightQuery,
+    SchemaTypes.CurrentUserLightQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export function useCurrentUserLightSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export type CurrentUserLightQueryHookResult = ReturnType<typeof useCurrentUserLightQuery>;
+export type CurrentUserLightLazyQueryHookResult = ReturnType<typeof useCurrentUserLightLazyQuery>;
+export type CurrentUserLightSuspenseQueryHookResult = ReturnType<typeof useCurrentUserLightSuspenseQuery>;
+export type CurrentUserLightQueryResult = Apollo.QueryResult<
+  SchemaTypes.CurrentUserLightQuery,
+  SchemaTypes.CurrentUserLightQueryVariables
+>;
+export function refetchCurrentUserLightQuery(variables?: SchemaTypes.CurrentUserLightQueryVariables) {
+  return { query: CurrentUserLightDocument, variables: variables };
 }
 export const CommunityAvailableVCsDocument = gql`
   query CommunityAvailableVCs($roleSetId: UUID!) {
@@ -27225,7 +27328,7 @@ export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.Das
   return { query: DashboardWithMembershipsDocument, variables: variables };
 }
 export const ExploreSpacesSearchDocument = gql`
-  query ExploreSpacesSearch($searchData: SearchInput!) {
+  query ExploreSpacesSearch($searchData: SearchInput!, $skipLeads: Boolean! = false) {
     search(searchData: $searchData) {
       spaceResults {
         cursor
@@ -27255,6 +27358,7 @@ export const ExploreSpacesSearchDocument = gql`
  * const { data, loading, error } = useExploreSpacesSearchQuery({
  *   variables: {
  *      searchData: // value for 'searchData'
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27308,7 +27412,7 @@ export function refetchExploreSpacesSearchQuery(variables: SchemaTypes.ExploreSp
   return { query: ExploreSpacesSearchDocument, variables: variables };
 }
 export const ExploreAllSpacesDocument = gql`
-  query ExploreAllSpaces {
+  query ExploreAllSpaces($skipLeads: Boolean! = false) {
     exploreSpaces {
       ...ExploreSpaces
     }
@@ -27328,6 +27432,7 @@ export const ExploreAllSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useExploreAllSpacesQuery({
  *   variables: {
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27374,7 +27479,7 @@ export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllS
   return { query: ExploreAllSpacesDocument, variables: variables };
 }
 export const WelcomeSpaceDocument = gql`
-  query WelcomeSpace($spaceId: UUID!) {
+  query WelcomeSpace($spaceId: UUID!, $skipLeads: Boolean! = false) {
     lookup {
       space(ID: $spaceId) {
         ...ExploreSpaces
@@ -27397,6 +27502,7 @@ export const WelcomeSpaceDocument = gql`
  * const { data, loading, error } = useWelcomeSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27831,12 +27937,18 @@ export const LatestContributionsSpacesFlatDocument = gql`
       spaceMembershipsFlat {
         id
         space {
-          ...ActivityLogSpaceVisuals
+          id
+          about {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
         }
       }
     }
   }
-  ${ActivityLogSpaceVisualsFragmentDoc}
 `;
 
 /**

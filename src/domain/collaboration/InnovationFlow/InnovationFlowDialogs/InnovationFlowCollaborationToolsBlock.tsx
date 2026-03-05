@@ -1,5 +1,5 @@
 import { Box, BoxProps, Skeleton, styled } from '@mui/material';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { FC, ReactNode } from 'react';
 import { Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import Gutters from '@/core/ui/grid/Gutters';

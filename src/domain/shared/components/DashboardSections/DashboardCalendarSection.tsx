@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import useNavigate from '@/core/routing/useNavigate';
-import { groupBy, sortBy, times } from 'lodash';
+import { groupBy, sortBy, times } from 'lodash-es';
 import { useSpaceCalendarEventsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';

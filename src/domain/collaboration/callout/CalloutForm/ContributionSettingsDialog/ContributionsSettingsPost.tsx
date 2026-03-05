@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef } from 'react';
 import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { Formik, FormikProps, useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import { Box } from '@mui/material';

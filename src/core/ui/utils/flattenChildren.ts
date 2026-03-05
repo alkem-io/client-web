@@ -1,5 +1,5 @@
 import { Children, cloneElement, Fragment, isValidElement, ReactNode } from 'react';
-import { isArray } from 'lodash';
+import { isArray } from 'lodash-es';
 
 type AnyProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

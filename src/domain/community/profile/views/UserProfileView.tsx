@@ -10,7 +10,7 @@ import {
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { GridLegacy, styled } from '@mui/material';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserModel } from '../../user/models/UserModel';

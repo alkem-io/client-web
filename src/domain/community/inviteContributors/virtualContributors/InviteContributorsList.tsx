@@ -2,7 +2,7 @@ import GridItem from '@/core/ui/grid/GridItem';
 import UserCard from '../../user/userCard/UserCard';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { ContributorProps } from '../InviteContributorsProps';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 
 interface InviteContributorsListProps {
   contributors: ContributorProps[] | undefined;

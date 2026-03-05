@@ -10,7 +10,7 @@ import DiscussionIcon from '../views/DiscussionIcon';
 import { Discussion } from '../models/Discussion';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface DiscussionFormValues {
