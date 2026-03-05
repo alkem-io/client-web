@@ -5,7 +5,7 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { PostTemplate } from '@/domain/templates/models/PostTemplate';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { TemplateFormProps } from './TemplateForm';
 

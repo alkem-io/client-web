@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { compact, debounce, isArray } from 'lodash';
+import { compact, debounce, isArray } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '../../../userCurrent/useCurrentUserContext';
 import ContributorChip from '../ContributorChip/ContributorChip';

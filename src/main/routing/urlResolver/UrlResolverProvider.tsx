@@ -3,7 +3,7 @@ import { SpaceLevel, UrlResolverResultState, UrlType } from '@/core/apollo/gener
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotAuthorizedError, NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import { PartialRecord } from '@/core/utils/PartialRecord';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
 import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';

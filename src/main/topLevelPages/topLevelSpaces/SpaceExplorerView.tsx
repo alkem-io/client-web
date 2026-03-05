@@ -20,7 +20,7 @@ import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import RouterLink from '@/core/ui/link/RouterLink';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import Loading from '@/core/ui/loading/Loading';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';

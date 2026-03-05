@@ -15,7 +15,7 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';

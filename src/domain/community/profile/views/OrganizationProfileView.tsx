@@ -1,4 +1,4 @@
-import { groupBy, isEmpty } from 'lodash';
+import { groupBy, isEmpty } from 'lodash-es';
 import { Box, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';

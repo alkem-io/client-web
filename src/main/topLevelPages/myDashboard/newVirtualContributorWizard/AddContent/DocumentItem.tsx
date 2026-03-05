@@ -8,7 +8,7 @@ import { DocumentValues } from './AddContentProps';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface DocumentItemProps {

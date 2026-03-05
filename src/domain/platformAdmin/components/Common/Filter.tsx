@@ -1,5 +1,5 @@
 import { GridLegacy, MenuItem, TextField } from '@mui/material';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

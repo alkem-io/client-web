@@ -4,6 +4,7 @@ query AccountResourcesInfo($accountId: UUID!) {
       id
       spaces {
         id
+        visibility
         about {
           id
           profile {

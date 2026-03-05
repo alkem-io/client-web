@@ -1,4 +1,4 @@
-query ExploreSpacesSearch($searchData: SearchInput!) {
+query ExploreSpacesSearch($searchData: SearchInput!, $skipLeads: Boolean! = false) {
   search(searchData: $searchData) {
     spaceResults {
       cursor
@@ -19,13 +19,13 @@ fragment ExploreSpacesSearch on SearchResultSpace {
   }
 }
 
-query ExploreAllSpaces {
+query ExploreAllSpaces($skipLeads: Boolean! = false) {
   exploreSpaces {
     ...ExploreSpaces
   }
 }
 
-query WelcomeSpace($spaceId: UUID!) {
+query WelcomeSpace($spaceId: UUID!, $skipLeads: Boolean! = false) {
   lookup {
     space(ID: $spaceId) {
       ...ExploreSpaces
@@ -57,7 +57,7 @@ fragment ExploreSpaces on Space {
     }
     membership {
       myMembershipStatus
-      leadUsers {
+      leadUsers @skip(if: $skipLeads) {
         id
         profile {
           id
@@ -68,7 +68,7 @@ fragment ExploreSpaces on Space {
           }
         }
       }
-      leadOrganizations {
+      leadOrganizations @skip(if: $skipLeads) {
         id
         profile {
           id

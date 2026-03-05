@@ -26,7 +26,6 @@ async function buildConfiguration() {
       console.info(`${key}: ${env[key]}`);
     }
   });
-  configuration['VITE_APP_GRAPHQL_ENDPOINT'] = configuration['VITE_APP_GRAPHQL_ENDPOINT'] || '/graphql';
   const envBasePath = path.join(__dirname, '.build', 'docker', '.env.base');
   const envBase = createWriteStream(envBasePath, { flags: 'w' });
   Object.keys(configuration).forEach(k => {

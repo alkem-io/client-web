@@ -1,6 +1,6 @@
 import Avatar from '@/core/ui/avatar/Avatar';
 import { Box, Collapse, List, ListItem, Skeleton, Tooltip, TooltipProps } from '@mui/material';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LockOutlined } from '@mui/icons-material';

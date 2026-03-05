@@ -60,7 +60,7 @@ export type Account = ActorFull & {
   license: License;
   /** A name identifier of the Account, unique within the platform. */
   nameID: Scalars['NameID']['output'];
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The Spaces within this Account. */
   spaces: Array<Space>;
@@ -522,8 +522,12 @@ export type Actor = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The credentials held by this Actor. */
+  credentials?: Maybe<Array<Credential>>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID']['output'];
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The type of Actor */
@@ -548,7 +552,7 @@ export type ActorFull = {
   id: Scalars['UUID']['output'];
   /** A name identifier of the Actor, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The type of Actor */
   type: ActorType;
@@ -3047,7 +3051,7 @@ export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload
 
 export type InAppNotificationPayloadVirtualContributor = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadVirtualContributor';
-  contributor: VirtualContributor;
+  actor: VirtualContributor;
   /** The Space related to the notification */
   space: Space;
   /** The payload type. */
@@ -5561,7 +5565,7 @@ export type Organization = ActorFull &
     metrics?: Maybe<Array<Nvp>>;
     /** A name identifier of the entity, unique within a given scope. */
     nameID: Scalars['NameID']['output'];
-    /** The profile for this Actor. Note: Not all actor types have profiles. */
+    /** The profile for this Actor. */
     profile?: Maybe<Profile>;
     /** The RoleSet for this Organization. */
     roleSet: RoleSet;
@@ -6031,6 +6035,7 @@ export type ProfileVisualArgs = {
 };
 
 export enum ProfileType {
+  Account = 'ACCOUNT',
   CalendarEvent = 'CALENDAR_EVENT',
   CalloutFraming = 'CALLOUT_FRAMING',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
@@ -6043,6 +6048,7 @@ export enum ProfileType {
   Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
+  Space = 'SPACE',
   SpaceAbout = 'SPACE_ABOUT',
   Template = 'TEMPLATE',
   User = 'USER',
@@ -6455,7 +6461,7 @@ export type RelayPaginatedSpace = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** The calculated platform access for this Space. */
   platformAccess: PlatformRolesAccess;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this Space. */
   settings: SpaceSettings;
@@ -7197,7 +7203,7 @@ export type Space = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** The calculated platform access for this Space. */
   platformAccess: PlatformRolesAccess;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this Space. */
   settings: SpaceSettings;
@@ -7361,6 +7367,7 @@ export enum SpaceVisibility {
   Active = 'ACTIVE',
   Archived = 'ARCHIVED',
   Demo = 'DEMO',
+  Inactive = 'INACTIVE',
 }
 
 export type StorageAggregator = {
@@ -8734,7 +8741,7 @@ export type User = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** The phone number for this User. */
   phone?: Maybe<Scalars['String']['output']>;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this User. */
   settings: UserSettings;
@@ -8995,7 +9002,7 @@ export type VirtualContributor = ActorFull & {
   nameID: Scalars['NameID']['output'];
   /** Platform-level settings of this Virtual Contributor, modifiable only by platform admins. */
   platformSettings: VirtualContributorPlatformSettings;
-  /** The profile for this Actor. Note: Not all actor types have profiles. */
+  /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** Prompt graph definition for this Virtual Contributor. */
   promptGraphDefinition?: Maybe<PromptGraphDefinition>;
@@ -18829,6 +18836,7 @@ export type AccountResourcesInfoQuery = {
           spaces: Array<{
             __typename?: 'Space';
             id: string;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -19617,6 +19625,7 @@ export type SpaceContributionDetailsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -19859,6 +19868,30 @@ export type UserDetailsFragment = {
               allowedValues: Array<string>;
               type: TagsetType;
             }>
+          | undefined;
+      }
+    | undefined;
+  settings: {
+    __typename?: 'UserSettings';
+    id: string;
+    homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+  };
+};
+
+export type UserDetailsLightFragment = {
+  __typename?: 'User';
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
       }
     | undefined;
@@ -20714,6 +20747,64 @@ export type EntitlementDetailsFragment = {
   isAvailable: boolean;
   dataType: LicenseEntitlementDataType;
   enabled: boolean;
+};
+
+export type CurrentUserLightQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CurrentUserLightQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+                };
+              }
+            | undefined;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
+        }
+      | undefined;
+  };
 };
 
 export type CommunityAvailableVCsQueryVariables = Exact<{
@@ -32279,9 +32370,10 @@ export type InAppNotificationReceivedSubscription = {
               };
             };
           };
-          contributor: {
+          actor: {
             __typename?: 'VirtualContributor';
             id: string;
+            type: ActorType;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -33232,9 +33324,10 @@ export type InAppNotificationsQuery = {
                   };
                 };
               };
-              contributor: {
+              actor: {
                 __typename?: 'VirtualContributor';
                 id: string;
+                type: ActorType;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -34191,9 +34284,10 @@ export type InAppNotificationAllTypesFragment = {
             };
           };
         };
-        contributor: {
+        actor: {
           __typename?: 'VirtualContributor';
           id: string;
+          type: ActorType;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -34751,9 +34845,10 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
       };
     };
   };
-  contributor: {
+  actor: {
     __typename?: 'VirtualContributor';
     id: string;
+    type: ActorType;
     profile?:
       | {
           __typename?: 'Profile';
@@ -37167,6 +37262,7 @@ export type DashboardSpaceMembershipFragment = {
 
 export type ExploreSpacesSearchQueryVariables = Exact<{
   searchData: SearchInput;
+  skipLeads?: Scalars['Boolean']['input'];
 }>;
 
 export type ExploreSpacesSearchQuery = {
@@ -37224,7 +37320,7 @@ export type ExploreSpacesSearchQuery = {
                 membership: {
                   __typename?: 'SpaceAboutMembership';
                   myMembershipStatus?: CommunityMembershipStatus | undefined;
-                  leadUsers: Array<{
+                  leadUsers?: Array<{
                     __typename?: 'User';
                     id: string;
                     profile?:
@@ -37245,7 +37341,7 @@ export type ExploreSpacesSearchQuery = {
                         }
                       | undefined;
                   }>;
-                  leadOrganizations: Array<{
+                  leadOrganizations?: Array<{
                     __typename?: 'Organization';
                     id: string;
                     profile?:
@@ -37304,7 +37400,7 @@ export type ExploreSpacesSearchFragment = {
       membership: {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
-        leadUsers: Array<{
+        leadUsers?: Array<{
           __typename?: 'User';
           id: string;
           profile?:
@@ -37325,7 +37421,7 @@ export type ExploreSpacesSearchFragment = {
               }
             | undefined;
         }>;
-        leadOrganizations: Array<{
+        leadOrganizations?: Array<{
           __typename?: 'Organization';
           id: string;
           profile?:
@@ -37351,7 +37447,9 @@ export type ExploreSpacesSearchFragment = {
   };
 };
 
-export type ExploreAllSpacesQueryVariables = Exact<{ [key: string]: never }>;
+export type ExploreAllSpacesQueryVariables = Exact<{
+  skipLeads?: Scalars['Boolean']['input'];
+}>;
 
 export type ExploreAllSpacesQuery = {
   __typename?: 'Query';
@@ -37380,7 +37478,7 @@ export type ExploreAllSpacesQuery = {
       membership: {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
-        leadUsers: Array<{
+        leadUsers?: Array<{
           __typename?: 'User';
           id: string;
           profile?:
@@ -37401,7 +37499,7 @@ export type ExploreAllSpacesQuery = {
               }
             | undefined;
         }>;
-        leadOrganizations: Array<{
+        leadOrganizations?: Array<{
           __typename?: 'Organization';
           id: string;
           profile?:
@@ -37429,6 +37527,7 @@ export type ExploreAllSpacesQuery = {
 
 export type WelcomeSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
+  skipLeads?: Scalars['Boolean']['input'];
 }>;
 
 export type WelcomeSpaceQuery = {
@@ -37473,7 +37572,7 @@ export type WelcomeSpaceQuery = {
             membership: {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-              leadUsers: Array<{
+              leadUsers?: Array<{
                 __typename?: 'User';
                 id: string;
                 profile?:
@@ -37494,7 +37593,7 @@ export type WelcomeSpaceQuery = {
                     }
                   | undefined;
               }>;
-              leadOrganizations: Array<{
+              leadOrganizations?: Array<{
                 __typename?: 'Organization';
                 id: string;
                 profile?:
@@ -37547,7 +37646,7 @@ export type ExploreSpacesFragment = {
     membership: {
       __typename?: 'SpaceAboutMembership';
       myMembershipStatus?: CommunityMembershipStatus | undefined;
-      leadUsers: Array<{
+      leadUsers?: Array<{
         __typename?: 'User';
         id: string;
         profile?:
@@ -37568,7 +37667,7 @@ export type ExploreSpacesFragment = {
             }
           | undefined;
       }>;
-      leadOrganizations: Array<{
+      leadOrganizations?: Array<{
         __typename?: 'Organization';
         id: string;
         profile?:
@@ -39281,29 +39380,7 @@ export type LatestContributionsSpacesFlatQuery = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            cardBanner?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
         };
       };
     }>;
@@ -40020,6 +40097,7 @@ export type HomeSpaceLookupQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             isContentPublic: boolean;
@@ -40090,6 +40168,7 @@ export type RecentSpacesQuery = {
         __typename: 'Space';
         id: string;
         level: SpaceLevel;
+        visibility: SpaceVisibility;
         about: {
           __typename?: 'SpaceAbout';
           isContentPublic: boolean;

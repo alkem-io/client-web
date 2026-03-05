@@ -2,7 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { FormHelperText, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
-import { without } from 'lodash';
+import { without } from 'lodash-es';
 import { useMemo, useState } from 'react';
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';

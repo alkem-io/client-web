@@ -6,7 +6,7 @@ import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/h
 import { useGuestWhiteboardAccess } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestWhiteboardAccess';
 import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
 import { setGuestWhiteboardUrl } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
-import { useCurrentUserFullQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
 import WhiteboardDialog, {
   WhiteboardDetails,
@@ -34,7 +34,7 @@ const PublicWhiteboardPageContent: FC = () => {
 
   // Check if user is authenticated
   // Use errorPolicy 'ignore' and context flag to prevent error toaster on public page
-  const { data: currentUser, loading: userLoading } = useCurrentUserFullQuery({
+  const { data: currentUser, loading: userLoading } = useCurrentUserLightQuery({
     errorPolicy: 'ignore',
     context: {
       skipGlobalErrorHandler: true,

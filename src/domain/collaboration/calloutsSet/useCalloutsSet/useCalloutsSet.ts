@@ -9,7 +9,7 @@ import {
   CalloutsOnCalloutsSetUsingClassificationQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
