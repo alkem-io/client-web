@@ -438,7 +438,7 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   /** The community that was joined. */
   community: Community;
   /** The Contributor that joined the Community. */
-  contributor: Actor;
+  actor: Actor;
   /** The timestamp for the Activity. */
   createdDate: Scalars['DateTime']['output'];
   /** The text details for this Activity. */
@@ -665,7 +665,7 @@ export type Application = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The User for this Application. */
-  contributor: Actor;
+  actor: Actor;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -2807,7 +2807,7 @@ export type ISearchResults = {
   /** The search results for contributions (Posts, Whiteboards, Memos). */
   contributionResults: ISearchCategoryResult;
   /** The search results for contributors (Users, Organizations). */
-  contributorResults: ISearchCategoryResult;
+  actorResults: ISearchCategoryResult;
   /** The search results callout framings (Whiteboards, Memos as additional content). */
   framingResults: ISearchCategoryResult;
   /** The search results for Spaces / Subspaces. */
@@ -3226,7 +3226,7 @@ export type Invitation = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The Actor who is invited. */
-  contributor: Actor;
+  actor: Actor;
   /** The User who triggered the invitation. */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
@@ -3258,7 +3258,7 @@ export type InviteForEntryRoleOnRoleSetInput = {
   /** Additional roles to assign in addition to the entry Role. */
   extraRoles: Array<RoleName>;
   /** The identifiers for the contributors being invited. */
-  invitedContributorIDs: Array<Scalars['UUID']['input']>;
+  invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
   /** The welcome message to send */
@@ -9708,7 +9708,7 @@ export type InvitationStateEventMutation = {
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
-  invitedContributorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+  invitedActorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
   extraRoles: Array<RoleName> | RoleName;
@@ -9723,7 +9723,7 @@ export type InviteForEntryRoleOnRoleSetMutation = {
       | {
           __typename?: 'Invitation';
           id: string;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
@@ -9782,7 +9782,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            contributor: {
+            actor: {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
@@ -9796,7 +9796,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            contributor: {
+            actor: {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
@@ -9821,7 +9821,7 @@ export type AdminCommunityApplicationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
@@ -9836,7 +9836,7 @@ export type AdminCommunityInvitationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
@@ -9973,7 +9973,7 @@ export type UserPendingMembershipsQuery = {
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
-        contributor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: { __typename?: 'Actor'; id: string; type: ActorType };
       };
     }>;
   };
@@ -11225,7 +11225,7 @@ export type UpdateInnovationFlowStatesSortOrderMutation = {
 export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   actorType: ActorType;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     profile?:
@@ -11568,7 +11568,7 @@ export type ActivityCreatedSubscription = {
           createdDate: Date;
           type: ActivityEventType;
           actorType: ActorType;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -11772,7 +11772,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   createdDate: Date;
   type: ActivityEventType;
   actorType: ActorType;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     profile?:
@@ -12598,7 +12598,7 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        contributor: {
+        actor: {
           __typename?: 'Actor';
           id: string;
           profile?:
@@ -20734,7 +20734,7 @@ export type InvitationDataFragment = {
     state: string;
     createdDate: Date;
     createdBy?: { __typename?: 'User'; id: string } | undefined;
-    contributor: { __typename?: 'Actor'; id: string; type: ActorType };
+    actor: { __typename?: 'Actor'; id: string; type: ActorType };
   };
 };
 
@@ -21703,7 +21703,7 @@ export type VcMembershipsQuery = {
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
-        contributor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: { __typename?: 'Actor'; id: string; type: ActorType };
       };
     }>;
   };
@@ -26325,7 +26325,7 @@ export type CommunityApplicationQuery = {
           updatedDate: Date;
           state: string;
           nextEvents: Array<string>;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -26371,7 +26371,7 @@ export type CommunityInvitationQuery = {
           createdDate: Date;
           updatedDate: Date;
           welcomeMessage?: string | undefined;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             type: ActorType;
             id: string;
@@ -32063,7 +32063,7 @@ export type InAppNotificationReceivedSubscription = {
             __typename?: 'Application';
             id: string;
             createdDate: Date;
-            contributor: {
+            actor: {
               __typename?: 'Actor';
               id: string;
               profile?:
@@ -33017,7 +33017,7 @@ export type InAppNotificationsQuery = {
                 __typename?: 'Application';
                 id: string;
                 createdDate: Date;
-                contributor: {
+                actor: {
                   __typename?: 'Actor';
                   id: string;
                   profile?:
@@ -33977,7 +33977,7 @@ export type InAppNotificationAllTypesFragment = {
           __typename?: 'Application';
           id: string;
           createdDate: Date;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -34635,7 +34635,7 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
     __typename?: 'Application';
     id: string;
     createdDate: Date;
-    contributor: {
+    actor: {
       __typename?: 'Actor';
       id: string;
       profile?:
@@ -36052,7 +36052,7 @@ export type SearchQuery = {
           }
       >;
     };
-    contributorResults: {
+    actorResults: {
       __typename?: 'ISearchCategoryResult';
       cursor?: string | undefined;
       total: number;
@@ -37752,7 +37752,7 @@ export type PendingInvitationsQuery = {
         welcomeMessage?: string | undefined;
         state: string;
         createdDate: Date;
-        contributor: { __typename?: 'Actor'; type: ActorType };
+        actor: { __typename?: 'Actor'; type: ActorType };
         createdBy?: { __typename?: 'User'; id: string } | undefined;
       };
     }>;
@@ -38538,7 +38538,7 @@ export type LatestContributionsQuery = {
                 }
               | undefined;
           };
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -39232,7 +39232,7 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        contributor: {
+        actor: {
           __typename?: 'Actor';
           id: string;
           profile?:

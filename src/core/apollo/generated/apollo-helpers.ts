@@ -1594,7 +1594,7 @@ export type ISearchCategoryResultFieldPolicy = {
 export type ISearchResultsKeySpecifier = (
   | 'calloutResults'
   | 'contributionResults'
-  | 'contributorResults'
+  | 'actorResults'
   | 'framingResults'
   | 'spaceResults'
   | ISearchResultsKeySpecifier
@@ -1602,7 +1602,7 @@ export type ISearchResultsKeySpecifier = (
 export type ISearchResultsFieldPolicy = {
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  actorResults?: FieldPolicy<any> | FieldReadFunction<any>;
   framingResults?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
 };
