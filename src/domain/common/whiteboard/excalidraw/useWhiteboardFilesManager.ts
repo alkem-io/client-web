@@ -110,6 +110,12 @@ const useWhiteboardFilesManager = ({
   const downloader = useRef(new FileDownloader()).current;
   const semaphore = useRef(new Semaphore(1)).current;
 
+  // Clear failed uploads when storageBucketId changes so files aren't permanently blocked
+  // after switching whiteboards (each whiteboard has its own storage bucket)
+  useEffect(() => {
+    uploader.clearAllFailures();
+  }, [storageBucketId, uploader]);
+
   // Force re-render when cache changes
   const [cacheVersion, setCacheVersion] = useState(0);
   useEffect(() => {
@@ -255,11 +261,23 @@ const useWhiteboardFilesManager = ({
 
       // Upload file if it has dataURL and we have storage
       if (file.dataURL && storageBucketId) {
-        const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
-        const { url } = await uploader.upload(fileObject);
-        const result = { ...file, url } as BinaryFileDataWithUrl;
-        cache.set(file.id, result);
-        return result;
+        // Skip files that have already permanently failed (e.g. permission denied)
+        if (uploader.getFailedUploads().some(f => f.fileId === file.id)) {
+          return undefined;
+        }
+        try {
+          const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
+          const { url } = await uploader.upload(fileObject);
+          const result = { ...file, url } as BinaryFileDataWithUrl;
+          cache.set(file.id, result);
+          return result;
+        } catch (e) {
+          error(
+            `Failed to upload file ${file.id}: ${e instanceof Error ? e.message : 'Unknown error'}`,
+            { category: TagCategoryValues.WHITEBOARD, label: 'convert-upload-failed' }
+          );
+          return undefined;
+        }
       }
 
       // Cannot convert
@@ -390,7 +408,12 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, uploadingFile, guestName]
+    // Note: uploadingFile is intentionally excluded. Including it caused an infinite re-render loop
+    // when uploads fail (e.g. permission denied): failed upload toggles loading state → new filesManager
+    // reference → component re-render → onChange fires → upload retry → loop. The loading.uploadingFile
+    // value in the returned object will be stale (captured at memoization time); consumers needing
+    // real-time upload status should use the Apollo mutation state directly.
+    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, guestName]
   );
 };
 
