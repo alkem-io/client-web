@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Extensions } from '@tiptap/core';
-import { TiptapCollabProvider, onStatelessParameters } from '@hocuspocus/provider';
+import { TiptapCollabProvider, TiptapCollabProviderWebsocket, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCaret from '@tiptap/extension-collaboration-caret';
@@ -59,7 +59,11 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     return `${normalizedBase}${normalizedPath}`;
   };
 
-  // Create provider synchronously so extensions are available before editor initialization
+  // Stable ref for notify to avoid triggering effect cleanup on identity changes
+  const notifyRef = useRef(notify);
+  notifyRef.current = notify;
+
+  // Create provider without auto-connecting; connection is started in useEffect
   const provider = useMemo(() => {
     const MEMO_SERVICE_URL = getCollaborationServiceUrl();
 
@@ -67,14 +71,19 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       return null;
     }
 
-    return new TiptapCollabProvider({
+    const websocketProvider = new TiptapCollabProviderWebsocket({
       baseUrl: MEMO_SERVICE_URL,
+      connect: false,
+    });
+
+    return new TiptapCollabProvider({
+      websocketProvider,
       name: collaborationId,
       document: ydoc,
     });
   }, [collaborationId, ydoc]);
 
-  // Wire up provider events in effect
+  // Wire up provider events and connect
   useEffect(() => {
     if (!provider) return;
 
@@ -98,7 +107,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
 
       if (isStatelessSaveMessage(decodedMessage)) {
         if (isStatelessSaveErrorMessage(decodedMessage)) {
-          notify('Unable to save changes', 'warning');
+          notifyRef.current('Unable to save changes', 'warning');
         } else {
           setLastSaveTime(new Date());
         }
@@ -119,10 +128,13 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     provider.on('authenticationFailed', authenticationFailedHandler);
     provider.on('stateless', statelessEventHandler);
 
+    // Start the WebSocket connection now that event listeners are in place
+    provider.connect();
+
     return () => {
       provider.destroy();
     };
-  }, [provider, notify]);
+  }, [provider]);
 
   useEffect(() => {
     setReadOnlyState({
