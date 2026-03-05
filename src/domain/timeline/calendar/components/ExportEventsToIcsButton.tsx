@@ -3,6 +3,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
+import { escapeIcsText, foldLine, formatDateTimeUtc } from '@/domain/timeline/calendar/utils/icsUtils';
 
 type ExportEventsToIcsButtonProps = {
   events: {
@@ -37,29 +38,18 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
       const startDate = dayjs(event.startDate);
       const endDate = startDate.add(event.durationMinutes ?? 60, 'minute');
 
-      const formatDateTimeUtc = (date: dayjs.Dayjs) =>
-        date
-          .toDate()
-          .toISOString()
-          .replace(/[-:]/g, '')
-          .replace(/\.\d{3}/, '');
-
-      const escapeText = (text: string) => {
-        return text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
-      };
-
       lines.push(
         'BEGIN:VEVENT',
         `UID:${event.id}@alkemio.org`,
         `DTSTAMP:${formatDateTimeUtc(dayjs())}`,
         `DTSTART:${formatDateTimeUtc(startDate)}`,
         `DTEND:${formatDateTimeUtc(endDate)}`,
-        `SUMMARY:${escapeText(event.profile.displayName)}`
+        `SUMMARY:${escapeIcsText(event.profile.displayName)}`
       );
 
       if (event.profile.description) {
         const plainTextDescription = markdownToPlainText(event.profile.description);
-        lines.push(`DESCRIPTION:${escapeText(plainTextDescription)}`);
+        lines.push(`DESCRIPTION:${escapeIcsText(plainTextDescription)}`);
       }
 
       if (event.profile.url) {
@@ -71,7 +61,7 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
 
     lines.push('END:VCALENDAR');
 
-    return lines.join('\r\n');
+    return lines.map(foldLine).join('\r\n');
   };
 
   const handleExport = () => {
