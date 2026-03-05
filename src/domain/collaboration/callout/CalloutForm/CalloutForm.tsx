@@ -1,5 +1,5 @@
 import {
-  CalloutAllowedContributors,
+  CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
@@ -82,8 +82,8 @@ export const calloutValidationSchema = yup.object().shape({
         .oneOf(['none', ...Object.values(CalloutContributionType)].filter(value => typeof value === 'string'))
         .required(),
       canAddContributions: yup
-        .mixed<CalloutAllowedContributors>()
-        .oneOf(Object.values(CalloutAllowedContributors).filter(value => typeof value === 'string'))
+        .mixed<CalloutAllowedActors>()
+        .oneOf(Object.values(CalloutAllowedActors).filter(value => typeof value === 'string'))
         .required(),
       commentsEnabled: yup.boolean().required(),
     }),

@@ -1,5 +1,5 @@
 import {
-  CalloutAllowedContributors,
+  CalloutAllowedActors,
   CalloutFramingType,
   CalloutVisibility,
   VisualType,
@@ -58,7 +58,7 @@ export interface CalloutFormSubmittedValues {
     contribution: {
       enabled: boolean;
       allowedTypes: CalloutStructuredResponseType;
-      canAddContributions: CalloutAllowedContributors;
+      canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
     framing: {
@@ -94,7 +94,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     contribution: {
       enabled: true,
       allowedTypes: 'none' as CalloutStructuredResponseType,
-      canAddContributions: CalloutAllowedContributors.Members,
+      canAddContributions: CalloutAllowedActors.Members,
       commentsEnabled: true,
     },
     framing: {
