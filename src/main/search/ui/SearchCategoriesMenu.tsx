@@ -20,7 +20,7 @@ interface SearchCategoriesMenuProps {
         calloutResults: SearchResultsCount;
         framingResults: SearchResultsCount;
         contributionResults: SearchResultsCount;
-        actorResults: SearchResultsCount;
+        contributorResults: SearchResultsCount;
       }
     | undefined;
 }
@@ -68,10 +68,10 @@ const SearchCategoriesMenu = ({ results }: SearchCategoriesMenuProps) => {
         </Caption>
       </SearchCategoriesMenuItem>
 
-      <SearchCategoriesMenuItem href="#contributors" disabled={!(results?.actorResults?.results?.length ?? 0)}>
+      <SearchCategoriesMenuItem href="#contributors" disabled={!(results?.contributorResults?.results?.length ?? 0)}>
         <GroupOutlined />
         <Caption>
-          {t('pages.search.filter.results.contributor' /*, { count: results?.actorResults?.total }*/)}
+          {t('pages.search.filter.results.contributor' /*, { count: results?.contributorResults?.total }*/)}
         </Caption>
       </SearchCategoriesMenuItem>
     </Gutters>

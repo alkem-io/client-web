@@ -1,5 +1,5 @@
 import {
-  CalloutAllowedActors,
+  CalloutAllowedContributors,
   CalloutFramingType,
   CalloutVisibility,
   TemplateType,
@@ -57,7 +57,7 @@ export const getNewTemplate = (
               enabled: data?.callout?.settings?.contribution?.enabled ?? true,
               allowedTypes: data?.callout?.settings?.contribution?.allowedTypes ?? [],
               canAddContributions:
-                data?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedActors.Members,
+                data?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedContributors.Members,
               commentsEnabled: data?.callout?.settings?.contribution?.commentsEnabled ?? true,
             },
             framing: {

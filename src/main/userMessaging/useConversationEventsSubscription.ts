@@ -28,6 +28,13 @@ type MessageRemovedEvent = NonNullable<
 type ReadReceiptUpdatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['readReceiptUpdated']
 >;
+type ConversationDeletedEvent = NonNullable<
+  NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationDeleted']
+>;
+type MemberAddedEvent = NonNullable<NonNullable<ConversationEventsSubscription['conversationEvents']>['memberAdded']>;
+type MemberRemovedEvent = NonNullable<
+  NonNullable<ConversationEventsSubscription['conversationEvents']>['memberRemoved']
+>;
 
 // Fragment for reading lastMessage from cache
 const RoomLastMessageFragment = gql`
@@ -81,18 +88,17 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
   const handleConversationCreated = useCallback(
     (event: ConversationCreatedEvent) => {
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-        if (!existing?.me?.conversations?.users) return existing;
+        if (!existing?.me?.conversations?.conversations) return existing;
 
         const conversation = event.conversation;
         const room = conversation.room;
-        const user = conversation.user;
 
-        if (!room || !user) {
+        if (!room) {
           return existing;
         }
 
         // Check if already exists (idempotency)
-        if (existing.me.conversations.users.some(c => c.id === conversation.id)) {
+        if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
           return existing;
         }
 
@@ -103,15 +109,12 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           room: {
             __typename: 'Room' as const,
             id: room.id,
+            displayName: room.displayName,
             unreadCount: room.unreadCount,
             messagesCount: room.messagesCount,
             lastMessage: room.lastMessage,
           },
-          user: {
-            __typename: 'User' as const,
-            id: user.id,
-            profile: user.profile,
-          },
+          members: conversation.members,
         };
 
         return {
@@ -120,13 +123,103 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             ...existing.me,
             conversations: {
               ...existing.me.conversations,
-              users: [newConversation, ...existing.me.conversations.users],
+              conversations: [newConversation, ...existing.me.conversations.conversations],
             },
           },
         };
       });
     },
     [client]
+  );
+
+  const handleConversationDeleted = useCallback(
+    (event: ConversationDeletedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversationID),
+            },
+          },
+        };
+      });
+    },
+    [client]
+  );
+
+  const handleMemberAdded = useCallback(
+    (event: MemberAddedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                return {
+                  ...c,
+                  room: c.room
+                    ? { ...c.room, displayName: event.conversation.room?.displayName ?? c.room.displayName }
+                    : c.room,
+                  members: event.conversation.members,
+                };
+              }),
+            },
+          },
+        };
+      });
+    },
+    [client]
+  );
+
+  const handleMemberRemoved = useCallback(
+    (event: MemberRemovedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+
+        // If current user was removed, remove the conversation entirely
+        if (event.removedMemberID === currentUserId) {
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversation.id),
+              },
+            },
+          };
+        }
+
+        // Otherwise update the members list
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                return {
+                  ...c,
+                  members: event.conversation.members,
+                };
+              }),
+            },
+          },
+        };
+      });
+    },
+    [client, currentUserId]
   );
 
   const handleMessageReceived = useCallback(
@@ -190,7 +283,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       const conversationsData = client.cache.readQuery<UserConversationsQuery>({
         query: UserConversationsDocument,
       });
-      const conversation = conversationsData?.me?.conversations?.users?.find(c => c.room?.id === event.roomId);
+      const conversation = conversationsData?.me?.conversations?.conversations?.find(c => c.room?.id === event.roomId);
 
       if (conversation) {
         client.cache.updateQuery<ConversationMessagesQuery>(
@@ -263,7 +356,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       const conversationsData = client.cache.readQuery<UserConversationsQuery>({
         query: UserConversationsDocument,
       });
-      const conversation = conversationsData?.me?.conversations?.users?.find(c => c.room?.id === event.roomId);
+      const conversation = conversationsData?.me?.conversations?.conversations?.find(c => c.room?.id === event.roomId);
 
       if (conversation) {
         client.cache.updateQuery<ConversationMessagesQuery>(
@@ -361,6 +454,21 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         case ConversationEventType.ConversationCreated:
           if (event.conversationCreated) {
             handleConversationCreated(event.conversationCreated);
+          }
+          break;
+        case ConversationEventType.ConversationDeleted:
+          if (event.conversationDeleted) {
+            handleConversationDeleted(event.conversationDeleted);
+          }
+          break;
+        case ConversationEventType.MemberAdded:
+          if (event.memberAdded) {
+            handleMemberAdded(event.memberAdded);
+          }
+          break;
+        case ConversationEventType.MemberRemoved:
+          if (event.memberRemoved) {
+            handleMemberRemoved(event.memberRemoved);
           }
           break;
         case ConversationEventType.MessageReceived:

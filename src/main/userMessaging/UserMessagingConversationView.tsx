@@ -1,5 +1,15 @@
-import { Box, Typography, IconButton } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+} from '@mui/material';
+import { ArrowBack, Close, MoreVert } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -11,7 +21,16 @@ import Loading from '@/core/ui/loading/Loading';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { UserConversation } from './useUserConversations';
 import { ConversationMessage } from './useConversationMessages';
-import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSendMessageToRoomMutation,
+  useMarkMessageAsReadMutation,
+  useLeaveConversationMutation,
+  UserConversationsDocument,
+} from '@/core/apollo/generated/apollo-hooks';
+import { UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
+import { useApolloClient } from '@apollo/client';
+import { GroupChatManagementDialog } from './GroupChatManagementDialog';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useRef, useEffect, useCallback, useLayoutEffect, useState } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
@@ -183,6 +202,8 @@ interface UserMessagingConversationViewProps {
   messagesLoading: boolean;
   onBack?: () => void;
   showBackButton?: boolean;
+  onLeaveConversation?: () => void;
+  onClose?: () => void;
 }
 
 export const UserMessagingConversationView = ({
@@ -191,10 +212,44 @@ export const UserMessagingConversationView = ({
   messagesLoading,
   onBack,
   showBackButton = false,
+  onLeaveConversation,
+  onClose,
 }: UserMessagingConversationViewProps) => {
   const { t } = useTranslation();
   const { userModel } = useCurrentUserContext();
+  const client = useApolloClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Group menu state
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
+  const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
+  const [leaveConversation] = useLeaveConversationMutation();
+
+  const isGroup = (conversation?.members.length ?? 0) > 2;
+
+  const handleLeaveGroup = async () => {
+    if (!conversation) return;
+    await leaveConversation({
+      variables: { leaveData: { conversationID: conversation.id } },
+    });
+    // Remove from cache
+    client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+      if (!existing?.me?.conversations?.conversations) return existing;
+      return {
+        ...existing,
+        me: {
+          ...existing.me,
+          conversations: {
+            ...existing.me.conversations,
+            conversations: existing.me.conversations.conversations.filter(c => c.id !== conversation.id),
+          },
+        },
+      };
+    });
+    setIsLeaveConfirmOpen(false);
+    onLeaveConversation?.();
+  };
 
   const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
   const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
@@ -271,11 +326,20 @@ export const UserMessagingConversationView = ({
 
   if (!conversation) {
     return (
-      <Gutters alignItems="center" justifyContent="center" height="100%">
-        <Typography variant="body1" color="neutral.main">
-          {t('components.userMessaging.selectConversation' as const)}
-        </Typography>
-      </Gutters>
+      <Box display="flex" flexDirection="column" height="100%">
+        {onClose && (
+          <Box display="flex" justifyContent="flex-end" padding={gutters(0.5)} paddingX={gutters()}>
+            <IconButton size="small" onClick={onClose} aria-label={t('buttons.close')}>
+              <Close />
+            </IconButton>
+          </Box>
+        )}
+        <Gutters alignItems="center" justifyContent="center" flex={1}>
+          <Typography variant="body1" color="neutral.main">
+            {t('components.userMessaging.selectConversation' as const)}
+          </Typography>
+        </Gutters>
+      </Box>
     );
   }
 
@@ -297,15 +361,86 @@ export const UserMessagingConversationView = ({
           </IconButton>
         )}
         <Avatar
-          src={conversation.user.avatarUri}
-          alt={conversation.user.displayName}
+          src={conversation.avatarUri}
+          alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
           size="medium"
           sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
         />
-        <Typography variant="h4" fontWeight={500}>
-          {conversation.user.displayName}
-        </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight={500}>
+            {conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
+          </Typography>
+          {isGroup && (
+            <Caption color="neutral.light">
+              {t('components.userMessaging.membersCount' as const, { count: conversation.members.length })}
+            </Caption>
+          )}
+        </Box>
+        <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {isGroup && (
+            <>
+              <IconButton
+                size="small"
+                onClick={e => setMenuAnchorEl(e.currentTarget)}
+                aria-label={t('components.userMessaging.manageGroup' as const)}
+              >
+                <MoreVert />
+              </IconButton>
+              <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={() => setMenuAnchorEl(null)}>
+                <MenuItem
+                  onClick={() => {
+                    setMenuAnchorEl(null);
+                    setIsManageDialogOpen(true);
+                  }}
+                >
+                  {t('components.userMessaging.manageGroup' as const)}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setMenuAnchorEl(null);
+                    setIsLeaveConfirmOpen(true);
+                  }}
+                >
+                  {t('components.userMessaging.leaveGroup' as const)}
+                </MenuItem>
+              </Menu>
+            </>
+          )}
+          {onClose && (
+            <IconButton size="small" onClick={onClose} aria-label={t('buttons.close')}>
+              <Close />
+            </IconButton>
+          )}
+        </Box>
       </Box>
+
+      {/* Group management dialog */}
+      {isGroup && (
+        <GroupChatManagementDialog
+          open={isManageDialogOpen}
+          onClose={() => setIsManageDialogOpen(false)}
+          mode="manage"
+          conversationId={conversation.id}
+          currentMembers={conversation.members}
+        />
+      )}
+
+      {/* Leave confirmation dialog */}
+      <Dialog open={isLeaveConfirmOpen} onClose={() => setIsLeaveConfirmOpen(false)}>
+        <DialogHeader
+          title={t('components.userMessaging.leaveGroupConfirmTitle' as const)}
+          onClose={() => setIsLeaveConfirmOpen(false)}
+        />
+        <DialogContent>
+          <Typography>{t('components.userMessaging.leaveGroupConfirmMessage' as const)}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsLeaveConfirmOpen(false)}>{t('buttons.cancel')}</Button>
+          <Button variant="contained" color="error" onClick={handleLeaveGroup}>
+            {t('components.userMessaging.leaveGroup' as const)}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Messages */}
       <Box

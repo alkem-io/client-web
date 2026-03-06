@@ -9,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import { UserFilterInput, ConversationCreationType } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   ContributorItem,
@@ -23,6 +23,7 @@ interface NewMessageDialogProps {
   open: boolean;
   onClose: () => void;
   onConversationCreated: (conversationId: string, roomId: string) => void;
+  onStartGroupChat?: () => void;
 }
 
 interface SelectedUser {
@@ -33,7 +34,7 @@ interface SelectedUser {
   country?: string;
 }
 
-export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMessageDialogProps) => {
+export const NewMessageDialog = ({ open, onClose, onConversationCreated, onStartGroupChat }: NewMessageDialogProps) => {
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
@@ -91,7 +92,8 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
     const result = await createConversation({
       variables: {
         conversationData: {
-          userID: selectedUser.id,
+          memberIDs: [selectedUser.id],
+          type: ConversationCreationType.Direct,
         },
       },
     });
@@ -185,7 +187,14 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
           </Box>
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ justifyContent: 'space-between' }}>
+        {onStartGroupChat ? (
+          <Button variant="text" onClick={onStartGroupChat}>
+            {t('components.userMessaging.startGroupChat' as TranslationKey)}
+          </Button>
+        ) : (
+          <Box />
+        )}
         <Button variant="contained" onClick={handleCreateChat} disabled={!selectedUser || isCreating}>
           {t('components.userMessaging.createChat' as TranslationKey)}
         </Button>

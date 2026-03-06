@@ -13,6 +13,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -48,7 +49,9 @@ export const UserMessagingChatList = ({
   const filteredConversations = !searchTerm.trim()
     ? conversations
     : conversations.filter(conversation =>
-        conversation.user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+        (conversation.displayName ?? conversation.members.map(m => m.displayName).join(', '))
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       );
 
   const handleClearSearch = () => {
@@ -161,18 +164,33 @@ export const UserMessagingChatList = ({
             }}
           >
             <ListItemAvatar sx={{ minWidth: 48 }}>
-              <Avatar
-                src={conversation.user.avatarUri}
-                alt={conversation.user.displayName}
-                size="medium"
-                sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-              />
+              <Box position="relative" display="inline-flex">
+                <Avatar
+                  src={conversation.avatarUri}
+                  alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
+                  size="medium"
+                  sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+                />
+                {conversation.members.length > 2 && (
+                  <GroupOutlinedIcon
+                    sx={{
+                      position: 'absolute',
+                      bottom: -2,
+                      right: -4,
+                      fontSize: 14,
+                      backgroundColor: 'background.paper',
+                      borderRadius: '50%',
+                      padding: '1px',
+                    }}
+                  />
+                )}
+              </Box>
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
-                    {conversation.user.displayName}
+                    {conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
                   </Typography>
                   <Box
                     display="flex"

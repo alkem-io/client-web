@@ -7,7 +7,7 @@ export type InvitationModel = {
   state: string;
   nextEvents: string[];
   contributorType: ActorType;
-  actor: {
+  contributor: {
     id: string;
     profile?: {
       id: string;

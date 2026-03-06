@@ -1,6 +1,6 @@
 import {
   AuthorizationPrivilege,
-  CalloutAllowedActors,
+  CalloutAllowedContributors,
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
@@ -24,7 +24,7 @@ const useCalloutCollaborationPermissions = ({ callout, contributionType }: Colla
     if (
       !callout ||
       !callout.settings.contribution.enabled ||
-      callout.settings.contribution.canAddContributions.includes(CalloutAllowedActors.None)
+      callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.None)
     ) {
       return false;
     }
@@ -32,7 +32,7 @@ const useCalloutCollaborationPermissions = ({ callout, contributionType }: Colla
     const calloutPrivileges = callout.authorization?.myPrivileges ?? [];
     const requiredPrivileges = [AuthorizationPrivilege.Contribute];
 
-    if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedActors.Admins)) {
+    if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins)) {
       requiredPrivileges.push(AuthorizationPrivilege.Update);
     }
 

@@ -4,7 +4,7 @@ type InvitationResultModel = {
   type: RoleSetInvitationResultType;
   invitation?: {
     id: string;
-    actor: {
+    contributor: {
       id: string;
       profile?: { displayName: string };
     };

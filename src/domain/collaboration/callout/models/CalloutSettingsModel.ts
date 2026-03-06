@@ -1,5 +1,5 @@
 import {
-  CalloutAllowedActors,
+  CalloutAllowedContributors,
   CalloutContributionType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -8,7 +8,7 @@ export interface CalloutSettingsModelFull {
   contribution: {
     enabled: boolean;
     allowedTypes: CalloutContributionType[];
-    canAddContributions: CalloutAllowedActors;
+    canAddContributions: CalloutAllowedContributors;
     commentsEnabled: boolean;
   };
   framing: {
@@ -21,7 +21,7 @@ export const DefaultCalloutSettings = {
   contribution: {
     enabled: true,
     allowedTypes: [],
-    canAddContributions: CalloutAllowedActors.Members,
+    canAddContributions: CalloutAllowedContributors.Members,
     commentsEnabled: true,
   },
   framing: {

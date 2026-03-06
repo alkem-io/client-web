@@ -8,7 +8,7 @@ const UserConversationsUnreadCountDocument = gql`
   query UserConversationsUnreadCount {
     me {
       conversations {
-        users {
+        conversations {
           id
           room {
             id
@@ -23,7 +23,7 @@ const UserConversationsUnreadCountDocument = gql`
 interface UserConversationsUnreadCountData {
   me?: {
     conversations?: {
-      users?: {
+      conversations?: {
         id: string;
         room?: {
           id: string;
@@ -50,9 +50,9 @@ export const useUnreadConversationsCount = () => {
   });
 
   const totalUnreadCount = useMemo(() => {
-    if (!data?.me?.conversations?.users) return 0;
-    return data.me.conversations.users.filter(conv => conv.room && conv.room.unreadCount > 0).length;
-  }, [data?.me?.conversations?.users]);
+    if (!data?.me?.conversations?.conversations) return 0;
+    return data.me.conversations.conversations.filter(conv => conv.room && conv.room.unreadCount > 0).length;
+  }, [data?.me?.conversations?.conversations]);
 
   return totalUnreadCount;
 };

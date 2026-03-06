@@ -77,7 +77,7 @@ const InviteUsersDialog = ({
 
   const [onSubmit, invitingUsers] = useLoadingState(async (data: InviteUsersData) => {
     const requiredRoleSetId = ensurePresence(roleSetId);
-    const invitedActorIds = compact(
+    const invitedContributorIds = compact(
       data.selectedContributors.map(contributor =>
         contributor.type === ContributorSelectorType.User ? contributor.id : undefined
       )
@@ -89,7 +89,7 @@ const InviteUsersDialog = ({
     );
     const result = await inviteContributorsOnRoleSet({
       roleSetId: requiredRoleSetId,
-      invitedActorIds,
+      invitedContributorIds,
       invitedUserEmails,
       welcomeMessage: data.welcomeMessage,
       extraRoles: data.extraRoles,

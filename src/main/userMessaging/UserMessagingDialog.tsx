@@ -9,6 +9,7 @@ import { useConversationEventsSubscription } from './useConversationEventsSubscr
 import { UserMessagingChatList } from './UserMessagingChatList';
 import { UserMessagingConversationView } from './UserMessagingConversationView';
 import { NewMessageDialog } from './NewMessageDialog';
+import { GroupChatManagementDialog } from './GroupChatManagementDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -39,6 +40,7 @@ const UserMessagingDialog = () => {
 
   const { isSmallScreen: isMobile } = useScreenSize();
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
+  const [isGroupChatDialogOpen, setIsGroupChatDialogOpen] = useState(false);
 
   // Sync unread count to context: use full query count when dialog is open, lightweight count otherwise
   useEffect(() => {
@@ -77,6 +79,15 @@ const UserMessagingDialog = () => {
 
   const handleCloseNewMessage = () => {
     setIsNewMessageDialogOpen(false);
+  };
+
+  const handleStartGroupChat = () => {
+    setIsNewMessageDialogOpen(false);
+    setIsGroupChatDialogOpen(true);
+  };
+
+  const handleCloseGroupChat = () => {
+    setIsGroupChatDialogOpen(false);
   };
 
   const handleNewConvMessageSent = (conversationId: string, roomId: string) => {
@@ -123,6 +134,7 @@ const UserMessagingDialog = () => {
                 messagesLoading={messagesLoading}
                 onBack={handleBack}
                 showBackButton
+                onLeaveConversation={handleBack}
               />
             ) : (
               <UserMessagingChatList
@@ -139,6 +151,13 @@ const UserMessagingDialog = () => {
           open={isNewMessageDialogOpen}
           onClose={handleCloseNewMessage}
           onConversationCreated={handleNewConvMessageSent}
+          onStartGroupChat={handleStartGroupChat}
+        />
+        <GroupChatManagementDialog
+          open={isGroupChatDialogOpen}
+          onClose={handleCloseGroupChat}
+          mode="create"
+          onGroupCreated={handleNewConvMessageSent}
         />
       </>
     );
@@ -163,19 +182,6 @@ const UserMessagingDialog = () => {
           },
         }}
       >
-        {/* Close button */}
-        <IconButton
-          onClick={handleClose}
-          aria-label={t('buttons.close')}
-          sx={theme => ({
-            position: 'absolute',
-            top: theme.spacing(2),
-            right: theme.spacing(2),
-            zIndex: 1,
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
         <DialogContent sx={{ padding: 0, display: 'flex', height: '100%' }}>
           <PageContentBlockSeamless
             disablePadding
@@ -198,6 +204,8 @@ const UserMessagingDialog = () => {
               conversation={selectedConversation}
               messages={messages}
               messagesLoading={messagesLoading}
+              onLeaveConversation={handleBack}
+              onClose={handleClose}
             />
           </PageContentBlockSeamless>
         </DialogContent>
@@ -206,6 +214,13 @@ const UserMessagingDialog = () => {
         open={isNewMessageDialogOpen}
         onClose={handleCloseNewMessage}
         onConversationCreated={handleNewConvMessageSent}
+        onStartGroupChat={handleStartGroupChat}
+      />
+      <GroupChatManagementDialog
+        open={isGroupChatDialogOpen}
+        onClose={handleCloseGroupChat}
+        mode="create"
+        onGroupCreated={handleNewConvMessageSent}
       />
     </>
   );

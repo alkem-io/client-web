@@ -2,7 +2,7 @@ import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import { useImperativeHandle, useState } from 'react';
-import { CalloutAllowedActors } from '@/core/apollo/generated/graphql-schema';
+import { CalloutAllowedContributors } from '@/core/apollo/generated/graphql-schema';
 import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import { useTranslation } from 'react-i18next';
 import { FramingSettings } from '../CalloutFormContributionSettings';
@@ -27,10 +27,10 @@ const ContributionsSettings = ({
   const [formState, setFormState] = useState<FieldsState>({
     membersCanRespond:
       field.value.contribution.enabled &&
-      field.value.contribution.canAddContributions === CalloutAllowedActors.Members,
+      field.value.contribution.canAddContributions === CalloutAllowedContributors.Members,
     adminCanRespond:
       field.value.contribution.enabled &&
-      field.value.contribution.canAddContributions !== CalloutAllowedActors.None,
+      field.value.contribution.canAddContributions !== CalloutAllowedContributors.None,
     commentsOnEachResponse: calloutRestrictions?.disableCommentsToContributions
       ? false
       : field.value.contribution.commentsEnabled,
@@ -55,10 +55,10 @@ const ContributionsSettings = ({
           ...field.value.contribution,
           enabled: formState.membersCanRespond || formState.adminCanRespond,
           canAddContributions: formState.membersCanRespond
-            ? CalloutAllowedActors.Members
+            ? CalloutAllowedContributors.Members
             : formState.adminCanRespond
-              ? CalloutAllowedActors.Admins
-              : CalloutAllowedActors.None,
+              ? CalloutAllowedContributors.Admins
+              : CalloutAllowedContributors.None,
           commentsEnabled: calloutRestrictions?.disableCommentsToContributions
             ? false
             : formState.commentsOnEachResponse,
@@ -69,9 +69,9 @@ const ContributionsSettings = ({
     isContentChanged: () => {
       return (
         formState.membersCanRespond !==
-          (field.value.contribution.canAddContributions === CalloutAllowedActors.Members) ||
+          (field.value.contribution.canAddContributions === CalloutAllowedContributors.Members) ||
         formState.adminCanRespond !==
-          (field.value.contribution.canAddContributions !== CalloutAllowedActors.None) ||
+          (field.value.contribution.canAddContributions !== CalloutAllowedContributors.None) ||
         formState.commentsOnEachResponse !== field.value.contribution.commentsEnabled
       );
     },
