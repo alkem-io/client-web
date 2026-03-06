@@ -1,0 +1,5 @@
+mutation LeaveConversation($leaveData: LeaveConversationInput!) {
+  leaveConversation(leaveData: $leaveData) {
+    id
+  }
+}

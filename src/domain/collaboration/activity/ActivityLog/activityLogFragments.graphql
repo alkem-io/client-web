@@ -1,6 +1,6 @@
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
   actorType
-  actor {
+  contributor {
     id
     profile {
       id

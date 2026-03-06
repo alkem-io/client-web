@@ -429,9 +429,7 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
 
 export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryMemberJoined';
-  /** The Actor that joined the Community. */
-  actor: Actor;
-  /** The type of the Actor that joined the Community. */
+  /** The type of the Contributor that joined the Community. */
   actorType: ActorType;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
   child: Scalars['Boolean']['output'];
@@ -439,6 +437,8 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   collaborationID: Scalars['UUID']['output'];
   /** The community that was joined. */
   community: Community;
+  /** The Contributor that joined the Community. */
+  contributor: Actor;
   /** The timestamp for the Activity. */
   createdDate: Scalars['DateTime']['output'];
   /** The text details for this Activity. */
@@ -575,7 +575,7 @@ export type ActorRoles = {
   id: Scalars['UUID']['output'];
   /** The invitations for the specified user; only accessible for platform admins */
   invitations: Array<CommunityInvitationForRoleResult>;
-  /** Details of the roles the actor has in Organizations */
+  /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
   spaces: Array<RolesResultSpace>;
@@ -597,6 +597,13 @@ export enum ActorType {
   User = 'USER',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
+
+export type AddConversationMemberInput = {
+  /** The ID of the conversation to add a member to. */
+  conversationID: Scalars['UUID']['input'];
+  /** The ID of the member (user or VC) to add. */
+  memberID: Scalars['UUID']['input'];
+};
 
 export type AddVisualToMediaGalleryInput = {
   /** The ID of the media gallery. */
@@ -662,10 +669,10 @@ export type AiServerAiPersonaArgs = {
 
 export type Application = {
   __typename?: 'Application';
-  /** The Actor for this Application. */
-  actor: Actor;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The User for this Application. */
+  contributor: Actor;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1055,7 +1062,7 @@ export type CalloutContributionsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export enum CalloutAllowedActors {
+export enum CalloutAllowedContributors {
   Admins = 'ADMINS',
   Members = 'MEMBERS',
   None = 'NONE',
@@ -1179,7 +1186,7 @@ export type CalloutSettingsContribution = {
   /** The allowed contribution types for this callout. */
   allowedTypes: Array<CalloutContributionType>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions: CalloutAllowedActors;
+  canAddContributions: CalloutAllowedContributors;
   /** Can comment to contributions callout. */
   commentsEnabled: Scalars['Boolean']['output'];
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1363,11 +1370,6 @@ export type CommunicationAdminUpdateRoomStateInput = {
   isWorldVisible: Scalars['Boolean']['input'];
   roomID: Scalars['String']['input'];
 };
-
-export enum CommunicationConversationType {
-  UserUser = 'USER_USER',
-  UserVc = 'USER_VC',
-}
 
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
@@ -1562,17 +1564,13 @@ export type Conversation = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** All members of this Conversation, returned as actors with their types. */
+  members: Array<Actor>;
   messaging: Messaging;
   /** The room for this Conversation. */
   room?: Maybe<Room>;
-  /** The type of this Conversation (USER_USER or USER_VC), inferred from member agent types. */
-  type: CommunicationConversationType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The other user participating in this Conversation (excludes the current user). */
-  user?: Maybe<User>;
-  /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
-  virtualContributor?: Maybe<VirtualContributor>;
 };
 
 /** Event fired when a new conversation is created. Each member receives a personalized event with the other participant resolved via conversation.user or conversation.virtualContributor. */
@@ -1584,13 +1582,32 @@ export type ConversationCreatedEvent = {
   message?: Maybe<Message>;
 };
 
+/** The type of conversation to create. Maps to room type: DIRECT → DM room, GROUP → group room. */
+export enum ConversationCreationType {
+  Direct = 'DIRECT',
+  Group = 'GROUP',
+}
+
+/** Event fired when a conversation is deleted. All members are notified. */
+export type ConversationDeletedEvent = {
+  __typename?: 'ConversationDeletedEvent';
+  /** The ID of the deleted conversation. UUID only — conversation no longer exists. */
+  conversationID: Scalars['UUID']['output'];
+};
+
 /** Payload for conversation subscription events. */
 export type ConversationEventSubscriptionResult = {
   __typename?: 'ConversationEventSubscriptionResult';
   /** Present when eventType is CONVERSATION_CREATED. */
   conversationCreated?: Maybe<ConversationCreatedEvent>;
+  /** Present when eventType is CONVERSATION_DELETED. */
+  conversationDeleted?: Maybe<ConversationDeletedEvent>;
   /** The type of event. Use this to determine which payload field is populated. */
   eventType: ConversationEventType;
+  /** Present when eventType is MEMBER_ADDED. */
+  memberAdded?: Maybe<ConversationMemberAddedEvent>;
+  /** Present when eventType is MEMBER_REMOVED. */
+  memberRemoved?: Maybe<ConversationMemberRemovedEvent>;
   /** Present when eventType is MESSAGE_RECEIVED. */
   messageReceived?: Maybe<ConversationMessageReceivedEvent>;
   /** Present when eventType is MESSAGE_REMOVED. */
@@ -1602,10 +1619,31 @@ export type ConversationEventSubscriptionResult = {
 /** The type of conversation event. */
 export enum ConversationEventType {
   ConversationCreated = 'CONVERSATION_CREATED',
+  ConversationDeleted = 'CONVERSATION_DELETED',
+  MemberAdded = 'MEMBER_ADDED',
+  MemberRemoved = 'MEMBER_REMOVED',
   MessageReceived = 'MESSAGE_RECEIVED',
   MessageRemoved = 'MESSAGE_REMOVED',
   ReadReceiptUpdated = 'READ_RECEIPT_UPDATED',
 }
+
+/** Event fired when a member is added to a group conversation. */
+export type ConversationMemberAddedEvent = {
+  __typename?: 'ConversationMemberAddedEvent';
+  /** The actor that was added as a member. */
+  addedMember: Actor;
+  /** The conversation the member was added to. */
+  conversation: Conversation;
+};
+
+/** Event fired when a member is removed from or leaves a group conversation. */
+export type ConversationMemberRemovedEvent = {
+  __typename?: 'ConversationMemberRemovedEvent';
+  /** The conversation the member was removed from. */
+  conversation: Conversation;
+  /** The ID of the removed member. UUID only — removed member may not be resolvable after removal. */
+  removedMemberID: Scalars['UUID']['output'];
+};
 
 /** Event fired when a new message is received in a conversation. */
 export type ConversationMessageReceivedEvent = {
@@ -1799,7 +1837,7 @@ export type CreateCalloutSettingsContributionData = {
   /** Allowed Contribution types. */
   allowedTypes?: Maybe<Array<CalloutContributionType>>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: Maybe<CalloutAllowedActors>;
+  canAddContributions?: Maybe<CalloutAllowedContributors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1810,7 +1848,7 @@ export type CreateCalloutSettingsContributionInput = {
   /** Allowed Contribution types. */
   allowedTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: InputMaybe<CalloutAllowedActors>;
+  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1910,9 +1948,10 @@ export type CreateContributionOnCalloutInput = {
 };
 
 export type CreateConversationInput = {
-  userID: Scalars['UUID']['input'];
-  virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
-  wellKnownVirtualContributor?: InputMaybe<VirtualContributorWellKnown>;
+  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs. Creator is auto-included. */
+  memberIDs: Array<Scalars['UUID']['input']>;
+  /** The type of conversation to create: DIRECT for 1-on-1, GROUP for multi-party. */
+  type: ConversationCreationType;
 };
 
 export type CreateInnovationFlowData = {
@@ -2802,12 +2841,12 @@ export type ISearchCategoryResult = {
 
 export type ISearchResults = {
   __typename?: 'ISearchResults';
-  /** The search results for actors (Users, Organizations). */
-  actorResults: ISearchCategoryResult;
   /** The search results for Callouts. */
   calloutResults: ISearchCategoryResult;
   /** The search results for contributions (Posts, Whiteboards, Memos). */
   contributionResults: ISearchCategoryResult;
+  /** The search results for contributors (Users, Organizations). */
+  contributorResults: ISearchCategoryResult;
   /** The search results callout framings (Whiteboards, Memos as additional content). */
   framingResults: ISearchCategoryResult;
   /** The search results for Spaces / Subspaces. */
@@ -2837,7 +2876,7 @@ export type InAppNotification = {
   state: NotificationEventInAppState;
   /** The triggered date of the notification event. */
   triggeredAt: Scalars['DateTime']['output'];
-  /** The Actor who triggered the notification. */
+  /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Actor>;
   /** The type of the notification event. */
   type: NotificationEvent;
@@ -3223,19 +3262,19 @@ export type InputCreatorQueryResultsWhiteboardArgs = {
 
 export type Invitation = {
   __typename?: 'Invitation';
-  /** The Actor who is invited. */
-  actor: Actor;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Actor who is invited. */
+  contributor: Actor;
   /** The User who triggered the invitation. */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** Additional roles to assign to the Actor, in addition to the entry Role. */
+  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
   extraRoles: Array<RoleName>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** Whether to also add the invited actor to the parent community. */
+  /** Whether to also add the invited contributor to the parent community. */
   invitedToParent: Scalars['Boolean']['output'];
   /** Is this lifecycle in a final state (done). */
   isFinalized: Scalars['Boolean']['output'];
@@ -3257,8 +3296,8 @@ export type InvitationEventInput = {
 export type InviteForEntryRoleOnRoleSetInput = {
   /** Additional roles to assign in addition to the entry Role. */
   extraRoles: Array<RoleName>;
-  /** The identifiers for the actors being invited. */
-  invitedActorIDs: Array<Scalars['UUID']['input']>;
+  /** The identifiers for the contributors being invited. */
+  invitedContributorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
   /** The welcome message to send */
@@ -3309,6 +3348,11 @@ export type LatestReleaseDiscussion = {
   id: Scalars['String']['output'];
   /** NameID of the latest release discussion. */
   nameID: Scalars['String']['output'];
+};
+
+export type LeaveConversationInput = {
+  /** The ID of the conversation to leave. */
+  conversationID: Scalars['UUID']['input'];
 };
 
 export type Library = {
@@ -4019,16 +4063,8 @@ export type LookupQueryResultsWhiteboardArgs = {
 
 export type MeConversationsResult = {
   __typename?: 'MeConversationsResult';
-  /** Conversations between users. */
-  users: Array<Conversation>;
-  /** Get a conversation with a well-known virtual contributor for the current user. */
-  virtualContributor?: Maybe<Conversation>;
-  /** Conversations between users and virtual contributors. */
-  virtualContributors: Array<Conversation>;
-};
-
-export type MeConversationsResultVirtualContributorArgs = {
-  wellKnown: VirtualContributorWellKnown;
+  /** All conversations (direct and group) for the current authenticated user. Client handles categorization by room type and member actor types. */
+  conversations: Array<Conversation>;
 };
 
 export type MeQueryResults = {
@@ -4261,6 +4297,8 @@ export type MoveCalloutContributionInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add a member to a group conversation. */
+  addConversationMember: Conversation;
   /** Adds an Iframe Allowed URL to the Platform Settings */
   addIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Adds a full email address to the platform notification blacklist */
@@ -4315,7 +4353,7 @@ export type Mutation = {
   assignLicensePlanToSpace: Space;
   /** Assigns a User to a role on the Platform. */
   assignPlatformRoleToUser: User;
-  /** Assigns an Actor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
+  /** Assigns a Contributor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
   assignRole: Actor;
   /** Assigns an Organization a Role in the specified Community. */
   assignRoleToOrganization: Organization;
@@ -4353,7 +4391,7 @@ export type Mutation = {
   createCalloutOnCalloutsSet: Callout;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Create a new Conversation on the Messaging. */
+  /** Create a new Conversation. Use type DIRECT for 1-on-1, GROUP for multi-party. */
   createConversation: Conversation;
   /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
@@ -4401,7 +4439,7 @@ export type Mutation = {
   deleteCallout: Callout;
   /** Deletes a contribution. */
   deleteContribution: CalloutContribution;
-  /** Deletes a Conversation. The Matrix room is only deleted if no reciprocal conversation exists. */
+  /** Deletes a Conversation. All members are notified via CONVERSATION_DELETED event. */
   deleteConversation: Conversation;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
@@ -4461,6 +4499,8 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
+  /** Leave a group conversation. Returns null if the conversation was auto-deleted (0 members). */
+  leaveConversation?: Maybe<Conversation>;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
   /** Marks a message as read for the current user. */
@@ -4477,6 +4517,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Remove a member from a group conversation. Returns null if the conversation was auto-deleted (0 members). */
+  removeConversationMember?: Maybe<Conversation>;
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Removes an Iframe Allowed URL from the Platform Settings */
@@ -4489,7 +4531,7 @@ export type Mutation = {
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
-  /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
+  /** Removes a Contributor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
   removeRole: Actor;
   /** Removes an Organization from a Role in the specified Community. */
   removeRoleFromOrganization: Organization;
@@ -4643,6 +4685,10 @@ export type Mutation = {
   uploadFileOnStorageBucket: StorageBucketUploadFileResult;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddConversationMemberArgs = {
+  memberData: AddConversationMemberInput;
 };
 
 export type MutationAddIframeAllowedUrlArgs = {
@@ -5007,6 +5053,10 @@ export type MutationJoinRoleSetArgs = {
   joinData: JoinAsEntryRoleOnRoleSetInput;
 };
 
+export type MutationLeaveConversationArgs = {
+  leaveData: LeaveConversationInput;
+};
+
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
 };
@@ -5033,6 +5083,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveConversationMemberArgs = {
+  memberData: RemoveConversationMemberInput;
 };
 
 export type MutationRemoveDefaultCalloutTemplateOnInnovationFlowStateArgs = {
@@ -5881,7 +5935,7 @@ export type PlatformInvitation = {
   platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean']['output'];
-  /** Additional roles to assign to the Actor, in addition to the entry Role. */
+  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
@@ -6517,6 +6571,13 @@ export type RemoveCommunityGuidelinesContentInput = {
   communityGuidelinesID: Scalars['UUID']['input'];
 };
 
+export type RemoveConversationMemberInput = {
+  /** The ID of the conversation to remove a member from. */
+  conversationID: Scalars['UUID']['input'];
+  /** The ID of the member (user or VC) to remove. */
+  memberID: Scalars['UUID']['input'];
+};
+
 export type RemoveDefaultCalloutTemplateOnInnovationFlowStateInput = {
   flowStateID: Scalars['UUID']['input'];
 };
@@ -6778,7 +6839,7 @@ export type RolesResult = {
   id: Scalars['String']['output'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the actor */
+  /** The roles held by the contributor */
   roles: Array<Scalars['String']['output']>;
 };
 
@@ -6792,7 +6853,7 @@ export type RolesResultCommunity = {
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the actor */
+  /** The roles held by the contributor */
   roles: Array<Scalars['String']['output']>;
 };
 
@@ -6806,7 +6867,7 @@ export type RolesResultOrganization = {
   nameID: Scalars['NameID']['output'];
   /** The Organization ID. */
   organizationID: Scalars['String']['output'];
-  /** The roles held by the actor */
+  /** The roles held by the contributor */
   roles: Array<Scalars['String']['output']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
@@ -6822,7 +6883,7 @@ export type RolesResultSpace = {
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the actor */
+  /** The roles held by the contributor */
   roles: Array<Scalars['String']['output']>;
   /** The Space ID */
   spaceID: Scalars['String']['output'];
@@ -7919,7 +7980,7 @@ export type UpdateCalloutPublishInfoInput = {
 
 export type UpdateCalloutSettingsContributionInput = {
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: InputMaybe<CalloutAllowedActors>;
+  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -9708,7 +9769,7 @@ export type InvitationStateEventMutation = {
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
-  invitedActorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+  invitedContributorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
   extraRoles: Array<RoleName> | RoleName;
@@ -9723,7 +9784,7 @@ export type InviteForEntryRoleOnRoleSetMutation = {
       | {
           __typename?: 'Invitation';
           id: string;
-          actor: {
+          contributor: {
             __typename?: 'Actor';
             id: string;
             profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
@@ -9782,7 +9843,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            actor: {
+            contributor: {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
@@ -9796,7 +9857,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            actor: {
+            contributor: {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
@@ -9821,7 +9882,7 @@ export type AdminCommunityApplicationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  actor: {
+  contributor: {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
@@ -9836,7 +9897,7 @@ export type AdminCommunityInvitationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  actor: {
+  contributor: {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
@@ -9973,7 +10034,7 @@ export type UserPendingMembershipsQuery = {
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
-        actor: { __typename?: 'Actor'; id: string; type: ActorType };
+        contributor: { __typename?: 'Actor'; id: string; type: ActorType };
       };
     }>;
   };
@@ -11225,7 +11286,7 @@ export type UpdateInnovationFlowStatesSortOrderMutation = {
 export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   actorType: ActorType;
-  actor: {
+  contributor: {
     __typename?: 'Actor';
     id: string;
     profile?:
@@ -11568,7 +11629,7 @@ export type ActivityCreatedSubscription = {
           createdDate: Date;
           type: ActivityEventType;
           actorType: ActorType;
-          actor: {
+          contributor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -11772,7 +11833,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   createdDate: Date;
   type: ActivityEventType;
   actorType: ActorType;
-  actor: {
+  contributor: {
     __typename?: 'Actor';
     id: string;
     profile?:
@@ -12598,7 +12659,7 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        actor: {
+        contributor: {
           __typename?: 'Actor';
           id: string;
           profile?:
@@ -12881,7 +12942,7 @@ export type CalloutContentQuery = {
               __typename?: 'CalloutSettingsContribution';
               enabled: boolean;
               allowedTypes: Array<CalloutContributionType>;
-              canAddContributions: CalloutAllowedActors;
+              canAddContributions: CalloutAllowedContributors;
               commentsEnabled: boolean;
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13226,7 +13287,7 @@ export type UpdateCalloutContentMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedActors;
+        canAddContributions: CalloutAllowedContributors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13576,7 +13637,7 @@ export type UpdateCalloutVisibilityMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedActors;
+        canAddContributions: CalloutAllowedContributors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13604,7 +13665,7 @@ export type CalloutSettingsFullFragment = {
     __typename?: 'CalloutSettingsContribution';
     enabled: boolean;
     allowedTypes: Array<CalloutContributionType>;
-    canAddContributions: CalloutAllowedActors;
+    canAddContributions: CalloutAllowedContributors;
     commentsEnabled: boolean;
   };
   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15040,7 +15101,7 @@ export type CreateCalloutMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedActors;
+        canAddContributions: CalloutAllowedContributors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15515,7 +15576,7 @@ export type CalloutDetailsQuery = {
               __typename?: 'CalloutSettingsContribution';
               enabled: boolean;
               allowedTypes: Array<CalloutContributionType>;
-              canAddContributions: CalloutAllowedActors;
+              canAddContributions: CalloutAllowedContributors;
               commentsEnabled: boolean;
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15897,7 +15958,7 @@ export type CalloutDetailsFragment = {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
       allowedTypes: Array<CalloutContributionType>;
-      canAddContributions: CalloutAllowedActors;
+      canAddContributions: CalloutAllowedContributors;
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -20734,7 +20795,7 @@ export type InvitationDataFragment = {
     state: string;
     createdDate: Date;
     createdBy?: { __typename?: 'User'; id: string } | undefined;
-    actor: { __typename?: 'Actor'; id: string; type: ActorType };
+    contributor: { __typename?: 'Actor'; id: string; type: ActorType };
   };
 };
 
@@ -21703,7 +21764,7 @@ export type VcMembershipsQuery = {
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
-        actor: { __typename?: 'Actor'; id: string; type: ActorType };
+        contributor: { __typename?: 'Actor'; id: string; type: ActorType };
       };
     }>;
   };
@@ -26325,7 +26386,7 @@ export type CommunityApplicationQuery = {
           updatedDate: Date;
           state: string;
           nextEvents: Array<string>;
-          actor: {
+          contributor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -26371,7 +26432,7 @@ export type CommunityInvitationQuery = {
           createdDate: Date;
           updatedDate: Date;
           welcomeMessage?: string | undefined;
-          actor: {
+          contributor: {
             __typename?: 'Actor';
             type: ActorType;
             id: string;
@@ -28655,7 +28716,7 @@ export type TemplateContentQuery = {
                     __typename?: 'CalloutSettingsContribution';
                     enabled: boolean;
                     allowedTypes: Array<CalloutContributionType>;
-                    canAddContributions: CalloutAllowedActors;
+                    canAddContributions: CalloutAllowedContributors;
                     commentsEnabled: boolean;
                   };
                   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -29300,7 +29361,7 @@ export type CalloutTemplateContentFragment = {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
       allowedTypes: Array<CalloutContributionType>;
-      canAddContributions: CalloutAllowedActors;
+      canAddContributions: CalloutAllowedContributors;
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -31440,9 +31501,17 @@ export type ConversationWithGuidanceVcQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      conversationGuidanceVc?:
-        | { __typename?: 'Conversation'; id: string; room?: { __typename?: 'Room'; id: string } | undefined }
-        | undefined;
+      conversations: Array<{
+        __typename?: 'Conversation';
+        id: string;
+        room?: { __typename?: 'Room'; id: string } | undefined;
+        members: Array<{
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>;
+      }>;
     };
   };
 };
@@ -32063,7 +32132,7 @@ export type InAppNotificationReceivedSubscription = {
             __typename?: 'Application';
             id: string;
             createdDate: Date;
-            actor: {
+            contributor: {
               __typename?: 'Actor';
               id: string;
               profile?:
@@ -33017,7 +33086,7 @@ export type InAppNotificationsQuery = {
                 __typename?: 'Application';
                 id: string;
                 createdDate: Date;
-                actor: {
+                contributor: {
                   __typename?: 'Actor';
                   id: string;
                   profile?:
@@ -33977,7 +34046,7 @@ export type InAppNotificationAllTypesFragment = {
           __typename?: 'Application';
           id: string;
           createdDate: Date;
-          actor: {
+          contributor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -34635,7 +34704,7 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
     __typename?: 'Application';
     id: string;
     createdDate: Date;
-    actor: {
+    contributor: {
       __typename?: 'Actor';
       id: string;
       profile?:
@@ -36052,7 +36121,7 @@ export type SearchQuery = {
           }
       >;
     };
-    actorResults: {
+    contributorResults: {
       __typename?: 'ISearchCategoryResult';
       cursor?: string | undefined;
       total: number;
@@ -37752,7 +37821,7 @@ export type PendingInvitationsQuery = {
         welcomeMessage?: string | undefined;
         state: string;
         createdDate: Date;
-        actor: { __typename?: 'Actor'; type: ActorType };
+        contributor: { __typename?: 'Actor'; type: ActorType };
         createdBy?: { __typename?: 'User'; id: string } | undefined;
       };
     }>;
@@ -38538,7 +38607,7 @@ export type LatestContributionsQuery = {
                 }
               | undefined;
           };
-          actor: {
+          contributor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -39232,7 +39301,7 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        actor: {
+        contributor: {
           __typename?: 'Actor';
           id: string;
           profile?:
@@ -41083,6 +41152,32 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   };
 };
 
+export type AddConversationMemberMutationVariables = Exact<{
+  memberData: AddConversationMemberInput;
+}>;
+
+export type AddConversationMemberMutation = {
+  __typename?: 'Mutation';
+  addConversationMember: {
+    __typename?: 'Conversation';
+    id: string;
+    members: Array<{
+      __typename?: 'Actor';
+      id: string;
+      type: ActorType;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
+
 export type ConversationEventsSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type ConversationEventsSubscription = {
@@ -41100,6 +41195,7 @@ export type ConversationEventsSubscription = {
               | {
                   __typename?: 'Room';
                   id: string;
+                  displayName: string;
                   unreadCount: number;
                   messagesCount: number;
                   lastMessage?:
@@ -41140,21 +41236,20 @@ export type ConversationEventsSubscription = {
                     | undefined;
                 }
               | undefined;
-            user?:
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        url: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
+            members: Array<{
+              __typename?: 'Actor';
+              id: string;
+              type: ActorType;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }>;
           };
           message?:
             | {
@@ -41192,6 +41287,69 @@ export type ConversationEventsSubscription = {
                 }>;
               }
             | undefined;
+        }
+      | undefined;
+    conversationDeleted?: { __typename?: 'ConversationDeletedEvent'; conversationID: string } | undefined;
+    memberAdded?:
+      | {
+          __typename?: 'ConversationMemberAddedEvent';
+          conversation: {
+            __typename?: 'Conversation';
+            id: string;
+            room?: { __typename?: 'Room'; id: string; displayName: string } | undefined;
+            members: Array<{
+              __typename?: 'Actor';
+              id: string;
+              type: ActorType;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }>;
+          };
+          addedMember: {
+            __typename?: 'Actor';
+            id: string;
+            type: ActorType;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
+    memberRemoved?:
+      | {
+          __typename?: 'ConversationMemberRemovedEvent';
+          removedMemberID: string;
+          conversation: {
+            __typename?: 'Conversation';
+            id: string;
+            members: Array<{
+              __typename?: 'Actor';
+              id: string;
+              type: ActorType;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }>;
+          };
         }
       | undefined;
     messageReceived?:
@@ -41307,8 +41465,31 @@ export type CreateConversationMutation = {
   createConversation: {
     __typename?: 'Conversation';
     id: string;
-    room?: { __typename?: 'Room'; id: string } | undefined;
+    room?: { __typename?: 'Room'; id: string; displayName: string } | undefined;
+    members: Array<{
+      __typename?: 'Actor';
+      id: string;
+      type: ActorType;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          }
+        | undefined;
+    }>;
   };
+};
+
+export type LeaveConversationMutationVariables = Exact<{
+  leaveData: LeaveConversationInput;
+}>;
+
+export type LeaveConversationMutation = {
+  __typename?: 'Mutation';
+  leaveConversation?: { __typename?: 'Conversation'; id: string } | undefined;
 };
 
 export type MarkMessageAsReadMutationVariables = Exact<{
@@ -41316,6 +41497,34 @@ export type MarkMessageAsReadMutationVariables = Exact<{
 }>;
 
 export type MarkMessageAsReadMutation = { __typename?: 'Mutation'; markMessageAsReadInRoom: boolean };
+
+export type RemoveConversationMemberMutationVariables = Exact<{
+  memberData: RemoveConversationMemberInput;
+}>;
+
+export type RemoveConversationMemberMutation = {
+  __typename?: 'Mutation';
+  removeConversationMember?:
+    | {
+        __typename?: 'Conversation';
+        id: string;
+        members: Array<{
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }>;
+      }
+    | undefined;
+};
 
 export type UserConversationsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -41325,13 +41534,14 @@ export type UserConversationsQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      users: Array<{
+      conversations: Array<{
         __typename?: 'Conversation';
         id: string;
         room?:
           | {
               __typename?: 'Room';
               id: string;
+              displayName: string;
               unreadCount: number;
               messagesCount: number;
               lastMessage?:
@@ -41372,21 +41582,20 @@ export type UserConversationsQuery = {
                 | undefined;
             }
           | undefined;
-        user?:
-          | {
-              __typename?: 'User';
-              id: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                  }
-                | undefined;
-            }
-          | undefined;
+        members: Array<{
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }>;
       }>;
     };
   };
@@ -41400,7 +41609,7 @@ export type UserConversationsUnreadCountQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      users: Array<{
+      conversations: Array<{
         __typename?: 'Conversation';
         id: string;
         room?: { __typename?: 'Room'; id: string; unreadCount: number } | undefined;

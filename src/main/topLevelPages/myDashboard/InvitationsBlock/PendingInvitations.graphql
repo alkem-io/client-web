@@ -12,7 +12,7 @@ query PendingInvitations {
       invitation {
         id
         welcomeMessage
-        actor {
+        contributor {
           type
         }
         createdBy {

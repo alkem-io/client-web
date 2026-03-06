@@ -116,7 +116,7 @@ export const AdminCommunityApplicationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    actor {
+    contributor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -129,7 +129,7 @@ export const AdminCommunityInvitationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    actor {
+    contributor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -378,7 +378,7 @@ export const InnovationFlowDetailsFragmentDoc = gql`
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     actorType
-    actor {
+    contributor {
       id
       profile {
         id
@@ -1749,7 +1749,7 @@ export const InvitationDataFragmentDoc = gql`
       }
       state
       createdDate
-      actor {
+      contributor {
         id
         type
       }
@@ -3209,7 +3209,7 @@ export const InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc = gql`
     application {
       id
       createdDate
-      actor {
+      contributor {
         id
         profile {
           id
@@ -4992,14 +4992,14 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
 export const InviteForEntryRoleOnRoleSetDocument = gql`
   mutation InviteForEntryRoleOnRoleSet(
     $roleSetId: UUID!
-    $invitedActorIds: [UUID!]!
+    $invitedContributorIds: [UUID!]!
     $invitedUserEmails: [String!]!
     $welcomeMessage: String
     $extraRoles: [RoleName!]!
   ) {
     inviteForEntryRoleOnRoleSet(
       invitationData: {
-        invitedActorIDs: $invitedActorIds
+        invitedContributorIDs: $invitedContributorIds
         invitedUserEmails: $invitedUserEmails
         roleSetID: $roleSetId
         welcomeMessage: $welcomeMessage
@@ -5009,7 +5009,7 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
       type
       invitation {
         id
-        actor {
+        contributor {
           id
           profile {
             id
@@ -5045,7 +5045,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  * const [inviteForEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteForEntryRoleOnRoleSetMutation({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      invitedActorIds: // value for 'invitedActorIds'
+ *      invitedContributorIds: // value for 'invitedContributorIds'
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRoles: // value for 'extraRoles'
@@ -22208,7 +22208,7 @@ export const CommunityApplicationDocument = gql`
         id
         createdDate
         updatedDate
-        actor {
+        contributor {
           id
           profile {
             id
@@ -22310,7 +22310,7 @@ export const CommunityInvitationDocument = gql`
         createdDate
         updatedDate
         welcomeMessage
-        actor {
+        contributor {
           type
           id
           profile {
@@ -26156,11 +26156,19 @@ export const ConversationWithGuidanceVcDocument = gql`
   query ConversationWithGuidanceVc {
     me {
       conversations {
-        conversationGuidanceVc: virtualContributor(wellKnown: CHAT_GUIDANCE) {
+        conversations {
+          id
           room {
             id
           }
-          id
+          members {
+            id
+            type
+            profile {
+              id
+              displayName
+            }
+          }
         }
       }
     }
@@ -26768,7 +26776,7 @@ export const SearchDocument = gql`
         }
         total
       }
-      actorResults {
+      contributorResults {
         cursor
         results {
           id
@@ -27563,7 +27571,7 @@ export const PendingInvitationsDocument = gql`
         invitation {
           id
           welcomeMessage
-          actor {
+          contributor {
             type
           }
           createdBy {
@@ -29150,6 +29158,66 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const AddConversationMemberDocument = gql`
+  mutation AddConversationMember($memberData: AddConversationMemberInput!) {
+    addConversationMember(memberData: $memberData) {
+      id
+      members {
+        id
+        type
+        profile {
+          id
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+        }
+      }
+    }
+  }
+`;
+export type AddConversationMemberMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddConversationMemberMutation,
+  SchemaTypes.AddConversationMemberMutationVariables
+>;
+
+/**
+ * __useAddConversationMemberMutation__
+ *
+ * To run a mutation, you first call `useAddConversationMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddConversationMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addConversationMemberMutation, { data, loading, error }] = useAddConversationMemberMutation({
+ *   variables: {
+ *      memberData: // value for 'memberData'
+ *   },
+ * });
+ */
+export function useAddConversationMemberMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddConversationMemberMutation,
+    SchemaTypes.AddConversationMemberMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AddConversationMemberMutation,
+    SchemaTypes.AddConversationMemberMutationVariables
+  >(AddConversationMemberDocument, options);
+}
+export type AddConversationMemberMutationHookResult = ReturnType<typeof useAddConversationMemberMutation>;
+export type AddConversationMemberMutationResult = Apollo.MutationResult<SchemaTypes.AddConversationMemberMutation>;
+export type AddConversationMemberMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddConversationMemberMutation,
+  SchemaTypes.AddConversationMemberMutationVariables
+>;
 export const ConversationEventsDocument = gql`
   subscription ConversationEvents {
     conversationEvents {
@@ -29159,6 +29227,7 @@ export const ConversationEventsDocument = gql`
           id
           room {
             id
+            displayName
             unreadCount
             messagesCount
             lastMessage {
@@ -29191,8 +29260,9 @@ export const ConversationEventsDocument = gql`
               }
             }
           }
-          user {
+          members {
             id
+            type
             profile {
               id
               displayName
@@ -29233,6 +29303,63 @@ export const ConversationEventsDocument = gql`
             }
           }
         }
+      }
+      conversationDeleted {
+        conversationID
+      }
+      memberAdded {
+        conversation {
+          id
+          room {
+            id
+            displayName
+          }
+          members {
+            id
+            type
+            profile {
+              id
+              displayName
+              url
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+        }
+        addedMember {
+          id
+          type
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+      memberRemoved {
+        conversation {
+          id
+          members {
+            id
+            type
+            profile {
+              id
+              displayName
+              url
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+        }
+        removedMemberID
       }
       messageReceived {
         roomId
@@ -29421,6 +29548,20 @@ export const CreateConversationDocument = gql`
       id
       room {
         id
+        displayName
+      }
+      members {
+        id
+        type
+        profile {
+          id
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+        }
       }
     }
   }
@@ -29464,6 +29605,53 @@ export type CreateConversationMutationResult = Apollo.MutationResult<SchemaTypes
 export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateConversationMutation,
   SchemaTypes.CreateConversationMutationVariables
+>;
+export const LeaveConversationDocument = gql`
+  mutation LeaveConversation($leaveData: LeaveConversationInput!) {
+    leaveConversation(leaveData: $leaveData) {
+      id
+    }
+  }
+`;
+export type LeaveConversationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.LeaveConversationMutation,
+  SchemaTypes.LeaveConversationMutationVariables
+>;
+
+/**
+ * __useLeaveConversationMutation__
+ *
+ * To run a mutation, you first call `useLeaveConversationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveConversationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveConversationMutation, { data, loading, error }] = useLeaveConversationMutation({
+ *   variables: {
+ *      leaveData: // value for 'leaveData'
+ *   },
+ * });
+ */
+export function useLeaveConversationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.LeaveConversationMutation,
+    SchemaTypes.LeaveConversationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.LeaveConversationMutation, SchemaTypes.LeaveConversationMutationVariables>(
+    LeaveConversationDocument,
+    options
+  );
+}
+export type LeaveConversationMutationHookResult = ReturnType<typeof useLeaveConversationMutation>;
+export type LeaveConversationMutationResult = Apollo.MutationResult<SchemaTypes.LeaveConversationMutation>;
+export type LeaveConversationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.LeaveConversationMutation,
+  SchemaTypes.LeaveConversationMutationVariables
 >;
 export const MarkMessageAsReadDocument = gql`
   mutation MarkMessageAsRead($messageData: RoomMarkMessageReadInput!) {
@@ -29510,14 +29698,76 @@ export type MarkMessageAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkMessageAsReadMutation,
   SchemaTypes.MarkMessageAsReadMutationVariables
 >;
+export const RemoveConversationMemberDocument = gql`
+  mutation RemoveConversationMember($memberData: RemoveConversationMemberInput!) {
+    removeConversationMember(memberData: $memberData) {
+      id
+      members {
+        id
+        type
+        profile {
+          id
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+        }
+      }
+    }
+  }
+`;
+export type RemoveConversationMemberMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveConversationMemberMutation,
+  SchemaTypes.RemoveConversationMemberMutationVariables
+>;
+
+/**
+ * __useRemoveConversationMemberMutation__
+ *
+ * To run a mutation, you first call `useRemoveConversationMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveConversationMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeConversationMemberMutation, { data, loading, error }] = useRemoveConversationMemberMutation({
+ *   variables: {
+ *      memberData: // value for 'memberData'
+ *   },
+ * });
+ */
+export function useRemoveConversationMemberMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveConversationMemberMutation,
+    SchemaTypes.RemoveConversationMemberMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveConversationMemberMutation,
+    SchemaTypes.RemoveConversationMemberMutationVariables
+  >(RemoveConversationMemberDocument, options);
+}
+export type RemoveConversationMemberMutationHookResult = ReturnType<typeof useRemoveConversationMemberMutation>;
+export type RemoveConversationMemberMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveConversationMemberMutation>;
+export type RemoveConversationMemberMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveConversationMemberMutation,
+  SchemaTypes.RemoveConversationMemberMutationVariables
+>;
 export const UserConversationsDocument = gql`
   query UserConversations {
     me {
       conversations {
-        users {
+        conversations {
           id
           room {
             id
+            displayName
             unreadCount
             messagesCount
             lastMessage {
@@ -29550,8 +29800,9 @@ export const UserConversationsDocument = gql`
               }
             }
           }
-          user {
+          members {
             id
+            type
             profile {
               id
               displayName
@@ -29629,7 +29880,7 @@ export const UserConversationsUnreadCountDocument = gql`
   query UserConversationsUnreadCount {
     me {
       conversations {
-        users {
+        conversations {
           id
           room {
             id

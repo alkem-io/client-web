@@ -4,7 +4,7 @@ query CommunityApplication($applicationId: UUID!) {
       id
       createdDate
       updatedDate
-      actor {
+      contributor {
         id
         profile {
           id

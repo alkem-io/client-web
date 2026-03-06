@@ -6,6 +6,7 @@ subscription ConversationEvents {
         id
         room {
           id
+          displayName
           unreadCount
           messagesCount
           lastMessage {
@@ -38,8 +39,9 @@ subscription ConversationEvents {
             }
           }
         }
-        user {
+        members {
           id
+          type
           profile {
             id
             displayName
@@ -80,6 +82,63 @@ subscription ConversationEvents {
           }
         }
       }
+    }
+    conversationDeleted {
+      conversationID
+    }
+    memberAdded {
+      conversation {
+        id
+        room {
+          id
+          displayName
+        }
+        members {
+          id
+          type
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+      addedMember {
+        id
+        type
+        profile {
+          id
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+        }
+      }
+    }
+    memberRemoved {
+      conversation {
+        id
+        members {
+          id
+          type
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+      removedMemberID
     }
     messageReceived {
       roomId

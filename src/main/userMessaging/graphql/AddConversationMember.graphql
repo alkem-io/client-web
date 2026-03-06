@@ -1,10 +1,6 @@
-mutation CreateConversation($conversationData: CreateConversationInput!) {
-  createConversation(conversationData: $conversationData) {
+mutation AddConversationMember($memberData: AddConversationMemberInput!) {
+  addConversationMember(memberData: $memberData) {
     id
-    room {
-      id
-      displayName
-    }
     members {
       id
       type

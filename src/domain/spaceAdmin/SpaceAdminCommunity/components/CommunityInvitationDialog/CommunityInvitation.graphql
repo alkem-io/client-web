@@ -5,7 +5,7 @@ query CommunityInvitation($invitationId: UUID!, $isPlatformInvitation: Boolean!)
       createdDate
       updatedDate
       welcomeMessage
-      actor {
+      contributor {
         type
         id
         profile {

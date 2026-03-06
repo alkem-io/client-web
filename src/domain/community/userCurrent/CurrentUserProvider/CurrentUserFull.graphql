@@ -34,7 +34,7 @@ fragment InvitationData on CommunityInvitationResult {
     }
     state
     createdDate
-    actor {
+    contributor {
       id
       type
     }
