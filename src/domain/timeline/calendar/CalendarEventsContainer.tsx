@@ -110,7 +110,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
       let durationDays = 0;
       let multipleDays = false;
 
-      if (!isSameDay(startDate, endDate) && !wholeDay) {
+      if (!isSameDay(startDate, endDate)) {
         const parsedEndDate = endDate ? new Date(endDate) : new Date();
         durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
         durationDays = Math.floor(durationMinutes / (24 * 60));
@@ -155,7 +155,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
       let durationDays = 0;
       let multipleDays = false;
 
-      if (!isSameDay(startDate, endDate) && !wholeDay) {
+      if (!isSameDay(startDate, endDate)) {
         const parsedEndDate = endDate ? new Date(endDate) : new Date();
         durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
         durationDays = Math.floor(durationMinutes / (24 * 60));
