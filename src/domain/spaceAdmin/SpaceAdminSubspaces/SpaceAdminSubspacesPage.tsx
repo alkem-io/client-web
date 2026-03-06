@@ -8,6 +8,8 @@ import {
   useSubspacesInSpaceQuery,
   useUpdateTemplateDefaultMutation,
   refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery,
+  useUpdateSubspacePinnedMutation,
+  useUpdateSubspacesSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
@@ -15,12 +17,17 @@ import Gutters from '@/core/ui/grid/Gutters';
 import Loading from '@/core/ui/loading/Loading';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import SearchableList, { SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
+import { type SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
+import SubspacesSortableList from './SubspacesSortableList';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { Cached, DeleteOutline, DownloadForOfflineOutlined, SwapVert } from '@mui/icons-material';
+import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import SubspacesSortDialog from './SubspacesSortDialog/SubspacesSortDialog';
+import SortModeDropdown from './SortModeDropdown';
+import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
+import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
+import SubspacePinIndicator from '@/domain/space/components/SubspacePinIndicator';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
@@ -55,14 +62,14 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   const [subspaceCreationDialogOpen, setSubspaceCreationDialogOpen] = useState(false);
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
   const [saveAsTemplateDialogSelectedSpace, setSaveAsTemplateDialogSelectedSpace] = useState<SearchableListItem>();
-  const [sortDialogOpen, setSortDialogOpen] = useState(false);
-
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId },
     skip: !spaceId,
   });
 
-  const subspaces =
+  const sortMode = subspacesListQuery?.lookup.space?.settings.sortMode ?? SpaceSortMode.Alphabetical;
+
+  const rawSubspaces =
     subspacesListQuery?.lookup.space?.subspaces?.map(s => ({
       id: s.id,
       profile: {
@@ -73,7 +80,16 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         },
       },
       level: s.level,
+      pinned: s.pinned,
+      sortOrder: s.sortOrder,
+      about: {
+        profile: {
+          displayName: s.about.profile.displayName,
+        },
+      },
     })) || [];
+
+  const subspaces = useSubspacesSorted(rawSubspaces, sortMode);
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [
@@ -92,6 +108,9 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
       },
     });
   };
+
+  const [updateSubspacePinned] = useUpdateSubspacePinnedMutation();
+  const [updateSubspacesSortOrder] = useUpdateSubspacesSortOrderMutation();
 
   // Templates usage
   const { data, loading: adminTemplatesLoading } = useSpaceAdminDefaultSpaceTemplatesDetailsQuery({
@@ -136,23 +155,65 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     setSelectSpaceTemplateDialogOpen(false);
   };
 
-  const getSubSpaceActions = (item: SearchableListItem) => (
-    <>
-      {canCreateTemplate && (
-        <MenuItemWithIcon
-          iconComponent={DownloadForOfflineOutlined}
-          onClick={() => {
-            setSaveAsTemplateDialogSelectedSpace(item);
-          }}
-        >
-          {t('buttons.saveAsTemplate')}
+  const handleTogglePin = (subspaceId: string, currentlyPinned: boolean) => {
+    updateSubspacePinned({
+      variables: {
+        pinnedData: {
+          spaceID: spaceId,
+          subspaceID: subspaceId,
+          pinned: !currentlyPinned,
+        },
+      },
+    });
+  };
+
+  const getSubSpaceActions = (item: SearchableListItem) => {
+    const isPinned = subspaces.find(s => s.id === item.id)?.pinned ?? false;
+    return (
+      <>
+        <MenuItemWithIcon iconComponent={PushPinOutlinedIcon} onClick={() => handleTogglePin(item.id, isPinned)}>
+          {isPinned
+            ? t('pages.admin.space.sections.subspaces.unpinSpace')
+            : t('pages.admin.space.sections.subspaces.pinSpace')}
         </MenuItemWithIcon>
-      )}
-      <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => setDeleteDialogSelectedItem(item)}>
-        {t('buttons.delete')}
-      </MenuItemWithIcon>
-    </>
-  );
+        {canCreateTemplate && (
+          <MenuItemWithIcon
+            iconComponent={DownloadForOfflineOutlined}
+            onClick={() => {
+              setSaveAsTemplateDialogSelectedSpace(item);
+            }}
+          >
+            {t('buttons.saveAsTemplate')}
+          </MenuItemWithIcon>
+        )}
+        <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => setDeleteDialogSelectedItem(item)}>
+          {t('buttons.delete')}
+        </MenuItemWithIcon>
+      </>
+    );
+  };
+
+  const handleReorder = (subspaceIds: string[]) => {
+    updateSubspacesSortOrder({
+      variables: {
+        spaceID: spaceId,
+        subspaceIds: subspaceIds,
+      },
+    });
+  };
+
+  const handleDragPin = (subspaceId: string) => {
+    updateSubspacePinned({
+      variables: {
+        pinnedData: {
+          spaceID: spaceId,
+          subspaceID: subspaceId,
+          pinned: true,
+        },
+      },
+    });
+  };
+
   const onSubspaceCreated = (subspace: { about: { profile: { url: string } } }) => {
     notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
     navigate(buildSettingsUrl(subspace.about.profile.url));
@@ -201,10 +262,8 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
         <PageContentBlock>
           <PageContentBlockHeader title={t('common.subspaces')} />
           <Box display="flex" flexDirection="column">
-            <Box display="flex" gap={1} justifyContent="flex-end" marginBottom={2}>
-              <Button startIcon={<SwapVert />} variant="outlined" onClick={() => setSortDialogOpen(true)}>
-                {t('pages.admin.space.sections.subspaces.reorderSubspaces')}
-              </Button>
+            <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center" marginBottom={2}>
+              <SortModeDropdown spaceId={spaceId} currentSortMode={sortMode} />
               <Button
                 startIcon={<AddOutlinedIcon />}
                 variant="contained"
@@ -214,7 +273,19 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
               </Button>
             </Box>
             <Gutters disablePadding>
-              <SearchableList data={subspaces} getActions={getSubSpaceActions} loading={loading} />
+              <SubspacesSortableList
+                subspaces={subspaces}
+                sortMode={sortMode}
+                getActions={getSubSpaceActions}
+                getIndicator={item =>
+                  sortMode === SpaceSortMode.Alphabetical && subspaces.find(s => s.id === item.id)?.pinned ? (
+                    <SubspacePinIndicator />
+                  ) : undefined
+                }
+                loading={loading}
+                onReorder={handleReorder}
+                onPin={handleDragPin}
+              />
             </Gutters>
           </Box>
         </PageContentBlock>
@@ -247,7 +318,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
             templatesSetId={templatesSet.id}
           />
         )}
-        <SubspacesSortDialog open={sortDialogOpen} onClose={() => setSortDialogOpen(false)} spaceId={spaceId} />
       </>
     </LayoutSwitcher>
   );

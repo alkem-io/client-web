@@ -120,6 +120,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
             id: '',
             level: SpaceLevel.L1,
             visibility: SpaceVisibility.Active,
+            pinned: false,
+            sortOrder: 0,
             about: {
               id: '',
               why: value.about.why,

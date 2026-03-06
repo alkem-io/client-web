@@ -2,6 +2,9 @@ query SubspacesInSpace($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      settings {
+        sortMode
+      }
       subspaces {
         id
         about {
@@ -9,6 +12,7 @@ query SubspacesInSpace($spaceId: UUID!) {
         }
         level
         sortOrder
+        pinned
       }
     }
   }
