@@ -116,7 +116,7 @@ export const AdminCommunityApplicationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    contributor {
+    actor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -129,7 +129,7 @@ export const AdminCommunityInvitationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    contributor {
+    actor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -378,7 +378,7 @@ export const InnovationFlowDetailsFragmentDoc = gql`
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     actorType
-    contributor {
+    actor {
       id
       profile {
         id
@@ -1749,7 +1749,7 @@ export const InvitationDataFragmentDoc = gql`
       }
       state
       createdDate
-      contributor {
+      actor {
         id
         type
       }
@@ -3209,7 +3209,7 @@ export const InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc = gql`
     application {
       id
       createdDate
-      contributor {
+      actor {
         id
         profile {
           id
@@ -4992,14 +4992,14 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
 export const InviteForEntryRoleOnRoleSetDocument = gql`
   mutation InviteForEntryRoleOnRoleSet(
     $roleSetId: UUID!
-    $invitedContributorIds: [UUID!]!
+    $invitedActorIds: [UUID!]!
     $invitedUserEmails: [String!]!
     $welcomeMessage: String
     $extraRoles: [RoleName!]!
   ) {
     inviteForEntryRoleOnRoleSet(
       invitationData: {
-        invitedContributorIDs: $invitedContributorIds
+        invitedActorIDs: $invitedActorIds
         invitedUserEmails: $invitedUserEmails
         roleSetID: $roleSetId
         welcomeMessage: $welcomeMessage
@@ -5009,7 +5009,7 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
       type
       invitation {
         id
-        contributor {
+        actor {
           id
           profile {
             id
@@ -5045,7 +5045,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  * const [inviteForEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteForEntryRoleOnRoleSetMutation({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      invitedContributorIds: // value for 'invitedContributorIds'
+ *      invitedActorIds: // value for 'invitedActorIds'
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRoles: // value for 'extraRoles'
@@ -22208,7 +22208,7 @@ export const CommunityApplicationDocument = gql`
         id
         createdDate
         updatedDate
-        contributor {
+        actor {
           id
           profile {
             id
@@ -22310,7 +22310,7 @@ export const CommunityInvitationDocument = gql`
         createdDate
         updatedDate
         welcomeMessage
-        contributor {
+        actor {
           type
           id
           profile {
@@ -26850,7 +26850,7 @@ export const SearchDocument = gql`
         }
         total
       }
-      contributorResults {
+      actorResults {
         cursor
         results {
           id
@@ -27645,7 +27645,7 @@ export const PendingInvitationsDocument = gql`
         invitation {
           id
           welcomeMessage
-          contributor {
+          actor {
             type
           }
           createdBy {
