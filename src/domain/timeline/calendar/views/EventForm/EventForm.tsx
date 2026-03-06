@@ -85,7 +85,7 @@ const EventForm = ({
                 />
               </Gutters>
               <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
-                <FormikDatePicker name="endDate" label={t('common.date')} minDate={startDate} disabled={wholeDay} />
+                <FormikDatePicker name="endDate" label={t('common.date')} minDate={startDate} />
                 {isSameDay(startDate, endDate) ? (
                   <FormikDurationMinutes
                     name="durationMinutes"

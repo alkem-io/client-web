@@ -976,12 +976,18 @@ export type CalendarEvent = {
   durationDays?: Maybe<Scalars['Float']['output']>;
   /** The length of the event in minutes. */
   durationMinutes: Scalars['Float']['output'];
+  /** Google Calendar add-event URL for this CalendarEvent. */
+  googleCalendarUrl?: Maybe<Scalars['String']['output']>;
+  /** ICS download URL for this CalendarEvent. */
+  icsDownloadUrl?: Maybe<Scalars['String']['output']>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Flag to indicate if this event is for multiple days. */
   multipleDays: Scalars['Boolean']['output'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** Outlook Calendar add-event URL for this CalendarEvent. */
+  outlookCalendarUrl?: Maybe<Scalars['String']['output']>;
   /** The Profile for this Post. */
   profile: Profile;
   /** The start time for this CalendarEvent. */
@@ -31373,6 +31379,27 @@ export type DeleteCalendarEventMutationVariables = Exact<{
 export type DeleteCalendarEventMutation = {
   __typename?: 'Mutation';
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string };
+};
+
+export type CalendarEventImportUrlsQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+export type CalendarEventImportUrlsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calendarEvent?:
+      | {
+          __typename?: 'CalendarEvent';
+          id: string;
+          googleCalendarUrl?: string | undefined;
+          outlookCalendarUrl?: string | undefined;
+          icsDownloadUrl?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
 };
 
 export type AuthorizationPolicyQueryVariables = Exact<{
