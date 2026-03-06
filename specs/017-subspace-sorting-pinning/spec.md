@@ -149,7 +149,7 @@ The drag-and-drop behavior adapts based on the active sort mode:
 
 - The backend API will be extended to support a `pinned` boolean on subspaces and a `sortMode` setting on spaces. The exact API shape will be determined during planning.
 - The existing `sortOrder` numeric field on subspaces will continue to be used for ordering; pinning adds a filter layer on top.
-- The `@hello-pangea/dnd` library (already used in the codebase for subspace reordering) will be reused for drag-and-drop functionality.
+- Drag-and-drop will use the `@dnd-kit` library (already used for the gallery) following the same patterns as the existing `@hello-pangea/dnd` usage.
 - Only users with space admin (or equivalent) permissions can change the sort mode, pin/unpin subspaces, or reorder them.
 - The pin icon used is MUI's `PushPin` icon (referred to as "keep" in the Figma design).
 - The "Sort By" dropdown replaces or augments the existing "Reorder Subspaces" button in the space admin subspaces settings.
