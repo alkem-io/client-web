@@ -51,7 +51,7 @@ query search($searchData: SearchInput!) {
       total
     }
 
-    contributorResults {
+    actorResults {
       cursor
       results {
         id

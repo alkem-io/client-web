@@ -6,7 +6,9 @@ subscription ConversationEvents {
         id
         room {
           id
+          type
           displayName
+          avatarUrl
           unreadCount
           messagesCount
           lastMessage {
@@ -83,6 +85,16 @@ subscription ConversationEvents {
         }
       }
     }
+    conversationUpdated {
+      conversation {
+        id
+        room {
+          id
+          displayName
+          avatarUrl
+        }
+      }
+    }
     conversationDeleted {
       conversationID
     }
@@ -92,6 +104,7 @@ subscription ConversationEvents {
         room {
           id
           displayName
+          avatarUrl
         }
         members {
           id

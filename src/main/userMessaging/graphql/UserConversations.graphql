@@ -5,7 +5,9 @@ query UserConversations {
         id
         room {
           id
+          type
           displayName
+          avatarUrl
           unreadCount
           messagesCount
           lastMessage {

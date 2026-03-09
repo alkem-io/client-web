@@ -1,18 +1,3 @@
-mutation AddConversationMember($memberData: AddConversationMemberInput!) {
-  addConversationMember(memberData: $memberData) {
-    id
-    members {
-      id
-      type
-      profile {
-        id
-        displayName
-        url
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-  }
+mutation AssignConversationMember($memberData: AssignConversationMemberInput!) {
+  assignConversationMember(memberData: $memberData)
 }

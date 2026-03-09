@@ -1,18 +1,3 @@
 mutation RemoveConversationMember($memberData: RemoveConversationMemberInput!) {
-  removeConversationMember(memberData: $memberData) {
-    id
-    members {
-      id
-      type
-      profile {
-        id
-        displayName
-        url
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-  }
+  removeConversationMember(memberData: $memberData)
 }

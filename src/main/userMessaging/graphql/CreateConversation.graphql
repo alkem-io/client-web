@@ -3,7 +3,9 @@ mutation CreateConversation($conversationData: CreateConversationInput!) {
     id
     room {
       id
+      type
       displayName
+      avatarUrl
     }
     members {
       id

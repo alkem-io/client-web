@@ -1,5 +1,3 @@
 mutation LeaveConversation($leaveData: LeaveConversationInput!) {
-  leaveConversation(leaveData: $leaveData) {
-    id
-  }
+  leaveConversation(leaveData: $leaveData)
 }
