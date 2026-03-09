@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  CalloutAllowedContributors,
+  CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
@@ -51,7 +51,7 @@ export interface CalloutCreationType {
     contribution?: {
       enabled?: boolean;
       allowedTypes?: CalloutContributionType[];
-      canAddContributions?: CalloutAllowedContributors;
+      canAddContributions?: CalloutAllowedActors;
       commentsEnabled?: boolean;
     };
     visibility?: CalloutVisibility;

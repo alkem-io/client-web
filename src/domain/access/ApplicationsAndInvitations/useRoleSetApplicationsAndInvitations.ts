@@ -75,8 +75,8 @@ const useRoleSetApplicationsAndInvitations = ({
   const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
 
   const contributorIds = useMemo(() => {
-    const appIds = data?.lookup.roleSet?.applications.map(app => app.contributor.id) ?? [];
-    const invIds = data?.lookup.roleSet?.invitations.map(inv => inv.contributor.id) ?? [];
+    const appIds = data?.lookup.roleSet?.applications.map(app => app.actor.id) ?? [];
+    const invIds = data?.lookup.roleSet?.invitations.map(inv => inv.actor.id) ?? [];
     return [...new Set([...appIds, ...invIds])];
   }, [data]);
 
@@ -112,22 +112,22 @@ const useRoleSetApplicationsAndInvitations = ({
       applications:
         data?.lookup.roleSet?.applications.map(app => ({
           ...app,
-          contributorType: getContributorType(app.contributor.type),
-          contributor: {
-            ...app.contributor,
-            profile: app.contributor.profile
-              ? { ...app.contributor.profile, email: getActorEmail(actorDetailsMap[app.contributor.id]) }
+          contributorType: getContributorType(app.actor.type),
+          actor: {
+            ...app.actor,
+            profile: app.actor.profile
+              ? { ...app.actor.profile, email: getActorEmail(actorDetailsMap[app.actor.id]) }
               : undefined,
           },
         })) ?? [],
       invitations:
         data?.lookup.roleSet?.invitations.map(inv => ({
           ...inv,
-          contributorType: getContributorType(inv.contributor.type),
-          contributor: {
-            ...inv.contributor,
-            profile: inv.contributor.profile
-              ? { ...inv.contributor.profile, email: getActorEmail(actorDetailsMap[inv.contributor.id]) }
+          contributorType: getContributorType(inv.actor.type),
+          actor: {
+            ...inv.actor,
+            profile: inv.actor.profile
+              ? { ...inv.actor.profile, email: getActorEmail(actorDetailsMap[inv.actor.id]) }
               : undefined,
           },
         })) ?? [],
@@ -208,7 +208,7 @@ const useRoleSetApplicationsAndInvitations = ({
     const result = await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
-        invitedContributorIds,
+        invitedActorIds: invitedContributorIds,
         invitedUserEmails,
         welcomeMessage,
         extraRoles: filteredExtraRoles,

@@ -1,5 +1,5 @@
 import {
-  CalloutAllowedContributors,
+  CalloutAllowedActors,
   CalloutContributionType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -59,7 +59,7 @@ export const getDocumentCalloutRequestData = (name: string) => ({
     contribution: {
       enabled: true,
       allowedTypes: [CalloutContributionType.Link],
-      canAddContributions: CalloutAllowedContributors.Members,
+      canAddContributions: CalloutAllowedActors.Members,
       commentsEnabled: false,
     },
     visibility: CalloutVisibility.Published,
