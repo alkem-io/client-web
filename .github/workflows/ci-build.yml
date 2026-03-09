@@ -18,6 +18,11 @@ jobs:
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.22.0'
+
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
@@ -30,11 +35,6 @@ jobs:
           key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-${{ runner.arch }}-
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '22.22.0'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
