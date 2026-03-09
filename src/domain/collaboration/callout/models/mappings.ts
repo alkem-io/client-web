@@ -125,7 +125,7 @@ export const mapCalloutTemplateToCalloutForm = (
       poll: calloutTemplate.framing.poll
         ? {
             title: calloutTemplate.framing.poll.title,
-            options: calloutTemplate.framing.poll.options.map(o => o.text),
+            options: calloutTemplate.framing.poll.options.map(o => ({ text: o.text })),
             settings: {
               minResponses: calloutTemplate.framing.poll.settings.minResponses,
               maxResponses: calloutTemplate.framing.poll.settings.maxResponses,

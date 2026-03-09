@@ -11,26 +11,24 @@ export type PollOptionModel = {
   id: string;
   text: string;
   sortOrder: number;
-  voteCount: number | null;
-  votePercentage: number | null;
-  voters:
-    | {
+  voteCount?: number;
+  votePercentage?: number;
+  voters?: {
+    id: string;
+    profile?: {
+      id: string;
+      displayName: string;
+      visual?: {
         id: string;
-        profile: {
-          id: string;
-          displayName: string;
-          visual?: {
-            id: string;
-            uri: string;
-          };
-        };
-      }[]
-    | null;
+        uri: string;
+      };
+    };
+  }[];
 };
 
 export type PollVoteModel = {
   id: string;
-  selectedOptionIds: string[];
+  selectedOptions: { id: string }[];
 };
 
 export type PollDetailsModel = {
@@ -38,15 +36,20 @@ export type PollDetailsModel = {
   title: string;
   status: PollStatus;
   settings: PollSettingsModel;
-  totalVotes: number | null;
+  totalVotes?: number;
   canSeeDetailedResults: boolean;
   options: PollOptionModel[];
-  myVote: PollVoteModel | null;
+  myVote?: PollVoteModel;
+};
+
+export type PollFormOptionValue = {
+  id?: string;
+  text: string;
 };
 
 export type PollFormValues = {
   title: string;
-  options: string[];
+  options: PollFormOptionValue[];
   settings: PollSettingsFormValues;
 };
 

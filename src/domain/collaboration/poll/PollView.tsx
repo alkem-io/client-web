@@ -5,27 +5,24 @@ import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels'
 import { PollStatus } from '@/core/apollo/generated/graphql-schema';
 import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
 import PollResultsDisplay from '@/domain/collaboration/poll/PollResultsDisplay';
-import PollOptionManager from '@/domain/collaboration/poll/PollOptionManager';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
 import { Caption } from '@/core/ui/typography/components';
 import { gutters } from '@/core/ui/grid/utils';
 
 type PollViewProps = {
   poll: PollDetailsModel;
-  editable?: boolean;
   canVote?: boolean;
 };
 
-const PollView = ({ poll, editable = false, canVote = false }: PollViewProps) => {
+const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const { t } = useTranslation();
 
-  const mySelectedOptionIds = poll.myVote?.selectedOptionIds ?? [];
+  const mySelectedOptionIds = poll.myVote?.selectedOptions.map(o => o.id) ?? [];
   const hasVoted = poll.myVote !== null;
   const isClosed = poll.status === PollStatus.Closed;
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(mySelectedOptionIds);
   const [isChangingVote, setIsChangingVote] = useState(false);
-  const [isManaging, setIsManaging] = useState(false);
 
   const { castVote, loading, error: voteError } = usePollVote({ pollId: poll.id, poll });
 
@@ -49,27 +46,8 @@ const PollView = ({ poll, editable = false, canVote = false }: PollViewProps) =>
     setIsChangingVote(false);
   };
 
-  if (isManaging && editable) {
-    return (
-      <Box>
-        <PollOptionManager poll={poll} pollId={poll.id} />
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-          <Button onClick={() => setIsManaging(false)}>{t('poll.manage.done')}</Button>
-        </Box>
-      </Box>
-    );
-  }
-
   return (
     <Box>
-      {editable && !isVotingMode && (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-          <Button size="small" onClick={() => setIsManaging(true)}>
-            {t('poll.manage.editPoll')}
-          </Button>
-        </Box>
-      )}
-
       {isVotingMode && (
         <Box>
           <PollVotingControls

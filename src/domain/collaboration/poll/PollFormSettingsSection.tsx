@@ -40,7 +40,7 @@ const PollFormSettingsSection = ({ fieldPrefix }: PollFormSettingsSectionProps) 
         />
         <FormikInputField
           name={`${settingsPath}.resultsVisibility`}
-          title={t('poll.create.resultsVisibility')}
+          title={t('poll.create.resultsVisibility.title')}
           select
           value={settings?.resultsVisibility ?? PollResultsVisibility.Visible}
           onChange={e => setFieldValue(`${settingsPath}.resultsVisibility`, e.target.value)}
@@ -51,7 +51,7 @@ const PollFormSettingsSection = ({ fieldPrefix }: PollFormSettingsSectionProps) 
         </FormikInputField>
         <FormikInputField
           name={`${settingsPath}.resultsDetail`}
-          title={t('poll.create.resultsDetail')}
+          title={t('poll.create.resultsDetail.title')}
           select
           value={settings?.resultsDetail ?? PollResultsDetail.Full}
           onChange={e => setFieldValue(`${settingsPath}.resultsDetail`, e.target.value)}

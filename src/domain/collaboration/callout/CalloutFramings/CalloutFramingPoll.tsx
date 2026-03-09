@@ -1,6 +1,7 @@
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import PollView from '@/domain/collaboration/poll/PollView';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface CalloutFramingPollProps {
   callout: CalloutDetailsModelExtended;
@@ -15,7 +16,11 @@ const CalloutFramingPoll = ({ callout }: CalloutFramingPollProps) => {
 
   const canVote = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Contribute) ?? false;
 
-  return <PollView poll={poll} editable={callout.editable} canVote={canVote} />;
+  return (
+    <Gutters>
+      <PollView poll={poll} canVote={canVote} />
+    </Gutters>
+  );
 };
 
 export default CalloutFramingPoll;

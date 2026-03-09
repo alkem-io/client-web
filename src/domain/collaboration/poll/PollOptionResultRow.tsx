@@ -53,7 +53,7 @@ const PollOptionResultRow = ({ option, resultsDetail, isSelected }: PollOptionRe
         />
       )}
 
-      {showVoters && <PollVoterAvatars voters={option.voters} />}
+      {showVoters && option.voters && <PollVoterAvatars voters={option.voters} />}
     </Box>
   );
 };

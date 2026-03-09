@@ -183,34 +183,6 @@ const UserAdminNotificationsPage = () => {
       value,
       currentSettings.space?.communityCalendarEvents
     ),
-    collaborationPollVoteCastOnOwnPoll: createNotificationChannel(
-      type,
-      property,
-      'collaborationPollVoteCastOnOwnPoll',
-      value,
-      currentSettings.space?.collaborationPollVoteCastOnOwnPoll
-    ),
-    collaborationPollVoteCastOnPollIVotedOn: createNotificationChannel(
-      type,
-      property,
-      'collaborationPollVoteCastOnPollIVotedOn',
-      value,
-      currentSettings.space?.collaborationPollVoteCastOnPollIVotedOn
-    ),
-    collaborationPollModifiedOnPollIVotedOn: createNotificationChannel(
-      type,
-      property,
-      'collaborationPollModifiedOnPollIVotedOn',
-      value,
-      currentSettings.space?.collaborationPollModifiedOnPollIVotedOn
-    ),
-    collaborationPollVoteAffectedByOptionChange: createNotificationChannel(
-      type,
-      property,
-      'collaborationPollVoteAffectedByOptionChange',
-      value,
-      currentSettings.space?.collaborationPollVoteAffectedByOptionChange
-    ),
   });
 
   const buildSpaceAdminSettings = (property: string, type: 'inApp' | 'email', value: boolean) => ({
@@ -369,18 +341,6 @@ const UserAdminNotificationsPage = () => {
           ),
           collaborationCalloutComment: preserveChannel(currentSettings.space?.collaborationCalloutComment),
           communityCalendarEvents: preserveChannel(currentSettings.space?.communityCalendarEvents),
-          collaborationPollVoteCastOnOwnPoll: preserveChannel(
-            currentSettings.space?.collaborationPollVoteCastOnOwnPoll
-          ),
-          collaborationPollVoteCastOnPollIVotedOn: preserveChannel(
-            currentSettings.space?.collaborationPollVoteCastOnPollIVotedOn
-          ),
-          collaborationPollModifiedOnPollIVotedOn: preserveChannel(
-            currentSettings.space?.collaborationPollModifiedOnPollIVotedOn
-          ),
-          collaborationPollVoteAffectedByOptionChange: preserveChannel(
-            currentSettings.space?.collaborationPollVoteAffectedByOptionChange
-          ),
           admin: buildSpaceAdminSettings(property, type, value),
         };
         break;

@@ -2360,14 +2360,18 @@
       "minResponses": "Minimum selections",
       "maxResponses": "Maximum selections",
       "maxResponsesUnlimited": "0 = unlimited",
-      "resultsVisibility": "Results visibility",
-      "resultsVisibilityVISIBLE": "Always visible",
-      "resultsVisibilityHIDDEN": "Hidden until voted",
-      "resultsVisibilityTOTAL_ONLY": "Total count only until voted",
-      "resultsDetail": "Results detail level",
-      "resultsDetailFULL": "Full (counts, percentages, and voters)",
-      "resultsDetailCOUNT": "Counts only",
-      "resultsDetailPERCENTAGE": "Percentages only"
+      "resultsVisibility": {
+        "title": "Results visibility",
+        "VISIBLE": "Always visible",
+        "HIDDEN": "Hidden until voted",
+        "TOTAL_ONLY": "Total count only until voted"
+      },
+      "resultsDetail": {
+        "title": "Results detail level",
+        "FULL": "Full (counts, percentages, and voters)",
+        "COUNT": "Counts only",
+        "PERCENTAGE": "Percentages only"
+      }
     },
     "manage": {
       "editPoll": "Edit Poll",

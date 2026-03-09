@@ -8,7 +8,7 @@ import { Caption } from '@/core/ui/typography';
 type PollResultsDisplayProps = {
   options: PollOptionModel[];
   resultsDetail: PollResultsDetail;
-  totalVotes: number | null;
+  totalVotes?: number;
   selectedOptionIds: string[];
 };
 

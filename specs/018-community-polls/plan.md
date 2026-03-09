@@ -71,21 +71,19 @@ specs/018-community-polls/
 ```text
 src/domain/collaboration/
 ├── poll/                                    # NEW: Poll domain directory
-│   ├── PollView.tsx                         # Main poll display (voting + results)
+│   ├── PollView.tsx                         # Main poll display (voting + results, read-only — no edit controls)
 │   ├── PollVotingControls.tsx               # Radio/checkbox vote selection
 │   ├── PollResultsDisplay.tsx               # Results with progress bars
 │   ├── PollOptionResultRow.tsx              # Single option result row
 │   ├── PollVoterAvatars.tsx                 # Voter avatar group (FULL detail)
 │   ├── PollEmptyState.tsx                   # "No votes yet" empty state
-│   ├── PollOptionManager.tsx                # Option add/edit/remove/reorder UI
-│   ├── PollOptionManagerRow.tsx             # Single option in edit mode
-│   ├── PollFormFields.tsx                   # Creation form fields (title, options, settings)
+│   ├── PollFormFields.tsx                   # Creation & edit form fields (title, options with reorder, settings)
 │   ├── PollFormSettingsSection.tsx          # Advanced settings (expandable)
 │   ├── models/
 │   │   └── PollModels.ts                   # Client view model types
 │   ├── hooks/
 │   │   ├── usePollVote.ts                  # Vote submission hook (castPollVote)
-│   │   └── usePollOptionManagement.ts      # Option CRUD hooks
+│   │   └── usePollOptionManagement.ts      # Option CRUD hooks (used by edit dialog save)
 │   └── graphql/
 │       └── pollFragments.graphql           # PollDetails, PollOptionFields, PollVoteFields fragments
 │

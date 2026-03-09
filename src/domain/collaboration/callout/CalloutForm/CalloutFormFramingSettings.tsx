@@ -113,7 +113,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           type: newType,
           poll: {
             title: '',
-            options: ['', ''],
+            options: [{ text: '' }, { text: '' }],
             settings: {
               minResponses: 1,
               maxResponses: 1,

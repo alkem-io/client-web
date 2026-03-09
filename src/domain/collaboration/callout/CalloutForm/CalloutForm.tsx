@@ -70,7 +70,11 @@ export const calloutValidationSchema = yup.object().shape({
         ? schema
             .shape({
               title: displayNameValidator({ required: true }),
-              options: yup.array().of(yup.string().required()).min(2).required(),
+              options: yup
+                .array()
+                .of(yup.object().shape({ text: yup.string().required() }))
+                .min(2)
+                .required(),
               settings: yup
                 .object()
                 .shape({

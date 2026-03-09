@@ -75,13 +75,14 @@ All NEEDS CLARIFICATION items from the technical context have been resolved thro
 
 ## Decision 6: Option Management UI
 
-**Decision**: When a callout editor views a poll they can edit, show an "Edit Poll" action that opens an inline editing mode. In edit mode, options display with text edit fields, delete buttons, and drag handles for reordering. Uses `@dnd-kit/sortable` if already available, otherwise MUI-native up/down buttons. Each mutation (add/edit/remove/reorder) fires independently.
+**Decision**: All poll option management (add, edit text, remove, reorder) happens exclusively in the **Edit Callout dialog** (Formik form). The inline PollView in the callout is read-only — voting and results only, no "Edit Poll" button or inline option editing. When editing, the PollFormFields component renders options with text fields, remove buttons, and up/down arrow buttons for reordering, consistent with the creation form but enhanced with reorder controls.
 
-**Rationale**: Inline editing keeps the user in context. Independent mutations match the server API (separate mutations for each action). Confirmation dialogs for destructive actions (edit text, remove option) are shown when the option has votes, following FR-020.
+**Rationale**: Consolidating all editing in the Edit Callout dialog provides a single, consistent editing experience. It follows the same pattern used for editing other framing types (whiteboard, memo, link, media gallery) — none of those have inline editing in the callout view. This simplifies PollView (pure voting/results component), eliminates the need for the PollOptionManager/PollOptionManagerRow components in the callout view, and keeps the `usePollOptionManagement` hook mutations only for the save action in the dialog. The edit callout dialog already has a well-established UX pattern with save/cancel, which provides a safer editing experience than immediate-fire mutations.
 
 **Alternatives considered**:
 
-- Batch editing with a single "Save" button — rejected because the server API has separate mutations and batch mode would add complex state tracking for no benefit.
+- Inline editing via PollOptionManager in the callout view (original design) — **rejected and migrated away from** because it was inconsistent with how all other framing types handle editing, and it mixed editing concerns into the read-only poll display.
+- Batch editing with a single "Save" button in inline mode — rejected because the Edit Callout dialog already provides this UX naturally.
 - Full-page option management view — rejected as overkill; polls have at most ~20 options.
 
 ---

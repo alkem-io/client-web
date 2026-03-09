@@ -14,7 +14,7 @@ import {
   CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
 import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
-import { PollFormValues } from '../../poll/models/PollModels';
+import { PollSettingsFormValues } from '../../poll/models/PollModels';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {
@@ -27,7 +27,11 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     type: CalloutFramingType;
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
     memo?: MemoFieldSubmittedValues;
-    poll?: PollFormValues;
+    poll?: {
+      title: string;
+      options: string[];
+      settings: PollSettingsFormValues;
+    };
     tags?: string[];
   };
 }

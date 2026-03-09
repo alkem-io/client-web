@@ -22,10 +22,10 @@ const basePoll: PollDetailsModel = {
   totalVotes: 5,
   canSeeDetailedResults: true,
   options: [
-    { id: 'opt-1', text: 'Option A', sortOrder: 0, voteCount: 3, votePercentage: 60, voters: null },
-    { id: 'opt-2', text: 'Option B', sortOrder: 1, voteCount: 2, votePercentage: 40, voters: null },
+    { id: 'opt-1', text: 'Option A', sortOrder: 0, voteCount: 3, votePercentage: 60 },
+    { id: 'opt-2', text: 'Option B', sortOrder: 1, voteCount: 2, votePercentage: 40 },
   ],
-  myVote: null,
+  myVote: undefined,
 };
 
 describe('usePollVote', () => {
@@ -66,7 +66,7 @@ describe('usePollVote', () => {
   test('optimistic response does not increment totalVotes for vote change', async () => {
     const pollWithVote: PollDetailsModel = {
       ...basePoll,
-      myVote: { id: 'vote-1', selectedOptionIds: ['opt-1'] },
+      myVote: { id: 'vote-1', selectedOptions: [{ id: 'opt-1' }] },
     };
 
     const { result } = renderHook(() => usePollVote({ pollId: 'poll-1', poll: pollWithVote }));
@@ -82,7 +82,7 @@ describe('usePollVote', () => {
   test('optimistic response updates option vote counts correctly', async () => {
     const pollWithVote: PollDetailsModel = {
       ...basePoll,
-      myVote: { id: 'vote-1', selectedOptionIds: ['opt-1'] },
+      myVote: { id: 'vote-1', selectedOptions: [{ id: 'opt-1' }] },
     };
 
     const { result } = renderHook(() => usePollVote({ pollId: 'poll-1', poll: pollWithVote }));

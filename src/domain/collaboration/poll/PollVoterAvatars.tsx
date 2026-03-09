@@ -5,7 +5,7 @@ import { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 type Voter = NonNullable<PollOptionModel['voters']>[number];
 
 type PollVoterAvatarsProps = {
-  voters: Voter[] | null;
+  voters?: Voter[];
 };
 
 const PollVoterAvatars = ({ voters }: PollVoterAvatarsProps) => {
@@ -15,11 +15,13 @@ const PollVoterAvatars = ({ voters }: PollVoterAvatarsProps) => {
 
   return (
     <AvatarGroup max={5} sx={{ justifyContent: 'flex-end' }}>
-      {voters.map(voter => (
-        <Tooltip key={voter.id} title={voter.profile.displayName}>
-          <Avatar src={voter.profile.visual?.uri} alt={voter.profile.displayName} size="xsmall" />
-        </Tooltip>
-      ))}
+      {voters.map(voter =>
+        voter.profile ? (
+          <Tooltip key={voter.id} title={voter.profile.displayName}>
+            <Avatar src={voter.profile.visual?.uri} alt={voter.profile.displayName} size="xsmall" />
+          </Tooltip>
+        ) : null
+      )}
     </AvatarGroup>
   );
 };

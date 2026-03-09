@@ -107,6 +107,13 @@ const CreateCalloutDialog = ({
         ...framingData,
         profile: mapProfileModelToCreateProfileInput(framingData.profile),
         tags: mapProfileTagsToCreateTags(framingData.profile),
+        // Map poll options from form model (objects) to creation input (strings)
+        poll: framingData.poll
+          ? {
+              ...framingData.poll,
+              options: framingData.poll.options.map(o => o.text),
+            }
+          : undefined,
         // Map media gallery items to CreateMediaGalleryInput
       };
 

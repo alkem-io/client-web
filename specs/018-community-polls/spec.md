@@ -90,20 +90,21 @@ A member who has already voted on a poll decides to change their mind. They can 
 
 ### User Story 5 — Managing Poll Options (Priority: P5)
 
-A callout editor (facilitator/admin) can manage the options of an existing poll: add new options, edit option text, remove options, and reorder options. Editing or removing an option that has received votes triggers vote cleanup and notifies affected voters.
+A callout editor (facilitator/admin) can manage the options of an existing poll through the **Edit Callout dialog**: add new options, edit option text, remove options, and reorder options. All option management is consolidated in the edit callout form — the inline callout view is read-only (voting + results only, no edit controls). Editing or removing an option that has received votes triggers vote cleanup and notifies affected voters.
 
 **Why this priority**: Option management is needed for poll maintenance but is an administrative action. Polls can function without post-creation edits.
 
-**Independent Test**: Can be tested by editing, adding, removing, and reordering options on an existing poll, verifying the poll updates correctly.
+**Independent Test**: Can be tested by opening the Edit Callout dialog on a poll, adding/removing/reordering options via the form, saving, and verifying the poll updates correctly.
 
 **Acceptance Scenarios**:
 
-1. **Given** a callout editor views a poll they can manage, **When** they enter edit mode, **Then** each option shows edit, remove, and reorder controls, plus an "Add Option" action.
-2. **Given** the editor clicks "Add Option," **When** they enter text and confirm, **Then** the addPollOption mutation is called and the new option appears at the end of the list.
-3. **Given** the editor edits an option's text, **When** they confirm the change, **Then** the updatePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted.
-4. **Given** the editor removes an option, **When** they confirm, **Then** the removePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted. At least 2 options must remain.
-5. **Given** the editor reorders options (via drag-and-drop or up/down buttons), **When** they confirm the new order, **Then** the reorderPollOptions mutation is called with the full set of option IDs in the new order.
-6. **Given** only 2 options remain, **When** the editor tries to remove one, **Then** the remove action is disabled with a tooltip explaining the minimum requirement.
+1. **Given** a callout editor opens the Edit Callout dialog for a poll, **When** the dialog loads, **Then** the poll form shows the current options with text fields, remove buttons, reorder controls (up/down arrows), and an "Add Option" button.
+2. **Given** the editor clicks "Add Option" in the edit form, **When** they enter text, **Then** a new option input is appended to the options list.
+3. **Given** the editor edits an option's text in the form, **When** they save the callout, **Then** the updatePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted.
+4. **Given** the editor removes an option in the form, **When** they save the callout, **Then** the removePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted. At least 2 options must remain.
+5. **Given** the editor reorders options via up/down arrow buttons in the form, **When** they save the callout, **Then** the reorderPollOptions mutation is called with the full set of option IDs in the new order.
+6. **Given** only 2 options remain in the form, **When** the editor tries to remove one, **Then** the remove button is disabled/hidden (minimum 2 enforced).
+7. **Given** a callout editor views a poll in the callout view, **When** they look at the poll, **Then** NO inline edit controls are shown — the poll view is read-only (voting and results only). Editing is only available through the Edit Callout dialog accessed via the callout settings menu.
 
 ---
 
@@ -167,7 +168,7 @@ Users can manage their notification preferences for poll-related events. Four ne
 
 **Option Management**
 
-- **FR-019**: The client MUST provide UI controls for callout editors to add, edit, remove, and reorder poll options.
+- **FR-019**: The client MUST provide UI controls in the Edit Callout dialog for callout editors to add, edit, remove, and reorder poll options. The inline poll view in the callout MUST NOT contain option management controls.
 - **FR-020**: The client MUST show a confirmation dialog before editing or removing an option that has votes, warning the user that affected votes will be deleted.
 - **FR-021**: The client MUST prevent removing options when only 2 remain.
 - **FR-022**: The client MUST call the appropriate mutations (addPollOption, updatePollOption, removePollOption, reorderPollOptions) for each management action.
@@ -198,7 +199,7 @@ Users can manage their notification preferences for poll-related events. Four ne
 - **SC-003**: 100% of votes cast through the UI are accurately reflected in the results display after mutation completion.
 - **SC-004**: Results display correctly adapts to all 6 combinations of resultsVisibility (HIDDEN, TOTAL_ONLY, VISIBLE) and voted/not-voted states.
 - **SC-005**: Results display correctly adapts to all 3 resultsDetail levels (PERCENTAGE, COUNT, FULL).
-- **SC-006**: A facilitator can add, edit, remove, and reorder poll options, with confirmation dialogs shown when votes would be affected.
+- **SC-006**: A facilitator can add, edit, remove, and reorder poll options via the Edit Callout dialog, with confirmation dialogs shown when votes would be affected.
 - **SC-007**: 90% of first-time users successfully cast a vote without needing help or documentation.
 - **SC-008**: All poll UI elements meet WCAG 2.1 AA accessibility requirements, including keyboard navigation and screen reader support.
 
