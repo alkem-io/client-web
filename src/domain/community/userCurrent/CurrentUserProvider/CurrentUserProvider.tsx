@@ -6,7 +6,6 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
-import { error as sentryError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
 import { toPlatformPrivilegeWrapper } from './usePlatformPrivilegeWrapper';
 import { CurrentUserModel } from '../model/CurrentUserModel';
@@ -105,21 +104,6 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
       accountEntitlements,
     ]
   );
-
-  useEffect(() => {
-    if (error) {
-      sentryError(error, { category: TagCategoryValues.AUTH, label: 'CurrentUserProvider: user registration failed' });
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (userProviderError) {
-      sentryError(userProviderError, {
-        category: TagCategoryValues.AUTH,
-        label: 'CurrentUserProvider: user query failed',
-      });
-    }
-  }, [userProviderError]);
 
   const criticalError = error ?? userProviderError;
 

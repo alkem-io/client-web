@@ -3,7 +3,6 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
 import { ClosestAncestor, NotAuthorizedError, NotFoundError } from './40XErrors';
 import { setNavigationHistoryError } from '../routing/NavigationHistory';
-import { error as sentryError, TagCategoryValues } from '@/core/logging/sentry/log';
 
 interface Props extends React.PropsWithChildren {
   errorComponent: (errorState: State) => React.ReactNode;
@@ -61,13 +60,6 @@ class Error40XBoundaryInternal extends React.Component<InternalProps, State> {
         redirectUrl: undefined,
         closestAncestor: undefined,
       };
-    }
-  }
-
-  componentDidCatch(error: Error) {
-    // Log non-40X errors to Sentry; 404/403 are expected navigational errors.
-    if (!(error instanceof NotFoundError) && !(error instanceof NotAuthorizedError)) {
-      sentryError(error, { category: TagCategoryValues.UI, label: 'Error40XBoundary' });
     }
   }
 
