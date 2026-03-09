@@ -1,4 +1,4 @@
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import BlockIcon from '@mui/icons-material/Block';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
@@ -192,7 +192,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           disabled: calloutRestrictions?.disableMediaGallery,
         },
         {
-          icon: BallotOutlinedIcon,
+          icon: ChecklistRtlIcon,
           value: CalloutFramingType.Poll,
           label: t('callout.create.framingSettings.poll.title'),
           tooltip: t('callout.create.framingSettings.poll.tooltip'),
@@ -287,7 +287,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
 
       {framing.poll && framing.type === CalloutFramingType.Poll && (
         <PageContentBlock>
-          <PollFormFields />
+          <PollFormFields readOnly={edit} />
         </PageContentBlock>
       )}
     </>

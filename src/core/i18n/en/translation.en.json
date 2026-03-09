@@ -2357,9 +2357,9 @@
       "title": "Poll Title",
       "options": "Options",
       "settings": "Advanced Settings",
-      "minResponses": "Minimum selections",
-      "maxResponses": "Maximum selections",
-      "maxResponsesUnlimited": "0 = unlimited",
+      "responseType": "Response type",
+      "singleResponse": "Single response",
+      "multipleResponses": "Multiple responses",
       "resultsVisibility": {
         "title": "Results visibility",
         "VISIBLE": "Always visible",

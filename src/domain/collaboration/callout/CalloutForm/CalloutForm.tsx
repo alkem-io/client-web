@@ -75,13 +75,7 @@ export const calloutValidationSchema = yup.object().shape({
                 .of(yup.object().shape({ text: yup.string().required() }))
                 .min(2)
                 .required(),
-              settings: yup
-                .object()
-                .shape({
-                  minResponses: yup.number().min(1).required(),
-                  maxResponses: yup.number().min(0).required(),
-                })
-                .required(),
+              settings: yup.object().required(),
             })
             .required()
         : schema.nullable();

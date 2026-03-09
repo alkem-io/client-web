@@ -63,8 +63,8 @@ A space facilitator (user with callout creation rights) creates a new poll withi
 1. **Given** a user with callout creation rights opens the create callout dialog, **When** they select the framing type, **Then** "Poll" appears as an option alongside existing types (Whiteboard, Link, Memo, etc.).
 2. **Given** the user selects Poll type, **When** the form renders, **Then** it shows fields for: poll title, callout description (serves as prompt), and a dynamic list of option text inputs (minimum 2).
 3. **Given** the user has entered a title and fewer than 2 options, **When** they attempt to submit, **Then** validation prevents submission with a message indicating at least 2 options are required.
-4. **Given** the user enters poll details, **When** they expand the optional settings section, **Then** they can configure: minResponses (default 1), maxResponses (default 1, with 0 = unlimited), resultsVisibility (default VISIBLE), and resultsDetail (default FULL).
-5. **Given** maxResponses is set to a value > 0 and less than minResponses, **When** the user attempts to submit, **Then** validation prevents submission with a message explaining the constraint.
+4. **Given** the user enters poll details, **When** they click the "Advanced Settings" button, **Then** a dialog opens where they can configure: response type via radio buttons ("Single response" maps to minResponses=1, maxResponses=1; "Multiple responses" maps to minResponses=1, maxResponses=0), resultsVisibility (default VISIBLE), and resultsDetail (default FULL).
+5. **Given** the user is reordering poll options during creation, **When** they drag an option to a new position, **Then** the option moves to the new position via drag-and-drop (using @dnd-kit).
 6. **Given** all fields are valid, **When** the user submits, **Then** the createCallout mutation is called with framing.type = POLL and framing.poll populated, and the new poll callout appears in the space.
 7. **Given** the user adds options, **When** clicking "Add Option," **Then** a new empty text input is appended to the options list.
 8. **Given** the options list has more than 2 entries, **When** the user clicks "Remove" on an option, **Then** that option is removed from the list (minimum 2 enforced).
@@ -98,13 +98,14 @@ A callout editor (facilitator/admin) can manage the options of an existing poll 
 
 **Acceptance Scenarios**:
 
-1. **Given** a callout editor opens the Edit Callout dialog for a poll, **When** the dialog loads, **Then** the poll form shows the current options with text fields, remove buttons, reorder controls (up/down arrows), and an "Add Option" button.
+1. **Given** a callout editor opens the Edit Callout dialog for a poll, **When** the dialog loads, **Then** the poll form shows the current options with text fields, remove buttons, drag-and-drop reorder handles, and an "Add Option" button.
 2. **Given** the editor clicks "Add Option" in the edit form, **When** they enter text, **Then** a new option input is appended to the options list.
 3. **Given** the editor edits an option's text in the form, **When** they save the callout, **Then** the updatePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted.
 4. **Given** the editor removes an option in the form, **When** they save the callout, **Then** the removePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted. At least 2 options must remain.
-5. **Given** the editor reorders options via up/down arrow buttons in the form, **When** they save the callout, **Then** the reorderPollOptions mutation is called with the full set of option IDs in the new order.
-6. **Given** only 2 options remain in the form, **When** the editor tries to remove one, **Then** the remove button is disabled/hidden (minimum 2 enforced).
-7. **Given** a callout editor views a poll in the callout view, **When** they look at the poll, **Then** NO inline edit controls are shown — the poll view is read-only (voting and results only). Editing is only available through the Edit Callout dialog accessed via the callout settings menu.
+5. **Given** the editor reorders options via drag-and-drop in the form, **When** they save the callout, **Then** the reorderPollOptions mutation is called with the full set of option IDs in the new order.
+6. **Given** the editor clicks "Advanced Settings" in the Edit Callout dialog for a poll, **When** the settings dialog opens, **Then** all advanced settings (response type, results visibility, results detail level) are displayed as read-only and cannot be modified.
+7. **Given** only 2 options remain in the form, **When** the editor tries to remove one, **Then** the remove button is disabled/hidden (minimum 2 enforced).
+8. **Given** a callout editor views a poll in the callout view, **When** they look at the poll, **Then** NO inline edit controls are shown — the poll view is read-only (voting and results only). Editing is only available through the Edit Callout dialog accessed via the callout settings menu.
 
 ---
 
@@ -162,8 +163,8 @@ Users can manage their notification preferences for poll-related events. Four ne
 **Poll Creation**
 
 - **FR-015**: The client MUST add "Poll" as a selectable framing type in the create callout dialog.
-- **FR-016**: The client MUST provide a form for poll creation with fields: title, options (dynamic list, minimum 2), and optional settings (minResponses, maxResponses, resultsVisibility, resultsDetail).
-- **FR-017**: The client MUST validate that at least 2 options are provided, option text is not empty, title is not empty, and maxResponses >= minResponses (when maxResponses > 0) before submission.
+- **FR-016**: The client MUST provide a form for poll creation with fields: title, options (dynamic list with drag-and-drop reordering, minimum 2), and an "Advanced Settings" button that opens a dialog with: response type radio buttons ("Single response" = min 1 / max 1, "Multiple responses" = min 1 / max 0), resultsVisibility, and resultsDetail. Advanced settings MUST be read-only when editing an existing callout.
+- **FR-017**: The client MUST validate that at least 2 options are provided and option text is not empty before submission.
 - **FR-018**: The client MUST send the poll data via the existing createCallout mutation with framing.type = POLL and framing.poll populated.
 
 **Option Management**

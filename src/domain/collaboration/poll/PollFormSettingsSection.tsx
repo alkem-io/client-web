@@ -1,5 +1,19 @@
-import { Accordion, AccordionDetails, AccordionSummary, MenuItem, Typography } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useState } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Typography,
+} from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
@@ -8,60 +22,91 @@ import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/Callo
 
 type PollFormSettingsSectionProps = {
   fieldPrefix: string;
+  readOnly?: boolean;
 };
 
-const PollFormSettingsSection = ({ fieldPrefix }: PollFormSettingsSectionProps) => {
+const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSettingsSectionProps) => {
   const { t } = useTranslation();
   const { setFieldValue, values } = useFormikContext<CalloutFormSubmittedValues>();
+  const [open, setOpen] = useState(false);
 
   const settingsPath = `${fieldPrefix}.settings`;
   const settings = values.framing.poll?.settings;
 
+  const isSingleResponse = settings?.maxResponses === 1;
+  const responseType = isSingleResponse ? 'single' : 'multiple';
+
+  const handleResponseTypeChange = (value: string) => {
+    if (readOnly) return;
+    if (value === 'single') {
+      setFieldValue(`${settingsPath}.minResponses`, 1);
+      setFieldValue(`${settingsPath}.maxResponses`, 1);
+    } else {
+      setFieldValue(`${settingsPath}.minResponses`, 1);
+      setFieldValue(`${settingsPath}.maxResponses`, 0);
+    }
+  };
+
   return (
-    <Accordion disableGutters elevation={0} sx={{ '&::before': { display: 'none' } }}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="body2">{t('poll.create.settings')}</Typography>
-      </AccordionSummary>
-      <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <FormikInputField
-          name={`${settingsPath}.minResponses`}
-          title={t('poll.create.minResponses')}
-          type="number"
-          value={String(settings?.minResponses ?? 1)}
-          onChange={e => setFieldValue(`${settingsPath}.minResponses`, Math.max(1, Number(e.target.value)))}
-        />
-        <FormikInputField
-          name={`${settingsPath}.maxResponses`}
-          title={t('poll.create.maxResponses')}
-          type="number"
-          value={String(settings?.maxResponses ?? 1)}
-          onChange={e => setFieldValue(`${settingsPath}.maxResponses`, Math.max(0, Number(e.target.value)))}
-          helpIconText={t('poll.create.maxResponsesUnlimited')}
-        />
-        <FormikInputField
-          name={`${settingsPath}.resultsVisibility`}
-          title={t('poll.create.resultsVisibility.title')}
-          select
-          value={settings?.resultsVisibility ?? PollResultsVisibility.Visible}
-          onChange={e => setFieldValue(`${settingsPath}.resultsVisibility`, e.target.value)}
-        >
-          <MenuItem value={PollResultsVisibility.Visible}>{t('poll.create.resultsVisibility.VISIBLE')}</MenuItem>
-          <MenuItem value={PollResultsVisibility.Hidden}>{t('poll.create.resultsVisibility.HIDDEN')}</MenuItem>
-          <MenuItem value={PollResultsVisibility.TotalOnly}>{t('poll.create.resultsVisibility.TOTAL_ONLY')}</MenuItem>
-        </FormikInputField>
-        <FormikInputField
-          name={`${settingsPath}.resultsDetail`}
-          title={t('poll.create.resultsDetail.title')}
-          select
-          value={settings?.resultsDetail ?? PollResultsDetail.Full}
-          onChange={e => setFieldValue(`${settingsPath}.resultsDetail`, e.target.value)}
-        >
-          <MenuItem value={PollResultsDetail.Full}>{t('poll.create.resultsDetail.FULL')}</MenuItem>
-          <MenuItem value={PollResultsDetail.Count}>{t('poll.create.resultsDetail.COUNT')}</MenuItem>
-          <MenuItem value={PollResultsDetail.Percentage}>{t('poll.create.resultsDetail.PERCENTAGE')}</MenuItem>
-        </FormikInputField>
-      </AccordionDetails>
-    </Accordion>
+    <>
+      <Button
+        size="small"
+        variant="text"
+        startIcon={<SettingsOutlinedIcon />}
+        onClick={() => setOpen(true)}
+        sx={{ alignSelf: 'flex-start' }}
+      >
+        {t('poll.create.settings')}
+      </Button>
+
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>{t('poll.create.settings')}</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
+          <FormControl disabled={readOnly}>
+            <FormLabel>
+              <Typography variant="body2" fontWeight={600}>
+                {t('poll.create.responseType')}
+              </Typography>
+            </FormLabel>
+            <RadioGroup value={responseType} onChange={(_e, value) => handleResponseTypeChange(value)}>
+              <FormControlLabel value="single" control={<Radio />} label={t('poll.create.singleResponse')} />
+              <FormControlLabel value="multiple" control={<Radio />} label={t('poll.create.multipleResponses')} />
+            </RadioGroup>
+          </FormControl>
+
+          <FormikInputField
+            name={`${settingsPath}.resultsVisibility`}
+            title={t('poll.create.resultsVisibility.title')}
+            select
+            value={settings?.resultsVisibility ?? PollResultsVisibility.Visible}
+            onChange={e => !readOnly && setFieldValue(`${settingsPath}.resultsVisibility`, e.target.value)}
+            disabled={readOnly}
+          >
+            <MenuItem value={PollResultsVisibility.Visible}>{t('poll.create.resultsVisibility.VISIBLE')}</MenuItem>
+            <MenuItem value={PollResultsVisibility.Hidden}>{t('poll.create.resultsVisibility.HIDDEN')}</MenuItem>
+            <MenuItem value={PollResultsVisibility.TotalOnly}>{t('poll.create.resultsVisibility.TOTAL_ONLY')}</MenuItem>
+          </FormikInputField>
+
+          <FormikInputField
+            name={`${settingsPath}.resultsDetail`}
+            title={t('poll.create.resultsDetail.title')}
+            select
+            value={settings?.resultsDetail ?? PollResultsDetail.Full}
+            onChange={e => !readOnly && setFieldValue(`${settingsPath}.resultsDetail`, e.target.value)}
+            disabled={readOnly}
+          >
+            <MenuItem value={PollResultsDetail.Full}>{t('poll.create.resultsDetail.FULL')}</MenuItem>
+            <MenuItem value={PollResultsDetail.Count}>{t('poll.create.resultsDetail.COUNT')}</MenuItem>
+            <MenuItem value={PollResultsDetail.Percentage}>{t('poll.create.resultsDetail.PERCENTAGE')}</MenuItem>
+          </FormikInputField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} variant="contained">
+            {t('buttons.close')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

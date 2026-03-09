@@ -77,8 +77,8 @@ src/domain/collaboration/
 │   ├── PollOptionResultRow.tsx              # Single option result row
 │   ├── PollVoterAvatars.tsx                 # Voter avatar group (FULL detail)
 │   ├── PollEmptyState.tsx                   # "No votes yet" empty state
-│   ├── PollFormFields.tsx                   # Creation & edit form fields (title, options with reorder, settings)
-│   ├── PollFormSettingsSection.tsx          # Advanced settings (expandable)
+│   ├── PollFormFields.tsx                   # Creation & edit form fields (title, options with drag-and-drop reorder, settings button)
+│   ├── PollFormSettingsSection.tsx          # Advanced settings dialog (readonly when editing)
 │   ├── models/
 │   │   └── PollModels.ts                   # Client view model types
 │   ├── hooks/
