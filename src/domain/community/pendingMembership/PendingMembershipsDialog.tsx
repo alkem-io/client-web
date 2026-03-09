@@ -21,7 +21,7 @@ import { ActorType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
-import { defer } from 'lodash';
+import { defer } from 'lodash-es';
 import Loading from '@/core/ui/loading/Loading';
 
 interface SectionProps<T> {
@@ -58,7 +58,7 @@ const PendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      spaceUri: invitation.contributor?.type === ActorType.VirtualContributor ? undefined : space.about.profile.url,
+      spaceUri: invitation.actor?.type === ActorType.VirtualContributor ? undefined : space.about.profile.url,
     });
   };
 
@@ -82,11 +82,11 @@ const PendingMembershipsDialog = () => {
       : undefined;
 
   const virtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributor?.type === ActorType.VirtualContributor
+    invitation => invitation.invitation.actor?.type === ActorType.VirtualContributor
   );
 
   const nonVirtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributor?.type !== ActorType.VirtualContributor
+    invitation => invitation.invitation.actor?.type !== ActorType.VirtualContributor
   );
 
   const isEmpty =

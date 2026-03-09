@@ -128,7 +128,7 @@ interface CommunityApplicationsProps {
 const NO_DATA_PLACEHOLDER = '—';
 
 const CreatePendingMembershipForApplication = (application: ApplicationModel) => {
-  const applicant = application.contributor;
+  const applicant = application.actor;
   const result: MembershipTableItem = {
     id: application.id,
     type: MembershipType.Application,
@@ -146,7 +146,7 @@ const CreatePendingMembershipForApplication = (application: ApplicationModel) =>
 };
 
 const CreatePendingMembershipForInvitation = (invitation: InvitationModel) => {
-  const contributor = invitation.contributor;
+  const contributor = invitation.actor;
   const result: MembershipTableItem = {
     id: invitation.id,
     type: MembershipType.Invitation,

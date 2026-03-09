@@ -11,7 +11,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import { startOfDay } from '@/core/utils/time/utils';
-import { first, groupBy, sortBy } from 'lodash';
+import { first, groupBy, sortBy } from 'lodash-es';
 import dayjs from 'dayjs';
 import { Identifiable } from '@/core/utils/Identifiable';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
@@ -22,6 +22,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 import React from 'react';
+import ExportEventsToIcsButton from '../components/ExportEventsToIcsButton';
 
 type CalendarEventsListProps = {
   events: {
@@ -108,7 +109,11 @@ const CalendarEventsList = ({
 
   return (
     <GridProvider columns={12}>
-      <DialogHeader onClose={onClose} id={dialogTitleId}>
+      <DialogHeader
+        onClose={onClose}
+        id={dialogTitleId}
+        actions={<>{sortedFutureEvents.length > 0 && <ExportEventsToIcsButton events={sortedFutureEvents} />}</>}
+      >
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
       <Gutters row={!isMediumSmallScreen} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>

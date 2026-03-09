@@ -1,4 +1,4 @@
-import { differenceWith, isEmpty, isEqual } from 'lodash';
+import { differenceWith, isEmpty, isEqual } from 'lodash-es';
 
 export const isArrayEqual = (x: unknown[] | undefined, y: unknown[] | undefined) => {
   if (x === undefined && y === undefined) {

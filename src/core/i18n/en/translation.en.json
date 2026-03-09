@@ -89,6 +89,13 @@
         "positive": "Event End Time can't be before event Start Time"
       }
     },
+    "addToCalendar": {
+      "button": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "iCal": "Apple calendar & Other apps",
+      "exportAll": "Export all future events to calendar"
+    },
     "no-data": "No events found",
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
     "past-events": "Past Events",
@@ -516,7 +523,8 @@
       "space-visibility": {
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
-        "DEMO": "Demo"
+        "DEMO": "Demo",
+        "INACTIVE": "Inactive"
       },
       "searchVisibility": {
         "ACCOUNT": "$t(common.Account)",
@@ -1559,7 +1567,7 @@
       },
       "redirectDialog": {
         "title": "We are redirecting you...",
-        "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
+        "message": "It looks like you don’t have permission to view this item, or it may have been moved or deleted.<br/> We’re taking you to the nearest available page.",
         "countdown": "Redirecting in {{seconds}} seconds...",
         "cancelCountdown": "[Click to cancel]",
         "goNow": "Go now"
@@ -2432,6 +2440,10 @@
       "demoNotice": {
         "demoSpace": "Demo $t(common.space)",
         "demoSubspace": "This {{space}} is within a Demo $t(common.space)."
+      },
+      "inactiveNotice": {
+        "inactiveSpace": "Inactive Space",
+        "inactiveSubspace": "This {{space}} is within an Inactive Space."
       }
     },
     "contribute": {

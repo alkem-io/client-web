@@ -116,7 +116,7 @@ export const AdminCommunityApplicationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    contributor {
+    actor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -129,7 +129,7 @@ export const AdminCommunityInvitationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    contributor {
+    actor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -378,7 +378,7 @@ export const InnovationFlowDetailsFragmentDoc = gql`
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     actorType
-    contributor {
+    actor {
       id
       profile {
         id
@@ -1558,6 +1558,30 @@ export const UserDetailsFragmentDoc = gql`
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const UserDetailsLightFragmentDoc = gql`
+  fragment UserDetailsLight on User {
+    id
+    firstName
+    lastName
+    email
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      url
+    }
+    settings {
+      id
+      homeSpace {
+        spaceID
+        autoRedirect
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
     id
@@ -1725,7 +1749,7 @@ export const InvitationDataFragmentDoc = gql`
       }
       state
       createdDate
-      contributor {
+      actor {
         id
         type
       }
@@ -3185,7 +3209,7 @@ export const InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc = gql`
     application {
       id
       createdDate
-      contributor {
+      actor {
         id
         profile {
           id
@@ -3891,7 +3915,7 @@ export const ExploreSpacesFragmentDoc = gql`
       }
       membership {
         myMembershipStatus
-        leadUsers {
+        leadUsers @skip(if: $skipLeads) {
           id
           profile {
             id
@@ -3902,7 +3926,7 @@ export const ExploreSpacesFragmentDoc = gql`
             }
           }
         }
-        leadOrganizations {
+        leadOrganizations @skip(if: $skipLeads) {
           id
           profile {
             id
@@ -4968,14 +4992,14 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
 export const InviteForEntryRoleOnRoleSetDocument = gql`
   mutation InviteForEntryRoleOnRoleSet(
     $roleSetId: UUID!
-    $invitedContributorIds: [UUID!]!
+    $invitedActorIds: [UUID!]!
     $invitedUserEmails: [String!]!
     $welcomeMessage: String
     $extraRoles: [RoleName!]!
   ) {
     inviteForEntryRoleOnRoleSet(
       invitationData: {
-        invitedContributorIDs: $invitedContributorIds
+        invitedActorIDs: $invitedActorIds
         invitedUserEmails: $invitedUserEmails
         roleSetID: $roleSetId
         welcomeMessage: $welcomeMessage
@@ -4985,7 +5009,7 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
       type
       invitation {
         id
-        contributor {
+        actor {
           id
           profile {
             id
@@ -5021,7 +5045,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  * const [inviteForEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteForEntryRoleOnRoleSetMutation({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      invitedContributorIds: // value for 'invitedContributorIds'
+ *      invitedActorIds: // value for 'invitedActorIds'
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRoles: // value for 'extraRoles'
@@ -12830,6 +12854,7 @@ export const AccountResourcesInfoDocument = gql`
         id
         spaces {
           id
+          visibility
           about {
             id
             profile {
@@ -13389,7 +13414,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 }
 export const RolesOrganizationDocument = gql`
   query rolesOrganization($organizationId: UUID!) {
-    rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -14057,6 +14082,7 @@ export const SpaceContributionDetailsDocument = gql`
       space(ID: $spaceId) {
         id
         level
+        visibility
         about {
           id
           profile {
@@ -14699,7 +14725,7 @@ export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFull
 }
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID!) {
-    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -15284,6 +15310,85 @@ export type CurrentUserFullQueryResult = Apollo.QueryResult<
 >;
 export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
   return { query: CurrentUserFullDocument, variables: variables };
+}
+export const CurrentUserLightDocument = gql`
+  query CurrentUserLight {
+    me {
+      user {
+        ...UserDetailsLight
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          license {
+            id
+            availableEntitlements
+          }
+        }
+      }
+    }
+  }
+  ${UserDetailsLightFragmentDoc}
+`;
+
+/**
+ * __useCurrentUserLightQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserLightQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserLightQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserLightQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserLightQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export function useCurrentUserLightLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CurrentUserLightQuery,
+    SchemaTypes.CurrentUserLightQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export function useCurrentUserLightSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export type CurrentUserLightQueryHookResult = ReturnType<typeof useCurrentUserLightQuery>;
+export type CurrentUserLightLazyQueryHookResult = ReturnType<typeof useCurrentUserLightLazyQuery>;
+export type CurrentUserLightSuspenseQueryHookResult = ReturnType<typeof useCurrentUserLightSuspenseQuery>;
+export type CurrentUserLightQueryResult = Apollo.QueryResult<
+  SchemaTypes.CurrentUserLightQuery,
+  SchemaTypes.CurrentUserLightQueryVariables
+>;
+export function refetchCurrentUserLightQuery(variables?: SchemaTypes.CurrentUserLightQueryVariables) {
+  return { query: CurrentUserLightDocument, variables: variables };
 }
 export const CommunityAvailableVCsDocument = gql`
   query CommunityAvailableVCs($roleSetId: UUID!) {
@@ -17275,7 +17380,7 @@ export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
-    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
       ...InnovationHubSpace
     }
   }
@@ -18425,7 +18530,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 export const PlatformAdminSpacesListDocument = gql`
   query platformAdminSpacesList {
     platformAdmin {
-      spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+      spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
         id
         nameID
         visibility
@@ -22103,7 +22208,7 @@ export const CommunityApplicationDocument = gql`
         id
         createdDate
         updatedDate
-        contributor {
+        actor {
           id
           profile {
             id
@@ -22205,7 +22310,7 @@ export const CommunityInvitationDocument = gql`
         createdDate
         updatedDate
         welcomeMessage
-        contributor {
+        actor {
           type
           id
           profile {
@@ -25830,6 +25935,88 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
+export const CalendarEventImportUrlsDocument = gql`
+  query CalendarEventImportUrls($eventId: UUID!) {
+    lookup {
+      calendarEvent(ID: $eventId) {
+        id
+        profile {
+          id
+          displayName
+        }
+        googleCalendarUrl
+        outlookCalendarUrl
+        icsDownloadUrl
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalendarEventImportUrlsQuery__
+ *
+ * To run a query within a React component, call `useCalendarEventImportUrlsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarEventImportUrlsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarEventImportUrlsQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useCalendarEventImportUrlsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalendarEventImportUrlsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalendarEventImportUrlsQuery, SchemaTypes.CalendarEventImportUrlsQueryVariables>(
+    CalendarEventImportUrlsDocument,
+    options
+  );
+}
+export function useCalendarEventImportUrlsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  >(CalendarEventImportUrlsDocument, options);
+}
+export function useCalendarEventImportUrlsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalendarEventImportUrlsQuery,
+        SchemaTypes.CalendarEventImportUrlsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalendarEventImportUrlsQuery,
+    SchemaTypes.CalendarEventImportUrlsQueryVariables
+  >(CalendarEventImportUrlsDocument, options);
+}
+export type CalendarEventImportUrlsQueryHookResult = ReturnType<typeof useCalendarEventImportUrlsQuery>;
+export type CalendarEventImportUrlsLazyQueryHookResult = ReturnType<typeof useCalendarEventImportUrlsLazyQuery>;
+export type CalendarEventImportUrlsSuspenseQueryHookResult = ReturnType<typeof useCalendarEventImportUrlsSuspenseQuery>;
+export type CalendarEventImportUrlsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalendarEventImportUrlsQuery,
+  SchemaTypes.CalendarEventImportUrlsQueryVariables
+>;
+export function refetchCalendarEventImportUrlsQuery(variables: SchemaTypes.CalendarEventImportUrlsQueryVariables) {
+  return { query: CalendarEventImportUrlsDocument, variables: variables };
+}
 export const AuthorizationPolicyDocument = gql`
   query AuthorizationPolicy($authorizationPolicyId: UUID!) {
     lookup {
@@ -26663,7 +26850,7 @@ export const SearchDocument = gql`
         }
         total
       }
-      contributorResults {
+      actorResults {
         cursor
         results {
           id
@@ -26732,7 +26919,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 }
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID!) {
-    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -27225,7 +27412,7 @@ export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.Das
   return { query: DashboardWithMembershipsDocument, variables: variables };
 }
 export const ExploreSpacesSearchDocument = gql`
-  query ExploreSpacesSearch($searchData: SearchInput!) {
+  query ExploreSpacesSearch($searchData: SearchInput!, $skipLeads: Boolean! = false) {
     search(searchData: $searchData) {
       spaceResults {
         cursor
@@ -27255,6 +27442,7 @@ export const ExploreSpacesSearchDocument = gql`
  * const { data, loading, error } = useExploreSpacesSearchQuery({
  *   variables: {
  *      searchData: // value for 'searchData'
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27308,7 +27496,7 @@ export function refetchExploreSpacesSearchQuery(variables: SchemaTypes.ExploreSp
   return { query: ExploreSpacesSearchDocument, variables: variables };
 }
 export const ExploreAllSpacesDocument = gql`
-  query ExploreAllSpaces {
+  query ExploreAllSpaces($skipLeads: Boolean! = false) {
     exploreSpaces {
       ...ExploreSpaces
     }
@@ -27328,6 +27516,7 @@ export const ExploreAllSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useExploreAllSpacesQuery({
  *   variables: {
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27374,7 +27563,7 @@ export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllS
   return { query: ExploreAllSpacesDocument, variables: variables };
 }
 export const WelcomeSpaceDocument = gql`
-  query WelcomeSpace($spaceId: UUID!) {
+  query WelcomeSpace($spaceId: UUID!, $skipLeads: Boolean! = false) {
     lookup {
       space(ID: $spaceId) {
         ...ExploreSpaces
@@ -27397,6 +27586,7 @@ export const WelcomeSpaceDocument = gql`
  * const { data, loading, error } = useWelcomeSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27455,7 +27645,7 @@ export const PendingInvitationsDocument = gql`
         invitation {
           id
           welcomeMessage
-          contributor {
+          actor {
             type
           }
           createdBy {
@@ -27831,12 +28021,18 @@ export const LatestContributionsSpacesFlatDocument = gql`
       spaceMembershipsFlat {
         id
         space {
-          ...ActivityLogSpaceVisuals
+          id
+          about {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
         }
       }
     }
   }
-  ${ActivityLogSpaceVisualsFragmentDoc}
 `;
 
 /**
@@ -28409,6 +28605,7 @@ export const HomeSpaceLookupDocument = gql`
           isContentPublic
         }
         level
+        visibility
       }
     }
   }
@@ -28493,6 +28690,7 @@ export const RecentSpacesDocument = gql`
             isContentPublic
           }
           level
+          visibility
           __typename
         }
       }

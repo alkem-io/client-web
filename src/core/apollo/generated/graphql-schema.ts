@@ -429,7 +429,9 @@ export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
 
 export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryMemberJoined';
-  /** The type of the Contributor that joined the Community. */
+  /** The Actor that joined the Community. */
+  actor: Actor;
+  /** The type of the Actor that joined the Community. */
   actorType: ActorType;
   /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
   child: Scalars['Boolean']['output'];
@@ -437,8 +439,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   collaborationID: Scalars['UUID']['output'];
   /** The community that was joined. */
   community: Community;
-  /** The Contributor that joined the Community. */
-  contributor: Actor;
   /** The timestamp for the Activity. */
   createdDate: Scalars['DateTime']['output'];
   /** The text details for this Activity. */
@@ -575,7 +575,7 @@ export type ActorRoles = {
   id: Scalars['UUID']['output'];
   /** The invitations for the specified user; only accessible for platform admins */
   invitations: Array<CommunityInvitationForRoleResult>;
-  /** Details of the roles the contributor has in Organizations */
+  /** Details of the roles the actor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
   spaces: Array<RolesResultSpace>;
@@ -662,10 +662,10 @@ export type AiServerAiPersonaArgs = {
 
 export type Application = {
   __typename?: 'Application';
+  /** The Actor for this Application. */
+  actor: Actor;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The User for this Application. */
-  contributor: Actor;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -976,12 +976,18 @@ export type CalendarEvent = {
   durationDays?: Maybe<Scalars['Float']['output']>;
   /** The length of the event in minutes. */
   durationMinutes: Scalars['Float']['output'];
+  /** Google Calendar add-event URL for this CalendarEvent. */
+  googleCalendarUrl?: Maybe<Scalars['String']['output']>;
+  /** ICS download URL for this CalendarEvent. */
+  icsDownloadUrl?: Maybe<Scalars['String']['output']>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Flag to indicate if this event is for multiple days. */
   multipleDays: Scalars['Boolean']['output'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** Outlook Calendar add-event URL for this CalendarEvent. */
+  outlookCalendarUrl?: Maybe<Scalars['String']['output']>;
   /** The Profile for this Post. */
   profile: Profile;
   /** The start time for this CalendarEvent. */
@@ -1055,7 +1061,7 @@ export type CalloutContributionsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export enum CalloutAllowedContributors {
+export enum CalloutAllowedActors {
   Admins = 'ADMINS',
   Members = 'MEMBERS',
   None = 'NONE',
@@ -1179,7 +1185,7 @@ export type CalloutSettingsContribution = {
   /** The allowed contribution types for this callout. */
   allowedTypes: Array<CalloutContributionType>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions: CalloutAllowedContributors;
+  canAddContributions: CalloutAllowedActors;
   /** Can comment to contributions callout. */
   commentsEnabled: Scalars['Boolean']['output'];
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1799,7 +1805,7 @@ export type CreateCalloutSettingsContributionData = {
   /** Allowed Contribution types. */
   allowedTypes?: Maybe<Array<CalloutContributionType>>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: Maybe<CalloutAllowedContributors>;
+  canAddContributions?: Maybe<CalloutAllowedActors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -1810,7 +1816,7 @@ export type CreateCalloutSettingsContributionInput = {
   /** Allowed Contribution types. */
   allowedTypes?: InputMaybe<Array<CalloutContributionType>>;
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
+  canAddContributions?: InputMaybe<CalloutAllowedActors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -2802,12 +2808,12 @@ export type ISearchCategoryResult = {
 
 export type ISearchResults = {
   __typename?: 'ISearchResults';
+  /** The search results for actors (Users, Organizations). */
+  actorResults: ISearchCategoryResult;
   /** The search results for Callouts. */
   calloutResults: ISearchCategoryResult;
   /** The search results for contributions (Posts, Whiteboards, Memos). */
   contributionResults: ISearchCategoryResult;
-  /** The search results for contributors (Users, Organizations). */
-  contributorResults: ISearchCategoryResult;
   /** The search results callout framings (Whiteboards, Memos as additional content). */
   framingResults: ISearchCategoryResult;
   /** The search results for Spaces / Subspaces. */
@@ -2837,7 +2843,7 @@ export type InAppNotification = {
   state: NotificationEventInAppState;
   /** The triggered date of the notification event. */
   triggeredAt: Scalars['DateTime']['output'];
-  /** The Contributor who triggered the notification. */
+  /** The Actor who triggered the notification. */
   triggeredBy?: Maybe<Actor>;
   /** The type of the notification event. */
   type: NotificationEvent;
@@ -3223,19 +3229,19 @@ export type InputCreatorQueryResultsWhiteboardArgs = {
 
 export type Invitation = {
   __typename?: 'Invitation';
+  /** The Actor who is invited. */
+  actor: Actor;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Actor who is invited. */
-  contributor: Actor;
   /** The User who triggered the invitation. */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  /** Additional roles to assign to the Actor, in addition to the entry Role. */
   extraRoles: Array<RoleName>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** Whether to also add the invited contributor to the parent community. */
+  /** Whether to also add the invited actor to the parent community. */
   invitedToParent: Scalars['Boolean']['output'];
   /** Is this lifecycle in a final state (done). */
   isFinalized: Scalars['Boolean']['output'];
@@ -3257,8 +3263,8 @@ export type InvitationEventInput = {
 export type InviteForEntryRoleOnRoleSetInput = {
   /** Additional roles to assign in addition to the entry Role. */
   extraRoles: Array<RoleName>;
-  /** The identifiers for the contributors being invited. */
-  invitedContributorIDs: Array<Scalars['UUID']['input']>;
+  /** The identifiers for the actors being invited. */
+  invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
   /** The welcome message to send */
@@ -4315,7 +4321,7 @@ export type Mutation = {
   assignLicensePlanToSpace: Space;
   /** Assigns a User to a role on the Platform. */
   assignPlatformRoleToUser: User;
-  /** Assigns a Contributor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
+  /** Assigns an Actor (User, Organization, or Virtual Contributor) to a role in the specified RoleSet. */
   assignRole: Actor;
   /** Assigns an Organization a Role in the specified Community. */
   assignRoleToOrganization: Organization;
@@ -4489,7 +4495,7 @@ export type Mutation = {
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
-  /** Removes a Contributor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
+  /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
   removeRole: Actor;
   /** Removes an Organization from a Role in the specified Community. */
   removeRoleFromOrganization: Organization;
@@ -5881,7 +5887,7 @@ export type PlatformInvitation = {
   platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean']['output'];
-  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  /** Additional roles to assign to the Actor, in addition to the entry Role. */
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
@@ -6778,7 +6784,7 @@ export type RolesResult = {
   id: Scalars['String']['output'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
 };
 
@@ -6792,7 +6798,7 @@ export type RolesResultCommunity = {
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
 };
 
@@ -6806,7 +6812,7 @@ export type RolesResultOrganization = {
   nameID: Scalars['NameID']['output'];
   /** The Organization ID. */
   organizationID: Scalars['String']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
@@ -6822,7 +6828,7 @@ export type RolesResultSpace = {
   level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID']['output'];
-  /** The roles held by the contributor */
+  /** The roles held by the actor */
   roles: Array<Scalars['String']['output']>;
   /** The Space ID */
   spaceID: Scalars['String']['output'];
@@ -7367,6 +7373,7 @@ export enum SpaceVisibility {
   Active = 'ACTIVE',
   Archived = 'ARCHIVED',
   Demo = 'DEMO',
+  Inactive = 'INACTIVE',
 }
 
 export type StorageAggregator = {
@@ -7918,7 +7925,7 @@ export type UpdateCalloutPublishInfoInput = {
 
 export type UpdateCalloutSettingsContributionInput = {
   /** Indicate who can add more contributions to the callout. */
-  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
+  canAddContributions?: InputMaybe<CalloutAllowedActors>;
   /** Can comment to contributions callout. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
@@ -9707,7 +9714,7 @@ export type InvitationStateEventMutation = {
 
 export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   roleSetId: Scalars['UUID']['input'];
-  invitedContributorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+  invitedActorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
   extraRoles: Array<RoleName> | RoleName;
@@ -9722,7 +9729,7 @@ export type InviteForEntryRoleOnRoleSetMutation = {
       | {
           __typename?: 'Invitation';
           id: string;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
@@ -9781,7 +9788,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            contributor: {
+            actor: {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
@@ -9795,7 +9802,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            contributor: {
+            actor: {
               __typename?: 'Actor';
               id: string;
               type: ActorType;
@@ -9820,7 +9827,7 @@ export type AdminCommunityApplicationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
@@ -9835,7 +9842,7 @@ export type AdminCommunityInvitationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     type: ActorType;
@@ -9972,7 +9979,7 @@ export type UserPendingMembershipsQuery = {
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
-        contributor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: { __typename?: 'Actor'; id: string; type: ActorType };
       };
     }>;
   };
@@ -11224,7 +11231,7 @@ export type UpdateInnovationFlowStatesSortOrderMutation = {
 export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   actorType: ActorType;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     profile?:
@@ -11567,7 +11574,7 @@ export type ActivityCreatedSubscription = {
           createdDate: Date;
           type: ActivityEventType;
           actorType: ActorType;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -11771,7 +11778,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   createdDate: Date;
   type: ActivityEventType;
   actorType: ActorType;
-  contributor: {
+  actor: {
     __typename?: 'Actor';
     id: string;
     profile?:
@@ -12597,7 +12604,7 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        contributor: {
+        actor: {
           __typename?: 'Actor';
           id: string;
           profile?:
@@ -12880,7 +12887,7 @@ export type CalloutContentQuery = {
               __typename?: 'CalloutSettingsContribution';
               enabled: boolean;
               allowedTypes: Array<CalloutContributionType>;
-              canAddContributions: CalloutAllowedContributors;
+              canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13225,7 +13232,7 @@ export type UpdateCalloutContentMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedContributors;
+        canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13575,7 +13582,7 @@ export type UpdateCalloutVisibilityMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedContributors;
+        canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -13603,7 +13610,7 @@ export type CalloutSettingsFullFragment = {
     __typename?: 'CalloutSettingsContribution';
     enabled: boolean;
     allowedTypes: Array<CalloutContributionType>;
-    canAddContributions: CalloutAllowedContributors;
+    canAddContributions: CalloutAllowedActors;
     commentsEnabled: boolean;
   };
   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15039,7 +15046,7 @@ export type CreateCalloutMutation = {
         __typename?: 'CalloutSettingsContribution';
         enabled: boolean;
         allowedTypes: Array<CalloutContributionType>;
-        canAddContributions: CalloutAllowedContributors;
+        canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15514,7 +15521,7 @@ export type CalloutDetailsQuery = {
               __typename?: 'CalloutSettingsContribution';
               enabled: boolean;
               allowedTypes: Array<CalloutContributionType>;
-              canAddContributions: CalloutAllowedContributors;
+              canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -15896,7 +15903,7 @@ export type CalloutDetailsFragment = {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
       allowedTypes: Array<CalloutContributionType>;
-      canAddContributions: CalloutAllowedContributors;
+      canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -18835,6 +18842,7 @@ export type AccountResourcesInfoQuery = {
           spaces: Array<{
             __typename?: 'Space';
             id: string;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -19623,6 +19631,7 @@ export type SpaceContributionDetailsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             id: string;
@@ -19865,6 +19874,30 @@ export type UserDetailsFragment = {
               allowedValues: Array<string>;
               type: TagsetType;
             }>
+          | undefined;
+      }
+    | undefined;
+  settings: {
+    __typename?: 'UserSettings';
+    id: string;
+    homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+  };
+};
+
+export type UserDetailsLightFragment = {
+  __typename?: 'User';
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
       }
     | undefined;
@@ -20707,7 +20740,7 @@ export type InvitationDataFragment = {
     state: string;
     createdDate: Date;
     createdBy?: { __typename?: 'User'; id: string } | undefined;
-    contributor: { __typename?: 'Actor'; id: string; type: ActorType };
+    actor: { __typename?: 'Actor'; id: string; type: ActorType };
   };
 };
 
@@ -20720,6 +20753,64 @@ export type EntitlementDetailsFragment = {
   isAvailable: boolean;
   dataType: LicenseEntitlementDataType;
   enabled: boolean;
+};
+
+export type CurrentUserLightQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CurrentUserLightQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+                };
+              }
+            | undefined;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
+        }
+      | undefined;
+  };
 };
 
 export type CommunityAvailableVCsQueryVariables = Exact<{
@@ -21618,7 +21709,7 @@ export type VcMembershipsQuery = {
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
-        contributor: { __typename?: 'Actor'; id: string; type: ActorType };
+        actor: { __typename?: 'Actor'; id: string; type: ActorType };
       };
     }>;
   };
@@ -26240,7 +26331,7 @@ export type CommunityApplicationQuery = {
           updatedDate: Date;
           state: string;
           nextEvents: Array<string>;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -26286,7 +26377,7 @@ export type CommunityInvitationQuery = {
           createdDate: Date;
           updatedDate: Date;
           welcomeMessage?: string | undefined;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             type: ActorType;
             id: string;
@@ -28570,7 +28661,7 @@ export type TemplateContentQuery = {
                     __typename?: 'CalloutSettingsContribution';
                     enabled: boolean;
                     allowedTypes: Array<CalloutContributionType>;
-                    canAddContributions: CalloutAllowedContributors;
+                    canAddContributions: CalloutAllowedActors;
                     commentsEnabled: boolean;
                   };
                   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -29215,7 +29306,7 @@ export type CalloutTemplateContentFragment = {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
       allowedTypes: Array<CalloutContributionType>;
-      canAddContributions: CalloutAllowedContributors;
+      canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
@@ -31290,6 +31381,27 @@ export type DeleteCalendarEventMutation = {
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string };
 };
 
+export type CalendarEventImportUrlsQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+export type CalendarEventImportUrlsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calendarEvent?:
+      | {
+          __typename?: 'CalendarEvent';
+          id: string;
+          googleCalendarUrl?: string | undefined;
+          outlookCalendarUrl?: string | undefined;
+          icsDownloadUrl?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
+};
+
 export type AuthorizationPolicyQueryVariables = Exact<{
   authorizationPolicyId: Scalars['UUID']['input'];
 }>;
@@ -31978,7 +32090,7 @@ export type InAppNotificationReceivedSubscription = {
             __typename?: 'Application';
             id: string;
             createdDate: Date;
-            contributor: {
+            actor: {
               __typename?: 'Actor';
               id: string;
               profile?:
@@ -32932,7 +33044,7 @@ export type InAppNotificationsQuery = {
                 __typename?: 'Application';
                 id: string;
                 createdDate: Date;
-                contributor: {
+                actor: {
                   __typename?: 'Actor';
                   id: string;
                   profile?:
@@ -33892,7 +34004,7 @@ export type InAppNotificationAllTypesFragment = {
           __typename?: 'Application';
           id: string;
           createdDate: Date;
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -34550,7 +34662,7 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
     __typename?: 'Application';
     id: string;
     createdDate: Date;
-    contributor: {
+    actor: {
       __typename?: 'Actor';
       id: string;
       profile?:
@@ -35967,7 +36079,7 @@ export type SearchQuery = {
           }
       >;
     };
-    contributorResults: {
+    actorResults: {
       __typename?: 'ISearchCategoryResult';
       cursor?: string | undefined;
       total: number;
@@ -37177,6 +37289,7 @@ export type DashboardSpaceMembershipFragment = {
 
 export type ExploreSpacesSearchQueryVariables = Exact<{
   searchData: SearchInput;
+  skipLeads?: Scalars['Boolean']['input'];
 }>;
 
 export type ExploreSpacesSearchQuery = {
@@ -37234,7 +37347,7 @@ export type ExploreSpacesSearchQuery = {
                 membership: {
                   __typename?: 'SpaceAboutMembership';
                   myMembershipStatus?: CommunityMembershipStatus | undefined;
-                  leadUsers: Array<{
+                  leadUsers?: Array<{
                     __typename?: 'User';
                     id: string;
                     profile?:
@@ -37255,7 +37368,7 @@ export type ExploreSpacesSearchQuery = {
                         }
                       | undefined;
                   }>;
-                  leadOrganizations: Array<{
+                  leadOrganizations?: Array<{
                     __typename?: 'Organization';
                     id: string;
                     profile?:
@@ -37314,7 +37427,7 @@ export type ExploreSpacesSearchFragment = {
       membership: {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
-        leadUsers: Array<{
+        leadUsers?: Array<{
           __typename?: 'User';
           id: string;
           profile?:
@@ -37335,7 +37448,7 @@ export type ExploreSpacesSearchFragment = {
               }
             | undefined;
         }>;
-        leadOrganizations: Array<{
+        leadOrganizations?: Array<{
           __typename?: 'Organization';
           id: string;
           profile?:
@@ -37361,7 +37474,9 @@ export type ExploreSpacesSearchFragment = {
   };
 };
 
-export type ExploreAllSpacesQueryVariables = Exact<{ [key: string]: never }>;
+export type ExploreAllSpacesQueryVariables = Exact<{
+  skipLeads?: Scalars['Boolean']['input'];
+}>;
 
 export type ExploreAllSpacesQuery = {
   __typename?: 'Query';
@@ -37390,7 +37505,7 @@ export type ExploreAllSpacesQuery = {
       membership: {
         __typename?: 'SpaceAboutMembership';
         myMembershipStatus?: CommunityMembershipStatus | undefined;
-        leadUsers: Array<{
+        leadUsers?: Array<{
           __typename?: 'User';
           id: string;
           profile?:
@@ -37411,7 +37526,7 @@ export type ExploreAllSpacesQuery = {
               }
             | undefined;
         }>;
-        leadOrganizations: Array<{
+        leadOrganizations?: Array<{
           __typename?: 'Organization';
           id: string;
           profile?:
@@ -37439,6 +37554,7 @@ export type ExploreAllSpacesQuery = {
 
 export type WelcomeSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
+  skipLeads?: Scalars['Boolean']['input'];
 }>;
 
 export type WelcomeSpaceQuery = {
@@ -37483,7 +37599,7 @@ export type WelcomeSpaceQuery = {
             membership: {
               __typename?: 'SpaceAboutMembership';
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-              leadUsers: Array<{
+              leadUsers?: Array<{
                 __typename?: 'User';
                 id: string;
                 profile?:
@@ -37504,7 +37620,7 @@ export type WelcomeSpaceQuery = {
                     }
                   | undefined;
               }>;
-              leadOrganizations: Array<{
+              leadOrganizations?: Array<{
                 __typename?: 'Organization';
                 id: string;
                 profile?:
@@ -37557,7 +37673,7 @@ export type ExploreSpacesFragment = {
     membership: {
       __typename?: 'SpaceAboutMembership';
       myMembershipStatus?: CommunityMembershipStatus | undefined;
-      leadUsers: Array<{
+      leadUsers?: Array<{
         __typename?: 'User';
         id: string;
         profile?:
@@ -37578,7 +37694,7 @@ export type ExploreSpacesFragment = {
             }
           | undefined;
       }>;
-      leadOrganizations: Array<{
+      leadOrganizations?: Array<{
         __typename?: 'Organization';
         id: string;
         profile?:
@@ -37663,7 +37779,7 @@ export type PendingInvitationsQuery = {
         welcomeMessage?: string | undefined;
         state: string;
         createdDate: Date;
-        contributor: { __typename?: 'Actor'; type: ActorType };
+        actor: { __typename?: 'Actor'; type: ActorType };
         createdBy?: { __typename?: 'User'; id: string } | undefined;
       };
     }>;
@@ -38449,7 +38565,7 @@ export type LatestContributionsQuery = {
                 }
               | undefined;
           };
-          contributor: {
+          actor: {
             __typename?: 'Actor';
             id: string;
             profile?:
@@ -39143,7 +39259,7 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        contributor: {
+        actor: {
           __typename?: 'Actor';
           id: string;
           profile?:
@@ -39291,29 +39407,7 @@ export type LatestContributionsSpacesFlatQuery = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            avatar?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            cardBanner?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: VisualType;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
         };
       };
     }>;
@@ -40030,6 +40124,7 @@ export type HomeSpaceLookupQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          visibility: SpaceVisibility;
           about: {
             __typename?: 'SpaceAbout';
             isContentPublic: boolean;
@@ -40100,6 +40195,7 @@ export type RecentSpacesQuery = {
         __typename: 'Space';
         id: string;
         level: SpaceLevel;
+        visibility: SpaceVisibility;
         about: {
           __typename?: 'SpaceAbout';
           isContentPublic: boolean;

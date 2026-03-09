@@ -11,7 +11,7 @@ import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
-import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import { GetPublicWhiteboardDocument, CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/core/i18n/config';
@@ -19,7 +19,7 @@ import i18n from '@/core/i18n/config';
 import '@testing-library/jest-dom/vitest';
 const buildCurrentUserMock = (): MockedResponse => ({
   request: {
-    query: CurrentUserFullDocument,
+    query: CurrentUserLightDocument,
   },
   result: {
     data: {

@@ -233,7 +233,7 @@ fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationP
   application {
     id
     createdDate
-    contributor {
+    actor {
       id
       profile {
         id

@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import { setUserScope, setTransactionScope, TransactionScope } from '@/core/logging/sentry/scope';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { isEqual, last } from 'lodash';
+import { isEqual, last } from 'lodash-es';
 import { UserModel } from '@/domain/community/user/models/UserModel';
 
 export const useUserScope = (currentUser: UserModel | undefined) => {

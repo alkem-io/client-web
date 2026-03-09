@@ -21,7 +21,7 @@ import { Suspense, useMemo } from 'react';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import Loading from '@/core/ui/loading/Loading';

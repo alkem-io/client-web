@@ -10,7 +10,7 @@ import useCalloutContributions from './useCalloutContributions/useCalloutContrib
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { AnyContribution } from './interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from './interfaces/CalloutContributionCardComponentProps';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import { useColumns } from '@/core/ui/grid/GridContext';
 

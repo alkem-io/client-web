@@ -21,7 +21,7 @@ import type {
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import { debounce, merge } from 'lodash';
+import { debounce, merge } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
@@ -228,6 +228,10 @@ const CollaborativeExcalidrawWrapper = ({
   );
 
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    if (isReadOnly) {
+      collabApi?.syncScene(elements, files);
+      return;
+    }
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };

@@ -4,7 +4,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogContent } from '@mui/material';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { useMemo } from 'react';
 import * as yup from 'yup';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';

@@ -14,7 +14,7 @@ const LAST_VERSION_MISMATCH_LS_KEY = 'lastVersionMismatch';
  */
 export const VersionHandling = () => {
   const { t } = useTranslation();
-  const appVersion = import.meta.env.VITE_APP_VERSION;
+  const appVersion = import.meta.env.VITE_VERSION;
   const [open, setOpenToast] = useState(false);
   const defaultMessageKey = 'snackbars.appVersion.message';
   const [messageKeys, setMessageKeys] = useState<TranslationKey[]>([defaultMessageKey]);

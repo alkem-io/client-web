@@ -11,7 +11,7 @@ import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikDatePicker from '@/core/ui/forms/DatePicker/FormikDatePicker';
 import FormikTimePicker from '@/core/ui/forms/DatePicker/FormikTimePicker';
 import dayjs from 'dayjs';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalendarEventFormData } from '@/domain/timeline/calendar/CalendarEventsContainer';
@@ -85,7 +85,7 @@ const EventForm = ({
                 />
               </Gutters>
               <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
-                <FormikDatePicker name="endDate" label={t('common.date')} minDate={startDate} disabled={wholeDay} />
+                <FormikDatePicker name="endDate" label={t('common.date')} minDate={startDate} />
                 {isSameDay(startDate, endDate) ? (
                   <FormikDurationMinutes
                     name="durationMinutes"

@@ -17,7 +17,7 @@ import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionD
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {

@@ -77,7 +77,7 @@ interface SearchViewSections {
   calloutResults?: SearchResultMetaType[];
   framingResults?: SearchResultMetaType[]; // framingResults merged into calloutResults
   contributionResults?: SearchResultMetaType[];
-  contributorResults?: SearchResultMetaType[];
+  actorResults?: SearchResultMetaType[];
 }
 
 type ResultsCursors = {
@@ -244,7 +244,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     skip: hasNoTermsLength || resolvingSpace,
   });
 
-  const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
+  const { spaceResults, calloutResults, framingResults, contributionResults, actorResults }: SearchViewSections =
     toResultType(hasNoTermsLength ? undefined : data);
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
@@ -380,7 +380,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
             }
 
             case SearchCategory.Contributors: {
-              setContributorCanLoadMore(fetchMoreResult?.search?.contributorResults?.results?.length > 0);
+              setContributorCanLoadMore(fetchMoreResult?.search?.actorResults?.results?.length > 0);
               break;
             }
 
@@ -454,11 +454,11 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               return {
                 search: {
                   ...prev.search,
-                  contributorResults: {
-                    ...fetchMoreResult.search.contributorResults,
+                  actorResults: {
+                    ...fetchMoreResult.search.actorResults,
                     results: concatSearchResults(
-                      prev.search.contributorResults?.results,
-                      fetchMoreResult.search.contributorResults?.results
+                      prev.search.actorResults?.results,
+                      fetchMoreResult.search.actorResults?.results
                     ),
                   },
                 },
@@ -501,7 +501,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
         calloutCursor: data.search.calloutResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
         framingCursor: data.search.framingResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
         contributionCursor: data.search.contributionResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-        contributorCursor: data.search.contributorResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
+        contributorCursor: data.search.actorResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
       });
   }, [data, isSearching]);
 
@@ -539,8 +539,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
 
   const filteredContributorResults =
     contributorFilter.typename === 'all'
-      ? contributorResults
-      : contributorResults?.filter(contributor =>
+      ? actorResults
+      : actorResults?.filter(contributor =>
           contributorFilter.typename === 'user'
             ? contributor.type === SearchResultType.User
             : contributor.type === SearchResultType.Organization
@@ -659,13 +659,13 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               />
             </SectionWrapper>
           )}
-          {(data?.search?.contributorResults.results?.length ?? 0) > 0 && (
+          {(data?.search?.actorResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="contributors"
                 title={t('common.contributors')}
                 filterTitle={t('pages.search.filter.type.contributor')}
-                count={data?.search?.contributorResults?.total ?? 0}
+                count={data?.search?.actorResults?.total ?? 0}
                 filterConfig={contributorFilterConfig}
                 results={filteredContributorResults}
                 currentFilter={contributorFilter}
@@ -702,7 +702,7 @@ function toResultType(query?: SearchQuery): SearchViewSections {
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const contributorResults = (query?.search.contributorResults?.results || []).map<SearchResultMetaType>(
+  const actorResults = (query?.search.actorResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
@@ -711,7 +711,7 @@ function toResultType(query?: SearchQuery): SearchViewSections {
     calloutResults,
     framingResults,
     contributionResults,
-    contributorResults,
+    actorResults,
   };
 }
 

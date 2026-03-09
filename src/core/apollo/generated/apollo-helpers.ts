@@ -348,11 +348,11 @@ export type ActivityLogEntryCalloutWhiteboardCreatedFieldPolicy = {
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryMemberJoinedKeySpecifier = (
+  | 'actor'
   | 'actorType'
   | 'child'
   | 'collaborationID'
   | 'community'
-  | 'contributor'
   | 'createdDate'
   | 'description'
   | 'id'
@@ -363,11 +363,11 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | ActivityLogEntryMemberJoinedKeySpecifier
 )[];
 export type ActivityLogEntryMemberJoinedFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   actorType?: FieldPolicy<any> | FieldReadFunction<any>;
   child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -535,8 +535,8 @@ export type AiServerFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationKeySpecifier = (
+  | 'actor'
   | 'authorization'
-  | 'contributor'
   | 'createdDate'
   | 'id'
   | 'isFinalized'
@@ -548,8 +548,8 @@ export type ApplicationKeySpecifier = (
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -647,9 +647,12 @@ export type CalendarEventKeySpecifier = (
   | 'createdDate'
   | 'durationDays'
   | 'durationMinutes'
+  | 'googleCalendarUrl'
+  | 'icsDownloadUrl'
   | 'id'
   | 'multipleDays'
   | 'nameID'
+  | 'outlookCalendarUrl'
   | 'profile'
   | 'startDate'
   | 'subspace'
@@ -666,9 +669,12 @@ export type CalendarEventFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   durationDays?: FieldPolicy<any> | FieldReadFunction<any>;
   durationMinutes?: FieldPolicy<any> | FieldReadFunction<any>;
+  googleCalendarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  icsDownloadUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   multipleDays?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  outlookCalendarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   startDate?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1592,17 +1598,17 @@ export type ISearchCategoryResultFieldPolicy = {
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
+  | 'actorResults'
   | 'calloutResults'
   | 'contributionResults'
-  | 'contributorResults'
   | 'framingResults'
   | 'spaceResults'
   | ISearchResultsKeySpecifier
 )[];
 export type ISearchResultsFieldPolicy = {
+  actorResults?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
   framingResults?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1995,8 +2001,8 @@ export type InputCreatorQueryResultsFieldPolicy = {
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationKeySpecifier = (
+  | 'actor'
   | 'authorization'
-  | 'contributor'
   | 'createdBy'
   | 'createdDate'
   | 'extraRoles'
@@ -2011,8 +2017,8 @@ export type InvitationKeySpecifier = (
   | InvitationKeySpecifier
 )[];
 export type InvitationFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   extraRoles?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -2,7 +2,7 @@ import { Box, Button } from '@mui/material';
 import { useField } from 'formik';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Caption, CardText } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';

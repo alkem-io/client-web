@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Converter } from './Converter';
-import { once } from 'lodash';
+import { once } from 'lodash-es';
 import type { Element, ElementContent } from 'hast';
 import type { Html, Parent as MDASTParent, PhrasingContent } from 'mdast';
 import { State as M2HState } from 'mdast-util-to-hast';
