@@ -788,6 +788,7 @@ export type CalloutFramingKeySpecifier = (
   | 'link'
   | 'mediaGallery'
   | 'memo'
+  | 'poll'
   | 'profile'
   | 'type'
   | 'updatedDate'
@@ -801,6 +802,7 @@ export type CalloutFramingFieldPolicy = {
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   mediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  poll?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1241,6 +1243,7 @@ export type CreateCalloutDataFieldPolicy = {
 export type CreateCalloutFramingDataKeySpecifier = (
   | 'link'
   | 'memo'
+  | 'poll'
   | 'profile'
   | 'tags'
   | 'type'
@@ -1250,6 +1253,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
 export type CreateCalloutFramingDataFieldPolicy = {
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  poll?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1358,6 +1362,12 @@ export type CreateMemoDataKeySpecifier = ('markdown' | 'profile' | CreateMemoDat
 export type CreateMemoDataFieldPolicy = {
   markdown?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreatePollDataKeySpecifier = ('options' | 'settings' | 'title' | CreatePollDataKeySpecifier)[];
+export type CreatePollDataFieldPolicy = {
+  options?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreatePostDataKeySpecifier = ('tags' | CreatePostDataKeySpecifier)[];
 export type CreatePostDataFieldPolicy = {
@@ -1759,6 +1769,17 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpeci
 export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   messageDetails?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadSpaceCollaborationPollKeySpecifier = (
+  | 'callout'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCollaborationPollKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCollaborationPollFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2597,6 +2618,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
+  | 'addPollOption'
   | 'addReactionToMessageInRoom'
   | 'addVisualToMediaGallery'
   | 'adminCommunicationEnsureAccessToCommunications'
@@ -2634,6 +2656,7 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnUser'
   | 'authorizationPolicyResetToGlobalAdminsAccess'
+  | 'castPollVote'
   | 'cleanupCollections'
   | 'convertSpaceL1ToSpaceL0'
   | 'convertSpaceL1ToSpaceL2'
@@ -2708,12 +2731,14 @@ export type MutationKeySpecifier = (
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
+  | 'removePollOption'
   | 'removeReactionToMessageInRoom'
   | 'removeRole'
   | 'removeRoleFromOrganization'
   | 'removeRoleFromUser'
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
+  | 'reorderPollOptions'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -2760,6 +2785,7 @@ export type MutationKeySpecifier = (
   | 'updateOrganizationPlatformSettings'
   | 'updateOrganizationSettings'
   | 'updatePlatformSettings'
+  | 'updatePollOption'
   | 'updatePost'
   | 'updateProfile'
   | 'updateReference'
@@ -2791,6 +2817,7 @@ export type MutationKeySpecifier = (
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
+  addPollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2828,6 +2855,7 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
+  castPollVote?: FieldPolicy<any> | FieldReadFunction<any>;
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2902,12 +2930,14 @@ export type MutationFieldPolicy = {
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  removePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRole?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
+  reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2954,6 +2984,7 @@ export type MutationFieldPolicy = {
   updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3370,6 +3401,97 @@ export type PlatformWellKnownVirtualContributorsKeySpecifier = (
 )[];
 export type PlatformWellKnownVirtualContributorsFieldPolicy = {
   mappings?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PollKeySpecifier = (
+  | 'authorization'
+  | 'canSeeDetailedResults'
+  | 'createdDate'
+  | 'deadline'
+  | 'id'
+  | 'myVote'
+  | 'options'
+  | 'settings'
+  | 'status'
+  | 'title'
+  | 'totalVotes'
+  | 'updatedDate'
+  | PollKeySpecifier
+)[];
+export type PollFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  canSeeDetailedResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  deadline?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  myVote?: FieldPolicy<any> | FieldReadFunction<any>;
+  options?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalVotes?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PollOptionKeySpecifier = (
+  | 'createdDate'
+  | 'id'
+  | 'sortOrder'
+  | 'text'
+  | 'updatedDate'
+  | 'voteCount'
+  | 'votePercentage'
+  | 'voters'
+  | PollOptionKeySpecifier
+)[];
+export type PollOptionFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  text?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  voteCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  votePercentage?: FieldPolicy<any> | FieldReadFunction<any>;
+  voters?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PollSettingsKeySpecifier = (
+  | 'maxResponses'
+  | 'minResponses'
+  | 'resultsDetail'
+  | 'resultsVisibility'
+  | PollSettingsKeySpecifier
+)[];
+export type PollSettingsFieldPolicy = {
+  maxResponses?: FieldPolicy<any> | FieldReadFunction<any>;
+  minResponses?: FieldPolicy<any> | FieldReadFunction<any>;
+  resultsDetail?: FieldPolicy<any> | FieldReadFunction<any>;
+  resultsVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PollSettingsDataKeySpecifier = (
+  | 'maxResponses'
+  | 'minResponses'
+  | 'resultsDetail'
+  | 'resultsVisibility'
+  | PollSettingsDataKeySpecifier
+)[];
+export type PollSettingsDataFieldPolicy = {
+  maxResponses?: FieldPolicy<any> | FieldReadFunction<any>;
+  minResponses?: FieldPolicy<any> | FieldReadFunction<any>;
+  resultsDetail?: FieldPolicy<any> | FieldReadFunction<any>;
+  resultsVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PollVoteKeySpecifier = (
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | 'selectedOptions'
+  | 'updatedDate'
+  | PollVoteKeySpecifier
+)[];
+export type PollVoteFieldPolicy = {
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedOptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PostKeySpecifier = (
   | 'authorization'
@@ -4898,6 +5020,10 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
   | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
+  | 'collaborationPollModifiedOnPollIVotedOn'
+  | 'collaborationPollVoteAffectedByOptionChange'
+  | 'collaborationPollVoteCastOnOwnPoll'
+  | 'collaborationPollVoteCastOnPollIVotedOn'
   | 'communicationUpdates'
   | 'communityCalendarEvents'
   | UserSettingsNotificationSpaceKeySpecifier
@@ -4908,6 +5034,10 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPollModifiedOnPollIVotedOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPollVoteAffectedByOptionChange?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPollVoteCastOnOwnPoll?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPollVoteCastOnPollIVotedOn?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
   communityCalendarEvents?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5644,6 +5774,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateMemoDataKeySpecifier | (() => undefined | CreateMemoDataKeySpecifier);
     fields?: CreateMemoDataFieldPolicy;
   };
+  CreatePollData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreatePollDataKeySpecifier | (() => undefined | CreatePollDataKeySpecifier);
+    fields?: CreatePollDataFieldPolicy;
+  };
   CreatePostData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreatePostDataKeySpecifier | (() => undefined | CreatePostDataKeySpecifier);
     fields?: CreatePostDataFieldPolicy;
@@ -5822,6 +5956,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCollaborationPoll?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCollaborationPollKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCollaborationPollKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCollaborationPollFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunicationMessageDirect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -6218,6 +6359,26 @@ export type StrictTypedTypePolicies = {
       | PlatformWellKnownVirtualContributorsKeySpecifier
       | (() => undefined | PlatformWellKnownVirtualContributorsKeySpecifier);
     fields?: PlatformWellKnownVirtualContributorsFieldPolicy;
+  };
+  Poll?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PollKeySpecifier | (() => undefined | PollKeySpecifier);
+    fields?: PollFieldPolicy;
+  };
+  PollOption?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PollOptionKeySpecifier | (() => undefined | PollOptionKeySpecifier);
+    fields?: PollOptionFieldPolicy;
+  };
+  PollSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PollSettingsKeySpecifier | (() => undefined | PollSettingsKeySpecifier);
+    fields?: PollSettingsFieldPolicy;
+  };
+  PollSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PollSettingsDataKeySpecifier | (() => undefined | PollSettingsDataKeySpecifier);
+    fields?: PollSettingsDataFieldPolicy;
+  };
+  PollVote?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PollVoteKeySpecifier | (() => undefined | PollVoteKeySpecifier);
+    fields?: PollVoteFieldPolicy;
   };
   Post?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier);

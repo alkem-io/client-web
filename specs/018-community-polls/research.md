@@ -1,6 +1,6 @@
 # Research: Community Polls & Voting — Client UI
 
-**Branch**: `016-community-polls` | **Date**: 2026-03-03
+**Branch**: `018-community-polls` | **Date**: 2026-03-03
 
 ## Research Summary
 

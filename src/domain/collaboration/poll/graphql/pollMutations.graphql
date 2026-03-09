@@ -22,8 +22,8 @@ mutation RemovePollOption($optionData: RemovePollOptionInput!) {
   }
 }
 
-mutation ReorderPollOptions($reorderData: ReorderPollOptionsInput!) {
-  reorderPollOptions(reorderData: $reorderData) {
+mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
+  reorderPollOptions(optionData: $optionData) {
     ...PollDetails
   }
 }

@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import { PollStatus } from '@/core/apollo/generated/graphql-schema';
 import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
-import PollEmptyState from '@/domain/collaboration/poll/PollEmptyState';
 import PollResultsDisplay from '@/domain/collaboration/poll/PollResultsDisplay';
 import PollOptionManager from '@/domain/collaboration/poll/PollOptionManager';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
+import { Caption } from '@/core/ui/typography/components';
+import { gutters } from '@/core/ui/grid/utils';
 
 type PollViewProps = {
   poll: PollDetailsModel;
@@ -115,17 +116,19 @@ const PollView = ({ poll, editable = false, canVote = false }: PollViewProps) =>
       )}
 
       {showTotalOnly && !showResults && (
-        <Typography variant="body2" color="text.secondary">
-          {t('poll.results.totalVotes', { count: poll.totalVotes })}
-        </Typography>
+        <Caption color="text.secondary">{t('poll.results.totalVotes', { count: poll.totalVotes ?? 0 })}</Caption>
       )}
 
-      {!showResults && !showTotalOnly && poll.totalVotes === 0 && <PollEmptyState />}
+      {!showResults && !showTotalOnly && poll.totalVotes === 0 && (
+        <Box textAlign="center" paddingY={gutters()}>
+          <Caption color="text.secondary">{t('poll.results.noVotes')}</Caption>
+        </Box>
+      )}
 
       {voteError && (
-        <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+        <Caption color="error" sx={{ mt: 1 }}>
           {t('poll.error.voteFailed')}
-        </Typography>
+        </Caption>
       )}
     </Box>
   );

@@ -1,6 +1,6 @@
 """
 Community Polls & Voting — Client GraphQL Operations
-Branch: 016-community-polls | Date: 2026-03-03
+Branch: 018-community-polls | Date: 2026-03-03
 
 This file defines the GraphQL fragments, queries, and mutations the client
 will use to interact with the Poll feature. These operations consume the
@@ -163,8 +163,8 @@ Requires UPDATE privilege on the parent callout.
 Does not affect vote counts or results ranking.
 Returns the full updated Poll for cache update.
 """
-mutation ReorderPollOptions($reorderData: ReorderPollOptionsInput!) {
-  reorderPollOptions(reorderData: $reorderData) {
+mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
+  reorderPollOptions(optionData: $optionData) {
     ...PollDetails
   }
 }

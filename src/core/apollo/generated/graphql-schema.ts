@@ -598,6 +598,11 @@ export enum ActorType {
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
+export type AddPollOptionInput = {
+  pollID: Scalars['UUID']['input'];
+  text: Scalars['String']['input'];
+};
+
 export type AddVisualToMediaGalleryInput = {
   /** The ID of the media gallery. */
   mediaGalleryID: Scalars['String']['input'];
@@ -861,6 +866,7 @@ export enum AuthorizationPolicyType {
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
   Platform = 'PLATFORM',
+  Poll = 'POLL',
   Post = 'POST',
   Profile = 'PROFILE',
   Reference = 'REFERENCE',
@@ -1140,6 +1146,8 @@ export type CalloutFraming = {
   mediaGallery?: Maybe<MediaGallery>;
   /** The Memo for framing the associated Callout. */
   memo?: Maybe<Memo>;
+  /** The Poll attached to this Callout Framing, if any. Present when framing.type = POLL. */
+  poll?: Maybe<Poll>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
   /** The type of the Callout Framing, the additional content attached to this callout */
@@ -1155,6 +1163,7 @@ export enum CalloutFramingType {
   MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
   None = 'NONE',
+  Poll = 'POLL',
   Whiteboard = 'WHITEBOARD',
 }
 
@@ -1241,6 +1250,13 @@ export enum CalloutsSetType {
   Collaboration = 'COLLABORATION',
   KnowledgeBase = 'KNOWLEDGE_BASE',
 }
+
+export type CastPollVoteInput = {
+  /** The ID of the Poll to vote on. */
+  pollID: Scalars['UUID']['input'];
+  /** The complete set of selected PollOption IDs. When updating an existing vote, the entire selection set must be provided. Count must be ≥ poll.minResponses and ≤ poll.maxResponses (0 = unlimited). All IDs must belong to the specified poll. */
+  selectedOptionIDs: Array<Scalars['UUID']['input']>;
+};
 
 export type Classification = {
   __typename?: 'Classification';
@@ -1752,6 +1768,8 @@ export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   link?: Maybe<CreateLinkData>;
   memo?: Maybe<CreateMemoData>;
+  /** Poll definition to attach to this Callout Framing. Required when type = POLL. Ignored for all other framing types. */
+  poll?: Maybe<CreatePollData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -1762,6 +1780,8 @@ export type CreateCalloutFramingData = {
 export type CreateCalloutFramingInput = {
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
+  /** Poll definition to attach to this Callout Framing. Required when type = POLL. Ignored for all other framing types. */
+  poll?: InputMaybe<CreatePollInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -2085,6 +2105,25 @@ export type CreateOrganizationInput = {
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreatePollData = {
+  __typename?: 'CreatePollData';
+  /** Initial options for the poll. Minimum 2 options required. Options appear in the order provided. */
+  options: Array<Scalars['String']['output']>;
+  /** Poll configuration settings (all immutable after creation). Optional; uses defaults for any unspecified settings. */
+  settings?: Maybe<PollSettingsData>;
+  /** Poll title. Must not be empty. Maximum length 512 characters. */
+  title: Scalars['String']['output'];
+};
+
+export type CreatePollInput = {
+  /** Initial options for the poll. Minimum 2 options required. Options appear in the order provided. */
+  options: Array<Scalars['String']['input']>;
+  /** Poll configuration settings (all immutable after creation). Optional; uses defaults for any unspecified settings. */
+  settings?: InputMaybe<PollSettingsInput>;
+  /** Poll title. Must not be empty. Maximum length 512 characters. */
+  title: Scalars['String']['input'];
 };
 
 export type CreatePostData = {
@@ -2962,6 +3001,16 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostComment = InApp
   /** The details of the message. */
   messageDetails?: Maybe<MessageDetails>;
   /** The Space where the comment was made. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpaceCollaborationPoll = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll';
+  /** The Callout that contains the poll. */
+  callout: Callout;
+  /** Where the callout is located. */
   space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -4271,6 +4320,8 @@ export type Mutation = {
   addIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Adds a full email address to the platform notification blacklist */
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
+  /** Add a new option to a Poll. Requires UPDATE privilege on the Poll. The new option is appended with the next available sort order. */
+  addPollOption: Poll;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Adds a new visual to the specified media gallery. */
@@ -4345,6 +4396,8 @@ export type Mutation = {
   authorizationPolicyResetOnUser: User;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
+  /** Cast or update a vote on a Poll. Requires CONTRIBUTE privilege on the Poll (space member). If the calling user has already voted, their vote is REPLACED ENTIRELY with the new selection set. */
+  castPollVote: Poll;
   /** Deletes collections nameID-... */
   cleanupCollections: MigrateEmbeddings;
   /** Move an L1 Space up in the hierarchy, to be a L0 Space. */
@@ -4493,6 +4546,8 @@ export type Mutation = {
   removeNotificationEmailFromBlacklist: Array<Scalars['String']['output']>;
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
+  /** Remove an option from a Poll. Requires UPDATE privilege. Poll must retain at least 2 options. Votes that selected this option are deleted and affected voters are notified. */
+  removePollOption: Poll;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
   /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
@@ -4505,6 +4560,8 @@ export type Mutation = {
   removeRoleFromVirtualContributor: VirtualContributor;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
+  /** Reorder Poll options. Requires UPDATE privilege. The provided list must contain exactly the same option IDs as the current poll options. */
+  reorderPollOptions: Poll;
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
@@ -4597,6 +4654,8 @@ export type Mutation = {
   updateOrganizationSettings: Organization;
   /** Updates one of the Setting on the Platform */
   updatePlatformSettings: PlatformSettings;
+  /** Update the text of an existing Poll option. Requires UPDATE privilege. Votes that selected this option are deleted and affected voters are notified. */
+  updatePollOption: Poll;
   /** Updates the specified Post. */
   updatePost: Post;
   /** Updates the specified Profile. */
@@ -4657,6 +4716,10 @@ export type MutationAddIframeAllowedUrlArgs = {
 
 export type MutationAddNotificationEmailToBlacklistArgs = {
   input: NotificationEmailAddressInput;
+};
+
+export type MutationAddPollOptionArgs = {
+  optionData: AddPollOptionInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4769,6 +4832,10 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
   authorizationID: Scalars['String']['input'];
+};
+
+export type MutationCastPollVoteArgs = {
+  voteData: CastPollVoteInput;
 };
 
 export type MutationConvertSpaceL1ToSpaceL0Args = {
@@ -5061,6 +5128,10 @@ export type MutationRemovePlatformRoleFromUserArgs = {
   roleData: RemovePlatformRoleInput;
 };
 
+export type MutationRemovePollOptionArgs = {
+  optionData: RemovePollOptionInput;
+};
+
 export type MutationRemoveReactionToMessageInRoomArgs = {
   reactionData: RoomRemoveReactionToMessageInput;
 };
@@ -5083,6 +5154,10 @@ export type MutationRemoveRoleFromVirtualContributorArgs = {
 
 export type MutationRemoveUserFromGroupArgs = {
   membershipData: RemoveUserGroupMemberInput;
+};
+
+export type MutationReorderPollOptionsArgs = {
+  optionData: ReorderPollOptionsInput;
 };
 
 export type MutationResetConversationVcArgs = {
@@ -5267,6 +5342,10 @@ export type MutationUpdatePlatformSettingsArgs = {
   settingsData: UpdatePlatformSettingsInput;
 };
 
+export type MutationUpdatePollOptionArgs = {
+  optionData: UpdatePollOptionInput;
+};
+
 export type MutationUpdatePostArgs = {
   postData: UpdatePostInput;
 };
@@ -5422,6 +5501,10 @@ export enum NotificationEvent {
   SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
+  SpaceCollaborationPollModifiedOnPollIVotedOn = 'SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON',
+  SpaceCollaborationPollVoteAffectedByOptionChange = 'SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE',
+  SpaceCollaborationPollVoteCastOnOwnPoll = 'SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL',
+  SpaceCollaborationPollVoteCastOnPollIVotedOn = 'SPACE_COLLABORATION_POLL_VOTE_CAST_ON_POLL_I_VOTED_ON',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityCalendarEventComment = 'SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT',
   SpaceCommunityCalendarEventCreated = 'SPACE_COMMUNITY_CALENDAR_EVENT_CREATED',
@@ -5463,6 +5546,7 @@ export enum NotificationEventPayload {
   SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
   SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutPostComment = 'SPACE_COLLABORATION_CALLOUT_POST_COMMENT',
+  SpaceCollaborationPoll = 'SPACE_COLLABORATION_POLL',
   SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityActor = 'SPACE_COMMUNITY_ACTOR',
@@ -5974,6 +6058,125 @@ export type PlatformWellKnownVirtualContributors = {
   __typename?: 'PlatformWellKnownVirtualContributors';
   /** The mappings of well-known Virtual Contributors to their UUIDs. */
   mappings: Array<PlatformWellKnownVirtualContributorMapping>;
+};
+
+export type Poll = {
+  __typename?: 'Poll';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** Whether the current user can see detailed results (visibility gate passed). */
+  canSeeDetailedResults: Scalars['Boolean']['output'];
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** [Future] Date/time after which the poll automatically closes. Always null in this iteration. */
+  deadline?: Maybe<Scalars['DateTime']['output']>;
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The current user's vote on this poll, or null if the current user has not voted. */
+  myVote?: Maybe<PollVote>;
+  /** The selectable options for this poll, ordered by vote count (most votes first), with ties broken by sortOrder ascending. */
+  options: Array<PollOption>;
+  /** Configuration settings for this poll (immutable after creation). */
+  settings: PollSettings;
+  /** Current lifecycle status of this poll. Always OPEN in this iteration; CLOSED reserved for future use. */
+  status: PollStatus;
+  /** Poll title. */
+  title: Scalars['String']['output'];
+  /** Total number of votes cast on this poll. Null when resultsVisibility = HIDDEN and the current user has not voted. */
+  totalVotes?: Maybe<Scalars['Int']['output']>;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
+export type PollOption = {
+  __typename?: 'PollOption';
+  createdDate: Scalars['DateTime']['output'];
+  id: Scalars['UUID']['output'];
+  /** Position of this option in the creation order (used for tie-breaking in results). */
+  sortOrder: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
+  updatedDate: Scalars['DateTime']['output'];
+  /** Number of votes this option has received. Null when results are hidden or resultsDetail = PERCENTAGE. */
+  voteCount?: Maybe<Scalars['Int']['output']>;
+  /** Percentage of total votes this option has received (0–100). Null when results are hidden or resultsDetail = COUNT. Null when totalVotes = 0. */
+  votePercentage?: Maybe<Scalars['Float']['output']>;
+  /** List of space members who voted for this option. Null when results are hidden or resultsDetail is not FULL. */
+  voters?: Maybe<Array<User>>;
+};
+
+/** Controls the level of detail shown in poll results. */
+export enum PollResultsDetail {
+  /** Vote count per option; no voter identities. */
+  Count = 'COUNT',
+  /** Counts and voter list per option — fully transparent (default). */
+  Full = 'FULL',
+  /** Only percentage per option; no vote counts or voter identities. */
+  Percentage = 'PERCENTAGE',
+}
+
+/** Controls when poll results become visible to voters. */
+export enum PollResultsVisibility {
+  /** Results hidden until the viewer has cast their own vote. */
+  Hidden = 'HIDDEN',
+  /** Only the total vote count is shown before voting; full detail after voting. */
+  TotalOnly = 'TOTAL_ONLY',
+  /** Full results always visible regardless of whether the viewer has voted (default). */
+  Visible = 'VISIBLE',
+}
+
+export type PollSettings = {
+  __typename?: 'PollSettings';
+  /** Maximum number of options a voter may select (0 = unlimited). Immutable after poll creation. */
+  maxResponses: Scalars['Int']['output'];
+  /** Minimum number of options a voter must select (≥ 1). Immutable after poll creation. */
+  minResponses: Scalars['Int']['output'];
+  /** Controls how much detail is shown in results. Immutable after poll creation. */
+  resultsDetail: PollResultsDetail;
+  /** Controls when results become visible to voters. Immutable after poll creation. */
+  resultsVisibility: PollResultsVisibility;
+};
+
+export type PollSettingsData = {
+  __typename?: 'PollSettingsData';
+  /** Maximum selections allowed. Defaults to 1. Set to 0 for unlimited. */
+  maxResponses?: Maybe<Scalars['Int']['output']>;
+  /** Minimum selections required. Defaults to 1. */
+  minResponses?: Maybe<Scalars['Int']['output']>;
+  /** How much detail is shown. Defaults to FULL. */
+  resultsDetail?: Maybe<PollResultsDetail>;
+  /** When results become visible. Defaults to VISIBLE. */
+  resultsVisibility?: Maybe<PollResultsVisibility>;
+};
+
+export type PollSettingsInput = {
+  /** Maximum selections allowed. Defaults to 1. Set to 0 for unlimited. */
+  maxResponses?: InputMaybe<Scalars['Int']['input']>;
+  /** Minimum selections required. Defaults to 1. */
+  minResponses?: InputMaybe<Scalars['Int']['input']>;
+  /** How much detail is shown. Defaults to FULL. */
+  resultsDetail?: InputMaybe<PollResultsDetail>;
+  /** When results become visible. Defaults to VISIBLE. */
+  resultsVisibility?: InputMaybe<PollResultsVisibility>;
+};
+
+/** Lifecycle status of a Poll. Only OPEN is enforced in this iteration; CLOSED is reserved for future use. */
+export enum PollStatus {
+  Closed = 'CLOSED',
+  Open = 'OPEN',
+}
+
+export type PollVote = {
+  __typename?: 'PollVote';
+  /** ID of the user who cast this vote. */
+  createdBy: Scalars['UUID']['output'];
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The options selected in this vote. */
+  selectedOptions: Array<PollOption>;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type Post = {
@@ -6532,6 +6735,11 @@ export type RemovePlatformRoleInput = {
   role: RoleName;
 };
 
+export type RemovePollOptionInput = {
+  optionID: Scalars['UUID']['input'];
+  pollID: Scalars['UUID']['input'];
+};
+
 export type RemoveRoleOnRoleSetInput = {
   actorID: Scalars['UUID']['input'];
   role: RoleName;
@@ -6541,6 +6749,11 @@ export type RemoveRoleOnRoleSetInput = {
 export type RemoveUserGroupMemberInput = {
   groupID: Scalars['UUID']['input'];
   userID: Scalars['UUID']['input'];
+};
+
+export type ReorderPollOptionsInput = {
+  optionIDs: Array<Scalars['UUID']['input']>;
+  pollID: Scalars['UUID']['input'];
 };
 
 export type RevokeAuthorizationCredentialInput = {
@@ -8209,6 +8422,12 @@ export type UpdatePlatformSettingsIntegrationInput = {
   notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
+export type UpdatePollOptionInput = {
+  optionID: Scalars['UUID']['input'];
+  pollID: Scalars['UUID']['input'];
+  text: Scalars['String']['input'];
+};
+
 export type UpdatePostInput = {
   ID: Scalars['UUID']['input'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -8897,6 +9116,14 @@ export type UserSettingsNotificationSpace = {
   collaborationCalloutPostContributionComment: UserSettingsNotificationChannels;
   /** Receive a notification when a callout is published */
   collaborationCalloutPublished: UserSettingsNotificationChannels;
+  /** Receive a notification when a poll you voted on is modified */
+  collaborationPollModifiedOnPollIVotedOn: UserSettingsNotificationChannels;
+  /** Receive a notification when a poll option you voted for is changed or removed */
+  collaborationPollVoteAffectedByOptionChange: UserSettingsNotificationChannels;
+  /** Receive a notification when a vote is cast on a poll you created */
+  collaborationPollVoteCastOnOwnPoll: UserSettingsNotificationChannels;
+  /** Receive a notification when another user votes on a poll you already voted on */
+  collaborationPollVoteCastOnPollIVotedOn: UserSettingsNotificationChannels;
   /** Receive a notification for community updates */
   communicationUpdates: UserSettingsNotificationChannels;
   /** Receive a notification when a calendar event is created */
@@ -12872,6 +13099,60 @@ export type CalloutContentQuery = {
                   }>;
                 }
               | undefined;
+            poll?:
+              | {
+                  __typename?: 'Poll';
+                  id: string;
+                  createdDate: Date;
+                  updatedDate: Date;
+                  title: string;
+                  status: PollStatus;
+                  deadline?: Date | undefined;
+                  totalVotes?: number | undefined;
+                  canSeeDetailedResults: boolean;
+                  settings: {
+                    __typename?: 'PollSettings';
+                    minResponses: number;
+                    maxResponses: number;
+                    resultsVisibility: PollResultsVisibility;
+                    resultsDetail: PollResultsDetail;
+                  };
+                  options: Array<{
+                    __typename?: 'PollOption';
+                    id: string;
+                    createdDate: Date;
+                    updatedDate: Date;
+                    text: string;
+                    sortOrder: number;
+                    voteCount?: number | undefined;
+                    votePercentage?: number | undefined;
+                    voters?:
+                      | Array<{
+                          __typename?: 'User';
+                          id: string;
+                          profile?:
+                            | {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              }
+                            | undefined;
+                        }>
+                      | undefined;
+                  }>;
+                  myVote?:
+                    | {
+                        __typename?: 'PollVote';
+                        id: string;
+                        createdDate: Date;
+                        updatedDate: Date;
+                        createdBy: string;
+                        selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+                      }
+                    | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -13123,6 +13404,60 @@ export type UpdateCalloutContentMutation = {
               alternativeText?: string | undefined;
               sortOrder?: number | undefined;
             }>;
+          }
+        | undefined;
+      poll?:
+        | {
+            __typename?: 'Poll';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            title: string;
+            status: PollStatus;
+            deadline?: Date | undefined;
+            totalVotes?: number | undefined;
+            canSeeDetailedResults: boolean;
+            settings: {
+              __typename?: 'PollSettings';
+              minResponses: number;
+              maxResponses: number;
+              resultsVisibility: PollResultsVisibility;
+              resultsDetail: PollResultsDetail;
+            };
+            options: Array<{
+              __typename?: 'PollOption';
+              id: string;
+              createdDate: Date;
+              updatedDate: Date;
+              text: string;
+              sortOrder: number;
+              voteCount?: number | undefined;
+              votePercentage?: number | undefined;
+              voters?:
+                | Array<{
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }>
+                | undefined;
+            }>;
+            myVote?:
+              | {
+                  __typename?: 'PollVote';
+                  id: string;
+                  createdDate: Date;
+                  updatedDate: Date;
+                  createdBy: string;
+                  selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+                }
+              | undefined;
           }
         | undefined;
     };
@@ -13473,6 +13808,60 @@ export type UpdateCalloutVisibilityMutation = {
               alternativeText?: string | undefined;
               sortOrder?: number | undefined;
             }>;
+          }
+        | undefined;
+      poll?:
+        | {
+            __typename?: 'Poll';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            title: string;
+            status: PollStatus;
+            deadline?: Date | undefined;
+            totalVotes?: number | undefined;
+            canSeeDetailedResults: boolean;
+            settings: {
+              __typename?: 'PollSettings';
+              minResponses: number;
+              maxResponses: number;
+              resultsVisibility: PollResultsVisibility;
+              resultsDetail: PollResultsDetail;
+            };
+            options: Array<{
+              __typename?: 'PollOption';
+              id: string;
+              createdDate: Date;
+              updatedDate: Date;
+              text: string;
+              sortOrder: number;
+              voteCount?: number | undefined;
+              votePercentage?: number | undefined;
+              voters?:
+                | Array<{
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }>
+                | undefined;
+            }>;
+            myVote?:
+              | {
+                  __typename?: 'PollVote';
+                  id: string;
+                  createdDate: Date;
+                  updatedDate: Date;
+                  createdBy: string;
+                  selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+                }
+              | undefined;
           }
         | undefined;
     };
@@ -14939,6 +15328,60 @@ export type CreateCalloutMutation = {
             }>;
           }
         | undefined;
+      poll?:
+        | {
+            __typename?: 'Poll';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            title: string;
+            status: PollStatus;
+            deadline?: Date | undefined;
+            totalVotes?: number | undefined;
+            canSeeDetailedResults: boolean;
+            settings: {
+              __typename?: 'PollSettings';
+              minResponses: number;
+              maxResponses: number;
+              resultsVisibility: PollResultsVisibility;
+              resultsDetail: PollResultsDetail;
+            };
+            options: Array<{
+              __typename?: 'PollOption';
+              id: string;
+              createdDate: Date;
+              updatedDate: Date;
+              text: string;
+              sortOrder: number;
+              voteCount?: number | undefined;
+              votePercentage?: number | undefined;
+              voters?:
+                | Array<{
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }>
+                | undefined;
+            }>;
+            myVote?:
+              | {
+                  __typename?: 'PollVote';
+                  id: string;
+                  createdDate: Date;
+                  updatedDate: Date;
+                  createdBy: string;
+                  selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -15401,6 +15844,60 @@ export type CalloutDetailsQuery = {
                   }>;
                 }
               | undefined;
+            poll?:
+              | {
+                  __typename?: 'Poll';
+                  id: string;
+                  createdDate: Date;
+                  updatedDate: Date;
+                  title: string;
+                  status: PollStatus;
+                  deadline?: Date | undefined;
+                  totalVotes?: number | undefined;
+                  canSeeDetailedResults: boolean;
+                  settings: {
+                    __typename?: 'PollSettings';
+                    minResponses: number;
+                    maxResponses: number;
+                    resultsVisibility: PollResultsVisibility;
+                    resultsDetail: PollResultsDetail;
+                  };
+                  options: Array<{
+                    __typename?: 'PollOption';
+                    id: string;
+                    createdDate: Date;
+                    updatedDate: Date;
+                    text: string;
+                    sortOrder: number;
+                    voteCount?: number | undefined;
+                    votePercentage?: number | undefined;
+                    voters?:
+                      | Array<{
+                          __typename?: 'User';
+                          id: string;
+                          profile?:
+                            | {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              }
+                            | undefined;
+                        }>
+                      | undefined;
+                  }>;
+                  myVote?:
+                    | {
+                        __typename?: 'PollVote';
+                        id: string;
+                        createdDate: Date;
+                        updatedDate: Date;
+                        createdBy: string;
+                        selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+                      }
+                    | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -15796,6 +16293,60 @@ export type CalloutDetailsFragment = {
           }>;
         }
       | undefined;
+    poll?:
+      | {
+          __typename?: 'Poll';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          title: string;
+          status: PollStatus;
+          deadline?: Date | undefined;
+          totalVotes?: number | undefined;
+          canSeeDetailedResults: boolean;
+          settings: {
+            __typename?: 'PollSettings';
+            minResponses: number;
+            maxResponses: number;
+            resultsVisibility: PollResultsVisibility;
+            resultsDetail: PollResultsDetail;
+          };
+          options: Array<{
+            __typename?: 'PollOption';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            text: string;
+            sortOrder: number;
+            voteCount?: number | undefined;
+            votePercentage?: number | undefined;
+            voters?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }>;
+          myVote?:
+            | {
+                __typename?: 'PollVote';
+                id: string;
+                createdDate: Date;
+                updatedDate: Date;
+                createdBy: string;
+                selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+              }
+            | undefined;
+        }
+      | undefined;
   };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
@@ -16133,6 +16684,401 @@ export type MemoDetailsFragment = {
           | undefined;
       }
     | undefined;
+};
+
+export type PollSettingsFieldsFragment = {
+  __typename?: 'PollSettings';
+  minResponses: number;
+  maxResponses: number;
+  resultsVisibility: PollResultsVisibility;
+  resultsDetail: PollResultsDetail;
+};
+
+export type PollOptionFieldsFragment = {
+  __typename?: 'PollOption';
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  text: string;
+  sortOrder: number;
+  voteCount?: number | undefined;
+  votePercentage?: number | undefined;
+  voters?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+};
+
+export type PollVoteFieldsFragment = {
+  __typename?: 'PollVote';
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  createdBy: string;
+  selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+};
+
+export type PollDetailsFragment = {
+  __typename?: 'Poll';
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  title: string;
+  status: PollStatus;
+  deadline?: Date | undefined;
+  totalVotes?: number | undefined;
+  canSeeDetailedResults: boolean;
+  settings: {
+    __typename?: 'PollSettings';
+    minResponses: number;
+    maxResponses: number;
+    resultsVisibility: PollResultsVisibility;
+    resultsDetail: PollResultsDetail;
+  };
+  options: Array<{
+    __typename?: 'PollOption';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    text: string;
+    sortOrder: number;
+    voteCount?: number | undefined;
+    votePercentage?: number | undefined;
+    voters?:
+      | Array<{
+          __typename?: 'User';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }>
+      | undefined;
+  }>;
+  myVote?:
+    | {
+        __typename?: 'PollVote';
+        id: string;
+        createdDate: Date;
+        updatedDate: Date;
+        createdBy: string;
+        selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+      }
+    | undefined;
+};
+
+export type CastPollVoteMutationVariables = Exact<{
+  voteData: CastPollVoteInput;
+}>;
+
+export type CastPollVoteMutation = {
+  __typename?: 'Mutation';
+  castPollVote: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    deadline?: Date | undefined;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
+};
+
+export type AddPollOptionMutationVariables = Exact<{
+  optionData: AddPollOptionInput;
+}>;
+
+export type AddPollOptionMutation = {
+  __typename?: 'Mutation';
+  addPollOption: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    deadline?: Date | undefined;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
+};
+
+export type UpdatePollOptionMutationVariables = Exact<{
+  optionData: UpdatePollOptionInput;
+}>;
+
+export type UpdatePollOptionMutation = {
+  __typename?: 'Mutation';
+  updatePollOption: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    deadline?: Date | undefined;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
+};
+
+export type RemovePollOptionMutationVariables = Exact<{
+  optionData: RemovePollOptionInput;
+}>;
+
+export type RemovePollOptionMutation = {
+  __typename?: 'Mutation';
+  removePollOption: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    deadline?: Date | undefined;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
+};
+
+export type ReorderPollOptionsMutationVariables = Exact<{
+  optionData: ReorderPollOptionsInput;
+}>;
+
+export type ReorderPollOptionsMutation = {
+  __typename?: 'Mutation';
+  reorderPollOptions: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    deadline?: Date | undefined;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
 };
 
 export type CalloutSettingsQueryVariables = Exact<{
@@ -20339,6 +21285,26 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
           };
           communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          collaborationPollVoteCastOnOwnPoll: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+          collaborationPollVoteCastOnPollIVotedOn: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+          collaborationPollModifiedOnPollIVotedOn: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+          collaborationPollVoteAffectedByOptionChange: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
           admin: {
             __typename?: 'UserSettingsNotificationSpaceAdmin';
             communityApplicationReceived: {
@@ -20453,6 +21419,26 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
       };
       communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      collaborationPollVoteCastOnOwnPoll: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
+      collaborationPollVoteCastOnPollIVotedOn: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
+      collaborationPollModifiedOnPollIVotedOn: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
+      collaborationPollVoteAffectedByOptionChange: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
     };
     user: {
       __typename?: 'UserSettingsNotificationUser';
@@ -20592,6 +21578,26 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                 };
                 communityCalendarEvents: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationPollVoteCastOnOwnPoll: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationPollVoteCastOnPollIVotedOn: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationPollModifiedOnPollIVotedOn: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationPollVoteAffectedByOptionChange: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -31867,6 +32873,7 @@ export type InAppNotificationReceivedSubscription = {
             };
           };
         }
+      | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
           type: NotificationEventPayload;
@@ -32821,6 +33828,7 @@ export type InAppNotificationsQuery = {
                 };
               };
             }
+          | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll'; type: NotificationEventPayload }
           | {
               __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
               type: NotificationEventPayload;
@@ -33781,6 +34789,7 @@ export type InAppNotificationAllTypesFragment = {
           };
         };
       }
+    | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
         type: NotificationEventPayload;

@@ -1,7 +1,7 @@
 # Implementation Plan: Community Polls & Voting — Client UI
 
-**Branch**: `016-community-polls` | **Date**: 2026-03-03 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/016-community-polls/spec.md`
+**Branch**: `018-community-polls` | **Date**: 2026-03-03 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/018-community-polls/spec.md`
 
 ## Summary
 
@@ -53,7 +53,7 @@ All checks remain PASS after Phase 1 design. No violations to justify.
 ### Documentation (this feature)
 
 ```text
-specs/016-community-polls/
+specs/018-community-polls/
 ├── spec.md
 ├── plan.md                    # This file
 ├── research.md

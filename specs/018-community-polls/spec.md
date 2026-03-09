@@ -1,6 +1,6 @@
 # Feature Specification: Community Polls & Voting — Client UI
 
-**Feature Branch**: `016-community-polls`
+**Feature Branch**: `018-community-polls`
 **Created**: 2026-03-03
 **Status**: Draft
 **Input**: User description: "Client-side UI for creating, configuring, voting on, and viewing results of community polls within collaboration spaces. Based on server spec at specs/server/."

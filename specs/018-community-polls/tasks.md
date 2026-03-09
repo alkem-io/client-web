@@ -1,6 +1,6 @@
 # Tasks: Community Polls & Voting — Client UI
 
-**Input**: Design documents from `/specs/016-community-polls/`
+**Input**: Design documents from `/specs/018-community-polls/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
 **Tests**: Unit tests for domain hooks are included in Phase 9. UI/integration tests will be added to the separate test project (not in this repository).
@@ -30,10 +30,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [x] T003 Create poll GraphQL fragments (PollSettingsFields, PollOptionFields, PollVoteFields, PollDetails) in `src/domain/collaboration/poll/graphql/pollFragments.graphql` — use the fragment definitions from `specs/016-community-polls/contracts/graphql-operations.graphql`
+- [x] T003 Create poll GraphQL fragments (PollSettingsFields, PollOptionFields, PollVoteFields, PollDetails) in `src/domain/collaboration/poll/graphql/pollFragments.graphql` — use the fragment definitions from `specs/018-community-polls/contracts/graphql-operations.graphql`
 - [x] T004 Add poll field with `...PollDetails` fragment spread to the framing section of the callout content query in `src/domain/collaboration/callout/graphql/CalloutContent.graphql` — add `poll { ...PollDetails }` alongside existing whiteboard, memo, link, and mediaGallery fields
 - [x] T005 Run `pnpm codegen` to regenerate hooks after adding the new fragments and query changes
-- [x] T006 [P] Create client view model types (PollDetailsModel, PollSettingsModel, PollOptionModel, PollVoteModel, PollFormValues, PollSettingsFormValues) in `src/domain/collaboration/poll/models/PollModels.ts` — follow the type definitions from `specs/016-community-polls/data-model.md`
+- [x] T006 [P] Create client view model types (PollDetailsModel, PollSettingsModel, PollOptionModel, PollVoteModel, PollFormValues, PollSettingsFormValues) in `src/domain/collaboration/poll/models/PollModels.ts` — follow the type definitions from `specs/018-community-polls/data-model.md`
 - [x] T007 [P] Add optional `poll?: PollDetailsModel` field to the `framing` type in `src/domain/collaboration/callout/models/CalloutDetailsModel.ts` — follows the same pattern as existing `whiteboard?`, `memo?`, `link?`, `mediaGallery?` fields
 - [x] T008 [P] Add optional `poll?: PollFormValues` field to the `framing` type in `src/domain/collaboration/callout/CalloutForm/CalloutFormModel.ts` — add alongside existing whiteboard, memo, link, mediaGallery fields in `CalloutFormSubmittedValues`
 - [x] T009 [P] Add `BallotOutlined` icon mapping for `CalloutFramingType.Poll` to the `calloutFramingIcons` record in `src/domain/collaboration/callout/icons/calloutIcons.ts` — import `BallotOutlined` from `@mui/icons-material` and add entry; also update `getCalloutIconLabelKey()` to handle POLL type
@@ -205,7 +205,7 @@
 - [x] T044 [P] Create unit tests for poll form validation in `src/domain/collaboration/poll/PollFormFields.test.tsx` — test cases: (1) form renders with minimum 2 option inputs, (2) "Add Option" button appends a new input, (3) remove button is hidden when only 2 options remain, (4) submit is blocked when option text is empty, (5) submit is blocked when fewer than 2 options exist. Use `render` from `@/main/test/testUtils` with Formik context wrapper
 - [x] T045 Run `pnpm lint` to verify no linting errors across all new and modified files
 - [x] T046 Run `pnpm vitest run` to ensure all tests pass (existing + new poll tests)
-- [x] T047 Run quickstart.md end-to-end validation — manually walk through all 8 steps from `specs/016-community-polls/quickstart.md` to verify the full feature works as specified
+- [x] T047 Run quickstart.md end-to-end validation — manually walk through all 8 steps from `specs/018-community-polls/quickstart.md` to verify the full feature works as specified
 
 **Note**: UI/integration tests (browser-level interactions, full voting flows, multi-user scenarios) will be added to the separate Alkemio test project, not in this repository.
 

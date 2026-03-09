@@ -43,7 +43,7 @@ export const usePollOptionManagement = ({ pollId }: UsePollOptionManagementParam
   const reorderOptions = useCallback(
     (optionIDs: string[]) =>
       reorderPollOptionsMutation({
-        variables: { reorderData: { pollID: pollId, optionIDs } },
+        variables: { optionData: { pollID: pollId, optionIDs } },
       }),
     [pollId, reorderPollOptionsMutation]
   );
