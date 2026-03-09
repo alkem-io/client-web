@@ -296,6 +296,7 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
               onClose={() => setCropDialogOpen(false)}
               onSave={handleAvatarCropSave}
               config={visualConstraints}
+              hideAltText
             />
           )}
 
