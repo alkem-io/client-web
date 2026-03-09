@@ -67,7 +67,15 @@ const SubspaceLinkList = ({ items = [], emptyListCaption, loading = false }: Lin
       <BlockSectionTitle minWidth={0} noWrap>
         {item.title}
       </BlockSectionTitle>
-      {item.pinned && <PushPinOutlined sx={{ ml: 'auto', fontSize: 14, color: 'primary.main' }} />}
+      {item.pinned && (
+        <Tooltip
+          title={<Caption>{t('components.subspacePinIndicator.tooltip')}</Caption>}
+          placement={tooltipPlacement}
+          arrow
+        >
+          <PushPinOutlined sx={{ ml: 'auto', fontSize: 14, color: 'primary.main' }} />
+        </Tooltip>
+      )}
       {item.isPrivate && (
         <Tooltip
           title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}

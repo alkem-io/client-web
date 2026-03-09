@@ -36,7 +36,12 @@ const SortModeDropdown: FC<SortModeDropdownProps> = ({ spaceId, currentSortMode 
     <Box display="flex" alignItems="center" gap={1}>
       <Caption>{t('pages.admin.space.sections.subspaces.sortBy')}</Caption>
       <FormControl size="small">
-        <Select value={currentSortMode} onChange={handleChange} disabled={loading}>
+        <Select
+          aria-label={t('pages.admin.space.sections.subspaces.sortBy')}
+          value={currentSortMode}
+          onChange={handleChange}
+          disabled={loading}
+        >
           <MenuItem value={SpaceSortMode.Alphabetical}>
             {t('pages.admin.space.sections.subspaces.sortMode.alphabetical')}
           </MenuItem>

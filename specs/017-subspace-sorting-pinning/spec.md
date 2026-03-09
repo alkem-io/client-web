@@ -119,7 +119,7 @@ The drag-and-drop behavior adapts based on the active sort mode:
 - **FR-002**: System MUST persist the selected sort mode as a space-level setting.
 - **FR-003**: System MUST allow space administrators to pin and unpin individual subspaces.
 - **FR-004**: System MUST persist the pinned state of each subspace.
-- **FR-005**: When displaying subspaces, the system MUST show pinned subspaces first (ordered by their sort order), followed by non-pinned subspaces ordered according to the active sort mode.
+- **FR-005**: In Alphabetical mode, the system MUST show pinned subspaces first (ordered by their sort order), followed by non-pinned subspaces in A-Z order. In Custom mode, all subspaces are displayed in their sort order as a flat list; the pin marker is cosmetic only and does not affect ordering.
 - **FR-006**: When a subspace is pinned, the system MUST assign it a sort order value that places it at the first available position among pinned items (or at the specific drop position if dragged).
 - **FR-007**: In "Custom" mode, all subspaces MUST be reorderable via drag-and-drop.
 - **FR-008**: In "Alphabetical" mode, only pinned subspaces MUST be reorderable via drag-and-drop; non-pinned subspaces MUST be locked in alphabetical order.

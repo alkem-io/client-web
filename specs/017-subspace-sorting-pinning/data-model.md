@@ -73,7 +73,7 @@ type SubspaceSortItem = {
 
 The client sorting hook receives subspaces + sortMode and returns them in display order:
 
-```
+```text
 Input:  subspaces[] + sortMode (ALPHABETICAL | CUSTOM)
 Output: [...pinnedSubspaces (by sortOrder), ...nonPinnedSubspaces (by sortOrder or name)]
 ```
@@ -100,7 +100,7 @@ Output: [...pinnedSubspaces (by sortOrder), ...nonPinnedSubspaces (by sortOrder 
 
 ## Affected Query/Fragment Hierarchy
 
-```
+```text
 SubspacesInSpace query
   └─ space.subspaces
       ├─ id

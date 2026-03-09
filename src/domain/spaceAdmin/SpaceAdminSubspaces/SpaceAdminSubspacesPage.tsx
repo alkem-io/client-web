@@ -202,18 +202,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     });
   };
 
-  const handleDragPin = (subspaceId: string) => {
-    updateSubspacePinned({
-      variables: {
-        pinnedData: {
-          spaceID: spaceId,
-          subspaceID: subspaceId,
-          pinned: true,
-        },
-      },
-    });
-  };
-
   const onSubspaceCreated = (subspace: { about: { profile: { url: string } } }) => {
     notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
     navigate(buildSettingsUrl(subspace.about.profile.url));
@@ -284,7 +272,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
                 }
                 loading={loading}
                 onReorder={handleReorder}
-                onPin={handleDragPin}
               />
             </Gutters>
           </Box>

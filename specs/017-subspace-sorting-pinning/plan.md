@@ -2,7 +2,7 @@
 
 **Branch**: `017-subspace-sorting-pinning` | **Date**: 2026-03-06 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/017-subspace-sorting-pinning/spec.md`
-**Server API**: [`server/specs/041-subspace-sorting-pinning/`](/Users/borislavkolev/WebstormProjects/server/specs/041-subspace-sorting-pinning/spec.md)
+**Server API**: Server branch `041-subspace-sorting-pinning`
 
 ## Summary
 
@@ -95,7 +95,7 @@ src/
 
 ### Settings View (SpaceAdminSubspacesPage)
 
-```
+```text
 SpaceAdminSubspacesPage
 ├── Header: "Subspaces" title
 ├── Actions Row:
@@ -117,7 +117,7 @@ SpaceAdminSubspacesPage
 
 ### Subspaces Page (public-facing)
 
-```
+```text
 SpaceSubspacesPage
 └── SubspaceView
     └── CardLayoutContainer
@@ -130,7 +130,7 @@ SpaceSubspacesPage
 
 ### Sorting Logic (useSubspacesSorted hook)
 
-```
+```text
 Input:  subspaces[], sortMode
 Output: sortedSubspaces[]
 

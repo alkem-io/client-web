@@ -1,11 +1,11 @@
-import { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode, useState, useMemo, useEffect } from 'react';
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { Box, FormControl, InputLabel, OutlinedInput, Button } from '@mui/material';
-import { useState, useMemo } from 'react';
+import { Box, FormControl, OutlinedInput, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
+import { Caption } from '@/core/ui/typography';
 import { type SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 import SubspacesSortableItem from './SubspacesSortableItem';
 import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
@@ -22,7 +22,6 @@ type SubspacesSortableListProps = {
   getActions: (item: SearchableListItem) => ReactNode;
   getIndicator: (item: SearchableListItem) => ReactNode | undefined;
   onReorder: (subspaceIds: string[]) => void;
-  onPin: (subspaceId: string) => void;
 };
 
 const MAX_ITEMS_LIMIT = 1000;
@@ -34,11 +33,16 @@ const SubspacesSortableList: FC<SubspacesSortableListProps> = ({
   getActions,
   getIndicator,
   onReorder,
-  onPin,
 }) => {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
   const [limit, setLimit] = useState(10);
+  const [orderedSubspaces, setOrderedSubspaces] = useState(subspaces);
+
+  // Sync local state when props change (e.g. after mutation response)
+  useEffect(() => {
+    setOrderedSubspaces(subspaces);
+  }, [subspaces]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -47,10 +51,10 @@ const SubspacesSortableList: FC<SubspacesSortableListProps> = ({
 
   const filteredSubspaces = useMemo(
     () =>
-      subspaces.filter(item =>
+      orderedSubspaces.filter(item =>
         filterBy ? item.profile.displayName.toLowerCase().includes(filterBy.toLowerCase()) : true
       ),
-    [filterBy, subspaces]
+    [filterBy, orderedSubspaces]
   );
 
   const slicedSubspaces = useMemo(() => filteredSubspaces.slice(0, limit), [filteredSubspaces, limit]);
@@ -69,21 +73,15 @@ const SubspacesSortableList: FC<SubspacesSortableListProps> = ({
       return;
     }
 
-    const draggedItem = slicedSubspaces[oldIndex];
-    const targetItem = slicedSubspaces[newIndex];
-
-    // In Alphabetical mode: if dragging a non-pinned item into the pinned section, auto-pin it
-    if (sortMode === SpaceSortMode.Alphabetical && !draggedItem.pinned && targetItem.pinned) {
-      onPin(draggedItem.id);
-    }
-
     // Compute the new order from all subspaces (not just sliced)
-    const reordered = [...subspaces];
+    const reordered = [...orderedSubspaces];
     const fullOldIndex = reordered.findIndex(s => s.id === active.id);
     const fullNewIndex = reordered.findIndex(s => s.id === over.id);
     if (fullOldIndex !== -1 && fullNewIndex !== -1) {
       const [moved] = reordered.splice(fullOldIndex, 1);
       reordered.splice(fullNewIndex, 0, moved);
+      // Optimistically update local state so the UI reflects the new order immediately
+      setOrderedSubspaces(reordered);
       onReorder(reordered.map(s => s.id));
     }
   };
@@ -100,14 +98,15 @@ const SubspacesSortableList: FC<SubspacesSortableListProps> = ({
     <>
       <FormControl fullWidth size="small">
         <OutlinedInput
+          aria-label={t('components.searchableList.placeholder')}
           placeholder={t('components.searchableList.placeholder')}
           onChange={e => setFilterBy(e.target.value)}
           sx={{ background: theme => theme.palette.primary.contrastText }}
         />
       </FormControl>
-      <InputLabel>
+      <Caption>
         {t('components.searchableList.info', { count: slicedSubspaces.length, total: subspaces.length })}
-      </InputLabel>
+      </Caption>
       {loading ? (
         <>
           <LoadingListItem />
