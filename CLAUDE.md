@@ -284,3 +284,8 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 - TypeScript 5.x, React 19 + MUI (theming + components), Apollo Client (GraphQL), Formik (forms), react-i18next (i18n)
 - Apollo Client normalized cache (no local persistence)
+
+## Active Technologies
+
+- TypeScript 5.x, React 19 + MUI (theming + components), Apollo Client (GraphQL), Formik (forms), react-i18next (i18n)
+- Apollo Client normalized cache (no local persistence)
