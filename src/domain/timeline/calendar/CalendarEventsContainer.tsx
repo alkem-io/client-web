@@ -1,4 +1,5 @@
 import {
+  refetchCalendarEventImportUrlsQuery,
   refetchSpaceCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
@@ -186,7 +187,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
             }),
           },
         },
-        refetchQueries: refetchQueriesList,
+        refetchQueries: [...refetchQueriesList, refetchCalendarEventImportUrlsQuery({ eventId })],
         awaitRefetchQueries: true,
       }).then(result => result.data?.updateCalendarEvent?.profile.url);
     },
