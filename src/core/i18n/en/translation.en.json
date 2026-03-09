@@ -4332,6 +4332,10 @@
     "appVersion": {
       "message": "A new version of the app is available.",
       "recurringMessage": "Please close all Alkemio tabs and reload to update."
+    },
+    "onlineStatus": {
+      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
+      "restored": "Your connection has been restored."
     }
   }
 }
