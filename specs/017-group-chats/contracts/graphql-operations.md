@@ -205,65 +205,45 @@ query ConversationWithGuidanceVc {
 
 ## New Operations
 
-### AddConversationMember Mutation
+### AssignConversationMember Mutation
 
 ```graphql
-mutation AddConversationMember($memberData: AddConversationMemberInput!) {
-  addConversationMember(memberData: $memberData) {
-    id
-    members {
-      id
-      type
-      profile {
-        id
-        displayName
-        url
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-  }
+mutation AssignConversationMember($memberData: AssignConversationMemberInput!) {
+  assignConversationMember(memberData: $memberData)
 }
 ```
+
+**Note:** Returns `Boolean!` (fire-and-forget). Actual member addition arrives via `MEMBER_ADDED` subscription event.
 
 ### RemoveConversationMember Mutation
 
 ```graphql
 mutation RemoveConversationMember($memberData: RemoveConversationMemberInput!) {
-  removeConversationMember(memberData: $memberData) {
-    id
-    members {
-      id
-      type
-      profile {
-        id
-        displayName
-        url
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-  }
+  removeConversationMember(memberData: $memberData)
 }
 ```
 
-**Note:** Returns `null` if conversation was auto-deleted (last member removed).
+**Note:** Returns `Boolean!` (fire-and-forget). Actual removal arrives via `MEMBER_REMOVED` event. If last member, `CONVERSATION_DELETED` event fires.
 
 ### LeaveConversation Mutation
 
 ```graphql
 mutation LeaveConversation($leaveData: LeaveConversationInput!) {
-  leaveConversation(leaveData: $leaveData) {
-    id
-  }
+  leaveConversation(leaveData: $leaveData)
 }
 ```
 
-**Note:** Returns `null` if conversation was auto-deleted (last member left).
+**Note:** Returns `Boolean!` (fire-and-forget). Removal arrives via `MEMBER_REMOVED` event. If last member, `CONVERSATION_DELETED` event fires.
+
+### UpdateConversation Mutation
+
+```graphql
+mutation UpdateConversation($updateData: UpdateConversationInput!) {
+  updateConversation(updateData: $updateData)
+}
+```
+
+**Note:** Returns `Boolean!` (fire-and-forget). Updates arrive via `CONVERSATION_UPDATED` subscription event. Used for editing group displayName and avatarUrl.
 
 ## Fragment Candidates
 

@@ -7,7 +7,8 @@
 
 **References**:
 
-- Server feature issue: [alkem-io/server#5713](https://github.com/alkem-io/server/issues/5713)
+- Server PR: [alkem-io/server#5891](https://github.com/alkem-io/server/pull/5891)
+- Server issue: [alkem-io/server#5893](https://github.com/alkem-io/server/issues/5893)
 - Client API adaptation issue: [alkem-io/client-web#9373](https://github.com/alkem-io/client-web/issues/9373)
 - Figma designs: [User-to-User Messaging — Group Chats](https://www.figma.com/design/44zLTs7qQLFGesxmRbtw9N/User-to-User-Messaging?node-id=118-98&p=f&t=0qOGoQ5NHSsFYtx9-0)
 
@@ -24,9 +25,10 @@ The following API shape is assumed based on the server-side work in progress. Th
 
 - **Conversation** has a `members` list of `Actor` objects (replacing the previous `user` / `virtualContributor` fields). Each actor has a `type` (USER, VIRTUAL_CONTRIBUTOR) and a `profile`.
 - **All conversations** (direct + group) are returned in a flat `conversations` list (replacing the previous `users` / `virtualContributors` split).
-- **Creating a conversation** uses `memberIDs` (array) + `type` (DIRECT or GROUP).
-- **Group management mutations**: `addConversationMember`, `removeConversationMember`, `leaveConversation`.
-- **Real-time events**: `CONVERSATION_CREATED`, `CONVERSATION_DELETED`, `MEMBER_ADDED`, `MEMBER_REMOVED`, `MESSAGE_RECEIVED`, `MESSAGE_REMOVED`, `READ_RECEIPT_UPDATED`.
+- **Creating a conversation** uses `memberIDs` (array) + `type` (DIRECT or GROUP), with optional `displayName` and `avatarUrl` for groups.
+- **Group management mutations**: `assignConversationMember`, `removeConversationMember`, `leaveConversation`, `updateConversation`. All return `Boolean!` (fire-and-forget — actual state changes arrive via subscription events).
+- **Real-time events**: `CONVERSATION_CREATED`, `CONVERSATION_UPDATED`, `CONVERSATION_DELETED`, `MEMBER_ADDED`, `MEMBER_REMOVED`, `MESSAGE_RECEIVED`, `MESSAGE_REMOVED`, `READ_RECEIPT_UPDATED`.
+- **`Room.avatarUrl`** stores the group avatar URL (mxc:// or https://), persisted server-side.
 - Group conversations **auto-delete** when the last member leaves.
 
 ## Clarifications
@@ -210,6 +212,8 @@ As a user, I want to see group membership changes and new messages in real-time 
 - **FR-029**: System MUST handle `MEMBER_REMOVED` subscription events to update the member list in real-time.
 - **FR-030**: System MUST handle `CONVERSATION_CREATED` subscription events to add new group chats to the conversation list.
 - **FR-031**: System MUST handle `CONVERSATION_DELETED` subscription events to remove deleted groups from the conversation list.
+- **FR-034**: System MUST handle `CONVERSATION_UPDATED` subscription events to update group name and avatar in real-time.
+- **FR-035**: System MUST NOT update local state from mutation responses for membership/property mutations — rely on subscription events for state changes (fire-and-forget pattern).
 
 #### Restrictions
 
@@ -220,7 +224,7 @@ As a user, I want to see group membership changes and new messages in real-time 
 
 - **Conversation**: A communication channel between two or more participants. Attributes: unique identifier, room (containing messages), members list, conversation kind (direct vs. group). For group conversations, also includes: name, avatar.
 - **Actor / Member**: A participant in a conversation. Attributes: unique identifier, type (user or virtual contributor), profile (display name, avatar). Represents the unified model for all conversation participants.
-- **Conversation Event**: A real-time notification about a change to a conversation. Types: conversation created, conversation deleted, member added, member removed, message received, message removed, read receipt updated.
+- **Conversation Event**: A real-time notification about a change to a conversation. Types: conversation created, conversation updated, conversation deleted, member added, member removed, message received, message removed, read receipt updated.
 
 ## Success Criteria _(mandatory)_
 

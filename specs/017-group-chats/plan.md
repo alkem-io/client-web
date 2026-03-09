@@ -62,9 +62,10 @@ src/main/userMessaging/
 │   ├── ConversationMessages.graphql      # (minimal changes)
 │   ├── MarkMessageAsRead.graphql         # (no changes)
 │   ├── UserConversationsUnreadCount.graphql # UPDATE: conversations path
-│   ├── AddConversationMember.graphql     # NEW
+│   ├── AddConversationMember.graphql     # NEW (renamed to AssignConversationMember)
 │   ├── RemoveConversationMember.graphql  # NEW
-│   └── LeaveConversation.graphql         # NEW
+│   ├── LeaveConversation.graphql         # NEW
+│   └── UpdateConversation.graphql        # NEW
 ├── UserMessagingDialog.tsx               # UPDATE: pass group context
 ├── UserMessagingChatList.tsx             # UPDATE: render group + direct
 ├── UserMessagingConversationView.tsx     # UPDATE: group header, three-dots menu
@@ -141,7 +142,7 @@ No constitution violations to justify. All changes fit within existing architect
 
 **Goal**: Members can manage group details and membership.
 
-1. Add `AddConversationMember.graphql` and `RemoveConversationMember.graphql`
+1. Add `AssignConversationMember.graphql`, `RemoveConversationMember.graphql`, and `UpdateConversation.graphql`
 2. Extend `GroupChatManagementDialog.tsx` for management mode (pre-populated members, edit name/avatar)
 3. Add three-dots menu to `UserMessagingConversationView.tsx` for group chats
 4. Wire "Manage group" menu option to open management dialog
@@ -165,11 +166,14 @@ No constitution violations to justify. All changes fit within existing architect
 
 **Goal**: All group events update the UI in real-time.
 
-1. Update `ConversationEvents.graphql` with new event payload fields
-2. Add `CONVERSATION_DELETED` handler — remove from cache, evict
-3. Add `MEMBER_ADDED` handler — update members array; if self added, add conversation to list
-4. Add `MEMBER_REMOVED` handler — update members array; if self removed, remove from list
-5. Test all event types with two browser windows
+1. Update `ConversationEvents.graphql` with new event payload fields (including `conversationUpdated`, `Room.avatarUrl`)
+2. Add `CONVERSATION_UPDATED` handler — update displayName/avatarUrl in cache
+3. Add `CONVERSATION_DELETED` handler — remove from cache, evict
+4. Add `MEMBER_ADDED` handler — update members array; if self added, add conversation to list
+5. Add `MEMBER_REMOVED` handler — update members array; if self removed, remove from list
+6. Test all event types with two browser windows
+
+**Key design**: All membership/property mutations return `Boolean!` (fire-and-forget). Client must NOT read state from mutation responses — rely on subscription events for state changes.
 
 **Verification**: Real-time updates work for all event types across connected clients.
 
@@ -183,10 +187,11 @@ No constitution violations to justify. All changes fit within existing architect
 
 ## Risk Register
 
-| Risk                                                   | Impact | Mitigation                                                                                       |
-| ------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------ |
-| Server schema differs from assumed contract            | High   | Run codegen early; iterate on `.graphql` documents                                               |
-| Apollo cache inconsistencies with new event types      | Medium | Idempotency checks in all subscription handlers (existing pattern)                               |
-| Group avatar upload requires server-side visual entity | Medium | Check if conversation has a `visual` field after codegen; if not, use default avatar only for V1 |
-| Chat widget VC lookup migration                        | Medium | May need to query all conversations and filter client-side; check codegen output                 |
-| Performance with large member lists (no upper limit)   | Low    | MUI Autocomplete handles virtualization; server handles pagination                               |
+| Risk                                                 | Impact | Mitigation                                                                                     |
+| ---------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
+| Server schema differs from assumed contract          | High   | Run codegen early; iterate on `.graphql` documents. Server PR #5891 is the source of truth.    |
+| Apollo cache inconsistencies with new event types    | Medium | Idempotency checks in all subscription handlers (existing pattern)                             |
+| Group avatar uses `Room.avatarUrl` (mxc:// or https) | Medium | `Room.avatarUrl` is persisted server-side. Client fetches it. Upload via `updateConversation`. |
+| Fire-and-forget mutation pattern                     | Medium | All membership/property mutations return `Boolean!`. State arrives via subscriptions.          |
+| Chat widget VC lookup migration                      | Medium | Query all conversations and filter client-side for VC member type                              |
+| Performance with large member lists (no upper limit) | Low    | MUI Autocomplete handles virtualization; server handles pagination                             |

@@ -13,7 +13,7 @@ The `Conversation` entity is refactored from a 1-on-1 model to a unified model s
 | ------------- | ----------- | ------------------------------------------------------------------- |
 | `id`          | UUID        | Unique identifier                                                   |
 | `members`     | `[Actor!]!` | **NEW** — All participants (replaces `user` / `virtualContributor`) |
-| `room`        | `Room`      | Contains messages, unread count, etc. (unchanged)                   |
+| `room`        | `Room`      | Contains messages, unread count, avatarUrl, etc. (updated)          |
 | `messaging`   | `Messaging` | Authorization and metadata (unchanged)                              |
 | `createdDate` | DateTime    | (unchanged)                                                         |
 | `updatedDate` | DateTime    | (unchanged)                                                         |
@@ -29,10 +29,10 @@ The `Conversation` entity is refactored from a 1-on-1 model to a unified model s
 - Room type: `conversation_direct` vs `conversation_group` (on the Room entity)
 - Or member count: 2 members = direct, 3+ = group
 
-**Group-specific fields** (on Room or Conversation, TBD from codegen):
+**Group-specific fields** (on Room):
 
 - `displayName` — group name
-- `visual` — group avatar
+- `avatarUrl` — group avatar URL (mxc:// or https://), persisted server-side
 
 ### Actor / Member
 
@@ -59,10 +59,12 @@ Represents a participant in a conversation.
 
 ### CreateConversationInput (updated)
 
-| Field       | Type                        | Notes                                                                 |
-| ----------- | --------------------------- | --------------------------------------------------------------------- |
-| `memberIDs` | `[UUID!]!`                  | **NEW** — For DIRECT: 1 ID. For GROUP: 1+ IDs. Creator auto-included. |
-| `type`      | `ConversationCreationType!` | **NEW** — DIRECT or GROUP                                             |
+| Field         | Type                        | Notes                                                                 |
+| ------------- | --------------------------- | --------------------------------------------------------------------- |
+| `memberIDs`   | `[UUID!]!`                  | **NEW** — For DIRECT: 1 ID. For GROUP: 1+ IDs. Creator auto-included. |
+| `type`        | `ConversationCreationType!` | **NEW** — DIRECT or GROUP                                             |
+| `displayName` | `String`                    | **NEW** — Optional, GROUP only                                        |
+| `avatarUrl`   | `String`                    | **NEW** — Optional, GROUP only                                        |
 
 **Removed fields:**
 
@@ -75,6 +77,7 @@ Represents a participant in a conversation.
 | Event Type             | Payload                                | New?     |
 | ---------------------- | -------------------------------------- | -------- |
 | `CONVERSATION_CREATED` | `{ conversation, message }`            | Existing |
+| `CONVERSATION_UPDATED` | `{ conversation }`                     | **NEW**  |
 | `CONVERSATION_DELETED` | `{ conversationID }`                   | **NEW**  |
 | `MEMBER_ADDED`         | `{ conversation, addedMember: Actor }` | **NEW**  |
 | `MEMBER_REMOVED`       | `{ conversation, removedMemberID }`    | **NEW**  |
@@ -84,11 +87,14 @@ Represents a participant in a conversation.
 
 ### New Mutations
 
-| Mutation                   | Input                                                        | Returns                                          |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| `addConversationMember`    | `AddConversationMemberInput { conversationID, memberID }`    | `Conversation!`                                  |
-| `removeConversationMember` | `RemoveConversationMemberInput { conversationID, memberID }` | `Conversation` (nullable — null if auto-deleted) |
-| `leaveConversation`        | `LeaveConversationInput { conversationID }`                  | `Conversation` (nullable — null if auto-deleted) |
+All membership/property mutations return `Boolean!` (fire-and-forget). The mutation sends an RPC and returns `true` immediately. Actual state changes arrive via subscription events.
+
+| Mutation                   | Input                                                                  | Returns    |
+| -------------------------- | ---------------------------------------------------------------------- | ---------- |
+| `assignConversationMember` | `AssignConversationMemberInput { conversationID, memberID }`           | `Boolean!` |
+| `removeConversationMember` | `RemoveConversationMemberInput { conversationID, memberID }`           | `Boolean!` |
+| `leaveConversation`        | `LeaveConversationInput { conversationID }`                            | `Boolean!` |
+| `updateConversation`       | `UpdateConversationInput { conversationID, displayName?, avatarUrl? }` | `Boolean!` |
 
 ## Client-Side Models
 
@@ -131,16 +137,18 @@ interface ConversationMember {
 
 ```
 [Not Exists] → createConversation(type: GROUP) → [Active]
-[Active] → addConversationMember → [Active] (member count increases)
-[Active] → removeConversationMember → [Active] (member count decreases)
-[Active] → removeConversationMember (last member) → [Deleted] (returns null)
-[Active] → leaveConversation → [Active for others] / [Deleted if last]
+[Active] → assignConversationMember → [Active] (member count increases, via MEMBER_ADDED event)
+[Active] → removeConversationMember → [Active] (member count decreases, via MEMBER_REMOVED event)
+[Active] → removeConversationMember (last member) → [Deleted] (via CONVERSATION_DELETED event)
+[Active] → leaveConversation → [Active for others] / [Deleted if last] (via events)
+[Active] → updateConversation → [Active] (name/avatar updated, via CONVERSATION_UPDATED event)
 ```
 
 ### Client Cache Transitions
 
 ```
 Subscription: CONVERSATION_CREATED → Add to conversation list cache
+Subscription: CONVERSATION_UPDATED → Update displayName/avatarUrl in conversation cache
 Subscription: CONVERSATION_DELETED → Remove from conversation list cache; evict
 Subscription: MEMBER_ADDED (self) → Add conversation to list
 Subscription: MEMBER_ADDED (other) → Update members in conversation cache
