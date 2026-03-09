@@ -2,7 +2,7 @@ import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks'
 import { useUserMessagingContext } from './UserMessagingContext';
 import { useMemo } from 'react';
 import { ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export interface ConversationMember {
@@ -16,6 +16,7 @@ export interface ConversationMember {
 export interface UserConversation {
   id: string;
   roomId: string;
+  isGroup: boolean;
   displayName?: string;
   avatarUri?: string;
   unreadCount: number;
@@ -56,7 +57,7 @@ export const useUserConversations = () => {
             url: member.profile?.url,
           }));
 
-          const isGroup = members.length > 2;
+          const isGroup = room.type === RoomType.ConversationGroup;
           const otherMembers = members.filter(m => m.id !== currentUser?.id);
 
           // For 1:1 chats: use the other member's name
@@ -70,12 +71,14 @@ export const useUserConversations = () => {
             displayName = otherMembers.map(m => m.displayName).join(', ');
           }
 
-          // For 1:1 chats: use the other member's avatar; for groups: use first member's
-          const avatarUri = !isGroup && otherMembers.length > 0 ? otherMembers[0].avatarUri : members[0]?.avatarUri;
+          // For 1:1 chats: use the other member's avatar; for groups: use room avatarUrl or first member's
+          const avatarUri =
+            !isGroup && otherMembers.length > 0 ? otherMembers[0].avatarUri : (room.avatarUrl ?? members[0]?.avatarUri);
 
           return {
             id: conv.id,
             roomId: room.id,
+            isGroup,
             displayName,
             avatarUri,
             unreadCount: room.unreadCount,

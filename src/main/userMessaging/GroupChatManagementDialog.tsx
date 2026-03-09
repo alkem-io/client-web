@@ -13,6 +13,7 @@ import {
   ListItemText,
   IconButton,
   Typography,
+  Skeleton,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -24,10 +25,18 @@ import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import {
   useCreateConversationMutation,
-  useAddConversationMemberMutation,
+  useAssignConversationMemberMutation,
   useRemoveConversationMemberMutation,
+  useUpdateConversationMutation,
+  useUploadFileMutation,
+  useDefaultVisualTypeConstraintsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType, ConversationCreationType, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  ActorType,
+  ConversationCreationType,
+  UserFilterInput,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   ContributorItem,
@@ -37,6 +46,10 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import Avatar from '@/core/ui/avatar/Avatar';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { ConversationMember } from './useUserConversations';
+import FileUploadWrapper from '@/core/ui/upload/FileUploadWrapper';
+import { CropDialog } from '@/core/ui/upload/VisualUpload/CropDialog';
+import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 interface GroupChatCreateProps {
   open: boolean;
@@ -51,6 +64,8 @@ interface GroupChatManageProps {
   mode: 'manage';
   conversationId: string;
   currentMembers: ConversationMember[];
+  displayName?: string;
+  avatarUrl?: string;
 }
 
 type GroupChatManagementDialogProps = GroupChatCreateProps | GroupChatManageProps;
@@ -59,6 +74,7 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
   const { open, onClose, mode } = props;
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
+  const notify = useNotification();
   const [inputValue, setInputValue] = useState('');
   const [filter, setFilter] = useState<UserFilterInput>();
 
@@ -67,8 +83,75 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
   const [selectedMembers, setSelectedMembers] = useState<ConversationMember[]>([]);
 
   const [createConversation] = useCreateConversationMutation();
-  const [addMember] = useAddConversationMemberMutation();
+  const [addMember] = useAssignConversationMemberMutation();
   const [removeMember] = useRemoveConversationMemberMutation();
+  const [updateConversation] = useUpdateConversationMutation();
+
+  // Manage mode: editable group name
+  const [editedDisplayName, setEditedDisplayName] = useState(mode === 'manage' ? (props.displayName ?? '') : '');
+
+  // Avatar upload state
+  const [avatarUrl, setAvatarUrl] = useState(mode === 'manage' ? (props.avatarUrl ?? '') : '');
+  const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File>();
+
+  // SSOT: fetch constraints from platform configuration
+  const { data: constraintsData } = useDefaultVisualTypeConstraintsQuery({
+    variables: { visualType: VisualType.Avatar },
+    skip: !open,
+  });
+  const visualConstraints = constraintsData?.platform.configuration.defaultVisualTypeConstraints;
+
+  const { storageConfig } = useStorageConfig({ locationType: 'platform', skip: !open });
+
+  const [uploadFile, { loading: isUploading }] = useUploadFileMutation({
+    onCompleted: data => {
+      const url = data.uploadFileOnStorageBucket.url;
+      setAvatarUrl(url);
+      if (mode === 'manage') {
+        updateConversation({
+          variables: {
+            updateData: {
+              conversationID: props.conversationId,
+              avatarUrl: url,
+            },
+          },
+        });
+      }
+    },
+    onError: () => {
+      notify(t('components.file-upload.file-upload-error' as TranslationKey), 'error');
+    },
+  });
+
+  const handleAvatarFileSelected = (file: File) => {
+    setSelectedFile(file);
+    setCropDialogOpen(true);
+  };
+
+  const handleAvatarCropSave = async (data: { file: File; altText: string }) => {
+    if (!storageConfig) return;
+    await uploadFile({
+      variables: {
+        file: data.file,
+        uploadData: {
+          storageBucketId: storageConfig.storageBucketId,
+        },
+      },
+    });
+  };
+
+  const handleSaveDisplayName = async () => {
+    if (mode !== 'manage' || editedDisplayName.trim() === (props.displayName ?? '')) return;
+    await updateConversation({
+      variables: {
+        updateData: {
+          conversationID: props.conversationId,
+          displayName: editedDisplayName.trim(),
+        },
+      },
+    });
+  };
 
   const { data: contributors = [], loading: loadingContributors } = useContributors({
     filter,
@@ -150,6 +233,8 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
         conversationData: {
           memberIDs: selectedMembers.map(m => m.id),
           type: ConversationCreationType.Group,
+          displayName: groupName.trim(),
+          avatarUrl: avatarUrl || undefined,
         },
       },
     });
@@ -168,6 +253,7 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     setSelectedMembers([]);
     setInputValue('');
     setFilter(undefined);
+    setAvatarUrl(mode === 'manage' ? (props.avatarUrl ?? '') : '');
     onClose();
   };
 
@@ -181,29 +267,60 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
       <DialogHeader id="group-chat-dialog" title={title} onClose={handleClose} />
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={gutters()}>
-          {/* Group name (create mode only) */}
-          {mode === 'create' && (
-            <Box>
-              <Caption marginBottom={gutters(0.5)}>
-                {t('components.userMessaging.groupChatName' as TranslationKey)}
-              </Caption>
-              <TextField
-                value={groupName}
-                onChange={e => setGroupName(e.target.value)}
-                placeholder={t('components.userMessaging.groupChatName' as TranslationKey)}
-                variant="outlined"
-                size="small"
-                fullWidth
-                required
-                error={groupName.length === 0 && selectedMembers.length > 0}
-                helperText={
-                  groupName.length === 0 && selectedMembers.length > 0
-                    ? t('components.userMessaging.groupChatNameRequired' as TranslationKey)
-                    : undefined
-                }
-              />
-            </Box>
+          {/* Avatar upload */}
+          <Box display="flex" flexDirection="column" alignItems="center" gap={gutters(0.5)}>
+            <FileUploadWrapper
+              onFileSelected={handleAvatarFileSelected}
+              allowedTypes={visualConstraints?.allowedTypes ?? []}
+            >
+              {isUploading ? (
+                <Skeleton variant="circular" width={80} height={80} />
+              ) : (
+                <Avatar
+                  src={avatarUrl || undefined}
+                  alt={mode === 'create' ? groupName : editedDisplayName}
+                  size="large"
+                  sx={{ cursor: 'pointer', boxShadow: '0 0 4px rgba(0, 0, 0, 0.2)' }}
+                />
+              )}
+            </FileUploadWrapper>
+            <Caption color="neutral.light">
+              {t('components.userMessaging.editProfilePicture' as TranslationKey)}
+            </Caption>
+          </Box>
+
+          {cropDialogOpen && visualConstraints && (
+            <CropDialog
+              open={cropDialogOpen}
+              file={selectedFile}
+              onClose={() => setCropDialogOpen(false)}
+              onSave={handleAvatarCropSave}
+              config={visualConstraints}
+            />
           )}
+
+          {/* Group name */}
+          <Box>
+            <Caption marginBottom={gutters(0.5)}>
+              {t('components.userMessaging.groupChatName' as TranslationKey)}
+            </Caption>
+            <TextField
+              value={mode === 'create' ? groupName : editedDisplayName}
+              onChange={e => (mode === 'create' ? setGroupName(e.target.value) : setEditedDisplayName(e.target.value))}
+              onBlur={mode === 'manage' ? handleSaveDisplayName : undefined}
+              placeholder={t('components.userMessaging.groupChatName' as TranslationKey)}
+              variant="outlined"
+              size="small"
+              fullWidth
+              required={mode === 'create'}
+              error={mode === 'create' && groupName.length === 0 && selectedMembers.length > 0}
+              helperText={
+                mode === 'create' && groupName.length === 0 && selectedMembers.length > 0
+                  ? t('components.userMessaging.groupChatNameRequired' as TranslationKey)
+                  : undefined
+              }
+            />
+          </Box>
 
           {/* Member search */}
           <Box>

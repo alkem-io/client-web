@@ -226,7 +226,7 @@ export const UserMessagingConversationView = ({
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [leaveConversation] = useLeaveConversationMutation();
 
-  const isGroup = (conversation?.members.length ?? 0) > 2;
+  const isGroup = conversation?.isGroup ?? false;
 
   const handleLeaveGroup = async () => {
     if (!conversation) return;
@@ -422,6 +422,8 @@ export const UserMessagingConversationView = ({
           mode="manage"
           conversationId={conversation.id}
           currentMembers={conversation.members}
+          displayName={conversation.displayName}
+          avatarUrl={conversation.avatarUri}
         />
       )}
 

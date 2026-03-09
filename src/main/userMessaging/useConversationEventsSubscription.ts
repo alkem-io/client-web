@@ -28,6 +28,9 @@ type MessageRemovedEvent = NonNullable<
 type ReadReceiptUpdatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['readReceiptUpdated']
 >;
+type ConversationUpdatedEvent = NonNullable<
+  NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationUpdated']
+>;
 type ConversationDeletedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationDeleted']
 >;
@@ -109,7 +112,9 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           room: {
             __typename: 'Room' as const,
             id: room.id,
+            type: room.type,
             displayName: room.displayName,
+            avatarUrl: room.avatarUrl,
             unreadCount: room.unreadCount,
             messagesCount: room.messagesCount,
             lastMessage: room.lastMessage,
@@ -124,6 +129,38 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             conversations: {
               ...existing.me.conversations,
               conversations: [newConversation, ...existing.me.conversations.conversations],
+            },
+          },
+        };
+      });
+    },
+    [client]
+  );
+
+  const handleConversationUpdated = useCallback(
+    (event: ConversationUpdatedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                return {
+                  ...c,
+                  room: c.room
+                    ? {
+                        ...c.room,
+                        displayName: event.conversation.room?.displayName ?? c.room.displayName,
+                        avatarUrl: event.conversation.room?.avatarUrl ?? c.room.avatarUrl,
+                      }
+                    : c.room,
+                };
+              }),
             },
           },
         };
@@ -454,6 +491,11 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         case ConversationEventType.ConversationCreated:
           if (event.conversationCreated) {
             handleConversationCreated(event.conversationCreated);
+          }
+          break;
+        case ConversationEventType.ConversationUpdated:
+          if (event.conversationUpdated) {
+            handleConversationUpdated(event.conversationUpdated);
           }
           break;
         case ConversationEventType.ConversationDeleted:

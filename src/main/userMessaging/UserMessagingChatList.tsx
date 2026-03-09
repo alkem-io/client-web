@@ -171,7 +171,7 @@ export const UserMessagingChatList = ({
                   size="medium"
                   sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
                 />
-                {conversation.members.length > 2 && (
+                {conversation.isGroup && (
                   <GroupOutlinedIcon
                     sx={{
                       position: 'absolute',
