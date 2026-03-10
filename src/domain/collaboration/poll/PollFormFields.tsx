@@ -1,4 +1,5 @@
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { FieldArray, useFormikContext } from 'formik';
@@ -14,6 +15,8 @@ import {
   useSortable,
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
+import Gutters from '@/core/ui/grid/Gutters';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 
 const FIELD_PREFIX = 'framing.poll';
 const MIN_OPTIONS = 2;
@@ -41,6 +44,7 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
         display: 'flex',
         gap: 0.5,
         alignItems: 'flex-start',
+        width: '100%',
         opacity: isDragging ? 0.5 : 1,
         zIndex: isDragging ? 1 : 'auto',
       }}
@@ -50,19 +54,18 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
         {...listeners}
         {...attributes}
         aria-label={t('poll.options.reorder')}
-        sx={{ mt: 3, cursor: 'grab', touchAction: 'none' }}
+        sx={{ mt: 1, cursor: 'grab', touchAction: 'none' }}
       >
         <DragIndicatorIcon fontSize="small" />
       </IconButton>
       <FormikInputField
         name={`${formPrefix}.options.${index}.text`}
-        title={`${t('poll.create.options')} ${index + 1}`}
         required
         maxLength={512}
         containerProps={{ sx: { flex: 1 } }}
       />
       {canRemove && (
-        <IconButton onClick={onRemove} size="small" aria-label={t('poll.options.remove')} sx={{ mt: 3 }}>
+        <IconButton onClick={onRemove} size="small" aria-label={t('poll.options.remove')} sx={{ mt: 1 }}>
           <DeleteOutlineIcon fontSize="small" />
         </IconButton>
       )}
@@ -90,12 +93,10 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
   const itemIds = options.map((option, index) => option.id ?? `new-${index}`);
 
   return (
-    <Stack gap={2}>
+    <Gutters disablePadding>
       <FormikInputField name={`${formPrefix}.title`} title={t('poll.create.title')} required maxLength={512} />
 
-      <Typography variant="body2" fontWeight={600}>
-        {t('poll.create.options')}
-      </Typography>
+      <Caption>{t('poll.create.options')}</Caption>
 
       <FieldArray
         name={`${formPrefix}.options`}
@@ -110,31 +111,42 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
           };
 
           return (
-            <Stack gap={1}>
+            <Gutters disablePadding gap={2}>
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                   {options.map((_option, index) => (
-                    <SortableOptionRow
-                      key={itemIds[index]}
-                      id={itemIds[index]}
-                      index={index}
-                      formPrefix={formPrefix}
-                      canRemove={options.length > MIN_OPTIONS}
-                      onRemove={() => arrayHelpers.remove(index)}
-                    />
+                    <Gutters row disablePadding key={itemIds[index]} width="100%">
+                      <Caption mt={1.5}>{index + 1}</Caption>
+                      <SortableOptionRow
+                        key={itemIds[index]}
+                        id={itemIds[index]}
+                        index={index}
+                        formPrefix={formPrefix}
+                        canRemove={options.length > MIN_OPTIONS}
+                        onRemove={() => arrayHelpers.remove(index)}
+                      />
+                    </Gutters>
                   ))}
                 </SortableContext>
               </DndContext>
-              <Button size="small" onClick={() => arrayHelpers.push({ text: '' })} sx={{ alignSelf: 'flex-start' }}>
-                {t('poll.options.add')}
-              </Button>
-            </Stack>
+              <Gutters row disablePadding justifyContent="space-between">
+                <Box display="flex" alignItems="center">
+                  <IconButton
+                    aria-label={t('components.referenceSegment.addReference')}
+                    onClick={() => arrayHelpers.push({ text: '' })}
+                    color="primary"
+                  >
+                    <AddIcon />
+                  </IconButton>
+                  <BlockSectionTitle>{t('poll.options.add')}</BlockSectionTitle>
+                </Box>
+                <PollFormSettingsSection fieldPrefix={formPrefix} readOnly={readOnly} />
+              </Gutters>
+            </Gutters>
           );
         }}
       />
-
-      <PollFormSettingsSection fieldPrefix={formPrefix} readOnly={readOnly} />
-    </Stack>
+    </Gutters>
   );
 };
 

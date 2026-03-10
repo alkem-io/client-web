@@ -71,10 +71,12 @@ specs/018-community-polls/
 ```text
 src/domain/collaboration/
 ├── poll/                                    # NEW: Poll domain directory
-│   ├── PollView.tsx                         # Main poll display (voting + results, read-only — no edit controls)
-│   ├── PollVotingControls.tsx               # Radio/checkbox vote selection
-│   ├── PollResultsDisplay.tsx               # Results with progress bars
-│   ├── PollOptionResultRow.tsx              # Single option result row
+│   ├── PollView.tsx                         # Main poll display — orchestrates unified voting+results view
+│   ├── PollVotingControls.tsx               # Unified radio/checkbox controls with inline progress bars as labels
+│   │                                        #   In voting mode: controls enabled, results shown if canSeeDetailedResults
+│   │                                        #   In results mode: controls disabled, user's vote pre-selected
+│   ├── PollOptionResultRow.tsx              # Single option result row (progress bar + counts/percentages)
+│   ├── PollResultsDisplay.tsx               # [DEPRECATED] Standalone results — kept temporarily, to be removed
 │   ├── PollVoterAvatars.tsx                 # Voter avatar group (FULL detail)
 │   ├── PollEmptyState.tsx                   # "No votes yet" empty state
 │   ├── PollFormFields.tsx                   # Creation & edit form fields (title, options with drag-and-drop reorder, settings button)
@@ -132,3 +134,17 @@ src/core/
 ## Complexity Tracking
 
 No constitution violations to justify. All design decisions follow established patterns.
+
+### Design Decision: Unified Voting + Results View (2026-03-10)
+
+Merged the previously separate PollVotingControls (voting only) and PollResultsDisplay (results only)
+into a single unified component in PollVotingControls. The component renders radio/checkbox controls
+with progress bars as labels (inline results), toggling between enabled (voting mode) and disabled
+(results mode) states. This provides a cleaner, more compact UX where the user always sees the same
+layout regardless of state. The "Change Vote" button is positioned below the results.
+
+- PollResultsDisplay is kept temporarily but deprecated (will be deleted in a follow-up).
+- The blueish background highlight for selected votes is removed; selection is shown only via the
+  radio/checkbox checked state.
+- When `canSeeDetailedResults` is false, progress bars and counts are hidden even in voting mode,
+  respecting admin visibility settings.

@@ -50,8 +50,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
   return (
     <>
       <Button
-        size="small"
-        variant="text"
+        variant="outlined"
         startIcon={<SettingsOutlinedIcon />}
         onClick={() => setOpen(true)}
         sx={{ alignSelf: 'flex-start' }}
@@ -59,7 +58,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
         {t('poll.create.settings')}
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{t('poll.create.settings')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <FormControl disabled={readOnly}>

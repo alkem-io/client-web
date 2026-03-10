@@ -8,7 +8,7 @@ import { ReactNode, useMemo } from 'react';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 
 export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
-  title: string;
+  title?: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -58,7 +58,7 @@ export const FormikInputField = ({
       return tErr('forms.validations.required');
     }
 
-    return tErr(meta.error as TranslationKey, { field: title });
+    return tErr(meta.error as TranslationKey, { field: title ?? '' });
   }, [isError, meta.error, _helperText, tErr, title]);
 
   return (

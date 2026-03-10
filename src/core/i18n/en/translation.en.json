@@ -2356,7 +2356,7 @@
     "create": {
       "title": "Poll Title",
       "options": "Options",
-      "settings": "Advanced Settings",
+      "settings": "Settings",
       "responseType": "Response type",
       "singleResponse": "Single response",
       "multipleResponses": "Multiple responses",

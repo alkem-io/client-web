@@ -125,6 +125,17 @@
 
 ---
 
+## Phase 4b: Unified Voting + Results View (Design Iteration)
+
+**Goal**: Merge the separate voting controls and results display into a single unified component. Progress bars appear as labels for radio/checkbox controls. In voting mode controls are enabled; in results mode they are disabled with the user's vote pre-selected. Respects `canSeeDetailedResults` — hides progress bars and counts when admin has restricted results visibility.
+
+- [x] T048 [US1+US2] Rework `PollVotingControls` in `src/domain/collaboration/poll/PollVotingControls.tsx` — add new props: `options` with full `PollOptionModel` (includes voteCount/votePercentage), `showResults` (boolean, whether to show progress bars), `resultsDetail` (PollResultsDetail), and an optional `readOnly` flag to disable controls for results-only mode. Render each option as a FormControlLabel where the label contains the option text AND (when showResults is true) a LinearProgress bar with count/percentage. Remove the blueish background highlight for selected options — selection indicated only by the radio/checkbox checked state.
+- [x] T049 [US1+US2] Update `PollView` in `src/domain/collaboration/poll/PollView.tsx` — replace the separate `PollVotingControls` + `PollResultsDisplay` rendering with the unified `PollVotingControls` that receives showResults and readOnly props. Keep PollResultsDisplay import but don't render it (deprecated, will be removed later). Move "Change Vote" button below the unified controls.
+
+**Checkpoint**: The poll always shows the same visual layout — radio/checkbox with progress bar labels. Toggling between voting and viewing is seamless.
+
+---
+
 ## Phase 5: User Story 3 — Creating a Poll (Priority: P3)
 
 **Goal**: Facilitators can create a poll via the existing create callout dialog by selecting "Poll" as the framing type, entering a title, adding options, and optionally configuring advanced settings.
