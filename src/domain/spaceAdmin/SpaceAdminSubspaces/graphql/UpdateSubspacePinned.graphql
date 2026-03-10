@@ -1,0 +1,7 @@
+mutation UpdateSubspacePinned($pinnedData: UpdateSubspacePinnedInput!) {
+  updateSubspacePinned(pinnedData: $pinnedData) {
+    id
+    pinned
+    sortOrder
+  }
+}

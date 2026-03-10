@@ -6,15 +6,15 @@
 
 ## Workflow Change Matrix
 
-| Workflow File | Current Runner | Target Runner | Caching | Docker Modernization | Status |
-|--------------|---------------|---------------|---------|---------------------|--------|
-| `ci-test.yml` | `arc-runner-set` | `[self-hosted, macOS, ARM64, apple-silicon, m4]` | Add `actions/cache@v4` | N/A | **MODIFY** |
-| `ci-build.yml` | `arc-runner-set` | `[self-hosted, macOS, ARM64, apple-silicon, m4]` | Add `actions/cache@v4` | N/A | **MODIFY** |
-| `ci-lint.yml` | `arc-runner-set` | `[self-hosted, macOS, ARM64, apple-silicon, m4]` | Add `actions/cache@v4` | N/A | **MODIFY** |
-| `build-release-docker-hub.yml` | `ubuntu-latest` | `ubuntu-latest` (unchanged) | N/A | Replace `Prepare` step with `docker/metadata-action@v5` | **REWRITE** |
-| `build-deploy-k8s-dev-hetzner.yml` | `ubuntu-latest` | `ubuntu-latest` (unchanged) | N/A | N/A | **UNCHANGED** |
-| `build-deploy-k8s-sandbox-hetzner.yml` | `ubuntu-latest` | `ubuntu-latest` (unchanged) | N/A | N/A | **UNCHANGED** |
-| `build-deploy-k8s-test-hetzner.yml` | `ubuntu-latest` | `ubuntu-latest` (unchanged) | N/A | N/A | **UNCHANGED** |
+| Workflow File                          | Current Runner   | Target Runner                                    | Caching                | Docker Modernization                                    | Status        |
+| -------------------------------------- | ---------------- | ------------------------------------------------ | ---------------------- | ------------------------------------------------------- | ------------- |
+| `ci-test.yml`                          | `arc-runner-set` | `[self-hosted, macOS, ARM64, apple-silicon, m4]` | Add `actions/cache@v4` | N/A                                                     | **MODIFY**    |
+| `ci-build.yml`                         | `arc-runner-set` | `[self-hosted, macOS, ARM64, apple-silicon, m4]` | Add `actions/cache@v4` | N/A                                                     | **MODIFY**    |
+| `ci-lint.yml`                          | `arc-runner-set` | `[self-hosted, macOS, ARM64, apple-silicon, m4]` | Add `actions/cache@v4` | N/A                                                     | **MODIFY**    |
+| `build-release-docker-hub.yml`         | `ubuntu-latest`  | `ubuntu-latest` (unchanged)                      | N/A                    | Replace `Prepare` step with `docker/metadata-action@v5` | **REWRITE**   |
+| `build-deploy-k8s-dev-hetzner.yml`     | `ubuntu-latest`  | `ubuntu-latest` (unchanged)                      | N/A                    | N/A                                                     | **UNCHANGED** |
+| `build-deploy-k8s-sandbox-hetzner.yml` | `ubuntu-latest`  | `ubuntu-latest` (unchanged)                      | N/A                    | N/A                                                     | **UNCHANGED** |
+| `build-deploy-k8s-test-hetzner.yml`    | `ubuntu-latest`  | `ubuntu-latest` (unchanged)                      | N/A                    | N/A                                                     | **UNCHANGED** |
 
 ## CI Workflow Template (Node.js Jobs)
 
@@ -108,7 +108,7 @@ The modernized `build-release-docker-hub.yml` replaces the manual `Prepare` step
 
 ### Tag Output Comparison
 
-| Release Type | Old Manual Tags | New Metadata-Action Tags |
-|-------------|----------------|-------------------------|
-| `v1.2.3` (release) | `v1.2.3`, `v1.2`, `v1`, `latest` | `v1.2.3`, `v1.2`, `v1`, `latest` |
-| `v1.2.3-beta.1` (prerelease) | `v1.2.3-beta.1` only | `v1.2.3-beta.1` only (latest disabled) |
+| Release Type                 | Old Manual Tags                  | New Metadata-Action Tags               |
+| ---------------------------- | -------------------------------- | -------------------------------------- |
+| `v1.2.3` (release)           | `v1.2.3`, `v1.2`, `v1`, `latest` | `v1.2.3`, `v1.2`, `v1`, `latest`       |
+| `v1.2.3-beta.1` (prerelease) | `v1.2.3-beta.1` only             | `v1.2.3-beta.1` only (latest disabled) |

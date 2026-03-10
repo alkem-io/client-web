@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "Move to Apple Silicon build runner. Use https://github.com/alkem-io/server/pull/5906 as a reference implementation."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Apple Silicon Runner Migration for Node.js CI Workflows (Priority: P1)
 
@@ -61,7 +61,7 @@ As a maintainer, I want the Docker release workflow modernized to use `docker/me
 - What happens if the pnpm cache key format changes? The workflow should gracefully fall back to a partial cache match via `restore-keys`.
 - What happens if `actions/setup-node` cache parameter conflicts with explicit `actions/cache`? Only one caching mechanism should be used per workflow to avoid conflicts.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -74,9 +74,9 @@ As a maintainer, I want the Docker release workflow modernized to use `docker/me
 - **FR-006a**: The Docker release workflow (`build-release-docker-hub.yml`) MUST remain on `ubuntu-latest` since the Docker daemon is unavailable on macOS runners
 - **FR-007**: The `actions/setup-node` `cache` parameter MUST be removed from workflows that use explicit `actions/cache` to avoid conflicts
 - **FR-009**: CI workflows using Apple Silicon runners MUST configure `pnpm/action-setup@v4` with `dest: ${{ runner.temp }}/setup-pnpm` to avoid path resolution issues on macOS ARM64 (per server PR #5906 findings)
-- **FR-008**: The Docker release workflow MUST NOT pass build-time secrets (e.g., `ARG_SENTRY_AUTH_TOKEN`) as Docker build arguments that leak into the image layer history — *Already satisfied by commit `f40537dd3` (PR #9378); no additional work required. Retained as a reference constraint.*
+- **FR-008**: The Docker release workflow MUST NOT pass build-time secrets (e.g., `ARG_SENTRY_AUTH_TOKEN`) as Docker build arguments that leak into the image layer history — _Already satisfied by commit `f40537dd3` (PR #9378); no additional work required. Retained as a reference constraint._
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

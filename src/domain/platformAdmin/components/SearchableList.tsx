@@ -15,6 +15,7 @@ export interface SearchableListProps<
 > {
   data: Item[];
   getActions?: (item: SearchableListItem) => React.ReactNode | undefined;
+  getIndicator?: (item: SearchableListItem) => React.ReactNode | undefined;
   loading?: boolean;
 }
 
@@ -37,6 +38,7 @@ export const SearchableList = <
   data = [],
   loading,
   getActions,
+  getIndicator,
 }: SearchableListProps<ItemViewProps, Item>) => {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
@@ -84,6 +86,7 @@ export const SearchableList = <
             seamless
             sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
             actions={getActions ? getActions(item) : undefined}
+            indicator={getIndicator ? getIndicator(item) : undefined}
           />
         ))
       )}

@@ -2242,6 +2242,8 @@ export type CreateSpaceSettingsInput = {
   collaboration?: InputMaybe<CreateSpaceSettingsCollaborationInput>;
   membership?: InputMaybe<CreateSpaceSettingsMembershipInput>;
   privacy?: InputMaybe<CreateSpaceSettingsPrivacyInput>;
+  /** The sort mode for subspaces: Alphabetical or Custom. */
+  sortMode?: InputMaybe<SpaceSortMode>;
 };
 
 export type CreateSpaceSettingsMembershipInput = {
@@ -4667,6 +4669,8 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
+  /** Updates the pinned state of a Subspace within the specified Space. */
+  updateSubspacePinned: Space;
   /** Update the sortOrder field of the supplied Subspaces to increase as per the order that they are provided in. */
   updateSubspacesSortOrder: Array<Space>;
   /** Updates the specified Tagset. */
@@ -5363,6 +5367,10 @@ export type MutationUpdateSpacePlatformSettingsArgs = {
 
 export type MutationUpdateSpaceSettingsArgs = {
   settingsData: UpdateSpaceSettingsInput;
+};
+
+export type MutationUpdateSubspacePinnedArgs = {
+  pinnedData: UpdateSubspacePinnedInput;
 };
 
 export type MutationUpdateSubspacesSortOrderArgs = {
@@ -6539,12 +6547,16 @@ export type RelayPaginatedSpace = ActorFull & {
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** Whether this Space is pinned in its parent Space. */
+  pinned: Scalars['Boolean']['output'];
   /** The calculated platform access for this Space. */
   platformAccess: PlatformRolesAccess;
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this Space. */
   settings: SpaceSettings;
+  /** The sort mode for subspaces of this Space: Alphabetical or Custom. Accessible without READ privilege. */
+  sortMode: SpaceSortMode;
   /** The sorting order for this Space within its parent. */
   sortOrder: Scalars['Int']['output'];
   /** The StorageAggregator in use by this Space */
@@ -7304,12 +7316,16 @@ export type Space = ActorFull & {
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** Whether this Space is pinned in its parent Space. */
+  pinned: Scalars['Boolean']['output'];
   /** The calculated platform access for this Space. */
   platformAccess: PlatformRolesAccess;
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
   /** The settings for this Space. */
   settings: SpaceSettings;
+  /** The sort mode for subspaces of this Space: Alphabetical or Custom. Accessible without READ privilege. */
+  sortMode: SpaceSortMode;
   /** The sorting order for this Space within its parent. */
   sortOrder: Scalars['Int']['output'];
   /** The StorageAggregator in use by this Space */
@@ -7422,6 +7438,8 @@ export type SpaceSettings = {
   membership: SpaceSettingsMembership;
   /** The privacy settings for this Space */
   privacy: SpaceSettingsPrivacy;
+  /** The sort mode for subspaces of this Space: Alphabetical or Custom. */
+  sortMode: SpaceSortMode;
 };
 
 export type SpaceSettingsCollaboration = {
@@ -7457,6 +7475,11 @@ export type SpaceSettingsPrivacy = {
   /** The privacy mode for this Space */
   mode: SpacePrivacyMode;
 };
+
+export enum SpaceSortMode {
+  Alphabetical = 'ALPHABETICAL',
+  Custom = 'CUSTOM',
+}
 
 export type SpaceSubscription = {
   __typename?: 'SpaceSubscription';
@@ -8394,6 +8417,8 @@ export type UpdateSpaceSettingsEntityInput = {
   collaboration?: InputMaybe<UpdateSpaceSettingsCollaborationInput>;
   membership?: InputMaybe<UpdateSpaceSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateSpaceSettingsPrivacyInput>;
+  /** The sort mode for subspaces: Alphabetical or Custom. */
+  sortMode?: InputMaybe<SpaceSortMode>;
 };
 
 export type UpdateSpaceSettingsInput = {
@@ -8416,6 +8441,15 @@ export type UpdateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+};
+
+export type UpdateSubspacePinnedInput = {
+  /** Whether the subspace should be pinned (true) or unpinned (false). */
+  pinned: Scalars['Boolean']['input'];
+  /** The ID of the parent Space containing the subspace. */
+  spaceID: Scalars['UUID']['input'];
+  /** The ID of the subspace to pin or unpin. */
+  subspaceID: Scalars['UUID']['input'];
 };
 
 export type UpdateSubspacesSortOrderInput = {
@@ -24087,6 +24121,8 @@ export type CreateSubspaceMutation = {
     id: string;
     level: SpaceLevel;
     visibility: SpaceVisibility;
+    pinned: boolean;
+    sortOrder: number;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -24465,9 +24501,12 @@ export type SpaceDashboardNavigationSubspacesQuery = {
                 | undefined;
             };
           };
+          settings: { __typename?: 'SpaceSettings'; sortMode: SpaceSortMode };
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
+            sortOrder: number;
+            pinned: boolean;
             about: {
               __typename?: 'SpaceAbout';
               isContentPublic: boolean;
@@ -24644,11 +24683,14 @@ export type SpaceSubspaceCardsQuery = {
                 | undefined;
             };
           };
+          settings: { __typename?: 'SpaceSettings'; sortMode: SpaceSortMode };
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
             visibility: SpaceVisibility;
+            pinned: boolean;
+            sortOrder: number;
             about: {
               __typename?: 'SpaceAbout';
               isContentPublic: boolean;
@@ -24830,6 +24872,8 @@ export type SubspaceCardFragment = {
   id: string;
   level: SpaceLevel;
   visibility: SpaceVisibility;
+  pinned: boolean;
+  sortOrder: number;
   about: {
     __typename?: 'SpaceAbout';
     isContentPublic: boolean;
@@ -24917,6 +24961,8 @@ export type SubspacesOnSpaceFragment = {
     id: string;
     level: SpaceLevel;
     visibility: SpaceVisibility;
+    pinned: boolean;
+    sortOrder: number;
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;
@@ -25354,11 +25400,13 @@ export type SubspacesInSpaceQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          settings: { __typename?: 'SpaceSettings'; sortMode: SpaceSortMode };
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
             sortOrder: number;
+            pinned: boolean;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -25417,6 +25465,8 @@ export type SubspaceCreatedSubscription = {
       id: string;
       level: SpaceLevel;
       visibility: SpaceVisibility;
+      pinned: boolean;
+      sortOrder: number;
       about: {
         __typename?: 'SpaceAbout';
         isContentPublic: boolean;
@@ -26944,6 +26994,7 @@ export type SpaceSettingsQuery = {
           };
           settings: {
             __typename?: 'SpaceSettings';
+            sortMode: SpaceSortMode;
             privacy: {
               __typename?: 'SpaceSettingsPrivacy';
               mode: SpacePrivacyMode;
@@ -26973,6 +27024,7 @@ export type SpaceSettingsQuery = {
 
 export type SpaceSettingsFragment = {
   __typename?: 'SpaceSettings';
+  sortMode: SpaceSortMode;
   privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
   membership: {
     __typename?: 'SpaceSettingsMembership';
@@ -27002,6 +27054,7 @@ export type UpdateSpaceSettingsMutation = {
     id: string;
     settings: {
       __typename?: 'SpaceSettings';
+      sortMode: SpaceSortMode;
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
       membership: {
         __typename?: 'SpaceSettingsMembership';
@@ -27405,16 +27458,6 @@ export type DeleteDocumentMutation = {
   deleteDocument: { __typename?: 'Document'; id: string };
 };
 
-export type UpdateSubspacesSortOrderMutationVariables = Exact<{
-  spaceID: Scalars['UUID']['input'];
-  subspaceIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
-}>;
-
-export type UpdateSubspacesSortOrderMutation = {
-  __typename?: 'Mutation';
-  updateSubspacesSortOrder: Array<{ __typename?: 'Space'; id: string; sortOrder: number }>;
-};
-
 export type SpaceAdminDefaultSpaceTemplatesDetailsQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -27598,6 +27641,25 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
         }
       | undefined;
   };
+};
+
+export type UpdateSubspacePinnedMutationVariables = Exact<{
+  pinnedData: UpdateSubspacePinnedInput;
+}>;
+
+export type UpdateSubspacePinnedMutation = {
+  __typename?: 'Mutation';
+  updateSubspacePinned: { __typename?: 'Space'; id: string; pinned: boolean; sortOrder: number };
+};
+
+export type UpdateSubspacesSortOrderMutationVariables = Exact<{
+  spaceID: Scalars['UUID']['input'];
+  subspaceIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+export type UpdateSubspacesSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateSubspacesSortOrder: Array<{ __typename?: 'Space'; id: string; sortOrder: number }>;
 };
 
 export type SpacePrivilegesQueryVariables = Exact<{

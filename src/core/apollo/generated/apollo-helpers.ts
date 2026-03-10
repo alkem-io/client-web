@@ -2793,6 +2793,7 @@ export type MutationKeySpecifier = (
   | 'updateSpace'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
+  | 'updateSubspacePinned'
   | 'updateSubspacesSortOrder'
   | 'updateTagset'
   | 'updateTemplate'
@@ -2991,6 +2992,7 @@ export type MutationFieldPolicy = {
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSubspacePinned?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3701,9 +3703,11 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'levelZeroSpaceID'
   | 'license'
   | 'nameID'
+  | 'pinned'
   | 'platformAccess'
   | 'profile'
   | 'settings'
+  | 'sortMode'
   | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
@@ -3730,9 +3734,11 @@ export type RelayPaginatedSpaceFieldPolicy = {
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4150,9 +4156,11 @@ export type SpaceKeySpecifier = (
   | 'levelZeroSpaceID'
   | 'license'
   | 'nameID'
+  | 'pinned'
   | 'platformAccess'
   | 'profile'
   | 'settings'
+  | 'sortMode'
   | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
@@ -4179,9 +4187,11 @@ export type SpaceFieldPolicy = {
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4253,11 +4263,18 @@ export type SpacePendingMembershipInfoFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
+export type SpaceSettingsKeySpecifier = (
+  | 'collaboration'
+  | 'membership'
+  | 'privacy'
+  | 'sortMode'
+  | SpaceSettingsKeySpecifier
+)[];
 export type SpaceSettingsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
   | 'allowEventsFromSubspaces'
