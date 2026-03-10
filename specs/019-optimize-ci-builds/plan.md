@@ -21,17 +21,17 @@ Migrate Node.js CI workflows (test, build, lint) from `arc-runner-set` to Apple 
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Applicable? | Status | Notes |
-|-----------|------------|--------|-------|
-| I. Domain-Driven Boundaries | No | N/A | CI workflows are infrastructure, not domain code |
-| II. React 19 Concurrent UX | No | N/A | No React components affected |
-| III. GraphQL Contract Fidelity | No | N/A | No GraphQL schema changes |
-| IV. State & Side-Effect Isolation | No | N/A | No application state changes |
-| V. Experience Quality & Safeguards | Partially | PASS | CI workflows SHOULD enforce linting, testing, and type generation (Governance §CI). All existing checks are preserved. |
-| Architecture Standards §4 | No | N/A | No Vite/build config changes |
-| Engineering Workflow §5 | No | N/A | No debugging/root cause changes |
+| Principle                          | Applicable? | Status | Notes                                                                                                                  |
+| ---------------------------------- | ----------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| I. Domain-Driven Boundaries        | No          | N/A    | CI workflows are infrastructure, not domain code                                                                       |
+| II. React 19 Concurrent UX         | No          | N/A    | No React components affected                                                                                           |
+| III. GraphQL Contract Fidelity     | No          | N/A    | No GraphQL schema changes                                                                                              |
+| IV. State & Side-Effect Isolation  | No          | N/A    | No application state changes                                                                                           |
+| V. Experience Quality & Safeguards | Partially   | PASS   | CI workflows SHOULD enforce linting, testing, and type generation (Governance §CI). All existing checks are preserved. |
+| Architecture Standards §4          | No          | N/A    | No Vite/build config changes                                                                                           |
+| Engineering Workflow §5            | No          | N/A    | No debugging/root cause changes                                                                                        |
 
 **Gate Result**: PASS — This feature modifies only CI workflow files. No constitution principles are violated. Existing CI checks (lint, test, build) continue to run with identical commands.
 

@@ -17,7 +17,7 @@
 
 **Purpose**: No new files or directories needed — all changes are in-place modifications. This phase is intentionally empty.
 
-*No setup tasks required — all changes modify existing workflow files.*
+_No setup tasks required — all changes modify existing workflow files._
 
 ---
 
