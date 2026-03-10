@@ -9,6 +9,7 @@
 **Rationale**: Matches the labels used by the server repository (PR #5906) and the provisioned runner group in the `alkem-io` organization. The M4 label ensures jobs land on the latest Apple Silicon hardware.
 
 **Alternatives considered**:
+
 - `[self-hosted, macOS, ARM64]` — Too broad; could match older Intel-to-ARM transition runners
 - Keeping `arc-runner-set` — Slower builds, no ARM64 benefits
 
@@ -19,6 +20,7 @@
 **Rationale**: Content-addressed caching keyed on OS, architecture, and lockfile hash ensures cache correctness across platform changes. The restore-key prefix enables partial cache hits when the lockfile changes (new dependency added but most of the store is still valid). This is the same pattern used in the server repository.
 
 **Alternatives considered**:
+
 - `actions/setup-node` built-in `cache: 'pnpm'` — Cannot coexist with explicit `actions/cache`; less control over key composition and restore behavior
 - No caching — Slower installs on every run; wasted bandwidth and compute
 
@@ -41,25 +43,27 @@
 **Decision**: Replace the manual `Prepare` step with `docker/metadata-action@v5` for automatic semver tag generation.
 
 **Rationale**: The current `Prepare` step contains ~25 lines of shell-based tag parsing that duplicates what `docker/metadata-action` does natively. The metadata action provides:
+
 - Automatic semver extraction from git tags (`v{{version}}`, `v{{major}}.{{minor}}`, `v{{major}}`)
 - Automatic `latest` tag management (only on non-prerelease)
 - OCI-compliant labels via `${{ steps.meta.outputs.labels }}`
 - Battle-tested edge cases (schedule, PR, branch naming)
 
 **Alternatives considered**:
+
 - Keep manual parsing — Harder to maintain, error-prone, already replaced in the server repo
 - Custom composite action — Over-engineering for a single workflow
 
 ### Docker Action Version Updates
 
-| Action | Current | Target | Reason |
-|--------|---------|--------|--------|
-| `actions/checkout` | `v3.0.2` | `v4` | Major version behind; security patches |
-| `docker/setup-qemu-action` | `v3.0.0` | `v3` | Use floating minor for auto-patches |
-| `docker/setup-buildx-action` | `v3.0.0` | `v3` | Use floating minor for auto-patches |
-| `docker/login-action` | `v3.0.0` | `v3` | Use floating minor for auto-patches |
-| `docker/build-push-action` | `v5.0.0` | `v5` | Use floating minor for auto-patches |
-| *(new)* `docker/metadata-action` | — | `v5` | Replaces manual tag parsing |
+| Action                           | Current  | Target | Reason                                 |
+| -------------------------------- | -------- | ------ | -------------------------------------- |
+| `actions/checkout`               | `v3.0.2` | `v4`   | Major version behind; security patches |
+| `docker/setup-qemu-action`       | `v3.0.0` | `v3`   | Use floating minor for auto-patches    |
+| `docker/setup-buildx-action`     | `v3.0.0` | `v3`   | Use floating minor for auto-patches    |
+| `docker/login-action`            | `v3.0.0` | `v3`   | Use floating minor for auto-patches    |
+| `docker/build-push-action`       | `v5.0.0` | `v5`   | Use floating minor for auto-patches    |
+| _(new)_ `docker/metadata-action` | —        | `v5`   | Replaces manual tag parsing            |
 
 ## 6. Docker Build Args — Sentry Auth Token
 
@@ -86,6 +90,7 @@ tags: |
 ```
 
 **Rationale**: Produces the same tag set as the current manual parsing logic:
+
 - Full version tag: `alkemio/client-web:v1.2.3`
 - Minor version tag: `alkemio/client-web:v1.2`
 - Major version tag: `alkemio/client-web:v1`

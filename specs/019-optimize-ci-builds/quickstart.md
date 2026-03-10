@@ -19,16 +19,19 @@
 3. Verify each of the three CI workflows:
 
 **ci-test.yml**:
+
 - [ ] Job runs on a runner with label `apple-silicon` (visible in the runner info at the top of the job log)
 - [ ] "Setup pnpm cache" step shows cache miss on first run, cache hit on subsequent runs
 - [ ] Tests pass with the same results as on `arc-runner-set`
 
 **ci-build.yml**:
+
 - [ ] Job runs on an Apple Silicon runner
 - [ ] pnpm cache is restored (after first run)
 - [ ] Build completes successfully (`CI=false pnpm run build`)
 
 **ci-lint.yml**:
+
 - [ ] Job runs on an Apple Silicon runner
 - [ ] pnpm cache is restored (after first run)
 - [ ] Lint passes (`pnpm run lint:prod`)
@@ -61,6 +64,7 @@
 ## Rollback
 
 If Apple Silicon runners are unavailable or cause issues:
+
 1. Revert `runs-on` to `arc-runner-set` in the three CI workflow files
 2. Remove the `actions/cache` and `Get pnpm store directory` steps
 3. Restore `cache: 'pnpm'` to `actions/setup-node`
