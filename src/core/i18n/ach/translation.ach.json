@@ -228,6 +228,7 @@
     "validation": {
       "fill-fields": "crwdns17658:0crwdne17658:0"
     },
+    "lockout": "crwdns44402:0{{minutes}}crwdne44402:0",
     "social-login": {
       "connect": "crwdns17660:0{{provider}}crwdne17660:0",
       "providers": {
@@ -515,7 +516,8 @@
       "space-visibility": {
         "ACTIVE": "crwdns18026:0crwdne18026:0",
         "ARCHIVED": "crwdns18028:0crwdne18028:0",
-        "DEMO": "crwdns18030:0crwdne18030:0"
+        "DEMO": "crwdns18030:0crwdne18030:0",
+        "INACTIVE": "crwdns44404:0crwdne44404:0"
       },
       "searchVisibility": {
         "ACCOUNT": "crwdns40662:0$t(common.Account)crwdne40662:0",
@@ -577,7 +579,9 @@
       "roleSetContributorType": {
         "USER": "crwdns36954:0crwdne36954:0",
         "ORGANIZATION": "crwdns40700:0$t(common.Organization)crwdne40700:0",
-        "VIRTUAL": "crwdns42304:0$t(common.virtualContributor)crwdne42304:0"
+        "VIRTUAL_CONTRIBUTOR": "crwdns44372:0$t(common.virtualContributor)crwdne44372:0",
+        "ACCOUNT": "crwdns44374:0crwdne44374:0",
+        "SPACE": "crwdns44376:0$t(common.space)crwdne44376:0"
       }
     },
     "blocks": {
@@ -706,7 +710,10 @@
       "inviteButton": {
         "USER": "crwdns40224:0$t(common.space)crwdne40224:0",
         "ORGANIZATION": "crwdns40226:0$t(common.space)crwdne40226:0",
-        "VIRTUAL": "crwdns42314:0$t(common.virtualContributor)crwdne42314:0"
+        "VIRTUAL": "crwdns42314:0$t(common.virtualContributor)crwdne42314:0",
+        "VIRTUAL_CONTRIBUTOR": "crwdns44378:0$t(common.virtualContributor)crwdne44378:0",
+        "ACCOUNT": "crwdns44380:0$t(common.space)crwdne44380:0",
+        "SPACE": "crwdns44382:0$t(common.space)crwdne44382:0"
       },
       "inviteToRole": "crwdns36966:0crwdne36966:0",
       "inviteContributorsDialog": {
@@ -1548,7 +1555,7 @@
       },
       "redirectDialog": {
         "title": "crwdns43422:0crwdne43422:0",
-        "message": "crwdns43424:0crwdne43424:0",
+        "message": "crwdns44410:0crwdne44410:0",
         "countdown": "crwdns43426:0{{seconds}}crwdne43426:0",
         "cancelCountdown": "crwdns43428:0crwdne43428:0",
         "goNow": "crwdns43430:0crwdne43430:0"
@@ -2371,6 +2378,10 @@
       "demoNotice": {
         "demoSpace": "crwdns40294:0$t(common.space)crwdne40294:0",
         "demoSubspace": "crwdns40296:0{{space}}crwdnd40296:0$t(common.space)crwdne40296:0"
+      },
+      "inactiveNotice": {
+        "inactiveSpace": "crwdns44406:0crwdne44406:0",
+        "inactiveSubspace": "crwdns44408:0{{space}}crwdne44408:0"
       }
     },
     "contribute": {
@@ -2423,7 +2434,13 @@
         "transferFailed": "crwdns44302:0crwdne44302:0",
         "close": "crwdns44304:0crwdne44304:0",
         "unknown": "crwdns44306:0crwdne44306:0",
-        "urlRequired": "crwdns44308:0crwdne44308:0"
+        "urlRequired": "crwdns44308:0crwdne44308:0",
+        "confirmTitle": "crwdns44384:0crwdne44384:0",
+        "confirmWarning1": "crwdns44386:0crwdne44386:0",
+        "confirmWarning2": "crwdns44388:0crwdne44388:0",
+        "confirmWarning3": "crwdns44390:0crwdne44390:0",
+        "confirmWarning4": "crwdns44392:0crwdne44392:0",
+        "confirmButton": "crwdns44394:0crwdne44394:0"
       },
       "transferSpace": {
         "sectionTitle": "crwdns44310:0crwdne44310:0",
@@ -2452,7 +2469,10 @@
         "successMessage": "crwdns44356:0{{spaceName}}crwdnd44356:0{{accountOwnerName}}crwdne44356:0",
         "transferFailed": "crwdns44358:0crwdne44358:0",
         "close": "crwdns44360:0crwdne44360:0",
-        "urlRequired": "crwdns44362:0crwdne44362:0"
+        "urlRequired": "crwdns44362:0crwdne44362:0",
+        "confirmTitle": "crwdns44396:0crwdne44396:0",
+        "confirmWarning1": "crwdns44398:0crwdne44398:0",
+        "confirmButton": "crwdns44400:0crwdne44400:0"
       },
       "generic": {
         "sections": {
