@@ -1,4 +1,4 @@
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceSortMode, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -49,6 +49,7 @@ export interface SubspaceViewProps<ChildEntity extends BaseChildEntity> {
   state: SubspacesState;
   children?: ReactNode;
   onClickCreate?: (isOpen: boolean) => void;
+  sortMode?: SpaceSortMode;
 }
 
 const SubspaceView = <ChildEntity extends BaseChildEntity>({
@@ -64,6 +65,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
   state,
   children,
   onClickCreate,
+  sortMode,
 }: SubspaceViewProps<ChildEntity>) => {
   const [filter, setFilter] = useState('');
   const { permissions } = useSpace();
@@ -79,6 +81,10 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
           uri: entity.about.profile.url,
           cardBanner: entity.about.profile?.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
           isPrivate: !entity.about.isContentPublic,
+          pinned:
+            sortMode !== SpaceSortMode.Custom && 'pinned' in entity
+              ? (entity as { pinned?: boolean }).pinned
+              : undefined,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]

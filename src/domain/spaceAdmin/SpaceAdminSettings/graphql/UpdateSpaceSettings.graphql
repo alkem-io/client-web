@@ -19,6 +19,7 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
         allowMembersToVideoCall
         allowGuestContributions
       }
+      sortMode
     }
   }
 }
