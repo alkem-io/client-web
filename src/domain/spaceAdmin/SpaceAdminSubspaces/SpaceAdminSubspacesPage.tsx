@@ -171,11 +171,13 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
     const isPinned = subspaces.find(s => s.id === item.id)?.pinned ?? false;
     return (
       <>
-        <MenuItemWithIcon iconComponent={PushPinOutlinedIcon} onClick={() => handleTogglePin(item.id, isPinned)}>
-          {isPinned
-            ? t('pages.admin.space.sections.subspaces.unpinSpace')
-            : t('pages.admin.space.sections.subspaces.pinSpace')}
-        </MenuItemWithIcon>
+        {sortMode === SpaceSortMode.Alphabetical && (
+          <MenuItemWithIcon iconComponent={PushPinOutlinedIcon} onClick={() => handleTogglePin(item.id, isPinned)}>
+            {isPinned
+              ? t('pages.admin.space.sections.subspaces.unpinSpace')
+              : t('pages.admin.space.sections.subspaces.pinSpace')}
+          </MenuItemWithIcon>
+        )}
         {canCreateTemplate && (
           <MenuItemWithIcon
             iconComponent={DownloadForOfflineOutlined}
