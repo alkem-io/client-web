@@ -38,7 +38,7 @@ const FormikDurationMinutes = ({
     // In this case we keep endTime intact by increasing durationMinutes by the difference
     // between old startTime and new startTime.
     const startTime = new Date(startTimeField.value);
-    const isStartTimeValid = !isNaN(startTime.getTime());
+    const isStartTimeValid = !Number.isNaN(startTime.getTime());
 
     if (field.value < 0 && isStartTimeValid) {
       const durationMinutes =

@@ -31487,6 +31487,27 @@ export type DeleteCalendarEventMutation = {
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string };
 };
 
+export type CalendarEventImportUrlsQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+export type CalendarEventImportUrlsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calendarEvent?:
+      | {
+          __typename?: 'CalendarEvent';
+          id: string;
+          googleCalendarUrl?: string | undefined;
+          outlookCalendarUrl?: string | undefined;
+          icsDownloadUrl?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
+};
+
 export type AuthorizationPolicyQueryVariables = Exact<{
   authorizationPolicyId: Scalars['UUID']['input'];
 }>;

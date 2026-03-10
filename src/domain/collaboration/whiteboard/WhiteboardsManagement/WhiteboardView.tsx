@@ -123,7 +123,7 @@ const WhiteboardView = ({
             headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  <WhiteboardGuestAccessControls whiteboard={whiteboard} guestAccessEnabled={guestAccess.enabled}>
+                  <WhiteboardGuestAccessControls whiteboard={whiteboard}>
                     <WhiteboardGuestAccessSection guestAccess={guestAccess} />
                   </WhiteboardGuestAccessControls>
                   {hasUpdatePrivileges && (
