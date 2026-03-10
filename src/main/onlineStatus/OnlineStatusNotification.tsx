@@ -37,7 +37,7 @@ export const OnlineStatusNotification = () => {
         offlineShown.current = true;
         setState('offline');
       }, OFFLINE_DEBOUNCE_MS);
-      return;
+      return () => clearTimeout(offlineTimerRef.current);
     }
 
     // Came back online — cancel pending offline toast if it hasn't fired yet
@@ -59,8 +59,6 @@ export const OnlineStatusNotification = () => {
         // localStorage unavailable — skip silently
       }
     }
-
-    return () => clearTimeout(offlineTimerRef.current);
   }, [isOnline]);
 
   const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
