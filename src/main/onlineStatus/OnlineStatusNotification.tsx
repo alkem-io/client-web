@@ -9,6 +9,7 @@ import NotificationView from '@/core/ui/notifications/NotificationView';
 import { info as sentryInfo } from '@/core/logging/sentry/log';
 import { rem } from '@/core/ui/typography/utils';
 
+const OFFLINE_DEBOUNCE_MS = 3000; // Only show offline toast after 3 s sustained disconnection
 const ONLINE_RESTORED_TIMEOUT = 6000;
 const SENTRY_ONLINE_RESTORED_LS_KEY = 'lastOnlineRestoredLog';
 const SENTRY_ONLINE_RESTORED_THROTTLE_MS = 30 * 1000; // 30 seconds
@@ -17,27 +18,34 @@ type NotificationState = 'idle' | 'offline' | 'restored';
 
 /**
  * Tracks browser online/offline events and shows a non-intrusive toast:
- * - Offline  → persistent white toast, grey text, top-center
- * - Restored → white toast, green text, auto-dismisses after 6 s
+ * - Offline  → persistent white toast, grey text, top-center (debounced — only after 3 s sustained)
+ * - Restored → white toast, green text, auto-dismisses after 6 s (only if offline toast was shown)
  *
  * Logs a single Sentry info event per restored-session, throttled to avoid noise.
  */
 export const OnlineStatusNotification = () => {
   const { t } = useTranslation();
   const isOnline = useOnlineStatus();
-  const wasOffline = useRef(false);
+  const offlineShown = useRef(false);
+  const offlineTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [state, setState] = useState<NotificationState>('idle');
 
   useEffect(() => {
     if (!isOnline) {
-      wasOffline.current = true;
-      setState('offline');
+      // Debounce: only show offline toast after sustained disconnection
+      offlineTimerRef.current = setTimeout(() => {
+        offlineShown.current = true;
+        setState('offline');
+      }, OFFLINE_DEBOUNCE_MS);
       return;
     }
 
-    // Came back online after being offline
-    if (wasOffline.current) {
-      wasOffline.current = false;
+    // Came back online — cancel pending offline toast if it hasn't fired yet
+    clearTimeout(offlineTimerRef.current);
+
+    // Only show "restored" if the offline toast was actually displayed
+    if (offlineShown.current) {
+      offlineShown.current = false;
       setState('restored');
 
       // Throttled Sentry log — at most once per 30 seconds
@@ -51,6 +59,8 @@ export const OnlineStatusNotification = () => {
         // localStorage unavailable — skip silently
       }
     }
+
+    return () => clearTimeout(offlineTimerRef.current);
   }, [isOnline]);
 
   const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
