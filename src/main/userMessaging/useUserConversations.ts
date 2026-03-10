@@ -21,6 +21,7 @@ export interface UserConversation {
   avatarUri?: string;
   unreadCount: number;
   messagesCount: number;
+  createdDate: Date;
   lastMessage?: ConversationMessage;
   members: ConversationMember[];
 }
@@ -83,6 +84,7 @@ export const useUserConversations = () => {
             avatarUri,
             unreadCount: room.unreadCount,
             messagesCount: room.messagesCount,
+            createdDate: new Date(room.createdDate),
             lastMessage: lastMessage
               ? {
                   id: lastMessage.id,
@@ -95,22 +97,16 @@ export const useUserConversations = () => {
             members,
           };
         })
-        // Sort conversations: newly created first, then unread, then by last message timestamp
+        // Sort conversations: newly created first, then by most recent activity
         .sort((a, b) => {
           // Newly created conversation always at the top
           if (a.id === newlyCreatedConversationId) return -1;
           if (b.id === newlyCreatedConversationId) return 1;
 
-          // Unread conversations first
-          if (a.unreadCount > 0 && b.unreadCount === 0) return -1;
-          if (a.unreadCount === 0 && b.unreadCount > 0) return 1;
-
-          // Conversations without messages go to the end
-          if (!a.lastMessage && !b.lastMessage) return 0;
-          if (!a.lastMessage) return 1;
-          if (!b.lastMessage) return -1;
-          // Both have messages - sort by most recent first
-          return b.lastMessage.timestamp - a.lastMessage.timestamp;
+          // Sort by most recent activity: lastMessage timestamp if available, otherwise createdDate
+          const aTime = a.lastMessage ? a.lastMessage.timestamp : a.createdDate.getTime();
+          const bTime = b.lastMessage ? b.lastMessage.timestamp : b.createdDate.getTime();
+          return bTime - aTime;
         })
     );
   }, [data?.me?.conversations?.conversations, newlyCreatedConversationId, currentUser?.id]);

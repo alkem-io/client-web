@@ -115,6 +115,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             type: room.type,
             displayName: room.displayName,
             avatarUrl: room.avatarUrl,
+            createdDate: room.createdDate,
             unreadCount: room.unreadCount,
             messagesCount: room.messagesCount,
             lastMessage: room.lastMessage,

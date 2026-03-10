@@ -9,6 +9,7 @@ subscription ConversationEvents {
           type
           displayName
           avatarUrl
+          createdDate
           unreadCount
           messagesCount
           lastMessage {

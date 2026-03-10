@@ -41229,6 +41229,7 @@ export type ConversationEventsSubscription = {
                   type: RoomType;
                   displayName: string;
                   avatarUrl?: string | undefined;
+                  createdDate: Date;
                   unreadCount: number;
                   messagesCount: number;
                   lastMessage?:
@@ -41570,6 +41571,7 @@ export type UserConversationsQuery = {
               type: RoomType;
               displayName: string;
               avatarUrl?: string | undefined;
+              createdDate: Date;
               unreadCount: number;
               messagesCount: number;
               lastMessage?:

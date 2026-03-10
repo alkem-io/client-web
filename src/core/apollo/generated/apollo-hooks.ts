@@ -29216,6 +29216,7 @@ export const ConversationEventsDocument = gql`
             type
             displayName
             avatarUrl
+            createdDate
             unreadCount
             messagesCount
             lastMessage {
@@ -29799,6 +29800,7 @@ export const UserConversationsDocument = gql`
             type
             displayName
             avatarUrl
+            createdDate
             unreadCount
             messagesCount
             lastMessage {
