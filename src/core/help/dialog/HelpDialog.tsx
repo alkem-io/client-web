@@ -98,7 +98,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
               <Trans
                 i18nKey="pages.help-dialog.versionNumber"
                 components={{ b: <strong /> }}
-                values={{ version: import.meta.env.VITE_APP_VERSION ?? 'N/A' }}
+                values={{ version: import.meta.env.VITE_VERSION ?? 'N/A' }}
               />
             </Caption>
           </Gutters>
