@@ -3,6 +3,7 @@ query SpaceContributionDetails($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       level
+      visibility
       about {
         id
         profile {

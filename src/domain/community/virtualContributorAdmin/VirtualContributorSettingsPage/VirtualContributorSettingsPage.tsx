@@ -38,18 +38,20 @@ const VirtualContributorSettingsPage = () => {
     vc?.aiPersona?.engine === AiPersonaEngine.Expert &&
     (isPlatformAdmin || vc.platformSettings?.promptGraphEditingEnabled);
 
-  if (!vc || !vc.aiPersona) {
+  if (!vc || !vc.aiPersona || !vc.profile) {
     return null;
   }
+
+  const vcWithProfile = { ...vc, profile: vc.profile, aiPersona: vc.aiPersona };
 
   return (
     <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vc?.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
-        <VisibilityForm vc={vc} />
-        <BodyOfKnowledgeManagement vc={vc} />
-        {canShowPromptGraphSection && <PromptGraphConfig vc={vc} isPlatformAdmin={!!isPlatformAdmin} />}
-        {isPromptConfigAvailable && <PromptConfig vc={vc} />}
-        {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
+        <VisibilityForm vc={vcWithProfile} />
+        <BodyOfKnowledgeManagement vc={vcWithProfile} />
+        {canShowPromptGraphSection && <PromptGraphConfig vc={vcWithProfile} isPlatformAdmin={!!isPlatformAdmin} />}
+        {isPromptConfigAvailable && <PromptConfig vc={vcWithProfile} />}
+        {isExternalConfigAvailable && <ExternalConfig vc={vcWithProfile} />}
       </VCSettingsPageLayout>
     </StorageConfigContextProvider>
   );

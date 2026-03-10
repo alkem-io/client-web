@@ -13,7 +13,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import CalloutsSetTagCloud from '@/domain/collaboration/calloutsSet/tagCloud/CalloutsSetTagCloud';
-import { sortedUniq } from 'lodash';
+import { sortedUniq } from 'lodash-es';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')

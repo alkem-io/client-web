@@ -6,16 +6,20 @@ export type APMFieldPolicy = {
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountKeySpecifier = (
-  | 'agent'
+  | 'accountType'
+  | 'actor'
   | 'authorization'
   | 'baselineLicensePlan'
   | 'createdDate'
+  | 'credentials'
   | 'externalSubscriptionID'
   | 'host'
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
   | 'license'
+  | 'nameID'
+  | 'profile'
   | 'spaces'
   | 'storageAggregator'
   | 'subscriptions'
@@ -25,16 +29,20 @@ export type AccountKeySpecifier = (
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  accountType?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   baselineLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   externalSubscriptionID?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -340,11 +348,11 @@ export type ActivityLogEntryCalloutWhiteboardCreatedFieldPolicy = {
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryMemberJoinedKeySpecifier = (
+  | 'actor'
+  | 'actorType'
   | 'child'
   | 'collaborationID'
   | 'community'
-  | 'contributor'
-  | 'contributorType'
   | 'createdDate'
   | 'description'
   | 'id'
@@ -355,11 +363,11 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | ActivityLogEntryMemberJoinedKeySpecifier
 )[];
 export type ActivityLogEntryMemberJoinedFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
+  actorType?: FieldPolicy<any> | FieldReadFunction<any>;
   child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -422,35 +430,67 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AdminAuthenticationIDBackfillResultKeySpecifier = (
-  | 'processed'
-  | 'retriedBatches'
-  | 'skipped'
-  | 'updated'
-  | AdminAuthenticationIDBackfillResultKeySpecifier
-)[];
-export type AdminAuthenticationIDBackfillResultFieldPolicy = {
-  processed?: FieldPolicy<any> | FieldReadFunction<any>;
-  retriedBatches?: FieldPolicy<any> | FieldReadFunction<any>;
-  skipped?: FieldPolicy<any> | FieldReadFunction<any>;
-  updated?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AgentKeySpecifier = (
+export type ActorKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'credentials'
   | 'id'
+  | 'nameID'
+  | 'profile'
   | 'type'
   | 'updatedDate'
-  | AgentKeySpecifier
+  | ActorKeySpecifier
 )[];
-export type AgentFieldPolicy = {
+export type ActorFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActorFullKeySpecifier = (
+  | 'authorization'
+  | 'createdDate'
+  | 'credentials'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | 'type'
+  | 'updatedDate'
+  | ActorFullKeySpecifier
+)[];
+export type ActorFullFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActorRolePolicyKeySpecifier = ('maximum' | 'minimum' | ActorRolePolicyKeySpecifier)[];
+export type ActorRolePolicyFieldPolicy = {
+  maximum?: FieldPolicy<any> | FieldReadFunction<any>;
+  minimum?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActorRolesKeySpecifier = (
+  | 'applications'
+  | 'id'
+  | 'invitations'
+  | 'organizations'
+  | 'spaces'
+  | ActorRolesKeySpecifier
+)[];
+export type ActorRolesFieldPolicy = {
+  applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaKeySpecifier = (
   | 'authorization'
@@ -495,8 +535,8 @@ export type AiServerFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationKeySpecifier = (
+  | 'actor'
   | 'authorization'
-  | 'contributor'
   | 'createdDate'
   | 'id'
   | 'isFinalized'
@@ -508,8 +548,8 @@ export type ApplicationKeySpecifier = (
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1000,9 +1040,8 @@ export type CommunityGuidelinesFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityInvitationForRoleResultKeySpecifier = (
+  | 'actorID'
   | 'communityID'
-  | 'contributorID'
-  | 'contributorType'
   | 'createdBy'
   | 'createdDate'
   | 'displayName'
@@ -1015,9 +1054,8 @@ export type CommunityInvitationForRoleResultKeySpecifier = (
   | CommunityInvitationForRoleResultKeySpecifier
 )[];
 export type CommunityInvitationForRoleResultFieldPolicy = {
+  actorID?: FieldPolicy<any> | FieldReadFunction<any>;
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorID?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1070,45 +1108,6 @@ export type ConfigFieldPolicy = {
   locations?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ContributorKeySpecifier = (
-  | 'agent'
-  | 'authorization'
-  | 'createdDate'
-  | 'id'
-  | 'nameID'
-  | 'profile'
-  | 'updatedDate'
-  | ContributorKeySpecifier
-)[];
-export type ContributorFieldPolicy = {
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ContributorRolePolicyKeySpecifier = ('maximum' | 'minimum' | ContributorRolePolicyKeySpecifier)[];
-export type ContributorRolePolicyFieldPolicy = {
-  maximum?: FieldPolicy<any> | FieldReadFunction<any>;
-  minimum?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ContributorRolesKeySpecifier = (
-  | 'applications'
-  | 'id'
-  | 'invitations'
-  | 'organizations'
-  | 'spaces'
-  | ContributorRolesKeySpecifier
-)[];
-export type ContributorRolesFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
-  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationKeySpecifier = (
   | 'authorization'
@@ -1593,17 +1592,17 @@ export type ISearchCategoryResultFieldPolicy = {
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
+  | 'actorResults'
   | 'calloutResults'
   | 'contributionResults'
-  | 'contributorResults'
   | 'framingResults'
   | 'spaceResults'
   | ISearchResultsKeySpecifier
 )[];
 export type ISearchResultsFieldPolicy = {
+  actorResults?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
   framingResults?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceResults?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1779,6 +1778,17 @@ export type InAppNotificationPayloadSpaceCommunicationUpdateFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   update?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadSpaceCommunityActorKeySpecifier = (
+  | 'actor'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCommunityActorKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCommunityActorFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadSpaceCommunityApplicationKeySpecifier = (
   | 'application'
   | 'space'
@@ -1814,17 +1824,6 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolic
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InAppNotificationPayloadSpaceCommunityContributorKeySpecifier = (
-  | 'contributor'
-  | 'space'
-  | 'type'
-  | InAppNotificationPayloadSpaceCommunityContributorKeySpecifier
-)[];
-export type InAppNotificationPayloadSpaceCommunityContributorFieldPolicy = {
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type InAppNotificationPayloadSpaceCommunityInvitationKeySpecifier = (
   | 'space'
   | 'type'
@@ -1855,13 +1854,13 @@ export type InAppNotificationPayloadUserMessageDirectFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadVirtualContributorKeySpecifier = (
-  | 'contributor'
+  | 'actor'
   | 'space'
   | 'type'
   | InAppNotificationPayloadVirtualContributorKeySpecifier
 )[];
 export type InAppNotificationPayloadVirtualContributorFieldPolicy = {
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1996,9 +1995,8 @@ export type InputCreatorQueryResultsFieldPolicy = {
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationKeySpecifier = (
+  | 'actor'
   | 'authorization'
-  | 'contributor'
-  | 'contributorType'
   | 'createdBy'
   | 'createdDate'
   | 'extraRoles'
@@ -2013,9 +2011,8 @@ export type InvitationKeySpecifier = (
   | InvitationKeySpecifier
 )[];
 export type InvitationFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   extraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2596,7 +2593,6 @@ export type MutationKeySpecifier = (
   | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'addVisualToMediaGallery'
-  | 'adminBackfillAuthenticationIDs'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationMigrateOrphanedConversations'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2620,6 +2616,7 @@ export type MutationKeySpecifier = (
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
+  | 'assignRole'
   | 'assignRoleToOrganization'
   | 'assignRoleToUser'
   | 'assignRoleToVirtualContributor'
@@ -2656,9 +2653,9 @@ export type MutationKeySpecifier = (
   | 'createTemplateFromContentSpace'
   | 'createTemplateFromSpace'
   | 'createUser'
-  | 'createUserNewRegistration'
   | 'createVirtualContributor'
   | 'createWingbackAccount'
+  | 'deleteApplication'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
   | 'deleteContribution'
@@ -2680,7 +2677,6 @@ export type MutationKeySpecifier = (
   | 'deleteStorageBucket'
   | 'deleteTemplate'
   | 'deleteUser'
-  | 'deleteUserApplication'
   | 'deleteUserGroup'
   | 'deleteVirtualContributor'
   | 'deleteVisualFromMediaGallery'
@@ -2688,6 +2684,7 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
+  | 'grantCredentialToActor'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
@@ -2706,12 +2703,14 @@ export type MutationKeySpecifier = (
   | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
+  | 'removeRole'
   | 'removeRoleFromOrganization'
   | 'removeRoleFromUser'
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
+  | 'revokeCredentialFromActor'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
@@ -2788,7 +2787,6 @@ export type MutationFieldPolicy = {
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminBackfillAuthenticationIDs?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMigrateOrphanedConversations?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2812,6 +2810,7 @@ export type MutationFieldPolicy = {
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignRole?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2848,9 +2847,9 @@ export type MutationFieldPolicy = {
   createTemplateFromContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createWingbackAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2872,7 +2871,6 @@ export type MutationFieldPolicy = {
   deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVisualFromMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2880,6 +2878,7 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantCredentialToActor?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2898,12 +2897,14 @@ export type MutationFieldPolicy = {
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeRole?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3000,10 +3001,11 @@ export type NotificationRecipientResultFieldPolicy = {
 };
 export type OrganizationKeySpecifier = (
   | 'account'
-  | 'agent'
+  | 'actor'
   | 'authorization'
   | 'contactEmail'
   | 'createdDate'
+  | 'credentials'
   | 'domain'
   | 'group'
   | 'groups'
@@ -3015,6 +3017,7 @@ export type OrganizationKeySpecifier = (
   | 'roleSet'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | 'updatedDate'
   | 'verification'
   | 'website'
@@ -3022,10 +3025,11 @@ export type OrganizationKeySpecifier = (
 )[];
 export type OrganizationFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3037,6 +3041,7 @@ export type OrganizationFieldPolicy = {
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3540,6 +3545,8 @@ export type QueryKeySpecifier = (
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
+  | 'actor'
+  | 'actorsWithCredential'
   | 'adminIdentitiesUnverified'
   | 'aiServer'
   | 'exploreSpaces'
@@ -3576,6 +3583,8 @@ export type QueryFieldPolicy = {
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
+  actorsWithCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3644,17 +3653,19 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
-  | 'agent'
+  | 'actor'
   | 'authorization'
   | 'collaboration'
   | 'community'
   | 'createdDate'
+  | 'credentials'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
   | 'nameID'
   | 'platformAccess'
+  | 'profile'
   | 'settings'
   | 'sortOrder'
   | 'storageAggregator'
@@ -3662,6 +3673,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
+  | 'type'
   | 'updatedDate'
   | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
@@ -3670,17 +3682,19 @@ export type RelayPaginatedSpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3688,6 +3702,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4083,17 +4098,19 @@ export type SpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
-  | 'agent'
+  | 'actor'
   | 'authorization'
   | 'collaboration'
   | 'community'
   | 'createdDate'
+  | 'credentials'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
   | 'nameID'
   | 'platformAccess'
+  | 'profile'
   | 'settings'
   | 'sortOrder'
   | 'storageAggregator'
@@ -4101,6 +4118,7 @@ export type SpaceKeySpecifier = (
   | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
+  | 'type'
   | 'updatedDate'
   | 'visibility'
   | SpaceKeySpecifier
@@ -4109,17 +4127,19 @@ export type SpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4127,6 +4147,7 @@ export type SpaceFieldPolicy = {
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4706,10 +4727,11 @@ export type UrlResolverQueryResultsFieldPolicy = {
 };
 export type UserKeySpecifier = (
   | 'account'
-  | 'agent'
+  | 'actor'
   | 'authentication'
   | 'authorization'
   | 'createdDate'
+  | 'credentials'
   | 'email'
   | 'firstName'
   | 'id'
@@ -4720,15 +4742,17 @@ export type UserKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | 'updatedDate'
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4739,6 +4763,7 @@ export type UserFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserAuthenticationResultKeySpecifier = (
@@ -4938,13 +4963,14 @@ export type VcInteractionFieldPolicy = {
 };
 export type VirtualContributorKeySpecifier = (
   | 'account'
-  | 'agent'
+  | 'actor'
   | 'aiPersona'
   | 'authorization'
   | 'bodyOfKnowledgeDescription'
   | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
+  | 'credentials'
   | 'dataAccessMode'
   | 'engine'
   | 'id'
@@ -4961,19 +4987,21 @@ export type VirtualContributorKeySpecifier = (
   | 'searchVisibility'
   | 'settings'
   | 'status'
+  | 'type'
   | 'updatedDate'
   | 'wellKnownVirtualContributor'
   | VirtualContributorKeySpecifier
 )[];
 export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4990,6 +5018,7 @@ export type VirtualContributorFieldPolicy = {
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   wellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5273,16 +5302,21 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ActivityLogEntryUpdateSentKeySpecifier);
     fields?: ActivityLogEntryUpdateSentFieldPolicy;
   };
-  AdminAuthenticationIDBackfillResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | AdminAuthenticationIDBackfillResultKeySpecifier
-      | (() => undefined | AdminAuthenticationIDBackfillResultKeySpecifier);
-    fields?: AdminAuthenticationIDBackfillResultFieldPolicy;
+  Actor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActorKeySpecifier | (() => undefined | ActorKeySpecifier);
+    fields?: ActorFieldPolicy;
   };
-  Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
-    fields?: AgentFieldPolicy;
+  ActorFull?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActorFullKeySpecifier | (() => undefined | ActorFullKeySpecifier);
+    fields?: ActorFullFieldPolicy;
+  };
+  ActorRolePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActorRolePolicyKeySpecifier | (() => undefined | ActorRolePolicyKeySpecifier);
+    fields?: ActorRolePolicyFieldPolicy;
+  };
+  ActorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActorRolesKeySpecifier | (() => undefined | ActorRolesKeySpecifier);
+    fields?: ActorRolesFieldPolicy;
   };
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
@@ -5475,18 +5509,6 @@ export type StrictTypedTypePolicies = {
   Config?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);
     fields?: ConfigFieldPolicy;
-  };
-  Contributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ContributorKeySpecifier | (() => undefined | ContributorKeySpecifier);
-    fields?: ContributorFieldPolicy;
-  };
-  ContributorRolePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ContributorRolePolicyKeySpecifier | (() => undefined | ContributorRolePolicyKeySpecifier);
-    fields?: ContributorRolePolicyFieldPolicy;
-  };
-  ContributorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
-    fields?: ContributorRolesFieldPolicy;
   };
   Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
@@ -5809,6 +5831,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | InAppNotificationPayloadSpaceCommunicationUpdateKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunicationUpdateFieldPolicy;
   };
+  InAppNotificationPayloadSpaceCommunityActor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCommunityActorKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCommunityActorKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCommunityActorFieldPolicy;
+  };
   InAppNotificationPayloadSpaceCommunityApplication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5829,13 +5858,6 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy;
-  };
-  InAppNotificationPayloadSpaceCommunityContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadSpaceCommunityContributorKeySpecifier
-      | (() => undefined | InAppNotificationPayloadSpaceCommunityContributorKeySpecifier);
-    fields?: InAppNotificationPayloadSpaceCommunityContributorFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunityInvitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

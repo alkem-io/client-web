@@ -2,7 +2,7 @@ import { Message } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import Avatar from '@/core/ui/avatar/Avatar';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -32,8 +32,8 @@ import {
   alpha,
 } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { keyBy } from 'lodash';
-import orderBy from 'lodash/orderBy';
+import { keyBy } from 'lodash-es';
+import { orderBy } from 'lodash-es';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -233,7 +233,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                       </Link>
                     )
                   }
-                  title={member?.displayName || m.sender?.profile.displayName}
+                  title={member?.displayName || m.sender?.profile?.displayName}
                   subheader={new Date(m.timestamp).toLocaleString()}
                   action={
                     canEdit ? (

@@ -4,7 +4,7 @@ import { ActionableContributionsView } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { AuthorizationPrivilege, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   PendingMembershipsDialogType,
@@ -47,7 +47,7 @@ const VCMembershipPage = () => {
         id: space.id,
         spaceLevel: SpaceLevel.L0,
         contributorId: vcId,
-        contributorType: RoleSetContributorType.Virtual,
+        contributorType: ActorType.VirtualContributor,
       };
       acc.push(currentSpace);
 
@@ -56,7 +56,7 @@ const VCMembershipPage = () => {
         spaceID: subspace.id,
         spaceLevel: subspace.level,
         contributorId: vcId,
-        contributorType: RoleSetContributorType.Virtual,
+        contributorType: ActorType.VirtualContributor,
         parentSpaceId: space.id, // Track parent space for subspaces
       }));
 
@@ -72,15 +72,15 @@ const VCMembershipPage = () => {
     return data?.me.communityInvitations
       .filter(
         invitation =>
-          invitation.invitation.contributorType === RoleSetContributorType.Virtual &&
-          invitation.invitation.contributor.id === data.lookup.virtualContributor?.id
+          invitation.invitation.actor.type === ActorType.VirtualContributor &&
+          invitation.invitation.actor.id === data.lookup.virtualContributor?.id
       )
       .map(invitation => ({
         id: invitation.id,
         spaceID: invitation.spacePendingMembershipInfo.id,
         spaceLevel: invitation.spacePendingMembershipInfo.level,
         contributorId: vcId,
-        contributorType: RoleSetContributorType.Virtual,
+        contributorType: ActorType.VirtualContributor,
       }));
   }, [data]);
 

@@ -60,8 +60,8 @@ const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDet
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 
   const creator = event?.createdBy;
-  const creatorAvatar = creator?.profile.visual?.uri;
-  const creatorName = creator?.profile.displayName;
+  const creatorAvatar = creator?.profile?.visual?.uri;
+  const creatorName = creator?.profile?.displayName;
   const createdDate = event?.createdDate?.toString();
 
   const _messages = useMemo(() => event?.comments?.messages ?? [], [event?.comments?.messages]);

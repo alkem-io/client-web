@@ -15,7 +15,7 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -57,21 +57,17 @@ export const UserForm = ({
   const isReadOnlyMode = editMode === EditMode.readOnly;
   const { isSmallScreen } = useScreenSize();
 
+  const { firstName, lastName, email, phone, profile } = currentUser;
+
   const {
-    firstName,
-    lastName,
-    email,
-    phone,
-    profile: {
-      id: profileId,
-      displayName,
-      description: bio,
-      tagline,
-      references,
-      location: { city, country } = {},
-      tagsets,
-    },
-  } = currentUser;
+    id: profileId,
+    displayName,
+    description: bio,
+    tagline,
+    references,
+    location: { city, country } = {},
+    tagsets,
+  } = profile ?? {};
 
   const { blueSkyRef, githubRef, linkedinRef } = useMemo(
     () => ({

@@ -53,10 +53,10 @@ const EntityDashboardLeadsSection = ({
         onContact: () => {
           sendMessage(getMessageType(ProfileType.Organization), {
             id: org.id,
-            avatarUri: org.profile.avatar?.uri,
-            displayName: org.profile.displayName,
-            city: org.profile.location?.city,
-            country: org.profile.location?.country,
+            avatarUri: org.profile?.avatar?.uri,
+            displayName: org.profile?.displayName,
+            city: org.profile?.location?.city,
+            country: org.profile?.location?.country,
           });
         },
       })),
@@ -71,10 +71,10 @@ const EntityDashboardLeadsSection = ({
       onContact: () => {
         sendMessage(getMessageType(ProfileType.User), {
           id: user.id,
-          avatarUri: user.profile.avatar?.uri,
-          displayName: user.profile.displayName,
-          city: user.profile.location?.city,
-          country: user.profile.location?.country,
+          avatarUri: user.profile?.avatar?.uri,
+          displayName: user.profile?.displayName,
+          city: user.profile?.location?.city,
+          country: user.profile?.location?.country,
         });
       },
     }));

@@ -1,4 +1,4 @@
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
@@ -13,6 +13,8 @@ export interface PendingInvitationItem extends Identifiable {
     welcomeMessage?: string;
     createdDate: Date | string;
     state?: string;
-    contributorType?: RoleSetContributorType;
+    actor?: {
+      type: ActorType;
+    };
   };
 }

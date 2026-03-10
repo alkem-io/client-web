@@ -11,7 +11,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import { useTranslation } from 'react-i18next';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
@@ -49,7 +49,7 @@ const InvitationDialog = ({
   const { isSmallScreen } = useScreenSize();
 
   const getTitle = (invitation: InvitationWithMeta) => {
-    if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
+    if (invitation.invitation.actor?.type === ActorType.VirtualContributor) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
         space: invitation?.space.about.profile.displayName,
       });
@@ -61,7 +61,7 @@ const InvitationDialog = ({
   };
 
   const getAcceptLabel = (invitation: InvitationWithMeta) => {
-    if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
+    if (invitation.invitation.actor?.type === ActorType.VirtualContributor) {
       return t('community.pendingMembership.invitationDialog.actions.accept');
     }
 
@@ -125,7 +125,7 @@ const InvitationDialog = ({
                           spaceLevel={invitation.space.level}
                           createdDate={invitation.invitation.createdDate}
                           author={{ displayName: invitation.userDisplayName }}
-                          type={invitation.invitation.contributorType}
+                          type={invitation.invitation.actor?.type}
                         />
                       </Caption>
                       {invitation.invitation.welcomeMessage && <Text>{invitation.invitation.welcomeMessage}</Text>}

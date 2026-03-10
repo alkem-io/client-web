@@ -22,12 +22,7 @@ import CommunityGuidelinesContainer, {
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
-import {
-  LicenseEntitlementType,
-  RoleSetContributorType,
-  SpaceLevel,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
+import { LicenseEntitlementType, ActorType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -171,7 +166,7 @@ const SpaceAdminCommunityPage = ({
           <PageContentBlock>
             <PageContentBlockHeader title={t('community.pendingMemberships')}>
               <InviteContributorsWizard
-                contributorType={RoleSetContributorType.User}
+                contributorType={ActorType.User}
                 filterContributors={filterInviteeContributors}
                 onlyFromParentCommunity={level === SpaceLevel.L2}
               >

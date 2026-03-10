@@ -40,7 +40,7 @@ export interface TemplateInnovationPack extends Identifiable {
     displayName: string;
   };
   provider?: {
-    profile: {
+    profile?: {
       displayName: string;
       avatar?: {
         id: string;

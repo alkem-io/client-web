@@ -1,6 +1,6 @@
 query platformAdminSpacesList {
   platformAdmin {
-    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
       id
       nameID
       visibility

@@ -58,7 +58,7 @@ export const VisualModelFragmentDoc = gql`
   }
 `;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
-  fragment InnovationPackProviderProfileWithAvatar on Contributor {
+  fragment InnovationPackProviderProfileWithAvatar on Actor {
     id
     profile {
       id
@@ -99,8 +99,9 @@ export const InnovationPackCardFragmentDoc = gql`
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
 export const AdminCommunityCandidateMemberFragmentDoc = gql`
-  fragment AdminCommunityCandidateMember on Contributor {
+  fragment AdminCommunityCandidateMember on Actor {
     id
+    type
     profile {
       id
       displayName
@@ -115,11 +116,8 @@ export const AdminCommunityApplicationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    contributor {
+    actor {
       ...AdminCommunityCandidateMember
-      ... on User {
-        email
-      }
     }
   }
   ${AdminCommunityCandidateMemberFragmentDoc}
@@ -131,12 +129,8 @@ export const AdminCommunityInvitationFragmentDoc = gql`
     updatedDate
     state
     nextEvents
-    contributorType
-    contributor {
+    actor {
       ...AdminCommunityCandidateMember
-      ... on User {
-        email
-      }
     }
   }
   ${AdminCommunityCandidateMemberFragmentDoc}
@@ -383,7 +377,8 @@ export const InnovationFlowDetailsFragmentDoc = gql`
 `;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-    contributor {
+    actorType
+    actor {
       id
       profile {
         id
@@ -393,10 +388,6 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
           id
           uri
         }
-      }
-      ... on User {
-        firstName
-        lastName
       }
     }
   }
@@ -910,7 +901,7 @@ export const ReactionDetailsFragmentDoc = gql`
   }
 `;
 export const ContributorDetailsFragmentDoc = gql`
-  fragment ContributorDetails on Contributor {
+  fragment ContributorDetails on Actor {
     id
     profile {
       id
@@ -1567,6 +1558,30 @@ export const UserDetailsFragmentDoc = gql`
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const UserDetailsLightFragmentDoc = gql`
+  fragment UserDetailsLight on User {
+    id
+    firstName
+    lastName
+    email
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      url
+    }
+    settings {
+      id
+      homeSpace {
+        spaceID
+        autoRedirect
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
     id
@@ -1734,10 +1749,10 @@ export const InvitationDataFragmentDoc = gql`
       }
       state
       createdDate
-      contributor {
+      actor {
         id
+        type
       }
-      contributorType
     }
   }
   ${SpaceAboutMinimalUrlFragmentDoc}
@@ -3165,14 +3180,14 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
   }
   ${SpaceNotificationFragmentDoc}
 `;
-export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
-  fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
+export const InAppNotificationSpaceCommunityActorFragmentDoc = gql`
+  fragment InAppNotificationSpaceCommunityActor on InAppNotificationPayloadSpaceCommunityActor {
     space {
       ...spaceNotification
     }
-    contributor {
+    actor {
       id
-      __typename
+      type
       profile {
         id
         displayName
@@ -3194,7 +3209,7 @@ export const InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc = gql`
     application {
       id
       createdDate
-      contributor {
+      actor {
         id
         profile {
           id
@@ -3325,8 +3340,9 @@ export const InAppNotificationPayloadVirtualContributorFragmentDoc = gql`
     space {
       ...spaceNotification
     }
-    contributor {
+    actor {
       id
+      type
       profile {
         id
         displayName
@@ -3421,8 +3437,8 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadSpaceCollaborationCallout {
         ...InAppNotificationPayloadSpaceCollaborationCallout
       }
-      ... on InAppNotificationPayloadSpaceCommunityContributor {
-        ...InAppNotificationSpaceCommunityContributor
+      ... on InAppNotificationPayloadSpaceCommunityActor {
+        ...InAppNotificationSpaceCommunityActor
       }
       ... on InAppNotificationPayloadSpaceCommunityApplication {
         ...InAppNotificationPayloadSpaceCommunityApplication
@@ -3469,7 +3485,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadPlatformUserFragmentDoc}
   ${InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
-  ${InAppNotificationSpaceCommunityContributorFragmentDoc}
+  ${InAppNotificationSpaceCommunityActorFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunicationUpdateFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunicationMessageDirectFragmentDoc}
@@ -3899,7 +3915,7 @@ export const ExploreSpacesFragmentDoc = gql`
       }
       membership {
         myMembershipStatus
-        leadUsers {
+        leadUsers @skip(if: $skipLeads) {
           id
           profile {
             id
@@ -3910,7 +3926,7 @@ export const ExploreSpacesFragmentDoc = gql`
             }
           }
         }
-        leadOrganizations {
+        leadOrganizations @skip(if: $skipLeads) {
           id
           profile {
             id
@@ -4976,14 +4992,14 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
 export const InviteForEntryRoleOnRoleSetDocument = gql`
   mutation InviteForEntryRoleOnRoleSet(
     $roleSetId: UUID!
-    $invitedContributorIds: [UUID!]!
+    $invitedActorIds: [UUID!]!
     $invitedUserEmails: [String!]!
     $welcomeMessage: String
     $extraRoles: [RoleName!]!
   ) {
     inviteForEntryRoleOnRoleSet(
       invitationData: {
-        invitedContributorIDs: $invitedContributorIds
+        invitedActorIDs: $invitedActorIds
         invitedUserEmails: $invitedUserEmails
         roleSetID: $roleSetId
         welcomeMessage: $welcomeMessage
@@ -4993,7 +5009,7 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
       type
       invitation {
         id
-        contributor {
+        actor {
           id
           profile {
             id
@@ -5029,7 +5045,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  * const [inviteForEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteForEntryRoleOnRoleSetMutation({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      invitedContributorIds: // value for 'invitedContributorIds'
+ *      invitedActorIds: // value for 'invitedActorIds'
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRoles: // value for 'extraRoles'
@@ -5685,7 +5701,7 @@ export function refetchAvailableOrganizationsQuery(variables: SchemaTypes.Availa
 }
 export const AssignPlatformRoleToUserDocument = gql`
   mutation AssignPlatformRoleToUser($role: RoleName!, $contributorId: UUID!) {
-    assignPlatformRoleToUser(roleData: { role: $role, contributorID: $contributorId }) {
+    assignPlatformRoleToUser(roleData: { role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -5734,7 +5750,7 @@ export type AssignPlatformRoleToUserMutationOptions = Apollo.BaseMutationOptions
 >;
 export const AssignRoleToUserDocument = gql`
   mutation AssignRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignRoleToUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    assignRoleToUser(roleData: { roleSetID: $roleSetId, role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -5783,7 +5799,7 @@ export type AssignRoleToUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AssignRoleToOrganizationDocument = gql`
   mutation AssignRoleToOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -5833,7 +5849,7 @@ export type AssignRoleToOrganizationMutationOptions = Apollo.BaseMutationOptions
 >;
 export const AssignRoleToVirtualContributorDocument = gql`
   mutation AssignRoleToVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -5885,7 +5901,7 @@ export type AssignRoleToVirtualContributorMutationOptions = Apollo.BaseMutationO
 >;
 export const RemovePlatformRoleFromUserDocument = gql`
   mutation RemovePlatformRoleFromUser($role: RoleName!, $contributorId: UUID!) {
-    removePlatformRoleFromUser(roleData: { role: $role, contributorID: $contributorId }) {
+    removePlatformRoleFromUser(roleData: { role: $role, actorID: $contributorId }) {
       id
       profile {
         id
@@ -5938,7 +5954,7 @@ export type RemovePlatformRoleFromUserMutationOptions = Apollo.BaseMutationOptio
 >;
 export const RemoveRoleFromUserDocument = gql`
   mutation RemoveRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removeRoleFromUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    removeRoleFromUser(roleData: { roleSetID: $roleSetId, role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -5987,7 +6003,7 @@ export type RemoveRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const RemoveRoleFromOrganizationDocument = gql`
   mutation removeRoleFromOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -6037,7 +6053,7 @@ export type RemoveRoleFromOrganizationMutationOptions = Apollo.BaseMutationOptio
 >;
 export const RemoveRoleFromVirtualContributorDocument = gql`
   mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removeRoleFromVirtualContributor(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    removeRoleFromVirtualContributor(roleData: { roleSetID: $roleSetId, role: $role, actorID: $contributorId }) {
       id
     }
   }
@@ -11490,12 +11506,8 @@ export const ReplyToMessageDocument = gql`
       id
       message
       sender {
-        ... on User {
-          id
-        }
-        ... on VirtualContributor {
-          id
-        }
+        id
+        type
       }
       timestamp
     }
@@ -11661,12 +11673,8 @@ export const SendMessageToRoomDocument = gql`
       id
       message
       sender {
-        ... on User {
-          id
-        }
-        ... on VirtualContributor {
-          id
-        }
+        id
+        type
       }
       timestamp
     }
@@ -12753,6 +12761,92 @@ export function refetchContributorsVirtualInLibraryQuery(
 ) {
   return { query: ContributorsVirtualInLibraryDocument, variables: variables };
 }
+export const ActorDetailsDocument = gql`
+  query ActorDetails($actorId: UUID!) {
+    actor(id: $actorId) {
+      id
+      type
+      nameID
+      profile {
+        id
+        displayName
+        url
+      }
+      ... on User {
+        email
+        firstName
+        lastName
+        phone
+        isContactable
+      }
+      ... on Organization {
+        contactEmail
+        domain
+        legalEntityName
+      }
+      ... on VirtualContributor {
+        bodyOfKnowledgeType
+      }
+    }
+  }
+`;
+
+/**
+ * __useActorDetailsQuery__
+ *
+ * To run a query within a React component, call `useActorDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActorDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActorDetailsQuery({
+ *   variables: {
+ *      actorId: // value for 'actorId'
+ *   },
+ * });
+ */
+export function useActorDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ActorDetailsQuery, SchemaTypes.ActorDetailsQueryVariables> &
+    ({ variables: SchemaTypes.ActorDetailsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ActorDetailsQuery, SchemaTypes.ActorDetailsQueryVariables>(
+    ActorDetailsDocument,
+    options
+  );
+}
+export function useActorDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ActorDetailsQuery, SchemaTypes.ActorDetailsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ActorDetailsQuery, SchemaTypes.ActorDetailsQueryVariables>(
+    ActorDetailsDocument,
+    options
+  );
+}
+export function useActorDetailsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ActorDetailsQuery, SchemaTypes.ActorDetailsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ActorDetailsQuery, SchemaTypes.ActorDetailsQueryVariables>(
+    ActorDetailsDocument,
+    options
+  );
+}
+export type ActorDetailsQueryHookResult = ReturnType<typeof useActorDetailsQuery>;
+export type ActorDetailsLazyQueryHookResult = ReturnType<typeof useActorDetailsLazyQuery>;
+export type ActorDetailsSuspenseQueryHookResult = ReturnType<typeof useActorDetailsSuspenseQuery>;
+export type ActorDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ActorDetailsQuery,
+  SchemaTypes.ActorDetailsQueryVariables
+>;
+export function refetchActorDetailsQuery(variables: SchemaTypes.ActorDetailsQueryVariables) {
+  return { query: ActorDetailsDocument, variables: variables };
+}
 export const AccountResourcesInfoDocument = gql`
   query AccountResourcesInfo($accountId: UUID!) {
     lookup {
@@ -12760,6 +12854,7 @@ export const AccountResourcesInfoDocument = gql`
         id
         spaces {
           id
+          visibility
           about {
             id
             profile {
@@ -13319,7 +13414,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 }
 export const RolesOrganizationDocument = gql`
   query rolesOrganization($organizationId: UUID!) {
-    rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesOrganization(rolesData: { actorID: $organizationId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -13987,6 +14082,7 @@ export const SpaceContributionDetailsDocument = gql`
       space(ID: $spaceId) {
         id
         level
+        visibility
         about {
           id
           profile {
@@ -14274,8 +14370,8 @@ export function refetchUserSelectorUserDetailsQuery(variables: SchemaTypes.UserS
   return { query: UserSelectorUserDetailsDocument, variables: variables };
 }
 export const CreateUserNewRegistrationDocument = gql`
-  mutation createUserNewRegistration {
-    createUserNewRegistration {
+  mutation createUserNewRegistration($userData: CreateUserInput!) {
+    createUser(userData: $userData) {
       id
     }
   }
@@ -14298,6 +14394,7 @@ export type CreateUserNewRegistrationMutationFn = Apollo.MutationFunction<
  * @example
  * const [createUserNewRegistrationMutation, { data, loading, error }] = useCreateUserNewRegistrationMutation({
  *   variables: {
+ *      userData: // value for 'userData'
  *   },
  * });
  */
@@ -14372,13 +14469,6 @@ export const UserAccountDocument = gql`
         profile {
           id
           displayName
-        }
-        agent {
-          id
-          credentials {
-            id
-            type
-          }
         }
         account {
           id
@@ -14635,7 +14725,7 @@ export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFull
 }
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID!) {
-    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -14715,7 +14805,7 @@ export function refetchUserContributionsQuery(variables: SchemaTypes.UserContrib
 }
 export const UserOrganizationIdsDocument = gql`
   query UserOrganizationIds($userId: UUID!) {
-    rolesUser(rolesData: { userID: $userId }) {
+    rolesUser(rolesData: { actorID: $userId }) {
       id
       organizations {
         id
@@ -15220,6 +15310,85 @@ export type CurrentUserFullQueryResult = Apollo.QueryResult<
 >;
 export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
   return { query: CurrentUserFullDocument, variables: variables };
+}
+export const CurrentUserLightDocument = gql`
+  query CurrentUserLight {
+    me {
+      user {
+        ...UserDetailsLight
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          license {
+            id
+            availableEntitlements
+          }
+        }
+      }
+    }
+  }
+  ${UserDetailsLightFragmentDoc}
+`;
+
+/**
+ * __useCurrentUserLightQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserLightQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserLightQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserLightQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserLightQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export function useCurrentUserLightLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CurrentUserLightQuery,
+    SchemaTypes.CurrentUserLightQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export function useCurrentUserLightSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CurrentUserLightQuery, SchemaTypes.CurrentUserLightQueryVariables>(
+    CurrentUserLightDocument,
+    options
+  );
+}
+export type CurrentUserLightQueryHookResult = ReturnType<typeof useCurrentUserLightQuery>;
+export type CurrentUserLightLazyQueryHookResult = ReturnType<typeof useCurrentUserLightLazyQuery>;
+export type CurrentUserLightSuspenseQueryHookResult = ReturnType<typeof useCurrentUserLightSuspenseQuery>;
+export type CurrentUserLightQueryResult = Apollo.QueryResult<
+  SchemaTypes.CurrentUserLightQuery,
+  SchemaTypes.CurrentUserLightQueryVariables
+>;
+export function refetchCurrentUserLightQuery(variables?: SchemaTypes.CurrentUserLightQueryVariables) {
+  return { query: CurrentUserLightDocument, variables: variables };
 }
 export const CommunityAvailableVCsDocument = gql`
   query CommunityAvailableVCs($roleSetId: UUID!) {
@@ -16689,7 +16858,7 @@ export const VcMembershipsDocument = gql`
         }
       }
     }
-    rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
+    rolesVirtualContributor(rolesData: { actorID: $virtualContributorId }) {
       spaces {
         id
         subspaces {
@@ -17211,7 +17380,7 @@ export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
-    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+    spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
       ...InnovationHubSpace
     }
   }
@@ -18361,7 +18530,7 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
 export const PlatformAdminSpacesListDocument = gql`
   query platformAdminSpacesList {
     platformAdmin {
-      spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+      spaces(filter: { visibilities: [ACTIVE, DEMO, INACTIVE] }) {
         id
         nameID
         visibility
@@ -21919,7 +22088,7 @@ export const SpaceAccountDocument = gql`
           ...SpaceAboutLight
           provider {
             id
-            __typename
+            type
             authorization {
               myPrivileges
             }
@@ -22039,7 +22208,7 @@ export const CommunityApplicationDocument = gql`
         id
         createdDate
         updatedDate
-        contributor {
+        actor {
           id
           profile {
             id
@@ -22141,8 +22310,8 @@ export const CommunityInvitationDocument = gql`
         createdDate
         updatedDate
         welcomeMessage
-        contributorType
-        contributor {
+        actor {
+          type
           id
           profile {
             id
@@ -26599,7 +26768,7 @@ export const SearchDocument = gql`
         }
         total
       }
-      contributorResults {
+      actorResults {
         cursor
         results {
           id
@@ -26668,7 +26837,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 }
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID!) {
-    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
       id
       spaces {
         id
@@ -27161,7 +27330,7 @@ export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.Das
   return { query: DashboardWithMembershipsDocument, variables: variables };
 }
 export const ExploreSpacesSearchDocument = gql`
-  query ExploreSpacesSearch($searchData: SearchInput!) {
+  query ExploreSpacesSearch($searchData: SearchInput!, $skipLeads: Boolean! = false) {
     search(searchData: $searchData) {
       spaceResults {
         cursor
@@ -27191,6 +27360,7 @@ export const ExploreSpacesSearchDocument = gql`
  * const { data, loading, error } = useExploreSpacesSearchQuery({
  *   variables: {
  *      searchData: // value for 'searchData'
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27244,7 +27414,7 @@ export function refetchExploreSpacesSearchQuery(variables: SchemaTypes.ExploreSp
   return { query: ExploreSpacesSearchDocument, variables: variables };
 }
 export const ExploreAllSpacesDocument = gql`
-  query ExploreAllSpaces {
+  query ExploreAllSpaces($skipLeads: Boolean! = false) {
     exploreSpaces {
       ...ExploreSpaces
     }
@@ -27264,6 +27434,7 @@ export const ExploreAllSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useExploreAllSpacesQuery({
  *   variables: {
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27310,7 +27481,7 @@ export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllS
   return { query: ExploreAllSpacesDocument, variables: variables };
 }
 export const WelcomeSpaceDocument = gql`
-  query WelcomeSpace($spaceId: UUID!) {
+  query WelcomeSpace($spaceId: UUID!, $skipLeads: Boolean! = false) {
     lookup {
       space(ID: $spaceId) {
         ...ExploreSpaces
@@ -27333,6 +27504,7 @@ export const WelcomeSpaceDocument = gql`
  * const { data, loading, error } = useWelcomeSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      skipLeads: // value for 'skipLeads'
  *   },
  * });
  */
@@ -27391,7 +27563,9 @@ export const PendingInvitationsDocument = gql`
         invitation {
           id
           welcomeMessage
-          contributorType
+          actor {
+            type
+          }
           createdBy {
             id
           }
@@ -27765,12 +27939,18 @@ export const LatestContributionsSpacesFlatDocument = gql`
       spaceMembershipsFlat {
         id
         space {
-          ...ActivityLogSpaceVisuals
+          id
+          about {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
         }
       }
     }
   }
-  ${ActivityLogSpaceVisualsFragmentDoc}
 `;
 
 /**
@@ -28343,6 +28523,7 @@ export const HomeSpaceLookupDocument = gql`
           isContentPublic
         }
         level
+        visibility
       }
     }
   }
@@ -28427,6 +28608,7 @@ export const RecentSpacesDocument = gql`
             isContentPublic
           }
           level
+          visibility
           __typename
         }
       }
@@ -28984,26 +29166,14 @@ export const ConversationEventsDocument = gql`
               message
               timestamp
               sender {
-                ... on User {
+                id
+                type
+                profile {
                   id
-                  profile {
+                  displayName
+                  avatar: visual(type: AVATAR) {
                     id
-                    displayName
-                    avatar: visual(type: AVATAR) {
-                      id
-                      uri
-                    }
-                  }
-                }
-                ... on VirtualContributor {
-                  id
-                  profile {
-                    id
-                    displayName
-                    avatar: visual(type: AVATAR) {
-                      id
-                      uri
-                    }
+                    uri
                   }
                 }
               }
@@ -29039,26 +29209,14 @@ export const ConversationEventsDocument = gql`
           message
           timestamp
           sender {
-            ... on User {
+            id
+            type
+            profile {
               id
-              profile {
+              displayName
+              avatar: visual(type: AVATAR) {
                 id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
-              }
-            }
-            ... on VirtualContributor {
-              id
-              profile {
-                id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
+                uri
               }
             }
           }
@@ -29083,26 +29241,14 @@ export const ConversationEventsDocument = gql`
           message
           timestamp
           sender {
-            ... on User {
+            id
+            type
+            profile {
               id
-              profile {
+              displayName
+              avatar: visual(type: AVATAR) {
                 id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
-              }
-            }
-            ... on VirtualContributor {
-              id
-              profile {
-                id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
+                uri
               }
             }
           }
@@ -29174,26 +29320,14 @@ export const ConversationMessagesDocument = gql`
             message
             timestamp
             sender {
-              ... on User {
+              id
+              type
+              profile {
                 id
-                profile {
+                displayName
+                avatar: visual(type: AVATAR) {
                   id
-                  displayName
-                  avatar: visual(type: AVATAR) {
-                    id
-                    uri
-                  }
-                }
-              }
-              ... on VirtualContributor {
-                id
-                profile {
-                  id
-                  displayName
-                  avatar: visual(type: AVATAR) {
-                    id
-                    uri
-                  }
+                  uri
                 }
               }
             }
@@ -29391,26 +29525,14 @@ export const UserConversationsDocument = gql`
               message
               timestamp
               sender {
-                ... on User {
+                id
+                type
+                profile {
                   id
-                  profile {
+                  displayName
+                  avatar: visual(type: AVATAR) {
                     id
-                    displayName
-                    avatar: visual(type: AVATAR) {
-                      id
-                      uri
-                    }
-                  }
-                }
-                ... on VirtualContributor {
-                  id
-                  profile {
-                    id
-                    displayName
-                    avatar: visual(type: AVATAR) {
-                      id
-                      uri
-                    }
+                    uri
                   }
                 }
               }

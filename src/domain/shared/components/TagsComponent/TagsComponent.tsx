@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
 import { Box, BoxProps, ClickAwayListener, Tooltip, useTheme } from '@mui/material';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { Theme } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
 import LinesFitter from '../LinesFitter/LinesFitter';

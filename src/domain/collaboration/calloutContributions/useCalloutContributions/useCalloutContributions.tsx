@@ -9,7 +9,7 @@ import { Ref, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
 import useCalloutPostCreatedSubscription from '../post/useCalloutPostCreatedSubscription';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 
 interface useCalloutContributionsProps {
   callout:

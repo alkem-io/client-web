@@ -17,11 +17,11 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
-import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
-import { defer } from 'lodash';
+import { defer } from 'lodash-es';
 import Loading from '@/core/ui/loading/Loading';
 
 interface SectionProps<T> {
@@ -58,7 +58,7 @@ const PendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      spaceUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
+      spaceUri: invitation.actor?.type === ActorType.VirtualContributor ? undefined : space.about.profile.url,
     });
   };
 
@@ -82,11 +82,11 @@ const PendingMembershipsDialog = () => {
       : undefined;
 
   const virtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributorType === RoleSetContributorType.Virtual
+    invitation => invitation.invitation.actor?.type === ActorType.VirtualContributor
   );
 
   const nonVirtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
+    invitation => invitation.invitation.actor?.type !== ActorType.VirtualContributor
   );
 
   const isEmpty =

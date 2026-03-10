@@ -12,7 +12,7 @@ import { formatFileSize } from '@/core/utils/Storage';
 import RouterLink from '@/core/ui/link/RouterLink';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { formatDateTime } from '@/core/utils/time/utils';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import useStorageAdminTree, { StorageAdminGridRow } from './useStorageAdminTree';

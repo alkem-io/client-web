@@ -11,7 +11,7 @@ import type {
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
-import { compact, debounce, merge } from 'lodash';
+import { compact, debounce, merge } from 'lodash-es';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '../EmptyWhiteboard';

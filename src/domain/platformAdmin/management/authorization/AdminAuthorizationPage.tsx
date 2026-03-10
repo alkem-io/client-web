@@ -3,7 +3,7 @@ import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { Box, Tab, Tabs } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
-import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, ActorType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
@@ -33,7 +33,7 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: MANAGED_ROLES,
-    contributorTypes: [RoleSetContributorType.User],
+    contributorTypes: [ActorType.User],
     fetchContributors: true,
   });
 

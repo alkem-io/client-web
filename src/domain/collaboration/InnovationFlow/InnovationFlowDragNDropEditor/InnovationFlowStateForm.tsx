@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';

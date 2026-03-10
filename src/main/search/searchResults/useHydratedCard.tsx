@@ -31,20 +31,20 @@ import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/Whiteboar
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
   const profile = user.profile;
-  const avatarUri = profile.visual?.uri;
-  const { country, city } = profile.location ?? {};
-  const tags = profile.tagsets?.[0]?.tags ?? [];
+  const avatarUri = profile?.visual?.uri;
+  const { country, city } = profile?.location ?? {};
+  const tags = profile?.tagsets?.[0]?.tags ?? [];
 
   return (
     <ContributingUserCard
       id={user.id}
-      displayName={user.profile.displayName}
-      description={profile.description}
+      displayName={user.profile?.displayName ?? ''}
+      description={profile?.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
       tags={tags}
-      userUri={user.profile.url}
+      userUri={user.profile?.url ?? ''}
       matchedTerms={data.terms}
       isContactable={user.isContactable}
     />
@@ -57,23 +57,23 @@ const _hydrateOrganizationCard = (
 ) => {
   const organization = data.organization;
   const profile = data.organization.profile;
-  const avatarUri = profile.visual?.uri;
-  const { country, city } = profile.location ?? {};
-  const url = organization.profile.url;
-  const tags = profile.tagsets?.[0]?.tags ?? [];
+  const avatarUri = profile?.visual?.uri;
+  const { country, city } = profile?.location ?? {};
+  const url = organization.profile?.url;
+  const tags = profile?.tagsets?.[0]?.tags ?? [];
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);
   const isMember = organizationRoles?.roles.some(x => x === RoleType.Associate);
 
   return (
     <ContributingOrganizationCard
-      displayName={organization.profile.displayName}
-      description={profile.description}
+      displayName={organization.profile?.displayName ?? ''}
+      description={profile?.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
       tags={tags}
-      userUri={url}
+      userUri={url ?? ''}
       member={isMember}
       matchedTerms={data.terms}
     />
@@ -153,7 +153,7 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
   return (
     <SearchContributionCardCard
       name={card.profile.displayName}
-      author={card.createdBy?.profile.displayName}
+      author={card.createdBy?.profile?.displayName}
       description={card.profile.description}
       tags={card.profile.tagset?.tags}
       createdDate={card.createdDate}
@@ -185,7 +185,7 @@ const hydrateMemo = (data: TypedSearchResult<SearchResultType.Memo, SearchResult
   return (
     <SearchContributionMemoCard
       name={memo.profile.displayName}
-      author={memo.createdBy?.profile.displayName}
+      author={memo.createdBy?.profile?.displayName}
       description={memo.markdown}
       tags={memo.profile.tagset?.tags}
       createdDate={memo.createdDate}
@@ -216,7 +216,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
   return (
     <SearchContributionWhiteboardCard
       name={whiteboard.profile.displayName}
-      author={whiteboard.createdBy?.profile.displayName}
+      author={whiteboard.createdBy?.profile?.displayName}
       visual={whiteboard.profile.preview}
       tags={whiteboard.profile.tagset?.tags}
       createdDate={whiteboard.createdDate}

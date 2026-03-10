@@ -9,7 +9,7 @@ export type SpaceAboutMinimalUrlModel = {
     myPrivileges?: string[];
   };
   provider?: {
-    profile: {
+    profile?: {
       displayName: string;
     };
   };

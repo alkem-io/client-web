@@ -7,7 +7,7 @@ export interface ReactionViewReaction {
   count: number;
   ownReactionId?: string;
   senders: {
-    profile: {
+    profile?: {
       displayName: string;
     };
   }[];
@@ -29,7 +29,9 @@ const ReactionView = ({ reaction, onRemoveReaction }: ReactionViewProps) => {
         <Paper variant="outlined">
           <Gutters row>
             <Text>{reaction.emoji}</Text>
-            <Caption>{reaction.senders.map(({ profile }) => profile.displayName).join(SENDERS_JOIN_SEPARATOR)}</Caption>
+            <Caption>
+              {reaction.senders.map(({ profile }) => profile?.displayName).join(SENDERS_JOIN_SEPARATOR)}
+            </Caption>
           </Gutters>
         </Paper>
       }

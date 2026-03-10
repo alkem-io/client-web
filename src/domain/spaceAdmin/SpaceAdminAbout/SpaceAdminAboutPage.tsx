@@ -11,7 +11,7 @@ import ProfileForm, { ProfileFormHandle, ProfileFormValues } from '@/domain/comm
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';

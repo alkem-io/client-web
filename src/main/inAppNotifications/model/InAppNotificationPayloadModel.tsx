@@ -2,15 +2,15 @@ import {
   CalendarEventType,
   ForumDiscussionCategory,
   NotificationEventPayload,
-  RoleSetContributorType,
+  ActorType,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 
 export interface InAppNotificationPayloadModel {
   type: NotificationEventPayload;
-  contributor?: {
-    type?: RoleSetContributorType;
-    profile:
+  actor?: {
+    type?: ActorType;
+    profile?:
       | {
           displayName: string;
           url: string;
@@ -21,8 +21,8 @@ export interface InAppNotificationPayloadModel {
       | undefined;
   };
   user?: {
-    type?: RoleSetContributorType;
-    profile:
+    type?: ActorType;
+    profile?:
       | {
           displayName: string;
           url: string;
@@ -34,7 +34,7 @@ export interface InAppNotificationPayloadModel {
   };
   organization?: {
     id: string;
-    profile:
+    profile?:
       | {
           displayName: string;
           url: string;

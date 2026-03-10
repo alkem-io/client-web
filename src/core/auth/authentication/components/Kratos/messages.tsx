@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useTranslation, Trans, TransProps } from 'react-i18next';
 import { UiText } from '@ory/kratos-client/api';
-import { has } from 'lodash';
+import { has } from 'lodash-es';
 
 /**
  * A message from Kratos is received in the form of an object with an id property. Kratos docs say:

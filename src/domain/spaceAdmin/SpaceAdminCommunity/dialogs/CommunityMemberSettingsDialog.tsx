@@ -14,7 +14,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 interface CommunityMemberSettingsDialogProps {
   member: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       avatar?: {
         uri: string;
@@ -75,10 +75,10 @@ const CommunityMemberSettingsDialog = ({
         <Gutters>
           <ProfileChip
             key={member.id}
-            displayName={member.profile.displayName}
-            avatarUrl={member.profile.avatar?.uri}
-            city={member.profile.location?.city}
-            country={member.profile.location?.country}
+            displayName={member.profile?.displayName ?? ''}
+            avatarUrl={member.profile?.avatar?.uri}
+            city={member.profile?.location?.city}
+            country={member.profile?.location?.country}
           />
           <BlockSectionTitle>{t('common.role')}</BlockSectionTitle>
           <FormControlLabel
@@ -136,7 +136,7 @@ const CommunityMemberSettingsDialog = ({
           entities={{
             title: t('community.memberSettings.removeMember.dialogTitle'),
             content: t('community.memberSettings.removeMember.dialogContent', {
-              member: member.profile.displayName,
+              member: member.profile?.displayName,
               memberFirstName: member.firstName,
               // TODO: Add Space name to this message
             }),

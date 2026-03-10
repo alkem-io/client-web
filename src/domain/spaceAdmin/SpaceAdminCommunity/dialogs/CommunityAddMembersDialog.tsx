@@ -13,7 +13,7 @@ import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
 
 interface Entity extends Identifiable {
   email?: string;
-  profile: {
+  profile?: {
     displayName: string;
   };
 }
@@ -57,7 +57,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
     setData(fetched);
   };
 
-  const createCellText = (row: Entity) => `${row.profile.displayName} ${row.email ? '(' + row.email + ')' : ''}`;
+  const createCellText = (row: Entity) => `${row.profile?.displayName ?? ''} ${row.email ? '(' + row.email + ')' : ''}`;
 
   const parseAndSetFilter = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let filterValue = event.target.value;
@@ -73,7 +73,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderCell: ({ row }: RenderParams) => <>{createCellText(row)}</>,
-      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile?.displayName,
       filterable: false,
       flex: 1,
     },

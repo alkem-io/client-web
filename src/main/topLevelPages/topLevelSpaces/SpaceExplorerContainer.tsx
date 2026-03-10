@@ -18,7 +18,7 @@ import {
 import { TypedSearchResult } from '@/main/search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 
 export interface SpacesExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;

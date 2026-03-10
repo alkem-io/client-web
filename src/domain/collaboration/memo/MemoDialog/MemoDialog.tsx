@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput';
+import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInputLazy';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
 import { Box, DialogContent, IconButton, OutlinedInput, Tooltip } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';

@@ -19,7 +19,7 @@ export interface MemoModelFull {
   };
   createdBy?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       url: string;
       avatar?: { id: string; uri: string };

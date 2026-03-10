@@ -35,7 +35,7 @@ interface WhiteboardDialogFooterProps {
   guestContributionsAllowed?: boolean;
   createdBy:
     | (Identifiable & {
-        profile: {
+        profile?: {
           displayName: string;
           url: string;
           avatar?: Visual;
@@ -125,8 +125,8 @@ const WhiteboardDialogFooter = ({
     event.preventDefault();
     sendMessage('user', {
       id: createdBy?.id ?? '',
-      displayName: createdBy?.profile.displayName,
-      avatarUri: createdBy?.profile.avatar?.uri,
+      displayName: createdBy?.profile?.displayName,
+      avatarUri: createdBy?.profile?.avatar?.uri,
     });
   };
 
@@ -139,8 +139,7 @@ const WhiteboardDialogFooter = ({
 
   const canRestart =
     readonlyReason === ReadonlyReason.Readonly &&
-    (!collaboratorModeReason ||
-      collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
+    (!collaboratorModeReason || collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
 
   return (
     <>
@@ -172,10 +171,10 @@ const WhiteboardDialogFooter = ({
                 i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
                 values={{
                   spaceLevel: t(`common.space-level.${spaceLevel}`),
-                  ownerName: createdBy?.profile.displayName,
+                  ownerName: createdBy?.profile?.displayName,
                 }}
                 components={{
-                  ownerlink: createdBy ? (
+                  ownerlink: createdBy?.profile ? (
                     <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
                   ) : (
                     <span />

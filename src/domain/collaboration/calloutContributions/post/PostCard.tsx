@@ -7,7 +7,7 @@ import CardFooter from '@/core/ui/card/CardFooter';
 import MessageCounter from '@/core/ui/card/MessageCounter';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 import { formatDate } from '@/core/utils/time/utils';
@@ -22,7 +22,7 @@ export interface PostContribution extends Identifiable {
       tagset?: { tags: string[] };
     };
     bannerNarrow?: VisualModel;
-    createdBy?: { profile: { displayName: string } };
+    createdBy?: { profile?: { displayName: string } };
     comments?: { messagesCount: number };
     createdDate: string | Date; // Apollo says Date while actually it's a string
   };

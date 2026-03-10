@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -193,7 +193,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const memoizedFilteredOnAccount = useMemo(
     () =>
       filter
-        ? onAccount?.filter(acc => acc.profile.displayName.toLowerCase().includes(filter.toLowerCase()))
+        ? onAccount?.filter(acc => (acc.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
         : undefined,
     [filter, onAccount]
   );
@@ -201,7 +201,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const memoizedFilteredInLibrary = useMemo(
     () =>
       filter
-        ? inLibrary?.filter(lib => lib.profile.displayName.toLowerCase().includes(filter.toLowerCase()))
+        ? inLibrary?.filter(lib => (lib.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
         : undefined,
     [filter, inLibrary]
   );

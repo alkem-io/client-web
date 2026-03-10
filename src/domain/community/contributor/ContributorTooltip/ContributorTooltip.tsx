@@ -5,11 +5,11 @@ import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 
 interface ContributorTooltipProps extends Omit<TooltipProps, 'title'> {
   contributorId: string;
-  contributorType: RoleSetContributorType;
+  contributorType: ActorType;
   override?: string;
   onContact?: () => void;
 }
@@ -27,13 +27,13 @@ const ContributorTooltip = ({
   const onOpenTooltipShow = () => {
     if (!data && !loading && !override) {
       switch (contributorType) {
-        case RoleSetContributorType.User:
+        case ActorType.User:
           fetchUserData({ variables: { userId: contributorId, includeUser: true } });
           break;
-        case RoleSetContributorType.Organization:
+        case ActorType.Organization:
           fetchUserData({ variables: { organizationId: contributorId, includeOrganization: true } });
           break;
-        case RoleSetContributorType.Virtual:
+        case ActorType.VirtualContributor:
           fetchUserData({ variables: { virtualContributorId: contributorId, includeVirtualContributor: true } });
           break;
         default:
@@ -54,13 +54,13 @@ const ContributorTooltip = ({
     let contributor;
 
     switch (contributorType) {
-      case RoleSetContributorType.User:
+      case ActorType.User:
         contributor = user;
         break;
-      case RoleSetContributorType.Organization:
+      case ActorType.Organization:
         contributor = organization;
         break;
-      case RoleSetContributorType.Virtual:
+      case ActorType.VirtualContributor:
         contributor = virtualContributor;
         break;
       default:

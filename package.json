@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.133.3",
+  "version": "0.134.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -147,7 +147,7 @@
     "i18next-browser-languagedetector": "7.2.2",
     "immer": "^10.1.1",
     "jsdom": "^26.0.0",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "markdown-it": "^14.1.0",
     "markdown-it-link-attributes": "^4.0.1",
     "markdown-it-sanitizer": "^0.4.3",
@@ -201,6 +201,7 @@
     "@sentry/vite-plugin": "^2.7.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/eslint-plugin-jsx-a11y": "^6.2.4",
+    "@types/lodash-es": "^4.17.12",
     "@types/react-mentions": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",

@@ -1,5 +1,6 @@
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-  contributor {
+  actorType
+  actor {
     id
     profile {
       id
@@ -9,10 +10,6 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
         id
         uri
       }
-    }
-    ... on User {
-      firstName
-      lastName
     }
   }
 }

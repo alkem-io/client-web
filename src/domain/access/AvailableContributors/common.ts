@@ -11,7 +11,7 @@ type AvailableContributorsResponse = {
 export type AvailableUsersResponse = {
   users: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
     };
     email?: string;
@@ -21,7 +21,7 @@ export type AvailableUsersResponse = {
 export type AvailableOrganizationsResponse = {
   organizations: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
     };
   }[];
@@ -30,7 +30,7 @@ export type AvailableOrganizationsResponse = {
 export type AvailableVirtualContributorsResponse = {
   virtualContributors: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       url: string;
     };

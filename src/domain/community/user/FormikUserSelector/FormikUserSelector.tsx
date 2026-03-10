@@ -2,7 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { FormHelperText, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
-import { without } from 'lodash';
+import { without } from 'lodash-es';
 import { useMemo, useState } from 'react';
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
@@ -28,7 +28,7 @@ type FormikUserSelectorProps = {
   name: string;
   required?: boolean;
   readonly?: boolean;
-  onChange?: (invitedContributorIds: string[]) => void;
+  onChange?: (invitedActorIds: string[]) => void;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
@@ -124,7 +124,7 @@ export const FormikUserSelector = ({
             inputValue={inputValue}
             onInputChange={(event, value) => setInputValue(value)}
             autoHighlight
-            getOptionLabel={option => option.profile.displayName}
+            getOptionLabel={option => option.profile?.displayName ?? ''}
             noOptionsText={t('components.user-selector.tooltip')}
             popupIcon={<SearchIcon />}
             sx={{
@@ -140,10 +140,10 @@ export const FormikUserSelector = ({
               return (
                 <li key={`${key}-${user.id}`} {...otherProps}>
                   <ProfileChipView
-                    displayName={user.profile.displayName}
-                    avatarUrl={user.profile.visual?.uri}
-                    city={user.profile.location?.city}
-                    country={user.profile.location?.country}
+                    displayName={user.profile?.displayName ?? ''}
+                    avatarUrl={user.profile?.visual?.uri}
+                    city={user.profile?.location?.city}
+                    country={user.profile?.location?.country}
                     width="100%"
                   >
                     <FlexSpacer />

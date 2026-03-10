@@ -12,7 +12,7 @@ import {
   useRemoveMessageOnRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
 import { Message } from '@/domain/communication/room/models/Message';
 import { Skeleton } from '@mui/material';

@@ -47,7 +47,7 @@ type useCalendarEventProvided = {
         durationDays?: number | undefined;
         durationMinutes: number;
         createdBy?: {
-          profile: {
+          profile?: {
             displayName: string;
             avatar?: {
               id: string;

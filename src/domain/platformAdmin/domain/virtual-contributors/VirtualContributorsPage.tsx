@@ -54,8 +54,8 @@ const VirtualContributorsPage: FC = () => {
 
         return {
           id: vc.id,
-          value: vc.profile.displayName,
-          url: vc.profile.url,
+          value: vc.profile?.displayName ?? '',
+          url: vc.profile?.url ?? '',
           listedInStore: vc.listedInStore,
           searchVisibility: vc.searchVisibility,
           accountOwner,

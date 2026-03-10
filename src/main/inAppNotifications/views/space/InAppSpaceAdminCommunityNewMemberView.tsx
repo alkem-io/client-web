@@ -5,20 +5,20 @@ export const InAppSpaceAdminCommunityNewMemberView = (notification: InAppNotific
   const { payload } = notification;
 
   // do not display notification if these are missing
-  if (!payload.contributor?.profile?.displayName || !payload.space?.about?.profile?.displayName) {
+  if (!payload.actor?.profile?.displayName || !payload.space?.about?.profile?.displayName) {
     return null;
   }
 
   const notificationTextValues = {
     spaceName: payload.space?.about?.profile?.displayName,
-    memberName: payload.contributor?.profile?.displayName,
+    memberName: payload.actor?.profile?.displayName,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.contributor?.profile?.url}
+      url={payload.actor?.profile?.url}
     />
   );
 };
