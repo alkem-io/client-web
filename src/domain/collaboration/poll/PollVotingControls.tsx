@@ -5,7 +5,6 @@ import {
   FormControlLabel,
   FormGroup,
   FormHelperText,
-  LinearProgress,
   Radio,
   RadioGroup,
   Typography,
@@ -14,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { PollResultsDetail } from '@/core/apollo/generated/graphql-schema';
 import { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 import PollVoterAvatars from '@/domain/collaboration/poll/PollVoterAvatars';
+import { Text } from '@/core/ui/typography';
 
 type PollVotingControlsProps = {
   options: PollOptionModel[];
@@ -40,33 +40,60 @@ const OptionLabel = ({
   const showPercentage = showResults && option.votePercentage != null && resultsDetail !== PollResultsDetail.Count;
   const showBar = showResults && option.votePercentage != null;
   const showVoters = showResults && resultsDetail === PollResultsDetail.Full && option.voters != null;
+  const percentage = option.votePercentage ?? 0;
 
   return (
-    <Box sx={{ flex: 1, minWidth: 0, py: 0.5 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="body2">{option.text}</Typography>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0, ml: 1 }}>
-          {showPercentage && (
-            <Typography variant="caption" color="text.secondary">
-              {Math.round(option.votePercentage!)}%
-            </Typography>
-          )}
-          {showCount && (
-            <Typography variant="caption" color="text.secondary">
-              ({option.voteCount})
-            </Typography>
-          )}
-        </Box>
-      </Box>
+    <Box
+      sx={{
+        position: 'relative',
+        flex: 1,
+        minWidth: 0,
+        py: 0.5,
+        px: showBar ? 1 : 0,
+        borderRadius: 1,
+        border: 0,
+        overflow: 'hidden',
+        height: '60px',
+        mb: '5px',
+      }}
+    >
       {showBar && (
-        <LinearProgress
-          variant="determinate"
-          value={option.votePercentage!}
-          aria-label={`${option.text}: ${Math.round(option.votePercentage!)}%`}
-          sx={{ borderRadius: 1, height: 6, mt: 0.5 }}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: `${percentage}%`,
+            backgroundColor: theme => theme.palette.action.hover,
+            transition: 'width 0.4s ease',
+            borderRadius: 'inherit',
+          }}
+          role="progressbar"
+          aria-valuenow={Math.round(percentage)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${option.text}: ${Math.round(percentage)}%`}
         />
       )}
-      {showVoters && option.voters && <PollVoterAvatars voters={option.voters} />}
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text color="text.primary">{option.text}</Text>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0, ml: 1 }}>
+            {showPercentage && (
+              <Typography variant="caption" color="text.secondary">
+                {Math.round(option.votePercentage!)}%
+              </Typography>
+            )}
+            {showCount && (
+              <Typography variant="caption" color="text.secondary">
+                ({option.voteCount})
+              </Typography>
+            )}
+          </Box>
+        </Box>
+        {showVoters && option.voters && <PollVoterAvatars voters={option.voters} />}
+      </Box>
     </Box>
   );
 };

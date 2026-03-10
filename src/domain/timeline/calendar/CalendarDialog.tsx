@@ -27,7 +27,7 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
 export const INIT_CREATING_EVENT_PARAM = 'new';
-export const CALENDAR_PATH = '/calendar';
+export const CALENDAR_PATH = '/calendar/';
 
 export interface CalendarDialogProps {
   open: boolean;

@@ -29,7 +29,7 @@ A space member navigates to a collaboration space and sees a poll callout. The p
 
 ### User Story 2 — Viewing Poll Results (Priority: P2)
 
-After voting (or immediately for polls with VISIBLE results), a space member can see how the community has voted. Results show options ranked by vote count, with visual indicators (progress bars, percentages, or counts) based on the poll's resultsDetail setting. The level of information varies depending on whether the member has voted and the resultsVisibility setting.
+After voting (or immediately for polls with VISIBLE results), a space member can see how the community has voted. Results show options in their original defined order, with visual indicators (background fill, percentages, or counts) based on the poll's resultsDetail setting. The level of information varies depending on whether the member has voted and the resultsVisibility setting.
 
 **Why this priority**: Seeing results is the primary feedback loop that makes polls valuable. Without visible results, there is no incentive to participate.
 
@@ -45,7 +45,7 @@ After voting (or immediately for polls with VISIBLE results), a space member can
 6. **Given** resultsDetail = PERCENTAGE, **When** results are visible, **Then** each option shows a percentage bar but no absolute vote count or voter list.
 7. **Given** resultsDetail = COUNT, **When** results are visible, **Then** each option shows its vote count but no percentages or voter list.
 8. **Given** resultsDetail = FULL, **When** results are visible, **Then** each option shows vote count, percentage, and a list of voters (with user avatars/names).
-9. **Given** options are displayed in results, **When** rendering, **Then** options are ordered by vote count (highest first), with ties broken by original sort order.
+9. **Given** options are displayed in results, **When** rendering, **Then** options maintain the same order as defined by the poll creator (sorted by sortOrder), regardless of vote counts.
 10. **Given** canSeeDetailedResults is false, **When** rendering, **Then** per-option results (counts, percentages, voters) are not displayed.
 
 ---

@@ -93,7 +93,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
   const itemIds = options.map((option, index) => option.id ?? `new-${index}`);
 
   return (
-    <Gutters disablePadding>
+    <Box>
       <FormikInputField name={`${formPrefix}.title`} title={t('poll.create.title')} required maxLength={512} />
 
       <Caption>{t('poll.create.options')}</Caption>
@@ -146,7 +146,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
           );
         }}
       />
-    </Gutters>
+    </Box>
   );
 };
 

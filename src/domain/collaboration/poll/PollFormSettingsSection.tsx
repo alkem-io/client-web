@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   Button,
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   FormControl,
@@ -11,7 +10,6 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
-  Typography,
 } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +17,8 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useFormikContext } from 'formik';
 import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
+import { Caption } from '@/core/ui/typography';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 type PollFormSettingsSectionProps = {
   fieldPrefix: string;
@@ -33,8 +33,10 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
   const settingsPath = `${fieldPrefix}.settings`;
   const settings = values.framing.poll?.settings;
 
-  const isSingleResponse = settings?.maxResponses === 1;
-  const responseType = isSingleResponse ? 'single' : 'multiple';
+  const isSingleResponse = settings?.minResponses === 1 && settings?.maxResponses === 1;
+  const isMultipleResponse = settings?.minResponses === 1 && settings?.maxResponses === 0;
+  const isCustomResponse = !isSingleResponse && !isMultipleResponse;
+  const responseType = isSingleResponse ? 'single' : isMultipleResponse ? 'multiple' : 'custom';
 
   const handleResponseTypeChange = (value: string) => {
     if (readOnly) return;
@@ -59,19 +61,42 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>{t('poll.create.settings')}</DialogTitle>
+        <DialogHeader title={t('poll.create.settings')} onClose={() => setOpen(false)} />
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <FormControl disabled={readOnly}>
             <FormLabel>
-              <Typography variant="body2" fontWeight={600}>
-                {t('poll.create.responseType')}
-              </Typography>
+              <Caption>{t('poll.create.responseType')}</Caption>
             </FormLabel>
-            <RadioGroup value={responseType} onChange={(_e, value) => handleResponseTypeChange(value)}>
+            <RadioGroup value={responseType} onChange={(_e, value) => handleResponseTypeChange(value)} row>
               <FormControlLabel value="single" control={<Radio />} label={t('poll.create.singleResponse')} />
               <FormControlLabel value="multiple" control={<Radio />} label={t('poll.create.multipleResponses')} />
+              {isCustomResponse && (
+                <FormControlLabel
+                  value="custom"
+                  control={<Radio />}
+                  label={t('poll.create.customResponses')}
+                  disabled
+                />
+              )}
             </RadioGroup>
           </FormControl>
+
+          {isCustomResponse && (
+            <>
+              <FormikInputField
+                name={`${settingsPath}.minResponses`}
+                title={t('poll.create.minResponses')}
+                type="number"
+                disabled={readOnly}
+              />
+              <FormikInputField
+                name={`${settingsPath}.maxResponses`}
+                title={t('poll.create.maxResponses')}
+                type="number"
+                disabled={readOnly}
+              />
+            </>
+          )}
 
           <FormikInputField
             name={`${settingsPath}.resultsVisibility`}

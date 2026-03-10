@@ -36,14 +36,15 @@ All NEEDS CLARIFICATION items from the technical context have been resolved thro
 
 ## Decision 3: Results Visualization Approach
 
-**Decision**: Use MUI LinearProgress bars for per-option results, with text labels showing percentage and/or count based on `resultsDetail`. Voter avatars (when `resultsDetail = FULL`) render as an AvatarGroup below the progress bar.
+**Decision**: Use the option container itself as the progress indicator — the vote percentage fills the background of the entire option row as a colored bar, with a subtle gray background behind unfilled portions. Each option has a thin border. Text labels show percentage and/or count based on `resultsDetail`. Voter avatars (when `resultsDetail = FULL`) render as an AvatarGroup within the option row, using ContributorTooltip for rich user card popups on hover, with a spread animation on hover for the overlapping avatar group.
 
-**Rationale**: Progress bars are a standard, accessible way to represent proportional data. MUI's LinearProgress supports `determinate` variant with a value prop (0-100), which maps directly to `votePercentage`. This approach requires no additional dependencies.
+**Rationale**: Using the full option rectangle as the progress bar creates a cleaner, more integrated visual design compared to a separate thin progress bar element. The background fill approach is widely used in modern polling UIs (e.g., Twitter/X polls) and reduces visual clutter.
 
 **Alternatives considered**:
 
-- Chart.js or Recharts pie/bar charts — rejected as overkill for simple option-to-percentage mapping; adds a dependency for minimal gain.
-- Custom SVG bars — rejected because MUI LinearProgress already provides theming, accessibility, and animation support.
+- MUI LinearProgress bars as separate elements — **rejected and migrated away from** because the background fill approach is visually cleaner and more modern.
+- Chart.js or Recharts pie/bar charts — rejected as overkill for simple option-to-percentage mapping.
+- Custom SVG bars — rejected as unnecessary complexity.
 
 ---
 

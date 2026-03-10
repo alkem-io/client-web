@@ -7,6 +7,7 @@ import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
 import { Caption } from '@/core/ui/typography/components';
 import { gutters } from '@/core/ui/grid/utils';
+import Gutters from '@/core/ui/grid/Gutters';
 
 type PollViewProps = {
   poll: PollDetailsModel;
@@ -50,6 +51,14 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
 
   return (
     <Box>
+      {poll.title && (
+        <Box display="flex" flexDirection="row" justifyContent="space-between" mb={2}>
+          <Caption color="text.primary">{poll.title}</Caption>
+          {showTotalOnly && (
+            <Caption color="text.secondary">{t('poll.results.totalVotes', { count: poll.totalVotes ?? 0 })}</Caption>
+          )}
+        </Box>
+      )}
       <PollVotingControls
         options={poll.options}
         selectedOptionIds={displayedSelectedIds}
@@ -63,33 +72,28 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
       />
 
       {isVotingMode && (
-        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+        <Gutters row disablePadding mt={1}>
           <Button
             variant="contained"
-            size="small"
             onClick={handleVoteSubmit}
             disabled={loading || isBelowMin || selectedOptionIds.length === 0}
           >
             {t('poll.vote.button')}
           </Button>
           {isChangingVote && (
-            <Button size="small" onClick={handleCancelChange} disabled={loading}>
+            <Button onClick={handleCancelChange} disabled={loading} variant="outlined">
               {t('poll.vote.cancelButton')}
             </Button>
           )}
-        </Box>
+        </Gutters>
       )}
 
       {!isVotingMode && hasVoted && canVote && !isClosed && (
-        <Box sx={{ mt: 1 }}>
-          <Button size="small" variant="outlined" onClick={handleChangeVote}>
-            {t('poll.vote.changeButton')}
+        <Box mt={1}>
+          <Button variant="text" onClick={handleChangeVote}>
+            {t('poll.vote.changeMyVote')}
           </Button>
         </Box>
-      )}
-
-      {showTotalOnly && (
-        <Caption color="text.secondary">{t('poll.results.totalVotes', { count: poll.totalVotes ?? 0 })}</Caption>
       )}
 
       {!showResults && !showTotalOnly && poll.totalVotes === 0 && (

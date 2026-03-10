@@ -2333,7 +2333,7 @@
   "poll": {
     "vote": {
       "button": "Vote",
-      "changeButton": "Change Vote",
+      "changeMyVote": "Change My Vote",
       "cancelButton": "Cancel",
       "submitted": "Your vote has been recorded",
       "minRequired": "Select at least {{min}} option(s)",
@@ -2341,7 +2341,9 @@
     },
     "results": {
       "noVotes": "No votes yet",
-      "totalVotes": "{{count}} vote(s)",
+      "totalVotes_zero": "{{count}} votes",
+      "totalVotes": "{{count}} vote",
+      "totalVotes_plural": "{{count}} votes",
       "voters": "Voters"
     },
     "options": {
@@ -2360,6 +2362,9 @@
       "responseType": "Response type",
       "singleResponse": "Single response",
       "multipleResponses": "Multiple responses",
+      "customResponses": "Custom",
+      "minResponses": "Min responses",
+      "maxResponses": "Max responses",
       "resultsVisibility": {
         "title": "Results visibility",
         "VISIBLE": "Always visible",
