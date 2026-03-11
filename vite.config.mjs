@@ -106,7 +106,11 @@ export default defineConfig({
               response.setHeader('Surrogate-Control', 'no-store');
               response.setHeader('X-Accel-Expires', '0');
               response.setHeader('Vary', '*');
-              response.setHeader('Content-Type', 'text/html; charset=utf-8');
+
+              // Preserve correct Content-Type for known static file types
+              if (!req.url?.includes('.') || req.url?.endsWith('.html')) {
+                response.setHeader('Content-Type', 'text/html; charset=utf-8');
+              }
 
               // Additional anti-cache headers
               response.setHeader('X-Cache-Control', 'no-cache');
