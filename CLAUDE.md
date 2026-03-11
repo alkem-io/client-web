@@ -282,11 +282,12 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 ## Active Technologies
 - TypeScript / Node.js 22 (build script is vanilla ESM JS) + `dotenv-flow`, `dotenv-expand` (already used by `buildConfiguration.js`); no new dependencies required (021-add-robots-txt)
-- N/A — static file written to `public/robots.txt` (021-add-robots-txt)
+- Shell script (`env.sh`) for runtime environment detection; Nginx config for caching/Content-Type (021-add-robots-txt)
 
 - GitHub Actions YAML workflows; Node.js 22.22.0 (via `actions/setup-node`) + `actions/checkout@v6`, `actions/setup-node@v6`, `actions/cache@v4`, `pnpm/action-setup@v4`, `docker/metadata-action@v5`, `docker/build-push-action@v5` (019-optimize-ci-builds)
 - N/A (CI workflows only) (019-optimize-ci-builds)
 
 ## Recent Changes
 
+- 021-add-robots-txt: Build-time robots.txt generation via `buildConfiguration.js` with runtime override in `env.sh` for non-production domains; nginx no-cache config; Vite Content-Type fix
 - 019-optimize-ci-builds: Added GitHub Actions YAML workflows; Node.js 22.22.0 (via `actions/setup-node`) + `actions/checkout@v6`, `actions/setup-node@v6`, `actions/cache@v4`, `pnpm/action-setup@v4`, `docker/metadata-action@v5`, `docker/build-push-action@v5`

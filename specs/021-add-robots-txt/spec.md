@@ -2,7 +2,7 @@
 
 **Feature Branch**: `021-add-robots-txt`
 **Created**: 2026-03-11
-**Status**: Draft
+**Status**: Implemented
 **Input**: User description: "Add robots.txt with environment-aware crawling rules per [#9401](https://github.com/alkem-io/client-web/issues/9401)"
 
 ## User Scenarios & Testing *(mandatory)*
@@ -17,7 +17,7 @@ A search engine crawler (Google, Bing, etc.) visits the Alkemio production platf
 
 **Acceptance Scenarios**:
 
-1. **Given** the platform is running in production, **When** a crawler requests `/robots.txt`, **Then** it receives a 200 response with a valid robots.txt containing rules that allow crawling of public content.
+1. **Given** the platform is running in production (`VITE_APP_ALKEMIO_DOMAIN=https://alkem.io`), **When** a crawler requests `/robots.txt`, **Then** it receives a 200 response with a valid robots.txt containing rules that allow crawling of public content.
 2. **Given** the platform is running in production, **When** a crawler requests `/robots.txt`, **Then** the response content type is `text/plain`.
 3. ~~**Given** the platform is running in production, **When** a crawler reads the robots.txt, **Then** it finds a reference to the sitemap location.~~ *Deferred — no sitemap exists yet; directive will be added when a sitemap is implemented.*
 
@@ -54,7 +54,7 @@ Platform operators monitoring Sentry no longer see 404 errors for `/robots.txt` 
 
 ### Edge Cases
 
-- What happens when the environment configuration is missing or undefined? See FR-007 (fail-safe disallow-all).
+- What happens when the environment configuration is missing or undefined? See FR-007 (fail-safe disallow-all). If `VITE_APP_ALKEMIO_DOMAIN` is unset, `env.sh` treats it as non-production and overwrites with restrictive rules.
 - What happens if a crawler requests `/robots.txt` with unusual casing (e.g., `/Robots.txt`)? Standard web servers handle this based on filesystem case sensitivity; no special handling needed.
 
 ## Requirements *(mandatory)*
@@ -62,24 +62,25 @@ Platform operators monitoring Sentry no longer see 404 errors for `/robots.txt` 
 ### Functional Requirements
 
 - **FR-001**: The platform MUST serve a valid robots.txt file at the `/robots.txt` URL path on all environments.
-- **FR-002**: On production environments, the robots.txt MUST allow crawling of public content while explicitly disallowing `/admin`. The identity logic resides on a separate subdomain and is not handled by this robots.txt.
+- **FR-002**: On production environments, the robots.txt MUST allow crawling of public content while explicitly disallowing sensitive paths (`/admin`, `/identity`, `/restricted`, `/profile`), API endpoints (`/api/`, `/graphql`), and build artifacts (`/env-config.js`, `/meta.json`, `/assets/`). AI/LLM scrapers and aggressive SEO bots MUST be blocked entirely.
 - **FR-003**: On non-production environments (development, staging, test, and any other non-production environment), the robots.txt MUST disallow all crawling by all user agents.
 - **FR-004**: The robots.txt MUST follow the [Robots Exclusion Protocol](https://www.rfc-editor.org/rfc/rfc9309.html) standard format.
-- **FR-005**: The robots.txt content MUST be generated at build time by `buildConfiguration.js` based on the `VITE_APP_ROBOTS_ALLOW_INDEXING` environment variable, producing a static `public/robots.txt` file. When the variable is `true`, production-style rules are generated; when absent or any other value, restrictive (disallow-all) rules are generated (fail-safe).
-- **FR-006**: The robots.txt MUST be served with `text/plain` content type.
-- **FR-007**: When the environment cannot be determined, the system MUST default to disallowing all crawling (fail-safe).
+- **FR-005**: The production robots.txt content MUST be generated at build time by `buildConfiguration.js` as a static `public/robots.txt` file. For non-production environments, `env.sh` MUST override the file at container startup when `VITE_APP_ALKEMIO_DOMAIN` is not `https://alkem.io`, replacing it with restrictive (disallow-all) rules.
+- **FR-006**: The robots.txt MUST be served with `text/plain` content type. Nginx is configured with `default_type text/plain` for the `/robots.txt` location. The Vite dev server preserves correct Content-Type for static file types.
+- **FR-007**: When the environment cannot be determined (domain unset or unknown), the system MUST default to disallowing all crawling (fail-safe).
+- **FR-008**: The robots.txt MUST be served with no-cache headers to ensure crawlers always receive the current version.
 
 ### Key Entities
 
-- **robots.txt**: A plain text file served at the root URL that provides crawling directives to web crawlers. Key attributes: user-agent rules, allow/disallow directives, optional sitemap reference.
-- **Environment**: The deployment context (production vs. non-production) that determines which robots.txt rules are served. Determined by existing environment configuration.
+- **robots.txt**: A plain text file served at the root URL that provides crawling directives to web crawlers. Key attributes: user-agent rules, allow/disallow directives, crawl-delay, optional sitemap reference.
+- **Environment**: The deployment context (production vs. non-production) determined at runtime by checking `VITE_APP_ALKEMIO_DOMAIN` against the production domain (`https://alkem.io`).
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: All environments serve a valid robots.txt at `/robots.txt` returning a 200 status code.
-- **SC-002**: Production robots.txt allows search engine crawlers to access public content.
+- **SC-002**: Production robots.txt allows search engine crawlers to access public content while blocking AI/LLM scrapers and aggressive bots.
 - **SC-003**: Non-production robots.txt blocks all search engine crawling completely.
 - **SC-004**: Sentry 404 errors for `/robots.txt` drop to zero after deployment.
 - **SC-005**: The robots.txt file is valid according to the Robots Exclusion Protocol standard (can be verified with Google's robots.txt testing tool).
@@ -88,16 +89,17 @@ Platform operators monitoring Sentry no longer see 404 errors for `/robots.txt` 
 
 ### Session 2026-03-11
 
-- Q: Should robots.txt content be determined at build time or runtime? → A: Build-time generation via `buildConfiguration.js`, producing a static `public/robots.txt` based on env vars.
-- Q: Should production robots.txt allow all paths or disallow specific private routes? → A: Allow all but explicitly disallow `/admin`. The identity subdomain is separate and not handled by client-web robots.txt.
-- Q: What is the complete list of paths to disallow on production? → A: Only `/admin`. The identity logic lives on a separate subdomain (not a path), so `/identity` is not relevant. No other private paths need disallowing.
-- Q: Which env var should determine production vs non-production? → A: New `VITE_APP_ROBOTS_ALLOW_INDEXING=true`, set only in production CI/CD; absent = disallow-all (fail-safe).
-- Q: How is the env var provided in production? → A: Via `ARG_ROBOTS_ALLOW_INDEXING` Docker build arg in `build-release-docker-hub.yml`, mapped to `VITE_APP_ROBOTS_ALLOW_INDEXING` in the Dockerfile. Non-production workflows don't pass this arg, so they get the fail-safe default.
+- Q: Should robots.txt content be determined at build time or runtime? → A: Hybrid. Build-time generates production content via `buildConfiguration.js`. Runtime (`env.sh`) overrides with restrictive content for non-production domains at container startup.
+- Q: Should production robots.txt allow all paths or disallow specific private routes? → A: Allow all but disallow `/admin`, `/identity`, `/restricted`, `/profile`, `/api/`, `/graphql`, and build artifacts (`/env-config.js`, `/meta.json`, `/assets/`).
+- Q: What about AI/LLM scrapers? → A: Block them entirely with dedicated user-agent rules (GPTBot, ClaudeBot, CCBot, anthropic-ai, Google-Extended, Bytespider, PerplexityBot, Amazonbot, FacebookBot, Omgilibot, Diffbot, cohere-ai, ChatGPT-User).
+- Q: What about aggressive SEO scrapers? → A: Block them entirely (AhrefsBot, SemrushBot, MJ12bot, DotBot, BLEXBot).
+- Q: How is production vs non-production determined? → A: At container startup, `env.sh` checks `VITE_APP_ALKEMIO_DOMAIN`. If it equals `https://alkem.io`, the build-time production robots.txt is preserved. Otherwise, it's overwritten with restrictive rules. This means the same Docker image works for any environment.
 - Q: Should production robots.txt include a Sitemap directive? → A: No, omit for now; add when a sitemap is implemented.
 
 ## Assumptions
 
-- A new `VITE_APP_ROBOTS_ALLOW_INDEXING` environment variable will be introduced. It is provided via the `ARG_ROBOTS_ALLOW_INDEXING` Docker build arg, set to `true` only in the release Docker Hub workflow (`build-release-docker-hub.yml`). All other workflows (dev, sandbox, test) don't pass this arg, defaulting to disallow-all (fail-safe).
-- Production robots.txt allows public content but explicitly disallows only `/admin`. Identity logic is on a separate subdomain and not governed by this file.
+- Production is identified by `VITE_APP_ALKEMIO_DOMAIN === "https://alkem.io"`. The `env.sh` script checks this at container startup and overwrites robots.txt with restrictive rules for any other domain (fail-safe).
+- Production robots.txt allows public content but disallows sensitive paths, API endpoints, build artifacts, AI/LLM scrapers, and aggressive SEO bots.
 - No `Sitemap:` directive will be included in the initial robots.txt. It will be added when a sitemap is implemented.
-- The robots.txt will be a static file generated into the `public/` directory at build time by `buildConfiguration.js`, following the same pattern used for `public/env-config.js`.
+- The production robots.txt is generated at build time by `buildConfiguration.js` into `public/robots.txt`. Non-production override happens at container startup via `env.sh`.
+- The same Docker image is used for all environments; environment detection is runtime-based.

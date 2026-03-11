@@ -4,71 +4,84 @@
 
 ## 1. Build-time Generation Pattern
 
-**Decision**: Extend `buildConfiguration.js` to generate `public/robots.txt` alongside `public/env-config.js`.
+**Decision**: Extend `buildConfiguration.js` to generate `public/robots.txt` alongside `public/env-config.js`. Build always generates the production variant.
 
 **Rationale**: The script already loads all `VITE_APP_*` environment variables via `dotenv-flow`, writes to `public/`, and runs before every `build` and `start` command (see `package.json` scripts). Adding robots.txt generation here requires zero new infrastructure.
 
 **Alternatives considered**:
 - **Vite plugin**: Would require a custom plugin; more complex than a simple `writeFile` call in existing script.
-- **Runtime generation (server middleware)**: Not applicable — this is a static SPA served by Nginx/CDN. No server-side rendering.
-- **Multiple static files with conditional copy**: Error-prone; env-var-driven generation is cleaner and matches existing patterns.
+- **Committed static file**: Simpler but not generated/testable; drift risk if content needs updating.
+- **Multiple static files with conditional copy**: Error-prone; generation is cleaner and matches existing patterns.
 
 ## 2. Environment Detection Mechanism
 
-**Decision**: New `VITE_APP_ROBOTS_ALLOW_INDEXING=true` environment variable. When `true`, generate production rules; otherwise, disallow all (fail-safe).
+**Decision**: Runtime domain detection via `env.sh`. At container startup, check `VITE_APP_ALKEMIO_DOMAIN`; if not `https://alkem.io`, overwrite robots.txt with restrictive rules.
 
-**Rationale**: Simple boolean flag. Fail-safe design means any misconfiguration (missing var, typo, empty string) results in blocking crawlers. Only explicit `true` enables indexing.
+**Rationale**: This allows the same Docker image to work for any environment. The production domain is the single source of truth — no additional env vars or build args needed. Fail-safe: any unknown or missing domain defaults to blocking all crawlers.
 
 **Alternatives considered**:
-- **Reuse `NODE_ENV`**: Too coarse — `NODE_ENV=production` is used for build optimizations, not deployment target. A staging build might use `NODE_ENV=production` for performance while still needing crawlers blocked.
+- **`VITE_APP_ROBOTS_ALLOW_INDEXING` env var**: Required explicit opt-in per environment. Replaced by domain detection which is implicit and less error-prone.
+- **Docker build arg**: Would bake the decision into the image, preventing a single image from serving multiple environments.
+- **Reuse `NODE_ENV`**: Too coarse — `NODE_ENV=production` is used for build optimizations, not deployment target.
 - **`VITE_APP_ENVIRONMENT` string matching**: More complex parsing; introduces risk of typos in environment names.
 
 ## 3. robots.txt Content (RFC 9309 Compliance)
 
 **Decision**: Two variants:
 
-### Production (VITE_APP_ROBOTS_ALLOW_INDEXING=true)
+### Production (domain = https://alkem.io)
 
-```text
-User-agent: *
-Allow: /
-Disallow: /admin
-```
+Comprehensive rules covering:
+- **Global rules**: `Allow: /` with specific disallows for `/admin`, `/identity`, `/restricted`, `/profile`, `/api/`, `/graphql`, `/env-config.js`, `/meta.json`, `/assets/`
+- **Crawl-delay**: `Crawl-delay: 1` for polite crawling
+- **AI/LLM scrapers**: Blocked entirely (GPTBot, ChatGPT-User, Google-Extended, CCBot, anthropic-ai, ClaudeBot, Bytespider, PerplexityBot, Amazonbot, FacebookBot, Omgilibot, Diffbot, cohere-ai)
+- **Aggressive SEO bots**: Blocked entirely (AhrefsBot, SemrushBot, MJ12bot, DotBot, BLEXBot)
 
 ### Non-production (default)
 
 ```text
+# Non-production environment - block all crawlers
 User-agent: *
 Disallow: /
 ```
 
 **Rationale**:
-- Production allows all paths except `/admin` (admin panel should not be indexed).
+- Production allows public paths but blocks sensitive areas, API endpoints, build artifacts, AI scrapers, and aggressive bots.
 - Non-production blocks everything to prevent SEO pollution.
 - No `Sitemap:` directive per spec — deferred until sitemap exists.
-- Format follows RFC 9309 exactly: `User-agent` directive followed by `Allow`/`Disallow` directives.
-
-**Alternatives considered**:
-- **Listing specific allowed paths**: Overly restrictive; platform routes change frequently. `Allow: /` with targeted disallows is standard practice.
-- **Multiple user-agent blocks**: Unnecessary unless specific bots need different treatment. One `User-agent: *` block is sufficient.
+- Format follows RFC 9309: `User-agent` directive followed by `Allow`/`Disallow` directives.
+- AI bot blocking follows industry practice (NYT, Reddit, Stack Overflow, etc.).
 
 ## 4. Content Type Handling
 
-**Decision**: No special handling needed. Vite's dev server and production web servers (Nginx) serve `.txt` files as `text/plain` by default.
+**Decision**: Explicit handling at both nginx and Vite dev server levels.
 
-**Rationale**: The robots.txt file has a `.txt` extension. Standard web servers already map this to `text/plain` content type. No custom MIME type configuration required.
+**Implementation**:
+- **Nginx**: Dedicated `location = /robots.txt` block with `default_type text/plain` ensures correct Content-Type in production.
+- **Vite dev server**: Fixed Content-Type override that was forcing `text/html` on all no-cache routes. Now only sets `text/html` for routes without file extensions or `.html` files.
 
-## 5. Testing Strategy
+## 5. Caching Strategy
 
-**Decision**: Extract the robots.txt content generation into a pure function, unit-test it with Vitest.
+**Decision**: No-cache headers for robots.txt at all levels.
 
-**Rationale**: The generation logic is simple (string output based on boolean input), making it easy to test in isolation. The file-writing concern stays in `buildConfiguration.js` and doesn't need testing (it's the same `writeFile` pattern already used and proven).
+**Implementation**:
+- **Nginx**: `Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0` + `Pragma: no-cache` + `Expires: 0`
+- **Vite dev server**: `/robots.txt` added to the no-cache route list
+
+**Rationale**: Since `env.sh` can change robots.txt at container startup, caching could serve stale content. Aggressive no-cache ensures crawlers always get the current rules.
+
+## 6. Testing Strategy
+
+**Decision**: Extract the robots.txt content generation into a pure function (`generateRobotsTxt`), unit-test it with Vitest. 13 tests covering both production and restrictive variants.
+
+**Production tests**: User-agent, Allow, Disallow for sensitive paths, API endpoints, build artifacts, crawl-delay, AI bot blocking, SEO bot blocking.
+**Non-production tests**: User-agent, Disallow: /, no Allow directives, no AI bot rules.
 
 **Alternatives considered**:
 - **Integration test with actual file system**: Overkill for a string template function.
 - **E2E test requesting /robots.txt**: Valuable but requires deployed environment; can be done as part of manual QA or CI smoke test.
 
-## 6. .gitignore Consideration
+## 7. .gitignore Consideration
 
 **Decision**: Add `public/robots.txt` to `.gitignore`.
 

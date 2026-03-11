@@ -4,47 +4,48 @@
 
 ## Entities
 
-This feature has no persistent data entities, database models, or GraphQL schema changes. It operates entirely at the build infrastructure level.
+This feature has no persistent data entities, database models, or GraphQL schema changes. It operates at the build infrastructure and container startup level.
 
 ### Build Artifact: `public/robots.txt`
 
-A static text file generated at build time by `buildConfiguration.js`.
+A static text file generated at build time by `buildConfiguration.js`, potentially overridden at container startup by `env.sh`.
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
 | Content | `text/plain` | RFC 9309-compliant robots.txt directives |
-| Generation trigger | Build-time | Created on every `pnpm start` / `pnpm build` |
-| Input | `VITE_APP_ROBOTS_ALLOW_INDEXING` env var | `"true"` → production rules; anything else → disallow all |
+| Build-time generation | `buildConfiguration.js` | Always generates comprehensive production rules |
+| Runtime override | `env.sh` | Overwrites with restrictive rules when domain is not `https://alkem.io` |
 
-### Environment Variable: `VITE_APP_ROBOTS_ALLOW_INDEXING`
+### Environment Detection: `VITE_APP_ALKEMIO_DOMAIN`
 
 | Property | Value |
 |----------|-------|
-| Type | String (boolean-like) |
-| Required | No (absence = fail-safe disallow) |
-| Valid values | `"true"` enables indexing; all other values disable |
-| Scope | Build-time only (read by `buildConfiguration.js`) |
-| CI/CD | Set to `"true"` only in production deployment pipelines |
+| Type | String (URL) |
+| Checked by | `env.sh` at container startup |
+| Production value | `https://alkem.io` — preserves production robots.txt |
+| Other values | Any non-production domain — overwritten with restrictive rules |
+| Absent/unset | Treated as non-production (fail-safe) |
 
 ## State Transitions
 
 ```
-Environment variable check:
-  ┌─────────────────────────────────┐
-  │ VITE_APP_ROBOTS_ALLOW_INDEXING  │
-  └─────────┬───────────────────────┘
+Container startup (env.sh):
+  ┌──────────────────────────────┐
+  │ VITE_APP_ALKEMIO_DOMAIN      │
+  └─────────┬────────────────────┘
             │
-     ┌──────┴──────┐
-     │  === "true"  │
-     ├──Yes─────────┼──No/Missing──┐
-     ▼              │              ▼
-  Production        │         Restrictive
-  robots.txt        │         robots.txt
-  (Allow: /)        │         (Disallow: /)
-  (Disallow: /admin)│
-                    │
+     ┌──────┴──────────────┐
+     │ === "https://alkem.io" │
+     ├──Yes────────────────┼──No/Missing──┐
+     ▼                     │              ▼
+  Keep production          │         Override with
+  robots.txt               │         restrictive
+  (comprehensive rules,    │         robots.txt
+  AI bot blocking,         │         (Disallow: /)
+  sensitive path blocks)   │
+                           │
 ```
 
 ## Relationships
 
-No relationships with other entities. This feature is self-contained build infrastructure.
+No relationships with other entities. This feature is self-contained build/infrastructure logic.
