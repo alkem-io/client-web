@@ -264,7 +264,7 @@ const SpaceAboutDialog = ({
                   description={about.why}
                   loading={loading}
                   canEdit={hasEditPrivilege}
-                  onEditClick={openEditDialog}
+                  onEditClick={() => openEditDialog('/about#why')}
                 />
               </PageContentBlock>
             )}
@@ -277,7 +277,7 @@ const SpaceAboutDialog = ({
                   description={about.who}
                   loading={loading}
                   canEdit={hasEditPrivilege}
-                  onEditClick={openEditDialog}
+                  onEditClick={() => openEditDialog('/about#who')}
                 />
               </PageContentBlock>
             )}
@@ -292,7 +292,7 @@ const SpaceAboutDialog = ({
                   title={t('components.referenceSegment.title')}
                   loading={loading}
                   canEdit={hasEditPrivilege}
-                  onEditClick={openEditDialog}
+                  onEditClick={() => openEditDialog('/about')}
                 >
                   <Box paddingTop={gutters(1)}>
                     <References references={aboutProfile?.references} />

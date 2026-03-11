@@ -6,8 +6,10 @@ import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
+  SpaceSortMode,
 } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
 import { useCallback, useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
@@ -31,6 +33,7 @@ export interface DashboardNavigationItem {
   };
   innovationFlowState?: string | undefined;
   private?: boolean;
+  pinned?: boolean;
   member: boolean;
   canCreateSubspace?: boolean;
   children?: DashboardNavigationItem[];
@@ -86,13 +89,29 @@ const useSpaceDashboardNavigation = ({
     if (!space) {
       return undefined;
     }
+
+    const sortMode = space.settings?.sortMode;
+    let sortedSubspaces = [...space.subspaces];
+
+    if (sortMode === SpaceSortMode.Custom) {
+      sortedSubspaces.sort(sortBySortOrder);
+    } else {
+      // Alphabetical: pinned first (by sortOrder), then non-pinned (by displayName A-Z)
+      const pinned = sortedSubspaces.filter(s => s.pinned).sort(sortBySortOrder);
+      const unpinned = sortedSubspaces
+        .filter(s => !s.pinned)
+        .sort((a, b) => a.about.profile.displayName.localeCompare(b.about.profile.displayName));
+      sortedSubspaces = [...pinned, ...unpinned];
+    }
+
+    const isAlphabetical = sortMode !== SpaceSortMode.Custom;
+
     return {
       ...getDashboardNavigationItemProps(space),
-      children: space.subspaces.map(subspace => {
-        return {
-          ...getDashboardNavigationItemProps(subspace),
-        };
-      }),
+      children: sortedSubspaces.map(subspace => ({
+        ...getDashboardNavigationItemProps(subspace),
+        pinned: isAlphabetical && subspace.pinned,
+      })),
     };
   }, [subSpacesQueryData]);
 

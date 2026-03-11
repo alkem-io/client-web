@@ -2,7 +2,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpace } from '../../../context/useSpace';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel, SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
+import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
+import SubspacePinIndicator from '@/domain/space/components/SubspacePinIndicator';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
@@ -46,8 +48,9 @@ const SpaceSubspacesPage = () => {
   // @ts-ignore react-18
   useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
   const space = data?.lookup.space;
+  const sortMode = space?.settings?.sortMode ?? SpaceSortMode.Alphabetical;
 
-  const subspaces = space?.subspaces ?? [];
+  const subspaces = useSubspacesSorted(space?.subspaces ?? [], sortMode);
 
   // Use shared hook for parent info and avatar stacking
   const { collectAvatars } = useSubspaceCardData(space);
@@ -85,6 +88,7 @@ const SpaceSubspacesPage = () => {
       <SubspaceView
         childEntities={subspaces}
         level={level}
+        sortMode={sortMode}
         childEntitiesIcon={<SpaceL1Icon />}
         childEntityValueGetter={spaceAboutValueGetter}
         childEntityTagsGetter={spaceAboutTagsGetter}
@@ -107,6 +111,11 @@ const SpaceSubspacesPage = () => {
             showLeads={isAuthenticated}
             onContactLead={handleContactLead}
             avatarUris={collectAvatars(item)}
+            iconOverlay={
+              sortMode === SpaceSortMode.Alphabetical && item.pinned ? (
+                <SubspacePinIndicator withBackground />
+              ) : undefined
+            }
           />
         )}
         onClickCreate={() => setIsCreateDialogOpen(true)}

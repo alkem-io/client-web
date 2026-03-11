@@ -1319,6 +1319,9 @@
     }
   },
   "components": {
+    "subspacePinIndicator": {
+      "tooltip": "Pinned $t(common.subspace)"
+    },
     "calloutTemplateDialog": {
       "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
@@ -2800,7 +2803,14 @@
                 "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
-            "reorderSubspaces": "Reorder $t(common.subspaces)"
+            "reorderSubspaces": "Reorder $t(common.subspaces)",
+            "sortBy": "Sort By:",
+            "sortMode": {
+              "alphabetical": "Alphabetical",
+              "custom": "Custom"
+            },
+            "pinSpace": "Pin Space",
+            "unpinSpace": "Unpin Space"
           }
         },
         "authorization": {
@@ -4416,6 +4426,10 @@
     "appVersion": {
       "message": "A new version of the app is available.",
       "recurringMessage": "Please close all Alkemio tabs and reload to update."
+    },
+    "onlineStatus": {
+      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
+      "restored": "Your connection has been restored."
     }
   }
 }

@@ -282,10 +282,9 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 ## Active Technologies
 
-- TypeScript 5.x, React 19 + MUI (theming + components), Apollo Client (GraphQL), Formik (forms), react-i18next (i18n)
-- Apollo Client normalized cache (no local persistence)
+- GitHub Actions YAML workflows; Node.js 22.22.0 (via `actions/setup-node`) + `actions/checkout@v6`, `actions/setup-node@v6`, `actions/cache@v4`, `pnpm/action-setup@v4`, `docker/metadata-action@v5`, `docker/build-push-action@v5` (019-optimize-ci-builds)
+- N/A (CI workflows only) (019-optimize-ci-builds)
 
-## Active Technologies
+## Recent Changes
 
-- TypeScript 5.x, React 19 + MUI (theming + components), Apollo Client (GraphQL), Formik (forms), react-i18next (i18n)
-- Apollo Client normalized cache (no local persistence)
+- 019-optimize-ci-builds: Added GitHub Actions YAML workflows; Node.js 22.22.0 (via `actions/setup-node`) + `actions/checkout@v6`, `actions/setup-node@v6`, `actions/cache@v4`, `pnpm/action-setup@v4`, `docker/metadata-action@v5`, `docker/build-push-action@v5`

@@ -2124,6 +2124,8 @@ export const SubspaceCardFragmentDoc = gql`
     id
     level
     visibility
+    pinned
+    sortOrder
     about {
       ...SpaceAboutCardBanner
       metrics {
@@ -2546,6 +2548,7 @@ export const SpaceSettingsFragmentDoc = gql`
       allowMembersToVideoCall
       allowGuestContributions
     }
+    sortMode
   }
 `;
 export const StorageAggregatorParentFragmentDoc = gql`
@@ -21331,8 +21334,13 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
           ...SpaceAboutCardBanner
           isContentPublic
         }
+        settings {
+          sortMode
+        }
         subspaces {
           id
+          sortOrder
+          pinned
           about {
             ...SpaceAboutCardAvatar
             isContentPublic
@@ -21680,6 +21688,9 @@ export const SpaceSubspaceCardsDocument = gql`
             }
           }
         }
+        settings {
+          sortMode
+        }
         subspaces {
           ...SubspaceCard
         }
@@ -21846,6 +21857,9 @@ export const SubspacesInSpaceDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        settings {
+          sortMode
+        }
         subspaces {
           id
           about {
@@ -21853,6 +21867,7 @@ export const SubspacesInSpaceDocument = gql`
           }
           level
           sortOrder
+          pinned
         }
       }
     }
@@ -23234,6 +23249,7 @@ export const UpdateSpaceSettingsDocument = gql`
           allowMembersToVideoCall
           allowGuestContributions
         }
+        sortMode
       }
     }
   }
@@ -23484,56 +23500,6 @@ export type DeleteDocumentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDocumentMutation,
   SchemaTypes.DeleteDocumentMutationVariables
 >;
-export const UpdateSubspacesSortOrderDocument = gql`
-  mutation UpdateSubspacesSortOrder($spaceID: UUID!, $subspaceIds: [UUID!]!) {
-    updateSubspacesSortOrder(sortOrderData: { spaceID: $spaceID, subspaceIDs: $subspaceIds }) {
-      id
-      sortOrder
-    }
-  }
-`;
-export type UpdateSubspacesSortOrderMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateSubspacesSortOrderMutation,
-  SchemaTypes.UpdateSubspacesSortOrderMutationVariables
->;
-
-/**
- * __useUpdateSubspacesSortOrderMutation__
- *
- * To run a mutation, you first call `useUpdateSubspacesSortOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSubspacesSortOrderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSubspacesSortOrderMutation, { data, loading, error }] = useUpdateSubspacesSortOrderMutation({
- *   variables: {
- *      spaceID: // value for 'spaceID'
- *      subspaceIds: // value for 'subspaceIds'
- *   },
- * });
- */
-export function useUpdateSubspacesSortOrderMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateSubspacesSortOrderMutation,
-    SchemaTypes.UpdateSubspacesSortOrderMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateSubspacesSortOrderMutation,
-    SchemaTypes.UpdateSubspacesSortOrderMutationVariables
-  >(UpdateSubspacesSortOrderDocument, options);
-}
-export type UpdateSubspacesSortOrderMutationHookResult = ReturnType<typeof useUpdateSubspacesSortOrderMutation>;
-export type UpdateSubspacesSortOrderMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateSubspacesSortOrderMutation>;
-export type UpdateSubspacesSortOrderMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateSubspacesSortOrderMutation,
-  SchemaTypes.UpdateSubspacesSortOrderMutationVariables
->;
 export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
   query SpaceAdminDefaultSpaceTemplatesDetails($spaceId: UUID!) {
     lookup {
@@ -23673,6 +23639,105 @@ export function refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery(
 ) {
   return { query: SpaceAdminDefaultSpaceTemplatesDetailsDocument, variables: variables };
 }
+export const UpdateSubspacePinnedDocument = gql`
+  mutation UpdateSubspacePinned($pinnedData: UpdateSubspacePinnedInput!) {
+    updateSubspacePinned(pinnedData: $pinnedData) {
+      id
+      pinned
+      sortOrder
+    }
+  }
+`;
+export type UpdateSubspacePinnedMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateSubspacePinnedMutation,
+  SchemaTypes.UpdateSubspacePinnedMutationVariables
+>;
+
+/**
+ * __useUpdateSubspacePinnedMutation__
+ *
+ * To run a mutation, you first call `useUpdateSubspacePinnedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSubspacePinnedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSubspacePinnedMutation, { data, loading, error }] = useUpdateSubspacePinnedMutation({
+ *   variables: {
+ *      pinnedData: // value for 'pinnedData'
+ *   },
+ * });
+ */
+export function useUpdateSubspacePinnedMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateSubspacePinnedMutation,
+    SchemaTypes.UpdateSubspacePinnedMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateSubspacePinnedMutation,
+    SchemaTypes.UpdateSubspacePinnedMutationVariables
+  >(UpdateSubspacePinnedDocument, options);
+}
+export type UpdateSubspacePinnedMutationHookResult = ReturnType<typeof useUpdateSubspacePinnedMutation>;
+export type UpdateSubspacePinnedMutationResult = Apollo.MutationResult<SchemaTypes.UpdateSubspacePinnedMutation>;
+export type UpdateSubspacePinnedMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateSubspacePinnedMutation,
+  SchemaTypes.UpdateSubspacePinnedMutationVariables
+>;
+export const UpdateSubspacesSortOrderDocument = gql`
+  mutation UpdateSubspacesSortOrder($spaceID: UUID!, $subspaceIds: [UUID!]!) {
+    updateSubspacesSortOrder(sortOrderData: { spaceID: $spaceID, subspaceIDs: $subspaceIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateSubspacesSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateSubspacesSortOrderMutation,
+  SchemaTypes.UpdateSubspacesSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateSubspacesSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateSubspacesSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSubspacesSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSubspacesSortOrderMutation, { data, loading, error }] = useUpdateSubspacesSortOrderMutation({
+ *   variables: {
+ *      spaceID: // value for 'spaceID'
+ *      subspaceIds: // value for 'subspaceIds'
+ *   },
+ * });
+ */
+export function useUpdateSubspacesSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateSubspacesSortOrderMutation,
+    SchemaTypes.UpdateSubspacesSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateSubspacesSortOrderMutation,
+    SchemaTypes.UpdateSubspacesSortOrderMutationVariables
+  >(UpdateSubspacesSortOrderDocument, options);
+}
+export type UpdateSubspacesSortOrderMutationHookResult = ReturnType<typeof useUpdateSubspacesSortOrderMutation>;
+export type UpdateSubspacesSortOrderMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateSubspacesSortOrderMutation>;
+export type UpdateSubspacesSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateSubspacesSortOrderMutation,
+  SchemaTypes.UpdateSubspacesSortOrderMutationVariables
+>;
 export const SpacePrivilegesDocument = gql`
   query SpacePrivileges($spaceId: UUID!) {
     lookup {

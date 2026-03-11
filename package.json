@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.133.3",
+  "version": "0.134.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -121,7 +121,7 @@
     "@types/jest": "^28.0.0",
     "@types/lodash": "^4.14.172",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^20.14.11",
+    "@types/node": "^24.0.0",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@types/unist": "^3.0.3",
@@ -232,11 +232,11 @@
     "@rollup/rollup-win32-x64-msvc": "^4.40.0"
   },
   "engines": {
-    "node": ">=22.0.0",
-    "pnpm": ">=9.0.0"
+    "node": ">=24.0.0",
+    "pnpm": ">=10.17.1"
   },
   "packageManager": "pnpm@10.17.1",
   "volta": {
-    "node": "22.21.1"
+    "node": "24.14.0"
   }
 }
