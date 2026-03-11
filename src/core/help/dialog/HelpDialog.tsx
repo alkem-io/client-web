@@ -1,3 +1,8 @@
+import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+import { DialogContent, Link, styled } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -6,11 +11,6 @@ import { Caption } from '@/core/ui/typography';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { buildWelcomeSpaceUrl } from '@/main/routing/urlBuilders';
-import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
-import { DialogContent, Link, styled } from '@mui/material';
-import { Trans, useTranslation } from 'react-i18next';
 
 interface HelpDialogProps {
   open: boolean;
@@ -63,7 +63,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
       <DialogHeader title={t('pages.help-dialog.title')} onClose={handleClose} id="help-dialog-title" />
       <HelpDialogContent>
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
-        <Gutters row disablePadding>
+        <Gutters row={true} disablePadding={true}>
           <IconWrapper
             href={docsHref}
             target="_blank"
@@ -92,8 +92,8 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
             {t('pages.help-dialog.icons.joinTheWelcomeSpace')}
           </IconWrapper>
         </Gutters>
-        <Gutters row justifyContent="center">
-          <Gutters row gap={1} disablePadding>
+        <Gutters row={true} justifyContent="center">
+          <Gutters row={true} gap={1} disablePadding={true}>
             <Caption>
               <Trans
                 i18nKey="pages.help-dialog.versionNumber"
@@ -103,7 +103,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
             </Caption>
           </Gutters>
 
-          <Gutters row gap={1} disablePadding>
+          <Gutters row={true} gap={1} disablePadding={true}>
             <Caption>
               <Trans
                 i18nKey="pages.help-dialog.serverVersionNumber"

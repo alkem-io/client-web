@@ -1,8 +1,8 @@
 import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import CampaignBlockCreateVC from './CampaignBlockCreateVC';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import CampaignBlockCreateVC from './CampaignBlockCreateVC';
 
 const CampaignBlock = () => {
   const { platformRoles, accountEntitlements } = useCurrentUserContext();

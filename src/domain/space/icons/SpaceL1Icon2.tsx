@@ -1,5 +1,5 @@
-import { SvgIconComponent } from '@mui/icons-material';
-import { SvgIcon, SvgIconProps } from '@mui/material';
+import type { SvgIconComponent } from '@mui/icons-material';
+import { SvgIcon, type SvgIconProps } from '@mui/material';
 
 /**
  * This is the newest version of the SpaceL1Icon/L1 icon.

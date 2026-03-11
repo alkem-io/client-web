@@ -1,6 +1,6 @@
-import React, { PropsWithChildren } from 'react';
-import { AuthorizationPrivilege, UrlType } from '@/core/apollo/generated/graphql-schema';
+import type { PropsWithChildren } from 'react';
 import { useSpacePrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, UrlType } from '@/core/apollo/generated/graphql-schema';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
 
 interface NonSpaceAdminRedirectProps {

@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from '@/main/test/testUtils';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { describe, expect, it, vi } from 'vitest';
-import WhiteboardGuestAccessSection from '../WhiteboardGuestAccessSection';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { fireEvent, render, screen } from '@/main/test/testUtils';
+import type { UseWhiteboardGuestAccessResult } from '../../hooks/useWhiteboardGuestAccess';
 import WhiteboardGuestAccessControls from '../WhiteboardGuestAccessControls';
-import { UseWhiteboardGuestAccessResult } from '../../hooks/useWhiteboardGuestAccess';
+import WhiteboardGuestAccessSection from '../WhiteboardGuestAccessSection';
 
 const buildGuestAccess = (overrides: Partial<UseWhiteboardGuestAccessResult> = {}): UseWhiteboardGuestAccessResult => ({
   enabled: false,

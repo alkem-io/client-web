@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppPlatformAdminGlobalRoleChangedView = (notification: InAppNotificationModel) => {

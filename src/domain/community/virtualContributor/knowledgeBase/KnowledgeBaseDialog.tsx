@@ -1,16 +1,16 @@
-import { Trans, useTranslation } from 'react-i18next';
-import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import SyncOutlinedIcon from '@mui/icons-material/SyncOutlined';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
+import { useVirtualContributorKnowledgeBaseLastUpdatedQuery } from '@/core/apollo/generated/apollo-hooks';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
-import useKnowledgeBase from './useKnowledgeBase';
-import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
-import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
-import { useVirtualContributorKnowledgeBaseLastUpdatedQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
+import useKnowledgeBase from './useKnowledgeBase';
 import { virtualContributorsCalloutRestrictions } from './virtualContributorsCalloutRestrictions';
 
 type KnowledgeBaseDialogProps = {
@@ -46,7 +46,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
 
   if (!hasReadAccess && !loadingPrivileges) {
     return (
-      <DialogWithGrid open columns={6} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
+      <DialogWithGrid open={true} columns={6} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
         <DialogHeader
           id="knowledge-base-dialog"
           onClose={onClose}
@@ -60,13 +60,13 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
   }
 
   return (
-    <DialogWithGrid open columns={10} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
+    <DialogWithGrid open={true} columns={10} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
       <DialogHeader id="knowledge-base-dialog" onClose={onClose} title={title} />
       <DialogContent>
         {loadingPrivileges || loading ? (
           <Loading />
         ) : (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             {(placeholder || knowledgeBaseDescription || canCreateCallout) && (
               <DescriptionComponent
                 description={knowledgeBaseDescription || placeholder}
@@ -82,7 +82,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               createButtonPlace="bottom"
-              disableClassification
+              disableClassification={true}
               calloutRestrictions={virtualContributorsCalloutRestrictions}
             />
           </Gutters>

@@ -1,5 +1,5 @@
+import type { ApolloError } from '@apollo/client';
 import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ApolloError } from '@apollo/client';
 import { defaultSpaceSettings } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 
 interface UseSpaceGuestContributionsResult {

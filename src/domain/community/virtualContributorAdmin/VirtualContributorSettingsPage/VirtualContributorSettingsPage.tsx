@@ -1,15 +1,15 @@
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import VisibilityForm from '../components/VisibilityForm';
-import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
-import { PromptGraphConfig } from '../components/promptGraph';
-import { PromptConfig } from '../components/PromptConfig';
-import ExternalConfig from '../components/ExternalConfig';
 import { AiPersonaEngine, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
+import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
+import ExternalConfig from '../components/ExternalConfig';
+import { PromptConfig } from '../components/PromptConfig';
+import { PromptGraphConfig } from '../components/promptGraph';
+import VisibilityForm from '../components/VisibilityForm';
+import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 
 const VirtualContributorSettingsPage = () => {
   const { vcId } = useUrlResolver();

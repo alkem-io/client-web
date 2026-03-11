@@ -1,16 +1,16 @@
-import { useCreateMemoOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useState } from 'react';
-import CreateContributionButton from '../CreateContributionButton';
-import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
-import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
-import { normalizeLink } from '@/core/utils/links';
-import useNavigate from '@/core/routing/useNavigate';
-import { useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCreateMemoOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { normalizeLink } from '@/core/utils/links';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import CreateContributionButton from '../CreateContributionButton';
+import type { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 
 interface CreateContributionButtonMemoProps extends CalloutContributionCreateButtonProps {}
 
@@ -71,12 +71,12 @@ const CreateContributionButtonMemo = ({
         <DialogHeader onClose={handleCloseDialog} title={t('common.create-new-entity', { entity: t('common.memo') })} />
         <DialogContent>
           <TextField
-            fullWidth
+            fullWidth={true}
             label={t('fields.displayName')}
             variant="outlined"
             onChange={e => setMemoName(e.target.value)}
             value={memoName}
-            focused
+            focused={true}
           />
         </DialogContent>
         <DialogActions>

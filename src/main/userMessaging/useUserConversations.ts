@@ -1,7 +1,7 @@
-import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserMessagingContext } from './UserMessagingContext';
 import { useMemo } from 'react';
-import { ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
+import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { type ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
+import { useUserMessagingContext } from './UserMessagingContext';
 
 export interface UserConversation {
   id: string;
@@ -52,10 +52,10 @@ export const useUserConversations = () => {
                 }
               : undefined,
             user: {
-              id: conv.user!.id,
-              displayName: conv.user!.profile?.displayName ?? '',
-              avatarUri: conv.user!.profile?.avatar?.uri,
-              url: conv.user!.profile?.url,
+              id: conv.user?.id,
+              displayName: conv.user?.profile?.displayName ?? '',
+              avatarUri: conv.user?.profile?.avatar?.uri,
+              url: conv.user?.profile?.url,
             },
           };
         })

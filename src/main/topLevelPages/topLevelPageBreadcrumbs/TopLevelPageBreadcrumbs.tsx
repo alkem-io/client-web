@@ -1,7 +1,7 @@
-import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
+import Breadcrumbs, { type BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
+import type { Collapsible } from '@/core/ui/navigation/Collapsible';
+import type { Expandable } from '@/core/ui/navigation/Expandable';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
-import { Collapsible } from '@/core/ui/navigation/Collapsible';
-import { Expandable } from '@/core/ui/navigation/Expandable';
 
 const TopLevelPageBreadcrumbs = ({
   ref,

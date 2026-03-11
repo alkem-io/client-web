@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import type { VisualModelFull } from '../model/VisualModel';
 import { getVisualByType } from '../utils/visuals.utils';
-import { useTranslation } from 'react-i18next';
 import VisualDescription from './VisualDescription';
-import { VisualModelFull } from '../model/VisualModel';
 
 export interface EditVisualsViewProps {
   visuals?: VisualModelFull[];

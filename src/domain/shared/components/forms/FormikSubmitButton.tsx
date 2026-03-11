@@ -1,15 +1,12 @@
-import { Button, ButtonProps } from '@mui/material';
+import { Button, type ButtonProps } from '@mui/material';
 import { useFormikContext } from 'formik';
-import { FormikProps } from 'formik/dist/types';
+import type { FormikProps } from 'formik/dist/types';
 
-export interface FormikSubmitButtonProps<Values extends unknown> extends ButtonProps {
+export interface FormikSubmitButtonProps<Values> extends ButtonProps {
   formik: FormikProps<Values>;
 }
 
-export const FormikSubmitButtonPure = <Values extends unknown>({
-  formik,
-  ...props
-}: FormikSubmitButtonProps<Values>) => {
+export const FormikSubmitButtonPure = <Values,>({ formik, ...props }: FormikSubmitButtonProps<Values>) => {
   const { isValid, isValidating, isSubmitting, dirty } = formik;
   const isDisabled = !isValid || !dirty;
   const isLoading = isValidating || isSubmitting;

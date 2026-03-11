@@ -1,23 +1,23 @@
-import { Avatar, Box, Button, IconButton, Link, TextField } from '@mui/material';
-import {
-  GridColDef,
-  GridFilterModel,
-  GridInitialState,
-  GridLogicOperator,
-  GridRenderCellParams,
-} from '@mui/x-data-grid';
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import { Avatar, Box, Button, IconButton, Link, TextField } from '@mui/material';
+import {
+  type GridColDef,
+  type GridFilterModel,
+  type GridInitialState,
+  GridLogicOperator,
+  type GridRenderCellParams,
+} from '@mui/x-data-grid';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
+import type { ContributorViewModel } from '../../../community/community/utils/ContributorViewModel';
+import CommunityAddMembersDialog, { type CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDialog';
-import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
-import { ContributorViewModel } from '../../../community/community/utils/ContributorViewModel';
 
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewModel {
   isMember: boolean;
@@ -49,11 +49,11 @@ const initialState: GridInitialState = {
 
 interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
-  onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
+  onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | undefined;
   canAddOrganizations: boolean;
   onAddMember: (organizationId) => Promise<unknown> | undefined;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
-  onRemoveMember: (organizationId) => Promise<unknown> | void;
+  onRemoveMember: (organizationId) => Promise<unknown> | undefined;
   memberRoleDefinition?: {
     organizationPolicy: { minimum: number; maximum: number };
     userPolicy: { minimum: number; maximum: number };
@@ -160,7 +160,7 @@ const CommunityOrganizations = ({
         label={t('common.search')}
         placeholder={t('common.search')}
         size="small"
-        fullWidth
+        fullWidth={true}
       />
       <Box minHeight={gutters(25)}>
         {loading ? (

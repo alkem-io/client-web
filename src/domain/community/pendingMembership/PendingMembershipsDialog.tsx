@@ -1,28 +1,28 @@
-import React, { ReactNode, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { HdrStrongOutlined } from '@mui/icons-material';
+import { defer } from 'lodash-es';
+import React, { type ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActorType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import BackButton from '@/core/ui/actions/BackButton';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
+import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
+import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
+import InvitationDialog from '../invitations/InvitationDialog';
 import {
   ApplicationHydrator,
   InvitationHydrator,
-  InvitationWithMeta,
+  type InvitationWithMeta,
   usePendingMemberships,
 } from './PendingMemberships';
-import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
-import InvitationDialog from '../invitations/InvitationDialog';
-import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
-import { ActorType, VisualType } from '@/core/apollo/generated/graphql-schema';
-import BackButton from '@/core/ui/actions/BackButton';
-import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
-import { defer } from 'lodash-es';
-import Loading from '@/core/ui/loading/Loading';
 
 interface SectionProps<T> {
   title: string;
@@ -121,7 +121,7 @@ const PendingMembershipsDialog = () => {
         <DialogHeader
           id="pending-memberships-dialog"
           title={
-            <Gutters row disablePadding>
+            <Gutters row={true} disablePadding={true}>
               <HdrStrongOutlined fontSize="small" />
               {t('community.pendingMembership.pendingMemberships')}
             </Gutters>

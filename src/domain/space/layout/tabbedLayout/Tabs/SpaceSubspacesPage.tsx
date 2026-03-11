@@ -1,21 +1,21 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpace } from '../../../context/useSpace';
-import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
-import useSpaceTabProvider from '../SpaceTabProvider';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
-import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
-import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useSubspaceCardData } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
+import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import type { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import { useSubspaceCardData } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
+import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
+import { useSpace } from '../../../context/useSpace';
+import useSpaceTabProvider from '../SpaceTabProvider';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -43,7 +43,7 @@ const SpaceSubspacesPage = () => {
     skip: !spaceId,
   });
 
-  // @ts-ignore react-18
+  // @ts-expect-error react-18
   useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
   const space = data?.lookup.space;
 

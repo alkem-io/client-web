@@ -1,15 +1,15 @@
-import SubHeading from '@/domain/shared/components/Text/SubHeading';
-import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
+import { Box } from '@mui/material';
+import type { UiContainer } from '@ory/kratos-client';
 import { useState } from 'react';
-import KratosAcceptTermsButton from '../components/KratosAcceptTermsButton';
 import { useTranslation } from 'react-i18next';
-import PlatformIntroduction from '../components/PlatformIntroduction';
-import { UiContainer } from '@ory/kratos-client';
-import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
-import KratosHidden from '../components/Kratos/KratosHidden';
+import SubHeading from '@/domain/shared/components/Text/SubHeading';
 import { KRATOS_TRAIT_NAME_FIRST_NAME } from '../components/Kratos/constants';
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
-import { Box } from '@mui/material';
+import KratosHidden from '../components/Kratos/KratosHidden';
+import KratosAcceptTermsButton from '../components/KratosAcceptTermsButton';
+import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
+import PlatformIntroduction from '../components/PlatformIntroduction';
+import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 
 interface GreetingProps {
   userName: string;
@@ -56,7 +56,7 @@ const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}>
       {nonButtonInputs.map(node => (
-        <KratosHidden key={node.attributes['name']} node={node} />
+        <KratosHidden key={node.attributes.name} node={node} />
       ))}
       {userName && <Greeting userName={userName} />}
       <PlatformIntroduction label="pages.registration.introduction-short" />

@@ -1,12 +1,12 @@
-import React, { Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
-import Loading from '@/core/ui/loading/Loading';
-import { DashboardProvider } from './DashboardContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useLocation, Navigate } from 'react-router-dom';
-import { DIALOG_PARAM_VALUES, useMyDashboardDialogs } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { DIALOG_PARAM_VALUES, useMyDashboardDialogs } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
+import { DashboardProvider } from './DashboardContext';
 
 const MyDashboardUnauthenticated = lazyWithGlobalErrorHandler(() => import('./MyDashboardUnauthenticated'));
 const MyDashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithMemberships'));

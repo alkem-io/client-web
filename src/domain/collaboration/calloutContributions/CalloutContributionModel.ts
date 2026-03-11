@@ -1,5 +1,5 @@
-import { Identifiable } from '@/core/utils/Identifiable';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 type CalloutContributionModel = Identifiable & {
   post?: {

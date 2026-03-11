@@ -17,7 +17,7 @@ export const getCaretIndex = el => {
   let position = 0;
   const selection = window.getSelection()!;
   if (selection.rangeCount !== 0) {
-    const range = window.getSelection()!.getRangeAt(0);
+    const range = window.getSelection()?.getRangeAt(0);
     const preCaretRange = range.cloneRange();
     preCaretRange.selectNodeContents(el);
     preCaretRange.setEnd(range.endContainer, range.endOffset);
@@ -66,7 +66,7 @@ export const insertNodeAtCaret = el => {
 };
 
 export const getSelection = el => {
-  const range = window.getSelection()!.getRangeAt(0);
+  const range = window.getSelection()?.getRangeAt(0);
   const preSelectionRange = range.cloneRange();
   preSelectionRange.selectNodeContents(el);
   preSelectionRange.setEnd(range.startContainer, range.startOffset);
@@ -78,7 +78,6 @@ export const getSelection = el => {
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function sinEaseOut(timestamp: any, beginning: any, change: any, duration: any) {
   return change * ((timestamp = timestamp / duration - 1) * timestamp * timestamp + 1) + beginning;
 }
@@ -89,7 +88,6 @@ function sinEaseOut(timestamp: any, beginning: any, change: any, duration: any) 
  * @param {*} scrollStart
  * @param {*} scroll scroll distance
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function scrollWithSlowMotion(target: any, scrollStart: any, scroll: number) {
   const raf = window?.requestAnimationFrame;
   let start = 0;
@@ -97,8 +95,8 @@ function scrollWithSlowMotion(target: any, scrollStart: any, scroll: number) {
     if (!start) {
       start = timestamp;
     }
-    let stepScroll = sinEaseOut(timestamp - start, 0, scroll, MESSAGE_BOX_SCROLL_DURATION);
-    let total = scrollStart + stepScroll;
+    const stepScroll = sinEaseOut(timestamp - start, 0, scroll, MESSAGE_BOX_SCROLL_DURATION);
+    const total = scrollStart + stepScroll;
     target.scrollTop = total;
     if (total < scrollStart + scroll) {
       raf(step);

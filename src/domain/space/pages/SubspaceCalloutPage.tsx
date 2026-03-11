@@ -1,7 +1,7 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
-import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
-import { SpaceCalloutDialogProps } from '@/domain/space/pages/SpaceCalloutDialogProps';
+import type { SpaceCalloutDialogProps } from '@/domain/space/pages/SpaceCalloutDialogProps';
 import { useSubSpace } from '../hooks/useSubSpace';
+import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
 
 const renderPage = () => <SubspaceHomePage />;
 

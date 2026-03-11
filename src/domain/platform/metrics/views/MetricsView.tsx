@@ -1,6 +1,6 @@
-import CircleTag from '@/core/ui/tags/CircleTag';
 import { Box, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import CircleTag from '@/core/ui/tags/CircleTag';
 
 export const MetricViewItem = ({ text, count }: { text: ReactNode; count: number }) => (
   <Box display="flex" gap={1}>

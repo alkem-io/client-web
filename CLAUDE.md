@@ -281,6 +281,8 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
 ## Active Technologies
+- TypeScript ~5.8.3, React 19, Node 24.14.0 (Volta-pinned) + Vite ^7.3.0, Vitest ^4.0.16, Biome (to add), @vitejs/plugin-react ^5.1.2, babel-plugin-react-compiler ^1.0.0 (020-fast-ci-feedback)
+- N/A (tooling change only) (020-fast-ci-feedback)
 
 - GitHub Actions YAML workflows; Node.js 22.22.0 (via `actions/setup-node`) + `actions/checkout@v6`, `actions/setup-node@v6`, `actions/cache@v4`, `pnpm/action-setup@v4`, `docker/metadata-action@v5`, `docker/build-push-action@v5` (019-optimize-ci-builds)
 - N/A (CI workflows only) (019-optimize-ci-builds)

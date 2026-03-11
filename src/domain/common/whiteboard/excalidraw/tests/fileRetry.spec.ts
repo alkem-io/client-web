@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { FileId } from '@alkemio/excalidraw/dist/types/element/src/types';
-import { FileDownloader, type DownloadFailure } from '../fileStore/FileDownloader';
+import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { type DownloadFailure, FileDownloader } from '../fileStore/FileDownloader';
 import { FileUploader, type UploadFailure } from '../fileStore/FileUploader';
 import type { BinaryFileDataWithOptionalUrl } from '../types';
 
@@ -21,9 +21,9 @@ vi.mock('@/core/logging/sentry/log', () => ({
   TagCategoryValues: { WHITEBOARD: 'whiteboard' },
 }));
 
-// Import mocked modules
-import { fetchFileToDataURL, blobToDataURL } from '../fileStore/fileConverters';
 import { generateIdFromFile } from '../collab/utils';
+// Import mocked modules
+import { blobToDataURL, fetchFileToDataURL } from '../fileStore/fileConverters';
 
 /**
  * Implementation tests for file retry mechanisms (T026)
@@ -34,10 +34,7 @@ import { generateIdFromFile } from '../collab/utils';
  */
 
 // Test data factories
-const createMockFile = (
-  id: string,
-  options: { url?: string; dataURL?: DataURL } = {}
-): BinaryFileDataWithOptionalUrl =>
+const createMockFile = (id: string, options: { url?: string; dataURL?: DataURL } = {}): BinaryFileDataWithOptionalUrl =>
   ({
     id,
     mimeType: 'image/png',
@@ -73,9 +70,12 @@ describe('FileDownloader implementation', () => {
 
       await downloader.downloadFile(file, { guestName: 'Alice' });
 
-      expect(fetchFileToDataURL).toHaveBeenCalledWith('https://example.com/image.png', expect.objectContaining({
-        'x-guest-name': expect.any(String),
-      }));
+      expect(fetchFileToDataURL).toHaveBeenCalledWith(
+        'https://example.com/image.png',
+        expect.objectContaining({
+          'x-guest-name': expect.any(String),
+        })
+      );
     });
 
     it('throws and tracks failure when file has no URL', async () => {
@@ -423,9 +423,7 @@ describe('FileUploader implementation', () => {
       vi.mocked(generateIdFromFile)
         .mockResolvedValueOnce('file-1' as FileId)
         .mockResolvedValueOnce('file-2' as FileId);
-      mockUploadMutation
-        .mockRejectedValueOnce(new Error('Error 1'))
-        .mockRejectedValueOnce(new Error('Error 2'));
+      mockUploadMutation.mockRejectedValueOnce(new Error('Error 1')).mockRejectedValueOnce(new Error('Error 2'));
 
       await expect(uploader.upload(file1)).rejects.toThrow();
       await expect(uploader.upload(file2)).rejects.toThrow();
@@ -443,9 +441,7 @@ describe('FileUploader implementation', () => {
       vi.mocked(generateIdFromFile)
         .mockResolvedValueOnce('file-1' as FileId)
         .mockResolvedValueOnce('file-2' as FileId);
-      mockUploadMutation
-        .mockRejectedValueOnce(new Error('Error 1'))
-        .mockRejectedValueOnce(new Error('Error 2'));
+      mockUploadMutation.mockRejectedValueOnce(new Error('Error 1')).mockRejectedValueOnce(new Error('Error 2'));
 
       await expect(uploader.upload(file1)).rejects.toThrow();
       await expect(uploader.upload(file2)).rejects.toThrow();

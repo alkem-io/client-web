@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export interface PlatformPrivilegeWrapper {
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;

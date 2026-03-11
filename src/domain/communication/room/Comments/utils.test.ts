@@ -1,5 +1,5 @@
+import { describe, expect, test } from 'vitest';
 import { findCursorPositionInMarkdown } from './utils';
-import { expect, test, describe } from 'vitest';
 
 describe('findCursorPositionInMarkdown', () => {
   test('finds the position in pure plain text string', () => {

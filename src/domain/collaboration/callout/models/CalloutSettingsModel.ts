@@ -1,6 +1,6 @@
 import {
   CalloutAllowedActors,
-  CalloutContributionType,
+  type CalloutContributionType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 

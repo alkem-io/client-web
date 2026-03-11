@@ -1,13 +1,13 @@
-import { useState, Suspense } from 'react';
 import HelpIcon from '@mui/icons-material/Help';
-import HelpDialog from '@/core/help/dialog/HelpDialog';
 import { IconButton } from '@mui/material';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
-import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
+import HelpDialog from '@/core/help/dialog/HelpDialog';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 const ChatWidget = lazyWithGlobalErrorHandler(() => import('@/main/guidance/chatWidget/ChatWidget'));
 

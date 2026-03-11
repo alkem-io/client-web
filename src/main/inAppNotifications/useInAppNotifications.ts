@@ -1,17 +1,17 @@
-import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
+import type { ApolloCache } from '@apollo/client';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   useInAppNotificationsQuery,
   useInAppNotificationsUnreadCountQuery,
-  useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
+  useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { type NotificationEvent, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
-import { ApolloCache } from '@apollo/client';
-import { InAppNotificationModel } from './model/InAppNotificationModel';
-import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
-import { useMemo, useCallback, useEffect, useRef } from 'react';
-import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import type { InAppNotificationModel } from './model/InAppNotificationModel';
 import { getNotificationTypesForFilter } from './notificationFilters';
+import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
 
 export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
 
@@ -136,9 +136,7 @@ export const useInAppNotifications = () => {
           };
         },
       });
-    } catch (error) {
-      console.error('Failed to fetch more notifications:', error);
-    }
+    } catch (_error) {}
   }, [fetchMore, hasMore, loading, data?.me?.notifications?.pageInfo?.endCursor, notificationTypes]);
 
   const updateNotificationState = useCallback(
@@ -155,9 +153,7 @@ export const useInAppNotifications = () => {
             }
           },
         });
-      } catch (error) {
-        console.error('Failed to update notification state:', error);
-      }
+      } catch (_error) {}
     },
     [updateState]
   );
@@ -175,9 +171,7 @@ export const useInAppNotifications = () => {
           }
         },
       });
-    } catch (error) {
-      console.error('Failed to mark notifications as read:', error);
-    }
+    } catch (_error) {}
   }, [markAsRead, notificationTypes, refetch]);
 
   return {

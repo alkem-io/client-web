@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
+import type { ReactNode } from 'react';
 import { CardText } from '@/core/ui/typography';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 
 interface SpaceCardTaglineProps {
   children: Exclude<ReactNode, boolean | null | undefined>;

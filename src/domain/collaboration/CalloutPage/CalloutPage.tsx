@@ -1,24 +1,24 @@
-import { ReactElement, ReactNode, useEffect, useRef } from 'react';
-import CalloutView from '../callout/CalloutView/CalloutView';
-import { useCalloutManager } from '../callout/utils/useCalloutManager';
-import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useSearchParams } from 'react-router-dom';
 import { DialogContent } from '@mui/material';
-import Loading from '@/core/ui/loading/Loading';
+import { type ReactElement, type ReactNode, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Text } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import { NavigationState } from '@/core/routing/ScrollToTop';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { NavigationState } from '@/core/routing/ScrollToTop';
 import useNavigate from '@/core/routing/useNavigate';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Loading from '@/core/ui/loading/Loading';
+import { Text } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import type { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
+import CalloutView from '../callout/CalloutView/CalloutView';
+import type { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
 import useCalloutDetails from '../callout/useCalloutDetails/useCalloutDetails';
-import { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
+import { useCalloutManager } from '../callout/utils/useCalloutManager';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -80,17 +80,17 @@ const CalloutPage = ({
   const { isSmallScreen } = useScreenSize();
 
   const calloutFlowState = callout?.classification?.flowState?.tags[0];
-  const calloutPosition = callout?.classification?.flowState?.allowedValues?.findIndex(val => val === calloutFlowState);
+  const calloutPosition = callout?.classification?.flowState?.allowedValues?.indexOf(calloutFlowState);
 
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
-  let [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   // Track previous contributionId to detect when we're navigating between contributions
   const prevContributionIdRef = useRef<string | undefined>(contributionId);
 
   useEffect(() => {
-    const currentSection = parseInt(searchParams.get(SEARCH_PARAM_TAB) || '-1') + 1;
+    const currentSection = parseInt(searchParams.get(SEARCH_PARAM_TAB) || '-1', 10) + 1;
     const isNavigatingBetweenContributions = prevContributionIdRef.current !== contributionId;
     prevContributionIdRef.current = contributionId;
 
@@ -151,7 +151,7 @@ const CalloutPage = ({
     return (
       <>
         {renderPage(calloutPosition)}
-        <DialogWithGrid open onClose={handleClose} aria-labelledby="callout-access-forbidden-dialog-title">
+        <DialogWithGrid open={true} onClose={handleClose} aria-labelledby="callout-access-forbidden-dialog-title">
           <DialogHeader
             title={t('callout.accessForbidden.title')}
             id="callout-access-forbidden-dialog-title"
@@ -173,15 +173,15 @@ const CalloutPage = ({
     <>
       {renderPage(calloutPosition)}
       <DialogWithGrid
-        open
+        open={true}
         columns={12}
         onClose={handleClose}
         fullScreen={isSmallScreen}
-        fullHeight
+        fullHeight={true}
         aria-labelledby="callout-title"
       >
         <DialogContent
-          dividers
+          dividers={true}
           sx={{
             p: 0,
             display: 'flex',
@@ -201,7 +201,7 @@ const CalloutPage = ({
             onCalloutDelete={handleDeleteWithClose}
             onCollapse={handleClose}
             calloutRestrictions={calloutRestrictions}
-            expanded
+            expanded={true}
           />
         </DialogContent>
       </DialogWithGrid>

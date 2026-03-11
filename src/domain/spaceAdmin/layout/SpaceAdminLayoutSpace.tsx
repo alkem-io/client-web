@@ -1,11 +1,11 @@
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
 import EntitySettingsLayout from '../../platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import BackButton from '@/core/ui/actions/BackButton';
-import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
+import type { SettingsSection } from '../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { useSpace } from '../../space/context/useSpace';
+import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';
 
 type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;

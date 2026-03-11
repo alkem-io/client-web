@@ -1,7 +1,7 @@
-import { BoxProps, Fade } from '@mui/material';
-import { ReactNode } from 'react';
-import ScrollToTop from './ScrollToTop';
+import { type BoxProps, Fade } from '@mui/material';
+import type { ReactNode } from 'react';
 import Gutters from '../grid/Gutters';
+import ScrollToTop from './ScrollToTop';
 
 const FLOATING_ACTION_BUTTONS_Z_INDEX = 1200; // Dialogs are 1300
 export interface FloatingActionButtonsProps extends BoxProps {

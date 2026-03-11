@@ -1,27 +1,26 @@
 import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
 import { Box, Button, Collapse, IconButton, Tooltip } from '@mui/material';
-import { Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
+import { produce } from 'immer';
+import { debounce, difference } from 'lodash-es';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import DashboardNavigationItemView, {
-  DashboardNavigationItemViewApi,
-  DashboardNavigationItemViewProps,
-} from './DashboardNavigationItemView';
-import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
-import { Actions } from '@/core/ui/actions/Actions';
-
-import { produce } from 'immer';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
-import { findCurrentPath } from './utils';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { debounce, difference } from 'lodash-es';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
+import DashboardNavigationItemView, {
+  type DashboardNavigationItemViewApi,
+  type DashboardNavigationItemViewProps,
+} from './DashboardNavigationItemView';
+import { findCurrentPath } from './utils';
 
 export interface DashboardNavigationProps {
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -203,7 +202,7 @@ const DashboardNavigation = ({
   }
 
   return (
-    <PageContentBlock sx={{ py: gutters(0.5), px: gutters(0.1) }} disablePadding disableGap>
+    <PageContentBlock sx={{ py: gutters(0.5), px: gutters(0.1) }} disablePadding={true} disableGap={true}>
       {!compact && (
         <Collapse in={!isSnapped || isTopLevel}>
           <RouterLink to={dashboardNavigationRoot?.url ?? ''}>
@@ -217,7 +216,7 @@ const DashboardNavigation = ({
                 <Tooltip
                   title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
                   placement={tooltipPlacement}
-                  arrow
+                  arrow={true}
                 >
                   <IconButton size="small" aria-label={t('components.dashboardNavigation.help')}>
                     <HelpOutlineOutlined fontSize="small" />

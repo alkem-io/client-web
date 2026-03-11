@@ -195,9 +195,4 @@ export default defineConfig({
       '@mui/icons-material',
     ],
   },
-  test: {
-    environment: 'jsdom',
-    setupFiles: ['src/setupTests.ts'],
-    globals: true,
-  },
 });

@@ -1,7 +1,7 @@
-import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
 import { Button, Container, Link, Typography } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 import { generateSupportMailtoUrl } from '@/core/ui/notifications/generateSupportMailtoUrl';
+import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
 
 type ErrorPageProps = {
   error: Error;

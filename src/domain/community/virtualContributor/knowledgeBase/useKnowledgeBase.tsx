@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import {
-  AuthorizationPrivilege,
-  CalloutsOnCalloutsSetUsingClassificationQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
-import useCalloutsSet, { OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorMutation,
   useVirtualContributorKnowledgeBaseQuery,
   useVirtualContributorKnowledgePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  type CalloutsOnCalloutsSetUsingClassificationQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import useCalloutsSet, { type OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 
 interface useKnowledgeBaseParams {
   id: string | undefined;
@@ -24,7 +24,7 @@ interface useKnowledgeBaseProvided {
   loading: boolean;
   calloutsSetLoading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetUsingClassificationQueryVariables>) => void;
-  refetchCallout: (calloutId: string) => Promise<unknown> | void;
+  refetchCallout: (calloutId: string) => Promise<unknown> | undefined;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   knowledgeBaseDescription: string | undefined;
   updateDescription: (values: { description: string }) => Promise<void>;

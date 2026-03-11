@@ -1,10 +1,10 @@
 import { Alert } from '@mui/material';
 import { useSelector } from '@xstate/react';
+import { CLEAR_NOTIFICATION, type Notification } from '@/core/state/global/notifications/notificationMachine';
 import { useGlobalState } from '@/core/state/useGlobalState';
 import { getNotificationAutoHideDuration } from './constants';
-import { CLEAR_NOTIFICATION, Notification } from '@/core/state/global/notifications/notificationMachine';
-import NotificationView from './NotificationView';
 import { ErrorNotificationContent } from './ErrorNotificationContent';
+import NotificationView from './NotificationView';
 
 const NotificationContent = ({ notification }: { notification: Notification }) => {
   // For error notifications, show the enhanced content with support link
@@ -30,7 +30,7 @@ export const NotificationHandler = () => {
         return (
           <NotificationView
             key={i}
-            open
+            open={true}
             autoHideDuration={getNotificationAutoHideDuration(x.severity)}
             onClose={() => closeMessage(x.id)}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}

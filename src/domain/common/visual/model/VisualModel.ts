@@ -1,4 +1,4 @@
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface VisualModel {
   id: string;

@@ -1,10 +1,10 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, Collapse, BoxProps, IconButtonProps, styled, IconButton, Divider } from '@mui/material';
-import { ReactNode, useState } from 'react';
-import PageContentBlock, { PageContentBlockProps } from './PageContentBlock';
-import { gutters } from '../grid/utils';
-import PageContentBlockSeamless from './PageContentBlockSeamless';
+import { Box, type BoxProps, Collapse, Divider, IconButton, type IconButtonProps, styled } from '@mui/material';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '../grid/utils';
+import PageContentBlock, { type PageContentBlockProps } from './PageContentBlock';
+import PageContentBlockSeamless from './PageContentBlockSeamless';
 
 interface ExpandMoreButtonProps extends IconButtonProps {
   collapsed: boolean;

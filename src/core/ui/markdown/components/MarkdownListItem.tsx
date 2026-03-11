@@ -1,6 +1,6 @@
-import createMarkdownComponent from './MarkdownComponent';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
 import type { Element } from 'hast';
+import createMarkdownComponent from './MarkdownComponent';
 
 const Base = createMarkdownComponent('li');
 
@@ -17,7 +17,7 @@ const MarkdownListItem = (props: ReactMarkdownProps) => {
 
   const newProps = { ...props };
   if (Object.hasOwn(newProps, 'ordered')) {
-    delete newProps['ordered'];
+    delete newProps.ordered;
   }
 
   return <Base sx={{ display: 'list-item' }} {...newProps} />;

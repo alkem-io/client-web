@@ -1,9 +1,9 @@
-import React, { ComponentType, PropsWithChildren } from 'react';
+import { OpenInNewOutlined } from '@mui/icons-material';
+import { Box, type SvgIconProps } from '@mui/material';
+import type { ComponentType, PropsWithChildren } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Text } from '@/core/ui/typography';
-import { Box, SvgIconProps } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
-import { OpenInNewOutlined } from '@mui/icons-material';
 
 interface ReferencesListSmallItemProps {
   uri: string;

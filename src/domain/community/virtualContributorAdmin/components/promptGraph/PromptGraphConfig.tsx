@@ -1,20 +1,20 @@
+import { Alert, Switch } from '@mui/material';
+import { Formik } from 'formik';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useAiPersonaQuery,
   useUpdateAiPersonaMutation,
   useUpdateVirtualContributorPlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { UpdateAiPersonaInput, PromptGraphInput } from '@/core/apollo/generated/graphql-schema';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import type { PromptGraphInput, UpdateAiPersonaInput } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
-import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import { Switch, Alert } from '@mui/material';
-import { Formik } from 'formik';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { FormNodeValue, FormValueType, PromptGraphNode } from './types';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import PromptGraphConfigForm from './PromptGraphConfigForm';
+import type { FormNodeValue, FormValueType, PromptGraphNode } from './types';
 import { transformNodesMapToArray } from './utils';
 
 type PromptGraphConfigProps = {
@@ -171,7 +171,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
             {t('pages.virtualContributorProfile.settings.promptGraph.infoText', { availableVariables })}
           </Caption>
           {promptGraphEditingEnabled && (
-            <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={() => {}}>
+            <Formik initialValues={initialValues} enableReinitialize={true} validateOnMount={true} onSubmit={() => {}}>
               <PromptGraphConfigForm
                 promptGraph={promptGraph}
                 setIsValid={setIsValid}

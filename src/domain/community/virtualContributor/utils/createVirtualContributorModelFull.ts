@@ -1,7 +1,6 @@
-import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import type { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { createAiPersonaModelCardModelFromFragment } from './createAiPersonaModelCardModelFromFragment';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createVirtualContributorModelFull(virtualContributor: any): VirtualContributorModelFull {
   return {
     id: virtualContributor?.id ?? '',

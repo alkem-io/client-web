@@ -1,5 +1,5 @@
+import { Box, type BoxProps, Fade } from '@mui/material';
 import { useState } from 'react';
-import { Box, BoxProps, Fade } from '@mui/material';
 import useImageErrorHandler from './useImageErrorHandler';
 
 export const ImageFadeIn = ({ onLoad, onError, ...props }: BoxProps<'img'>) => {

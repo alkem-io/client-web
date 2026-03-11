@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import RecentContributionsBlock from './RecentContributionsBlock';
-import { ActivityEventType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
+import { useTranslation } from 'react-i18next';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActivityEventType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/constants';
+import RecentContributionsBlock from './RecentContributionsBlock';
 
 export interface ActivityDialogProps {
   open?: boolean;

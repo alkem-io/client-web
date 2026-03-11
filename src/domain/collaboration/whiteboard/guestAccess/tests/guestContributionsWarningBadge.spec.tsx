@@ -20,14 +20,14 @@
  * - PublicWhiteboardPage: Sources guestContributionsAllowed from GraphQL
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { MemoryRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
+import { MemoryRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import i18n from '@/core/i18n/config';
 import WhiteboardDialogFooter from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialogFooter';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const sendMessageMock = vi.fn();
 

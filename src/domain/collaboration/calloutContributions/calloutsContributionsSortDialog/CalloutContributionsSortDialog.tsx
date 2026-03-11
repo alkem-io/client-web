@@ -1,20 +1,20 @@
+import { DragDropContext, Draggable, Droppable, type OnDragEndResponder } from '@hello-pangea/dnd';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { Box, DialogContent, Paper } from '@mui/material';
+import { isNumber, sortBy } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isNumber, sortBy } from 'lodash-es';
-import { Box, DialogContent, Paper } from '@mui/material';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Caption } from '@/core/ui/typography';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
-import Gutters from '@/core/ui/grid/Gutters';
-import { gutters } from '@/core/ui/grid/utils';
 import {
   useCalloutContributionsSortOrderQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 export interface CalloutContributionsSortItem {
   name: string;
@@ -97,7 +97,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId={`contributions_${callout.id}`}>
               {provided => (
-                <Gutters ref={provided.innerRef} disableGap disablePadding {...provided.droppableProps}>
+                <Gutters ref={provided.innerRef} disableGap={true} disablePadding={true} {...provided.droppableProps}>
                   {items?.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
                       {provided => (

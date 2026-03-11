@@ -1,11 +1,11 @@
-import { Severity } from '@/core/state/global/notifications/notificationMachine';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { ApolloError } from '@apollo/client';
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import type { TFunction, i18n } from 'i18next';
+import type { ApolloError } from '@apollo/client';
+import type { GraphQLError, GraphQLFormattedError } from 'graphql';
+import type { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type { Severity } from '@/core/state/global/notifications/notificationMachine';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 /**
  * Attempts to translate using the server-provided userMessage as an i18n key.
@@ -105,7 +105,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
 };
 
 export const isApolloNotFoundError = (error: ApolloError | undefined) => {
-  if (error && error.graphQLErrors) {
+  if (error?.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
     return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.ENTITY_NOT_FOUND);
   }
@@ -113,7 +113,7 @@ export const isApolloNotFoundError = (error: ApolloError | undefined) => {
 };
 
 export const isApolloForbiddenError = (error: ApolloError | undefined) => {
-  if (error && error.graphQLErrors) {
+  if (error?.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
     return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.FORBIDDEN);
   }
@@ -121,7 +121,7 @@ export const isApolloForbiddenError = (error: ApolloError | undefined) => {
 };
 
 export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => {
-  if (error && error.graphQLErrors) {
+  if (error?.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
     return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.FORBIDDEN_POLICY);
   }
@@ -133,7 +133,7 @@ export const isApolloAuthorizationError = (error: ApolloError | undefined) => {
 };
 
 export const isUrlResolverError = (error: ApolloError | undefined) => {
-  if (error && error.graphQLErrors) {
+  if (error?.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
     return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.URL_RESOLVER_ERROR);
   }

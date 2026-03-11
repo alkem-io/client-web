@@ -1,12 +1,12 @@
-import { useUpdateVirtualContributorMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
 import { Trans, useTranslation } from 'react-i18next';
-import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
-import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
+import { useUpdateVirtualContributorMutation } from '@/core/apollo/generated/apollo-hooks';
 import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
+import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle } from '@/core/ui/typography';
 
 type VCAccessibilityProps = {

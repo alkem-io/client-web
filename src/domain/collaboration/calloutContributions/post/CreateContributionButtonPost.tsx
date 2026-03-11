@@ -1,12 +1,12 @@
-import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
-import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { useState } from 'react';
-import CreateContributionButton from '../CreateContributionButton';
-import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
-import { normalizeLink } from '@/core/utils/links';
+import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutContributionType, type CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { normalizeLink } from '@/core/utils/links';
+import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import CreateContributionButton from '../CreateContributionButton';
+import type { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 
 interface CreateContributionButtonPostProps extends CalloutContributionCreateButtonProps {}
 

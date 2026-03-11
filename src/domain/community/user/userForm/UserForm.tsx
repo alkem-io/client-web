@@ -4,30 +4,30 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
-import { defaultUser, UserFormGenerated, UserModel } from '../models/UserModel';
+import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { nameValidator } from '@/core/ui/forms/validator/nameValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { LocationSegment } from '@/domain/common/location/LocationSegment';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import SocialSegment from '@/domain/platformAdmin/components/Common/SocialSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { COUNTRIES } from '@/domain/common/location/countries.constants';
-import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import Gutters from '@/core/ui/grid/Gutters';
-import GridItem from '@/core/ui/grid/GridItem';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import GridContainer from '@/core/ui/grid/GridContainer';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { nameValidator } from '@/core/ui/forms/validator/nameValidator';
-import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { SocialNetworkEnum, socialNames } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { defaultUser, type UserFormGenerated, type UserModel } from '../models/UserModel';
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
@@ -247,7 +247,7 @@ export const UserForm = ({
                     title={t('components.profile.fields.bio.title')}
                     readOnly={isReadOnlyMode}
                     placeholder={t('components.profile.fields.bio.title')}
-                    multiline
+                    multiline={true}
                     rows={5}
                     disabled={isSubmitting}
                     maxLength={MARKDOWN_TEXT_LENGTH}

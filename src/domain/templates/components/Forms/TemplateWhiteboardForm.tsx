@@ -1,22 +1,22 @@
-import * as yup from 'yup';
-import TemplateFormBase, {
-  TemplateFormProfileSubmittedValues,
-  TemplateFormWithPreviewImages,
-} from './TemplateFormBase';
-import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import { TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
-import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { gutters } from '@/core/ui/grid/utils';
-import { TemplateFormProps } from './TemplateForm';
+import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import {
   DefaultWhiteboardPreviewSettings,
-  WhiteboardPreviewSettings,
+  type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { CardVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
+import type { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
+import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
+import type { TemplateFormProps } from './TemplateForm';
+import TemplateFormBase, {
+  type TemplateFormProfileSubmittedValues,
+  type TemplateFormWithPreviewImages,
+} from './TemplateFormBase';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -68,7 +68,7 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
         previewSettingsName="whiteboard.previewSettings"
         previewImagesSettings={[{ visualType: VisualType.Card, dimensions: CardVisualDimensions }]}
         maxHeight={gutters(20)}
-        canEdit
+        canEdit={true}
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
       />
     </TemplateFormBase>

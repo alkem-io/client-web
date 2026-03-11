@@ -1,4 +1,4 @@
-import { CalloutPageProps } from '@/domain/collaboration/CalloutPage/CalloutPage';
+import type { CalloutPageProps } from '@/domain/collaboration/CalloutPage/CalloutPage';
 
 export interface SpaceCalloutDialogProps {
   children?: CalloutPageProps['children'];

@@ -1,3 +1,8 @@
+import CachedIcon from '@mui/icons-material/Cached';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Box, CircularProgress, Link } from '@mui/material';
+import { type FC, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   useDeleteSpaceMutation,
   useOrganizationAuthorizationLazyQuery,
@@ -22,18 +27,13 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { PlanFeatures, PlanFooter, PlanName } from '@/domain/license/plans/ui/PlanCardsComponents';
 import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import SpaceSettingsLayout from '@/domain/spaceAdmin/layout/SpaceAdminLayoutSpace';
-import CachedIcon from '@mui/icons-material/Cached';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, CircularProgress, Link } from '@mui/material';
-import { FC, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import LicenseActionBlock from './components/LicenseActionBlock';
 
 export interface SpaceAdminAccountPageProps extends SettingsPageProps {
@@ -108,7 +108,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
     }
 
     const daysLeft = activeSubscription?.expires
-      ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+      ? Math.ceil((new Date(activeSubscription.expires).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
       : undefined;
 
     return {
@@ -142,11 +142,11 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
         {!loading && space && (
           <>
             <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockTitle>{t('common.url')}</BlockTitle>
                 <Caption>{space.about.profile.url}</Caption>
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockTitle>{t('common.visibility')}</BlockTitle>
                 <Caption>
                   {space && (
@@ -161,7 +161,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                   )}
                 </Caption>
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockTitle>{t('pages.admin.generic.sections.account.hostTitle')}</BlockTitle>
                 {space.about.provider && (
                   <ContributorCardHorizontal
@@ -172,11 +172,11 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                       tagsets: undefined,
                       url: space.about.provider.profile?.url ?? '',
                     }}
-                    seamless
+                    seamless={true}
                   />
                 )}
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <SeeMore
                   label="pages.admin.generic.sections.account.contactsLink"
                   to={contactsLink}
@@ -185,12 +185,12 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
               </Gutters>
             </PageContentBlock>
             <PageContentBlock columns={7} sx={{ gap: gutters(2) }}>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockTitle>{t('common.license')}</BlockTitle>
-                <Gutters row disablePadding>
+                <Gutters row={true} disablePadding={true}>
                   {plansData?.currentPlan && (
                     <Box width="50%">
-                      <PageContentBlock fullHeight sx={{ borderColor: theme => theme.palette.primary.main }}>
+                      <PageContentBlock fullHeight={true} sx={{ borderColor: theme => theme.palette.primary.main }}>
                         <Caption textAlign="center">{t('pages.admin.generic.sections.account.yourLicense')}</Caption>
                         <PlanName>{plansData.currentPlan.translation.displayName}</PlanName>
                         <PlanFeatures planTranslation={plansData.currentPlan.translation} listItemComponent={Caption} />
@@ -222,7 +222,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                     </Box>
                   )}
 
-                  <Gutters disablePadding width="50%">
+                  <Gutters disablePadding={true} width="50%">
                     <LicenseActionBlock
                       title={t('pages.admin.generic.sections.account.changeLicense')}
                       description={t(

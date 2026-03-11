@@ -1,8 +1,8 @@
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useTranslation } from 'react-i18next';
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
+import { useTranslation } from 'react-i18next';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
 
 interface TryVcInfoProps {
   vcName: string;

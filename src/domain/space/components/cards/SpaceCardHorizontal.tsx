@@ -1,31 +1,32 @@
-import React, { ReactNode } from 'react';
-import { ParseKeys } from 'i18next';
-import { gutters } from '@/core/ui/grid/utils';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import {
   Chip,
   ListItemButton,
-  ListItemButtonProps,
-  ListItemButtonTypeMap,
+  type ListItemButtonProps,
+  type ListItemButtonTypeMap,
   Paper,
-  PaperProps,
+  type PaperProps,
   Skeleton,
   Typography,
 } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
-import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
-import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
-import { LicenseEntitlementType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
+import type { ParseKeys } from 'i18next';
 import { intersection } from 'lodash-es';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import SpaceAvatar from '../SpaceAvatar';
+import type React from 'react';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { type LicenseEntitlementType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { AvatarSize } from '@/core/ui/avatar/Avatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
-import { AvatarSize } from '@/core/ui/avatar/Avatar';
+import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink, { type RouterLinkProps } from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { Caption } from '@/core/ui/typography';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { getSpaceSubscriptionLevel } from '@/domain/space/license/utils';
+import SpaceAvatar from '../SpaceAvatar';
 
 export const SpaceCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -136,7 +137,7 @@ const SpaceCardHorizontal = ({
           )}
         </BlockTitleWithIcon>
         {!disableTagline && (
-          <Caption noWrap component="div" lineHeight={gutters(1.5)}>
+          <Caption noWrap={true} component="div" lineHeight={gutters(1.5)}>
             {space.about.profile.tagline}
           </Caption>
         )}

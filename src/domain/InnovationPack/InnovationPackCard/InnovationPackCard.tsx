@@ -1,20 +1,20 @@
-import { useTranslation } from 'react-i18next';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
-import CardHeader from '@/core/ui/card/CardHeader';
-import CardDetails from '@/core/ui/card/CardDetails';
-import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
-import CardFooter from '@/core/ui/card/CardFooter';
-import InnovationPackIcon from '../InnovationPackIcon';
-import CardFooterBadge from '@/core/ui/card/CardFooterBadge';
 import { Box } from '@mui/material';
-import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
-import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
-import { gutters } from '@/core/ui/grid/utils';
-import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
+import { useTranslation } from 'react-i18next';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
+import CardDetails from '@/core/ui/card/CardDetails';
+import CardFooter from '@/core/ui/card/CardFooter';
+import CardFooterBadge from '@/core/ui/card/CardFooterBadge';
+import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
+import CardHeader from '@/core/ui/card/CardHeader';
+import ContributeCard, { type ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import { gutters } from '@/core/ui/grid/utils';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
+import InnovationPackIcon from '../InnovationPackIcon';
 
 export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;

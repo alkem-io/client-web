@@ -1,11 +1,11 @@
+import { ApolloError, type OperationVariables, type SubscribeToMoreOptions } from '@apollo/client';
+import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
 import { useEffect, useRef } from 'react';
-import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { ApolloError, OperationVariables, SubscribeToMoreOptions } from '@apollo/client';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import { PlatformFeatureFlagName } from '../generated/graphql-schema';
-import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
+import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 
 export interface Options<TVariables> {
   skip?: boolean;
@@ -34,7 +34,7 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables e
       return;
     }
 
-    // @ts-ignore TS5UPGRADE
+    // @ts-expect-error TS5UPGRADE
     return subscribeToMore({
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       ...subscribeToMoreOptions,

@@ -1,4 +1,4 @@
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const isAllowedUrl = (url: string, allowedIFrameOrigins: string[]) => {
@@ -12,9 +12,7 @@ const isAllowedUrl = (url: string, allowedIFrameOrigins: string[]) => {
     const srcOrigin = parsedUrl.origin;
 
     return allowedIFrameOrigins.some(vS => vS === srcOrigin);
-  } catch (e) {
-    console.error('Invalid iframe URL:', url, e);
-
+  } catch (_e) {
     return false;
   }
 };
@@ -24,7 +22,7 @@ export const remarkVerifyIframe: Plugin<[{ allowedIFrameOrigins?: string[] }]> =
 } = {}) => {
   return tree => {
     visit(tree, 'html', (node: { value: string }) => {
-      if (node && node.value) {
+      if (node?.value) {
         const nodeValue: string = node.value;
         if (nodeValue.toLowerCase().includes('<iframe')) {
           try {
@@ -36,7 +34,7 @@ export const remarkVerifyIframe: Plugin<[{ allowedIFrameOrigins?: string[] }]> =
               node.value = '';
               return;
             } else {
-              for (let iframe of iframes) {
+              for (const iframe of iframes) {
                 const src = iframe.getAttribute('src');
                 if (!src || !isAllowedUrl(src, allowedIFrameOrigins)) {
                   node.value = '';

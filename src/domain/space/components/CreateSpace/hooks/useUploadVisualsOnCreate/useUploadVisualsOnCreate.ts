@@ -1,10 +1,10 @@
+import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
-import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
-import { Identifiable } from '@/core/utils/Identifiable';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useTranslation } from 'react-i18next';
-import { useCallback } from 'react';
+import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 const VisualTypes = ['avatar', 'cardBanner', 'banner'] as const;
 
@@ -24,7 +24,7 @@ interface UseUploadVisualsOnCreateProvided {
   uploadVisuals: (
     createResult: ProfileWithVisuals | undefined,
     data: VisualsForm | undefined
-  ) => Promise<unknown> | void;
+  ) => Promise<unknown> | undefined;
 }
 
 interface UseUploadVisualsOnCreateProps {

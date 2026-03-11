@@ -1,15 +1,15 @@
-import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, UrlResolverResultState, UrlType } from '@/core/apollo/generated/graphql-schema';
-import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotAuthorizedError, NotFoundError } from '@/core/40XErrorHandler/40XErrors';
-import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash-es';
-import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
-import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { NotAuthorizedError, NotFoundError } from '@/core/40XErrorHandler/40XErrors';
+import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
+import { type SpaceLevel, UrlResolverResultState, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';
+import type { PartialRecord } from '@/core/utils/PartialRecord';
 import { ROUTE_USER_ME } from '@/domain/platform/routes/constants';
+import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
 
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -193,7 +193,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
     const handleUrlChange = () => {
       // Get the normalized URL
-      let nextUrl = processUrl(globalThis.location.origin + globalThis.location.pathname);
+      const nextUrl = processUrl(globalThis.location.origin + globalThis.location.pathname);
 
       // Skip update if URL hasn't changed from the last processed URL
       if (nextUrl === lastProcessedUrlRef.current) {
@@ -216,7 +216,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     // Set up event listeners
     globalThis.addEventListener('popstate', handleUrlChange);
     const originalPushState = globalThis.history.pushState;
-    globalThis.history.pushState = function (...args) {
+    globalThis.history.pushState = (...args) => {
       originalPushState.apply(globalThis.history, args);
       handleUrlChange();
     };
@@ -272,7 +272,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
             calloutId: calloutsSet?.calloutId,
             contributionId: calloutsSet?.contributionId,
             postId: calloutsSet?.postId,
-            whiteboardId: calloutsSet?.['whiteboardId'], // No whiteboards yet on VCKBs, so TypeScript is complaining
+            whiteboardId: calloutsSet?.whiteboardId, // No whiteboards yet on VCKBs, so TypeScript is complaining
           })
         ),
 

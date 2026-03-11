@@ -1,8 +1,10 @@
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
+import ContributorCardHorizontal, {
+  type ContributorCardHorizontalProps,
+} from '@/core/ui/card/ContributorCardHorizontal';
 import LabeledCount from '@/core/ui/content/LabeledCount';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 

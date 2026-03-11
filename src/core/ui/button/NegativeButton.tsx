@@ -1,5 +1,5 @@
-import { Button, alpha } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { alpha, Button } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 
 interface ButtonProps {
   onClick: () => void;

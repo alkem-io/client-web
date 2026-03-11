@@ -1,5 +1,5 @@
-import { Session } from '@ory/kratos-client';
-import React, { PropsWithChildren } from 'react';
+import type { Session } from '@ory/kratos-client';
+import React, { type PropsWithChildren } from 'react';
 import { useWhoami } from '../hooks/useWhoami';
 
 export interface AuthContext {

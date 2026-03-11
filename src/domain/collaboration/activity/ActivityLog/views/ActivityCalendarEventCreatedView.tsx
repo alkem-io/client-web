@@ -1,7 +1,7 @@
-import { ActivityBaseView } from './ActivityBaseView';
-import { ActivityViewProps } from './ActivityViewProps';
+import type { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import { ActivityBaseView } from './ActivityBaseView';
+import type { ActivityViewProps } from './ActivityViewProps';
 
 export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps {
   calendarEvent: {

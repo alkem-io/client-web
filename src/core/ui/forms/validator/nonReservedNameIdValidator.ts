@@ -1,5 +1,5 @@
-import { nameIdValidator } from './nameIdValidator';
 import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
+import { nameIdValidator } from './nameIdValidator';
 
 const nonReservedNameIdValidator = nameIdValidator.test({
   name: 'nonReservedNameIdValidator',

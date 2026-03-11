@@ -1,4 +1,4 @@
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export type RoleDefinition = {
   name: RoleName;

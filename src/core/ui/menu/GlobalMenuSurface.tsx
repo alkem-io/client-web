@@ -1,6 +1,6 @@
-import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '@/main/ui/platformNavigation/constants';
 import { Paper } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '@/main/ui/platformNavigation/constants';
 
 // TODO width
 const GlobalMenuSurface = ({

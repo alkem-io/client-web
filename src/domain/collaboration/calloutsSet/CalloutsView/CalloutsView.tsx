@@ -1,18 +1,18 @@
+import { times, without } from 'lodash-es';
 import { useMemo } from 'react';
-import { useCalloutManager } from '../../callout/utils/useCalloutManager';
-import { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
-import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
-import { CalloutSortEvents, CalloutSortProps } from './CalloutSortModels';
-import CalloutView, { CalloutViewSkeleton } from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
+import PageContentBlock, { type PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
 import {
-  LocationStateCachedCallout,
+  type LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
-import { times, without } from 'lodash-es';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import CalloutView, { CalloutViewSkeleton } from '../../callout/CalloutView/CalloutView';
+import type { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
+import type { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
+import { useCalloutManager } from '../../callout/utils/useCalloutManager';
+import type { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
+import type { CalloutSortEvents, CalloutSortProps } from './CalloutSortModels';
 import CalloutInViewWrapper from './CalloutsInViewWrapper';
 
 const CalloutsViewSkeleton = () => times(3).map(i => <CalloutViewSkeleton key={i} />);
@@ -21,7 +21,7 @@ export interface CalloutsViewProps {
   callouts: CalloutModelLightExtended[] | undefined;
   calloutsSetId: string | undefined;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
-  onCalloutUpdate?: (calloutId: string) => Promise<unknown> | void;
+  onCalloutUpdate?: (calloutId: string) => Promise<unknown> | undefined;
   loading?: boolean;
   blockProps?:
     | Partial<PageContentBlockProps>
@@ -108,7 +108,7 @@ const CalloutsView = ({
           const computedBlockProps = typeof blockProps === 'function' ? blockProps(callout, index) : blockProps;
 
           return (
-            <PageContentBlock key={callout.id} disablePadding disableGap {...computedBlockProps}>
+            <PageContentBlock key={callout.id} disablePadding={true} disableGap={true} {...computedBlockProps}>
               <CalloutInViewWrapper
                 calloutId={callout.id}
                 calloutsSetId={calloutsSetId}

@@ -1,15 +1,15 @@
-import { useSpaceBreadcrumbs, UseSpaceBreadcrumbsParams } from './useSpaceBreadcrumbs';
-import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
-import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { Expandable } from '@/core/ui/navigation/Expandable';
-import { ReactElement, Ref } from 'react';
-import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Settings } from '@mui/icons-material';
+import type { ReactElement, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useLocation } from 'react-router-dom';
+import Breadcrumbs, { type BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import type { Collapsible } from '@/core/ui/navigation/Collapsible';
+import type { Expandable } from '@/core/ui/navigation/Expandable';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
+import { type UseSpaceBreadcrumbsParams, useSpaceBreadcrumbs } from './useSpaceBreadcrumbs';
 
 interface SpaceBreadcrumbsProps<ItemProps extends Expandable>
   extends BreadcrumbsProps<ItemProps>,
@@ -42,7 +42,13 @@ const SpaceBreadcrumbs = (({
     <Breadcrumbs ref={ref} {...props}>
       <BreadcrumbsRootItem />
       {breadcrumbs.map(({ displayName, level, ...item }) => (
-        <BreadcrumbsItem key={level} iconComponent={spaceLevelIcon[level]} accent aria-label={displayName} {...item}>
+        <BreadcrumbsItem
+          key={level}
+          iconComponent={spaceLevelIcon[level]}
+          accent={true}
+          aria-label={displayName}
+          {...item}
+        >
           {displayName}
         </BreadcrumbsItem>
       ))}

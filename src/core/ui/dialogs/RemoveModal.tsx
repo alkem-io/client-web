@@ -17,9 +17,9 @@ const RemoveModal = ({ show, text, onCancel, title, onConfirm }: RelationRemoveM
   const defaultTitle = t('components.remove-modal.title');
 
   return (
-    <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="remove-dialog-title">
+    <Dialog open={show} maxWidth="md" fullWidth={true} aria-labelledby="remove-dialog-title">
       <DialogHeader onClose={onCancel} title={title || defaultTitle} />
-      <DialogContent dividers>{text}</DialogContent>
+      <DialogContent dividers={true}>{text}</DialogContent>
       <DialogActions>
         <NegativeButton onClick={onConfirm}>{t('buttons.remove')}</NegativeButton>
       </DialogActions>

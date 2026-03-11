@@ -1,4 +1,4 @@
-import { TypographyProps, useTheme } from '@mui/material';
+import { type TypographyProps, useTheme } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { Caption } from '../typography';
 

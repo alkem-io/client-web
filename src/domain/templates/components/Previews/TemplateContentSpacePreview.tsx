@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import Loading from '@/core/ui/loading/Loading';
-import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
-import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
-import { Caption } from '@/core/ui/typography';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import Gutters from '@/core/ui/grid/Gutters';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
+import { Caption } from '@/core/ui/typography';
+import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
+import type { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;
@@ -53,7 +53,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
       return (
         <>
           <Caption>{t('templateLibrary.spaceTemplates.includesSubspaces')}</Caption>
-          <Gutters row disablePadding flexWrap="wrap">
+          <Gutters row={true} disablePadding={true} flexWrap="wrap">
             {template.contentSpace.subspaces.map((subspace, index) => (
               <SpaceCard
                 key={index}
@@ -63,7 +63,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
                 banner={subspace.about.profile.cardBanner}
                 isPrivate={!subspace.about.isContentPublic}
                 level={SpaceLevel.L1}
-                compact
+                compact={true}
               />
             ))}
           </Gutters>
@@ -74,24 +74,22 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
   }, [template?.contentSpace?.subspaces, t, cardColumns]);
 
   return (
-    <>
-      <PageContentBlock>
-        {loading && (
-          <Box textAlign="center">
-            <Loading />
-          </Box>
-        )}
-        {!loading && (
-          <InnovationFlowChips
-            states={templateStates}
-            selectedState={selectedState}
-            onSelectState={state => setSelectedState(state.displayName)}
-          />
-        )}
-        <InnovationFlowCalloutsPreview callouts={callouts} selectedState={selectedState} loading={loading} />
-        {subspaces}
-      </PageContentBlock>
-    </>
+    <PageContentBlock>
+      {loading && (
+        <Box textAlign="center">
+          <Loading />
+        </Box>
+      )}
+      {!loading && (
+        <InnovationFlowChips
+          states={templateStates}
+          selectedState={selectedState}
+          onSelectState={state => setSelectedState(state.displayName)}
+        />
+      )}
+      <InnovationFlowCalloutsPreview callouts={callouts} selectedState={selectedState} loading={loading} />
+      {subspaces}
+    </PageContentBlock>
   );
 };
 

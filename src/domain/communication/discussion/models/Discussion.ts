@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import {
+import type {
   AuthorizationPrivilege,
   DiscussionCardFragment,
   ForumDiscussionCategory,
 } from '@/core/apollo/generated/graphql-schema';
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
+import type { Room } from '@/domain/communication/room/models/Room';
 import { useAuthorsDetails } from '@/domain/community/user/hooks/useAuthorsDetails';
-import { Room } from '@/domain/communication/room/models/Room';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 
 export interface Discussion {
   id: string;

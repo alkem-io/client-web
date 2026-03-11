@@ -1,5 +1,5 @@
-import { PromptGraph } from '@/core/apollo/generated/graphql-schema';
-import { FormNodeValue, PromptGraphNode } from './types';
+import type { PromptGraph } from '@/core/apollo/generated/graphql-schema';
+import type { FormNodeValue, PromptGraphNode } from './types';
 
 export function transformNodeToPromptGraphNode(name: string, value: FormNodeValue) {
   // Ensure prompt is an array of strings. If it's a single string, split on newline to preserve lines
@@ -57,13 +57,13 @@ export const prepareGraph = (promptGraph: PromptGraph, startNodeName: string = '
   // Build a simple lookup map: from -> to (O(n))
   const nextNode = new Map<string, string>();
 
-  promptGraph.edges!.forEach(edge => {
+  promptGraph.edges?.forEach(edge => {
     nextNode.set(edge.from!, edge.to!);
   });
 
   // Build a lookup map for nodes by name (O(n))
   const nodesByName = new Map<string, PromptGraphNode>();
-  promptGraph.nodes!.forEach(node => {
+  promptGraph.nodes?.forEach(node => {
     if (node.name) {
       nodesByName.set(node.name, node as unknown as PromptGraphNode);
     }

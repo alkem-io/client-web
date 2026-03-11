@@ -1,17 +1,17 @@
-import { PropsWithChildren, ReactElement, ReactNode, MouseEvent } from 'react';
 import { Close } from '@mui/icons-material';
-import { Box, BoxProps, IconButton, SvgIconProps } from '@mui/material';
-import ActionsBar from '../actions/ActionsBar/ActionsBar';
+import { Box, type BoxProps, IconButton, type SvgIconProps } from '@mui/material';
+import type { MouseEvent, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import BlockTitleWithIcon from '../content/BlockTitleWithIcon';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import ActionsBar from '../actions/ActionsBar/ActionsBar';
+import BlockTitleWithIcon from '../content/BlockTitleWithIcon';
 
 export interface DialogHeaderProps {
   id?: string;
   icon?: ReactElement<SvgIconProps>;
   title?: ReactNode;
   actions?: ReactNode;
-  onClose?: (event: MouseEvent<HTMLButtonElement>) => void | Promise<unknown>;
+  onClose?: (event: MouseEvent<HTMLButtonElement>) => undefined | Promise<unknown>;
   titleContainerProps?: BoxProps;
 }
 

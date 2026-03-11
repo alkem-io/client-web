@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { Form, Formik } from 'formik';
-import Gutters from '@/core/ui/grid/Gutters';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
-import Loading from '@/core/ui/loading/Loading';
 import { Button } from '@mui/material';
-import * as yup from 'yup';
-import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
+import { Form, Formik } from 'formik';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
+import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
 import useTransferCallout from './useTransferCallout';
 
 const T_PREFIX = 'pages.admin.transferCallout';
@@ -75,18 +75,18 @@ const TransferCalloutSection = () => {
   return (
     <PageContentBlock>
       <BlockTitle>{t(`${T_PREFIX}.sectionTitle`)}</BlockTitle>
-      <Gutters row disablePadding>
+      <Gutters row={true} disablePadding={true}>
         <PageContentColumn columns={6}>
-          <PageContentBlockSeamless disablePadding>
+          <PageContentBlockSeamless disablePadding={true}>
             <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={onCalloutSubmit}>
               {formik => (
                 <Form>
-                  <Gutters row disablePadding>
+                  <Gutters row={true} disablePadding={true}>
                     <FormikInputField
                       name="url"
                       title={t(`${T_PREFIX}.calloutUrl`)}
                       placeholder={t(`${T_PREFIX}.calloutUrlPlaceholder`)}
-                      fullWidth
+                      fullWidth={true}
                     />
                     <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
                   </Gutters>
@@ -103,19 +103,19 @@ const TransferCalloutSection = () => {
           {callout && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.calloutInfo`)}</BlockTitle>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{callout.framing.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockSectionTitle>{t(`${T_PREFIX}.description`)}</BlockSectionTitle>
                 <span>{callout.framing.profile.description}</span>
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockSectionTitle>{t(`${T_PREFIX}.createdBy`)}</BlockSectionTitle>
                 <span>{callout.createdBy?.profile?.displayName ?? t(`${T_PREFIX}.unknown`)}</span>
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockSectionTitle>{t(`${T_PREFIX}.contributions`)}</BlockSectionTitle>
                 <span>
                   {t(`${T_PREFIX}.contributionsSummary`, {
@@ -131,16 +131,16 @@ const TransferCalloutSection = () => {
           )}
         </PageContentColumn>
         <PageContentColumn columns={6}>
-          <PageContentBlockSeamless disablePadding>
+          <PageContentBlockSeamless disablePadding={true}>
             <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={onSpaceSubmit}>
               {formik => (
                 <Form>
-                  <Gutters row disablePadding>
+                  <Gutters row={true} disablePadding={true}>
                     <FormikInputField
                       name="url"
                       title={t(`${T_PREFIX}.targetSpaceUrl`)}
                       placeholder={t(`${T_PREFIX}.targetSpaceUrlPlaceholder`)}
-                      fullWidth
+                      fullWidth={true}
                     />
                     <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
                   </Gutters>
@@ -157,16 +157,16 @@ const TransferCalloutSection = () => {
           {space && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.targetSpaceInfo`)}</BlockTitle>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{space.about.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <BlockSectionTitle>{t(`${T_PREFIX}.level`)}</BlockSectionTitle>
                 <span>{space.level}</span>
               </Gutters>
               {calloutsSetId && (
-                <Gutters disablePadding>
+                <Gutters disablePadding={true}>
                   <BlockSectionTitle>{t(`${T_PREFIX}.calloutsSetId`)}</BlockSectionTitle>
                   <span>{calloutsSetId}</span>
                 </Gutters>

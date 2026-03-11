@@ -14,13 +14,13 @@ describe('foldLine', () => {
 
   test('returns a line of exactly 75 bytes unchanged', () => {
     // "SUMMARY:" = 8 bytes, pad the rest to reach exactly 75
-    const line = 'SUMMARY:' + 'x'.repeat(67); // 8 + 67 = 75
+    const line = `SUMMARY:${'x'.repeat(67)}`; // 8 + 67 = 75
     expect(encoder.encode(line).length).toBe(75);
     expect(foldLine(line)).toBe(line);
   });
 
   test('folds a line of 76 ASCII bytes', () => {
-    const line = 'SUMMARY:' + 'x'.repeat(68); // 76 bytes
+    const line = `SUMMARY:${'x'.repeat(68)}`; // 76 bytes
     const folded = foldLine(line);
 
     // First segment must be ≤ 75 bytes
@@ -32,7 +32,7 @@ describe('foldLine', () => {
   });
 
   test('folds a long ASCII line into multiple continuation lines', () => {
-    const line = 'DESCRIPTION:' + 'A'.repeat(200);
+    const line = `DESCRIPTION:${'A'.repeat(200)}`;
     const folded = foldLine(line);
 
     const segments = folded.split('\r\n ');
@@ -57,9 +57,9 @@ describe('foldLine', () => {
   test('never splits a multi-byte character across fold boundaries', () => {
     // Each emoji (e.g. 🎉) is 4 UTF-8 bytes.
     // Fill up to near the fold point with ASCII, then place emoji right at the boundary.
-    const prefix = 'SUMMARY:' + 'a'.repeat(63); // 71 bytes
+    const prefix = `SUMMARY:${'a'.repeat(63)}`; // 71 bytes
     // Next char is a 4-byte emoji → 71 + 4 = 75 still fits on first line
-    const line = prefix + '🎉' + 'b'.repeat(10);
+    const line = `${prefix}🎉${'b'.repeat(10)}`;
 
     const folded = foldLine(line);
     const segments = folded.split('\r\n ');
@@ -71,8 +71,8 @@ describe('foldLine', () => {
 
   test('folds emoji that would exceed the 75-byte boundary', () => {
     // 73 ASCII bytes + 4-byte emoji = 77 → emoji must go to continuation line
-    const prefix = 'SUMMARY:' + 'a'.repeat(65); // 73 bytes
-    const line = prefix + '🎉' + 'b'.repeat(5);
+    const prefix = `SUMMARY:${'a'.repeat(65)}`; // 73 bytes
+    const line = `${prefix}🎉${'b'.repeat(5)}`;
 
     const folded = foldLine(line);
     const segments = folded.split('\r\n ');
@@ -86,7 +86,7 @@ describe('foldLine', () => {
 
   test('handles lines with mixed multi-byte characters (accented, CJK, emoji)', () => {
     // é = 2 bytes, 中 = 3 bytes, 🌍 = 4 bytes
-    const line = 'DESCRIPTION:' + 'é'.repeat(20) + '中'.repeat(10) + '🌍'.repeat(5) + 'end';
+    const line = `DESCRIPTION:${'é'.repeat(20)}${'中'.repeat(10)}${'🌍'.repeat(5)}end`;
 
     const folded = foldLine(line);
     const segments = folded.split('\r\n ');
@@ -101,7 +101,7 @@ describe('foldLine', () => {
   });
 
   test('all segments respect byte limits for a very long description', () => {
-    const line = 'DESCRIPTION:' + 'The quick brown fox jumps over the lazy dog. '.repeat(20);
+    const line = `DESCRIPTION:${'The quick brown fox jumps over the lazy dog. '.repeat(20)}`;
     const folded = foldLine(line);
     const segments = folded.split('\r\n ');
 

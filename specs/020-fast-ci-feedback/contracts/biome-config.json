@@ -1,0 +1,106 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noDebugger": "error",
+        "noConsoleLog": "warn",
+        "noDoubleEquals": "error",
+        "noDuplicateCase": "error",
+        "noDuplicateObjectKeys": "error",
+        "noFallthroughSwitchClause": "error",
+        "noRedeclare": "error",
+        "noShadowRestrictedNames": "error",
+        "useIsArray": "error",
+        "noArrayIndexKey": "warn"
+      },
+      "complexity": {
+        "noBannedTypes": "error",
+        "noUselessTypeConstraint": "error",
+        "noUselessFragments": "warn",
+        "useFlatMap": "warn",
+        "useOptionalChain": "warn"
+      },
+      "style": {
+        "useConst": "error",
+        "useSelfClosingElements": "error",
+        "noUnusedTemplateLiteral": "warn",
+        "useImportType": "warn",
+        "noNonNullAssertion": "warn",
+        "useEnumInitializers": "off",
+        "noImplicitBoolean": "error"
+      },
+      "a11y": {
+        "noAccessKey": "warn",
+        "useAltText": "warn",
+        "useValidAnchor": "warn",
+        "useValidAriaRole": "warn",
+        "noRedundantAlt": "warn",
+        "useButtonType": "warn",
+        "useKeyWithClickEvents": "warn",
+        "useKeyWithMouseEvents": "warn"
+      },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error",
+        "useExhaustiveDependencies": "off",
+        "noUndeclaredVariables": "error",
+        "useJsxKeyInIterable": "error",
+        "useJsxPascalCase": "error"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120,
+    "lineEnding": "lf"
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "double",
+      "trailingCommas": "es5",
+      "semicolons": "always",
+      "arrowParentheses": "asNeeded",
+      "bracketSpacing": true
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": false
+    }
+  },
+  "files": {
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "*.json", "*.md"],
+    "ignore": [
+      "node_modules/",
+      "build/",
+      "dist/",
+      "coverage/",
+      "public/env-config.js",
+      "public/meta.json",
+      "**/*.min.js"
+    ]
+  },
+  "overrides": [
+    {
+      "include": ["src/core/apollo/generated/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedImports": "off"
+          }
+        }
+      }
+    }
+  ]
+}

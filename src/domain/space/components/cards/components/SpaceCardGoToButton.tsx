@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowForward } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import ButtonNarrow from '@/core/ui/actions/ButtonNarrow';

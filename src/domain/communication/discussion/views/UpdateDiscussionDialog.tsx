@@ -1,11 +1,11 @@
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { refetchPlatformDiscussionsQuery, useUpdateDiscussionMutation } from '@/core/apollo/generated/apollo-hooks';
-import { Discussion } from '../models/Discussion';
-import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import DiscussionForm, { type DiscussionFormValues } from '../forms/DiscussionForm';
+import type { Discussion } from '../models/Discussion';
 
 export interface UpdateDiscussionDialogProps {
   open: boolean;
@@ -41,7 +41,7 @@ const UpdateDiscussionDialog = ({ open, onClose, discussion }: UpdateDiscussionD
     <DialogWithGrid
       open={open}
       onClose={onClose}
-      fullWidth
+      fullWidth={true}
       fullScreen={isSmallScreen}
       aria-labelledby="update-discussion-dialog"
     >
@@ -49,7 +49,12 @@ const UpdateDiscussionDialog = ({ open, onClose, discussion }: UpdateDiscussionD
         {t('pages.forum.new-title')}
       </DialogHeader>
       <DialogContent>
-        <DiscussionForm onSubmit={handleSubmit} discussion={discussion} categories={[discussion.category]} editMode />
+        <DiscussionForm
+          onSubmit={handleSubmit}
+          discussion={discussion}
+          categories={[discussion.category]}
+          editMode={true}
+        />
       </DialogContent>
     </DialogWithGrid>
   );

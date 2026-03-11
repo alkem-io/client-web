@@ -84,7 +84,7 @@ const ExportEventsToIcsButton = ({ events }: ExportEventsToIcsButtonProps) => {
   }
 
   return (
-    <Tooltip title={t('calendar.addToCalendar.exportAll')} arrow>
+    <Tooltip title={t('calendar.addToCalendar.exportAll')} arrow={true}>
       <IconButton onClick={handleExport} size="small" aria-label={t('calendar.addToCalendar.exportAll')}>
         <ExportCalendarEventIcon />
       </IconButton>

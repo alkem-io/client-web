@@ -2,28 +2,28 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Loading from '@/core/ui/loading/Loading';
+import { CaptionSmall } from '@/core/ui/typography';
+import AccountResourcesView, {
+  type AccountResourcesProps,
+} from '@/domain/community/contributor/Account/AccountResourcesView';
+import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
 import {
   AssociatesView,
   OrganizationProfileView,
-  OrganizationProfileViewEntity,
+  type OrganizationProfileViewEntity,
 } from '@/domain/community/profile/views';
-import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
-import { MetricType } from '@/domain/platform/metrics/MetricType';
-import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
-import { CaptionSmall } from '@/core/ui/typography';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import AccountResourcesView, {
-  AccountResourcesProps,
-} from '@/domain/community/contributor/Account/AccountResourcesView';
-import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
-import Loading from '@/core/ui/loading/Loading';
-import { UseOrganizationProvided } from '../useOrganization/useOrganization';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
+import { MetricType } from '@/domain/platform/metrics/MetricType';
+import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import type { UseOrganizationProvided } from '../useOrganization/useOrganization';
 
 type OrganizationPageViewProps = {
   organizationProvided: UseOrganizationProvided;

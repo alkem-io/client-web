@@ -3,7 +3,7 @@ import {
   CalloutAllowedActors,
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
+import type { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
 
 interface CollaborationPermissionsParams {
   callout:

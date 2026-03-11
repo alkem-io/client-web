@@ -1,23 +1,23 @@
 import { useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { useSpace } from '@/domain/space/context/useSpace';
 import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { buildSpaceSectionUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpaceDashboardView, { SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 import useSpaceTabProvider from '../../SpaceTabProvider';
-import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import useNavigate from '@/core/routing/useNavigate';
-import { useParams } from 'react-router-dom';
-import PageContent from '@/core/ui/content/PageContent';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
-import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { useSpace } from '@/domain/space/context/useSpace';
+import SpaceDashboardView, { type SpaceDashboardSpaceDetails } from './SpaceDashboardView';
 
 const SpaceDashboardPage = () => {
   const { classificationTagsets, flowStateForNewCallouts, calloutsSetId, tabDescription, loading } =

@@ -1,15 +1,15 @@
-import { useTranslation } from 'react-i18next';
-import { Box, IconButton, Tooltip } from '@mui/material';
-import * as yup from 'yup';
-import { gutters } from '@/core/ui/grid/utils';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
-import RoundedBadge from '@/core/ui/icon/RoundedBadge';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowUpwardIcon from '@mui/icons-material/KeyboardArrowUp';
 import ArrowDownwardIcon from '@mui/icons-material/KeyboardArrowDown';
+import ArrowUpwardIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { gutters } from '@/core/ui/grid/utils';
+import RoundedBadge from '@/core/ui/icon/RoundedBadge';
 
 interface FormQuestionFieldProps {
   index: number;

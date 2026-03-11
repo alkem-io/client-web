@@ -1,6 +1,6 @@
-import { Identifiable } from '@/core/utils/Identifiable';
+import { IconButton, type IconButtonProps, type SvgIconProps, Tooltip } from '@mui/material';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { IconButton, IconButtonProps, SvgIconProps, Tooltip } from '@mui/material';
 
 const alwaysFalse = () => false;
 
@@ -9,7 +9,7 @@ interface DataGridActionButtonProps<Item extends Identifiable> extends Omit<Icon
   icon: React.ComponentType<SvgIconProps>;
   iconColor?: SvgIconProps['color'];
   tooltip?: string;
-  onClick?: (item: Item) => Promise<unknown> | void;
+  onClick?: (item: Item) => Promise<unknown> | undefined;
   isDisabled?: (item: Item) => boolean;
 }
 
@@ -25,7 +25,7 @@ const DataGridActionButton = <Item extends Identifiable>({
   const [handleClick, loading] = useLoadingState(async () => await onClick?.(item));
 
   return (
-    <Tooltip title={tooltip} arrow>
+    <Tooltip title={tooltip} arrow={true}>
       <span>
         <IconButton onClick={handleClick} disabled={isDisabled(item)} aria-label={tooltip} loading={loading} {...props}>
           <Icon color={isDisabled(item) ? 'disabled' : iconColor} />

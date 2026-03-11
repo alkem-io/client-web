@@ -1,5 +1,5 @@
+import TagsComponent, { type TagsComponentProps } from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '../grid/utils';
-import TagsComponent, { TagsComponentProps } from '@/domain/shared/components/TagsComponent/TagsComponent';
 
 export interface CardTagsProps extends TagsComponentProps {
   rows?: number;

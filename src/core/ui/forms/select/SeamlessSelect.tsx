@@ -1,9 +1,9 @@
+import { ExpandMore } from '@mui/icons-material';
+import { Box, MenuItem, Select, type SelectChangeEvent, type SelectProps, type TypographyProps } from '@mui/material';
+import { type ComponentType, type ReactNode, useMemo } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import { SearchScope } from '@/main/ui/platformSearch/PlatformSearch';
-import { ExpandMore } from '@mui/icons-material';
-import { Box, MenuItem, Select, SelectChangeEvent, SelectProps, TypographyProps } from '@mui/material';
-import { ComponentType, ReactNode, useMemo } from 'react';
+import type { SearchScope } from '@/main/ui/platformSearch/PlatformSearch';
 
 export interface CustomSelectOption<Option extends string | number | SearchScope> {
   value: Option;
@@ -61,7 +61,7 @@ const SeamlessSelect = <Option extends string | number>({
               <Typography whiteSpace="pre"> </Typography>
             </>
           )}
-          <Typography color="primary" maxWidth="22vw" noWrap>
+          <Typography color="primary" maxWidth="22vw" noWrap={true}>
             {selectedOption?.label}
           </Typography>
         </Box>

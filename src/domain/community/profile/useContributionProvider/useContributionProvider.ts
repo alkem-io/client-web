@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
-import { RoleName, ActorType, SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
   useSpaceContributionDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, RoleName, type SpaceLevel, type SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 
 export interface ContributionDetails {
   id: string;

@@ -1,16 +1,3 @@
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { TagCategoryValues, error as logError, warn as logWarn } from '@/core/logging/sentry/log';
-import { Actions } from '@/core/ui/actions/Actions';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { gutters } from '@/core/ui/grid/utils';
-import Loading from '@/core/ui/loading/Loading';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import { Identifiable } from '@/core/utils/Identifiable';
-import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw'; // @alkemio/excalidraw/dist/types/excalidraw/data/json
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
@@ -18,21 +5,38 @@ import { Delete, Save } from '@mui/icons-material';
 import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
-import { FormikProps } from 'formik/dist/types';
-import React, { ReactNode, useMemo, useRef, useState, useEffect } from 'react';
+import type { FormikProps } from 'formik/dist/types';
+import type React from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
+import type { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardValidationSchema from '../validation/whiteboardFormSchema';
-import { WhiteboardDetails } from './WhiteboardDialog';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import {
   DefaultWhiteboardPreviewSettings,
-  WhiteboardPreviewSettings,
+  type WhiteboardPreviewSettings,
 } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
+import type {
+  PreviewImageDimensions,
+  WhiteboardPreviewImage,
+} from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import type { WhiteboardDetails } from './WhiteboardDialog';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -120,7 +124,8 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     }
     const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
-    const { whiteboard: convertedState, unrecoverableFiles } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
+    const { whiteboard: convertedState, unrecoverableFiles } =
+      await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
     // Surface unrecoverable files - these will be lost
     if (unrecoverableFiles.length > 0) {
@@ -191,14 +196,15 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     }
   };
 
-  const formikRef = useRef<
-    FormikProps<{
-      profile: {
-        displayName: string;
-      };
-      previewSettings: WhiteboardPreviewSettings;
-    }>
-  >(null);
+  const formikRef =
+    useRef<
+      FormikProps<{
+        profile: {
+          displayName: string;
+        };
+        previewSettings: WhiteboardPreviewSettings;
+      }>
+    >(null);
 
   const initialValues = useMemo(() => {
     return {
@@ -215,7 +221,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
         open={options.show}
         aria-labelledby="whiteboard-dialog"
         maxWidth={false}
-        fullWidth
+        fullWidth={true}
         fullScreen={options.fullscreen}
         onClose={onClose}
         slotProps={{
@@ -242,7 +248,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 titleContainerProps={{ flexDirection: 'row' }}
               >
                 {options.dialogTitle ?? t('common.Whiteboard')}
-                <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
+                <WhiteboardDialogTemplatesLibrary editModeEnabled={true} onImportTemplate={handleImportTemplate} />
               </DialogHeader>
               <DialogContent
                 sx={{
@@ -283,7 +289,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
               </DialogContent>
               <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
                 {actions.onDelete && (
-                  <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
+                  <Button startIcon={<Delete />} onClick={() => actions.onDelete?.(whiteboard!)} color="error">
                     {t('pages.whiteboard.state-actions.delete')}
                   </Button>
                 )}

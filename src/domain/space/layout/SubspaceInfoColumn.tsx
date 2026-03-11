@@ -1,25 +1,25 @@
-import InfoColumn from '../components/InfoColumn';
+import { KeyboardTab } from '@mui/icons-material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import WelcomeBlock from '../components/WelcomeBlock';
-import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import { KeyboardTab } from '@mui/icons-material';
+import { AuthorizationPrivilege, type CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import { gutters } from '@/core/ui/grid/utils';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
-import DashboardNavigation from '../components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useSpaceDashboardNavigation from '../components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
-import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
+import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import InfoColumn from '../components/InfoColumn';
+import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
+import DashboardNavigation from '../components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
+import useSpaceDashboardNavigation from '../components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { SubmenuActionButton } from '../components/subspaces/SubmenuActionButton';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
+import WelcomeBlock from '../components/WelcomeBlock';
 import { useVideoCall } from '../hooks/useVideoCall';
 
 interface SubspaceInfoColumnProps {
@@ -151,7 +151,7 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
           <ButtonWithTooltip
             tooltip={t('buttons.expand')}
             tooltipPlacement="right"
-            iconButton
+            iconButton={true}
             onClick={() => {
               setIsCollapsed(false);
               localStorage.setItem(MENU_STATE_KEY, MenuState.EXPANDED);

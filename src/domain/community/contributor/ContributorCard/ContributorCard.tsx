@@ -1,13 +1,13 @@
-import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
 import { Box } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
-import { BlockTitle } from '@/core/ui/typography';
-import LocationCardSegment from '@/core/ui/location/LocationCardSegment';
-import { ReactNode, useState } from 'react';
-import CardTags from '@/core/ui/card/CardTags';
-import RouterLink from '@/core/ui/link/RouterLink';
-import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
+import { type ReactNode, useState } from 'react';
 import CardBanner from '@/core/ui/card/CardImageHeader';
+import CardTags from '@/core/ui/card/CardTags';
+import ContributeCard, { type ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import LocationCardSegment from '@/core/ui/location/LocationCardSegment';
+import { BlockTitle } from '@/core/ui/typography';
 import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
 
 export interface ContributorCardProps extends ContributeCardProps {
@@ -46,39 +46,37 @@ const ContributorCard = ({
   const tagsElement = <></>; //<Tags tags={matchedTerms ?? tags} marginTop={gutters()} />;
 
   return (
-    <>
-      <ContributeCard {...containerProps}>
-        <Box component={RouterLink} to={userUri} display="flex" flexDirection="column" gap={gutters()}>
-          <CardBanner src={avatarUri} alt={displayName} overlay={bannerOverlay} />
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            paddingLeft={gutters()}
-            paddingRight={0.5}
-            height={gutters()}
-            gap={0.5}
-          >
-            <BlockTitle noWrap>{displayName}</BlockTitle>
-            {headerActions}
-          </Box>
+    <ContributeCard {...containerProps}>
+      <Box component={RouterLink} to={userUri} display="flex" flexDirection="column" gap={gutters()}>
+        <CardBanner src={avatarUri} alt={displayName} overlay={bannerOverlay} />
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          paddingLeft={gutters()}
+          paddingRight={0.5}
+          height={gutters()}
+          gap={0.5}
+        >
+          <BlockTitle noWrap={true}>{displayName}</BlockTitle>
+          {headerActions}
         </Box>
-        <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={gutters(0.5)}>
-          <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} />
-          <ExpandableCardFooter
-            tags={tagsElement}
-            expanded={isExpanded}
-            paddingLeft={gutters()}
-            expansion={
-              <>
-                {description && <SpaceCardDescription rows={3}>{description}</SpaceCardDescription>}
-                {matchedTerms ? <CardTags tags={tags} rows={3} disableIndentation /> : undefined}
-              </>
-            }
-          />
-        </Box>
-      </ContributeCard>
-    </>
+      </Box>
+      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={gutters(0.5)}>
+        <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} />
+        <ExpandableCardFooter
+          tags={tagsElement}
+          expanded={isExpanded}
+          paddingLeft={gutters()}
+          expansion={
+            <>
+              {description && <SpaceCardDescription rows={3}>{description}</SpaceCardDescription>}
+              {matchedTerms ? <CardTags tags={tags} rows={3} disableIndentation={true} /> : undefined}
+            </>
+          }
+        />
+      </Box>
+    </ContributeCard>
   );
 };
 

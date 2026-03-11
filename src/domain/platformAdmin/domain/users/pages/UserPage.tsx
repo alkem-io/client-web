@@ -1,19 +1,19 @@
-import { FC, useState } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
-import UserForm from '@/domain/community/user/userForm/UserForm';
-import Loading from '@/core/ui/loading/Loading';
+import { type FC, useState } from 'react';
 import {
   useCreateTagsetOnProfileMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { EditMode } from '@/core/ui/forms/editMode';
-import { UserModel } from '@/domain/community/user/models/UserModel';
-import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useNavigate from '@/core/routing/useNavigate';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { EditMode } from '@/core/ui/forms/editMode';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { UserModel } from '@/domain/community/user/models/UserModel';
+import UserForm from '@/domain/community/user/userForm/UserForm';
+import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface UserPageProps {
   readOnly?: boolean;
@@ -46,7 +46,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
       cache.modify({
         fields: {
           users(existingUsers = [], { readField }) {
-            return existingUsers.filter(x => readField('id', x) !== data['id']);
+            return existingUsers.filter(x => readField('id', x) !== data.id);
           },
         },
       });
@@ -60,7 +60,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
     // there is an issue handling multiple snackbars.
-    onError: error => console.error(error.message),
+    onError: _error => {},
   });
 
   const isSaving = updateMutationLoading;

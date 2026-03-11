@@ -1,17 +1,17 @@
-import React, { PropsWithChildren, ReactNode, ReactElement } from 'react';
-import { Box } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import { gutters } from '@/core/ui/grid/utils';
-import CardContent from '@/core/ui/card/CardContent';
-import RouterLink from '@/core/ui/link/RouterLink';
-import CardBanner, { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
+import { Box } from '@mui/material';
+import React, { type PropsWithChildren, type ReactElement, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceCardBanner } from './components/SpaceCardBanner';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import CardContent from '@/core/ui/card/CardContent';
+import CardBanner, { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
 import CardTags from '@/core/ui/card/CardTags';
+import ContributeCard, { type ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import type { SpaceCardBanner } from './components/SpaceCardBanner';
 
 export const CARD_FOOTER_HEIGHT = gutters(3);
 
@@ -139,7 +139,7 @@ const SpaceCardBase = ({
       <CardContent flexGrow={1} paddingBottom={1}>
         {children}
         {actions}
-        {tags && <CardTags disableIndentation tags={tags} />}
+        {tags && <CardTags disableIndentation={true} tags={tags} />}
       </CardContent>
     </ContributeCard>
   );

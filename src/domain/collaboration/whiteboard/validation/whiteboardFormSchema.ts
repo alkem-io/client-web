@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 export interface WhiteboardFormSchema {
   profile: {

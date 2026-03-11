@@ -1,4 +1,4 @@
-import {
+import type {
   FrontendApi,
   LoginFlow,
   RecoveryFlow,
@@ -6,10 +6,10 @@ import {
   SettingsFlow,
   VerificationFlow,
 } from '@ory/kratos-client';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
-import { useKratosClient } from './useKratosClient';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useKratosClient } from './useKratosClient';
 
 type FlowTypes = LoginFlow | RegistrationFlow | SettingsFlow | VerificationFlow | RecoveryFlow;
 
@@ -46,7 +46,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
   const [loading, setLoading] = useState(false);
 
   const handleFlowError = useCallback(err => {
-    const response = err && err.response;
+    const response = err?.response;
     if (response) {
       if (response.status === 410) {
         window.location.replace(response.data.error.details.redirect_to);

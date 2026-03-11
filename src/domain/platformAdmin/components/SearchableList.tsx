@@ -1,11 +1,12 @@
 import { Button, FormControl, InputLabel, OutlinedInput } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import type React from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { Visual } from '@/domain/common/visual/Visual';
+import type { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
-import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
-import { Visual } from '@/domain/common/visual/Visual';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const MAX_ITEMS_LIMIT = 1000;
 
@@ -57,7 +58,7 @@ export const SearchableList = <
 
   return (
     <>
-      <FormControl fullWidth size={'small'}>
+      <FormControl fullWidth={true} size={'small'}>
         <OutlinedInput
           placeholder={t('components.searchableList.placeholder')}
           onChange={handleSearch}
@@ -81,7 +82,7 @@ export const SearchableList = <
             size="medium"
             space={{ id: item.id, about: { profile: item.profile }, level: item.level }}
             deepness={0}
-            seamless
+            seamless={true}
             sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
             actions={getActions ? getActions(item) : undefined}
           />

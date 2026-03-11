@@ -1,6 +1,6 @@
-import { Box, BoxProps, SvgIconProps, TypographyProps } from '@mui/material';
+import { Box, type BoxProps, type SvgIconProps, type TypographyProps } from '@mui/material';
+import { cloneElement, type ReactElement, type ReactNode } from 'react';
 import { gutters } from '../grid/utils';
-import { cloneElement, ReactElement, ReactNode } from 'react';
 import { BlockTitle, Caption } from '../typography';
 
 type BlockTitleWithIconProps = {
@@ -36,13 +36,13 @@ const BlockTitleWithIcon = ({
     {avatar}
     {title && typeof title === 'string' ? (
       <Box>
-        <BlockTitle variant={variant} noWrap color="textPrimary">
+        <BlockTitle variant={variant} noWrap={true} color="textPrimary">
           {title}
         </BlockTitle>
         <Caption>{subtitle}</Caption>
       </Box>
     ) : (
-      <Caption noWrap>{title}</Caption>
+      <Caption noWrap={true}>{title}</Caption>
     )}
     {children}
   </Box>

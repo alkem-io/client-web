@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActionableContributionsView } from '@/domain/community/profile/views';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { AuthorizationPrivilege, ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
+import { ActionableContributionsView } from '@/domain/community/profile/views';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
 
 const VCMembershipPage = () => {
   const { t } = useTranslation();

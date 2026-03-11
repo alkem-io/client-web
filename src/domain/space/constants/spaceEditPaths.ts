@@ -1,5 +1,5 @@
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 /**
  * Edit path for L0 space layout settings (used with tabbed layout)

@@ -43,10 +43,13 @@ const Reconnectable = ({ baseInterval, computeReconnectionTimeout } = DEFAULT_RE
       if (autoReconnectTime !== null) {
         const timeRemaining = autoReconnectTime - Date.now();
 
-        reconnectTimeoutId.current = window.setTimeout(() => {
-          setAutoReconnectTime(null);
-          handleReconnect();
-        }, Math.max(timeRemaining, 0));
+        reconnectTimeoutId.current = window.setTimeout(
+          () => {
+            setAutoReconnectTime(null);
+            handleReconnect();
+          },
+          Math.max(timeRemaining, 0)
+        );
       }
       return () => {
         if (reconnectTimeoutId.current !== null) {

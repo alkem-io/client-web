@@ -1,13 +1,12 @@
-import { Box, styled } from '@mui/material';
-import { DataGrid, DataGridProps, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { ReactNode, useMemo } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Box, styled } from '@mui/material';
+import { DataGrid, type DataGridProps, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
+import React, { type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { GUTTER_PX } from '../grid/constants';
 import DataGridActionButton from './DataGridActionButton';
-import React from 'react';
 
 export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '.MuiDataGrid-columnHeaders': {

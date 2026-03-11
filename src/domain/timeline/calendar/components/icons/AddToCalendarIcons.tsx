@@ -1,7 +1,7 @@
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Suspense } from 'react';
 import { Box, Skeleton, useTheme } from '@mui/material';
+import { Suspense } from 'react';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const ICON_SIZE = 24;
 const OutlookLogo = lazyWithGlobalErrorHandler(() => import('./outlook.svg?react'));

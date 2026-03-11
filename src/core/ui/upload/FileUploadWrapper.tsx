@@ -1,4 +1,4 @@
-import { ReactNode, PropsWithChildren, useRef } from 'react';
+import { type PropsWithChildren, type ReactNode, useRef } from 'react';
 
 type FileUploadWrapperProps = {
   onFileSelected: (file: File) => void;

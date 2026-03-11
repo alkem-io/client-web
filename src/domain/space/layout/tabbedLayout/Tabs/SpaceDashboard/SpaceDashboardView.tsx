@@ -1,4 +1,6 @@
+import { InfoOutlined } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -6,25 +8,23 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import type { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import type { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
-import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
-import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
+import type { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
+import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
+import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
+import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
+import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
+import type { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
 import {
   getVCCreationCache,
   removeVCCreationCache,
 } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
-import { InfoOutlined } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
-import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
-import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
-import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
-import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -117,7 +117,7 @@ const SpaceDashboardView = ({
       {directMessageDialog}
       <PageContent>
         <InfoColumn>
-          <PageContentBlock accent>
+          <PageContentBlock accent={true}>
             <SpaceWelcomeBlock spaceAbout={space.about!} description={tabDescription} />
           </PageContentBlock>
 
@@ -165,7 +165,7 @@ const SpaceDashboardView = ({
           open={aboutDialogOpen}
           space={space}
           onClose={() => setAboutDialogOpen(false)}
-          hasReadPrivilege
+          hasReadPrivilege={true}
           hasEditPrivilege={canEdit}
         />
       </PageContent>

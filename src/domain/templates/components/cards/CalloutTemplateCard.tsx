@@ -1,9 +1,9 @@
-import { FC } from 'react';
 import { Box } from '@mui/material';
+import type { FC } from 'react';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import stopPropagationFromLinks from '@/core/ui/utils/stopPropagationFromLinks';
-import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { TemplateCardProps } from './TemplateCard';
+import type { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
+import type { TemplateCardProps } from './TemplateCard';
 import TemplateCardLayout from './TemplateCardLayout';
 
 interface CalloutTemplateCardProps extends TemplateCardProps {

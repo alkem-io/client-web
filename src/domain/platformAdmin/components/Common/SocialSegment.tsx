@@ -1,11 +1,11 @@
 import { MailOutline } from '@mui/icons-material';
 import { GridLegacy, InputAdornment, Typography } from '@mui/material';
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import BlueSky from '@/domain/shared/components/SocialLinks/icons/BlueSky';
 import GitHub from '@/domain/shared/components/SocialLinks/icons/GitHub';
 import LinkedIn from '@/domain/shared/components/SocialLinks/icons/LinkedIn';
-import BlueSky from '@/domain/shared/components/SocialLinks/icons/BlueSky';
 
 export interface SocialSegmentProps {
   readOnly?: boolean;
@@ -20,11 +20,11 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew, fiel
   const { t } = useTranslation();
 
   return (
-    <GridLegacy item container spacing={4}>
-      <GridLegacy item xs={12}>
+    <GridLegacy item={true} container={true} spacing={4}>
+      <GridLegacy item={true} xs={12}>
         <Typography variant="h4">{t('common.social')}</Typography>
       </GridLegacy>
-      <GridLegacy item xs={12} md={6}>
+      <GridLegacy item={true} xs={12} md={6}>
         <FormikInputField
           name={'linkedin'}
           title={'Linkedin'}
@@ -39,7 +39,7 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew, fiel
           }}
         />
       </GridLegacy>
-      <GridLegacy item xs={12} md={6}>
+      <GridLegacy item={true} xs={12} md={6}>
         <FormikInputField
           name={'bsky'}
           title={'BlueSky'}
@@ -54,7 +54,7 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew, fiel
           }}
         />
       </GridLegacy>
-      <GridLegacy item xs={12} md={6}>
+      <GridLegacy item={true} xs={12} md={6}>
         <FormikInputField
           name={'github'}
           title={'Github'}
@@ -69,7 +69,7 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew, fiel
           }}
         />
       </GridLegacy>
-      <GridLegacy item xs={12} md={6}>
+      <GridLegacy item={true} xs={12} md={6}>
         <FormikInputField
           name={fieldNames?.email ?? 'email'}
           type={'email'}

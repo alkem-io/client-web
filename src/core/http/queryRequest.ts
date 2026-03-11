@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DocumentNode, print } from 'graphql';
+import { type DocumentNode, print } from 'graphql';
 
 const queryRequest = async <TResponseData = unknown>(url: string, queryDocument: DocumentNode) => {
   return axios.post<{ data: TResponseData }>(

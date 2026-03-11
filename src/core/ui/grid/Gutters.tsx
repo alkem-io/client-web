@@ -1,6 +1,7 @@
-import React, { ReactElement } from 'react';
-import { Box, BoxProps } from '@mui/material';
-import { BoxTypeMap } from '@mui/system';
+import { Box, type BoxProps } from '@mui/material';
+import type { BoxTypeMap } from '@mui/system';
+import type React from 'react';
+import type { ReactElement } from 'react';
 import { gutters } from './utils';
 
 export interface GuttersProps extends BoxProps {

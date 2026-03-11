@@ -1,13 +1,13 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
+import { type FC, useState } from 'react';
+import { Trans, type TransProps, useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
-import { FC, useState } from 'react';
-import { Trans, TransProps, useTranslation } from 'react-i18next';
 
 interface EntityConfirmDeleteDialogProps {
   entity: string;
@@ -15,7 +15,7 @@ interface EntityConfirmDeleteDialogProps {
   description?: TranslationKey;
   open: boolean;
   onClose: () => void;
-  onDelete: () => Promise<unknown> | void;
+  onDelete: () => Promise<unknown> | undefined;
 }
 
 const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
@@ -44,7 +44,7 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
         title={t('components.deleteEntity.confirmDialog.title', { entity: entity })}
       />
       <DialogContent>
-        <Gutters disablePadding>
+        <Gutters disablePadding={true}>
           <Box sx={{ wordWrap: 'break-word' }}>
             <Caption>
               <Trans

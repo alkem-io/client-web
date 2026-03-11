@@ -1,8 +1,8 @@
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import type { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export const VCProfileTabs: TabDefinition<SettingsSection>[] = [
   {

@@ -1,10 +1,10 @@
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { exportToCanvas as ExcalidrawExportToCanvas } from '@alkemio/excalidraw/dist/types/utils/src/export';
-import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
-import createFallbackWhiteboardPreview from './createFallbackWhiteboardPreview';
 import { padImage } from '@/core/utils/images/padImage';
+import createFallbackWhiteboardPreview from './createFallbackWhiteboardPreview';
+import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
 
 type ExcalidrawUtils = {
   exportToCanvas: typeof ExcalidrawExportToCanvas;

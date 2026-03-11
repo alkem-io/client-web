@@ -1,10 +1,10 @@
-import { AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import {
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useAvailableVirtualContributorsInSpaceAccountLazyQuery,
   useAvailableVirtualContributorsInSpaceLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { type AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 interface useVirtualContributorsAdminParams {
   level: SpaceLevel;

@@ -1,11 +1,11 @@
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useInAppNotifications } from './useInAppNotifications';
-import { InAppNotificationItem } from './InAppNotificationItem';
+import Gutters from '@/core/ui/grid/Gutters';
 import Loading from '@/core/ui/loading/Loading';
 import { Caption } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
-import { Box } from '@mui/material';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import { InAppNotificationItem } from './InAppNotificationItem';
+import { useInAppNotifications } from './useInAppNotifications';
 
 const Loader = ({ ref }) => (
   <Box ref={ref} display="flex" justifyContent="center" padding={2}>

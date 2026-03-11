@@ -1,9 +1,9 @@
-import { FC } from 'react';
 import { Box } from '@mui/material';
+import type { FC } from 'react';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import stopPropagationFromLinks from '@/core/ui/utils/stopPropagationFromLinks';
-import { TemplateCardProps } from './TemplateCard';
-import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
+import type { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
+import type { TemplateCardProps } from './TemplateCard';
 import TemplateCardLayout from './TemplateCardLayout';
 
 interface CommunityGuidelinesTemplateCardProps extends TemplateCardProps {

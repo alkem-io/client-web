@@ -1,4 +1,4 @@
-import { IconButton, IconButtonProps } from '@mui/material';
+import { IconButton, type IconButtonProps } from '@mui/material';
 import { WhiteboardPreviewSettingsIcon } from './icons/WhiteboardPreviewIcons';
 
 const WhiteboardPreviewSettingsButton = (props: IconButtonProps) => {

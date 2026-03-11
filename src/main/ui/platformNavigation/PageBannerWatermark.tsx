@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
-import PoweredBy from '../poweredBy/PoweredBy';
 import { alpha } from '@mui/material/styles';
+import PoweredBy from '../poweredBy/PoweredBy';
 
 const PageBannerWatermark = () => {
   return (

@@ -1,6 +1,6 @@
-import { UiNodeInputAttributes } from '@ory/kratos-client';
-import { FC } from 'react';
-import { KratosProps } from './KratosProps';
+import type { UiNodeInputAttributes } from '@ory/kratos-client';
+import type { FC } from 'react';
+import type { KratosProps } from './KratosProps';
 
 interface KratosHiddenProps extends KratosProps {}
 

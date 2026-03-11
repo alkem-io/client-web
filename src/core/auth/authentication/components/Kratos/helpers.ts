@@ -1,15 +1,15 @@
-import {
+import type {
   UiNode,
-  UiNodeAttributes,
   UiNodeAnchorAttributes,
+  UiNodeAttributes,
   UiNodeInputAttributes,
   UiNodeScriptAttributes,
   UiNodeTextAttributes,
 } from '@ory/kratos-client';
-import { FormEvent } from 'react';
-import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
 import type { TFunction } from 'i18next';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type { FormEvent } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { KRATOS_REQUIRED_FIELDS, KRATOS_VERIFICATION_CONTINUE_LINK_ID } from './constants';
 
 export function isUiNodeInputAttributes(attr: UiNodeAttributes) {
   if (attr.node_type === 'input') {
@@ -78,7 +78,7 @@ export const isRequired = (node: UiNode) => {
 
 export const isSubmittingPasswordFlow = (event: FormEvent<HTMLFormElement>) => {
   // https://developer.mozilla.org/en-US/docs/Web/API/SubmitEvent/submitter
-  const button = event.nativeEvent['submitter'] as HTMLButtonElement;
+  const button = event.nativeEvent.submitter as HTMLButtonElement;
   return button && button.name === 'method' && button.value === 'password';
 };
 

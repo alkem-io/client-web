@@ -1,4 +1,8 @@
 import { Box, Button } from '@mui/material';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { GUTTER_MUI } from '@/core/ui/grid/constants';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import {
   BlockSectionTitle,
   BlockTitle,
@@ -9,10 +13,6 @@ import {
   Text,
   TextBlock,
 } from '@/core/ui/typography';
-import { GUTTER_MUI } from '@/core/ui/grid/constants';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import PageContent from '@/core/ui/content/PageContent';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -49,7 +49,7 @@ const TypographyDemo = () => {
               <WrapperMarkdown>{`Markdown text with **strong** and *em*.\n\n${loremIpsum}`}</WrapperMarkdown>
             </TextBlock>
             <TextBlock>
-              <WrapperMarkdown card>
+              <WrapperMarkdown card={true}>
                 {`Markdown text with **strong** and *em* rendered on a card.\n\n${loremIpsum}`}
               </WrapperMarkdown>
             </TextBlock>

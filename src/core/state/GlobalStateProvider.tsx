@@ -1,17 +1,16 @@
 import { useActorRef } from '@xstate/react';
-import { PropsWithChildren, createContext } from 'react';
-import { Actor, StateMachine } from 'xstate';
+import { createContext, type PropsWithChildren } from 'react';
+import type { Actor, StateMachine } from 'xstate';
 
 import {
+  type NotificationsContext,
+  type NotificationsEvent,
   notificationMachine,
-  NotificationsContext,
-  NotificationsEvent,
 } from './global/notifications/notificationMachine';
 
 // TODO replace any with correct types below
 interface GlobalStateContextProps {
   notificationsService: Actor<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     StateMachine<NotificationsContext, NotificationsEvent, any, any, any, any, any, any, any, any, any, any, any, any>
   >;
 }

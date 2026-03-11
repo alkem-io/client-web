@@ -6,7 +6,7 @@ export const ActivityLoadingView = ({ rows }: { rows: number }) => (
     {times(rows, i => (
       <ActivityBaseView
         key={`_activity_log_loading_view_row_${i}`}
-        loading
+        loading={true}
         type={undefined}
         avatarUrl={undefined}
         title=""

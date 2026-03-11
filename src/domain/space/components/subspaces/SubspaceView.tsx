@@ -1,6 +1,11 @@
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { ApolloError } from '@apollo/client';
+import AddIcon from '@mui/icons-material/Add';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button, IconButton } from '@mui/material';
+import { cloneElement, type ReactElement, type ReactNode, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { type SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import PageContent from '@/core/ui/content/PageContent';
@@ -12,20 +17,15 @@ import SubspaceLinkList from '@/core/ui/list/SubspaceLinkList';
 import Loading from '@/core/ui/loading/Loading';
 import SearchField from '@/core/ui/search/SearchField';
 import { Caption } from '@/core/ui/typography';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { ValueType } from '@/core/utils/filtering/filterFn';
+import type { ValueType } from '@/core/utils/filtering/filterFn';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { ApolloError } from '@apollo/client';
-import AddIcon from '@mui/icons-material/Add';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button, IconButton } from '@mui/material';
-import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import CreateSubspaceBlock from './CreateSubspaceBlock';
+import { useSpace } from '@/domain/space/context/useSpace';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import { getDefaultSpaceVisualUrl } from '../../icons/defaultVisualUrls';
-import { useSpace } from '@/domain/space/context/useSpace';
+import CreateSubspaceBlock from './CreateSubspaceBlock';
 
 export interface SubspacesState {
   loading: boolean;
@@ -130,7 +130,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
                 })}
               >
                 {filteredEntities => (
-                  <CardLayoutContainer disablePadding>
+                  <CardLayoutContainer disablePadding={true}>
                     {filteredEntities.map((item, index) => {
                       const key = item ? item.id : `__loading_${index}`;
                       return cloneElement(renderChildEntityCard(item), { key });

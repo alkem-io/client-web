@@ -1,17 +1,18 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+
 import { InMemoryCache } from '@apollo/client';
-import { useGuestSession } from './useGuestSession';
-import { GuestSessionProvider } from '../context/GuestSessionContext';
+import { MockedProvider } from '@apollo/client/testing';
+import { act, renderHook } from '@testing-library/react';
 import type { FC, PropsWithChildren } from 'react';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import i18n from '@/core/i18n/config';
 import { I18nextProvider } from 'react-i18next';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import i18n from '@/core/i18n/config';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { sessionStorageMock } from '../tests/utils/sessionStorageMock';
+import { useGuestSession } from './useGuestSession';
 
 const wrapper: FC<PropsWithChildren> = ({ children }) => (
   <MockedProvider mocks={[]} cache={new InMemoryCache()}>

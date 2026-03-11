@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
-import { Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
@@ -24,7 +24,7 @@ export const ContributeCreationBlock = ({ tabDescription, canCreate, handleCreat
   }
 
   return (
-    <PageContentBlock accent>
+    <PageContentBlock accent={true}>
       <ExpandableDescription
         description={tabDescription}
         editPath={SPACE_LAYOUT_EDIT_PATH}

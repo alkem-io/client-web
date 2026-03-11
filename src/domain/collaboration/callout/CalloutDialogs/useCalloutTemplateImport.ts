@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { CalloutFormSubmittedValues, isEmptyCalloutForm } from '../CalloutForm/CalloutFormModel';
-import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { type CalloutFormSubmittedValues, isEmptyCalloutForm } from '../CalloutForm/CalloutFormModel';
+import type { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { mapCalloutTemplateToCalloutForm } from '../models/mappings';
 
 interface UseCalloutTemplateImportProps {

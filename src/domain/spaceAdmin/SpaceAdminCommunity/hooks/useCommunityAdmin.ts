@@ -1,22 +1,22 @@
 import { useMemo } from 'react';
 import {
+  ActorType,
   AuthorizationPrivilege,
   RoleName,
-  ActorType,
-  RoleSetMemberOrganizationFragment,
-  RoleSetMemberUserFragment,
+  type RoleSetMemberOrganizationFragment,
+  type RoleSetMemberUserFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
+import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
+import type { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
+import type { InvitationModel } from '@/domain/access/model/InvitationModel';
+import type { PlatformInvitationModel } from '@/domain/access/model/PlatformInvitationModel';
+import type { RoleDefinition } from '@/domain/access/model/RoleDefinitionModel';
 import useRoleSetManager, {
   RELEVANT_ROLES,
-  RoleSetMemberVirtualContributorFragmentWithRoles,
+  type RoleSetMemberVirtualContributorFragmentWithRoles,
 } from '@/domain/access/RoleSetManager/useRoleSetManager';
-import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
-import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import { RoleDefinition } from '@/domain/access/model/RoleDefinitionModel';
-import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
-import { InvitationModel } from '@/domain/access/model/InvitationModel';
-import { PlatformInvitationModel } from '@/domain/access/model/PlatformInvitationModel';
-import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 
 interface useCommunityAdminParams {
   roleSetId: string;

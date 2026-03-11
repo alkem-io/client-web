@@ -1,14 +1,14 @@
+import { createContext, type PropsWithChildren, useEffect, useMemo } from 'react';
 import {
   refetchCurrentUserLightQuery,
   useCreateUserNewRegistrationMutation,
-  usePlatformLevelAuthorizationQuery,
   useCurrentUserLightQuery,
+  usePlatformLevelAuthorizationQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
-import { PropsWithChildren, createContext, useEffect, useMemo } from 'react';
+import type { CurrentUserModel } from '../model/CurrentUserModel';
 import { toPlatformPrivilegeWrapper } from './usePlatformPrivilegeWrapper';
-import { CurrentUserModel } from '../model/CurrentUserModel';
 
 const CurrentUserContext = createContext<CurrentUserModel>({
   platformPrivilegeWrapper: undefined,

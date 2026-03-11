@@ -1,12 +1,13 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import type React from 'react';
+import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, Text } from '@/core/ui/typography';
-import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import React, { useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { ImportFlowOptions } from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import type { ImportFlowOptions } from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 
 export enum FlowReplaceOption {
   REPLACE_ALL = 'replace_all',
@@ -17,7 +18,7 @@ export enum FlowReplaceOption {
 interface ApplySpaceTemplateDialogProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (options: ImportFlowOptions) => Promise<unknown> | void;
+  onConfirm: (options: ImportFlowOptions) => Promise<unknown> | undefined;
   existingCalloutsCount?: number;
 }
 
@@ -91,7 +92,7 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
           title={t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.title')}
         />
         <DialogContent>
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <Caption>
               <Trans
                 i18nKey="components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.description"
@@ -108,7 +109,7 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
                 'components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.title'
               )}
             >
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 {OPTIONS.map(option => (
                   <FormControlLabel
                     key={option.value}
@@ -116,12 +117,8 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
                     control={<Radio slotProps={{ input: { 'aria-describedby': `${option.value}-description` } }} />}
                     label={
                       <>
-                        <Text sx={{ fontWeight: 'bold' }}>
-                          <>{t(option.labelKey)}</>
-                        </Text>
-                        <Caption id={`${option.value}-description`}>
-                          <>{t(option.descriptionKey)}</>
-                        </Caption>
+                        <Text sx={{ fontWeight: 'bold' }}>{t(option.labelKey)}</Text>
+                        <Caption id={`${option.value}-description`}>{t(option.descriptionKey)}</Caption>
                       </>
                     }
                   />

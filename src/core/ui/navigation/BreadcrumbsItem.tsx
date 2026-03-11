@@ -1,12 +1,12 @@
-import { Avatar, CircularProgress, Collapse, Paper, SvgIconProps, useTheme } from '@mui/material';
-import RouterLink from '../link/RouterLink';
+import { Avatar, CircularProgress, Collapse, Paper, type SvgIconProps, useTheme } from '@mui/material';
+import type { ComponentType } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
+import RouterLink from '../link/RouterLink';
 import SwapColors from '../palette/SwapColors';
 import { CardText } from '../typography';
-import { Expandable } from './Expandable';
-import { ComponentType } from 'react';
 import { useElevationContext } from '../utils/ElevationContext';
-import { useTranslation } from 'react-i18next';
+import type { Expandable } from './Expandable';
 
 export interface BreadcrumbsItemProps extends Expandable {
   avatar?: {
@@ -79,7 +79,7 @@ const BreadcrumbsItem = ({
         {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}
       </Avatar>
       <Collapse in={expanded} orientation="horizontal">
-        <CardText paddingX={1} lineHeight={gutters(avatarSize)} maxWidth="30vw" color="primary" noWrap>
+        <CardText paddingX={1} lineHeight={gutters(avatarSize)} maxWidth="30vw" color="primary" noWrap={true}>
           {children}
         </CardText>
       </Collapse>

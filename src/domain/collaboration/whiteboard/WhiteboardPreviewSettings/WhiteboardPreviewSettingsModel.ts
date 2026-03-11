@@ -1,4 +1,4 @@
-import { WhiteboardPreviewCoordinates, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { type WhiteboardPreviewCoordinates, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 
 export interface WhiteboardPreviewSettings {
   mode: WhiteboardPreviewMode;

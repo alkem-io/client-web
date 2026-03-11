@@ -1,11 +1,11 @@
+import { Box, Chip, Divider, Link } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import { Caption } from '@/core/ui/typography';
-import { Box, Chip, Divider, Link } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
+import type { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import { classificationTagsetModelToTagsetArgs } from '../Classification/ClassificationTagset.utils';
 import TwoLinesTagsContainer from './TwoLinesTagsContainer';
 
@@ -14,9 +14,9 @@ export interface CalloutsSetTagCloudProps {
   classificationTagsets?: ClassificationTagsetModel[];
   selectedTags: string[];
   resultsCount?: number;
-  onSelectTag: (tag: string) => Promise<unknown> | void;
-  onDeselectTag: (tag: string) => Promise<unknown> | void;
-  onClear: () => Promise<unknown> | void;
+  onSelectTag: (tag: string) => Promise<unknown> | undefined;
+  onDeselectTag: (tag: string) => Promise<unknown> | undefined;
+  onClear: () => Promise<unknown> | undefined;
 }
 
 const ResultsCount = ({ count, onClear }: { count: number; onClear: () => void }) => {

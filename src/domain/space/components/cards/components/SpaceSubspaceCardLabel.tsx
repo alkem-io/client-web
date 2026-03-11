@@ -1,8 +1,8 @@
 import { LockOutlined } from '@mui/icons-material';
-import { gutters } from '@/core/ui/grid/utils';
 import { Chip } from '@mui/material';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface SpaceSubspaceCardLabelProps {
   level: SpaceLevel;

@@ -1,13 +1,13 @@
-import React, { FC, useState } from 'react';
+import { TuneOutlined } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import { type FC, useState } from 'react';
+import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
+import LicensePlanDialog from '@/domain/platformAdmin/domain/organizations/LicensePlanDialog';
+import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
-import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
-import { IconButton } from '@mui/material';
-import { TuneOutlined } from '@mui/icons-material';
-import LicensePlanDialog from '@/domain/platformAdmin/domain/organizations/LicensePlanDialog';
-import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 
 const AdminUsersPage: FC = () => {
   const { userList, licensePlans, ...listProps } = useAdminGlobalUserList();
