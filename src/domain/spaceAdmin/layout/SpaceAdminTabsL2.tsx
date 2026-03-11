@@ -3,12 +3,18 @@ import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLay
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 
 export const spaceAdminTabsL2: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.About,
     route: 'about',
     icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Layout,
+    route: 'layout',
+    icon: DashboardOutlinedIcon,
   },
   {
     section: SettingsSection.Community,

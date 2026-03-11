@@ -2464,6 +2464,9 @@ export const SpaceSettingsFragmentDoc = gql`
       allowGuestContributions
     }
     sortMode
+    layout {
+      calloutDescriptionDisplayMode
+    }
   }
 `;
 export const StorageAggregatorParentFragmentDoc = gql`
@@ -22885,6 +22888,9 @@ export const UpdateSpaceSettingsDocument = gql`
           allowGuestContributions
         }
         sortMode
+        layout {
+          calloutDescriptionDisplayMode
+        }
       }
     }
   }

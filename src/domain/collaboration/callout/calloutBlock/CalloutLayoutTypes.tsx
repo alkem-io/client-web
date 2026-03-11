@@ -12,4 +12,5 @@ export interface CalloutLayoutProps {
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
   calloutActions?: boolean;
+  defaultCollapsed?: boolean;
 }

@@ -56,10 +56,10 @@ Default is `EXPANDED` to preserve current behavior for existing spaces. New spac
 
 ```
 Server (JSONB settings)
-  → GraphQL query (settings.layout.calloutDescriptionDisplayMode)
+  → GraphQL query (useSpaceSettingsQuery in useCalloutDescriptionDisplayMode hook)
     → Apollo cache (normalized by space ID)
-      → Component tree (prop drilling or query)
-        → ExpandableMarkdown (defaultCollapsed prop)
+      → useCalloutDescriptionDisplayMode(spaceId) returns defaultCollapsed boolean
+        → CalloutView → CalloutViewLayout → ExpandableMarkdown (defaultCollapsed prop)
 ```
 
 ## State Transitions
@@ -76,3 +76,5 @@ expanded ←──→ collapsed  (user toggles, temporary per-session)
 ```
 
 On navigation: state resets to initial detection based on space setting.
+
+On `defaultCollapsed` prop change (async load or admin toggle): state re-enters `detecting` via `useEffect`, triggering fresh overflow measurement with the new default. This handles the race condition where the query resolves after the initial detection has already run.

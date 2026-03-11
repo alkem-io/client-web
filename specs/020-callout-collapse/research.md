@@ -18,6 +18,8 @@
 
 **Required change**: Accept an optional `defaultCollapsed` prop. When `true`, the detection flow becomes: `detecting` → `collapsed` (if overflow) or `no-overflow` (if fits). This preserves all existing behavior while allowing the initial state to be driven by the space setting.
 
+**Implementation note**: A `useEffect` re-enters `'detecting'` state when `defaultCollapsed` changes. This handles two cases: (1) the setting loads asynchronously after the component mounts, and (2) the admin reactively toggles the setting while callouts are mounted. Without this, the initial overflow detection fires before the query resolves (with `defaultCollapsed=false`), and later changes to the prop are ignored because the state is no longer `'detecting'`.
+
 **Alternatives considered**:
 
 - Creating a new wrapper component: Rejected — adds unnecessary abstraction over simple state initialization
@@ -43,17 +45,20 @@
 
 ## R3: Delivering the Setting to Callout Components
 
-**Decision**: Query the `calloutDescriptionDisplayMode` where callouts are rendered and pass it as a prop through the component tree.
+**Decision**: Create a dedicated `useCalloutDescriptionDisplayMode(spaceId)` hook that encapsulates the `useSpaceSettingsQuery` call and returns a `defaultCollapsed` boolean. Call it directly in `CalloutView`.
 
 **Rationale**: The `SpaceContext` (`src/domain/space/context/SpaceContext.tsx`) does NOT include space settings — it focuses on identity, permissions, and entitlements. Adding settings to SpaceContext would bloat it. Instead:
 
-- The callout rendering entry points (`CalloutsView`, `CalloutPage`) can query the space's `layout.calloutDescriptionDisplayMode` setting
-- Pass it down as a prop to `CalloutView` → `CalloutViewLayout` → `ExpandableMarkdown`
-- Since layout settings are public metadata (no READ privilege needed), this query is lightweight
+- A `useCalloutDescriptionDisplayMode` hook (`src/domain/space/settings/useCalloutDescriptionDisplayMode.ts`) follows the `useSpaceGuestContributions` pattern — a thin wrapper around `useSpaceSettingsQuery` that returns a single derived value
+- The hook is called in `CalloutView`, which already has access to `useSpace()` and `useSubSpace()` for the space ID
+- The resulting `defaultCollapsed` boolean is passed via prop to `CalloutViewLayout` → `ExpandableMarkdown`
+- `CalloutsView` and `CalloutPage` are NOT modified — the setting is fetched at the `CalloutView` level
 
-**Alternative**: Add to SpaceContext — rejected because SpaceContext is already large and settings are not needed by most consumers. A dedicated query or piggybacking on an existing callout query is more targeted.
+**Gotcha**: `SubspaceContext` default value has `subspace.id: ''` (empty string, not null/undefined) when no subspace is active. The space ID resolution must use `||` (not `??`) to correctly fall through: `subspace?.id || space?.id`.
 
-**Reactive update approach**: When the admin changes the setting, the Apollo cache update from the mutation response will propagate to any active query watching `settings.layout.calloutDescriptionDisplayMode`, causing callout components to re-render with the new value automatically. No manual refetch needed.
+**Alternative**: Add to SpaceContext — rejected because SpaceContext is already large and settings are not needed by most consumers. Prop-drilling from `CalloutsView` — rejected because `CalloutsView` doesn't have space settings access and the hook approach is cleaner.
+
+**Reactive update approach**: When the admin changes the setting, the Apollo cache update from the mutation response propagates to `useSpaceSettingsQuery` in the hook, causing `CalloutView` to re-render with the new `defaultCollapsed` value. The `ExpandableMarkdown` re-enters `'detecting'` state via the `useEffect` and re-evaluates. No manual refetch needed.
 
 ## R4: Admin UI Placement
 
@@ -65,11 +70,10 @@
 
 ## R5: Layout Tab Availability for Subspaces
 
-**Decision**: The Layout tab is currently only available for L0 spaces (top-level). Subspaces (L1, L2) do NOT have the Layout tab.
+**Decision**: The Layout tab is now available at all space levels (L0, L1, L2).
 
-**Rationale**: Research confirmed that `SpaceAdminTabsL1.tsx` and `SpaceAdminTabsL2.tsx` do NOT include `SettingsSection.Layout`. This means:
+**Rationale**: Initially, `SpaceAdminTabsL1.tsx` and `SpaceAdminTabsL2.tsx` did not include `SettingsSection.Layout`, so the callout display mode toggle was placed in the Settings tab for subspaces as a workaround.
 
-- L0 spaces: Setting is configurable via Layout tab
-- L1/L2 subspaces: Need an alternative path to configure the setting, OR it could be placed in the existing Settings tab for subspaces
+**Resolution**: The Layout tab was added to L1 and L2 tab definitions and routing, reusing the existing `SpaceAdminLayoutPage` component with `useL0Layout: false`. The workaround in `SpaceAdminSettingsPage` (conditional `CalloutDisplayModeSettings` for subspaces) was removed. All levels now consistently use the Layout tab for layout-related settings, including the Innovation Flow editor and the callout display mode toggle.
 
-**Resolution**: For MVP, add the callout display mode setting to the Layout tab for L0 spaces. For subspaces, the setting can be added to the Settings tab (`SpaceAdminSettingsPage`) since it already handles space settings. This aligns with the spec requirement that each space/subspace is independently configurable.
+**Gotcha — spaceId prop**: `SpaceAdminLayoutPage` originally used `useSpace()` to get `space.id` for all queries/mutations. Since `useSpace()` always returns the L0 space context (even when rendered inside a subspace route), an optional `spaceId` prop was added. When provided (with the subspace ID from the routing files), it overrides the `useSpace()` fallback. Without this fix, the Layout tab on L1/L2 would read and write the L0 space's settings instead of the subspace's settings.

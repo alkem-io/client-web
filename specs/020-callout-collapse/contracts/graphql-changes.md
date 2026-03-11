@@ -52,17 +52,9 @@
  }
 ```
 
-## New Query (for callout rendering contexts)
+## Callout Rendering Query Strategy
 
-A lightweight query or fragment to fetch the display mode where callouts are rendered. Can piggyback on existing space queries or be a standalone lookup:
-
-```graphql
-fragment SpaceLayoutSettings on SpaceSettings {
-  layout {
-    calloutDescriptionDisplayMode
-  }
-}
-```
+No new standalone query or fragment was needed. The `useCalloutDescriptionDisplayMode` hook reuses the existing `useSpaceSettingsQuery` (which includes the `SpaceSettings` fragment above). Apollo's cache deduplication ensures no extra network requests when the same query is already active from the admin settings page.
 
 ## Server-Provided Types (after codegen)
 

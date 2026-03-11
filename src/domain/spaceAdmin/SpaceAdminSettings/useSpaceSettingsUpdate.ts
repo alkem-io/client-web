@@ -7,6 +7,7 @@ import { error as logError } from '@/core/logging/sentry/log';
 import { defaultSpaceSettings } from './SpaceDefaultSettings';
 import {
   SpaceSettingsCollaboration,
+  SpaceSettingsLayout,
   SpaceSettingsMembership,
   SpaceSettingsPrivacy,
 } from '@/domain/space/settings/SpaceSettingsModel';
@@ -23,6 +24,7 @@ export interface SpaceSettingsUpdateParams {
   allowGuestContributions?: boolean;
   hostOrganizationTrusted?: boolean;
   collaborationSettings?: Partial<SpaceSettingsCollaboration>;
+  layoutSettings?: Partial<SpaceSettingsLayout>;
   showNotification?: boolean;
   allowPlatformSupportAsAdmin?: boolean;
 }
@@ -33,6 +35,7 @@ export interface UseSpaceSettingsUpdateProps {
     privacy?: Partial<SpaceSettingsPrivacy>;
     membership?: Partial<SpaceSettingsMembership>;
     collaboration?: Partial<SpaceSettingsCollaboration>;
+    layout?: Partial<SpaceSettingsLayout>;
     hostOrganizationTrusted?: boolean;
   };
   hostId?: string;
@@ -60,6 +63,7 @@ export const useSpaceSettingsUpdate = ({ spaceId, currentSettings, hostId }: Use
       collaboration: newSettings.collaboration
         ? { ...state?.collaboration, ...newSettings.collaboration }
         : state?.collaboration,
+      layout: newSettings.layout ? { ...state?.layout, ...newSettings.layout } : state?.layout,
     })
   );
 
@@ -87,6 +91,7 @@ export const useSpaceSettingsUpdate = ({ spaceId, currentSettings, hostId }: Use
         hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
           defaultSpaceSettings.membership.hostOrganizationTrusted,
         collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
+        layoutSettings = currentSettings.layout ?? defaultSpaceSettings.layout,
         showNotification = true,
         allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
           defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
@@ -123,6 +128,12 @@ export const useSpaceSettingsUpdate = ({ spaceId, currentSettings, hostId }: Use
           inheritMembershipRights,
           allowGuestContributions,
         } as SpaceSettingsCollaboration,
+        layout: {
+          calloutDescriptionDisplayMode:
+            layoutSettings?.calloutDescriptionDisplayMode ??
+            currentSettings.layout?.calloutDescriptionDisplayMode ??
+            defaultSpaceSettings.layout.calloutDescriptionDisplayMode,
+        },
       };
 
       // Create the optimistic state update action
@@ -131,6 +142,7 @@ export const useSpaceSettingsUpdate = ({ spaceId, currentSettings, hostId }: Use
           privacy: settingsVariable.privacy,
           membership: settingsVariable.membership,
           collaboration: settingsVariable.collaboration,
+          layout: settingsVariable.layout,
         });
 
         await updateSpaceSettings({

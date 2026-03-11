@@ -45,4 +45,7 @@ fragment SpaceSettings on SpaceSettings {
     allowGuestContributions
   }
   sortMode
+  layout {
+    calloutDescriptionDisplayMode
+  }
 }

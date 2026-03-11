@@ -21,10 +21,10 @@
 
 **Prerequisites**: Server branch `043-callout-collapse` must be deployed and running at `localhost:4000/graphql`.
 
-- [ ] T001 Add `layout { calloutDescriptionDisplayMode }` to the `SpaceSettings` fragment in `src/domain/spaceAdmin/SpaceAdminSettings/graphql/SpaceSettings.graphql`
-- [ ] T002 Add `layout { calloutDescriptionDisplayMode }` to the mutation response in `src/domain/spaceAdmin/SpaceAdminSettings/graphql/UpdateSpaceSettings.graphql`
-- [ ] T003 Run `pnpm codegen` to regenerate types and hooks in `src/core/apollo/generated/`
-- [ ] T004 Verify `CalloutDescriptionDisplayMode` enum and `SpaceSettingsLayout` type exist in `src/core/apollo/generated/graphql-schema.ts`
+- [x] T001 Add `layout { calloutDescriptionDisplayMode }` to the `SpaceSettings` fragment in `src/domain/spaceAdmin/SpaceAdminSettings/graphql/SpaceSettings.graphql`
+- [x] T002 Add `layout { calloutDescriptionDisplayMode }` to the mutation response in `src/domain/spaceAdmin/SpaceAdminSettings/graphql/UpdateSpaceSettings.graphql`
+- [ ] T003 Run `pnpm codegen` to regenerate types and hooks in `src/core/apollo/generated/` (DEFERRED: requires server with new schema at localhost:4000/graphql)
+- [ ] T004 Verify `CalloutDescriptionDisplayMode` enum and `SpaceSettingsLayout` type exist in `src/core/apollo/generated/graphql-schema.ts` (DEFERRED: requires codegen)
 
 **Checkpoint**: Generated types include the new enum and layout type. `pnpm lint` passes.
 
@@ -34,10 +34,10 @@
 
 **Purpose**: Client-side type model, default values, and `ExpandableMarkdown` enhancement. MUST complete before any user story.
 
-- [ ] T005 [P] Add `SpaceSettingsLayout` interface (importing the generated `CalloutDescriptionDisplayMode` enum) to `src/domain/space/settings/SpaceSettingsModel.ts`
-- [ ] T006 [P] Add `layout` default (`calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode.Expanded`) to `src/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings.tsx`
-- [ ] T007 [P] Add `defaultCollapsed?: boolean` prop to `ExpandableMarkdown` in `src/core/ui/markdown/ExpandableMarkdown.tsx`. When `true` and overflow is detected, resolve `detecting` state to `'collapsed'` instead of `'expanded'`. When `false`/`undefined`, preserve current behavior (resolve to `'expanded'`).
-- [ ] T008 [P] Add i18n keys for the layout setting labels (e.g., setting title, collapsed/expanded option labels) to `src/core/i18n/en/translation.en.json`
+- [x] T005 [P] Add `SpaceSettingsLayout` interface (importing the generated `CalloutDescriptionDisplayMode` enum) to `src/domain/space/settings/SpaceSettingsModel.ts`
+- [x] T006 [P] Add `layout` default (`calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode.Expanded`) to `src/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings.tsx`
+- [x] T007 [P] Add `defaultCollapsed?: boolean` prop to `ExpandableMarkdown` in `src/core/ui/markdown/ExpandableMarkdown.tsx`. When `true` and overflow is detected, resolve `detecting` state to `'collapsed'` instead of `'expanded'`. When `false`/`undefined`, preserve current behavior (resolve to `'expanded'`).
+- [x] T008 [P] Add i18n keys for the layout setting labels (e.g., setting title, collapsed/expanded option labels) to `src/core/i18n/en/translation.en.json`
 
 **Checkpoint**: `pnpm lint` passes. `ExpandableMarkdown` supports `defaultCollapsed` prop. Types and defaults are in place.
 
@@ -45,18 +45,22 @@
 
 ## Phase 3: User Story 1 — Space Admin Configures Callout Display Mode (Priority: P1) — MVP
 
-**Goal**: Space admins can toggle the callout description display mode (Collapsed/Expanded) via the Space Admin Layout tab (L0) or Settings tab (L1/L2), and the setting persists via the `updateSpaceSettings` mutation.
+**Goal**: Space admins can toggle the callout description display mode (Collapsed/Expanded) via the Space Admin Layout tab (available at all levels: L0, L1, L2), and the setting persists via the `updateSpaceSettings` mutation.
 
 **Independent Test**: Navigate to Space -> Admin -> Layout tab, toggle the setting, verify it saves and persists across page reloads.
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Extend `useSpaceSettingsUpdate` hook in `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts`: add `layout` to `SpaceSettingsUpdateParams` interface, `UseSpaceSettingsUpdateProps.currentSettings`, optimistic state reducer, and `settingsVariable` in the mutation call
-- [ ] T010 [US1] Create a `CalloutDisplayModeSettings` component (following the `MemberActionsSettings` pattern) that renders a labeled switch or radio group for Collapsed/Expanded and calls `updateSettings` on change. Place it in `src/domain/spaceAdmin/SpaceAdminSettings/components/CalloutDisplayModeSettings.tsx`
-- [ ] T011 [US1] Add the `CalloutDisplayModeSettings` toggle to `SpaceAdminLayoutPage` in `src/domain/spaceAdmin/SpaceAdminLayout/SpaceAdminLayoutPage.tsx` as a new `PageContentBlock` below the existing Innovation Flow editor block. Wire it to the space settings query and `useSpaceSettingsUpdate` hook.
-- [ ] T012 [US1] Add the `CalloutDisplayModeSettings` toggle to the Settings tab for subspaces (L1/L2) in `src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx` so each subspace can independently configure its display mode.
+- [x] T009 [US1] Extend `useSpaceSettingsUpdate` hook in `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts`: add `layout` to `SpaceSettingsUpdateParams` interface, `UseSpaceSettingsUpdateProps.currentSettings`, optimistic state reducer, and `settingsVariable` in the mutation call
+- [x] T010 [US1] Create a `CalloutDisplayModeSettings` component (following the `MemberActionsSettings` pattern) that renders a labeled switch or radio group for Collapsed/Expanded and calls `updateSettings` on change. Place it in `src/domain/spaceAdmin/SpaceAdminSettings/components/CalloutDisplayModeSettings.tsx`
+- [x] T011 [US1] Add the `CalloutDisplayModeSettings` toggle to `SpaceAdminLayoutPage` in `src/domain/spaceAdmin/SpaceAdminLayout/SpaceAdminLayoutPage.tsx` as a new `PageContentBlock` below the existing Innovation Flow editor block. Wire it to the space settings query and `useSpaceSettingsUpdate` hook.
+- [x] T012 [US1] Add the Layout tab to L1/L2 subspaces so each subspace can independently configure its display mode via the same `SpaceAdminLayoutPage` used by L0:
+  - Add `SettingsSection.Layout` tab to `SpaceAdminTabsL1.tsx` and `SpaceAdminTabsL2.tsx`
+  - Add layout route to `SpaceAdminRouteL1.tsx` and `SpaceAdminRouteL2.tsx` with `spaceId: subspaceId`
+  - Add optional `spaceId` prop to `SpaceAdminLayoutPageProps` (falls back to `useSpace().space.id` for L0)
+  - Remove the `CalloutDisplayModeSettings` workaround from `SpaceAdminSettingsPage.tsx`
 
-**Checkpoint**: Admin can toggle the setting in L0 Layout tab and L1/L2 Settings tab. Setting persists. `pnpm lint` passes.
+**Checkpoint**: Admin can toggle the setting in L0/L1/L2 Layout tab. Setting persists. `pnpm lint` passes.
 
 ---
 
@@ -68,10 +72,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Add a GraphQL query or fragment to fetch `settings.layout.calloutDescriptionDisplayMode` in the callout rendering context. Determine the optimal placement — either extend an existing space query used by `CalloutsView`/`CalloutPage`, or create a lightweight dedicated query. Ensure the query result is available where `CalloutViewLayout` is rendered.
-- [ ] T014 [US2] Thread the `calloutDescriptionDisplayMode` value as a prop through the callout component tree: from the query result through `CalloutsView` → `CalloutView` → `CalloutViewLayout`. Add `defaultCollapsed?: boolean` to the relevant prop types (`BaseCalloutViewProps`, `CalloutLayoutProps`).
-- [ ] T015 [US2] In `CalloutViewLayout` (`src/domain/collaboration/callout/CalloutView/CalloutViewLayout.tsx`), pass `defaultCollapsed` to the `ExpandableMarkdown` component, computed as `calloutDescriptionDisplayMode === CalloutDescriptionDisplayMode.Collapsed`.
-- [ ] T016 [US2] Ensure the `CalloutPage` full-screen dialog view (`src/domain/collaboration/CalloutPage/CalloutPage.tsx`) also receives and passes the display mode to `CalloutView` for consistency.
+- [x] T013 [US2] Add a GraphQL query or fragment to fetch `settings.layout.calloutDescriptionDisplayMode` in the callout rendering context. Determine the optimal placement — either extend an existing space query used by `CalloutsView`/`CalloutPage`, or create a lightweight dedicated query. Ensure the query result is available where `CalloutViewLayout` is rendered.
+- [x] T014 [US2] Thread the `calloutDescriptionDisplayMode` value as a prop through the callout component tree: from the query result through `CalloutsView` → `CalloutView` → `CalloutViewLayout`. Add `defaultCollapsed?: boolean` to the relevant prop types (`BaseCalloutViewProps`, `CalloutLayoutProps`).
+- [x] T015 [US2] In `CalloutViewLayout` (`src/domain/collaboration/callout/CalloutView/CalloutViewLayout.tsx`), pass `defaultCollapsed` to the `ExpandableMarkdown` component, computed as `calloutDescriptionDisplayMode === CalloutDescriptionDisplayMode.Collapsed`.
+- [x] T016 [US2] Ensure the `CalloutPage` full-screen dialog view (`src/domain/collaboration/CalloutPage/CalloutPage.tsx`) also receives and passes the display mode to `CalloutView` for consistency.
 
 **Checkpoint**: All callouts in a space reflect the configured display mode. Changing the setting in admin reactively updates callouts (FR-011) via Apollo cache propagation. `pnpm lint` passes.
 
@@ -85,8 +89,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Verify that `ExpandableMarkdown`'s existing "Read More"/"Show Less" toggle still works correctly with the new `defaultCollapsed` prop. The user toggle between `'expanded'` and `'collapsed'` states must remain functional regardless of the initial default. No code changes expected — this is a verification task.
-- [ ] T018 [US3] Verify that on navigation (component unmount/remount), the `ExpandableMarkdown` state resets to the space's configured default (re-enters `'detecting'` and resolves based on `defaultCollapsed`). No code changes expected — React's component lifecycle handles this naturally.
+- [x] T017 [US3] Verify that `ExpandableMarkdown`'s existing "Read More"/"Show Less" toggle still works correctly with the new `defaultCollapsed` prop. The user toggle between `'expanded'` and `'collapsed'` states must remain functional regardless of the initial default. No code changes expected — this is a verification task.
+- [x] T018 [US3] Verify that on navigation (component unmount/remount), the `ExpandableMarkdown` state resets to the space's configured default (re-enters `'detecting'` and resolves based on `defaultCollapsed`). No code changes expected — React's component lifecycle handles this naturally.
 
 **Checkpoint**: Temporary toggle works in both Collapsed and Expanded default modes. State resets on navigation.
 
@@ -100,8 +104,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T019 [US4] Ensure the client fallback for missing/null `calloutDescriptionDisplayMode` resolves to `EXPANDED`. Verify this in the component that reads the setting (from T013/T014) — use nullish coalescing to default to `CalloutDescriptionDisplayMode.Expanded` when the value is absent.
-- [ ] T020 [US4] Verify that `SpaceDefaultSettings.tsx` uses `CalloutDescriptionDisplayMode.Expanded` as the default, ensuring the optimistic state and admin UI show "Expanded" for existing spaces that haven't been explicitly configured.
+- [x] T019 [US4] Ensure the client fallback for missing/null `calloutDescriptionDisplayMode` resolves to `EXPANDED`. Verify this in the component that reads the setting (from T013/T014) — use nullish coalescing to default to `CalloutDescriptionDisplayMode.Expanded` when the value is absent.
+- [x] T020 [US4] Verify that `SpaceDefaultSettings.tsx` uses `CalloutDescriptionDisplayMode.Expanded` as the default, ensuring the optimistic state and admin UI show "Expanded" for existing spaces that haven't been explicitly configured.
 
 **Checkpoint**: Existing spaces remain expanded. New spaces (server-side default `COLLAPSED`) display collapsed. Fallback is safe.
 
@@ -111,8 +115,8 @@
 
 **Purpose**: Lint, type-check, and validate the complete feature.
 
-- [ ] T021 Run `pnpm lint` to verify TypeScript and ESLint pass across all modified files
-- [ ] T022 Run `pnpm vitest run` to verify no existing tests are broken
+- [x] T021 Run `pnpm lint` to verify TypeScript and ESLint pass across all modified files
+- [x] T022 Run `pnpm vitest run` to verify no existing tests are broken
 - [ ] T023 Manually validate the full feature flow per `specs/020-callout-collapse/quickstart.md` verification steps
 
 ---

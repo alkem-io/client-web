@@ -15,9 +15,9 @@ Add a space-level setting (`layout.calloutDescriptionDisplayMode`) that controls
 **Testing**: Vitest with jsdom
 **Target Platform**: Web (SPA served by Vite)
 **Project Type**: Web application (client-only changes; server schema assumed ready via `043-callout-collapse`)
-**Performance Goals**: Reactive setting update without full page reload; no additional network requests on callout render beyond the space settings query already in the component tree
+**Performance Goals**: Reactive setting update without full page reload; the `useCalloutDescriptionDisplayMode` hook shares the same `SpaceSettings` query via Apollo cache deduplication
 **Constraints**: Must preserve existing collapse/expand visual behavior exactly; existing spaces must remain expanded after deployment
-**Scale/Scope**: ~6 files modified, ~2 new files, 1 prop addition to `ExpandableMarkdown`
+**Scale/Scope**: ~14 files modified, 2 new files, 1 prop addition to `ExpandableMarkdown`, 1 new hook
 
 ## Constitution Check
 
@@ -64,23 +64,36 @@ src/
 │   ├── apollo/generated/          # Regenerated after codegen (graphql-schema.ts, apollo-hooks.ts)
 │   ├── i18n/en/translation.en.json # New i18n keys for layout setting labels
 │   └── ui/markdown/
-│       └── ExpandableMarkdown.tsx  # MODIFY: add defaultCollapsed prop
+│       └── ExpandableMarkdown.tsx  # MODIFY: add defaultCollapsed prop + re-detection on change
 │
 ├── domain/
 │   ├── space/settings/
-│   │   └── SpaceSettingsModel.ts   # MODIFY: add SpaceSettingsLayout interface
+│   │   ├── SpaceSettingsModel.ts                  # MODIFY: add SpaceSettingsLayout interface
+│   │   └── useCalloutDescriptionDisplayMode.ts    # NEW: hook returning defaultCollapsed boolean
 │   ├── spaceAdmin/
 │   │   ├── SpaceAdminLayout/
-│   │   │   └── SpaceAdminLayoutPage.tsx  # MODIFY: add display mode toggle block
+│   │   │   └── SpaceAdminLayoutPage.tsx  # MODIFY: add display mode toggle + spaceId prop (all levels)
+│   │   ├── layout/
+│   │   │   ├── SpaceAdminTabsL1.tsx       # MODIFY: add Layout tab
+│   │   │   └── SpaceAdminTabsL2.tsx       # MODIFY: add Layout tab
+│   │   ├── routing/
+│   │   │   ├── SpaceAdminRouteL1.tsx      # MODIFY: add layout route with subspace spaceId
+│   │   │   └── SpaceAdminRouteL2.tsx      # MODIFY: add layout route with subspace spaceId
 │   │   └── SpaceAdminSettings/
 │   │       ├── graphql/
 │   │       │   ├── SpaceSettings.graphql        # MODIFY: add layout fragment
 │   │       │   └── UpdateSpaceSettings.graphql  # MODIFY: add layout to response
+│   │       ├── components/
+│   │       │   └── CalloutDisplayModeSettings.tsx  # NEW: admin toggle component
 │   │       ├── SpaceDefaultSettings.tsx          # MODIFY: add layout defaults
 │   │       └── useSpaceSettingsUpdate.ts         # MODIFY: extend for layout
 │   └── collaboration/
-│       └── callout/CalloutView/
-│           └── CalloutViewLayout.tsx  # MODIFY: pass defaultCollapsed to ExpandableMarkdown
+│       └── callout/
+│           ├── calloutBlock/
+│           │   └── CalloutLayoutTypes.tsx    # MODIFY: add defaultCollapsed to CalloutLayoutProps
+│           └── CalloutView/
+│               ├── CalloutView.tsx           # MODIFY: use useCalloutDescriptionDisplayMode hook
+│               └── CalloutViewLayout.tsx     # MODIFY: pass defaultCollapsed to ExpandableMarkdown
 ```
 
 **Structure Decision**: Single web application (client-only). All changes within the existing `src/` directory structure following established domain boundaries.
@@ -89,18 +102,17 @@ src/
 
 ### D1: ExpandableMarkdown prop addition
 
-Add `defaultCollapsed?: boolean` to `ExpandableMarkdown`. When `true`, the overflow detection resolves to `'collapsed'` instead of `'expanded'`. This is the minimal change to support the feature while preserving all existing behavior (default is `false` / `undefined` = current expanded behavior).
+Add `defaultCollapsed?: boolean` to `ExpandableMarkdown`. When `true`, the overflow detection resolves to `'collapsed'` instead of `'expanded'`. A `useEffect` re-enters `'detecting'` state when `defaultCollapsed` changes, handling both async setting load and reactive admin toggles. This is the minimal change to support the feature while preserving all existing behavior (default is `false` / `undefined` = current expanded behavior).
 
 ### D2: Setting delivery to callout components
 
-The `calloutDescriptionDisplayMode` is fetched alongside space settings in queries that already exist in the component tree. The value flows as a prop from `CalloutViewLayout` → `ExpandableMarkdown`. No new React context or global state needed.
+A dedicated `useCalloutDescriptionDisplayMode(spaceId)` hook in `src/domain/space/settings/` encapsulates the `useSpaceSettingsQuery` call and returns a `defaultCollapsed` boolean. The hook is called directly in `CalloutView` (which already has access to `useSpace()` and `useSubSpace()` for the space ID), avoiding prop-drilling from parent components. The `defaultCollapsed` value is passed as a prop through `CalloutViewLayout` → `ExpandableMarkdown`.
 
-For the specific query strategy: the setting can be added to existing space data queries that are already fetched where callouts are rendered, or via a small dedicated fragment. The exact query placement depends on where in the component tree the space settings are most naturally available.
+Note: the hook uses `||` (not `??`) to resolve the space ID from `subspace?.id || space?.id` because the `SubspaceContext` default value has `id: ''` (empty string, not null/undefined) when no subspace is active.
 
 ### D3: Admin UI placement
 
-- **L0 spaces**: New `PageContentBlock` in `SpaceAdminLayoutPage.tsx`, positioned below the Innovation Flow editor block (per user requirement)
-- **L1/L2 subspaces**: Add the toggle to the Settings tab (`SpaceAdminSettingsPage.tsx`), since subspaces don't have a Layout tab
+- **All levels (L0/L1/L2)**: The Layout tab is available at all space levels. The `CalloutDisplayModeSettings` toggle lives in `SpaceAdminLayoutPage.tsx`, positioned below the Innovation Flow editor block. L1/L2 subspaces reuse the same `SpaceAdminLayoutPage` component with `useL0Layout: false` and an explicit `spaceId` prop (the subspace ID) so that queries and mutations target the correct subspace rather than the parent L0 space from `useSpace()`.
 
 ### D4: Reactive updates (FR-011)
 

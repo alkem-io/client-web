@@ -11,6 +11,7 @@ import SpaceAdminCommunicationsPage, {
 import SpaceAdminSettingsPage, { SpaceAdminSettingsPageProps } from '../SpaceAdminSettings/SpaceAdminSettingsPage';
 import { useSpace } from '../../space/context/useSpace';
 import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
+import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 
 export const SpaceAdminL2Route = () => {
   const { space, entitlements } = useSpace();
@@ -47,6 +48,11 @@ export const SpaceAdminL2Route = () => {
     parentSpaceUrl: space.about.profile?.url, // Should be L1
   };
 
+  const layoutPageProps: SpaceAdminLayoutPageProps = {
+    useL0Layout: false,
+    spaceId: subspaceId,
+  };
+
   const aboutPageProps: SpaceAdminAboutPageProps = {
     useL0Layout: false,
     spaceId: subspaceId,
@@ -58,6 +64,7 @@ export const SpaceAdminL2Route = () => {
         <Routes>
           <Route index element={<Navigate to="about" replace />} />
           <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
+          <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />

@@ -122,10 +122,11 @@ As a platform operator, I want new spaces to default to "Collapsed" and all exis
 
 ## Assumptions
 
-- The "Layout" tab already exists in the Space Admin interface and can accommodate a new setting.
+- The "Layout" tab exists in the Space Admin interface at all levels (L0, L1, L2) and can accommodate a new setting. (Note: The Layout tab was added to L1/L2 subspaces as part of this feature — it previously only existed for L0 spaces.)
 - The backend exposes `settings.layout.calloutDescriptionDisplayMode` via GraphQL (see server spec `043-callout-collapse`). The client reads this field to determine the default display mode and writes it via `updateSpaceSettings` mutation.
 - Layout settings are publicly accessible without READ privilege (same pattern as `sortMode`), so the client can determine the display mode during initial render before full space data loads.
 - The existing collapse/expand toggle mechanism and visual behavior on individual callouts will be preserved exactly as-is. This feature only changes the default initial state, not the collapse/expand rendering logic.
 - "Bulk update" means the setting applies to all callouts in a space at once (not individual per-callout configuration).
 - No inheritance between spaces/subspaces; each is configured independently.
 - Template-based space creation inherits the template's display mode setting server-side; no special client handling needed.
+- In the UI, "callouts" are presented as "Posts" to users. The admin setting labels use "Post" terminology (e.g., "Post description display", "Collapse post descriptions by default").

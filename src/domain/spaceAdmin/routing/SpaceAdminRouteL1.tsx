@@ -16,6 +16,7 @@ import SpaceAdminCommunicationsPage, {
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
 import { useSpace } from '../../space/context/useSpace';
 import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
+import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 
 export const SpaceAdminL1Route: FC = () => {
   const { space, entitlements } = useSpace();
@@ -57,6 +58,11 @@ export const SpaceAdminL1Route: FC = () => {
     spaceId: subspaceId,
   };
 
+  const layoutPageProps: SpaceAdminLayoutPageProps = {
+    useL0Layout: false,
+    spaceId: subspaceId,
+  };
+
   const subspacesPageProps: SpaceAdminSubspacesPageProps = {
     useL0Layout: false,
     spaceId: subspaceId,
@@ -70,6 +76,7 @@ export const SpaceAdminL1Route: FC = () => {
           <Route path={'/'}>
             <Route index element={<Navigate to="about" replace />} />
             <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
+            <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
             <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
             <Route path="opportunities/*" element={<SpaceAdminSubspacesPage {...subspacesPageProps} />} />
             <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />

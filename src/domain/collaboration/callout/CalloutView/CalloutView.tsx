@@ -6,6 +6,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
@@ -77,6 +78,7 @@ const CalloutView = ({
 }: CalloutViewProps) => {
   const { space } = useSpace();
   const { subspace } = useSubSpace();
+  const defaultCollapsed = useCalloutDescriptionDisplayMode(subspace?.id || space?.id || '');
   const navigate = useNavigate();
   const contributionPreviewRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement>(null);
@@ -146,6 +148,7 @@ const CalloutView = ({
           onExpand={onExpand}
           onCollapse={onCollapse}
           calloutActions={calloutActions}
+          defaultCollapsed={defaultCollapsed}
         >
           {/* Whiteboard framing */}
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
