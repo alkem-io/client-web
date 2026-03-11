@@ -30,10 +30,12 @@ import {
   useUpdateConversationMutation,
   useUploadFileMutation,
   useDefaultVisualTypeConstraintsQuery,
+  UserConversationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActorType,
   ConversationCreationType,
+  UserConversationsQuery,
   UserFilterInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -192,6 +194,48 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
             memberID: value.id,
           },
         },
+        update: cache => {
+          cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+            if (!existing?.me?.conversations?.conversations) return existing;
+            return {
+              ...existing,
+              me: {
+                ...existing.me,
+                conversations: {
+                  ...existing.me.conversations,
+                  conversations: existing.me.conversations.conversations.map(c => {
+                    if (c.id !== props.conversationId) return c;
+                    if (c.members.some(m => m.id === value.id)) return c;
+                    return {
+                      ...c,
+                      members: [
+                        ...c.members,
+                        {
+                          __typename: 'Actor' as const,
+                          id: value.id,
+                          type: ActorType.User,
+                          profile: {
+                            __typename: 'Profile' as const,
+                            id: '',
+                            displayName: value.profile?.displayName ?? '',
+                            url: '',
+                            avatar: value.profile?.visual
+                              ? {
+                                  __typename: 'Visual' as const,
+                                  id: '',
+                                  uri: value.profile.visual.uri,
+                                }
+                              : undefined,
+                          },
+                        },
+                      ],
+                    };
+                  }),
+                },
+              },
+            };
+          });
+        },
       });
     } else {
       setSelectedMembers(prev => [
@@ -216,6 +260,27 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
             conversationID: props.conversationId,
             memberID: memberId,
           },
+        },
+        update: cache => {
+          cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+            if (!existing?.me?.conversations?.conversations) return existing;
+            return {
+              ...existing,
+              me: {
+                ...existing.me,
+                conversations: {
+                  ...existing.me.conversations,
+                  conversations: existing.me.conversations.conversations.map(c => {
+                    if (c.id !== props.conversationId) return c;
+                    return {
+                      ...c,
+                      members: c.members.filter(m => m.id !== memberId),
+                    };
+                  }),
+                },
+              },
+            };
+          });
         },
       });
     } else {

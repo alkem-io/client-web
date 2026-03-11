@@ -192,7 +192,6 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const handleMemberAdded = useCallback(
     (_event: MemberAddedEvent) => {
-      // Refetch conversations from the server to get authoritative data
       client.refetchQueries({ include: [UserConversationsDocument] });
     },
     [client]
@@ -200,7 +199,6 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const handleMemberRemoved = useCallback(
     (event: MemberRemovedEvent) => {
-      // If current user was removed, evict the conversation from cache immediately
       if (event.removedMemberID === currentUserId) {
         client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
           if (!existing?.me?.conversations?.conversations) return existing;
@@ -217,8 +215,6 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         });
         return;
       }
-
-      // Refetch conversations from the server to get authoritative data
       client.refetchQueries({ include: [UserConversationsDocument] });
     },
     [client, currentUserId]
