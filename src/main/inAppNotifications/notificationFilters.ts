@@ -40,6 +40,10 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceLeadCommunicationMessage,
   NotificationEvent.SpaceCommunityCalendarEventCreated,
   NotificationEvent.SpaceCommunityCalendarEventComment,
+  NotificationEvent.SpaceCollaborationPollVoteCastOnOwnPoll,
+  NotificationEvent.SpaceCollaborationPollVoteCastOnPollIVotedOn,
+  NotificationEvent.SpaceCollaborationPollModifiedOnPollIVotedOn,
+  NotificationEvent.SpaceCollaborationPollVoteAffectedByOptionChange,
 ];
 
 // Platform notifications - platform admin and forum notifications

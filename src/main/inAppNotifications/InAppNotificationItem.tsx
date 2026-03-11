@@ -31,6 +31,7 @@ import { InAppUserSpaceCommunityApplicationDeclined } from '@/main/inAppNotifica
 import { InAppSpaceAdminVirtualContributorCommunityInvitationDeclinedView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView';
 import { InAppSpaceCommunityCalendarEventCreatedView } from './views/space/InAppSpaceCommunityCalendarEventCreatedView';
 import { InAppSpaceCommunityCalendarEventCommentView } from './views/space/InAppSpaceCommunityCalendarEventCommentView';
+import { InAppSpaceCollaborationPollView } from './views/space/InAppSpaceCollaborationPollView';
 
 export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
@@ -94,6 +95,11 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppSpaceCommunityCalendarEventCreatedView {...item} />;
     case NotificationEvent.SpaceCommunityCalendarEventComment:
       return <InAppSpaceCommunityCalendarEventCommentView {...item} />;
+    case NotificationEvent.SpaceCollaborationPollVoteCastOnOwnPoll:
+    case NotificationEvent.SpaceCollaborationPollVoteCastOnPollIVotedOn:
+    case NotificationEvent.SpaceCollaborationPollModifiedOnPollIVotedOn:
+    case NotificationEvent.SpaceCollaborationPollVoteAffectedByOptionChange:
+      return <InAppSpaceCollaborationPollView {...item} />;
 
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {

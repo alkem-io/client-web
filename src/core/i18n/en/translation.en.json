@@ -2261,6 +2261,22 @@
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
           "subject": "New $t(common.comment) on {{type}}: {{eventTitle}}",
           "description": "{{triggeredByName}} left a $t(common.comment) on the {{eventTitle}} in the {{spaceName}} calendar"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL": {
+          "subject": "{{triggeredByName}} voted on your poll \"{{calloutName}}\" in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_POLL_I_VOTED_ON": {
+          "subject": "{{triggeredByName}} also voted on \"{{calloutName}}\" in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
+          "subject": "The poll \"{{calloutName}}\" in {{spaceName}} has been modified",
+          "description": "{{triggeredByName}} modified a poll you voted on"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE": {
+          "subject": "Your vote on \"{{calloutName}}\" in {{spaceName}} was affected by a change",
+          "description": "{{triggeredByName}} changed an option on a poll you voted on, and your vote was removed"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",

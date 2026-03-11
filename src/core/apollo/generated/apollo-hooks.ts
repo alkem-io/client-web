@@ -3475,6 +3475,25 @@ export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentD
   }
   ${SpaceNotificationFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCollaborationPollFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationPoll on InAppNotificationPayloadSpaceCollaborationPoll {
+    space {
+      ...spaceNotification
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
     id
@@ -3558,6 +3577,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
         ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
       }
+      ... on InAppNotificationPayloadSpaceCollaborationPoll {
+        ...InAppNotificationPayloadSpaceCollaborationPoll
+      }
     }
   }
   ${VisualModelFragmentDoc}
@@ -3582,6 +3604,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadVirtualContributorFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}
 `;
 export const UrlResolverResultFragmentDoc = gql`
   fragment UrlResolverResult on UrlResolverQueryResults {
