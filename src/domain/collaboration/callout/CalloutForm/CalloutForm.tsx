@@ -3,6 +3,8 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  PollResultsDetail,
+  PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
@@ -31,6 +33,7 @@ import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutF
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '../../poll/PollFormFields';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -73,9 +76,24 @@ export const calloutValidationSchema = yup.object().shape({
               options: yup
                 .array()
                 .of(yup.object().shape({ text: yup.string().required() }))
-                .min(2)
+                .min(MIN_POLL_OPTIONS)
+                .max(MAX_POLL_OPTIONS)
                 .required(),
-              settings: yup.object().required(),
+              settings: yup
+                .object()
+                .shape({
+                  minResponses: yup.number().min(1).required(),
+                  maxResponses: yup.number().min(0).required(),
+                  resultsVisibility: yup
+                    .mixed<PollResultsVisibility>()
+                    .oneOf(Object.values(PollResultsVisibility).filter(value => typeof value === 'string'))
+                    .required(),
+                  resultsDetail: yup
+                    .mixed<PollResultsDetail>()
+                    .oneOf(Object.values(PollResultsDetail).filter(value => typeof value === 'string'))
+                    .required(),
+                })
+                .required(),
             })
             .required()
         : schema.nullable();

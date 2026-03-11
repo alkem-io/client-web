@@ -114,7 +114,6 @@ const CreateCalloutDialog = ({
               options: framingData.poll.options.map(o => o.text),
             }
           : undefined,
-        // Map media gallery items to CreateMediaGalleryInput
       };
 
       // And map the radio button allowed contribution types to an array

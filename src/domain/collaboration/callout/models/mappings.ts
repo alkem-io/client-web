@@ -53,8 +53,8 @@ export const mapCalloutTemplateToCalloutForm = (
         settings: {
           minResponses: number;
           maxResponses: number;
-          resultsVisibility: string;
-          resultsDetail: string;
+          resultsVisibility: PollResultsVisibility;
+          resultsDetail: PollResultsDetail;
         };
         options: { text: string }[];
       };
@@ -129,8 +129,8 @@ export const mapCalloutTemplateToCalloutForm = (
             settings: {
               minResponses: calloutTemplate.framing.poll.settings.minResponses,
               maxResponses: calloutTemplate.framing.poll.settings.maxResponses,
-              resultsVisibility: calloutTemplate.framing.poll.settings.resultsVisibility as PollResultsVisibility,
-              resultsDetail: calloutTemplate.framing.poll.settings.resultsDetail as PollResultsDetail,
+              resultsVisibility: calloutTemplate.framing.poll.settings.resultsVisibility,
+              resultsDetail: calloutTemplate.framing.poll.settings.resultsDetail,
             },
           }
         : undefined,

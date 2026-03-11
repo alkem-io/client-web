@@ -383,6 +383,8 @@
     "role": "Role",
     "agreement": "Agreement",
     "agreements": "Agreements",
+    "Poll": "Poll",
+    "poll": "poll",
     "templates": "Templates",
     "noneTemplates": "No templates",
     "templateTypes": "Template types",
@@ -660,7 +662,7 @@
       "WHITEBOARD": "$t(common.Whiteboard)",
       "MEMO": "$t(common.Memo)",
       "NONE": "$t(common.Post)",
-      "POLL": "Poll"
+      "POLL": "$t(common.Poll)"
     }
   },
   "community": {
@@ -872,8 +874,8 @@
           "emptyGallery": "No images yet. Click the + button to add images."
         },
         "poll": {
-          "title": "Poll",
-          "tooltip": "Create a poll for community voting"
+          "title": "$t(common.Poll)",
+          "tooltip": "Create a $t(common.poll) for community voting"
         }
       },
       "contributionSettings": {
@@ -2266,7 +2268,7 @@
           "description": "{{triggeredByName}} left a $t(common.comment) on the {{eventTitle}} in the {{spaceName}} calendar"
         },
         "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL": {
-          "subject": "{{triggeredByName}} voted on your poll \"{{calloutName}}\" in {{spaceName}}",
+          "subject": "{{triggeredByName}} voted on your $t(common.poll) \"{{calloutName}}\" in {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_POLL_I_VOTED_ON": {
@@ -2274,12 +2276,12 @@
           "description": ""
         },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
-          "subject": "The poll \"{{calloutName}}\" in {{spaceName}} has been modified",
-          "description": "{{triggeredByName}} modified a poll you voted on"
+          "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified",
+          "description": "{{triggeredByName}} modified a $t(common.poll) you voted on"
         },
         "SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE": {
           "subject": "Your vote on \"{{calloutName}}\" in {{spaceName}} was affected by a change",
-          "description": "{{triggeredByName}} changed an option on a poll you voted on, and your vote was removed"
+          "description": "{{triggeredByName}} changed an option on a $t(common.poll) you voted on, and your vote was removed"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -2375,7 +2377,7 @@
       "confirmRemove": "Removing this option will delete all votes for it. Continue?"
     },
     "create": {
-      "title": "Poll Title",
+      "title": "$t(common.Poll) Title",
       "options": "Options",
       "settings": "Settings",
       "responseType": "Response type",
@@ -2398,14 +2400,14 @@
       }
     },
     "manage": {
-      "editPoll": "Edit Poll",
+      "editPoll": "Edit $t(common.poll)",
       "done": "Done"
     },
     "error": {
       "voteFailed": "Failed to submit your vote. Please try again.",
-      "staleOption": "This poll has been updated. Please refresh and try again.",
+      "staleOption": "This $t(common.poll) has been updated. Please refresh and try again.",
       "networkError": "Network error. Please check your connection and try again.",
-      "optionActionFailed": "Failed to update poll options. Please try again."
+      "optionActionFailed": "Failed to update $t(common.poll) options. Please try again."
     }
   },
   "pages": {
@@ -3797,10 +3799,10 @@
           "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of",
           "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of",
-          "collaborationPollVoteCastOnOwnPoll": "Someone votes on a poll I created",
-          "collaborationPollVoteCastOnPollIVotedOn": "Someone votes on a poll I also voted on",
-          "collaborationPollModifiedOnPollIVotedOn": "A poll I voted on is modified",
-          "collaborationPollVoteAffectedByOptionChange": "My vote is affected by a poll option change"
+          "collaborationPollVoteCastOnOwnPoll": "Someone votes on a $t(common.poll) I created",
+          "collaborationPollVoteCastOnPollIVotedOn": "Someone votes on a $t(common.poll) I also voted on",
+          "collaborationPollModifiedOnPollIVotedOn": "A $t(common.poll) I voted on is modified",
+          "collaborationPollVoteAffectedByOptionChange": "My vote is affected by a $t(common.poll) option change"
         }
       },
       "spaceAdmin": {

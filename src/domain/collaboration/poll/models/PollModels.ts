@@ -59,3 +59,9 @@ export type PollSettingsFormValues = {
   resultsVisibility: PollResultsVisibility;
   resultsDetail: PollResultsDetail;
 };
+
+export type PollFormFieldSubmittedValues = {
+  title: string;
+  options: string[];
+  settings: PollSettingsFormValues;
+};

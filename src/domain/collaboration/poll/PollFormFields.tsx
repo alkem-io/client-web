@@ -19,7 +19,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 
 const FIELD_PREFIX = 'framing.poll';
-const MIN_OPTIONS = 2;
+export const MIN_POLL_OPTIONS = 2;
+export const MAX_POLL_OPTIONS = 10;
 
 interface SortableOptionRowProps {
   id: string;
@@ -59,6 +60,7 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
         <DragIndicatorIcon fontSize="small" />
       </IconButton>
       <FormikInputField
+        title=""
         name={`${formPrefix}.options.${index}.text`}
         required
         maxLength={512}
@@ -122,7 +124,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
                         id={itemIds[index]}
                         index={index}
                         formPrefix={formPrefix}
-                        canRemove={options.length > MIN_OPTIONS}
+                        canRemove={options.length > MIN_POLL_OPTIONS}
                         onRemove={() => arrayHelpers.remove(index)}
                       />
                     </Gutters>
@@ -135,6 +137,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
                     aria-label={t('components.referenceSegment.addReference')}
                     onClick={() => arrayHelpers.push({ text: '' })}
                     color="primary"
+                    disabled={options.length >= MAX_POLL_OPTIONS}
                   >
                     <AddIcon />
                   </IconButton>
