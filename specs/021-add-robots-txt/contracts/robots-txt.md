@@ -4,7 +4,7 @@
 
 ## Endpoint
 
-```
+```http
 GET /robots.txt
 ```
 
