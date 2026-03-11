@@ -4670,7 +4670,7 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
-  /** Updates the pinned state of a Subspace within the specified Space. */
+  /** Updates the pinned state of a Subspace within the specified Space. Returns the updated Subspace. */
   updateSubspacePinned: Space;
   /** Update the sortOrder field of the supplied Subspaces to increase as per the order that they are provided in. */
   updateSubspacesSortOrder: Array<Space>;
