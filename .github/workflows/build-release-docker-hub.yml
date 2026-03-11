@@ -46,4 +46,5 @@ jobs:
             ARG_BUILD_DATE=${{ github.event.release.created_at }}
             ARG_BUILD_REVISION=${{ github.sha }}
             ARG_BUILD_ENVIRONMENT=production
+            ARG_ROBOTS_ALLOW_INDEXING=true
           labels: ${{ steps.meta.outputs.labels }}
