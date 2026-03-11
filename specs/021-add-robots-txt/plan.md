@@ -54,6 +54,8 @@ specs/021-add-robots-txt/
 ```text
 # Files modified
 buildConfiguration.js          # Extended with robots.txt generation logic
+Dockerfile                     # New ARG_ROBOTS_ALLOW_INDEXING build arg → VITE_APP_ROBOTS_ALLOW_INDEXING env
+.github/workflows/build-release-docker-hub.yml  # Passes ARG_ROBOTS_ALLOW_INDEXING=true for production
 
 # Files added
 src/domain/platform/__tests__/robotsTxt.test.ts   # Unit test for generation logic

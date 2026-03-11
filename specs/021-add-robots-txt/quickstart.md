@@ -45,10 +45,12 @@ curl http://localhost:3001/robots.txt
 | File | Change |
 |------|--------|
 | `buildConfiguration.js` | Added robots.txt generation logic |
+| `Dockerfile` | New `ARG_ROBOTS_ALLOW_INDEXING` build arg mapped to `VITE_APP_ROBOTS_ALLOW_INDEXING` |
+| `.github/workflows/build-release-docker-hub.yml` | Passes `ARG_ROBOTS_ALLOW_INDEXING=true` for production releases |
 | `.env` | Documents `VITE_APP_ROBOTS_ALLOW_INDEXING` variable |
 | `.gitignore` | Added `public/robots.txt` to ignored files |
 | Test file | Unit test for robots.txt content generation |
 
 ## CI/CD Configuration
 
-Set `VITE_APP_ROBOTS_ALLOW_INDEXING=true` **only** in the production deployment pipeline. All other environments (staging, dev, test) should leave it unset or set to any value other than `"true"`.
+`ARG_ROBOTS_ALLOW_INDEXING=true` is passed as a Docker build arg **only** in `build-release-docker-hub.yml` (triggered on release/tag). All other workflows (dev, sandbox, test) don't pass this arg, so they default to `false` (disallow all crawlers).

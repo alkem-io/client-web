@@ -92,11 +92,12 @@ Platform operators monitoring Sentry no longer see 404 errors for `/robots.txt` 
 - Q: Should production robots.txt allow all paths or disallow specific private routes? → A: Allow all but explicitly disallow `/admin`. The identity subdomain is separate and not handled by client-web robots.txt.
 - Q: What is the complete list of paths to disallow on production? → A: Only `/admin`. The identity logic lives on a separate subdomain (not a path), so `/identity` is not relevant. No other private paths need disallowing.
 - Q: Which env var should determine production vs non-production? → A: New `VITE_APP_ROBOTS_ALLOW_INDEXING=true`, set only in production CI/CD; absent = disallow-all (fail-safe).
+- Q: How is the env var provided in production? → A: Via `ARG_ROBOTS_ALLOW_INDEXING` Docker build arg in `build-release-docker-hub.yml`, mapped to `VITE_APP_ROBOTS_ALLOW_INDEXING` in the Dockerfile. Non-production workflows don't pass this arg, so they get the fail-safe default.
 - Q: Should production robots.txt include a Sitemap directive? → A: No, omit for now; add when a sitemap is implemented.
 
 ## Assumptions
 
-- A new `VITE_APP_ROBOTS_ALLOW_INDEXING` environment variable will be introduced. It is set to `true` only in production CI/CD; absent or any other value defaults to disallow-all (fail-safe).
+- A new `VITE_APP_ROBOTS_ALLOW_INDEXING` environment variable will be introduced. It is provided via the `ARG_ROBOTS_ALLOW_INDEXING` Docker build arg, set to `true` only in the release Docker Hub workflow (`build-release-docker-hub.yml`). All other workflows (dev, sandbox, test) don't pass this arg, defaulting to disallow-all (fail-safe).
 - Production robots.txt allows public content but explicitly disallows only `/admin`. Identity logic is on a separate subdomain and not governed by this file.
 - No `Sitemap:` directive will be included in the initial robots.txt. It will be added when a sitemap is implemented.
 - The robots.txt will be a static file generated into the `public/` directory at build time by `buildConfiguration.js`, following the same pattern used for `public/env-config.js`.
