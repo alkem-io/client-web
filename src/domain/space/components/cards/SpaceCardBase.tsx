@@ -115,7 +115,8 @@ const SpaceCardBase = ({
   // Regular mode - standard card layout with header and content
   return (
     <ContributeCard sx={{ position: 'relative', minWidth: CARD_MIN_WIDTH }} {...containerProps}>
-      <Box {...wrapperProps}>
+      <Box {...wrapperProps} sx={{ position: 'relative' }}>
+        {iconOverlay && <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 1 }}>{iconOverlay}</Box>}
         <CardBanner
           src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}

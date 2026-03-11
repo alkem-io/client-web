@@ -1,5 +1,7 @@
 import { Button, Container, Link, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { error as sentryError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { generateSupportMailtoUrl } from '@/core/ui/notifications/generateSupportMailtoUrl';
 import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
 
@@ -11,6 +13,12 @@ type ErrorPageProps = {
 export const ErrorPage = ({ error, numericCode }: ErrorPageProps) => {
   const { t } = useTranslation();
   const mailtoUrl = generateSupportMailtoUrl({ numericCode, t });
+
+  // Safety net: ensure every ErrorPage render is tracked in Sentry.
+  // Sentry deduplicates if the same error was already captured upstream (e.g. SentryErrorBoundary).
+  useEffect(() => {
+    sentryError(error, { category: TagCategoryValues.UI, label: 'ErrorPage' });
+  }, [error]);
 
   return (
     <Container maxWidth="lg">

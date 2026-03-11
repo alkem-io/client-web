@@ -128,6 +128,7 @@ const SpaceCard = ({
           {tags && tags.length > 0 && <SpaceCardTagsOverlay tags={tags} />}
         </>
       }
+      iconOverlay={iconOverlay}
       tags={undefined}
       {...props}
     >

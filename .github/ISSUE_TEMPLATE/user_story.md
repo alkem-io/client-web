@@ -2,7 +2,7 @@
 name: User Story
 about: A valuable increment of functionality, testable by the users
 title: ''
-labels: 'user story, client, Rhea Team'
+labels: CE, client
 assignees: ''
 ---
 

@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -25,7 +26,7 @@ export const SpaceAboutSegment = ({ loading, spaceLevel }: ContextSegmentProps &
   const { isMediumSmallScreen } = useScreenSize();
   return (
     <Gutters disablePadding={true}>
-      <Gutters disableGap={true} disablePadding={true}>
+      <Gutters id="description" disableGap={true} disablePadding={true}>
         <FormikMarkdownField
           name="description"
           title={t(`context.${spaceLevel}.description.title` as const)}
@@ -37,25 +38,29 @@ export const SpaceAboutSegment = ({ loading, spaceLevel }: ContextSegmentProps &
         />
       </Gutters>
       <Gutters disablePadding={true} row={!isMediumSmallScreen}>
-        <FormikMarkdownField
-          name="why"
-          title={t(`context.${spaceLevel}.why.title` as const)}
-          placeholder={t(`context.${spaceLevel}.why.title` as const)}
-          helperText={t(`context.${spaceLevel}.why.description` as const)}
-          rows={10}
-          maxLength={MARKDOWN_TEXT_LENGTH}
-          loading={loading}
-        />
+        <Box id="why" flex={1} minWidth={0}>
+          <FormikMarkdownField
+            name="why"
+            title={t(`context.${spaceLevel}.why.title` as const)}
+            placeholder={t(`context.${spaceLevel}.why.title` as const)}
+            helperText={t(`context.${spaceLevel}.why.description` as const)}
+            rows={10}
+            maxLength={MARKDOWN_TEXT_LENGTH}
+            loading={loading}
+          />
+        </Box>
 
-        <FormikMarkdownField
-          name="who"
-          title={t(`context.${spaceLevel}.who.title` as const)}
-          placeholder={t(`context.${spaceLevel}.who.title` as const)}
-          helperText={t(`context.${spaceLevel}.who.description` as const)}
-          rows={10}
-          maxLength={MARKDOWN_TEXT_LENGTH}
-          loading={loading}
-        />
+        <Box id="who" flex={1} minWidth={0}>
+          <FormikMarkdownField
+            name="who"
+            title={t(`context.${spaceLevel}.who.title` as const)}
+            placeholder={t(`context.${spaceLevel}.who.title` as const)}
+            helperText={t(`context.${spaceLevel}.who.description` as const)}
+            rows={10}
+            maxLength={MARKDOWN_TEXT_LENGTH}
+            loading={loading}
+          />
+        </Box>
       </Gutters>
     </Gutters>
   );

@@ -1,4 +1,4 @@
-import { LockOutlined } from '@mui/icons-material';
+import { LockOutlined, PushPinOutlined } from '@mui/icons-material';
 import { Box, Collapse, List, ListItem, Skeleton, Tooltip, type TooltipProps } from '@mui/material';
 import { times } from 'lodash-es';
 import { type ReactNode, useState } from 'react';
@@ -16,6 +16,7 @@ interface Item {
   uri: string;
   cardBanner?: string;
   isPrivate?: boolean;
+  pinned?: boolean;
 }
 
 export interface LinksListProps {
@@ -65,13 +66,22 @@ const SubspaceLinkList = ({ items = [], emptyListCaption, loading = false }: Lin
       <BlockSectionTitle minWidth={0} noWrap={true}>
         {item.title}
       </BlockSectionTitle>
+      {item.pinned && (
+        <Tooltip
+          title={<Caption>{t('components.subspacePinIndicator.tooltip')}</Caption>}
+          placement={tooltipPlacement}
+          arrow={true}
+        >
+          <PushPinOutlined sx={{ ml: 'auto', fontSize: 14, color: 'primary.main' }} />
+        </Tooltip>
+      )}
       {item.isPrivate && (
         <Tooltip
           title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
           placement={tooltipPlacement}
           arrow={true}
         >
-          <LockOutlined sx={{ ml: 'auto', color: theme => theme.palette.neutral.light }} />
+          <LockOutlined sx={{ ml: item.pinned ? 0 : 'auto', color: theme => theme.palette.neutral.light }} />
         </Tooltip>
       )}
     </ListItem>

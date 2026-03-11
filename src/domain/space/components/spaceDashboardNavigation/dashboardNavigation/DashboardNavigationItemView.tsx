@@ -7,6 +7,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption } from '@/core/ui/typography';
 import SpaceAvatar from '../../SpaceAvatar';
+import SubspacePinIndicator from '../../SubspacePinIndicator';
 import type { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { getIndentStyle } from './utils';
 
@@ -38,6 +39,7 @@ const DashboardNavigationItemView = ({
   children,
   avatar,
   private: isPrivate = false,
+  pinned: isPinned = false,
   tooltipPlacement,
   level = 0,
   onClick,
@@ -125,23 +127,29 @@ const DashboardNavigationItemView = ({
             </Tooltip>
           }
           visualRight={
-            isPrivate ? (
-              <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
-                placement={tooltipPlacement}
-                arrow={true}
-              >
-                <Box>
-                  <IconButton disableRipple={true} onClick={preventDefault} aria-label={t('common.lock')}>
-                    <LockOutlined />
-                  </IconButton>
-                </Box>
-              </Tooltip>
-            ) : hasChildren ? (
-              <IconButton onClick={toggleExpand} aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}>
-                {isExpanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            ) : undefined
+            <Box display="flex" alignItems="center" gap={0.5}>
+              {isPinned && <SubspacePinIndicator />}
+              {isPrivate ? (
+                <Tooltip
+                  title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+                  placement={tooltipPlacement}
+                  arrow={true}
+                >
+                  <Box>
+                    <IconButton disableRipple={true} onClick={preventDefault} aria-label={t('common.lock')}>
+                      <LockOutlined />
+                    </IconButton>
+                  </Box>
+                </Tooltip>
+              ) : hasChildren ? (
+                <IconButton
+                  onClick={toggleExpand}
+                  aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+                >
+                  {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+              ) : undefined}
+            </Box>
           }
           padding={true}
           square={true}

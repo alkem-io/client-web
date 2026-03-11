@@ -27,6 +27,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { Error40X } from './core/pages/Errors/Error40X';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
+import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
 
@@ -144,6 +145,7 @@ const Root: FC = () => {
                                         <UserMessagingDialog />
                                       </Suspense>
                                       <VersionHandling />
+                                      <OnlineStatusNotification />
                                       <Error40XBoundary
                                         errorComponent={errorState => (
                                           <TopLevelLayout>

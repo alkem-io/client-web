@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel, SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -11,8 +11,10 @@ import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreati
 import type { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { useSubspaceCardData } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import SubspacePinIndicator from '@/domain/space/components/SubspacePinIndicator';
 import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
+import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { useSpace } from '../../../context/useSpace';
 import useSpaceTabProvider from '../SpaceTabProvider';
@@ -46,8 +48,9 @@ const SpaceSubspacesPage = () => {
   // @ts-expect-error react-18
   useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
   const space = data?.lookup.space;
+  const sortMode = space?.settings?.sortMode ?? SpaceSortMode.Alphabetical;
 
-  const subspaces = space?.subspaces ?? [];
+  const subspaces = useSubspacesSorted(space?.subspaces ?? [], sortMode);
 
   // Use shared hook for parent info and avatar stacking
   const { collectAvatars } = useSubspaceCardData(space);
@@ -85,6 +88,7 @@ const SpaceSubspacesPage = () => {
       <SubspaceView
         childEntities={subspaces}
         level={level}
+        sortMode={sortMode}
         childEntitiesIcon={<SpaceL1Icon />}
         childEntityValueGetter={spaceAboutValueGetter}
         childEntityTagsGetter={spaceAboutTagsGetter}
@@ -107,6 +111,11 @@ const SpaceSubspacesPage = () => {
             showLeads={isAuthenticated}
             onContactLead={handleContactLead}
             avatarUris={collectAvatars(item)}
+            iconOverlay={
+              sortMode === SpaceSortMode.Alphabetical && item.pinned ? (
+                <SubspacePinIndicator withBackground={true} />
+              ) : undefined
+            }
           />
         )}
         onClickCreate={() => setIsCreateDialogOpen(true)}

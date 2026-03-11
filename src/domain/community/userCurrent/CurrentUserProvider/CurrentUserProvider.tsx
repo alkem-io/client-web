@@ -105,8 +105,10 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     ]
   );
 
-  return error ? (
-    <ErrorPage error={error} />
+  const criticalError = error ?? userProviderError;
+
+  return criticalError ? (
+    <ErrorPage error={criticalError} />
   ) : (
     <CurrentUserContext value={providedValue}>{children}</CurrentUserContext>
   );

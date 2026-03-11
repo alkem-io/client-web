@@ -4,7 +4,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, IconButton } from '@mui/material';
 import { cloneElement, type ReactElement, type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { type SpaceLevel, SpaceSortMode, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import InfoColumn from '@/core/ui/content/InfoColumn';
@@ -49,6 +49,7 @@ export interface SubspaceViewProps<ChildEntity extends BaseChildEntity> {
   state: SubspacesState;
   children?: ReactNode;
   onClickCreate?: (isOpen: boolean) => void;
+  sortMode?: SpaceSortMode;
 }
 
 const SubspaceView = <ChildEntity extends BaseChildEntity>({
@@ -64,6 +65,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
   state,
   children,
   onClickCreate,
+  sortMode,
 }: SubspaceViewProps<ChildEntity>) => {
   const [filter, setFilter] = useState('');
   const { permissions } = useSpace();
@@ -79,6 +81,10 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
           uri: entity.about.profile.url,
           cardBanner: entity.about.profile?.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
           isPrivate: !entity.about.isContentPublic,
+          pinned:
+            sortMode !== SpaceSortMode.Custom && 'pinned' in entity
+              ? (entity as { pinned?: boolean }).pinned
+              : undefined,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
     [childEntities, filter, childEntitiesIcon]
