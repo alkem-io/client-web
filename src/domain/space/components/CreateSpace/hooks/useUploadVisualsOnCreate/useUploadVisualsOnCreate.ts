@@ -24,7 +24,7 @@ interface UseUploadVisualsOnCreateProvided {
   uploadVisuals: (
     createResult: ProfileWithVisuals | undefined,
     data: VisualsForm | undefined
-  ) => Promise<unknown> | undefined;
+  ) => Promise<unknown> | void;
 }
 
 interface UseUploadVisualsOnCreateProps {

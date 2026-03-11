@@ -23,7 +23,7 @@ export const lazyWithGlobalErrorHandler = <T extends object>(
     } catch (error) {
       const setError = getGlobalErrorSetter();
       const originalError: Error =
-        error instanceof Error ? error : error?.message ? new Error(error.message) : new Error('Unknown error');
+        error instanceof Error ? error : error?.['message'] ? new Error(error['message']) : new Error('Unknown error');
 
       setError(new LazyLoadError(originalError));
 
@@ -44,7 +44,7 @@ export const lazyImportWithErrorHandler = async <T>(importFunc: () => Promise<T>
   } catch (error) {
     const setError = getGlobalErrorSetter();
     const originalError: Error =
-      error instanceof Error ? error : error?.message ? new Error(error.message) : new Error('Unknown error');
+      error instanceof Error ? error : error?.['message'] ? new Error(error['message']) : new Error('Unknown error');
 
     setError(new LazyLoadError(originalError));
     throw new LazyLoadError(originalError);

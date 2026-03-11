@@ -18,7 +18,7 @@ export enum FlowReplaceOption {
 interface ApplySpaceTemplateDialogProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (options: ImportFlowOptions) => Promise<unknown> | undefined;
+  onConfirm: (options: ImportFlowOptions) => Promise<unknown> | void;
   existingCalloutsCount?: number;
 }
 

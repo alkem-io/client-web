@@ -15,7 +15,7 @@ interface EntityConfirmDeleteDialogProps {
   description?: TranslationKey;
   open: boolean;
   onClose: () => void;
-  onDelete: () => Promise<unknown> | undefined;
+  onDelete: () => Promise<unknown> | void;
 }
 
 const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({

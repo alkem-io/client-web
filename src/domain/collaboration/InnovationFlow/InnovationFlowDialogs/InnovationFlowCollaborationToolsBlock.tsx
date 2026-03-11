@@ -50,7 +50,7 @@ interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlow
       | undefined;
   }[];
   loading?: boolean;
-  onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | undefined;
+  onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }
 
 interface ListItemProps extends BoxProps {

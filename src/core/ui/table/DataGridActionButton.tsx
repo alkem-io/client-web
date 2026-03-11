@@ -9,7 +9,7 @@ interface DataGridActionButtonProps<Item extends Identifiable> extends Omit<Icon
   icon: React.ComponentType<SvgIconProps>;
   iconColor?: SvgIconProps['color'];
   tooltip?: string;
-  onClick?: (item: Item) => Promise<unknown> | undefined;
+  onClick?: (item: Item) => Promise<unknown> | void;
   isDisabled?: (item: Item) => boolean;
 }
 

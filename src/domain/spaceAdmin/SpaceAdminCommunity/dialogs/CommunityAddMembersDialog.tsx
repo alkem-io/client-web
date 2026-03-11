@@ -24,7 +24,7 @@ type GetterParams = Entity | undefined;
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
   fetchAvailableEntities: (filter?: string) => Promise<Entity[] | undefined>;
-  onAdd: (memberId: string) => Promise<unknown> | undefined | undefined;
+  onAdd: (memberId: string) => Promise<unknown> | void | void;
   allowSearchByURL?: boolean;
 }
 const PAGE_SIZE = 10;

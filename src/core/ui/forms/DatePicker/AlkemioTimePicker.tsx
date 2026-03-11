@@ -12,7 +12,6 @@ export interface AlkemioTimePickerProps
   onChange?: (date: Date) => void;
   onBlur?: () => void;
   minTime?: Dayjs;
-  // @ts-expect-error react-18 allow string and translations (hard to type)
   error?: unknown;
   containerProps?: BoxProps;
 }

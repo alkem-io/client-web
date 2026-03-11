@@ -115,7 +115,7 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
         <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage={true} />
         <KratosForm ui={registrationFlow?.ui}>
           <AuthPageContentContainer>
-            {mustAcceptTerms && <AcceptTerms ui={registrationFlow?.ui} />}
+            {mustAcceptTerms && <AcceptTerms ui={registrationFlow!.ui} />}
             {!mustAcceptTerms && (
               <KratosUI
                 ui={registrationFlowWithAcceptedTerms?.ui}

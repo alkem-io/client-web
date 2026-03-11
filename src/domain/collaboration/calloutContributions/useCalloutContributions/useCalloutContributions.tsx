@@ -24,7 +24,7 @@ interface useCalloutContributionsProps {
     | undefined;
   pageSize?: number;
   contributionType: CalloutContributionType;
-  onCalloutUpdate?: () => Promise<unknown> | undefined;
+  onCalloutUpdate?: () => Promise<unknown> | void;
   skip?: boolean;
 }
 

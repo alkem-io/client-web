@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { type FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -34,12 +34,12 @@ const SpaceAdminL0Route: FC = () => {
 
   const communityPageProps: SpaceAdminCommunityPageProps = {
     about: space?.about,
-    roleSetId: space?.about.membership?.roleSetID!,
+    roleSetId: space?.about.membership!.roleSetID!,
     spaceId: space?.id,
     pendingMembershipsEnabled: true,
     communityGuidelinesEnabled: true,
     communityGuidelinesTemplatesEnabled: true,
-    communityGuidelinesId: space?.about.guidelines?.id,
+    communityGuidelinesId: space?.about.guidelines!.id,
     virtualContributorsBlockEnabled: true,
     level: space?.level,
     useL0Layout: true,

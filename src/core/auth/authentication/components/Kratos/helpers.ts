@@ -78,7 +78,7 @@ export const isRequired = (node: UiNode) => {
 
 export const isSubmittingPasswordFlow = (event: FormEvent<HTMLFormElement>) => {
   // https://developer.mozilla.org/en-US/docs/Web/API/SubmitEvent/submitter
-  const button = event.nativeEvent.submitter as HTMLButtonElement;
+  const button = event.nativeEvent['submitter'] as HTMLButtonElement;
   return button && button.name === 'method' && button.value === 'password';
 };
 

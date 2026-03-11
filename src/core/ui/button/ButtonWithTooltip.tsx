@@ -43,7 +43,7 @@ const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultC
     backgroundColor: isOutlined ? theme.palette.background.paper : undefined,
     borderColor: isOutlined ? theme.palette.divider : undefined,
     ...sx,
-    minWidth: iconButton ? 0 : sx?.minWidth,
+    minWidth: iconButton ? 0 : sx?.['minWidth'],
     paddingX: iconButton ? 1 : undefined,
     '&.MuiButton-outlinedSizeMedium': { paddingX: 0.9 },
     '.MuiButton-startIcon': { margin: 0 },

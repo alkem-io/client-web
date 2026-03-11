@@ -56,7 +56,7 @@ const AcceptTerms = ({ ui }: KratosAcceptTermsProps) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}>
       {nonButtonInputs.map(node => (
-        <KratosHidden key={node.attributes.name} node={node} />
+        <KratosHidden key={node.attributes['name']} node={node} />
       ))}
       {userName && <Greeting userName={userName} />}
       <PlatformIntroduction label="pages.registration.introduction-short" />

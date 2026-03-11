@@ -55,11 +55,11 @@ interface Entity extends Identifiable {
 
 type CommunityVirtualContributorsProps = {
   virtualContributors: ContributorViewModel[] | undefined;
-  onRemoveMember: (memberId: string) => Promise<unknown> | undefined;
+  onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
   fetchAvailableVirtualContributorsInLibrary: (filter?: string) => Promise<Entity[] | undefined>;
-  onAddMember: (memberId: string) => Promise<unknown> | undefined | undefined;
+  onAddMember: (memberId: string) => Promise<unknown> | void | void;
   loading?: boolean;
   inviteContributors: (params: InviteContributorsData) => Promise<unknown>;
   spaceDisplayName?: string;

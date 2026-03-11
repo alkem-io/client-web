@@ -30,10 +30,10 @@ interface CommunityMemberSettingsDialogProps {
     isAdmin?: boolean;
   };
   onClose?: () => void;
-  onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown> | undefined;
+  onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown> | void;
   canAddLead?: boolean;
   canRemoveLead?: boolean;
-  onAdminChange?: (memberId: string, isAdmin: boolean) => Promise<unknown> | undefined;
+  onAdminChange?: (memberId: string, isAdmin: boolean) => Promise<unknown> | void;
   onRemoveMember?: (memberId: string) => void;
 }
 

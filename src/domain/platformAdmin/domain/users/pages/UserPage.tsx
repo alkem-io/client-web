@@ -46,7 +46,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
       cache.modify({
         fields: {
           users(existingUsers = [], { readField }) {
-            return existingUsers.filter(x => readField('id', x) !== data.id);
+            return existingUsers.filter(x => readField('id', x) !== data['id']);
           },
         },
       });
@@ -60,7 +60,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
     // there is an issue handling multiple snackbars.
-    onError: _error => {},
+    onError: error => console.error(error.message),
   });
 
   const isSaving = updateMutationLoading;

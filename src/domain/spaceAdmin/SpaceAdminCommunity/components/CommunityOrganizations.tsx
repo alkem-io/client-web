@@ -49,11 +49,11 @@ const initialState: GridInitialState = {
 
 interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
-  onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | undefined;
+  onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
   canAddOrganizations: boolean;
-  onAddMember: (organizationId) => Promise<unknown> | undefined;
+  onAddMember: (organizationId) => Promise<unknown> | void;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
-  onRemoveMember: (organizationId) => Promise<unknown> | undefined;
+  onRemoveMember: (organizationId) => Promise<unknown> | void;
   memberRoleDefinition?: {
     organizationPolicy: { minimum: number; maximum: number };
     userPolicy: { minimum: number; maximum: number };

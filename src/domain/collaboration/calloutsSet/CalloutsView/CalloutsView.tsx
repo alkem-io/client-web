@@ -21,7 +21,7 @@ export interface CalloutsViewProps {
   callouts: CalloutModelLightExtended[] | undefined;
   calloutsSetId: string | undefined;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
-  onCalloutUpdate?: (calloutId: string) => Promise<unknown> | undefined;
+  onCalloutUpdate?: (calloutId: string) => Promise<unknown> | void;
   loading?: boolean;
   blockProps?:
     | Partial<PageContentBlockProps>

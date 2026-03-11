@@ -14,9 +14,9 @@ export interface CalloutsSetTagCloudProps {
   classificationTagsets?: ClassificationTagsetModel[];
   selectedTags: string[];
   resultsCount?: number;
-  onSelectTag: (tag: string) => Promise<unknown> | undefined;
-  onDeselectTag: (tag: string) => Promise<unknown> | undefined;
-  onClear: () => Promise<unknown> | undefined;
+  onSelectTag: (tag: string) => Promise<unknown> | void;
+  onDeselectTag: (tag: string) => Promise<unknown> | void;
+  onClear: () => Promise<unknown> | void;
 }
 
 const ResultsCount = ({ count, onClear }: { count: number; onClear: () => void }) => {

@@ -16,7 +16,7 @@ const UserAvatar = styled(Avatar)<CustomAvatarProps>(({ theme }) => ({
 }));
 
 export interface PostMessageToCommentsFormProps {
-  onPostComment: (comment: string, responseBoxElement: HTMLDivElement | null) => Promise<unknown> | undefined;
+  onPostComment: (comment: string, responseBoxElement: HTMLDivElement | null) => Promise<unknown> | void;
   title?: string;
   placeholder?: string;
   maxLength?: number;

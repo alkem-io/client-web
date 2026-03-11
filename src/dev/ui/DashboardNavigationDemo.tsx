@@ -88,7 +88,7 @@ const DashboardNavigationDemo = () => {
   const { pathname } = useLocation();
 
   const handleClickOnSpace: MouseEventHandler = ({ target }) => {
-    if (target.parentElement?.parentElement?.parentElement?.href?.endsWith(pathname)) {
+    if (target['parentElement']?.['parentElement']?.['parentElement']?.['href']?.endsWith(pathname)) {
       setCurrentSpaceId('space_0');
     }
   };

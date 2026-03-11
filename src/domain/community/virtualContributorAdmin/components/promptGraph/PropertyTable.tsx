@@ -80,7 +80,7 @@ export const PropertyTable = ({
           <TableBody>
             {properties.map((prop, idx) => {
               const isEditing = !readOnly && isPropertyEditing(nodeName, idx);
-              const displayData = isEditing ? editingProperty?.data : prop;
+              const displayData = isEditing ? editingProperty!.data : prop;
 
               return (
                 <TableRow key={idx}>
@@ -150,7 +150,8 @@ export const PropertyTable = ({
                               color="primary"
                               disabled={
                                 !(
-                                  editingProperty?.data &&
+                                  editingProperty &&
+                                  editingProperty.data &&
                                   (editingProperty.data.name || '').trim() &&
                                   (editingProperty.data.type || '').trim() &&
                                   (editingProperty.data.description || '').trim()

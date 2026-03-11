@@ -86,7 +86,7 @@ const CalendarEventDetailView = ({ eventId }: CalendarEventDetailViewProps) => {
   const commentReactionsMutations = useCommentReactionsMutations(comments.roomId);
 
   const handleCommentsScroll = () => {
-    prevScrollTopRef.current.scrollTop = commentsContainerRef.current?.scrollTop;
+    prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
   return (

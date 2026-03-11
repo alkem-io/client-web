@@ -11,7 +11,7 @@ export interface DialogHeaderProps {
   icon?: ReactElement<SvgIconProps>;
   title?: ReactNode;
   actions?: ReactNode;
-  onClose?: (event: MouseEvent<HTMLButtonElement>) => undefined | Promise<unknown>;
+  onClose?: (event: MouseEvent<HTMLButtonElement>) => void | Promise<unknown>;
   titleContainerProps?: BoxProps;
 }
 

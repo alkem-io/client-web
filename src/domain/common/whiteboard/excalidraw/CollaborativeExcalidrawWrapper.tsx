@@ -200,7 +200,6 @@ const CollaborativeExcalidrawWrapper = ({
       });
     },
     onInitialize: collabApi => {
-      // @ts-expect-error — combinedCollabApiRef is a combined ref; mutating .current is intentional
       // eslint-disable-next-line react-compiler/react-compiler
       combinedCollabApiRef.current = collabApi;
     },

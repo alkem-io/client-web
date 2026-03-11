@@ -270,7 +270,7 @@ const InnovationFlowDragNDropEditor = ({
               ?.filter(state => state.displayName !== editFlowState?.displayName)
               .map(state => state.displayName)}
             onSubmit={async newState => {
-              await onEditFlowState(editFlowState?.id, newState);
+              await onEditFlowState(editFlowState!.id, newState);
               setEditFlowState(undefined);
             }}
             onCancel={() => setEditFlowState(undefined)}

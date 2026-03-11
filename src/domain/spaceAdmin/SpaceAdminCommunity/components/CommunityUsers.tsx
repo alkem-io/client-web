@@ -44,11 +44,11 @@ const initialState: GridInitialState = {
 
 interface CommunityUsersProps {
   users: CommunityMemberUserFragmentWithRoles[] | undefined;
-  onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | undefined;
-  onUserAuthorizationChange?: (userId: string, newValue: boolean) => Promise<unknown> | undefined;
-  onRemoveMember: (userId: string) => Promise<unknown> | undefined;
+  onUserLeadChange: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onUserAuthorizationChange?: (userId: string, newValue: boolean) => Promise<unknown> | void;
+  onRemoveMember: (userId: string) => Promise<unknown> | void;
   canAddUsers: boolean;
-  onAddMember: (memberId: string) => Promise<unknown> | undefined;
+  onAddMember: (memberId: string) => Promise<unknown> | void;
   fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   memberRoleDefinition?: {
     organizationPolicy: { minimum: number; maximum: number };

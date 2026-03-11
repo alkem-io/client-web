@@ -34,7 +34,6 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables e
       return;
     }
 
-    // @ts-expect-error TS5UPGRADE
     return subscribeToMore({
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       ...subscribeToMoreOptions,

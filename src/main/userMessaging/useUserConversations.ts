@@ -52,10 +52,10 @@ export const useUserConversations = () => {
                 }
               : undefined,
             user: {
-              id: conv.user?.id,
-              displayName: conv.user?.profile?.displayName ?? '',
-              avatarUri: conv.user?.profile?.avatar?.uri,
-              url: conv.user?.profile?.url,
+              id: conv.user!.id,
+              displayName: conv.user!.profile?.displayName ?? '',
+              avatarUri: conv.user!.profile?.avatar?.uri,
+              url: conv.user!.profile?.url,
             },
           };
         })

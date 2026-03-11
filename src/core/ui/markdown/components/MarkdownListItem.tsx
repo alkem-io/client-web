@@ -17,7 +17,7 @@ const MarkdownListItem = (props: ReactMarkdownProps) => {
 
   const newProps = { ...props };
   if (Object.hasOwn(newProps, 'ordered')) {
-    delete newProps.ordered;
+    delete newProps['ordered'];
   }
 
   return <Base sx={{ display: 'list-item' }} {...newProps} />;

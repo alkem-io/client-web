@@ -30,7 +30,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   const handleFormClick: MouseEventHandler = ({ target }) => {
     const element = target as HTMLElement;
-    if (element.nodeName === 'A' && element.attributes.href.value === returnUrl) {
+    if (element.nodeName === 'A' && element.attributes['href'].value === returnUrl) {
       clearReturnUrl();
     }
   };

@@ -80,7 +80,7 @@ const CalloutPage = ({
   const { isSmallScreen } = useScreenSize();
 
   const calloutFlowState = callout?.classification?.flowState?.tags[0];
-  const calloutPosition = callout?.classification?.flowState?.allowedValues?.indexOf(calloutFlowState);
+  const calloutPosition = callout?.classification?.flowState?.allowedValues?.findIndex(val => val === calloutFlowState);
 
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
@@ -90,7 +90,7 @@ const CalloutPage = ({
   const prevContributionIdRef = useRef<string | undefined>(contributionId);
 
   useEffect(() => {
-    const currentSection = parseInt(searchParams.get(SEARCH_PARAM_TAB) || '-1', 10) + 1;
+    const currentSection = parseInt(searchParams.get(SEARCH_PARAM_TAB) || '-1') + 1;
     const isNavigatingBetweenContributions = prevContributionIdRef.current !== contributionId;
     prevContributionIdRef.current = contributionId;
 
