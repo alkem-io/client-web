@@ -191,41 +191,19 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
   );
 
   const handleMemberAdded = useCallback(
-    (event: MemberAddedEvent) => {
-      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-        if (!existing?.me?.conversations?.conversations) return existing;
-
-        return {
-          ...existing,
-          me: {
-            ...existing.me,
-            conversations: {
-              ...existing.me.conversations,
-              conversations: existing.me.conversations.conversations.map(c => {
-                if (c.id !== event.conversation.id) return c;
-                return {
-                  ...c,
-                  room: c.room
-                    ? { ...c.room, displayName: event.conversation.room?.displayName ?? c.room.displayName }
-                    : c.room,
-                  members: event.conversation.members,
-                };
-              }),
-            },
-          },
-        };
-      });
+    (_event: MemberAddedEvent) => {
+      // Refetch conversations from the server to get authoritative data
+      client.refetchQueries({ include: [UserConversationsDocument] });
     },
     [client]
   );
 
   const handleMemberRemoved = useCallback(
     (event: MemberRemovedEvent) => {
-      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-        if (!existing?.me?.conversations?.conversations) return existing;
-
-        // If current user was removed, remove the conversation entirely
-        if (event.removedMemberID === currentUserId) {
+      // If current user was removed, evict the conversation from cache immediately
+      if (event.removedMemberID === currentUserId) {
+        client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
           return {
             ...existing,
             me: {
@@ -236,26 +214,12 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
               },
             },
           };
-        }
+        });
+        return;
+      }
 
-        // Otherwise update the members list
-        return {
-          ...existing,
-          me: {
-            ...existing.me,
-            conversations: {
-              ...existing.me.conversations,
-              conversations: existing.me.conversations.conversations.map(c => {
-                if (c.id !== event.conversation.id) return c;
-                return {
-                  ...c,
-                  members: event.conversation.members,
-                };
-              }),
-            },
-          },
-        };
-      });
+      // Refetch conversations from the server to get authoritative data
+      client.refetchQueries({ include: [UserConversationsDocument] });
     },
     [client, currentUserId]
   );
