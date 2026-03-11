@@ -2202,7 +2202,7 @@ export type CreateSpaceSettingsInput = {
 
 export type CreateSpaceSettingsLayoutInput = {
   /** The default display mode for callout descriptions. */
-  calloutDescriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
+  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 };
 
 export type CreateSpaceSettingsMembershipInput = {
@@ -8350,7 +8350,7 @@ export type UpdateSpaceSettingsInput = {
 
 export type UpdateSpaceSettingsLayoutInput = {
   /** The default display mode for callout descriptions. */
-  calloutDescriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
+  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 };
 
 export type UpdateSpaceSettingsMembershipInput = {
