@@ -28,3 +28,16 @@ while read -r line || [[ -n "$line" ]]; do
 done <.env.base
 
 echo "}" >>./env-config.js
+
+# -- robots.txt override for non-production environments --
+# Only allow crawling on the production domain (https://alkem.io).
+# All other environments get a full disallow.
+ALKEMIO_DOMAIN=$(printenv VITE_APP_ALKEMIO_DOMAIN || grep '^VITE_APP_ALKEMIO_DOMAIN=' .env.base 2>/dev/null | head -1 | sed 's/^[^=]*=//')
+if [ "$ALKEMIO_DOMAIN" != "https://alkem.io" ]; then
+  echo "Overriding robots.txt - disallowing all crawlers (domain: ${ALKEMIO_DOMAIN:-unset})"
+  cat >./robots.txt <<'EOF'
+# Non-production environment - block all crawlers
+User-agent: *
+Disallow: /
+EOF
+fi
