@@ -8,6 +8,13 @@ import { fileURLToPath } from 'url';
 const CONFIG_TEXT = 'window._env_ = ';
 const CONFIG_FILE_NAME = 'env-config.js';
 
+export function generateRobotsTxt(allowIndexing) {
+  if (allowIndexing) {
+    return 'User-agent: *\nAllow: /\nDisallow: /admin\n';
+  }
+  return 'User-agent: *\nDisallow: /\n';
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -36,6 +43,11 @@ async function buildConfiguration() {
   const envConfigPath = path.join(__dirname, '/public', CONFIG_FILE_NAME);
   await writeFile(envConfigPath, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`);
   console.info(`Write in: ${envConfigPath}`);
+
+  const allowIndexing = env.VITE_APP_ROBOTS_ALLOW_INDEXING === 'true';
+  const robotsTxtPath = path.join(__dirname, '/public', 'robots.txt');
+  await writeFile(robotsTxtPath, generateRobotsTxt(allowIndexing));
+  console.info(`Write in: ${robotsTxtPath}`);
 }
 (async () => {
   await buildConfiguration();

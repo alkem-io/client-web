@@ -281,6 +281,8 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
 ## Active Technologies
+- TypeScript / Node.js 22 (build script is vanilla ESM JS) + `dotenv-flow`, `dotenv-expand` (already used by `buildConfiguration.js`); no new dependencies required (021-add-robots-txt)
+- N/A — static file written to `public/robots.txt` (021-add-robots-txt)
 
 - GitHub Actions YAML workflows; Node.js 22.22.0 (via `actions/setup-node`) + `actions/checkout@v6`, `actions/setup-node@v6`, `actions/cache@v4`, `pnpm/action-setup@v4`, `docker/metadata-action@v5`, `docker/build-push-action@v5` (019-optimize-ci-builds)
 - N/A (CI workflows only) (019-optimize-ci-builds)
