@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
@@ -23,6 +23,26 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(mySelectedOptionIds);
   const [isChangingVote, setIsChangingVote] = useState(false);
+  const [voteRevoked, setVoteRevoked] = useState(false);
+  const hadVotedRef = useRef(hasVoted);
+
+  // Handle vote revocation from subscription updates (myVote goes non-null → null)
+  useEffect(() => {
+    if (hadVotedRef.current && !hasVoted) {
+      setIsChangingVote(false);
+      setSelectedOptionIds([]);
+      setVoteRevoked(true);
+    }
+    hadVotedRef.current = hasVoted;
+  }, [hasVoted]);
+
+  // When changing vote and options update via subscription, remove selections for deleted options
+  useEffect(() => {
+    if (isChangingVote) {
+      const currentOptionIds = new Set(poll.options.map(o => o.id));
+      setSelectedOptionIds(prev => prev.filter(id => currentOptionIds.has(id)));
+    }
+  }, [poll.options, isChangingVote]);
 
   const { castVote, loading, error: voteError } = usePollVote({ pollId: poll.id, poll });
 
@@ -34,6 +54,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const handleVoteSubmit = () => {
     castVote(selectedOptionIds);
     setIsChangingVote(false);
+    setVoteRevoked(false);
   };
 
   const handleChangeVote = () => {
@@ -100,6 +121,12 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
         <Box textAlign="center" paddingY={gutters()}>
           <Caption color="text.secondary">{t('poll.results.noVotes')}</Caption>
         </Box>
+      )}
+
+      {voteRevoked && !hasVoted && (
+        <Caption color="warning.main" sx={{ mt: 1 }}>
+          {t('poll.subscription.voteRevoked')}
+        </Caption>
       )}
 
       {voteError && (

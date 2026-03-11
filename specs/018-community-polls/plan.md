@@ -85,9 +85,11 @@ src/domain/collaboration/
 │   │   └── PollModels.ts                   # Client view model types
 │   ├── hooks/
 │   │   ├── usePollVote.ts                  # Vote submission hook (castPollVote)
-│   │   └── usePollOptionManagement.ts      # Option CRUD hooks (used by edit dialog save)
+│   │   ├── usePollOptionManagement.ts      # Option CRUD hooks (used by edit dialog save)
+│   │   └── usePollSubscriptions.ts         # NEW: Real-time subscription hook (vote + options)
 │   └── graphql/
-│       └── pollFragments.graphql           # PollDetails, PollOptionFields, PollVoteFields fragments
+│       ├── pollFragments.graphql           # PollDetails, PollOptionFields, PollVoteFields fragments
+│       └── pollSubscriptions.graphql       # NEW: pollVoteUpdated + pollOptionsChanged subscriptions
 │
 ├── callout/
 │   ├── CalloutFramings/
@@ -148,3 +150,24 @@ layout regardless of state. The "Change Vote" button is positioned below the res
   radio/checkbox checked state.
 - When `canSeeDetailedResults` is false, progress bars and counts are hidden even in voting mode,
   respecting admin visibility settings.
+
+### Design Decision: Real-Time Subscriptions (2026-03-11)
+
+Added two GraphQL subscriptions for real-time poll updates:
+
+- `pollVoteUpdated(pollID: UUID!)` — fires when any user casts/updates a vote
+- `pollOptionsChanged(pollID: UUID!)` — fires when options are added/edited/removed/reordered
+
+Both return the full `Poll` object. The server's field resolvers handle visibility filtering
+(resultsVisibility, resultsDetail, voted status) — the client trusts the data it receives
+without replicating the visibility matrix. Key behaviors:
+
+- HIDDEN + not voted + vote event → event suppressed entirely (client receives nothing)
+- HIDDEN + not voted + options event → options only, no vote data
+- TOTAL_ONLY + not voted → only totalVotes field populated
+- VISIBLE or voted → full data per resultsDetail setting
+- Vote revocation (option removed/edited) → myVote becomes null in payload
+
+Implementation follows the existing subscription patterns (InAppNotifications, ConversationEvents)
+using generated Apollo subscription hooks with `onData` callbacks for cache updates. Subscriptions
+are activated when the poll callout is visible and deactivated on unmount.

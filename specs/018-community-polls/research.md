@@ -126,13 +126,21 @@ All NEEDS CLARIFICATION items from the technical context have been resolved thro
 
 ---
 
-## Decision 10: Real-time Updates
+## Decision 10: Real-time Updates via Subscriptions
 
-**Decision**: No real-time updates in this iteration. Poll results update when: (a) the page loads, (b) the user submits their own vote (mutation response), or (c) the user manually refreshes. The Apollo cache is updated via the mutation response which returns the full updated Poll object.
+**Decision**: Use two GraphQL subscriptions (`pollVoteUpdated` and `pollOptionsChanged`) to deliver real-time updates to users viewing a poll. The subscriptions are activated when the poll callout component mounts and deactivated on unmount. The server handles visibility filtering at the field-resolver level — the client trusts and renders whatever data it receives.
 
-**Rationale**: The server spec explicitly defers real-time push. The `castPollVote` mutation returns the full updated `Poll` object, so the voting user sees immediate results. Other users see updated results on their next page load. This is consistent with how other callout types work.
+**Rationale**: Real-time updates enhance engagement by showing live vote counts and option changes. The server already implements the two subscriptions with full visibility matrix filtering (resultsVisibility × resultsDetail × voted status), so the client implementation is simple: subscribe, receive data, write to Apollo cache. This follows the established patterns from InAppNotifications and ConversationEvents subscriptions.
+
+**Key implementation choices**:
+
+- **Cache update strategy**: Use `client.cache.writeFragment` with the `PollDetails` fragment in the `onData` callback. Since subscription payloads return the full Poll shape, this directly replaces the cached poll data and all consuming components re-render automatically.
+- **Subscription placement**: Hook called in `CalloutFramingPoll` (the framing display component), not in `PollView`, to ensure proper mount/unmount lifecycle tied to callout visibility.
+- **Vote revocation handling**: When `myVote` becomes null in a subscription update, PollView resets to voting mode.
+- **In-progress selection**: When the user is changing their vote and a subscription update arrives, the option list updates but the user's local selection state is preserved (removing any selections for deleted options).
 
 **Alternatives considered**:
 
-- Polling interval — rejected as premature optimization; adds network overhead for marginal UX benefit.
-- WebSocket subscription — explicitly deferred in the server spec.
+- Polling interval — rejected because subscriptions provide true real-time with less network overhead.
+- Single combined subscription — rejected because vote updates are high-frequency and option changes are low-frequency; separate subscriptions let the server suppress vote events for HIDDEN+not-voted scenarios without suppressing option changes.
+- Client-side visibility filtering — rejected because the server already handles this at the field-resolver level; duplicating the logic would be error-prone.

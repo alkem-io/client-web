@@ -224,6 +224,41 @@
 
 ---
 
+## Phase 10: User Story 7 — Real-Time Poll Updates via Subscriptions (Priority: P7)
+
+**Purpose**: Add real-time updates so users viewing a poll see live vote count changes and option modifications without refreshing.
+
+**Prerequisites**: Phases 1–4b complete (poll display and voting functional). Server subscriptions (`pollVoteUpdated`, `pollOptionsChanged`) deployed.
+
+**Independent Test**: Open the same poll in two browser tabs with different users → vote in one tab → verify the other tab updates in real time. As facilitator, add/remove/edit options → verify viewers see changes.
+
+- [ ] T050 [P] [US7] Create GraphQL subscription document `src/domain/collaboration/poll/graphql/pollSubscriptions.graphql` — define two subscriptions:
+  ```graphql
+  subscription PollVoteUpdated($pollID: UUID!) {
+    pollVoteUpdated(pollID: $pollID) {
+      ...PollDetails
+    }
+  }
+  subscription PollOptionsChanged($pollID: UUID!) {
+    pollOptionsChanged(pollID: $pollID) {
+      ...PollDetails
+    }
+  }
+  ```
+  Import the `PollDetails` fragment from `pollFragments.graphql`.
+- [ ] T051 [US7] Run `pnpm codegen` to generate `usePollVoteUpdatedSubscription` and `usePollOptionsChangedSubscription` hooks (requires server with subscriptions running at localhost:4000/graphql)
+- [ ] T052 [US7] Create `usePollSubscriptions` hook in `src/domain/collaboration/poll/hooks/usePollSubscriptions.ts` — wraps both generated subscription hooks. Accepts `pollID: string` and `skip: boolean`. Uses `onData` callback to write updated poll data to Apollo cache via `client.cache.writeFragment` using the `PollDetails` fragment. Returns `{ voteUpdateLoading, optionsChangeLoading }` for optional UI indicators. Both subscriptions use `skip` when `pollID` is falsy or component is not visible.
+- [ ] T053 [US7] Integrate `usePollSubscriptions` into `CalloutFramingPoll` in `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — call `usePollSubscriptions({ pollID: callout.framing.poll?.id, skip: !callout.framing.poll })`. The hook activates when the component mounts and deactivates on unmount, providing automatic subscribe/unsubscribe lifecycle.
+- [ ] T054 [US7] Handle vote revocation in `PollView` in `src/domain/collaboration/poll/PollView.tsx` — when `myVote` transitions from non-null to null (detected via effect or render), reset `isChangingVote` to false and clear local selection state, returning the user to voting mode.
+- [ ] T055 [US7] Handle in-progress selection preservation in `PollView` — when a subscription update arrives while `isChangingVote` is true, keep the user's current selection state (selectedOptionIds) but update the available options list. If a selected option was removed, remove it from the local selection.
+- [ ] T056 [P] [US7] Add i18n key for subscription-related states to `src/core/i18n/en/translation.en.json`:
+  - `poll.subscription.voteRevoked` — "Your vote was affected by a poll change. Please vote again."
+- [ ] T057 [US7] Run `pnpm lint` and `pnpm vitest run` to verify no regressions
+
+**Checkpoint**: Real-time updates are functional. Users viewing a poll see live vote count changes and option modifications. Subscription lifecycle (subscribe on mount, unsubscribe on unmount) is properly managed.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -237,6 +272,7 @@
   - US4 (P4): Depends on US1 (extends PollView with change-vote mode)
   - US5 (P5): Depends on US1 (extends PollView with management mode)
   - US6 (P6): No dependencies on other stories (separate notification settings area)
+- **Subscriptions (Phase 10)**: Depends on Phase 4b (poll display + voting). Requires server subscriptions deployed
 - **Polish (Phase 9)**: Depends on all user stories being complete
 
 ### User Story Dependencies
@@ -245,6 +281,7 @@
 Phase 2 (Foundational)
   ├── US1 (Viewing & Voting) ← MVP
   │   ├── US2 (Results Display) — extends PollView
+  │   │   └── US7 (Subscriptions) — extends PollView + CalloutFramingPoll
   │   ├── US4 (Changing Vote) — extends PollView
   │   └── US5 (Option Management) — extends PollView
   ├── US3 (Creating a Poll) — independent (callout form)

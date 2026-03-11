@@ -3454,6 +3454,15 @@ export type PollOptionFieldPolicy = {
   votePercentage?: FieldPolicy<any> | FieldReadFunction<any>;
   voters?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PollOptionsChangedSubscriptionResultKeySpecifier = (
+  | 'poll'
+  | 'pollEventType'
+  | PollOptionsChangedSubscriptionResultKeySpecifier
+)[];
+export type PollOptionsChangedSubscriptionResultFieldPolicy = {
+  poll?: FieldPolicy<any> | FieldReadFunction<any>;
+  pollEventType?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PollSettingsKeySpecifier = (
   | 'maxResponses'
   | 'minResponses'
@@ -3494,6 +3503,15 @@ export type PollVoteFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   selectedOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PollVoteUpdatedSubscriptionResultKeySpecifier = (
+  | 'poll'
+  | 'pollEventType'
+  | PollVoteUpdatedSubscriptionResultKeySpecifier
+)[];
+export type PollVoteUpdatedSubscriptionResultFieldPolicy = {
+  poll?: FieldPolicy<any> | FieldReadFunction<any>;
+  pollEventType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PostKeySpecifier = (
   | 'authorization'
@@ -4497,6 +4515,8 @@ export type SubscriptionKeySpecifier = (
   | 'forumDiscussionUpdated'
   | 'inAppNotificationReceived'
   | 'notificationsUnreadCount'
+  | 'pollOptionsChanged'
+  | 'pollVoteUpdated'
   | 'roomEvents'
   | 'subspaceCreated'
   | 'virtualContributorUpdated'
@@ -4509,6 +4529,8 @@ export type SubscriptionFieldPolicy = {
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  pollOptionsChanged?: FieldPolicy<any> | FieldReadFunction<any>;
+  pollVoteUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6385,6 +6407,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PollOptionKeySpecifier | (() => undefined | PollOptionKeySpecifier);
     fields?: PollOptionFieldPolicy;
   };
+  PollOptionsChangedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PollOptionsChangedSubscriptionResultKeySpecifier
+      | (() => undefined | PollOptionsChangedSubscriptionResultKeySpecifier);
+    fields?: PollOptionsChangedSubscriptionResultFieldPolicy;
+  };
   PollSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PollSettingsKeySpecifier | (() => undefined | PollSettingsKeySpecifier);
     fields?: PollSettingsFieldPolicy;
@@ -6396,6 +6425,13 @@ export type StrictTypedTypePolicies = {
   PollVote?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PollVoteKeySpecifier | (() => undefined | PollVoteKeySpecifier);
     fields?: PollVoteFieldPolicy;
+  };
+  PollVoteUpdatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PollVoteUpdatedSubscriptionResultKeySpecifier
+      | (() => undefined | PollVoteUpdatedSubscriptionResultKeySpecifier);
+    fields?: PollVoteUpdatedSubscriptionResultFieldPolicy;
   };
   Post?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier);

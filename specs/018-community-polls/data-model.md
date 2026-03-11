@@ -252,3 +252,41 @@ CalloutsSet
 - Edit: text non-empty, max 512 characters
 - Remove: poll must retain at least 2 options after removal
 - Reorder: must include exactly all current option IDs
+
+---
+
+## Real-Time Subscriptions
+
+### GraphQL Subscription Operations
+
+Two subscriptions provide real-time updates when a poll is being viewed:
+
+#### `pollVoteUpdated(pollID: UUID!): Poll!`
+
+Fires when any user casts or updates a vote on the poll. Returns the full `Poll` object with updated vote data, filtered by the server's field resolvers based on the viewer's context.
+
+#### `pollOptionsChanged(pollID: UUID!): Poll!`
+
+Fires when poll options are added, edited, removed, or reordered. Returns the full `Poll` object with the updated option structure and any vote data changes (e.g., revoked votes).
+
+### Server-Side Visibility Filtering
+
+The server applies visibility filtering at the field-resolver level. The client does **not** replicate this logic — it renders whatever data it receives. Key behaviors:
+
+| Scenario               | Vote Event                    | Options Event                 |
+| ---------------------- | ----------------------------- | ----------------------------- |
+| HIDDEN + not voted     | **Suppressed** (no event)     | Options only, no vote data    |
+| TOTAL_ONLY + not voted | Only `totalVotes`             | Options + `totalVotes`        |
+| VISIBLE (any) or voted | Full data per `resultsDetail` | Full data per `resultsDetail` |
+
+When a user's vote is revoked (option removed/edited), `myVote` becomes `null` in the payload.
+
+### Apollo Cache Update Strategy
+
+Subscription payloads contain the full `Poll` object with the same fragment shape as the query (`PollDetails`). The `onData` callback writes the received poll data directly into the Apollo cache using `client.cache.writeFragment`, which automatically updates all components reading from the cache.
+
+### Subscription Lifecycle
+
+- **Subscribe**: When the poll callout component mounts (callout is visible)
+- **Unsubscribe**: When the poll callout component unmounts (navigation away, callout collapsed)
+- **Skip**: When poll ID is not available (loading state)

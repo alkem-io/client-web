@@ -9915,6 +9915,93 @@ export type ReorderPollOptionsMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReorderPollOptionsMutation,
   SchemaTypes.ReorderPollOptionsMutationVariables
 >;
+export const PollVoteUpdatedDocument = gql`
+  subscription PollVoteUpdated($pollID: UUID!) {
+    pollVoteUpdated(pollID: $pollID) {
+      pollEventType
+      poll {
+        ...PollDetails
+      }
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+
+/**
+ * __usePollVoteUpdatedSubscription__
+ *
+ * To run a query within a React component, call `usePollVoteUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `usePollVoteUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollVoteUpdatedSubscription({
+ *   variables: {
+ *      pollID: // value for 'pollID'
+ *   },
+ * });
+ */
+export function usePollVoteUpdatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.PollVoteUpdatedSubscription,
+    SchemaTypes.PollVoteUpdatedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.PollVoteUpdatedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.PollVoteUpdatedSubscription,
+    SchemaTypes.PollVoteUpdatedSubscriptionVariables
+  >(PollVoteUpdatedDocument, options);
+}
+export type PollVoteUpdatedSubscriptionHookResult = ReturnType<typeof usePollVoteUpdatedSubscription>;
+export type PollVoteUpdatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.PollVoteUpdatedSubscription>;
+export const PollOptionsChangedDocument = gql`
+  subscription PollOptionsChanged($pollID: UUID!) {
+    pollOptionsChanged(pollID: $pollID) {
+      pollEventType
+      poll {
+        ...PollDetails
+      }
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+
+/**
+ * __usePollOptionsChangedSubscription__
+ *
+ * To run a query within a React component, call `usePollOptionsChangedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `usePollOptionsChangedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollOptionsChangedSubscription({
+ *   variables: {
+ *      pollID: // value for 'pollID'
+ *   },
+ * });
+ */
+export function usePollOptionsChangedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.PollOptionsChangedSubscription,
+    SchemaTypes.PollOptionsChangedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.PollOptionsChangedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.PollOptionsChangedSubscription,
+    SchemaTypes.PollOptionsChangedSubscriptionVariables
+  >(PollOptionsChangedDocument, options);
+}
+export type PollOptionsChangedSubscriptionHookResult = ReturnType<typeof usePollOptionsChangedSubscription>;
+export type PollOptionsChangedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.PollOptionsChangedSubscription>;
 export const CalloutSettingsDocument = gql`
   query CalloutSettings($calloutId: UUID!) {
     lookup {

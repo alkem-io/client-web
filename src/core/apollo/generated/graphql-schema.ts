@@ -6096,6 +6096,12 @@ export type Poll = {
   updatedDate: Scalars['DateTime']['output'];
 };
 
+/** The type of event that occurred on a poll. */
+export enum PollEventType {
+  PollOptionsChanged = 'POLL_OPTIONS_CHANGED',
+  PollVoteUpdated = 'POLL_VOTE_UPDATED',
+}
+
 export type PollOption = {
   __typename?: 'PollOption';
   createdDate: Scalars['DateTime']['output'];
@@ -6110,6 +6116,14 @@ export type PollOption = {
   votePercentage?: Maybe<Scalars['Float']['output']>;
   /** List of space members who voted for this option. Null when results are hidden or resultsDetail is not FULL. */
   voters?: Maybe<Array<User>>;
+};
+
+export type PollOptionsChangedSubscriptionResult = {
+  __typename?: 'PollOptionsChangedSubscriptionResult';
+  /** The updated Poll. Fields are filtered per subscriber's visibility context. */
+  poll: Poll;
+  /** The type of poll event. */
+  pollEventType: PollEventType;
 };
 
 /** Controls the level of detail shown in poll results. */
@@ -6185,6 +6199,14 @@ export type PollVote = {
   selectedOptions: Array<PollOption>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type PollVoteUpdatedSubscriptionResult = {
+  __typename?: 'PollVoteUpdatedSubscriptionResult';
+  /** The updated Poll. Fields are filtered per subscriber's visibility context. */
+  poll: Poll;
+  /** The type of poll event. */
+  pollEventType: PollEventType;
 };
 
 export type Post = {
@@ -7743,6 +7765,10 @@ export type Subscription = {
   inAppNotificationReceived: InAppNotification;
   /** Counter of unread in-app notifications for the currently authenticated user. */
   notificationsUnreadCount: Scalars['Int']['output'];
+  /** Subscribe to option changes on a specific Poll. Fires when options are added, removed, updated, or reordered. Always delivered regardless of resultsVisibility. */
+  pollOptionsChanged: PollOptionsChangedSubscriptionResult;
+  /** Subscribe to vote updates on a specific Poll. Fires when votes are cast or updated. When resultsVisibility = HIDDEN and the subscriber has not voted, events are suppressed. */
+  pollVoteUpdated: PollVoteUpdatedSubscriptionResult;
   /** Receive Room event */
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
@@ -7761,6 +7787,14 @@ export type SubscriptionCalloutPostCreatedArgs = {
 
 export type SubscriptionForumDiscussionUpdatedArgs = {
   forumID: Scalars['UUID']['input'];
+};
+
+export type SubscriptionPollOptionsChangedArgs = {
+  pollID: Scalars['UUID']['input'];
+};
+
+export type SubscriptionPollVoteUpdatedArgs = {
+  pollID: Scalars['UUID']['input'];
 };
 
 export type SubscriptionRoomEventsArgs = {
@@ -17120,6 +17154,134 @@ export type ReorderPollOptionsMutation = {
           selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
         }
       | undefined;
+  };
+};
+
+export type PollVoteUpdatedSubscriptionVariables = Exact<{
+  pollID: Scalars['UUID']['input'];
+}>;
+
+export type PollVoteUpdatedSubscription = {
+  __typename?: 'Subscription';
+  pollVoteUpdated: {
+    __typename?: 'PollVoteUpdatedSubscriptionResult';
+    pollEventType: PollEventType;
+    poll: {
+      __typename?: 'Poll';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      title: string;
+      status: PollStatus;
+      deadline?: Date | undefined;
+      totalVotes?: number | undefined;
+      canSeeDetailedResults: boolean;
+      settings: {
+        __typename?: 'PollSettings';
+        minResponses: number;
+        maxResponses: number;
+        resultsVisibility: PollResultsVisibility;
+        resultsDetail: PollResultsDetail;
+      };
+      options: Array<{
+        __typename?: 'PollOption';
+        id: string;
+        createdDate: Date;
+        updatedDate: Date;
+        text: string;
+        sortOrder: number;
+        voteCount?: number | undefined;
+        votePercentage?: number | undefined;
+        voters?:
+          | Array<{
+              __typename?: 'User';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }>
+          | undefined;
+      }>;
+      myVote?:
+        | {
+            __typename?: 'PollVote';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            createdBy: string;
+            selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type PollOptionsChangedSubscriptionVariables = Exact<{
+  pollID: Scalars['UUID']['input'];
+}>;
+
+export type PollOptionsChangedSubscription = {
+  __typename?: 'Subscription';
+  pollOptionsChanged: {
+    __typename?: 'PollOptionsChangedSubscriptionResult';
+    pollEventType: PollEventType;
+    poll: {
+      __typename?: 'Poll';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      title: string;
+      status: PollStatus;
+      deadline?: Date | undefined;
+      totalVotes?: number | undefined;
+      canSeeDetailedResults: boolean;
+      settings: {
+        __typename?: 'PollSettings';
+        minResponses: number;
+        maxResponses: number;
+        resultsVisibility: PollResultsVisibility;
+        resultsDetail: PollResultsDetail;
+      };
+      options: Array<{
+        __typename?: 'PollOption';
+        id: string;
+        createdDate: Date;
+        updatedDate: Date;
+        text: string;
+        sortOrder: number;
+        voteCount?: number | undefined;
+        votePercentage?: number | undefined;
+        voters?:
+          | Array<{
+              __typename?: 'User';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }>
+          | undefined;
+      }>;
+      myVote?:
+        | {
+            __typename?: 'PollVote';
+            id: string;
+            createdDate: Date;
+            updatedDate: Date;
+            createdBy: string;
+            selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+          }
+        | undefined;
+    };
   };
 };
 

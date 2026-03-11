@@ -124,6 +124,27 @@ Users can manage their notification preferences for poll-related events. Four ne
 
 ---
 
+### User Story 7 — Real-Time Poll Updates via Subscriptions (Priority: P7)
+
+A space member is viewing a poll callout. When another user casts a vote or a facilitator modifies poll options, the viewing member's UI updates in real time without requiring a page refresh. The subscription is active while the callout is visible and respects the poll's visibility and detail settings — the server filters the payload so the client only receives data appropriate for the viewer.
+
+**Why this priority**: Real-time updates enhance engagement but the core poll functionality (voting, results, creation) works without them. Subscriptions are an incremental improvement on top of a complete feature.
+
+**Independent Test**: Open a poll in two browser tabs (different users) → vote in one tab → verify the other tab updates in real time. Modify options as facilitator → verify viewers see changes.
+
+**Acceptance Scenarios**:
+
+1. **Given** a member is viewing a poll callout, **When** another user casts a vote, **Then** the poll results update in real time (vote counts, percentages, voter lists as applicable) without requiring a page refresh.
+2. **Given** a member is viewing a poll callout, **When** a facilitator adds, removes, edits, or reorders poll options, **Then** the poll options update in real time.
+3. **Given** a member has voted and is viewing results, **When** another user votes, **Then** the results display updates smoothly with new counts/percentages.
+4. **Given** a poll with resultsVisibility = HIDDEN and the member has NOT voted, **When** another user votes, **Then** the subscription event is suppressed — no data is received and the UI remains unchanged.
+5. **Given** a poll with resultsVisibility = TOTAL_ONLY and the member has NOT voted, **When** another user votes, **Then** only the total vote count updates; no per-option details are shown.
+6. **Given** a member has voted on a poll, **When** a facilitator removes an option the member voted for, **Then** the member's `myVote` becomes null (vote revoked) and the UI returns to voting mode.
+7. **Given** a member navigates away from the poll callout, **When** the callout is no longer visible, **Then** the subscription is unsubscribed to avoid unnecessary network traffic.
+8. **Given** a member is in the middle of changing their vote (selection mode), **When** a subscription update arrives, **Then** the option list updates but the member's in-progress selection is preserved where possible.
+
+---
+
 ### Edge Cases
 
 - What happens when the user votes on a poll but loses network connection mid-request? The UI should show an error state and allow retry without corrupting the local state.
@@ -179,6 +200,16 @@ Users can manage their notification preferences for poll-related events. Four ne
 - **FR-023**: The client MUST display four new poll notification preferences in the user notification settings area.
 - **FR-024**: The client MUST allow users to toggle each poll notification preference independently.
 
+**Real-Time Subscriptions**
+
+- **FR-027**: The client MUST subscribe to `pollVoteUpdated` and `pollOptionsChanged` GraphQL subscriptions when a poll callout is visible, passing the poll ID as argument.
+- **FR-028**: The client MUST unsubscribe from both subscriptions when the poll callout is no longer visible (component unmount or navigation away).
+- **FR-029**: When a `pollVoteUpdated` event is received, the client MUST update the Apollo cache with the new poll data (vote counts, percentages, voter lists, totalVotes, myVote) as returned by the server.
+- **FR-030**: When a `pollOptionsChanged` event is received, the client MUST update the Apollo cache with the new options list and any updated vote data as returned by the server.
+- **FR-031**: The client MUST NOT replicate visibility filtering logic — the server's field resolvers handle filtering based on resultsVisibility, resultsDetail, and the viewer's voted status. The client renders whatever data it receives.
+- **FR-032**: When a subscription update sets `myVote` to null (vote revoked due to option change), the client MUST transition the UI back to voting mode.
+- **FR-033**: When a subscription update arrives while the user is in vote-change mode, the client MUST update the option list and results but MUST preserve the user's in-progress selection state where possible.
+
 **Authorization**
 
 - **FR-025**: The client MUST hide vote controls for users without CONTRIBUTE privilege on the poll.
@@ -212,6 +243,6 @@ Users can manage their notification preferences for poll-related events. Four ne
 - Options are returned pre-sorted by the server (by vote count descending, ties by sortOrder); the client renders them in the order received.
 - Vote changes use the same `castPollVote` mutation as initial votes (server handles upsert).
 - Notification preferences follow the existing user settings pattern already implemented for other notification types.
-- No real-time push updates for poll results in this iteration; results update on page load or after the user's own mutation.
+- Real-time updates are delivered via two GraphQL subscriptions (`pollVoteUpdated` and `pollOptionsChanged`). The server handles visibility filtering at the field-resolver level — the client trusts the data it receives without replicating the visibility matrix.
 - The poll's `status` field (OPEN/CLOSED) is always OPEN in this iteration; CLOSED behavior is deferred.
 - The `deadline` field is always null in this iteration; deadline-based auto-close is deferred.

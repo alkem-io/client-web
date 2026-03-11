@@ -2408,6 +2408,9 @@
       "staleOption": "This $t(common.poll) has been updated. Please refresh and try again.",
       "networkError": "Network error. Please check your connection and try again.",
       "optionActionFailed": "Failed to update $t(common.poll) options. Please try again."
+    },
+    "subscription": {
+      "voteRevoked": "Your vote was affected by a $t(common.poll) change. Please vote again."
     }
   },
   "pages": {
