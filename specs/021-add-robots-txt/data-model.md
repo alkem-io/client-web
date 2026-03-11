@@ -4,48 +4,48 @@
 
 ## Entities
 
-This feature has no persistent data entities, database models, or GraphQL schema changes. It operates at the build infrastructure and container startup level.
+This feature has no persistent data entities, database models, or GraphQL schema changes. It operates at the static file and container startup infrastructure level.
 
-### Build Artifact: `public/robots.txt`
+### Static File: `public/robots.txt`
 
-A static text file generated at build time by `buildConfiguration.js`, potentially overridden at container startup by `env.sh`.
+A plain text file committed directly to the repository with production crawling rules. Served by nginx in production, Vite dev server locally.
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| Content | `text/plain` | RFC 9309-compliant robots.txt directives |
-| Build-time generation | `buildConfiguration.js` | Always generates comprehensive production rules |
-| Runtime override | `env.sh` | Overwrites with restrictive rules when domain is not `https://alkem.io` |
+| Attribute        | Type         | Description                                                                                  |
+| ---------------- | ------------ | -------------------------------------------------------------------------------------------- |
+| Content          | `text/plain` | RFC 9309-compliant robots.txt directives                                                     |
+| Committed        | Yes          | Version-controlled, not gitignored                                                           |
+| Runtime override | `env.sh`     | Overwritten with disallow-all at container startup when `VITE_ROBOTS_ALLOW_INDEXING != true` |
 
-### Environment Detection: `VITE_APP_ALKEMIO_DOMAIN`
+### Runtime Variable: `VITE_ROBOTS_ALLOW_INDEXING`
 
-| Property | Value |
-|----------|-------|
-| Type | String (URL) |
-| Checked by | `env.sh` at container startup |
-| Production value | `https://alkem.io` — preserves production robots.txt |
-| Other values | Any non-production domain — overwritten with restrictive rules |
-| Absent/unset | Treated as non-production (fail-safe) |
+| Property                | Value                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------- |
+| Type                    | String                                                                          |
+| Checked by              | `env.sh` at container startup                                                   |
+| `true`                  | Keeps committed `public/robots.txt` (production content)                        |
+| Unset / any other value | `env.sh` overwrites with disallow-all (fail-safe default)                       |
+| Set via                 | K8s/Helm runtime env var injection (matching `VITE_APP_ALKEMIO_DOMAIN` pattern) |
+| DOM exposure            | None -- `VITE_*` (without `_APP_`) prefix not written to `window._env_`         |
 
 ## State Transitions
 
 ```
 Container startup (env.sh):
-  ┌──────────────────────────────┐
-  │ VITE_APP_ALKEMIO_DOMAIN      │
-  └─────────┬────────────────────┘
-            │
-     ┌──────┴──────────────┐
-     │ === "https://alkem.io" │
-     ├──Yes────────────────┼──No/Missing──┐
-     ▼                     │              ▼
-  Keep production          │         Override with
-  robots.txt               │         restrictive
-  (comprehensive rules,    │         robots.txt
-  AI bot blocking,         │         (Disallow: /)
-  sensitive path blocks)   │
-                           │
+  +-----------------------------+
+  | VITE_ROBOTS_ALLOW_INDEXING  |
+  +-------------+---------------+
+                |
+       +--------+---------+
+       | === "true"       |
+       +-Yes-----------+--+-No/Unset--+
+       v               |             v
+  Keep committed       |         Overwrite with
+  public/robots.txt    |         disallow-all
+  (comprehensive rules,|         (User-agent: *
+  AI bot blocking,     |          Disallow: /)
+  sensitive path blocks)
 ```
 
 ## Relationships
 
-No relationships with other entities. This feature is self-contained build/infrastructure logic.
+No relationships with other entities. This feature is self-contained infrastructure logic.

@@ -5,33 +5,32 @@
 
 ## Summary
 
-Add environment-aware `robots.txt` generation to the platform. The `buildConfiguration.js` script generates a comprehensive production `public/robots.txt` at build time (blocking AI/LLM scrapers, aggressive SEO bots, and sensitive paths). At container startup, `env.sh` checks `VITE_APP_ALKEMIO_DOMAIN` and overwrites with restrictive rules for non-production domains. This allows the same Docker image to serve correct robots.txt on any environment.
+Add environment-aware `robots.txt` to the platform. Production crawling rules are committed directly as `public/robots.txt` (comprehensive rules: AI/LLM scraper blocking, aggressive SEO bot blocking, sensitive path disallows). At container startup, `env.sh` checks `VITE_ROBOTS_ALLOW_INDEXING` (injected from K8s/Helm); if not `true`, it overwrites `robots.txt` with disallow-all (fail-safe default). The same Docker image serves all environments — only the runtime env var differs.
 
 ## Technical Context
 
-**Language/Version**: TypeScript / Node.js 22 (build script is vanilla ESM JS)
-**Primary Dependencies**: `dotenv-flow`, `dotenv-expand` (already used by `buildConfiguration.js`); no new dependencies required
-**Storage**: N/A — static file written to `public/robots.txt`
-**Testing**: Vitest (13 unit tests for the robots.txt generation logic)
+**Language/Version**: TypeScript / Node.js 22 (build script is vanilla ESM JS) + `dotenv-flow`, `dotenv-expand` (already used by `buildConfiguration.js`); no new dependencies required
+**Storage**: N/A — static file committed to `public/robots.txt`, overridden at runtime by `env.sh`
+**Testing**: Vitest (9 unit tests verifying production robots.txt content)
 **Target Platform**: Web (all deployment environments)
 **Project Type**: Web SPA (Vite + React)
 **Performance Goals**: N/A — static file served by web server / CDN
 **Constraints**: Must follow RFC 9309 (Robots Exclusion Protocol); fail-safe to disallow-all
-**Scale/Scope**: Touches 6 files, adds ~80 lines of build/infrastructure logic
+**Scale/Scope**: Touches 4 files, adds ~30 lines of infrastructure logic
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Status | Notes |
-|-----------|--------|-------|
-| I. Domain-Driven Frontend Boundaries | **PASS** | No domain logic involved; this is build infrastructure (`buildConfiguration.js`) and container startup (`env.sh`). |
-| II. React 19 Concurrent UX Discipline | **N/A** | No React components touched. |
-| III. GraphQL Contract Fidelity | **N/A** | No GraphQL changes. |
-| IV. State & Side-Effect Isolation | **PASS** | Build-time file generation + container startup override; no application runtime side effects. |
-| V. Experience Quality & Safeguards | **PASS** | No interactive elements; accessibility N/A. |
-| Architecture Standard 4 (Build determinism) | **PASS** | Production content generated deterministically at build time; runtime override is environment-aware. |
-| Engineering Workflow 1 (Planning docs) | **PASS** | This plan documents affected contexts and confirms no violations. |
+| Principle                                   | Status   | Notes                                                                                        |
+| ------------------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| I. Domain-Driven Frontend Boundaries        | **PASS** | No domain logic involved; this is static file + container startup infrastructure (`env.sh`). |
+| II. React 19 Concurrent UX Discipline       | **N/A**  | No React components touched.                                                                 |
+| III. GraphQL Contract Fidelity              | **N/A**  | No GraphQL changes.                                                                          |
+| IV. State & Side-Effect Isolation           | **PASS** | Static committed file + container startup override; no application runtime side effects.     |
+| V. Experience Quality & Safeguards          | **PASS** | No interactive elements; accessibility N/A.                                                  |
+| Architecture Standard 4 (Build determinism) | **PASS** | Production content committed directly; runtime override is environment-aware via `env.sh`.   |
+| Engineering Workflow 1 (Planning docs)      | **PASS** | This plan documents affected contexts and confirms no violations.                            |
 
 **Gate result**: PASS — no violations.
 
@@ -54,17 +53,16 @@ specs/021-add-robots-txt/
 
 ```text
 # Files modified
-buildConfiguration.js                              # Extended with generateRobotsTxt() and build-time generation
-.build/docker/env.sh                               # Runtime override for non-production domains
-.build/.nginx/nginx.conf                           # No-cache location block for /robots.txt
+.build/docker/env.sh                               # Runtime override: if VITE_ROBOTS_ALLOW_INDEXING != true, overwrite robots.txt with disallow-all
+.build/.nginx/nginx.conf                           # No-cache location block for /robots.txt with default_type text/plain
 vite.config.mjs                                    # /robots.txt in no-cache routes + Content-Type fix
-.gitignore                                         # Added /public/robots.txt
 
 # Files added
-src/domain/platform/__tests__/robotsTxt.test.ts    # 13 unit tests for generation logic
+public/robots.txt                                  # Committed production crawling rules (not gitignored)
+src/domain/platform/__tests__/robotsTxt.test.ts    # 9 unit tests verifying production robots.txt content
 ```
 
-**Structure Decision**: This feature combines build infrastructure with container startup logic. `buildConfiguration.js` generates the production robots.txt (following the existing `public/env-config.js` pattern). `env.sh` (which already runs at container startup to regenerate `env-config.js`) now also overrides robots.txt for non-production domains. This enables a single Docker image to serve correct content on any environment.
+**Structure Decision**: Production robots.txt is committed directly as `public/robots.txt` — no build-time generation, no template indirection. At container startup, `env.sh` (which already regenerates `env-config.js`) checks `VITE_ROBOTS_ALLOW_INDEXING` (injected from K8s/Helm). If not `true`, it overwrites `robots.txt` with disallow-all. The same Docker image serves all environments — only the runtime env var differs, matching the existing `VITE_APP_ALKEMIO_DOMAIN` pattern.
 
 ## Complexity Tracking
 

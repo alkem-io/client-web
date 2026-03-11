@@ -8,55 +8,52 @@ Generates an environment-aware `robots.txt` file so search engines know what to 
 
 ## How It Works
 
-1. `buildConfiguration.js` always generates the comprehensive production `public/robots.txt` at build time
-2. At container startup, `env.sh` checks `VITE_APP_ALKEMIO_DOMAIN`
-3. If domain is `https://alkem.io` (production), the production robots.txt is preserved
-4. If domain is anything else (or unset), `env.sh` overwrites with restrictive `Disallow: /` rules (fail-safe)
-5. The same Docker image works for any environment — no build args needed
+1. `public/robots.txt` is committed directly to the repository with comprehensive production crawling rules
+2. In Docker, `env.sh` runs at container startup (before nginx)
+3. If `VITE_ROBOTS_ALLOW_INDEXING=true` (set by K8s/Helm on production), the committed production file is preserved
+4. Otherwise (unset or any other value), `env.sh` overwrites with disallow-all — the fail-safe default
+5. Same Docker image works for all environments — runtime env var controls behaviour
 
 ## Local Development
 
-No special setup needed. Running `pnpm start` generates the production robots.txt automatically. In local dev the runtime override doesn't apply (no `env.sh`), so you'll see the full production content.
+No special setup needed. `public/robots.txt` is committed with production content, so running `pnpm start` serves it as-is. In local dev the runtime override doesn't apply (no `env.sh`), so you'll always see the full production content — this is harmless.
 
-To verify it works:
+To verify:
 
 ```bash
 pnpm start
-# Then visit http://localhost:3001/robots.txt
+curl http://localhost:3001/robots.txt
 ```
 
 ## Verification
 
 ```bash
-# After starting dev server:
-curl http://localhost:3001/robots.txt
-
-# Expected output (local dev — full production content):
+# Local dev — always shows production content:
 # User-agent: *
 # Allow: /
 # Disallow: /admin
 # Disallow: /identity
 # ... (comprehensive rules including AI bot blocking)
 
-# In Docker (non-production domain):
+# Docker (non-production, VITE_ROBOTS_ALLOW_INDEXING unset):
+# # Non-production environment - block all crawlers
 # User-agent: *
 # Disallow: /
 
-# In Docker (production domain https://alkem.io):
+# Docker (production, VITE_ROBOTS_ALLOW_INDEXING=true):
 # Full production content preserved
 ```
 
 ## Files Changed
 
-| File | Change |
-|------|--------|
-| `buildConfiguration.js` | Added `generateRobotsTxt()` export + build-time generation |
-| `.build/docker/env.sh` | Runtime override for non-production domains |
-| `.build/.nginx/nginx.conf` | No-cache location block for `/robots.txt` |
-| `vite.config.mjs` | `/robots.txt` in no-cache routes + Content-Type fix for static files |
-| `.gitignore` | Added `public/robots.txt` to ignored files |
-| `src/domain/platform/__tests__/robotsTxt.test.ts` | 13 unit tests for generation logic |
+| File                                              | Change                                                                                   |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `public/robots.txt`                               | Committed production robots.txt with comprehensive crawling rules                        |
+| `.build/docker/env.sh`                            | Runtime override: overwrites with disallow-all when `VITE_ROBOTS_ALLOW_INDEXING != true` |
+| `.build/.nginx/nginx.conf`                        | No-cache location block for `/robots.txt` with `default_type text/plain`                 |
+| `vite.config.mjs`                                 | `/robots.txt` in no-cache routes + Content-Type fix for static files                     |
+| `src/domain/platform/__tests__/robotsTxt.test.ts` | 9 unit tests verifying production robots.txt content                                     |
 
 ## CI/CD Configuration
 
-No special CI/CD configuration needed. The same Docker image is built for all environments. At container startup, `env.sh` detects the domain and overwrites robots.txt if non-production. Only the production deployment with `VITE_APP_ALKEMIO_DOMAIN=https://alkem.io` preserves the full production robots.txt.
+Production indexing is enabled by setting the `VITE_ROBOTS_ALLOW_INDEXING=true` environment variable on the production container via K8s/Helm — matching the existing pattern for variables like `VITE_APP_ALKEMIO_DOMAIN`. All other environments (dev, staging, test) leave it unset, so `env.sh` overwrites with disallow-all at startup.
