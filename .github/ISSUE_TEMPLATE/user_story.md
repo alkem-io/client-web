@@ -2,9 +2,8 @@
 name: User Story
 about: A valuable increment of functionality, testable by the users
 title: ''
-labels: CE, client, Rhea Team, user story
+labels: CE, client
 assignees: ''
-
 ---
 
 ## Description
