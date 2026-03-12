@@ -3,7 +3,7 @@ import { expand as dotenvExpand } from 'dotenv-expand';
 import { createWriteStream } from 'fs';
 import { writeFile } from 'fs/promises';
 import path from 'path';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
 
 const CONFIG_TEXT = 'window._env_ = ';
 const CONFIG_FILE_NAME = 'env-config.js';
@@ -37,8 +37,11 @@ async function buildConfiguration() {
   await writeFile(envConfigPath, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`);
   console.info(`Write in: ${envConfigPath}`);
 }
-const isDirectExecution =
-  process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+const isDirectExecution = (() => {
+  if (!process.argv[1]) return false;
+  const resolved = path.resolve(process.argv[1]);
+  return resolved === __filename || resolved + '.js' === __filename;
+})();
 
 if (isDirectExecution) {
   await buildConfiguration();
