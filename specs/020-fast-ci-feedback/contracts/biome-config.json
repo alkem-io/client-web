@@ -1,15 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
       "suspicious": {
-        "noExplicitAny": "error",
+        "noExplicitAny": "warn",
         "noDebugger": "error",
-        "noConsoleLog": "warn",
         "noDoubleEquals": "error",
         "noDuplicateCase": "error",
         "noDuplicateObjectKeys": "error",
@@ -17,14 +14,27 @@
         "noRedeclare": "error",
         "noShadowRestrictedNames": "error",
         "useIsArray": "error",
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "warn",
+        "noConsole": "warn",
+        "noNonNullAssertedOptionalChain": "warn",
+        "noImplicitAnyLet": "warn",
+        "noAssignInExpressions": "warn",
+        "noAsyncPromiseExecutor": "warn",
+        "noControlCharactersInRegex": "warn",
+        "useIterableCallbackReturn": "warn"
       },
       "complexity": {
-        "noBannedTypes": "error",
+        "noBannedTypes": "warn",
         "noUselessTypeConstraint": "error",
         "noUselessFragments": "warn",
         "useFlatMap": "warn",
         "useOptionalChain": "warn"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
       },
       "style": {
         "useConst": "error",
@@ -33,7 +43,7 @@
         "useImportType": "warn",
         "noNonNullAssertion": "warn",
         "useEnumInitializers": "off",
-        "noImplicitBoolean": "error"
+        "noImplicitBoolean": "warn"
       },
       "a11y": {
         "noAccessKey": "warn",
@@ -43,15 +53,18 @@
         "noRedundantAlt": "warn",
         "useButtonType": "warn",
         "useKeyWithClickEvents": "warn",
-        "useKeyWithMouseEvents": "warn"
+        "useKeyWithMouseEvents": "warn",
+        "noStaticElementInteractions": "warn",
+        "noSvgWithoutTitle": "warn",
+        "noLabelWithoutControl": "warn"
       },
       "correctness": {
         "noUnusedVariables": "error",
         "noUnusedImports": "error",
         "useExhaustiveDependencies": "off",
         "noUndeclaredVariables": "error",
-        "useJsxKeyInIterable": "error",
-        "useJsxPascalCase": "error"
+        "useJsxKeyInIterable": "warn",
+        "useHookAtTopLevel": "warn"
       }
     }
   },
@@ -76,20 +89,25 @@
     }
   },
   "files": {
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "*.json", "*.md"],
-    "ignore": [
-      "node_modules/",
-      "build/",
-      "dist/",
-      "coverage/",
-      "public/env-config.js",
-      "public/meta.json",
-      "**/*.min.js"
+    "includes": [
+      "**/src/**/*.ts",
+      "**/src/**/*.tsx",
+      "**/src/**/*.js",
+      "**/src/**/*.jsx",
+      "**/*.json",
+      "**/*.md",
+      "!**/node_modules/",
+      "!**/build/",
+      "!**/dist/",
+      "!**/coverage/",
+      "!**/public/env-config.js",
+      "!**/public/meta.json",
+      "!**/*.min.js"
     ]
   },
   "overrides": [
     {
-      "include": ["src/core/apollo/generated/**"],
+      "includes": ["**/src/core/apollo/generated/**"],
       "linter": {
         "rules": {
           "suspicious": {

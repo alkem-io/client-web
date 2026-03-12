@@ -25,7 +25,6 @@
     "gulp": "gulp",
     "lint": "tsc --noEmit && biome ci . && eslint .",
     "lint:fix": "tsc --noEmit && biome check --write . && eslint .",
-    "lint:prod": "tsc --noEmit && biome ci . && eslint .",
     "prune": "rm -rf node_modules && pnpm install",
     "serve:dev": "serve -s build -l 3001",
     "spellcheck": "npx cspell '**/*.{ts,tsx}' >> cspell-report.txt",

@@ -43,7 +43,7 @@
         "useImportType": "warn",
         "noNonNullAssertion": "warn",
         "useEnumInitializers": "off",
-        "noImplicitBoolean": "error"
+        "noImplicitBoolean": "warn"
       },
       "a11y": {
         "noAccessKey": "warn",

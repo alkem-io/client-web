@@ -6,8 +6,11 @@ on:
   pull_request:
     branches: [develop, main]
 
+env:
+  NODE_VERSION: '24.14.0'
+
 jobs:
-  typecheck:
+  setup:
     runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
     steps:
       - name: Checkout
@@ -21,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.14.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -29,6 +32,39 @@ jobs:
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+  typecheck:
+    needs: setup
+    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -43,6 +79,7 @@ jobs:
         run: pnpm exec tsc --noEmit
 
   lint:
+    needs: setup
     runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
     steps:
       - name: Checkout
@@ -56,14 +93,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.14.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
-      - name: Setup pnpm cache
+      - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -78,6 +115,7 @@ jobs:
         run: pnpm biome ci .
 
   eslint-compiler:
+    needs: setup
     runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
     steps:
       - name: Checkout
@@ -91,14 +129,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.14.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
-      - name: Setup pnpm cache
+      - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
