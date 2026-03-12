@@ -7,10 +7,10 @@ import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGr
 import { defaultSpaceSettings } from '../SpaceDefaultSettings';
 import { SpaceSettingsLayout } from '@/domain/space/settings/SpaceSettingsModel';
 
-interface CalloutDisplayModeSettingsProps {
+type CalloutDisplayModeSettingsProps = {
   currentLayout?: Partial<SpaceSettingsLayout>;
-  onUpdate: (params: { layoutSettings: Partial<SpaceSettingsLayout> }) => void;
-}
+  onUpdate: (params: { layoutSettings: Partial<SpaceSettingsLayout> }) => Promise<void>;
+};
 
 const CalloutDisplayModeSettings: FC<CalloutDisplayModeSettingsProps> = ({ currentLayout, onUpdate }) => {
   const { t } = useTranslation();

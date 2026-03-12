@@ -47,8 +47,13 @@ const SpaceAdminLayoutPage: FC<SpaceAdminLayoutPageProps> = ({
     skip: !spaceId,
   });
 
+  const spaceSettings = spaceSettingsData?.lookup.space?.settings;
+
   const currentSettings = {
-    layout: spaceSettingsData?.lookup.space?.settings.layout,
+    privacy: spaceSettings?.privacy,
+    membership: spaceSettings?.membership,
+    collaboration: spaceSettings?.collaboration,
+    layout: spaceSettings?.layout,
   };
 
   const { updateSettings } = useSpaceSettingsUpdate({
