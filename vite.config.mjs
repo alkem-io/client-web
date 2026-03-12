@@ -54,6 +54,7 @@ export default defineConfig({
               req.url === '/home' ||
               // the files below might not work - headersSent is true
               req.url?.startsWith('/meta.json') ||
+              req.url?.startsWith('/robots.txt') ||
               req.url?.startsWith('/env-config.js') ||
               (!req.url.includes('.') && !req.url.startsWith('/api/') && !req.url.startsWith('/@')));
 
@@ -105,7 +106,10 @@ export default defineConfig({
               response.setHeader('Surrogate-Control', 'no-store');
               response.setHeader('X-Accel-Expires', '0');
               response.setHeader('Vary', '*');
-              response.setHeader('Content-Type', 'text/html; charset=utf-8');
+              // Preserve correct Content-Type for known static file types
+              if (!req.url?.includes('.') || req.url?.endsWith('.html')) {
+                response.setHeader('Content-Type', 'text/html; charset=utf-8');
+              }
 
               // Additional anti-cache headers
               response.setHeader('X-Cache-Control', 'no-cache');
