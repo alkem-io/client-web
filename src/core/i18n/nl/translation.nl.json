@@ -89,6 +89,13 @@
         "positive": "Evenement eindtijd kan niet voor de starttijd van evenement zijn"
       }
     },
+    "addToCalendar": {
+      "button": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "iCal": "Apple calendar & Other apps",
+      "exportAll": "Export all future events to calendar"
+    },
     "no-data": "Geen evenementen gevonden",
     "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
     "past-events": "Afgelopen evenementen",
@@ -1307,6 +1314,9 @@
     }
   },
   "components": {
+    "subspacePinIndicator": {
+      "tooltip": "Pinned $t(common.subspace)"
+    },
     "calloutTemplateDialog": {
       "typeReadonly": "Zodra een $t(common.template) is gemaakt, kan het type niet worden gewijzigd. Als je een ander type nodig hebt, maak dan een nieuwe $t(common.template)."
     },
@@ -2713,7 +2723,14 @@
                 "description": "Pas de standaard $t(common.template) aan voor nieuw aangemaakte $t(common.subspaces).<br/><br/>Hieronder kun je kiezen tussen de $t(common.templates) die zijn verzameld in de $t(common.space) $t(common.templateLibrary). Als je nieuwe $t(common.templates) wilt maken of extra $t(common.templates) wilt verkennen, klik dan <library>hier</library> om deze bibliotheek te openen."
               }
             },
-            "reorderSubspaces": "$t(common.subspaces) bewerken"
+            "reorderSubspaces": "$t(common.subspaces) bewerken",
+            "sortBy": "Sort By:",
+            "sortMode": {
+              "alphabetical": "Alphabetical",
+              "custom": "Custom"
+            },
+            "pinSpace": "Pin Space",
+            "unpinSpace": "Unpin Space"
           }
         },
         "authorization": {
@@ -3862,64 +3879,64 @@
           "tagset": "Tagset niet gevonden.",
           "mimeType": "MIME-type niet gevonden.",
           "matrixEntity": "Matrix entiteit niet gevonden.",
-          "userIdentity": "User identity not found.",
-          "pagination": "Pagination cursor not found."
+          "userIdentity": "Gebruikersidentiteit niet gevonden.",
+          "pagination": "Paginering cursor niet gevonden."
         },
         "authorization": {
-          "unauthenticated": "You might not be logged in.",
-          "unauthorized": "Access denied.",
-          "forbidden": "Access denied.",
-          "forbiddenPolicy": "You don't have the correct rights.",
-          "forbiddenLicensePolicy": "License restriction.",
-          "invalidPolicy": "Invalid authorization policy.",
-          "authorizationReset": "Authorization reset in progress.",
-          "userNotVerified": "User is not verified.",
-          "subscriptionNotAuthenticated": "Subscription requires authentication.",
-          "apiRestricted": "API access restricted.",
-          "invalidToken": "Invalid token.",
-          "bearerToken": "Bearer token error.",
-          "sessionExpired": "Session expired.",
-          "sessionExtend": "Unable to extend session.",
+          "unauthenticated": "Je bent mogelijk niet ingelogd.",
+          "unauthorized": "Toegang geweigerd.",
+          "forbidden": "Toegang geweigerd.",
+          "forbiddenPolicy": "Je hebt niet de juiste rechten.",
+          "forbiddenLicensePolicy": "Licentie beperking.",
+          "invalidPolicy": "Ongeldige autorisatie beleid.",
+          "authorizationReset": "Autorisatie reset bezig.",
+          "userNotVerified": "Gebruiker is niet geverifieerd.",
+          "subscriptionNotAuthenticated": "Abonnement vereist authenticatie.",
+          "apiRestricted": "API-toegang beperkt.",
+          "invalidToken": "Ongeldig token.",
+          "bearerToken": "Fout in bearer-token.",
+          "sessionExpired": "Sessie verlopen.",
+          "sessionExtend": "Kan sessie niet verlengen.",
           "loginFlow": "Login flow error.",
-          "loginFlowInit": "Unable to initialize login flow."
+          "loginFlowInit": "Kan de login-flow niet initialiseren."
         },
         "validation": {
           "badUserInput": "{{message}}",
-          "inputValidation": "Input validation error.",
-          "invalidUuid": "Invalid identifier format.",
-          "formatNotSupported": "Format not supported.",
-          "invalidStateTransition": "Invalid state transition.",
-          "invalidTemplateType": "Invalid template type.",
-          "groupNotInitialized": "Group not initialized.",
-          "entityNotInitialized": "Entity not initialized.",
-          "relationNotLoaded": "Relation not loaded.",
-          "paginationOutOfBound": "Pagination input out of bounds.",
-          "paginationParamNotFound": "Pagination parameter not found.",
-          "forumDiscussionCategory": "Invalid discussion category.",
-          "notSupported": "Operation not supported."
+          "inputValidation": "Invoer validatie fout.",
+          "invalidUuid": "Ongeldig Identifier-formaat.",
+          "formatNotSupported": "Format niet ondersteund.",
+          "invalidStateTransition": "Ongeldige statusovergang.",
+          "invalidTemplateType": "Ongeldig templatetype.",
+          "groupNotInitialized": "Groep niet geïnitialiseerd.",
+          "entityNotInitialized": "Entiteit niet geïnitialiseerd.",
+          "relationNotLoaded": "Relatie niet geladen.",
+          "paginationOutOfBound": "Paginering invoer buiten bereik.",
+          "paginationParamNotFound": "Paginering parameter niet gevonden.",
+          "forumDiscussionCategory": "Ongeldige discussiecategorie.",
+          "notSupported": "Handeling niet ondersteund."
         },
         "operations": {
-          "operationNotAllowed": "Operation not allowed.",
-          "notEnabled": "Feature not enabled.",
-          "messagingNotEnabled": "Messaging not enabled.",
-          "roleSetRole": "Role set error.",
-          "roleSetInvitation": "Invitation error.",
-          "roleLimitsViolated": "Role limits exceeded.",
-          "licenseEntitlementNotAvailable": "License entitlement not available.",
-          "licenseEntitlementNotSupported": "License entitlement not supported.",
-          "calloutClosed": "Callout is closed.",
-          "userAlreadyRegistered": "User already registered.",
-          "userNotRegistered": "User not registered.",
-          "noAgentForUser": "No agent for user.",
-          "userIdentityDeletionFailed": "User identity deletion failed."
+          "operationNotAllowed": "Handeling niet toegestaan.",
+          "notEnabled": "Functionaliteit niet ingeschakeld.",
+          "messagingNotEnabled": "Berichten niet ingeschakeld.",
+          "roleSetRole": "Rol instellen error.",
+          "roleSetInvitation": "Uitnodiging error.",
+          "roleLimitsViolated": "Rol limieten overschreden.",
+          "licenseEntitlementNotAvailable": "Licentierecht niet beschikbaar.",
+          "licenseEntitlementNotSupported": "Licentierechten worden niet ondersteund.",
+          "calloutClosed": "Callout is gesloten.",
+          "userAlreadyRegistered": "Gebruiker al geregistreerd.",
+          "userNotRegistered": "Gebruiker niet geregistreerd.",
+          "noAgentForUser": "Geen agent voor gebruiker.",
+          "userIdentityDeletionFailed": "Gebruikersidentiteit verwijderen mislukt."
         },
         "system": {
-          "bootstrapFailed": "System initialization failed.",
-          "notificationPayloadBuilder": "Notification error.",
-          "geoLocationError": "Geolocation error.",
-          "geoServiceNotAvailable": "Geolocation service not available.",
-          "geoServiceError": "Geolocation service error.",
-          "geoServiceRequestLimit": "Geolocation request limit exceeded.",
+          "bootstrapFailed": "Systeem initialisatie mislukt.",
+          "notificationPayloadBuilder": "Notificatie error.",
+          "geoLocationError": "Geolocatie error.",
+          "geoServiceNotAvailable": "Geolocatie service niet beschikbaar.",
+          "geoServiceError": "Geolocatie service error.",
+          "geoServiceRequestLimit": "Geolocatie verzoek limiet overschreden.",
           "storageDisabled": "Storage is uitgeschakeld.",
           "storageUploadFailed": "Upload mislukt.",
           "localStorageSaveFailed": "Opslaan in lokale storage mislukt.",
@@ -4325,6 +4342,10 @@
     "appVersion": {
       "message": "Er is een nieuwe versie van de app beschikbaar.",
       "recurringMessage": "Sluit alle Alkemio tabbladen en laad opnieuw om bij te werken."
+    },
+    "onlineStatus": {
+      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
+      "restored": "Your connection has been restored."
     }
   }
 }
