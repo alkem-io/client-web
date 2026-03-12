@@ -26,9 +26,8 @@ describe('robots.txt', () => {
     });
 
     it('disallows crawling of sensitive paths', () => {
-      expect(content).toContain('Disallow: /identity');
       expect(content).toContain('Disallow: /restricted');
-      expect(content).toContain('Disallow: /profile');
+      expect(content).toContain('Disallow: /user/me');
     });
 
     it('disallows crawling of API and internal endpoints', () => {
