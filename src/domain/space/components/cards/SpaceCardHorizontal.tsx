@@ -60,6 +60,7 @@ export interface SpaceCardHorizontalProps {
   size?: AvatarSize;
   disableHoverState?: boolean;
   disableTagline?: boolean;
+  indicator?: ReactNode;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
@@ -80,6 +81,7 @@ const SpaceCardHorizontal = ({
   size,
   disableHoverState = false,
   disableTagline = false,
+  indicator,
 }: SpaceCardHorizontalProps) => {
   const Icon = withIcon && space.level ? spaceLevelIcon[space.level] : undefined;
 
@@ -105,13 +107,16 @@ const SpaceCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
-          <SpaceAvatar
-            size={size}
-            // Use || instead of ?? here, because uri can be an empty string
-            src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri}
-            alt={space.about.profile.displayName}
-            spaceId={space.id}
-          />
+          <>
+            {indicator}
+            <SpaceAvatar
+              size={size}
+              // Use || instead of ?? here, because uri can be an empty string
+              src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri}
+              alt={space.about.profile.displayName}
+              spaceId={space.id}
+            />
+          </>
         }
         component={disableHoverState ? RouterLink : Wrapper}
         to={space.about.profile.url}

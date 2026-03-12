@@ -33,8 +33,25 @@ const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceI
 
   useEffect(() => {
     if (hash) {
-      const element = document.getElementById(hash.slice(1));
-      element?.scrollIntoView({ behavior: 'smooth' });
+      const scrollToHash = () => {
+        const element = document.getElementById(hash.slice(1));
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          return true;
+        }
+        return false;
+      };
+
+      if (!scrollToHash()) {
+        // Element may not be rendered yet due to async data loading; retry with observer
+        const observer = new MutationObserver(() => {
+          if (scrollToHash()) {
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        return () => observer.disconnect();
+      }
     }
   }, [hash]);
 
@@ -87,7 +104,7 @@ const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceI
             <SaveButton loading={loading} onClick={() => profileFormRef.current?.submit()} />
           </Actions>
         </PageContentBlock>
-        <PageContentBlock id="description">
+        <PageContentBlock>
           <PageContentBlockHeader title={t('common.description')} />
           <SpaceAboutView />
         </PageContentBlock>
