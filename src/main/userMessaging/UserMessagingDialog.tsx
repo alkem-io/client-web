@@ -9,7 +9,6 @@ import { useConversationEventsSubscription } from './useConversationEventsSubscr
 import { UserMessagingChatList } from './UserMessagingChatList';
 import { UserMessagingConversationView } from './UserMessagingConversationView';
 import { NewMessageDialog } from './NewMessageDialog';
-import { GroupChatManagementDialog } from './GroupChatManagementDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -40,7 +39,6 @@ const UserMessagingDialog = () => {
 
   const { isSmallScreen: isMobile } = useScreenSize();
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
-  const [isGroupChatDialogOpen, setIsGroupChatDialogOpen] = useState(false);
 
   // Sync unread count to context: use full query count when dialog is open, lightweight count otherwise
   useEffect(() => {
@@ -79,15 +77,6 @@ const UserMessagingDialog = () => {
 
   const handleCloseNewMessage = () => {
     setIsNewMessageDialogOpen(false);
-  };
-
-  const handleStartGroupChat = () => {
-    setIsNewMessageDialogOpen(false);
-    setIsGroupChatDialogOpen(true);
-  };
-
-  const handleCloseGroupChat = () => {
-    setIsGroupChatDialogOpen(false);
   };
 
   const handleNewConvMessageSent = (conversationId: string, roomId: string) => {
@@ -151,13 +140,6 @@ const UserMessagingDialog = () => {
           open={isNewMessageDialogOpen}
           onClose={handleCloseNewMessage}
           onConversationCreated={handleNewConvMessageSent}
-          onStartGroupChat={handleStartGroupChat}
-        />
-        <GroupChatManagementDialog
-          open={isGroupChatDialogOpen}
-          onClose={handleCloseGroupChat}
-          mode="create"
-          onGroupCreated={handleNewConvMessageSent}
         />
       </>
     );
@@ -214,13 +196,6 @@ const UserMessagingDialog = () => {
         open={isNewMessageDialogOpen}
         onClose={handleCloseNewMessage}
         onConversationCreated={handleNewConvMessageSent}
-        onStartGroupChat={handleStartGroupChat}
-      />
-      <GroupChatManagementDialog
-        open={isGroupChatDialogOpen}
-        onClose={handleCloseGroupChat}
-        mode="create"
-        onGroupCreated={handleNewConvMessageSent}
       />
     </>
   );

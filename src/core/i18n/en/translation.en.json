@@ -2285,7 +2285,7 @@
       "startTyping": "Start typing to search users",
       "searchUsers": "Search users...",
       "searchConversations": "Search...",
-      "createChat": "Create Chat",
+      "createChat": "Go to Chat",
       "startGroupChat": "Start group chat",
       "groupChatName": "Group name",
       "groupChatNameRequired": "Group name is required",
@@ -2301,7 +2301,11 @@
       "leaveGroupConfirmTitle": "Leave group chat?",
       "leaveGroupConfirmMessage": "You will no longer receive messages from this group. You can be re-added by another member.",
       "noMembersSelected": "Add at least one member",
-      "membersCount": "{{count}} members"
+      "membersCount": "{{count}} members",
+      "saveGroup": "Save Group",
+      "discardChangesTitle": "Unsaved changes",
+      "discardChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
+      "discardChanges": "Discard"
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",

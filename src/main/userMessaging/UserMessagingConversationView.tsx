@@ -28,7 +28,6 @@ import {
   UserConversationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import { UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
-import { useApolloClient } from '@apollo/client';
 import { GroupChatManagementDialog } from './GroupChatManagementDialog';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useRef, useEffect, useCallback, useLayoutEffect, useState } from 'react';
@@ -217,7 +216,6 @@ export const UserMessagingConversationView = ({
 }: UserMessagingConversationViewProps) => {
   const { t } = useTranslation();
   const { userModel } = useCurrentUserContext();
-  const client = useApolloClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Group menu state
@@ -232,20 +230,21 @@ export const UserMessagingConversationView = ({
     if (!conversation) return;
     await leaveConversation({
       variables: { leaveData: { conversationID: conversation.id } },
-    });
-    // Remove from cache
-    client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-      if (!existing?.me?.conversations?.conversations) return existing;
-      return {
-        ...existing,
-        me: {
-          ...existing.me,
-          conversations: {
-            ...existing.me.conversations,
-            conversations: existing.me.conversations.conversations.filter(c => c.id !== conversation.id),
-          },
-        },
-      };
+      update: cache => {
+        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.filter(c => c.id !== conversation.id),
+              },
+            },
+          };
+        });
+      },
     });
     setIsLeaveConfirmOpen(false);
     onLeaveConversation?.();
@@ -419,7 +418,6 @@ export const UserMessagingConversationView = ({
         <GroupChatManagementDialog
           open={isManageDialogOpen}
           onClose={() => setIsManageDialogOpen(false)}
-          mode="manage"
           conversationId={conversation.id}
           currentMembers={conversation.members}
           displayName={conversation.displayName}

@@ -29456,57 +29456,6 @@ export const ConversationEventsDocument = gql`
       memberAdded {
         conversation {
           id
-          room {
-            id
-            type
-            displayName
-            avatarUrl
-            createdDate
-            unreadCount
-            messagesCount
-            lastMessage {
-              id
-              message
-              timestamp
-              sender {
-                id
-                type
-                profile {
-                  id
-                  displayName
-                  avatar: visual(type: AVATAR) {
-                    id
-                    uri
-                  }
-                }
-              }
-              reactions {
-                id
-                emoji
-                timestamp
-                sender {
-                  id
-                  profile {
-                    id
-                    displayName
-                  }
-                }
-              }
-            }
-          }
-          members {
-            id
-            type
-            profile {
-              id
-              displayName
-              url
-              avatar: visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
-          }
         }
         addedMember {
           id
@@ -29525,19 +29474,6 @@ export const ConversationEventsDocument = gql`
       memberRemoved {
         conversation {
           id
-          members {
-            id
-            type
-            profile {
-              id
-              displayName
-              url
-              avatar: visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
-          }
         }
         removedMemberID
       }
@@ -29731,6 +29667,38 @@ export const CreateConversationDocument = gql`
         type
         displayName
         avatarUrl
+        createdDate
+        unreadCount
+        messagesCount
+        lastMessage {
+          id
+          message
+          timestamp
+          sender {
+            id
+            type
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+          reactions {
+            id
+            emoji
+            timestamp
+            sender {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
+        }
       }
       members {
         id

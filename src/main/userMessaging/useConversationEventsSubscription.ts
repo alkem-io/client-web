@@ -191,8 +191,28 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
   );
 
   const handleMemberAdded = useCallback(
-    (_event: MemberAddedEvent) => {
-      client.refetchQueries({ include: [UserConversationsDocument] });
+    (event: MemberAddedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                // Idempotent: only add if not already present
+                if (c.members.some(m => m.id === event.addedMember.id)) return c;
+                return {
+                  ...c,
+                  members: [...c.members, event.addedMember],
+                };
+              }),
+            },
+          },
+        };
+      });
     },
     [client]
   );
@@ -215,7 +235,26 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         });
         return;
       }
-      client.refetchQueries({ include: [UserConversationsDocument] });
+      // Idempotent: only remove if still present
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                return {
+                  ...c,
+                  members: c.members.filter(m => m.id !== event.removedMemberID),
+                };
+              }),
+            },
+          },
+        };
+      });
     },
     [client, currentUserId]
   );

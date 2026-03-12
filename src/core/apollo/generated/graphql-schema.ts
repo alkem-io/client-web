@@ -4669,7 +4669,7 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
-  /** Updates the pinned state of a Subspace within the specified Space. */
+  /** Updates the pinned state of a Subspace within the specified Space. Returns the updated Subspace. */
   updateSubspacePinned: Space;
   /** Update the sortOrder field of the supplied Subspaces to increase as per the order that they are provided in. */
   updateSubspacesSortOrder: Array<Space>;
@@ -41420,72 +41420,7 @@ export type ConversationEventsSubscription = {
     memberAdded?:
       | {
           __typename?: 'ConversationMemberAddedEvent';
-          conversation: {
-            __typename?: 'Conversation';
-            id: string;
-            room?:
-              | {
-                  __typename?: 'Room';
-                  id: string;
-                  type: RoomType;
-                  displayName: string;
-                  avatarUrl?: string | undefined;
-                  createdDate: Date;
-                  unreadCount: number;
-                  messagesCount: number;
-                  lastMessage?:
-                    | {
-                        __typename?: 'Message';
-                        id: string;
-                        message: string;
-                        timestamp: number;
-                        sender?:
-                          | {
-                              __typename?: 'Actor';
-                              id: string;
-                              type: ActorType;
-                              profile?:
-                                | {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                  }
-                                | undefined;
-                            }
-                          | undefined;
-                        reactions: Array<{
-                          __typename?: 'Reaction';
-                          id: string;
-                          emoji: string;
-                          timestamp: number;
-                          sender?:
-                            | {
-                                __typename?: 'User';
-                                id: string;
-                                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                              }
-                            | undefined;
-                        }>;
-                      }
-                    | undefined;
-                }
-              | undefined;
-            members: Array<{
-              __typename?: 'Actor';
-              id: string;
-              type: ActorType;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                  }
-                | undefined;
-            }>;
-          };
+          conversation: { __typename?: 'Conversation'; id: string };
           addedMember: {
             __typename?: 'Actor';
             id: string;
@@ -41506,24 +41441,7 @@ export type ConversationEventsSubscription = {
       | {
           __typename?: 'ConversationMemberRemovedEvent';
           removedMemberID: string;
-          conversation: {
-            __typename?: 'Conversation';
-            id: string;
-            members: Array<{
-              __typename?: 'Actor';
-              id: string;
-              type: ActorType;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                  }
-                | undefined;
-            }>;
-          };
+          conversation: { __typename?: 'Conversation'; id: string };
         }
       | undefined;
     messageReceived?:
@@ -41640,7 +41558,52 @@ export type CreateConversationMutation = {
     __typename?: 'Conversation';
     id: string;
     room?:
-      | { __typename?: 'Room'; id: string; type: RoomType; displayName: string; avatarUrl?: string | undefined }
+      | {
+          __typename?: 'Room';
+          id: string;
+          type: RoomType;
+          displayName: string;
+          avatarUrl?: string | undefined;
+          createdDate: Date;
+          unreadCount: number;
+          messagesCount: number;
+          lastMessage?:
+            | {
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender?:
+                  | {
+                      __typename?: 'Actor';
+                      id: string;
+                      type: ActorType;
+                      profile?:
+                        | {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+                reactions: Array<{
+                  __typename?: 'Reaction';
+                  id: string;
+                  emoji: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }
       | undefined;
     members: Array<{
       __typename?: 'Actor';

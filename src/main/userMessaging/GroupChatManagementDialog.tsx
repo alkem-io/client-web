@@ -1,22 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
+  Dialog,
   DialogContent,
   DialogActions,
   TextField,
   CircularProgress,
   Button,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  IconButton,
   Typography,
   Skeleton,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import { debounce } from 'lodash-es';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -24,7 +20,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import {
-  useCreateConversationMutation,
   useAssignConversationMemberMutation,
   useRemoveConversationMemberMutation,
   useUpdateConversationMutation,
@@ -32,14 +27,7 @@ import {
   useDefaultVisualTypeConstraintsQuery,
   UserConversationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  ActorType,
-  ConversationCreationType,
-  UserConversationsQuery,
-  UserFilterInput,
-  VisualType,
-} from '@/core/apollo/generated/graphql-schema';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { ActorType, UserConversationsQuery, UserFilterInput, VisualType } from '@/core/apollo/generated/graphql-schema';
 import {
   ContributorItem,
   useContributors,
@@ -53,51 +41,36 @@ import { CropDialog } from '@/core/ui/upload/VisualUpload/CropDialog';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 
-interface GroupChatCreateProps {
+interface GroupChatManagementDialogProps {
   open: boolean;
   onClose: () => void;
-  mode: 'create';
-  onGroupCreated: (conversationId: string, roomId: string) => void;
-}
-
-interface GroupChatManageProps {
-  open: boolean;
-  onClose: () => void;
-  mode: 'manage';
   conversationId: string;
   currentMembers: ConversationMember[];
   displayName?: string;
   avatarUrl?: string;
 }
 
-type GroupChatManagementDialogProps = GroupChatCreateProps | GroupChatManageProps;
-
 export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps) => {
-  const { open, onClose, mode } = props;
+  const { open, onClose, conversationId, currentMembers } = props;
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
   const notify = useNotification();
   const [inputValue, setInputValue] = useState('');
   const [filter, setFilter] = useState<UserFilterInput>();
+  const [isAddMembersOpen, setIsAddMembersOpen] = useState(false);
+  const [isDiscardConfirmOpen, setIsDiscardConfirmOpen] = useState(false);
 
-  // Create mode state
-  const [groupName, setGroupName] = useState('');
-  const [selectedMembers, setSelectedMembers] = useState<ConversationMember[]>([]);
-
-  const [createConversation] = useCreateConversationMutation();
+  // Member mutations fire immediately — subscription refetch keeps the list in sync
   const [addMember] = useAssignConversationMemberMutation();
   const [removeMember] = useRemoveConversationMemberMutation();
   const [updateConversation] = useUpdateConversationMutation();
 
-  // Manage mode: editable group name
-  const [editedDisplayName, setEditedDisplayName] = useState(mode === 'manage' ? (props.displayName ?? '') : '');
-
-  // Avatar upload state
-  const [avatarUrl, setAvatarUrl] = useState(mode === 'manage' ? (props.avatarUrl ?? '') : '');
+  // Display name and avatar are pending until Save
+  const [editedDisplayName, setEditedDisplayName] = useState(props.displayName ?? '');
+  const [avatarUrl, setAvatarUrl] = useState(props.avatarUrl ?? '');
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
 
-  // SSOT: fetch constraints from platform configuration
   const { data: constraintsData } = useDefaultVisualTypeConstraintsQuery({
     variables: { visualType: VisualType.Avatar },
     skip: !open,
@@ -106,20 +79,10 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
 
   const { storageConfig } = useStorageConfig({ locationType: 'platform', skip: !open });
 
+  // Upload file eagerly to get URL, persist to conversation only on Save
   const [uploadFile, { loading: isUploading }] = useUploadFileMutation({
     onCompleted: data => {
-      const url = data.uploadFileOnStorageBucket.url;
-      setAvatarUrl(url);
-      if (mode === 'manage') {
-        updateConversation({
-          variables: {
-            updateData: {
-              conversationID: props.conversationId,
-              avatarUrl: url,
-            },
-          },
-        });
-      }
+      setAvatarUrl(data.uploadFileOnStorageBucket.url);
     },
     onError: () => {
       notify(t('components.file-upload.file-upload-error' as TranslationKey), 'error');
@@ -143,17 +106,10 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     });
   };
 
-  const handleSaveDisplayName = async () => {
-    if (mode !== 'manage' || editedDisplayName.trim() === (props.displayName ?? '')) return;
-    await updateConversation({
-      variables: {
-        updateData: {
-          conversationID: props.conversationId,
-          displayName: editedDisplayName.trim(),
-        },
-      },
-    });
-  };
+  // Only display name and avatar are considered "unsaved"
+  const hasUnsavedChanges = useMemo(() => {
+    return editedDisplayName.trim() !== (props.displayName ?? '') || avatarUrl !== (props.avatarUrl ?? '');
+  }, [editedDisplayName, props.displayName, avatarUrl, props.avatarUrl]);
 
   const { data: contributors = [], loading: loadingContributors } = useContributors({
     filter,
@@ -161,14 +117,10 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     pageSize: 20,
   });
 
-  // Get the effective member list (for manage mode use props, for create use local state)
-  const effectiveMembers = mode === 'manage' ? props.currentMembers : selectedMembers;
-
-  // Filter out current user and already-present members
   const filteredContributors = useMemo(() => {
-    const memberIds = new Set(effectiveMembers.map(m => m.id));
+    const memberIds = new Set(currentMembers.map(m => m.id));
     return contributors.filter(user => user.id !== currentUser?.id && !memberIds.has(user.id));
-  }, [contributors, currentUser?.id, effectiveMembers]);
+  }, [contributors, currentUser?.id, currentMembers]);
 
   const debouncedSetFilter = useMemo(
     () =>
@@ -183,157 +135,170 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     debouncedSetFilter(value);
   };
 
+  // Add member immediately — subscription refetch updates the list
   const handleMemberSelect = async (_event: React.SyntheticEvent, value: ContributorItem | null) => {
     if (!value) return;
 
-    if (mode === 'manage') {
-      await addMember({
-        variables: {
-          memberData: {
-            conversationID: props.conversationId,
-            memberID: value.id,
-          },
-        },
-        update: cache => {
-          cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-            if (!existing?.me?.conversations?.conversations) return existing;
-            return {
-              ...existing,
-              me: {
-                ...existing.me,
-                conversations: {
-                  ...existing.me.conversations,
-                  conversations: existing.me.conversations.conversations.map(c => {
-                    if (c.id !== props.conversationId) return c;
-                    if (c.members.some(m => m.id === value.id)) return c;
-                    return {
-                      ...c,
-                      members: [
-                        ...c.members,
-                        {
-                          __typename: 'Actor' as const,
-                          id: value.id,
-                          type: ActorType.User,
-                          profile: {
-                            __typename: 'Profile' as const,
-                            id: '',
-                            displayName: value.profile?.displayName ?? '',
-                            url: '',
-                            avatar: value.profile?.visual
-                              ? {
-                                  __typename: 'Visual' as const,
-                                  id: '',
-                                  uri: value.profile.visual.uri,
-                                }
-                              : undefined,
-                          },
-                        },
-                      ],
-                    };
-                  }),
-                },
-              },
-            };
-          });
-        },
-      });
-    } else {
-      setSelectedMembers(prev => [
-        ...prev,
-        {
-          id: value.id,
-          type: ActorType.User,
-          displayName: value.profile?.displayName ?? '',
-          avatarUri: value.profile?.visual?.uri,
-        },
-      ]);
-    }
-    setInputValue('');
-    setFilter(undefined);
-  };
-
-  const handleRemoveMember = async (memberId: string) => {
-    if (mode === 'manage') {
-      await removeMember({
-        variables: {
-          memberData: {
-            conversationID: props.conversationId,
-            memberID: memberId,
-          },
-        },
-        update: cache => {
-          cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-            if (!existing?.me?.conversations?.conversations) return existing;
-            return {
-              ...existing,
-              me: {
-                ...existing.me,
-                conversations: {
-                  ...existing.me.conversations,
-                  conversations: existing.me.conversations.conversations.map(c => {
-                    if (c.id !== props.conversationId) return c;
-                    return {
-                      ...c,
-                      members: c.members.filter(m => m.id !== memberId),
-                    };
-                  }),
-                },
-              },
-            };
-          });
-        },
-      });
-    } else {
-      setSelectedMembers(prev => prev.filter(m => m.id !== memberId));
-    }
-  };
-
-  const isValid = mode === 'create' ? selectedMembers.length > 0 && groupName.trim().length > 0 : true;
-
-  const [handleCreateGroup, isCreating] = useLoadingState(async () => {
-    if (mode !== 'create' || !isValid) return;
-
-    const result = await createConversation({
+    await addMember({
       variables: {
-        conversationData: {
-          memberIDs: selectedMembers.map(m => m.id),
-          type: ConversationCreationType.Group,
-          displayName: groupName.trim(),
-          avatarUrl: avatarUrl || undefined,
+        memberData: {
+          conversationID: conversationId,
+          memberID: value.id,
         },
       },
+      update: cache => {
+        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.map(c => {
+                  if (c.id !== conversationId) return c;
+                  if (c.members.some(m => m.id === value.id)) return c;
+                  return {
+                    ...c,
+                    members: [
+                      ...c.members,
+                      {
+                        __typename: 'Actor' as const,
+                        id: value.id,
+                        type: ActorType.User,
+                        profile: {
+                          __typename: 'Profile' as const,
+                          id: '',
+                          displayName: value.profile?.displayName ?? '',
+                          url: '',
+                          avatar: value.profile?.visual
+                            ? {
+                                __typename: 'Visual' as const,
+                                id: '',
+                                uri: value.profile.visual.uri,
+                              }
+                            : undefined,
+                        },
+                      },
+                    ],
+                  };
+                }),
+              },
+            },
+          };
+        });
+      },
     });
-
-    const conversationId = result.data?.createConversation.id;
-    const roomId = result.data?.createConversation.room?.id;
-
-    if (conversationId && roomId) {
-      props.onGroupCreated(conversationId, roomId);
-    }
-    handleClose();
-  });
-
-  const handleClose = () => {
-    setGroupName('');
-    setSelectedMembers([]);
     setInputValue('');
     setFilter(undefined);
-    setAvatarUrl(mode === 'manage' ? (props.avatarUrl ?? '') : '');
+  };
+
+  // Remove member immediately — subscription refetch updates the list
+  const handleRemoveMember = async (memberId: string) => {
+    await removeMember({
+      variables: {
+        memberData: {
+          conversationID: conversationId,
+          memberID: memberId,
+        },
+      },
+      update: cache => {
+        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.map(c => {
+                  if (c.id !== conversationId) return c;
+                  return {
+                    ...c,
+                    members: c.members.filter(m => m.id !== memberId),
+                  };
+                }),
+              },
+            },
+          };
+        });
+      },
+    });
+  };
+
+  const resetLocalState = useCallback(() => {
+    setEditedDisplayName(props.displayName ?? '');
+    setAvatarUrl(props.avatarUrl ?? '');
+    setInputValue('');
+    setFilter(undefined);
+    setIsAddMembersOpen(false);
+  }, [props.displayName, props.avatarUrl]);
+
+  const handleRequestClose = () => {
+    if (hasUnsavedChanges) {
+      setIsDiscardConfirmOpen(true);
+    } else {
+      resetLocalState();
+      onClose();
+    }
+  };
+
+  const handleDiscardAndClose = () => {
+    setIsDiscardConfirmOpen(false);
+    resetLocalState();
     onClose();
   };
 
-  const title =
-    mode === 'create'
-      ? t('components.userMessaging.startGroupChat' as TranslationKey)
-      : t('components.userMessaging.manageGroup' as TranslationKey);
+  const handleSave = async () => {
+    if (editedDisplayName.trim() !== (props.displayName ?? '')) {
+      await updateConversation({
+        variables: {
+          updateData: {
+            conversationID: conversationId,
+            displayName: editedDisplayName.trim(),
+          },
+        },
+      });
+    }
+
+    if (avatarUrl !== (props.avatarUrl ?? '')) {
+      await updateConversation({
+        variables: {
+          updateData: {
+            conversationID: conversationId,
+            avatarUrl,
+          },
+        },
+      });
+    }
+
+    setInputValue('');
+    setFilter(undefined);
+    setIsAddMembersOpen(false);
+    onClose();
+  };
 
   return (
-    <DialogWithGrid open={open} columns={8} onClose={handleClose} aria-labelledby="group-chat-dialog">
-      <DialogHeader id="group-chat-dialog" title={title} onClose={handleClose} />
+    <DialogWithGrid
+      open={open}
+      columns={8}
+      onClose={handleRequestClose}
+      aria-labelledby="group-chat-dialog"
+      sx={{
+        '.MuiDialog-paper': {
+          maxWidth: 706,
+        },
+      }}
+    >
+      <DialogHeader
+        id="group-chat-dialog"
+        title={props.displayName ?? t('components.userMessaging.manageGroup' as TranslationKey)}
+        onClose={handleRequestClose}
+      />
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={gutters()}>
           {/* Avatar upload */}
-          <Box display="flex" flexDirection="column" alignItems="center" gap={gutters(0.5)}>
+          <Box display="flex" flexDirection="row" alignItems="center" gap={gutters()}>
             <FileUploadWrapper
               onFileSelected={handleAvatarFileSelected}
               allowedTypes={visualConstraints?.allowedTypes ?? []}
@@ -343,13 +308,22 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
               ) : (
                 <Avatar
                   src={avatarUrl || undefined}
-                  alt={mode === 'create' ? groupName : editedDisplayName}
+                  alt={editedDisplayName}
                   size="large"
                   sx={{ cursor: 'pointer', boxShadow: '0 0 4px rgba(0, 0, 0, 0.2)' }}
                 />
               )}
             </FileUploadWrapper>
-            <Caption color="neutral.light">
+            <Caption
+              sx={{
+                fontFamily: '"Montserrat", sans-serif',
+                fontWeight: 500,
+                fontSize: 12,
+                textTransform: 'uppercase',
+                color: '#1D384A',
+                cursor: 'pointer',
+              }}
+            >
               {t('components.userMessaging.editProfilePicture' as TranslationKey)}
             </Caption>
           </Box>
@@ -365,32 +339,18 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
             />
           )}
 
-          {/* Group name */}
-          <Box>
-            <Caption marginBottom={gutters(0.5)}>
-              {t('components.userMessaging.groupChatName' as TranslationKey)}
-            </Caption>
-            <TextField
-              value={mode === 'create' ? groupName : editedDisplayName}
-              onChange={e => (mode === 'create' ? setGroupName(e.target.value) : setEditedDisplayName(e.target.value))}
-              onBlur={mode === 'manage' ? handleSaveDisplayName : undefined}
-              placeholder={t('components.userMessaging.groupChatName' as TranslationKey)}
-              variant="outlined"
-              size="small"
-              fullWidth
-              required={mode === 'create'}
-              error={mode === 'create' && groupName.length === 0 && selectedMembers.length > 0}
-              helperText={
-                mode === 'create' && groupName.length === 0 && selectedMembers.length > 0
-                  ? t('components.userMessaging.groupChatNameRequired' as TranslationKey)
-                  : undefined
-              }
-            />
-          </Box>
+          {/* Group Chat Name */}
+          <TextField
+            value={editedDisplayName}
+            onChange={e => setEditedDisplayName(e.target.value)}
+            label={t('components.userMessaging.groupChatName' as TranslationKey)}
+            variant="outlined"
+            size="small"
+            fullWidth
+          />
 
-          {/* Member search */}
-          <Box>
-            <Caption marginBottom={gutters(0.5)}>{t('components.userMessaging.addMembers' as TranslationKey)}</Caption>
+          {/* Add Members toggle */}
+          {isAddMembersOpen ? (
             <Autocomplete
               options={filteredContributors}
               getOptionLabel={option => option.profile?.displayName ?? ''}
@@ -410,6 +370,11 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
                   placeholder={t('components.userMessaging.searchUsers' as TranslationKey)}
                   variant="outlined"
                   size="small"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '12px',
+                    },
+                  }}
                   slotProps={{
                     input: {
                       ...params.InputProps,
@@ -434,63 +399,148 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
                 </li>
               )}
             />
-          </Box>
-
-          {/* Members list */}
-          {effectiveMembers.length > 0 && (
-            <Box>
-              <Caption marginBottom={gutters(0.25)}>
-                {t('components.userMessaging.groupMembers' as TranslationKey)} ({effectiveMembers.length})
-              </Caption>
-              <List dense disablePadding>
-                {effectiveMembers.map(member => (
-                  <ListItem
-                    key={member.id}
-                    secondaryAction={
-                      member.id !== currentUser?.id ? (
-                        <IconButton
-                          edge="end"
-                          size="small"
-                          onClick={() => handleRemoveMember(member.id)}
-                          aria-label={t('components.userMessaging.remove' as TranslationKey)}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </IconButton>
-                      ) : undefined
-                    }
-                    sx={{ paddingX: 0 }}
-                  >
-                    <ListItemAvatar sx={{ minWidth: 40 }}>
-                      <Avatar src={member.avatarUri} alt={member.displayName} size="small" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography variant="body2" noWrap>
-                          {member.displayName}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
+          ) : (
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={() => setIsAddMembersOpen(true)}
+              sx={{
+                fontFamily: '"Montserrat", sans-serif',
+                fontWeight: 500,
+                fontSize: 12,
+                textTransform: 'uppercase',
+                color: '#1D384A',
+                borderColor: '#1D384A',
+                borderRadius: '12px',
+                alignSelf: 'flex-start',
+              }}
+            >
+              {t('components.userMessaging.addMembers' as TranslationKey)}
+            </Button>
           )}
 
-          {/* Validation hint (create mode only) */}
-          {mode === 'create' && selectedMembers.length === 0 && (
-            <Caption color="neutral.light" fontStyle="italic">
-              {t('components.userMessaging.noMembersSelected' as TranslationKey)}
-            </Caption>
+          {/* Group Members bordered section */}
+          {currentMembers.length > 0 && (
+            <Box
+              sx={{
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: '12px',
+                padding: gutters(),
+              }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: '"Montserrat", sans-serif',
+                  fontWeight: 400,
+                  fontSize: 15,
+                  lineHeight: '20px',
+                  color: '#1D384A',
+                  marginBottom: gutters(0.5),
+                }}
+              >
+                {t('components.userMessaging.groupMembers' as TranslationKey)}
+              </Typography>
+              <Box display="flex" flexDirection="column" gap={1.5}>
+                {currentMembers.map(member => (
+                  <Box key={member.id} display="flex" flexDirection="row" alignItems="center" gap={2}>
+                    <Avatar
+                      src={member.avatarUri}
+                      alt={member.displayName}
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.15)',
+                        borderRadius: '12px',
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontWeight: 400,
+                        fontSize: 15,
+                        lineHeight: '20px',
+                        color: '#1D384A',
+                        flexGrow: 1,
+                      }}
+                      noWrap
+                    >
+                      {member.displayName}
+                    </Typography>
+                    {member.id !== currentUser?.id && (
+                      <Button
+                        variant="text"
+                        size="small"
+                        onClick={() => handleRemoveMember(member.id)}
+                        sx={{
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontWeight: 500,
+                          fontSize: 12,
+                          lineHeight: '20px',
+                          textTransform: 'uppercase',
+                          color: '#646464',
+                          minWidth: 'auto',
+                          padding: 0,
+                        }}
+                      >
+                        {t('components.userMessaging.remove' as TranslationKey)}
+                      </Button>
+                    )}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
           )}
         </Box>
       </DialogContent>
-      {mode === 'create' && (
+      <DialogActions sx={{ justifyContent: 'flex-end', padding: '20px', gap: 1.25 }}>
+        <Button
+          variant="text"
+          onClick={handleRequestClose}
+          sx={{
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: 500,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            color: '#1D384A',
+          }}
+        >
+          {t('buttons.back' as TranslationKey)}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          sx={{
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: 500,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            background: '#1D384A',
+            borderRadius: '12px',
+            padding: '5px 15px',
+            '&:hover': { background: '#15293A' },
+          }}
+        >
+          {t('components.userMessaging.saveGroup' as TranslationKey)}
+        </Button>
+      </DialogActions>
+
+      {/* Discard changes confirmation */}
+      <Dialog open={isDiscardConfirmOpen} onClose={() => setIsDiscardConfirmOpen(false)}>
+        <DialogHeader
+          title={t('components.userMessaging.discardChangesTitle' as TranslationKey)}
+          onClose={() => setIsDiscardConfirmOpen(false)}
+        />
+        <DialogContent>
+          <Typography>{t('components.userMessaging.discardChangesMessage' as TranslationKey)}</Typography>
+        </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleCreateGroup} disabled={!isValid || isCreating}>
-            {t('components.userMessaging.createGroupChat' as TranslationKey)}
+          <Button onClick={() => setIsDiscardConfirmOpen(false)}>{t('buttons.cancel' as TranslationKey)}</Button>
+          <Button variant="contained" color="error" onClick={handleDiscardAndClose}>
+            {t('components.userMessaging.discardChanges' as TranslationKey)}
           </Button>
         </DialogActions>
-      )}
+      </Dialog>
     </DialogWithGrid>
   );
 };
