@@ -34,6 +34,7 @@ describe('robots.txt', () => {
     it('disallows crawling of API and internal endpoints', () => {
       expect(content).toContain('Disallow: /api/');
       expect(content).toContain('Disallow: /graphql');
+      expect(content).toContain('Disallow: /graphiql');
     });
 
     it('disallows crawling of build artifacts', () => {

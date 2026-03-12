@@ -13,13 +13,13 @@ Allow: /
 
 # Sensitive / authenticated-only areas
 Disallow: /admin
-Disallow: /identity
 Disallow: /restricted
-Disallow: /profile
+Disallow: /user/me
 
 # API and internal endpoints
 Disallow: /api/
 Disallow: /graphql
+Disallow: /graphiql
 
 # Static / build artifacts that add no SEO value
 Disallow: /env-config.js
