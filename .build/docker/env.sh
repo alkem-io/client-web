@@ -29,15 +29,10 @@ done <.env.base
 
 echo "}" >>./env-config.js
 
-# -- robots.txt override for non-production environments --
-# Only allow crawling on the production domain (https://alkem.io).
-# All other environments get a full disallow.
-ALKEMIO_DOMAIN=$(printenv VITE_APP_ALKEMIO_DOMAIN || grep '^VITE_APP_ALKEMIO_DOMAIN=' .env.base 2>/dev/null | head -1 | sed 's/^[^=]*=//')
-if [ "$ALKEMIO_DOMAIN" != "https://alkem.io" ]; then
-  echo "Overriding robots.txt - disallowing all crawlers (domain: ${ALKEMIO_DOMAIN:-unset})"
-  cat >./robots.txt <<'EOF'
-# Non-production environment - block all crawlers
-User-agent: *
-Disallow: /
-EOF
+# Override robots.txt for non-production environments (fail-safe: default is disallow-all)
+if [ "$VITE_ROBOTS_ALLOW_INDEXING" != "true" ]; then
+  printf '# Non-production environment - block all crawlers\nUser-agent: *\nDisallow: /\n' > ./robots.txt
+  echo "robots.txt: overwritten with disallow-all (VITE_ROBOTS_ALLOW_INDEXING != true)"
+else
+  echo "robots.txt: keeping production template (VITE_ROBOTS_ALLOW_INDEXING=true)"
 fi

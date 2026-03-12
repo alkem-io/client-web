@@ -1,81 +1,61 @@
-import { describe, it, expect } from 'vitest';
-import { generateRobotsTxt } from '../../../../buildConfiguration.js';
+import { describe, it, expect, beforeAll } from 'vitest';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-describe('generateRobotsTxt', () => {
-  describe('when allowIndexing is true (production)', () => {
+// Root of the repo (4 levels up from src/domain/platform/__tests__)
+const repoRoot = join(import.meta.dirname, '../../../../');
+
+describe('robots.txt', () => {
+  describe('production (public/robots.txt)', () => {
+    let content: string;
+
+    beforeAll(() => {
+      content = readFileSync(join(repoRoot, 'public', 'robots.txt'), 'utf-8');
+    });
+
     it('contains User-agent: * directive', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('User-agent: *');
+      expect(content).toContain('User-agent: *');
     });
 
     it('allows crawling of public content', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('Allow: /');
+      expect(content).toContain('Allow: /');
     });
 
     it('disallows crawling of admin paths', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('Disallow: /admin');
+      expect(content).toContain('Disallow: /admin');
     });
 
     it('disallows crawling of sensitive paths', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('Disallow: /identity');
-      expect(result).toContain('Disallow: /restricted');
-      expect(result).toContain('Disallow: /profile');
+      expect(content).toContain('Disallow: /identity');
+      expect(content).toContain('Disallow: /restricted');
+      expect(content).toContain('Disallow: /profile');
     });
 
     it('disallows crawling of API and internal endpoints', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('Disallow: /api/');
-      expect(result).toContain('Disallow: /graphql');
+      expect(content).toContain('Disallow: /api/');
+      expect(content).toContain('Disallow: /graphql');
+      expect(content).toContain('Disallow: /graphiql');
     });
 
     it('disallows crawling of build artifacts', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('Disallow: /env-config.js');
-      expect(result).toContain('Disallow: /meta.json');
-      expect(result).toContain('Disallow: /assets/');
+      expect(content).toContain('Disallow: /env-config.js');
+      expect(content).toContain('Disallow: /meta.json');
+      expect(content).toContain('Disallow: /assets/');
     });
 
     it('includes crawl-delay directive', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('Crawl-delay: 1');
+      expect(content).toContain('Crawl-delay: 1');
     });
 
     it('blocks AI/LLM scrapers', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('User-agent: GPTBot');
-      expect(result).toContain('User-agent: ClaudeBot');
-      expect(result).toContain('User-agent: CCBot');
+      expect(content).toContain('User-agent: GPTBot');
+      expect(content).toContain('User-agent: ClaudeBot');
+      expect(content).toContain('User-agent: CCBot');
     });
 
     it('blocks aggressive SEO scrapers', () => {
-      const result = generateRobotsTxt(true);
-      expect(result).toContain('User-agent: AhrefsBot');
-      expect(result).toContain('User-agent: SemrushBot');
-    });
-  });
-
-  describe('when allowIndexing is false (non-production)', () => {
-    it('contains User-agent: * directive', () => {
-      const result = generateRobotsTxt(false);
-      expect(result).toContain('User-agent: *');
-    });
-
-    it('disallows all crawling', () => {
-      const result = generateRobotsTxt(false);
-      expect(result).toContain('Disallow: /');
-    });
-
-    it('does not contain any Allow directives', () => {
-      const result = generateRobotsTxt(false);
-      expect(result).not.toContain('Allow:');
-    });
-
-    it('does not contain AI bot rules (unnecessary when all blocked)', () => {
-      const result = generateRobotsTxt(false);
-      expect(result).not.toContain('GPTBot');
+      expect(content).toContain('User-agent: AhrefsBot');
+      expect(content).toContain('User-agent: SemrushBot');
     });
   });
 });

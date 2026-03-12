@@ -16,7 +16,7 @@ GET /robots.txt
 
 ## Response Body Variants
 
-### Production (VITE_APP_ALKEMIO_DOMAIN = https://alkem.io)
+### Production (VITE_ROBOTS_ALLOW_INDEXING=true)
 
 ```text
 # Alkemio - robots.txt
@@ -105,10 +105,12 @@ Disallow: /
 
 ## Environment Detection
 
-Production vs non-production is determined at container startup by `env.sh`:
-- Reads `VITE_APP_ALKEMIO_DOMAIN` from environment or `.env.base`
-- If domain equals `https://alkem.io`, preserves the build-time production robots.txt
-- Otherwise, overwrites with restrictive rules (fail-safe)
+Production vs non-production is determined at **container startup** by `env.sh`:
+
+- Checks `VITE_ROBOTS_ALLOW_INDEXING` (injected from K8s/Helm at runtime)
+- If `VITE_ROBOTS_ALLOW_INDEXING=true`, keeps the committed `public/robots.txt` (production content)
+- Otherwise (unset or any other value), overwrites `robots.txt` with the restrictive disallow-all content (fail-safe)
+- `buildConfiguration.js` has no robots.txt logic
 
 ## Compliance
 
@@ -122,4 +124,5 @@ Production vs non-production is determined at container startup by `env.sh`:
 - This is a static file served directly by the web server (Nginx), not by the application
 - No API, middleware, or runtime application logic involved
 - No GraphQL changes
-- Same Docker image works for all environments — runtime override handles environment detection
+- `public/robots.txt` is committed with production content; `env.sh` overwrites at container startup for non-production
+- Same Docker image for all environments — `VITE_ROBOTS_ALLOW_INDEXING` injected from K8s/Helm at runtime
