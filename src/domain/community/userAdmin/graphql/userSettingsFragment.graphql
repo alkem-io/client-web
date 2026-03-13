@@ -95,6 +95,22 @@ fragment userSettingsFragment on UserSettings {
         email
         inApp
       }
+      collaborationPollVoteCastOnOwnPoll {
+        email
+        inApp
+      }
+      collaborationPollVoteCastOnPollIVotedOn {
+        email
+        inApp
+      }
+      collaborationPollModifiedOnPollIVotedOn {
+        email
+        inApp
+      }
+      collaborationPollVoteAffectedByOptionChange {
+        email
+        inApp
+      }
     }
     user {
       membership {

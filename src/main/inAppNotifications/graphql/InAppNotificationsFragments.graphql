@@ -80,6 +80,9 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
+    ... on InAppNotificationPayloadSpaceCollaborationPoll {
+      ...InAppNotificationPayloadSpaceCollaborationPoll
+    }
   }
 }
 
@@ -371,6 +374,23 @@ fragment InAppNotificationPayloadSpaceCommunityCalendarEvent on InAppNotificatio
       id
       displayName
       url
+    }
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCollaborationPoll on InAppNotificationPayloadSpaceCollaborationPoll {
+  space {
+    ...spaceNotification
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
     }
   }
 }

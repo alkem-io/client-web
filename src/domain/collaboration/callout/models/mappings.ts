@@ -2,6 +2,8 @@ import { uniqBy } from 'lodash-es';
 import {
   CalloutContributionType,
   CalloutFramingType,
+  type PollResultsDetail,
+  type PollResultsVisibility,
   type UpdateLinkInput,
   type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -45,6 +47,16 @@ export const mapCalloutTemplateToCalloutForm = (
       };
       mediaGallery?: {
         visuals?: VisualModel[];
+      };
+      poll?: {
+        title: string;
+        settings: {
+          minResponses: number;
+          maxResponses: number;
+          resultsVisibility: PollResultsVisibility;
+          resultsDetail: PollResultsDetail;
+        };
+        options: { text: string }[];
       };
     };
     settings: CalloutSettingsModelFull;
@@ -110,6 +122,18 @@ export const mapCalloutTemplateToCalloutForm = (
               })) ?? [],
           }
         : undefined,
+      poll: calloutTemplate.framing.poll
+        ? {
+            title: calloutTemplate.framing.poll.title,
+            options: calloutTemplate.framing.poll.options.map(o => ({ text: o.text })),
+            settings: {
+              minResponses: calloutTemplate.framing.poll.settings.minResponses,
+              maxResponses: calloutTemplate.framing.poll.settings.maxResponses,
+              resultsVisibility: calloutTemplate.framing.poll.settings.resultsVisibility,
+              resultsDetail: calloutTemplate.framing.poll.settings.resultsDetail,
+            },
+          }
+        : undefined,
     };
     const templateContributionDefaults =
       mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
@@ -117,6 +141,10 @@ export const mapCalloutTemplateToCalloutForm = (
 
     const templateSettings = mapCalloutSettingsModelToCalloutSettingsFormValues(calloutTemplate.settings);
 
+    if (calloutRestrictions?.disablePolls && templateFraming.type === CalloutFramingType.Poll) {
+      templateFraming.type = CalloutFramingType.None;
+      templateFraming.poll = undefined;
+    }
     if (calloutRestrictions?.disableWhiteboards && templateFraming.type === CalloutFramingType.Whiteboard) {
       templateFraming.type = CalloutFramingType.None;
       templateFraming.whiteboard = undefined;

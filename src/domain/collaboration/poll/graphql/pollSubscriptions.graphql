@@ -1,0 +1,17 @@
+subscription PollVoteUpdated($pollID: UUID!) {
+  pollVoteUpdated(pollID: $pollID) {
+    pollEventType
+    poll {
+      ...PollDetails
+    }
+  }
+}
+
+subscription PollOptionsChanged($pollID: UUID!) {
+  pollOptionsChanged(pollID: $pollID) {
+    pollEventType
+    poll {
+      ...PollDetails
+    }
+  }
+}

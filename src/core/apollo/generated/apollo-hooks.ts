@@ -871,6 +871,71 @@ export const MediaGalleryVisualsFragmentDoc = gql`
     }
   }
 `;
+export const PollSettingsFieldsFragmentDoc = gql`
+  fragment PollSettingsFields on PollSettings {
+    minResponses
+    maxResponses
+    resultsVisibility
+    resultsDetail
+  }
+`;
+export const PollOptionFieldsFragmentDoc = gql`
+  fragment PollOptionFields on PollOption {
+    id
+    createdDate
+    updatedDate
+    text
+    sortOrder
+    voteCount
+    votePercentage
+    voters {
+      id
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+export const PollVoteFieldsFragmentDoc = gql`
+  fragment PollVoteFields on PollVote {
+    id
+    createdDate
+    updatedDate
+    createdBy
+    selectedOptions {
+      id
+    }
+  }
+`;
+export const PollDetailsFragmentDoc = gql`
+  fragment PollDetails on Poll {
+    id
+    createdDate
+    updatedDate
+    title
+    status
+    settings {
+      ...PollSettingsFields
+    }
+    deadline
+    totalVotes
+    canSeeDetailedResults
+    options {
+      ...PollOptionFields
+    }
+    myVote {
+      ...PollVoteFields
+    }
+  }
+  ${PollSettingsFieldsFragmentDoc}
+  ${PollOptionFieldsFragmentDoc}
+  ${PollVoteFieldsFragmentDoc}
+`;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
   fragment LinkDetailsWithAuthorization on Link {
     id
@@ -1011,6 +1076,9 @@ export const CalloutDetailsFragmentDoc = gql`
       mediaGallery {
         ...MediaGalleryVisuals
       }
+      poll {
+        ...PollDetails
+      }
     }
     contributionDefaults {
       id
@@ -1052,6 +1120,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${MemoDetailsFragmentDoc}
   ${LinkDetailsFragmentDoc}
   ${MediaGalleryVisualsFragmentDoc}
+  ${PollDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
@@ -1683,6 +1752,22 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
         }
         communityCalendarEvents {
+          email
+          inApp
+        }
+        collaborationPollVoteCastOnOwnPoll {
+          email
+          inApp
+        }
+        collaborationPollVoteCastOnPollIVotedOn {
+          email
+          inApp
+        }
+        collaborationPollModifiedOnPollIVotedOn {
+          email
+          inApp
+        }
+        collaborationPollVoteAffectedByOptionChange {
           email
           inApp
         }
@@ -3393,6 +3478,25 @@ export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentD
   }
   ${SpaceNotificationFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCollaborationPollFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationPoll on InAppNotificationPayloadSpaceCollaborationPoll {
+    space {
+      ...spaceNotification
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
     id
@@ -3476,6 +3580,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
         ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
       }
+      ... on InAppNotificationPayloadSpaceCollaborationPoll {
+        ...InAppNotificationPayloadSpaceCollaborationPoll
+      }
     }
   }
   ${VisualModelFragmentDoc}
@@ -3500,6 +3607,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadVirtualContributorFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}
 `;
 export const UrlResolverResultFragmentDoc = gql`
   fragment UrlResolverResult on UrlResolverQueryResults {
@@ -7626,6 +7734,9 @@ export const CalloutContentDocument = gql`
           mediaGallery {
             ...MediaGalleryVisuals
           }
+          poll {
+            ...PollDetails
+          }
         }
         contributionDefaults {
           id
@@ -7644,6 +7755,7 @@ export const CalloutContentDocument = gql`
   ${WhiteboardPreviewSettingsFragmentDoc}
   ${LinkDetailsFragmentDoc}
   ${MediaGalleryVisualsFragmentDoc}
+  ${PollDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 
@@ -9566,6 +9678,330 @@ export type UpdateMemoDisplayNameMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateMemoDisplayNameMutation,
   SchemaTypes.UpdateMemoDisplayNameMutationVariables
 >;
+export const CastPollVoteDocument = gql`
+  mutation CastPollVote($voteData: CastPollVoteInput!) {
+    castPollVote(voteData: $voteData) {
+      ...PollDetails
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+export type CastPollVoteMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CastPollVoteMutation,
+  SchemaTypes.CastPollVoteMutationVariables
+>;
+
+/**
+ * __useCastPollVoteMutation__
+ *
+ * To run a mutation, you first call `useCastPollVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCastPollVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [castPollVoteMutation, { data, loading, error }] = useCastPollVoteMutation({
+ *   variables: {
+ *      voteData: // value for 'voteData'
+ *   },
+ * });
+ */
+export function useCastPollVoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>(
+    CastPollVoteDocument,
+    options
+  );
+}
+export type CastPollVoteMutationHookResult = ReturnType<typeof useCastPollVoteMutation>;
+export type CastPollVoteMutationResult = Apollo.MutationResult<SchemaTypes.CastPollVoteMutation>;
+export type CastPollVoteMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CastPollVoteMutation,
+  SchemaTypes.CastPollVoteMutationVariables
+>;
+export const AddPollOptionDocument = gql`
+  mutation AddPollOption($optionData: AddPollOptionInput!) {
+    addPollOption(optionData: $optionData) {
+      ...PollDetails
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+export type AddPollOptionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddPollOptionMutation,
+  SchemaTypes.AddPollOptionMutationVariables
+>;
+
+/**
+ * __useAddPollOptionMutation__
+ *
+ * To run a mutation, you first call `useAddPollOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPollOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPollOptionMutation, { data, loading, error }] = useAddPollOptionMutation({
+ *   variables: {
+ *      optionData: // value for 'optionData'
+ *   },
+ * });
+ */
+export function useAddPollOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddPollOptionMutation,
+    SchemaTypes.AddPollOptionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.AddPollOptionMutation, SchemaTypes.AddPollOptionMutationVariables>(
+    AddPollOptionDocument,
+    options
+  );
+}
+export type AddPollOptionMutationHookResult = ReturnType<typeof useAddPollOptionMutation>;
+export type AddPollOptionMutationResult = Apollo.MutationResult<SchemaTypes.AddPollOptionMutation>;
+export type AddPollOptionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddPollOptionMutation,
+  SchemaTypes.AddPollOptionMutationVariables
+>;
+export const UpdatePollOptionDocument = gql`
+  mutation UpdatePollOption($optionData: UpdatePollOptionInput!) {
+    updatePollOption(optionData: $optionData) {
+      ...PollDetails
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+export type UpdatePollOptionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePollOptionMutation,
+  SchemaTypes.UpdatePollOptionMutationVariables
+>;
+
+/**
+ * __useUpdatePollOptionMutation__
+ *
+ * To run a mutation, you first call `useUpdatePollOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePollOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePollOptionMutation, { data, loading, error }] = useUpdatePollOptionMutation({
+ *   variables: {
+ *      optionData: // value for 'optionData'
+ *   },
+ * });
+ */
+export function useUpdatePollOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePollOptionMutation,
+    SchemaTypes.UpdatePollOptionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdatePollOptionMutation, SchemaTypes.UpdatePollOptionMutationVariables>(
+    UpdatePollOptionDocument,
+    options
+  );
+}
+export type UpdatePollOptionMutationHookResult = ReturnType<typeof useUpdatePollOptionMutation>;
+export type UpdatePollOptionMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePollOptionMutation>;
+export type UpdatePollOptionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePollOptionMutation,
+  SchemaTypes.UpdatePollOptionMutationVariables
+>;
+export const RemovePollOptionDocument = gql`
+  mutation RemovePollOption($optionData: RemovePollOptionInput!) {
+    removePollOption(optionData: $optionData) {
+      ...PollDetails
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+export type RemovePollOptionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemovePollOptionMutation,
+  SchemaTypes.RemovePollOptionMutationVariables
+>;
+
+/**
+ * __useRemovePollOptionMutation__
+ *
+ * To run a mutation, you first call `useRemovePollOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePollOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePollOptionMutation, { data, loading, error }] = useRemovePollOptionMutation({
+ *   variables: {
+ *      optionData: // value for 'optionData'
+ *   },
+ * });
+ */
+export function useRemovePollOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemovePollOptionMutation,
+    SchemaTypes.RemovePollOptionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemovePollOptionMutation, SchemaTypes.RemovePollOptionMutationVariables>(
+    RemovePollOptionDocument,
+    options
+  );
+}
+export type RemovePollOptionMutationHookResult = ReturnType<typeof useRemovePollOptionMutation>;
+export type RemovePollOptionMutationResult = Apollo.MutationResult<SchemaTypes.RemovePollOptionMutation>;
+export type RemovePollOptionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemovePollOptionMutation,
+  SchemaTypes.RemovePollOptionMutationVariables
+>;
+export const ReorderPollOptionsDocument = gql`
+  mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
+    reorderPollOptions(optionData: $optionData) {
+      ...PollDetails
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+export type ReorderPollOptionsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ReorderPollOptionsMutation,
+  SchemaTypes.ReorderPollOptionsMutationVariables
+>;
+
+/**
+ * __useReorderPollOptionsMutation__
+ *
+ * To run a mutation, you first call `useReorderPollOptionsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReorderPollOptionsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reorderPollOptionsMutation, { data, loading, error }] = useReorderPollOptionsMutation({
+ *   variables: {
+ *      optionData: // value for 'optionData'
+ *   },
+ * });
+ */
+export function useReorderPollOptionsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ReorderPollOptionsMutation,
+    SchemaTypes.ReorderPollOptionsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>(
+    ReorderPollOptionsDocument,
+    options
+  );
+}
+export type ReorderPollOptionsMutationHookResult = ReturnType<typeof useReorderPollOptionsMutation>;
+export type ReorderPollOptionsMutationResult = Apollo.MutationResult<SchemaTypes.ReorderPollOptionsMutation>;
+export type ReorderPollOptionsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ReorderPollOptionsMutation,
+  SchemaTypes.ReorderPollOptionsMutationVariables
+>;
+export const PollVoteUpdatedDocument = gql`
+  subscription PollVoteUpdated($pollID: UUID!) {
+    pollVoteUpdated(pollID: $pollID) {
+      pollEventType
+      poll {
+        ...PollDetails
+      }
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+
+/**
+ * __usePollVoteUpdatedSubscription__
+ *
+ * To run a query within a React component, call `usePollVoteUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `usePollVoteUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollVoteUpdatedSubscription({
+ *   variables: {
+ *      pollID: // value for 'pollID'
+ *   },
+ * });
+ */
+export function usePollVoteUpdatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.PollVoteUpdatedSubscription,
+    SchemaTypes.PollVoteUpdatedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.PollVoteUpdatedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.PollVoteUpdatedSubscription,
+    SchemaTypes.PollVoteUpdatedSubscriptionVariables
+  >(PollVoteUpdatedDocument, options);
+}
+export type PollVoteUpdatedSubscriptionHookResult = ReturnType<typeof usePollVoteUpdatedSubscription>;
+export type PollVoteUpdatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.PollVoteUpdatedSubscription>;
+export const PollOptionsChangedDocument = gql`
+  subscription PollOptionsChanged($pollID: UUID!) {
+    pollOptionsChanged(pollID: $pollID) {
+      pollEventType
+      poll {
+        ...PollDetails
+      }
+    }
+  }
+  ${PollDetailsFragmentDoc}
+`;
+
+/**
+ * __usePollOptionsChangedSubscription__
+ *
+ * To run a query within a React component, call `usePollOptionsChangedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `usePollOptionsChangedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollOptionsChangedSubscription({
+ *   variables: {
+ *      pollID: // value for 'pollID'
+ *   },
+ * });
+ */
+export function usePollOptionsChangedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.PollOptionsChangedSubscription,
+    SchemaTypes.PollOptionsChangedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.PollOptionsChangedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.PollOptionsChangedSubscription,
+    SchemaTypes.PollOptionsChangedSubscriptionVariables
+  >(PollOptionsChangedDocument, options);
+}
+export type PollOptionsChangedSubscriptionHookResult = ReturnType<typeof usePollOptionsChangedSubscription>;
+export type PollOptionsChangedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.PollOptionsChangedSubscription>;
 export const CalloutSettingsDocument = gql`
   query CalloutSettings($calloutId: UUID!) {
     lookup {
@@ -15057,6 +15493,22 @@ export const UpdateUserSettingsDocument = gql`
               inApp
             }
             communityCalendarEvents {
+              email
+              inApp
+            }
+            collaborationPollVoteCastOnOwnPoll {
+              email
+              inApp
+            }
+            collaborationPollVoteCastOnPollIVotedOn {
+              email
+              inApp
+            }
+            collaborationPollModifiedOnPollIVotedOn {
+              email
+              inApp
+            }
+            collaborationPollVoteAffectedByOptionChange {
               email
               inApp
             }

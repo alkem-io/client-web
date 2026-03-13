@@ -37,6 +37,7 @@ import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import CalloutFramingMediaGallery from '../CalloutFramings/CalloutFramingMediaGallery';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
+import CalloutFramingPoll from '../CalloutFramings/CalloutFramingPoll';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import type { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
@@ -164,6 +165,9 @@ const CalloutView = ({
               calloutRestrictions={calloutRestrictions}
             />
           )}
+
+          {/* Poll framing */}
+          {callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}
 
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
