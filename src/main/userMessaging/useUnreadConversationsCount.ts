@@ -1,38 +1,8 @@
-import { gql, useQuery } from '@apollo/client';
 import { useUserMessagingContext } from './UserMessagingContext';
 import { useMemo, useState, useEffect } from 'react';
+import { useUserConversationsUnreadCountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const DELAY_MS = 2000;
-
-const UserConversationsUnreadCountDocument = gql`
-  query UserConversationsUnreadCount {
-    me {
-      conversations {
-        conversations {
-          id
-          room {
-            id
-            unreadCount
-          }
-        }
-      }
-    }
-  }
-`;
-
-interface UserConversationsUnreadCountData {
-  me?: {
-    conversations?: {
-      conversations?: {
-        id: string;
-        room?: {
-          id: string;
-          unreadCount: number;
-        };
-      }[];
-    };
-  };
-}
 
 export const useUnreadConversationsCount = () => {
   const { isEnabled, isOpen } = useUserMessagingContext();
@@ -44,7 +14,7 @@ export const useUnreadConversationsCount = () => {
     return () => clearTimeout(timer);
   }, [isEnabled]);
 
-  const { data } = useQuery<UserConversationsUnreadCountData>(UserConversationsUnreadCountDocument, {
+  const { data } = useUserConversationsUnreadCountQuery({
     skip: !isEnabled || (!ready && !isOpen),
     fetchPolicy: 'cache-first',
   });

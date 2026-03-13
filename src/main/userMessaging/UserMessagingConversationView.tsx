@@ -28,6 +28,7 @@ import {
   UserConversationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import { UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
+import { useApolloClient } from '@apollo/client';
 import { GroupChatManagementDialog } from './GroupChatManagementDialog';
 import { GroupCompositeAvatar } from './GroupCompositeAvatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -255,12 +256,27 @@ export const UserMessagingConversationView = ({
   const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
   useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
   const [markAsRead] = useMarkMessageAsReadMutation();
+  const client = useApolloClient();
 
   // Mark last message as read when conversation is opened or new messages arrive
   const markConversationAsRead = useCallback(() => {
-    if (!conversation?.roomId || !messages.length || conversation.unreadCount === 0) {
+    if (!conversation?.roomId || conversation.unreadCount === 0) {
       return;
     }
+
+    // Clear badge immediately — don't wait for the subscription round-trip
+    const roomCacheId = client.cache.identify({ __typename: 'Room', id: conversation.roomId });
+    if (roomCacheId) {
+      client.cache.modify({
+        id: roomCacheId,
+        fields: {
+          unreadCount: () => 0,
+        },
+      });
+    }
+
+    // Only send read receipt if there are messages to mark as read
+    if (!messages.length) return;
 
     const lastMessage = messages[messages.length - 1];
     markAsRead({
@@ -273,7 +289,7 @@ export const UserMessagingConversationView = ({
     }).catch(error => {
       console.error('Failed to mark messages as read:', error);
     });
-  }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead]);
+  }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead, client]);
 
   // Mark as read when conversation is opened
   useEffect(() => {

@@ -3,12 +3,15 @@ import { gql } from '@apollo/client';
 import {
   useConversationEventsSubscription as useSubscription,
   UserConversationsDocument,
+  UserConversationsUnreadCountDocument,
   ConversationMessagesDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   ConversationEventsSubscription,
   ConversationEventType,
+  RoomType,
   UserConversationsQuery,
+  UserConversationsUnreadCountQuery,
   ConversationMessagesQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { useUserMessagingContext } from './UserMessagingContext';
@@ -90,15 +93,22 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const handleConversationCreated = useCallback(
     (event: ConversationCreatedEvent) => {
+      const conversation = event.conversation;
+      const room = conversation.room;
+
+      if (!room) {
+        return;
+      }
+
+      // Group conversations with 0 messages should still show a badge so the
+      // user knows they were added. The server returns unreadCount=0 (correct
+      // for Matrix), so we override it client-side only for conversations
+      // arriving via the subscription (new ones), not old ones loaded by query.
+      const effectiveUnreadCount =
+        room.type === RoomType.ConversationGroup ? Math.max(room.unreadCount, 1) : room.unreadCount;
+
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
         if (!existing?.me?.conversations?.conversations) return existing;
-
-        const conversation = event.conversation;
-        const room = conversation.room;
-
-        if (!room) {
-          return existing;
-        }
 
         // Check if already exists (idempotency)
         if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
@@ -116,7 +126,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             displayName: room.displayName,
             avatarUrl: room.avatarUrl,
             createdDate: room.createdDate,
-            unreadCount: room.unreadCount,
+            unreadCount: effectiveUnreadCount,
             messagesCount: room.messagesCount,
             lastMessage: room.lastMessage,
           },
@@ -134,6 +144,36 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           },
         };
       });
+
+      // Also update the lightweight unread count query so the nav bar badge works
+      client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+        { query: UserConversationsUnreadCountDocument },
+        existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+
+          if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
+            return existing;
+          }
+
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: [
+                  {
+                    __typename: 'Conversation' as const,
+                    id: conversation.id,
+                    room: { __typename: 'Room' as const, id: room.id, unreadCount: effectiveUnreadCount },
+                  },
+                  ...existing.me.conversations.conversations,
+                ],
+              },
+            },
+          };
+        }
+      );
     },
     [client]
   );
@@ -186,6 +226,24 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           },
         };
       });
+
+      client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+        { query: UserConversationsUnreadCountDocument },
+        existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversationID),
+              },
+            },
+          };
+        }
+      );
     },
     [client]
   );
@@ -233,6 +291,23 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             },
           };
         });
+
+        client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+          { query: UserConversationsUnreadCountDocument },
+          existing => {
+            if (!existing?.me?.conversations?.conversations) return existing;
+            return {
+              ...existing,
+              me: {
+                ...existing.me,
+                conversations: {
+                  ...existing.me.conversations,
+                  conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversation.id),
+                },
+              },
+            };
+          }
+        );
         return;
       }
       // Idempotent: only remove if still present
