@@ -46,3 +46,7 @@ Each render-prop Container's `Provided` type becomes the return type of a hook. 
 | WhiteboardActionsContainer | useWhiteboardActions() | `WhiteboardChildProps` |
 | CalloutsInViewWrapper | useCalloutDetails() | `CalloutDetailsContainerProvided` |
 | InvitationActionsContainer | useInvitationActions() | `InvitationActionsContainerProvided` |
+| CalendarEventsContainer | useCalendarEvents() | `CalendarEventsContainerProvided` (events list, loading, refetch) |
+| CalendarEventDetailContainer | useCalendarEventDetail() | `CalendarEventDetailContainerProvided` (event detail, loading) |
+| CommunityUpdatesContainer | useCommunityUpdates() | `CommunityUpdatesContainerProvided` (updates list, loading, postUpdate) |
+| AssociatedOrganizationContainer | useAssociatedOrganization() | `AssociatedOrganizationContainerProvided` (organization data, loading) |

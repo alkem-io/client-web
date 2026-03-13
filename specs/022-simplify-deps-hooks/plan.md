@@ -5,7 +5,7 @@
 
 ## Summary
 
-Reduce the project's dependency count by 15+ packages and refactor the component architecture from Page/View/Container (MVC-like) to hooks-first composition. This eliminates ~25+ KB of unused vendor code, consolidates duplicated libraries (3 D&D libs → 1), replaces obsolete patterns (render-prop containers → custom hooks), and enforces clean UI/logic separation across 17 impure View files. The goal is a leaner, more maintainable codebase that's ready for the upcoming shadcn/Tailwind migration.
+Reduce the project's dependency count by 15+ packages and refactor the component architecture from Page/View/Container (MVC-like) to hooks-first composition. This eliminates ~25+ KB of unused vendor code, consolidates duplicated libraries (3 D&D libs → 1), replaces obsolete patterns (render-prop containers → custom hooks), and enforces clean UI/logic separation across 19 impure View files. The goal is a leaner, more maintainable codebase that's ready for the upcoming shadcn/Tailwind migration.
 
 ## Technical Context
 
@@ -17,7 +17,7 @@ Reduce the project's dependency count by 15+ packages and refactor the component
 **Project Type**: Web SPA
 **Performance Goals**: Reduce vendor bundle by ≥25 KB gzipped; eliminate runtime CSS-in-JS overhead from removed libs
 **Constraints**: Zero user-facing behavior changes; all existing tests must pass; React Compiler compatibility
-**Scale/Scope**: ~1,650 .tsx files total; 9 files (immer), 8 files (resize-detector), 5 files (hello-pangea), 3 files (xstate), 17 View files, 10 Container files directly affected
+**Scale/Scope**: ~1,650 .tsx files total; 9 files (immer), 8 files (resize-detector), 5 files (hello-pangea), 3 files (xstate), 19 View files, 14 Container files directly affected
 
 ## Constitution Check
 
@@ -95,8 +95,12 @@ src/
 │   │   │   └── InvitationActionsContainer.tsx  # REPLACE with useInvitationActions.ts
 │   │   ├── community/CommunityGuidelines/
 │   │   │   └── CommunityGuidelinesContainer.tsx  # REPLACE with useCommunityGuidelines.ts
+│   │   ├── organization/AssociatedOrganizations/
+│   │   │   └── AssociatedOrganizationContainer.ts  # REPLACE with useAssociatedOrganization.ts
 │   │   └── pendingMembership/
 │   │       └── PendingMemberships.tsx  # MODIFY: hydrator render-props → hooks
+│   ├── communication/updates/CommunityUpdatesContainer/
+│   │   └── CommunityUpdatesContainer.tsx  # REPLACE with useCommunityUpdates.ts
 │   ├── innovationHub/InnovationHubsSettings/
 │   │   └── InnovationHubSpacesField.tsx  # MODIFY: @hello-pangea/dnd → @dnd-kit
 │   ├── space/
@@ -105,8 +109,11 @@ src/
 │   │   │   └── SpaceDashboardView.tsx   # MODIFY: extract business logic to hooks
 │   │   └── components/spaceDashboardNavigation/
 │   │       └── DashboardNavigation.tsx  # MODIFY: remove immer
-│   └── timeline/calendar/views/
-│       └── CalendarEventDetailView.tsx  # MODIFY: remove react-scroll
+│   ├── timeline/calendar/
+│   │   ├── CalendarEventsContainer.tsx  # REPLACE with useCalendarEvents.ts
+│   │   ├── CalendarEventDetailContainer.tsx  # REPLACE with useCalendarEventDetail.ts
+│   │   └── views/
+│   │       └── CalendarEventDetailView.tsx  # MODIFY: remove react-scroll
 └── main/
     └── topLevelPages/
         ├── topLevelSpaces/
@@ -121,7 +128,7 @@ src/
 
 ### Phase 1: Drop Unused Packages
 
-**Scope**: Remove 7 packages with zero or obsolete imports. Zero code changes except package.json.
+**Scope**: Remove 7 packages with zero or obsolete imports. Minimal code changes required for `@elastic/apm-rum-react`.
 
 **Packages**:
 | Package | Reason | Code Changes |
@@ -129,7 +136,7 @@ src/
 | `@atlaskit/pragmatic-drag-and-drop` | 0 imports | None |
 | `date-fns` | 0 imports (dayjs used) | None |
 | `@sentry/tracing` v7 | 0 imports (@sentry/react v9 covers it) | None |
-| `@elastic/apm-rum-react` | 0 imports | None |
+| `@elastic/apm-rum-react` | 1 import (`WithApmTransaction.tsx` imports `withTransaction`) | Update or remove `src/domain/shared/components/WithApmTransaction/WithApmTransaction.tsx` to use `@elastic/apm-rum` directly or inline the wrapper |
 | `@types/jest` | Wrong test framework (Vitest) | None |
 | `source-map-explorer` | Not in scripts (visualizer used) | None |
 | `@types/yup` | Yup v1 has built-in types | None |
@@ -148,7 +155,8 @@ src/
 2. Update `GlobalStateProvider.tsx`: Replace `useActorRef(notificationMachine)` with `useNotifications()`
 3. Update `NotificationHandler.tsx`: Replace `useSelector` with `useContext`, replace `send()` with `dispatch()`
 4. Delete `notificationMachine.ts`
-5. Remove `xstate`, `@xstate/react` from package.json
+5. Remove commented-out xstate import in `src/domain/templates/hooks/useCreateInputFromTemplate.ts` (`// import { t } from 'xstate';`)
+6. Remove `xstate`, `@xstate/react` from package.json
 
 **Verification**: Trigger success/error/info notifications in the app. Verify they appear, stack, and dismiss.
 
@@ -212,7 +220,7 @@ Remove `@hello-pangea/dnd` from package.json after all 5 files migrated.
 
 ### Phase 6: Hooks-First Refactoring — Containers
 
-**Scope**: 10 render-prop Container components → custom hooks.
+**Scope**: 14 render-prop Container components → custom hooks.
 
 **For each Container**:
 1. Create a new hook file (e.g., `useApplicationButton.ts`) in the same directory
@@ -228,12 +236,16 @@ Remove `@hello-pangea/dnd` from package.json after all 5 files migrated.
 |-----------|------|---------------|
 | `LanguageSelect.tsx` | `useLanguageSelect()` | 1 |
 | `CharacterCountContext.tsx` | Simplify to context-only | 1 |
-| `InvitationActionsContainer.tsx` | `useInvitationActions()` | 1 |
+| `InvitationActionsContainer.tsx` | `useInvitationActions()` | 3 (InvitationsBlock, PendingMembershipsDialog, ApplicationButton) |
 | `CommunityGuidelinesContainer.tsx` | `useCommunityGuidelines()` | 1 |
 | `WhiteboardActionsContainer.tsx` | `useWhiteboardActions()` | 1 |
-| `CalloutsInViewWrapper.tsx` | `useCalloutDetails()` | ~3 |
-| `CalloutSettingsContainer.tsx` | `useCalloutSettings()` | ~5 |
-| `ApplicationButtonContainer.tsx` | `useApplicationButton()` | ~3 |
+| `AssociatedOrganizationContainer.ts` | `useAssociatedOrganization()` | 1 (AssociatedOrganizationsLazilyFetched) |
+| `CalloutsInViewWrapper.tsx` | `useCalloutDetails()` | 1 (CalloutsView) |
+| `CalloutSettingsContainer.tsx` | `useCalloutSettings()` | 1 (CalloutView) |
+| `ApplicationButtonContainer.tsx` | `useApplicationButton()` | 3 |
+| `CalendarEventsContainer.tsx` | `useCalendarEvents()` | 3 (CalendarDialog, CalendarEventForm, EventForm) |
+| `CalendarEventDetailContainer.tsx` | `useCalendarEventDetail()` | 2 (CalendarDialog, CalendarEventForm) |
+| `CommunityUpdatesContainer.tsx` | `useCommunityUpdates()` | 3 (DashboardUpdatesSection, CommunityUpdatesDialog, SpaceAdminCommunityUpdatesPage) |
 | `SpaceExplorerContainer.tsx` | `useSpaceExplorer()` | 1 |
 | `ExploreSpacesContainer.tsx` | `useExploreSpaces()` | 1 |
 
@@ -243,7 +255,7 @@ Plus 2 hydrators in `PendingMemberships.tsx`:
 
 ### Phase 7: Hooks-First Refactoring — Impure Views
 
-**Scope**: 17 View files containing business logic (useState, useEffect, localStorage, data transformations).
+**Scope**: 19 View files containing business logic (useState, useEffect, localStorage, data transformations).
 
 **For each View**:
 1. Identify business logic vs UI-only state
@@ -258,7 +270,7 @@ Plus 2 hydrators in `PendingMemberships.tsx`:
 **Files** (grouped by domain):
 1. **collaboration**: CalloutView, CalloutsGroupView, WhiteboardView (3)
 2. **communication**: MessageWithRepliesView, DiscussionView, UserMessagingConversationView (3)
-3. **community**: AssociatesView, CommunityUpdatesView, AccountResourcesView, ContributorAccountView (4)
+3. **community**: AssociatesView, CommunityUpdatesView, AccountResourcesView, ContributorAccountView, OrganizationAssociatesView, OrganizationAuthorizationRoleAssignementView (6)
 4. **space**: SpaceDashboardView, SubspaceView, DashboardNavigationItemView (3)
 5. **timeline**: CalendarEventDetailView (1)
 6. **main**: SpaceExplorerView, ExploreSpacesView, SearchView (3)

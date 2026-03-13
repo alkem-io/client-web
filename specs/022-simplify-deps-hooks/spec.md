@@ -26,7 +26,7 @@ A developer opens the project and runs `pnpm install`. The dependency tree is sm
 1. **Given** `@atlaskit/pragmatic-drag-and-drop` is in package.json but has zero imports in src/, **When** it is removed from dependencies, **Then** `pnpm build` and all tests pass without errors.
 2. **Given** `date-fns` is in package.json but has zero imports in src/ (only `dayjs` is used), **When** it is removed, **Then** all date-related functionality continues to work.
 3. **Given** `@sentry/tracing` v7 is installed but `@sentry/react` v9 provides all tracing integrations, **When** `@sentry/tracing` is removed, **Then** Sentry error tracking and performance monitoring work correctly.
-4. **Given** `@elastic/apm-rum-react` has zero imports in src/, **When** it is removed, **Then** Elastic APM monitoring (`@elastic/apm-rum`) continues to function.
+4. **Given** `@elastic/apm-rum-react` has 1 import in src/ (`WithApmTransaction.tsx` imports `withTransaction`), **When** the `WithApmTransaction` wrapper is updated to use `@elastic/apm-rum` directly (or removed if redundant) and the package is removed, **Then** Elastic APM monitoring continues to function and `pnpm build` succeeds.
 5. **Given** `@types/jest` is installed but the project uses Vitest, **When** it is removed, **Then** all test types resolve correctly via Vitest's built-in types.
 6. **Given** `source-map-explorer` is not referenced in any script (project uses `rollup-plugin-visualizer`), **When** it is removed, **Then** bundle analysis via `pnpm analyze` works as before.
 7. **Given** `@types/yup` is installed but Yup v1 ships its own types, **When** it is removed, **Then** all Yup-related type checking works.
@@ -107,7 +107,7 @@ Immer's `produce` function is used in 9 files for immutable state updates. Moder
 
 The codebase currently uses a Page → View → Container pattern where Containers use render-props (`children(provided)`) to pass state and callbacks to children. This pre-hooks pattern creates unnecessary component nesting, prop drilling, and indirection. Developers should find logic encapsulated in custom hooks, with components acting as composition roots rather than prop-forwarding stations.
 
-**Why this priority**: This is the largest and most impactful change. It requires refactoring ~10 render-prop Container files to hooks AND auditing all Page/View pairs across the codebase to merge or extract logic from Views that contain business logic (state management, effects, localStorage reads). It establishes the architectural foundation for future work (component library migration, potential SSR). Prioritized after dependency cleanup so the codebase is leaner before structural refactoring begins.
+**Why this priority**: This is the largest and most impactful change. It requires refactoring ~14 render-prop Container files to hooks AND auditing all Page/View pairs across the codebase to merge or extract logic from Views that contain business logic (state management, effects, localStorage reads). It establishes the architectural foundation for future work (component library migration, potential SSR). Prioritized after dependency cleanup so the codebase is leaner before structural refactoring begins.
 
 **Independent Test**: Each refactored Container can be tested independently — the feature it supports (application button, callout settings, calendar events, etc.) works identically after the render-prop pattern is replaced with a hook.
 

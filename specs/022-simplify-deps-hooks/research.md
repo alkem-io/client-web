@@ -73,9 +73,9 @@ The 5 files to migrate:
 
 ## Decision 5: Impure View Files Audit
 
-**Decision**: Audit and refactor all 17 View files containing useState/useEffect.
+**Decision**: Audit and refactor all 19 View files containing useState/useEffect.
 
-**Rationale**: View files (`*View.tsx`) should be pure presentation components. 17 files currently import `useState` or `useEffect`, containing business logic that belongs in hooks or parent components:
+**Rationale**: View files (`*View.tsx`) should be pure presentation components. 19 files currently import `useState` or `useEffect`, containing business logic that belongs in hooks or parent components:
 
 **Files identified**:
 1. `CalloutView.tsx` — custom hooks (useCalloutComments, etc.)
@@ -95,6 +95,8 @@ The 5 files to migrate:
 15. `DiscussionView.tsx`
 16. `WhiteboardView.tsx`
 17. `CalloutsGroupView.tsx`
+18. `OrganizationAssociatesView.tsx` — uses React.useState, imports Apollo hooks
+19. `OrganizationAuthorizationRoleAssignementView.tsx` — uses React.useState, imports Apollo hooks
 
 For each: extract business logic to custom hooks, leave View as pure JSX.
 
@@ -102,9 +104,9 @@ For each: extract business logic to custom hooks, leave View as pure JSX.
 
 ## Decision 6: Render-Prop Container Refactoring
 
-**Decision**: Refactor 8 render-prop Container files to custom hooks.
+**Decision**: Refactor 12 render-prop Container files to custom hooks.
 
-**Rationale**: All 8 files follow the `SimpleContainerProps<T>` pattern with `children(provided)`. Each becomes a hook returning the same `T` interface:
+**Rationale**: All 12 files follow the `SimpleContainerProps<T>` pattern or `children(provided)` render-prop pattern. Each becomes a hook returning the same `T` interface:
 
 1. `ApplicationButtonContainer.tsx` → `useApplicationButton()`
 2. `CalloutSettingsContainer.tsx` → `useCalloutSettings()`
@@ -114,6 +116,10 @@ For each: extract business logic to custom hooks, leave View as pure JSX.
 6. `InvitationActionsContainer.tsx` → `useInvitationActions()`
 7. `LanguageSelect.tsx` → `useLanguageSelect()`
 8. `CharacterCountContext.tsx` → simplify to context-only
+9. `CalendarEventsContainer.tsx` → `useCalendarEvents()`
+10. `CalendarEventDetailContainer.tsx` → `useCalendarEventDetail()`
+11. `CommunityUpdatesContainer.tsx` → `useCommunityUpdates()`
+12. `AssociatedOrganizationContainer.ts` → `useAssociatedOrganization()`
 
 Plus 2 hydrators in `PendingMemberships.tsx`:
 - `InvitationHydrator` → `useInvitationHydrator()`
