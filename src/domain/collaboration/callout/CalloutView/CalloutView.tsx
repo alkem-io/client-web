@@ -14,6 +14,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
@@ -77,6 +78,7 @@ const CalloutView = ({
 }: CalloutViewProps) => {
   const { space } = useSpace();
   const { subspace } = useSubSpace();
+  const defaultCollapsed = useCalloutDescriptionDisplayMode(subspace?.id || space?.id || '');
   const navigate = useNavigate();
   const contributionPreviewRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement>(null);
@@ -146,6 +148,7 @@ const CalloutView = ({
           onExpand={onExpand}
           onCollapse={onCollapse}
           calloutActions={calloutActions}
+          defaultCollapsed={defaultCollapsed}
         >
           {/* Whiteboard framing */}
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
