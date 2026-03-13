@@ -1,45 +1,50 @@
-import { useState, useMemo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  TextField,
-  CircularProgress,
   Button,
-  Typography,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
   Skeleton,
+  TextField,
+  Typography,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import AddIcon from '@mui/icons-material/Add';
 import { debounce } from 'lodash-es';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
+import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  UserConversationsDocument,
   useAssignConversationMemberMutation,
+  useDefaultVisualTypeConstraintsQuery,
   useRemoveConversationMemberMutation,
   useUpdateConversationMutation,
   useUploadFileMutation,
-  useDefaultVisualTypeConstraintsQuery,
-  UserConversationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType, UserConversationsQuery, UserFilterInput, VisualType } from '@/core/apollo/generated/graphql-schema';
 import {
-  ContributorItem,
+  ActorType,
+  type UserConversationsQuery,
+  type UserFilterInput,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import Avatar from '@/core/ui/avatar/Avatar';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { gutters } from '@/core/ui/grid/utils';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { Caption } from '@/core/ui/typography';
+import FileUploadWrapper from '@/core/ui/upload/FileUploadWrapper';
+import { CropDialog } from '@/core/ui/upload/VisualUpload/CropDialog';
+import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
+import {
+  type ContributorItem,
   useContributors,
 } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import Avatar from '@/core/ui/avatar/Avatar';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { ConversationMember } from './useUserConversations';
-import FileUploadWrapper from '@/core/ui/upload/FileUploadWrapper';
-import { CropDialog } from '@/core/ui/upload/VisualUpload/CropDialog';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { ConversationMember } from './useUserConversations';
 
 interface GroupChatManagementDialogProps {
   open: boolean;
@@ -335,7 +340,7 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
               onClose={() => setCropDialogOpen(false)}
               onSave={handleAvatarCropSave}
               config={visualConstraints}
-              hideAltText
+              hideAltText={true}
             />
           )}
 
@@ -346,7 +351,7 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
             label={t('components.userMessaging.groupChatName' as TranslationKey)}
             variant="outlined"
             size="small"
-            fullWidth
+            fullWidth={true}
           />
 
           {/* Add Members toggle */}
@@ -463,7 +468,7 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
                         color: '#1D384A',
                         flexGrow: 1,
                       }}
-                      noWrap
+                      noWrap={true}
                     >
                       {member.displayName}
                     </Typography>

@@ -1,7 +1,7 @@
-import { Box, SxProps, Theme } from '@mui/material';
+import { Box, type SxProps, type Theme } from '@mui/material';
 import MuiAvatar from '@mui/material/Avatar';
 import { gutters } from '@/core/ui/grid/utils';
-import { ConversationMember } from './useUserConversations';
+import type { ConversationMember } from './useUserConversations';
 
 type CompositeAvatarSize = 'medium' | 'large';
 
