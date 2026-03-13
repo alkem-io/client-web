@@ -4,8 +4,8 @@
 
 ### Prerequisites
 
-- Node.js >= 20.9.0
-- pnpm >= 9 (recommended package manager)
+- Node.js >= 24.0.0
+- pnpm >= 10.17.1 (recommended package manager)
 
 ### Installation
 

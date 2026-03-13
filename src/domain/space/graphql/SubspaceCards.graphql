@@ -16,6 +16,9 @@ query SpaceSubspaceCards($spaceId: UUID!) {
           }
         }
       }
+      settings {
+        sortMode
+      }
       subspaces {
         ...SubspaceCard
       }

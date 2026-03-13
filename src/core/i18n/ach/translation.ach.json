@@ -89,6 +89,13 @@
         "positive": "crwdns17448:0crwdne17448:0"
       }
     },
+    "addToCalendar": {
+      "button": "crwdns44412:0crwdne44412:0",
+      "google": "crwdns44414:0crwdne44414:0",
+      "outlook": "crwdns44416:0crwdne44416:0",
+      "iCal": "crwdns44418:0crwdne44418:0",
+      "exportAll": "crwdns44420:0crwdne44420:0"
+    },
     "no-data": "crwdns17450:0crwdne17450:0",
     "no-upcoming-events": "crwdns17452:0crwdne17452:0",
     "past-events": "crwdns17454:0crwdne17454:0",
@@ -1307,6 +1314,9 @@
     }
   },
   "components": {
+    "subspacePinIndicator": {
+      "tooltip": "crwdns44422:0$t(common.subspace)crwdne44422:0"
+    },
     "calloutTemplateDialog": {
       "typeReadonly": "crwdns43840:0$t(common.template)crwdnd43840:0$t(common.template)crwdne43840:0"
     },
@@ -2713,7 +2723,14 @@
                 "description": "crwdns43892:0$t(common.template)crwdnd43892:0$t(common.subspaces)crwdnd43892:0$t(common.templates)crwdnd43892:0$t(common.space)crwdnd43892:0$t(common.templateLibrary)crwdnd43892:0$t(common.templates)crwdnd43892:0$t(common.templates)crwdne43892:0"
               }
             },
-            "reorderSubspaces": "crwdns43550:0$t(common.subspaces)crwdne43550:0"
+            "reorderSubspaces": "crwdns43550:0$t(common.subspaces)crwdne43550:0",
+            "sortBy": "crwdns44424:0crwdne44424:0",
+            "sortMode": {
+              "alphabetical": "crwdns44426:0crwdne44426:0",
+              "custom": "crwdns44428:0crwdne44428:0"
+            },
+            "pinSpace": "crwdns44430:0crwdne44430:0",
+            "unpinSpace": "crwdns44432:0crwdne44432:0"
           }
         },
         "authorization": {
@@ -4337,6 +4354,10 @@
     "appVersion": {
       "message": "crwdns37168:0crwdne37168:0",
       "recurringMessage": "crwdns37170:0crwdne37170:0"
+    },
+    "onlineStatus": {
+      "offline": "crwdns44434:0crwdne44434:0",
+      "restored": "crwdns44436:0crwdne44436:0"
     }
   }
 }

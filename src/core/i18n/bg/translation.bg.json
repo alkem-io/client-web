@@ -89,6 +89,13 @@
         "positive": "Крайното време на събитието не може да е преди началното време"
       }
     },
+    "addToCalendar": {
+      "button": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "iCal": "Apple calendar & Other apps",
+      "exportAll": "Export all future events to calendar"
+    },
     "no-data": "Не са намерени събития",
     "no-upcoming-events": "В момента няма предстоящи събития за показване",
     "past-events": "Минали събития",
@@ -1307,6 +1314,9 @@
     }
   },
   "components": {
+    "subspacePinIndicator": {
+      "tooltip": "Pinned $t(common.subspace)"
+    },
     "calloutTemplateDialog": {
       "typeReadonly": "Веднъж създаден $t(common.template), неговият тип не може да бъде променен. Ако ви е необходим различен тип, моля, създайте нов $t(common.template)."
     },
@@ -2713,7 +2723,14 @@
                 "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
-            "reorderSubspaces": "Reorder $t(common.subspaces)"
+            "reorderSubspaces": "Reorder $t(common.subspaces)",
+            "sortBy": "Sort By:",
+            "sortMode": {
+              "alphabetical": "Alphabetical",
+              "custom": "Custom"
+            },
+            "pinSpace": "Pin Space",
+            "unpinSpace": "Unpin Space"
           }
         },
         "authorization": {
@@ -4325,6 +4342,10 @@
     "appVersion": {
       "message": "Налична е нова версия на приложението.",
       "recurringMessage": "Моля, затворете всички раздели на Alkemio и презаредете, за да актуализирате."
+    },
+    "onlineStatus": {
+      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
+      "restored": "Your connection has been restored."
     }
   }
 }

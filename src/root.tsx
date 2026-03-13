@@ -27,6 +27,7 @@ import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
+import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { Suspense } from 'react';
@@ -145,6 +146,7 @@ const Root: FC = () => {
                                         <UserMessagingDialog />
                                       </Suspense>
                                       <VersionHandling />
+                                      <OnlineStatusNotification />
                                       <Error40XBoundary
                                         errorComponent={errorState => (
                                           <TopLevelLayout>

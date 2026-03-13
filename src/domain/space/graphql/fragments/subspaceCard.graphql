@@ -2,6 +2,8 @@ fragment SubspaceCard on Space {
   id
   level
   visibility
+  pinned
+  sortOrder
   about {
     ...SpaceAboutCardBanner
     metrics {
