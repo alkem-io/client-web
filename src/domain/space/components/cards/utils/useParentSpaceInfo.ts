@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useParentSpaceInfoQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ParentInfo } from './useSubspaceCardData';
+import type { ParentInfo } from './useSubspaceCardData';
 
 /**
  * Hook to fetch and format parent space information for SpaceCard

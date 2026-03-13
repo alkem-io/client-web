@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react';
-import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
-import { Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import EditLinkDialog from '@/domain/shared/components/References/EditLinkDialog';
-import CreateLinksDialog, { CreateLinkFormValues } from '@/domain/shared/components/References/CreateLinksDialog';
+import AddIcon from '@mui/icons-material/Add';
 import { Box, IconButton, Link } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCreateLinkOnCalloutMutation,
   useDeleteContributionMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import AddIcon from '@mui/icons-material/Add';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
-import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
+import { gutters } from '@/core/ui/grid/utils';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { Caption } from '@/core/ui/typography';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import LinkContributionsList from './LinksList';
-import { LinkContribution } from './models/LinkContribution';
-import { LinkDetails } from './models/LinkDetails';
+import CreateLinksDialog, { type CreateLinkFormValues } from '@/domain/shared/components/References/CreateLinksDialog';
+import EditLinkDialog from '@/domain/shared/components/References/EditLinkDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import type { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import useCalloutCollaborationPermissions from '../useCalloutContributions/useCalloutCollaborationPermissions';
+import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
+import LinkContributionsList from './LinksList';
+import type { LinkContribution } from './models/LinkContribution';
+import type { LinkDetails } from './models/LinkDetails';
 
 const MAX_LINKS_COMPACT_VIEW = 8;
 

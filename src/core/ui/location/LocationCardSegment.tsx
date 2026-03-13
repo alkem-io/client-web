@@ -1,7 +1,7 @@
-import { Box, BoxProps } from '@mui/material';
 import { PlaceOutlined } from '@mui/icons-material';
-import { Caption } from '../typography';
+import { Box, type BoxProps } from '@mui/material';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { Caption } from '../typography';
 import getLocationString from './getLocationString';
 
 type LocationCardSegmentProps = {

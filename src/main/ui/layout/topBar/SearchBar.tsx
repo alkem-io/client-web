@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
-import { useTranslation } from 'react-i18next';
-import TextField from '@mui/material/TextField';
-import { Box, BoxProps, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, type BoxProps, InputAdornment } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import type React from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import useNavigate from '@/core/routing/useNavigate';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { SEARCH_TERMS_URL_PARAM } from '@/main/search/constants';
-import { useLocation } from 'react-router-dom';
 
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.trim();

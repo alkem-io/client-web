@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import SpaceList from './SpaceList';
+import type { FC } from 'react';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
+import SpaceList from './SpaceList';
 
 /**
  * AdminSpacesPageV2 - Optimized version

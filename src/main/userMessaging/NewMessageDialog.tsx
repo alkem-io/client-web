@@ -1,23 +1,23 @@
-import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, DialogContent, DialogActions, TextField, Chip, CircularProgress, Button } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, DialogActions, DialogContent, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
-  ContributorItem,
+  type ContributorItem,
   useContributors,
 } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import Avatar from '@/core/ui/avatar/Avatar';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface NewMessageDialogProps {
   open: boolean;

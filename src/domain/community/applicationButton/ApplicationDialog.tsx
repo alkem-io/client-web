@@ -1,22 +1,22 @@
+import { Button, DialogContent } from '@mui/material';
 import { Formik } from 'formik';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { useApplicationDialogQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { CreateNvpInput } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { CreateNvpInput } from '@/core/apollo/generated/graphql-schema';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
-import References from '@/domain/shared/components/References/References';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Button, DialogContent } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
-import { Actions } from '@/core/ui/actions/Actions';
-import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { useApplicationDialogQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import References from '@/domain/shared/components/References/References';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
@@ -122,45 +122,43 @@ const ApplicationDialog = ({
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
-          validateOnMount
+          enableReinitialize={true}
+          validateOnMount={true}
           onSubmit={() => {}}
         >
           {() => {
             return (
-              <>
-                <Gutters disablePadding>
-                  <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
-                  {canJoinCommunity && <BlockTitle>{t('pages.space.application.subheaderJoin')}</BlockTitle>}
-                  {!canJoinCommunity &&
-                    (applicationForm?.description ? (
-                      <WrapperMarkdown>{applicationForm.description}</WrapperMarkdown>
-                    ) : (
-                      <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
-                    ))}
-                  {questions.map((x, i) => (
-                    <FormikInputField
-                      key={i}
-                      title={x.question}
-                      name={`['${x.question.replace(/'/g, "\\'")}']`}
-                      rows={2}
-                      multiline
-                      required={x.required}
-                      autoComplete="on"
-                      autoCapitalize="sentences"
-                      autoCorrect="on"
-                      maxLength={x.maxLength}
-                    />
+              <Gutters disablePadding={true}>
+                <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
+                {canJoinCommunity && <BlockTitle>{t('pages.space.application.subheaderJoin')}</BlockTitle>}
+                {!canJoinCommunity &&
+                  (applicationForm?.description ? (
+                    <WrapperMarkdown>{applicationForm.description}</WrapperMarkdown>
+                  ) : (
+                    <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
                   ))}
-                  {communityGuidelines && (
-                    <>
-                      <BlockTitle>{communityGuidelines.displayName}</BlockTitle>
-                      <WrapperMarkdown>{communityGuidelines.description ?? ''}</WrapperMarkdown>
-                      <References compact references={communityGuidelines.references} />
-                    </>
-                  )}
-                </Gutters>
-              </>
+                {questions.map((x, i) => (
+                  <FormikInputField
+                    key={i}
+                    title={x.question}
+                    name={`['${x.question.replace(/'/g, "\\'")}']`}
+                    rows={2}
+                    multiline={true}
+                    required={x.required}
+                    autoComplete="on"
+                    autoCapitalize="sentences"
+                    autoCorrect="on"
+                    maxLength={x.maxLength}
+                  />
+                ))}
+                {communityGuidelines && (
+                  <>
+                    <BlockTitle>{communityGuidelines.displayName}</BlockTitle>
+                    <WrapperMarkdown>{communityGuidelines.description ?? ''}</WrapperMarkdown>
+                    <References compact={true} references={communityGuidelines.references} />
+                  </>
+                )}
+              </Gutters>
             );
           }}
         </Formik>

@@ -1,5 +1,5 @@
 import { useUserModelFullQuery } from '@/core/apollo/generated/apollo-hooks';
-import { UserModel } from '@/domain/community/user/models/UserModel';
+import type { UserModel } from '@/domain/community/user/models/UserModel';
 
 /**
  * Allows to retrieve a user, given its ID

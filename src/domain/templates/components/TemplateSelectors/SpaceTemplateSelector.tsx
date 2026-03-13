@@ -1,23 +1,23 @@
 import { Box, Button, Chip, Skeleton, Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, useMemo, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BlockSectionTitle, Caption } from '@/core/ui/typography';
-import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import TemplateActionButton from '../Buttons/TemplateActionButton';
-import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useSpaceDefaultTemplatesQuery,
-  useTemplateNameQuery,
   useTemplateContentLazyQuery,
+  useTemplateNameQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
-import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { SpaceTemplate } from '../../models/SpaceTemplate';
+import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { type EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import type { SpaceTemplate } from '../../models/SpaceTemplate';
+import TemplateActionButton from '../Buttons/TemplateActionButton';
+import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 
 interface SpaceTemplateSelectorProps extends GuttersProps {
   /**
@@ -141,7 +141,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   const loading = loadingTemplate || loadingSpaceTemplate;
 
   return (
-    <Gutters row alignItems="center" {...rest}>
+    <Gutters row={true} alignItems="center" {...rest}>
       {loading && <Skeleton width="100%" />}
       {!loading && templateName !== defaultTemplateName && (
         <>
@@ -169,13 +169,11 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
             if (isTemplateSelectable && !isTemplateSelectable(template as SpaceTemplate)) {
               return (
                 /* Keep it inside a react fragment <>...</> to disable the onClick handler that the dialog is adding*/
-                <>
-                  <Tooltip title={t('createSpace.innovationFlowError')}>
-                    <span>
-                      <TemplateActionButton disabled />
-                    </span>
-                  </Tooltip>
-                </>
+                <Tooltip title={t('createSpace.innovationFlowError')}>
+                  <span>
+                    <TemplateActionButton disabled={true} />
+                  </span>
+                </Tooltip>
               );
             }
             return <TemplateActionButton />;
@@ -183,7 +181,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
           open={isDialogOpen}
           onSelectTemplate={handleSelectTemplate}
           onClose={() => setDialogOpen(false)}
-          enablePlatformTemplates
+          enablePlatformTemplates={true}
         />
         {/* Add confirmation dialog for overwriting form data */}
         {importTemplateConfirmOpen && (

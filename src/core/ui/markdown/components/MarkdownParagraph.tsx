@@ -1,7 +1,7 @@
+import type { SxProps } from '@mui/material';
+import type { Element } from 'hast';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 import createMarkdownComponent from './MarkdownComponent';
-import { SxProps } from '@mui/material';
-import type { Element } from 'hast';
 
 const Base = createMarkdownComponent('p');
 

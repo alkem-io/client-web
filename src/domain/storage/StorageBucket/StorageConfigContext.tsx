@@ -1,5 +1,5 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
-import useStorageConfig, { StorageConfigOptions, StorageConfigProvided } from './useStorageConfig';
+import { createContext, type PropsWithChildren, useContext } from 'react';
+import useStorageConfig, { type StorageConfigOptions, type StorageConfigProvided } from './useStorageConfig';
 
 const StorageConfigContext = createContext<StorageConfigProvided | undefined>(undefined);
 

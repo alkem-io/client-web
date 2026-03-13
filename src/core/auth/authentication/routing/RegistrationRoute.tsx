@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
-import { useQueryParams } from '@/core/routing/useQueryParams';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import RegistrationPage from '../pages/RegistrationPage';
 import RegistrationSuccessPage from '../pages/RegistrationSuccessPage';
 

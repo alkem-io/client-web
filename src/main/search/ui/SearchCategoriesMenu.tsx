@@ -1,10 +1,10 @@
-import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
+import { DrawOutlined, GroupOutlined, HubOutlined, LibraryBooksOutlined } from '@mui/icons-material';
+import { Link, Tooltip } from '@mui/material';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { Link, Tooltip } from '@mui/material';
-import { PropsWithChildren } from 'react';
 import { Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
 
 type SearchResultsCount =
   | {
@@ -30,8 +30,8 @@ const SearchCategoriesMenu = ({ results }: SearchCategoriesMenuProps) => {
 
   return (
     <Gutters
-      disableGap
-      disablePadding
+      disableGap={true}
+      disablePadding={true}
       sx={theme => ({
         position: 'sticky',
         top: 80,
@@ -70,9 +70,7 @@ const SearchCategoriesMenu = ({ results }: SearchCategoriesMenuProps) => {
 
       <SearchCategoriesMenuItem href="#contributors" disabled={!(results?.actorResults?.results?.length ?? 0)}>
         <GroupOutlined />
-        <Caption>
-          {t('pages.search.filter.results.contributor' /*, { count: results?.actorResults?.total }*/)}
-        </Caption>
+        <Caption>{t('pages.search.filter.results.contributor' /*, { count: results?.actorResults?.total }*/)}</Caption>
       </SearchCategoriesMenuItem>
     </Gutters>
   );
@@ -86,7 +84,7 @@ const SearchCategoriesMenuItem = ({
   const { t } = useTranslation();
   if (disabled) {
     return (
-      <Tooltip title={t('pages.search.filter.results.noResults')} arrow>
+      <Tooltip title={t('pages.search.filter.results.noResults')} arrow={true}>
         <Gutters
           tabIndex={0}
           role="link"

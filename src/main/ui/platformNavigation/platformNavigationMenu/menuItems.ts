@@ -1,11 +1,11 @@
-import { ComponentType } from 'react';
-import { SvgIconProps } from '@mui/material';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 
 interface MenuItem {
   iconComponent: ComponentType<SvgIconProps>;

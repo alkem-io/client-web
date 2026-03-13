@@ -1,21 +1,21 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
   useSpacePrivilegesQuery,
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
-import { PendingApplicationItem } from '../user/models/PendingApplicationItem';
 import {
   AuthorizationPrivilege,
-  CommunityGuidelinesSummaryFragment,
-  SpaceLevel,
-  VisualType,
+  type CommunityGuidelinesSummaryFragment,
+  type SpaceLevel,
+  type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { PendingApplicationItem } from '../user/models/PendingApplicationItem';
+import type { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 
 export interface SpaceDetails {
   id: string;

@@ -1,6 +1,6 @@
-import { KratosProps } from './Kratos/KratosProps';
+import AcceptTermsCheckbox, { type AcceptTermsCheckboxProps } from './AcceptTermsCheckbox';
 import { getNodeName } from './Kratos/helpers';
-import AcceptTermsCheckbox, { AcceptTermsCheckboxProps } from './AcceptTermsCheckbox';
+import type { KratosProps } from './Kratos/KratosProps';
 
 interface KratosVisibleAcceptTermsCheckboxProps extends AcceptTermsCheckboxProps, KratosProps {}
 

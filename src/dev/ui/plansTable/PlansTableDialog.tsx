@@ -1,27 +1,27 @@
+import { Box, Button, Dialog, DialogActions, DialogContent, type Theme } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogActions, DialogContent, Theme } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import RouterLink from '@/core/ui/link/RouterLink';
-import { Caption, CaptionSmall, Text } from '@/core/ui/typography';
-import GridContainer from '@/core/ui/grid/GridContainer';
-import GridItem from '@/core/ui/grid/GridItem';
-import { gutters } from '@/core/ui/grid/utils';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import Gutters from '@/core/ui/grid/Gutters';
 import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
-import Loading from '@/core/ui/loading/Loading';
-import SelectPlanButton from './SelectPlanButton';
-import { usePlanAvailability } from '@/domain/space/components/CreateSpace/hooks/spacePlans/usePlanAvailability';
-import { TagCategoryValues, error } from '@/core/logging/sentry/log';
-import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
-import { PlanFeatures, PlanName, PlanPrice } from '@/domain/license/plans/ui/PlanCardsComponents';
 import {
   LicensingCredentialBasedCredentialType,
   LicensingCredentialBasedPlanType,
 } from '@/core/apollo/generated/graphql-schema';
+import { error, TagCategoryValues } from '@/core/logging/sentry/log';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption, CaptionSmall, Text } from '@/core/ui/typography';
+import { PlanFeatures, PlanName, PlanPrice } from '@/domain/license/plans/ui/PlanCardsComponents';
+import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
+import { usePlanAvailability } from '@/domain/space/components/CreateSpace/hooks/spacePlans/usePlanAvailability';
+import SelectPlanButton from './SelectPlanButton';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -112,7 +112,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
           {t('plansTable.title')}
         </DialogHeader>
         <Gutters>
-          <GridContainer sameHeight disablePadding disableGap>
+          <GridContainer sameHeight={true} disablePadding={true} disableGap={true}>
             {loading && <Loading text={t('common.loading')} />}
             {plansData.map(plan => {
               const planTranslation = planTranslations[plan.name] ?? {};

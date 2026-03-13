@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
-import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
-import EmojiObjectsOutlinedIcon from '@mui/icons-material/EmojiObjectsOutlined';
-import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import EmojiObjectsOutlinedIcon from '@mui/icons-material/EmojiObjectsOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
+import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
+import { useMemo } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserAccountUrl } from '@/main/routing/urlBuilders';
-import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
+import type { MenuOptionProps } from './dashboardMenuTypes';
 
 export const useHomeMenuItems = () => {
   const { userModel, loading } = useCurrentUserContext();

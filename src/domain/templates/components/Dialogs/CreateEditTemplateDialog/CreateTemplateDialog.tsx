@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import TemplateForm, { AnyTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateForm';
-import { getNewTemplate } from '@/domain/templates/models/common';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { Box, CircularProgress } from '@mui/material';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import TemplateForm, { type AnyTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateForm';
+import { getNewTemplate } from '@/domain/templates/models/common';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 
 interface CreateTemplateDialogProps {
   open: boolean;

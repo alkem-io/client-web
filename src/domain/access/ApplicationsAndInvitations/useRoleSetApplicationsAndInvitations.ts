@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useState } from 'react';
 import {
   refetchUserPendingMembershipsQuery,
+  useActorDetailsLazyQuery,
   useApplyForEntryRoleOnRoleSetMutation,
   useCommunityApplicationsInvitationsQuery,
   useDeleteInvitationMutation,
@@ -7,14 +9,17 @@ import {
   useEventOnApplicationMutation,
   useInvitationStateEventMutation,
   useInviteForEntryRoleOnRoleSetMutation,
-  useActorDetailsLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, RoleName, ActorType, ActorDetailsQuery } from '@/core/apollo/generated/graphql-schema';
-import { useEffect, useMemo, useState } from 'react';
-import { ApplicationModel } from '../model/ApplicationModel';
-import { InvitationModel } from '../model/InvitationModel';
-import { PlatformInvitationModel } from '../model/PlatformInvitationModel';
-import InvitationResultModel from '../model/InvitationResultModel';
+import {
+  type ActorDetailsQuery,
+  ActorType,
+  type AuthorizationPrivilege,
+  RoleName,
+} from '@/core/apollo/generated/graphql-schema';
+import type { ApplicationModel } from '../model/ApplicationModel';
+import type { InvitationModel } from '../model/InvitationModel';
+import type InvitationResultModel from '../model/InvitationResultModel';
+import type { PlatformInvitationModel } from '../model/PlatformInvitationModel';
 
 type useRoleSetApplicationsAndInvitationsParams = {
   roleSetId: string | undefined;

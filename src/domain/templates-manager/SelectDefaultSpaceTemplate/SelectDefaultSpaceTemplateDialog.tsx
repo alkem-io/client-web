@@ -1,21 +1,21 @@
-import * as yup from 'yup';
 import { Button, Skeleton } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { useSpaceContentTemplatesOnSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { Trans, useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
-import { Form, Formik } from 'formik';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { useSpaceContentTemplatesOnSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useMemo } from 'react';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Actions } from '@/core/ui/actions/Actions';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption } from '@/core/ui/typography';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface FormValues {
   spaceTemplateSelectedId: string;
@@ -78,9 +78,14 @@ const SelectDefaultSpaceTemplateDialog = ({
         title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.title')}
         onClose={onClose}
       />
-      <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={() => {}}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize={true}
+        onSubmit={() => {}}
+      >
         {({ isValid, values }) => (
-          <Form noValidate>
+          <Form noValidate={true}>
             <Gutters>
               <Caption>
                 <Trans

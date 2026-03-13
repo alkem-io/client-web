@@ -1,5 +1,3 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import {
   FormControl,
   FormHelperText,
@@ -8,10 +6,13 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  SelectProps,
+  type SelectProps,
 } from '@mui/material';
 import { useField } from 'formik';
-import React, { useMemo } from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 export interface FormikSelectValue {
   id: string;
@@ -52,9 +53,9 @@ export const FormikSelect = ({
   }, [isError, meta.error, _helperText, name, tErr]);
 
   return (
-    <FormControl required={required} disabled={disabled} fullWidth error={isError}>
+    <FormControl required={required} disabled={disabled} fullWidth={true} error={isError}>
       {title && (
-        <InputLabel id={`${name}-label`} shrink>
+        <InputLabel id={`${name}-label`} shrink={true}>
           {title}
         </InputLabel>
       )}
@@ -87,9 +88,7 @@ export const FormikSelect = ({
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText sx={{ color: 'red' }}>
-        <>{helperText}</>
-      </FormHelperText>
+      <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
     </FormControl>
   );
 };

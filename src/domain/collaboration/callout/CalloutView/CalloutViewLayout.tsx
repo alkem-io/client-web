@@ -1,15 +1,15 @@
-import { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { BlockTitle } from '@/core/ui/typography';
 import { Ribbon } from '@/core/ui/card/Ribbon';
+import { gutters } from '@/core/ui/grid/utils';
+import ExpandableMarkdown from '@/core/ui/markdown/ExpandableMarkdown';
+import { BlockTitle } from '@/core/ui/typography';
 import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import CalloutHeader from '../calloutBlock/CalloutHeader';
-import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
-import { gutters } from '@/core/ui/grid/utils';
-import ExpandableMarkdown from '@/core/ui/markdown/ExpandableMarkdown';
+import type { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 
 const CalloutViewLayout = ({
   callout,
@@ -71,13 +71,13 @@ const CalloutViewLayout = ({
         }}
       >
         <Box sx={theme => ({ padding: theme.spacing(0, 2, 1) })}>
-          <ExpandableMarkdown caption defaultCollapsed={defaultCollapsed}>
+          <ExpandableMarkdown caption={true} defaultCollapsed={defaultCollapsed}>
             {callout.framing.profile.description ?? ''}
           </ExpandableMarkdown>
         </Box>
         {!skipReferences && !!callout.framing.profile.references?.length && (
           <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>
-            <References compact references={callout.framing.profile.references} />
+            <References compact={true} references={callout.framing.profile.references} />
           </Box>
         )}
         {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 && (

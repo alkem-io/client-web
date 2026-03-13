@@ -1,7 +1,7 @@
-import { Box, Chip } from '@mui/material';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
+import { Box, Chip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 type TemplateTypeFilterProps = {
   value: TemplateType[];

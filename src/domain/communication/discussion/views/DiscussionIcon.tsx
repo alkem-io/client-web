@@ -1,18 +1,18 @@
 import {
   AllInclusive as AllInclusiveIcon,
   Category as CategoryIcon,
-  GroupsOutlined as GroupsOutlinedIcon,
+  Celebration as CelebrationIcon,
   GpsNotFixedOutlined as GpsNotFixedOutlinedIcon,
-  QuestionMark as QuestionMarkIcon,
+  GroupsOutlined as GroupsOutlinedIcon,
   MoreHoriz as MoreHorizIcon,
   QuestionAnswerOutlined as QuestionAnswerOutlinedIcon,
-  Celebration as CelebrationIcon,
+  QuestionMark as QuestionMarkIcon,
 } from '@mui/icons-material';
 
-import { SvgIconProps } from '@mui/material';
-import { createElement, FC, useMemo } from 'react';
-import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
+import type { SvgIconProps } from '@mui/material';
+import { createElement, type FC, useMemo } from 'react';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
+import { type DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 
 export interface DiscussionIconProps extends SvgIconProps {
   category: DiscussionCategoryExt;

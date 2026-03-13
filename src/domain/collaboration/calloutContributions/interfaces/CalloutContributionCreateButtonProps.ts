@@ -1,5 +1,5 @@
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import type { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 
 /**
  * Properties that a Create Contribution Button must receive

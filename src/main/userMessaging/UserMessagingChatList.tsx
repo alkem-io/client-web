@@ -1,30 +1,30 @@
-import { useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import {
   Box,
   Chip,
+  IconButton,
+  InputAdornment,
+  InputBase,
   List,
-  ListItemButton,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Tooltip,
   Typography,
-  IconButton,
-  InputBase,
-  InputAdornment,
 } from '@mui/material';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
-import CloseIcon from '@mui/icons-material/Close';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import Avatar from '@/core/ui/avatar/Avatar';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption, BlockTitle } from '@/core/ui/typography';
-import Loading from '@/core/ui/loading/Loading';
-import Gutters from '@/core/ui/grid/Gutters';
-import { UserConversation } from './useUserConversations';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import BadgeCounter from '@/core/ui/icon/BadgeCounter';
+import Loading from '@/core/ui/loading/Loading';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import type { UserConversation } from './useUserConversations';
 
 interface UserMessagingChatListProps {
   conversations: UserConversation[];
@@ -61,7 +61,7 @@ export const UserMessagingChatList = ({
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
         placeholder={t('components.userMessaging.searchConversations' as TranslationKey)}
-        fullWidth
+        fullWidth={true}
         sx={{
           height: 30,
           backgroundColor: theme => theme.palette.background.default,
@@ -101,7 +101,7 @@ export const UserMessagingChatList = ({
     >
       <Box display="flex" alignItems="center" gap={1}>
         <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
-        <Tooltip title={t('components.userMessaging.betaTooltip' as TranslationKey)} arrow placement="top">
+        <Tooltip title={t('components.userMessaging.betaTooltip' as TranslationKey)} arrow={true} placement="top">
           <Chip label={t('common.beta')} size="small" color="primary" variant="outlined" />
         </Tooltip>
       </Box>
@@ -146,7 +146,7 @@ export const UserMessagingChatList = ({
     <Box display="flex" flexDirection="column" height="100%">
       {headerContent}
       {searchInput}
-      <List disablePadding sx={{ width: '100%', overflowY: 'auto', flex: 1 }}>
+      <List disablePadding={true} sx={{ width: '100%', overflowY: 'auto', flex: 1 }}>
         {filteredConversations.map(conversation => (
           <ListItemButton
             key={conversation.id}
@@ -171,7 +171,7 @@ export const UserMessagingChatList = ({
             <ListItemText
               primary={
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
+                  <Typography variant="body1" fontWeight={500} noWrap={true} sx={{ maxWidth: '60%' }}>
                     {conversation.user.displayName}
                   </Typography>
                   <Box
@@ -207,7 +207,7 @@ export const UserMessagingChatList = ({
                   <Typography
                     variant="body2"
                     fontWeight={conversation.unreadCount > 0 ? 600 : 400}
-                    noWrap
+                    noWrap={true}
                     sx={{ maxWidth: '90%' }}
                   >
                     {conversation.lastMessage.message}

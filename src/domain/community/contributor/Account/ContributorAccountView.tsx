@@ -1,26 +1,8 @@
+import { DeleteOutline, SettingsOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import { Button, IconButton, Link } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
-import Gutters from '@/core/ui/grid/Gutters';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import InnovationHubCardHorizontal, {
-  InnovationHubCardHorizontalSkeleton,
-} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '@/core/ui/actions/Actions';
-import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
-import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import {
-  AuthorizationPrivilege,
-  LicenseEntitlement,
-  LicenseEntitlementType,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
-import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { DeleteOutline, SettingsOutlined } from '@mui/icons-material';
 import {
   useCreateWingbackAccountMutation,
   useDeleteInnovationHubMutation,
@@ -28,23 +10,41 @@ import {
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  type LicenseEntitlement,
+  LicenseEntitlementType,
+  type SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import { Actions } from '@/core/ui/actions/Actions';
 import CreationButton from '@/core/ui/button/CreationButton';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Gutters from '@/core/ui/grid/Gutters';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
-import AddIcon from '@mui/icons-material/Add';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { Button, IconButton, Link } from '@mui/material';
-import useNavigate from '@/core/routing/useNavigate';
-import { Identifiable } from '@/core/utils/Identifiable';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import InnovationHubCardHorizontal, {
+  InnovationHubCardHorizontalSkeleton,
+} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
+import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
+import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
+import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 
-const enum Entities {
+enum Entities {
   Space = 'Space',
   VirtualContributor = 'VirtualContributor',
   InnovationPack = 'InnovationPack',
@@ -132,7 +132,7 @@ const BlockHeader = ({
   const { t } = useTranslation();
 
   return (
-    <Gutters disablePadding disableGap row justifyContent="space-between">
+    <Gutters disablePadding={true} disableGap={true} row={true} justifyContent="space-between">
       <BlockTitle>{title}</BlockTitle>
       {isAvailable || usage > 0 ? (
         <TextWithTooltip text={`${usage}/${limit}`} tooltip={tooltip} />
@@ -403,7 +403,6 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         return t('common.innovationPack');
       case Entities.InnovationHub:
         return t('common.innovation-hub');
-      case Entities.Space:
       default:
         return t('common.space');
     }
@@ -492,7 +491,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 sx={{ textTransform: 'none', flexShrink: 1 }}
                 onClick={onCreateWingbackAccountClick}
               >
-                <Caption noWrap>{t('pages.admin.generic.sections.account.addExternalSub')}</Caption>
+                <Caption noWrap={true}>{t('pages.admin.generic.sections.account.addExternalSub')}</Caption>
               </Button>
             }
             disabled={!enableWingbackAccountCreation}
@@ -501,7 +500,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         )}
       </PageContentColumn>
       <PageContentColumn columns={12}>
-        <PageContentBlock halfWidth>
+        <PageContentBlock halfWidth={true}>
           <BlockHeader
             title={t('pages.admin.generic.sections.account.hostedSpaces')}
             usage={hostedSpaceUsage}
@@ -516,9 +515,9 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               premiumLimit: spacePremiumLimit,
             })}
           />
-          <Gutters disablePadding disableGap justifyContent="space-between" fullHeight>
+          <Gutters disablePadding={true} disableGap={true} justifyContent="space-between" fullHeight={true}>
             {loading && <SpaceCardHorizontalSkeleton />}
-            <Gutters disablePadding>
+            <Gutters disablePadding={true}>
               {!loading &&
                 account?.spaces.map(space => (
                   <SpaceCardHorizontal
@@ -526,10 +525,10 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                     space={{ id: space.id, about: space.about, level: space.level, license: space.license }}
                     size="medium"
                     deepness={0}
-                    seamless
+                    seamless={true}
                     sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
                     actions={getSpaceActions(space.id)}
-                    disableHoverState
+                    disableHoverState={true}
                   />
                 ))}
             </Gutters>
@@ -556,7 +555,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             )}
           </Actions>
         </PageContentBlock>
-        <PageContentBlock halfWidth>
+        <PageContentBlock halfWidth={true}>
           <BlockHeader
             title={t('pages.admin.generic.sections.account.virtualContributors')}
             usage={vcUsage}
@@ -568,16 +567,16 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: vcLimit,
             })}
           />
-          <Gutters disablePadding justifyContent="space-between" fullHeight>
+          <Gutters disablePadding={true} justifyContent="space-between" fullHeight={true}>
             {loading && <SpaceCardHorizontalSkeleton />}
-            <Gutters disablePadding>
+            <Gutters disablePadding={true}>
               {!loading &&
                 virtualContributors?.map(vc => (
                   <ContributorCardHorizontal
                     key={vc.id}
                     profile={vc.profile}
-                    seamless
-                    withUnifiedTitle
+                    seamless={true}
+                    withUnifiedTitle={true}
                     menuActions={getVCActions(vc.id)}
                   />
                 ))}
@@ -599,7 +598,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             <VirtualContributorWizard />
           </Gutters>
         </PageContentBlock>
-        <PageContentBlock halfWidth>
+        <PageContentBlock halfWidth={true}>
           <BlockHeader
             title={t('pages.admin.generic.sections.account.innovationPacks')}
             usage={innovationPackUsage}
@@ -611,7 +610,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: innovationPackLimit,
             })}
           />
-          <Gutters disablePadding justifyContent="space-between" fullHeight>
+          <Gutters disablePadding={true} justifyContent="space-between" fullHeight={true}>
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(pack => (
@@ -640,7 +639,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             </Actions>
           </Gutters>
         </PageContentBlock>
-        <PageContentBlock halfWidth>
+        <PageContentBlock halfWidth={true}>
           <BlockHeader
             title={t('pages.admin.generic.sections.account.customHomepages')}
             usage={innovationHubUsage}
@@ -652,7 +651,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               limit: innovationHubLimit,
             })}
           />
-          <Gutters disablePadding justifyContent="space-between" fullHeight>
+          <Gutters disablePadding={true} justifyContent="space-between" fullHeight={true}>
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
               innovationHubs?.map(hub => (

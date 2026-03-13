@@ -1,6 +1,6 @@
 import { useQueryParams } from '@/core/routing/useQueryParams';
-import RecoveryPage from '../pages/RecoveryPage';
 import { AUTH_RESET_PASSWORD_REQUEST } from '../constants/authentication.constants';
+import RecoveryPage from '../pages/RecoveryPage';
 
 export const RecoveryRoute = () => {
   const params = useQueryParams();

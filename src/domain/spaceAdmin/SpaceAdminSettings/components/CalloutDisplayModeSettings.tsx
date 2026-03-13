@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
+import type { SpaceSettingsLayout } from '@/domain/space/settings/SpaceSettingsModel';
 import { defaultSpaceSettings } from '../SpaceDefaultSettings';
-import { SpaceSettingsLayout } from '@/domain/space/settings/SpaceSettingsModel';
 
 type CalloutDisplayModeSettingsProps = {
   currentLayout?: Partial<SpaceSettingsLayout>;
@@ -20,7 +20,7 @@ const CalloutDisplayModeSettings: FC<CalloutDisplayModeSettingsProps> = ({ curre
     CalloutDescriptionDisplayMode.Collapsed;
 
   return (
-    <PageContentBlock disableGap>
+    <PageContentBlock disableGap={true}>
       <PageContentBlockHeader title={t('pages.admin.generic.sections.layout.calloutDisplayMode.title')} />
       <SwitchSettingsGroup
         ariaLabel={t('pages.admin.generic.sections.layout.calloutDisplayMode.title')}

@@ -1,8 +1,8 @@
-import { useSpacePermissionsAndEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpacePermissions } from '../context/SpaceContext';
-import { useSpace } from '../context/useSpace';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
+import { useSpacePermissionsAndEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import type { SpacePermissions } from '../context/SpaceContext';
+import { useSpace } from '../context/useSpace';
 
 type useSpacePermissionsAndEntitlementsProvided = {
   permissions: SpacePermissions & {

@@ -1,6 +1,3 @@
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '@/core/ui/loading/Loading';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type {
   BinaryFileData,
@@ -14,10 +11,13 @@ import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash-es';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import EmptyWhiteboard from '../EmptyWhiteboard';
-import useWhiteboardDefaults from './useWhiteboardDefaults';
-import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
+import useWhiteboardDefaults from './useWhiteboardDefaults';
+import type { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
@@ -212,7 +212,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
             initialData={data}
             UIOptions={mergedUIOptions}
             isCollaborating={false}
-            viewModeEnabled
+            viewModeEnabled={true}
             generateIdForFile={handleGenerateIdForFile}
             aiEnabled={false}
             {...restOptions}

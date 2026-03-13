@@ -1,4 +1,4 @@
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 
 export interface Message {
   id: string;

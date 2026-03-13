@@ -6,11 +6,15 @@ import {
   useSpaceUrlResolverQuery,
   useWelcomeSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ExploreSpacesSearchFragment, SearchCategory, SearchResultType } from '@/core/apollo/generated/graphql-schema';
-import { TypedSearchResult } from '@/main/search/SearchView';
-import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
-import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
+import {
+  type ExploreSpacesSearchFragment,
+  SearchCategory,
+  SearchResultType,
+} from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { TypedSearchResult } from '@/main/search/SearchView';
+import type { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
+import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 
 type FiltersConfigTranslation = {
   key: string;

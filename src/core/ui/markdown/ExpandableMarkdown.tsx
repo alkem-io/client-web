@@ -1,10 +1,10 @@
-import WrapperMarkdown, { WrapperMarkdownProps } from './WrapperMarkdown';
-import { gutters } from '../grid/utils';
-import { OverflowGradientProps } from '../overflow/OverflowGradient';
-import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
 import { Box, Button } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '../grid/utils';
+import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
+import type { OverflowGradientProps } from '../overflow/OverflowGradient';
+import WrapperMarkdown, { type WrapperMarkdownProps } from './WrapperMarkdown';
 
 const DEFAULT_MAX_HEIGHT_GUTTERS = 6;
 
@@ -71,7 +71,7 @@ const ExpandableMarkdown = ({
           ) : undefined
         }
       >
-        <WrapperMarkdown card {...props}>
+        <WrapperMarkdown card={true} {...props}>
           {children}
         </WrapperMarkdown>
       </AutomaticOverflowGradient>

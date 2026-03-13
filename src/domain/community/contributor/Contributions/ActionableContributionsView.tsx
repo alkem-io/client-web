@@ -1,12 +1,11 @@
 import { GridLegacy, Skeleton } from '@mui/material';
-import React from 'react';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { Caption } from '@/core/ui/typography';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import ContributionCard, { ContributionCardProps } from './ContributionCard';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockGrid, { type PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { Caption } from '@/core/ui/typography';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import ContributionCard, { type ContributionCardProps } from './ContributionCard';
 
 type ActionableContributionsViewProps = Pick<
   ContributionCardProps,
@@ -21,7 +20,7 @@ type ActionableContributionsViewProps = Pick<
 };
 
 const SkeletonItem = () => (
-  <GridLegacy item>
+  <GridLegacy item={true}>
     <Skeleton
       variant="rectangular"
       sx={{
@@ -60,7 +59,7 @@ export const ActionableContributionsView = ({
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
       {subtitle && <Caption>{subtitle}</Caption>}
-      <PageContentBlockGrid disablePadding cards={cards}>
+      <PageContentBlockGrid disablePadding={true} cards={cards}>
         {loading && (
           <>
             <SkeletonItem />

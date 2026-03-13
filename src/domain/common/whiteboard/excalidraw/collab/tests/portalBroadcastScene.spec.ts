@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type { BinaryFileDataWithOptionalUrl } from '../../types';
+import { describe, expect, it } from 'vitest';
 import { isFileRenderable, shouldStripDataUrlForBroadcast } from '../../fileStore/fileAvailability';
+import type { BinaryFileDataWithOptionalUrl } from '../../types';
 
 /**
  * Tests for Portal.broadcastScene file payload rules:
@@ -10,10 +10,7 @@ import { isFileRenderable, shouldStripDataUrlForBroadcast } from '../../fileStor
  * - Files with neither url nor dataURL should be skipped (unrecoverable)
  */
 describe('Portal broadcastScene file payload rules', () => {
-  const createFile = (
-    id: string,
-    options: { url?: string; dataURL?: DataURL }
-  ): BinaryFileDataWithOptionalUrl =>
+  const createFile = (id: string, options: { url?: string; dataURL?: DataURL }): BinaryFileDataWithOptionalUrl =>
     ({
       id,
       mimeType: 'image/png',
@@ -167,7 +164,7 @@ describe('Portal broadcastScene file payload rules', () => {
           url: undefined,
           dataURL: 'data:image/png;base64,def' as DataURL,
         }),
-        'unrenderable': createFile('unrenderable', {
+        unrenderable: createFile('unrenderable', {
           url: undefined,
           dataURL: undefined,
         }),
@@ -188,7 +185,7 @@ describe('Portal broadcastScene file payload rules', () => {
       expect(payload['only-dataurl'].dataURL).toBe('data:image/png;base64,def');
 
       // Unrenderable: skipped
-      expect(payload['unrenderable']).toBeUndefined();
+      expect(payload.unrenderable).toBeUndefined();
 
       // File with url but no dataURL: included, dataURL stays as undefined (becomes '')
       expect(payload['url-no-dataurl']).toBeDefined();

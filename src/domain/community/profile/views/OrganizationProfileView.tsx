@@ -1,20 +1,20 @@
-import { groupBy, isEmpty } from 'lodash-es';
 import { Box, styled } from '@mui/material';
+import { groupBy, isEmpty } from 'lodash-es';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Gutters from '@/core/ui/grid/Gutters';
+import { BlockSectionTitle, CardText } from '@/core/ui/typography';
+import type { LocationModelMapped } from '@/domain/common/location/LocationModelMapped';
+import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import References from '@/domain/shared/components/References/References';
-import { useMemo } from 'react';
 import {
   isSocialNetworkSupported,
-  SocialNetworkEnum,
+  type SocialNetworkEnum,
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import SocialLinks from '@/domain/shared/components/SocialLinks/SocialLinks';
-import { LocationModelMapped } from '@/domain/common/location/LocationModelMapped';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -67,7 +67,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
 
   return (
     <PageContentBlock>
-      <Gutters disablePadding sx={{ position: 'relative' }}>
+      <Gutters disablePadding={true} sx={{ position: 'relative' }}>
         <VerifiedBadge>
           {entity?.verified !== undefined && (
             <OrganizationVerifiedStatus
@@ -76,7 +76,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
             />
           )}
         </VerifiedBadge>
-        <Gutters disablePadding>
+        <Gutters disablePadding={true}>
           <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
         </Gutters>
 
@@ -84,7 +84,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
           ?.filter(t => t.tags.length > 0)
           .map((tagset, i) =>
             tagset.tags.length > 0 ? (
-              <Gutters key={i} disablePadding disableGap>
+              <Gutters key={i} disablePadding={true} disableGap={true}>
                 <BlockSectionTitle>{tagset.name}</BlockSectionTitle>
                 <TagsWithOffset tags={tagset.tags} count={5} />
               </Gutters>
@@ -92,7 +92,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
           )}
 
         {!isEmpty(links) && (
-          <Gutters disablePadding fullHeight maxWidth="100%">
+          <Gutters disablePadding={true} fullHeight={true} maxWidth="100%">
             <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
 
             <References

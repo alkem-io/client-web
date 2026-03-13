@@ -1,4 +1,3 @@
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   refetchLatestContributionsSpacesFlatQuery,
   refetchPendingInvitationsCountQuery,
@@ -6,7 +5,8 @@ import {
   refetchSpaceAboutBaseQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { InvitationEvent } from './InvitationApplicationConstants';
 
 type InvitationActionsContainerProvided = {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import Collab, { CollabProps, OnIncomingEmojiReactionCallback } from './Collab';
-import { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
+import Collab, { type CollabProps, type OnIncomingEmojiReactionCallback } from './Collab';
+import type { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
 type CollabInstance = InstanceType<typeof Collab>;
 

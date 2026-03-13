@@ -1,8 +1,8 @@
-import SingleInvitationFull from '@/domain/community/invitations/SingleInvitationFull';
-import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useNavigate from '@/core/routing/useNavigate';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
+import SingleInvitationFull from '@/domain/community/invitations/SingleInvitationFull';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 
 export const InvitationsBlock = () => {

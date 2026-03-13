@@ -1,5 +1,5 @@
+import { Box, styled, type Theme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, styled, Theme } from '@mui/material';
 
 // Calendar colors:
 // TODO: Maybe move this into the template

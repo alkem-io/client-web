@@ -97,7 +97,7 @@ describe('urlValidator', () => {
 
     test('uses MID_TEXT_LENGTH as default maxLength', async () => {
       const validator = urlValidator();
-      const longUrl = 'https://example.com/' + 'a'.repeat(500); // > 512 chars (MID_TEXT_LENGTH)
+      const longUrl = `https://example.com/${'a'.repeat(500)}`; // > 512 chars (MID_TEXT_LENGTH)
       await expect(validator.validate(longUrl)).rejects.toThrow();
     });
   });

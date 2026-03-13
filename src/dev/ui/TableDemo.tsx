@@ -1,13 +1,13 @@
-import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import GridItem, { GridItemProps } from '@/core/ui/grid/GridItem';
 import { Box } from '@mui/material';
-import { GUTTER_MUI, GUTTER_PX } from '@/core/ui/grid/constants';
-import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
+import type { GridColDef } from '@mui/x-data-grid';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { GUTTER_MUI, GUTTER_PX } from '@/core/ui/grid/constants';
+import GridItem, { type GridItemProps } from '@/core/ui/grid/GridItem';
 import DataGridTable from '@/core/ui/table/DataGridTable';
-import { GridColDef } from '@mui/x-data-grid';
+import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 
 const DummyContent = (props: GridItemProps) => (
   <GridItem {...props}>
@@ -61,17 +61,17 @@ const TableDemo = () => {
       </PageTitle>
       <PageContent>
         <PageContentColumn columns={3}>
-          <PageContentBlock accent>
+          <PageContentBlock accent={true}>
             <BlockTitle>Block Title</BlockTitle>
             <Text>{loremIpsum}</Text>
           </PageContentBlock>
-          <PageContentBlock disableGap disablePadding>
+          <PageContentBlock disableGap={true} disablePadding={true}>
             <PageContentBlockGrid>
               <DummyContent columns={2} />
               <DummyContent columns={2} />
             </PageContentBlockGrid>
           </PageContentBlock>
-          <PageContentBlock disableGap disablePadding>
+          <PageContentBlock disableGap={true} disablePadding={true}>
             <PageContentBlockGrid>
               <DummyContent columns={1} />
               <DummyContent />

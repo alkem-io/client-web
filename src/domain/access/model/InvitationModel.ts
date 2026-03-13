@@ -1,4 +1,4 @@
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { ActorType } from '@/core/apollo/generated/graphql-schema';
 
 export type InvitationModel = {
   id: string;

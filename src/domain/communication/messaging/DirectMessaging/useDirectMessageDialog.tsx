@@ -1,17 +1,15 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUsersMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { DirectMessageDialog, MessageReceiverChipData } from './DirectMessageDialog';
+import { DirectMessageDialog, type MessageReceiverChipData } from './DirectMessageDialog';
 
 interface UseDirectMessageDialogOptions {
   dialogTitle: ReactNode;
 }
 
-export interface SendMessage {
-  (receiverType: ReceiverType, ...receivers: MessageReceiverChipData[]): void;
-}
+export type SendMessage = (receiverType: ReceiverType, ...receivers: MessageReceiverChipData[]) => void;
 
 export type ReceiverType = 'user' | 'organization';
 

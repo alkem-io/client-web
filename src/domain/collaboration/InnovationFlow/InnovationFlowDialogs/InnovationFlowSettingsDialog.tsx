@@ -1,19 +1,19 @@
 import { Box, CircularProgress, DialogContent, ListItemIcon, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
-import useInnovationFlowSettings, { ImportFlowOptions } from './useInnovationFlowSettings';
-import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
-import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
-import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
+import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
+import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
+import useInnovationFlowSettings, { type ImportFlowOptions } from './useInnovationFlowSettings';
 
 export type InnovationFlowSettingsDialogProps = {
   open?: boolean;
@@ -122,7 +122,7 @@ const InnovationFlowSettingsDialog = ({
         templateType={TemplateType.Space}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
-        enablePlatformTemplates
+        enablePlatformTemplates={true}
         actionButton={() => <TemplateActionButton />}
       />
     </>

@@ -1,7 +1,7 @@
-import { Box, Button } from '@mui/material';
 import { Warning } from '@mui/icons-material';
-import { Caption } from '@/core/ui/typography';
+import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Caption } from '@/core/ui/typography';
 import type { FileFailureState } from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface WhiteboardImageFailureBannerProps {
@@ -14,7 +14,11 @@ interface WhiteboardImageFailureBannerProps {
  * Banner displayed when whiteboard images fail to load or upload.
  * Shows count of failures and a retry button (T030).
  */
-const WhiteboardImageFailureBanner = ({ failureState, onRetry, retrying = false }: WhiteboardImageFailureBannerProps) => {
+const WhiteboardImageFailureBanner = ({
+  failureState,
+  onRetry,
+  retrying = false,
+}: WhiteboardImageFailureBannerProps) => {
   const { t } = useTranslation();
 
   if (!failureState.hasFailures) {
@@ -43,7 +47,7 @@ const WhiteboardImageFailureBanner = ({ failureState, onRetry, retrying = false 
         <Warning fontSize="small" color="warning" />
         <Caption>
           {totalFailures === 1
-                ? t('callout.whiteboard.images.singleFailure')
+            ? t('callout.whiteboard.images.singleFailure')
             : t('callout.whiteboard.images.multipleFailures', { count: totalFailures })}
         </Caption>
       </Box>

@@ -1,6 +1,6 @@
-import { UIEvent } from 'react';
+import type { UIEvent } from 'react';
 
-const stopPropagationIf = (filter?: { (event: UIEvent): boolean }) => (event: UIEvent) => {
+const stopPropagationIf = (filter?: (event: UIEvent) => boolean) => (event: UIEvent) => {
   if (!filter?.(event)) {
     event.stopPropagation();
   }

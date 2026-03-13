@@ -1,13 +1,13 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import Gutters from '@/core/ui/grid/Gutters';
-import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
-import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export const organizationSegmentSchema = yup.object().shape({
   contactEmail: emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
@@ -26,7 +26,7 @@ export const OrganizationSegment: FC<OrganizationSegmentProps> = ({ disabled = f
   const { t } = useTranslation();
 
   return (
-    <Gutters disablePadding>
+    <Gutters disablePadding={true}>
       <FormikInputField
         name="contactEmail"
         title={t('components.organizationSegment.contactEmail.name')}
@@ -59,7 +59,7 @@ export const OrganizationSegment: FC<OrganizationSegmentProps> = ({ disabled = f
         name="verified"
         title={t('components.organizationSegment.verified.name')}
         placeholder={t('components.organizationSegment.verified.placeholder')}
-        disabled
+        disabled={true}
       />
     </Gutters>
   );

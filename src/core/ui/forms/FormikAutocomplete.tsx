@@ -1,8 +1,8 @@
-import { Autocomplete, AutocompleteValue, TextField, TextFieldProps } from '@mui/material';
+import { Autocomplete, type AutocompleteValue, TextField, type TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
-import { useMemo, ReactElement, SyntheticEvent } from 'react';
+import { type ReactElement, type SyntheticEvent, useMemo } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export interface FormikSelectValue {
   id: string;
@@ -44,7 +44,7 @@ export const FormikAutocomplete = ({
   }, [isError, meta.error, helpText, name, tErr]);
 
   const handleChange = (
-    event: SyntheticEvent,
+    _event: SyntheticEvent,
     value: AutocompleteValue<FormikSelectValue | undefined, false, false, false>
   ) => {
     helpers.setValue(value?.id);
@@ -70,7 +70,7 @@ export const FormikAutocomplete = ({
           {...textFieldProps}
           {...params}
           InputLabelProps={{ shrink: true }}
-          helperText={Boolean(helperText) ? <>{helperText}</> : null}
+          helperText={helperText ? helperText : null}
           error={isError}
         />
       )}

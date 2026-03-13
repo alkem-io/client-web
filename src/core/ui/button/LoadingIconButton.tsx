@@ -1,4 +1,4 @@
-import { CircularProgress, IconButton, IconButtonProps } from '@mui/material';
+import { CircularProgress, IconButton, type IconButtonProps } from '@mui/material';
 
 const LoadingIconButton = ({ loading, ...props }: IconButtonProps & { loading?: boolean }) =>
   loading ? <CircularProgress /> : <IconButton {...props} />;

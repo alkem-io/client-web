@@ -1,16 +1,16 @@
+import { useCallback, useMemo } from 'react';
 import {
-  WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
   useUpdateWhiteboardMutation,
+  WhiteboardDetailsFragmentDoc,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CreateWhiteboardInput } from '@/core/apollo/generated/graphql-schema';
+import type { CreateWhiteboardInput } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { useCallback, useMemo } from 'react';
-import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
+import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 interface WhiteboardWithPreviewVisuals {
   nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals

@@ -1,5 +1,5 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { SearchResultType } from '@/core/apollo/generated/graphql-schema';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export const FILTER_OFF = 'all';
 

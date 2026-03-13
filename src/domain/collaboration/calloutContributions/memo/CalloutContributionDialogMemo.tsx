@@ -1,8 +1,8 @@
 import { useRef } from 'react';
-import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
-import MemoDialog from '@/domain/collaboration/memo/MemoDialog/MemoDialog';
 import { useDeleteContributionMutation, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import MemoDialog from '@/domain/collaboration/memo/MemoDialog/MemoDialog';
+import type { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 
 export interface CalloutContributionDialogMemoProps extends CalloutContributionPreviewDialogProps {}
 
@@ -66,7 +66,7 @@ const CalloutContributionDialogMemo = ({
       memoId={contribution.memo.id}
       calloutId={calloutId}
       onDelete={handleMemoDeleted}
-      isContribution
+      isContribution={true}
     />
   );
 };

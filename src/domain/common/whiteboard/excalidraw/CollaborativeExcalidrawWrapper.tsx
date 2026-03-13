@@ -1,17 +1,3 @@
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import Loading from '@/core/ui/loading/Loading';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Caption, Text } from '@/core/ui/typography';
-import { Identifiable } from '@/core/utils/Identifiable';
-import useOnlineStatus from '@/core/utils/onlineStatus';
-import Reconnectable from '@/core/utils/reconnectable';
-import { useTick } from '@/core/utils/time/tick';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
@@ -22,13 +8,28 @@ import type {
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash-es';
+import type React from 'react';
+import { type PropsWithChildren, type Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
-import useWhiteboardDefaults from './useWhiteboardDefaults';
-import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Loading from '@/core/ui/loading/Loading';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { Caption, Text } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import useOnlineStatus from '@/core/utils/onlineStatus';
+import Reconnectable from '@/core/utils/reconnectable';
+import { useTick } from '@/core/utils/time/tick';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
 import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
+import useWhiteboardDefaults from './useWhiteboardDefaults';
+import type { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
@@ -70,7 +71,7 @@ export interface WhiteboardWhiteboardActions {
   onRemoteSave?: (error?: string) => void;
 }
 
-export interface WhiteboardWhiteboardEvents {}
+export type WhiteboardWhiteboardEvents = {};
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
@@ -199,7 +200,6 @@ const CollaborativeExcalidrawWrapper = ({
       });
     },
     onInitialize: collabApi => {
-      // @ts-ignore — combinedCollabApiRef is a combined ref; mutating .current is intentional
       // eslint-disable-next-line react-compiler/react-compiler
       combinedCollabApiRef.current = collabApi;
     },
@@ -292,7 +292,7 @@ const CollaborativeExcalidrawWrapper = ({
             onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
             onRequestBroadcastCountdownTimer={handleRequestBroadcastCountdownTimer}
             detectScroll={false}
-            autoFocus
+            autoFocus={true}
             generateIdForFile={handleGenerateIdForFile}
             aiEnabled={false}
             {...restOptions}

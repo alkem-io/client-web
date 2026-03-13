@@ -1,48 +1,48 @@
+import { CardHeader, Skeleton } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CalloutContributionType,
   CalloutFramingType,
   CommunityMembershipStatus,
 } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import CardFooter from '@/core/ui/card/CardFooter';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
-import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
-import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
-import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
+import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
+import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
+import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
+import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
+import ContributionsCardsExpandable from '../../calloutContributions/contributionsCardsExpandable/ContributionsCardsExpandable';
+import type { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
+import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
+import CalloutContributionDialogMemo from '../../calloutContributions/memo/CalloutContributionDialogMemo';
+import CalloutContributionPreviewMemo from '../../calloutContributions/memo/CalloutContributionPreviewMemo';
+import CreateContributionButtonMemo from '../../calloutContributions/memo/CreateContributionButtonMemo';
+import MemoCard from '../../calloutContributions/memo/MemoCard';
+import CalloutContributionDialogPost from '../../calloutContributions/post/CalloutContributionDialogPost';
+import CalloutContributionPreviewPost from '../../calloutContributions/post/CalloutContributionPreviewPost';
+import CreateContributionButtonPost from '../../calloutContributions/post/CreateContributionButtonPost';
+import PostCard from '../../calloutContributions/post/PostCard';
+import CalloutContributionDialogWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionDialogWhiteboard';
+import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
+import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
+import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
+import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import CalloutFramingMediaGallery from '../CalloutFramings/CalloutFramingMediaGallery';
-import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
+import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
+import type { BaseCalloutViewProps } from '../CalloutViewTypes';
+import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import useCalloutComments from '../commentsToCallout/useCalloutComments';
 import CalloutViewLayout from './CalloutViewLayout';
-import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { CardHeader, Skeleton } from '@mui/material';
-import ContributeCard from '@/core/ui/card/ContributeCard';
-import CardFooter from '@/core/ui/card/CardFooter';
-import { gutters } from '@/core/ui/grid/utils';
-import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
-import CalloutContributionPreviewPost from '../../calloutContributions/post/CalloutContributionPreviewPost';
-import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
-import CalloutContributionPreviewMemo from '../../calloutContributions/memo/CalloutContributionPreviewMemo';
-import CalloutContributionDialogWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionDialogWhiteboard';
-import CalloutContributionDialogPost from '../../calloutContributions/post/CalloutContributionDialogPost';
-import CalloutContributionDialogMemo from '../../calloutContributions/memo/CalloutContributionDialogMemo';
-import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
-import PostCard from '../../calloutContributions/post/PostCard';
-import ContributionsCardsExpandable from '../../calloutContributions/contributionsCardsExpandable/ContributionsCardsExpandable';
-import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
-import MemoCard from '../../calloutContributions/memo/MemoCard';
-import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
-import CreateContributionButtonPost from '../../calloutContributions/post/CreateContributionButtonPost';
-import CreateContributionButtonMemo from '../../calloutContributions/memo/CreateContributionButtonMemo';
-import Gutters from '@/core/ui/grid/Gutters';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
-import useNavigate from '@/core/routing/useNavigate';
-import { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
-import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
-import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -209,7 +209,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
                   dialogComponent={CalloutContributionDialogWhiteboard}
-                  openContributionDialogOnLoad
+                  openContributionDialogOnLoad={true}
                   calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
@@ -306,7 +306,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewMemo}
                   dialogComponent={CalloutContributionDialogMemo}
-                  openContributionDialogOnLoad
+                  openContributionDialogOnLoad={true}
                   calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
@@ -329,7 +329,7 @@ const CalloutView = ({
 
           {/* Comments: contribution comments for Posts, callout comments when no contribution, hidden for non-Post contributions and during loading */}
           {!isContributionCommentsLoading && (showContributionComments || (!contributionId && callout.comments)) && (
-            <Gutters disableVerticalPadding disableGap>
+            <Gutters disableVerticalPadding={true} disableGap={true}>
               <CommentsComponent
                 {...(showContributionComments ? contributionComments : calloutComments)}
                 loading={loading || (showContributionComments ? contributionComments.loading : calloutComments.loading)}

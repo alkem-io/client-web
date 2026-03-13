@@ -1,8 +1,8 @@
+import type { PropsWithChildren } from 'react';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
-import { getColumnsWidth, gutters } from '@/core/ui/grid/utils';
-import { useColumns } from '@/core/ui/grid/GridContext';
 import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
-import { PropsWithChildren } from 'react';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { getColumnsWidth, gutters } from '@/core/ui/grid/utils';
 
 interface InfoColumnProps {
   collapsed: boolean;

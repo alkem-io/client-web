@@ -7,7 +7,7 @@ import WrapperMarkdown from './WrapperMarkdown';
  * @constructor
  */
 const OneLineMarkdown = ({ children }: { children: string }) => (
-  <WrapperMarkdown plain card>
+  <WrapperMarkdown plain={true} card={true}>
     {children}
   </WrapperMarkdown>
 );

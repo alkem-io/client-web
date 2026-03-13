@@ -4,9 +4,9 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach } from 'vitest';
-import { clearGuestSessionOnSignIn } from './useGuestSession';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { sessionStorageMock } from '../tests/utils/sessionStorageMock';
+import { clearGuestSessionOnSignIn } from './useGuestSession';
 
 describe('clearGuestSessionOnSignIn', () => {
   beforeEach(() => {

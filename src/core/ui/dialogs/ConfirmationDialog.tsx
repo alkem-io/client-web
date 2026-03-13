@@ -1,8 +1,8 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
@@ -52,13 +52,9 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onCancel}>
       <DialogHeader onClose={actions.onCancel}>
-        <BlockTitle>
-          <>{title}</>
-        </BlockTitle>
+        <BlockTitle>{title}</BlockTitle>
       </DialogHeader>
-      <DialogContent>
-        <>{content}</>
-      </DialogContent>
+      <DialogContent>{content}</DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
         <Button variant="text" onClick={actions.onCancel}>
           {cancelButtonText || t('buttons.cancel')}

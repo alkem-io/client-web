@@ -1,19 +1,19 @@
-import { DialogContent, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { DialogContent, IconButton } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useUserMessagingContext } from './UserMessagingContext';
-import { useUserConversations } from './useUserConversations';
-import { useConversationMessages } from './useConversationMessages';
-import { useConversationEventsSubscription } from './useConversationEventsSubscription';
-import { UserMessagingChatList } from './UserMessagingChatList';
-import { UserMessagingConversationView } from './UserMessagingConversationView';
-import { NewMessageDialog } from './NewMessageDialog';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { NewMessageDialog } from './NewMessageDialog';
+import { UserMessagingChatList } from './UserMessagingChatList';
+import { useUserMessagingContext } from './UserMessagingContext';
+import { UserMessagingConversationView } from './UserMessagingConversationView';
+import { useConversationEventsSubscription } from './useConversationEventsSubscription';
+import { useConversationMessages } from './useConversationMessages';
 import { useUnreadConversationsCount } from './useUnreadConversationsCount';
+import { useUserConversations } from './useUserConversations';
 
 const UserMessagingDialog = () => {
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ const UserMessagingDialog = () => {
         <DialogWithGrid
           open={isOpen}
           columns={12}
-          fullScreen
+          fullScreen={true}
           onClose={handleClose}
           aria-labelledby={t('components.userMessaging.title' as const)}
         >
@@ -122,7 +122,7 @@ const UserMessagingDialog = () => {
                 messages={messages}
                 messagesLoading={messagesLoading}
                 onBack={handleBack}
-                showBackButton
+                showBackButton={true}
               />
             ) : (
               <UserMessagingChatList
@@ -150,7 +150,7 @@ const UserMessagingDialog = () => {
       <DialogWithGrid
         open={isOpen}
         columns={8}
-        fullHeight
+        fullHeight={true}
         maxWidth={false}
         onClose={handleClose}
         aria-labelledby={t('components.userMessaging.title' as const)}
@@ -178,7 +178,7 @@ const UserMessagingDialog = () => {
         </IconButton>
         <DialogContent sx={{ padding: 0, display: 'flex', height: '100%' }}>
           <PageContentBlockSeamless
-            disablePadding
+            disablePadding={true}
             columns={3}
             sx={{
               borderRight: theme => `1px solid ${theme.palette.divider}`,
@@ -193,7 +193,12 @@ const UserMessagingDialog = () => {
               onNewMessage={handleOpenNewMessage}
             />
           </PageContentBlockSeamless>
-          <PageContentBlockSeamless disablePadding disableGap columns={5} sx={{ flexGrow: 1, height: '100%' }}>
+          <PageContentBlockSeamless
+            disablePadding={true}
+            disableGap={true}
+            columns={5}
+            sx={{ flexGrow: 1, height: '100%' }}
+          >
             <UserMessagingConversationView
               conversation={selectedConversation}
               messages={messages}

@@ -1,9 +1,9 @@
 import type { FetchResult } from '@apollo/client';
+import type { UploadFileMutation } from '@/core/apollo/generated/graphql-schema';
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { excalidrawFileMimeType, generateIdFromFile } from '../collab/utils';
+import type { BinaryFileDataWithOptionalUrl, BinaryFileDataWithUrl } from '../types';
 import { blobToDataURL } from './fileConverters';
-import type { BinaryFileDataWithUrl, BinaryFileDataWithOptionalUrl } from '../types';
-import type { UploadFileMutation } from '@/core/apollo/generated/graphql-schema';
 
 export interface UploadResult {
   id: string;

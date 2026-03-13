@@ -1,11 +1,10 @@
-import { Link as RouterLink } from 'react-router-dom';
-import Gutters from '@/core/ui/grid/Gutters';
-import { Box, Typography } from '@mui/material';
-import { Link } from '@mui/material';
-import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
+import { Box, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { Link as RouterLink } from 'react-router-dom';
 import { useQueryParams } from '@/core/routing/useQueryParams';
+import Gutters from '@/core/ui/grid/Gutters';
+import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
 
 export const AuthFormHeader = ({
   title,
@@ -22,7 +21,7 @@ export const AuthFormHeader = ({
   const signUpUrl = buildSignUpUrl(returnUrl);
 
   return (
-    <Gutters row justifyContent="space-between" sx={{ paddingBottom: 0 }}>
+    <Gutters row={true} justifyContent="space-between" sx={{ paddingBottom: 0 }}>
       <Box>
         <Typography color="muted.contrastText">{t('pages.home.sections.welcome.welcomeUnauthenticated')}</Typography>
         <Typography sx={{ fontSize: '40px', fontWeight: '500', paddingTop: 2 }} variant="h1">

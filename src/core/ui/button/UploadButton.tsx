@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import React from 'react';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import FileUploadWrapper from '../upload/FileUploadWrapper';
 

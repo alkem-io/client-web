@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import RouterLink from '@/core/ui/link/RouterLink';
 
 interface ReactMarkdownProps {

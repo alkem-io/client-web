@@ -1,14 +1,14 @@
-import { Box, BoxProps, SvgIconProps, TypographyProps, useTheme } from '@mui/material';
-import { CaptionSmall } from '../typography';
-import { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import { Box, type BoxProps, type SvgIconProps, type TypographyProps, useTheme } from '@mui/material';
+import type { BoxTypeMap } from '@mui/system';
+import type { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
-import SkipLink from '../keyboardNavigation/SkipLink';
-import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
-import BlockTitleWithIcon from './BlockTitleWithIcon';
-import { BoxTypeMap } from '@mui/system';
 import RoundedIcon from '../icon/RoundedIcon';
+import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
+import SkipLink from '../keyboardNavigation/SkipLink';
 import SwapColors from '../palette/SwapColors';
+import { CaptionSmall } from '../typography';
+import BlockTitleWithIcon from './BlockTitleWithIcon';
 
 export interface PageContentBlockHeaderCardLikeProps {
   title: ReactNode;

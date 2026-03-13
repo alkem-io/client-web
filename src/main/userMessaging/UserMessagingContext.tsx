@@ -1,5 +1,5 @@
+import { createContext, type ReactNode, useContext, useState } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { createContext, useState, useContext, ReactNode } from 'react';
 
 interface UserMessagingContextProps {
   isEnabled: boolean;

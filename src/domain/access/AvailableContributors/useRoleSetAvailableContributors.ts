@@ -4,9 +4,13 @@ import {
   useAvailableUsersForEntryRoleLazyQuery,
   usePlatformRoleAvailableUsersLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AVAILABLE_CONTRIBUTORS_PAGE_SIZE, AvailableOrganizationsResponse, AvailableUsersResponse } from './common';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import {
+  AVAILABLE_CONTRIBUTORS_PAGE_SIZE,
+  type AvailableOrganizationsResponse,
+  type AvailableUsersResponse,
+} from './common';
 
 type useRoleSetAvailableContributorsParams = {
   roleSetId: string | undefined;

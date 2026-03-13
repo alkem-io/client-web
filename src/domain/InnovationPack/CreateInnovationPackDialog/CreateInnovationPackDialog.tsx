@@ -1,13 +1,13 @@
-import InnovationPackForm, { InnovationPackFormValues } from '../admin/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useCreateInnovationPackMutation } from '@/core/apollo/generated/apollo-hooks';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle } from '@/core/ui/typography';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { BlockTitle } from '@/core/ui/typography';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import InnovationPackForm, { type InnovationPackFormValues } from '../admin/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
 
 const CreateInnovationPackDialog = ({
   accountId,
@@ -55,18 +55,16 @@ const CreateInnovationPackDialog = ({
   }
 
   return (
-    <>
-      <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-pack-dialog-title">
-        <DialogHeader onClose={onClose}>
-          <BlockTitle id="create-innovation-pack-dialog-title">{t('pages.admin.innovation-packs.create')}</BlockTitle>
-        </DialogHeader>
-        <DialogContent>
-          <StorageConfigContextProvider accountId={accountId} locationType="account">
-            <InnovationPackForm isNew onSubmit={handleSubmit} loading={loading || !accountId} />
-          </StorageConfigContextProvider>
-        </DialogContent>
-      </DialogWithGrid>
-    </>
+    <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-pack-dialog-title">
+      <DialogHeader onClose={onClose}>
+        <BlockTitle id="create-innovation-pack-dialog-title">{t('pages.admin.innovation-packs.create')}</BlockTitle>
+      </DialogHeader>
+      <DialogContent>
+        <StorageConfigContextProvider accountId={accountId} locationType="account">
+          <InnovationPackForm isNew={true} onSubmit={handleSubmit} loading={loading || !accountId} />
+        </StorageConfigContextProvider>
+      </DialogContent>
+    </DialogWithGrid>
   );
 };
 

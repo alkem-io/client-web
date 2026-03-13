@@ -1,12 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { SearchTagsInputProps } from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
-import { Identifiable } from '@/core/utils/Identifiable';
-import filterFn, { MatchInformation, ValueType, getAllValues } from '@/core/utils/filtering/filterFn';
 import { Box } from '@mui/material';
-import { BlockTitle } from '@/core/ui/typography';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { gutters } from '@/core/ui/grid/utils';
 import { uniq } from 'lodash-es';
+import type React from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import filterFn, { getAllValues, type MatchInformation, type ValueType } from '@/core/utils/filtering/filterFn';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { SearchTagsInputProps } from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
 
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
@@ -92,7 +93,7 @@ const SpaceFilter = <T extends Identifiable>({
           height={gutters(2.5)}
           selectedIndexes={selectedIndexes}
           onClickTag={onTermClick}
-          canShowAll
+          canShowAll={true}
         />
       )}
       {children(filteredData)}

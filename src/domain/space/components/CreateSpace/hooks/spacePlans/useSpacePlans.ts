@@ -1,7 +1,7 @@
-import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
-import { usePlanAvailability } from '@/domain/space/components/CreateSpace/hooks/spacePlans/usePlanAvailability';
-import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
+import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
+import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
+import { usePlanAvailability } from '@/domain/space/components/CreateSpace/hooks/spacePlans/usePlanAvailability';
 
 type Plan =
   | {

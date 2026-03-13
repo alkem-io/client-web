@@ -1,4 +1,4 @@
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 

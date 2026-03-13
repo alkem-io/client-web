@@ -1,8 +1,8 @@
-import { IconButton, Paper } from '@mui/material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import { IconButton, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useUserMessagingContext } from './UserMessagingContext';
 import BadgeCounter from '@/core/ui/icon/BadgeCounter';
+import { useUserMessagingContext } from './UserMessagingContext';
 
 export const UserMessagingButton = () => {
   const { isEnabled, setIsOpen, totalUnreadCount } = useUserMessagingContext();

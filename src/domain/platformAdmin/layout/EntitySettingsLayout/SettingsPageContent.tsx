@@ -1,10 +1,10 @@
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
+import type { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
 import TabDescriptionHeader from '@/domain/shared/layout/TabDescriptionHeader/TabDescriptionHeader';
-import { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface SettingsPageContentProps<Section extends string | number> {
   currentSection: Section;
@@ -33,18 +33,14 @@ const SettingsPageContent = <Section extends string | number>({
   });
 
   return (
-    <>
-      <PageContentColumn columns={12}>
-        {tabDescriptionText && (
-          <PageContentBlockSeamless row justifyContent="center">
-            <TabDescriptionHeader>
-              <>{tabDescriptionText}</>
-            </TabDescriptionHeader>
-          </PageContentBlockSeamless>
-        )}
-        <PageContentBlockSeamless disablePadding>{children}</PageContentBlockSeamless>
-      </PageContentColumn>
-    </>
+    <PageContentColumn columns={12}>
+      {tabDescriptionText && (
+        <PageContentBlockSeamless row={true} justifyContent="center">
+          <TabDescriptionHeader>{tabDescriptionText}</TabDescriptionHeader>
+        </PageContentBlockSeamless>
+      )}
+      <PageContentBlockSeamless disablePadding={true}>{children}</PageContentBlockSeamless>
+    </PageContentColumn>
   );
 };
 

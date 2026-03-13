@@ -1,14 +1,14 @@
 import {
   Checkbox,
-  CheckboxProps,
+  type CheckboxProps,
   FormControl,
   FormControlLabel,
-  FormControlProps,
+  type FormControlProps,
   FormGroup,
   FormHelperText,
 } from '@mui/material';
 import { useField } from 'formik';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface CheckboxFieldProps extends CheckboxProps {
   label: ReactNode;
@@ -29,7 +29,7 @@ export const FormikCheckboxField = ({
 
   return (
     <FormControl required={required} disabled={disabled} {...containerProps}>
-      <FormGroup row>
+      <FormGroup row={true}>
         <FormControlLabel
           control={
             <Checkbox

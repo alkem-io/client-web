@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
-import { PartialRecord } from '@/core/utils/PartialRecord';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
+  ActorType,
   AuthorizationPrivilege,
   RoleName,
-  ActorType,
-  RoleSetMemberOrganizationFragment,
-  RoleSetMemberUserFragment,
-  RoleSetMemberVirtualContributorFragment,
+  type RoleSetMemberOrganizationFragment,
+  type RoleSetMemberUserFragment,
+  type RoleSetMemberVirtualContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import type { PartialRecord } from '@/core/utils/PartialRecord';
+import type { RoleDefinition } from '../model/RoleDefinitionModel';
 import useRoleSetManagerRolesAssignment, {
-  useRoleSetManagerRolesAssignmentProvided,
+  type useRoleSetManagerRolesAssignmentProvided,
 } from './RolesAssignment/useRoleSetManagerRolesAssignment';
-import { RoleDefinition } from '../model/RoleDefinitionModel';
 
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],

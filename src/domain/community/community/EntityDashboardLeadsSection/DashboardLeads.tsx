@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 type DashboardLeadsProps<T extends {}> = {
   headerText: string;

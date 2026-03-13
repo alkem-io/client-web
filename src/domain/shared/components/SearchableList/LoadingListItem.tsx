@@ -1,5 +1,5 @@
-import React from 'react';
 import { Box, Skeleton } from '@mui/material';
+import type React from 'react';
 
 const LoadingListItem = ({ ref }: { ref?: React.Ref<HTMLDivElement> }) => (
   <Box ref={ref} height="50px" display="flex" justifyContent="space-between">

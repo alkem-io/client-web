@@ -1,5 +1,5 @@
-import { Box, BoxProps, useTheme } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { Box, type BoxProps, useTheme } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { gutters } from '../grid/utils';
 import { Caption } from '../typography';
 
@@ -25,7 +25,7 @@ const CardHeaderCaption = ({
   return (
     <Box display="flex" alignItems="center" gap={gutters(0.5)} {...containerProps}>
       {logoUrl && <Box component="img" src={logoUrl} maxHeight={gutters()} maxWidth={gutters()} />}
-      <Caption noWrap sx={{ ...captionStyle }}>
+      <Caption noWrap={true} sx={{ ...captionStyle }}>
         {children}
       </Caption>
     </Box>

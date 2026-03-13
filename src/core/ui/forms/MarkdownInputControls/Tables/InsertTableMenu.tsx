@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Menu, MenuItem, Box, TextField, Button, Stack, ListItemIcon } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { styled } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
+import { Box, Button, ListItemIcon, Menu, MenuItem, Stack, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import type React from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../grid/utils';
 import { Caption } from '../../../typography';
 
@@ -118,7 +119,7 @@ const InsertTableMenu = ({ anchorEl, open, onClose, onInsert }: InsertTableMenuP
                   label={t('components.wysiwyg-editor.toolbar.table.columns')}
                   type="number"
                   value={customCols}
-                  onChange={e => setCustomCols(parseInt(e.target.value) || 0)}
+                  onChange={e => setCustomCols(parseInt(e.target.value, 10) || 0)}
                   size="small"
                   sx={{ width: gutters(4) }}
                   error={customCols <= 0}
@@ -128,7 +129,7 @@ const InsertTableMenu = ({ anchorEl, open, onClose, onInsert }: InsertTableMenuP
                   label={t('components.wysiwyg-editor.toolbar.table.rows')}
                   type="number"
                   value={customRows}
-                  onChange={e => setCustomRows(parseInt(e.target.value) || 0)}
+                  onChange={e => setCustomRows(parseInt(e.target.value, 10) || 0)}
                   size="small"
                   sx={{ width: gutters(4) }}
                   error={customRows <= 0}

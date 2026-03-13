@@ -1,5 +1,5 @@
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import CalloutContributionModel from '../CalloutContributionModel';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import type CalloutContributionModel from '../CalloutContributionModel';
 
 /**
  * Properties that a CalloutContribution Preview Dialog component must receive

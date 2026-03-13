@@ -1,25 +1,25 @@
-import { useCalloutContributionQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutContributionType, ActorType } from '@/core/apollo/generated/graphql-schema';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import { formatDateTime } from '@/core/utils/time/utils';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
-import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
-import useNavigate from '@/core/routing/useNavigate';
-import { Ref, useRef, useState } from 'react';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { type Ref, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
-import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import { useCalloutContributionQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import Avatar from '@/core/ui/avatar/Avatar';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
+import { formatDateTime } from '@/core/utils/time/utils';
 import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import type { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
+import type { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
+import type { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 
 interface CalloutContributionPreviewProps {
   callout: CalloutDetailsModelExtended;
@@ -132,15 +132,15 @@ const CalloutContributionPreview = ({
     contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return (
-    <PageContentBlock disablePadding disableGap ref={ref}>
+    <PageContentBlock disablePadding={true} disableGap={true} ref={ref}>
       <PageContentBlockHeaderCardLike
         avatar={authorAvatar}
         title={displayName}
         subtitle={author?.profile?.displayName}
-        selected
+        selected={true}
         actions={
           <>
-            <Tooltip title={formattedCreatedDate} arrow>
+            <Tooltip title={formattedCreatedDate} arrow={true}>
               <Caption whiteSpace="nowrap" color="textPrimary">
                 {formattedElapsedTime}
               </Caption>
@@ -162,7 +162,7 @@ const CalloutContributionPreview = ({
               <ShareButton
                 url={contributionUrl}
                 entityTypeName={calloutContributionTypeToShareDialogKey(contributionType)}
-                resetDialogTheme
+                resetDialogTheme={true}
               />
             )}
             <IconButton

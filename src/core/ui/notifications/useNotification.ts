@@ -1,6 +1,6 @@
-import { useGlobalState } from '@/core/state/useGlobalState';
-import { PUSH_NOTIFICATION, Severity } from '@/core/state/global/notifications/notificationMachine';
 import { useCallback } from 'react';
+import { PUSH_NOTIFICATION, type Severity } from '@/core/state/global/notifications/notificationMachine';
+import { useGlobalState } from '@/core/state/useGlobalState';
 
 export const useNotification = () => {
   const { notificationsService } = useGlobalState();

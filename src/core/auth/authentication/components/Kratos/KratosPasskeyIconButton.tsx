@@ -1,7 +1,7 @@
-import { FC, useCallback, useState } from 'react';
-import { Box, Button, CircularProgress, Tooltip, Alert } from '@mui/material';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { Alert, Box, Button, CircularProgress, Tooltip } from '@mui/material';
+import type { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { type FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getPasskeyTriggerType } from './helpers';
 
@@ -79,7 +79,7 @@ const KratosPasskeyIconButton: FC<KratosPasskeyIconButtonProps> = ({ node, isScr
           alignItems: 'center',
         }}
       >
-        <Tooltip title={buttonLabel} placement="top" arrow>
+        <Tooltip title={buttonLabel} placement="top" arrow={true}>
           {/* Wrap in span so Tooltip works even when button is disabled */}
           <span style={{ height: '100%', display: 'inline-flex' }}>
             <Button

@@ -1,5 +1,5 @@
-import useLoadingState, { Callback, Provided } from './useLoadingState';
 import { useCallback } from 'react';
+import useLoadingState, { type Callback, type Provided } from './useLoadingState';
 
 interface Handlers {
   onError?: (error: Error) => void;

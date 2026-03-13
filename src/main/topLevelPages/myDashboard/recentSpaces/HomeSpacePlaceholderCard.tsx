@@ -1,9 +1,9 @@
 import { Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { CARD_IMAGE_ASPECT_RATIO_DEFAULT } from '@/core/ui/card/CardImage';
 import GridItem from '@/core/ui/grid/GridItem';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption } from '@/core/ui/typography';
-import { CARD_IMAGE_ASPECT_RATIO_DEFAULT } from '@/core/ui/card/CardImage';
 
 interface HomeSpacePlaceholderCardProps {
   columns: number;

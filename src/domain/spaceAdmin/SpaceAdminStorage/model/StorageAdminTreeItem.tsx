@@ -1,6 +1,6 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { SvgIconProps } from '@mui/material';
-import { ComponentType } from 'react';
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export interface StorageAdminTreeItem {
   id: string;

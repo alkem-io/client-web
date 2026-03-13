@@ -1,5 +1,5 @@
+import { describe, expect, test } from 'vitest';
 import getDepsValueFromObject from './getDepsValueFromObject';
-import { expect, test, describe } from 'vitest';
 
 describe('getValuesSorted', () => {
   test('returns values of an object, sorted by key names', () => {

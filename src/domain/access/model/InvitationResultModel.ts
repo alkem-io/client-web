@@ -1,4 +1,4 @@
-import { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
+import type { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 
 type InvitationResultModel = {
   type: RoleSetInvitationResultType;

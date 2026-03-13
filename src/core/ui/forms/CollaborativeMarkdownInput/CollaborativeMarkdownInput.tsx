@@ -1,17 +1,17 @@
-import React, { memo, useEffect, useRef, useState, useMemo } from 'react';
 import { Box } from '@mui/material';
-import { EditorContent, useEditor, Editor } from '@tiptap/react';
-import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
-import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
-import { gutters } from '@/core/ui/grid/utils';
+import type { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
+import { type Editor, EditorContent, useEditor } from '@tiptap/react';
 import { isEqual } from 'lodash-es';
-import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
+import type { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
+import { MarkdownInputStyles } from '../MarkdownInput/hooks/MarkdownInputStyles';
 import { useEditorConfig } from '../MarkdownInput/hooks/useEditorConfig';
 import { useImageUpload } from '../MarkdownInput/hooks/useImageUpload';
 import { useMarkdownInputUI } from '../MarkdownInput/hooks/useMarkdownInputUI';
-import { useCollaboration } from './hooks/useCollaboration';
-import { MarkdownInputStyles } from '../MarkdownInput/hooks/MarkdownInputStyles';
+import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { CollaborativeMarkdownInputStyles } from './CollaborativeMarkdownInputStyles';
+import { useCollaboration } from './hooks/useCollaboration';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';

@@ -1,10 +1,10 @@
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Box, DialogProps, Typography } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
 import { InfoOutlined } from '@mui/icons-material';
-import Gutters from '@/core/ui/grid/Gutters';
+import { Box, type DialogProps, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 interface ChatWidgetHelpDialogProps extends DialogProps {
@@ -35,7 +35,7 @@ const ChatWidgetHelpDialog = ({ onClose, ...props }: ChatWidgetHelpDialogProps) 
         onClose={onClose}
       />
       <Gutters paddingTop={0}>
-        <WrapperMarkdown caption disableParagraphPadding>
+        <WrapperMarkdown caption={true} disableParagraphPadding={true}>
           {t('chatbot.infoDialog.content')}
         </WrapperMarkdown>
       </Gutters>

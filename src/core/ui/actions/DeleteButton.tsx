@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button, ButtonProps, ButtonTypeMap } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { Button, type ButtonProps, type ButtonTypeMap } from '@mui/material';
+import type React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DeleteButton = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
   loading,

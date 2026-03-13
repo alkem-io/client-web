@@ -1,5 +1,5 @@
-import { Suspense, ComponentProps } from 'react';
 import { Box } from '@mui/material';
+import { type ComponentProps, Suspense } from 'react';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const LazyCollaborativeMarkdownInput = lazyWithGlobalErrorHandler(() => import('./CollaborativeMarkdownInput'));

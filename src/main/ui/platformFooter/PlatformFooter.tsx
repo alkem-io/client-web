@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import { type BoxProps, Button } from '@mui/material';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import LanguageSelect from '@/core/ui/language/LanguageSelect';
 import HelpDialog from '@/core/help/dialog/HelpDialog';
+import LanguageSelect from '@/core/ui/language/LanguageSelect';
 import FooterLink from '@/core/ui/layout/pageFooter/FooterLink';
 import PageFooter from '@/core/ui/layout/pageFooter/PageFooter';
-import FooterLogo from './FooterLogo';
 import { Caption } from '@/core/ui/typography';
-import { BoxProps, Button } from '@mui/material';
-import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import FooterLogo from './FooterLogo';
 
 const PlatformFooter = (props: BoxProps) => {
   const { t } = useTranslation();

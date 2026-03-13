@@ -1,4 +1,4 @@
-import { Identifiable } from '../Identifiable';
+import type { Identifiable } from '../Identifiable';
 
 export type ValueType = {
   id: string;

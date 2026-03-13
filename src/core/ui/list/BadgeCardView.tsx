@@ -1,8 +1,9 @@
-import React, { cloneElement, PropsWithChildren, ReactElement } from 'react';
-import { Box, BoxProps } from '@mui/material';
-import { BoxTypeMap } from '@mui/system';
+import { Box, type BoxProps } from '@mui/material';
+import type { BoxTypeMap } from '@mui/system';
+import type React from 'react';
+import { cloneElement, type PropsWithChildren, type ReactElement } from 'react';
 import { gutters } from '../grid/utils';
-import { RouterLinkProps } from '../link/RouterLink';
+import type { RouterLinkProps } from '../link/RouterLink';
 
 interface BadgeCardViewProps extends Partial<RouterLinkProps> {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;

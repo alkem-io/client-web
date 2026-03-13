@@ -1,8 +1,8 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, type ReactNode, useContext, useState } from 'react';
+import type { DashboardDialog } from './DashboardDialogs/DashboardDialogsProps';
 import { getCachedView, setViewToCache } from './dashboardUtil';
-import { DashboardDialog } from './DashboardDialogs/DashboardDialogsProps';
 
-const enum DashboardViews {
+enum DashboardViews {
   ACTIVITY = 'ACTIVITY',
   SPACES = 'SPACES',
 }

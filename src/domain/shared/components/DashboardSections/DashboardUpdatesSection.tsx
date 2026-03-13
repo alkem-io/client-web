@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import SingleUpdateView from '@/domain/communication/updates/views/SingleUpdateView';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
+import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
+import SingleUpdateView from '@/domain/communication/updates/views/SingleUpdateView';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import ShareButton from '../ShareDialog/ShareButton';
 
 export interface DashboardUpdatesSectionProps {

@@ -1,8 +1,8 @@
 import { useVirtualContributorUpdatesSubscription } from '@/core/apollo/generated/apollo-hooks';
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCurrentUserContext } from '../userCurrent/useCurrentUserContext';
-import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 
 export const useSubscribeOnVirtualContributorEvents = (virtualContributorId: string | undefined, skip?: boolean) => {
   const { isFeatureEnabled } = useConfig();

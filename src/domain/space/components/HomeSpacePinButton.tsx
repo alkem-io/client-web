@@ -1,7 +1,7 @@
-import { Paper, Tooltip } from '@mui/material';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
-import RouterLink from '@/core/ui/link/RouterLink';
+import { Paper, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import RouterLink from '@/core/ui/link/RouterLink';
 
 interface HomeSpacePinButtonProps {
   settingsUrl: string;
@@ -15,7 +15,7 @@ const HomeSpacePinButton = ({ settingsUrl }: HomeSpacePinButtonProps) => {
   }
 
   return (
-    <Tooltip title={t('pages.admin.user.homeSpace.pinButtonTooltip')} arrow>
+    <Tooltip title={t('pages.admin.user.homeSpace.pinButtonTooltip')} arrow={true}>
       <Paper
         component={RouterLink}
         to={settingsUrl}

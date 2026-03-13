@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import { Button } from '@mui/material';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationsView, { AssociatedOrganizationsViewProps } from './AssociatedOrganizationsView';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { CreateOrganizationDialog } from '../CreateOrganizationDialog';
+import AssociatedOrganizationsView, { type AssociatedOrganizationsViewProps } from './AssociatedOrganizationsView';
 
 export interface AssociatedOrganizationsDashboardSectionProps<
   Consumed extends {},

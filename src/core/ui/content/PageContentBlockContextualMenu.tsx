@@ -1,7 +1,7 @@
-import { ReactNode, useState } from 'react';
-import Menu from '@mui/material/Menu';
-import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { IconButton } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import { type ReactNode, useState } from 'react';
 import unwrapFragment from '../utils/unwrapFragment';
 
 export default function PageContentBlockContextualMenu({
@@ -24,7 +24,7 @@ export default function PageContentBlockContextualMenu({
       >
         <MoreVertIcon fontSize="small" sx={{ padding: 0 }} />
       </IconButton>
-      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={closeMenu}>
+      <Menu anchorEl={anchorEl} keepMounted={true} open={Boolean(anchorEl)} onClose={closeMenu}>
         {unwrapFragment(children)}
       </Menu>
     </>

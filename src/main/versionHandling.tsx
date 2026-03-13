@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { Box, Button, SnackbarContent } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cleanupVersionUpdateListeners, onVersionUpdate, syncClientVersion } from '@/serviceWorker';
-import NotificationView from '@/core/ui/notifications/NotificationView';
-import { SnackbarContent, Button, Box } from '@mui/material';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { info as logInfo, warn as logWarn } from '@/core/logging/sentry/log';
+import NotificationView from '@/core/ui/notifications/NotificationView';
 import { rem } from '@/core/ui/typography/utils';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { cleanupVersionUpdateListeners, onVersionUpdate, syncClientVersion } from '@/serviceWorker';
 
 const LAST_VERSION_MISMATCH_LS_KEY = 'lastVersionMismatch';
 
@@ -25,9 +25,7 @@ export const VersionHandling = () => {
   const setLastVersionDetected = (oldVersion: string, newVersion: string) => {
     try {
       localStorage.setItem(LAST_VERSION_MISMATCH_LS_KEY, buildVersionMismatchPair(oldVersion, newVersion));
-    } catch (e) {
-      console.warn('Failed to store version mismatch info: ', e);
-    }
+    } catch (_e) {}
   };
   const getLastVersionDetected = () => {
     try {
@@ -80,9 +78,7 @@ export const VersionHandling = () => {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
       <SnackbarContent
-        message={messageKeys.map((messageKey, i) => (
-          <Box key={i}>{t(messageKey)}</Box>
-        ))}
+        message={messageKeys.map((messageKey, i) => <Box key={i}>{t(messageKey)}</Box>)}
         sx={{
           backgroundColor: 'highlight.dark',
           color: 'white',

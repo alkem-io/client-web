@@ -1,11 +1,11 @@
-import React, { Ref } from 'react';
-import NavigationItemContainer from '@/core/ui/navigation/NavigationItemContainer';
-import NavigationItemButton from '@/core/ui/navigation/NavigationItemButton';
-import MenuTriggerButton from '@/core/ui/tooltip/MenuTriggerButton';
-import StandalonePlatformNavigationMenu from './platformNavigationMenu/StandalonePlatformNavigationMenu';
-import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { WidgetsRounded } from '@mui/icons-material';
+import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
+import NavigationItemButton from '@/core/ui/navigation/NavigationItemButton';
+import NavigationItemContainer from '@/core/ui/navigation/NavigationItemContainer';
+import MenuTriggerButton from '@/core/ui/tooltip/MenuTriggerButton';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
+import StandalonePlatformNavigationMenu from './platformNavigationMenu/StandalonePlatformNavigationMenu';
 
 const PlatformNavigationMenuButton = () => {
   const { t } = useTranslation();
