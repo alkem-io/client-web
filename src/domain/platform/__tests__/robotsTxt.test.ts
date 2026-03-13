@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeAll } from 'vitest';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 // Root of the repo (4 levels up from src/domain/platform/__tests__)
 const repoRoot = join(import.meta.dirname, '../../../../');
