@@ -1,17 +1,17 @@
-import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useState } from 'react';
-import CreateContributionButton from '../CreateContributionButton';
-import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
-import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
-import { normalizeLink } from '@/core/utils/links';
-import useNavigate from '@/core/routing/useNavigate';
-import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { normalizeLink } from '@/core/utils/links';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import CreateContributionButton from '../CreateContributionButton';
+import type { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 
 interface CreateContributionButtonWhiteboardProps extends CalloutContributionCreateButtonProps {}
 
@@ -79,12 +79,12 @@ const CreateContributionButtonWhiteboard = ({
         />
         <DialogContent>
           <TextField
-            fullWidth
+            fullWidth={true}
             label={t('fields.displayName')}
             variant="outlined"
             onChange={e => setWhiteboardName(e.target.value)}
             value={whiteboardName}
-            focused
+            focused={true}
           />
         </DialogContent>
         <DialogActions>

@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import { UiNode, UiNodeScriptAttributes } from '@ory/kratos-client';
+import type { UiNode, UiNodeScriptAttributes } from '@ory/kratos-client';
+import { useEffect, useRef, useState } from 'react';
 import { isScriptNode } from '../components/Kratos/helpers';
 
 type PasskeyScriptStatus = 'idle' | 'loading' | 'loaded' | 'error';

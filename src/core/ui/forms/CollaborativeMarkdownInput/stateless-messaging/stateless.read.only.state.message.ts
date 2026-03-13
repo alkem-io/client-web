@@ -1,5 +1,5 @@
-import { ReadOnlyCode } from './read.only.code';
-import { StatelessBaseMessage } from './stateless.base.message';
+import type { ReadOnlyCode } from './read.only.code';
+import type { StatelessBaseMessage } from './stateless.base.message';
 
 export interface StatelessReadOnlyStateMessage extends StatelessBaseMessage {
   event: 'read-only-state';

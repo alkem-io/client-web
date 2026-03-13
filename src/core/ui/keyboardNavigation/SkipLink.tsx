@@ -1,8 +1,8 @@
-import { PropsWithChildren } from 'react';
 import { Button } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import visibleOnFocus from './visibleOnFocus';
-import { SxProps, Theme } from '@mui/material/styles';
 
 const SKIP_LINK_Z_INDEX = 1;
 

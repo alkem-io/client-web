@@ -1,7 +1,7 @@
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { SubspaceDialog } from './subspaces/SubspaceDialog';
 import { DialogActionButton } from './subspaces/DialogActionButton';
+import { SubspaceDialog } from './subspaces/SubspaceDialog';
 
 interface WelcomeBlockProps {
   about?: boolean;
@@ -9,7 +9,7 @@ interface WelcomeBlockProps {
 
 const WelcomeBlock = ({ children }: PropsWithChildren<WelcomeBlockProps>) => {
   return (
-    <PageContentBlock accent>
+    <PageContentBlock accent={true}>
       {children}
       <DialogActionButton dialog={SubspaceDialog.About} actionDisplay="fullWidth" />
     </PageContentBlock>

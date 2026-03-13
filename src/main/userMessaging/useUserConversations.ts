@@ -1,9 +1,9 @@
-import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserMessagingContext } from './UserMessagingContext';
 import { useMemo } from 'react';
-import { ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
-import { ActorType, RoomType } from '@/core/apollo/generated/graphql-schema';
+import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { type ActorType, RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { type ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
+import { useUserMessagingContext } from './UserMessagingContext';
 
 export interface ConversationMember {
   id: string;

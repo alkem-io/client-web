@@ -1,4 +1,4 @@
-import { Components } from '@mui/material/styles';
+import type { Components } from '@mui/material/styles';
 
 const MuiPaper: Components['MuiPaper'] = {
   styleOverrides: {

@@ -1,19 +1,3 @@
-import { useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { ActionableContributionsView } from '@/domain/community/profile/views';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import {
-  useUserContributionsQuery,
-  useUserPendingMembershipsQuery,
-  useUserSettingsQuery,
-  useUpdateUserSettingsMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import Gutters from '@/core/ui/grid/Gutters';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import {
   Box,
   Checkbox,
@@ -23,9 +7,25 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
+  type SelectChangeEvent,
 } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import {
+  useUpdateUserSettingsMutation,
+  useUserContributionsQuery,
+  useUserPendingMembershipsQuery,
+  useUserSettingsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption } from '@/core/ui/typography/components';
+import { ActionableContributionsView } from '@/domain/community/profile/views';
+import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import useUserRouteContext from '../../user/routing/useUserRouteContext';
 
 const UserAdminMembershipPage = () => {
@@ -164,8 +164,8 @@ const UserAdminMembershipPage = () => {
           <BlockTitle>{t('pages.admin.user.homeSpace.title')}</BlockTitle>
           <Caption marginBottom={gutters(1)}>{t('pages.admin.user.homeSpace.description')}</Caption>
 
-          <Gutters disablePadding>
-            <FormControl fullWidth disabled={hasNoMemberships || isUpdating || loadingSettings}>
+          <Gutters disablePadding={true}>
+            <FormControl fullWidth={true} disabled={hasNoMemberships || isUpdating || loadingSettings}>
               <InputLabel id="home-space-select-label">{t('pages.admin.user.homeSpace.selectLabel')}</InputLabel>
               <Select
                 labelId="home-space-select-label"
@@ -216,7 +216,7 @@ const UserAdminMembershipPage = () => {
           title={t('common.my-memberships')}
           contributions={memberships}
           loading={loading}
-          enableLeave
+          enableLeave={true}
           onLeave={refetch}
         />
         <ActionableContributionsView

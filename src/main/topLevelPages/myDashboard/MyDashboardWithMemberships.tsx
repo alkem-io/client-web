@@ -1,21 +1,20 @@
-import React, { Suspense, useState } from 'react';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
-import { useLatestReleaseDiscussionQuery } from '@/core/apollo/generated/apollo-hooks';
-import CampaignBlock from './Campaigns/CampaignBlock';
-import InfoColumn from '@/core/ui/content/InfoColumn';
-import { DashboardMenu } from './DashboardMenu/DashboardMenu';
-import ContentColumn from '@/core/ui/content/ContentColumn';
-import { useDashboardContext } from './DashboardContext';
-import MyResources from './myResources/MyResources';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '@/core/ui/loading/Loading';
-import RecentSpacesList from './recentSpaces/RecentSpacesList';
-import { MyMembershipsDialog } from './myMemberships/MyMembershipsDialog';
-import { useMyMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLatestReleaseDiscussionQuery, useMyMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Loading from '@/core/ui/loading/Loading';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import CampaignBlock from './Campaigns/CampaignBlock';
+import { useDashboardContext } from './DashboardContext';
+import { DashboardMenu } from './DashboardMenu/DashboardMenu';
+import { MyMembershipsDialog } from './myMemberships/MyMembershipsDialog';
+import MyResources from './myResources/MyResources';
+import RecentSpacesList from './recentSpaces/RecentSpacesList';
+import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 
 const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
 const DashboardActivity = lazyWithGlobalErrorHandler(() => import('./DashboardWithMemberships/DashboardActivity'));
@@ -50,8 +49,8 @@ const MyDashboardWithMemberships = () => {
           <MyResources />
         </InfoColumn>
       )}
-      <ContentColumn fullWidth>
-        {isMediumSmallScreen && <DashboardMenu expandable />}
+      <ContentColumn fullWidth={true}>
+        {isMediumSmallScreen && <DashboardMenu expandable={true} />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         {!activityEnabled && (

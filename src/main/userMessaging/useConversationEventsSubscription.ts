@@ -1,23 +1,22 @@
-import { useApolloClient } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
+import { useCallback } from 'react';
 import {
-  useConversationEventsSubscription as useSubscription,
+  ConversationMessagesDocument,
   UserConversationsDocument,
   UserConversationsUnreadCountDocument,
-  ConversationMessagesDocument,
+  useConversationEventsSubscription as useSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  ConversationEventsSubscription,
+  type ConversationEventsSubscription,
   ConversationEventType,
+  type ConversationMessagesQuery,
   RoomType,
-  UserConversationsQuery,
-  UserConversationsUnreadCountQuery,
-  ConversationMessagesQuery,
+  type UserConversationsQuery,
+  type UserConversationsUnreadCountQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import { useUserMessagingContext } from './UserMessagingContext';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useCallback } from 'react';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useUserMessagingContext } from './UserMessagingContext';
 
 type ConversationCreatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationCreated']

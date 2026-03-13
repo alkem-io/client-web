@@ -1,18 +1,17 @@
-import React from 'react';
 import { Link } from '@mui/material';
-import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { useInnovationLibraryQuery } from '@/core/apollo/generated/apollo-hooks';
-import DashboardInnovationPacks from '@/domain/InnovationPack/DashboardInnovationPacks/DashboardInnovationPacks';
-import DashboardLibraryTemplates from '@/domain/InnovationPack/DashboardLibraryTemplates/DashboardLibraryTemplates';
-import useInnovationPackCardProps from '@/domain/InnovationPack/DashboardInnovationPacks/useInnovationPackCardProps';
 import { useTranslation } from 'react-i18next';
-import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import InnovationLibraryIcon from './InnovationLibraryIcon';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { useInnovationLibraryQuery } from '@/core/apollo/generated/apollo-hooks';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import DashboardInnovationPacks from '@/domain/InnovationPack/DashboardInnovationPacks/DashboardInnovationPacks';
+import useInnovationPackCardProps from '@/domain/InnovationPack/DashboardInnovationPacks/useInnovationPackCardProps';
+import DashboardLibraryTemplates from '@/domain/InnovationPack/DashboardLibraryTemplates/DashboardLibraryTemplates';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import InnovationLibraryIcon from './InnovationLibraryIcon';
 
 const InnovationLibraryPage = () => {
   const { data: innovationLibraryData, loading: innovationLibraryLoading } = useInnovationLibraryQuery();

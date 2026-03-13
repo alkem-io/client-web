@@ -1,13 +1,13 @@
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import type { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export const UserAdminTabs: TabDefinition<SettingsSection>[] = [
   {

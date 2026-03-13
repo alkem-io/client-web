@@ -1,24 +1,24 @@
-import { Dispatch, useCallback, useEffect, useMemo, useState } from 'react';
+import { uniqBy } from 'lodash-es';
+import { type Dispatch, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerMemberSpacesQuery,
-  useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
+  useSpaceExplorerSubspacesLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
-  SearchCategory,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
+  SearchCategory,
   SearchResultType,
-  SpaceExplorerSubspacesQuery,
-  SpaceExplorerSearchSpaceFragment,
+  type SpaceExplorerSearchSpaceFragment,
+  type SpaceExplorerSubspacesQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import { TypedSearchResult } from '@/main/search/SearchView';
-import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { uniqBy } from 'lodash-es';
+import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { TypedSearchResult } from '@/main/search/SearchView';
+import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, type SpaceWithParent } from './SpaceExplorerView';
 
 export interface SpacesExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;

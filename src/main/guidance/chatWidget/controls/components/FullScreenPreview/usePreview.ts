@@ -1,4 +1,4 @@
-import { useState, useReducer } from 'react';
+import { useReducer, useState } from 'react';
 
 type Layout = {
   width?: number;
@@ -90,7 +90,7 @@ const usePreview = zoomStep => {
     return layout;
   };
 
-  const isMinSize = (): Boolean => {
+  const isMinSize = (): boolean => {
     if (state.direction === 'vertical') {
       return state.layout.height > windowSize.height / 3;
     }

@@ -1,4 +1,4 @@
-import { BoxProps } from '@mui/material';
+import type { BoxProps } from '@mui/material';
 import GridItem from '../grid/GridItem';
 import PageContentColumnBase from './PageContentColumnBase';
 

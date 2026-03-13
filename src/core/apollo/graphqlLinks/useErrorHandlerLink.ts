@@ -1,6 +1,6 @@
-import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import { ApolloError } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 
 // Don't report these errors in the bottom right corner

@@ -1,10 +1,10 @@
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import { useMemo } from 'react';
-import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { ContributorViewModel } from './ContributorViewModel';
-import { WithId } from '@/core/utils/WithId';
+import type { WithId } from '@/core/utils/WithId';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import type { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import type { UserCardProps } from '@/domain/community/user/userCard/UserCard';
+import type { ContributorViewModel } from './ContributorViewModel';
 
 interface RoleSetMembers {
   memberUsers?: ContributorViewModel[];

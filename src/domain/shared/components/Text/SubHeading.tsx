@@ -1,4 +1,4 @@
-import { TypographyProps } from '@mui/material';
+import type { TypographyProps } from '@mui/material';
 import { PageTitle } from '@/core/ui/typography';
 
 interface SubHeadingProps extends TypographyProps {}

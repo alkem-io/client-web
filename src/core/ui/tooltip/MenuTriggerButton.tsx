@@ -1,6 +1,6 @@
-import { cloneElement, MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
-import { Box, ClickAwayListener, Drawer, Grow, ModalProps, Popper, PopperProps } from '@mui/material';
+import { Box, ClickAwayListener, Drawer, Grow, type ModalProps, Popper, type PopperProps } from '@mui/material';
 import { debounce } from 'lodash-es';
+import { cloneElement, type MouseEventHandler, type ReactElement, type Ref, useRef, useState } from 'react';
 import { gutters } from '../grid/utils';
 
 export interface TriggerProps {
@@ -131,7 +131,7 @@ const MenuTriggerButton = ({
             ...sx,
             zIndex,
           }}
-          transition
+          transition={true}
           onMouseEnter={handleContentMouseEnter}
           onMouseLeave={handleMouseLeaveDebounced}
         >

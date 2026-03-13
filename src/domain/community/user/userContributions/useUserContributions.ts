@@ -1,7 +1,7 @@
+import { useMemo } from 'react';
 import { useUserContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { useMemo } from 'react';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 
 const useUserContributions = (userId: string | undefined) => {
   const { data } = useUserContributionsQuery({

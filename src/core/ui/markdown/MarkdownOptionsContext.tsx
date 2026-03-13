@@ -1,5 +1,5 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 
 export interface MarkdownOptions {
   card: boolean;

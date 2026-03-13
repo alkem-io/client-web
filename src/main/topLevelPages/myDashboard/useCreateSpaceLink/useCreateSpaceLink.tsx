@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserAccountUrl } from '@/main/routing/urlBuilders';
 
 export const useCreateSpaceLink = () => {

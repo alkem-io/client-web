@@ -1,6 +1,6 @@
-import { useUserMessagingContext } from './UserMessagingContext';
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useUserConversationsUnreadCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useUserMessagingContext } from './UserMessagingContext';
 
 const DELAY_MS = 2000;
 

@@ -1,9 +1,9 @@
 import { Formik } from 'formik';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import * as yup from 'yup';
-import { SpaceAboutSegment, spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { SpaceAboutSegment, spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 
 interface SpaceAboutFormProps {
   about: {
@@ -53,7 +53,7 @@ const SpaceAboutForm = forwardRef<SpaceAboutFormHandle, SpaceAboutFormProps>(
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        enableReinitialize
+        enableReinitialize={true}
         onSubmit={async values => {
           onSubmit(values);
         }}

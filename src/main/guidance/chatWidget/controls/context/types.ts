@@ -1,8 +1,7 @@
-import { ElementType } from 'react';
+import type { ElementType } from 'react';
 
 export type Nullable<T> = T | null;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyFunction = (...args: any[]) => any;
 
 // Base message interface
@@ -30,7 +29,6 @@ export interface Link extends BaseMessage {
 
 // Custom component message type
 export interface CustomCompMessage extends BaseMessage {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: any;
 }
 

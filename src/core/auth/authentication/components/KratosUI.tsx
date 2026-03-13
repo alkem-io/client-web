@@ -1,40 +1,40 @@
-import { Text } from '@/core/ui/typography';
-import { Alert, Box, Button } from '@mui/material';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import { UiContainer, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
+import { Alert, Box, Button } from '@mui/material';
+import type { UiContainer, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash-es';
-import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
+import { type ComponentType, createContext, type FC, type PropsWithChildren, type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Text } from '@/core/ui/typography';
+import usePasskeyScript from '../hooks/usePasskeyScript';
+import type { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
-import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
-import KratosButton from './Kratos/KratosButton';
-import KratosCheckbox from './Kratos/KratosCheckbox';
-import { useKratosFormContext } from './Kratos/KratosForm';
-import KratosHidden from './Kratos/KratosHidden';
-import KratosInput from './Kratos/KratosInput';
-import { KratosInputExtraProps } from './Kratos/KratosProps';
-import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
-import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
+import { KRATOS_REMOVED_FIELDS_DEFAULT, type KratosRemovedFieldAttributes } from './Kratos/constants';
 import {
   guessVariant,
   isAnchorNode,
   isHiddenInput,
   isInputNode,
   isPasskeyAutocompleteInit,
+  isPasskeyMethodButton,
+  isPasskeyTrigger,
   isScriptNode,
   isSubmitButton,
   isTextNode,
-  isPasskeyTrigger,
-  isPasskeyMethodButton,
 } from './Kratos/helpers';
+import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
+import KratosButton from './Kratos/KratosButton';
+import KratosCheckbox from './Kratos/KratosCheckbox';
+import { useKratosFormContext } from './Kratos/KratosForm';
+import KratosHidden from './Kratos/KratosHidden';
+import KratosInput from './Kratos/KratosInput';
 import KratosPasskeyButton from './Kratos/KratosPasskeyButton';
 import KratosPasskeyIconButton from './Kratos/KratosPasskeyIconButton';
+import type { KratosInputExtraProps } from './Kratos/KratosProps';
+import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
 import KratosText from './Kratos/KratosText';
-import usePasskeyScript from '../hooks/usePasskeyScript';
 import { useKratosT } from './Kratos/messages';
-import Gutters from '@/core/ui/grid/Gutters';
-import { gutters } from '@/core/ui/grid/utils';
 
 interface KratosUIProps extends PropsWithChildren {
   ui?: UiContainer;
@@ -339,7 +339,7 @@ export const KratosUI: FC<KratosUIProps> = ({
         )}
         {/* For login flows, render Passkey icon buttons alongside OIDC buttons */}
         {flowType === 'login' && nodesByGroup.passkey.length > 0 && nodesByGroup.oidc.length > 0 && (
-          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
+          <Gutters row={true} sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {nodesByGroup.passkey.map((node, index) => (
               <KratosPasskeyIconButton
                 key={`passkey-${index}`}
@@ -363,7 +363,7 @@ export const KratosUI: FC<KratosUIProps> = ({
         )}
         {/* For login flows with only Passkey (no OIDC), show icon buttons in a row */}
         {flowType === 'login' && nodesByGroup.passkey.length > 0 && nodesByGroup.oidc.length === 0 && (
-          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
+          <Gutters row={true} sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {nodesByGroup.passkey.map((node, index) => (
               <KratosPasskeyIconButton
                 key={`passkey-${index}`}
@@ -383,7 +383,7 @@ export const KratosUI: FC<KratosUIProps> = ({
         )}
         {/* OIDC buttons for non-login flows, or when there are no Passkey buttons in login flow */}
         {(flowType !== 'login' || nodesByGroup.passkey.length === 0) && nodesByGroup.oidc.length > 0 && (
-          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
+          <Gutters row={true} sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {[...nodesByGroup.oidc]
               .sort((a, b) => {
                 const aValue = isInputNode(a) ? a.attributes.value : '';

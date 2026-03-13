@@ -1,8 +1,8 @@
-import React, { FC, useMemo } from 'react';
-import { newReferenceName } from '@/domain/common/reference/newReferenceName';
-import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
-import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
+import { type FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { newReferenceName } from '@/domain/common/reference/newReferenceName';
+import ReferenceSegment, { type ReferenceSegmentProps } from './ReferenceSegment';
 
 interface Reference {
   id?: string;

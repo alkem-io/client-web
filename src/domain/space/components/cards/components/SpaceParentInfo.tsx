@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { useTranslation } from 'react-i18next';
-import { ParentInfo } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
+import type { ParentInfo } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 interface SpaceParentInfoProps {
   parent?: ParentInfo;
@@ -33,7 +33,7 @@ const SpaceParentInfo = ({ parent }: SpaceParentInfoProps) => {
       onClick={(e: React.MouseEvent) => e.stopPropagation()}
     >
       <Caption
-        noWrap
+        noWrap={true}
         component="dd"
         sx={{
           color: 'primary.main',

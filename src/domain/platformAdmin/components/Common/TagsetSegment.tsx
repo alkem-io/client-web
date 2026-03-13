@@ -1,10 +1,11 @@
 import { FieldArray, useField } from 'formik';
-import React, { FC, useMemo } from 'react';
+import type React from 'react';
+import { type FC, useMemo } from 'react';
 import * as yup from 'yup';
-import { toTagsetTitle } from '@/domain/common/tagset/toTagsetTitle';
 import TagsInput from '@/core/ui/forms/tagsInput/TagsInput';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { toTagsetTitle } from '@/domain/common/tagset/toTagsetTitle';
 
 interface TagsSegmentProps {
   name?: string;
@@ -102,7 +103,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
       helpTextIcon={helpTextIcon}
       onChange={items => helper.setValue(items)}
       onBlur={field.onBlur}
-      fullWidth
+      fullWidth={true}
       loading={loading}
     />
   );

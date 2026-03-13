@@ -1,8 +1,8 @@
+import { Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
-import { Tooltip } from '@mui/material';
 import { formatTimeElapsed } from '../../../domain/shared/utils/formatTimeElapsed';
-import { useTranslation } from 'react-i18next';
 
 interface FormattedDateProps {
   date: string | Date | undefined;
@@ -16,7 +16,7 @@ const FormattedDate = ({ date, component: Component = Caption, format = 'long' }
     return null;
   }
   return (
-    <Tooltip title={formatDateTime(date)} arrow>
+    <Tooltip title={formatDateTime(date)} arrow={true}>
       <span style={{ cursor: 'default' }}>
         <Component>{formatTimeElapsed(date, t, format)}</Component>
       </span>

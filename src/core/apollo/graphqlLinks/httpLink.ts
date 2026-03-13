@@ -1,10 +1,10 @@
-import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { split } from '@apollo/client';
-import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition } from '@apollo/client/utilities';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { createClient } from 'graphql-ws';
+import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { env } from '@/main/env';
-import { TagCategoryValues, warn as logWarn } from '@/core/logging/sentry/log';
 
 const WS_RETRY_ATTEMPTS = 5;
 const DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? window.location.origin;

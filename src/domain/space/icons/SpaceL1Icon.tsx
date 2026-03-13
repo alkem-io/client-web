@@ -1,5 +1,5 @@
-import { SvgIcon, SvgIconProps } from '@mui/material';
-import React, { FC } from 'react';
+import { SvgIcon, type SvgIconProps } from '@mui/material';
+import type { FC } from 'react';
 
 /**
  * This is still used but the old version of L1 icon.

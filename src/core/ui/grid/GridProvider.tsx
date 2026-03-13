@@ -1,5 +1,5 @@
-import { PropsWithChildren, useContext, useMemo } from 'react';
-import GridContext, { GridProperties } from './GridContext';
+import { type PropsWithChildren, useContext, useMemo } from 'react';
+import GridContext, { type GridProperties } from './GridContext';
 
 type GridProviderProps = {
   columns: number;

@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { useTranslation } from 'react-i18next';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   useConversationWithGuidanceVcQuery,
   useMarkMessageAsReadMutation,
@@ -9,7 +7,9 @@ import {
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { useConversationMessages, ConversationMessage } from '@/main/userMessaging/useConversationMessages';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { type ConversationMessage, useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 
 // Message format expected by ChatWidgetInner
 interface GuidanceMessage {

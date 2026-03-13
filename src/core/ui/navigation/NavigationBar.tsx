@@ -1,13 +1,13 @@
-import { PropsWithChildren, useLayoutEffect, useState } from 'react';
-import { alpha, AppBar, Box, Paper, Slide } from '@mui/material';
-import { gutters } from '../grid/utils';
-import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
-import GridProvider from '../grid/GridProvider';
-import { useScrolledUp, useScrollTop } from '../scroll/utils';
+import { AppBar, alpha, Box, Paper, Slide } from '@mui/material';
+import { type PropsWithChildren, useLayoutEffect, useState } from 'react';
 import {
   PLATFORM_NAVIGATION_ITEM_ELEVATION,
   PLATFORM_NAVIGATION_MENU_ELEVATION,
 } from '@/main/ui/platformNavigation/constants';
+import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
+import GridProvider from '../grid/GridProvider';
+import { gutters } from '../grid/utils';
+import { useScrolledUp, useScrollTop } from '../scroll/utils';
 import { ElevationContext } from '../utils/ElevationContext';
 
 interface NavigationBarContentProps {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useGuestSessionContext } from '../context/GuestSessionContext';
 import { anonymizeGuestName } from '../utils/anonymizeGuestName';
-import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
 import { clearAllGuestSessionData } from '../utils/sessionStorage';
 
 /**

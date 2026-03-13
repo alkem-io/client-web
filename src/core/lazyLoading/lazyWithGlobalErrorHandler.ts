@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React, { type ComponentType } from 'react';
 import { getGlobalErrorSetter } from './GlobalErrorContext';
 
 type ImportFunc<T> = () => Promise<{ default: React.ComponentType<T> }>;

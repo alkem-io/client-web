@@ -1,22 +1,22 @@
-import { ReactNode } from 'react';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Avatar, Button, DialogContent, styled } from '@mui/material';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
-import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
-import TemplateContentPreview from '@/domain/templates/components/Previews/TemplateContentPreview';
-import { Avatar, Button, DialogContent, styled } from '@mui/material';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { Actions } from '@/core/ui/actions/Actions';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
+import TemplateContentPreview from '@/domain/templates/components/Previews/TemplateContentPreview';
+import type { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 
 export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPack {
   open?: boolean;
@@ -48,11 +48,11 @@ const PreviewTemplateDialog = ({
         </BlockTitle>
       </DialogHeader>
       <DialogContent>
-        <PageContentBlockGrid disablePadding>
+        <PageContentBlockGrid disablePadding={true}>
           <PageContentColumn columns={3}>
             <TemplateCard template={template} />
             {templateInfo}
-            <PageContentBlockSeamless disablePadding>
+            <PageContentBlockSeamless disablePadding={true}>
               <Actions justifyContent="end">
                 <Button
                   startIcon={<ArrowBackIcon />}
@@ -65,20 +65,20 @@ const PreviewTemplateDialog = ({
                 {actions}
               </Actions>
             </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
+            <PageContentBlockSeamless disablePadding={true} disableGap={true}>
               <BlockSectionTitle>{t('common.title')}</BlockSectionTitle>
               <CardText>{template?.profile.displayName}</CardText>
             </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
+            <PageContentBlockSeamless disablePadding={true} disableGap={true}>
               <BlockSectionTitle>{t('common.description')}</BlockSectionTitle>
-              <WrapperMarkdown card>{template?.profile.description ?? ''}</WrapperMarkdown>
+              <WrapperMarkdown card={true}>{template?.profile.description ?? ''}</WrapperMarkdown>
             </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding disableGap>
+            <PageContentBlockSeamless disablePadding={true} disableGap={true}>
               <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
               <TagsComponent tags={template?.profile.defaultTagset?.tags ?? []} height={gutters()} />
             </PageContentBlockSeamless>
             {innovationPack?.provider && (
-              <PageContentBlockSeamless disablePadding disableGap>
+              <PageContentBlockSeamless disablePadding={true} disableGap={true}>
                 <BlockSectionTitle>{t('common.createdBy')}</BlockSectionTitle>
                 <BadgeCardView
                   visual={

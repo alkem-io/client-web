@@ -1,8 +1,8 @@
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Trans, useTranslation } from 'react-i18next';
 import { Button, DialogActions, DialogContent, Link } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
+import { Trans, useTranslation } from 'react-i18next';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { Caption } from '@/core/ui/typography';
 
 interface SpaceWelcomeDialogProps {
   onClose: () => void;
@@ -12,7 +12,7 @@ const SpaceWelcomeDialog = ({ onClose }: SpaceWelcomeDialogProps) => {
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid open onClose={onClose} columns={6} aria-labelledby="space-welcome-dialog">
+    <DialogWithGrid open={true} onClose={onClose} columns={6} aria-labelledby="space-welcome-dialog">
       <DialogHeader id="space-welcome-dialog" title={t('components.spaceWelcomeDialog.title')} onClose={onClose} />
       <DialogContent>
         <Caption alignSelf="center">

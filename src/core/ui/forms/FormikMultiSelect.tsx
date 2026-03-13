@@ -1,8 +1,8 @@
-import { Autocomplete, Chip, TextField, TextFieldProps } from '@mui/material';
+import { Autocomplete, Chip, TextField, type TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
-import { useMemo, ReactElement, SyntheticEvent } from 'react';
+import { type ReactElement, type SyntheticEvent, useMemo } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export interface FormikSelectValue {
   id: string;
@@ -58,7 +58,7 @@ export const FormikMultiSelect = ({
     return [...fieldSelectedValues, ...allFixedOptions];
   }, [values, field.value, fixedOptions]);
 
-  const handleChange = (event: SyntheticEvent, newValues: FormikSelectValue[]) => {
+  const handleChange = (_event: SyntheticEvent, newValues: FormikSelectValue[]) => {
     // Filter out fixed options from the change since they should always be present
     const removableValues = newValues.filter(value => !fixedOptions.some(fixed => fixed.id === value.id));
     const allValues = [...fixedOptions, ...removableValues];
@@ -69,7 +69,7 @@ export const FormikMultiSelect = ({
 
   return (
     <Autocomplete
-      multiple
+      multiple={true}
       disablePortal={disablePortal}
       value={selectedValues}
       options={values}
@@ -104,7 +104,7 @@ export const FormikMultiSelect = ({
           {...textFieldProps}
           {...params}
           InputLabelProps={{ shrink: true }}
-          helperText={Boolean(helperText) ? <>{helperText}</> : null}
+          helperText={helperText ? helperText : null}
           error={isError}
         />
       )}

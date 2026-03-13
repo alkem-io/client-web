@@ -1,17 +1,17 @@
-import { Box, BoxProps, Skeleton, styled } from '@mui/material';
+import { Draggable, Droppable, type OnDragEndResponder } from '@hello-pangea/dnd';
+import { Box, type BoxProps, Skeleton, styled } from '@mui/material';
 import { groupBy } from 'lodash-es';
-import { FC, ReactNode } from 'react';
-import { Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
+import type { FC, ReactNode } from 'react';
+import { type CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { GUTTER_PX } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { CalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
 import InnovationFlowDragNDropEditor, {
-  InnovationFlowDragNDropEditorProps,
+  type InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { GUTTER_PX } from '@/core/ui/grid/constants';
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 
 const SKELETON_COUNT = 3;
 
@@ -98,9 +98,9 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
 
   if (loading && !callouts.length) {
     return (
-      <Gutters disablePadding height={gutters(5)} flexDirection="row">
+      <Gutters disablePadding={true} height={gutters(5)} flexDirection="row">
         {Array.from({ length: SKELETON_COUNT }).map((_, index) => (
-          <PageContentBlock key={index} columns={3} fullHeight>
+          <PageContentBlock key={index} columns={3} fullHeight={true}>
             <Skeleton aria-busy="true" />
           </PageContentBlock>
         ))}
@@ -112,7 +112,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
     <InnovationFlowDragNDropEditor
       onUnhandledDragEnd={handleDragEnd}
       innovationFlow={innovationFlow}
-      croppedDescriptions
+      croppedDescriptions={true}
       {...statesActions}
     >
       {state => (
@@ -121,7 +121,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
             {provided => (
               <Gutters
                 ref={provided.innerRef}
-                disablePadding
+                disablePadding={true}
                 flexGrow={1}
                 minHeight={gutters(1)}
                 height="100%"
@@ -140,7 +140,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                           <CalloutIcon
                             framingType={callout.framing?.type || CalloutFramingType.None}
                             allowedTypes={callout.settings?.contribution?.allowedTypes}
-                            tooltip
+                            tooltip={true}
                             iconProps={{ fontSize: 'small' }}
                           />
                         }

@@ -1,7 +1,7 @@
 import { Box, Paper, Skeleton, styled } from '@mui/material';
-import { gutters } from '../grid/utils';
-import Image from '@/core/ui/image/Image';
 import { useState } from 'react';
+import Image from '@/core/ui/image/Image';
+import { gutters } from '../grid/utils';
 
 const BannerContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -30,7 +30,7 @@ const PageContentBlockBanner = ({ bannerUrl, children }: PageContentBlockBannerP
             })}
           />
           {bannerLoading && (
-            <Paper square sx={{ position: 'absolute', inset: 0 }}>
+            <Paper square={true} sx={{ position: 'absolute', inset: 0 }}>
               <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />
             </Paper>
           )}

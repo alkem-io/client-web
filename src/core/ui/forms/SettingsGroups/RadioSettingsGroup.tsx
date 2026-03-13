@@ -1,5 +1,5 @@
-import { Box, CircularProgress, FormControlLabel, Radio, RadioGroup, RadioProps } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { Box, CircularProgress, FormControlLabel, Radio, RadioGroup, type RadioProps } from '@mui/material';
+import { type ReactNode, useState } from 'react';
 
 const LoadingRadio = ({ loading, ...props }: RadioProps & { loading?: boolean }) =>
   loading ? (
@@ -27,7 +27,7 @@ function RadioSettingsGroup<T extends Record<string, { label: ReactNode }>>({
   return (
     <RadioGroup
       value={value}
-      onChange={async (event, newValue) => {
+      onChange={async (_event, newValue) => {
         const option = options[newValue];
         if (option) {
           setItemLoading(newValue);

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Box } from '@mui/material';
+import type { ReactNode } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
 
 interface TabPanelProps {

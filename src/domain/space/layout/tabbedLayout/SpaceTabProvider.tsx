@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceTabQuery, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
+import { AuthorizationPrivilege, type SpaceTabQuery, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
+import type { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
+import type { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
+import type { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { useSpace } from '../../context/useSpace';
-import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
@@ -66,7 +66,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     const about: SpaceAboutLightModel | undefined = space?.about;
     const calloutsSetId = space?.collaboration.calloutsSet.id;
 
-    let flowState: InnovationFlowStateModel | undefined = undefined;
+    let flowState: InnovationFlowStateModel | undefined;
     if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
       flowState = innovationFlowStates[tabPosition];
     }

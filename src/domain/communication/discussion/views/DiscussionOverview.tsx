@@ -1,10 +1,10 @@
 import { AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
 import { useTranslation } from 'react-i18next';
-import { Discussion } from '../models/Discussion';
-import DiscussionIcon from './DiscussionIcon';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { formatLongDate } from '@/core/utils/time/utils';
+import type { Discussion } from '../models/Discussion';
+import DiscussionIcon from './DiscussionIcon';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;
@@ -19,7 +19,7 @@ const DiscussionOverview = ({ discussion, onClick }: DiscussionOverviewProps) =>
   const { title, createdAt, author, authors = [], comments, category } = discussion;
 
   return (
-    <ListItemButton disableGutters onClick={() => onClick?.(discussion)}>
+    <ListItemButton disableGutters={true} onClick={() => onClick?.(discussion)}>
       <ListItemIcon sx={{ justifyContent: 'center' }}>
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>

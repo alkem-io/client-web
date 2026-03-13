@@ -1,6 +1,6 @@
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { EmptyLocationMapped } from '@/domain/common/location/LocationModelMapped';
-import { ProfileModelFull } from '@/domain/common/profile/ProfileModel';
+import type { ProfileModelFull } from '@/domain/common/profile/ProfileModel';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { OrgVerificationLifecycleEvents } from './OrganizationVerification';
 

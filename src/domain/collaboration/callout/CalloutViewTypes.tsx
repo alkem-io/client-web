@@ -1,8 +1,8 @@
-import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { CalloutSortEvents, CalloutSortProps } from '../calloutsSet/CalloutsView/CalloutSortModels';
-import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
-import { CalloutDetailsModelExtended } from './models/CalloutDetailsModel';
+import type { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import type { CalloutSortEvents, CalloutSortProps } from '../calloutsSet/CalloutsView/CalloutSortModels';
+import type { CalloutDetailsModelExtended } from './models/CalloutDetailsModel';
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
   onVisibilityChange?: (

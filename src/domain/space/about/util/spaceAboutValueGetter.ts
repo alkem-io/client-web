@@ -1,4 +1,4 @@
-import { ValueType } from '@/core/utils/filtering/filterFn';
+import type { ValueType } from '@/core/utils/filtering/filterFn';
 
 interface SpaceAboutFilterable {
   id: string;

@@ -1,11 +1,11 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Box, styled, Tabs, TabsProps } from '@mui/material';
-import { PropsWithChildren } from 'react';
-import HeaderNavigationTab from './HeaderNavigationTab';
+import { Box, styled, Tabs, type TabsProps } from '@mui/material';
+import { t } from 'i18next';
+import type { PropsWithChildren } from 'react';
 import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { t } from 'i18next';
+import HeaderNavigationTab from './HeaderNavigationTab';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -82,7 +82,7 @@ const HeaderNavigationTabs = ({
         aria-label={ariaLabel}
         variant="scrollable"
         scrollButtons="auto"
-        allowScrollButtonsMobile
+        allowScrollButtonsMobile={true}
       >
         {children}
         {showSettings && (

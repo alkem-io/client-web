@@ -1,15 +1,15 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import Footer from '@/main/ui/platformFooter/PlatformFooter';
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import PlatformNavigationBar from '@/main/ui/platformNavigation/PlatformNavigationBar';
-import Breadcrumbs from '@/core/ui/navigation/Breadcrumbs';
-import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
+import { type PropsWithChildren, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
+import { useLocation } from 'react-router-dom';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import Breadcrumbs from '@/core/ui/navigation/Breadcrumbs';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import SearchDialog from '@/main/search/SearchDialog';
+import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
+import Footer from '@/main/ui/platformFooter/PlatformFooter';
+import PlatformNavigationBar from '@/main/ui/platformNavigation/PlatformNavigationBar';
 
 const HomePageLayout = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();

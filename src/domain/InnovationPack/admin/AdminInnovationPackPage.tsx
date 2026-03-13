@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { useAdminInnovationPackQuery, useUpdateInnovationPackMutation } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
-import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
+import InnovationPackForm, { type InnovationPackFormValues } from './InnovationPackForm';
 
 const TemplateTypePermissions = {
   create: [
@@ -86,37 +86,35 @@ const AdminInnovationPackPage = () => {
   const loading = resolvingUrl || loadingInnovationPack;
 
   return (
-    <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings settings>
+    <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings={true} settings={true}>
       {loading && <Loading />}
       {innovationPack && !loading && templatesSetId && (
-        <>
-          <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
-            <PageContent>
-              <PageContentColumn columns={12}>
-                <PageContentBlock>
-                  <InnovationPackForm
-                    profile={innovationPack.profile}
-                    avatar={innovationPack.profile?.avatar}
-                    provider={innovationPack.provider}
-                    onSubmit={handleSubmit}
-                    loading={updatingProfile}
-                    listedInStore={innovationPack.listedInStore}
-                    searchVisibility={innovationPack.searchVisibility}
-                  />
-                </PageContentBlock>
-                <TemplatesAdmin
-                  templatesSetId={templatesSetId}
-                  templateId={templateId}
-                  baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile?.url ?? '')}
-                  alwaysEditTemplate // When editing an Template pack, we don't want to see template preview, just go to Edit mode always
-                  canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}
-                  canEditTemplates={templateType => TemplateTypePermissions.edit.includes(templateType)}
-                  canDeleteTemplates={templateType => TemplateTypePermissions.delete.includes(templateType)}
+        <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
+          <PageContent>
+            <PageContentColumn columns={12}>
+              <PageContentBlock>
+                <InnovationPackForm
+                  profile={innovationPack.profile}
+                  avatar={innovationPack.profile?.avatar}
+                  provider={innovationPack.provider}
+                  onSubmit={handleSubmit}
+                  loading={updatingProfile}
+                  listedInStore={innovationPack.listedInStore}
+                  searchVisibility={innovationPack.searchVisibility}
                 />
-              </PageContentColumn>
-            </PageContent>
-          </StorageConfigContextProvider>
-        </>
+              </PageContentBlock>
+              <TemplatesAdmin
+                templatesSetId={templatesSetId}
+                templateId={templateId}
+                baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile?.url ?? '')}
+                alwaysEditTemplate={true} // When editing an Template pack, we don't want to see template preview, just go to Edit mode always
+                canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}
+                canEditTemplates={templateType => TemplateTypePermissions.edit.includes(templateType)}
+                canDeleteTemplates={templateType => TemplateTypePermissions.delete.includes(templateType)}
+              />
+            </PageContentColumn>
+          </PageContent>
+        </StorageConfigContextProvider>
       )}
     </InnovationPackProfileLayout>
   );

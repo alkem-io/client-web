@@ -1,12 +1,12 @@
-import { gutters } from '@/core/ui/grid/utils';
-import { Box, IconButton } from '@mui/material';
-import { ReactNode } from 'react';
-import { PageTitle, Tagline } from '@/core/ui/typography';
 import { Close } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { PageTitle, Tagline } from '@/core/ui/typography';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 export interface AboutHeaderProps {
   title?: string;

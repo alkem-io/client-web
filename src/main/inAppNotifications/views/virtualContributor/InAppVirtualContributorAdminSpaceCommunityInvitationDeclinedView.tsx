@@ -1,4 +1,4 @@
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 // Notification for when a Virtual Contributor invitation to a Space community is declined by the contributor admin

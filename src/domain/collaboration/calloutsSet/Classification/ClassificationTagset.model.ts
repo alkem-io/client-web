@@ -1,4 +1,4 @@
-import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import type { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 
 export type ClassificationTagsetModel = {
   name: TagsetReservedName | string;

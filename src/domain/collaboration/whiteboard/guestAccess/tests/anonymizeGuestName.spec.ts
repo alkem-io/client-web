@@ -4,7 +4,7 @@
  * Spec: 002-guest-whiteboard-access, Phase 8 - Derived Authenticated Guest Name
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { anonymizeGuestName } from '../utils/anonymizeGuestName';
 
 describe('anonymizeGuestName - Guest Name Derivation', () => {

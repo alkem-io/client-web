@@ -1,5 +1,5 @@
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { InnovationFlowProfileModel } from '../models/InnovationFlowProfileModel';
+import type { InnovationFlowProfileModel } from '../models/InnovationFlowProfileModel';
 
 const InnovationFlowProfileView = ({
   innovationFlow,

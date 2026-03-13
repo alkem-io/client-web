@@ -1,4 +1,4 @@
-import { CropConfig } from '@/core/utils/images/cropImage';
+import type { CropConfig } from '@/core/utils/images/cropImage';
 
 const ASPECT_RATIO_TOLERANCE = 0.01; // Allow 1% difference between aspect ratios
 

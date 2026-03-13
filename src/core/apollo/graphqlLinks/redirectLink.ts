@@ -1,5 +1,5 @@
+import type { ServerParseError } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import { ServerParseError } from '@apollo/client';
 import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
 /**

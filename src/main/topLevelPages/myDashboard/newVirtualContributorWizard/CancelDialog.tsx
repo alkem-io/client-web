@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface CancelDialogProps {

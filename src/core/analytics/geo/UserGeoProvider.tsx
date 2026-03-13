@@ -1,8 +1,8 @@
-import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import axios from 'axios';
+import { createContext, type PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { AUTH_PAGE_PREFIXES } from '@/core/auth/authentication/constants/authentication.constants';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 const skipOnLocal = process.env.NODE_ENV !== 'production';
 

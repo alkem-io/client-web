@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { usePageTitle } from './usePageTitle';
 import '@/core/i18n/config'; // PageTitle needs translations
 

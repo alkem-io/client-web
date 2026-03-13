@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   useAssignPlatformRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
@@ -8,9 +9,8 @@ import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { useMemo } from 'react';
 
 type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;

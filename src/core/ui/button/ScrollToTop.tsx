@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { IconButton } from '@mui/material';
-import scrollToTop from '../utils/scrollToTop';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { IconButton } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import scrollToTop from '../utils/scrollToTop';
 
 const SCROLL_OFFSET = 36;
 

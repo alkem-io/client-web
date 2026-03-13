@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 const joinNodes = (nodes: ReactNode[], Separator: ComponentType) => {
   if (nodes.length < 2) {

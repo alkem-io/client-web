@@ -1,11 +1,11 @@
-import React, { FC, ReactNode } from 'react';
-import SearchBaseContributionCard, { SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
-import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
-import CardFooterDate from '@/core/ui/card/CardFooterDate';
-import MessageCounter from '@/core/ui/card/MessageCounter';
-import CardFooter from '@/core/ui/card/CardFooter';
+import type { FC, ReactNode } from 'react';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import CardDetails from '@/core/ui/card/CardDetails';
+import CardFooter from '@/core/ui/card/CardFooter';
+import CardFooterDate from '@/core/ui/card/CardFooterDate';
+import MessageCounter from '@/core/ui/card/MessageCounter';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import SearchBaseContributionCard, { type SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
 
 export type SearchContributionCardCardProps = Omit<SearchBaseContributionCardProps, 'icon'> & {
   createdDate?: Date;

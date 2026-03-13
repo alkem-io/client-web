@@ -1,7 +1,7 @@
-import { LazyQueryHookOptions, QueryHookOptions, QueryResult, QueryTuple } from '@apollo/client/react/types/types';
-import { PageInfo } from '@/core/apollo/generated/graphql-schema';
+import type { ApolloError } from '@apollo/client';
+import type { LazyQueryHookOptions, QueryHookOptions, QueryResult, QueryTuple } from '@apollo/client/react/types/types';
 import { useCallback } from 'react';
-import { ApolloError } from '@apollo/client';
+import type { PageInfo } from '@/core/apollo/generated/graphql-schema';
 
 export interface PaginationVariables {
   first: number;

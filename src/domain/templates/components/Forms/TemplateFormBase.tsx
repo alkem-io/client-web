@@ -1,30 +1,30 @@
-import { ReactNode } from 'react';
+import { InfoOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { Formik, type FormikHelpers, type FormikProps } from 'formik';
+import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import type { TemplateType, Visual } from '@/core/apollo/generated/graphql-schema';
+import BlockSectionTitleWithIcon from '@/core/ui/content/BlockSectionTitleWithIcon';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { TemplateType, Visual } from '@/core/apollo/generated/graphql-schema';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import GridContainer from '@/core/ui/grid/GridContainer';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { Box } from '@mui/material';
-import { InfoOutlined } from '@mui/icons-material';
-import BlockSectionTitleWithIcon from '@/core/ui/content/BlockSectionTitleWithIcon';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import type { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 /**
  * Whiteboards have preview imagesTemplates, they are handled separately and uploaded as the Visual of the Template
@@ -98,7 +98,12 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
   const renderChildren = typeof children === 'function' ? children : () => children;
 
   return (
-    <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik
+      enableReinitialize={true}
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
       {formState => {
         const actionsContent = actions.renderActions(formState);
         const renderedActions = actionsContent ? (
@@ -110,10 +115,10 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
         ) : null;
 
         return (
-          <GridContainer disablePadding>
+          <GridContainer disablePadding={true}>
             <FormikEffect onDirtyChange={actions.onDirtyChange} />
             <PageContentColumn columns={3}>
-              <PageContentBlockSeamless disablePadding>
+              <PageContentBlockSeamless disablePadding={true}>
                 <BlockSectionTitleWithIcon
                   icon={<InfoOutlined />}
                   tooltip={t('templateDialog.profile.help', {
@@ -139,7 +144,7 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
               </PageContentBlockSeamless>
             </PageContentColumn>
             <PageContentColumn columns={9}>
-              <PageContentBlockSeamless disablePadding>
+              <PageContentBlockSeamless disablePadding={true}>
                 <BlockSectionTitle>{t(`common.enums.templateType.${templateType}`)}</BlockSectionTitle>
                 {renderChildren(formState)}
               </PageContentBlockSeamless>

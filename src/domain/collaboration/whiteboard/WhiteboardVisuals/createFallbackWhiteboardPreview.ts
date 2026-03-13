@@ -41,7 +41,7 @@ const createFallbackWhiteboardPreview = async (): Promise<HTMLCanvasElement> => 
       let currentLine = words[0];
 
       for (let i = 1; i < words.length; i++) {
-        const testLine = currentLine + ' ' + words[i];
+        const testLine = `${currentLine} ${words[i]}`;
         const metrics = ctx.measureText(testLine);
         if (metrics.width > maxWidth) {
           lines.push(currentLine);

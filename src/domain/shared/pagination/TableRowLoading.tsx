@@ -1,6 +1,6 @@
-import React from 'react';
-import TableCell, { TableCellProps } from '@mui/material/TableCell';
+import TableCell, { type TableCellProps } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import type React from 'react';
 import Loading from '@/core/ui/loading/Loading';
 
 interface TableRowLoadingProps {

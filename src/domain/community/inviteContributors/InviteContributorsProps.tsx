@@ -1,11 +1,11 @@
-import {
-  AiPersonaEngine,
+import type {
   ActorType,
+  AiPersonaEngine,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface InviteContributorsDialogProps {
   type: ActorType;

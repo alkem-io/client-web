@@ -1,7 +1,7 @@
-import ScrollerWithGradient, { Orientation } from '@/core/ui/overflow/ScrollerWithGradient';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import type { BoxProps } from '@mui/material';
+import PageContentBlockGrid, { type PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import ScrollerWithGradient, { type Orientation } from '@/core/ui/overflow/ScrollerWithGradient';
 import { useScreenSize } from '../../grid/constants';
-import { BoxProps } from '@mui/material';
 
 interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps {
   orientation?: Orientation;

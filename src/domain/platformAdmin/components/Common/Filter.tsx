@@ -1,6 +1,7 @@
 import { GridLegacy, MenuItem, TextField } from '@mui/material';
 import { orderBy } from 'lodash-es';
-import React, { useEffect, useMemo, useState } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface sortItem<T> {
@@ -63,22 +64,22 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
 
   return (
     <>
-      <GridLegacy container item spacing={2} justifyContent="space-between" alignItems="center">
-        <GridLegacy item xs={12} lg={sort ? 9 : 12}>
+      <GridLegacy container={true} item={true} spacing={2} justifyContent="space-between" alignItems="center">
+        <GridLegacy item={true} xs={12} lg={sort ? 9 : 12}>
           <TextField
             placeholder={placeholder ?? t('components.filter.placeholder')}
             onChange={handleSearch}
             size="small"
-            fullWidth
+            fullWidth={true}
             InputLabelProps={{ shrink: true }}
             sx={{ background: theme => theme.palette.primary.contrastText }}
           />
         </GridLegacy>
         {sort && (
-          <GridLegacy item xs={12} lg={3}>
+          <GridLegacy item={true} xs={12} lg={3}>
             <TextField
-              fullWidth
-              select
+              fullWidth={true}
+              select={true}
               value={keyFromSortItem(sortBy)}
               onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
               inputProps={{ 'aria-label': 'Discussions sort order' }}

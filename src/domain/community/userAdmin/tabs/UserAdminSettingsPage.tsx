@@ -1,19 +1,19 @@
-import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
-import { BlockTitle } from '@/core/ui/typography/components';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
-import { Trans, useTranslation } from 'react-i18next';
-import Loading from '@/core/ui/loading/Loading';
 import { useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUserProvider } from '../../user/hooks/useUserProvider';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
+import Loading from '@/core/ui/loading/Loading';
+import { BlockTitle } from '@/core/ui/typography/components';
+import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { useUserProvider } from '../../user/hooks/useUserProvider';
 import useUserRouteContext from '../../user/routing/useUserRouteContext';
 
 export const UserAdminSettingsPage = () => {
   const { userId } = useUserRouteContext();
-  const { userModel: userModel, loading: isLoadingUser } = useUserProvider(userId);
+  const { userModel, loading: isLoadingUser } = useUserProvider(userId);
 
   const { t } = useTranslation();
   const userID = userModel?.id ?? '';
@@ -66,25 +66,23 @@ export const UserAdminSettingsPage = () => {
     <UserAdminLayout currentTab={SettingsSection.Settings}>
       <PageContent background="transparent">
         {!loading && (
-          <>
-            <PageContentBlock>
-              <BlockTitle>{t('pages.admin.user.settings.title')}</BlockTitle>
-              <SwitchSettingsGroup
-                options={{
-                  allowOtherUsersToSendMessages: {
-                    checked: currentSettings?.communication?.allowOtherUsersToSendMessages || false,
-                    label: (
-                      <Trans
-                        i18nKey="pages.admin.user.settings.communication.allowOtherUsersToSendMessages"
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                }}
-                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-              />
-            </PageContentBlock>
-          </>
+          <PageContentBlock>
+            <BlockTitle>{t('pages.admin.user.settings.title')}</BlockTitle>
+            <SwitchSettingsGroup
+              options={{
+                allowOtherUsersToSendMessages: {
+                  checked: currentSettings?.communication?.allowOtherUsersToSendMessages || false,
+                  label: (
+                    <Trans
+                      i18nKey="pages.admin.user.settings.communication.allowOtherUsersToSendMessages"
+                      components={{ b: <strong /> }}
+                    />
+                  ),
+                },
+              }}
+              onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+            />
+          </PageContentBlock>
         )}
       </PageContent>
     </UserAdminLayout>

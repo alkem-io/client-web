@@ -1,11 +1,11 @@
-import React, { Suspense } from 'react';
-import HomePageLayout from './HomePageLayout';
-import Loading from '@/core/ui/loading/Loading';
-import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
-import PageContent from '@/core/ui/content/PageContent';
+import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { usePageTitle } from '@/core/routing/usePageTitle';
-import { useTranslation } from 'react-i18next';
+import PageContent from '@/core/ui/content/PageContent';
+import Loading from '@/core/ui/loading/Loading';
+import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
+import HomePageLayout from './HomePageLayout';
 
 const MyDashboard = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/myDashboard/MyDashboard'));
 const InnovationHubHomePage = lazyWithGlobalErrorHandler(

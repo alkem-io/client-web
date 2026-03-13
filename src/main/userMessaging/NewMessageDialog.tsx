@@ -1,26 +1,26 @@
-import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, DialogContent, DialogActions, TextField, CircularProgress, Button } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { Box, Button, CircularProgress, DialogActions, DialogContent, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { useCreateConversationMutation, UserConversationsDocument } from '@/core/apollo/generated/apollo-hooks';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { UserConversationsDocument, useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  UserFilterInput,
   ConversationCreationType,
-  UserConversationsQuery,
+  type UserConversationsQuery,
+  type UserFilterInput,
 } from '@/core/apollo/generated/graphql-schema';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import Avatar from '@/core/ui/avatar/Avatar';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import {
-  ContributorItem,
+  type ContributorItem,
   useContributors,
 } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import Avatar from '@/core/ui/avatar/Avatar';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface NewMessageDialogProps {
   open: boolean;

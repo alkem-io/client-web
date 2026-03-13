@@ -1,12 +1,12 @@
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DialogActions, DialogContent } from '@mui/material';
-import PostForm, { PostFormOutput } from '../PostForm/PostForm';
-import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import type { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
+import PostForm, { type PostFormOutput } from '../PostForm/PostForm';
 
 export type PostCreationType = Partial<CreatePostInput>;
 export type PostCreationOutput = CreatePostInput;

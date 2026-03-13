@@ -1,28 +1,28 @@
-import { Button, ButtonProps, CircularProgress, DialogActions, DialogContent, Link, Box } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { cloneElement, ReactElement, useEffect, useState } from 'react';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import SearchIcon from '@mui/icons-material/Search';
+import { Box, Button, type ButtonProps, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
+import { cloneElement, type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ImportTemplatesDialogGallery from './ImportTemplatesDialogGallery';
-import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useImportTemplateDialogPlatformTemplatesQuery,
   useImportTemplateDialogQuery,
   useSpaceTemplatesManagerQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { gutters } from '@/core/ui/grid/utils';
-import SearchIcon from '@mui/icons-material/Search';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
-import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import GridProvider from '@/core/ui/grid/GridProvider';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
+import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
+import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import ImportTemplatesDialogGallery from './ImportTemplatesDialogGallery';
 
 export interface ImportTemplatesOptions {
   /**
@@ -175,11 +175,11 @@ const ImportTemplatesDialog = ({
               </Box>
               <Box display="flex" flexDirection="row">
                 <Box display="flex" flexDirection="column" alignItems="flex-end" gap={gutters(1)} width={245}>
-                  <GridProvider columns={1} force>
+                  <GridProvider columns={1} force={true}>
                     <TemplateCard
                       template={selectedTemplate.template}
                       innovationPack={selectedTemplate.innovationPack}
-                      isSelected
+                      isSelected={true}
                       onClick={() => setPreviewTemplate(selectedTemplate.template)}
                     />
                   </GridProvider>
@@ -246,7 +246,7 @@ const ImportTemplatesDialog = ({
       </DialogWithGrid>
       {previewTemplate && (
         <PreviewTemplateDialog
-          open
+          open={true}
           template={previewTemplate}
           onClose={handleClosePreview}
           actions={

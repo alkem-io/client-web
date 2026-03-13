@@ -1,16 +1,14 @@
 import {
   cloneElement,
   createContext,
-  PropsWithChildren,
-  ReactElement,
-  RefObject,
+  type PropsWithChildren,
+  type ReactElement,
+  type RefObject,
   useCallback,
   useContext,
 } from 'react';
 
-type Anchor = {
-  (): Element | null;
-};
+type Anchor = () => Element | null;
 
 const BlockAnchorContext = createContext<Anchor | undefined>(undefined);
 

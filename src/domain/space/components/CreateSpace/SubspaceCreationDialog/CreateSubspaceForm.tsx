@@ -1,28 +1,28 @@
-import { PropsWithChildren, useState } from 'react';
+import { Form, Formik } from 'formik';
+import { type PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Form, Formik } from 'formik';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import {
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import { nameOf } from '@/core/utils/nameOf';
+import type { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import type {
   SpaceCreationForm,
   SpaceFormValues,
 } from '@/domain/space/components/CreateSpace/common/SpaceCreationDialog.models';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import SpaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SpaceTemplateSelector';
-import Gutters from '@/core/ui/grid/Gutters';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { gutters } from '@/core/ui/grid/utils';
-import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
-import { nameOf } from '@/core/utils/nameOf';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
@@ -94,17 +94,17 @@ export const CreateSubspaceForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={() => {}}
     >
       {() => (
-        <Form noValidate>
+        <Form noValidate={true}>
           <FormikEffect onChange={onChange} onStatusChange={onValidChanged} />
           <SpaceTemplateSelector
             name={nameOf<CreateSubspaceFormValues>('spaceTemplateId')}
             level={level}
-            disablePadding
+            disablePadding={true}
             sx={{ paddingBottom: gutters() }}
             onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
           />
@@ -129,7 +129,7 @@ export const CreateSubspaceForm = ({
             helperText={t(`context.${level}.description.description`)}
             disabled={isSubmitting}
             maxLength={MARKDOWN_TEXT_LENGTH}
-            temporaryLocation
+            temporaryLocation={true}
           />
           <TagsetField
             name={nameOf<CreateSubspaceFormValues>('tags')}

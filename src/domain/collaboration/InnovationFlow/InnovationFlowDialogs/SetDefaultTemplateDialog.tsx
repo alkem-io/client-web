@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 
 interface SetDefaultTemplateDialogProps {
   open: boolean;
@@ -64,7 +64,7 @@ const SetDefaultTemplateDialog = ({
       open={open}
       onClose={onClose}
       templateType={TemplateType.Callout}
-      enablePlatformTemplates
+      enablePlatformTemplates={true}
       onSelectTemplate={handleSelectTemplate}
       selectedTemplateId={currentTemplate?.id}
       onRemoveTemplate={currentTemplate ? handleRemoveTemplate : undefined}

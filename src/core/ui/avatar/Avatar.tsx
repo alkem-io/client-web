@@ -1,7 +1,7 @@
-import { HTMLAttributes, ReactNode } from 'react';
-import { AvatarProps, Box } from '@mui/material';
-import ErrorHandlingAvatar from './ErrorHandlingAvatar';
+import { type AvatarProps, Box } from '@mui/material';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { gutters } from '../grid/utils';
+import ErrorHandlingAvatar from './ErrorHandlingAvatar';
 
 export type AvatarSize = 'xsmall' | 'small' | 'medium' | 'regular' | 'large';
 

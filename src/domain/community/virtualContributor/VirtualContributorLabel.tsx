@@ -1,7 +1,7 @@
-import { CaptionSmall } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
 import { Chip, SvgIcon } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
+import { CaptionSmall } from '@/core/ui/typography';
 import VCIcon from './VirtualContributorsIcons';
 
 const VirtualContributorLabel = ({ chip = false }) => {

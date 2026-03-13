@@ -24,7 +24,7 @@ const emailParser = (data: string): EmailParserResult => {
   for (const line of lines) {
     const nameEmailMatch = line.match(nameEmailRegex);
 
-    if (nameEmailMatch && nameEmailMatch[2]) {
+    if (nameEmailMatch?.[2]) {
       const displayName = nameEmailMatch[1]?.trim() || nameEmailMatch[2].trim();
       const email = nameEmailMatch[2].trim();
       if (emailRegex.test(email)) {

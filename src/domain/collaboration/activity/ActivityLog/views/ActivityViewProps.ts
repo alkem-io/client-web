@@ -1,4 +1,4 @@
-import { ActivityBaseViewProps } from './ActivityBaseView';
+import type { ActivityBaseViewProps } from './ActivityBaseView';
 
 /**
  * Base props for all ActivityLog views.

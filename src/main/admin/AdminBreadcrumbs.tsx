@@ -1,9 +1,9 @@
-import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { useTranslation } from 'react-i18next';
 import { Settings } from '@mui/icons-material';
-import { Collapsible } from '@/core/ui/navigation/Collapsible';
-import { Expandable } from '@/core/ui/navigation/Expandable';
+import { useTranslation } from 'react-i18next';
+import Breadcrumbs, { type BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import type { Collapsible } from '@/core/ui/navigation/Collapsible';
+import type { Expandable } from '@/core/ui/navigation/Expandable';
 import BreadcrumbsRootItem from '../ui/breadcrumbs/BreadcrumbsRootItem';
 
 const AdminBreadcrumbs = ({

@@ -1,6 +1,6 @@
-import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
-import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
+import { WhiteboardProvider } from '../containers/WhiteboardProvider';
+import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 
 export interface WhiteboardPageProps {
   parentUrl: string;

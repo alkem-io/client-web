@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles';
+import type { Components, Theme } from '@mui/material/styles';
 import { themeTypographyOptions } from '@/core/ui/typography/themeTypographyOptions';
 
 const MuiChip: Components<Theme>['MuiChip'] = {

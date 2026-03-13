@@ -1,4 +1,4 @@
-import { ApolloCache, FetchResult, useApolloClient } from '@apollo/client';
+import { type ApolloCache, type FetchResult, useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 
 /***

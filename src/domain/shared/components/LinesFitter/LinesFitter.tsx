@@ -1,7 +1,7 @@
-import React, { ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
-import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import { type ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
 import { useResizeDetector } from 'react-resize-detector';
+import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
 
 enum Stage {
   MEASURING_EXPECTED_HEIGHT,
@@ -96,8 +96,8 @@ export interface LinesFitterProps<Item> extends BoxProps {
 
 const getInitialHeight = (height: number | string | undefined) => {
   if (typeof height === 'string') {
-    const numericHeight = parseInt(height);
-    if (isNaN(numericHeight)) {
+    const numericHeight = parseInt(height, 10);
+    if (Number.isNaN(numericHeight)) {
       return undefined;
     }
     return numericHeight;

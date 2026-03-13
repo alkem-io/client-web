@@ -1,12 +1,12 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { AddCircleOutlineOutlined } from '@mui/icons-material';
+import { ButtonBase, type SxProps, type Theme } from '@mui/material';
+import type { MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import Avatar from '@/core/ui/avatar/Avatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { CaptionSmall } from '@/core/ui/typography';
-import { AddCircleOutlineOutlined } from '@mui/icons-material';
-import { ButtonBase, SxProps, Theme } from '@mui/material';
-import { MouseEventHandler } from 'react';
-import { useTranslation } from 'react-i18next';
 import { getIndentStyle } from '../../../space/components/spaceDashboardNavigation/dashboardNavigation/utils';
 
 interface DashboardAddButtonProps {
@@ -31,15 +31,13 @@ export const DashboardAddButton = ({ url, level = 0, onClick, translationKey, sx
           <AddCircleOutlineOutlined />
         </Avatar>
       }
-      square
+      square={true}
       sx={{ ...getIndentStyle(level), ...sx }}
     >
       <CaptionSmall>
-        <>
-          {translationKey
-            ? t(translationKey, { defaultValue: t('common.add') })
-            : t('buttons.addSubject', { subject: t('common.subspace') })}
-        </>
+        {translationKey
+          ? t(translationKey, { defaultValue: t('common.add') })
+          : t('buttons.addSubject', { subject: t('common.subspace') })}
       </CaptionSmall>
     </BadgeCardView>
   );

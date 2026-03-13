@@ -1,23 +1,23 @@
-import { cloneElement, ReactElement, Ref, useLayoutEffect, useRef, useState } from 'react';
-import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
-import PlatformNavigationUserAvatar from './PlatformNavigationUserAvatar';
-import PlatformSearch from '../platformSearch/PlatformSearch';
-import PlatformNavigationMenuButton from './PlatformNavigationMenuButton';
 import { Box, MenuItem, Slide } from '@mui/material';
-import PlatformNavigationUserMenu, { UserMenuDivider } from './PlatformNavigationUserMenu';
-import UserMenuPlatformNavigationSegment from './platformNavigationMenu/UserMenuPlatformNavigationSegment';
-import NavigationBarSideContent from '@/core/ui/navigation/NavigationBarSideContent';
-import { gutters } from '@/core/ui/grid/utils';
-import { Collapsible } from '@/core/ui/navigation/Collapsible';
-import { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
+import { cloneElement, type ReactElement, type Ref, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
 import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
-import PlatformNavigationUncollapse from './PlatformNavigationUncollapse';
+import { gutters } from '@/core/ui/grid/utils';
 import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
-import { useTranslation } from 'react-i18next';
-import PoweredBy from '../poweredBy/PoweredBy';
-import { PlatformNotificationsButton } from './PlatformNotificationsButton';
+import type { Collapsible } from '@/core/ui/navigation/Collapsible';
+import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
+import NavigationBarSideContent from '@/core/ui/navigation/NavigationBarSideContent';
+import type { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
 import { UserMessagingButton } from '@/main/userMessaging/UserMessagingButton';
+import PlatformSearch from '../platformSearch/PlatformSearch';
+import PoweredBy from '../poweredBy/PoweredBy';
+import PlatformNavigationMenuButton from './PlatformNavigationMenuButton';
+import PlatformNavigationUncollapse from './PlatformNavigationUncollapse';
+import PlatformNavigationUserAvatar from './PlatformNavigationUserAvatar';
+import PlatformNavigationUserMenu, { UserMenuDivider } from './PlatformNavigationUserMenu';
+import { PlatformNotificationsButton } from './PlatformNotificationsButton';
+import UserMenuPlatformNavigationSegment from './platformNavigationMenu/UserMenuPlatformNavigationSegment';
 
 export interface PlatformNavigationBarProps {
   breadcrumbs?: ReactElement<UncontrolledExpandable & { ref: Ref<Collapsible> }>;
@@ -111,7 +111,7 @@ const PlatformNavigationBar = ({ breadcrumbs, staticPosition }: PlatformNavigati
                 isSmallScreen && [
                   <UserMenuDivider key="divider" />,
                   <Box component={MenuItem} paddingY={gutters(0.5)} key="menu-item">
-                    <PoweredBy preview />
+                    <PoweredBy preview={true} />
                   </Box>,
                 ]
               }

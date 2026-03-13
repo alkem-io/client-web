@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
-import { useAlkemioCookies } from './useAlkemioCookies';
-import TextContainer from './components/TextContainer';
+import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
+import TextContainer from './components/TextContainer';
+import { useAlkemioCookies } from './useAlkemioCookies';
 
 interface GeneralConsentProps {
   handleOpenSettings: () => void;

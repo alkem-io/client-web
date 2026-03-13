@@ -1,10 +1,10 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Box, type BoxProps, CircularProgress, FormHelperText, TextField, type TextFieldProps } from '@mui/material';
+import type { DistributiveOmit } from '@mui/types';
+import { useField } from 'formik';
+import { type ReactNode, useMemo } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import HelpButton from '@/core/ui/button/HelpButton';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { Box, BoxProps, CircularProgress, FormHelperText, TextField, TextFieldProps } from '@mui/material';
-import { DistributiveOmit } from '@mui/types';
-import { useField } from 'formik';
-import { ReactNode, useMemo } from 'react';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 
 export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
@@ -77,7 +77,7 @@ export const FormikInputField = ({
         autoComplete={autoComplete}
         rows={rows}
         multiline={!!rows}
-        fullWidth
+        fullWidth={true}
         InputProps={{
           ...InputProps,
           endAdornment: (
@@ -92,9 +92,7 @@ export const FormikInputField = ({
         {...rest}
       />
       <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
-        <FormHelperText error={isError}>
-          <>{helperText}</>
-        </FormHelperText>
+        <FormHelperText error={isError}>{helperText}</FormHelperText>
       </CharacterCounter>
     </Box>
   );

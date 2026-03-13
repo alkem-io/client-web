@@ -1,11 +1,11 @@
-import { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
-import { Caption } from '../typography';
-import { gutters } from '../grid/utils';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import FormattedDate from '../date/FormattedDate';
-import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
+import FormattedDate from '../date/FormattedDate';
+import { gutters } from '../grid/utils';
+import { Caption } from '../typography';
 
 type AuthorshipProps = {
   author:

@@ -1,11 +1,11 @@
-import { ChangeEvent, FC, useCallback, useId, MouseEvent } from 'react';
-import { Alert, Box, CircularProgress, IconButton, Switch, TextField, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Alert, Box, CircularProgress, IconButton, Switch, TextField, Typography } from '@mui/material';
+import { type ChangeEvent, type FC, type MouseEvent, useCallback, useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
-import { theme } from '@/core/ui/themes/default/Theme';
-import { UseWhiteboardGuestAccessResult } from '../hooks/useWhiteboardGuestAccess';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { theme } from '@/core/ui/themes/default/Theme';
+import type { UseWhiteboardGuestAccessResult } from '../hooks/useWhiteboardGuestAccess';
 
 export interface WhiteboardGuestAccessSectionProps {
   guestAccess: UseWhiteboardGuestAccessResult;
@@ -115,7 +115,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
                 sx: { color: theme => theme.palette.neutralMedium.dark },
               },
             }}
-            fullWidth
+            fullWidth={true}
             sx={{ flexGrow: 1 }}
           />
           <IconButton

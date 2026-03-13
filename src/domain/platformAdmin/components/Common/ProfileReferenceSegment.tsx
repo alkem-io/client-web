@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
-import { newReferenceName } from '@/domain/common/reference/newReferenceName';
-import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { newReferenceName } from '@/domain/common/reference/newReferenceName';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { type PushFunc, type RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
+import ReferenceSegment, { type ReferenceSegmentProps } from './ReferenceSegment';
 
 interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
   profileId?: string;

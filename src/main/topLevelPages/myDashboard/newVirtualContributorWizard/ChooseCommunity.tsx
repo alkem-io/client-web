@@ -1,16 +1,16 @@
-import { useMemo, useState } from 'react';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import Gutters from '@/core/ui/grid/Gutters';
 import { Formik } from 'formik';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { SelectableSpace } from './useVirtualContributorWizard';
-import { SelectableKnowledgeSpace } from './ExistingSpace';
+import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
+import type { SelectableKnowledgeSpace } from './ExistingSpace';
+import type { SelectableSpace } from './useVirtualContributorWizard';
 
 interface ChooseCommunityProps {
   onClose: () => void;
@@ -77,8 +77,8 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading, titl
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={onCreate}
     >
       {({ values }) => (
@@ -91,7 +91,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading, titl
             })}
           />
           <DialogContent>
-            <Gutters disablePadding>
+            <Gutters disablePadding={true}>
               <Caption>{t('createVirtualContributorWizard.chooseCommunity.description')}</Caption>
               <FormikAutocomplete
                 name="spaceId"

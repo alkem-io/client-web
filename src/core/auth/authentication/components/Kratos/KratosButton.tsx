@@ -1,11 +1,11 @@
-import { Box, ButtonProps, GridLegacy, SxProps, Theme, Tooltip } from '@mui/material';
-import { UiNodeInputAttributes } from '@ory/kratos-client';
-import { FC, ReactNode, useContext } from 'react';
+import { Box, type ButtonProps, GridLegacy, type SxProps, type Theme, Tooltip } from '@mui/material';
+import type { UiNodeInputAttributes } from '@ory/kratos-client';
+import { type FC, type ReactNode, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
+import AuthActionButton, { type AuthActionButtonProps } from '../Button';
 import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle } from './helpers';
-import { KratosProps } from './KratosProps';
-import AuthActionButton, { AuthActionButtonProps } from '../Button';
-import { useTranslation } from 'react-i18next';
+import type { KratosProps } from './KratosProps';
 
 interface KratosButtonProps extends KratosProps {
   variant?: ButtonProps['variant'];
@@ -20,12 +20,12 @@ export const KratosButton: FC<KratosButtonProps> = ({ disabled, node, sx, varian
   const { t } = useTranslation();
 
   return (
-    <GridLegacy item xs={12}>
+    <GridLegacy item={true} xs={12}>
       <Tooltip
         title={t('pages.accept-terms.tooltip')}
         disableFocusListener={!disabled}
         disableHoverListener={!disabled}
-        arrow
+        arrow={true}
         placement="top"
       >
         <Box>

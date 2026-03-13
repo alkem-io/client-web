@@ -1,4 +1,4 @@
-import { CropConfig } from '@/core/utils/images/cropImage';
+import type { CropConfig } from '@/core/utils/images/cropImage';
 
 /**
  * Gets the default crop config for an image, which is the maximum centered crop keeping aspect ratio

@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
 import {
   ActivityCreatedDocument,
   useActivityLogOnCollaborationQuery,
   useActorDetailsLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 import {
-  ActivityCreatedSubscription,
-  ActivityCreatedSubscriptionVariables,
-  ActorDetailsQuery,
+  type ActivityCreatedSubscription,
+  type ActivityCreatedSubscriptionVariables,
+  type ActivityEventType,
+  type ActivityLogOnCollaborationFragment,
+  type ActorDetailsQuery,
   ActorType,
-  ActivityEventType,
-  ActivityLogOnCollaborationFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
+import type { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
 
 const useActivityOnCollaborationSubscription = (collaborationID: string, { types }: { types?: ActivityEventType[] }) =>
   createUseSubscriptionToSubEntityHook<
@@ -68,7 +68,7 @@ const useActivityOnCollaboration = (
   useActivityOnCollaborationSubscription(collaborationID!, { types })(
     activityLogData,
     data => data?.activityLogOnCollaboration,
-    // @ts-ignore react-18
+    // @ts-expect-error react-18
     subscribeToMore,
     { skip: !collaborationID }
   );
@@ -81,11 +81,7 @@ const useActivityOnCollaboration = (
   const memberJoinedContributorIds = useMemo(() => {
     const entries = activityLogData?.activityLogOnCollaboration ?? [];
     return [
-      ...new Set(
-        entries
-          .filter((e): e is typeof e & { contributor: { id: string } } => 'contributor' in e)
-          .map(e => e.contributor.id)
-      ),
+      ...new Set(entries.filter((e): e is typeof e & { actor: { id: string } } => 'actor' in e).map(e => e.actor.id)),
     ];
   }, [activityLogData]);
 

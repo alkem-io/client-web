@@ -1,5 +1,5 @@
-import { Theme } from '@mui/material/styles';
 import { alpha } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 export type BackgroundColor = keyof Theme['palette']['background'];
 

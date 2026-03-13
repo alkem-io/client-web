@@ -1,13 +1,13 @@
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { GUTTER_MUI } from '@/core/ui/grid/constants';
-import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { GUTTER_MUI } from '@/core/ui/grid/constants';
+import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import UserCard from '@/domain/community/user/userCard/UserCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 const loremIpsum =
@@ -21,7 +21,7 @@ const SpaceCardsDemo = () => {
       </PageTitle>
       <PageContent>
         <PageContentColumn columns={3}>
-          <PageContentBlock accent>
+          <PageContentBlock accent={true}>
             <BlockTitle>Space Cards</BlockTitle>
             <Text>{loremIpsum}</Text>
           </PageContentBlock>
@@ -29,7 +29,7 @@ const SpaceCardsDemo = () => {
         <PageContentColumn columns={9}>
           <PageContentBlock>
             <PageContentBlockHeader title="Explore Spaces Cards" />
-            <PageContentBlockGrid disablePadding cards>
+            <PageContentBlockGrid disablePadding={true} cards={true}>
               <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
@@ -38,7 +38,7 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 parentInfo={{ displayName: 'Parent Space', url: '' }}
                 level={SpaceLevel.L1}
-                locked
+                locked={true}
               />
               <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
@@ -47,14 +47,14 @@ const SpaceCardsDemo = () => {
                 tags={['subspace', 'card']}
                 spaceUri=""
                 level={SpaceLevel.L0}
-                isPrivate
+                isPrivate={true}
               />
               <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
-                member
+                member={true}
                 spaceUri=""
                 parentInfo={{ displayName: 'Parent Space', url: '' }}
                 level={SpaceLevel.L2}
@@ -63,7 +63,7 @@ const SpaceCardsDemo = () => {
           </PageContentBlock>
           <PageContentBlock>
             <PageContentBlockHeader title="User Cards" />
-            <PageContentBlockGrid disablePadding cards>
+            <PageContentBlockGrid disablePadding={true} cards={true}>
               <UserCard
                 avatarSrc="https://alkem.io/api/private/rest/storage/document/0e228032-f3ab-4dec-9cd1-01d8a6e3ef2b"
                 displayName="Emilia Pavlova"
@@ -81,7 +81,7 @@ const SpaceCardsDemo = () => {
           </PageContentBlock>
           <PageContentBlock>
             <PageContentBlockHeader title="Space Cards" />
-            <PageContentBlockGrid disablePadding cards>
+            <PageContentBlockGrid disablePadding={true} cards={true}>
               <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
@@ -110,7 +110,7 @@ const SpaceCardsDemo = () => {
           </PageContentBlock>
           <PageContentBlock>
             <PageContentBlockHeader title="Subspace Cards" />
-            <PageContentBlockGrid disablePadding cards>
+            <PageContentBlockGrid disablePadding={true} cards={true}>
               <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}

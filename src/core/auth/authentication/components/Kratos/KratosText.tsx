@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import { Box, Typography, Paper, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyIcon from '@mui/icons-material/Key';
-import { UiNode, UiNodeTextAttributes } from '@ory/kratos-client';
+import { Box, IconButton, Paper, Typography } from '@mui/material';
+import type { UiNode, UiNodeTextAttributes } from '@ory/kratos-client';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKratosT } from './messages';
 

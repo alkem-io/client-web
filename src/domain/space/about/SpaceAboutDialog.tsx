@@ -1,38 +1,38 @@
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
-import { gutters } from '@/core/ui/grid/utils';
+import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import LockOutlined from '@mui/icons-material/LockOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
 import { Box, Link, Tooltip } from '@mui/material';
-import { MouseEventHandler, useRef } from 'react';
-import { Caption, CaptionSmall } from '@/core/ui/typography';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import type { Theme } from '@mui/material/styles';
+import { type MouseEventHandler, useRef } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { CommunityMembershipStatus, ProfileType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
+import { Caption, CaptionSmall } from '@/core/ui/typography';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
+import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import EntityDashboardLeadsSection, {
   getMessageType,
 } from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { Trans, useTranslation } from 'react-i18next';
-import { Theme } from '@mui/material/styles';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import References from '@/domain/shared/components/References/References';
-import { CommunityMembershipStatus, ProfileType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
-import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
-import LockOutlined from '@mui/icons-material/LockOutlined';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import AboutHeader from '@/domain/space/about/components/AboutHeader';
-import Gutters from '@/core/ui/grid/Gutters';
-import AboutDescription from '@/domain/space/about/components/AboutDescription';
-import Loading from '@/core/ui/loading/Loading';
-import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import RouterLink from '@/core/ui/link/RouterLink';
-import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
-import useNavigate from '@/core/routing/useNavigate';
-import { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
+import type { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import References from '@/domain/shared/components/References/References';
+import AboutDescription from '@/domain/space/about/components/AboutDescription';
+import AboutHeader from '@/domain/space/about/components/AboutHeader';
+import { buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import type { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 
 export interface SpaceAboutDialogProps {
   open: boolean;
@@ -118,7 +118,7 @@ const SpaceAboutDialog = ({
         organizationsHeader={t('pages.space.sections.dashboard.organization')}
         usersHeader={t('pages.space.sections.dashboard.organization')}
         organizationsHeaderIcon={
-          <Tooltip title={t('pages.space.sections.dashboard.hostTooltip')} arrow>
+          <Tooltip title={t('pages.space.sections.dashboard.hostTooltip')} arrow={true}>
             <InfoOutlinedIcon color="primary" />
           </Tooltip>
         }
@@ -172,7 +172,7 @@ const SpaceAboutDialog = ({
         startIcon={
           !hasReadPrivilege && (
             <Tooltip
-              arrow
+              arrow={true}
               placement="top"
               title={
                 <Caption>
@@ -196,7 +196,7 @@ const SpaceAboutDialog = ({
         <Gutters>
           <PageContentColumn columns={8}>
             <PageContentColumn columns={4}>
-              <PageContentBlock accent>
+              <PageContentBlock accent={true}>
                 <AboutDescription
                   member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
                   description={aboutProfile?.description}
@@ -208,7 +208,7 @@ const SpaceAboutDialog = ({
                   onEditClick={() => openEditDialog('/about#description')}
                 />
               </PageContentBlock>
-              <Gutters disablePadding display="flex" flexDirection="column" alignItems="center" width="100%">
+              <Gutters disablePadding={true} display="flex" flexDirection="column" alignItems="center" width="100%">
                 <ApplicationButtonContainer
                   spaceId={space.id}
                   parentSpaceId={parentSpaceId}
@@ -301,7 +301,7 @@ const SpaceAboutDialog = ({
               </PageContentBlock>
             )}
 
-            {hasLeads && <PageContentBlockSeamless disablePadding>{renderHost()}</PageContentBlockSeamless>}
+            {hasLeads && <PageContentBlockSeamless disablePadding={true}>{renderHost()}</PageContentBlockSeamless>}
           </PageContentColumn>
         </Gutters>
       </Box>

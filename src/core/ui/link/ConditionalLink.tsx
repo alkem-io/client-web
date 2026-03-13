@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
 import { Link } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import RouterLink from './RouterLink';
 
 export interface ConditionalLinkProps {
@@ -19,6 +19,6 @@ const ConditionalLink = ({
       {children}
     </Link>
   ) : (
-    <>{children}</>
+    children
   );
 export default ConditionalLink;

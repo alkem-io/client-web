@@ -1,8 +1,8 @@
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
-import { Box, BoxProps } from '@mui/material';
-import { gutters } from '../grid/utils';
-import { BackgroundColor, overflowBorderGradient } from './utils';
+import { Box, type BoxProps } from '@mui/material';
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { useResizeDetector } from 'react-resize-detector';
+import { gutters } from '../grid/utils';
+import { type BackgroundColor, overflowBorderGradient } from './utils';
 
 export interface AutomaticOverflowGradientProps extends BoxProps {
   lastLine?: boolean;

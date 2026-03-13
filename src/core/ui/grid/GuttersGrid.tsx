@@ -1,8 +1,9 @@
-import React, { ReactElement } from 'react';
-import { Box, BoxProps } from '@mui/material';
-import { BoxTypeMap } from '@mui/system';
-import { gutters } from './utils';
+import { Box, type BoxProps } from '@mui/material';
+import type { BoxTypeMap } from '@mui/system';
+import type React from 'react';
+import type { ReactElement } from 'react';
 import { useScreenSize } from './constants';
+import { gutters } from './utils';
 
 export interface GuttersGridProps extends BoxProps {
   columns?: number; // default 2
@@ -20,7 +21,7 @@ const GuttersGrid = ({
   ref?: React.Ref<unknown>;
 }) => {
   const { isMediumSmallScreen } = useScreenSize();
-  const gridColumns = isMediumSmallScreen ? 'auto' : (100 / columns + '% ').repeat(columns).trim();
+  const gridColumns = isMediumSmallScreen ? 'auto' : `${100 / columns}% `.repeat(columns).trim();
 
   return (
     <Box

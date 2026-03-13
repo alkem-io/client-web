@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import dayjs from 'dayjs';
-import { Caption } from '@/core/ui/typography';
-import RoundedBadge, { RoundedBadgeProps } from '@/core/ui/icon/RoundedBadge';
-import { formatBadgeDate, formatLongDateTimeString, startOfDay } from '@/core/utils/time/utils';
-import ToggleableTooltip from '@/core/ui/tooltip/ToggleableTooltip';
 import { Box, useTheme } from '@mui/material';
+import dayjs from 'dayjs';
+import { useMemo } from 'react';
+import RoundedBadge, { type RoundedBadgeProps } from '@/core/ui/icon/RoundedBadge';
+import ToggleableTooltip from '@/core/ui/tooltip/ToggleableTooltip';
+import { Caption } from '@/core/ui/typography';
+import { formatBadgeDate, formatLongDateTimeString, startOfDay } from '@/core/utils/time/utils';
 
 interface CalendarEventBadgeProps extends Partial<RoundedBadgeProps> {
   startDate: Date | undefined;

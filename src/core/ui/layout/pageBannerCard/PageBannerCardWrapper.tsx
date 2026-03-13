@@ -1,7 +1,7 @@
-import { BoxProps } from '@mui/material';
+import type { BoxProps } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
-import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
+import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
 
 import { gutters } from '@/core/ui/grid/utils';
 

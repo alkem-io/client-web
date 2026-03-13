@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Box, Button, Typography } from '@mui/material';
+import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface PublicWhiteboardErrorProps {
   error: Error;
@@ -51,7 +51,7 @@ const PublicWhiteboardError: FC<PublicWhiteboardErrorProps> = ({ error, onRetry 
       textAlign="center"
     >
       <ErrorOutlineIcon color="error" sx={{ fontSize: 64, mb: 2 }} />
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom={true}>
         {title}
       </Typography>
       <Typography variant="body1" color="text.secondary" maxWidth={600} mb={4}>

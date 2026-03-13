@@ -1,6 +1,6 @@
-import { UiContainer } from '@ory/kratos-client';
-import { Box, BoxProps } from '@mui/material';
-import { createContext, Dispatch, FormEvent, useCallback, useContext, useMemo, useState } from 'react';
+import { Box, type BoxProps } from '@mui/material';
+import type { UiContainer } from '@ory/kratos-client';
+import { createContext, type Dispatch, type FormEvent, useCallback, useContext, useMemo, useState } from 'react';
 import { isSubmittingPasswordFlow } from './helpers';
 
 interface KratosFormProps extends BoxProps<'form'> {
@@ -43,7 +43,14 @@ const KratosForm = ({ ui, children, onSubmit: customOnSubmit, ...formProps }: Kr
   );
 
   return (
-    <Box component="form" action={ui?.action} method={ui?.method} onSubmit={handleSubmit} noValidate {...formProps}>
+    <Box
+      component="form"
+      action={ui?.action}
+      method={ui?.method}
+      onSubmit={handleSubmit}
+      noValidate={true}
+      {...formProps}
+    >
       <KratosFormContext value={contextValue}>{children}</KratosFormContext>
     </Box>
   );

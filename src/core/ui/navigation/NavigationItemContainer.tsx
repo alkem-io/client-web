@@ -1,4 +1,4 @@
-import { Box, BoxProps, Paper } from '@mui/material';
+import { Box, type BoxProps, Paper } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { useElevationContext } from '../utils/ElevationContext';
 
