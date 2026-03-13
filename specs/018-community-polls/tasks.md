@@ -19,7 +19,7 @@
 
 **Purpose**: Generate types from updated server schema and create the poll domain directory structure.
 
-- [x] T001 Run `pnpm codegen` to generate updated GraphQL types including Poll, PollOption, PollVote, PollSettings, PollStatus, PollResultsVisibility, PollResultsDetail, and the extended CalloutFramingType enum with POLL value (requires server with polls feature running at localhost:4000/graphql)
+- [x] T001 Run `pnpm codegen` to generate updated GraphQL types including Poll, PollOption, PollVote, PollSettings, PollStatus, PollResultsVisibility, PollResultsDetail, and the extended CalloutFramingType enum with POLL value (requires server with polls feature running at localhost:3000/graphql)
 - [x] T002 Create poll domain directory structure: `src/domain/collaboration/poll/`, `src/domain/collaboration/poll/models/`, `src/domain/collaboration/poll/hooks/`, `src/domain/collaboration/poll/graphql/`
 
 ---
@@ -246,7 +246,7 @@
   }
   ```
   Import the `PollDetails` fragment from `pollFragments.graphql`.
-- [ ] T051 [US7] Run `pnpm codegen` to generate `usePollVoteUpdatedSubscription` and `usePollOptionsChangedSubscription` hooks (requires server with subscriptions running at localhost:4000/graphql)
+- [ ] T051 [US7] Run `pnpm codegen` to generate `usePollVoteUpdatedSubscription` and `usePollOptionsChangedSubscription` hooks (requires server with subscriptions running at localhost:3000/graphql)
 - [ ] T052 [US7] Create `usePollSubscriptions` hook in `src/domain/collaboration/poll/hooks/usePollSubscriptions.ts` — wraps both generated subscription hooks. Accepts `pollID: string` and `skip: boolean`. Uses `onData` callback to write updated poll data to Apollo cache via `client.cache.writeFragment` using the `PollDetails` fragment. Returns `{ voteUpdateLoading, optionsChangeLoading }` for optional UI indicators. Both subscriptions use `skip` when `pollID` is falsy or component is not visible.
 - [ ] T053 [US7] Integrate `usePollSubscriptions` into `CalloutFramingPoll` in `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — call `usePollSubscriptions({ pollID: callout.framing.poll?.id, skip: !callout.framing.poll })`. The hook activates when the component mounts and deactivates on unmount, providing automatic subscribe/unsubscribe lifecycle.
 - [ ] T054 [US7] Handle vote revocation in `PollView` in `src/domain/collaboration/poll/PollView.tsx` — when `myVote` transitions from non-null to null (detected via effect or render), reset `isChangingVote` to false and clear local selection state, returning the user to voting mode.
@@ -387,5 +387,5 @@ With multiple developers after Phase 2:
 - Each user story should be independently completable and testable
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
-- T001 and T005 require the server polls feature running at localhost:4000/graphql — if server is not ready, start from T002 and mock the generated types
+- T001 and T005 require the server polls feature running at localhost:3000/graphql — if server is not ready, start from T002 and mock the generated types
 - All mutations return the full updated Poll object via `...PollDetails` fragment — this ensures the Apollo cache is automatically updated without manual cache manipulation

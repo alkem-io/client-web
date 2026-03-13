@@ -1,7 +1,7 @@
-import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import BlockIcon from '@mui/icons-material/Block';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import { Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { Suspense, useMemo } from 'react';
@@ -23,6 +23,7 @@ import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/Whiteboar
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
+import PollFormFields from '../../poll/PollFormFields';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { CalloutFormSubmittedValues } from './CalloutFormModel';

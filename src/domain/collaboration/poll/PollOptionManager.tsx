@@ -1,8 +1,17 @@
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
 import { useState } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
+import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import PollOptionManagerRow from '@/domain/collaboration/poll/PollOptionManagerRow';
 
 type PollOptionManagerProps = {
@@ -99,7 +108,7 @@ const PollOptionManager = ({ poll, pollId }: PollOptionManagerProps) => {
           onChange={e => setNewOptionText(e.target.value)}
           size="small"
           placeholder={t('poll.options.add')}
-          fullWidth
+          fullWidth={true}
           inputProps={{ maxLength: 512 }}
           onKeyDown={e => {
             if (e.key === 'Enter') handleAddOption();
@@ -110,15 +119,21 @@ const PollOptionManager = ({ poll, pollId }: PollOptionManagerProps) => {
         </Button>
       </Box>
 
-      <Dialog open={confirmAction !== null} onClose={() => setConfirmAction(null)}>
+      <Dialog
+        open={confirmAction !== null}
+        onClose={() => setConfirmAction(null)}
+        aria-labelledby="poll-confirmation-title"
+        aria-describedby="poll-confirmation-description"
+      >
+        <DialogTitle id="poll-confirmation-title">{t('buttons.confirm')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText id="poll-confirmation-description">
             {confirmAction?.type === 'edit' ? t('poll.options.confirmEdit') : t('poll.options.confirmRemove')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmAction(null)}>{t('poll.vote.cancelButton')}</Button>
-          <Button onClick={handleConfirmAction} color="error" autoFocus>
+          <Button onClick={handleConfirmAction} color="error" autoFocus={true}>
             {t('buttons.confirm')}
           </Button>
         </DialogActions>
