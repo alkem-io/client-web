@@ -72,9 +72,9 @@ export const useUserConversations = () => {
             displayName = otherMembers.map(m => m.displayName).join(', ');
           }
 
-          // For 1:1 chats: use the other member's avatar; for groups: use room avatarUrl or first member's
+          // For 1:1 chats: use the other member's avatar; for groups: use room avatarUrl (composite avatar handles the fallback)
           const avatarUri =
-            !isGroup && otherMembers.length > 0 ? otherMembers[0].avatarUri : (room.avatarUrl ?? members[0]?.avatarUri);
+            !isGroup && otherMembers.length > 0 ? otherMembers[0].avatarUri : (room.avatarUrl ?? undefined);
 
           return {
             id: conv.id,

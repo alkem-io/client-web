@@ -17,6 +17,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
+import { GroupCompositeAvatar } from './GroupCompositeAvatar';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption, BlockTitle } from '@/core/ui/typography';
@@ -165,12 +166,20 @@ export const UserMessagingChatList = ({
           >
             <ListItemAvatar sx={{ minWidth: 48 }}>
               <Box position="relative" display="inline-flex">
-                <Avatar
-                  src={conversation.avatarUri}
-                  alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
-                  size="medium"
-                  sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-                />
+                {conversation.isGroup && !conversation.avatarUri ? (
+                  <GroupCompositeAvatar
+                    members={conversation.members}
+                    size="medium"
+                    sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+                  />
+                ) : (
+                  <Avatar
+                    src={conversation.avatarUri}
+                    alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
+                    size="medium"
+                    sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+                  />
+                )}
                 {conversation.isGroup && (
                   <GroupOutlinedIcon
                     sx={{

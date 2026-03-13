@@ -29,6 +29,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
 import { GroupChatManagementDialog } from './GroupChatManagementDialog';
+import { GroupCompositeAvatar } from './GroupCompositeAvatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useRef, useEffect, useCallback, useLayoutEffect, useState } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
@@ -359,12 +360,20 @@ export const UserMessagingConversationView = ({
             <ArrowBack />
           </IconButton>
         )}
-        <Avatar
-          src={conversation.avatarUri}
-          alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
-          size="medium"
-          sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
-        />
+        {isGroup && !conversation.avatarUri ? (
+          <GroupCompositeAvatar
+            members={conversation.members}
+            size="medium"
+            sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
+          />
+        ) : (
+          <Avatar
+            src={conversation.avatarUri}
+            alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
+            size="medium"
+            sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
+          />
+        )}
         <Box>
           <Typography variant="h4" fontWeight={500}>
             {conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
@@ -416,6 +425,7 @@ export const UserMessagingConversationView = ({
       {/* Group management dialog */}
       {isGroup && (
         <GroupChatManagementDialog
+          key={conversation.id}
           open={isManageDialogOpen}
           onClose={() => setIsManageDialogOpen(false)}
           conversationId={conversation.id}
