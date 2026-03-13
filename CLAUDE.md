@@ -278,7 +278,11 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
 ## Recent Changes
+- 022-simplify-deps-hooks: Added TypeScript 5.8.3, React 19.2.1 + Apollo Client 3.10, React Router 7.4, @dnd-kit 6.3/10.0, Vite 7.3
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
 - Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
-- CI lint workflow split into parallel jobs: typecheck, biome, eslint-compiler
+
+## Active Technologies
+- TypeScript 5.8.3, React 19.2.1 + Apollo Client 3.10, React Router 7.4, @dnd-kit 6.3/10.0, Vite 7.3 (022-simplify-deps-hooks)
+- N/A (Apollo cache, no direct storage changes) (022-simplify-deps-hooks)
