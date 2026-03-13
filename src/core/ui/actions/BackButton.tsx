@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button, ButtonProps } from '@mui/material';
-import { ButtonTypeMap } from '@mui/material/Button/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Button, type ButtonProps } from '@mui/material';
+import type { ButtonTypeMap } from '@mui/material/Button/Button';
+import type React from 'react';
 import { useTranslation } from 'react-i18next';
 
 const BackButton = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({

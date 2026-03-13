@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
-
-import { Trans, useTranslation } from 'react-i18next';
-import { CloudOff, CloudDone } from '@mui/icons-material';
+import { CloudDone, CloudOff } from '@mui/icons-material';
+import { Dialog, DialogContent, DialogContentText, IconButton, Tooltip } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import { Tooltip, IconButton, Dialog, DialogContent, DialogContentText } from '@mui/material';
-
-import Gutters from '@/core/ui/grid/Gutters';
+import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
 
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 
@@ -46,7 +44,7 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
     <Trans
       i18nKey="pages.whiteboard.unsuccessful-save"
       components={{ p: <p />, strong: <strong /> }}
-      values={{ datetime: formattedTime, warningMessage: isOpen ? '' : t('common.warning') + ':' }}
+      values={{ datetime: formattedTime, warningMessage: isOpen ? '' : `${t('common.warning')}:` }}
     />
   );
 
@@ -58,8 +56,8 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
             {isSaved ? (
               <Tooltip
                 title={savedText}
-                disableFocusListener
-                disableHoverListener
+                disableFocusListener={true}
+                disableHoverListener={true}
                 slotProps={{ popper: { disablePortal: true } }}
                 onClose={handleMessageClose}
               >
@@ -68,8 +66,8 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
             ) : (
               <Tooltip
                 title={unsavedText}
-                disableFocusListener
-                disableHoverListener
+                disableFocusListener={true}
+                disableHoverListener={true}
                 slotProps={{ popper: { disablePortal: true } }}
                 onClose={handleMessageClose}
               >

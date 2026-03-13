@@ -1,15 +1,15 @@
+import type { FetchResult } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FetchResult } from '@apollo/client';
-import { Message } from '../models/Message';
-import PostMessageToCommentsForm from './PostMessageToCommentsForm';
-import Gutters from '@/core/ui/grid/Gutters';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import useCommentReactionsMutations from './useCommentReactionsMutations';
-import MessagesThread from './MessagesThread';
-import { CommentInputFieldProps } from './CommentInputField';
+import Gutters from '@/core/ui/grid/Gutters';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
+import type { Message } from '../models/Message';
 import CollapsibleCommentsThread from './CollapsibleCommentsThread';
+import type { CommentInputFieldProps } from './CommentInputField';
+import MessagesThread from './MessagesThread';
+import PostMessageToCommentsForm from './PostMessageToCommentsForm';
+import useCommentReactionsMutations from './useCommentReactionsMutations';
 
 export interface CommentsComponentProps {
   messages: Message[] | undefined;
@@ -87,7 +87,7 @@ const CommentsComponent = ({
           collapsedHeight={collapsedHeight}
           id={commentsId ? `comments-thread-${commentsId}` : undefined}
         >
-          <Gutters disableSidePadding gap={0}>
+          <Gutters disableSidePadding={true} gap={0}>
             <MessagesThread
               messages={messages}
               vcInteractions={vcInteractions}

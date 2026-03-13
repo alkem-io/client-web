@@ -1,5 +1,5 @@
-import { Identifiable } from '@/core/utils/Identifiable';
-import ProfilePageBanner, { ProfilePageBannerProps } from '@/domain/common/profile/ProfilePageBanner';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import ProfilePageBanner, { type ProfilePageBannerProps } from '@/domain/common/profile/ProfilePageBanner';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 type OrganizationPageBannerProps = {

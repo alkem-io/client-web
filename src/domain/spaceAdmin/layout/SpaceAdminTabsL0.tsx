@@ -1,14 +1,14 @@
-import { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
-import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
+import type { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export const spaceAdminTabsL0: TabDefinition<SettingsSection>[] = [
   {

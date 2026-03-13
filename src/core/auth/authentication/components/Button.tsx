@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@mui/material';
+import { Button, type ButtonProps } from '@mui/material';
 
 export interface AuthActionButtonProps extends ButtonProps {
   justifyContent?: 'start' | 'center';

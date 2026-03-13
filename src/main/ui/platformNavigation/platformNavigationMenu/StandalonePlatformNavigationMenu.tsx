@@ -1,17 +1,18 @@
-import { Box, ButtonProps, Divider, MenuItem, MenuList, Paper, SvgIconProps } from '@mui/material';
-import Gutters from '@/core/ui/grid/Gutters';
-import React, { ComponentType, PropsWithChildren } from 'react';
-import RouterLink from '@/core/ui/link/RouterLink';
+import { ExitToAppOutlined } from '@mui/icons-material';
+import { Box, type ButtonProps, Divider, MenuItem, MenuList, Paper, type SvgIconProps } from '@mui/material';
+import type { ButtonTypeMap } from '@mui/material/Button/Button';
+import FocusTrap from '@mui/material/Unstable_TrapFocus';
+import type React from 'react';
+import type { ComponentType, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
+import { Caption } from '@/core/ui/typography';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
-import { ButtonTypeMap } from '@mui/material/Button/Button';
 import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '../constants';
 import PLATFORM_NAVIGATION_MENU_ITEMS from './menuItems';
-import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
-import { ExitToAppOutlined } from '@mui/icons-material';
-import { Caption } from '@/core/ui/typography';
-import FocusTrap from '@mui/material/Unstable_TrapFocus';
 
 type PlatformNavigationMenuItemProps = {
   iconComponent: ComponentType<SvgIconProps>;
@@ -48,7 +49,7 @@ const StandalonePlatformNavigationMenu = ({
 
   return (
     <Paper ref={ref} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
-      <FocusTrap open>
+      <FocusTrap open={true}>
         <MenuList
           sx={{
             display: 'flex',
@@ -61,14 +62,14 @@ const StandalonePlatformNavigationMenu = ({
         >
           {PLATFORM_NAVIGATION_MENU_ITEMS.map(({ label, ...props }) => (
             <PlatformNavigationMenuItem key={label} {...props} onClick={onClose}>
-              <>{t(label)}</>
+              {t(label)}
             </PlatformNavigationMenuItem>
           ))}
           <Divider component="li" sx={{ width: '75%', marginY: 1 }} />
           <Box component={MenuItem} paddingY={gutters(0.5)}>
-            <PoweredBy preview />
+            <PoweredBy preview={true} />
           </Box>
-          <NavigatableMenuItem tabOnly iconComponent={ExitToAppOutlined} onClick={onClose}>
+          <NavigatableMenuItem tabOnly={true} iconComponent={ExitToAppOutlined} onClick={onClose}>
             {t('components.navigation.exitMenu')}
           </NavigatableMenuItem>
         </MenuList>

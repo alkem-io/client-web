@@ -1,38 +1,38 @@
-import React, { useContext, useEffect, useState, Suspense } from 'react';
-import PageContent from '@/core/ui/content/PageContent';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Outlet } from 'react-router-dom';
-import { theme } from '@/core/ui/themes/default/Theme';
-import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
-import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import { Box, Button } from '@mui/material';
-import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { MENU_STATE_KEY, MenuState, SubspaceInfoColumn } from './SubspaceInfoColumn';
-import { InnovationFlowStateContext } from '../routing/SubspaceRoutes';
+import { Suspense, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Outlet } from 'react-router-dom';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSubSpace } from '../hooks/useSubSpace';
-import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { theme } from '@/core/ui/themes/default/Theme';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
+import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { DialogActions } from '../components/subspaces/DialogActions';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
-import { gutters } from '@/core/ui/grid/utils';
-import { useTranslation } from 'react-i18next';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { useSubSpace } from '../hooks/useSubSpace';
 import { useVideoCall } from '../hooks/useVideoCall';
-import { usePageTitle } from '@/core/routing/usePageTitle';
+import { InnovationFlowStateContext } from '../routing/SubspaceRoutes';
+import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
+import { MENU_STATE_KEY, MenuState, SubspaceInfoColumn } from './SubspaceInfoColumn';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
@@ -99,9 +99,9 @@ export const SubspacePageLayout = () => {
       state => state.displayName === currentInnovationFlowStateDisplayName
     );
     if (selectedIndex !== undefined && selectedIndex >= 0) {
-      setSelectedInnovationFlowState!(innovationFlowStates[selectedIndex].displayName);
+      setSelectedInnovationFlowState?.(innovationFlowStates[selectedIndex].displayName);
     } else {
-      setSelectedInnovationFlowState!(innovationFlowStates[0].displayName);
+      setSelectedInnovationFlowState?.(innovationFlowStates[0].displayName);
     }
   }, [innovationFlowStates, currentInnovationFlowStateDisplayName, setSelectedInnovationFlowState]);
 
@@ -165,7 +165,7 @@ export const SubspacePageLayout = () => {
                 states={innovationFlowStates}
                 currentState={currentInnovationFlowStateDisplayName}
                 selectedState={selectedFlowStateName}
-                onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
+                onSelectState={state => setSelectedInnovationFlowState?.(state.displayName)}
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
                 settingsButton={

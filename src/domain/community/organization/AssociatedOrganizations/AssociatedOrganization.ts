@@ -1,7 +1,7 @@
-import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
-import { AssociatedOrganizationQuery, OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
-import { ApolloError } from '@apollo/client';
+import type { ApolloError } from '@apollo/client';
+import { type AssociatedOrganizationQuery, OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
+import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 
 export interface AssociatedOrganization {
   key: string; // to be used as React key

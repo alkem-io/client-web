@@ -1,4 +1,4 @@
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import SpaceSettingsLayout from './SpaceAdminLayoutSpace';
 import SubspaceSettingsLayout from './SpaceAdminLayoutSubspace';
 

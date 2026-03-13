@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
 
 const CardDetails = ({ transparent = false, sx, ...boxProps }: { transparent?: boolean } & BoxProps) => {
   const mergedSx: BoxProps['sx'] = {

@@ -1,57 +1,54 @@
-import { useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
-
-import { Box, CircularProgress, Link } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { NetworkStatus } from '@apollo/client';
 
-import Gutters from '@/core/ui/grid/Gutters';
+import { Box, CircularProgress, Link } from '@mui/material';
+import { type PropsWithChildren, type ReactNode, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSearchQuery,
-  useSpaceUrlResolverQuery,
   useSearchScopeDetailsSpaceQuery,
+  useSpaceUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { gutters } from '@/core/ui/grid/utils';
 import {
-  SearchQuery,
-  SearchResult,
   SearchCategory,
+  type SearchQuery,
+  type SearchResult,
+  type SearchResultCalloutFragment,
+  type SearchResultMemoFragment,
+  type SearchResultOrganizationFragment,
+  type SearchResultPostFragment,
+  type SearchResultSpaceFragment,
   SearchResultType,
-  SearchResultPostFragment,
-  SearchResultUserFragment,
-  SearchResultSpaceFragment,
-  SearchResultCalloutFragment,
-  SearchResultOrganizationFragment,
-  SearchResultMemoFragment,
-  SearchResultWhiteboardFragment,
+  type SearchResultUserFragment,
+  type SearchResultWhiteboardFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
 import { useMemoizedQueryParams } from '@/core/routing/useQueryParams';
-import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
+import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
+import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import { buildLoginUrl } from '../routing/urlBuilders';
+import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
+import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
 import {
-  FilterConfig,
-  FilterDefinition,
   calloutFilterConfig,
-  framingFilterConfig,
   contributionFilterConfig,
   contributorFilterConfig,
   FILTER_OFF,
+  type FilterConfig,
+  type FilterDefinition,
+  framingFilterConfig,
 } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutAndFramingCard from './searchResults/SearchResultsCalloutAndFramingCard';
-
-import { useSearchTerms } from './useSearchTerms';
-import { buildLoginUrl } from '../routing/urlBuilders';
-import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
-import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
 import SearchCategoriesMenu from './ui/SearchCategoriesMenu';
+import { useSearchTerms } from './useSearchTerms';
 
 export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
   ResultFragment & { type: Type };
@@ -549,7 +546,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
   return (
     <PageContentColumn columns={12}>
       <PageContentBlockSeamless
-        disablePadding
+        disablePadding={true}
         sx={{
           position: 'sticky',
           top: 0,
@@ -558,7 +555,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           marginTop: 0.5,
         }}
       >
-        <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
+        <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus={true} />
       </PageContentBlockSeamless>
 
       {spaceId && (
@@ -587,10 +584,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
         </Box>
       )}
 
-      <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
+      <Gutters disablePadding={true} sx={{ width: '100%', flexDirection: 'row' }}>
         <SearchCategoriesMenu results={data?.search} />
 
-        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
+        <Gutters disablePadding={true} sx={{ width: '100%', flexDirection: 'column' }}>
           {isSearching && !isSearchingForMore && !hasNoTermsLength && (
             <Box display="flex" justifyContent="center" alignItems="center" paddingY={4} gap={1}>
               <CircularProgress size={20} />

@@ -1,6 +1,6 @@
-import { Box, Button, Typography, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 interface GuestSessionNotificationProps {
@@ -59,7 +59,7 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
           {/* Back to Whiteboard Button */}
           <Button
             variant="contained"
-            fullWidth
+            fullWidth={true}
             startIcon={<ArrowBackIcon sx={{ fontSize: '16px' }} />}
             onClick={onBackToWhiteboard}
             sx={{
@@ -83,7 +83,7 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
           {/* Go to Website Button */}
           <Button
             variant="outlined"
-            fullWidth
+            fullWidth={true}
             onClick={onGoToWebsite}
             sx={{
               backgroundColor: theme.palette.background.paper,

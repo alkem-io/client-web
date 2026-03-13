@@ -1,16 +1,16 @@
-import React from 'react';
-import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { Box, Tab, Tabs } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
-import { RoleName, ActorType } from '@/core/apollo/generated/graphql-schema';
-import { gutters } from '@/core/ui/grid/utils';
-import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
-import Loading from '@/core/ui/loading/Loading';
-import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, type RoleName } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
+import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 
 interface AdminAuthorizationPageProps {
   selectedRole?: RoleName;
@@ -56,7 +56,7 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }} value={selectedRole ?? '_none'}>
-              <Tab value="_none" hidden />
+              <Tab value="_none" hidden={true} />
               {MANAGED_ROLES.map(tab => (
                 <Tab
                   key={tab}

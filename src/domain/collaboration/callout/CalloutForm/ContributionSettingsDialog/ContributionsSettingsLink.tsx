@@ -1,11 +1,12 @@
-import ReferenceSegment from '@/domain/platformAdmin/components/Common/ReferenceSegment';
-import { Formik, FormikProps, useField } from 'formik';
+import { Formik, type FormikProps, useField } from 'formik';
 import { useImperativeHandle, useRef } from 'react';
-import { CalloutFormSubmittedValues } from '../CalloutFormModel';
-import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
-import { EmptyReference, ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { isArrayEqual } from '@/core/utils/isArrayEqual';
 import { useTranslation } from 'react-i18next';
+import { isArrayEqual } from '@/core/utils/isArrayEqual';
+import { EmptyReference, type ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import ReferenceSegment from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import type { CalloutFormSubmittedValues } from '../CalloutFormModel';
+import type { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
+
 const filterOutEmptyLinks = (link: ReferenceModel): boolean => Boolean(link.name || link.uri || link.description);
 
 const ContributionsSettingsLink = ({
@@ -48,7 +49,7 @@ const ContributionsSettingsLink = ({
         <ReferenceSegment
           fieldName="links"
           references={values.links}
-          fullWidth
+          fullWidth={true}
           addButtonLabel={t('callout.create.contributionSettings.contributionTypes.link.settings.addButton')}
           addButtonPosition="end"
         />

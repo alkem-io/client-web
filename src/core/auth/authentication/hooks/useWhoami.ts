@@ -1,4 +1,4 @@
-import { Session } from '@ory/kratos-client';
+import type { Session } from '@ory/kratos-client';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';

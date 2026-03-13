@@ -1,8 +1,8 @@
-import WrapperMarkdown, { WrapperMarkdownProps } from './WrapperMarkdown';
-import { gutters } from '../grid/utils';
-import OverflowGradient, { OverflowGradientProps } from '../overflow/OverflowGradient';
-import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
 import { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../card/CardDescription';
+import { gutters } from '../grid/utils';
+import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
+import OverflowGradient, { type OverflowGradientProps } from '../overflow/OverflowGradient';
+import WrapperMarkdown, { type WrapperMarkdownProps } from './WrapperMarkdown';
 
 interface CroppedMarkdownProps extends WrapperMarkdownProps {
   children: string;
@@ -35,7 +35,7 @@ const CroppedMarkdown = ({
       backgroundColor={backgroundColor}
       overflowMarker={overflowMarker}
     >
-      <WrapperMarkdown card {...props}>
+      <WrapperMarkdown card={true} {...props}>
         {children}
       </WrapperMarkdown>
     </OverflowGradientComponent>

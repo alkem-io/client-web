@@ -1,29 +1,29 @@
-import { useMemo, useState, useEffect } from 'react';
+import { Button, DialogActions, DialogContent } from '@mui/material';
 import { debounce } from 'lodash-es';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, DialogActions, Button } from '@mui/material';
+import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useSpace } from '@/domain/space/context/useSpace';
-import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
-import { ContributorProps, InviteContributorsDialogProps } from '../InviteContributorsProps';
-import InviteContributorsList from './InviteContributorsList';
-import InviteVirtualContributorDialog from './InviteVirtualContributorDialog';
-import PreviewContributorDialog, { ProviderProfile } from './PreviewContributorDialog';
-import VCProfileContentView from '../../virtualContributor/vcProfilePage/VCProfileContentView';
+import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
 import SearchField from '@/core/ui/search/SearchField';
+import { Caption } from '@/core/ui/typography';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
+import { useSpace } from '@/domain/space/context/useSpace';
 import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
-import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { createVirtualContributorModelFull } from '../../virtualContributor/utils/createVirtualContributorModelFull';
+import VCProfileContentView from '../../virtualContributor/vcProfilePage/VCProfileContentView';
+import type { ContributorProps, InviteContributorsDialogProps } from '../InviteContributorsProps';
+import InviteContributorsList from './InviteContributorsList';
+import InviteVirtualContributorDialog from './InviteVirtualContributorDialog';
+import PreviewContributorDialog, { type ProviderProfile } from './PreviewContributorDialog';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
@@ -31,7 +31,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
 
   const { space } = useSpace();
   const { about, level } = space;
-  const roleSetId = about?.membership!.roleSetID!;
+  const roleSetId = about?.membership?.roleSetID!;
 
   const [getVcProvider] = useVirtualContributorProviderLazyQuery();
 
@@ -112,9 +112,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
         'success'
       );
       setOpenPreviewDialog(false);
-    } catch (error) {
-      console.error('Error adding virtual contributor:', error);
-    }
+    } catch (_error) {}
   };
 
   const onInviteClick = () => {
@@ -233,7 +231,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
       />
 
       <DialogContent>
-        <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
+        <Gutters disableGap={true} disablePadding={true} sx={{ display: 'flex' }}>
           <SearchField
             value={inputValue}
             sx={{ maxWidth: 400, marginLeft: 'auto' }}
@@ -245,7 +243,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
           />
         </Gutters>
 
-        <Gutters disablePadding disableGap>
+        <Gutters disablePadding={true} disableGap={true}>
           {showOnAccount && (
             <PageContentBlockHeader
               variant="caption"
@@ -259,7 +257,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
             />
           )}
           {showOnAccount && (
-            <Gutters disableGap disablePadding paddingTop={gutters()}>
+            <Gutters disableGap={true} disablePadding={true} paddingTop={gutters()}>
               <PageContentBlockHeader
                 variant="caption"
                 title={t('community.invitations.inviteContributorsDialog.vcs.inLibrary.title')}
@@ -303,7 +301,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
           getProvider={getProvider}
         >
           {Boolean(selectedVirtualContributor?.profile?.description) && (
-            <PageContentBlock disableGap>
+            <PageContentBlock disableGap={true}>
               <ProfileDetail
                 title={t('components.profile.fields.description.title')}
                 value={selectedVirtualContributor?.profile?.description}

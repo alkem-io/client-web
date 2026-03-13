@@ -1,11 +1,11 @@
-import { Box, CircularProgress, FormControlLabel, FormGroup, Switch, SwitchProps } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { Box, CircularProgress, FormControlLabel, FormGroup, Switch, type SwitchProps } from '@mui/material';
+import { type ReactNode, useState } from 'react';
 
 const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean }) =>
   loading ? (
     <Box position="relative" aria-busy="true" aria-live="polite">
       <CircularProgress sx={{ width: '100%', height: '100%', position: 'absolute' }} aria-label="Saving changes" />
-      <Switch {...props} disabled />
+      <Switch {...props} disabled={true} />
     </Box>
   ) : (
     <Switch {...props} />
@@ -44,7 +44,7 @@ function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label:
                 checked={option.checked}
                 loading={itemLoading === key}
                 disabled={Boolean(itemLoading)}
-                onChange={(event, newValue) => handleChange(key, newValue)}
+                onChange={(_event, newValue) => handleChange(key, newValue)}
                 inputProps={{
                   'aria-label': typeof option.label === 'string' ? option.label : String(key),
                 }}

@@ -1,12 +1,12 @@
 import { Badge } from '@mui/material';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography/components';
-import { GenericCalloutIcon } from '../../callout/icons/calloutIcons';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
-import RouterLink from '@/core/ui/link/RouterLink';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { gutters } from '@/core/ui/grid/utils';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, CardText } from '@/core/ui/typography/components';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
+import { GenericCalloutIcon } from '../../callout/icons/calloutIcons';
 
 type TopCalloutProps = {
   title: string;
@@ -43,7 +43,7 @@ const TopCalloutDetails = ({ title, description, activity, calloutUri = '' }: To
       </Badge>
     }
   >
-    <BlockSectionTitle noWrap>{title}</BlockSectionTitle>
+    <BlockSectionTitle noWrap={true}>{title}</BlockSectionTitle>
     <CardText
       sx={{
         ...webkitLineClamp(2),
@@ -52,7 +52,7 @@ const TopCalloutDetails = ({ title, description, activity, calloutUri = '' }: To
         },
       }}
     >
-      <WrapperMarkdown card plain multiline>
+      <WrapperMarkdown card={true} plain={true} multiline={true}>
         {description}
       </WrapperMarkdown>
     </CardText>

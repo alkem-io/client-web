@@ -1,10 +1,10 @@
-import { Configuration, UiContainer, FrontendApi } from '@ory/kratos-client';
-import { useMemo, useRef } from 'react';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { Configuration, FrontendApi, type UiContainer } from '@ory/kratos-client';
+import axios, { type AxiosError, type AxiosResponse } from 'axios';
 import { once } from 'lodash-es';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { AuthenticationProviderConfigUnion, OryConfig } from '@/core/apollo/generated/graphql-schema';
+import { useMemo, useRef } from 'react';
+import type { AuthenticationProviderConfigUnion, OryConfig } from '@/core/apollo/generated/graphql-schema';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryConfig {
   return (pet as OryConfig).__typename === 'OryConfig';
@@ -16,7 +16,7 @@ const logFlowErrors = (response: AxiosResponse<{ ui: UiContainer } | {}>) => {
       if (type !== 'error') {
         continue;
       }
-      const errorMessage = 'Kratos Flow Error: ' + text;
+      const errorMessage = `Kratos Flow Error: ${text}`;
       logError(new Error(errorMessage), { category: TagCategoryValues.AUTH });
     }
   }

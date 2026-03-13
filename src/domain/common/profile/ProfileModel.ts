@@ -1,7 +1,7 @@
-import { EmptyTagset, TagsetModel } from '../tagset/TagsetModel';
-import { ReferenceModel } from '../reference/ReferenceModel';
-import { VisualModel, VisualModelFull } from '../visual/model/VisualModel';
-import { EmptyLocationMapped, LocationModelMapped } from '../location/LocationModelMapped';
+import { EmptyLocationMapped, type LocationModelMapped } from '../location/LocationModelMapped';
+import type { ReferenceModel } from '../reference/ReferenceModel';
+import { EmptyTagset, type TagsetModel } from '../tagset/TagsetModel';
+import type { VisualModel, VisualModelFull } from '../visual/model/VisualModel';
 
 export interface ProfileModel {
   id: string;

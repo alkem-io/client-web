@@ -1,9 +1,9 @@
-import PageContentBlock from './PageContentBlock';
-import Gutters from '../grid/Gutters';
-import RouterLink, { RouterLinkProps } from '../link/RouterLink';
-import { Box, BoxProps, IconButton } from '@mui/material';
 import { CloseOutlined } from '@mui/icons-material';
+import { Box, type BoxProps, IconButton } from '@mui/material';
+import Gutters from '../grid/Gutters';
 import { gutters } from '../grid/utils';
+import RouterLink, { type RouterLinkProps } from '../link/RouterLink';
+import PageContentBlock from './PageContentBlock';
 
 interface DashboardBannerProps extends RouterLinkProps {
   onClose?: () => void;
@@ -12,9 +12,14 @@ interface DashboardBannerProps extends RouterLinkProps {
 }
 
 const DashboardBanner = ({ children, onClose, containerProps, isLink = true, ...props }: DashboardBannerProps) => (
-  <PageContentBlock row accent disablePadding sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+  <PageContentBlock
+    row={true}
+    accent={true}
+    disablePadding={true}
+    sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+  >
     <Box {...props} sx={{ flexGrow: 1 }} component={isLink ? RouterLink : Box}>
-      <Gutters row disablePadding flexWrap="wrap" {...containerProps}>
+      <Gutters row={true} disablePadding={true} flexWrap="wrap" {...containerProps}>
         {children}
       </Gutters>
     </Box>

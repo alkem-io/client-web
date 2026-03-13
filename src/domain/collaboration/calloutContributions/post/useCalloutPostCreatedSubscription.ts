@@ -1,8 +1,8 @@
 import { CalloutPostCreatedDocument } from '@/core/apollo/generated/apollo-hooks';
-import {
+import type {
+  CalloutContributionsQuery,
   CalloutPostCreatedSubscription,
   CalloutPostCreatedSubscriptionVariables,
-  CalloutContributionsQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 

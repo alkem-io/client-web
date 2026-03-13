@@ -1,22 +1,22 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { FormHelperText, SxProps, TextField, Theme } from '@mui/material';
+import { FormHelperText, type SxProps, TextField, type Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { without } from 'lodash-es';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import type { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { UserChip } from './UserChip';
-import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
-import { useTranslation } from 'react-i18next';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { CaptionSmall } from '@/core/ui/typography';
-import { Identifiable } from '@/core/utils/Identifiable';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
+import { UserChip } from './UserChip';
 
 const MAX_USERS_SHOWN = 20;
 const GRID_COLUMNS_DESKTOP = 6;
@@ -122,8 +122,8 @@ export const FormikUserSelector = ({
             getOptionDisabled={option => option.disabled ?? false}
             value={autocompleteValue}
             inputValue={inputValue}
-            onInputChange={(event, value) => setInputValue(value)}
-            autoHighlight
+            onInputChange={(_event, value) => setInputValue(value)}
+            autoHighlight={true}
             getOptionLabel={option => option.profile?.displayName ?? ''}
             noOptionsText={t('components.user-selector.tooltip')}
             popupIcon={<SearchIcon />}
@@ -174,8 +174,8 @@ export const FormikUserSelector = ({
           <FormHelperText error={validationError}>{meta.error}</FormHelperText>
         </>
       )}
-      <GridContainer disablePadding marginBottom={gutters(1)}>
-        <GridProvider columns={isSmallScreen ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
+      <GridContainer disablePadding={true} marginBottom={gutters(1)}>
+        <GridProvider columns={isSmallScreen ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force={true}>
           {field.value?.map(id => (
             <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
           ))}

@@ -1,14 +1,14 @@
-import OrganizationPageBanner from '@/domain/community/organization/OrganizationPageBanner';
-import React, { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined } from '@mui/icons-material';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import useOrganizationProvider from '../useOrganization/useOrganization';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import OrganizationPageBanner from '@/domain/community/organization/OrganizationPageBanner';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import useOrganizationProvider from '../useOrganization/useOrganization';
 
-interface OrganizationPageLayoutProps {}
+type OrganizationPageLayoutProps = {};
 
 const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutProps>) => {
   const { t } = useTranslation();

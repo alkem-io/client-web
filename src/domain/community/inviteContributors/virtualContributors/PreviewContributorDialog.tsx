@@ -1,22 +1,22 @@
-import React, { useMemo, PropsWithChildren, ReactNode, useCallback, MouseEventHandler, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography';
-import { Button, DialogContent } from '@mui/material';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { Actions } from '@/core/ui/actions/Actions';
-import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
-import UserCard from '../../user/userCard/UserCard';
-import { ContributorProps } from '../InviteContributorsProps';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import References from '@/domain/shared/components/References/References';
-import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
-import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { Button, DialogContent } from '@mui/material';
+import { type MouseEventHandler, type PropsWithChildren, type ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Actions } from '@/core/ui/actions/Actions';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import { Location } from '@/core/ui/location/getLocationString';
+import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { gutters } from '@/core/ui/grid/utils';
+import type { Location } from '@/core/ui/location/getLocationString';
+import { BlockSectionTitle, CardText } from '@/core/ui/typography';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
+import References from '@/domain/shared/components/References/References';
+import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import UserCard from '../../user/userCard/UserCard';
+import type { ContributorProps } from '../InviteContributorsProps';
 
 export type ProviderProfile =
   | {
@@ -87,7 +87,7 @@ const PreviewContributorDialog = ({
       />
 
       <DialogContent>
-        <PageContentBlockGrid disablePadding>
+        <PageContentBlockGrid disablePadding={true}>
           <PageContentColumn columns={3}>
             <UserCard
               displayName={profile?.displayName}
@@ -101,7 +101,7 @@ const PreviewContributorDialog = ({
               onCardClick={navigateToProfile}
               isExpandable={false}
             />
-            <PageContentBlockSeamless disablePadding>
+            <PageContentBlockSeamless disablePadding={true}>
               <Actions justifyContent="end">
                 <Button
                   startIcon={<ArrowBackIcon />}
@@ -115,7 +115,7 @@ const PreviewContributorDialog = ({
               </Actions>
             </PageContentBlockSeamless>
             {links && links.length > 0 && (
-              <PageContentBlockSeamless disablePadding>
+              <PageContentBlockSeamless disablePadding={true}>
                 <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
                 <References
                   references={links}
@@ -123,9 +123,9 @@ const PreviewContributorDialog = ({
                 />
               </PageContentBlockSeamless>
             )}
-            <PageContentBlockSeamless disablePadding>
+            <PageContentBlockSeamless disablePadding={true}>
               <BlockSectionTitle>{t('pages.virtualContributorProfile.host')}</BlockSectionTitle>
-              <ContributorCardHorizontal profile={provider} seamless />
+              <ContributorCardHorizontal profile={provider} seamless={true} />
             </PageContentBlockSeamless>
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">

@@ -1,13 +1,13 @@
+import type { ParseKeys } from 'i18next';
 import React from 'react';
-import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
-import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { useTranslation } from 'react-i18next';
-import { ParseKeys } from 'i18next';
-import { RoleName, ActorType } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { ActorType, type RoleName } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
 
 export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: RoleName }) => {
   const { t } = useTranslation();

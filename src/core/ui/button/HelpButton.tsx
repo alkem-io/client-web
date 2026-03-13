@@ -8,7 +8,7 @@ interface HelpButtonProps {
 
 const HelpButton = ({ helpText, fontSize = 'small' }: HelpButtonProps) => {
   return (
-    <Tooltip title={helpText} arrow placement="right">
+    <Tooltip title={helpText} arrow={true} placement="right">
       <Help color="primary" sx={{ ml: 1 }} fontSize={fontSize} />
     </Tooltip>
   );

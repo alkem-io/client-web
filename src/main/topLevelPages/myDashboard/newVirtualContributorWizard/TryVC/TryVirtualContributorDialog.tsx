@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Trans, useTranslation } from 'react-i18next';
-import Gutters from '@/core/ui/grid/Gutters';
 import { Box, Button, DialogContent, Paper } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import {
-  CalloutCreationParams,
-  CalloutCreationType,
-  useCalloutCreation,
-} from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { useDeleteCalloutMutation, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutFramingType,
   CalloutVisibility,
   VirtualContributorStatus,
 } from '@/core/apollo/generated/graphql-schema';
-import Loading from '@/core/ui/loading/Loading';
-import CalloutView from '@/domain/collaboration/callout/CalloutView/CalloutView';
-import { useDeleteCalloutMutation, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import { Actions } from '@/core/ui/actions/Actions';
-import { removeVCCreationCache } from './utils';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import { Caption } from '@/core/ui/typography';
+import CalloutView from '@/domain/collaboration/callout/CalloutView/CalloutView';
+import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
+import {
+  type CalloutCreationParams,
+  type CalloutCreationType,
+  useCalloutCreation,
+} from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
+import { removeVCCreationCache } from './utils';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
@@ -155,7 +156,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
         {vcDataLoading && demoCalloutCreationLoading && calloutLoading ? (
           <Loading />
         ) : (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <Box display="flex" gap={gutters(0.5)}>
               <Caption alignSelf="center">
                 <Trans

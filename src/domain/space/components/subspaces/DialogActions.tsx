@@ -1,24 +1,24 @@
-import { SubspaceDialog } from './SubspaceDialog';
+import { Dialog } from '@mui/material';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import useNavigate from '@/core/routing/useNavigate';
+import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
+import GridProvider from '@/core/ui/grid/GridProvider';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
-import SubspacesListDialog from '../SubspacesListDialog';
-import ContributorsToggleDialog from '../ContributorsToggleDialog';
-import ActivityDialog from '../Activity/ActivityDialog';
-import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
-import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import VideoCallDialog from '../VideoCallDialog/VideoCallDialog';
-import { useEffect } from 'react';
-import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useSpaceDashboardNavigation from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { Dialog } from '@mui/material';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import DashboardNavigation from '../spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
-import useNavigate from '@/core/routing/useNavigate';
 import { useVideoCall } from '../../hooks/useVideoCall';
+import ActivityDialog from '../Activity/ActivityDialog';
+import ContributorsToggleDialog from '../ContributorsToggleDialog';
+import SubspacesListDialog from '../SubspacesListDialog';
+import DashboardNavigation from '../spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
+import useSpaceDashboardNavigation from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import VideoCallDialog from '../VideoCallDialog/VideoCallDialog';
+import { SubspaceDialog } from './SubspaceDialog';
 
 export const DialogActions = () => {
   const { collaborationId } = useUrlResolver();
@@ -71,7 +71,7 @@ export const DialogActions = () => {
         />
       )}
       <ActivityDialog open={currentDialog === SubspaceDialog.Activity} onClose={handleClose} />
-      <CalendarDialog open={currentDialog === SubspaceDialog.Timeline} onClose={handleClose} temporaryLocation />
+      <CalendarDialog open={currentDialog === SubspaceDialog.Timeline} onClose={handleClose} temporaryLocation={true} />
       <ShareDialog
         open={currentDialog === SubspaceDialog.Share}
         onClose={handleClose}
@@ -92,7 +92,7 @@ export const DialogActions = () => {
         onClose={handleClose}
       />
       {dashboardNavigation && (
-        <Dialog open={currentDialog === SubspaceDialog.Outline} onClose={handleClose} fullWidth>
+        <Dialog open={currentDialog === SubspaceDialog.Outline} onClose={handleClose} fullWidth={true}>
           <GridProvider columns={GRID_COLUMNS_MOBILE}>
             <DashboardNavigation currentItemId={spaceId} {...dashboardNavigation} />
           </GridProvider>

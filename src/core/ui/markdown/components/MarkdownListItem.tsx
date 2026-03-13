@@ -1,6 +1,6 @@
-import createMarkdownComponent from './MarkdownComponent';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
 import type { Element } from 'hast';
+import createMarkdownComponent from './MarkdownComponent';
 
 const Base = createMarkdownComponent('li');
 

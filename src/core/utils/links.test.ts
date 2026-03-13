@@ -1,5 +1,5 @@
+import { describe, expect, test } from 'vitest';
 import { hasDomainLike } from './links';
-import { expect, test, describe } from 'vitest';
 
 describe('hasDomainLike', () => {
   test('matches top-level domains', () => {

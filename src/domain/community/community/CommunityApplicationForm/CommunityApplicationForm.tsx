@@ -1,23 +1,23 @@
-import { useMemo } from 'react';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import { Formik } from 'formik';
 import { max, pullAt, slice, sortBy } from 'lodash-es';
-import { BlockSectionTitle } from '@/core/ui/typography';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import {
   refetchRoleSetApplicationFormQuery,
   useRoleSetApplicationFormQuery,
   useUpdateApplicationFormOnRoleSetMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import FormQuestionField, { questionSchema } from './views/FormQuestionField';
-import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import Gutters from '@/core/ui/grid/Gutters';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
+import FormQuestionField, { questionSchema } from './views/FormQuestionField';
 
 interface CommunityApplicationFormProps {
   roleSetId: string;
@@ -100,7 +100,12 @@ const CommunityApplicationForm = ({ roleSetId, disabled }: CommunityApplicationF
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize={true}
+      onSubmit={onSubmit}
+    >
       {({ values: { questions }, setFieldValue, handleSubmit }) => {
         const handleAdd = () => {
           const newArray = [...questions, newQuestion(questions)];
@@ -157,7 +162,7 @@ const CommunityApplicationForm = ({ roleSetId, disabled }: CommunityApplicationF
                 </span>
               </Tooltip>
             </BlockSectionTitle>
-            {questions.map((question, index) => (
+            {questions.map((_question, index) => (
               <FormQuestionField
                 key={index}
                 index={index}

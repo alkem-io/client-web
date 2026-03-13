@@ -1,31 +1,32 @@
-import React, { useMemo, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { Caption, CaptionSmall } from '@/core/ui/typography';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Box, Button, DialogContent, IconButton } from '@mui/material';
-import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
-import Gutters from '@/core/ui/grid/Gutters';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { Visual } from '@/domain/common/visual/Visual';
-import { gutters, useGridItem } from '@/core/ui/grid/utils';
-import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import RouterLink from '@/core/ui/link/RouterLink';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { compact } from 'lodash-es';
-import Loading from '@/core/ui/loading/Loading';
+import type React from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters, useGridItem } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption, CaptionSmall } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { Visual } from '@/domain/common/visual/Visual';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -206,7 +207,7 @@ export const SpaceExplorerView = ({
 
   return (
     <PageContentBlock>
-      <Gutters row disablePadding flexWrap="wrap" justifyContent="center" paddingTop={gutters(0.2)}>
+      <Gutters row={true} disablePadding={true} flexWrap="wrap" justifyContent="center" paddingTop={gutters(0.2)}>
         <SearchTagsInput
           value={searchTerms}
           placeholder={t('pages.exploreSpaces.search.placeholder')}
@@ -214,7 +215,7 @@ export const SpaceExplorerView = ({
           fullWidth={false}
           sx={{ flexGrow: 1, flexBasis: getGridItemStyle(4).width }}
         />
-        <Gutters row disablePadding maxWidth="100%" alignItems="center">
+        <Gutters row={true} disablePadding={true} maxWidth="100%" alignItems="center">
           {enabledFilters.map(filter => (
             <Button
               key={filter}
@@ -222,7 +223,7 @@ export const SpaceExplorerView = ({
               sx={{ textTransform: 'none', flexShrink: 1 }}
               onClick={() => onMembershipFilterChange?.(filter)}
             >
-              <Caption noWrap>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption>
+              <Caption noWrap={true}>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption>
             </Button>
           ))}
           <IconButton
@@ -285,7 +286,7 @@ export const SpaceExplorerView = ({
             onClose={() => setInfoOpen(false)}
           />
           <DialogContent sx={{ paddingTop: 0 }}>
-            <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
+            <WrapperMarkdown caption={true}>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
           </DialogContent>
         </DialogWithGrid>
       )}

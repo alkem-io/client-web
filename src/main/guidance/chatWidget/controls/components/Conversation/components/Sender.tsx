@@ -1,23 +1,21 @@
-import { useRef, useEffect, useState, useImperativeHandle } from 'react';
-import { ReactNode } from 'react';
+import { type ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { useChatBehavior } from '../../../context/ChatBehaviorContext';
 
-import { getCaretIndex, isFirefox, updateCaret, insertNodeAtCaret, getSelection } from '../../../utils';
+import { getCaretIndex, getSelection, insertNodeAtCaret, isFirefox, updateCaret } from '../../../utils';
 
 const brRegex = /<br>/g;
 
-import { Box, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { gutters } from '@/core/ui/grid/utils';
-import { ISenderRef } from '../Conversation';
+import { Box, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '@/core/ui/grid/utils';
+import type { ISenderRef } from '../Conversation';
 
 type Props = {
   placeholder: string;
   disabledInput: boolean;
   autofocus: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sendMessage: (event: any) => void;
   buttonAlt: string;
   menuButton?: ReactNode;
@@ -51,7 +49,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
 
   const handlerSendMessage = () => {
     const el = inputRef.current;
-    if (el && el.innerHTML) {
+    if (el?.innerHTML) {
       sendMessage(el.innerText);
       el.innerHTML = '';
       setHasContent(false);
@@ -77,7 +75,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     const el = inputRef.current;
     if (!el) return;
 
-    if (event.charCode == 13 && !event.shiftKey) {
+    if (event.charCode === 13 && !event.shiftKey) {
       event.preventDefault();
       handlerSendMessage();
     }
@@ -180,7 +178,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
       >
         <Box
           component="div"
-          spellCheck
+          spellCheck={true}
           role="textbox"
           contentEditable={!disabledInput}
           aria-label={t('messaging.message')}

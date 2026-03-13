@@ -1,10 +1,10 @@
-import { Box, Chip, CircularProgress, SvgIconProps, useTheme } from '@mui/material';
+import { Box, Chip, CircularProgress, type SvgIconProps, useTheme } from '@mui/material';
+import type { ComponentType, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import Avatar from '../avatar/Avatar';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { CardText } from '../typography';
-import { ComponentType, PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
 
 const AVATAR_SIZE_GUTTERS = 0.9;
 
@@ -61,7 +61,13 @@ const SearchResultsScopeCard = ({
             {loading && <CircularProgress size={gutters(0.6)(theme)} />}
             {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}
           </Avatar>
-          <CardText paddingX={0.5} lineHeight={gutters(AVATAR_SIZE_GUTTERS)} maxWidth="30vw" color="primary" noWrap>
+          <CardText
+            paddingX={0.5}
+            lineHeight={gutters(AVATAR_SIZE_GUTTERS)}
+            maxWidth="30vw"
+            color="primary"
+            noWrap={true}
+          >
             {children}
           </CardText>
         </Box>

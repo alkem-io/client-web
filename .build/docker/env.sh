@@ -28,3 +28,11 @@ while read -r line || [[ -n "$line" ]]; do
 done <.env.base
 
 echo "}" >>./env-config.js
+
+# Override robots.txt for non-production environments (fail-safe: default is disallow-all)
+if [ "$VITE_ROBOTS_ALLOW_INDEXING" != "true" ]; then
+  printf '# Non-production environment - block all crawlers\nUser-agent: *\nDisallow: /\n' > ./robots.txt
+  echo "robots.txt: overwritten with disallow-all (VITE_ROBOTS_ALLOW_INDEXING != true)"
+else
+  echo "robots.txt: keeping production template (VITE_ROBOTS_ALLOW_INDEXING=true)"
+fi

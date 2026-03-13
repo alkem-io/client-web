@@ -1,17 +1,17 @@
+import { useMemo } from 'react';
 import {
   useAccountStorageConfigQuery,
   useCalloutPostStorageConfigQuery,
   useCalloutStorageConfigQuery,
   useInnovationHubStorageConfigQuery,
   useInnovationPackStorageConfigQuery,
-  useSpaceStorageConfigQuery,
   useOrganizationStorageConfigQuery,
   usePlatformStorageConfigQuery,
+  useSpaceStorageConfigQuery,
   useTemplateStorageConfigQuery,
   useUserStorageConfigQuery,
   useVirtualContributorStorageConfigQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export interface StorageConfig {

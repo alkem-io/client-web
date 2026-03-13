@@ -1,5 +1,3 @@
-import { Editor } from '@tiptap/react';
-import { Ref } from 'react';
 import {
   Code,
   FormatBold,
@@ -14,14 +12,16 @@ import {
 } from '@mui/icons-material';
 import { Collapse, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import InsertImageButton from './InsertImageButton';
-import ToggleLinkButton from './ToggleLinkButton';
-import InsertEmojiButton from './InsertEmojiButton';
-import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeButton';
+import type { Editor } from '@tiptap/react';
+import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import ToolbarButton from './ToolbarButton';
+import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeButton';
+import InsertEmojiButton from './InsertEmojiButton';
+import InsertImageButton from './InsertImageButton';
 import TableControls from './Tables/TableControls';
 import { useTableState } from './Tables/useTableState';
+import ToggleLinkButton from './ToggleLinkButton';
+import ToolbarButton from './ToolbarButton';
 
 type MarkdownInputControlsProps = {
   editor: Editor | null;
@@ -57,7 +57,7 @@ const MarkdownInputControls = ({
 
   return (
     <Collapse in={visible} ref={ref}>
-      <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+      <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile={true}>
         <ToolbarButton
           editor={editor}
           command={e => e.undo()}

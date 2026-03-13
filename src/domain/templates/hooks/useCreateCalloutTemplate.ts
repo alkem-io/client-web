@@ -1,9 +1,9 @@
-import { TemplateCalloutFormSubmittedValues } from '../components/Forms/TemplateCalloutForm';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { toCreateTemplateMutationVariables } from '../components/Forms/common/mappings';
-import useHandlePreviewImages from '../utils/useHandlePreviewImages';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
+import { toCreateTemplateMutationVariables } from '../components/Forms/common/mappings';
+import type { TemplateCalloutFormSubmittedValues } from '../components/Forms/TemplateCalloutForm';
+import useHandlePreviewImages from '../utils/useHandlePreviewImages';
 
 export interface CalloutCreationUtils {
   handleCreateCalloutTemplate: (values: TemplateCalloutFormSubmittedValues, targetSpaceId: string) => Promise<unknown>;

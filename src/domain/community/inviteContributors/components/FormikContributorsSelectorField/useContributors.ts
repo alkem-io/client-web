@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useInviteUsersDialogQuery, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { UserFilterInput, ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, RoleName, type UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 export interface ContributorItem {

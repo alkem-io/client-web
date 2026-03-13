@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
+import type { ReactNode } from 'react';
+import type { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 
 export interface InnovationFlowVisualizerProps {
   states: InnovationFlowStateModel[];

@@ -1,7 +1,7 @@
-import { Box, Avatar, Typography } from '@mui/material';
-import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
-import RouterLink from '@/core/ui/link/RouterLink';
+import { Avatar, Box, Typography } from '@mui/material';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import RouterLink from '@/core/ui/link/RouterLink';
+import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
 
 export interface Lead {
   id: string;

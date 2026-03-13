@@ -1,10 +1,10 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { v4 as uuidv4 } from 'uuid';
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
 } from '@alkemio/excalidraw/dist/types/element/src';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { v4 as uuidv4 } from 'uuid';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const ANIMATION_SPEED = 2000;
@@ -31,10 +31,10 @@ const isWhiteboardLike = (parsedObject: unknown): parsedObject is WhiteboardLike
   }
 
   const whiteboard = parsedObject as Record<string, unknown>;
-  if (whiteboard['type'] !== 'excalidraw' || whiteboard['version'] !== 2) {
+  if (whiteboard.type !== 'excalidraw' || whiteboard.version !== 2) {
     return false;
   }
-  if (!whiteboard['elements'] || !Array.isArray(whiteboard['elements'])) {
+  if (!whiteboard.elements || !Array.isArray(whiteboard.elements)) {
     return false;
   }
   // At least we have something that looks like a whiteboard

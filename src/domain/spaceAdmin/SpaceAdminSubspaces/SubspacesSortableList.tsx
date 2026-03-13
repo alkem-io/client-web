@@ -1,14 +1,14 @@
-import { type FC, type ReactNode, useState, useMemo, useEffect } from 'react';
-import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { Box, FormControl, OutlinedInput, Button } from '@mui/material';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Box, Button, FormControl, OutlinedInput } from '@mui/material';
+import { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import { Caption } from '@/core/ui/typography';
-import { type SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
-import SubspacesSortableItem from './SubspacesSortableItem';
+import type { SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
+import SubspacesSortableItem from './SubspacesSortableItem';
 
 type SubspaceWithPinData = SearchableListItem & {
   pinned: boolean;
@@ -96,7 +96,7 @@ const SubspacesSortableList: FC<SubspacesSortableListProps> = ({
 
   return (
     <>
-      <FormControl fullWidth size="small">
+      <FormControl fullWidth={true} size="small">
         <OutlinedInput
           aria-label={t('components.searchableList.placeholder')}
           placeholder={t('components.searchableList.placeholder')}

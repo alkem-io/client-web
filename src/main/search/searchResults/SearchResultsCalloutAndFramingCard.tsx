@@ -1,9 +1,9 @@
-import CalloutCard, { CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
-import SearchResultsCalloutCardFooter, {
-  SearchResultsCalloutCardFooterProps,
-} from './searchResultsCallout/SearchResultsCalloutCardFooter';
-import { SearchResultMetaType } from '../SearchView';
+import CalloutCard, { type CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
+import type { SearchResultMetaType } from '../SearchView';
 import SearchResultPostChooser from './SearchResultPostChooser';
+import SearchResultsCalloutCardFooter, {
+  type SearchResultsCalloutCardFooterProps,
+} from './searchResultsCallout/SearchResultsCalloutCardFooter';
 
 interface SearchResultsCalloutAndFramingCardProps {
   result:

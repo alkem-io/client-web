@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
+import { useEffect, useMemo, useState } from 'react';
 import { useUserMessagingContext } from './UserMessagingContext';
-import { useMemo, useState, useEffect } from 'react';
 
 const DELAY_MS = 2000;
 

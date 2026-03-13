@@ -1,12 +1,12 @@
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { refetchPlatformDiscussionsQuery, useCreateDiscussionMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import DiscussionForm, { type DiscussionFormValues } from '../forms/DiscussionForm';
 
 export interface NewDiscussionDialogProps {
   open: boolean;
@@ -47,7 +47,7 @@ const NewDiscussionDialog = ({ open, onClose, forumId, categories }: NewDiscussi
     <DialogWithGrid
       open={open}
       onClose={onClose}
-      fullWidth
+      fullWidth={true}
       fullScreen={isSmallScreen}
       aria-labelledby="new-discussion-dialog"
     >

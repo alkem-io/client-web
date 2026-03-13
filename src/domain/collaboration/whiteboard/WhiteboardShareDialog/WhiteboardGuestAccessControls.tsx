@@ -1,6 +1,6 @@
-import { FC, ReactNode } from 'react';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Divider } from '@mui/material';
+import type { FC, ReactNode } from 'react';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 
 export interface WhiteboardGuestAccessControlsProps {

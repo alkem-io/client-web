@@ -1,5 +1,5 @@
 import { MetricType } from '@/domain/platform/metrics/MetricType';
-import { MetricsItemSpec } from '@/domain/platform/metrics/utils/useMetricsItems';
+import type { MetricsItemSpec } from '@/domain/platform/metrics/utils/useMetricsItems';
 
 const SpaceMetrics: MetricsItemSpec[] = [
   {

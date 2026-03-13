@@ -1,4 +1,4 @@
-import { Chip, Box } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { CARD_FOOTER_HEIGHT } from '@/domain/space/components/cards/SpaceCardBase';
 

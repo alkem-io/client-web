@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockSectionTitle } from '@/core/ui/typography';

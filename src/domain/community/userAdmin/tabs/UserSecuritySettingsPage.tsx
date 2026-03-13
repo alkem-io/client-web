@@ -1,17 +1,17 @@
+import { Alert, Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
-import { BlockTitle } from '@/core/ui/typography/components';
-import Loading from '@/core/ui/loading/Loading';
-import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import type { KratosRemovedFieldAttributes } from '@/core/auth/authentication/components/Kratos/constants';
 import KratosForm from '@/core/auth/authentication/components/Kratos/KratosForm';
 import KratosUI from '@/core/auth/authentication/components/KratosUI';
-import { KratosRemovedFieldAttributes } from '@/core/auth/authentication/components/Kratos/constants';
+import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Loading from '@/core/ui/loading/Loading';
+import { BlockTitle } from '@/core/ui/typography/components';
+import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { Alert, Typography, Box } from '@mui/material';
+import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 
 // Remove password and profile fields - show only WebAuthn/Passkey related settings
 const REMOVED_FIELDS: readonly KratosRemovedFieldAttributes[] = [

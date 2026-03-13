@@ -1,26 +1,26 @@
+import { FolderCopyOutlined } from '@mui/icons-material';
+import HistoryIcon from '@mui/icons-material/History';
+import ImageIcon from '@mui/icons-material/Image';
+import type { TFunction } from 'i18next';
 import { produce } from 'immer';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSpaceStorageAdminPageLazyQuery,
   useStorageAggregatorLookupLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { TFunction } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import HistoryIcon from '@mui/icons-material/History';
 import {
-  DocumentDataFragment,
-  LoadableStorageAggregatorFragment,
+  type DocumentDataFragment,
+  type LoadableStorageAggregatorFragment,
   SpaceLevel,
-  StorageAggregatorFragment,
-  StorageBucketFragment,
+  type StorageAggregatorFragment,
+  type StorageBucketFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '@/domain/shared/icons/profileIcons';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { SpaceL2Icon } from '@/domain/space/icons/SpaceL2Icon';
-import { FolderCopyOutlined } from '@mui/icons-material';
-import { StorageAdminTreeItem } from './model/StorageAdminTreeItem';
+import type { StorageAdminTreeItem } from './model/StorageAdminTreeItem';
 
 export interface StorageAdminGridRow extends Omit<StorageAdminTreeItem, 'childItems'> {
   nestLevel: number;
@@ -44,7 +44,6 @@ export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) =>
       return SpaceL1Icon;
     case SpaceLevel.L2:
       return SpaceL2Icon;
-    case SpaceLevel.L0:
     default:
       return SpaceL0Icon;
   }
@@ -285,7 +284,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
     setTreeData(treeData =>
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
-        if (branch && branch.collapsible) {
+        if (branch?.collapsible) {
           if (branch.loaded) {
             branch.collapsed = false;
           } else {
@@ -301,7 +300,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
     setTreeData(treeData =>
       produce(treeData, next => {
         const branch = findBranch(next.root, storageAggregatorId);
-        if (branch && branch.collapsible) {
+        if (branch?.collapsible) {
           branch.collapsed = true;
         }
       })

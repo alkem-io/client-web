@@ -1,30 +1,29 @@
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { Button, CircularProgress, DialogActions, DialogContent, styled, useTheme } from '@mui/material';
+import { Box } from '@mui/system';
 import { useState } from 'react';
-import getWhiteboardPreviewImage from '../WhiteboardVisuals/getWhiteboardPreviewImage';
-import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { Button, CircularProgress, DialogActions, DialogContent, styled } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { CropConfig } from '@/core/utils/images/cropImage';
+import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
+import createFallbackWhiteboardPreview from '../WhiteboardVisuals/createFallbackWhiteboardPreview';
+import getWhiteboardPreviewImage from '../WhiteboardVisuals/getWhiteboardPreviewImage';
+import type { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import {
   WhiteboardPreviewModeAutoIcon,
   WhiteboardPreviewModeCustomIcon,
   WhiteboardPreviewModeFixedIcon,
   WhiteboardPreviewSettingsIcon,
 } from './icons/WhiteboardPreviewIcons';
-import { Box } from '@mui/system';
-import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
-import { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { CropConfig } from '@/core/utils/images/cropImage';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
-import createFallbackWhiteboardPreview from '../WhiteboardVisuals/createFallbackWhiteboardPreview';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettingsModel';
+import type { WhiteboardPreviewSettings } from './WhiteboardPreviewSettingsModel';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;

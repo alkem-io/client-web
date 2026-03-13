@@ -1,8 +1,8 @@
-import { PropsWithChildren } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import type { SystemCssProperties } from '@mui/system/styleFunctionSx/styleFunctionSx';
+import type { PropsWithChildren } from 'react';
 import { gutters } from '../grid/utils';
-import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
-import { SystemCssProperties } from '@mui/system/styleFunctionSx/styleFunctionSx';
+import BasePageContentBlock, { type BasePageContentBlockProps } from './BasePageContentBlock';
 
 export interface PageContentBlockSeamlessProps
   extends BasePageContentBlockProps,
@@ -19,7 +19,6 @@ const PageContentBlockSeamless = ({
     <BasePageContentBlock
       ref={ref}
       padding={gutters() as SystemCssProperties<{}>['padding']}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       component={Box as any}
       {...props}
     />

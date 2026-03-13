@@ -1,5 +1,5 @@
-import { IconButton, InputAdornment, TextField, TextFieldProps } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { IconButton, InputAdornment, TextField, type TextFieldProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 type SearchFieldProps = TextFieldProps & {
@@ -12,7 +12,7 @@ const SearchField = ({ onSearch, InputProps, ...props }: SearchFieldProps) => {
   return (
     <TextField
       placeholder={t('common.search')}
-      fullWidth
+      fullWidth={true}
       variant="outlined"
       size="small"
       InputProps={{

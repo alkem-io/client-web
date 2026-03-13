@@ -1,4 +1,4 @@
-import { ComponentType, DOMAttributes, useCallback, useState } from 'react';
+import { type ComponentType, type DOMAttributes, useCallback, useState } from 'react';
 
 export const INITIAL_ELEVATION = 1;
 export const FINAL_ELEVATION = 8;

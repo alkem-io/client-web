@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { RouteObject } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
 
 const PublicWhiteboardPage = lazy(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));

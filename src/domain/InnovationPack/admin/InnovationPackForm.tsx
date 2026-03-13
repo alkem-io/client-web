@@ -4,28 +4,28 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import SaveButton from '@/core/ui/actions/SaveButton';
+import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
 import { BlockSectionTitle } from '@/core/ui/typography';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { nameOf } from '@/core/utils/nameOf';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import ContextReferenceSegment from '@/domain/platformAdmin/components/Common/ContextReferenceSegment';
 import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import Gutters from '@/core/ui/grid/Gutters';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
-import FormikSelect from '@/core/ui/forms/FormikSelect';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { nameOf } from '@/core/utils/nameOf';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import GridContainer from '@/core/ui/grid/GridContainer';
-import GridItem from '@/core/ui/grid/GridItem';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 
 export interface InnovationPackFormValues {
   profile: {
@@ -96,7 +96,12 @@ const InnovationPackForm = ({
   });
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize={true}
+      onSubmit={onSubmit}
+    >
       {({ values: { profile }, handleSubmit, isValid }) => {
         return (
           <GridContainer>
@@ -114,11 +119,11 @@ const InnovationPackForm = ({
               </GridItem>
 
               <GridItem columns={isSmallScreen ? 6 : 10}>
-                <Gutters disablePadding>
+                <Gutters disablePadding={true}>
                   <FormikInputField
                     name={nameOf<InnovationPackFormValues>('profile.displayName')}
                     title={t('components.nameSegment.name')}
-                    required
+                    required={true}
                   />
                   {!isNew && (
                     <>
@@ -126,7 +131,7 @@ const InnovationPackForm = ({
                         title={t('pages.admin.innovation-packs.fields.provider')}
                         label={t('pages.admin.innovation-packs.fields.provider')}
                         value={provider?.profile?.displayName ?? ''}
-                        disabled
+                        disabled={true}
                         placeholder={t('pages.admin.innovation-packs.fields.provider')}
                       />
                       <FormikCheckboxField

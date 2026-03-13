@@ -4,18 +4,18 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@/main/test/testUtils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen, waitFor } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
+import { type FC, type PropsWithChildren, type ReactElement, useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/core/i18n/config';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
-import { FC, PropsWithChildren, ReactElement, useEffect } from 'react';
-import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import i18n from '@/core/i18n/config';
-import { I18nextProvider } from 'react-i18next';
-import userEvent from '@testing-library/user-event';
 import { sessionStorageMock } from './utils/sessionStorageMock';
 
 // Mock the Sentry logging module

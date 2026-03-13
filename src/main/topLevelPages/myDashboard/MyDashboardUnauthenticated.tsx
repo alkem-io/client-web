@@ -1,14 +1,14 @@
-import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
-import { Actions } from '@/core/ui/actions/Actions';
+import { Button } from '@mui/material';
+import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 
-interface MyDashboardUnauthenticatedProps {}
+type MyDashboardUnauthenticatedProps = {};
 
 const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
   const { t } = useTranslation();

@@ -1,8 +1,8 @@
+import type { ApolloError } from '@apollo/client';
 import { useContext, useMemo } from 'react';
-import { ApolloError } from '@apollo/client';
+import type { Metadata } from '@/core/apollo/generated/graphql-schema';
 import { ConfigContext } from './ConfigProvider';
-import { Configuration } from './configuration';
-import { Metadata } from '@/core/apollo/generated/graphql-schema';
+import type { Configuration } from './configuration';
 
 type ConfigReturnType = Partial<Configuration> & {
   serverMetadata: Metadata;

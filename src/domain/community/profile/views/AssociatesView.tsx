@@ -1,12 +1,12 @@
 import { GridLegacy, Link } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributorCardSquare, {
-  ContributorCardSquareProps,
-} from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle } from '@/core/ui/typography';
+import ContributorCardSquare, {
+  type ContributorCardSquareProps,
+} from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 
 const ASSOCIATE_CARDS_COUNT = 12;
 
@@ -37,15 +37,15 @@ export const AssociatesView = ({
     <PageContentBlock>
       <PageContentBlockHeader title={t('components.associates.title', { count: totalCount })} />
 
-      <GridLegacy container spacing={2} columns={{ xs: 4, sm: 8 }}>
+      <GridLegacy container={true} spacing={2} columns={{ xs: 4, sm: 8 }}>
         {canReadUsers ? (
           <>
             {associatesToShow.map(associate => (
-              <GridLegacy key={associate.id} item xs={2}>
+              <GridLegacy key={associate.id} item={true} xs={2}>
                 <ContributorCardSquare {...associate} />
               </GridLegacy>
             ))}
-            <GridLegacy item container justifyContent="flex-end">
+            <GridLegacy item={true} container={true} justifyContent="flex-end">
               {usersCount > 0 && (
                 <Link component="button" onClick={toggleShowAll}>
                   {!showAll && t('associates-view.more', { count: usersCount })}
@@ -55,7 +55,7 @@ export const AssociatesView = ({
             </GridLegacy>
           </>
         ) : (
-          <GridLegacy item>
+          <GridLegacy item={true}>
             <BlockSectionTitle>{t('associates-view.sign-in')}</BlockSectionTitle>
           </GridLegacy>
         )}

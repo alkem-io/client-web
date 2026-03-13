@@ -1,5 +1,5 @@
-import { Components, Theme } from '@mui/material/styles';
-import { ButtonProps } from '@mui/material';
+import type { ButtonProps } from '@mui/material';
+import type { Components, Theme } from '@mui/material/styles';
 
 const getFocusVisibleStyle = (
   theme: Theme,

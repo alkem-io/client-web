@@ -1,12 +1,12 @@
-import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege } from '../apollo/generated/graphql-schema';
+import type { ApolloError } from '@apollo/client';
 import { useEffect } from 'react';
-import { isApolloAuthorizationError } from '../apollo/hooks/useApolloErrorHandler';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { NotAuthorizedError } from '../40XErrorHandler/40XErrors';
 import { useLocation } from 'react-router-dom';
-import { AUTH_REQUIRED_PATH } from '../auth/authentication/constants/authentication.constants';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
+import { NotAuthorizedError } from '../40XErrorHandler/40XErrors';
+import { AuthorizationPrivilege } from '../apollo/generated/graphql-schema';
+import { isApolloAuthorizationError } from '../apollo/hooks/useApolloErrorHandler';
+import { AUTH_REQUIRED_PATH } from '../auth/authentication/constants/authentication.constants';
 
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;
@@ -14,9 +14,7 @@ interface RestrictedRedirectQueryResponse<Data extends {}> {
   skip?: boolean;
 }
 
-interface PrivilegesReader<Data> {
-  (data: Data): AuthorizationPrivilege[] | undefined;
-}
+type PrivilegesReader<Data> = (data: Data) => AuthorizationPrivilege[] | undefined;
 
 interface RestrictedRedirectOptions {
   requiredPrivilege?: AuthorizationPrivilege;

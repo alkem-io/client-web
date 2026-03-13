@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { type MouseEvent, useState } from 'react';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 const DEFAULT_MAX_VISIBLE_DESKTOP = 8;

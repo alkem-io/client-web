@@ -1,17 +1,17 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import OrganizationPage from '../../components/Organization/OrganizationPage';
-import { EditMode } from '@/core/ui/forms/editMode';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import AdminOrganizationsPage from './AdminOrganizationsPage';
+import { EditMode } from '@/core/ui/forms/editMode';
+import OrganizationPage from '../../components/Organization/OrganizationPage';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
+import AdminOrganizationsPage from './AdminOrganizationsPage';
 
 const AdminOrganizationsRoutes: FC = () => {
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<AdminOrganizationsPage />} />
+        <Route index={true} element={<AdminOrganizationsPage />} />
         <Route
           path="new"
           element={

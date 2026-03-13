@@ -1,5 +1,5 @@
 import InnovationFlowCurrentStateSelector from './InnovationFlowCurrentStateSelector';
-import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
+import type { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 const InnovationFlowVisualizerMobile = (props: InnovationFlowVisualizerProps) => (
   <InnovationFlowCurrentStateSelector {...props} flexShrink={1} minWidth={0} />

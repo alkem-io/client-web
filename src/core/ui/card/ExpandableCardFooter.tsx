@@ -1,8 +1,8 @@
-import { Box, BoxProps, Collapse } from '@mui/material';
-import CardExpandButton from './CardExpandButton';
+import { Box, type BoxProps, Collapse } from '@mui/material';
+import { cloneElement, type PropsWithChildren, type ReactElement, type ReactNode } from 'react';
 import CardContent from './CardContent';
-import { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react';
-import { CardTagsProps } from './CardTags';
+import CardExpandButton from './CardExpandButton';
+import type { CardTagsProps } from './CardTags';
 
 interface CardExpandableProps extends BoxProps {
   expanded: boolean;

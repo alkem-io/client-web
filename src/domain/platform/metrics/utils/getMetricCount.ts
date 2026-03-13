@@ -1,4 +1,4 @@
-import { MetricType } from '../MetricType';
+import type { MetricType } from '../MetricType';
 
 export interface Metric {
   name: string;

@@ -1,36 +1,36 @@
-import { useMemo, useRef, useState } from 'react';
-import { FieldArray, useFormikContext } from 'formik';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
+import AddIcon from '@mui/icons-material/Add';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
   Box,
-  IconButton,
   Button,
-  Stack,
-  Tooltip,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
   List,
   ListItem,
   ListItemText,
+  Stack,
+  Tooltip,
 } from '@mui/material';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { FieldArray, useFormikContext } from 'formik';
+import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { useTranslation } from 'react-i18next';
-import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 import { gutters } from '@/core/ui/grid/utils';
-import { getMediaGalleryVisualType } from '../../mediaGallery/mediaGalleryVisualType';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import AddIcon from '@mui/icons-material/Add';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import ImagePlaceholder from '@/core/ui/image/ImagePlaceholder';
-import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { getMediaGalleryVisualType } from '../../mediaGallery/mediaGalleryVisualType';
+import type { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 
 const HEIC_TYPES = ['image/heic', 'image/heif'];
 
@@ -82,7 +82,7 @@ const SortableVisualItem = ({ id, visual, onRemove }: SortableVisualItemProps) =
         },
       }}
     >
-      {Boolean(visual.previewUrl || visual.uri) ? (
+      {visual.previewUrl || visual.uri ? (
         <Box
           component="img"
           src={visual.previewUrl || visual.uri}
@@ -103,7 +103,7 @@ const SortableVisualItem = ({ id, visual, onRemove }: SortableVisualItemProps) =
           }
         />
       )}
-      <Tooltip title={t('callout.sortContributions')} arrow>
+      <Tooltip title={t('callout.sortContributions')} arrow={true}>
         <IconButton
           className="only-on-hover"
           {...listeners}
@@ -126,7 +126,7 @@ const SortableVisualItem = ({ id, visual, onRemove }: SortableVisualItemProps) =
           <DragIndicatorIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow>
+      <Tooltip title={t('callout.create.framingSettings.mediaGallery.deleteItem')} arrow={true}>
         <IconButton
           className="only-on-hover"
           onClick={onRemove}
@@ -377,7 +377,7 @@ const CalloutFramingMediaGalleryField = () => {
                   </Button>
                 )}
                 {mediaVisuals.length > 0 && (
-                  <Tooltip title={t('buttons.uploadMedia')} arrow>
+                  <Tooltip title={t('buttons.uploadMedia')} arrow={true}>
                     <IconButton aria-label={t('buttons.uploadMedia')} size="small" onClick={handleUploadClick}>
                       <RoundedIcon component={AddIcon} size="medium" iconSize="small" color="primary.main" />
                     </IconButton>
@@ -387,7 +387,7 @@ const CalloutFramingMediaGalleryField = () => {
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
-                  multiple
+                  multiple={true}
                   style={{ display: 'none' }}
                   onChange={event => {
                     const files = event.target.files;
@@ -409,7 +409,7 @@ const CalloutFramingMediaGalleryField = () => {
           <List sx={{ pt: 0 }}>
             {validationErrors.map((error, index) => (
               <Box key={`${error.fileName}-${index}`}>
-                <ListItem disableGutters>
+                <ListItem disableGutters={true}>
                   <ListItemText
                     primary={error.fileName}
                     secondary={

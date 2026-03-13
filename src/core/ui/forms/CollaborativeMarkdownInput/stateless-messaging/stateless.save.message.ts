@@ -1,4 +1,4 @@
-import { StatelessBaseMessage } from './stateless.base.message';
+import type { StatelessBaseMessage } from './stateless.base.message';
 
 export type StatelessSaveMessage = StatelessSaveSuccessMessage | StatelessSaveErrorMessage;
 

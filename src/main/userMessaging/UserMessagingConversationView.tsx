@@ -1,22 +1,22 @@
-import { Box, Typography, IconButton } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
+import { Box, IconButton, Typography } from '@mui/material';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMarkMessageAsReadMutation, useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import Avatar from '@/core/ui/avatar/Avatar';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { UserConversation } from './useUserConversations';
-import { ConversationMessage } from './useConversationMessages';
-import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useRef, useEffect, useCallback, useLayoutEffect, useState } from 'react';
-import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
-import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
-import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption } from '@/core/ui/typography';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
+import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
+import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import type { ConversationMessage } from './useConversationMessages';
+import type { UserConversation } from './useUserConversations';
 
 interface MessageBubbleProps {
   message: ConversationMessage;
@@ -148,7 +148,7 @@ const MessageBubble = ({
                 canAddReaction={canAddReaction}
                 onAddReaction={onAddReaction}
                 onRemoveReaction={onRemoveReaction}
-                showAddButton
+                showAddButton={true}
                 onPickerVisibilityChange={setIsReactionPickerOpen}
               />
             </Box>
@@ -168,7 +168,7 @@ const MessageBubble = ({
             canAddReaction={canAddReaction}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
-            showAddButton
+            showAddButton={true}
             onPickerVisibilityChange={setIsReactionPickerOpen}
           />
         </Box>
@@ -215,9 +215,7 @@ export const UserMessagingConversationView = ({
           messageID: lastMessage.id,
         },
       },
-    }).catch(error => {
-      console.error('Failed to mark messages as read:', error);
-    });
+    }).catch(_error => {});
   }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead]);
 
   // Mark as read when conversation is opened
@@ -249,8 +247,7 @@ export const UserMessagingConversationView = ({
         },
       });
       return true; // Return true to reset the form
-    } catch (error) {
-      console.error('Failed to send message:', error);
+    } catch (_error) {
       return false;
     }
   };

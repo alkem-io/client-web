@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { BlockTitle } from '@/core/ui/typography';
@@ -12,7 +12,7 @@ export interface ApplicationSubmitedDialogProps {
 const ApplicationSubmitedDialog = ({ open, onClose }: ApplicationSubmitedDialogProps) => {
   const { t } = useTranslation();
   return (
-    <Dialog open={open} maxWidth={'sm'} fullWidth>
+    <Dialog open={open} maxWidth={'sm'} fullWidth={true}>
       <DialogHeader onClose={onClose} />
       <DialogContent sx={{ paddingBottom: 6 }}>
         <Gutters alignItems="center">

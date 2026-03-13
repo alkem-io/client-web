@@ -1,15 +1,15 @@
-import React, { FC, ReactNode } from 'react';
-import SearchBaseContributionCard, { SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
-import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import CardFooterDate from '@/core/ui/card/CardFooterDate';
+import type { FC, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import CardFooter from '@/core/ui/card/CardFooter';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import CardFooterDate from '@/core/ui/card/CardFooterDate';
 import CardImage from '@/core/ui/card/CardImage';
 import {
   WHITEBOARD_IMAGE_ASPECT_RATIO,
   WhiteboardDefaultImage,
 } from '@/domain/collaboration/calloutContributions/whiteboard/WhiteboardCard';
-import { useTranslation } from 'react-i18next';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import SearchBaseContributionCard, { type SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
 
 export type SearchContributionWhiteboardCardProps = Omit<SearchBaseContributionCardProps, 'icon'> & {
   createdDate?: Date;

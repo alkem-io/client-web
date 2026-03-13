@@ -1,7 +1,6 @@
-import React from 'react';
-import { Box, BoxProps } from '@mui/material';
-import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
+import { Box, type BoxProps } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
+import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import RouterLink from '@/core/ui/link/RouterLink';
 
 const FooterLogo = (props: BoxProps) => {

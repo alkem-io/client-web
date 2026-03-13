@@ -1,37 +1,40 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import Loading from '@/core/ui/loading/Loading';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Identifiable } from '@/core/utils/Identifiable';
-import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { Formik } from 'formik';
-import { FormikProps } from 'formik/dist/types';
+import type { FormikProps } from 'formik/dist/types';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
-import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
-import WhiteboardDialogFooter from './WhiteboardDialogFooter';
-import WhiteboardDisplayName from './WhiteboardDisplayName';
+import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
+import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import mergeWhiteboard from '../utils/mergeWhiteboard';
+import whiteboardValidationSchema, { type WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
+import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import {
   DefaultWhiteboardPreviewSettings,
-  WhiteboardPreviewSettings,
+  type WhiteboardPreviewSettings,
 } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
-import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
+import type {
+  PreviewImageDimensions,
+  WhiteboardPreviewImage,
+} from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import WhiteboardDialogFooter from './WhiteboardDialogFooter';
+import WhiteboardDisplayName from './WhiteboardDisplayName';
 
 export interface WhiteboardDetails {
   id: string;
@@ -326,7 +329,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 open={options.show}
                 aria-labelledby="whiteboard-dialog"
                 maxWidth={false}
-                fullWidth
+                fullWidth={true}
                 fullScreen={options.fullscreen}
                 onClose={onClose}
               >

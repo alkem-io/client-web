@@ -3,7 +3,6 @@ import { useCreateReferenceOnProfileMutation, useDeleteReferenceMutation } from 
 
 export type PushFunc = (success: boolean) => void;
 // TODO this hook needs refactoring - something weird is going on with types here
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
   profileId?: string;
@@ -18,7 +17,7 @@ export const useEditReference = () => {
   const push = useRef<RemoveFunc | undefined>(null);
 
   const handleError = () => {
-    push.current && push.current();
+    push.current?.();
   };
 
   const [addReferenceOnProfile] = useCreateReferenceOnProfileMutation({
@@ -35,10 +34,10 @@ export const useEditReference = () => {
 
   const [deleteReferenceInt] = useDeleteReferenceMutation({
     onError: () => {
-      remove.current && remove.current(false);
+      remove.current?.(false);
       handleError();
     },
-    onCompleted: () => remove.current && remove.current(true),
+    onCompleted: () => remove.current?.(true),
     //update: removeFromCache,
   });
 

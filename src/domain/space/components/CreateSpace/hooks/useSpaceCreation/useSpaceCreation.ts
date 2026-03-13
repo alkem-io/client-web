@@ -1,12 +1,12 @@
+import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  CreateSpaceMutationOptions,
+  type CreateSpaceMutationOptions,
   refetchCurrentUserLightQuery,
   useCreateSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useCallback } from 'react';
+import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 import useUploadVisualsOnCreate from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
-import { useTranslation } from 'react-i18next';
-import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 
 interface SpaceCreationInput {
   accountId: string;

@@ -1,15 +1,16 @@
+import type React from 'react';
+import { useCallback } from 'react';
 import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
   useRemoveMessageOnRoomMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Community, Message, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
+import { type Community, type Message, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
-import React, { useCallback } from 'react';
 
 export interface CommunityUpdatesContainerProps {
   communityId: string | undefined;

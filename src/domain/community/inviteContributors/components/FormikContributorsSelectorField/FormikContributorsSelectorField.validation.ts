@@ -1,6 +1,6 @@
-import * as yup from 'yup';
-import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import { compact } from 'lodash-es';
+import * as yup from 'yup';
+import { ContributorSelectorType, type SelectedContributor } from './FormikContributorsSelectorField.models';
 
 export const DUPLICATED_EMAIL_ERROR = 'DUPLICATED_EMAIL_ERROR';
 

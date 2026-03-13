@@ -1,8 +1,7 @@
-import { List, ListItemText } from '@mui/material';
-import { Skeleton } from '@mui/material';
+import { List, ListItemText, Skeleton } from '@mui/material';
 import { Filter } from '@/domain/platformAdmin/components/Common/Filter';
+import type { Discussion } from '../models/Discussion';
 import DiscussionOverview from './DiscussionOverview';
-import { Discussion } from '../models/Discussion';
 
 interface DiscussionListViewProps {
   filterEnabled: boolean;

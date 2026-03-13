@@ -1,14 +1,14 @@
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { ComponentType, PropsWithChildren } from 'react';
-import { gutters } from '@/core/ui/grid/utils';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import type { ComponentType, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutContributionCreateButtonProps } from './interfaces/CalloutContributionCreateButtonProps';
-import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
-import { useCalloutContributionsCountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useInView } from 'react-intersection-observer';
+import { useCalloutContributionsCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { gutters } from '@/core/ui/grid/utils';
+import type { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
+import type { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
+import type { CalloutContributionCreateButtonProps } from './interfaces/CalloutContributionCreateButtonProps';
 import useCalloutCollaborationPermissions from './useCalloutContributions/useCalloutCollaborationPermissions';
 
 interface CalloutContributionsBlockProps extends PropsWithChildren {

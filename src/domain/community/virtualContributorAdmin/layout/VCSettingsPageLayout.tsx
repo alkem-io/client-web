@@ -1,10 +1,10 @@
-import { PropsWithChildren } from 'react';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import type { PropsWithChildren } from 'react';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import EntitySettingsLayout from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
+import EntitySettingsLayout from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { VCProfileTabs } from '../VcAdminTabs';
 
 type VCPageLayoutProps = {

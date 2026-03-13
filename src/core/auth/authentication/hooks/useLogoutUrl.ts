@@ -17,7 +17,6 @@ export const useLogoutUrl = () => {
       setLoading(true);
       const { status, data } = await client.createBrowserLogoutFlow();
       if (status !== 200) {
-        console.error(data);
       }
       setLogoutUrl(data.logout_url);
     } catch (error) {

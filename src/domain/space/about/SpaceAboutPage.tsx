@@ -1,9 +1,9 @@
-import { useSpace } from '../context/useSpace';
+import { Box } from '@mui/material';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Box } from '@mui/material';
+import { useSpace } from '../context/useSpace';
 
 const SpaceAboutPage = () => {
   const { space, permissions, loading: loadingSpace } = useSpace();
@@ -26,7 +26,7 @@ const SpaceAboutPage = () => {
       <StorageConfigContextProvider locationType="space" spaceId={space.id}>
         {spaceDetails && (
           <SpaceAboutDialog
-            open
+            open={true}
             space={spaceDetails}
             loading={loading}
             onClose={backToParentPage}

@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { Message } from '@/domain/communication/room/models/Message';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
-import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
-import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { useCalendarEventDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import type { Message } from '@/domain/communication/room/models/Message';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 interface useCalendarEventProps {
   eventId: string | undefined;

@@ -1,5 +1,5 @@
-import { Caption } from '../typography';
 import { LocationIcon } from '@/domain/timeline/calendar/icons/LocationIcon';
+import { Caption } from '../typography';
 
 type LocationCaptionProps = {
   city?: string | undefined;

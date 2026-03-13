@@ -1,7 +1,7 @@
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
+import type { BinaryFileDataWithOptionalUrl, BinaryFileDataWithUrl } from '../types';
 import { fetchFileToDataURL } from './fileConverters';
-import type { BinaryFileDataWithUrl, BinaryFileDataWithOptionalUrl } from '../types';
 
 export interface DownloadOptions {
   guestName?: string | null;

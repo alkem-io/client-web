@@ -246,7 +246,7 @@ export const COUNTRIES: CountryType[] = [
 ];
 
 const toByCode = () => {
-  let result: Record<string, string> = {};
+  const result: Record<string, string> = {};
   COUNTRIES.forEach(x => (result[x.code] = x.name));
   return result;
 };

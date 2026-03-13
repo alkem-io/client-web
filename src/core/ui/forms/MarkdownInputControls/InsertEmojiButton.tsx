@@ -1,10 +1,10 @@
-import { Editor } from '@tiptap/react';
-import { useRef, useState } from 'react';
 import { EmojiEmotionsOutlined } from '@mui/icons-material';
+import type { Editor } from '@tiptap/react';
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EmojiSelector from '../emoji/EmojiSelector';
-import { useTranslation } from 'react-i18next';
-import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
+import MarkdownInputToolbarButton, { type MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
 interface InsertEmojiButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;

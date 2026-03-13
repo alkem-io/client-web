@@ -1,7 +1,7 @@
 import { cardsGridColumns } from '../grid/constants';
-import GridContainer, { GridContainerProps } from '../grid/GridContainer';
-import GridProvider from '../grid/GridProvider';
+import GridContainer, { type GridContainerProps } from '../grid/GridContainer';
 import { useColumns } from '../grid/GridContext';
+import GridProvider from '../grid/GridProvider';
 
 export interface PageContentBlockGridProps extends GridContainerProps {
   cards?: boolean;

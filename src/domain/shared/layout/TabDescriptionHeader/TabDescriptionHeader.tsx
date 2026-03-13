@@ -1,5 +1,5 @@
+import type { PropsWithChildren, ReactNode } from 'react';
 import { Caption } from '@/core/ui/typography';
-import { PropsWithChildren, ReactNode } from 'react';
 
 const splitIntoLines = (text: ReactNode, namespace?: string) => {
   if (Array.isArray(text)) {

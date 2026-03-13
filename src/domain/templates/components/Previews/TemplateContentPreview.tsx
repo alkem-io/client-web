@@ -1,10 +1,10 @@
 import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import TemplateContentCalloutPreview from './TemplateContentCalloutPreview';
-import TemplateContentSpacePreview from './TemplateContentSpacePreview';
 import TemplateContentCommunityGuidelinesPreview from './TemplateContentCommunityGuidelinesPreview';
 import TemplateContentPostPreview from './TemplateContentPostPreview';
+import TemplateContentSpacePreview from './TemplateContentSpacePreview';
 import TemplateContentWhiteboardPreview from './TemplateContentWhiteboardPreview';
 
 interface TemplateContentPreviewProps {

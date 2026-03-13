@@ -1,5 +1,5 @@
-import { UserModel } from '@/domain/community/user/models/UserModel';
 import * as Sentry from '@sentry/react';
+import type { UserModel } from '@/domain/community/user/models/UserModel';
 
 export const setUserScope = (user: UserModel | undefined, piiEnabled?: boolean) => {
   if (user && piiEnabled) {

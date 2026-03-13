@@ -1,5 +1,5 @@
-import React, { PropsWithChildren } from 'react';
-import { Box, BoxProps, SxProps, Theme, useTheme } from '@mui/material';
+import { Box, type BoxProps, type SxProps, type Theme, useTheme } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 
 export type RoundedBadgeSize = 'medium' | 'small' | 'xsmall';
 

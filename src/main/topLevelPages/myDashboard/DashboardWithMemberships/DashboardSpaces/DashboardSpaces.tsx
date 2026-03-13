@@ -1,25 +1,23 @@
-import { useTranslation } from 'react-i18next';
-import { Button, Avatar, useTheme, Paper, Box } from '@mui/material';
-import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
-import Gutters from '@/core/ui/grid/Gutters';
-import GridItem from '@/core/ui/grid/GridItem';
-import Loading from '@/core/ui/loading/Loading';
-import { PageTitle } from '@/core/ui/typography';
-import RouterLink from '@/core/ui/link/RouterLink';
-import { Caption, Tagline } from '@/core/ui/typography';
-import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { useDashboardSpaces } from './useDashboardSpaces';
-import { gutters } from '@/core/ui/grid/utils';
+import { Avatar, Box, Button, Card, Paper, useTheme } from '@mui/material';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
 import { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
+import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
+import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
+import { useDashboardSpaces } from './useDashboardSpaces';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
@@ -161,7 +159,7 @@ const DashboardSpaces = () => {
 
             {hasChildMemberships && (
               <>
-                <Gutters row disablePadding>
+                <Gutters row={true} disablePadding={true}>
                   {childMemberships?.slice(0, visibleSpaces).map(({ space: subSpace }) => {
                     if (!subSpace) {
                       return null;
@@ -177,7 +175,7 @@ const DashboardSpaces = () => {
                           banner={about.profile.cardBanner}
                           spaceUri={about.profile.url}
                           isPrivate={!about.isContentPublic}
-                          compact
+                          compact={true}
                         />
                       </GridItem>
                     );

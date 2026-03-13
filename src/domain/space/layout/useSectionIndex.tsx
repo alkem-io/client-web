@@ -1,8 +1,8 @@
 import { useSearchParams } from 'react-router-dom';
-import useSpaceTabs from './tabbedLayout/layout/useSpaceTabs';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { useSpace } from '../context/useSpace';
+import useSpaceTabs from './tabbedLayout/layout/useSpaceTabs';
 
 export const useSectionIndex = ({ spaceId, spaceLevel }: { spaceId?: string; spaceLevel?: SpaceLevel }) => {
   const [searchParams] = useSearchParams();
@@ -22,7 +22,7 @@ export const useSectionIndex = ({ spaceId, spaceLevel }: { spaceId?: string; spa
       sectionIndex = '0'; // set default to dashboard
     }
   } else {
-    sectionIndex = `${parseInt(sectionIndex) - 1}`;
+    sectionIndex = `${parseInt(sectionIndex, 10) - 1}`;
   }
 
   return sectionIndex;

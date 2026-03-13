@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete';
+import type { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete';
 
 export type EventFormProps = {
   isSubmitting: boolean;

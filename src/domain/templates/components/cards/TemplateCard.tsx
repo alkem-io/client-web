@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
-import { ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import type { FC } from 'react';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import type { ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import type { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 import CalloutTemplateCard from './CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from './CommunityGuidelinesTemplateCard';
 import PostTemplateCard from './PostTemplateCard';
-import WhiteboardTemplateCard from './WhiteboardTemplateCard';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 import SpaceTemplateCard from './SpaceTemplateCard';
+import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 
 export interface TemplateCardProps extends AnyTemplateWithInnovationPack, ContributeCardProps {
   loading?: boolean;

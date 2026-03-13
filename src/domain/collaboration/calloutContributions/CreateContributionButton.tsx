@@ -1,6 +1,6 @@
-import { Button, ButtonProps } from '@mui/material';
+import { Button, type ButtonProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import type { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 interface CreateContributionButtonProps extends ButtonProps {
   contributionType: CalloutContributionType;

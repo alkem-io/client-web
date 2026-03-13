@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
-import { Box, Chip } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
-import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Box, Chip } from '@mui/material';
+import type { ReactNode } from 'react';
+import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import { Caption } from '@/core/ui/typography';
 
 export interface AdminListItemColumn {
   flex?: number;
@@ -25,7 +25,7 @@ export const AdminListItemLayout = ({ name, columns }: AdminListItemLayoutProps)
     <Box display="flex" alignItems="center" gap={2} width="100%">
       {/* Name Column - always first */}
       <Box flex={2} minWidth={0}>
-        <Caption fontWeight={500} noWrap>
+        <Caption fontWeight={500} noWrap={true}>
           {name}
         </Caption>
       </Box>
@@ -85,7 +85,7 @@ interface AccountOwnerColumnProps {
  * Follows Single Responsibility Principle - handles only this column's rendering
  */
 export const AccountOwnerColumn = ({ accountOwner }: AccountOwnerColumnProps) => (
-  <Caption color="text.secondary" noWrap title={accountOwner}>
+  <Caption color="text.secondary" noWrap={true} title={accountOwner}>
     {accountOwner || 'N/A'}
   </Caption>
 );

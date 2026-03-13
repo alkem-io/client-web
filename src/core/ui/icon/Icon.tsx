@@ -1,5 +1,5 @@
-import { ComponentType } from 'react';
-import { SvgIconProps, Theme } from '@mui/material';
+import type { SvgIconProps, Theme } from '@mui/material';
+import type { ComponentType } from 'react';
 
 type CustomIconSize = 'xl' | 'xxl' | 'xs';
 

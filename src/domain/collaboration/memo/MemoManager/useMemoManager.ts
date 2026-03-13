@@ -1,6 +1,6 @@
-import { useMemoDetailsQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { MemoModelFull } from '../model/MemoModelFull';
 import { useCallback } from 'react';
+import { useMemoDetailsQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { MemoModelFull } from '../model/MemoModelFull';
 
 interface useMemoManagerProvided {
   memo: MemoModelFull | undefined;

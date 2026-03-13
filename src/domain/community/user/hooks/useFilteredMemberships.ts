@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import { RoleType } from '../constants/RoleType';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import type { RoleType } from '../constants/RoleType';
 
 const hasRole = (contribution: SpaceHostedItem, roles: RoleType[]) =>
   roles.some(role => contribution.roles?.includes(role));

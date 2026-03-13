@@ -1,4 +1,4 @@
-import { FieldFunctionOptions, FieldPolicy } from '@apollo/client';
+import type { FieldFunctionOptions, FieldPolicy } from '@apollo/client';
 
 type KeyArgs = FieldPolicy<unknown>['keyArgs'];
 const pageInfoFieldName = 'pageInfo';

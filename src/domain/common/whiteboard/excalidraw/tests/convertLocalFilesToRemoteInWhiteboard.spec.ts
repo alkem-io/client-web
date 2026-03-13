@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  type ConversionLogger,
   convertLocalFilesToRemoteInWhiteboard,
   type FileConverter,
-  type ConversionLogger,
 } from '../fileStore/convertLocalFilesToRemote';
 import type { BinaryFileDataWithOptionalUrl, BinaryFileDataWithUrl, WhiteboardWithFiles } from '../types';
 
@@ -66,10 +66,7 @@ describe('convertLocalFilesToRemoteInWhiteboard implementation', () => {
 
   describe('null/undefined handling', () => {
     it('returns unchanged whiteboard when whiteboard is null', async () => {
-      const result = await convertLocalFilesToRemoteInWhiteboard(
-        null as unknown as WhiteboardWithFiles,
-        mockConverter
-      );
+      const result = await convertLocalFilesToRemoteInWhiteboard(null as unknown as WhiteboardWithFiles, mockConverter);
 
       expect(result.whiteboard).toBeNull();
       expect(result.failedConversions).toEqual([]);
@@ -234,16 +231,16 @@ describe('convertLocalFilesToRemoteInWhiteboard implementation', () => {
       const result = await convertLocalFilesToRemoteInWhiteboard(whiteboard, mockConverter, mockLogger);
 
       // Successful conversion
-      expect(result.whiteboard.files?.['success']).toBeDefined();
-      expect(result.whiteboard.files?.['success']?.url).toBe('https://storage.example.com/success.png');
+      expect(result.whiteboard.files?.success).toBeDefined();
+      expect(result.whiteboard.files?.success?.url).toBe('https://storage.example.com/success.png');
 
       // Failed conversion - preserved with dataURL
-      expect(result.whiteboard.files?.['failed']).toBeDefined();
-      expect(result.whiteboard.files?.['failed']?.dataURL).toBe(failedFile.dataURL);
+      expect(result.whiteboard.files?.failed).toBeDefined();
+      expect(result.whiteboard.files?.failed?.dataURL).toBe(failedFile.dataURL);
       expect(result.failedConversions).toContain('failed');
 
       // Unrecoverable - dropped
-      expect(result.whiteboard.files?.['unrecoverable']).toBeUndefined();
+      expect(result.whiteboard.files?.unrecoverable).toBeUndefined();
       expect(result.unrecoverableFiles).toContain('unrecoverable');
 
       // Existing URL - preserved via conversion

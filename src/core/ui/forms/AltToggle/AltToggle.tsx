@@ -1,5 +1,5 @@
-import { ReactNode, ChangeEvent } from 'react';
-import { Stack, StackProps, Switch } from '@mui/material';
+import { Stack, type StackProps, Switch } from '@mui/material';
+import type { ChangeEvent, ReactNode } from 'react';
 import { Caption } from '@/core/ui/typography';
 
 type AltToggleOption<Value> = {
@@ -25,7 +25,7 @@ const AltToggle = <Value1, Value2>({
 
   const isLeftOptionSelected = value === leftOption.value;
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>, isChecked: boolean) => {
+  const handleChange = (_event: ChangeEvent<HTMLInputElement>, isChecked: boolean) => {
     onChange(isChecked ? rightOption.value : leftOption.value);
   };
 

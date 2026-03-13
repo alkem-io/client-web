@@ -1,11 +1,11 @@
+import { Typography } from '@mui/material';
 import { useField } from 'formik';
 import { useEffect, useState } from 'react';
-import FormikInputField, { FormikInputFieldProps } from '@/core/ui/forms/FormikInputField/FormikInputField';
-import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { Typography } from '@mui/material';
-import createNameId from './createNameId';
 import { useTranslation } from 'react-i18next';
+import FormikInputField, { type FormikInputFieldProps } from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { NAMEID_MAX_LENGTH } from '@/core/ui/forms/validator/nameIdValidator';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import createNameId from './createNameId';
 
 interface NameIdFieldProps {
   sourceFieldName?: string;

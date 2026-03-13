@@ -1,5 +1,5 @@
+import type { Theme } from '@mui/material/styles';
 import { GUTTER_MUI, GUTTER_PX } from './constants';
-import { Theme } from '@mui/material/styles';
 import { useColumns } from './GridContext';
 
 export const getColumnsWidth = (itemColumns: number, gridColumns: number) => {
@@ -20,9 +20,7 @@ export interface GridItemStyle {
   flexShrink: 0;
 }
 
-interface UseGridItemProvided {
-  (columns?: number): GridItemStyle;
-}
+type UseGridItemProvided = (columns?: number) => GridItemStyle;
 
 export const useGridItem = (): UseGridItemProvided => {
   const gridColumns = useColumns();

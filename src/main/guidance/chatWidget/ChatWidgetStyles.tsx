@@ -1,5 +1,5 @@
+import { Box, type BoxProps } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, BoxProps } from '@mui/material';
 
 export const SOURCES_HEADING_TAG_HTML = 'h5'; // In the server there's a '#####' markdown tag
 

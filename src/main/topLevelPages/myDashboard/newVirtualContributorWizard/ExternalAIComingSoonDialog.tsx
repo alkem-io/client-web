@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
-import { Field, Form, Formik } from 'formik';
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { Box, Button, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import Gutters from '@/core/ui/grid/Gutters';
-import { Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
+import { Field, Form, Formik } from 'formik';
+import type React from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { useSendMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import { warn as logWarn } from '@/core/logging/sentry/log';
 import { Actions } from '@/core/ui/actions/Actions';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { useSendMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { warn as logWarn } from '@/core/logging/sentry/log';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { Caption } from '@/core/ui/typography';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 const SUPPORT_EMAIL = 'support@alkem.io';
 
@@ -22,7 +23,7 @@ interface ExternalAIComingSoonDialogProps {
   onClose: () => void;
 }
 
-const enum ContactOptions {
+enum ContactOptions {
   option1 = 'Yes',
   option2 = 'No',
 }
@@ -96,13 +97,13 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={(values: FormValues) => sendNotification(values)}
     >
       {({ isValid, handleChange }) => (
         <Form>
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <Box display="flex">
               <Caption alignSelf="center">{t('createVirtualContributorWizard.externalAI.comingSoon.subTitle')}</Caption>
             </Box>

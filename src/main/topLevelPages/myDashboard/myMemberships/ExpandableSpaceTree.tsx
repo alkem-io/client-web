@@ -1,26 +1,23 @@
-import { useState } from 'react';
-
-import { useTranslation } from 'react-i18next';
-import { ParseKeys } from 'i18next';
-import { Button } from '@mui/material';
-
-import Avatar from '@/core/ui/avatar/Avatar';
-import Gutters from '@/core/ui/grid/Gutters';
-import GridItem from '@/core/ui/grid/GridItem';
-import RouterLink from '@/core/ui/link/RouterLink';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Caption, BlockTitle, BlockSectionTitle } from '@/core/ui/typography';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Button } from '@mui/material';
+import type { ParseKeys } from 'i18next';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RoleName, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
 
 import { gutters } from '@/core/ui/grid/utils';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { MembershipProps } from './MyMembershipsDialog.model';
-import { useColumns } from '@/core/ui/grid/GridContext';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
-import { SpaceLevel, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
-
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import type { MembershipProps } from './MyMembershipsDialog.model';
 
 const VISIBLE_COMMUNITY_ROLES = [RoleName.Admin, RoleName.Lead];
 
@@ -93,7 +90,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
             )}
           </BadgeCardView>
 
-          <Gutters flexDirection="row" disableGap padding={0}>
+          <Gutters flexDirection="row" disableGap={true} padding={0}>
             {!isSmallScreen && (
               <Caption color="primary" display="flex" alignItems="center">
                 {communityRoles?.map(role => t(`common.roles.${role}` as ParseKeys)).join(', ')}

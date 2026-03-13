@@ -1,6 +1,6 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export type AnyContribution = Identifiable & {
   link?: {

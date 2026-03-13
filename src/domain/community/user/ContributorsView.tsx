@@ -1,7 +1,11 @@
+import { Box, GridLegacy } from '@mui/material';
+import { times } from 'lodash-es';
+import type { ComponentType, ReactNode, Ref } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  OrganizationContributorFragment,
   ActorType,
-  UserContributorFragment,
+  type OrganizationContributorFragment,
+  type UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -9,19 +13,15 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import GridItem from '@/core/ui/grid/GridItem';
 import GridProvider from '@/core/ui/grid/GridProvider';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import { Box, GridLegacy } from '@mui/material';
-import { times } from 'lodash-es';
-import { ComponentType, ReactNode, Ref } from 'react';
-import { useTranslation } from 'react-i18next';
 import ContributorCardSquare, {
   ContributorCardSkeleton,
-  ContributorCardSquareProps,
+  type ContributorCardSquareProps,
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
-import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
-import { PaginatedResult, VirtualContributors } from './ContributorsPage';
+import type { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
+import type { PaginatedResult, VirtualContributors } from './ContributorsPage';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 32;
@@ -149,7 +149,7 @@ const ContributorsView = ({
           />
         )}
         {!showUsers && (
-          <GridLegacy item>
+          <GridLegacy item={true}>
             <ImageBackdrop
               src={grayedOutUsersImgSrc}
               backdropMessage="login"

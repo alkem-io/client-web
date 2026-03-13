@@ -1,15 +1,15 @@
-import { useMemo, useState } from 'react';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import Gutters from '@/core/ui/grid/Gutters';
 import { Formik } from 'formik';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
-import { SelectableSpace } from './useVirtualContributorWizard';
-import Loading from '@/core/ui/loading/Loading';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
+import { Caption } from '@/core/ui/typography';
+import type { SelectableSpace } from './useVirtualContributorWizard';
 
 export interface SelectableKnowledgeSpace {
   id: string;
@@ -100,8 +100,8 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading, titleId }: 
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={onCreate}
     >
       {({ values, isValid }) => (
@@ -117,13 +117,13 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading, titleId }: 
               <Caption>{t('createVirtualContributorWizard.existingSpace.noSpaces')}</Caption>
             )}
             {spaces.length > 0 && (
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <Caption>{t('createVirtualContributorWizard.existingSpace.description')}</Caption>
                 <FormikAutocomplete
                   name="subspaceId"
                   title={t('createVirtualContributorWizard.existingSpace.label')}
                   values={listItems}
-                  required
+                  required={true}
                   disablePortal={false}
                 />
               </Gutters>
