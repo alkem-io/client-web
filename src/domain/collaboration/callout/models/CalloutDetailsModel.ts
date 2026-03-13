@@ -7,11 +7,11 @@ import type { LinkDetails } from '../../calloutContributions/link/models/LinkDet
 import type { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import type { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
 import type { MemoModel } from '../../memo/model/MemoModel';
+import type { PollDetailsModel } from '../../poll/models/PollModels';
 import type { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
 import type { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import type { ContributionDefaultsModel } from './ContributionDefaultsModel';
-import type { PollDetailsModel } from '../../poll/models/PollModels';
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {

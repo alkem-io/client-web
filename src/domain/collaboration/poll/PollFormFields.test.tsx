@@ -1,6 +1,6 @@
-import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Formik } from 'formik';
+import { describe, expect, test, vi } from 'vitest';
 import PollFormFields from './PollFormFields';
 
 vi.mock('react-i18next', () => ({

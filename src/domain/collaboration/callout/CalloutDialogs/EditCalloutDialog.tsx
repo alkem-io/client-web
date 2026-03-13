@@ -21,6 +21,8 @@ import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
+import { usePollOptionManagement } from '../../poll/hooks/usePollOptionManagement';
+import type { PollFormOptionValue } from '../../poll/models/PollModels';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import CalloutForm from '../CalloutForm/CalloutForm';
 import type { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
@@ -29,8 +31,6 @@ import {
   mapCalloutSettingsModelToCalloutSettingsFormValues,
   mapLinkDataToUpdateLinkInput,
 } from '../models/mappings';
-import { type PollFormOptionValue } from '../../poll/models/PollModels';
-import { usePollOptionManagement } from '../../poll/hooks/usePollOptionManagement';
 
 export interface EditCalloutDialogProps {
   open?: boolean;

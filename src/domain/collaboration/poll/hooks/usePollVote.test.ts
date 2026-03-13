@@ -1,7 +1,7 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import { usePollVote } from './usePollVote';
-import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 
 const mockCastPollVoteMutation = vi.fn().mockResolvedValue({ data: {} });
 

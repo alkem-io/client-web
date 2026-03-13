@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Box, IconButton, TextField, Tooltip, Typography } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, IconButton, TextField, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
+import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 
 type PollOptionManagerRowProps = {
   option: PollOptionModel;
@@ -64,8 +64,8 @@ const PollOptionManagerRow = ({
           value={editText}
           onChange={e => setEditText(e.target.value)}
           size="small"
-          fullWidth
-          autoFocus
+          fullWidth={true}
+          autoFocus={true}
           inputProps={{ maxLength: 512 }}
           onKeyDown={e => {
             if (e.key === 'Enter') handleConfirmEdit();

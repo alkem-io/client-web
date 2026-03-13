@@ -6,6 +6,7 @@ import {
   type CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
 import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import {
@@ -14,7 +15,6 @@ import {
   type CalloutCreationUtils,
   useCalloutCreation,
 } from './useCalloutCreation';
-import { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {

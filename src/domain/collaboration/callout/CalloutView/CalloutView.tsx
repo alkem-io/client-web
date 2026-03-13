@@ -37,12 +37,12 @@ import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import CalloutFramingMediaGallery from '../CalloutFramings/CalloutFramingMediaGallery';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
+import CalloutFramingPoll from '../CalloutFramings/CalloutFramingPoll';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import type { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import useCalloutComments from '../commentsToCallout/useCalloutComments';
 import CalloutViewLayout from './CalloutViewLayout';
-import CalloutFramingPoll from '../CalloutFramings/CalloutFramingPoll';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>

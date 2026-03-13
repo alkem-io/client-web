@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import {
   useAddPollOptionMutation,
-  useUpdatePollOptionMutation,
   useRemovePollOptionMutation,
   useReorderPollOptionsMutation,
+  useUpdatePollOptionMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 
 type UsePollOptionManagementParams = {

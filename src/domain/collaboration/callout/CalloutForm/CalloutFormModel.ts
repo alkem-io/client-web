@@ -8,10 +8,10 @@ import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { PollFormValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import type { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
 import type { CalloutStructuredResponseType } from './CalloutForm';
-import type { PollFormValues } from '../../poll/models/PollModels';
 
 export interface CalloutFormSubmittedValues {
   framing: {

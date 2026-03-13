@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
 import { Box, Button } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import { PollStatus } from '@/core/apollo/generated/graphql-schema';
-import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
-import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
-import { Caption } from '@/core/ui/typography/components';
-import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography/components';
+import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
+import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
+import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
 
 type PollViewProps = {
   poll: PollDetailsModel;
@@ -93,7 +93,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
       />
 
       {isVotingMode && (
-        <Gutters row disablePadding mt={1}>
+        <Gutters row={true} disablePadding={true} mt={1}>
           <Button
             variant="contained"
             onClick={handleVoteSubmit}

@@ -1,8 +1,8 @@
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import PollView from '@/domain/collaboration/poll/PollView';
-import { usePollSubscriptions } from '@/domain/collaboration/poll/hooks/usePollSubscriptions';
-import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import Gutters from '@/core/ui/grid/Gutters';
+import { usePollSubscriptions } from '@/domain/collaboration/poll/hooks/usePollSubscriptions';
+import PollView from '@/domain/collaboration/poll/PollView';
+import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingPollProps {
   callout: CalloutDetailsModelExtended;

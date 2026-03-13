@@ -13,9 +13,9 @@ import type {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import type { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
+import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
-import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 
 export interface CalloutCreationType {
   classification?: {

@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import Avatar from '@/core/ui/avatar/Avatar';
+import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
-import { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 
 type Voter = NonNullable<PollOptionModel['voters']>[number];
 

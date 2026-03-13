@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { PollResultsDetail } from '@/core/apollo/generated/graphql-schema';
-import { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
-import PollVoterAvatars from '@/domain/collaboration/poll/PollVoterAvatars';
 import { Text } from '@/core/ui/typography';
+import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
+import PollVoterAvatars from '@/domain/collaboration/poll/PollVoterAvatars';
 
 type PollVotingControlsProps = {
   options: PollOptionModel[];
@@ -119,7 +119,7 @@ const PollVotingControls = ({
 
   if (isSingleChoice) {
     return (
-      <FormControl component="fieldset" disabled={isDisabled} fullWidth>
+      <FormControl component="fieldset" disabled={isDisabled} fullWidth={true}>
         <RadioGroup value={selectedOptionIds[0] ?? ''} onChange={(_event, value) => onChange([value])}>
           {options.map(option => (
             <FormControlLabel
@@ -144,7 +144,7 @@ const PollVotingControls = ({
   };
 
   return (
-    <FormControl component="fieldset" disabled={isDisabled} fullWidth>
+    <FormControl component="fieldset" disabled={isDisabled} fullWidth={true}>
       <FormGroup>
         {options.map(option => {
           const isSelected = selectedOptionIds.includes(option.id);

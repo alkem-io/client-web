@@ -1,22 +1,22 @@
-import { Box, IconButton } from '@mui/material';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { Box, IconButton } from '@mui/material';
 import { FieldArray, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
-import PollFormSettingsSection from '@/domain/collaboration/poll/PollFormSettingsSection';
-import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
 import Gutters from '@/core/ui/grid/Gutters';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
+import PollFormSettingsSection from '@/domain/collaboration/poll/PollFormSettingsSection';
 
 const FIELD_PREFIX = 'framing.poll';
 export const MIN_POLL_OPTIONS = 2;
@@ -62,7 +62,7 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
       <FormikInputField
         title=""
         name={`${formPrefix}.options.${index}.text`}
-        required
+        required={true}
         maxLength={512}
         containerProps={{ sx: { flex: 1 } }}
       />
@@ -96,7 +96,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
 
   return (
     <Box>
-      <FormikInputField name={`${formPrefix}.title`} title={t('poll.create.title')} required maxLength={512} />
+      <FormikInputField name={`${formPrefix}.title`} title={t('poll.create.title')} required={true} maxLength={512} />
 
       <Caption>{t('poll.create.options')}</Caption>
 
@@ -113,11 +113,11 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
           };
 
           return (
-            <Gutters disablePadding gap={0.5}>
+            <Gutters disablePadding={true} gap={0.5}>
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                   {options.map((_option, index) => (
-                    <Gutters row disablePadding key={itemIds[index]} width="100%">
+                    <Gutters row={true} disablePadding={true} key={itemIds[index]} width="100%">
                       <Caption mt={1.5}>{index + 1}</Caption>
                       <SortableOptionRow
                         key={itemIds[index]}
@@ -131,7 +131,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
                   ))}
                 </SortableContext>
               </DndContext>
-              <Gutters row disablePadding justifyContent="space-between">
+              <Gutters row={true} disablePadding={true} justifyContent="space-between">
                 <Box display="flex" alignItems="center">
                   <IconButton
                     aria-label={t('components.referenceSegment.addReference')}

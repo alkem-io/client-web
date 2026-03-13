@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {
   Box,
   Button,
@@ -12,18 +15,15 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
-import { useTranslation } from 'react-i18next';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikFormattedInputField from '@/core/ui/forms/FormikInputField/FormikFormattedInputField';
-import { PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useFormikContext } from 'formik';
-import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
-import { Caption, Text } from '@/core/ui/typography';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import FormikFormattedInputField from '@/core/ui/forms/FormikInputField/FormikFormattedInputField';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { Caption, Text } from '@/core/ui/typography';
+import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 
 type PollFormSettingsSectionProps = {
   fieldPrefix: string;
@@ -164,7 +164,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
                 }
                 label={t('poll.create.allowMultipleResponses')}
               />
-              <Tooltip title={t('poll.create.allowMultipleResponsesSettingsTooltip')} arrow>
+              <Tooltip title={t('poll.create.allowMultipleResponsesSettingsTooltip')} arrow={true}>
                 <IconButton
                   size="small"
                   onClick={() => setShowMinMaxFields(prev => !prev)}
@@ -201,7 +201,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
                   disabled={readOnly}
                   endAdornment={
                     <>
-                      <Tooltip title={t('poll.create.infiniteResponsesTooltip')} arrow>
+                      <Tooltip title={t('poll.create.infiniteResponsesTooltip')} arrow={true}>
                         <IconButton size="small" onClick={handleSetInfiniteResponses}>
                           <AllInclusiveIcon fontSize="small" />
                         </IconButton>
@@ -217,7 +217,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
                 />
               </Box>
             </Collapse>
-            <FormControlLabel control={<Checkbox disabled />} label={t('poll.create.allowUserOptions')} />
+            <FormControlLabel control={<Checkbox disabled={true} />} label={t('poll.create.allowUserOptions')} />
           </FormGroup>
 
           <Caption>{t('poll.create.displayOptions')}</Caption>
@@ -233,7 +233,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
           </FormGroup>
         </DialogContent>
         <DialogActions>
-          <Tooltip title={error ? t('poll.create.fixErrorsBeforeClosingTooltip') : ''} arrow>
+          <Tooltip title={error ? t('poll.create.fixErrorsBeforeClosingTooltip') : ''} arrow={true}>
             <span>
               <Button onClick={handleCloseDialog} variant="contained" disabled={!!error}>
                 {t('buttons.close')}

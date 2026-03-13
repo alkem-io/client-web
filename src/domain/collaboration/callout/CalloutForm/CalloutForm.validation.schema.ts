@@ -1,3 +1,4 @@
+import * as yup from 'yup';
 import {
   CalloutAllowedActors,
   CalloutContributionType,
@@ -6,15 +7,14 @@ import {
   PollResultsDetail,
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import * as yup from 'yup';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '../../poll/PollFormFields';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 export const calloutValidationSchema = yup.object().shape({
   framing: yup.object().shape({

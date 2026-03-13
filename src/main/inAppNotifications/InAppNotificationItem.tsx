@@ -18,6 +18,7 @@ import { InAppSpaceCollaborationCalloutCommentView } from './views/space/InAppSp
 import { InAppSpaceCollaborationCalloutContributionView } from './views/space/InAppSpaceCollaborationCalloutContributionView';
 import { InAppSpaceCollaborationCalloutPostContributionCommentView } from './views/space/InAppSpaceCollaborationCalloutPostContributionCommentView';
 import { InAppSpaceCollaborationCalloutPublishedView } from './views/space/InAppSpaceCollaborationCalloutPublishedView';
+import { InAppSpaceCollaborationPollView } from './views/space/InAppSpaceCollaborationPollView';
 import { InAppSpaceCommunicationUpdateView } from './views/space/InAppSpaceCommunicationUpdateView';
 import { InAppSpaceCommunityCalendarEventCommentView } from './views/space/InAppSpaceCommunityCalendarEventCommentView';
 import { InAppSpaceCommunityCalendarEventCreatedView } from './views/space/InAppSpaceCommunityCalendarEventCreatedView';
@@ -31,7 +32,6 @@ import { InAppUserSpaceCommunityInvitationView } from './views/user/InAppUserSpa
 import { InAppUserSpaceCommunityJoinedView } from './views/user/InAppUserSpaceCommunityJoinedView';
 import { InAppSpaceAdminVirtualContributorCommunityInvitationDeclinedView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView';
 import { InAppVirtualContributorAdminSpaceCommunityInvitationView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationView';
-import { InAppSpaceCollaborationPollView } from './views/space/InAppSpaceCollaborationPollView';
 
 export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {

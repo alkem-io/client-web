@@ -3,9 +3,7 @@ import { Formik, type FormikConfig } from 'formik';
 import { cloneDeep } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CalloutContributionType,
-} from '@/core/apollo/generated/graphql-schema';
+import type { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -20,10 +18,10 @@ import ReferenceSegment from '@/domain/platformAdmin/components/Common/Reference
 import { TagsetSegment } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
+import { calloutValidationSchema } from './CalloutForm.validation.schema';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { type CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
-import { calloutValidationSchema } from './CalloutForm.validation.schema';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 

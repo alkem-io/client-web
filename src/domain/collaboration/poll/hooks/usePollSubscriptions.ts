@@ -1,7 +1,7 @@
 import {
-  usePollVoteUpdatedSubscription,
-  usePollOptionsChangedSubscription,
   PollDetailsFragmentDoc,
+  usePollOptionsChangedSubscription,
+  usePollVoteUpdatedSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
 
 type UsePollSubscriptionsParams = {
