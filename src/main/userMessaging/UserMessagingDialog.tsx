@@ -123,6 +123,7 @@ const UserMessagingDialog = () => {
                 messagesLoading={messagesLoading}
                 onBack={handleBack}
                 showBackButton={true}
+                onLeaveConversation={handleBack}
               />
             ) : (
               <UserMessagingChatList
@@ -163,19 +164,6 @@ const UserMessagingDialog = () => {
           },
         }}
       >
-        {/* Close button */}
-        <IconButton
-          onClick={handleClose}
-          aria-label={t('buttons.close')}
-          sx={theme => ({
-            position: 'absolute',
-            top: theme.spacing(2),
-            right: theme.spacing(2),
-            zIndex: 1,
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
         <DialogContent sx={{ padding: 0, display: 'flex', height: '100%' }}>
           <PageContentBlockSeamless
             disablePadding={true}
@@ -203,6 +191,8 @@ const UserMessagingDialog = () => {
               conversation={selectedConversation}
               messages={messages}
               messagesLoading={messagesLoading}
+              onLeaveConversation={handleBack}
+              onClose={handleClose}
             />
           </PageContentBlockSeamless>
         </DialogContent>

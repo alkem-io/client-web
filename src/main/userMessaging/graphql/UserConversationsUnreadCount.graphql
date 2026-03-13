@@ -1,7 +1,7 @@
 query UserConversationsUnreadCount {
   me {
     conversations {
-      users {
+      conversations {
         id
         room {
           id

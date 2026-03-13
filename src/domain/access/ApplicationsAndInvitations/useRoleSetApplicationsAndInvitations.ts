@@ -37,7 +37,7 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   applicationStateChange: (applicationId: string, eventName: string) => Promise<unknown>;
   inviteContributorsOnRoleSet: (inviteData: {
     roleSetId: string;
-    invitedActorIds: string[];
+    invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
@@ -196,13 +196,13 @@ const useRoleSetApplicationsAndInvitations = ({
   const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
   const handleInviteContributorsOnRoleSet = async ({
     roleSetId,
-    invitedActorIds,
+    invitedContributorIds,
     invitedUserEmails,
     welcomeMessage,
     extraRoles,
   }: {
     roleSetId: string;
-    invitedActorIds: string[];
+    invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
@@ -213,7 +213,7 @@ const useRoleSetApplicationsAndInvitations = ({
     const result = await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
-        invitedActorIds,
+        invitedActorIds: invitedContributorIds,
         invitedUserEmails,
         welcomeMessage,
         extraRoles: filteredExtraRoles,

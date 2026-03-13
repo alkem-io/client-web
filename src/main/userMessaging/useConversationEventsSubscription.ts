@@ -3,13 +3,16 @@ import { useCallback } from 'react';
 import {
   ConversationMessagesDocument,
   UserConversationsDocument,
+  UserConversationsUnreadCountDocument,
   useConversationEventsSubscription as useSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   type ConversationEventsSubscription,
   ConversationEventType,
   type ConversationMessagesQuery,
+  RoomType,
   type UserConversationsQuery,
+  type UserConversationsUnreadCountQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -26,6 +29,16 @@ type MessageRemovedEvent = NonNullable<
 >;
 type ReadReceiptUpdatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['readReceiptUpdated']
+>;
+type ConversationUpdatedEvent = NonNullable<
+  NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationUpdated']
+>;
+type ConversationDeletedEvent = NonNullable<
+  NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationDeleted']
+>;
+type MemberAddedEvent = NonNullable<NonNullable<ConversationEventsSubscription['conversationEvents']>['memberAdded']>;
+type MemberRemovedEvent = NonNullable<
+  NonNullable<ConversationEventsSubscription['conversationEvents']>['memberRemoved']
 >;
 
 // Fragment for reading lastMessage from cache
@@ -79,19 +92,25 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const handleConversationCreated = useCallback(
     (event: ConversationCreatedEvent) => {
+      const conversation = event.conversation;
+      const room = conversation.room;
+
+      if (!room) {
+        return;
+      }
+
+      // Group conversations with 0 messages should still show a badge so the
+      // user knows they were added. The server returns unreadCount=0 (correct
+      // for Matrix), so we override it client-side only for conversations
+      // arriving via the subscription (new ones), not old ones loaded by query.
+      const effectiveUnreadCount =
+        room.type === RoomType.ConversationGroup ? Math.max(room.unreadCount, 1) : room.unreadCount;
+
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-        if (!existing?.me?.conversations?.users) return existing;
-
-        const conversation = event.conversation;
-        const room = conversation.room;
-        const user = conversation.user;
-
-        if (!room || !user) {
-          return existing;
-        }
+        if (!existing?.me?.conversations?.conversations) return existing;
 
         // Check if already exists (idempotency)
-        if (existing.me.conversations.users.some(c => c.id === conversation.id)) {
+        if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
           return existing;
         }
 
@@ -102,15 +121,15 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           room: {
             __typename: 'Room' as const,
             id: room.id,
-            unreadCount: room.unreadCount,
+            type: room.type,
+            displayName: room.displayName,
+            avatarUrl: room.avatarUrl,
+            createdDate: room.createdDate,
+            unreadCount: effectiveUnreadCount,
             messagesCount: room.messagesCount,
             lastMessage: room.lastMessage,
           },
-          user: {
-            __typename: 'User' as const,
-            id: user.id,
-            profile: user.profile,
-          },
+          members: conversation.members,
         };
 
         return {
@@ -119,13 +138,199 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             ...existing.me,
             conversations: {
               ...existing.me.conversations,
-              users: [newConversation, ...existing.me.conversations.users],
+              conversations: [newConversation, ...existing.me.conversations.conversations],
+            },
+          },
+        };
+      });
+
+      // Also update the lightweight unread count query so the nav bar badge works
+      client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+        { query: UserConversationsUnreadCountDocument },
+        existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+
+          if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
+            return existing;
+          }
+
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: [
+                  {
+                    __typename: 'Conversation' as const,
+                    id: conversation.id,
+                    room: { __typename: 'Room' as const, id: room.id, unreadCount: effectiveUnreadCount },
+                  },
+                  ...existing.me.conversations.conversations,
+                ],
+              },
+            },
+          };
+        }
+      );
+    },
+    [client]
+  );
+
+  const handleConversationUpdated = useCallback(
+    (event: ConversationUpdatedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                return {
+                  ...c,
+                  room: c.room
+                    ? {
+                        ...c.room,
+                        displayName: event.conversation.room?.displayName ?? c.room.displayName,
+                        avatarUrl: event.conversation.room?.avatarUrl ?? c.room.avatarUrl,
+                      }
+                    : c.room,
+                };
+              }),
             },
           },
         };
       });
     },
     [client]
+  );
+
+  const handleConversationDeleted = useCallback(
+    (event: ConversationDeletedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversationID),
+            },
+          },
+        };
+      });
+
+      client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+        { query: UserConversationsUnreadCountDocument },
+        existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversationID),
+              },
+            },
+          };
+        }
+      );
+    },
+    [client]
+  );
+
+  const handleMemberAdded = useCallback(
+    (event: MemberAddedEvent) => {
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                // Idempotent: only add if not already present
+                if (c.members.some(m => m.id === event.addedMember.id)) return c;
+                return {
+                  ...c,
+                  members: [...c.members, event.addedMember],
+                };
+              }),
+            },
+          },
+        };
+      });
+    },
+    [client]
+  );
+
+  const handleMemberRemoved = useCallback(
+    (event: MemberRemovedEvent) => {
+      if (event.removedMemberID === currentUserId) {
+        client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+          if (!existing?.me?.conversations?.conversations) return existing;
+          return {
+            ...existing,
+            me: {
+              ...existing.me,
+              conversations: {
+                ...existing.me.conversations,
+                conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversation.id),
+              },
+            },
+          };
+        });
+
+        client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+          { query: UserConversationsUnreadCountDocument },
+          existing => {
+            if (!existing?.me?.conversations?.conversations) return existing;
+            return {
+              ...existing,
+              me: {
+                ...existing.me,
+                conversations: {
+                  ...existing.me.conversations,
+                  conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversation.id),
+                },
+              },
+            };
+          }
+        );
+        return;
+      }
+      // Idempotent: only remove if still present
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.conversations) return existing;
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              conversations: existing.me.conversations.conversations.map(c => {
+                if (c.id !== event.conversation.id) return c;
+                return {
+                  ...c,
+                  members: c.members.filter(m => m.id !== event.removedMemberID),
+                };
+              }),
+            },
+          },
+        };
+      });
+    },
+    [client, currentUserId]
   );
 
   const handleMessageReceived = useCallback(
@@ -189,7 +394,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       const conversationsData = client.cache.readQuery<UserConversationsQuery>({
         query: UserConversationsDocument,
       });
-      const conversation = conversationsData?.me?.conversations?.users?.find(c => c.room?.id === event.roomId);
+      const conversation = conversationsData?.me?.conversations?.conversations?.find(c => c.room?.id === event.roomId);
 
       if (conversation) {
         client.cache.updateQuery<ConversationMessagesQuery>(
@@ -262,7 +467,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       const conversationsData = client.cache.readQuery<UserConversationsQuery>({
         query: UserConversationsDocument,
       });
-      const conversation = conversationsData?.me?.conversations?.users?.find(c => c.room?.id === event.roomId);
+      const conversation = conversationsData?.me?.conversations?.conversations?.find(c => c.room?.id === event.roomId);
 
       if (conversation) {
         client.cache.updateQuery<ConversationMessagesQuery>(
@@ -360,6 +565,26 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         case ConversationEventType.ConversationCreated:
           if (event.conversationCreated) {
             handleConversationCreated(event.conversationCreated);
+          }
+          break;
+        case ConversationEventType.ConversationUpdated:
+          if (event.conversationUpdated) {
+            handleConversationUpdated(event.conversationUpdated);
+          }
+          break;
+        case ConversationEventType.ConversationDeleted:
+          if (event.conversationDeleted) {
+            handleConversationDeleted(event.conversationDeleted);
+          }
+          break;
+        case ConversationEventType.MemberAdded:
+          if (event.memberAdded) {
+            handleMemberAdded(event.memberAdded);
+          }
+          break;
+        case ConversationEventType.MemberRemoved:
+          if (event.memberRemoved) {
+            handleMemberRemoved(event.memberRemoved);
           }
           break;
         case ConversationEventType.MessageReceived:

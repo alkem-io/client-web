@@ -1,5 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import {
   Box,
   Chip,
@@ -24,6 +25,7 @@ import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 import Loading from '@/core/ui/loading/Loading';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { GroupCompositeAvatar } from './GroupCompositeAvatar';
 import type { UserConversation } from './useUserConversations';
 
 interface UserMessagingChatListProps {
@@ -48,7 +50,9 @@ export const UserMessagingChatList = ({
   const filteredConversations = !searchTerm.trim()
     ? conversations
     : conversations.filter(conversation =>
-        conversation.user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+        (conversation.displayName ?? conversation.members.map(m => m.displayName).join(', '))
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       );
 
   const handleClearSearch = () => {
@@ -161,18 +165,41 @@ export const UserMessagingChatList = ({
             }}
           >
             <ListItemAvatar sx={{ minWidth: 48 }}>
-              <Avatar
-                src={conversation.user.avatarUri}
-                alt={conversation.user.displayName}
-                size="medium"
-                sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-              />
+              <Box position="relative" display="inline-flex">
+                {conversation.isGroup && !conversation.avatarUri ? (
+                  <GroupCompositeAvatar
+                    members={conversation.members}
+                    size="medium"
+                    sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+                  />
+                ) : (
+                  <Avatar
+                    src={conversation.avatarUri}
+                    alt={conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
+                    size="medium"
+                    sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+                  />
+                )}
+                {conversation.isGroup && (
+                  <GroupOutlinedIcon
+                    sx={{
+                      position: 'absolute',
+                      bottom: -2,
+                      right: -4,
+                      fontSize: 14,
+                      backgroundColor: 'background.paper',
+                      borderRadius: '50%',
+                      padding: '1px',
+                    }}
+                  />
+                )}
+              </Box>
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Typography variant="body1" fontWeight={500} noWrap={true} sx={{ maxWidth: '60%' }}>
-                    {conversation.user.displayName}
+                    {conversation.displayName ?? conversation.members.map(m => m.displayName).join(', ')}
                   </Typography>
                   <Box
                     display="flex"
