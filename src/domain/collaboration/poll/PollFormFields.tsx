@@ -77,6 +77,9 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
 
 interface PollFormFieldsProps {
   formPrefix?: string;
+  /**
+   * If true the settings will be readOnly.
+   */
   readOnly?: boolean;
 }
 
