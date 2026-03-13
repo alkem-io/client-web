@@ -1,23 +1,28 @@
 import { useState } from 'react';
 import {
+  Box,
   Button,
+  Checkbox,
+  Collapse,
   Dialog,
-  DialogContent,
   DialogActions,
-  FormControl,
+  DialogContent,
   FormControlLabel,
-  FormLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
+  FormGroup,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { useTranslation } from 'react-i18next';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikFormattedInputField from '@/core/ui/forms/FormikInputField/FormikFormattedInputField';
 import { PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useFormikContext } from 'formik';
 import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
-import { Caption } from '@/core/ui/typography';
+import { Caption, Text } from '@/core/ui/typography';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 type PollFormSettingsSectionProps = {
@@ -27,26 +32,113 @@ type PollFormSettingsSectionProps = {
 
 const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSettingsSectionProps) => {
   const { t } = useTranslation();
-  const { setFieldValue, values } = useFormikContext<CalloutFormSubmittedValues>();
+  const { setFieldValue, values, getFieldMeta } = useFormikContext<CalloutFormSubmittedValues>();
   const [open, setOpen] = useState(false);
+  const [showMinMaxFields, setShowMinMaxFields] = useState(false);
 
   const settingsPath = `${fieldPrefix}.settings`;
   const settings = values.framing.poll?.settings;
+  const { error } = getFieldMeta(settingsPath);
 
   const isSingleResponse = settings?.minResponses === 1 && settings?.maxResponses === 1;
-  const isMultipleResponse = settings?.minResponses === 1 && settings?.maxResponses === 0;
-  const isCustomResponse = !isSingleResponse && !isMultipleResponse;
-  const responseType = isSingleResponse ? 'single' : isMultipleResponse ? 'multiple' : 'custom';
 
-  const handleResponseTypeChange = (value: string) => {
+  const isHiddenResults = settings?.resultsVisibility === PollResultsVisibility.Hidden;
+  const isFullDetail = settings?.resultsDetail === PollResultsDetail.Full;
+  const currentMaxResponses = Number(settings?.maxResponses ?? 0) || 0;
+
+  const currentNumberOfOptions = values.framing.poll?.options.length ?? 2;
+
+  const handleMultipleResponseChange = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     if (readOnly) return;
-    if (value === 'single') {
-      setFieldValue(`${settingsPath}.minResponses`, 1);
-      setFieldValue(`${settingsPath}.maxResponses`, 1);
-    } else {
-      setFieldValue(`${settingsPath}.minResponses`, 1);
-      setFieldValue(`${settingsPath}.maxResponses`, 0);
+    if (!checked) {
+      setShowMinMaxFields(false);
     }
+    setFieldValue(`${settingsPath}.minResponses`, 1);
+    setFieldValue(`${settingsPath}.maxResponses`, checked ? 0 : 1);
+  };
+
+  const handleHiddenResultsChange = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    if (readOnly) return;
+    setFieldValue(
+      `${settingsPath}.resultsVisibility`,
+      checked ? PollResultsVisibility.Hidden : PollResultsVisibility.Visible
+    );
+  };
+
+  const handleShowAvatarsChange = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    if (readOnly) return;
+    setFieldValue(`${settingsPath}.resultsDetail`, checked ? PollResultsDetail.Full : PollResultsDetail.Percentage);
+  };
+
+  const handleMinChoicesLessClick = () => {
+    if (readOnly) return;
+    setFieldValue(`${settingsPath}.minResponses`, Math.max((values.framing.poll?.settings.minResponses ?? 0) - 1, 1));
+  };
+
+  const handleMinChoicesMoreClick = () => {
+    if (readOnly) return;
+    const newValue = Math.min((values.framing.poll?.settings.minResponses ?? 0) + 1, currentNumberOfOptions);
+    setFieldValue(`${settingsPath}.minResponses`, newValue);
+    if (settings?.maxResponses && newValue > settings.maxResponses) {
+      setFieldValue(`${settingsPath}.maxResponses`, newValue);
+    }
+  };
+
+  const formatMaxResponses = (value: unknown, { isFocused }: { isFocused: boolean }) => {
+    if (value === '' && isFocused) {
+      return '';
+    }
+
+    const numericValue = Number(value ?? 0);
+    if (isFocused) {
+      return String(Number.isNaN(numericValue) ? 0 : numericValue);
+    }
+
+    return numericValue === 0 ? t('poll.create.infiniteResponses') : String(numericValue);
+  };
+
+  const parseMaxResponses = (value: string, { isBlur }: { isBlur: boolean }) => {
+    const trimmed = value.trim();
+    if (trimmed === '') {
+      return isBlur ? 0 : '';
+    }
+
+    if (!/^\d+$/.test(trimmed)) {
+      return isBlur ? 0 : currentMaxResponses;
+    }
+
+    return Math.max(Number(trimmed), 0);
+  };
+
+  const handleSetInfiniteResponses = () => {
+    if (readOnly) return;
+    setFieldValue(`${settingsPath}.maxResponses`, 0);
+  };
+
+  const handleMaxChoicesLessClick = () => {
+    if (readOnly) return;
+    if (currentMaxResponses === 0) return;
+    const newValue = currentMaxResponses - 1;
+    if (newValue < (values.framing.poll?.settings.minResponses ?? 0)) {
+      setFieldValue(`${settingsPath}.maxResponses`, 0);
+    } else {
+      setFieldValue(`${settingsPath}.maxResponses`, newValue);
+    }
+  };
+
+  const handleMaxChoicesMoreClick = () => {
+    if (readOnly) return;
+    const newValue = Math.min(currentMaxResponses + 1, currentNumberOfOptions);
+    setFieldValue(`${settingsPath}.maxResponses`, newValue);
+  };
+
+  const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
+  const handleCloseDialog = () => {
+    if (error) {
+      setConfirmCloseDialogOpen(true);
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -55,78 +147,118 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
         variant="outlined"
         startIcon={<SettingsOutlinedIcon />}
         onClick={() => setOpen(true)}
-        sx={{ alignSelf: 'flex-start' }}
+        sx={{ alignSelf: 'flex-start', mt: 1 }}
       >
         {t('poll.create.settings')}
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogHeader title={t('poll.create.settings')} onClose={() => setOpen(false)} />
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
-          <FormControl disabled={readOnly}>
-            <FormLabel>
-              <Caption>{t('poll.create.responseType')}</Caption>
-            </FormLabel>
-            <RadioGroup value={responseType} onChange={(_e, value) => handleResponseTypeChange(value)} row>
-              <FormControlLabel value="single" control={<Radio />} label={t('poll.create.singleResponse')} />
-              <FormControlLabel value="multiple" control={<Radio />} label={t('poll.create.multipleResponses')} />
-              {isCustomResponse && (
-                <FormControlLabel
-                  value="custom"
-                  control={<Radio />}
-                  label={t('poll.create.customResponses')}
-                  disabled
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogHeader title={t('poll.create.settingsDialogTitle')} onClose={handleCloseDialog} />
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 1, pt: 2, minWidth: 520 }}>
+          <Caption>{t('poll.create.votingOptions')}</Caption>
+          <FormGroup>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={!isSingleResponse} onChange={handleMultipleResponseChange} disabled={readOnly} />
+                }
+                label={t('poll.create.allowMultipleResponses')}
+              />
+              <Tooltip title={t('poll.create.allowMultipleResponsesSettingsTooltip')} arrow>
+                <IconButton
+                  size="small"
+                  onClick={() => setShowMinMaxFields(prev => !prev)}
+                  aria-label={t('poll.create.settings')}
+                  disabled={readOnly}
+                >
+                  <SettingsOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            <Collapse in={showMinMaxFields}>
+              <Box sx={{ pl: 4, display: 'flex', flexDirection: 'column', gap: 1, pb: 1 }}>
+                <FormikInputField
+                  name={`${settingsPath}.minResponses`}
+                  title={t('poll.create.minResponses')}
+                  type="number"
+                  disabled={readOnly}
+                  endAdornment={
+                    <>
+                      <IconButton size="small" onClick={handleMinChoicesLessClick}>
+                        <RemoveCircleOutlineIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton size="small" onClick={handleMinChoicesMoreClick}>
+                        <AddCircleOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  }
                 />
-              )}
-            </RadioGroup>
-          </FormControl>
+                <FormikFormattedInputField
+                  name={`${settingsPath}.maxResponses`}
+                  title={t('poll.create.maxResponses')}
+                  valueFormatter={formatMaxResponses}
+                  valueParser={parseMaxResponses}
+                  disabled={readOnly}
+                  endAdornment={
+                    <>
+                      <Tooltip title={t('poll.create.infiniteResponsesTooltip')} arrow>
+                        <IconButton size="small" onClick={handleSetInfiniteResponses}>
+                          <AllInclusiveIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <IconButton size="small" onClick={handleMaxChoicesLessClick}>
+                        <RemoveCircleOutlineIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton size="small" onClick={handleMaxChoicesMoreClick}>
+                        <AddCircleOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  }
+                />
+              </Box>
+            </Collapse>
+            <FormControlLabel control={<Checkbox disabled />} label={t('poll.create.allowUserOptions')} />
+          </FormGroup>
 
-          {isCustomResponse && (
-            <>
-              <FormikInputField
-                name={`${settingsPath}.minResponses`}
-                title={t('poll.create.minResponses')}
-                type="number"
-                disabled={readOnly}
-              />
-              <FormikInputField
-                name={`${settingsPath}.maxResponses`}
-                title={t('poll.create.maxResponses')}
-                type="number"
-                disabled={readOnly}
-              />
-            </>
-          )}
-
-          <FormikInputField
-            name={`${settingsPath}.resultsVisibility`}
-            title={t('poll.create.resultsVisibility.title')}
-            select
-            value={settings?.resultsVisibility ?? PollResultsVisibility.Visible}
-            onChange={e => !readOnly && setFieldValue(`${settingsPath}.resultsVisibility`, e.target.value)}
-            disabled={readOnly}
-          >
-            <MenuItem value={PollResultsVisibility.Visible}>{t('poll.create.resultsVisibility.VISIBLE')}</MenuItem>
-            <MenuItem value={PollResultsVisibility.Hidden}>{t('poll.create.resultsVisibility.HIDDEN')}</MenuItem>
-            <MenuItem value={PollResultsVisibility.TotalOnly}>{t('poll.create.resultsVisibility.TOTAL_ONLY')}</MenuItem>
-          </FormikInputField>
-
-          <FormikInputField
-            name={`${settingsPath}.resultsDetail`}
-            title={t('poll.create.resultsDetail.title')}
-            select
-            value={settings?.resultsDetail ?? PollResultsDetail.Full}
-            onChange={e => !readOnly && setFieldValue(`${settingsPath}.resultsDetail`, e.target.value)}
-            disabled={readOnly}
-          >
-            <MenuItem value={PollResultsDetail.Full}>{t('poll.create.resultsDetail.FULL')}</MenuItem>
-            <MenuItem value={PollResultsDetail.Count}>{t('poll.create.resultsDetail.COUNT')}</MenuItem>
-            <MenuItem value={PollResultsDetail.Percentage}>{t('poll.create.resultsDetail.PERCENTAGE')}</MenuItem>
-          </FormikInputField>
+          <Caption>{t('poll.create.displayOptions')}</Caption>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox checked={isHiddenResults} onChange={handleHiddenResultsChange} disabled={readOnly} />}
+              label={t('poll.create.onlyShowResultsAfterVoted')}
+            />
+            <FormControlLabel
+              control={<Checkbox checked={isFullDetail} onChange={handleShowAvatarsChange} disabled={readOnly} />}
+              label={t('poll.create.showVoterAvatars')}
+            />
+          </FormGroup>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} variant="contained">
-            {t('buttons.close')}
+          <Tooltip title={error ? t('poll.create.fixErrorsBeforeClosingTooltip') : ''} arrow>
+            <span>
+              <Button onClick={handleCloseDialog} variant="contained" disabled={!!error}>
+                {t('buttons.close')}
+              </Button>
+            </span>
+          </Tooltip>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={confirmCloseDialogOpen} onClose={() => setConfirmCloseDialogOpen(false)}>
+        <DialogHeader title={t('poll.create.closeConfirm.title')} onClose={() => setConfirmCloseDialogOpen(false)} />
+        <DialogContent>
+          <Text>{t('poll.create.closeConfirm.message')}</Text>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setConfirmCloseDialogOpen(false);
+              setOpen(false);
+            }}
+            variant="text"
+          >
+            {t('buttons.yesClose')}
+          </Button>
+          <Button onClick={() => setConfirmCloseDialogOpen(false)} variant="contained">
+            {t('buttons.cancel')}
           </Button>
         </DialogActions>
       </Dialog>

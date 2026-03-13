@@ -1242,7 +1242,10 @@
       "invalidEmail": "Invalid Email address",
       "duplicateEmail": "Duplicated email address",
       "elementMustBeValidUrl": "{{name}} must be a valid URL",
-      "acceptedTerms": "You must accept the terms and conditions"
+      "acceptedTerms": "You must accept the terms and conditions",
+      "pollMinResponsesWithinOptions": "Minimum choices needed to vote must be less than or equal to the number of options.",
+      "pollMaxResponsesWithinOptions": "Maximum choices allowed per vote must be less than or equal to the number of options.",
+      "pollMinResponsesWithinMaxResponses": "Minimum choices needed to vote must be less than or equal to maximum choices allowed per vote."
     }
   },
   "templateDialog": {
@@ -2379,24 +2382,23 @@
     "create": {
       "title": "$t(common.Poll) Title",
       "options": "Options",
-      "settings": "Settings",
-      "responseType": "Response type",
-      "singleResponse": "Single response",
-      "multipleResponses": "Multiple responses",
-      "customResponses": "Custom",
-      "minResponses": "Min responses",
-      "maxResponses": "Max responses",
-      "resultsVisibility": {
-        "title": "Results visibility",
-        "VISIBLE": "Always visible",
-        "HIDDEN": "Hidden until voted",
-        "TOTAL_ONLY": "Total count only until voted"
-      },
-      "resultsDetail": {
-        "title": "Results detail level",
-        "FULL": "Full (counts, percentages, and voters)",
-        "COUNT": "Counts only",
-        "PERCENTAGE": "Percentages only"
+      "settings": "$t(common.settings)",
+      "settingsDialogTitle": "$t(common.Poll) $t(common.settings)",
+      "minResponses": "Minimum choices needed to vote",
+      "maxResponses": "Maximum choices allowed per vote",
+      "votingOptions": "Voting options",
+      "displayOptions": "Display options",
+      "allowMultipleResponses": "Allow multiple responses per user",
+      "allowMultipleResponsesSettingsTooltip": "Configure the maximum and minimum number of choices a user can select when voting",
+      "infiniteResponses": "Any",
+      "infiniteResponsesTooltip": "Allow unlimited responses",
+      "allowUserOptions": "Allow users to add new options",
+      "onlyShowResultsAfterVoted": "Only show results after a user has voted",
+      "showVoterAvatars": "Show avatars of voters in the results",
+      "fixErrorsBeforeClosingTooltip": "There are validation errors in the settings, please fix them before closing the dialog",
+      "closeConfirm": {
+        "title": "Close settings dialog",
+        "message": "There are validation errors in the settings, if you close the dialog you will not be able to save the $t(common.callout). Are you sure you want to close it?"
       }
     },
     "manage": {

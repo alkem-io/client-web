@@ -80,7 +80,7 @@ src/domain/collaboration/
 │   ├── PollVoterAvatars.tsx                 # Voter avatar group (FULL detail)
 │   ├── PollEmptyState.tsx                   # "No votes yet" empty state
 │   ├── PollFormFields.tsx                   # Creation & edit form fields (title, options with drag-and-drop reorder, settings button)
-│   ├── PollFormSettingsSection.tsx          # Advanced settings dialog (readonly when editing)
+│   ├── PollFormSettingsSection.tsx          # Checkbox-based settings dialog (readonly when editing)
 │   ├── models/
 │   │   └── PollModels.ts                   # Client view model types
 │   ├── hooks/
@@ -171,3 +171,23 @@ without replicating the visibility matrix. Key behaviors:
 Implementation follows the existing subscription patterns (InAppNotifications, ConversationEvents)
 using generated Apollo subscription hooks with `onData` callbacks for cache updates. Subscriptions
 are activated when the poll callout is visible and deactivated on unmount.
+
+### Design Decision: Poll Settings Form Simplification (2026-03-13)
+
+Replaced the original settings form (radio buttons for response type, dropdowns for resultsVisibility
+and resultsDetail) with a simplified checkbox-based UI:
+
+- **Voting options**: "Allow multiple responses per user" checkbox (maps to min=1/max=1 or min=1/max=0),
+  with a gear icon button that reveals detailed min/max numeric fields (stepper buttons + infinity button)
+  for fine-grained control. "Allow users to add new options" checkbox (always disabled, future feature).
+- **Display options**: "Only show results after a user has voted" (HIDDEN/VISIBLE), "Show avatars of
+  voters in the results" (FULL/PERCENTAGE).
+- TOTAL_ONLY and COUNT values are intentionally not exposed in the creation UI — the server retains full
+  support and the client renders them correctly for existing polls.
+- The gear icon for min/max fields is always visible (disabled in readOnly/edit mode), not conditional
+  on custom values.
+- Validation schema extracted to `CalloutForm.validation.schema.ts` with cross-field validations
+  (min ≤ options, max ≤ options, min ≤ max). Settings dialog Close button disabled when errors exist,
+  with a confirmation dialog if the user attempts to close anyway.
+- Created reusable `FormikFormattedInputField` component for the max responses field (displays "Any"
+  when value is 0, numeric value when focused).

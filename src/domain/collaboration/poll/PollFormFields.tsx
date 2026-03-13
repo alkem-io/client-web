@@ -113,7 +113,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnly = false }: PollFor
           };
 
           return (
-            <Gutters disablePadding gap={2}>
+            <Gutters disablePadding gap={0.5}>
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                   {options.map((_option, index) => (
