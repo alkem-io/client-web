@@ -16,6 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -48,6 +51,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -85,6 +91,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -120,6 +129,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
