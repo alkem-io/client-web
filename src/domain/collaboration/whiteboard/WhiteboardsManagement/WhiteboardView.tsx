@@ -73,6 +73,12 @@ const WhiteboardView = ({
   // to update an existing whiteboard
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
+  // When guest contributions are allowed, the public-access credential rule grants
+  // UpdateContent to all logged-in users (GLOBAL_REGISTERED). On the space view,
+  // non-members should not get edit access from this rule alone — require Update
+  // privilege (which indicates actual membership) as an additional gate.
+  const canEditContent =
+    whiteboard?.guestContributionsAllowed && !hasUpdatePrivileges ? false : hasUpdateContentPrivileges;
   const hasDeletePrivileges =
     !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
   const hasPublicSharePrivilege =
@@ -113,7 +119,7 @@ const WhiteboardView = ({
             onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
           }}
           options={{
-            canEdit: hasUpdateContentPrivileges,
+            canEdit: canEditContent,
             canDelete: hasDeletePrivileges,
             show: Boolean(whiteboardId),
             dialogTitle: displayName,

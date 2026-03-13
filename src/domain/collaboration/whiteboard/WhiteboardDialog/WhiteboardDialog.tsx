@@ -289,6 +289,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     <>
       <CollaborativeExcalidrawWrapper
         entities={{ whiteboard, filesManager, lastSuccessfulSavedDate }}
+        canEdit={editModeEnabled}
         collabApiRef={collabApiRef}
         options={{
           UIOptions: {
