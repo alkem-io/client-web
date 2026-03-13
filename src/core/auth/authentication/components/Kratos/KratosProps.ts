@@ -1,4 +1,4 @@
-import { UiNode } from '@ory/kratos-client';
+import type { UiNode } from '@ory/kratos-client';
 
 export interface KratosProps {
   node: UiNode;

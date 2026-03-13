@@ -1,19 +1,18 @@
-import React from 'react';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
-  useSpaceSubscriptionsQuery,
-  usePlatformLicensePlansQuery,
-  useAssignLicensePlanToSpaceMutation,
-  useRevokeLicensePlanFromSpaceMutation,
   refetchSpaceSubscriptionsQuery,
+  useAssignLicensePlanToSpaceMutation,
+  usePlatformLicensePlansQuery,
+  useRevokeLicensePlanFromSpaceMutation,
+  useSpaceSubscriptionsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Loading from '@/core/ui/loading/Loading';
-import LicensePlansTable, { LicensePlan } from './LicensePlansTable';
 import AssignPlan from './AssignPlan';
+import LicensePlansTable, { type LicensePlan } from './LicensePlansTable';
 
 interface ManageLicensePlansDialogProps {
   open: boolean;

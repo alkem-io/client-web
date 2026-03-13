@@ -1,6 +1,8 @@
 import { Route } from 'react-router-dom';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
+import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
+import SignUp from '../pages/SignUp';
 import ErrorRoute from './ErrorRoute';
 import LoginRoute from './LoginRoute';
 import LogoutRoute from './LogoutRoute';
@@ -8,8 +10,6 @@ import RecoveryRoute from './RecoveryRoute';
 import RegistrationRoute from './RegistrationRoute';
 import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
-import SignUp from '../pages/SignUp';
-import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 
 export enum IdentityRoutes {
   Login = 'login',

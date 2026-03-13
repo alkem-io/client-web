@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, Button, Box, DialogProps, Link } from '@mui/material';
-import { Trans, useTranslation } from 'react-i18next';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Caption, Text } from '@/core/ui/typography';
-import { Actions } from '@/core/ui/actions/Actions';
-import { gutters } from '@/core/ui/grid/utils';
-import { UrlType } from '../apollo/generated/graphql-schema';
-import { useSpaceCardQuery } from '../apollo/generated/apollo-hooks';
-import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
+import { Box, Button, Dialog, DialogContent, type DialogProps, Link } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption, Text } from '@/core/ui/typography';
+import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
+import { useSpaceCardQuery } from '../apollo/generated/apollo-hooks';
+import { UrlType } from '../apollo/generated/graphql-schema';
 import useNavigate from '../routing/useNavigate';
-import { ClosestAncestor } from './40XErrors';
+import type { ClosestAncestor } from './40XErrors';
 
 const REDIRECT_COUNTDOWN_SECONDS = 10;
 
@@ -58,7 +58,7 @@ const RedirectToAncestorDialogContent = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
       <DialogHeader icon={<LockOutlineIcon />} onClose={onClose ? evt => onClose(evt, 'escapeKeyDown') : undefined}>
         {t('components.urlResolver.redirectDialog.title')}
       </DialogHeader>
@@ -75,7 +75,12 @@ const RedirectToAncestorDialogContent = ({
           {closestAncestor.type === UrlType.Space && closestAncestor.space?.id && (
             <>
               {spaceData?.lookup.space && !loadingSpace && (
-                <SpaceCardHorizontal space={spaceData?.lookup.space} deepness={0} seamless sx={{ paddingLeft: 0 }} />
+                <SpaceCardHorizontal
+                  space={spaceData?.lookup.space}
+                  deepness={0}
+                  seamless={true}
+                  sx={{ paddingLeft: 0 }}
+                />
               )}
               {(!spaceData?.lookup.space || loadingSpace) && <SpaceCardHorizontalSkeleton />}
             </>

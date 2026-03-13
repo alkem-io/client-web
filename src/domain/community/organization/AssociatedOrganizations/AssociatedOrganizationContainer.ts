@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
   useRemoveRoleFromUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
-import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { type ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { type AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {

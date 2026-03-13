@@ -1,10 +1,10 @@
-import { type FC, type ReactNode } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
-import { Box, IconButton } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { Box, IconButton } from '@mui/material';
+import type { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
-import { type SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 
 type SubspacesSortableItemProps = {
   item: SearchableListItem;
@@ -49,11 +49,11 @@ const SubspacesSortableItem: FC<SubspacesSortableItemProps> = ({ item, disabled 
           size="medium"
           space={{ id: item.id, about: { profile: item.profile }, level: item.level }}
           deepness={0}
-          seamless
+          seamless={true}
           sx={{ maxWidth: '100%', padding: 0 }}
           actions={actions}
           indicator={indicator}
-          disableHoverState
+          disableHoverState={true}
         />
       </Box>
     </Box>

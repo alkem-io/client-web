@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef } from 'react';
-import { useField } from 'formik';
-import { FormikInputProps } from '../FormikInputProps';
-import { addMinutes } from '@/core/utils/time/utils';
-import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
 import dayjs from 'dayjs';
+import { useField } from 'formik';
+import { useLayoutEffect, useRef } from 'react';
+import { addMinutes } from '@/core/utils/time/utils';
+import type { FormikInputProps } from '../FormikInputProps';
+import AlkemioTimePicker, { type AlkemioTimePickerProps } from './AlkemioTimePicker';
 
 interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {
   startTimeFieldName: string;
@@ -66,7 +66,7 @@ const FormikDurationMinutes = ({
       value={date}
       onChange={handleChange}
       minTime={dayjs(startTimeField.value)}
-      fullWidth
+      fullWidth={true}
       label={label}
       containerProps={containerProps}
       disabled={disabled}

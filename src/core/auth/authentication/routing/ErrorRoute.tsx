@@ -1,8 +1,8 @@
-import { FC, useEffect, useState } from 'react';
 import { Container } from '@mui/material';
+import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Loading from '@/core/ui/loading/Loading';
 import { useQueryParams } from '@/core/routing/useQueryParams';
+import Loading from '@/core/ui/loading/Loading';
 import { useKratosClient } from '../hooks/useKratosClient';
 
 type KratosError = {
@@ -22,7 +22,6 @@ export const ErrorRoute: FC = () => {
     if (errorCode && kratos) {
       kratos.getFlowError({ id: errorCode }).then(({ status, data, ..._response }) => {
         if (status !== 200) {
-          console.error(data);
         }
         if (data && typeof data === 'object' && 'error' in data) {
           setError((data as { error: KratosError }).error);

@@ -1,5 +1,8 @@
-import { ChangeEvent, useCallback } from 'react';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
+import { type ChangeEvent, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -12,14 +15,11 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
-import { Menu as MenuIcon } from '@mui/icons-material';
-import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { useDashboardContext } from '../DashboardContext';
-import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
-import { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
-import { useHomeMenuItems } from './useHomeMenuItems';
 import { DIALOG_PARAM_VALUES, useMyDashboardDialogs } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
+import { useDashboardContext } from '../DashboardContext';
+import type { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import type { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
+import { useHomeMenuItems } from './useHomeMenuItems';
 
 /**
  * DashboardMenu Component
@@ -60,9 +60,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   const getItemContent = (item: MenuOptionProps) => (
     <>
       {item.icon && <item.icon fontSize="small" sx={{ color: 'neutral.light' }} />}
-      <Caption paddingLeft={gutters()}>
-        <>{getTranslationByKey(item.label)}</>
-      </Caption>
+      <Caption paddingLeft={gutters()}>{getTranslationByKey(item.label)}</Caption>
     </>
   );
 
@@ -108,11 +106,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
           <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
             <FormControlLabel
               key={index}
-              label={
-                <Caption paddingLeft={gutters(0.5)}>
-                  <>{getTranslationByKey(item.label)}</>
-                </Caption>
-              }
+              label={<Caption paddingLeft={gutters(0.5)}>{getTranslationByKey(item.label)}</Caption>}
               control={<Switch size="small" name="view" checked={activityEnabled} onChange={changeView} />}
             />
           </ListItem>
@@ -130,7 +124,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   }
 
   const renderList = () => (
-    <List disablePadding>
+    <List disablePadding={true}>
       {items.filter(item => item.isVisible(activityEnabled, compact)).map((item, index) => renderMenuItem(item, index))}
     </List>
   );
@@ -138,14 +132,14 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
   if (expandable) {
     return (
       <PageContentBlockCollapsible
-        disablePadding
-        disableGap
+        disablePadding={true}
+        disableGap={true}
         collapseHeaderProps={{
           paddingY: gutters(0.5),
           paddingX: gutters(0.8),
         }}
         header={
-          <Gutters row disableGap disablePadding sx={{ position: 'relative' }}>
+          <Gutters row={true} disableGap={true} disablePadding={true} sx={{ position: 'relative' }}>
             {pendingInvitationsCount > 0 && (
               <BadgeCounter count={pendingInvitationsCount} size="small" sx={{ position: 'absolute' }} />
             )}
@@ -159,5 +153,5 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
     );
   }
 
-  return <PageContentBlock disablePadding>{renderList()}</PageContentBlock>;
+  return <PageContentBlock disablePadding={true}>{renderList()}</PageContentBlock>;
 };

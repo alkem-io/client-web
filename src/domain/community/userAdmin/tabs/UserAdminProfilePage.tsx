@@ -1,23 +1,23 @@
 import { useMemo } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
-import { UserForm } from '../../user/userForm/UserForm';
-import Loading from '@/core/ui/loading/Loading';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { EditMode } from '@/core/ui/forms/editMode';
-import { UserModel } from '../../user/models/UserModel';
-import { getUpdateUserInput } from '../../user/utils/getUpdateUserInput';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import useNavigate from '@/core/routing/useNavigate';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { EditMode } from '@/core/ui/forms/editMode';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import type { UserModel } from '../../user/models/UserModel';
 import useUserRouteContext from '../../user/routing/useUserRouteContext';
+import { UserForm } from '../../user/userForm/UserForm';
+import { getUpdateUserInput } from '../../user/utils/getUpdateUserInput';
 
 export const UserAdminProfilePage = () => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export const UserAdminProfilePage = () => {
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
-    onError: error => console.error(error.message),
+    onError: _error => {},
   });
 
   const [updateUser] = useUpdateUserMutation({

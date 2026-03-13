@@ -1,8 +1,8 @@
 import {
   createContext,
-  Dispatch,
-  PropsWithChildren,
-  ReactElement,
+  type Dispatch,
+  type PropsWithChildren,
+  type ReactElement,
   useContext,
   useLayoutEffect,
   useMemo,

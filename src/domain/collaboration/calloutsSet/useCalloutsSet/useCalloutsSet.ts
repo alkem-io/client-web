@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash-es';
+import { useCallback, useMemo } from 'react';
 import {
   useCalloutDetailsLazyQuery,
   useCalloutsOnCalloutsSetUsingClassificationQuery,
@@ -5,15 +7,13 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
+  type CalloutsOnCalloutsSetUsingClassificationQueryVariables,
   CalloutVisibility,
-  CalloutsOnCalloutsSetUsingClassificationQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
-import { useCallback, useMemo } from 'react';
-import { cloneDeep } from 'lodash-es';
-import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
-import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
+import type { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
+import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
+import type { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import { classificationTagsetModelToTagsetArgs } from '../Classification/ClassificationTagset.utils';
 
 interface UseCalloutsSetParams {
@@ -24,9 +24,7 @@ interface UseCalloutsSetParams {
   skip?: boolean;
 }
 
-export interface OrderUpdate {
-  (relatedCalloutIds: string[]): string[];
-}
+export type OrderUpdate = (relatedCalloutIds: string[]) => string[];
 
 export interface UseCalloutsSetProvided {
   calloutsSetId: string | undefined;

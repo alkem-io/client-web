@@ -1,16 +1,17 @@
-import React, { useImperativeHandle, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
-import { Formik, FormikProps, useField } from 'formik';
-import { CalloutFormSubmittedValues } from '../CalloutFormModel';
-import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import { gutters } from '@/core/ui/grid/utils';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { Box } from '@mui/material';
-import { Caption, CardText } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
+import { Formik, type FormikProps, useField } from 'formik';
+import type React from 'react';
+import { useImperativeHandle, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption, CardText } from '@/core/ui/typography';
+import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import type { CalloutFormSubmittedValues } from '../CalloutFormModel';
+import type { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
 
 const ContributionsSettingsWhiteboard = ({
   ref,
@@ -42,7 +43,7 @@ const ContributionsSettingsWhiteboard = ({
   const internalFormRef = useRef<FormikProps<{ defaultDisplayName: string; whiteboardContent: string }>>(null);
   return (
     <Formik initialValues={initialValues} onSubmit={() => {}} innerRef={internalFormRef}>
-      <Gutters disablePadding>
+      <Gutters disablePadding={true}>
         <Box>
           <Caption>{t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.label')}</Caption>
           <CardText>
@@ -53,10 +54,10 @@ const ContributionsSettingsWhiteboard = ({
           title={t('callout.create.contributionSettings.contributionTypes.common.defaultDisplayName')}
           name="defaultDisplayName"
         />
-        <PageContentBlock disablePadding>
+        <PageContentBlock disablePadding={true}>
           <FormikWhiteboardPreview
             name="whiteboardContent"
-            canEdit
+            canEdit={true}
             onDeleteContent={() => internalFormRef.current?.setFieldValue('whiteboardContent', EmptyWhiteboardString)}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.framing.whiteboard.editDialogTitle') }}

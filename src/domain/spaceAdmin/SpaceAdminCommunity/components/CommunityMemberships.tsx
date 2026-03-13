@@ -1,31 +1,31 @@
-import { Box, Link } from '@mui/material';
-import { useMemo, useState } from 'react';
-import type { TFunction } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
-import DataGridTable from '@/core/ui/table/DataGridTable';
-import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
-import { gutters } from '@/core/ui/grid/utils';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Box, Link } from '@mui/material';
+import type { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
+import type { TFunction } from 'i18next';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog/CommunityApplicationDialog';
-import { CommunityInvitationDialog } from './CommunityInvitationDialog/CommunityInvitationDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { formatDateTime } from '@/core/utils/time/utils';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
-import { MembershipType } from '../../../access/model/MembershipType';
-import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
-import { InvitationModel } from '@/domain/access/model/InvitationModel';
+import { gutters } from '@/core/ui/grid/utils';
 import DataGridActionButton from '@/core/ui/table/DataGridActionButton';
+import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
+import DataGridTable from '@/core/ui/table/DataGridTable';
+import { formatDateTime } from '@/core/utils/time/utils';
+import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
+import type { InvitationModel } from '@/domain/access/model/InvitationModel';
 import {
   ApplicationEvent,
   ApplicationState,
   InvitationEvent,
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog/CommunityApplicationDialog';
+import type { MembershipTableItem } from '../../../access/model/MembershipTableItem';
+import { MembershipType } from '../../../access/model/MembershipType';
+import { CommunityInvitationDialog } from './CommunityInvitationDialog/CommunityInvitationDialog';
 
 type RenderParams = GridRenderCellParams<MembershipTableItem>;
 type GetterParams = MembershipTableItem | undefined;

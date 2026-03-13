@@ -1,3 +1,4 @@
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import {
   FormControl,
   IconButton,
@@ -11,18 +12,18 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import React, { ReactNode, useMemo, useState } from 'react';
+import { times } from 'lodash-es';
+import type React from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Actions } from '@/core/ui/actions/Actions';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContent from '@/core/ui/content/PageContent';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { BlockTitle, CardTitle } from '@/core/ui/typography';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
-import { times } from 'lodash-es';
-import { Actions } from '@/core/ui/actions/Actions';
-import PageContent from '@/core/ui/content/PageContent';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import { BlockTitle, CardTitle } from '@/core/ui/typography';
-import RouterLink from '@/core/ui/link/RouterLink';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
   data: Item[] | undefined;
@@ -117,7 +118,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
 
   return (
     <PageContent>
-      <FormControl fullWidth size="small">
+      <FormControl fullWidth={true} size="small">
         <OutlinedInput
           value={searchTerm}
           placeholder={t('components.searchableList.placeholder')}
@@ -172,7 +173,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                             url: item.url,
                             avatar: item.avatar,
                           }}
-                          seamless
+                          seamless={true}
                         />
                       ) : (
                         <BlockTitle component={RouterLink} to={item.url}>

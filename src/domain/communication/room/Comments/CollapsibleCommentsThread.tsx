@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, ButtonBase, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_COLLAPSED_HEIGHT = 250;
 const COLLAPSE_THRESHOLD = 2;

@@ -1,8 +1,8 @@
-import React, { ComponentType } from 'react';
 import { Tabs } from '@mui/material';
-import { TabsProps } from '@mui/material/Tabs/Tabs';
-import NavigationTab from '@/core/ui/tabs/NavigationTab';
+import type { TabsProps } from '@mui/material/Tabs/Tabs';
+import type { ComponentType } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
+import NavigationTab from '@/core/ui/tabs/NavigationTab';
 
 export interface TabDefinition<Section extends string | number> {
   section: Section;
@@ -34,7 +34,7 @@ const EntitySettingsTabs = <Section extends string | number>({
       value={currentTab}
       variant="scrollable"
       scrollButtons="auto"
-      allowScrollButtonsMobile
+      allowScrollButtonsMobile={true}
       sx={{
         '.MuiTabs-flexContainer': {
           gap: gutters(),

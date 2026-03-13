@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppSpaceCollaborationCalloutPublishedView = (notification: InAppNotificationModel) => {
   const { t } = useTranslation();

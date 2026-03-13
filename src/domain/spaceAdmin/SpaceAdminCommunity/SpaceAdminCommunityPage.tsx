@@ -1,41 +1,41 @@
-import { useCallback, useRef, useState } from 'react';
-import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Button, Icon, IconButton, Tooltip } from '@mui/material';
+import { useCallback, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
-import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
-import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
-import { BlockTitle, Caption, Text } from '@/core/ui/typography';
-import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
-import { Trans, useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
-import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityVirtualContributors from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityVirtualContributors';
-import CommunityGuidelinesContainer, {
-  CommunityGuidelines,
-} from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
-import { LicenseEntitlementType, ActorType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
-import { TemplateCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCommunityGuidelinesForm';
-import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
-import useCommunityAdmin from './hooks/useCommunityAdmin';
-import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
-import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption, Text } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
+import CommunityGuidelinesContainer, {
+  type CommunityGuidelines,
+} from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
+import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
+import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
+import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
+import CommunityVirtualContributors from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityVirtualContributors';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
+import type { TemplateCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCommunityGuidelinesForm';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import type { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
+import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import useCommunityAdmin from './hooks/useCommunityAdmin';
+import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -172,7 +172,7 @@ const SpaceAdminCommunityPage = ({
               >
                 {t('buttons.invite')}
               </InviteContributorsWizard>
-              <Tooltip title={t('community.applicationsHelp')} arrow>
+              <Tooltip title={t('community.applicationsHelp')} arrow={true}>
                 <IconButton aria-label={t('common.help')} sx={{ marginLeft: gutters() }}>
                   <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
                 </IconButton>
@@ -253,7 +253,7 @@ const SpaceAdminCommunityPage = ({
                       await onSelectCommunityGuidelinesTemplate(template);
                       setCommunityGuidelinesTemplatesDialogOpen(false);
                     }}
-                    enablePlatformTemplates
+                    enablePlatformTemplates={true}
                     actionButton={() => <TemplateActionButton />}
                   />
                 </>

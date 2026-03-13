@@ -1,15 +1,15 @@
 import { sortBy } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useInnovationHubSettingsQuery, useUpdateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
-import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import InnovationHubSpacesField from '../InnovationHubsSettings/InnovationHubSpacesField';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import InnovationHubForm, { type InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
 import InnovationHubProfileLayout from '../InnovationHubsSettings/InnovationHubProfileLayout';
+import InnovationHubSpacesField from '../InnovationHubsSettings/InnovationHubSpacesField';
 
 const InnovationHubSettingsPage = () => {
   const { t } = useTranslation();

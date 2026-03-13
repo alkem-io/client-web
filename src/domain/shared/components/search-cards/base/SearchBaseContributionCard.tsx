@@ -1,5 +1,5 @@
-import { Box, SvgIconProps } from '@mui/material';
-import { FC, PropsWithChildren } from 'react';
+import { Box, type SvgIconProps } from '@mui/material';
+import type { FC, PropsWithChildren } from 'react';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import ContributeCard from '@/core/ui/card/ContributeCard';

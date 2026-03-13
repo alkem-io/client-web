@@ -1,15 +1,15 @@
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { FetchResult } from '@apollo/client';
 import { useCallback, useMemo } from 'react';
-import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
-import { Message } from '@/domain/communication/room/models/Message';
-import { CommentInputFieldProps } from '@/domain/communication/room/Comments/CommentInputField';
-import { FetchResult } from '@apollo/client';
+import type { CommentInputFieldProps } from '@/domain/communication/room/Comments/CommentInputField';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import type { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
+import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 
 interface useCalloutCommentsProvided {
   commentsId: string | undefined;

@@ -1,16 +1,16 @@
-import { useMemo } from 'react';
-import { Box, styled } from '@mui/material';
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
-import ContributeCard from '@/core/ui/card/ContributeCard';
+import { Box, styled } from '@mui/material';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardImage from '@/core/ui/card/CardImage';
-import { useTranslation } from 'react-i18next';
-import { Visual } from '@/domain/common/visual/Visual';
-import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
+import ContributeCard from '@/core/ui/card/ContributeCard';
 import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { formatDate } from '@/core/utils/time/utils';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
+import type { Visual } from '@/domain/common/visual/Visual';
+import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
 export interface WhiteboardContribution extends Identifiable {
   whiteboard?: {

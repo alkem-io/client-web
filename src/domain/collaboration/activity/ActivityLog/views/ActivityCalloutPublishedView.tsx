@@ -1,8 +1,8 @@
-import { ActivityBaseView } from './ActivityBaseView';
-import { ActivityViewProps } from './ActivityViewProps';
+import type { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
-import { ActivityCalloutValues } from '@/domain/shared/types/ActivityCalloutValues';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import type { ActivityCalloutValues } from '@/domain/shared/types/ActivityCalloutValues';
+import { ActivityBaseView } from './ActivityBaseView';
+import type { ActivityViewProps } from './ActivityViewProps';
 
 interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
   callout: ActivityCalloutValues;

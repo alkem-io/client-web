@@ -1,17 +1,17 @@
-import { useMemo } from 'react';
-import { Form, Formik } from 'formik';
 import { Button, GridLegacy } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import DiscussionIcon from '../views/DiscussionIcon';
-import { Discussion } from '../models/Discussion';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import type { Discussion } from '../models/Discussion';
+import DiscussionIcon from '../views/DiscussionIcon';
 
 export interface DiscussionFormValues {
   title: string;
@@ -55,11 +55,16 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
   );
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize={true}
+      onSubmit={onSubmit}
+    >
       {({ isValid, dirty, isSubmitting }) => (
-        <Form noValidate>
-          <GridLegacy container spacing={2}>
-            <GridLegacy item xs={12} md={9}>
+        <Form noValidate={true}>
+          <GridLegacy container={true} spacing={2}>
+            <GridLegacy item={true} xs={12} md={9}>
               <FormikInputField
                 name="title"
                 title={t('components.discussionForm.title.title')}
@@ -68,9 +73,9 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
                 maxLength={SMALL_TEXT_LENGTH}
               />
             </GridLegacy>
-            <GridLegacy item xs={12} md={3}>
+            <GridLegacy item={true} xs={12} md={3}>
               <FormikSelect
-                required
+                required={true}
                 disabled={editMode}
                 title={t('components.discussionForm.category.title')}
                 name="category"
@@ -78,18 +83,18 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
                 value={discussion ? discussion.category : null}
               />
             </GridLegacy>
-            <GridLegacy item xs={12}>
+            <GridLegacy item={true} xs={12}>
               <FormikMarkdownField
                 name="description"
                 title={t('components.discussionForm.description.title')}
                 placeholder={t('components.discussionForm.description.placeholder')}
                 rows={10}
-                multiline
+                multiline={true}
                 disabled={isSubmitting}
                 maxLength={MARKDOWN_TEXT_LENGTH}
               />
             </GridLegacy>
-            <GridLegacy item>
+            <GridLegacy item={true}>
               <Button type="submit" variant="contained" loading={isSubmitting} disabled={!isValid || !dirty}>
                 {isSubmitting
                   ? t('buttons.processing')

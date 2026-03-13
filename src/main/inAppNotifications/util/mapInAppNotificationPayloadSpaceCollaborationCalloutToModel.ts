@@ -1,5 +1,5 @@
-import { NotificationEventPayload, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { InAppNotificationPayloadSpaceCollaborationCalloutModel } from '../model/InAppNotificationPayloadSpaceCollaborationCalloutModel';
+import type { NotificationEventPayload, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { InAppNotificationPayloadSpaceCollaborationCalloutModel } from '../model/InAppNotificationPayloadSpaceCollaborationCalloutModel';
 
 export const mapInAppNotificationPayloadSpaceCollaborationCalloutToModel = (payload?: {
   type: NotificationEventPayload;

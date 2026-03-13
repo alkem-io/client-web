@@ -1,15 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { ReactNode } from 'react';
-import { gutters } from '@/core/ui/grid/utils';
-
-import { useFullscreenPreview } from './context/FullscreenPreviewContext';
-import { useChatBehavior } from './context/ChatBehaviorContext';
-
-import Conversation from './components/Conversation/Conversation';
-import Launcher from './components/Launcher/Launcher';
-import FullScreenPreview from './components/FullScreenPreview/FullScreenPreview';
-
 import { Box } from '@mui/material';
+import { type ReactNode, useEffect, useRef } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
+import Conversation from './components/Conversation/Conversation';
+import FullScreenPreview from './components/FullScreenPreview/FullScreenPreview';
+import Launcher from './components/Launcher/Launcher';
+import { useChatBehavior } from './context/ChatBehaviorContext';
+import { useFullscreenPreview } from './context/FullscreenPreviewContext';
 
 type Props = {
   title: string | ReactNode;

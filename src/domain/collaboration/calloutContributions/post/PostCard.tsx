@@ -1,17 +1,17 @@
 import { Skeleton } from '@mui/material';
-import ContributeCard from '@/core/ui/card/ContributeCard';
-import CardHeader from '@/core/ui/card/CardHeader';
-import CardDetails from '@/core/ui/card/CardDetails';
+import { isNumber } from 'lodash-es';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
+import CardDetails from '@/core/ui/card/CardDetails';
 import CardFooter from '@/core/ui/card/CardFooter';
+import CardHeader from '@/core/ui/card/CardHeader';
+import ContributeCard from '@/core/ui/card/ContributeCard';
 import MessageCounter from '@/core/ui/card/MessageCounter';
 import { gutters } from '@/core/ui/grid/utils';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { isNumber } from 'lodash-es';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
-import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
-import { formatDate } from '@/core/utils/time/utils';
 import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { formatDate } from '@/core/utils/time/utils';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
 export interface PostContribution extends Identifiable {
   post?: {

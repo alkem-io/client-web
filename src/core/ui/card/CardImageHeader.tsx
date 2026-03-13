@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
 import { Box } from '@mui/material';
-import CardImage from './CardImage';
+import type { ReactNode } from 'react';
 import SpaceCardBannerPlaceholder from '@/domain/space/components/cards/components/SpaceCardBannerPlaceholder';
+import CardImage from './CardImage';
 
 type CardBannerProps = {
   src?: string;

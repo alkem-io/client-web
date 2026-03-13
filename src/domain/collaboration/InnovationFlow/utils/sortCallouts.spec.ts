@@ -1,6 +1,6 @@
-import { sortCallouts, SortCalloutsParams } from './sortCallouts';
 import { groupBy, mapValues, sortBy } from 'lodash-es';
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
+import { type SortCalloutsParams, sortCallouts } from './sortCallouts';
 
 enum FlowStates {
   A = 'A',

@@ -1,11 +1,11 @@
-import { Box, CircularProgress, FormGroup, Switch, SwitchProps } from '@mui/material';
+import { Box, CircularProgress, FormGroup, Switch, type SwitchProps } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
-import { NotificationOption } from './types/NotificationTypes';
-import { NotificationValidationService } from './services/NotificationValidationService';
-import { NotificationSwitchTooltip } from './components/NotificationSwitchTooltip';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
+import { NotificationSwitchTooltip } from './components/NotificationSwitchTooltip';
+import { NotificationValidationService } from './services/NotificationValidationService';
+import type { NotificationOption } from './types/NotificationTypes';
 
 const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean }) =>
   loading ? (
@@ -84,7 +84,7 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
                       checked={option.inAppChecked}
                       loading={isInAppLoading}
                       disabled={switchStates.inApp.disabled || isAnyLoading}
-                      onChange={(event, newValue) => handleChange(key, 'inApp', newValue)}
+                      onChange={(_event, newValue) => handleChange(key, 'inApp', newValue)}
                       size="small"
                     />
                   </NotificationSwitchTooltip>
@@ -99,7 +99,7 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
                     checked={option.emailChecked}
                     loading={isEmailLoading}
                     disabled={switchStates.email.disabled || isAnyLoading}
-                    onChange={(event, newValue) => handleChange(key, 'email', newValue)}
+                    onChange={(_event, newValue) => handleChange(key, 'email', newValue)}
                     size="small"
                   />
                 </NotificationSwitchTooltip>

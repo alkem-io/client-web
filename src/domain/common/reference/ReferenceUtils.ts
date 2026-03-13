@@ -1,5 +1,5 @@
-import { UpdateReferenceInput } from '@/core/apollo/generated/graphql-schema';
-import { ReferenceModel } from './ReferenceModel';
+import type { UpdateReferenceInput } from '@/core/apollo/generated/graphql-schema';
+import type { ReferenceModel } from './ReferenceModel';
 
 export const mapReferenceModelsToUpdateReferenceInputs = (
   references: Partial<ReferenceModel>[] | undefined

@@ -1,16 +1,16 @@
-import { PropsWithChildren, ReactNode } from 'react';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Box, IconButton, styled, Typography } from '@mui/material';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import AuthorAvatar from '@/domain/shared/components/AuthorAvatar/AuthorAvatar';
-import { Caption, Text } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import CommentReactions from './CommentReactions';
-import { MaybeDeletedMessage } from './useRestoredMessages';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption, Text } from '@/core/ui/typography';
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
+import AuthorAvatar from '@/domain/shared/components/AuthorAvatar/AuthorAvatar';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import CommentReactions from './CommentReactions';
+import type { MaybeDeletedMessage } from './useRestoredMessages';
 
 const MessageContentWrapper = styled(Box)(({ theme }) => ({
   overflowWrap: 'break-word',

@@ -1,8 +1,11 @@
-import { useMemo } from 'react';
 import { useField } from 'formik';
-import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
-import FileUploadButton, { FileUploadEntityType, UploadedDocument } from '@/core/ui/upload/FileUpload/FileUpload';
+import { useMemo } from 'react';
+import FileUploadButton, {
+  type FileUploadEntityType,
+  type UploadedDocument,
+} from '@/core/ui/upload/FileUpload/FileUpload';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import FormikInputField, { type FormikInputFieldProps } from '../FormikInputField/FormikInputField';
 
 const DEFAULT_PROTOCOL = 'https';
 const MATCH_PROTOCOL_REGEX = /^[a-z][a-z0-9+_-]{0,500}:\/\//i;
@@ -59,8 +62,7 @@ const FormikFileInput = ({
       loading={!storageConfig}
       onBlur={checkProtocol}
       endAdornment={
-        storageConfig &&
-        storageConfig.canUpload &&
+        storageConfig?.canUpload &&
         updatedStorageConfig && (
           <FileUploadButton
             onUpload={onUpload}

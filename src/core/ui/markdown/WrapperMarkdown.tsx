@@ -1,13 +1,13 @@
-import ReactMarkdown, { Options as ReactMarkdownOptions } from 'react-markdown';
-import gfm from 'remark-gfm';
+import { Box, type BoxProps, type SxProps, type Theme } from '@mui/material';
+import ReactMarkdown, { type Options as ReactMarkdownOptions } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import components from './components';
-import PlainText from './PlainText';
-import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
-import { Box, BoxProps, SxProps, Theme } from '@mui/material';
-import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
-import { useConfig } from '@/domain/platform/config/useConfig';
+import gfm from 'remark-gfm';
 import { gutters } from '@/core/ui/grid/utils';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import components from './components';
+import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
+import { type MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
+import PlainText from './PlainText';
 
 /**
  * WARNING: About `mdast-util-gfm-autolink-literal` package.

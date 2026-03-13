@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import SpaceExplorerContainer from './SpaceExplorerContainer';
-import { SpaceExplorerView } from './SpaceExplorerView';
-import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { usePageTitle } from '@/core/routing/usePageTitle';
+import SpaceExplorerContainer from './SpaceExplorerContainer';
+import { SpaceExplorerView } from './SpaceExplorerView';
 
 const SpaceExplorerPage = () => {
   const { t } = useTranslation();

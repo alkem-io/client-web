@@ -1,6 +1,11 @@
-import { describe, expect, test } from 'vitest';
 import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { isFileRenderable, isUsableDataUrl, isUsableUrl, shouldStripDataUrlForBroadcast } from '../fileStore/fileAvailability';
+import { describe, expect, test } from 'vitest';
+import {
+  isFileRenderable,
+  isUsableDataUrl,
+  isUsableUrl,
+  shouldStripDataUrlForBroadcast,
+} from '../fileStore/fileAvailability';
 
 describe('fileAvailability', () => {
   test('isUsableUrl returns false for empty/whitespace', () => {

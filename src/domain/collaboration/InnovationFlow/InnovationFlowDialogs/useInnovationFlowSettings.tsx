@@ -1,30 +1,30 @@
+import { useMemo } from 'react';
 import {
   refetchInnovationFlowSettingsQuery,
-  useInnovationFlowSettingsQuery,
-  useUpdateCalloutFlowStateMutation,
-  useUpdateCalloutsSortOrderMutation,
-  useUpdateInnovationFlowMutation,
-  useUpdateInnovationFlowCurrentStateMutation,
-  useUpdateInnovationFlowStateMutation,
   useCreateStateOnInnovationFlowMutation,
   useDeleteStateOnInnovationFlowMutation,
-  useUpdateInnovationFlowStatesSortOrderMutation,
-  useUpdateCollaborationFromSpaceTemplateMutation,
-  useSetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  useInnovationFlowSettingsQuery,
   useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  useSetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  useUpdateCalloutFlowStateMutation,
+  useUpdateCalloutsSortOrderMutation,
+  useUpdateCollaborationFromSpaceTemplateMutation,
+  useUpdateInnovationFlowCurrentStateMutation,
+  useUpdateInnovationFlowMutation,
+  useUpdateInnovationFlowStateMutation,
+  useUpdateInnovationFlowStatesSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  CalloutContributionType,
-  CalloutFramingType,
-  UpdateProfileInput,
+  type CalloutContributionType,
+  type CalloutFramingType,
+  type UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { InnovationFlowStateFormValues } from '../InnovationFlowDragNDropEditor/InnovationFlowStateForm';
-import { sortCallouts } from '../utils/sortCallouts';
-import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { InnovationFlowStateFormValues } from '../InnovationFlowDragNDropEditor/InnovationFlowStateForm';
+import { sortCallouts } from '../utils/sortCallouts';
 
 export interface ImportFlowOptions {
   addCallouts?: boolean;
@@ -271,7 +271,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     // In theory the new state create should have gone to the database with a correct sortOrder, but there are cases where
     // states have consecutive sortOrders and that produces collisions, so we call the sort mutation to ensure all states get a correct sortOrder
     const newStateId = ensurePresence(newState.data?.createStateOnInnovationFlow?.id, 'New State');
-    let stateIdsSorted: string[] = currentStates.sort(sortBySortOrder).map(state => state.id);
+    const stateIdsSorted: string[] = currentStates.sort(sortBySortOrder).map(state => state.id);
     if (stateBeforeId) {
       const stateBeforeIndex = stateIdsSorted.indexOf(stateBeforeId);
       if (stateBeforeIndex === -1) {

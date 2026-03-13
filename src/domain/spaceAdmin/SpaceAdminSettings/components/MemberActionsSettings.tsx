@@ -1,18 +1,18 @@
-import { FC } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle } from '@/core/ui/typography';
-import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { Link } from '@mui/material';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { FC } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { gutters } from '@/core/ui/grid/utils';
-import { defaultSpaceSettings } from '../SpaceDefaultSettings';
-import {
+import { BlockTitle } from '@/core/ui/typography';
+import type {
   SpaceSettingsCollaboration,
   SpaceSettingsMembership,
   SpaceSettingsPrivacy,
 } from '@/domain/space/settings/SpaceSettingsModel';
-import { isSubspace, isNotLastLevel } from '@/domain/space/utils/spaceLevel';
+import { isNotLastLevel, isSubspace } from '@/domain/space/utils/spaceLevel';
+import { defaultSpaceSettings } from '../SpaceDefaultSettings';
 
 interface MemberActionsSettingsProps {
   optimisticSettings: {
@@ -42,7 +42,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
   const { t } = useTranslation();
 
   return (
-    <PageContentBlock disableGap>
+    <PageContentBlock disableGap={true}>
       <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
 
       {/* Subspace Admin Invitations */}

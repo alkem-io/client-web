@@ -1,9 +1,9 @@
-import AlkemioLogo from '../logo/logoSmall.svg?react';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import useBreadcrumbsTopLevelItem from '@/domain/innovationHub/useSpaceBreadcrumbsTopLevelItem';
-import { Expandable } from '@/core/ui/navigation/Expandable';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import type { Expandable } from '@/core/ui/navigation/Expandable';
+import useBreadcrumbsTopLevelItem from '@/domain/innovationHub/useSpaceBreadcrumbsTopLevelItem';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import AlkemioLogo from '../logo/logoSmall.svg?react';
 
 const Logo = () => <AlkemioLogo />;
 

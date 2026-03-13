@@ -1,32 +1,32 @@
-import { useState, ChangeEvent, useMemo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { InputAdornment, OutlinedInput } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { debounce } from 'lodash-es';
-import { useCurrentUserContext } from '../userCurrent/useCurrentUserContext';
-import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
-import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import type { ApolloError } from '@apollo/client';
 import { GroupOutlined } from '@mui/icons-material';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import SearchIcon from '@mui/icons-material/Search';
+import { InputAdornment, OutlinedInput } from '@mui/material';
+import { debounce } from 'lodash-es';
+import { type ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useContributorsPageOrganizationsQuery,
   useContributorsPageUsersQuery,
   useContributorsVirtualInLibraryQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  OrganizationContributorFragment,
+  type OrganizationContributorFragment,
   OrganizationVerificationEnum,
-  UserContributorFragment,
+  type UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { arrayShuffle } from '@/core/utils/array.shuffle';
-import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
-import { ApolloError } from '@apollo/client';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import { arrayShuffle } from '@/core/utils/array.shuffle';
+import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import { useCurrentUserContext } from '../userCurrent/useCurrentUserContext';
+import type { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
+import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 
 export interface VirtualContributors {
   items: VirtualContributorModelBase[] | undefined;
@@ -220,7 +220,7 @@ const ContributorsPage = () => {
     >
       <PageContentColumn columns={12}>
         {searchEnabled && (
-          <PageContentBlockSeamless disablePadding>
+          <PageContentBlockSeamless disablePadding={true}>
             <OutlinedInput
               value={searchTerms}
               sx={{ width: '100%' }}

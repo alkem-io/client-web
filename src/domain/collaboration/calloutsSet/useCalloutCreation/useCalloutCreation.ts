@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import {
+import type {
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
@@ -12,9 +12,9 @@ import {
   CreateTagsetInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
+import type { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
+import type { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
-import { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 
 export interface CalloutCreationType {
   classification?: {

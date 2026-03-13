@@ -1,14 +1,14 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { useSpace } from '@/domain/space/context/useSpace';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SettingsSection } from '../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '../../platformAdmin/layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from '../layout/SpaceAdminLayoutSpace';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/space/context/useSpace';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;

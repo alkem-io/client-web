@@ -1,18 +1,18 @@
-import React from 'react';
-import { Form, Formik } from 'formik';
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { Button, DialogContent } from '@mui/material';
+import { Form, Formik } from 'formik';
+import type React from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption } from '@/core/ui/typography';
-import { Actions } from '@/core/ui/actions/Actions';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
-import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
-import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
 
 const PROVIDERS = [
   { id: AiPersonaEngine.OpenaiAssistant, name: 'OpenAI Assistant' },
@@ -56,8 +56,8 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={(values: ExternalVcFormValues) => handleSubmit(values)}
     >
       {({ isValid, handleChange, values }) => (
@@ -71,7 +71,7 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
             <Caption alignSelf="center">{t('createVirtualContributorWizard.externalAI.create.subTitle')}</Caption>
 
             <Form>
-              <Gutters disablePadding sx={{ paddingTop: 2, paddingBottom: 2 }}>
+              <Gutters disablePadding={true} sx={{ paddingTop: 2, paddingBottom: 2 }}>
                 <FormikAutocomplete
                   name="engine"
                   label={t('createVirtualContributorWizard.externalAI.create.provider.title')}

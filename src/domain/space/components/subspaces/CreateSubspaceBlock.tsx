@@ -1,7 +1,6 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Box, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
@@ -24,7 +23,7 @@ const CreateSubspaceBlock = ({ canCreateSubentity, onCreateSubentity, tabDescrip
   }
 
   return (
-    <PageContentBlock accent>
+    <PageContentBlock accent={true}>
       <ExpandableDescription
         description={tabDescription}
         editPath={SPACE_LAYOUT_EDIT_PATH}

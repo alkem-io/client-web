@@ -1,12 +1,12 @@
-import { useState, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, IconButton } from '@mui/material';
 import { EditOutlined } from '@mui/icons-material';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
+import { Box, IconButton } from '@mui/material';
+import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { gutters } from '@/core/ui/grid/utils';
-import { useTranslation } from 'react-i18next';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
 import useCurrentTabPosition from '../layout/tabbedLayout/useCurrentTabPosition';
 
 export interface ExpandableDescriptionProps {

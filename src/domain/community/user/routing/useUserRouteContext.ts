@@ -1,6 +1,6 @@
+import { ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useMeUserContext } from './MeUserContext';
-import { ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 
 /**
  * Hook that provides user route context, handling both /user/me and /user/:nameId routes.

@@ -1,6 +1,6 @@
+import type { PageBannerCardWrapperProps } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
+import type { Visual } from '@/domain/common/visual/Visual';
 import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
-import { Visual } from '@/domain/common/visual/Visual';
-import { PageBannerCardWrapperProps } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import PageBannerCardWithVisual from './PageBannerCardWithVisual';
 
 export interface SpacePageBannerCardProps extends PageBannerCardWrapperProps {

@@ -1,10 +1,9 @@
-import React from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface AssignPlanProps {
   onAssignPlan: (licensePlanId: string) => Promise<unknown>;
@@ -37,7 +36,7 @@ const AssignPlan = ({ licensePlans, onAssignPlan, activeLicensePlanIds = [] }: A
   return (
     <Formik initialValues={initialValues} validator={validator} onSubmit={handleSubmit}>
       <Form>
-        <Gutters row>
+        <Gutters row={true}>
           <FormikAutocomplete
             values={availableLicensePlans}
             name="licensePlanId"

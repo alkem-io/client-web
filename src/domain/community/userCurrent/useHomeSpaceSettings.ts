@@ -1,6 +1,6 @@
-import { useCurrentUserContext } from './useCurrentUserContext';
+import type { UserDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { buildMembershipSettingsUrl } from '@/main/routing/urlBuilders';
-import { UserDetailsFragment } from '@/core/apollo/generated/graphql-schema';
+import { useCurrentUserContext } from './useCurrentUserContext';
 
 export const useHomeSpaceSettings = () => {
   const { userModel } = useCurrentUserContext();

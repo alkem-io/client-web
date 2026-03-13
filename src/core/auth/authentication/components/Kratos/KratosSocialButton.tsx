@@ -1,17 +1,16 @@
-import React, { FC } from 'react';
-
-import MicrosoftIcon from '../AuthProviders/microsoft.svg?react';
-import AppleIcon from '../AuthProviders/apple.svg?react';
-import LinkedInIcon from '../AuthProviders/linkedin.svg?react';
-import GithubIcon from '../AuthProviders/github.svg?react';
-import CleverbaseIcon from '../AuthProviders/cleverbase.svg?react';
-
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { Box, Button, type SvgIconTypeMap, Tooltip } from '@mui/material';
+import type { OverridableComponent } from '@mui/material/OverridableComponent';
+import type { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import type React from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AuthActionButtonProps } from '../Button';
-import { SvgIconTypeMap, Button, Tooltip, Box } from '@mui/material';
-import { OverridableComponent } from '@mui/material/OverridableComponent';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import AppleIcon from '../AuthProviders/apple.svg?react';
+import CleverbaseIcon from '../AuthProviders/cleverbase.svg?react';
+import GithubIcon from '../AuthProviders/github.svg?react';
+import LinkedInIcon from '../AuthProviders/linkedin.svg?react';
+import MicrosoftIcon from '../AuthProviders/microsoft.svg?react';
+import type { AuthActionButtonProps } from '../Button';
 
 interface SocialCustomization {
   icon: FC<React.SVGProps<SVGSVGElement> & { title?: string }> | OverridableComponent<SvgIconTypeMap>;
@@ -72,7 +71,7 @@ const KratosSocialButton = ({ node, disabled = false }: KratosSocialButtonProps)
         alignItems: 'center',
       }}
     >
-      <Tooltip title={label} placement="top" arrow>
+      <Tooltip title={label} placement="top" arrow={true}>
         <Button
           variant="contained"
           sx={{

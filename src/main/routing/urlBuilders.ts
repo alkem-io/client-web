@@ -1,6 +1,6 @@
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { DIALOG_PARAM_VALUES } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
@@ -34,7 +34,7 @@ export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.loca
   return `?returnUrl=${encodeURI(fullReturnUrl)}`;
 };
 
-export const hasReturnUrlParam = (params?: string) => params && params.includes('returnUrl=');
+export const hasReturnUrlParam = (params?: string) => params?.includes('returnUrl=');
 
 export const buildLoginUrl = (returnUrl?: string, params?: string) => {
   if (hasReturnUrlParam(params)) {

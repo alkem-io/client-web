@@ -1,9 +1,9 @@
-import { useSubSpace } from '../hooks/useSubSpace';
-import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
-import useNavigate from '@/core/routing/useNavigate';
-import { useSpace } from '../context/useSpace';
 import { Box } from '@mui/material';
+import useNavigate from '@/core/routing/useNavigate';
+import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
+import { useSpace } from '../context/useSpace';
+import { useSubSpace } from '../hooks/useSubSpace';
+import type { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
 
 const SubspaceAboutPage = () => {
   const {
@@ -31,7 +31,7 @@ const SubspaceAboutPage = () => {
       {/* sticky footer  */}
       <Box sx={{ height: 'calc(100vh - 400px)' }}>&nbsp;</Box>
       <SpaceAboutDialog
-        open
+        open={true}
         space={space}
         parentSpaceId={parentSpaceId}
         loading={loading}

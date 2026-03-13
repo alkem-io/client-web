@@ -1,12 +1,12 @@
-import { useTranslation } from 'react-i18next';
+import { Autorenew } from '@mui/icons-material';
 
 import { Button } from '@mui/material';
-import { Autorenew } from '@mui/icons-material';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
-import { Identifiable } from '@/core/utils/Identifiable';
-import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
-import { FC, ReactElement, ReactNode, cloneElement, useMemo } from 'react';
+import { cloneElement, type FC, type ReactElement, type ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import PageContentBlockGrid, { type PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import Gutters from '@/core/ui/grid/Gutters';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   extends Omit<PageContentBlockGridProps, 'children'> {
@@ -52,7 +52,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   if (globalSearch) {
     return (
-      <Gutters disablePadding sx={{ display: 'flex', alignItems: 'center' }}>
+      <Gutters disablePadding={true} sx={{ display: 'flex', alignItems: 'center' }}>
         <CardLayoutContainer {...layoutProps} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           {createButton}
           {cards}
@@ -95,5 +95,5 @@ export default CardsLayout;
 interface CardLayoutContainerProps extends PageContentBlockGridProps {}
 
 export const CardLayoutContainer: FC<CardLayoutContainerProps> = props => {
-  return <PageContentBlockGrid cards {...props} />;
+  return <PageContentBlockGrid cards={true} {...props} />;
 };

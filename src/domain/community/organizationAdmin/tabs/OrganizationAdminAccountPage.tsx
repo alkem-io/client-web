@@ -1,7 +1,7 @@
+import type { FC } from 'react';
 import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { FC } from 'react';
 import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '../../../platformAdmin/layout/EntitySettingsLayout/types';
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';

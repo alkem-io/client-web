@@ -1,27 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Extensions } from '@tiptap/core';
-import { TiptapCollabProvider, TiptapCollabProviderWebsocket, onStatelessParameters } from '@hocuspocus/provider';
-import * as Y from 'yjs';
+import { type onStatelessParameters, TiptapCollabProvider, TiptapCollabProviderWebsocket } from '@hocuspocus/provider';
+import type { Extensions } from '@tiptap/core';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCaret from '@tiptap/extension-collaboration-caret';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import * as Y from 'yjs';
+import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import type { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
+import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
 import {
-  CollaborationStatus,
-  MemoStatus,
+  type CollaborationStatus,
   isCollaborationStatus,
+  MemoStatus,
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
+import { useNotification } from '../../../notifications/useNotification';
 import {
-  isStatelessSaveMessage,
   isStatelessReadOnlyStateMessage,
   isStatelessSaveErrorMessage,
+  isStatelessSaveMessage,
 } from '../stateless-messaging';
 import { decodeStatelessMessage } from '../stateless-messaging/util';
-import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import { useNotification } from '../../../notifications/useNotification';
 import useUserCursor from '../useUserCursor';
-import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
-import { error as logError } from '@/core/logging/sentry/log';
-import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 
 interface UseCollaborationProps {
   collaborationId?: string;

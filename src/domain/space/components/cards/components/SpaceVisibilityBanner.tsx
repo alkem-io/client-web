@@ -1,6 +1,6 @@
 import { Chip } from '@mui/material';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 
 interface SpaceVisibilityBannerProps {
   visibility?: SpaceVisibility;

@@ -1,8 +1,3 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
-import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
-import { gutters } from '@/core/ui/grid/utils';
-import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import SendIcon from '@mui/icons-material/Send';
@@ -13,16 +8,22 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
-  InputBaseComponentProps,
-  InputProps,
+  type InputBaseComponentProps,
+  type InputProps,
   OutlinedInput,
-  OutlinedInputProps,
+  type OutlinedInputProps,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { type FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
-import { CursorPositionInMarkdown, MentionMatch, findCursorPositionInMarkdown } from './utils';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
+import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
+import { gutters } from '@/core/ui/grid/utils';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { CommentInputField, type CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
+import { type CursorPositionInMarkdown, findCursorPositionInMarkdown, type MentionMatch } from './utils';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
 
@@ -186,7 +187,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         <FormControl>
           <OutlinedInput
             ref={ref}
-            multiline
+            multiline={true}
             size={size}
             placeholder={placeholder}
             aria-label={title || placeholder || t('messaging.message')}
@@ -228,7 +229,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               'aria-label': title || placeholder || t('messaging.message'),
               placeholder: placeholder,
             }}
-            fullWidth
+            fullWidth={true}
           />
         </FormControl>
         <CharacterCounter
@@ -250,7 +251,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             </Box>
           )}
           <FormHelperText error={isError} sx={{ order: compactMode ? 1 : 0 }}>
-            <>{helperText}</>
+            {helperText}
           </FormHelperText>
         </CharacterCounter>
       </FormGroup>

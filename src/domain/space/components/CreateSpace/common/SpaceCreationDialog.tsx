@@ -1,11 +1,12 @@
+import { Button, DialogActions, DialogContent, type SvgIconProps } from '@mui/material';
+import type React from 'react';
+import { type FC, type ReactElement, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { Button, DialogActions, DialogContent, SvgIconProps } from '@mui/material';
-import React, { FC, ReactElement, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { SpaceCreationForm, SpaceFormValues } from './SpaceCreationDialog.models';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type { SpaceCreationForm, SpaceFormValues } from './SpaceCreationDialog.models';
 
 interface SpaceCreationDialogProps {
   open?: boolean;
@@ -36,7 +37,13 @@ export const SpaceCreationDialog: FC<SpaceCreationDialogProps> = ({
   });
 
   return (
-    <DialogWithGrid open={open} maxWidth="xs" fullWidth aria-labelledby="space-creation-dialog-title" onClose={onClose}>
+    <DialogWithGrid
+      open={open}
+      maxWidth="xs"
+      fullWidth={true}
+      aria-labelledby="space-creation-dialog-title"
+      onClose={onClose}
+    >
       <DialogHeader id="space-creation-dialog-title" onClose={onClose} icon={icon}>
         {t('space-creation.dialog-title', { entity: entityName })}
       </DialogHeader>

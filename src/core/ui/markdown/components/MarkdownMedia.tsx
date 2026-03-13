@@ -1,7 +1,7 @@
-import { ElementType } from 'react';
 import { Box } from '@mui/material';
-import { useMarkdownOptions } from '../MarkdownOptionsContext';
 import type { Element } from 'hast';
+import type { ElementType } from 'react';
+import { useMarkdownOptions } from '../MarkdownOptionsContext';
 
 interface ReactMarkdownProps {
   node?: Element;

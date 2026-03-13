@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 
 type UserCardData = {
   id: string;

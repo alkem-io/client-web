@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 
 const PageContentBlockFooter = (props: BoxProps) => (

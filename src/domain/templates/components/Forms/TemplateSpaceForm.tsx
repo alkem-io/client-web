@@ -1,21 +1,21 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { FormikHelpers } from 'formik';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { BlockSectionTitle, Caption } from '@/core/ui/typography';
-import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
-import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
-import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
-import SpaceContentFromSpaceUrlForm, { SpaceContentFromSpaceUrlFormRef } from './SpaceContentFromSpaceUrlForm';
-import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
-import { nameOf } from '@/core/utils/nameOf';
 import { Box, FormControlLabel, Switch } from '@mui/material';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type { FormikHelpers } from 'formik';
+import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import { TemplateFormProps } from './TemplateForm';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import { nameOf } from '@/core/utils/nameOf';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
+import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
+import SpaceContentFromSpaceUrlForm, { type SpaceContentFromSpaceUrlFormRef } from './SpaceContentFromSpaceUrlForm';
+import type { TemplateFormProps } from './TemplateForm';
+import TemplateFormBase, { type TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -183,7 +183,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
               <Box>
                 <FormControlLabel
                   label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
-                  control={<Switch checked disabled />}
+                  control={<Switch checked={true} disabled={true} />}
                 />
                 <FormikSwitch
                   label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}

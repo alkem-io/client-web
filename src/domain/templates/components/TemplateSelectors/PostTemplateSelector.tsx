@@ -1,16 +1,16 @@
 import { Box, Button } from '@mui/material';
 import { useField } from 'formik';
-import { FC, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { Caption, CardText } from '@/core/ui/typography';
-import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import TemplateActionButton from '../Buttons/TemplateActionButton';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
+import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 
 interface PostTemplatesSelectorProps {
   name: string;
@@ -19,7 +19,7 @@ interface PostTemplatesSelectorProps {
 export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) => {
   const { t } = useTranslation();
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [, , helpers] = useField<String>(name);
+  const [, , helpers] = useField<string>(name);
 
   const [getTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
@@ -47,7 +47,7 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}
-            enablePlatformTemplates
+            enablePlatformTemplates={true}
           />
         </Box>
       </Box>

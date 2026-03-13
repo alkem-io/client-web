@@ -1,13 +1,13 @@
+import CloseIcon from '@mui/icons-material/Close';
+import WifiIcon from '@mui/icons-material/Wifi';
+import WifiOffIcon from '@mui/icons-material/WifiOff';
+import { IconButton, SnackbarContent } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconButton, SnackbarContent } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import WifiOffIcon from '@mui/icons-material/WifiOff';
-import WifiIcon from '@mui/icons-material/Wifi';
-import useOnlineStatus from '@/core/utils/onlineStatus';
-import NotificationView from '@/core/ui/notifications/NotificationView';
 import { info as sentryInfo } from '@/core/logging/sentry/log';
+import NotificationView from '@/core/ui/notifications/NotificationView';
 import { rem } from '@/core/ui/typography/utils';
+import useOnlineStatus from '@/core/utils/onlineStatus';
 
 const OFFLINE_DEBOUNCE_MS = 3000; // Only show offline toast after 3 s sustained disconnection
 const ONLINE_RESTORED_TIMEOUT = 6000;
@@ -72,7 +72,7 @@ export const OnlineStatusNotification = () => {
 
   return (
     <NotificationView
-      open
+      open={true}
       onClose={handleClose}
       autoHideDuration={isOffline ? null : ONLINE_RESTORED_TIMEOUT}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

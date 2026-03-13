@@ -1,8 +1,8 @@
 import { Fullscreen, FullscreenExit } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFullscreen } from '../fullscreen/useFullscreen';
-import { useEffect } from 'react';
 
 interface FullscreenButtonProps {
   element?: HTMLElement;

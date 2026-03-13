@@ -1,9 +1,9 @@
-import {
-  useNavigate as reactRouterUseNavigate,
-  NavigateOptions as ReactRouterNavigateOptions,
-  To,
-} from 'react-router-dom';
 import { useCallback } from 'react';
+import {
+  type NavigateOptions as ReactRouterNavigateOptions,
+  useNavigate as reactRouterUseNavigate,
+  type To,
+} from 'react-router-dom';
 import { normalizeLink } from '../utils/links';
 
 interface NavigationOptions extends ReactRouterNavigateOptions {

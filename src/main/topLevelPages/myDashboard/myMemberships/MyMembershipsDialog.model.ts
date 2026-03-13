@@ -1,14 +1,13 @@
-import { ComponentType } from 'react';
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
 
-import { type SvgIconProps } from '@mui/material';
-
-import {
-  SpaceLevel,
-  RoleName,
+import type {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
+  RoleName,
+  SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { type Visual } from '@/domain/common/visual/Visual';
+import type { Visual } from '@/domain/common/visual/Visual';
 
 export type MembershipProps = {
   space: {

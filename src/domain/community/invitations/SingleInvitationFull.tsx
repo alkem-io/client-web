@@ -1,22 +1,22 @@
-import { ReactNode } from 'react';
-import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
-import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
-import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
-import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
-import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { PendingInvitationItem } from '../user/models/PendingInvitationItem';
+import { Box, Button } from '@mui/material';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { Box, Button } from '@mui/material';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import References from '@/domain/shared/components/References/References';
-import { gutters } from '@/core/ui/grid/utils';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
+import References from '@/domain/shared/components/References/References';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
+import { InvitationHydrator, type InvitationWithMeta } from '../pendingMembership/PendingMemberships';
+import type { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 
 type SingleInvitationFullProps = {
   invitation: PendingInvitationItem | undefined;
@@ -73,11 +73,11 @@ const SingleInvitationFull = ({
   return (
     <>
       {invitation && (
-        <InvitationHydrator invitation={invitation} withCommunityGuidelines>
+        <InvitationHydrator invitation={invitation} withCommunityGuidelines={true}>
           {({ invitation, communityGuidelines }) =>
             invitation && (
               <>
-                <Gutters row disablePadding sx={{ whiteSpace: 'break-spaces' }}>
+                <Gutters row={true} disablePadding={true} sx={{ whiteSpace: 'break-spaces' }}>
                   <HdrStrongOutlined fontSize="small" />
                   {getTitle(invitation)}
                 </Gutters>
@@ -94,7 +94,7 @@ const SingleInvitationFull = ({
                   >
                     <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
                   </SpaceCardBase>
-                  <Gutters disablePadding>
+                  <Gutters disablePadding={true}>
                     <Caption>
                       <DetailedActivityDescription
                         i18nKey="community.pendingMembership.invitationTitle"
@@ -112,13 +112,13 @@ const SingleInvitationFull = ({
                         <BlockSectionTitle paddingTop={gutters()}>
                           {communityGuidelines.profile.displayName}
                         </BlockSectionTitle>
-                        <Gutters disablePadding>
+                        <Gutters disablePadding={true}>
                           <Box sx={{ wordWrap: 'break-word' }}>
-                            <WrapperMarkdown disableParagraphPadding>
+                            <WrapperMarkdown disableParagraphPadding={true}>
                               {communityGuidelines?.profile.description ?? ''}
                             </WrapperMarkdown>
                           </Box>
-                          <References compact references={communityGuidelines?.profile.references} />
+                          <References compact={true} references={communityGuidelines?.profile.references} />
                         </Gutters>
                       </>
                     )}

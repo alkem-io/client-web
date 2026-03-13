@@ -1,4 +1,3 @@
-import useEnsurePresence from '@/core/utils/ensurePresence';
 import {
   MessageDetailsFragmentDoc,
   useRemoveMessageOnRoomMutation,
@@ -6,6 +5,7 @@ import {
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;

@@ -1,8 +1,6 @@
-import { RefObject, useMemo, useRef } from 'react';
+import { type RefObject, useMemo, useRef } from 'react';
 
-interface FunctionalRef<T> {
-  (refValue: T): void;
-}
+type FunctionalRef<T> = (refValue: T) => void;
 
 type Ref<T> = RefObject<T> | FunctionalRef<T> | undefined | null;
 

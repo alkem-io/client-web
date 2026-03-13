@@ -1,6 +1,6 @@
-import { useMessages } from './context/MessagesContext';
+import type { ReactNode } from 'react';
 import { useChatBehavior } from './context/ChatBehaviorContext';
-import { ReactNode } from 'react';
+import { useMessages } from './context/MessagesContext';
 
 import WidgetLayout from './WidgetLayout';
 
@@ -11,10 +11,8 @@ type Props = {
   profileAvatar?: string;
   showCloseButton: boolean;
   autofocus: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleNewUserMessage: (...args: any[]) => any;
   chatId: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleToggle?: (...args: any[]) => any;
   launcherOpenLabel: string;
   launcherCloseLabel: string;
@@ -23,7 +21,6 @@ type Props = {
   sendButtonAlt: string;
   imagePreview?: boolean;
   zoomStep?: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSubmit?: (...args: any[]) => any;
   showBadge?: boolean;
   footer?: ReactNode;

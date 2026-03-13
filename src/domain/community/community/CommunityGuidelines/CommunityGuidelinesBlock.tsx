@@ -1,19 +1,19 @@
+import { EditOutlined } from '@mui/icons-material';
 import { Box, IconButton, Skeleton, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { gutters } from '@/core/ui/grid/utils';
-import CommunityGuidelinesInfoDialog from './CommunityGuidelinesInfoDialog';
-import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import SeeMore from '@/core/ui/content/SeeMore';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
+import { Caption } from '@/core/ui/typography';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { EditOutlined } from '@mui/icons-material';
+import CommunityGuidelinesInfoDialog from './CommunityGuidelinesInfoDialog';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
@@ -77,7 +77,7 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl }: Community
               {!loading && (
                 <OverflowGradient maxHeight={gutters(6)}>
                   <Box sx={{ wordWrap: 'break-word' }}>
-                    <WrapperMarkdown disableParagraphPadding>
+                    <WrapperMarkdown disableParagraphPadding={true}>
                       {communityGuidelines?.profile.description ?? ''}
                     </WrapperMarkdown>
                   </Box>
@@ -88,9 +88,7 @@ const CommunityGuidelinesBlock = ({ communityGuidelinesId, spaceUrl }: Community
             <SeeMore label="buttons.readMore" onClick={openDialog} />
           </>
         ) : (
-          <>
-            <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-          </>
+          <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
         )}
       </PageContentBlock>
       <CommunityGuidelinesInfoDialog

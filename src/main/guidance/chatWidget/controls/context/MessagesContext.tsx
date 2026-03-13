@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, ReactNode, ElementType } from 'react';
-import { MessageTypes, Link, CustomCompMessage } from './types';
+import { createContext, type ElementType, type ReactNode, useContext, useState } from 'react';
+import type { CustomCompMessage, Link, MessageTypes } from './types';
 
 export interface MessagesState {
   messages: (MessageTypes | Link | CustomCompMessage)[];
@@ -11,7 +11,6 @@ interface MessagesContextProps {
   addUserMessage: (text: string, id?: string) => void;
   addResponseMessage: (text: string, id?: string) => void;
   addLinkSnippet: (link: { link: string; title: string; target?: string }, id?: string) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addComponentMessage: (component: ElementType, props: any, showAvatar: boolean, id?: string) => void;
   dropMessages: () => void;
   hideAvatar: (index: number) => void;
@@ -53,7 +52,6 @@ const createLinkSnippet = (link: { link: string; title: string; target?: string 
 
 const createComponentMessage = (
   component: ElementType,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: any,
   showAvatar: boolean,
   id?: string
@@ -96,7 +94,6 @@ export const MessagesProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addComponentMessage = (component: ElementType, props: any, showAvatar: boolean, id?: string) => {
     const newMessage = createComponentMessage(component, props, showAvatar, id);
     setState(prev => ({

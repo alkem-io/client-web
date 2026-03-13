@@ -1,6 +1,6 @@
-import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
-import { ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
+import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { type ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
 
 export type { ConversationMessage } from './models';
 

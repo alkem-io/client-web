@@ -1,7 +1,7 @@
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import WrapperMarkdown from '../markdown/WrapperMarkdown';
-import OverflowGradient, { OverflowGradientProps } from '../overflow/OverflowGradient';
+import OverflowGradient, { type OverflowGradientProps } from '../overflow/OverflowGradient';
 import stopPropagationFromLinks from '../utils/stopPropagationFromLinks';
 
 export const DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS = 4;

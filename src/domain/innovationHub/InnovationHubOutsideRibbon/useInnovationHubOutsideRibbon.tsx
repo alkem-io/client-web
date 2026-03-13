@@ -1,6 +1,6 @@
-import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Trans, useTranslation } from 'react-i18next';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 
 const useInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => {
@@ -18,7 +18,6 @@ const useInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => 
     <PageContentRibbon>
       <Trans
         t={t}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         i18nKey={label as any}
         values={{ space: innovationHub?.profile?.displayName }}
         components={{ strong: <strong /> }}

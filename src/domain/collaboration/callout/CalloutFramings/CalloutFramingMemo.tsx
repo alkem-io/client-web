@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import MemoPreview from '../../memo/MemoPreview/MemoPreview';
-import MemoDialog from '../../memo/MemoDialog/MemoDialog';
-import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
+import MemoDialog from '../../memo/MemoDialog/MemoDialog';
+import MemoPreview from '../../memo/MemoPreview/MemoPreview';
+import type { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingMemoProps {
   callout: CalloutDetailsModel;

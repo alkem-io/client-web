@@ -1,7 +1,7 @@
-import { ComponentType, ReactNode } from 'react';
-import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
+import type { ComponentType, ReactNode } from 'react';
 import InnovationFlowChips from '../InnovationFlowVisualizers/InnovationFlowChips';
-import { InnovationFlowVisualizerProps } from '../InnovationFlowVisualizers/InnovationFlowVisualizer';
+import type { InnovationFlowVisualizerProps } from '../InnovationFlowVisualizers/InnovationFlowVisualizer';
+import type { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 
 type InnovationFlowStatesProps = {
   states: InnovationFlowStateModel[] | undefined;

@@ -1,8 +1,8 @@
-import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
-import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 import { useTranslation } from 'react-i18next';
+import type { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppPlatformForumDiscussionCreatedView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;

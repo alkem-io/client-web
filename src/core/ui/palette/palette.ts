@@ -1,5 +1,5 @@
-import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import type { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
 
 const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
 const COLOR_DIVIDER = '#D3D3D3';

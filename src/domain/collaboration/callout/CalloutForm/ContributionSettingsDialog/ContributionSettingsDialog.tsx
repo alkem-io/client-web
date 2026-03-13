@@ -1,15 +1,15 @@
+import { DialogActions, DialogContent } from '@mui/material';
+import { type ComponentType, type RefAttributes, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import BackButton from '@/core/ui/actions/BackButton';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { DialogActions, DialogContent } from '@mui/material';
-import { ComponentType, RefAttributes, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import ContributionsSettings from './ContributionsSettings';
-import Gutters from '@/core/ui/grid/Gutters';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
-import { FramingSettings } from '../CalloutFormContributionSettings';
+import Gutters from '@/core/ui/grid/Gutters';
+import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import type { FramingSettings } from '../CalloutFormContributionSettings';
+import ContributionsSettings from './ContributionsSettings';
 
 /**
  * Specific settings for the contribution type (e.g. post, link, whiteboard)
@@ -78,7 +78,7 @@ const ContributionSettingsDialog = ({
           id="contribution-settings-dialog-title"
         />
         <DialogContent>
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             {SettingsComponent && (
               <SettingsComponent ref={settingsComponentRef} calloutRestrictions={calloutRestrictions} />
             )}

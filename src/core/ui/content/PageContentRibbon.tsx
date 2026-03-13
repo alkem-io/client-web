@@ -1,6 +1,6 @@
-import { Box, BoxProps } from '@mui/material';
-import { Caption } from '../typography';
+import { Box, type BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
+import { Caption } from '../typography';
 
 const PageContentRibbon = ({ sx, children, ...props }: BoxProps) => (
   <Box

@@ -1,9 +1,9 @@
-import { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
-import CardFooterAvatar from './CardFooterAvatar';
-import { Caption } from '../typography';
-import { gutters } from '../grid/utils';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '../grid/utils';
+import { Caption } from '../typography';
+import CardFooterAvatar from './CardFooterAvatar';
 
 type CardFooterBadgeProps = {
   avatarUri?: string;
@@ -20,7 +20,7 @@ const CardFooterBadge = ({ avatarUri, avatarDisplayName, children }: PropsWithCh
           alt={avatarDisplayName ? t('common.avatar-of', { user: avatarDisplayName }) : t('common.avatar')}
         />
       )}
-      <Caption noWrap>{children}</Caption>
+      <Caption noWrap={true}>{children}</Caption>
     </Box>
   );
 };

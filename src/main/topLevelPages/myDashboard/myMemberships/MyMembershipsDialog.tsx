@@ -1,18 +1,15 @@
-import { Trans } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-
-import Gutters from '@/core/ui/grid/Gutters';
-import { Caption } from '@/core/ui/typography';
+import { Trans } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-
-import Loading from '@/core/ui/loading/Loading';
-import { ExpandableSpaceTree } from './ExpandableSpaceTree';
-import RouterLink from '@/core/ui/link/RouterLink';
-
+import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { type MyMembershipsDialogProps } from './MyMembershipsDialog.model';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
+import { Caption } from '@/core/ui/typography';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
+import { ExpandableSpaceTree } from './ExpandableSpaceTree';
+import type { MyMembershipsDialogProps } from './MyMembershipsDialog.model';
 
 export const MyMembershipsDialog = ({
   data,
@@ -32,7 +29,7 @@ export const MyMembershipsDialog = ({
       <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}
 
-        <Gutters disableGap disablePadding>
+        <Gutters disableGap={true} disablePadding={true}>
           {data?.map(spaceMembership => (
             <ExpandableSpaceTree key={spaceMembership.space.id} membership={spaceMembership} />
           ))}

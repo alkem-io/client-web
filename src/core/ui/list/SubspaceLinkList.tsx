@@ -1,14 +1,13 @@
-import Avatar from '@/core/ui/avatar/Avatar';
-import { Box, Collapse, List, ListItem, Skeleton, Tooltip, TooltipProps } from '@mui/material';
-import { times } from 'lodash-es';
-import { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { LockOutlined, PushPinOutlined } from '@mui/icons-material';
-import { Caption } from '../typography';
+import { Box, Collapse, List, ListItem, Skeleton, Tooltip, type TooltipProps } from '@mui/material';
+import { times } from 'lodash-es';
+import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import Avatar from '@/core/ui/avatar/Avatar';
 import CardExpandButton from '../card/CardExpandButton';
 import { gutters } from '../grid/utils';
 import RouterLink from '../link/RouterLink';
-import { BlockSectionTitle, CaptionSmall } from '../typography';
+import { BlockSectionTitle, Caption, CaptionSmall } from '../typography';
 
 interface Item {
   id: string;
@@ -64,14 +63,14 @@ const SubspaceLinkList = ({ items = [], emptyListCaption, loading = false }: Lin
     >
       <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} ariaLabel={t('common.avatar')} />
 
-      <BlockSectionTitle minWidth={0} noWrap>
+      <BlockSectionTitle minWidth={0} noWrap={true}>
         {item.title}
       </BlockSectionTitle>
       {item.pinned && (
         <Tooltip
           title={<Caption>{t('components.subspacePinIndicator.tooltip')}</Caption>}
           placement={tooltipPlacement}
-          arrow
+          arrow={true}
         >
           <PushPinOutlined sx={{ ml: 'auto', fontSize: 14, color: 'primary.main' }} />
         </Tooltip>
@@ -80,7 +79,7 @@ const SubspaceLinkList = ({ items = [], emptyListCaption, loading = false }: Lin
         <Tooltip
           title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
           placement={tooltipPlacement}
-          arrow
+          arrow={true}
         >
           <LockOutlined sx={{ ml: item.pinned ? 0 : 'auto', color: theme => theme.palette.neutral.light }} />
         </Tooltip>

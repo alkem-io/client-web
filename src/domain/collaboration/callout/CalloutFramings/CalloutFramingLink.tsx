@@ -1,10 +1,10 @@
-import { Button, SxProps, Theme, Tooltip } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
-import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
+import { Button, type SxProps, type Theme, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Caption } from '@/core/ui/typography';
 import useNavigate from '@/core/routing/useNavigate';
+import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
+import type { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingLinkProps {
   callout: CalloutDetailsModel;
@@ -40,7 +40,7 @@ const CalloutFramingLink = ({ callout, sx, containerProps }: CalloutFramingLinkP
   if (!isValidLink) {
     return (
       <Gutters {...containerProps}>
-        <Button variant="outlined" color="error" fullWidth disabled sx={sx}>
+        <Button variant="outlined" color="error" fullWidth={true} disabled={true} sx={sx}>
           {t('forms.validations.invalidUrl')}
         </Button>
       </Gutters>
@@ -64,7 +64,7 @@ const CalloutFramingLink = ({ callout, sx, containerProps }: CalloutFramingLinkP
     <Button
       variant="contained"
       color="primary"
-      fullWidth
+      fullWidth={true}
       onClick={handleLinkClick}
       endIcon={isExternalLink ? <OpenInNewIcon /> : undefined}
       sx={sx}

@@ -1,24 +1,33 @@
-import { throttle } from 'lodash-es';
+import type {
+  reconcileElements as ExcalidrawReconcileElements,
+  restoreElements as ExcalidrawRestoreElements,
+} from '@alkemio/excalidraw';
+import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
+import type {
+  CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
+  hashElementsVersion as ExcalidrawHashElementsVersion,
+  newElementWith as ExcalidrawNewElementWith,
+} from '@alkemio/excalidraw/dist/types/element/src';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type {
+  ReconciledExcalidrawElement,
+  RemoteExcalidrawElement,
+} from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
 import type {
   Collaborator,
   ExcalidrawImperativeAPI,
   Gesture,
   SocketId,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type {
-  reconcileElements as ExcalidrawReconcileElements,
-  restoreElements as ExcalidrawRestoreElements,
-} from '@alkemio/excalidraw';
-import type {
-  hashElementsVersion as ExcalidrawHashElementsVersion,
-  CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
-  newElementWith as ExcalidrawNewElementWith,
-} from '@alkemio/excalidraw/dist/types/element/src';
+import { throttle } from 'lodash-es';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import type { BinaryFilesWithOptionalUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { getCollabServer, type SocketUpdateData, type SocketUpdateDataSource } from './data';
 import {
   ACTIVE_THRESHOLD,
-  CollaboratorMode,
-  CollaboratorModeEvent,
+  type CollaboratorMode,
+  type CollaboratorModeEvent,
   CURSOR_SYNC_TIMEOUT,
   EVENT,
   IDLE_THRESHOLD,
@@ -26,17 +35,8 @@ import {
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
-import { UserIdleState, isImageElement } from './utils';
-import { getCollabServer, SocketUpdateData, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
-import { BinaryFilesWithOptionalUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
-import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import type {
-  ReconciledExcalidrawElement,
-  RemoteExcalidrawElement,
-} from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
-import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { isImageElement, UserIdleState } from './utils';
 
 type CollabState = {
   errorMessage: string;
@@ -200,9 +200,7 @@ class Collab {
         },
       } as SocketUpdateData;
       await this.portal._broadcastSocketData(data, { volatile: true });
-    } catch (e) {
-      console.error('Failed to broadcast emoji reaction:', e);
-    }
+    } catch (_e) {}
   };
 
   /**
@@ -220,9 +218,7 @@ class Collab {
         },
       } as SocketUpdateData;
       await this.portal._broadcastSocketData(data, { volatile: true });
-    } catch (e) {
-      console.error('Failed to broadcast countdown timer:', e);
-    }
+    } catch (_e) {}
   };
 
   public isCollaborating = () => {
@@ -334,9 +330,7 @@ class Collab {
                     x,
                     y,
                   });
-                } catch (e) {
-                  console.error('Failed to handle incoming emoji reaction:', e);
-                }
+                } catch (_e) {}
                 return;
               }
               if (isCountdownTimerPayload(data)) {
@@ -348,9 +342,7 @@ class Collab {
                     active,
                     startedBy,
                   });
-                } catch (e) {
-                  console.error('Failed to handle incoming countdown timer:', e);
-                }
+                } catch (_e) {}
                 return;
               }
             },

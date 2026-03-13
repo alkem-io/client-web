@@ -1,10 +1,11 @@
-import React, { FC, useState } from 'react';
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup } from '@mui/material';
+import type React from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormControl, FormGroup, FormControlLabel, Checkbox, Button } from '@mui/material';
-import { useAlkemioCookies } from './useAlkemioCookies';
-import TextContainer from './components/TextContainer';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Caption } from '@/core/ui/typography';
+import TextContainer from './components/TextContainer';
+import { useAlkemioCookies } from './useAlkemioCookies';
 
 const CookieSettings: FC = () => {
   const { t } = useTranslation();
@@ -42,7 +43,7 @@ const CookieSettings: FC = () => {
         <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox style={{ color: '#FFFFFF' }} checked name="technical" />}
+              control={<Checkbox style={{ color: '#FFFFFF' }} checked={true} name="technical" />}
               label={<Caption>{CookieLabels.technical}</Caption>}
             />
             <FormControlLabel

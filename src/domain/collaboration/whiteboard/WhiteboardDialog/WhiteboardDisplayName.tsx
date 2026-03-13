@@ -1,13 +1,13 @@
-import { Box, Button, IconButton, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Edit } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { Box, Button, IconButton, TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
-import { Edit } from '@mui/icons-material';
-import { useGlobalGridColumns } from '@/core/ui/grid/constants';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 type WhiteboardDisplayNameProps = {
   displayName: string | undefined;
@@ -68,7 +68,12 @@ const WhiteboardDisplayName = ({
       )}
       {!readOnlyDisplayName && isEditing && (
         <Box display="flex" alignItems="center" height={gutters()}>
-          <TextField value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} size="small" autoFocus />
+          <TextField
+            value={newDisplayName}
+            onChange={e => setNewDisplayName(e.target.value)}
+            size="small"
+            autoFocus={true}
+          />
           <Box sx={{ marginX: 1 }}>
             <Button
               aria-label={t('buttons.save')}

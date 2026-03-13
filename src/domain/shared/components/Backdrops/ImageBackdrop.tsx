@@ -1,10 +1,10 @@
+import { Box, type BoxProps, Button, styled, Typography, type TypographyProps } from '@mui/material';
+import type { FC, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
-import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
-import { FC, PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 
 const Root = styled(Box)(() => ({
   position: 'relative',

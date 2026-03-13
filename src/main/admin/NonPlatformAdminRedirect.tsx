@@ -1,6 +1,6 @@
+import type { FC, PropsWithChildren } from 'react';
 import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { FC, PropsWithChildren } from 'react';
 import NonAdminRedirect from './NonAdminRedirect';
 
 const NonPlatformAdminRedirect: FC<PropsWithChildren> = ({ children }) => {

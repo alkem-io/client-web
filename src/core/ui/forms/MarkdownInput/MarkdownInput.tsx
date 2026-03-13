@@ -1,16 +1,17 @@
-import React, { memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { Box, useTheme } from '@mui/material';
-import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
-import { CharacterCountContainer } from './CharacterCountContext';
-import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
+import type { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
+import { type Editor, EditorContent } from '@tiptap/react';
+import type React from 'react';
+import { memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { EditorContent, Editor } from '@tiptap/react';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
+import { CharacterCountContainer } from './CharacterCountContext';
+import { MarkdownInputStyles } from './hooks/MarkdownInputStyles';
 import { useEditorConfig } from './hooks/useEditorConfig';
 import { useImageUpload } from './hooks/useImageUpload';
-import { useMarkdownInputUI } from './hooks/useMarkdownInputUI';
 import { useMarkdownEditor } from './hooks/useMarkdownEditor';
-import { MarkdownInputStyles } from './hooks/MarkdownInputStyles';
+import { useMarkdownInputUI } from './hooks/useMarkdownInputUI';
 
 export interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';

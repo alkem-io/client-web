@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { useField } from 'formik';
-import { FormikInputProps } from '../FormikInputProps';
-import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useMemo } from 'react';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import type { FormikInputProps } from '../FormikInputProps';
+import AlkemioTimePicker, { type AlkemioTimePickerProps } from './AlkemioTimePicker';
 
 interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {}
 
@@ -27,7 +27,7 @@ const FormikTimePicker = ({ name, ...datePickerProps }: FormikTimePickerProps) =
       onChange={helpers.setValue}
       error={helperText}
       onBlur={() => helpers.setTouched(true)}
-      fullWidth
+      fullWidth={true}
       {...datePickerProps}
     />
   );

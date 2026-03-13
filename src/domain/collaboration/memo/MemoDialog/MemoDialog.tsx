@@ -1,27 +1,27 @@
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { Box, DialogContent, IconButton, OutlinedInput, Tooltip } from '@mui/material';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInputLazy';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
-import { Box, DialogContent, IconButton, OutlinedInput, Tooltip } from '@mui/material';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
-import useMemoManager from '../MemoManager/useMemoManager';
 import Loading from '@/core/ui/loading/Loading';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import FullscreenButton from '@/core/ui/button/FullscreenButton';
-import UserPresencing from '../../realTimeCollaboration/UserPresencing';
-import { MemoStatus, RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
-import MemoFooter from './MemoFooter';
-import MemoDisplayName from './MemoDisplayName';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useTranslation } from 'react-i18next';
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
-import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { MemoStatus, type RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
+import UserPresencing from '../../realTimeCollaboration/UserPresencing';
+import useMemoManager from '../MemoManager/useMemoManager';
+import MemoDisplayName from './MemoDisplayName';
+import MemoFooter from './MemoFooter';
 
 interface MemoDialogProps {
   open?: boolean;
@@ -82,8 +82,8 @@ const MemoDialog = ({
       ref={dialogRef}
       open={open}
       onClose={handleClose}
-      fullWidth
-      fullHeight
+      fullWidth={true}
+      fullHeight={true}
       fullScreen={isFullscreen}
       aria-labelledby="memo-dialog-title"
     >
@@ -94,7 +94,7 @@ const MemoDialog = ({
         actions={
           <>
             {isContribution && hasDeletePrivileges && onDelete && (
-              <Tooltip title={t('buttons.delete')} arrow>
+              <Tooltip title={t('buttons.delete')} arrow={true}>
                 <IconButton
                   onClick={() => setDeleteConfirmDialogOpen(true)}
                   aria-label={t('buttons.delete')}
@@ -164,8 +164,8 @@ const MemoDialog = ({
                     height: '100%',
                     alignItems: 'flex-start',
                   }}
-                  multiline
-                  fullWidth
+                  multiline={true}
+                  fullWidth={true}
                 />
               </CharacterCountContextProvider>
             </StorageConfigContextProvider>

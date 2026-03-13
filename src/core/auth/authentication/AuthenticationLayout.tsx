@@ -1,16 +1,16 @@
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import Footer from '@/main/ui/platformFooter/PlatformFooter';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import Overlay from '@/core/ui/utils/Overlay';
 import { Box, Card } from '@mui/material';
-import Image from '@/core/ui/image/Image';
-import FixedHeightLogo from './components/FixedHeightLogo';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import Image from '@/core/ui/image/Image';
 import PageBannerCardWrapper from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import { Text } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import { ReactNode } from 'react';
+import Overlay from '@/core/ui/utils/Overlay';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import Footer from '@/main/ui/platformFooter/PlatformFooter';
+import FixedHeightLogo from './components/FixedHeightLogo';
 
 interface AuthenticationLayoutProps {
   children: ReactNode;
@@ -29,8 +29,8 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
       </Overlay>
       <Gutters
         component="main"
-        row
-        fullHeight
+        row={true}
+        fullHeight={true}
         sx={{
           padding: { xs: 1, sm: 6 },
           zIndex: 999,
@@ -43,9 +43,9 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
         }}
       >
         <PageBannerCardWrapper sx={{ maxWidth: { xs: '100%', sm: '100%', md: '260px' }, maxHeight: '114px' }}>
-          <Gutters disablePadding gap={gutters(0.5)}>
+          <Gutters disablePadding={true} gap={gutters(0.5)}>
             <FixedHeightLogo />
-            <Text color="textSecondary" noWrap sx={{ paddingLeft: gutters(0.7) }}>
+            <Text color="textSecondary" noWrap={true} sx={{ paddingLeft: gutters(0.7) }}>
               {t('pages.registration.logo-subtitle')}
             </Text>
           </Gutters>

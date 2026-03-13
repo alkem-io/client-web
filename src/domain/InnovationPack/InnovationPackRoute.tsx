@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
-import AdminInnovationPackPage from './admin/AdminInnovationPackPage';
 import { nameOfUrl } from '@/main/routing/urlParams';
+import AdminInnovationPackPage from './admin/AdminInnovationPackPage';
+import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
 
 // TODO the Innovationpack layout is too heavily coupled with the innovation pack so it's kept iniside the pages rather than here
 // will revise ASAP

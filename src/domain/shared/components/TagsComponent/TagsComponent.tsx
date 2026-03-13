@@ -1,13 +1,13 @@
-import React, { useCallback, useState } from 'react';
-import Chip, { ChipProps } from '@mui/material/Chip';
-import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, ClickAwayListener, Tooltip, useTheme } from '@mui/material';
-import { times } from 'lodash-es';
-import { Theme } from '@mui/material/styles';
-import Skeleton from '@mui/material/Skeleton';
-import LinesFitter from '../LinesFitter/LinesFitter';
-import { CardText } from '@/core/ui/typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { Box, type BoxProps, ClickAwayListener, Tooltip, useTheme } from '@mui/material';
+import Chip, { type ChipProps } from '@mui/material/Chip';
+import Skeleton from '@mui/material/Skeleton';
+import type { Theme } from '@mui/material/styles';
+import { times } from 'lodash-es';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CardText } from '@/core/ui/typography';
+import LinesFitter from '../LinesFitter/LinesFitter';
 
 export interface TagsComponentProps extends BoxProps {
   tags: string[];
@@ -57,7 +57,7 @@ const TagsComponent = ({
 
   const renderTag = useCallback(
     (item: string, i: number) => (
-      <Tooltip key={i} title={item} arrow placement="bottom">
+      <Tooltip key={i} title={item} arrow={true} placement="bottom">
         <Chip
           label={item}
           color={color}
@@ -76,7 +76,7 @@ const TagsComponent = ({
     <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
       <Tooltip
         title={getMoreTagsTooltipTitle(remainingTags)}
-        arrow
+        arrow={true}
         placement="bottom"
         open={tooltipOpen}
         onOpen={() => setTooltipOpen(true)}

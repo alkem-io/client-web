@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { ActivityBaseView } from './ActivityBaseView';
-import { ActivityViewProps } from './ActivityViewProps';
+import type { FC } from 'react';
+import type { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import { ActivityBaseView } from './ActivityBaseView';
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
+import type { ActivityViewProps } from './ActivityViewProps';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
   message: string;

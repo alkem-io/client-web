@@ -1,5 +1,5 @@
-import { ReactNode, useState } from 'react';
-import { Menu, MenuItem, MenuProps } from '@mui/material';
+import { Menu, MenuItem, type MenuProps } from '@mui/material';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supportedLngs } from '@/core/i18n/config';
 import { Caption } from '../typography';

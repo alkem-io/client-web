@@ -1,27 +1,31 @@
-import React, { FC } from 'react';
+import { type FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
-import { useSpace } from '@/domain/space/context/useSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '@/domain/spaceAdmin/SpaceAdminAbout/SpaceAdminAboutPage';
-import SpaceAdminSettingsPage, {
-  SpaceAdminSettingsPageProps,
-} from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage';
-import SpaceTemplatesAdminRoutes from '@/domain/spaceAdmin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
-import SpaceAdminStoragePage, {
-  SpaceAdminStoragePageProps,
-} from '@/domain/spaceAdmin/SpaceAdminStorage/SpaceAdminStoragePage';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useSpace } from '@/domain/space/context/useSpace';
+import SpaceAdminAboutPage, {
+  type SpaceAdminAboutPageProps,
+} from '@/domain/spaceAdmin/SpaceAdminAbout/SpaceAdminAboutPage';
 import SpaceAdminCommunityPage, {
-  SpaceAdminCommunityPageProps,
+  type SpaceAdminCommunityPageProps,
 } from '@/domain/spaceAdmin/SpaceAdminCommunity/SpaceAdminCommunityPage';
-import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
-import SpaceAdminLayoutPage, { SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
-import SpaceAdminAccountPage, { SpaceAdminAccountPageProps } from '../SpaceAdminAccount/SpaceAdminAccountPage';
+import SpaceAdminSettingsPage, {
+  type SpaceAdminSettingsPageProps,
+} from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage';
+import SpaceAdminStoragePage, {
+  type SpaceAdminStoragePageProps,
+} from '@/domain/spaceAdmin/SpaceAdminStorage/SpaceAdminStoragePage';
+import SpaceTemplatesAdminRoutes from '@/domain/spaceAdmin/SpaceAdminTemplates/SpaceAdminTemplatesRoutes';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import SpaceAdminAccountPage, { type SpaceAdminAccountPageProps } from '../SpaceAdminAccount/SpaceAdminAccountPage';
 import SpaceAdminCommunicationsPage, {
-  SpaceAdminCommunicationsPageProps,
+  type SpaceAdminCommunicationsPageProps,
 } from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
-import SpaceAdminSubspacesPage, { SpaceAdminSubspacesPageProps } from '../SpaceAdminSubspaces/SpaceAdminSubspacesPage';
+import SpaceAdminLayoutPage, { type SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
+import SpaceAdminSubspacesPage, {
+  type SpaceAdminSubspacesPageProps,
+} from '../SpaceAdminSubspaces/SpaceAdminSubspacesPage';
+import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 
 const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -87,7 +91,7 @@ const SpaceAdminL0Route: FC = () => {
     <NonSpaceAdminRedirect spaceId={spaceId}>
       <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
         <Routes>
-          <Route index element={<Navigate to="about" replace />} />
+          <Route index={true} element={<Navigate to="about" replace={true} />} />
           <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
           <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />

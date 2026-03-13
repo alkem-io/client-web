@@ -1,7 +1,10 @@
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
+import { Button, type ButtonProps } from '@mui/material';
+import { compact } from 'lodash-es';
+import { type PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useAllTemplatesInTemplatesSetQuery,
+  useCreateTemplateFromContentSpaceMutation,
   useCreateTemplateFromSpaceMutation,
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
@@ -10,38 +13,37 @@ import {
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
-  useCreateTemplateFromContentSpaceMutation,
   useUpdateWhiteboardMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { useTranslation } from 'react-i18next';
-import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
-import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { Button, ButtonProps } from '@mui/material';
-import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import type { SpaceTemplate } from '../../models/SpaceTemplate';
+import useHandlePreviewImages from '../../utils/useHandlePreviewImages';
 import TemplateActionButton from '../Buttons/TemplateActionButton';
+import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
+import ImportTemplatesDialog, {
+  type ImportTemplatesOptions,
+} from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import {
-  toCreateTemplateFromSpaceMutationVariables,
   toCreateTemplateFromSpaceContentMutationVariables,
+  toCreateTemplateFromSpaceMutationVariables,
   toCreateTemplateMutationVariables,
   toUpdateTemplateMutationVariables,
 } from '../Forms/common/mappings';
-import useHandlePreviewImages from '../../utils/useHandlePreviewImages';
-import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
-import { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm';
-import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
-import { SpaceTemplate } from '../../models/SpaceTemplate';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
-import { compact } from 'lodash-es';
+import type { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm';
+import type { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
+import type { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
+import type { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
+import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -346,7 +348,7 @@ const TemplatesAdmin = ({
   return (
     <>
       {shouldRenderTemplateSection(spaceTemplates, TemplateType.Space) && (
-        <PageContentBlockSeamless disablePadding>
+        <PageContentBlockSeamless disablePadding={true}>
           <TemplatesGallery
             headerText={
               showCounts
@@ -367,7 +369,7 @@ const TemplatesAdmin = ({
         </PageContentBlockSeamless>
       )}
       {shouldRenderTemplateSection(calloutTemplates, TemplateType.Callout) && (
-        <PageContentBlockSeamless disablePadding>
+        <PageContentBlockSeamless disablePadding={true}>
           <TemplatesGallery
             headerText={
               showCounts
@@ -388,7 +390,7 @@ const TemplatesAdmin = ({
         </PageContentBlockSeamless>
       )}
       {shouldRenderTemplateSection(whiteboardTemplates, TemplateType.Whiteboard) && (
-        <PageContentBlockSeamless disablePadding>
+        <PageContentBlockSeamless disablePadding={true}>
           <TemplatesGallery
             headerText={
               showCounts
@@ -409,7 +411,7 @@ const TemplatesAdmin = ({
         </PageContentBlockSeamless>
       )}
       {shouldRenderTemplateSection(postTemplates, TemplateType.Post) && (
-        <PageContentBlockSeamless disablePadding>
+        <PageContentBlockSeamless disablePadding={true}>
           <TemplatesGallery
             headerText={
               showCounts
@@ -430,7 +432,7 @@ const TemplatesAdmin = ({
         </PageContentBlockSeamless>
       )}
       {shouldRenderTemplateSection(communityGuidelinesTemplates, TemplateType.CommunityGuidelines) && (
-        <PageContentBlockSeamless disablePadding>
+        <PageContentBlockSeamless disablePadding={true}>
           <TemplatesGallery
             headerText={
               showCounts
@@ -452,16 +454,16 @@ const TemplatesAdmin = ({
       )}
       {creatingTemplateType && (
         <CreateTemplateDialog
-          open
+          open={true}
           onClose={() => setCreatingTemplateType(undefined)}
           templateType={creatingTemplateType}
           onSubmit={handleTemplateCreate}
-          temporaryLocation
+          temporaryLocation={true}
         />
       )}
       {selectedTemplate && editTemplateMode && (
         <EditTemplateDialog
-          open
+          open={true}
           onClose={() => {
             backToTemplates();
             window.setTimeout(() => {
@@ -479,7 +481,7 @@ const TemplatesAdmin = ({
       )}
       {selectedTemplate && !editTemplateMode && (
         <PreviewTemplateDialog
-          open
+          open={true}
           onClose={() => backToTemplates()}
           template={selectedTemplate}
           actions={
@@ -514,7 +516,7 @@ const TemplatesAdmin = ({
       )}
       {importTemplateType && (
         <ImportTemplatesDialog
-          open
+          open={true}
           onClose={() => setImportTemplateType(undefined)}
           templateType={importTemplateType}
           subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}

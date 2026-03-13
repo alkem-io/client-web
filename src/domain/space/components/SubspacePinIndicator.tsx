@@ -1,7 +1,7 @@
-import { Paper } from '@mui/material';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import { Paper } from '@mui/material';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type FC } from 'react';
 
 type SubspacePinIndicatorProps = {
   withBackground?: boolean;

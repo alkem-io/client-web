@@ -1,17 +1,17 @@
-import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { getDefaultCropConfigForWhiteboardPreview } from './utils/getDefaultCropConfigForWhiteboardPreview';
-import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
-import cropImage, { CropConfig } from '@/core/utils/images/cropImage';
-import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
-import { PreviewImageDimensions, WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
-import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import validateCropConfig from './utils/validateCropConfig';
-import resizeImage from '@/core/utils/images/resizeImage';
-import { error as logError } from '@/core/logging/sentry/log';
 import { useTranslation } from 'react-i18next';
+import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import cropImage, { type CropConfig } from '@/core/utils/images/cropImage';
+import resizeImage from '@/core/utils/images/resizeImage';
+import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
+import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
+import { getDefaultCropConfigForWhiteboardPreview } from './utils/getDefaultCropConfigForWhiteboardPreview';
+import validateCropConfig from './utils/validateCropConfig';
+import type { PreviewImageDimensions, WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
+import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
 
 interface WhiteboardWithPreviewImageDimensions {
   profile?: {

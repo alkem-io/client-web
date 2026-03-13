@@ -1,3 +1,6 @@
+import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUsersMutation,
@@ -10,9 +13,6 @@ import ConditionalLink from '@/core/ui/link/ConditionalLink';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
-import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type ContributorCardTooltip = {
   tags: string[];
@@ -79,7 +79,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
       ({ children }) =>
         tooltip ? (
           <Tooltip
-            arrow
+            arrow={true}
             title={
               <GridProvider columns={3}>
                 <Box width={gutters(15)}>
@@ -102,7 +102,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
             <Box>{children}</Box>
           </Tooltip>
         ) : (
-          <>{children}</>
+          children
         ),
     [displayName, avatar, tooltip, isContactable]
   );

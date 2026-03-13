@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import type { ReactNode } from 'react';
 import { gutters } from '../grid/utils';
-import { BackgroundColor, overflowBorderGradient } from './utils';
+import { type BackgroundColor, overflowBorderGradient } from './utils';
 
 export interface OverflowGradientProps extends BoxProps {
   lastLine?: boolean;

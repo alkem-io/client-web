@@ -1,9 +1,9 @@
-import { ElementType, ComponentProps } from 'react';
-import { Caption, CardText, Text } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import { useMarkdownOptions } from '../MarkdownOptionsContext';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
 import type { Element } from 'hast';
+import type { ComponentProps, ElementType } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption, CardText, Text } from '@/core/ui/typography';
+import { useMarkdownOptions } from '../MarkdownOptionsContext';
 
 interface MarkdownComponentProps extends ComponentProps<'div'> {
   overrideDisableParagraphPadding?: boolean;

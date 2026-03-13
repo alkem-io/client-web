@@ -1,30 +1,33 @@
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { useMemo } from 'react';
+import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  type UpdateUserSettingsNotificationInput,
+} from '@/core/apollo/generated/graphql-schema';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Loading from '@/core/ui/loading/Loading';
+import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
+import { VCNotificationsSettings } from '@/domain/community/userAdmin/tabs/components/VCNotificationsSettings';
+import type {
+  NotificationChannels,
+  NotificationSettings,
+  OrganizationNotificationSettings,
+  PlatformAdminNotificationSettings,
+  PlatformNotificationSettings,
+  SpaceAdminNotificationSettings,
+  SpaceNotificationSettings,
+  UserNotificationSettings,
+  VCNotificationSettings,
+} from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
 import useUserRouteContext from '../../user/routing/useUserRouteContext';
-import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
-import Loading from '@/core/ui/loading/Loading';
-import PageContent from '@/core/ui/content/PageContent';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
-import { AuthorizationPrivilege, UpdateUserSettingsNotificationInput } from '@/core/apollo/generated/graphql-schema';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { CombinedPlatformNotificationsSettings } from './components/CombinedPlatformNotificationsSettings';
 import { CombinedSpaceNotificationsSettings } from './components/CombinedSpaceNotificationsSettings';
 import { CombinedUserNotificationsSettings } from './components/CombinedUserNotificationsSettings';
 import { OrganizationNotificationsSettings } from './components/OrganizationNotificationsSettings';
-import { CombinedPlatformNotificationsSettings } from './components/CombinedPlatformNotificationsSettings';
-import {
-  NotificationSettings,
-  SpaceNotificationSettings,
-  SpaceAdminNotificationSettings,
-  UserNotificationSettings,
-  OrganizationNotificationSettings,
-  PlatformNotificationSettings,
-  PlatformAdminNotificationSettings,
-  VCNotificationSettings,
-  NotificationChannels,
-} from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
-import { VCNotificationsSettings } from '@/domain/community/userAdmin/tabs/components/VCNotificationsSettings';
 
 // Notification groups enum for explicit handling
 export enum NotificationGroup {
@@ -371,7 +374,6 @@ const UserAdminNotificationsPage = () => {
         break;
 
       default:
-        console.warn(`Unknown notification group: ${group}`);
         return;
     }
 

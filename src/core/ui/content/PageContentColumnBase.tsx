@@ -1,9 +1,9 @@
-import { Box, BoxProps } from '@mui/material';
-import GridProvider from '../grid/GridProvider';
-import { GUTTER_MUI } from '../grid/constants';
-import SkipLink from '../keyboardNavigation/SkipLink';
+import { Box, type BoxProps } from '@mui/material';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import { GUTTER_MUI } from '../grid/constants';
+import GridProvider from '../grid/GridProvider';
 import { BlockAnchorProvider, NextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
+import SkipLink from '../keyboardNavigation/SkipLink';
 
 export interface PageContentColumnBaseProps extends BoxProps {
   columns: number;

@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
+import { Actions, type ActionsProps } from '../actions/Actions';
 import { gutters } from '../grid/utils';
-import { Actions, ActionsProps } from '../actions/Actions';
 
 const CardActions = (props: ActionsProps) => {
   const stopPropagation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation();

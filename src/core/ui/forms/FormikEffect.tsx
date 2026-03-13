@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { useFormikContext } from 'formik';
+import { useEffect } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 export interface FormikEffectProps<T> {
@@ -31,9 +31,9 @@ const FormikEffectFactory = <T,>() => {
         };
       }
     }, [values]);
-    useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
-    useEffect(() => onDirtyChange && onDirtyChange(dirty), [dirty, onDirtyChange]);
-    useEffect(() => canSave && canSave(isValid && dirty), [isValid, dirty, canSave]);
+    useEffect(() => onStatusChange?.(isValid), [isValid, onStatusChange]);
+    useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange]);
+    useEffect(() => canSave?.(isValid && dirty), [isValid, dirty, canSave]);
 
     return <></>;
   };

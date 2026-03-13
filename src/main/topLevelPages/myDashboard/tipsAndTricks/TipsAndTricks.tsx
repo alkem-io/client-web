@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import SeeMore from '@/core/ui/content/SeeMore';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import Avatar from '@/core/ui/avatar/Avatar';
-import RouterLink from '@/core/ui/link/RouterLink';
-import { Caption } from '@/core/ui/typography';
+import SeeMore from '@/core/ui/content/SeeMore';
 import Gutters from '@/core/ui/grid/Gutters';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { Caption } from '@/core/ui/typography';
 
 type TipsAndTricksItemTranslation = {
   title: string;
@@ -20,7 +20,7 @@ export const TipsAndTricks = () => {
   const items: TipsAndTricksItemTranslation[] = Array.isArray(itemsRaw) ? itemsRaw : Object.values(itemsRaw);
 
   return (
-    <Gutters disablePadding>
+    <Gutters disablePadding={true}>
       {items.map((item, index) => (
         <BadgeCardView
           key={index}

@@ -1,12 +1,12 @@
+import { Box } from '@mui/material';
+import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { AUTH_VERIFY_PATH } from '../constants/authentication.constants';
+import { clearAllGuestSessionData } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import Paragraph from '@/domain/shared/components/Text/Paragraph';
 import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
-import { Box } from '@mui/material';
-import Paragraph from '@/domain/shared/components/Text/Paragraph';
-import { useEffect } from 'react';
-import { clearAllGuestSessionData } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { AUTH_VERIFY_PATH } from '../constants/authentication.constants';
 
 export const RegistrationSuccessPage = () => {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ export const RegistrationSuccessPage = () => {
 
   return (
     <AuthenticationLayout>
-      <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
+      <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage={true} />
       <Box
         display="flex"
         flexDirection="column"

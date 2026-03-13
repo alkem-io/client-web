@@ -1,13 +1,13 @@
 import { DialogContent } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useDashboardContext } from '../DashboardContext';
-import { DashboardDialog } from './DashboardDialogsProps';
-import { TipsAndTricks } from '../tipsAndTricks/TipsAndTricks';
-import { useTranslation } from 'react-i18next';
-import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
 import LatestContributions from '../latestContributions/LatestContributions';
-import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
+import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
+import { TipsAndTricks } from '../tipsAndTricks/TipsAndTricks';
+import { DashboardDialog } from './DashboardDialogsProps';
 
 const DashboardDialogs = () => {
   const { t } = useTranslation();

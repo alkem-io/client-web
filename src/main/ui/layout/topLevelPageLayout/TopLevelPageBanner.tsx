@@ -1,6 +1,6 @@
-import { Visual } from '@/domain/common/visual/Visual';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
-import PageBannerCard, { PageBannerCardProps } from '@/main/topLevelPages/pageBannerCard/PageBannerCard';
+import type { Visual } from '@/domain/common/visual/Visual';
+import PageBannerCard, { type PageBannerCardProps } from '@/main/topLevelPages/pageBannerCard/PageBannerCard';
 
 export const defaultPageBanner: Visual = {
   uri: '/alkemio-banner/global-banner.svg',

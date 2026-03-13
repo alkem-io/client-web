@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
-import { AuthorizationPrivilege, InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
-import { Visual } from '@/domain/common/visual/Visual';
+import {
+  AuthorizationPrivilege,
+  type InnovationHubHomeInnovationHubFragment,
+} from '@/core/apollo/generated/graphql-schema';
+import type { Visual } from '@/domain/common/visual/Visual';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 export interface InnovationHubAttrs {

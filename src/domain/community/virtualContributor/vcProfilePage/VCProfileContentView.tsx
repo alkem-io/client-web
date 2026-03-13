@@ -1,30 +1,28 @@
-import { PropsWithChildren } from 'react';
-
-import { Link, Button } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CheckIcon from '@mui/icons-material/Check';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import LaunchIcon from '@mui/icons-material/Launch';
+import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import PublicIcon from '@mui/icons-material/Public';
 import RemoveIcon from '@mui/icons-material/Remove';
-import LaunchIcon from '@mui/icons-material/Launch';
-import StorageIcon from '@mui/icons-material/Storage';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
-import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
-import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import SettingsAccessibilityOutlinedIcon from '@mui/icons-material/SettingsAccessibilityOutlined';
-import useNavigate from '@/core/routing/useNavigate';
+import StorageIcon from '@mui/icons-material/Storage';
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import { Button, Link } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import useNavigate from '@/core/routing/useNavigate';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 import Gutters from '@/core/ui/grid/Gutters';
-import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
-import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
-import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 import { EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
+import type { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
+import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
 
 export type VCProfileContentViewProps = {
   virtualContributor?: VirtualContributorModelFull;
@@ -91,14 +89,14 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
   return (
     <>
       <PageContentBlock>
-        <Gutters disablePadding>
+        <Gutters disablePadding={true}>
           <SectionTitle>{sections.functionality.title}</SectionTitle>
 
           <SectionWrapper>
             {sections.functionality.cells.map((cell, idx) =>
               cell ? (
                 <SectionItem key={idx}>
-                  <Gutters disablePadding alignItems="center" paddingBottom={gutters(1)}>
+                  <Gutters disablePadding={true} alignItems="center" paddingBottom={gutters(1)}>
                     {renderCellIcon(cell.icon)}
                   </Gutters>
 
@@ -107,9 +105,9 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
                   </Caption>
 
                   {cell?.bullets?.map((bullet, idx) => (
-                    <Gutters key={idx} disablePadding paddingLeft={gutters(1.2)}>
+                    <Gutters key={idx} disablePadding={true} paddingLeft={gutters(1.2)}>
                       <Gutters
-                        disablePadding
+                        disablePadding={true}
                         position="relative"
                         flexDirection="row"
                         alignItems="start"
@@ -127,7 +125,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
                   ))}
 
                   {cell.description && (
-                    <Gutters disableGap disablePadding>
+                    <Gutters disableGap={true} disablePadding={true}>
                       <Caption sx={{ textAlign: 'center' }}>
                         {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server and use Trans! */}
                         <span dangerouslySetInnerHTML={{ __html: cell.description }} />
@@ -142,13 +140,13 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
       </PageContentBlock>
 
       <PageContentBlock>
-        <Gutters disablePadding>
+        <Gutters disablePadding={true}>
           <SectionTitle>{sections.aiEngine.title}</SectionTitle>
 
           <SectionWrapper>
             {sections.aiEngine.cells.map((cell, idx) => (
               <SectionItem key={idx}>
-                <Gutters disablePadding alignItems="center" paddingBottom={gutters(1)}>
+                <Gutters disablePadding={true} alignItems="center" paddingBottom={gutters(1)}>
                   {renderCellIcon(cell.icon)}
                 </Gutters>
 
@@ -157,13 +155,13 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
                 </Caption>
 
                 {cell.description && (
-                  <Gutters disableGap disablePadding>
+                  <Gutters disableGap={true} disablePadding={true}>
                     <Caption sx={{ textAlign: 'center' }}>{cell.description}</Caption>
                   </Gutters>
                 )}
 
                 <Gutters
-                  disablePadding
+                  disablePadding={true}
                   flexDirection="row"
                   alignItems="center"
                   justifyContent="center"
@@ -190,7 +188,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
       <PageContentBlock>
         <SectionTitle>{sections.monitoring.title}</SectionTitle>
 
-        <Gutters disableGap disablePadding>
+        <Gutters disableGap={true} disablePadding={true}>
           <Caption>
             {/* dangerouslySetInnerHTML is used temporarily because we're using hard-coded values. REMOVE when data is fetched from server and use Trans! */}
             <span dangerouslySetInnerHTML={{ __html: sections.monitoring.description }} />
@@ -222,7 +220,7 @@ function SectionTitle({ children }) {
 
 function SectionWrapper({ children }: PropsWithChildren<{}>) {
   return (
-    <Gutters disablePadding sx={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+    <Gutters disablePadding={true} sx={{ flexDirection: 'row', flexWrap: 'wrap' }}>
       {children}
     </Gutters>
   );
@@ -231,7 +229,7 @@ function SectionWrapper({ children }: PropsWithChildren<{}>) {
 function SectionItem({ children }: PropsWithChildren<{}>) {
   return (
     <Gutters
-      disableGap
+      disableGap={true}
       sx={theme => ({
         flex: '1 1 270px',
         borderRadius: 1,

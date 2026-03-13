@@ -1,17 +1,17 @@
-import Loading from '@/core/ui/loading/Loading';
+import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Error404 } from '@/core/pages/Errors/Error404';
+import Loading from '@/core/ui/loading/Loading';
+import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
 import { useUserProvider } from '../hooks/useUserProvider';
-import UserProfilePageView from './UserProfilePageView';
+import useUserRouteContext from '../routing/useUserRouteContext';
 import useUserContributions from '../userContributions/useUserContributions';
 import useUserOrganizationIds from '../userContributions/useUserOrganizationIds';
-import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
-import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
-import useUserRouteContext from '../routing/useUserRouteContext';
+import UserProfilePageView from './UserProfilePageView';
 
 export const UserProfilePage = () => {
   const { userId, loading: routeLoading } = useUserRouteContext();
 
-  const { userModel: userModel, loading } = useUserProvider(userId);
+  const { userModel, loading } = useUserProvider(userId);
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: { userId: userId! },

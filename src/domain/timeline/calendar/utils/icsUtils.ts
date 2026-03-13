@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import type dayjs from 'dayjs';
 
 /**
  * Folds a content line per RFC 5545 §3.1.

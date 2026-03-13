@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import 'react-i18next';
-import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 import { env } from '@/main/env';
 // Eagerly import default English translation to bundle it with main chunk
 import translationEN from './en/translation.en.json';
@@ -39,8 +39,7 @@ const loadTranslation = async (lng: string) => {
         // Return eagerly loaded English translation
         return translationEN;
     }
-  } catch (error) {
-    console.error(`Failed to load translation for language: ${lng}`, error);
+  } catch (_error) {
     // Fallback to English
     return translationEN;
   }

@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import Loading from '@/core/ui/loading/Loading';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
+import Loading from '@/core/ui/loading/Loading';
 
 const LogoutPage = () => {
   const { t } = useTranslation();
