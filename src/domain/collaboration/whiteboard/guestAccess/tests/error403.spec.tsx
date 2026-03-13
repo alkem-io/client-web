@@ -43,7 +43,7 @@ const buildCurrentUserMock = (): MockedResponse => ({
           settings: {
             __typename: 'UserSettings',
             id: 'user-current-settings',
-            homeSpace: { __typename: 'UserSettingsHomeSpace', spaceID: undefined, autoRedirect: false },
+            homeSpace: { __typename: 'UserSettingsHomeSpace', spaceID: null, autoRedirect: false },
           },
           account: {
             __typename: 'Account',

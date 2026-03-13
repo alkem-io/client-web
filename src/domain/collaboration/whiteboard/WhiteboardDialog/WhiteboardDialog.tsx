@@ -89,6 +89,8 @@ interface WhiteboardDialogProps {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
+    /** Forces read-only mode on the Excalidraw canvas, overriding the server-sent collaborator mode. */
+    forceReadOnly?: boolean;
     headerActions?: (state: CollabState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
@@ -289,7 +291,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     <>
       <CollaborativeExcalidrawWrapper
         entities={{ whiteboard, filesManager, lastSuccessfulSavedDate }}
-        canEdit={editModeEnabled}
+        forceReadOnly={options.forceReadOnly}
         collabApiRef={collabApiRef}
         options={{
           UIOptions: {

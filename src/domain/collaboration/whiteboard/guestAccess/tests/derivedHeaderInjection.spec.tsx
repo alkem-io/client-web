@@ -51,7 +51,7 @@ const buildCurrentUserMock = ({
           },
           settings: {
             id: `${id}-settings`,
-            homeSpace: { spaceID: undefined, autoRedirect: false, __typename: 'UserSettingsHomeSpace' },
+            homeSpace: { spaceID: null, autoRedirect: false, __typename: 'UserSettingsHomeSpace' },
             __typename: 'UserSettings',
           },
           account: {

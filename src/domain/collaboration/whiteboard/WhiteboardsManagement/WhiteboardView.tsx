@@ -1,4 +1,5 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import { useSpace } from '@/domain/space/context/useSpace';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
@@ -75,10 +76,11 @@ const WhiteboardView = ({
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
   // When guest contributions are allowed, the public-access credential rule grants
   // UpdateContent to all logged-in users (GLOBAL_REGISTERED). On the space view,
-  // non-members should not get edit access from this rule alone — require Update
-  // privilege (which indicates actual membership) as an additional gate.
-  const canEditContent =
-    whiteboard?.guestContributionsAllowed && !hasUpdatePrivileges ? false : hasUpdateContentPrivileges;
+  // non-members should not get edit access from this rule — force read-only by
+  // overriding the server-sent collaborator mode.
+  const { space } = useSpace();
+  const isMember = space.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
+  const forceReadOnly = !!whiteboard?.guestContributionsAllowed && !isMember;
   const hasDeletePrivileges =
     !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
   const hasPublicSharePrivilege =
@@ -119,7 +121,8 @@ const WhiteboardView = ({
             onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
           }}
           options={{
-            canEdit: canEditContent,
+            canEdit: hasUpdateContentPrivileges,
+            forceReadOnly,
             canDelete: hasDeletePrivileges,
             show: Boolean(whiteboardId),
             dialogTitle: displayName,

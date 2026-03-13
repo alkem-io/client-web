@@ -83,8 +83,8 @@ export interface WhiteboardWhiteboardProps {
   options: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
   events?: WhiteboardWhiteboardEvents;
-  /** When false, forces view-only mode regardless of server-sent collaborator mode. */
-  canEdit?: boolean;
+  /** When true, forces view-only mode regardless of server-sent collaborator mode. */
+  forceReadOnly?: boolean;
   collabApiRef?: Ref<CollabAPI | null>;
   children: (props: PropsWithChildren<CollaborativeExcalidrawWrapperProvided>) => React.ReactNode;
 }
@@ -97,7 +97,7 @@ const CollaborativeExcalidrawWrapper = ({
   entities,
   actions,
   options,
-  canEdit,
+  forceReadOnly,
   collabApiRef,
   children: renderChildren,
 }: WhiteboardWhiteboardProps) => {
@@ -289,7 +289,7 @@ const CollaborativeExcalidrawWrapper = ({
             initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
-            viewModeEnabled={isReadOnly || canEdit === false}
+            viewModeEnabled={isReadOnly || !!forceReadOnly}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
             onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
