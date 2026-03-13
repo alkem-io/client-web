@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react';
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
-import { useUsersModelFullQuery } from '@/core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash-es';
-import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import { useCallback, useMemo } from 'react';
+import { useUsersModelFullQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 
 export const useAuthorsDetails = (authorIds: string[]) => {
   const uniqIds = uniq(authorIds).sort();

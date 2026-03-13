@@ -25,25 +25,18 @@ export function register(config?: Config): void {
         .register(swUrl, { scope: '/' })
         .then(registration => {
           if (navigator.serviceWorker.controller) {
-            console.info('[SW] Updated ');
-
-            if (config && config.onUpdate) {
+            if (config?.onUpdate) {
               config.onUpdate(registration);
             }
           } else {
-            console.info('[SW] Registered');
-
-            if (config && config.onSuccess) {
+            if (config?.onSuccess) {
               config.onSuccess(registration);
             }
           }
         })
-        .catch(() => {
-          console.info('[SW] App is running in offline mode.');
-        });
+        .catch(() => {});
     });
   } else {
-    console.warn('[SW] Service workers are not supported. ', 'serviceWorker' in navigator);
   }
 }
 
@@ -53,9 +46,7 @@ export function unregister(): void {
       .then(registration => {
         registration.unregister();
       })
-      .catch(error => {
-        console.error(error.message);
-      });
+      .catch(_error => {});
   }
 }
 
@@ -87,7 +78,6 @@ export function cleanupVersionUpdateListeners() {
 // sends the current client version to the service worker
 export function syncClientVersion(version: string) {
   if (!('serviceWorker' in navigator)) {
-    console.warn('[SW] Service workers are not supported.');
     return;
   }
 
@@ -108,9 +98,8 @@ export function syncClientVersion(version: string) {
     }, VERSION_CHECK_INTERVAL);
   }
 
-  function sendClientVersion(worker: ServiceWorker | null, context: string) {
+  function sendClientVersion(worker: ServiceWorker | null, _context: string) {
     if (!worker) {
-      console.warn(`[SW] No worker available during ${context}`);
       return;
     }
 

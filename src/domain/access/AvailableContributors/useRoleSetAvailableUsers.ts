@@ -1,8 +1,8 @@
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { AvailableUsersResponse } from './common';
 import useRoleSetAvailableUsersOnPlatform from './useRoleSetAvailableUsersOnPlatform';
 import useRoleSetAvailableUsersOnRoleSet from './useRoleSetAvailableUsersOnRoleSet';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { AvailableUsersResponse } from './common';
 
 type AvailableUsersForRoleSearchParams = {
   skip?: boolean;

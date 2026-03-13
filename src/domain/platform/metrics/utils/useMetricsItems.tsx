@@ -1,8 +1,8 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MetricType } from '../MetricType';
-import getMetricCount, { Metric } from './getMetricCount';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type { MetricType } from '../MetricType';
+import getMetricCount, { type Metric } from './getMetricCount';
 
 export interface MetricItem {
   name: ReactNode;

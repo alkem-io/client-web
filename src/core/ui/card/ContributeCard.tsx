@@ -1,11 +1,11 @@
-import { MouseEventHandler, PropsWithChildren } from 'react';
-import { Paper, SxProps } from '@mui/material';
-import { Theme } from '@mui/material/styles';
+import { Paper, type SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import type { MouseEventHandler, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
+import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
-import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
-import { useTranslation } from 'react-i18next';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 

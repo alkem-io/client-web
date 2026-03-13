@@ -1,27 +1,27 @@
+import { DragDropContext, Draggable, Droppable, type OnDragEndResponder } from '@hello-pangea/dnd';
+import { EditOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, DialogContent, IconButton, type IconButtonProps, styled } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import i18n from '@/core/i18n/config';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
-import { EditOutlined } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
-import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
-import { gutters } from '@/core/ui/grid/utils';
-import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
-import InnovationFlowStateForm, { InnovationFlowStateFormValues } from './InnovationFlowStateForm';
-import InnovationFlowStateMenu from './InnovationFlowStateMenu';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import SetDefaultTemplateDialog from '../InnovationFlowDialogs/SetDefaultTemplateDialog';
+import type { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
+import InnovationFlowStateForm, { type InnovationFlowStateFormValues } from './InnovationFlowStateForm';
+import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -177,7 +177,7 @@ const InnovationFlowDragNDropEditor = ({
                           <PageContentBlockHeader
                             title={
                               <Caption
-                                noWrap
+                                noWrap={true}
                                 sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
                                 {...parentProvider.dragHandleProps}
                               >
@@ -203,7 +203,7 @@ const InnovationFlowDragNDropEditor = ({
                           {state.description?.trim() &&
                             (croppedDescriptions ? (
                               <CroppedMarkdown
-                                automaticOverflowDetector
+                                automaticOverflowDetector={true}
                                 backgroundColor="paper"
                                 maxHeightGutters={3}
                                 minHeightGutters={1}
@@ -211,7 +211,7 @@ const InnovationFlowDragNDropEditor = ({
                                 {state.description}
                               </CroppedMarkdown>
                             ) : (
-                              <WrapperMarkdown card>{state.description}</WrapperMarkdown>
+                              <WrapperMarkdown card={true}>{state.description}</WrapperMarkdown>
                             ))}
                           {children?.(state)}
                         </PageContentBlock>

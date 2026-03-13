@@ -1,11 +1,11 @@
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { useUpdateWhiteboardPreviewSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { WhiteboardPreviewMode, type WhiteboardPreviewSettings } from '@/core/apollo/generated/graphql-schema';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
-import { WhiteboardPreviewMode, WhiteboardPreviewSettings } from '@/core/apollo/generated/graphql-schema';
-import { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { Identifiable } from '@/core/utils/Identifiable';
-import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 interface useUpdateWhiteboardPreviewSettingsProps {
   whiteboard:

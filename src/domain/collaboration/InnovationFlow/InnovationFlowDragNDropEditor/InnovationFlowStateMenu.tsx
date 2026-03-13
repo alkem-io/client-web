@@ -1,8 +1,7 @@
-import React from 'react';
+import { AddCircleOutline, DeleteOutlined, EditOutlined, StickyNote2Outlined, ToggleOn } from '@mui/icons-material';
+import { Box, Divider, ListItemIcon, Tooltip } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import { Divider, ListItemIcon, Tooltip, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AddCircleOutline, StickyNote2Outlined, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 
 type InnovationFlowStateMenuProps = {
@@ -43,7 +42,7 @@ export default function InnovationFlowStateMenu({
         return (
           <Box>
             {isCurrentState ? (
-              <MenuItem disabled>
+              <MenuItem disabled={true}>
                 <ListItemIcon>
                   <ToggleOn fontSize="small" color="primary" />
                 </ListItemIcon>

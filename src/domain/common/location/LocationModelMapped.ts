@@ -1,4 +1,4 @@
-import { CountryType } from './countries.constants';
+import type { CountryType } from './countries.constants';
 
 export interface LocationModelMapped {
   id: string;

@@ -1,19 +1,19 @@
-import { PARAM_NAME_RETURN_URL } from '@/core/auth/authentication/constants/authentication.constants';
-import { useQueryParams } from '@/core/routing/useQueryParams';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { PARAM_NAME_RETURN_URL } from '@/core/auth/authentication/constants/authentication.constants';
+import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { gutters } from '@/core/ui/grid/utils';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
-import PageContent from '@/core/ui/content/PageContent';
-import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
-import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 
 export const AuthRequiredPage = () => {
   const returnUrl = useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '@/core/pages/Errors/Error404';
@@ -9,7 +8,7 @@ export const SpacesRoute = () => {
 
   return (
     <Routes>
-      <Route index element={<AdminSpacesPage />} />
+      <Route index={true} element={<AdminSpacesPage />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

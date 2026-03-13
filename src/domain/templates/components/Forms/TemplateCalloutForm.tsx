@@ -1,18 +1,18 @@
+import { useMemo } from 'react';
 import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import CalloutForm from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
 import { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm.validation.schema';
-import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
+import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 import { DefaultCalloutSettings } from '@/domain/collaboration/callout/models/CalloutSettingsModel';
 import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '@/domain/collaboration/callout/models/mappings';
-import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { useMemo } from 'react';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
+import type { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { TemplateFormProps } from './TemplateForm';
-import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { TemplateFormProps } from './TemplateForm';
+import TemplateFormBase, { type TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 
 interface TemplateContentCallout extends CalloutFormSubmittedValues {}
 
@@ -113,26 +113,24 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
         Other template types don't work like this.
         */
         return (
-          <>
-            <CalloutForm
-              callout={values.callout}
-              calloutRestrictions={{
-                readOnlyAllowedTypes: !createMode,
-                temporaryLocation: createMode,
-                readOnlyContributions: true,
-                disableWhiteboards: !createMode,
-                disableMemos: !createMode,
-                disableLinks: !createMode,
-                disableMediaGallery: !createMode,
-              }}
-              onChange={calloutFormValues => {
-                setFieldValue('callout', calloutFormValues);
-              }}
-              edit
-              template
-              containerProps={{ disablePadding: true }}
-            />
-          </>
+          <CalloutForm
+            callout={values.callout}
+            calloutRestrictions={{
+              readOnlyAllowedTypes: !createMode,
+              temporaryLocation: createMode,
+              readOnlyContributions: true,
+              disableWhiteboards: !createMode,
+              disableMemos: !createMode,
+              disableLinks: !createMode,
+              disableMediaGallery: !createMode,
+            }}
+            onChange={calloutFormValues => {
+              setFieldValue('callout', calloutFormValues);
+            }}
+            edit={true}
+            template={true}
+            containerProps={{ disablePadding: true }}
+          />
         );
       }}
     </TemplateFormBase>

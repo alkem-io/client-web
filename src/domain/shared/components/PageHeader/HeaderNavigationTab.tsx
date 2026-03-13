@@ -1,11 +1,10 @@
-import { Tab, TabProps } from '@mui/material';
-import React from 'react';
+import { Tab, type TabProps } from '@mui/material';
+import type { TabTypeMap } from '@mui/material/Tab/Tab';
+import type React from 'react';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { TabTypeMap } from '@mui/material/Tab/Tab';
 
 interface HeaderNavigationTabProps {
   to: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref?: React.Ref<any>;
 }
 

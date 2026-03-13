@@ -1,5 +1,5 @@
-import { Plugin } from 'unified';
-import { Literal, Node, Parent } from 'unist';
+import type { Plugin } from 'unified';
+import type { Literal, Node, Parent } from 'unist';
 import { paragraph, root, text } from './utils/unist-builders';
 
 type HandledNode = Parent | Literal;

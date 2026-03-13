@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
@@ -36,7 +36,7 @@ export const NameSegment: FC<NameSegmentProps> = ({
       <FormikInputField
         name={nameFieldName}
         title={t('components.nameSegment.name')}
-        required
+        required={true}
         helpIconText={nameHelpText}
         loading={loading}
       />

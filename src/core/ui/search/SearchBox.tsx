@@ -1,16 +1,25 @@
-import React, { ReactElement, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import { Box, BoxProps, ClickAwayListener, Collapse, Divider, InputBase, InputBaseProps } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import { gutters } from '../grid/utils';
-import { BlockSectionTitle } from '../typography';
-import NavigationItemContainer from '../navigation/NavigationItemContainer';
-import NavigationItemButton from '../navigation/NavigationItemButton';
+import {
+  Box,
+  type BoxProps,
+  ClickAwayListener,
+  Collapse,
+  Divider,
+  InputBase,
+  type InputBaseProps,
+} from '@mui/material';
+import type React from 'react';
+import { type ReactElement, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
-import { Collapsible } from '../navigation/Collapsible';
-import SeamlessSelect, { CustomSelectOption } from '../forms/select/SeamlessSelect';
-import { ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
-import { ROLE_OPTION_ALL } from '@/main/topLevelPages/myDashboard/latestContributions/LatestContributionsProps';
+import type { ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
+import type { ROLE_OPTION_ALL } from '@/main/topLevelPages/myDashboard/latestContributions/LatestContributionsProps';
+import SeamlessSelect, { type CustomSelectOption } from '../forms/select/SeamlessSelect';
+import { gutters } from '../grid/utils';
+import type { Collapsible } from '../navigation/Collapsible';
+import NavigationItemButton from '../navigation/NavigationItemButton';
+import NavigationItemContainer from '../navigation/NavigationItemContainer';
+import { BlockSectionTitle } from '../typography';
 
 interface SearchBoxProps<Option extends string | number | ActivityFeedRoles | typeof ROLE_OPTION_ALL> {
   searchTerms: string;
@@ -145,7 +154,7 @@ const SearchBox = (<Option extends string | number>({
                 }}
                 onChange={onChange}
                 onKeyUp={handleKeyUp}
-                fullWidth
+                fullWidth={true}
                 inputProps={{
                   'aria-label': t('common.search'),
                 }}

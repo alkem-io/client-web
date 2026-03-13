@@ -1,6 +1,6 @@
-import { FormControlLabel, FormGroup, Switch, SwitchProps } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch, type SwitchProps } from '@mui/material';
 import { useField } from 'formik';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface FormikSwitchProps extends Omit<SwitchProps, 'label'> {
   label: ReactNode;

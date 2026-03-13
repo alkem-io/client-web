@@ -1,15 +1,15 @@
-import { ReactNode, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import Avatar, { AvatarSize } from '../avatar/Avatar';
-import getLocationString, { Location } from '../location/getLocationString';
-import BadgeCardView from '../list/BadgeCardView';
+import { type ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import Avatar, { type AvatarSize } from '../avatar/Avatar';
 import GridItem from '../grid/GridItem';
-import SwapColors from '../palette/SwapColors';
 import RouterLink from '../link/RouterLink';
+import BadgeCardView from '../list/BadgeCardView';
+import getLocationString, { type Location } from '../location/getLocationString';
+import SwapColors from '../palette/SwapColors';
 import { BlockSectionTitle, BlockTitle, Caption } from '../typography';
-import ContributorTooltip from './ContributorTooltip';
 import ActionsMenu from './ActionsMenu';
+import ContributorTooltip from './ContributorTooltip';
 
 export interface ContributorCardHorizontalProps {
   profile:
@@ -53,7 +53,7 @@ const ContributorCardHorizontal = ({
   if (!seamless) {
     return (
       <SwapColors>
-        <ContributorCardHorizontal profile={profile} onContact={onContact} seamless />
+        <ContributorCardHorizontal profile={profile} onContact={onContact} seamless={true} />
       </SwapColors>
     );
   }

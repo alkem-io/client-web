@@ -1,9 +1,9 @@
-import { AriaAttributes, ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
-import RouterLink from '../link/RouterLink';
-import { ListItemIcon, ListItemText, MenuItem, SvgIconProps, TypographyProps } from '@mui/material';
+import { ListItemIcon, ListItemText, MenuItem, type SvgIconProps, type TypographyProps } from '@mui/material';
+import type { AriaAttributes, ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
 import { gutters } from '../grid/utils';
-import { BlockSectionTitle } from '../typography';
 import visibleOnFocus from '../keyboardNavigation/visibleOnFocus';
+import RouterLink from '../link/RouterLink';
+import { BlockSectionTitle } from '../typography';
 
 type NavigatableMenuItemProps = {
   iconComponent: ComponentType<SvgIconProps>;
@@ -41,7 +41,7 @@ const NavigatableMenuItem = ({
       <ListItemIcon>
         <Icon fontSize="small" color="primary" />
       </ListItemIcon>
-      <ListItemText disableTypography>
+      <ListItemText disableTypography={true}>
         <Typography>{children}</Typography>
       </ListItemText>
     </MenuItem>

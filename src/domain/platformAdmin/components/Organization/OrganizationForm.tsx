@@ -1,45 +1,48 @@
+import { Button } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { type FC, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import {
-  CreateOrganizationInput,
+  type CreateOrganizationInput,
   OrganizationVerificationEnum,
-  UpdateOrganizationInput,
+  type UpdateOrganizationInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { EditMode } from '@/core/ui/forms/editMode';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { nameOf } from '@/core/utils/nameOf';
 import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import { Button } from '@mui/material';
-import { Form, Formik } from 'formik';
-import { FC, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
+import { EmptyProfileModel, type ProfileModelFull } from '@/domain/common/profile/ProfileModel';
+import {
+  mapProfileModelToCreateProfileInput,
+  mapProfileModelToUpdateProfileInput,
+} from '@/domain/common/profile/ProfileModelUtils';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import {
+  EmptyOrganizationModel,
+  type OrganizationModel,
+} from '@/domain/community/organization/model/OrganizationModel';
+import SocialSegment from '@/domain/platformAdmin/components/Common/SocialSegment';
+import { SocialNetworkEnum, socialNames } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationSegment, organizationSegmentSchema } from '../Common/OrganizationSegment';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { ProfileSegment, profileSegmentSchemaWithReferences } from '../Common/ProfileSegment';
 import { TagsetSegment } from '../Common/TagsetSegment';
-import { Actions } from '@/core/ui/actions/Actions';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContent from '@/core/ui/content/PageContent';
-import { gutters } from '@/core/ui/grid/utils';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
-import { EmptyProfileModel, ProfileModelFull } from '@/domain/common/profile/ProfileModel';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import {
-  mapProfileModelToCreateProfileInput,
-  mapProfileModelToUpdateProfileInput,
-} from '@/domain/common/profile/ProfileModelUtils';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import SocialSegment from '@/domain/platformAdmin/components/Common/SocialSegment';
-import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { nameOf } from '@/core/utils/nameOf';
-import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
-import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -204,87 +207,85 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
     const displayName = currentOrganization.profile.displayName || '';
     const visual = getVisualByType(VisualType.Avatar, currentOrganization.profile.visuals);
     return (
-      <>
-        <PageContent sx={{ backgroundColor: 'transparent' }} gridContainerProps={{ gap: gutters(2) }}>
-          <PageContentColumn columns={isCreateMode ? 12 : 4} justifyContent="end">
-            <VisualUpload
-              visual={visual}
-              altText={t('visuals-alt-text.avatar.contributor.text', {
-                displayName,
-                altText: visual?.alternativeText,
-              })}
-            />
-          </PageContentColumn>
-          <PageContentColumn columns={isCreateMode ? 12 : 6} justifyContent={isCreateMode ? 'center' : 'start'}>
-            <Formik
-              key={currentOrganization.id ?? 'new'}
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={async (values, { setSubmitting }) => {
-                try {
-                  await handleSubmit(values);
-                } finally {
-                  setSubmitting(false);
-                }
-              }}
-            >
-              {({ values: { profile }, handleSubmit, isSubmitting }) => {
-                return (
-                  <Form noValidate onSubmit={handleSubmit}>
-                    <Gutters disablePadding sx={{ width: '100%' }}>
-                      <PageContentBlockHeader title={t('common.organization')} />
-                      <NameSegment
-                        disabled={isEditMode}
-                        required={!isEditMode}
-                        nameFieldName="profile.displayName"
-                        nameIdFieldName="nameID"
-                      />
-                      {!isCreateMode && (
-                        <>
-                          <ProfileSegment disabled={isReadOnlyMode} />
-                          <OrganizationSegment disabled={isReadOnlyMode} />
-                          <LocationSegment
-                            disabled={isReadOnlyMode}
-                            cityFieldName="profile.location.city"
-                            countryFieldName="profile.location.country"
-                          />
-                          <TagsetSegment
-                            name={nameOf<OrganizationFormValues>('profile.tagsets')}
-                            readOnly={isReadOnlyMode}
+      <PageContent sx={{ backgroundColor: 'transparent' }} gridContainerProps={{ gap: gutters(2) }}>
+        <PageContentColumn columns={isCreateMode ? 12 : 4} justifyContent="end">
+          <VisualUpload
+            visual={visual}
+            altText={t('visuals-alt-text.avatar.contributor.text', {
+              displayName,
+              altText: visual?.alternativeText,
+            })}
+          />
+        </PageContentColumn>
+        <PageContentColumn columns={isCreateMode ? 12 : 6} justifyContent={isCreateMode ? 'center' : 'start'}>
+          <Formik
+            key={currentOrganization.id ?? 'new'}
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                await handleSubmit(values);
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {({ values: { profile }, handleSubmit, isSubmitting }) => {
+              return (
+                <Form noValidate={true} onSubmit={handleSubmit}>
+                  <Gutters disablePadding={true} sx={{ width: '100%' }}>
+                    <PageContentBlockHeader title={t('common.organization')} />
+                    <NameSegment
+                      disabled={isEditMode}
+                      required={!isEditMode}
+                      nameFieldName="profile.displayName"
+                      nameIdFieldName="nameID"
+                    />
+                    {!isCreateMode && (
+                      <>
+                        <ProfileSegment disabled={isReadOnlyMode} />
+                        <OrganizationSegment disabled={isReadOnlyMode} />
+                        <LocationSegment
+                          disabled={isReadOnlyMode}
+                          cityFieldName="profile.location.city"
+                          countryFieldName="profile.location.country"
+                        />
+                        <TagsetSegment
+                          name={nameOf<OrganizationFormValues>('profile.tagsets')}
+                          readOnly={isReadOnlyMode}
+                          disabled={isSubmitting}
+                        />
+                        <SocialSegment
+                          readOnly={isReadOnlyMode}
+                          fieldNames={{ email: 'contactEmail' }}
+                          disabled={isSubmitting}
+                        />
+                        {isEditMode && (
+                          <ProfileReferenceSegment
                             disabled={isSubmitting}
-                          />
-                          <SocialSegment
+                            fieldName="profile.references"
+                            references={profile.references ?? []}
                             readOnly={isReadOnlyMode}
-                            fieldNames={{ email: 'contactEmail' }}
-                            disabled={isSubmitting}
+                            profileId={profile.id}
                           />
-                          {isEditMode && (
-                            <ProfileReferenceSegment
-                              disabled={isSubmitting}
-                              fieldName="profile.references"
-                              references={profile.references ?? []}
-                              readOnly={isReadOnlyMode}
-                              profileId={profile.id}
-                            />
-                          )}
-                        </>
-                      )}
-                      {!isReadOnlyMode && (
-                        <Actions justifyContent="end">
-                          {!isSubmitting && backButton}
-                          <Button variant="contained" type="submit" loading={isSubmitting}>
-                            {t('buttons.save')}
-                          </Button>
-                        </Actions>
-                      )}
-                    </Gutters>
-                  </Form>
-                );
-              }}
-            </Formik>
-          </PageContentColumn>
-        </PageContent>
-      </>
+                        )}
+                      </>
+                    )}
+                    {!isReadOnlyMode && (
+                      <Actions justifyContent="end">
+                        {!isSubmitting && backButton}
+                        <Button variant="contained" type="submit" loading={isSubmitting}>
+                          {t('buttons.save')}
+                        </Button>
+                      </Actions>
+                    )}
+                  </Gutters>
+                </Form>
+              );
+            }}
+          </Formik>
+        </PageContentColumn>
+      </PageContent>
     );
   }
 };

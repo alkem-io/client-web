@@ -1,17 +1,17 @@
-import { useContext, Suspense } from 'react';
-import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
-import { nameOfUrl } from '@/main/routing/urlParams';
-import Redirect from '@/core/routing/Redirect';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import SubspaceContextProvider from '../context/SubspaceContext';
-import { SpaceContext, SpaceContextProvider } from '../context/SpaceContext';
-import { SpacePageLayout } from '../layout/SpacePageLayout';
-import Loading from '@/core/ui/loading/Loading';
-import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
-import { useSectionIndex } from '../layout/useSectionIndex';
-import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
+import { Suspense, useContext } from 'react';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Redirect from '@/core/routing/Redirect';
+import Loading from '@/core/ui/loading/Loading';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
+import { nameOfUrl } from '@/main/routing/urlParams';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { SpaceContext, SpaceContextProvider } from '../context/SpaceContext';
+import SubspaceContextProvider from '../context/SubspaceContext';
+import { SpacePageLayout } from '../layout/SpacePageLayout';
+import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
+import { useSectionIndex } from '../layout/useSectionIndex';
 
 // Lazy load page components to reduce initial bundle size
 const SpaceDashboardPage = lazyWithGlobalErrorHandler(
@@ -37,25 +37,25 @@ const LegacyRoutesRedirects = () => {
     <Routes>
       <Route
         path={EntityPageSection.Dashboard}
-        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
+        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace={true} />}
       />
       path={EntityPageSection.Community}
-      <Route element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=2`} replace />} />
+      <Route element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=2`} replace={true} />} />
       <Route
         path={EntityPageSection.Subspaces}
-        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=3`} replace />}
+        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=3`} replace={true} />}
       />
       <Route
         path={EntityPageSection.KnowledgeBase}
-        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=4`} replace />}
+        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=4`} replace={true} />}
       />
       <Route
         path={EntityPageSection.Custom}
-        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=5`} replace />}
+        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=5`} replace={true} />}
       />
       <Route
         path={EntityPageSection.Contribute}
-        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace />}
+        element={<Navigate to={`/${spaceNameId}/?${TabbedLayoutParams.Section}=1`} replace={true} />}
       />
       <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
     </Routes>
@@ -71,7 +71,7 @@ const SpaceProtectedRoutes = () => {
   }
 
   if (!permissions.canRead) {
-    return <Navigate to={`../${EntityPageSection.About}`} replace />;
+    return <Navigate to={`../${EntityPageSection.About}`} replace={true} />;
   }
 
   return <Outlet />;
@@ -84,7 +84,7 @@ export const SpaceTabbedPages = () => {
   const { tabs } = useSpaceTabs({ spaceId, skip: !spaceId });
 
   // Convert sectionIndex to number for comparison
-  const currentSectionNumber = parseInt(sectionIndex);
+  const currentSectionNumber = parseInt(sectionIndex, 10);
   const totalTabs = tabs.length;
 
   return (
@@ -115,7 +115,7 @@ const SpaceRoutes = () => {
           />
 
           <Route element={<SpaceProtectedRoutes />}>
-            <Route index element={<SpaceTabbedPages />} />
+            <Route index={true} element={<SpaceTabbedPages />} />
 
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}

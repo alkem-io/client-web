@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useApm } from '@/core/analytics/apm/context/useApm';
-import { info as logInfo } from '@/core/logging/sentry/log';
-import { TagCategoryValues } from '@/core/logging/sentry/log';
+import { info as logInfo, TagCategoryValues } from '@/core/logging/sentry/log';
 
 /**
  * Analytics hook for guest whiteboard interactions

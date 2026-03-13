@@ -1,5 +1,5 @@
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { NotificationFilterType } from './notificationFilters';
 
 const NOTIFICATION_FILTER_STORAGE_KEY = 'alkemio.notifications.filter';
@@ -33,9 +33,7 @@ export const InAppNotificationsProvider = ({ children }: { children: ReactNode }
       if (stored && Object.values(NotificationFilterType).includes(stored as NotificationFilterType)) {
         return stored as NotificationFilterType;
       }
-    } catch (error) {
-      console.error('Failed to read notification filter from localStorage:', error);
-    }
+    } catch (_error) {}
     return NotificationFilterType.All;
   });
 
@@ -43,9 +41,7 @@ export const InAppNotificationsProvider = ({ children }: { children: ReactNode }
   useEffect(() => {
     try {
       localStorage.setItem(NOTIFICATION_FILTER_STORAGE_KEY, selectedFilter);
-    } catch (error) {
-      console.error('Failed to save notification filter to localStorage:', error);
-    }
+    } catch (_error) {}
   }, [selectedFilter]);
 
   // let's keep that logic in case we want to enable/disable the feature in the future

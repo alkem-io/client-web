@@ -1,5 +1,5 @@
-import { AdminSearchableTableItem } from '@/domain/platformAdmin/components/AdminSearchableTable';
-import { SearchVisibility, SpacePrivacyMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { SearchVisibility, SpacePrivacyMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { AdminSearchableTableItem } from '@/domain/platformAdmin/components/AdminSearchableTable';
 
 export interface InnovationPackTableItem extends AdminSearchableTableItem {
   listedInStore: boolean;

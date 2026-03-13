@@ -1,9 +1,9 @@
 import {
-  useUpdateWhiteboardContentUpdatePolicyMutation,
   useContentUpdatePolicyQuery,
   useUpdateMemoContentUpdatePolicyMutation,
+  useUpdateWhiteboardContentUpdatePolicyMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import type { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 
 type WhiteboardContentUpdatePolicyProviderProps = {

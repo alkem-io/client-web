@@ -1,18 +1,18 @@
-import { WhiteboardIcon } from '../icon/WhiteboardIcon';
+import { Box, type BoxProps, Button, type ButtonProps, styled } from '@mui/material';
+import type { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MouseEventHandler } from 'react';
-import { Box, BoxProps, Button, ButtonProps, styled } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
-import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
 import {
-  previewContainerStyles,
-  previewButtonStyles,
   chipButtonPositionStyles,
+  previewButtonStyles,
   previewContainerBottomGradientStyles,
+  previewContainerStyles,
 } from '../../common/PreviewStyles';
+import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
+import { WhiteboardIcon } from '../icon/WhiteboardIcon';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
 
 type WhiteboardPreviewProps = {
   displayName?: string;

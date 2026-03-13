@@ -1,5 +1,5 @@
-import { Link, LinkProps } from '@mui/material';
-import React from 'react';
+import { Link, type LinkProps } from '@mui/material';
+import type React from 'react';
 
 const LinkButton = ({ onClick, ...props }: LinkProps) => {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {

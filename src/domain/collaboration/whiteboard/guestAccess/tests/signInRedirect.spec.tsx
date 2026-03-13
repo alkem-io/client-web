@@ -4,9 +4,10 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@/main/test/testUtils';
+
 import userEvent from '@testing-library/user-event';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
 import JoinWhiteboardDialog from '@/main/public/whiteboard/JoinWhiteboardDialog';
@@ -39,7 +40,7 @@ describe('Sign-in Redirect Flow', () => {
     return render(
       <MemoryRouter initialEntries={[pathname]}>
         <GuestSessionProvider>
-          <JoinWhiteboardDialog open onSubmit={mockOnSubmit} />
+          <JoinWhiteboardDialog open={true} onSubmit={mockOnSubmit} />
         </GuestSessionProvider>
       </MemoryRouter>
     );

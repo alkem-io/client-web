@@ -1,16 +1,16 @@
+import { IconButton, Menu, MenuItem, ListItemIcon as MUIListItemIcon, styled, Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { IconButton, ListItemIcon as MUIListItemIcon, Menu, MenuItem, Tooltip, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import {
-  GoogleCalendarIcon,
-  OutlookCalendarIcon,
-  ExportCalendarEventIcon,
-  IcsDownloadIcon,
-} from './icons/AddToCalendarIcons';
-import { Identifiable } from '@/core/utils/Identifiable';
 import { useCalendarEventImportUrlsQuery } from '@/core/apollo/generated/apollo-hooks';
-import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import {
+  ExportCalendarEventIcon,
+  GoogleCalendarIcon,
+  IcsDownloadIcon,
+  OutlookCalendarIcon,
+} from './icons/AddToCalendarIcons';
 
 interface AddToCalendarButtonProps {
   event: Identifiable;
@@ -26,7 +26,7 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
 
   const { data, loading } = useCalendarEventImportUrlsQuery({
     variables: { eventId: event.id },
-    skip: !event.id || !Boolean(anchor),
+    skip: !event.id || !anchor,
   });
 
   if (!event.id) {
@@ -40,7 +40,7 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
 
   return (
     <>
-      <Tooltip title={t('calendar.addToCalendar.button')} arrow placement="top">
+      <Tooltip title={t('calendar.addToCalendar.button')} arrow={true} placement="top">
         <IconButton
           aria-label={t('calendar.addToCalendar.button')}
           aria-haspopup="true"
@@ -52,7 +52,7 @@ const AddToCalendarButton = ({ event }: AddToCalendarButtonProps) => {
       </Tooltip>
       <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={handleClose}>
         {loading || !eventData ? (
-          <MenuItem disabled>
+          <MenuItem disabled={true}>
             <Loading />
           </MenuItem>
         ) : (

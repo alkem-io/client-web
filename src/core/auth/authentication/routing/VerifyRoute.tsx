@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useQueryParams } from '@/core/routing/useQueryParams';
+import { _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import EmailVerificationRequiredPage from '../pages/EmailVerificationRequiredPage';
 import VerificationPage from '../pages/VerificationPage';
-import { _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
-import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 
 const RedirectToLogin = () => {
   const { pathname } = useLocation();
@@ -16,7 +16,7 @@ const RedirectToLogin = () => {
     });
   }, []);
 
-  return <Navigate to={_AUTH_LOGIN_PATH} replace />;
+  return <Navigate to={_AUTH_LOGIN_PATH} replace={true} />;
 };
 
 export const VerifyRoute = () => {

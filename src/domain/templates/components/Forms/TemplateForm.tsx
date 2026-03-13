@@ -1,13 +1,13 @@
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
-import TemplateCalloutForm, { TemplateCalloutFormSubmittedValues } from './TemplateCalloutForm';
-import TemplateSpaceForm, { TemplateSpaceFormSubmittedValues } from './TemplateSpaceForm';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import type { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
+import TemplateCalloutForm, { type TemplateCalloutFormSubmittedValues } from './TemplateCalloutForm';
 import TemplateCommunityGuidelinesForm, {
-  TemplateCommunityGuidelinesFormSubmittedValues,
+  type TemplateCommunityGuidelinesFormSubmittedValues,
 } from './TemplateCommunityGuidelinesForm';
-import TemplatePostForm, { TemplatePostFormSubmittedValues } from './TemplatePostForm';
-import TemplateWhiteboardForm, { TemplateWhiteboardFormSubmittedValues } from './TemplateWhiteboardForm';
+import TemplatePostForm, { type TemplatePostFormSubmittedValues } from './TemplatePostForm';
+import TemplateSpaceForm, { type TemplateSpaceFormSubmittedValues } from './TemplateSpaceForm';
+import TemplateWhiteboardForm, { type TemplateWhiteboardFormSubmittedValues } from './TemplateWhiteboardForm';
 
 interface AnyTemplateFormProps extends TemplateFormProps {}
 

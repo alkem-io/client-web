@@ -1,33 +1,33 @@
+import { ForumOutlined } from '@mui/icons-material';
+import { compact } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import useNavigate from '@/core/routing/useNavigate';
-import CategorySelector from '../components/CategorySelector';
-import DiscussionsLayout from '../layout/DiscussionsLayout';
-import { DiscussionListView } from '../views/DiscussionsListView';
-import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import { ForumDiscussionUpdatedDocument, usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Discussion, useDiscussionMapper } from '../models/Discussion';
-import { compact } from 'lodash-es';
 import {
   AuthorizationPrivilege,
-  ForumDiscussionUpdatedSubscription,
-  ForumDiscussionUpdatedSubscriptionVariables,
   ForumDiscussionCategory,
-  PlatformDiscussionsQuery,
+  type ForumDiscussionUpdatedSubscription,
+  type ForumDiscussionUpdatedSubscriptionVariables,
+  type PlatformDiscussionsQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import DiscussionIcon from '../views/DiscussionIcon';
-import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
-import NewDiscussionDialog from '../views/NewDiscussionDialog';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import UseSubscriptionToSubEntity from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
+import useNavigate from '@/core/routing/useNavigate';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import { BlockTitle } from '@/core/ui/typography';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { ForumOutlined } from '@mui/icons-material';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { BlockTitle } from '@/core/ui/typography';
-import { usePageTitle } from '@/core/routing/usePageTitle';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import CategorySelector from '../components/CategorySelector';
+import { type DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
+import DiscussionsLayout from '../layout/DiscussionsLayout';
+import { type Discussion, useDiscussionMapper } from '../models/Discussion';
+import DiscussionIcon from '../views/DiscussionIcon';
+import { DiscussionListView } from '../views/DiscussionsListView';
+import NewDiscussionDialog from '../views/NewDiscussionDialog';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 
@@ -76,7 +76,7 @@ export const ForumPage = ({
 
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
 
-  // @ts-ignore react-18
+  // @ts-expect-error react-18
   useSubscriptionToForum(data, data => data?.platform.forum, subscribeToMore);
 
   const isPlatformAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
@@ -108,11 +108,11 @@ export const ForumPage = ({
         title: t('common.show-all'),
         icon: <DiscussionIcon category={ALL_CATEGORIES} />,
       },
-      ...validCategories?.map(id => ({
+      ...(validCategories?.map(id => ({
         id: id,
         title: t(`common.enums.discussion-category.${id}` as const),
         icon: <DiscussionIcon category={id} />,
-      })),
+      })) ?? []),
     ],
     [validCategories, t]
   );
@@ -163,7 +163,7 @@ export const ForumPage = ({
             discussions={discussions}
             loading={loading}
             onClickDiscussion={discussion => handleClickDiscussion(discussion.url)}
-            filterEnabled
+            filterEnabled={true}
           />
           {!loading && communicationId && (
             <NewDiscussionDialog

@@ -1,18 +1,18 @@
-import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
-import * as yup from 'yup';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
-import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import { Actions } from '@/core/ui/actions/Actions';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { Formik } from 'formik';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { useEffect, useMemo, useState } from 'react';
-import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Button, OutlinedInput } from '@mui/material';
+import { Formik } from 'formik';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 
 type FormValueType = {
   prompt: string;
@@ -87,32 +87,25 @@ export const PromptConfig = ({ vc }: PromptConfigProps) => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            enableReinitialize
-            validateOnMount
+            enableReinitialize={true}
+            validateOnMount={true}
             onSubmit={() => {}}
           >
-            <>
-              <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
-              <OutlinedInput
-                name="prompt"
-                value={prompt}
-                title={t('pages.virtualContributorProfile.settings.prompt.title')}
-                onChange={e => setPrompt(e.target.value)}
-                multiline
-                minRows={10}
-                maxRows={35}
-              />
-              <Actions>
-                <Button
-                  variant="contained"
-                  loading={loading || updateLoading}
-                  disabled={!isValid}
-                  onClick={handleSubmit}
-                >
-                  {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
-                </Button>
-              </Actions>
-            </>
+            <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
+            <OutlinedInput
+              name="prompt"
+              value={prompt}
+              title={t('pages.virtualContributorProfile.settings.prompt.title')}
+              onChange={e => setPrompt(e.target.value)}
+              multiline={true}
+              minRows={10}
+              maxRows={35}
+            />
+            <Actions>
+              <Button variant="contained" loading={loading || updateLoading} disabled={!isValid} onClick={handleSubmit}>
+                {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
+              </Button>
+            </Actions>
           </Formik>
         </PageContentBlock>
       </PageContentColumn>

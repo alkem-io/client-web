@@ -1,23 +1,23 @@
+import { uniqBy } from 'lodash-es';
 import {
   CalloutContributionType,
   CalloutFramingType,
-  PollResultsDetail,
-  PollResultsVisibility,
-  UpdateLinkInput,
-  VisualType,
+  type PollResultsDetail,
+  type PollResultsVisibility,
+  type UpdateLinkInput,
+  type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
-import { CalloutSettingsModelFull } from './CalloutSettingsModel';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { ProfileModel } from '@/domain/common/profile/ProfileModel';
-import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUtils';
+import type { ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUtils';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { type CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
+import type { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
+import type { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { CalloutRestrictions } from '../CalloutRestrictionsTypes';
+import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
-import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
-import { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { uniqBy } from 'lodash-es';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {

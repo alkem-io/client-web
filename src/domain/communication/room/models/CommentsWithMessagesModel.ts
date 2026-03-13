@@ -1,6 +1,6 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 type ContributorModel = {
   __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';

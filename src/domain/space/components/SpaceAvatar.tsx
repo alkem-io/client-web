@@ -1,8 +1,8 @@
-import { SxProps, Theme } from '@mui/material';
-import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { SxProps, Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import Avatar, { type CustomAvatarProps } from '@/core/ui/avatar/Avatar';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 interface SpaceAvatarProps extends CustomAvatarProps {
   sx?: SxProps<Theme> | undefined;

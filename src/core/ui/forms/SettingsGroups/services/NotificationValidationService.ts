@@ -1,7 +1,7 @@
 import {
-  NotificationOption,
-  NotificationSwitchStates,
-  NotificationValidationRule,
+  type NotificationOption,
+  type NotificationSwitchStates,
+  type NotificationValidationRule,
   NotificationValidationType,
 } from '../types/NotificationTypes';
 
@@ -13,8 +13,8 @@ export class NotificationValidationService {
     const rules = option.validationRules || [];
 
     return {
-      inApp: this.calculateSwitchState(option, 'inApp', rules),
-      email: this.calculateSwitchState(option, 'email', rules),
+      inApp: NotificationValidationService.calculateSwitchState(option, 'inApp', rules),
+      email: NotificationValidationService.calculateSwitchState(option, 'email', rules),
     };
   }
 

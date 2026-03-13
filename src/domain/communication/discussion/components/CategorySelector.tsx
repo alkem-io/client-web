@@ -1,16 +1,16 @@
-import { ReactElement, useMemo } from 'react';
 import {
   alpha,
   Box,
-  styled,
-  Typography,
   List,
   ListItemButton,
   ListItemIcon,
-  ListItemProps,
+  type ListItemProps,
   ListItemText,
+  styled,
+  Typography,
 } from '@mui/material';
-import { DiscussionCategoryExt } from '../constants/DiscusionCategories';
+import { type ReactElement, useMemo } from 'react';
+import type { DiscussionCategoryExt } from '../constants/DiscusionCategories';
 
 export interface CategoryConfig {
   id: DiscussionCategoryExt;
@@ -72,7 +72,7 @@ export const CategorySelector = ({ categories, value, showLabels = true, onSelec
             <ListItemText>
               <Box
                 component={Typography}
-                noWrap
+                noWrap={true}
                 fontWeight="bold"
                 display="flex"
                 sx={{ textTransform: 'uppercase', justifyContent: !icon ? 'center' : 'flex-start' }}
@@ -86,7 +86,7 @@ export const CategorySelector = ({ categories, value, showLabels = true, onSelec
     [showLabels, categories, value, onSelect]
   );
 
-  return <List disablePadding>{items}</List>;
+  return <List disablePadding={true}>{items}</List>;
 };
 
 export default CategorySelector;

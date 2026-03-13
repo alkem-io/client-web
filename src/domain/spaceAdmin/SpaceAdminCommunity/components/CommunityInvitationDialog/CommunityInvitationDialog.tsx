@@ -1,14 +1,14 @@
+import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useCommunityInvitationQuery } from '@/core/apollo/generated/apollo-hooks';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, Text } from '@/core/ui/typography';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { formatDateTime } from '@/core/utils/time/utils';
 import { MembershipType } from '@/domain/access/model/MembershipType';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
-import { Box } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 
 export interface CommunityInvitationDialogProps {
   invitation: Identifiable & { type: MembershipType }; // This dialog handles both normal invitations and platform invitations
@@ -34,7 +34,13 @@ export const CommunityInvitationDialog = ({
   const contributor = data?.lookup.invitation?.actor;
 
   return (
-    <DialogWithGrid open maxWidth="md" fullWidth aria-labelledby="community-invitation-dialog" onClose={onClose}>
+    <DialogWithGrid
+      open={true}
+      maxWidth="md"
+      fullWidth={true}
+      aria-labelledby="community-invitation-dialog"
+      onClose={onClose}
+    >
       <DialogHeader id="community-invitation-dialog" onClose={onClose}>
         {isPlatformInvitation ? (
           data?.lookup.platformInvitation?.email

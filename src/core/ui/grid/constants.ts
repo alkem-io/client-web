@@ -1,5 +1,5 @@
-import { Theme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 export const GUTTER_PX = 20;
 

@@ -1,6 +1,6 @@
 import { Box, Tooltip } from '@mui/material';
-import AuthActionButton, { AuthActionButtonProps } from './Button';
 import { useTranslation } from 'react-i18next';
+import AuthActionButton, { type AuthActionButtonProps } from './Button';
 
 export interface AcceptTermsButtonProps extends AuthActionButtonProps {
   hasAcceptedTerms: boolean;

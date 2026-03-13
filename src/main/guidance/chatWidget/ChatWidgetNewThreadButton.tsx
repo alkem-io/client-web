@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import MarkChatUnreadOutlinedIcon from '@mui/icons-material/MarkChatUnreadOutlined';
 import { Button, styled } from '@mui/material';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption } from '@/core/ui/typography';
-import MarkChatUnreadOutlinedIcon from '@mui/icons-material/MarkChatUnreadOutlined';
 
 const AnimatedButton = styled(Button)(() => ({
   justifyContent: 'flex-start',

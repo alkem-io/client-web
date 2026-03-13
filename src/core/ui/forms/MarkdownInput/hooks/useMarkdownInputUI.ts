@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
 import { useTheme } from '@mui/material';
+import { useCallback, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 
 interface UseMarkdownInputUIProps {

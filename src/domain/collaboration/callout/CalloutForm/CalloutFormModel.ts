@@ -2,16 +2,16 @@ import {
   CalloutAllowedActors,
   CalloutFramingType,
   CalloutVisibility,
-  VisualType,
+  type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
-import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
-import { CalloutStructuredResponseType } from './CalloutForm';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
-import { PollFormValues } from '../../poll/models/PollModels';
+import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
+import type { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
+import type { CalloutStructuredResponseType } from './CalloutForm';
+import type { PollFormValues } from '../../poll/models/PollModels';
 
 export interface CalloutFormSubmittedValues {
   framing: {

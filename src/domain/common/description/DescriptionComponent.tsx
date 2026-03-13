@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import {
+  DescriptionEditDialog,
+  type KnowledgeBaseProfileType,
+} from '@/domain/common/description/DescriptionEditDialog';
 import { DescriptionView } from './DescriptionView';
-import { DescriptionEditDialog, KnowledgeBaseProfileType } from '@/domain/common/description/DescriptionEditDialog';
 
 type DescriptionComponentProps = {
   description: string | undefined;

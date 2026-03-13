@@ -1,4 +1,4 @@
-import { TypedTypePolicies } from '../generated/apollo-helpers';
+import type { TypedTypePolicies } from '../generated/apollo-helpers';
 import { paginationFieldPolicy } from './paginationPolicy';
 
 export const typePolicies: TypedTypePolicies = {

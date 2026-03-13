@@ -1,8 +1,8 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
-import { setUserScope, setTransactionScope, TransactionScope } from '@/core/logging/sentry/scope';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { isEqual, last } from 'lodash-es';
-import { UserModel } from '@/domain/community/user/models/UserModel';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
+import { setTransactionScope, setUserScope, type TransactionScope } from '@/core/logging/sentry/scope';
+import type { UserModel } from '@/domain/community/user/models/UserModel';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 export const useUserScope = (currentUser: UserModel | undefined) => {
   const { sentry } = useConfig();

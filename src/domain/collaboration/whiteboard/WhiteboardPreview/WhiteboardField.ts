@@ -1,6 +1,6 @@
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import type { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;

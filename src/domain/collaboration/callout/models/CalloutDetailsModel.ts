@@ -1,17 +1,17 @@
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
-import { MemoModel } from '../../memo/model/MemoModel';
-import { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import { CalloutSettingsModelFull } from './CalloutSettingsModel';
-import { ContributionDefaultsModel } from './ContributionDefaultsModel';
-import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
-import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
-import { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
-import { PollDetailsModel } from '../../poll/models/PollModels';
+import type { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
+import type { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
+import type { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
+import type { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
+import type { MemoModel } from '../../memo/model/MemoModel';
+import type { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
+import type { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
+import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
+import type { ContributionDefaultsModel } from './ContributionDefaultsModel';
+import type { PollDetailsModel } from '../../poll/models/PollModels';
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {

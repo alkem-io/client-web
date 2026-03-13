@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { GUTTER_MUI } from '@/core/ui/grid/constants';
 import { Caption } from '@/core/ui/typography';
 

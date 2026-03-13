@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
-import { formatTime, scrollToBottom } from '../../../../utils';
 import { Box } from '@mui/material';
+import { useEffect, useRef } from 'react';
+import { useChatBehavior } from '../../../../context/ChatBehaviorContext';
 
 import { useMessages } from '../../../../context/MessagesContext';
-import { useChatBehavior } from '../../../../context/ChatBehaviorContext';
+import { formatTime, scrollToBottom } from '../../../../utils';
 
 import Loader from './components/Loader';
 import Message from './components/Message';

@@ -1,9 +1,9 @@
+import type { FC, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import EntitySettingsLayout from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { FC, PropsWithChildren } from 'react';
 import { UserAdminTabs } from '../UserAdminTabs';
-import { usePageTitle } from '@/core/routing/usePageTitle';
-import { useTranslation } from 'react-i18next';
 
 const tabs = [
   SettingsSection.MyProfile,

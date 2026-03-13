@@ -1,7 +1,7 @@
-import { InnovationPackCardFragment } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
+import type { InnovationPackCardFragment } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 
 const useInnovationPackCardProps = (
   innovationPacks: InnovationPackCardFragment[] | undefined

@@ -1,8 +1,8 @@
-import { ActivityBaseView } from './ActivityBaseView';
-import { ActivityViewProps } from './ActivityViewProps';
-import { ActivitySubject } from '../types/ActivitySubject';
+import type { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import type { ActivitySubject } from '../types/ActivitySubject';
+import { ActivityBaseView } from './ActivityBaseView';
+import type { ActivityViewProps } from './ActivityViewProps';
 
 interface ActivitySubspaceCreatedViewProps extends ActivityViewProps {
   subspace: {

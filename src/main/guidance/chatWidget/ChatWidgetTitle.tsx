@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
-import { Box, IconButton } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption, PageTitle } from '@/core/ui/typography';
-import SwapColors from '@/core/ui/palette/SwapColors';
 import { InfoOutlined } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { gutters } from '@/core/ui/grid/utils';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { Caption, PageTitle } from '@/core/ui/typography';
 
 interface ChatWidgetTitleProps {
   onClickInfo?: () => void;

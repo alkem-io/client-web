@@ -1,16 +1,16 @@
+import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import { useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useResolvedPath } from 'react-router-dom';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
-import usePlatformAdminOrganizationsList from './usePlatformAdminOrganizationsList';
-import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
-import { IconButton } from '@mui/material';
-import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
-import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
+import usePlatformAdminOrganizationsList from './usePlatformAdminOrganizationsList';
 
 const AdminOrganizationsPage = () => {
   const { t } = useTranslation();

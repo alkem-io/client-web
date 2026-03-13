@@ -1,9 +1,9 @@
-import React, { useState, Suspense, useMemo, useCallback } from 'react';
-import AddContentButton from '@/core/ui/content/AddContentButton';
-import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildFlowStateClassificationTagsets } from '../Classification/ClassificationTagset.utils';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import AddContentButton from '@/core/ui/content/AddContentButton';
+import CalloutsView, { type CalloutsViewProps } from '../CalloutsView/CalloutsView';
+import { buildFlowStateClassificationTagsets } from '../Classification/ClassificationTagset.utils';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;

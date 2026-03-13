@@ -1,4 +1,4 @@
-import { PreviewImageDimensions } from './WhiteboardPreviewImagesModels';
+import type { PreviewImageDimensions } from './WhiteboardPreviewImagesModels';
 
 // Keep these dimensions in sync with the backend limits defined in server/src/domain/common/visual/visual.constraints.ts
 export const WhiteboardPreviewVisualDimensions: PreviewImageDimensions = {

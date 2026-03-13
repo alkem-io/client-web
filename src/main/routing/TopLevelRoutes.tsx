@@ -1,23 +1,23 @@
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import App from '../ui/layout/topLevelWrappers/App';
-import { Error404 } from '@/core/pages/Errors/Error404';
-import { Restricted } from '@/core/routing/Restricted';
-import { nameOfUrl } from './urlParams';
 import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
-import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
-import devRoute from '@/dev/routes';
-import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
-import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
-import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
-import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
-import { TopLevelRoutePath } from './TopLevelRoutePath';
-import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
-import TopLevelLayout from '../ui/layout/TopLevelLayout';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
+import { Restricted } from '@/core/routing/Restricted';
+import Loading from '@/core/ui/loading/Loading';
+import devRoute from '@/dev/routes';
 import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import NonIdentity from '@/domain/platform/routes/NonIdentity';
+import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
+import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
+import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import TopLevelLayout from '../ui/layout/TopLevelLayout';
+import App from '../ui/layout/topLevelWrappers/App';
+import { TopLevelRoutePath } from './TopLevelRoutePath';
+import { nameOfUrl } from './urlParams';
+import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
 const HomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/HomePage'));
 const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
@@ -59,7 +59,7 @@ export const TopLevelRoutes = () => {
           </WithApmTransaction>
         }
       >
-        <Route index element={<RedirectToLanding />} />
+        <Route index={true} element={<RedirectToLanding />} />
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
         {/* Public routes - accessible without authentication */}
         <Route

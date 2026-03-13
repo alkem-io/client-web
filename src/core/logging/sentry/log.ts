@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { getNavigationHistory } from '@/core/routing/NavigationHistory';
 
-export const enum TagCategoryValues {
+export enum TagCategoryValues {
   SERVER = 'SERVER',
   AUTH = 'AUTH',
   UI = 'UI',
@@ -30,7 +30,7 @@ const setTags = (tags: Tags, scope: Sentry.Scope) => {
   }
 };
 
-const getLogTypeBySeverity = (severity: Sentry.SeverityLevel) => {
+const _getLogTypeBySeverity = (severity: Sentry.SeverityLevel) => {
   switch (severity) {
     case 'error':
       return 'error';
@@ -43,9 +43,7 @@ const getLogTypeBySeverity = (severity: Sentry.SeverityLevel) => {
   }
 };
 
-const consoleLog = (severity: Sentry.SeverityLevel, error: Error | string, tags?: Tags) => {
-  console[getLogTypeBySeverity(severity)]?.('[Sentry Log] ', error, tags);
-};
+const consoleLog = (_severity: Sentry.SeverityLevel, _error: Error | string, _tags?: Tags) => {};
 
 const log = (severity: Sentry.SeverityLevel) => (error: Error | string, tags?: Tags) => {
   isDevelopment && consoleLog(severity, error, tags);

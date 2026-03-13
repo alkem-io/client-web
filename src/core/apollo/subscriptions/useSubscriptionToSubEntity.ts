@@ -1,7 +1,7 @@
-import { OperationVariables, TypedDocumentNode } from '@apollo/client';
+import type { OperationVariables, TypedDocumentNode } from '@apollo/client';
 import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
 import { produce } from 'immer';
-import useSubscribeToMore, { Options } from './useSubscribeToMore';
+import useSubscribeToMore, { type Options } from './useSubscribeToMore';
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;

@@ -1,8 +1,8 @@
-import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
-import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
 import { useDeleteContributionMutation } from '@/core/apollo/generated/apollo-hooks';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
+import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
+import type { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 
 export interface CalloutContributionDialogWhiteboardProps extends CalloutContributionPreviewDialogProps {}
 

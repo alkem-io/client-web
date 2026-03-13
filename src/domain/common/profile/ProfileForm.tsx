@@ -1,21 +1,21 @@
 import { Formik } from 'formik';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import ContextReferenceSegment from '@/domain/platformAdmin/components/Common/ContextReferenceSegment';
-import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
 import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import { spaceAboutSegmentSchema } from '@/domain/space/about/SpaceAboutSegment';
+import { EmptyLocationMapped, type LocationModelMapped } from '../location/LocationModelMapped';
 import { LocationSegment } from '../location/LocationSegment';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { EmptyTagset, TagsetModel } from '../tagset/TagsetModel';
-import { ReferenceModel } from '../reference/ReferenceModel';
-import { ProfileModel } from './ProfileModel';
-import { EmptyLocationMapped, LocationModelMapped } from '../location/LocationModelMapped';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import type { ReferenceModel } from '../reference/ReferenceModel';
+import { EmptyTagset, type TagsetModel } from '../tagset/TagsetModel';
+import type { ProfileModel } from './ProfileModel';
 
 export interface ProfileFormValues {
   displayName: string;
@@ -70,7 +70,7 @@ const ProfileForm = forwardRef<ProfileFormHandle, ProfileFormProps>(
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        enableReinitialize
+        enableReinitialize={true}
         onSubmit={async values => {
           onSubmit(values);
         }}
@@ -81,7 +81,7 @@ const ProfileForm = forwardRef<ProfileFormHandle, ProfileFormProps>(
 
           return (
             <>
-              <FormikInputField name="displayName" title={t('components.nameSegment.name')} required />
+              <FormikInputField name="displayName" title={t('components.nameSegment.name')} required={true} />
               <FormikInputField
                 name={'tagline'}
                 title={t(`context.${spaceLevel}.tagline.title` as const)}

@@ -1,6 +1,6 @@
-import { AiPersonaEngine, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { VirtualContributorModelCard } from './VirtualContributorModelCardModel';
+import type { AiPersonaEngine, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { VirtualContributorModelCard } from './VirtualContributorModelCardModel';
 
 export type VirtualContributorModelFull = {
   id: string;

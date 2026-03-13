@@ -1,15 +1,15 @@
-import { PropsWithChildren } from 'react';
 import { Box, Skeleton } from '@mui/material';
-import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import type { PropsWithChildren } from 'react';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
+import { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
 import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
 import CardTags from '@/core/ui/card/CardTags';
+import ContributeCard, { type ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import SwapColors from '@/core/ui/palette/SwapColors';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
-import { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
-import { TemplateInnovationPack } from '@/domain/templates/models/TemplateBase';
-import SwapColors from '@/core/ui/palette/SwapColors';
+import type { TemplateInnovationPack } from '@/domain/templates/models/TemplateBase';
 
 const CONTENT_HEIGHT = 120;
 const COMPACT_HEADER_HEIGHT = 60;
@@ -39,8 +39,8 @@ const TemplateCardLayout = ({
       {hasProvider ? (
         <CardHeader title={templateName} contrast={isSelected}>
           {loading && <Skeleton />}
-          <CardHeaderCaption logoUrl={innovationPack.provider!.profile?.avatar?.uri} contrast={isSelected}>
-            {innovationPack.provider!.profile?.displayName}
+          <CardHeaderCaption logoUrl={innovationPack.provider?.profile?.avatar?.uri} contrast={isSelected}>
+            {innovationPack.provider?.profile?.displayName}
           </CardHeaderCaption>
         </CardHeader>
       ) : (
@@ -84,13 +84,13 @@ const TemplateCardLayout = ({
         />
         {tags.length > 0 && (
           <Box position="absolute" bottom={8} left={0} right={0}>
-            <CardTags tags={tags} hideIfEmpty />
+            <CardTags tags={tags} hideIfEmpty={true} />
           </Box>
         )}
       </Box>
       {hasFooter && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{innovationPack!.profile.displayName}</Caption>
+          <Caption noWrap={true}>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

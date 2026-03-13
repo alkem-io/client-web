@@ -1,9 +1,9 @@
 import {
-  useNotificationsUnreadCountSubscription,
   InAppNotificationsUnreadCountDocument,
+  useNotificationsUnreadCountSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { NOTIFICATION_EVENT_TYPES } from '@/main/inAppNotifications/useInAppNotifications';
 
 export const InAppNotificationCountSubscriber = () => {

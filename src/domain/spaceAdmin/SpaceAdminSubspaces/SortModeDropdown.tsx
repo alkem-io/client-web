@@ -1,8 +1,8 @@
-import { type FC } from 'react';
 import { Box, CircularProgress, FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import { refetchSubspacesInSpaceQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import { Caption } from '@/core/ui/typography';
 
 type SortModeDropdownProps = {

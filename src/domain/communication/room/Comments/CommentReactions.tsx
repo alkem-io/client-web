@@ -1,14 +1,14 @@
-import { Identifiable } from '@/core/utils/Identifiable';
+import { AddReactionOutlined } from '@mui/icons-material';
+import { Box, IconButton, Popover } from '@mui/material';
 import { compact, groupBy, sortBy } from 'lodash-es';
 import { useMemo, useRef, useState } from 'react';
-import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { Box, IconButton, Popover } from '@mui/material';
-import { AddReactionOutlined } from '@mui/icons-material';
-import { Caption, CardText } from '@/core/ui/typography/components';
-import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
 import { useTranslation } from 'react-i18next';
+import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption, CardText } from '@/core/ui/typography/components';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import ReactionView, { type ReactionViewProps, type ReactionViewReaction } from './ReactionView';
 import useReactionsOverflow from './useReactionsOverflow';
 
 interface CommentReactionsReaction extends Identifiable {

@@ -1,7 +1,7 @@
-import { FC, useCallback, useState } from 'react';
-import { Box, Button, CircularProgress, Alert } from '@mui/material';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { Alert, Box, Button, CircularProgress } from '@mui/material';
+import type { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { type FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getPasskeyTriggerType } from './helpers';
 

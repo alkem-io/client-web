@@ -1,26 +1,26 @@
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
+  Button,
+  Checkbox,
+  IconButton,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   TextField,
-  Select,
-  MenuItem,
-  Checkbox,
-  Button,
-  IconButton,
 } from '@mui/material';
-import { BlockTitle } from '@/core/ui/typography';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
-import { DataPoint } from './types';
+import { BlockTitle } from '@/core/ui/typography';
+import type { DataPoint } from './types';
 
 export interface PropertyTableProps {
   nodeName: string;
@@ -90,7 +90,7 @@ export const PropertyTable = ({
                         size="small"
                         value={displayData.name || ''}
                         onChange={e => onFieldChange('name', e.target.value)}
-                        fullWidth
+                        fullWidth={true}
                       />
                     ) : (
                       prop.name || 'N/A'
@@ -103,7 +103,7 @@ export const PropertyTable = ({
                         defaultValue={displayData.type || 'string'}
                         value={displayData.type || 'string'}
                         onChange={e => onFieldChange('type', e.target.value)}
-                        fullWidth
+                        fullWidth={true}
                       >
                         <MenuItem value="string">
                           {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.typeOptions.string')}
@@ -131,8 +131,8 @@ export const PropertyTable = ({
                         size="small"
                         value={displayData.description || ''}
                         onChange={e => onFieldChange('description', e.target.value)}
-                        fullWidth
-                        multiline
+                        fullWidth={true}
+                        multiline={true}
                       />
                     ) : (
                       prop.description ||

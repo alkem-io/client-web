@@ -1,7 +1,7 @@
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
-import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { useCookies } from 'react-cookie';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 
 // Determine base cookie domain (e.g. .alkem.io) for cross-subdomain cookies
 const cookieDomain = (() => {

@@ -1,9 +1,9 @@
-import { Button, GridLegacy, Paper } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
-import Gutters from '@/core/ui/grid/Gutters';
+import { Button, GridLegacy, Paper } from '@mui/material';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import Gutters from '@/core/ui/grid/Gutters';
 
 type DiscussionsLayoutProps = {
   canCreateDiscussion?: boolean;
@@ -22,7 +22,7 @@ export const DiscussionsLayout = ({
   return (
     <>
       {/* TODO: Remove use of MUI Grid - We don't use MUI Grid anymore*/}
-      <GridLegacy item container alignItems="center">
+      <GridLegacy item={true} container={true} alignItems="center">
         {backButton}
         {canCreateDiscussion && (
           <Button
@@ -36,13 +36,13 @@ export const DiscussionsLayout = ({
           </Button>
         )}
       </GridLegacy>
-      <GridLegacy item container spacing={2}>
+      <GridLegacy item={true} container={true} spacing={2}>
         {categorySelector && (
-          <GridLegacy item>
+          <GridLegacy item={true}>
             <Paper elevation={0}>{categorySelector}</Paper>
           </GridLegacy>
         )}
-        <GridLegacy item xs>
+        <GridLegacy item={true} xs={true}>
           <Paper>
             <Gutters>{children}</Gutters>
           </Paper>

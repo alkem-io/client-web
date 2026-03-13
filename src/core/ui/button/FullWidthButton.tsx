@@ -1,6 +1,6 @@
-import React from 'react';
-import { ButtonTypeMap } from '@mui/material/Button/Button';
-import { Button, ButtonProps } from '@mui/material';
+import { Button, type ButtonProps } from '@mui/material';
+import type { ButtonTypeMap } from '@mui/material/Button/Button';
+import type React from 'react';
 
 const FullWidthButton = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
   sx,

@@ -1,10 +1,10 @@
-import React, { FC, ReactNode } from 'react';
-import SearchBaseContributionCard, { SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
-import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
-import CardFooterDate from '@/core/ui/card/CardFooterDate';
-import CardFooter from '@/core/ui/card/CardFooter';
+import type { FC, ReactNode } from 'react';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import CardDetails from '@/core/ui/card/CardDetails';
+import CardFooter from '@/core/ui/card/CardFooter';
+import CardFooterDate from '@/core/ui/card/CardFooterDate';
+import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
+import SearchBaseContributionCard, { type SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
 
 export type SearchContributionMemoCardProps = Omit<SearchBaseContributionCardProps, 'icon'> & {
   createdDate?: Date;

@@ -1,12 +1,12 @@
 import { Button, Dialog, DialogContent } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
-import RouterLink from '@/core/ui/link/RouterLink';
-import isApplicationPending from './isApplicationPending';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import { Actions } from '@/core/ui/actions/Actions';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { BlockTitle } from '@/core/ui/typography';
+import isApplicationPending from './isApplicationPending';
 
 export interface PreApplicationDialogProps {
   open: boolean;

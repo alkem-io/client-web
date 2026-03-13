@@ -1,13 +1,13 @@
+import type { FC, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
 import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
+import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
 import AdminBreadcrumbs from '@/main/admin/AdminBreadcrumbs';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import { FC, PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
 import { AdminSection, adminTabs } from './constants';
 
 interface AdminLayoutProps extends PropsWithChildren {
@@ -21,7 +21,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
     <TopLevelLayout
       header={
         <>
-          <SpacePageBanner title={t('common.administration')} isAdmin />
+          <SpacePageBanner title={t('common.administration')} isAdmin={true} />
           <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>
             {adminTabs.map(tab => {
               return (

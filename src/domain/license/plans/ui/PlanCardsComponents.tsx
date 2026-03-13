@@ -1,7 +1,7 @@
-import { Box, styled, List, ListProps } from '@mui/material';
+import { Box, List, type ListProps, styled } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption, Text } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
 
 export const PlanName = styled('h1')<{ inline?: boolean }>(({ theme, inline }) => ({
   color: theme.palette.primary.main,

@@ -1,9 +1,9 @@
-import { PropsWithChildren, FC, ReactNode, useCallback } from 'react';
-import { SettingsSection } from './SettingsSection';
-import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
+import { type FC, type PropsWithChildren, type ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import SettingsPageContent from './SettingsPageContent';
 import PageContent from '@/core/ui/content/PageContent';
+import EntitySettingsTabs, { type TabDefinition } from './EntitySettingsTabs';
+import SettingsPageContent from './SettingsPageContent';
+import type { SettingsSection } from './SettingsSection';
 
 type EntityTypeName = 'space' | 'subspace' | 'subsubspace' | 'organization' | 'user';
 

@@ -1,8 +1,8 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import CardImage from '@/core/ui/card/CardImage';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
-import { TemplateCardProps } from './TemplateCard';
+import type { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
+import type { TemplateCardProps } from './TemplateCard';
 import TemplateCardLayout from './TemplateCardLayout';
 
 interface WhiteboardTemplateCardProps extends TemplateCardProps {

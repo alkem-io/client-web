@@ -1,12 +1,12 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
+import Avatar, { type AvatarSize } from '@/core/ui/avatar/Avatar';
+import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import InnovationPackIcon from '../InnovationPackIcon';
-import ActionsMenu from '@/core/ui/card/ActionsMenu';
-import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
-import Avatar, { AvatarSize } from '@/core/ui/avatar/Avatar';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {

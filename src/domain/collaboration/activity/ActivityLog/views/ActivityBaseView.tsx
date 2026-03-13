@@ -1,16 +1,17 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Badge, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap, Paper } from '@mui/material';
+import { Badge, ListItemButton, type ListItemButtonProps, type ListItemButtonTypeMap, Paper } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
-import { Caption } from '@/core/ui/typography';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import { gutters } from '@/core/ui/grid/utils';
+import type React from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
-import SwapColors from '@/core/ui/palette/SwapColors';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink, { type RouterLinkProps } from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { Caption } from '@/core/ui/typography';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import getActivityIcon, { Activity } from './ActivityIcon';
+import getActivityIcon, { type Activity } from './ActivityIcon';
 import ActivityViewFooter from './ActivityViewFooter';
 
 export interface ActivityBaseViewProps {
@@ -45,7 +46,7 @@ export const ActivityBaseView = ({
     <BadgeCardView
       component={Wrapper}
       to={url}
-      padding
+      padding={true}
       visual={
         <Badge
           overlap="circular"
@@ -82,12 +83,12 @@ export const ActivityBaseView = ({
         </Badge>
       }
     >
-      <Gutters row disablePadding justifyContent="space-between" gap={gutters(0.5)}>
+      <Gutters row={true} disablePadding={true} justifyContent="space-between" gap={gutters(0.5)}>
         {loading ? (
           <Skeleton width="60%" />
         ) : (
           <>
-            <Caption noWrap flexGrow={1} minWidth={0} flexShrink={1}>
+            <Caption noWrap={true} flexGrow={1} minWidth={0} flexShrink={1}>
               {title}
             </Caption>
             <Caption>{formatTimeElapsed(createdDate, t)}</Caption>

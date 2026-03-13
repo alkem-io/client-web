@@ -1,5 +1,5 @@
-import { ButtonBase, ButtonBaseProps } from '@mui/material';
-import { ButtonBaseTypeMap } from '@mui/material/ButtonBase/ButtonBase';
+import { ButtonBase, type ButtonBaseProps } from '@mui/material';
+import type { ButtonBaseTypeMap } from '@mui/material/ButtonBase/ButtonBase';
 
 const ButtonBaseAlignReset = <D extends React.ElementType = ButtonBaseTypeMap['defaultComponent'], P = {}>({
   ref,

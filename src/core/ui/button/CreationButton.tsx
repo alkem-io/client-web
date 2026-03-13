@@ -1,5 +1,5 @@
-import React from 'react';
 import { Box, Tooltip } from '@mui/material';
+import type React from 'react';
 import { Caption } from '@/core/ui/typography';
 
 const CreationButton = ({
@@ -12,11 +12,11 @@ const CreationButton = ({
   disabled?: boolean;
 }) => {
   return disabled && disabledTooltip ? (
-    <Tooltip arrow placement="top" title={<Caption>{disabledTooltip}</Caption>}>
+    <Tooltip arrow={true} placement="top" title={<Caption>{disabledTooltip}</Caption>}>
       <Box>{buttonComponent}</Box>
     </Tooltip>
   ) : (
-    <>{buttonComponent}</>
+    buttonComponent
   );
 };
 

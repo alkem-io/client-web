@@ -1,5 +1,5 @@
-import { Ribbon, RibbonProps } from './Ribbon';
 import { RibbonText } from '../typography';
+import { Ribbon, type RibbonProps } from './Ribbon';
 
 interface CardRibbonProps extends RibbonProps {
   text: string;

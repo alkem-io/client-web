@@ -1,6 +1,6 @@
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
@@ -17,7 +17,7 @@ const VCPageBanner = () => {
 
   return (
     <ProfilePageBanner
-      isVirtualContributor
+      isVirtualContributor={true}
       entityId={vc?.id}
       profile={profile}
       settingsUri={hasSettingsAccess && profile?.url ? buildSettingsUrl(profile.url) : undefined}

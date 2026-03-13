@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'react';
-import { Box, BoxProps } from '@mui/material';
-import { Caption } from '../typography';
+import { Box, type BoxProps } from '@mui/material';
+import type { BoxTypeMap } from '@mui/system';
+import type React from 'react';
+import type { ReactNode } from 'react';
 import { gutters } from '../grid/utils';
-import { BoxTypeMap } from '@mui/system';
+import { Caption } from '../typography';
 
 type CardSegmentCaptionProps = {
   align?: 'left' | 'right';

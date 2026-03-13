@@ -1,4 +1,4 @@
-import { Typography, TypographyVariant } from '@mui/material';
+import { Typography, type TypographyVariant } from '@mui/material';
 import type { Element } from 'hast';
 
 interface HeadingProps {

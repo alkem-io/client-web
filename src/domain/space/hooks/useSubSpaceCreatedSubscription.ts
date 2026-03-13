@@ -1,9 +1,9 @@
 import { SubspaceCreatedDocument } from '@/core/apollo/generated/apollo-hooks';
-import {
-  SubspacesOnSpaceFragment,
+import type {
   Space,
   SubspaceCreatedSubscription,
   SubspaceCreatedSubscriptionVariables,
+  SubspacesOnSpaceFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 

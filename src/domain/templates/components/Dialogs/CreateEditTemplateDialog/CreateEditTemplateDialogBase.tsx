@@ -1,15 +1,15 @@
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { SaveOutlined } from '@mui/icons-material';
+import { Box, DialogActions, DialogContent } from '@mui/material';
+import type { FormikProps } from 'formik/dist/types';
+import { type ReactNode, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
-import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
+import DialogHeader, { type DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
-import { SaveOutlined } from '@mui/icons-material';
-import { DialogActions, DialogContent, Box } from '@mui/material';
-import { FormikProps } from 'formik/dist/types';
-import { ReactNode, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
+import type { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 
 export interface TemplateFormActions<T = AnyTemplateFormSubmittedValues> {
   renderActions: (formik: FormikProps<T>) => ReactNode;

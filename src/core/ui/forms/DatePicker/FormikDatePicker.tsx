@@ -1,8 +1,8 @@
-import { DatePicker, DatePickerProps, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, type DatePickerProps, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { useState } from 'react';
 import { useField } from 'formik';
-import { FormikInputProps } from '../FormikInputProps';
+import { useState } from 'react';
+import type { FormikInputProps } from '../FormikInputProps';
 
 interface FormikDatePickerProps extends FormikInputProps, Omit<DatePickerProps, 'name'> {}
 

@@ -1,5 +1,5 @@
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { ClassificationTagsetModel } from './ClassificationTagset.model';
+import type { ClassificationTagsetModel } from './ClassificationTagset.model';
 
 export const buildFlowStateClassificationTagsets = (
   flowState: string | undefined

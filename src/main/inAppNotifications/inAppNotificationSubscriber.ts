@@ -1,9 +1,9 @@
 import {
-  useInAppNotificationReceivedSubscription,
   InAppNotificationsDocument,
+  useInAppNotificationReceivedSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { IN_APP_NOTIFICATIONS_PAGE_SIZE, NOTIFICATION_EVENT_TYPES } from './useInAppNotifications';
 
 export const InAppNotificationSubscriber = () => {

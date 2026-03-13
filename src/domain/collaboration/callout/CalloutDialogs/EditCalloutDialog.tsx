@@ -1,36 +1,36 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
+import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutContributionType,
   CalloutFramingType,
-  UpdateCalloutEntityInput,
-  UpdateCalloutSettingsInput,
+  type UpdateCalloutEntityInput,
+  type UpdateCalloutSettingsInput,
 } from '@/core/apollo/generated/graphql-schema';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import CalloutForm from '../CalloutForm/CalloutForm';
-import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { mapProfileModelToUpdateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
-import Loading from '@/core/ui/loading/Loading';
 import SaveButton from '@/core/ui/actions/SaveButton';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import { mapProfileModelToUpdateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
+import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
+import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import CalloutForm from '../CalloutForm/CalloutForm';
+import type { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 import {
   mapCalloutSettingsFormToCalloutSettingsModel,
   mapCalloutSettingsModelToCalloutSettingsFormValues,
   mapLinkDataToUpdateLinkInput,
 } from '../models/mappings';
-import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
-import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
-import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
-import { PollFormOptionValue } from '@/domain/collaboration/poll/models/PollModels';
+import { type PollFormOptionValue } from '../../poll/models/PollModels';
+import { usePollOptionManagement } from '../../poll/hooks/usePollOptionManagement';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -317,7 +317,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       <DialogWithGrid
         open={open}
         onClose={handleCloseButtonClick}
-        fullWidth
+        fullWidth={true}
         aria-labelledby="edit-callout-dialog-title"
       >
         <DialogHeader
@@ -334,7 +334,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 callout={callout}
                 onChange={setCalloutFormData}
                 onStatusChanged={handleStatusChange}
-                edit
+                edit={true}
                 /* Users cannot change the allowedTypes on an already created callout for now */
                 calloutRestrictions={{
                   ...calloutRestrictions,

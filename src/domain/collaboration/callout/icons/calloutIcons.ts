@@ -1,16 +1,15 @@
-import { ComponentType } from 'react';
-import { SvgIconProps, Tooltip } from '@mui/material';
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { LibraryBooksOutlined } from '@mui/icons-material';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
+import { type SvgIconProps, Tooltip } from '@mui/material';
+import React, { type ComponentType } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { CtaIcon } from '@/domain/collaboration/callout/icons/CtaIcon';
+import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { ReferenceIcon } from '@/domain/shared/components/References/icons/ReferenceIcon';
-import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
-import { CtaIcon } from '@/domain/collaboration/callout/icons/CtaIcon';
-import { useTranslation } from 'react-i18next';
-import React from 'react';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export const GenericCalloutIcon = LibraryBooksOutlined;
 
@@ -79,5 +78,6 @@ export const CalloutIcon = ({ framingType, allowedTypes, tooltip = false, iconPr
   const label = t(labelKey);
   const element = React.createElement(Icon, { ...(iconProps || {}), ...(tooltip ? {} : { titleAccess: label }) });
 
+  // biome-ignore lint/correctness/noChildrenProp: React.createElement requires children as a prop
   return tooltip ? React.createElement(Tooltip, { title: label, placement: 'left', children: element }) : element;
 };

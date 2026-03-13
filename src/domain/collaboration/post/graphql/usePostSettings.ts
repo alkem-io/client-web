@@ -1,21 +1,21 @@
-import { ApolloError } from '@apollo/client';
-import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { ApolloError } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 import {
   useDeletePostMutation,
   usePostSettingsQuery,
   useUpdatePostMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
+import type {
   Post,
   PostSettingsCalloutFragment,
   PostSettingsFragment,
   Profile,
 } from '@/core/apollo/generated/graphql-schema';
-import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import removeFromCache from '@/core/apollo/utils/removeFromCache';
-import { useTranslation } from 'react-i18next';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { newReferenceName } from '@/domain/common/reference/newReferenceName';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { type PushFunc, type RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
 
 type PostUpdateData = Pick<Post, 'id'> & {
   displayName: Profile['displayName'];

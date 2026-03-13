@@ -1,14 +1,15 @@
-import React, { Suspense, useMemo, useRef, useState } from 'react';
-import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
-import { MediaGalleryItem } from './types';
-import { gutters } from '../grid/utils';
-import DialogHeader from '../dialog/DialogHeader';
-import DialogWithGrid from '../dialog/DialogWithGrid';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { useTranslation } from 'react-i18next';
 import DownloadIcon from '@mui/icons-material/Download';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
+import type React from 'react';
+import { Suspense, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import DialogHeader from '../dialog/DialogHeader';
+import DialogWithGrid from '../dialog/DialogWithGrid';
+import { gutters } from '../grid/utils';
+import type { MediaGalleryItem } from './types';
 
 const ImageGallery = lazyWithGlobalErrorHandler(async () => {
   const ImageGallery = await import('react-image-gallery');
@@ -16,10 +17,11 @@ const ImageGallery = lazyWithGlobalErrorHandler(async () => {
   await import('./MediaGallery.css');
   return { default: ImageGallery.default };
 });
+
 import type { GalleryItem, ImageGalleryRef } from 'react-image-gallery';
-import { Caption } from '../typography';
 import ImagePlaceholder, { createPlaceholderImageDataUri } from '../image/ImagePlaceholder';
 import Loading from '../loading/Loading';
+import { Caption } from '../typography';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -85,7 +87,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
     }
   };
 
-  const handleItemClick = (item: MediaGalleryItem, index: number) => {
+  const handleItemClick = (_item: MediaGalleryItem, index: number) => {
     setSelectedIndex(index);
     setDialogOpen(true);
   };
@@ -203,7 +205,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
         <DialogHeader
           actions={
             <>
-              <Tooltip title={t('buttons.download')} arrow>
+              <Tooltip title={t('buttons.download')} arrow={true}>
                 <IconButton
                   onClick={handleDownload}
                   title={t('buttons.download')}
@@ -213,7 +215,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
                   <DownloadIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={t('buttons.fullscreen')} arrow>
+              <Tooltip title={t('buttons.fullscreen')} arrow={true}>
                 <IconButton
                   onClick={handleClickFullscreen}
                   title={t('buttons.fullscreen')}
@@ -238,8 +240,8 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
               onSlide={currentIndex => setSelectedIndex(currentIndex)}
               showFullscreenButton={fullscreen}
               onScreenChange={fullscreen => setFullscreen(fullscreen)}
-              disableThumbnailScroll
-              disableThumbnailSwipe
+              disableThumbnailScroll={true}
+              disableThumbnailSwipe={true}
             />
           </Suspense>
         </DialogContent>

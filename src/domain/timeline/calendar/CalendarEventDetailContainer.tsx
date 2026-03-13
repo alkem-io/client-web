@@ -1,14 +1,14 @@
+import type { ApolloError } from '@apollo/client';
 import { useCallback, useMemo } from 'react';
-import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useCalendarEventDetailsQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
-import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { Message } from '@/domain/communication/room/models/Message';
+import { AuthorizationPrivilege, type CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
-import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import { type ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import type { Message } from '@/domain/communication/room/models/Message';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 

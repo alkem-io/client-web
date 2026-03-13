@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
+import type { FC } from 'react';
 import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '../../../platformAdmin/layout/EntitySettingsLayout/types';
+import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 import OrganizationAssociatesView from '../views/OrganizationAssociatesView';
 
 const OrganizationAdminCommunityPage: FC<SettingsPageProps> = () => (

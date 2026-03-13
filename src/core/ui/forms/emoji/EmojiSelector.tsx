@@ -1,6 +1,6 @@
-import { ClickAwayListener, Paper, Popper, PopperProps } from '@mui/material';
-import { POPPER_Z_INDEX } from '@/domain/communication/room/Comments/CommentInputField';
+import { ClickAwayListener, Paper, Popper, type PopperProps } from '@mui/material';
 import EmojiPicker, { EmojiStyle, SkinTonePickerLocation } from 'emoji-picker-react';
+import { POPPER_Z_INDEX } from '@/domain/communication/room/Comments/CommentInputField';
 
 type EmojiSelectorProps = {
   anchorElement: PopperProps['anchorEl'];

@@ -1,15 +1,15 @@
-import { gutters } from '@/core/ui/grid/utils';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Box, Chip, ChipProps, Link, Tooltip } from '@mui/material';
+import { Box, Chip, type ChipProps, Link, Tooltip } from '@mui/material';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
+import { gutters } from '@/core/ui/grid/utils';
 
 const Tag = ({ tag, onClick }: { tag: string; onClick: ChipProps['onClick'] }) => {
   const { t } = useTranslation();
 
   return (
-    <Tooltip title={t('components.tagCloud.filterByTag', { tag })} arrow>
+    <Tooltip title={t('components.tagCloud.filterByTag', { tag })} arrow={true}>
       <Chip
         label={tag}
         variant="outlined"
@@ -25,7 +25,7 @@ const Tag = ({ tag, onClick }: { tag: string; onClick: ChipProps['onClick'] }) =
 const ShowMoreChip = ({ count, onClick }: { count: number; onClick: () => void }) => {
   const { t } = useTranslation();
   return (
-    <Tooltip title={t('components.tagCloud.showMoreTags', { count })} arrow>
+    <Tooltip title={t('components.tagCloud.showMoreTags', { count })} arrow={true}>
       <Chip
         label={`+${count}`}
         variant="filled"
@@ -41,7 +41,7 @@ const ShowMoreChip = ({ count, onClick }: { count: number; onClick: () => void }
 const ShowLessChip = ({ onClick }: { onClick: () => void }) => {
   const { t } = useTranslation();
   return (
-    <Tooltip title={t('components.tagCloud.showFewerTags')} arrow>
+    <Tooltip title={t('components.tagCloud.showFewerTags')} arrow={true}>
       <Link onClick={onClick} sx={{ cursor: 'pointer' }} aria-label={t('components.tagCloud.showFewerTags')}>
         <KeyboardArrowUpIcon fontSize="small" />
       </Link>
@@ -131,7 +131,7 @@ const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTa
     <Box ref={resizeRef} sx={{ position: 'relative' }}>
       <Box
         ref={measurementRef}
-        aria-hidden
+        aria-hidden={true}
         sx={{
           position: 'absolute',
           pointerEvents: 'none',

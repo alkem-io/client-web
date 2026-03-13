@@ -1,9 +1,9 @@
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import type { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export const organizationAdminTabs: TabDefinition<SettingsSection>[] = [
   {

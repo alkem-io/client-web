@@ -1,6 +1,6 @@
 import { FormHelperText } from '@mui/material';
-import { UiNode } from '@ory/kratos-client';
-import { FC } from 'react';
+import type { UiNode } from '@ory/kratos-client';
+import type { FC } from 'react';
 import { isInvalidNode } from './helpers';
 
 interface KratosFeedbackProps {
@@ -8,13 +8,9 @@ interface KratosFeedbackProps {
 }
 
 export const KratosFeedback: FC<KratosFeedbackProps> = ({ node }) => {
-  return isInvalidNode(node) ? (
-    <>
-      {node.messages.map((x, key) => (
-        <FormHelperText key={key}>{x.text}</FormHelperText>
-      ))}
-    </>
-  ) : null;
+  return isInvalidNode(node)
+    ? node.messages.map((x, key) => <FormHelperText key={key}>{x.text}</FormHelperText>)
+    : null;
 };
 
 export default KratosFeedback;

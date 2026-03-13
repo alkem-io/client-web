@@ -1,15 +1,15 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import Gutters from '@/core/ui/grid/Gutters';
-import { referenceSegmentValidationObject } from './ReferenceSegment';
-import { socialNames } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { socialNames } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { referenceSegmentValidationObject } from './ReferenceSegment';
 
 const commonProfileValidationProps = {
   displayName: displayNameValidator({ required: true }),
@@ -46,7 +46,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
   const { t } = useTranslation();
 
   return (
-    <Gutters disablePadding>
+    <Gutters disablePadding={true}>
       <FormikInputField
         name="profile.tagline"
         title={t('components.profileSegment.tagline.name')}
@@ -60,7 +60,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
         title={t('components.profileSegment.description.name')}
         placeholder={t('components.profileSegment.description.placeholder')}
         rows={10}
-        multiline
+        multiline={true}
         disabled={disabled}
         maxLength={MARKDOWN_TEXT_LENGTH}
         required={required}

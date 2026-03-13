@@ -1,4 +1,4 @@
-import { UiText } from '@ory/kratos-client/api';
+import type { UiText } from '@ory/kratos-client/api';
 
 export interface LocationStateWithKratosErrors {
   kratosErrors?: UiText[];

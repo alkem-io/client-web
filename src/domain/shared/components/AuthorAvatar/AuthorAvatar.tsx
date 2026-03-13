@@ -1,13 +1,13 @@
-import { FC, useCallback, useMemo, useRef, useState } from 'react';
-import { styled, Tooltip, Link, Box, useTheme } from '@mui/material';
-import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
-import UserCard from '@/domain/community/user/userCard/UserCard';
-import { AuthorModel } from '../../../community/user/models/AuthorModel';
-import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
+import { Box, Link, styled, Tooltip, useTheme } from '@mui/material';
+import { type FC, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import GridProvider from '@/core/ui/grid/GridProvider';
+import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
+import Avatar, { type CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
+import UserCard from '@/domain/community/user/userCard/UserCard';
+import type { AuthorModel } from '../../../community/user/models/AuthorModel';
 
 const UserAvatar = styled(Avatar)<CustomAvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -47,7 +47,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
       ({ children }) =>
         author ? (
           <Tooltip
-            arrow
+            arrow={true}
             slotProps={{
               popper: {
                 anchorEl: anchorElement.current,
@@ -84,7 +84,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
             </Box>
           </Tooltip>
         ) : (
-          <>{children}</>
+          children
         ),
     [author, setContactDialogVisible]
   );

@@ -1,9 +1,9 @@
-import AssociatedOrganizationsDashboardSection, {
-  AssociatedOrganizationsDashboardSectionProps,
-} from './AssociatedOrganizationsDashboardSection';
-import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import AssociatedOrganizationCard from './AssociatedOrganizationCard';
-import { Identifiable } from '@/core/utils/Identifiable';
+import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
+import AssociatedOrganizationsDashboardSection, {
+  type AssociatedOrganizationsDashboardSectionProps,
+} from './AssociatedOrganizationsDashboardSection';
 
 interface AssociatedOrganizationsLazilyFetchedProps
   extends Omit<

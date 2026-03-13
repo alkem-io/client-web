@@ -1,9 +1,9 @@
-import { useInView } from 'react-intersection-observer';
-import useCalloutDetails from '../../callout/useCalloutDetails/useCalloutDetails';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { CalloutViewSkeleton } from '../../callout/CalloutView/CalloutView';
 import { Box } from '@mui/material';
-import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
+import { useInView } from 'react-intersection-observer';
+import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { CalloutViewSkeleton } from '../../callout/CalloutView/CalloutView';
+import type { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
+import useCalloutDetails from '../../callout/useCalloutDetails/useCalloutDetails';
 
 /**
  * Checks if the browser is scrolled to the position where the CalloutView is

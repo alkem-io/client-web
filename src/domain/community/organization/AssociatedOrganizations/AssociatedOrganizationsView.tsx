@@ -1,7 +1,7 @@
-import { ReactElement } from 'react';
 import { GridLegacy, Skeleton } from '@mui/material';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 export interface AssociatedOrganizationsViewProps<Consumed extends {}, Organization extends Consumed & Identifiable> {
   organizations: Organization[] | undefined;
@@ -12,7 +12,7 @@ export interface AssociatedOrganizationsViewProps<Consumed extends {}, Organizat
 }
 
 const SkeletonItem = (props: { dense: boolean }) => (
-  <GridLegacy item xs={12} md={props.dense ? 6 : 12}>
+  <GridLegacy item={true} xs={12} md={props.dense ? 6 : 12}>
     <Skeleton variant="rectangular" sx={{ height: theme => theme.spacing(8) }} />
   </GridLegacy>
 );
@@ -27,16 +27,16 @@ export const AssociatedOrganizationsView = <Consumed extends {}, Organization ex
   const { t } = useTranslation();
 
   return (
-    <GridLegacy container spacing={1}>
-      {loading && <SkeletonItem dense />}
+    <GridLegacy container={true} spacing={1}>
+      {loading && <SkeletonItem dense={true} />}
       {!loading &&
         organizations?.map(org => (
-          <GridLegacy key={org.id} item xs={12} md={dense ? 6 : 12}>
+          <GridLegacy key={org.id} item={true} xs={12} md={dense ? 6 : 12}>
             <OrganizationCardComponent {...org} key={org.id} />
           </GridLegacy>
         ))}
       {organizations?.length === 0 && (
-        <GridLegacy item xs={12} md={dense ? 6 : 12}>
+        <GridLegacy item={true} xs={12} md={dense ? 6 : 12}>
           {t('associated-organizations-view.no-data', { name: entityName })}{' '}
         </GridLegacy>
       )}

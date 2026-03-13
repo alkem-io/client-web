@@ -1,15 +1,15 @@
-import SaveButton from '@/core/ui/actions/SaveButton';
+import { useRef } from 'react';
 import { useSpaceAboutFullQuery, useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { Actions } from '@/core/ui/actions/Actions';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import SpaceAboutForm, {
-  SpaceAboutEditFormValuesType,
-  SpaceAboutFormHandle,
+  type SpaceAboutEditFormValuesType,
+  type SpaceAboutFormHandle,
 } from '@/domain/spaceAdmin/SpaceAdminAbout/components/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
-import { Actions } from '@/core/ui/actions/Actions';
-import Loading from '@/core/ui/loading/Loading';
-import { useRef } from 'react';
 
 export const SpaceAboutView = () => {
   const notify = useNotification();

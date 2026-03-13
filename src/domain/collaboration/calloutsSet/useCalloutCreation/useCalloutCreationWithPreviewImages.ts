@@ -1,19 +1,19 @@
 import { useCallback } from 'react';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
-import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
-import {
-  CalloutCreationParams,
-  CalloutCreationType,
-  CalloutCreationUtils,
-  useCalloutCreation,
-} from './useCalloutCreation';
 import {
   CalloutFramingType,
-  CreateCalloutMutation,
-  CreateReferenceInput,
-  CreateTagsetInput,
+  type CreateCalloutMutation,
+  type CreateReferenceInput,
+  type CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
+import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import {
+  type CalloutCreationParams,
+  type CalloutCreationType,
+  type CalloutCreationUtils,
+  useCalloutCreation,
+} from './useCalloutCreation';
 import { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
@@ -71,7 +71,7 @@ export const useCalloutCreationWithPreviewImages = (
       if (result && previewImages) {
         const whiteboard =
           callout.framing.type === CalloutFramingType.Whiteboard ? result?.framing.whiteboard : undefined;
-        if (whiteboard && whiteboard.profile) {
+        if (whiteboard?.profile) {
           await uploadVisuals(
             previewImages,
             {
@@ -82,7 +82,7 @@ export const useCalloutCreationWithPreviewImages = (
           );
         }
         const memo = callout.framing.type === CalloutFramingType.Memo ? result?.framing.memo : undefined;
-        if (memo && memo.profile && memo.profile.preview?.id) {
+        if (memo?.profile?.preview?.id) {
           await uploadVisuals(
             previewImages,
             {

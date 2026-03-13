@@ -1,6 +1,6 @@
-import { Box, Tooltip } from '@mui/material';
 import { InfoOutlined } from '@mui/icons-material';
-import { ReactNode } from 'react';
+import { Box, Tooltip } from '@mui/material';
+import type { ReactNode } from 'react';
 
 interface NotificationSwitchTooltipProps {
   children: ReactNode;
@@ -16,7 +16,7 @@ export const NotificationSwitchTooltip = ({ children, message, show = false }: N
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
       {children}
-      <Tooltip title={message} arrow placement="top">
+      <Tooltip title={message} arrow={true} placement="top">
         <InfoOutlined
           color="primary"
           sx={{

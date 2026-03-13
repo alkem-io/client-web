@@ -1,13 +1,13 @@
-import React, { useCallback } from 'react';
-import LatestContributions from '../latestContributions/LatestContributions';
-import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
+import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { useTranslation } from 'react-i18next';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import LatestContributions from '../latestContributions/LatestContributions';
+import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();

@@ -1,19 +1,19 @@
 import { useCallback } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { SpaceCreationDialog } from '../common/SpaceCreationDialog';
-import { SpaceFormValues } from '@/domain/space/components/CreateSpace/common/SpaceCreationDialog.models';
-import { CreateSpaceForm } from './CreateSpaceForm';
-import { useSpaceCreation } from '../hooks/useSpaceCreation/useSpaceCreation';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import { info, TagCategoryValues } from '@/core/logging/sentry/log';
+import useNavigate from '@/core/routing/useNavigate';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { SpaceFormValues } from '@/domain/space/components/CreateSpace/common/SpaceCreationDialog.models';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import { SpaceCreationDialog } from '../common/SpaceCreationDialog';
 import { useSpacePlans } from '../hooks/spacePlans/useSpacePlans';
-import { TagCategoryValues, info } from '@/core/logging/sentry/log';
+import { useSpaceCreation } from '../hooks/useSpaceCreation/useSpaceCreation';
 import { addSpaceWelcomeCache } from '../utils';
+import { CreateSpaceForm } from './CreateSpaceForm';
 
 type SpaceCreatedResult = Identifiable & {
   about: {

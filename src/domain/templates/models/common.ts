@@ -4,15 +4,15 @@ import {
   CalloutVisibility,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutTemplate } from './CalloutTemplate';
-import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
-import { AnyTemplate, TemplateBase } from './TemplateBase';
-import { PostTemplate } from './PostTemplate';
-import { WhiteboardTemplate } from './WhiteboardTemplate';
-import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { SpaceTemplate } from './SpaceTemplate';
-import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
+import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
+import type { CalloutTemplate } from './CalloutTemplate';
+import type { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
+import type { PostTemplate } from './PostTemplate';
+import type { SpaceTemplate } from './SpaceTemplate';
+import type { AnyTemplate, TemplateBase } from './TemplateBase';
+import type { WhiteboardTemplate } from './WhiteboardTemplate';
 
 export const getNewTemplate = (
   templateType: TemplateType,

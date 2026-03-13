@@ -1,7 +1,7 @@
+import { BeenhereOutlined } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '@/core/ui/typography';
-import { BeenhereOutlined } from '@mui/icons-material';
 
 type VerifiedStatusProps = {
   verified: boolean;
@@ -15,7 +15,7 @@ export const OrganizationVerifiedStatus = ({ verified, helpText }: VerifiedStatu
   return (
     <BlockTitle variant="caption" sx={{ display: 'flex', alignItems: 'center', columnGap: 0.5 }}>
       {helpText && verified && (
-        <Tooltip title={helpText} arrow placement="right">
+        <Tooltip title={helpText} arrow={true} placement="right">
           <BeenhereOutlined fontSize="small" color="primary" />
         </Tooltip>
       )}

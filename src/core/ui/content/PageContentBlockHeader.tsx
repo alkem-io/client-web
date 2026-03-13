@@ -1,13 +1,13 @@
-import { Box, BoxProps, SvgIconProps, TypographyProps } from '@mui/material';
-import { CaptionSmall } from '../typography';
-import { PropsWithChildren, ReactElement, ReactNode, useEffect, useRef, useState } from 'react';
+import { Box, type BoxProps, type SvgIconProps, type TypographyProps } from '@mui/material';
+import type { BoxTypeMap } from '@mui/system';
+import { type PropsWithChildren, type ReactElement, type ReactNode, useEffect, useRef, useState } from 'react';
+import { useResizeDetector } from 'react-resize-detector';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
-import SkipLink from '../keyboardNavigation/SkipLink';
 import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
+import SkipLink from '../keyboardNavigation/SkipLink';
+import { CaptionSmall } from '../typography';
 import BlockTitleWithIcon from './BlockTitleWithIcon';
-import { BoxTypeMap } from '@mui/system';
-import { useResizeDetector } from 'react-resize-detector';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;

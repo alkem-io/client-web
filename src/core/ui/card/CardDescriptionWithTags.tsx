@@ -1,5 +1,5 @@
-import CardDescription, { CardDescriptionProps, DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from './CardDescription';
-import CardTags, { CardTagsProps } from './CardTags';
+import CardDescription, { type CardDescriptionProps, DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from './CardDescription';
+import CardTags, { type CardTagsProps } from './CardTags';
 
 interface CardDescriptionWithTagsProps extends CardDescriptionProps {
   tags?: string[];
@@ -19,7 +19,7 @@ export const CardDescriptionWithTags = ({
   return (
     <>
       <CardDescription heightGutters={descriptionHeight} {...props} />
-      <CardTags tags={tags} marginY={1} hideIfEmpty {...tagsContainerProps} />
+      <CardTags tags={tags} marginY={1} hideIfEmpty={true} {...tagsContainerProps} />
     </>
   );
 };

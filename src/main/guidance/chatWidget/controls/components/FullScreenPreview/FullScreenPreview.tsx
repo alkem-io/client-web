@@ -1,16 +1,14 @@
-import { useEffect, ReactNode } from 'react';
-import ReactDOM from 'react-dom';
-import usePreview from './usePreview';
-import usePortal from './usePortal';
-
-import { useFullscreenPreview } from '../../context/FullscreenPreviewContext';
 import { Box, IconButton } from '@mui/material';
-
+import { type ReactNode, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import close from '../../assets/close.svg';
-import plus from '../../assets/plus.svg';
 import minus from '../../assets/minus.svg';
+import plus from '../../assets/plus.svg';
 import zoomIn from '../../assets/zoom-in.svg';
 import zoomOut from '../../assets/zoom-out.svg';
+import { useFullscreenPreview } from '../../context/FullscreenPreviewContext';
+import usePortal from './usePortal';
+import usePreview from './usePreview';
 
 type Props = {
   zoomStep?: number;

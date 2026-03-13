@@ -1,8 +1,12 @@
-import { CreateProfileInput, TagsetReservedName, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
-import { ProfileModel } from './ProfileModel';
-import { mapTagsetModelsToUpdateTagsetInputs } from '../tagset/TagsetUtils';
+import {
+  type CreateProfileInput,
+  TagsetReservedName,
+  type UpdateProfileInput,
+} from '@/core/apollo/generated/graphql-schema';
 import { formatLocationInput } from '../location/LocationUtils';
 import { mapReferenceModelsToUpdateReferenceInputs } from '../reference/ReferenceUtils';
+import { mapTagsetModelsToUpdateTagsetInputs } from '../tagset/TagsetUtils';
+import type { ProfileModel } from './ProfileModel';
 
 type ProfileModelWithoutId = {
   [K in keyof ProfileModel as K extends 'id' ? never : K]: ProfileModel[K];

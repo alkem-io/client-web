@@ -1,7 +1,7 @@
-import { Button, ButtonProps } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { Button, type ButtonProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface TemplateActionButtonProps extends Omit<ButtonProps, 'startIcon' | 'variant'> {
   /**

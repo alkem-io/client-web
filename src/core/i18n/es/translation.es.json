@@ -89,6 +89,13 @@
         "positive": "La hora de finalización del evento no puede ser anterior a la hora de inicio"
       }
     },
+    "addToCalendar": {
+      "button": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "iCal": "Apple calendar & Other apps",
+      "exportAll": "Export all future events to calendar"
+    },
     "no-data": "No se encontraron eventos",
     "no-upcoming-events": "Actualmente no hay eventos próximos para mostrar",
     "past-events": "Eventos pasados",
@@ -1307,6 +1314,9 @@
     }
   },
   "components": {
+    "subspacePinIndicator": {
+      "tooltip": "Pinned $t(common.subspace)"
+    },
     "calloutTemplateDialog": {
       "typeReadonly": "Una vez creada una $t(common.template), su tipo no puede cambiarse. Si necesitas un tipo diferente, crea una nueva $t(common.template)."
     },
@@ -2713,7 +2723,14 @@
                 "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
-            "reorderSubspaces": "Reordenar $t(common.subspaces)"
+            "reorderSubspaces": "Reordenar $t(common.subspaces)",
+            "sortBy": "Sort By:",
+            "sortMode": {
+              "alphabetical": "Alphabetical",
+              "custom": "Custom"
+            },
+            "pinSpace": "Pin Space",
+            "unpinSpace": "Unpin Space"
           }
         },
         "authorization": {
@@ -4337,6 +4354,10 @@
     "appVersion": {
       "message": "Hay una nueva versión de la aplicación disponible.",
       "recurringMessage": "Por favor, cierra todas las pestañas de Alkemio y recarga para actualizar."
+    },
+    "onlineStatus": {
+      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
+      "restored": "Your connection has been restored."
     }
   }
 }

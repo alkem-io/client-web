@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
+import { BlockTitle, Caption } from '@/core/ui/typography/components';
 
 interface VCNotificationSettings {
   adminSpaceCommunityInvitation?: {

@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import buildGuestShareUrl from '../../whiteboard/utils/buildGuestShareUrl';
 import WhiteboardPreview from '../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
-import buildGuestShareUrl from '../../whiteboard/utils/buildGuestShareUrl';
+import type { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingWhiteboardProps {
   callout: CalloutDetailsModel;
@@ -37,9 +37,9 @@ const CalloutFramingWhiteboard = ({ callout, onCollapse }: CalloutFramingWhitebo
           backToWhiteboards={handleCloseWhiteboardDialog}
           whiteboardShareUrl={callout.framing.profile.url}
           guestShareUrl={guestShareUrl}
-          readOnlyDisplayName
+          readOnlyDisplayName={true}
           displayName={callout.framing.profile.displayName}
-          preventWhiteboardDeletion
+          preventWhiteboardDeletion={true}
           whiteboard={callout.framing.whiteboard}
           authorization={callout.framing.whiteboard?.authorization}
           loadingWhiteboards={false}

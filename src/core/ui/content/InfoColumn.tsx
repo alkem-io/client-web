@@ -1,7 +1,7 @@
-import { useColumns } from '../grid/GridContext';
-import { BoxProps } from '@mui/material';
-import PageContentColumn from './PageContentColumn';
+import type { BoxProps } from '@mui/material';
 import { GRID_COLUMNS_MOBILE } from '../grid/constants';
+import { useColumns } from '../grid/GridContext';
+import PageContentColumn from './PageContentColumn';
 
 // GRID COLUMNS - CONTENT_COLUMNS => 12 - 9
 const INFO_COLUMNS = 3;

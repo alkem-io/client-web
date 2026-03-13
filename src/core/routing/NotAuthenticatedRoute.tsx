@@ -1,6 +1,6 @@
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { useAuthenticationContext } from '../auth/authentication/hooks/useAuthenticationContext';
 
 export const NotAuthenticatedRoute = ({ children }: PropsWithChildren) => {

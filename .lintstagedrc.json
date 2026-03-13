@@ -1,4 +1,4 @@
 {
-  "src/**/*.ts{,x}": ["cross-env NODE_ENV=production eslint --fix", "prettier --write"],
-  "*.{json,md}": "prettier --write"
+  "src/**/*.ts{,x}": ["biome check --fix --no-errors-on-unmatched", "biome format --write --no-errors-on-unmatched"],
+  "*.{json,md}": "biome format --write --no-errors-on-unmatched"
 }

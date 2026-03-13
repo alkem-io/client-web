@@ -1,16 +1,16 @@
-import { FC, useMemo } from 'react';
-import { Box, BoxProps, styled, Tooltip } from '@mui/material';
+import { Box, type BoxProps, styled, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
+import { type FC, useMemo } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import { getEndDateByDuration, startOfDay } from '@/core/utils/time/utils';
 import { useTranslation } from 'react-i18next';
-import CalendarStyles from './CalendarStyles';
-import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
+import { gutters } from '@/core/ui/grid/utils';
 import { useNextBlockAnchor } from '@/core/ui/keyboardNavigation/NextBlockAnchor';
+import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { getEndDateByDuration, startOfDay } from '@/core/utils/time/utils';
+import CalendarStyles from './CalendarStyles';
 
 export const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -46,7 +46,7 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => {
 
   return (
     <Tooltip
-      arrow
+      arrow={true}
       title={
         <EventsList>
           {events.map(event => (

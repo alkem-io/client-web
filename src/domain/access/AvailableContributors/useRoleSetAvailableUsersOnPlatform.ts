@@ -1,7 +1,7 @@
-import { usePlatformRoleAvailableUsersQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AVAILABLE_USERS_PAGE_SIZE, AvailableUsersResponse } from './common';
 import { useCallback, useMemo } from 'react';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { usePlatformRoleAvailableUsersQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse } from './common';
 
 type useRoleSetAvailableUsersOnPlatformParams = {
   usersAlreadyInRole?: Identifiable[];
@@ -21,7 +21,12 @@ const useRoleSetAvailableUsersOnPlatform = ({
   skip,
 }: useRoleSetAvailableUsersOnPlatformParams): useRoleSetAvailableUsersOnPlatformProvided => {
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const { data, loading, fetchMore: fetchMoreRaw, refetch } = usePlatformRoleAvailableUsersQuery({
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreRaw,
+    refetch,
+  } = usePlatformRoleAvailableUsersQuery({
     variables: {
       first: AVAILABLE_USERS_PAGE_SIZE,
       filter: { displayName: filter },

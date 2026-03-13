@@ -1,10 +1,10 @@
-import SpacePageBannerCard from '../cards/components/SpacePageBannerCard';
-import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import SpacePageBannerCard from '../cards/components/SpacePageBannerCard';
 
 const SubspacePageBanner = () => {
   const { spaceId, spaceLevel, levelZeroSpaceId } = useUrlResolver();

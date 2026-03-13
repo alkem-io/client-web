@@ -1,9 +1,9 @@
-import { FC } from 'react';
 import { Box } from '@mui/material';
+import type { FC } from 'react';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import stopPropagationFromLinks from '@/core/ui/utils/stopPropagationFromLinks';
-import { PostTemplate } from '@/domain/templates/models/PostTemplate';
-import { TemplateCardProps } from './TemplateCard';
+import type { PostTemplate } from '@/domain/templates/models/PostTemplate';
+import type { TemplateCardProps } from './TemplateCard';
 import TemplateCardLayout from './TemplateCardLayout';
 
 interface PostTemplateCardProps extends TemplateCardProps {

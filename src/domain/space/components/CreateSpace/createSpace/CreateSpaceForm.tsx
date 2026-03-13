@@ -1,38 +1,38 @@
-import { PropsWithChildren, useState } from 'react';
+import { DialogContent } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { type PropsWithChildren, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Form, Formik } from 'formik';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
+import LinkButton from '@/core/ui/button/LinkButton';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import {
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption } from '@/core/ui/typography';
+import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import NameIdField from '@/core/utils/nameId/NameIdField';
+import { nameOf } from '@/core/utils/nameOf';
+import type { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import type {
   SpaceCreationForm,
   SpaceFormValues,
 } from '@/domain/space/components/CreateSpace/common/SpaceCreationDialog.models';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import SpaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SpaceTemplateSelector';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { gutters } from '@/core/ui/grid/utils';
-import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
-import NameIdField from '@/core/utils/nameId/NameIdField';
-import { nameOf } from '@/core/utils/nameOf';
-import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@mui/material';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import RouterLink from '@/core/ui/link/RouterLink';
-import { Caption } from '@/core/ui/typography';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import LinkButton from '@/core/ui/button/LinkButton';
-import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
-import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import type { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 
 const FormikEffect = FormikEffectFactory<CreateSpaceFormValues>();
 
@@ -113,17 +113,17 @@ export const CreateSpaceForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={() => {}}
     >
       {() => (
-        <Form noValidate>
+        <Form noValidate={true}>
           <FormikEffect onChange={onChange} onStatusChange={onValidChanged} />
           <SpaceTemplateSelector
             name={nameOf<CreateSpaceFormValues>('spaceTemplateId')}
             level={SpaceLevel.L0}
-            disablePadding
+            disablePadding={true}
             sx={{ paddingBottom: gutters() }}
             onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
             isTemplateSelectable={(template: SpaceTemplate) =>
@@ -142,7 +142,7 @@ export const CreateSpaceForm = ({
             name={nameOf<CreateSpaceFormValues>('nameId')}
             sourceFieldName={nameOf<CreateSpaceFormValues>('displayName')}
             title={t('common.url')}
-            required
+            required={true}
           />
           <FormikInputField
             name={nameOf<CreateSpaceFormValues>('tagline')}
@@ -185,7 +185,7 @@ export const CreateSpaceForm = ({
           />
           <FormikCheckboxField
             name={nameOf<CreateSpaceFormValues>('acceptedTerms')}
-            required
+            required={true}
             label={
               <Caption>
                 <Trans
@@ -218,9 +218,9 @@ export const CreateSpaceForm = ({
               onClose={() => setIsTermsDialogOpen(false)}
             />
             <DialogContent sx={{ paddingTop: 0 }}>
-              <WrapperMarkdown caption>{t('createSpace.terms.dialogContent')}</WrapperMarkdown>
+              <WrapperMarkdown caption={true}>{t('createSpace.terms.dialogContent')}</WrapperMarkdown>
               {config.locations?.terms && (
-                <RouterLink to={config.locations?.terms ?? ''} blank underline="always">
+                <RouterLink to={config.locations?.terms ?? ''} blank={true} underline="always">
                   <Caption>{t('createSpace.terms.fullTermsLink')}</Caption>
                 </RouterLink>
               )}
