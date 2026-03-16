@@ -4,12 +4,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserConversationsDocument, useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import {
-  ConversationCreationType,
-  type UserConversationsQuery,
-  type UserFilterInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { UserConversationsDocument, useAssignConversationMemberMutation } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, type UserConversationsQuery, type UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -21,11 +17,13 @@ import {
 } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type { ConversationMember } from './useUserConversations';
 
-interface NewMessageDialogProps {
+interface AddMembersDialogProps {
   open: boolean;
   onClose: () => void;
-  onConversationCreated: (conversationId: string, roomId: string) => void;
+  conversationId: string;
+  currentMembers: ConversationMember[];
 }
 
 interface SelectedUser {
@@ -34,14 +32,14 @@ interface SelectedUser {
   avatarUri?: string;
 }
 
-export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMessageDialogProps) => {
+export const AddMembersDialog = ({ open, onClose, conversationId, currentMembers }: AddMembersDialogProps) => {
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
   const [selectedUsers, setSelectedUsers] = useState<SelectedUser[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const [createConversation] = useCreateConversationMutation();
+  const [addMember] = useAssignConversationMemberMutation();
 
   const { data: contributors = [], loading: loadingContributors } = useContributors({
     filter,
@@ -50,10 +48,13 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
   });
 
   const selectedIds = useMemo(() => new Set(selectedUsers.map(u => u.id)), [selectedUsers]);
+  const memberIds = useMemo(() => new Set(currentMembers.map(m => m.id)), [currentMembers]);
 
   const filteredContributors = useMemo(() => {
-    return contributors.filter(user => user.id !== currentUser?.id && !selectedIds.has(user.id));
-  }, [contributors, currentUser?.id, selectedIds]);
+    return contributors.filter(
+      user => user.id !== currentUser?.id && !selectedIds.has(user.id) && !memberIds.has(user.id)
+    );
+  }, [contributors, currentUser?.id, selectedIds, memberIds]);
 
   const debouncedSetFilter = useMemo(
     () =>
@@ -90,67 +91,62 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
     setSelectedUsers(prev => prev.filter(u => u.id !== userId));
   };
 
-  const [handleCreateChat, isCreating] = useLoadingState(async () => {
+  const [handleAddMembers, isAdding] = useLoadingState(async () => {
     if (selectedUsers.length === 0) return;
 
-    const isGroup = selectedUsers.length > 1;
-    const displayName = isGroup ? selectedUsers.map(u => u.displayName).join(', ') : undefined;
-
-    const result = await createConversation({
-      variables: {
-        conversationData: {
-          memberIDs: selectedUsers.map(u => u.id),
-          type: isGroup ? ConversationCreationType.Group : ConversationCreationType.Direct,
-          displayName,
+    for (const user of selectedUsers) {
+      await addMember({
+        variables: {
+          memberData: {
+            conversationID: conversationId,
+            memberID: user.id,
+          },
         },
-      },
-      update: (cache, { data }) => {
-        const conversation = data?.createConversation;
-        const room = conversation?.room;
-        if (!conversation || !room) return;
-
-        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-          if (!existing?.me?.conversations?.conversations) return existing;
-          if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) return existing;
-
-          return {
-            ...existing,
-            me: {
-              ...existing.me,
-              conversations: {
-                ...existing.me.conversations,
-                conversations: [
-                  {
-                    __typename: 'Conversation' as const,
-                    id: conversation.id,
-                    room: {
-                      __typename: 'Room' as const,
-                      id: room.id,
-                      type: room.type,
-                      displayName: room.displayName,
-                      avatarUrl: room.avatarUrl,
-                      createdDate: room.createdDate,
-                      unreadCount: 0,
-                      messagesCount: 0,
-                      lastMessage: undefined,
-                    },
-                    members: conversation.members,
-                  },
-                  ...existing.me.conversations.conversations,
-                ],
+        update: cache => {
+          cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+            if (!existing?.me?.conversations?.conversations) return existing;
+            return {
+              ...existing,
+              me: {
+                ...existing.me,
+                conversations: {
+                  ...existing.me.conversations,
+                  conversations: existing.me.conversations.conversations.map(c => {
+                    if (c.id !== conversationId) return c;
+                    if (c.members.some(m => m.id === user.id)) return c;
+                    return {
+                      ...c,
+                      members: [
+                        ...c.members,
+                        {
+                          __typename: 'Actor' as const,
+                          id: user.id,
+                          type: ActorType.User,
+                          profile: {
+                            __typename: 'Profile' as const,
+                            id: '',
+                            displayName: user.displayName,
+                            url: '',
+                            avatar: user.avatarUri
+                              ? {
+                                  __typename: 'Visual' as const,
+                                  id: '',
+                                  uri: user.avatarUri,
+                                }
+                              : undefined,
+                          },
+                        },
+                      ],
+                    };
+                  }),
+                },
               },
-            },
-          };
-        });
-      },
-    });
-
-    const conversationId = result.data?.createConversation.id;
-    const roomId = result.data?.createConversation.room?.id;
-
-    if (conversationId && roomId) {
-      onConversationCreated(conversationId, roomId);
+            };
+          });
+        },
+      });
     }
+
     handleClose();
   });
 
@@ -166,7 +162,7 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
       open={open}
       columns={8}
       onClose={handleClose}
-      aria-labelledby="new-message-dialog"
+      aria-labelledby="add-members-dialog"
       sx={{
         '.MuiDialog-paper': {
           maxWidth: 530,
@@ -174,13 +170,12 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
       }}
     >
       <DialogHeader
-        id="new-message-dialog"
-        title={t('components.userMessaging.newMessage' as TranslationKey)}
+        id="add-members-dialog"
+        title={t('components.userMessaging.addMembers' as TranslationKey)}
         onClose={handleClose}
       />
       <DialogContent>
         <Box display="flex" flexDirection="column">
-          {/* User search */}
           <Autocomplete
             options={filteredContributors}
             getOptionLabel={option => option.profile?.displayName ?? ''}
@@ -230,7 +225,6 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
             )}
           />
 
-          {/* Selected members as chips */}
           {selectedUsers.length > 0 && (
             <Box display="flex" flexDirection="row" flexWrap="wrap" gap={1} paddingTop={2.5}>
               {selectedUsers.map(user => (
@@ -312,8 +306,8 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
         </Button>
         <Button
           variant="contained"
-          onClick={handleCreateChat}
-          disabled={selectedUsers.length === 0 || isCreating}
+          onClick={handleAddMembers}
+          disabled={selectedUsers.length === 0 || isAdding}
           sx={{
             fontFamily: '"Montserrat", sans-serif',
             fontWeight: 500,
@@ -325,7 +319,7 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
             '&:hover': { background: '#15293A' },
           }}
         >
-          {t('components.userMessaging.createChat' as TranslationKey)}
+          {t('components.userMessaging.addMembers' as TranslationKey)}
         </Button>
       </DialogActions>
     </DialogWithGrid>

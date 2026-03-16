@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   UserConversationsDocument,
@@ -53,6 +53,7 @@ interface GroupChatManagementDialogProps {
   currentMembers: ConversationMember[];
   displayName?: string;
   avatarUrl?: string;
+  onLeaveGroup?: () => void;
 }
 
 export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps) => {
@@ -134,6 +135,10 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
       }, 300),
     []
   );
+
+  useEffect(() => {
+    return () => debouncedSetFilter.cancel();
+  }, [debouncedSetFilter]);
 
   const handleInputChange = (_event: React.SyntheticEvent, value: string) => {
     setInputValue(value);
@@ -498,41 +503,65 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
           )}
         </Box>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: 'flex-end', padding: '20px', gap: 1.25 }}>
-        <Button
-          variant="text"
-          onClick={handleRequestClose}
-          sx={{
-            fontFamily: '"Montserrat", sans-serif',
-            fontWeight: 500,
-            fontSize: 12,
-            textTransform: 'uppercase',
-            color: '#1D384A',
-          }}
-        >
-          {t('buttons.back' as TranslationKey)}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleSave}
-          sx={{
-            fontFamily: '"Montserrat", sans-serif',
-            fontWeight: 500,
-            fontSize: 12,
-            textTransform: 'uppercase',
-            background: '#1D384A',
-            borderRadius: '12px',
-            padding: '5px 15px',
-            '&:hover': { background: '#15293A' },
-          }}
-        >
-          {t('components.userMessaging.saveGroup' as TranslationKey)}
-        </Button>
+      <DialogActions sx={{ justifyContent: 'space-between', padding: '20px' }}>
+        {props.onLeaveGroup ? (
+          <Button
+            variant="text"
+            onClick={props.onLeaveGroup}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 500,
+              fontSize: 12,
+              textTransform: 'uppercase',
+              color: '#1D384A',
+            }}
+          >
+            {t('components.userMessaging.leaveGroup' as TranslationKey)}
+          </Button>
+        ) : (
+          <Box />
+        )}
+        <Box display="flex" gap={1.25}>
+          <Button
+            variant="text"
+            onClick={handleRequestClose}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 500,
+              fontSize: 12,
+              textTransform: 'uppercase',
+              color: '#1D384A',
+            }}
+          >
+            {t('buttons.back' as TranslationKey)}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 500,
+              fontSize: 12,
+              textTransform: 'uppercase',
+              background: '#1D384A',
+              borderRadius: '12px',
+              padding: '5px 15px',
+              '&:hover': { background: '#15293A' },
+            }}
+          >
+            {t('components.userMessaging.saveGroup' as TranslationKey)}
+          </Button>
+        </Box>
       </DialogActions>
 
       {/* Discard changes confirmation */}
-      <Dialog open={isDiscardConfirmOpen} onClose={() => setIsDiscardConfirmOpen(false)}>
+      <Dialog
+        open={isDiscardConfirmOpen}
+        onClose={() => setIsDiscardConfirmOpen(false)}
+        aria-labelledby="discard-confirm-title"
+      >
         <DialogHeader
+          id="discard-confirm-title"
           title={t('components.userMessaging.discardChangesTitle' as TranslationKey)}
           onClose={() => setIsDiscardConfirmOpen(false)}
         />

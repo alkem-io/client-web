@@ -1,4 +1,4 @@
-import { ArrowBack, Close, MoreVert } from '@mui/icons-material';
+import { Add, ArrowBack, Close, Groups, MoreVert, Remove } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -6,6 +6,8 @@ import {
   DialogActions,
   DialogContent,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Typography,
@@ -32,6 +34,7 @@ import PostMessageToCommentsForm from '@/domain/communication/room/Comments/Post
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { AddMembersDialog } from './AddMembersDialog';
 import { GroupChatManagementDialog } from './GroupChatManagementDialog';
 import { GroupCompositeAvatar } from './GroupCompositeAvatar';
 import type { ConversationMessage } from './useConversationMessages';
@@ -221,6 +224,7 @@ export const UserMessagingConversationView = ({
 
   // Group menu state
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [isAddMembersOpen, setIsAddMembersOpen] = useState(false);
   const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [leaveConversation] = useLeaveConversationMutation();
@@ -409,10 +413,24 @@ export const UserMessagingConversationView = ({
                 <MenuItem
                   onClick={() => {
                     setMenuAnchorEl(null);
+                    setIsAddMembersOpen(true);
+                  }}
+                >
+                  <ListItemIcon>
+                    <Add fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('components.userMessaging.addMembers' as const)}</ListItemText>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setMenuAnchorEl(null);
                     setIsManageDialogOpen(true);
                   }}
                 >
-                  {t('components.userMessaging.manageGroup' as const)}
+                  <ListItemIcon>
+                    <Groups fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('components.userMessaging.manageGroup' as const)}</ListItemText>
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -420,7 +438,10 @@ export const UserMessagingConversationView = ({
                     setIsLeaveConfirmOpen(true);
                   }}
                 >
-                  {t('components.userMessaging.leaveGroup' as const)}
+                  <ListItemIcon>
+                    <Remove fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('components.userMessaging.leaveGroup' as const)}</ListItemText>
                 </MenuItem>
               </Menu>
             </>
@@ -433,6 +454,16 @@ export const UserMessagingConversationView = ({
         </Box>
       </Box>
 
+      {/* Add members dialog */}
+      {isGroup && (
+        <AddMembersDialog
+          open={isAddMembersOpen}
+          onClose={() => setIsAddMembersOpen(false)}
+          conversationId={conversation.id}
+          currentMembers={conversation.members}
+        />
+      )}
+
       {/* Group management dialog */}
       {isGroup && (
         <GroupChatManagementDialog
@@ -443,12 +474,21 @@ export const UserMessagingConversationView = ({
           currentMembers={conversation.members}
           displayName={conversation.displayName}
           avatarUrl={conversation.avatarUri}
+          onLeaveGroup={() => {
+            setIsManageDialogOpen(false);
+            setIsLeaveConfirmOpen(true);
+          }}
         />
       )}
 
       {/* Leave confirmation dialog */}
-      <Dialog open={isLeaveConfirmOpen} onClose={() => setIsLeaveConfirmOpen(false)}>
+      <Dialog
+        open={isLeaveConfirmOpen}
+        onClose={() => setIsLeaveConfirmOpen(false)}
+        aria-labelledby="leave-confirm-title"
+      >
         <DialogHeader
+          id="leave-confirm-title"
           title={t('components.userMessaging.leaveGroupConfirmTitle' as const)}
           onClose={() => setIsLeaveConfirmOpen(false)}
         />

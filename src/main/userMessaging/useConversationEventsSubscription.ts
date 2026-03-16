@@ -19,6 +19,8 @@ import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useUserMessagingContext } from './UserMessagingContext';
 
+type SelectionClearer = (conversationId: string) => void;
+
 type ConversationCreatedEvent = NonNullable<
   NonNullable<ConversationEventsSubscription['conversationEvents']>['conversationCreated']
 >;
@@ -86,10 +88,20 @@ const MessageCacheFragment = gql`
 `;
 
 export const useConversationEventsSubscription = (selectedRoomId: string | null) => {
-  const { isEnabled } = useUserMessagingContext();
+  const { isEnabled, selectedConversationId, setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
   const { isAuthenticated, userModel } = useCurrentUserContext();
   const client = useApolloClient();
   const currentUserId = userModel?.id;
+
+  const clearSelectionIfActive: SelectionClearer = useCallback(
+    (conversationId: string) => {
+      if (selectedConversationId === conversationId) {
+        setSelectedConversationId(null);
+        setSelectedRoomId(null);
+      }
+    },
+    [selectedConversationId, setSelectedConversationId, setSelectedRoomId]
+  );
 
   const handleConversationCreated = useCallback(
     (event: ConversationCreatedEvent) => {
@@ -205,6 +217,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const handleConversationDeleted = useCallback(
     (event: ConversationDeletedEvent) => {
+      clearSelectionIfActive(event.conversationID);
+
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
         if (!existing?.me?.conversations?.conversations) return existing;
 
@@ -238,7 +252,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         }
       );
     },
-    [client]
+    [client, clearSelectionIfActive]
   );
 
   const handleMemberAdded = useCallback(
@@ -363,6 +377,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
   const handleMemberRemoved = useCallback(
     (event: MemberRemovedEvent) => {
       if (event.removedMemberID === currentUserId) {
+        clearSelectionIfActive(event.conversation.id);
+
         client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
           if (!existing?.me?.conversations?.conversations) return existing;
           return {
@@ -416,7 +432,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         };
       });
     },
-    [client, currentUserId]
+    [client, currentUserId, clearSelectionIfActive]
   );
 
   const handleMessageReceived = useCallback(

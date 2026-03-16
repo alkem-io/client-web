@@ -62,7 +62,7 @@ src/main/userMessaging/
 │   ├── ConversationMessages.graphql      # (minimal changes)
 │   ├── MarkMessageAsRead.graphql         # (no changes)
 │   ├── UserConversationsUnreadCount.graphql # UPDATE: conversations path
-│   ├── AddConversationMember.graphql     # NEW (renamed to AssignConversationMember)
+│   ├── AssignConversationMember.graphql   # NEW
 │   ├── RemoveConversationMember.graphql  # NEW
 │   ├── LeaveConversation.graphql         # NEW
 │   └── UpdateConversation.graphql        # NEW
@@ -194,4 +194,5 @@ No constitution violations to justify. All changes fit within existing architect
 | Group avatar uses `Room.avatarUrl` (mxc:// or https) | Medium | `Room.avatarUrl` is persisted server-side. Client fetches it. Upload via `updateConversation`. |
 | Fire-and-forget mutation pattern                     | Medium | All membership/property mutations return `Boolean!`. State arrives via subscriptions.          |
 | Chat widget VC lookup migration                      | Medium | Query all conversations and filter client-side for VC member type                              |
+| Server-side date normalization / timestamp → timestamptz migration missing | Medium | Server PR must perform the timestamp → timestamptz migration and ensure subscription dates are rehydrated correctly for real-time ordering. Run migration early and validate subscription date rehydration in integration tests. |
 | Performance with large member lists (no upper limit) | Low    | MUI Autocomplete handles virtualization; server handles pagination                             |

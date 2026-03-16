@@ -6,7 +6,7 @@
 ## Prerequisites
 
 - Node >= 22.0.0, pnpm >= 10.17.1
-- Alkemio server running locally at `localhost:3000` (Traefik) / `localhost:4000` (GraphQL)
+- Alkemio server running locally at `localhost:3000` (Traefik reverse proxy). `pnpm codegen` expects the GraphQL endpoint at `http://localhost:4000/graphql` (direct server access). `pnpm start` serves the UI on `localhost:3001` via Vite, proxying API calls to `localhost:3000`.
 - Server must have the group conversations API deployed (PR alkem-io/server#5891 or equivalent)
 
 ## Setup
