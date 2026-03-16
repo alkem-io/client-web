@@ -1,4 +1,3 @@
-import { useApolloClient } from '@apollo/client';
 import { ArrowBack, Close, MoreVert } from '@mui/icons-material';
 import {
   Box,
@@ -11,7 +10,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   UserConversationsDocument,
@@ -256,43 +255,42 @@ export const UserMessagingConversationView = ({
   const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
   useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
   const [markAsRead] = useMarkMessageAsReadMutation();
-  const client = useApolloClient();
+  const lastMarkedRef = useRef<string | null>(null);
 
-  // Mark last message as read when conversation is opened or new messages arrive
-  const markConversationAsRead = useCallback(() => {
-    if (!conversation?.roomId || conversation.unreadCount === 0) {
-      return;
-    }
-
-    // Clear badge immediately — don't wait for the subscription round-trip
-    const roomCacheId = client.cache.identify({ __typename: 'Room', id: conversation.roomId });
-    if (roomCacheId) {
-      client.cache.modify({
-        id: roomCacheId,
-        fields: {
-          unreadCount: () => 0,
-        },
-      });
-    }
-
-    // Only send read receipt if there are messages to mark as read
-    if (!messages.length) return;
+  // Send read receipt to Matrix when messages are available
+  useEffect(() => {
+    if (!conversation?.roomId || !messages.length) return;
 
     const lastMessage = messages[messages.length - 1];
+    const key = `${conversation.roomId}:${lastMessage.id}`;
+
+    // Skip if we already marked this exact message as read
+    if (lastMarkedRef.current === key) return;
+    lastMarkedRef.current = key;
+
+    const roomId = conversation.roomId;
     markAsRead({
       variables: {
         messageData: {
-          roomID: conversation.roomId,
+          roomID: roomId,
           messageID: lastMessage.id,
         },
       },
+      // Server confirmed the read receipt — update the cache directly.
+      // The refetch would race Matrix and return stale counts.
+      update: cache => {
+        const roomCacheId = cache.identify({ __typename: 'Room', id: roomId });
+        if (roomCacheId) {
+          cache.modify({
+            id: roomCacheId,
+            fields: {
+              unreadCount: () => 0,
+            },
+          });
+        }
+      },
     }).catch(_error => {});
-  }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead, client]);
-
-  // Mark as read when conversation is opened
-  useEffect(() => {
-    markConversationAsRead();
-  }, [markConversationAsRead]);
+  }, [conversation?.roomId, messages, markAsRead]);
 
   // Scroll to bottom when messages change
   useLayoutEffect(() => {
