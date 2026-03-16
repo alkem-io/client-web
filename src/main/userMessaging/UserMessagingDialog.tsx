@@ -100,19 +100,21 @@ const UserMessagingDialog = () => {
           onClose={handleClose}
           aria-labelledby={t('components.userMessaging.title' as const)}
         >
-          {/* Close button */}
-          <IconButton
-            onClick={handleClose}
-            aria-label={t('buttons.close')}
-            sx={theme => ({
-              position: 'absolute',
-              top: theme.spacing(2),
-              right: theme.spacing(2),
-              zIndex: 1,
-            })}
-          >
-            <CloseIcon />
-          </IconButton>
+          {/* Close button — hidden when a conversation is open (back button is available instead) */}
+          {!selectedConversationId && (
+            <IconButton
+              onClick={handleClose}
+              aria-label={t('buttons.close')}
+              sx={theme => ({
+                position: 'absolute',
+                top: theme.spacing(2),
+                right: theme.spacing(2),
+                zIndex: 1,
+              })}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
           <DialogContent
             sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%' }}
           >
@@ -124,6 +126,7 @@ const UserMessagingDialog = () => {
                 onBack={handleBack}
                 showBackButton={true}
                 onLeaveConversation={handleBack}
+                onClose={handleClose}
               />
             ) : (
               <UserMessagingChatList
