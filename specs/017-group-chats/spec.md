@@ -155,7 +155,7 @@ As a user, I want to see group membership changes and new messages in real-time 
 - **Duplicate member addition**: Users already in the group are filtered out of the search/add dialog.
 - **Deleted user account**: If a member's account is deleted, they are removed from the group (V2 — out of scope for initial release).
 - **Self-removal**: When a member removes themselves via "Manage members", it behaves the same as "Leave group".
-- **Last member leaves**: The group conversation is automatically deleted; mutations return null.
+- **Last member leaves**: The group conversation is automatically deleted server-side. The `leaveConversation` mutation returns `Boolean!` (fire-and-forget); the client receives a `CONVERSATION_DELETED` subscription event to remove the conversation from the list.
 - **Conversion restriction**: There is no way to convert an existing 1-on-1 direct conversation into a group chat. Groups must be created as new entities.
 - **VC restriction**: Only human users can be invited to group chats in V1; virtual contributors cannot be added to groups.
 - **Concurrent member operations**: If two members simultaneously add/remove users, the final state should be consistent (server-authoritative).
@@ -204,7 +204,7 @@ As a user, I want to see group membership changes and new messages in real-time 
 - **FR-024**: System MUST allow any member to voluntarily leave a group chat. A confirmation dialog MUST be shown before the leave action is executed.
 - **FR-025**: System MUST immediately remove a left/removed group chat from the affected user's conversation list.
 - **FR-026**: System MUST keep the group chat active for remaining members when a member leaves or is removed.
-- **FR-027**: System MUST handle auto-deletion of group conversations when the last member leaves (null response from mutation).
+- **FR-027**: System MUST handle auto-deletion of group conversations when the last member leaves. The `leaveConversation` mutation returns `Boolean!`; the server emits a `CONVERSATION_DELETED` subscription event that the client uses to remove the conversation from the list.
 
 #### Real-Time Updates
 

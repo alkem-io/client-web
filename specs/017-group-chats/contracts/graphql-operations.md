@@ -119,7 +119,10 @@ subscription ConversationEvents {
         id
         room {
           id
+          type
           displayName
+          avatarUrl
+          createdDate
           unreadCount
           messagesCount
           lastMessage {
@@ -134,15 +137,22 @@ subscription ConversationEvents {
         ...MessageFields
       }
     }
+    conversationUpdated {
+      conversation {
+        id
+        room {
+          id
+          displayName
+          avatarUrl
+        }
+      }
+    }
     conversationDeleted {
       conversationID
     }
     memberAdded {
       conversation {
         id
-        members {
-          ...MemberFields
-        }
       }
       addedMember {
         ...MemberFields
@@ -151,9 +161,6 @@ subscription ConversationEvents {
     memberRemoved {
       conversation {
         id
-        members {
-          ...MemberFields
-        }
       }
       removedMemberID
     }
