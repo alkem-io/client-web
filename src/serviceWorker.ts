@@ -71,7 +71,9 @@ export function onVersionUpdate(callback: VersionUpdateCallback) {
 }
 
 export function cleanupVersionUpdateListeners() {
-  versionUpdateListeners.forEach(dispose => dispose(''));
+  versionUpdateListeners.forEach(dispose => {
+    dispose('');
+  });
   versionUpdateListeners = [];
 }
 

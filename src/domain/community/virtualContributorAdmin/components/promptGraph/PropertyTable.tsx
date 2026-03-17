@@ -150,8 +150,7 @@ export const PropertyTable = ({
                               color="primary"
                               disabled={
                                 !(
-                                  editingProperty &&
-                                  editingProperty.data &&
+                                  editingProperty?.data &&
                                   (editingProperty.data.name || '').trim() &&
                                   (editingProperty.data.type || '').trim() &&
                                   (editingProperty.data.description || '').trim()

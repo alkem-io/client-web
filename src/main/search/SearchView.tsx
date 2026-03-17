@@ -74,7 +74,7 @@ interface SearchViewSections {
   calloutResults?: SearchResultMetaType[];
   framingResults?: SearchResultMetaType[]; // framingResults merged into calloutResults
   contributionResults?: SearchResultMetaType[];
-  actorResults?: SearchResultMetaType[];
+  contributorResults?: SearchResultMetaType[];
 }
 
 type ResultsCursors = {
@@ -241,7 +241,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     skip: hasNoTermsLength || resolvingSpace,
   });
 
-  const { spaceResults, calloutResults, framingResults, contributionResults, actorResults }: SearchViewSections =
+  const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
     toResultType(hasNoTermsLength ? undefined : data);
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
@@ -536,8 +536,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
 
   const filteredContributorResults =
     contributorFilter.typename === 'all'
-      ? actorResults
-      : actorResults?.filter(contributor =>
+      ? contributorResults
+      : contributorResults?.filter(contributor =>
           contributorFilter.typename === 'user'
             ? contributor.type === SearchResultType.User
             : contributor.type === SearchResultType.Organization
@@ -699,7 +699,7 @@ function toResultType(query?: SearchQuery): SearchViewSections {
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const actorResults = (query?.search.actorResults?.results || []).map<SearchResultMetaType>(
+  const contributorResults = (query?.search.actorResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
@@ -708,7 +708,7 @@ function toResultType(query?: SearchQuery): SearchViewSections {
     calloutResults,
     framingResults,
     contributionResults,
-    actorResults,
+    contributorResults,
   };
 }
 
