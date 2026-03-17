@@ -27046,6 +27046,10 @@ export type SpaceSettingsQuery = {
               allowMembersToVideoCall: boolean;
               allowGuestContributions: boolean;
             };
+            layout: {
+              __typename?: 'SpaceSettingsLayout';
+              calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
+            };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
         }
@@ -27072,6 +27076,7 @@ export type SpaceSettingsFragment = {
     allowMembersToVideoCall: boolean;
     allowGuestContributions: boolean;
   };
+  layout: { __typename?: 'SpaceSettingsLayout'; calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode };
 };
 
 export type UpdateSpaceSettingsMutationVariables = Exact<{
@@ -27102,6 +27107,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToVideoCall: boolean;
         allowGuestContributions: boolean;
       };
+      layout: { __typename?: 'SpaceSettingsLayout'; calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode };
     };
   };
 };

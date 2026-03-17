@@ -2515,7 +2515,13 @@
           },
           "layout": {
             "description": "Here you can edit the layout for this {{entity}}.",
-            "innovationFlowEditor": "$t(common.space) tabs"
+            "innovationFlowEditor": "$t(common.space) tabs",
+            "calloutDisplayMode": {
+              "title": "$t(common.Post) description display",
+              "expanded": "Expanded",
+              "collapsed": "Collapsed",
+              "description": "Collapse $t(common.post) descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+            }
           },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-$t(common.members)."
