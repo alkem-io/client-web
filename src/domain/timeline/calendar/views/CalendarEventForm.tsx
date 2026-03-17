@@ -22,7 +22,7 @@ export interface CalendarEventFormProps {
   dialogTitle: string;
   dialogTitleId?: string;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (eventValues: CalendarEventFormData) => void;
+  onSubmit: (eventValues: CalendarEventFormData) => void | Promise<void>;
   isSubmitting: boolean;
   actions?: ReactNode;
   temporaryLocation?: boolean;

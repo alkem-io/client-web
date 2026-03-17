@@ -8,7 +8,6 @@ import {
   useDeleteVirtualContributorOnAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import useEnsurePresence from '@/core/utils/ensurePresence';
 
 export enum AccountEntityType {
   Space = 'Space',
@@ -20,8 +19,6 @@ export enum AccountEntityType {
 export const useAccountEntityDeletion = (accountId: string | undefined) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const ensurePresence = useEnsurePresence();
-
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<AccountEntityType | undefined>(undefined);
@@ -109,19 +106,19 @@ export const useAccountEntityDeletion = (accountId: string | undefined) => {
   };
 
   const deleteEntity = () => {
+    if (!entity || !selectedId) {
+      clearDeleteState();
+      return;
+    }
+
     switch (entity) {
-      case AccountEntityType.Space: {
-        const requiredSpaceId = ensurePresence(selectedId, 'SpaceId');
-        return deleteSpace({ variables: { spaceId: requiredSpaceId } });
-      }
+      case AccountEntityType.Space:
+        return deleteSpace({ variables: { spaceId: selectedId } });
       case AccountEntityType.VirtualContributor:
-        if (!selectedId) return;
         return deleteVCMutation({ variables: { virtualContributorData: { ID: selectedId } } });
       case AccountEntityType.InnovationPack:
-        if (!selectedId) return;
         return deletePackMutation({ variables: { innovationPackId: selectedId } });
       case AccountEntityType.InnovationHub:
-        if (!selectedId) return;
         return deleteHubMutation({ variables: { innovationHubId: selectedId } });
     }
   };

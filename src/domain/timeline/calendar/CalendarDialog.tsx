@@ -41,7 +41,7 @@ export interface CalendarDialogProps {
 // Sub-component for the editing form that needs to call useCalendarEventDetail
 const EditingEventForm: FC<{
   eventId: string;
-  onSubmit: (calendarEvent: CalendarEventFormData) => void;
+  onSubmit: (calendarEvent: CalendarEventFormData) => void | Promise<void>;
   onClose: () => void;
   updatingCalendarEvent: boolean;
   canDeleteEvents: boolean;
