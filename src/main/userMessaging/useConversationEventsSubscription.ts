@@ -1,12 +1,14 @@
 import { gql, useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 import {
+  ConversationDetailsDocument,
   ConversationMessagesDocument,
   UserConversationsDocument,
   UserConversationsUnreadCountDocument,
   useConversationEventsSubscription as useSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
+  type ConversationDetailsQuery,
   type ConversationEventsSubscription,
   ConversationEventType,
   type ConversationMessagesQuery,
@@ -281,7 +283,99 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
   );
 
   const handleMemberAdded = useCallback(
-    (event: MemberAddedEvent) => {
+    async (event: MemberAddedEvent) => {
+      // Self-detection: current user was added to a group
+      if (event.addedMember.id === currentUserId) {
+        try {
+          const { data } = await client.query<ConversationDetailsQuery>({
+            query: ConversationDetailsDocument,
+            variables: { conversationId: event.conversation.id },
+            fetchPolicy: 'network-only',
+          });
+
+          const conversation = data?.lookup?.conversation;
+          const room = conversation?.room;
+
+          if (!conversation || !room) {
+            return;
+          }
+
+          // Write to full conversations cache
+          client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+            if (!existing?.me?.conversations?.conversations) return existing;
+
+            // Idempotency + race condition guard: skip if already present
+            if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
+              return existing;
+            }
+
+            return {
+              ...existing,
+              me: {
+                ...existing.me,
+                conversations: {
+                  ...existing.me.conversations,
+                  conversations: [
+                    {
+                      __typename: 'Conversation' as const,
+                      id: conversation.id,
+                      room: {
+                        __typename: 'Room' as const,
+                        id: room.id,
+                        type: room.type,
+                        displayName: room.displayName,
+                        avatarUrl: room.avatarUrl,
+                        createdDate: room.createdDate,
+                        unreadCount: room.unreadCount,
+                        messagesCount: room.messagesCount,
+                        lastMessage: room.lastMessage,
+                      },
+                      members: conversation.members,
+                    },
+                    ...existing.me.conversations.conversations,
+                  ],
+                },
+              },
+            };
+          });
+
+          // Write to lightweight unread count cache
+          client.cache.updateQuery<UserConversationsUnreadCountQuery>(
+            { query: UserConversationsUnreadCountDocument },
+            existing => {
+              if (!existing?.me?.conversations?.conversations) return existing;
+
+              // Idempotency + race condition guard
+              if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) {
+                return existing;
+              }
+
+              return {
+                ...existing,
+                me: {
+                  ...existing.me,
+                  conversations: {
+                    ...existing.me.conversations,
+                    conversations: [
+                      {
+                        __typename: 'Conversation' as const,
+                        id: conversation.id,
+                        room: { __typename: 'Room' as const, id: room.id, unreadCount: room.unreadCount },
+                      },
+                      ...existing.me.conversations.conversations,
+                    ],
+                  },
+                },
+              };
+            }
+          );
+        } catch {
+          // Silently fail — the conversation will appear on next full refetch
+        }
+        return;
+      }
+
+      // Non-self: another member was added to a group we're in — update member list
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
         if (!existing?.me?.conversations?.conversations) return existing;
         return {
@@ -304,7 +398,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         };
       });
     },
-    [client]
+    [client, currentUserId]
   );
 
   const handleMemberRemoved = useCallback(

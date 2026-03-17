@@ -41292,6 +41292,85 @@ export type AssignConversationMemberMutationVariables = Exact<{
 
 export type AssignConversationMemberMutation = { __typename?: 'Mutation'; assignConversationMember: boolean };
 
+export type ConversationDetailsQueryVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
+}>;
+
+export type ConversationDetailsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    conversation?:
+      | {
+          __typename?: 'Conversation';
+          id: string;
+          room?:
+            | {
+                __typename?: 'Room';
+                id: string;
+                type: RoomType;
+                displayName: string;
+                avatarUrl?: string | undefined;
+                createdDate: Date;
+                unreadCount: number;
+                messagesCount: number;
+                lastMessage?:
+                  | {
+                      __typename?: 'Message';
+                      id: string;
+                      message: string;
+                      timestamp: number;
+                      sender?:
+                        | {
+                            __typename?: 'Actor';
+                            id: string;
+                            type: ActorType;
+                            profile?:
+                              | {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                      reactions: Array<{
+                        __typename?: 'Reaction';
+                        id: string;
+                        emoji: string;
+                        timestamp: number;
+                        sender?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                            }
+                          | undefined;
+                      }>;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          members: Array<{
+            __typename?: 'Actor';
+            id: string;
+            type: ActorType;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type ConversationEventsSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type ConversationEventsSubscription = {
