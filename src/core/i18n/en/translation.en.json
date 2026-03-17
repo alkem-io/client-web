@@ -104,6 +104,7 @@
     "adminsOnly": "Since there are no events, this block is only visible for $t(common.admins) and $t(common.leads)"
   },
   "buttons": {
+    "add": "Add",
     "leave": "Leave",
     "learn-more": "Learn more",
     "load-more": "Load more",

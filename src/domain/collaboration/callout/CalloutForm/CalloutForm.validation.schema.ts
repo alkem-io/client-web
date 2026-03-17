@@ -51,7 +51,7 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Poll
         ? schema
             .shape({
-              title: displayNameValidator({ required: true }),
+              title: displayNameValidator(),
               options: yup
                 .array()
                 .of(yup.object().shape({ text: yup.string().required() }))

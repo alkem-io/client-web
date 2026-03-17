@@ -284,7 +284,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
 
       {framing.poll && framing.type === CalloutFramingType.Poll && (
         <PageContentBlock sx={{ marginBottom: gutters() }}>
-          <PollFormFields readOnly={edit} />
+          <PollFormFields readOnlySettings={edit} />
         </PageContentBlock>
       )}
     </>

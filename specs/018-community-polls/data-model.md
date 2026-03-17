@@ -157,7 +157,7 @@ Used in the create callout form when framing type = POLL:
 
 | Field    | Type                   | Required | Description                                         |
 | -------- | ---------------------- | -------- | --------------------------------------------------- |
-| title    | string                 | Yes      | Poll title (non-empty, max 512 chars)               |
+| title    | string                 | No       | Poll title (optional, max 512 chars)                |
 | options  | string[]               | Yes      | Option texts (min 2, each non-empty, max 512 chars) |
 | settings | PollSettingsFormValues | No       | Optional settings with defaults                     |
 
@@ -235,7 +235,7 @@ CalloutsSet
 
 ### Poll Creation
 
-- Title: non-empty, max 512 characters
+- Title: optional, max 512 characters (min 3 if provided)
 - Options: minimum 2, each non-empty, max 512 characters
 - minResponses: ≥ 1
 - maxResponses: ≥ 0; when > 0, must be ≥ minResponses

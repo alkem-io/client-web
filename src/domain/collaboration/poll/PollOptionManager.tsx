@@ -45,7 +45,7 @@ const PollOptionManager = ({ poll, pollId }: PollOptionManagerProps) => {
 
   const handleEdit = (optionId: string, text: string) => {
     const option = poll.options.find(o => o.id === optionId);
-    if (option && option.voteCount && option.voteCount > 0) {
+    if (option?.voteCount && option.voteCount > 0) {
       setConfirmAction({ type: 'edit', optionId, text });
     } else {
       updateOption(optionId, text);
@@ -54,7 +54,7 @@ const PollOptionManager = ({ poll, pollId }: PollOptionManagerProps) => {
 
   const handleRemove = (optionId: string) => {
     const option = poll.options.find(o => o.id === optionId);
-    if (option && option.voteCount && option.voteCount > 0) {
+    if (option?.voteCount && option.voteCount > 0) {
       setConfirmAction({ type: 'remove', optionId });
     } else {
       removeOption(optionId);
