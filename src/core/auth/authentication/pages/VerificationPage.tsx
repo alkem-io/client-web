@@ -1,5 +1,5 @@
 import type { VerificationFlow } from '@ory/kratos-client';
-import { produce } from 'immer';
+
 import { type FC, type MouseEventHandler, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
@@ -38,15 +38,17 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const ui = useMemo(() => {
     return (
       verificationFlow?.ui &&
-      produce(verificationFlow.ui, nextUi => {
-        const continueButton = nextUi.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
+      (() => {
+        const ui = structuredClone(verificationFlow.ui);
+        const continueButton = ui.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
         if (!continueButton) {
-          return;
+          return ui;
         }
         if (isAnchorNode(continueButton)) {
           continueButton.attributes.href = verificationFlow.ui.action ?? returnUrl;
         }
-      })
+        return ui;
+      })()
     );
   }, [verificationFlow]);
 

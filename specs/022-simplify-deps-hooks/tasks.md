@@ -97,27 +97,27 @@
 
 ### 5a: react-scroll replacement
 
-- [ ] T025 [US4] Replace `scroller.scrollTo()` with `element.scrollIntoView({ behavior: 'smooth' })` in `src/domain/timeline/calendar/views/CalendarEventDetailView.tsx`
-- [ ] T026 [US4] Remove `react-scroll` from dependencies in package.json
+- [x] T025 [US4] Replace `scroller.scrollTo()` with `element.scrollIntoView({ behavior: 'smooth' })` in `src/domain/timeline/calendar/views/CalendarEventDetailView.tsx`
+- [x] T026 [US4] Remove `react-scroll` from dependencies in package.json
 
 ### 5b: cross-env replacement
 
-- [ ] T027 [US4] Update package.json scripts — replace 8 occurrences of `cross-env` across 5 scripts (`build`, `build:dev`, `build:sentry`, `start`, `test:coverage`) with direct env var syntax
-- [ ] T028 [US4] Remove `cross-env` from devDependencies in package.json
+- [x] T027 [US4] Update package.json scripts — replace 8 occurrences of `cross-env` across 5 scripts (`build`, `build:dev`, `build:sentry`, `start`, `test:coverage`) with direct env var syntax
+- [x] T028 [US4] Remove `cross-env` from devDependencies in package.json
 
 ### 5c: react-resize-detector replacement
 
-- [ ] T029 [US4] Create `src/core/ui/hooks/useResizeObserver.ts` — wrap native `ResizeObserver` API, return `{ ref, width, height }` matching `useResizeDetector` interface
-- [ ] T030 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/main/ui/platformNavigation/PlatformNavigationBar.tsx`
-- [ ] T031 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/cookieConsent/CookieConsent.tsx`
-- [ ] T032 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/domain/timeline/calendar/views/CalendarEventDetailView.tsx`
-- [ ] T033 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/typography/LinesFitter.tsx`
-- [ ] T034 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/tags/TwoLinesTagsContainer.tsx`
-- [ ] T035 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/main/search/SearchBox.tsx`
-- [ ] T036 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/overflow/AutomaticOverflowGradient.tsx`
-- [ ] T037 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/content/PageContentBlockHeader.tsx`
-- [ ] T038 [US4] Remove `react-resize-detector` from dependencies in package.json
-- [ ] T039 [US4] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no removed package imports remain
+- [x] T029 [US4] Create `src/core/ui/hooks/useResizeObserver.ts` — wrap native `ResizeObserver` API, return `{ ref, width, height }` matching `useResizeDetector` interface
+- [x] T030 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/main/ui/platformNavigation/PlatformNavigationBar.tsx`
+- [x] T031 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/cookieConsent/CookieConsent.tsx`
+- [x] T032 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/domain/timeline/calendar/views/CalendarEventDetailView.tsx`
+- [x] T033 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/typography/LinesFitter.tsx`
+- [x] T034 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/tags/TwoLinesTagsContainer.tsx`
+- [x] T035 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/main/search/SearchBox.tsx`
+- [x] T036 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/overflow/AutomaticOverflowGradient.tsx`
+- [x] T037 [P] [US4] Replace `useResizeDetector` with `useResizeObserver` in `src/core/ui/content/PageContentBlockHeader.tsx`
+- [x] T038 [US4] Remove `react-resize-detector` from dependencies in package.json
+- [x] T039 [US4] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no removed package imports remain
 
 **Checkpoint**: 3 libraries replaced with native APIs. Custom useResizeObserver hook serves all 8 consumers.
 
@@ -131,17 +131,17 @@
 
 ### Implementation for User Story 5
 
-- [ ] T040 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/LoginPage.tsx` — Kratos form UI state update
-- [ ] T041 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/RegistrationPage.tsx` — Kratos form UI state update
-- [ ] T042 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/SignUp.tsx` — Kratos form UI state update
-- [ ] T043 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/VerificationPage.tsx` — Kratos form UI state update
-- [ ] T044 [P] [US5] Replace `produce()` with spread syntax in Apollo subscription cache update in `src/domain/shared/subscriptions/useSubscriptionToSubEntity.ts`
-- [ ] T045 [P] [US5] Replace `produce()` with spread syntax in `src/core/ui/forms/MarkdownInputControls/ToolbarButton.tsx` — editor state update
-- [ ] T046 [P] [US5] Replace `produce()` with spread syntax in `src/core/ui/forms/MarkdownInputControls/ToolbarMenuItem.tsx` — editor state update
-- [ ] T047 [P] [US5] Replace `produce()` with spread syntax in `src/domain/space/components/spaceDashboardNavigation/DashboardNavigation.tsx` — viewport snap state
-- [ ] T048 [P] [US5] Replace `produce()` with spread syntax in `src/main/admin/storage/useStorageAdminTree.tsx` — tree state update
-- [ ] T049 [US5] Remove `immer` from dependencies in package.json
-- [ ] T050 [US5] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no immer imports remain
+- [x] T040 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/LoginPage.tsx` — Kratos form UI state update
+- [x] T041 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/RegistrationPage.tsx` — Kratos form UI state update
+- [x] T042 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/SignUp.tsx` — Kratos form UI state update
+- [x] T043 [P] [US5] Replace `produce()` with spread syntax in `src/core/auth/authentication/pages/VerificationPage.tsx` — Kratos form UI state update
+- [x] T044 [P] [US5] Replace `produce()` with spread syntax in Apollo subscription cache update in `src/domain/shared/subscriptions/useSubscriptionToSubEntity.ts`
+- [x] T045 [P] [US5] Replace `produce()` with spread syntax in `src/core/ui/forms/MarkdownInputControls/ToolbarButton.tsx` — editor state update
+- [x] T046 [P] [US5] Replace `produce()` with spread syntax in `src/core/ui/forms/MarkdownInputControls/ToolbarMenuItem.tsx` — editor state update
+- [x] T047 [P] [US5] Replace `produce()` with spread syntax in `src/domain/space/components/spaceDashboardNavigation/DashboardNavigation.tsx` — viewport snap state
+- [x] T048 [P] [US5] Replace `produce()` with spread syntax in `src/main/admin/storage/useStorageAdminTree.tsx` — tree state update
+- [x] T049 [US5] Remove `immer` from dependencies in package.json
+- [x] T050 [US5] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no immer imports remain
 
 **Checkpoint**: All 9 produce() calls replaced with native spread syntax. Immer removed.
 

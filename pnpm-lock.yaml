@@ -146,9 +146,6 @@ importers:
       axios:
         specifier: ^1.9.0
         version: 1.12.2
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       dayjs:
         specifier: ^1.11.7
         version: 1.11.18
@@ -185,9 +182,6 @@ importers:
       i18next-browser-languagedetector:
         specifier: 7.2.2
         version: 7.2.2
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.3
       jsdom:
         specifier: ^26.0.0
         version: 26.1.0
@@ -245,15 +239,9 @@ importers:
       react-mentions:
         specifier: ^4.4.7
         version: 4.4.10(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      react-resize-detector:
-        specifier: ^12.0.2
-        version: 12.3.0(react@19.2.1)
       react-router-dom:
         specifier: ^7.4.0
         version: 7.9.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      react-scroll:
-        specifier: ^1.8.7
-        version: 1.9.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       rehype-parse:
         specifier: ^9.0.1
         version: 9.0.1
@@ -4079,9 +4067,6 @@ packages:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.39.10:
-    resolution: {integrity: sha512-E0iGnTtbDhkeczB0T+mxmoVlT4YNweEKBLq7oaU4p11mecdsZpNWOglI4895Vh4usbQ+LsJiuLuI2L0Vdmfm2w==}
-
   es6-promise-pool@2.5.0:
     resolution: {integrity: sha512-VHErXfzR/6r/+yyzPKeBvO0lgjfC5cbDCQWjWwMZWSb6YU39TGIl51OUmCfWCq4ylMdJSB8zkz2vIuIeIxXApA==}
     engines: {node: '>=0.10.0'}
@@ -6014,11 +5999,6 @@ packages:
       '@types/react':
         optional: true
 
-  react-resize-detector@12.3.0:
-    resolution: {integrity: sha512-mIDOVrTHKGnKe6qEUWi8dFdfHM5CPyTOpqoHctdMQf89Ljm/0qqDIzkP3vTRZZJi9/raaMiRxDEOqO4you5x+A==}
-    peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-
   react-router-dom@7.9.3:
     resolution: {integrity: sha512-1QSbA0TGGFKTAc/aWjpfW/zoEukYfU4dc1dLkT/vvf54JoGMkW+fNA+3oyo2gWVW1GM7BxjJVHz5GnPJv40rvg==}
     engines: {node: '>=20.0.0'}
@@ -6035,12 +6015,6 @@ packages:
     peerDependenciesMeta:
       react-dom:
         optional: true
-
-  react-scroll@1.9.3:
-    resolution: {integrity: sha512-xv7FXqF3k63aSLNu4/NjFvRNI0ge7DmmmsbeGarP7LZVAlJMSjUuW3dTtLxp1Afijyv0lS2qwC0GiFHvx1KBHQ==}
-    peerDependencies:
-      react: ^15.5.4 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^15.5.4 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
@@ -11362,8 +11336,6 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  es-toolkit@1.39.10: {}
-
   es6-promise-pool@2.5.0: {}
 
   esbuild@0.27.2:
@@ -12090,7 +12062,8 @@ snapshots:
 
   image-ssim@0.2.0: {}
 
-  immer@10.1.3: {}
+  immer@10.1.3:
+    optional: true
 
   immutable@3.7.6: {}
 
@@ -13855,11 +13828,6 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.8
 
-  react-resize-detector@12.3.0(react@19.2.1):
-    dependencies:
-      es-toolkit: 1.39.10
-      react: 19.2.1
-
   react-router-dom@7.9.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
     dependencies:
       react: 19.2.1
@@ -13872,13 +13840,6 @@ snapshots:
       react: 19.2.1
       set-cookie-parser: 2.7.1
     optionalDependencies:
-      react-dom: 19.2.1(react@19.2.1)
-
-  react-scroll@1.9.3(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
-    dependencies:
-      lodash.throttle: 4.1.1
-      prop-types: 15.8.1
-      react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
 
   react-style-singleton@2.2.3(@types/react@19.1.8)(react@19.2.1):
