@@ -11,6 +11,7 @@ import SpaceAdminCommunicationsPage, {
 import SpaceAdminCommunityPage, {
   type SpaceAdminCommunityPageProps,
 } from '../SpaceAdminCommunity/SpaceAdminCommunityPage';
+import SpaceAdminLayoutPage, { type SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
 import SpaceAdminSettingsPage, { type SpaceAdminSettingsPageProps } from '../SpaceAdminSettings/SpaceAdminSettingsPage';
 import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 
@@ -49,6 +50,11 @@ export const SpaceAdminL2Route = () => {
     parentSpaceUrl: space.about.profile?.url, // Should be L1
   };
 
+  const layoutPageProps: SpaceAdminLayoutPageProps = {
+    useL0Layout: false,
+    spaceId: subspaceId,
+  };
+
   const aboutPageProps: SpaceAdminAboutPageProps = {
     useL0Layout: false,
     spaceId: subspaceId,
@@ -60,6 +66,7 @@ export const SpaceAdminL2Route = () => {
         <Routes>
           <Route index={true} element={<Navigate to="about" replace={true} />} />
           <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
+          <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
           <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
           <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />
           <Route path="settings" element={<SpaceAdminSettingsPage {...settingsPageProps} />} />

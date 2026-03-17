@@ -1,3 +1,4 @@
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
@@ -9,6 +10,11 @@ export const spaceAdminTabsL2: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.About,
     route: 'about',
     icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Layout,
+    route: 'layout',
+    icon: DashboardOutlinedIcon,
   },
   {
     section: SettingsSection.Community,

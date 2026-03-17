@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
 import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
@@ -16,6 +16,7 @@ interface ExpandableMarkdownProps extends WrapperMarkdownProps {
   overflowMarker?: OverflowGradientProps['overflowMarker'];
   maxHeightGutters?: number;
   minHeightGutters?: number;
+  defaultCollapsed?: boolean;
 }
 
 const ExpandableMarkdown = ({
@@ -24,11 +25,21 @@ const ExpandableMarkdown = ({
   minHeightGutters = 0,
   backgroundColor = 'paper',
   overflowMarker,
+  defaultCollapsed = false,
   ...props
 }: ExpandableMarkdownProps) => {
   const { t } = useTranslation();
   // Start collapsed to measure overflow, then decide
   const [state, setState] = useState<OverflowState>('detecting');
+
+  // Re-enter detecting when defaultCollapsed changes (e.g. setting loaded async or admin toggle)
+  const prevDefaultCollapsedRef = useRef(defaultCollapsed);
+  useEffect(() => {
+    if (prevDefaultCollapsedRef.current !== defaultCollapsed) {
+      prevDefaultCollapsedRef.current = defaultCollapsed;
+      setState('detecting');
+    }
+  }, [defaultCollapsed]);
 
   const isCollapsed = state === 'detecting' || state === 'collapsed';
   const maxHeight = isCollapsed ? gutters(maxHeightGutters) : undefined;
@@ -36,10 +47,10 @@ const ExpandableMarkdown = ({
   const handleOverflowChange = useCallback(
     (isOverflowing: boolean) => {
       if (state === 'detecting') {
-        setState(isOverflowing ? 'expanded' : 'no-overflow');
+        setState(isOverflowing ? (defaultCollapsed ? 'collapsed' : 'expanded') : 'no-overflow');
       }
     },
-    [state]
+    [state, defaultCollapsed]
   );
 
   return (

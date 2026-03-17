@@ -3698,6 +3698,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'createdDate'
   | 'credentials'
   | 'id'
+  | 'layout'
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
@@ -3729,6 +3730,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  layout?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4151,6 +4153,7 @@ export type SpaceKeySpecifier = (
   | 'createdDate'
   | 'credentials'
   | 'id'
+  | 'layout'
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
@@ -4182,6 +4185,7 @@ export type SpaceFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  layout?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4264,6 +4268,7 @@ export type SpacePendingMembershipInfoFieldPolicy = {
 };
 export type SpaceSettingsKeySpecifier = (
   | 'collaboration'
+  | 'layout'
   | 'membership'
   | 'privacy'
   | 'sortMode'
@@ -4271,6 +4276,7 @@ export type SpaceSettingsKeySpecifier = (
 )[];
 export type SpaceSettingsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  layout?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4291,6 +4297,10 @@ export type SpaceSettingsCollaborationFieldPolicy = {
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToVideoCall?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsLayoutKeySpecifier = ('calloutDescriptionDisplayMode' | SpaceSettingsLayoutKeySpecifier)[];
+export type SpaceSettingsLayoutFieldPolicy = {
+  calloutDescriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsMembershipKeySpecifier = (
   | 'allowSubspaceAdminsToInviteMembers'
@@ -6520,6 +6530,10 @@ export type StrictTypedTypePolicies = {
       | SpaceSettingsCollaborationKeySpecifier
       | (() => undefined | SpaceSettingsCollaborationKeySpecifier);
     fields?: SpaceSettingsCollaborationFieldPolicy;
+  };
+  SpaceSettingsLayout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsLayoutKeySpecifier | (() => undefined | SpaceSettingsLayoutKeySpecifier);
+    fields?: SpaceSettingsLayoutFieldPolicy;
   };
   SpaceSettingsMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsMembershipKeySpecifier | (() => undefined | SpaceSettingsMembershipKeySpecifier);
