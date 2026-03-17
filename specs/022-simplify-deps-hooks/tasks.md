@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/022-simplify-deps-hooks/`
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md
 
-**Tests**: Not explicitly requested. Existing tests (247+ across 19+ files) must continue passing after each task.
+**Tests**: Not explicitly requested. Existing tests (555 across 50+ files) must continue passing after each task.
 
 **Organization**: Tasks grouped by user story. Each story is independently testable. Verification after each phase: `pnpm install && pnpm lint && pnpm vitest run && pnpm build`.
 
@@ -155,22 +155,22 @@
 
 ### Implementation for User Story 6 — Containers (leaf nodes first)
 
-- [ ] T051 [P] [US6] Refactor `src/core/ui/language/LanguageSelect.tsx` — extract render-prop logic to `useLanguageSelect()` hook, update consumer to use hook directly
-- [ ] T052 [P] [US6] Simplify `src/core/ui/forms/CharacterCountContext.tsx` — remove render-prop pattern, simplify to context-only provider
-- [ ] T053 [P] [US6] Refactor `src/domain/community/invitations/InvitationActionsContainer.tsx` — create `useInvitationActions.ts` hook returning `InvitationActionsContainerProvided`, update 3 consumers (InvitationsBlock, PendingMembershipsDialog, ApplicationButton), delete Container
-- [ ] T054 [P] [US6] Refactor `src/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer.tsx` — create `useCommunityGuidelines.ts` hook returning `CommunityGuidelinesContainerProvided`, update consumer, delete Container
-- [ ] T055 [P] [US6] Refactor `src/domain/collaboration/whiteboard/containers/WhiteboardActionsContainer.tsx` — create `useWhiteboardActions.ts` hook returning `WhiteboardChildProps`, update consumer, delete Container
-- [ ] T056 [US6] Refactor `src/domain/collaboration/calloutsSet/CalloutsView/CalloutsInViewWrapper.tsx` — create `useCalloutDetails.ts` hook returning `CalloutDetailsContainerProvided`, update 1 consumer (CalloutsView), delete wrapper
-- [ ] T057 [US6] Refactor `src/domain/collaboration/callout/calloutBlock/CalloutSettingsContainer.tsx` — create `useCalloutSettings.ts` hook returning dialog state interface, update 1 consumer (CalloutView), delete Container
-- [ ] T058 [US6] Refactor `src/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer.tsx` — create `useApplicationButton.ts` hook returning `ApplicationButtonProps & { shouldShow }`, update 3 consumers, delete Container
-- [ ] T058a [P] [US6] Refactor `src/domain/timeline/calendar/CalendarEventsContainer.tsx` — create `useCalendarEvents.ts` hook, update 3 consumers (CalendarDialog, CalendarEventForm, EventForm), delete Container
-- [ ] T058b [P] [US6] Refactor `src/domain/timeline/calendar/CalendarEventDetailContainer.tsx` — create `useCalendarEventDetail.ts` hook, update 2 consumers (CalendarDialog, CalendarEventForm), delete Container
-- [ ] T058c [P] [US6] Refactor `src/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer.tsx` — create `useCommunityUpdates.ts` hook, update 3 consumers (DashboardUpdatesSection, CommunityUpdatesDialog, SpaceAdminCommunityUpdatesPage), delete Container
-- [ ] T058d [P] [US6] Refactor `src/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationContainer.ts` — create `useAssociatedOrganization.ts` hook, update 1 consumer (AssociatedOrganizationsLazilyFetched), delete Container
-- [ ] T059 [P] [US6] Refactor `src/main/topLevelPages/topLevelSpaces/SpaceExplorerContainer.tsx` — create `useSpaceExplorer.ts` hook, update consumer, delete Container
-- [ ] T060 [P] [US6] Refactor `src/main/topLevelPages/myDashboard/ExploreSpaces/ExploreSpacesContainer.tsx` — create `useExploreSpaces.ts` hook, update consumer, delete Container
-- [ ] T061 [US6] Refactor hydrators in `src/domain/community/pendingMembership/PendingMemberships.tsx` — replace `InvitationHydrator` and `ApplicationHydrator` render-props with `useInvitationHydrator()` and `useApplicationHydrator()` hooks
-- [ ] T062 [US6] Delete `src/core/container/SimpleContainer.ts` and the `SimpleContainerProps` type after all consumers are migrated
+- [x] T051 [P] [US6] Refactor `src/core/ui/language/LanguageSelect.tsx` — extract render-prop logic to `useLanguageSelect()` hook, update consumer to use hook directly
+- [x] T052 [P] [US6] Simplify `src/core/ui/forms/CharacterCountContext.tsx` — remove render-prop pattern, simplify to context-only provider
+- [x] T053 [P] [US6] Refactor `src/domain/community/invitations/InvitationActionsContainer.tsx` — create `useInvitationActions.ts` hook returning `InvitationActionsContainerProvided`, update 3 consumers (InvitationsBlock, PendingMembershipsDialog, ApplicationButton), delete Container
+- [x] T054 [P] [US6] Refactor `src/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer.tsx` — create `useCommunityGuidelines.ts` hook returning `CommunityGuidelinesContainerProvided`, update consumer, delete Container
+- [x] T055 [P] [US6] Refactor `src/domain/collaboration/whiteboard/containers/WhiteboardActionsContainer.tsx` — create `useWhiteboardActions.ts` hook returning `WhiteboardChildProps`, update consumer, delete Container
+- [x] T056 [US6] Refactor `src/domain/collaboration/calloutsSet/CalloutsView/CalloutsInViewWrapper.tsx` — create `useCalloutInView.ts` hook returning callout-in-view logic, update 1 consumer (CalloutsView), delete wrapper
+- [x] T057 [US6] Refactor `src/domain/collaboration/callout/calloutBlock/CalloutSettingsContainer.tsx` — create `useCalloutSettings.ts` hook returning dialog state interface, update 1 consumer (CalloutView), delete Container
+- [x] T058 [US6] Refactor `src/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer.tsx` — create `useApplicationButton.ts` hook returning `ApplicationButtonProps & { shouldShow }`, update 3 consumers, delete Container
+- [x] T058a [P] [US6] Refactor `src/domain/timeline/calendar/CalendarEventsContainer.tsx` — create `useCalendarEvents.ts` hook, update 3 consumers (CalendarDialog, CalendarEventForm, EventForm), delete Container
+- [x] T058b [P] [US6] Refactor `src/domain/timeline/calendar/CalendarEventDetailContainer.tsx` — create `useCalendarEventDetail.ts` hook, update 2 consumers (CalendarDialog, CalendarEventForm), delete Container
+- [x] T058c [P] [US6] Refactor `src/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer.tsx` — create `useCommunityUpdates.ts` hook, update 3 consumers (DashboardUpdatesSection, CommunityUpdatesDialog, SpaceAdminCommunityUpdatesPage), delete Container
+- [x] T058d [P] [US6] Refactor `src/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationContainer.ts` — create `useAssociatedOrganization.ts` hook, update 1 consumer (AssociatedOrganizationsLazilyFetched), delete Container
+- [x] T059 [P] [US6] Refactor `src/main/topLevelPages/topLevelSpaces/SpaceExplorerContainer.tsx` — create `useSpaceExplorer.ts` hook, update consumer, delete Container
+- [x] T060 [P] [US6] Refactor `src/main/topLevelPages/myDashboard/ExploreSpaces/ExploreSpacesContainer.tsx` — create `useExploreSpaces.ts` hook, update consumer, delete Container
+- [ ] T061 [US6] Refactor hydrators in `src/domain/community/pendingMembership/PendingMemberships.tsx` — replace `InvitationHydrator` and `ApplicationHydrator` render-props with `useInvitationHydrator()` and `useApplicationHydrator()` hooks (4 consumers: PendingMembershipsDialog, InvitationDialog, SingleInvitationFull, PendingMemberships)
+- [ ] T062 [US6] Delete `src/core/container/SimpleContainer.ts`, `src/core/container/ComponentOrChildrenFn.tsx` and the `SimpleContainerProps` type after all consumers are migrated
 - [ ] T063 [US6] Run `pnpm lint && pnpm vitest run && pnpm build` — all pass, no render-prop Container patterns remain
 
 **Checkpoint**: All 14 render-prop Containers converted to hooks. SimpleContainerProps deleted.
