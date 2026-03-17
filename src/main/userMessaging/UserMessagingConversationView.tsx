@@ -15,12 +15,10 @@ import {
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  UserConversationsDocument,
   useLeaveConversationMutation,
   useMarkMessageAsReadMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -233,23 +231,9 @@ export const UserMessagingConversationView = ({
 
   const handleLeaveGroup = async () => {
     if (!conversation) return;
+    // Fire-and-forget: the subscription (MEMBER_REMOVED / CONVERSATION_DELETED) handles cache removal
     await leaveConversation({
       variables: { leaveData: { conversationID: conversation.id } },
-      update: cache => {
-        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-          if (!existing?.me?.conversations?.conversations) return existing;
-          return {
-            ...existing,
-            me: {
-              ...existing.me,
-              conversations: {
-                ...existing.me.conversations,
-                conversations: existing.me.conversations.conversations.filter(c => c.id !== conversation.id),
-              },
-            },
-          };
-        });
-      },
     });
     setIsLeaveConfirmOpen(false);
     onLeaveConversation?.();
