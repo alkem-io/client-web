@@ -1,4 +1,3 @@
-import type { DroppableProvidedProps } from '@hello-pangea/dnd';
 import { Paper, type PaperProps } from '@mui/material';
 import type { PaperTypeMap } from '@mui/material/Paper/Paper';
 import type { Ref } from 'react';
@@ -6,7 +5,7 @@ import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import BasePageContentBlock, { type BasePageContentBlockProps } from './BasePageContentBlock';
 
-export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps, Partial<DroppableProvidedProps> {
+export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps {
   accent?: boolean;
 }
 

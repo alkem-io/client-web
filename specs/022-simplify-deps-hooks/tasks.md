@@ -77,13 +77,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T018 [P] [US2] Migrate `src/domain/collaboration/InnovationFlow/InnovationFlowDragNDropEditor.tsx` — replace `DragDropContext`/`Droppable`/`Draggable` with `DndContext`/`SortableContext` using `horizontalListSortingStrategy`, replace `OnDragEndResponder` with `DragEndEvent` handler
-- [ ] T019 [P] [US2] Migrate `src/domain/innovationHub/InnovationHubsSettings/InnovationHubSpacesField.tsx` — replace `DragDropContext`/`Droppable`/`Draggable` with `DndContext`/`SortableContext` using `verticalListSortingStrategy`
-- [ ] T020 [P] [US2] Migrate `src/domain/collaboration/callout/CalloutContributionsSortDialog.tsx` — replace render-prop D&D with `SortableContext` + `useSortable()` hooks
-- [ ] T021 [P] [US2] Migrate `src/domain/collaboration/InnovationFlow/InnovationFlowCollaborationToolsBlock.tsx` — replace `Draggable` render-prop with `useSortable()` hook
-- [ ] T022 [P] [US2] Migrate `src/domain/collaboration/PageContentBlock.tsx` — replace `DroppableProvidedProps` type import with `useDroppable()` return type/ref
-- [ ] T023 [US2] Remove `@hello-pangea/dnd` from dependencies in package.json
-- [ ] T024 [US2] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no `@hello-pangea/dnd` imports remain
+- [x] T018 [P] [US2] Migrate `src/domain/collaboration/InnovationFlow/InnovationFlowDragNDropEditor.tsx` — replace `DragDropContext`/`Droppable`/`Draggable` with `DndContext`/`SortableContext` using `horizontalListSortingStrategy`, replace `OnDragEndResponder` with `DragEndEvent` handler
+- [x] T019 [P] [US2] Migrate `src/domain/innovationHub/InnovationHubsSettings/InnovationHubSpacesField.tsx` — replace `DragDropContext`/`Droppable`/`Draggable` with `DndContext`/`SortableContext` using `verticalListSortingStrategy`
+- [x] T020 [P] [US2] Migrate `src/domain/collaboration/callout/CalloutContributionsSortDialog.tsx` — replace render-prop D&D with `SortableContext` + `useSortable()` hooks
+- [x] T021 [P] [US2] Migrate `src/domain/collaboration/InnovationFlow/InnovationFlowCollaborationToolsBlock.tsx` — replace `Draggable` render-prop with `useSortable()` hook
+- [x] T022 [P] [US2] Migrate `src/domain/collaboration/PageContentBlock.tsx` — replace `DroppableProvidedProps` type import with `useDroppable()` return type/ref
+- [x] T023 [US2] Remove `@hello-pangea/dnd` from dependencies in package.json
+- [x] T024 [US2] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no `@hello-pangea/dnd` imports remain
 
 **Checkpoint**: Single D&D library (@dnd-kit) in dependency tree. All drag interactions use hooks API.
 

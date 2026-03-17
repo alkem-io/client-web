@@ -1,4 +1,11 @@
-import { DragDropContext, Draggable, Droppable, type OnDragEndResponder } from '@hello-pangea/dnd';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { Remove, Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, IconButton, TextField } from '@mui/material';
@@ -10,7 +17,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { sortBy, without } from 'lodash-es';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInnovationHubAvailableSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
@@ -40,17 +47,56 @@ interface InnovationHubSpacesFieldProps {
 
 const PAGE_SIZE = 30;
 
+const SortableSpaceRow = ({ space, onRemove }: { space: Space; onRemove: (id: string) => void }) => {
+  const { t } = useTranslation();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: space.id });
+
+  return (
+    <TableRow
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        transition,
+      }}
+      sx={{
+        display: isDragging ? 'table' : undefined,
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'grab',
+        touchAction: 'none',
+      }}
+    >
+      <TableCell>{space.about.profile.displayName}</TableCell>
+      <TableCell>{space.visibility}</TableCell>
+      <TableCell>{space.about.provider?.profile?.displayName}</TableCell>
+      <TableCell>
+        <IconButton color="warning" onClick={() => onRemove(space.id)} aria-label={t('buttons.delete')}>
+          <Remove />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  );
+};
+
 const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesFieldProps) => {
   const { t } = useTranslation();
 
-  const itemIds = spaces?.map(({ id }) => id) ?? [];
+  const itemIds = useMemo(() => spaces?.map(({ id }) => id) ?? [], [spaces]);
 
-  const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
-    if (!itemIds || !destination) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!itemIds || !over || active.id === over.id) {
       return;
     }
-    const nextItemIds = without(itemIds, draggableId);
-    nextItemIds.splice(destination.index, 0, draggableId);
+    const nextItemIds = without(itemIds, active.id as string);
+    const overIndex = itemIds.indexOf(over.id as string);
+    nextItemIds.splice(overIndex, 0, active.id as string);
     onChange?.(nextItemIds);
   };
 
@@ -177,52 +223,27 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
           />
         </Gutters>
       </DialogWithGrid>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="spaceListFilter">
-          {provided => (
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>{t('common.name')}</TableCell>
-                    <TableCell>{t('pages.admin.space.settings.visibility.title')}</TableCell>
-                    <TableCell>{t('pages.admin.innovationHubs.fields.host')}</TableCell>
-                    <TableCell />
-                  </TableRow>
-                </TableHead>
-                <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-                  {spaces?.map((space, index) => (
-                    <Draggable key={space.id} draggableId={space.id} index={index}>
-                      {(provided, snapshot) => (
-                        <TableRow
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          sx={{ display: snapshot.isDragging ? 'table' : undefined }}
-                        >
-                          <TableCell>{space.about.profile.displayName}</TableCell>
-                          <TableCell>{space.visibility}</TableCell>
-                          <TableCell>{space.about.provider?.profile?.displayName}</TableCell>
-                          <TableCell>
-                            <IconButton
-                              color="warning"
-                              onClick={() => handleRemove(space.id)}
-                              aria-label={t('buttons.delete')}
-                            >
-                              <Remove />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('common.name')}</TableCell>
+                  <TableCell>{t('pages.admin.space.settings.visibility.title')}</TableCell>
+                  <TableCell>{t('pages.admin.innovationHubs.fields.host')}</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {spaces?.map(space => (
+                  <SortableSpaceRow key={space.id} space={space} onRemove={handleRemove} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </SortableContext>
+      </DndContext>
     </>
   );
 };

@@ -1,4 +1,11 @@
-import { DragDropContext, Draggable, Droppable, type OnDragEndResponder } from '@hello-pangea/dnd';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, DialogContent, Paper } from '@mui/material';
 import { isNumber, sortBy } from 'lodash-es';
@@ -28,6 +35,36 @@ interface CalloutContributionsSortDialogProps {
   onClose: () => void;
   callout: Identifiable;
 }
+
+const SortableContributionItem = ({ item }: { item: CalloutContributionsSortItem }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
+
+  return (
+    <Box
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        transition,
+      }}
+      display="flex"
+      sx={{
+        padding: gutters(0.5),
+        alignItems: 'center',
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'grab',
+        touchAction: 'none',
+      }}
+    >
+      <DragIndicatorIcon />
+      <Caption>
+        {item.name}
+        {isNumber(item.commentsCount) && item.commentsCount > 0 ? ` (${item.commentsCount})` : ''}
+      </Caption>
+    </Box>
+  );
+};
 
 const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContributionsSortDialogProps) => {
   const { t } = useTranslation();
@@ -65,7 +102,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
   }, [data]);
 
   const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
-  const handleSortContributions = async contributions => {
+  const handleSortContributions = async (contributions: CalloutContributionsSortItem[]) => {
     return updateContributionsSortOrder({
       variables: {
         calloutID: callout.id,
@@ -75,11 +112,24 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     });
   };
 
-  const handleDragEnd: OnDragEndResponder = result => {
-    if (result.destination && items) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const itemIds = useMemo(() => items?.map(item => item.id) ?? [], [items]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id || !items) {
+      return;
+    }
+    const oldIndex = items.findIndex(item => item.id === active.id);
+    const newIndex = items.findIndex(item => item.id === over.id);
+    if (oldIndex !== -1 && newIndex !== -1) {
       const newItems = Array.from(items);
-      const [reorderedItem] = newItems.splice(result.source.index, 1);
-      newItems.splice(result.destination.index, 0, reorderedItem);
+      const [reorderedItem] = newItems.splice(oldIndex, 1);
+      newItems.splice(newIndex, 0, reorderedItem);
       handleSortContributions(newItems);
     }
   };
@@ -94,34 +144,15 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
       <DialogContent>
         {loading && <Loading />}
         <Paper variant="outlined">
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId={`contributions_${callout.id}`}>
-              {provided => (
-                <Gutters ref={provided.innerRef} disableGap={true} disablePadding={true} {...provided.droppableProps}>
-                  {items?.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {provided => (
-                        <Box
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          display="flex"
-                          sx={{ padding: gutters(0.5), alignItems: 'center' }}
-                        >
-                          <DragIndicatorIcon />
-                          <Caption>
-                            {item.name}
-                            {isNumber(item.commentsCount) && item.commentsCount > 0 ? ` (${item.commentsCount})` : ''}
-                          </Caption>
-                        </Box>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </Gutters>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+              <Gutters disableGap={true} disablePadding={true}>
+                {items?.map(item => (
+                  <SortableContributionItem key={item.id} item={item} />
+                ))}
+              </Gutters>
+            </SortableContext>
+          </DndContext>
         </Paper>
       </DialogContent>
     </DialogWithGrid>
