@@ -37,6 +37,10 @@ export const useAccountEntityDeletion = (accountId: string | undefined) => {
       clearDeleteState();
       notify(t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.space') }), 'success');
     },
+    onError: () => {
+      clearDeleteState();
+      notify(t('pages.admin.generic.sections.account.deleteFailed', { entity: t('common.space') }), 'error');
+    },
     refetchQueries: ['AccountInformation'],
   });
 
@@ -46,6 +50,13 @@ export const useAccountEntityDeletion = (accountId: string | undefined) => {
       notify(
         t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.virtualContributor') }),
         'success'
+      );
+    },
+    onError: () => {
+      clearDeleteState();
+      notify(
+        t('pages.admin.generic.sections.account.deleteFailed', { entity: t('common.virtualContributor') }),
+        'error'
       );
     },
     refetchQueries: ['AccountInformation'],
@@ -59,6 +70,10 @@ export const useAccountEntityDeletion = (accountId: string | undefined) => {
         'success'
       );
     },
+    onError: () => {
+      clearDeleteState();
+      notify(t('pages.admin.generic.sections.account.deleteFailed', { entity: t('common.innovationPack') }), 'error');
+    },
     refetchQueries: ['AccountInformation'],
   });
 
@@ -69,6 +84,10 @@ export const useAccountEntityDeletion = (accountId: string | undefined) => {
         t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.innovation-hub') }),
         'success'
       );
+    },
+    onError: () => {
+      clearDeleteState();
+      notify(t('pages.admin.generic.sections.account.deleteFailed', { entity: t('common.innovation-hub') }), 'error');
     },
     refetchQueries: ['AccountInformation'],
   });

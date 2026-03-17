@@ -38,10 +38,14 @@ export const useWhiteboardViewState = ({
   });
 
   useEffect(() => {
+    setLastSuccessfulSavedDate(undefined);
+  }, [whiteboard?.id]);
+
+  useEffect(() => {
     if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
       setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
     }
-  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
+  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate, whiteboard?.id]);
 
   const { state: actionsState, actions } = useWhiteboardActions();
 

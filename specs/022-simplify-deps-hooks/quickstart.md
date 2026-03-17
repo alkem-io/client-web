@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node 24+ (pinned via Volta)
+- Node >=22.0.0 (Volta pins 22.21.1)
 - pnpm 10.17.1+
 - Running backend at localhost:3000 (for manual testing of D&D, notifications, forms)
 

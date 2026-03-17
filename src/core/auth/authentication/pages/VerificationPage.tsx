@@ -50,7 +50,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
         return ui;
       })()
     );
-  }, [verificationFlow]);
+  }, [verificationFlow, returnUrl]);
 
   if (loading) {
     return <Loading text={t('kratos.loading-flow')} />;

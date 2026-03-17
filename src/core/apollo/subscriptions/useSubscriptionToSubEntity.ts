@@ -47,6 +47,9 @@ const createUseSubscriptionToSubEntityHook =
       document: options.subscriptionDocument,
       variables,
       updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
         const next = structuredClone(prev);
         const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
         options.updateSubEntity(nextSubEntity, subscriptionData.data as SubEntitySubscription);

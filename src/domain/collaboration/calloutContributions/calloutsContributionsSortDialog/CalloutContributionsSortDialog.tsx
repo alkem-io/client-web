@@ -9,7 +9,7 @@ import {
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, DialogContent, Paper } from '@mui/material';
 import { isNumber, sortBy } from 'lodash-es';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContributionsSortOrderQuery,
@@ -76,7 +76,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     skip: !open || !callout.id,
   });
 
-  const items = useMemo(() => {
+  const queryItems = useMemo(() => {
     return sortBy(
       data?.lookup.callout?.contributions
         .filter(
@@ -100,6 +100,12 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
       'sortOrder'
     );
   }, [data]);
+
+  const [items, setItems] = useState(queryItems);
+
+  useEffect(() => {
+    setItems(queryItems);
+  }, [queryItems]);
 
   const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
   const handleSortContributions = async (contributions: CalloutContributionsSortItem[]) => {
@@ -130,6 +136,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
       const newItems = Array.from(items);
       const [reorderedItem] = newItems.splice(oldIndex, 1);
       newItems.splice(newIndex, 0, reorderedItem);
+      setItems(newItems);
       handleSortContributions(newItems);
     }
   };

@@ -1,5 +1,5 @@
 import type { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   refetchCalendarEventImportUrlsQuery,
   refetchSpaceCalendarEventsQuery,
@@ -93,13 +93,13 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
 
   const [deleteCalendarEvent] = useDeleteCalendarEventMutation();
 
-  let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
-
-  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: spaceId ?? '' })];
-
-  if (parentSpaceId) {
-    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId }));
-  }
+  const refetchQueriesList: MutationBaseOptions['refetchQueries'] = useMemo(() => {
+    const list = [refetchSpaceCalendarEventsQuery({ spaceId: spaceId ?? '' })];
+    if (parentSpaceId) {
+      list.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId }));
+    }
+    return list;
+  }, [spaceId, parentSpaceId]);
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
@@ -116,10 +116,14 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
         multipleDays = durationDays > 0;
       }
 
+      if (!calendarId) {
+        return Promise.reject(new Error('Calendar is not loaded yet'));
+      }
+
       return createCalendarEvent({
         variables: {
           eventData: {
-            calendarID: calendarId ?? '',
+            calendarID: calendarId,
             startDate: parsedStartDate,
             tags: tags,
             ...rest,

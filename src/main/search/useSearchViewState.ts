@@ -193,6 +193,7 @@ export const useSearchViewState = (searchRoute: string, spaceFilterConfig: Filte
               {
                 category: SearchCategory.CollaborationTools,
                 size: SEARCH_RESULTS_COUNT,
+                types: calloutFilter.value,
                 cursor: resultsCursors.calloutCursor,
               },
             ];
@@ -234,6 +235,7 @@ export const useSearchViewState = (searchRoute: string, spaceFilterConfig: Filte
               {
                 category: SearchCategory.CollaborationTools,
                 size: SEARCH_RESULTS_COUNT,
+                types: calloutFilter.value,
                 cursor: resultsCursors.calloutCursor,
               },
               {

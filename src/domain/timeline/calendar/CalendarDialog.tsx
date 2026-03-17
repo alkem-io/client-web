@@ -265,14 +265,13 @@ const CalendarDialogInner: FC<{
       );
     } else {
       // Event Details:
-      const event = events.find(event => event.id === calendarEventId);
       return (
         <CalendarEventDetail
-          eventId={event?.id}
+          eventId={calendarEventId}
           onClose={onClose}
           actions={
             <>
-              {privileges.canEditEvents && <EditButton onClick={() => setEditingEventId(event?.id)} />}
+              {privileges.canEditEvents && <EditButton onClick={() => setEditingEventId(calendarEventId)} />}
               <BackButton onClick={navigateBack} variant="contained" />
             </>
           }

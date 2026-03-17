@@ -79,7 +79,7 @@ const SpaceDashboardPage = () => {
 
   return (
     <>
-      {!loading && !applicationButtonLoading && !applicationButtonProps.isMember && (
+      {!loading && !applicationButtonProps.isMember && (
         <PageContent gridContainerProps={{ paddingBottom: 0 }} sx={{ flexGrow: 0 }}>
           <PageContentColumn columns={12}>
             <ApplicationButton

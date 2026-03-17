@@ -97,12 +97,12 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
     const nextItemIds = without(itemIds, active.id as string);
     const overIndex = itemIds.indexOf(over.id as string);
     nextItemIds.splice(overIndex, 0, active.id as string);
-    onChange?.(nextItemIds);
+    void onChange?.(nextItemIds).catch(() => {});
   };
 
   const handleRemove = (itemId: string) => {
     const nextItemIds = without(itemIds, itemId);
-    onChange?.(nextItemIds);
+    void onChange?.(nextItemIds).catch(() => {});
   };
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
