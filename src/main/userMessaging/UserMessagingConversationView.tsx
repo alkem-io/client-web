@@ -262,19 +262,6 @@ export const UserMessagingConversationView = ({
           messageID: lastMessage.id,
         },
       },
-      // Server confirmed the read receipt — update the cache directly.
-      // The refetch would race Matrix and return stale counts.
-      update: cache => {
-        const roomCacheId = cache.identify({ __typename: 'Room', id: roomId });
-        if (roomCacheId) {
-          cache.modify({
-            id: roomCacheId,
-            fields: {
-              unreadCount: () => 0,
-            },
-          });
-        }
-      },
     }).catch(_error => {});
   }, [conversation?.roomId, messages, markAsRead]);
 
