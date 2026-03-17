@@ -26,6 +26,7 @@ interface CropDialogInterface extends DialogProps {
   file?: File;
   onSave?: (data: { file: File; altText: string }) => Promise<void> | void;
   config: CropDialogConfig;
+  hideAltText?: boolean;
 }
 
 interface CropDialogFormValues {
@@ -38,7 +39,7 @@ const MIN_WIDTH = 200;
 const MAX_HEIGHT = 400;
 const MIN_HEIGHT = 200;
 
-export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterface) => {
+export const CropDialog = ({ file, onSave, config, hideAltText, ...rest }: CropDialogInterface) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
@@ -220,15 +221,17 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
                   },
                 })}
               </FormHelperText>
-              <Box>
-                <FormikInputField
-                  title={t('common.description')}
-                  placeholder={t('pages.visualEdit.form.altText.placeholder')}
-                  name="altText"
-                  maxLength={ALT_TEXT_LENGTH}
-                  helpIconText={t('pages.visualEdit.form.altText.helpText')}
-                />
-              </Box>
+              {!hideAltText && (
+                <Box>
+                  <FormikInputField
+                    title={t('common.description')}
+                    placeholder={t('pages.visualEdit.form.altText.placeholder')}
+                    name="altText"
+                    maxLength={ALT_TEXT_LENGTH}
+                    helpIconText={t('pages.visualEdit.form.altText.helpText')}
+                  />
+                </Box>
+              )}
               <Actions justifyContent="space-between">
                 <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">
