@@ -169,9 +169,9 @@
 - [x] T058d [P] [US6] Refactor `src/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationContainer.ts` — create `useAssociatedOrganization.ts` hook, update 1 consumer (AssociatedOrganizationsLazilyFetched), delete Container
 - [x] T059 [P] [US6] Refactor `src/main/topLevelPages/topLevelSpaces/SpaceExplorerContainer.tsx` — create `useSpaceExplorer.ts` hook, update consumer, delete Container
 - [x] T060 [P] [US6] Refactor `src/main/topLevelPages/myDashboard/ExploreSpaces/ExploreSpacesContainer.tsx` — create `useExploreSpaces.ts` hook, update consumer, delete Container
-- [ ] T061 [US6] Refactor hydrators in `src/domain/community/pendingMembership/PendingMemberships.tsx` — replace `InvitationHydrator` and `ApplicationHydrator` render-props with `useInvitationHydrator()` and `useApplicationHydrator()` hooks (4 consumers: PendingMembershipsDialog, InvitationDialog, SingleInvitationFull, PendingMemberships)
-- [ ] T062 [US6] Delete `src/core/container/SimpleContainer.ts`, `src/core/container/ComponentOrChildrenFn.tsx` and the `SimpleContainerProps` type after all consumers are migrated
-- [ ] T063 [US6] Run `pnpm lint && pnpm vitest run && pnpm build` — all pass, no render-prop Container patterns remain
+- [x] T061 [US6] Refactor hydrators in `src/domain/community/pendingMembership/PendingMemberships.tsx` — replace `InvitationHydrator` and `ApplicationHydrator` render-props with `useInvitationHydrator()` and `useApplicationHydrator()` hooks (4 consumers: PendingMembershipsDialog, InvitationDialog, SingleInvitationFull, PendingMemberships)
+- [x] T062 [US6] Delete `src/core/container/SimpleContainer.ts`, `src/core/container/ComponentOrChildrenFn.tsx` and the `SimpleContainerProps` type after all consumers are migrated
+- [x] T063 [US6] Run `pnpm lint && pnpm vitest run && pnpm build` — all pass, no render-prop Container patterns remain
 
 **Checkpoint**: All 14 render-prop Containers converted to hooks. SimpleContainerProps deleted.
 

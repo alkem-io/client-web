@@ -17,7 +17,7 @@ import DetailedActivityDescription from '@/domain/shared/components/ActivityDesc
 import References from '@/domain/shared/components/References/References';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import { InvitationHydrator, type InvitationWithMeta } from '../pendingMembership/PendingMemberships';
+import { type InvitationWithMeta, useInvitationHydrator } from '../pendingMembership/PendingMemberships';
 import type { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 
 type InvitationDialogProps = {
@@ -45,6 +45,9 @@ const InvitationDialog = ({
 }: InvitationDialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { invitation: hydrated, communityGuidelines } = useInvitationHydrator(invitation, {
+    withCommunityGuidelines: true,
+  });
 
   const { isSmallScreen } = useScreenSize();
 
@@ -83,96 +86,90 @@ const InvitationDialog = ({
       columns={12}
       open={open}
       onClose={onClose}
-      aria-labelledby={invitation ? 'invitation-dialog' : undefined}
+      aria-labelledby={hydrated ? 'invitation-dialog' : undefined}
     >
-      {invitation && (
-        <InvitationHydrator invitation={invitation} withCommunityGuidelines={true}>
-          {({ invitation, communityGuidelines }) =>
-            invitation && (
-              <>
-                <DialogHeader
-                  id="invitation-dialog"
-                  title={
-                    <Gutters row={true} disablePadding={true} sx={{ whiteSpace: 'break-spaces' }}>
-                      <HdrStrongOutlined fontSize="small" />
-                      {getTitle(invitation)}
-                    </Gutters>
-                  }
-                  onClose={onClose}
-                />
-                <DialogContent sx={{ padding: 0 }}>
-                  <Gutters
-                    paddingTop={0}
-                    flexDirection={isSmallScreen ? 'column' : 'row'}
-                    alignItems={isSmallScreen ? 'center' : 'start'}
-                  >
-                    <SpaceCardBase
-                      header={invitation.space.about.profile.displayName}
-                      tags={invitation.space.about.profile.tagset?.tags ?? []}
-                      banner={invitation.space.about.profile.cardBanner}
-                      spaceId={invitation.space.id}
-                      spaceUri={invitation.space.about.profile.url}
-                      onClick={() => onCardClick(invitation.space.about.profile.url)}
-                    >
-                      <SpaceCardTagline>{invitation.space.about.profile.tagline ?? ''}</SpaceCardTagline>
-                    </SpaceCardBase>
+      {hydrated && (
+        <>
+          <DialogHeader
+            id="invitation-dialog"
+            title={
+              <Gutters row={true} disablePadding={true} sx={{ whiteSpace: 'break-spaces' }}>
+                <HdrStrongOutlined fontSize="small" />
+                {getTitle(hydrated)}
+              </Gutters>
+            }
+            onClose={onClose}
+          />
+          <DialogContent sx={{ padding: 0 }}>
+            <Gutters
+              paddingTop={0}
+              flexDirection={isSmallScreen ? 'column' : 'row'}
+              alignItems={isSmallScreen ? 'center' : 'start'}
+            >
+              <SpaceCardBase
+                header={hydrated.space.about.profile.displayName}
+                tags={hydrated.space.about.profile.tagset?.tags ?? []}
+                banner={hydrated.space.about.profile.cardBanner}
+                spaceId={hydrated.space.id}
+                spaceUri={hydrated.space.about.profile.url}
+                onClick={() => onCardClick(hydrated.space.about.profile.url)}
+              >
+                <SpaceCardTagline>{hydrated.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+              </SpaceCardBase>
+              <Gutters disablePadding={true}>
+                <Caption>
+                  <DetailedActivityDescription
+                    i18nKey="community.pendingMembership.invitationTitle"
+                    spaceDisplayName={hydrated.space.about.profile.displayName}
+                    spaceUrl={hydrated.space.about.profile.url}
+                    spaceLevel={hydrated.space.level}
+                    createdDate={hydrated.invitation.createdDate}
+                    author={{ displayName: hydrated.userDisplayName }}
+                    type={hydrated.invitation.actor?.type}
+                  />
+                </Caption>
+                {hydrated.invitation.welcomeMessage && <Text>{hydrated.invitation.welcomeMessage}</Text>}
+                {communityGuidelines && (
+                  <>
+                    <BlockSectionTitle paddingTop={gutters()}>
+                      {communityGuidelines.profile.displayName}
+                    </BlockSectionTitle>
                     <Gutters disablePadding={true}>
-                      <Caption>
-                        <DetailedActivityDescription
-                          i18nKey="community.pendingMembership.invitationTitle"
-                          spaceDisplayName={invitation.space.about.profile.displayName}
-                          spaceUrl={invitation.space.about.profile.url}
-                          spaceLevel={invitation.space.level}
-                          createdDate={invitation.invitation.createdDate}
-                          author={{ displayName: invitation.userDisplayName }}
-                          type={invitation.invitation.actor?.type}
-                        />
-                      </Caption>
-                      {invitation.invitation.welcomeMessage && <Text>{invitation.invitation.welcomeMessage}</Text>}
-                      {communityGuidelines && (
-                        <>
-                          <BlockSectionTitle paddingTop={gutters()}>
-                            {communityGuidelines.profile.displayName}
-                          </BlockSectionTitle>
-                          <Gutters disablePadding={true}>
-                            <Box sx={{ wordWrap: 'break-word' }}>
-                              <WrapperMarkdown disableParagraphPadding={true}>
-                                {communityGuidelines?.profile.description ?? ''}
-                              </WrapperMarkdown>
-                            </Box>
-                            <References compact={true} references={communityGuidelines?.profile.references} />
-                          </Gutters>
-                        </>
-                      )}
+                      <Box sx={{ wordWrap: 'break-word' }}>
+                        <WrapperMarkdown disableParagraphPadding={true}>
+                          {communityGuidelines?.profile.description ?? ''}
+                        </WrapperMarkdown>
+                      </Box>
+                      <References compact={true} references={communityGuidelines?.profile.references} />
                     </Gutters>
-                  </Gutters>
-                </DialogContent>
-                <DialogActions>
-                  {actions}
-                  <FlexSpacer />
-                  <Button
-                    startIcon={<CloseOutlinedIcon />}
-                    onClick={() => rejectInvitation(invitation.invitation.id)}
-                    variant="outlined"
-                    loading={rejecting}
-                    disabled={updating && !rejecting}
-                  >
-                    {t('community.pendingMembership.invitationDialog.actions.reject')}
-                  </Button>
-                  <Button
-                    startIcon={<CheckOutlined />}
-                    onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.about.profile.url)}
-                    variant="contained"
-                    loading={accepting}
-                    disabled={updating && !accepting}
-                  >
-                    {getAcceptLabel(invitation)}
-                  </Button>
-                </DialogActions>
-              </>
-            )
-          }
-        </InvitationHydrator>
+                  </>
+                )}
+              </Gutters>
+            </Gutters>
+          </DialogContent>
+          <DialogActions>
+            {actions}
+            <FlexSpacer />
+            <Button
+              startIcon={<CloseOutlinedIcon />}
+              onClick={() => rejectInvitation(hydrated.invitation.id)}
+              variant="outlined"
+              loading={rejecting}
+              disabled={updating && !rejecting}
+            >
+              {t('community.pendingMembership.invitationDialog.actions.reject')}
+            </Button>
+            <Button
+              startIcon={<CheckOutlined />}
+              onClick={() => acceptInvitation(hydrated.invitation.id, hydrated.space.about.profile.url)}
+              variant="contained"
+              loading={accepting}
+              disabled={updating && !accepting}
+            >
+              {getAcceptLabel(hydrated)}
+            </Button>
+          </DialogActions>
+        </>
       )}
     </DialogWithGrid>
   );
