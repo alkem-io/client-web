@@ -9,7 +9,6 @@ import {
   useTemplateContentLazyQuery,
   useUpdateCommunityGuidelinesMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -25,28 +24,14 @@ export interface CommunityGuidelines {
   }[];
 }
 
-interface CommunityGuidelinesContainerProvided {
-  communityGuidelines: CommunityGuidelines | undefined;
-  communityGuidelinesId: string | undefined;
-  profileId: string | undefined; // ProfileId is required to create references
-  loading: boolean;
-  onSelectCommunityGuidelinesTemplate: (template: Identifiable) => Promise<unknown>;
-  onUpdateCommunityGuidelines: (values: CommunityGuidelines) => Promise<unknown>;
-  onDeleteCommunityGuidelinesContent?: () => Promise<unknown>;
-}
-
-interface CommunityGuidelinesContainerProps extends SimpleContainerProps<CommunityGuidelinesContainerProvided> {
-  communityGuidelinesId: string | undefined;
-}
-
-const CommunityGuidelinesContainer = ({ communityGuidelinesId, children }: CommunityGuidelinesContainerProps) => {
+const useCommunityGuidelines = (communityGuidelinesId: string | undefined) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
   const notify = useNotification();
 
   const { data, loading } = useCommunityGuidelinesQuery({
     variables: {
-      communityGuidelinesId: communityGuidelinesId!,
+      communityGuidelinesId: communityGuidelinesId ?? '',
     },
     skip: !communityGuidelinesId,
   });
@@ -177,19 +162,15 @@ const CommunityGuidelinesContainer = ({ communityGuidelinesId, children }: Commu
     }
   };
 
-  return (
-    <>
-      {children({
-        communityGuidelines,
-        communityGuidelinesId,
-        profileId,
-        loading: loading || submittingGuidelines || removingReference || addingReference,
-        onUpdateCommunityGuidelines,
-        onSelectCommunityGuidelinesTemplate,
-        onDeleteCommunityGuidelinesContent,
-      })}
-    </>
-  );
+  return {
+    communityGuidelines,
+    communityGuidelinesId,
+    profileId,
+    loading: loading || submittingGuidelines || removingReference || addingReference,
+    onUpdateCommunityGuidelines,
+    onSelectCommunityGuidelinesTemplate,
+    onDeleteCommunityGuidelinesContent,
+  };
 };
 
-export default CommunityGuidelinesContainer;
+export default useCommunityGuidelines;

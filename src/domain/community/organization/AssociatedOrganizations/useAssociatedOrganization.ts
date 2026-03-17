@@ -5,26 +5,24 @@ import {
   useRemoveRoleFromUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { type ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { type AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
 
-export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
-  {
-    organizationId: string;
-    enableLeave?: boolean;
-  },
-  AssociatedOrganization & {
-    handleRemoveSelfFromOrganization: () => void;
-    removingFromOrganization?: boolean;
-  }
->;
+type UseAssociatedOrganizationParams = {
+  organizationId: string;
+  enableLeave?: boolean;
+};
 
-export const AssociatedOrganizationContainer = ({
+type UseAssociatedOrganizationResult = AssociatedOrganization & {
+  handleRemoveSelfFromOrganization: () => void;
+  removingFromOrganization?: boolean;
+  enableLeave?: boolean;
+};
+
+const useAssociatedOrganization = ({
   organizationId,
   enableLeave,
-  ...rendered
-}: OrganizationDetailsContainerProps) => {
+}: UseAssociatedOrganizationParams): UseAssociatedOrganizationResult => {
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
 
@@ -58,12 +56,12 @@ export const AssociatedOrganizationContainer = ({
     error,
   });
 
-  return renderComponentOrChildrenFn(rendered, {
+  return {
     ...associatedOrganization,
     handleRemoveSelfFromOrganization,
     removingFromOrganization,
     enableLeave,
-  });
+  };
 };
 
-export default AssociatedOrganizationContainer;
+export default useAssociatedOrganization;

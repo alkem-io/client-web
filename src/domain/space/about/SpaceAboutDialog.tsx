@@ -19,7 +19,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import Loading from '@/core/ui/loading/Loading';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
@@ -88,6 +88,16 @@ const SpaceAboutDialog = ({
       navigate(buildSettingsUrl(aboutProfile.url) + (goToPath ? `${goToPath}` : ''));
     }
   };
+
+  const { applicationButtonProps, loading: applicationButtonLoading } = useApplicationButton({
+    spaceId: space.id,
+    parentSpaceId,
+    onJoin: () => {
+      if (aboutProfile?.url) {
+        navigate(aboutProfile.url);
+      }
+    },
+  });
 
   const provider = about?.provider;
   const leadOrganizations = membership?.leadOrganizations;
@@ -209,37 +219,21 @@ const SpaceAboutDialog = ({
                 />
               </PageContentBlock>
               <Gutters disablePadding={true} display="flex" flexDirection="column" alignItems="center" width="100%">
-                <ApplicationButtonContainer
-                  spaceId={space.id}
-                  parentSpaceId={parentSpaceId}
-                  onJoin={() => {
-                    if (aboutProfile?.url) {
-                      navigate(aboutProfile.url);
-                    }
-                  }}
-                >
-                  {(applicationButtonProps, loading) => {
-                    if (loading || applicationButtonProps.isMember) {
-                      return null;
-                    }
-
-                    return (
-                      <>
-                        <ApplicationButton
-                          ref={applicationButtonRef}
-                          {...applicationButtonProps}
-                          loading={loading}
-                          spaceId={space.id}
-                          spaceLevel={space.level}
-                          noAuthApplyButtonText={t('buttons.apply')}
-                        />
-                        {!applicationButtonProps.isAuthenticated && (
-                          <CaptionSmall>{t('aboutDialog.applyNotSignedInHelperText')}</CaptionSmall>
-                        )}
-                      </>
-                    );
-                  }}
-                </ApplicationButtonContainer>
+                {!applicationButtonLoading && !applicationButtonProps.isMember && (
+                  <>
+                    <ApplicationButton
+                      ref={applicationButtonRef}
+                      {...applicationButtonProps}
+                      loading={applicationButtonLoading}
+                      spaceId={space.id}
+                      spaceLevel={space.level}
+                      noAuthApplyButtonText={t('buttons.apply')}
+                    />
+                    {!applicationButtonProps.isAuthenticated && (
+                      <CaptionSmall>{t('aboutDialog.applyNotSignedInHelperText')}</CaptionSmall>
+                    )}
+                  </>
+                )}
               </Gutters>
             </PageContentColumn>
 

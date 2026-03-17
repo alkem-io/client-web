@@ -13,7 +13,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { TypedSearchResult } from '@/main/search/SearchView';
-import type { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
+import type { ExploreSpacesContainerEntities, SpaceWithParent } from './ExploreSpacesTypes';
 import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 
 type FiltersConfigTranslation = {
@@ -22,7 +22,16 @@ type FiltersConfigTranslation = {
   tags: string[];
 };
 
-const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: ExploreSpacesContainerProps) => {
+interface UseExploreSpacesParams {
+  searchTerms: string[];
+  selectedFilter: string;
+}
+
+type UseExploreSpacesReturn = ExploreSpacesContainerEntities & {
+  welcomeSpace: SpaceWithParent | undefined;
+};
+
+const useExploreSpaces = ({ searchTerms, selectedFilter }: UseExploreSpacesParams): UseExploreSpacesReturn => {
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
   const skipLeads = !isAuthenticated;
@@ -43,7 +52,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
   const welcomeSpaceId = resolveSpaceData?.lookupByName.space?.id;
   const { data: welcomeSpaceData } = useWelcomeSpaceQuery({
     variables: {
-      spaceId: welcomeSpaceId!,
+      spaceId: welcomeSpaceId ?? '',
       skipLeads,
     },
     skip: shouldSearch || !welcomeSpaceId,
@@ -86,28 +95,10 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
     skip: !shouldSearch,
   });
 
-  /*const {
-    data: spacesData,
-    fetchMore: fetchMoreSpaces,
-    loading: isLoadingSpaces,
-    hasMore: hasMoreSpaces,
-  } = usePaginatedQuery({
-    useQuery: useExploreAllSpacesQuery,
-    pageSize: ITEMS_LIMIT,
-    variables: {},
-    getPageInfo: result => result.spacesPaginated.pageInfo,
-    options: {
-      skip: !!shouldSearch,
-    },
-  });*/
   const { data: spacesData, loading: isLoadingSpaces } = useExploreAllSpacesQuery({
     variables: { skipLeads },
     skip: shouldSearch,
   });
-
-  // const fetchMore = !shouldSearch ? fetchMoreSpaces : () => Promise.resolve();
-
-  // const hasMore = !shouldSearch ? hasMoreSpaces : false;
 
   const loading = isLoadingSpaces || loadingSearchResults;
 
@@ -130,7 +121,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
     return spacesData?.exploreSpaces;
   }, [spacesData, selectedFilter, rawSearchResults]);
 
-  const provided = {
+  return {
     spaces: flattenedSpaces,
     searchTerms,
     selectedFilter,
@@ -138,10 +129,8 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
     loading,
     hasMore,
     filtersConfig,
-    welcomeSpace: welcomeSpaceData?.lookup.space,
+    welcomeSpace: welcomeSpaceData?.lookup.space as SpaceWithParent | undefined,
   };
-
-  return <>{children(provided)}</>;
 };
 
-export default ExploreSpacesContainer;
+export default useExploreSpaces;

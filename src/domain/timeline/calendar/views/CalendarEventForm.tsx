@@ -11,8 +11,8 @@ import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValid
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { isSameDay } from '@/core/utils/time/utils';
-import type { CalendarEventDetailData } from '../CalendarEventDetailContainer';
-import type { CalendarEventFormData } from '../CalendarEventsContainer';
+import type { CalendarEventDetailData } from '../useCalendarEventDetail';
+import type { CalendarEventFormData } from '../useCalendarEvents';
 import EventForm from './EventForm/EventForm';
 
 const DEFAULT_DURATION_MINUTES = 30;

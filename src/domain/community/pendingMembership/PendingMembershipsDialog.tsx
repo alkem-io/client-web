@@ -13,9 +13,10 @@ import Loading from '@/core/ui/loading/Loading';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import InvitationDialog from '../invitations/InvitationDialog';
+import useInvitationActions from '../invitations/useInvitationActions';
+import type { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import {
   ApplicationHydrator,
   InvitationHydrator,
@@ -42,6 +43,40 @@ const Section = <T extends { id: string }>({ title, items, children }: SectionPr
         <React.Fragment key={item.id}>{children(item)}</React.Fragment>
       ))}
     </>
+  );
+};
+
+const InvitationDialogWithActions = ({
+  onAccept,
+  onReject,
+  currentInvitation,
+  openDialog,
+  closeDialog,
+  setOpenDialog,
+}: {
+  onAccept: () => void;
+  onReject: () => void;
+  currentInvitation: PendingInvitationItem | undefined;
+  openDialog: ReturnType<typeof usePendingMembershipsDialog>['openDialog'];
+  closeDialog: () => void;
+  setOpenDialog: ReturnType<typeof usePendingMembershipsDialog>['setOpenDialog'];
+}) => {
+  const props = useInvitationActions({
+    onAccept,
+    onReject,
+    spaceId: currentInvitation?.spacePendingMembershipInfo.id,
+  });
+
+  return (
+    <InvitationDialog
+      open={openDialog?.type === PendingMembershipsDialogType.InvitationView}
+      onClose={closeDialog}
+      invitation={currentInvitation}
+      actions={
+        <BackButton onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })} />
+      }
+      {...props}
+    />
   );
 };
 
@@ -193,25 +228,14 @@ const PendingMembershipsDialog = () => {
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationActionsContainer
+      <InvitationDialogWithActions
         onAccept={onInvitationAccept}
         onReject={onInvitationReject}
-        spaceId={currentInvitation?.spacePendingMembershipInfo.id}
-      >
-        {props => (
-          <InvitationDialog
-            open={openDialog?.type === PendingMembershipsDialogType.InvitationView}
-            onClose={closeDialog}
-            invitation={currentInvitation}
-            actions={
-              <BackButton
-                onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
-              />
-            }
-            {...props}
-          />
-        )}
-      </InvitationActionsContainer>
+        currentInvitation={currentInvitation}
+        openDialog={openDialog}
+        closeDialog={closeDialog}
+        setOpenDialog={setOpenDialog}
+      />
     </>
   );
 };

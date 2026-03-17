@@ -1,5 +1,4 @@
 import type { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import type React from 'react';
 import { useCallback } from 'react';
 import {
   refetchCalendarEventImportUrlsQuery,
@@ -22,7 +21,6 @@ import {
 } from '@/domain/common/profile/ProfileModelUtils';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -37,19 +35,7 @@ export interface CalendarEventFormData
   tags: string[];
 }
 
-export interface CalendarEventsContainerProps {
-  spaceId: string | undefined;
-  parentSpaceId: string | undefined;
-  children: (
-    entities: CalendarEventsEntities,
-    actions: CalendarEventsActions,
-    loading: CalendarEventsState
-  ) => React.ReactNode;
-  options?: {};
-}
-
 export interface CalendarEventsActions {
-  // loadMore: () => void; // TODO: pagination?
   createEvent: (event: CalendarEventFormData) => Promise<string | undefined>;
   updateEvent: (eventId: string, event: CalendarEventFormData, tagset: TagsetModel) => Promise<string | undefined>;
   deleteEvent: (eventId: string) => Promise<void>;
@@ -70,9 +56,20 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: CalendarEventsContainerProps) => {
+type UseCalendarEventsParams = {
+  spaceId: string | undefined;
+  parentSpaceId: string | undefined;
+};
+
+type UseCalendarEventsResult = {
+  entities: CalendarEventsEntities;
+  actions: CalendarEventsActions;
+  state: CalendarEventsState;
+};
+
+const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams): UseCalendarEventsResult => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: spaceId!, includeSubspace: !parentSpaceId },
+    variables: { spaceId: spaceId ?? '', includeSubspace: !parentSpaceId },
     skip: !spaceId,
   });
 
@@ -98,10 +95,10 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
 
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
-  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: spaceId! })];
+  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: spaceId ?? '' })];
 
   if (parentSpaceId) {
-    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId! }));
+    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId }));
   }
 
   const createEvent = useCallback(
@@ -122,7 +119,7 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
       return createCalendarEvent({
         variables: {
           eventData: {
-            calendarID: calendarId!,
+            calendarID: calendarId ?? '',
             startDate: parsedStartDate,
             tags: tags,
             ...rest,
@@ -210,17 +207,11 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
     [deleteCalendarEvent]
   );
 
-  return (
-    <StorageConfigContextProvider spaceId={spaceId} locationType="space">
-      {children(
-        { events, privileges },
-        { createEvent, updateEvent, deleteEvent },
-        {
-          loading,
-          creatingCalendarEvent,
-          updatingCalendarEvent,
-        }
-      )}
-    </StorageConfigContextProvider>
-  );
+  return {
+    entities: { events, privileges },
+    actions: { createEvent, updateEvent, deleteEvent },
+    state: { loading, creatingCalendarEvent, updatingCalendarEvent },
+  };
 };
+
+export default useCalendarEvents;
