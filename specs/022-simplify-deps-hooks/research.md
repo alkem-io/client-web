@@ -104,9 +104,9 @@ For each: extract business logic to custom hooks, leave View as pure JSX.
 
 ## Decision 6: Render-Prop Container Refactoring
 
-**Decision**: Refactor 12 render-prop Container files to custom hooks.
+**Decision**: Refactor 14 render-prop Container files to custom hooks.
 
-**Rationale**: All 12 files follow the `SimpleContainerProps<T>` pattern or `children(provided)` render-prop pattern. Each becomes a hook returning the same `T` interface:
+**Rationale**: All 14 files follow the `SimpleContainerProps<T>` pattern, `children(provided)` render-prop pattern, or equivalent render-prop delivery. Each becomes a hook returning the same interface:
 
 1. `ApplicationButtonContainer.tsx` → `useApplicationButton()`
 2. `CalloutSettingsContainer.tsx` → `useCalloutSettings()`
@@ -120,6 +120,8 @@ For each: extract business logic to custom hooks, leave View as pure JSX.
 10. `CalendarEventDetailContainer.tsx` → `useCalendarEventDetail()`
 11. `CommunityUpdatesContainer.tsx` → `useCommunityUpdates()`
 12. `AssociatedOrganizationContainer.ts` → `useAssociatedOrganization()`
+13. `SpaceExplorerContainer.tsx` → `useSpaceExplorer()`
+14. `ExploreSpacesContainer.tsx` → `useExploreSpaces()`
 
 Plus 2 hydrators in `PendingMemberships.tsx`:
 - `InvitationHydrator` → `useInvitationHydrator()`

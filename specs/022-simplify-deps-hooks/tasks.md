@@ -28,7 +28,7 @@
 
 ## Phase 2: User Story 1 — Remove Unused Dependencies (Priority: P1) MVP
 
-**Goal**: Remove 7 packages with zero or obsolete imports. Zero code changes except package.json.
+**Goal**: Remove 7 packages with zero or obsolete imports. Minimal code change: update `WithApmTransaction.tsx` before removing `@elastic/apm-rum-react`.
 
 **Independent Test**: `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass with no errors.
 
@@ -245,7 +245,7 @@
 ### Phase Dependencies
 
 - **Setup (Phase 1)**: No dependencies — capture baseline
-- **US1 (Phase 2)**: Depends on Setup — zero-risk, zero code changes
+- **US1 (Phase 2)**: Depends on Setup — zero-risk, minimal code changes
 - **US3 (Phase 3)**: Depends on US1 (cleaner dependency tree)
 - **US2 (Phase 4)**: Depends on US1 (pragmatic-drag-and-drop already removed)
 - **US4 (Phase 5)**: Independent of US2/US3 — can run in parallel with them
@@ -272,7 +272,7 @@
 
 ### Parallel Opportunities
 
-Within Phase 2 (US1): T003-T009 are all parallel (7 independent package removals)
+Within Phase 2 (US1): T003-T005, T007-T009 are parallel; T006a→T006b are sequential (code change before package removal)
 Within Phase 4 (US2): T018-T022 are all parallel (5 independent file migrations)
 Within Phase 5 (US4): T030-T037 are all parallel (8 independent file updates, after T029)
 Within Phase 6 (US5): T040-T048 are all parallel (9 independent file updates)
@@ -318,8 +318,8 @@ Task: "Verify build + tests pass"
 3. US2 (D&D consolidated, 1 package removed) → merge
 4. US4 (3 trivial libs replaced) → merge
 5. US5 (Immer removed) → merge
-6. US6a (10 Containers → hooks) → merge
-7. US6b (17 Views purified) → merge
+6. US6a (14 Containers → hooks) → merge
+7. US6b (19 Views purified) → merge
 
 Each merge is independently valuable and testable.
 
