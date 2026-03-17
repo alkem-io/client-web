@@ -1,10 +1,10 @@
-import { FC, useState } from 'react';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { Box } from '@mui/material';
+import { type FC, useState } from 'react';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { Box } from '@mui/material';
 
 interface TemplateContentWhiteboardPreviewProps {
   loading?: boolean;
@@ -27,7 +27,7 @@ const TemplateContentWhiteboardPreview: FC<TemplateContentWhiteboardPreviewProps
         </Box>
       )}
       {!loading && (
-        <PageContentBlock disablePadding sx={{ flexGrow: 1 }}>
+        <PageContentBlock disablePadding={true} sx={{ flexGrow: 1 }}>
           <ExcalidrawWrapper
             entities={{
               whiteboard: template?.whiteboard,

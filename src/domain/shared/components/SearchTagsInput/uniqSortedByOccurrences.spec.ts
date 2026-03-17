@@ -1,5 +1,5 @@
+import { describe, expect, test } from 'vitest';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
-import { expect, test, describe } from 'vitest';
 
 type SimpleType = {
   tags: string[];

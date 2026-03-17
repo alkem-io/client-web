@@ -1,9 +1,9 @@
-import { FC } from 'react';
-import { BlockSectionTitle } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Skeleton } from '@mui/material';
+import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle } from '@/core/ui/typography';
 
 interface TemplateContentPostPreviewProps {
   loading?: boolean;

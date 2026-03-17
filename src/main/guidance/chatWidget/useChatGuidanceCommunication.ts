@@ -1,14 +1,15 @@
 import { useCallback, useMemo } from 'react';
-import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { useTranslation } from 'react-i18next';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   useConversationWithGuidanceVcQuery,
   useMarkMessageAsReadMutation,
   useResetConversationVcMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useConversationMessages, ConversationMessage } from '@/main/userMessaging/useConversationMessages';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { type ConversationMessage, useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 
 // Message format expected by ChatWidgetInner
 interface GuidanceMessage {
@@ -35,7 +36,10 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
-  const conversation = conversationGuidanceData?.me.conversations.conversationGuidanceVc;
+  // Find the guidance VC conversation by looking for a conversation with a VirtualContributor member
+  const conversation = conversationGuidanceData?.me.conversations.conversations.find(conv =>
+    conv.members.some(member => member.type === ActorType.VirtualContributor)
+  );
   const conversationId = conversation?.id ?? null;
 
   // 2. Use shared hook for messages

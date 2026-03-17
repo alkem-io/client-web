@@ -1,13 +1,12 @@
-import React from 'react';
 import Box from '@mui/material/Box';
-import markdownIt from 'markdown-it';
-import markdownItSup from 'markdown-it-sup';
-import markdownItSanitizer from 'markdown-it-sanitizer';
 import markdownItClass from '@toycode/markdown-it-class';
+import markdownIt from 'markdown-it';
 import markdownItLinkAttributes from 'markdown-it-link-attributes';
-
-import { Message as MessageType } from '../../../../../context/types';
+import markdownItSanitizer from 'markdown-it-sanitizer';
+import markdownItSup from 'markdown-it-sup';
+import type React from 'react';
 import { MESSAGE_SENDER } from '@/main/guidance/chatWidget/controls/context';
+import type { Message as MessageType } from '../../../../../context/types';
 
 type Props = {
   message: MessageType;

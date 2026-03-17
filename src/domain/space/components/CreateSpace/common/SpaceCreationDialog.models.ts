@@ -1,4 +1,4 @@
-import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 
 export interface SpaceCreationForm {
   isSubmitting: boolean;

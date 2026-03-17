@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
-import ContributeCard, { ContributeCardProps } from './ContributeCard';
-import CardHeader from './CardHeader';
 import { gutters } from '../grid/utils';
+import CardHeader from './CardHeader';
+import ContributeCard, { type ContributeCardProps } from './ContributeCard';
 
 const ContributeCardSkeleton = (props: ContributeCardProps) => (
   <ContributeCard {...props}>

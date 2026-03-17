@@ -1,5 +1,5 @@
-import { Identifiable } from '@/core/utils/Identifiable';
-import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
+import type { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 // Enum of all memo status values
 export enum MemoStatus {

@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
 
 const CardContent = (props: BoxProps) => <Box paddingX={1.5} {...props} />;
 

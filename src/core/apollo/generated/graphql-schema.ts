@@ -693,6 +693,13 @@ export type ApplyForEntryRoleOnRoleSetInput = {
   roleSetID: Scalars['UUID']['input'];
 };
 
+export type AssignConversationMemberInput = {
+  /** The ID of the conversation to add a member to. */
+  conversationID: Scalars['UUID']['input'];
+  /** The ID of the member (user or VC) to add. */
+  memberID: Scalars['UUID']['input'];
+};
+
 export type AssignLicensePlanToAccount = {
   /** The ID of the Account to assign the LicensePlan to. */
   accountID: Scalars['UUID']['input'];
@@ -1370,11 +1377,6 @@ export type CommunicationAdminUpdateRoomStateInput = {
   roomID: Scalars['String']['input'];
 };
 
-export enum CommunicationConversationType {
-  UserUser = 'USER_USER',
-  UserVc = 'USER_VC',
-}
-
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
   communityId: Scalars['UUID']['input'];
@@ -1568,17 +1570,13 @@ export type Conversation = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** All members of this Conversation, returned as actors with their types. */
+  members: Array<Actor>;
   messaging: Messaging;
   /** The room for this Conversation. */
   room?: Maybe<Room>;
-  /** The type of this Conversation (USER_USER or USER_VC), inferred from member agent types. */
-  type: CommunicationConversationType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The other user participating in this Conversation (excludes the current user). */
-  user?: Maybe<User>;
-  /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
-  virtualContributor?: Maybe<VirtualContributor>;
 };
 
 /** Event fired when a new conversation is created. Each member receives a personalized event with the other participant resolved via conversation.user or conversation.virtualContributor. */
@@ -1590,13 +1588,34 @@ export type ConversationCreatedEvent = {
   message?: Maybe<Message>;
 };
 
+/** The type of conversation to create. Maps to room type: DIRECT → DM room, GROUP → group room. */
+export enum ConversationCreationType {
+  Direct = 'DIRECT',
+  Group = 'GROUP',
+}
+
+/** Event fired when a conversation is deleted. All members are notified. */
+export type ConversationDeletedEvent = {
+  __typename?: 'ConversationDeletedEvent';
+  /** The ID of the deleted conversation. UUID only — conversation no longer exists. */
+  conversationID: Scalars['UUID']['output'];
+};
+
 /** Payload for conversation subscription events. */
 export type ConversationEventSubscriptionResult = {
   __typename?: 'ConversationEventSubscriptionResult';
   /** Present when eventType is CONVERSATION_CREATED. */
   conversationCreated?: Maybe<ConversationCreatedEvent>;
+  /** Present when eventType is CONVERSATION_DELETED. */
+  conversationDeleted?: Maybe<ConversationDeletedEvent>;
+  /** Present when eventType is CONVERSATION_UPDATED. */
+  conversationUpdated?: Maybe<ConversationUpdatedEvent>;
   /** The type of event. Use this to determine which payload field is populated. */
   eventType: ConversationEventType;
+  /** Present when eventType is MEMBER_ADDED. */
+  memberAdded?: Maybe<ConversationMemberAddedEvent>;
+  /** Present when eventType is MEMBER_REMOVED. */
+  memberRemoved?: Maybe<ConversationMemberRemovedEvent>;
   /** Present when eventType is MESSAGE_RECEIVED. */
   messageReceived?: Maybe<ConversationMessageReceivedEvent>;
   /** Present when eventType is MESSAGE_REMOVED. */
@@ -1608,10 +1627,32 @@ export type ConversationEventSubscriptionResult = {
 /** The type of conversation event. */
 export enum ConversationEventType {
   ConversationCreated = 'CONVERSATION_CREATED',
+  ConversationDeleted = 'CONVERSATION_DELETED',
+  ConversationUpdated = 'CONVERSATION_UPDATED',
+  MemberAdded = 'MEMBER_ADDED',
+  MemberRemoved = 'MEMBER_REMOVED',
   MessageReceived = 'MESSAGE_RECEIVED',
   MessageRemoved = 'MESSAGE_REMOVED',
   ReadReceiptUpdated = 'READ_RECEIPT_UPDATED',
 }
+
+/** Event fired when a member is added to a group conversation. */
+export type ConversationMemberAddedEvent = {
+  __typename?: 'ConversationMemberAddedEvent';
+  /** The actor that was added as a member. */
+  addedMember: Actor;
+  /** The conversation the member was added to. */
+  conversation: Conversation;
+};
+
+/** Event fired when a member is removed from or leaves a group conversation. */
+export type ConversationMemberRemovedEvent = {
+  __typename?: 'ConversationMemberRemovedEvent';
+  /** The conversation the member was removed from. */
+  conversation: Conversation;
+  /** The ID of the removed member. UUID only — removed member may not be resolvable after removal. */
+  removedMemberID: Scalars['UUID']['output'];
+};
 
 /** Event fired when a new message is received in a conversation. */
 export type ConversationMessageReceivedEvent = {
@@ -1638,6 +1679,13 @@ export type ConversationReadReceiptUpdatedEvent = {
   lastReadEventId: Scalars['MessageID']['output'];
   /** The room ID where the read receipt was updated. */
   roomId: Scalars['UUID']['output'];
+};
+
+/** Event fired when a conversation is updated (displayName, avatarUrl). */
+export type ConversationUpdatedEvent = {
+  __typename?: 'ConversationUpdatedEvent';
+  /** The conversation that was updated. */
+  conversation: Conversation;
 };
 
 export type ConversationVcResetInput = {
@@ -1916,9 +1964,14 @@ export type CreateContributionOnCalloutInput = {
 };
 
 export type CreateConversationInput = {
-  userID: Scalars['UUID']['input'];
-  virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
-  wellKnownVirtualContributor?: InputMaybe<VirtualContributorWellKnown>;
+  /** Optional avatar URL for GROUP conversations. Ignored for DIRECT conversations. Accepts mxc:// or https:// URLs. */
+  avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  /** Optional display name for GROUP conversations. Ignored for DIRECT conversations (Synapse uses the other member name automatically). */
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs. Creator is auto-included. */
+  memberIDs: Array<Scalars['UUID']['input']>;
+  /** The type of conversation to create: DIRECT for 1-on-1, GROUP for multi-party. */
+  type: ConversationCreationType;
 };
 
 export type CreateInnovationFlowData = {
@@ -3319,6 +3372,11 @@ export type LatestReleaseDiscussion = {
   nameID: Scalars['String']['output'];
 };
 
+export type LeaveConversationInput = {
+  /** The ID of the conversation to leave. */
+  conversationID: Scalars['UUID']['input'];
+};
+
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -4027,16 +4085,8 @@ export type LookupQueryResultsWhiteboardArgs = {
 
 export type MeConversationsResult = {
   __typename?: 'MeConversationsResult';
-  /** Conversations between users. */
-  users: Array<Conversation>;
-  /** Get a conversation with a well-known virtual contributor for the current user. */
-  virtualContributor?: Maybe<Conversation>;
-  /** Conversations between users and virtual contributors. */
-  virtualContributors: Array<Conversation>;
-};
-
-export type MeConversationsResultVirtualContributorArgs = {
-  wellKnown: VirtualContributorWellKnown;
+  /** All conversations (direct and group) for the current authenticated user. Client handles categorization by room type and member actor types. */
+  conversations: Array<Conversation>;
 };
 
 export type MeQueryResults = {
@@ -4317,6 +4367,8 @@ export type Mutation = {
   aiServerUpdateAiPersona: AiPersona;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
+  /** Assign a member to a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_ADDED subscription event. */
+  assignConversationMember: Scalars['Boolean']['output'];
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -4361,7 +4413,7 @@ export type Mutation = {
   createCalloutOnCalloutsSet: Callout;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Create a new Conversation on the Messaging. */
+  /** Create a new Conversation. Use type DIRECT for 1-on-1, GROUP for multi-party. */
   createConversation: Conversation;
   /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
@@ -4409,7 +4461,7 @@ export type Mutation = {
   deleteCallout: Callout;
   /** Deletes a contribution. */
   deleteContribution: CalloutContribution;
-  /** Deletes a Conversation. The Matrix room is only deleted if no reciprocal conversation exists. */
+  /** Deletes a Conversation. All members are notified via CONVERSATION_DELETED event. */
   deleteConversation: Conversation;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
@@ -4469,6 +4521,8 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
+  /** Leave a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. */
+  leaveConversation: Scalars['Boolean']['output'];
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
   /** Marks a message as read for the current user. */
@@ -4485,6 +4539,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Remove a member from a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. */
+  removeConversationMember: Scalars['Boolean']['output'];
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Removes an Iframe Allowed URL from the Platform Settings */
@@ -4567,6 +4623,8 @@ export type Mutation = {
   updateCommunityGuidelines: CommunityGuidelines;
   /** Update the sortOrder field of the Contributions of s Callout. */
   updateContributionsSortOrder: Array<CalloutContribution>;
+  /** Update a group conversation (display name, avatar). Returns true when the RPC is sent. Actual changes arrive via CONVERSATION_UPDATED subscription event. */
+  updateConversation: Scalars['Boolean']['output'];
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -4611,7 +4669,7 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
-  /** Updates the pinned state of a Subspace within the specified Space. */
+  /** Updates the pinned state of a Subspace within the specified Space. Returns the updated Subspace. */
   updateSubspacePinned: Space;
   /** Update the sortOrder field of the supplied Subspaces to increase as per the order that they are provided in. */
   updateSubspacesSortOrder: Array<Space>;
@@ -4725,6 +4783,10 @@ export type MutationAiServerUpdateAiPersonaArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
+};
+
+export type MutationAssignConversationMemberArgs = {
+  memberData: AssignConversationMemberInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -5017,6 +5079,10 @@ export type MutationJoinRoleSetArgs = {
   joinData: JoinAsEntryRoleOnRoleSetInput;
 };
 
+export type MutationLeaveConversationArgs = {
+  leaveData: LeaveConversationInput;
+};
+
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
 };
@@ -5043,6 +5109,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveConversationMemberArgs = {
+  memberData: RemoveConversationMemberInput;
 };
 
 export type MutationRemoveDefaultCalloutTemplateOnInnovationFlowStateArgs = {
@@ -5205,6 +5275,10 @@ export type MutationUpdateCommunityGuidelinesArgs = {
 
 export type MutationUpdateContributionsSortOrderArgs = {
   sortOrderData: UpdateContributionCalloutsSortOrderInput;
+};
+
+export type MutationUpdateConversationArgs = {
+  updateData: UpdateConversationInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -6535,6 +6609,13 @@ export type RemoveCommunityGuidelinesContentInput = {
   communityGuidelinesID: Scalars['UUID']['input'];
 };
 
+export type RemoveConversationMemberInput = {
+  /** The ID of the conversation to remove a member from. */
+  conversationID: Scalars['UUID']['input'];
+  /** The ID of the member (user or VC) to remove. */
+  memberID: Scalars['UUID']['input'];
+};
+
 export type RemoveDefaultCalloutTemplateOnInnovationFlowStateInput = {
   flowStateID: Scalars['UUID']['input'];
 };
@@ -6854,6 +6935,8 @@ export type Room = {
   __typename?: 'Room';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The avatar URL of the Room (mxc:// or https://). Fetched from Matrix. */
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The display name of the Room. */
@@ -6866,6 +6949,8 @@ export type Room = {
   messages: Array<Message>;
   /** The number of messages in the Room. */
   messagesCount: Scalars['Int']['output'];
+  /** The type of room (e.g., post, callout, conversation_direct, conversation_group). */
+  type: RoomType;
   /** Simple unread message count for the current user. Use unreadCounts for per-thread breakdown. */
   unreadCount: Scalars['Int']['output'];
   /** Unread message counts for the current user in this Room. */
@@ -6969,6 +7054,18 @@ export type RoomThreadUnreadCount = {
   /** The thread ID. */
   threadId: Scalars['MessageID']['output'];
 };
+
+/** The type of room. */
+export enum RoomType {
+  CalendarEvent = 'CALENDAR_EVENT',
+  Callout = 'CALLOUT',
+  Conversation = 'CONVERSATION',
+  ConversationDirect = 'CONVERSATION_DIRECT',
+  ConversationGroup = 'CONVERSATION_GROUP',
+  DiscussionForum = 'DISCUSSION_FORUM',
+  Post = 'POST',
+  Updates = 'UPDATES',
+}
 
 /** Unread message counts for a Room. */
 export type RoomUnreadCounts = {
@@ -8014,6 +8111,15 @@ export type UpdateContributionCalloutsSortOrderInput = {
   calloutID: Scalars['UUID']['input'];
   /** The IDs of the contributions to update the sort order on */
   contributionIDs: Array<Scalars['UUID']['input']>;
+};
+
+export type UpdateConversationInput = {
+  /** Avatar URL for the conversation. Accepts mxc:// or https:// URLs. Pass empty string to remove. */
+  avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  /** The ID of the conversation to update. */
+  conversationID: Scalars['UUID']['input'];
+  /** New display name for the conversation. Only GROUP conversations support custom names. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateDiscussionInput = {
@@ -31529,9 +31635,17 @@ export type ConversationWithGuidanceVcQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      conversationGuidanceVc?:
-        | { __typename?: 'Conversation'; id: string; room?: { __typename?: 'Room'; id: string } | undefined }
-        | undefined;
+      conversations: Array<{
+        __typename?: 'Conversation';
+        id: string;
+        room?: { __typename?: 'Room'; id: string } | undefined;
+        members: Array<{
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>;
+      }>;
     };
   };
 };
@@ -41172,6 +41286,91 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   };
 };
 
+export type AssignConversationMemberMutationVariables = Exact<{
+  memberData: AssignConversationMemberInput;
+}>;
+
+export type AssignConversationMemberMutation = { __typename?: 'Mutation'; assignConversationMember: boolean };
+
+export type ConversationDetailsQueryVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
+}>;
+
+export type ConversationDetailsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    conversation?:
+      | {
+          __typename?: 'Conversation';
+          id: string;
+          room?:
+            | {
+                __typename?: 'Room';
+                id: string;
+                type: RoomType;
+                displayName: string;
+                avatarUrl?: string | undefined;
+                createdDate: Date;
+                unreadCount: number;
+                messagesCount: number;
+                lastMessage?:
+                  | {
+                      __typename?: 'Message';
+                      id: string;
+                      message: string;
+                      timestamp: number;
+                      sender?:
+                        | {
+                            __typename?: 'Actor';
+                            id: string;
+                            type: ActorType;
+                            profile?:
+                              | {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                      reactions: Array<{
+                        __typename?: 'Reaction';
+                        id: string;
+                        emoji: string;
+                        timestamp: number;
+                        sender?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                            }
+                          | undefined;
+                      }>;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          members: Array<{
+            __typename?: 'Actor';
+            id: string;
+            type: ActorType;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type ConversationEventsSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type ConversationEventsSubscription = {
@@ -41189,6 +41388,10 @@ export type ConversationEventsSubscription = {
               | {
                   __typename?: 'Room';
                   id: string;
+                  type: RoomType;
+                  displayName: string;
+                  avatarUrl?: string | undefined;
+                  createdDate: Date;
                   unreadCount: number;
                   messagesCount: number;
                   lastMessage?:
@@ -41229,21 +41432,20 @@ export type ConversationEventsSubscription = {
                     | undefined;
                 }
               | undefined;
-            user?:
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        displayName: string;
-                        url: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
+            members: Array<{
+              __typename?: 'Actor';
+              id: string;
+              type: ActorType;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }>;
           };
           message?:
             | {
@@ -41281,6 +41483,44 @@ export type ConversationEventsSubscription = {
                 }>;
               }
             | undefined;
+        }
+      | undefined;
+    conversationUpdated?:
+      | {
+          __typename?: 'ConversationUpdatedEvent';
+          conversation: {
+            __typename?: 'Conversation';
+            id: string;
+            room?: { __typename?: 'Room'; id: string; displayName: string; avatarUrl?: string | undefined } | undefined;
+          };
+        }
+      | undefined;
+    conversationDeleted?: { __typename?: 'ConversationDeletedEvent'; conversationID: string } | undefined;
+    memberAdded?:
+      | {
+          __typename?: 'ConversationMemberAddedEvent';
+          conversation: { __typename?: 'Conversation'; id: string };
+          addedMember: {
+            __typename?: 'Actor';
+            id: string;
+            type: ActorType;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
+    memberRemoved?:
+      | {
+          __typename?: 'ConversationMemberRemovedEvent';
+          removedMemberID: string;
+          conversation: { __typename?: 'Conversation'; id: string };
         }
       | undefined;
     messageReceived?:
@@ -41396,15 +41636,94 @@ export type CreateConversationMutation = {
   createConversation: {
     __typename?: 'Conversation';
     id: string;
-    room?: { __typename?: 'Room'; id: string } | undefined;
+    room?:
+      | {
+          __typename?: 'Room';
+          id: string;
+          type: RoomType;
+          displayName: string;
+          avatarUrl?: string | undefined;
+          createdDate: Date;
+          unreadCount: number;
+          messagesCount: number;
+          lastMessage?:
+            | {
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender?:
+                  | {
+                      __typename?: 'Actor';
+                      id: string;
+                      type: ActorType;
+                      profile?:
+                        | {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+                reactions: Array<{
+                  __typename?: 'Reaction';
+                  id: string;
+                  emoji: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+    members: Array<{
+      __typename?: 'Actor';
+      id: string;
+      type: ActorType;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          }
+        | undefined;
+    }>;
   };
 };
+
+export type LeaveConversationMutationVariables = Exact<{
+  leaveData: LeaveConversationInput;
+}>;
+
+export type LeaveConversationMutation = { __typename?: 'Mutation'; leaveConversation: boolean };
 
 export type MarkMessageAsReadMutationVariables = Exact<{
   messageData: RoomMarkMessageReadInput;
 }>;
 
 export type MarkMessageAsReadMutation = { __typename?: 'Mutation'; markMessageAsReadInRoom: boolean };
+
+export type RemoveConversationMemberMutationVariables = Exact<{
+  memberData: RemoveConversationMemberInput;
+}>;
+
+export type RemoveConversationMemberMutation = { __typename?: 'Mutation'; removeConversationMember: boolean };
+
+export type UpdateConversationMutationVariables = Exact<{
+  updateData: UpdateConversationInput;
+}>;
+
+export type UpdateConversationMutation = { __typename?: 'Mutation'; updateConversation: boolean };
 
 export type UserConversationsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -41414,13 +41733,17 @@ export type UserConversationsQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      users: Array<{
+      conversations: Array<{
         __typename?: 'Conversation';
         id: string;
         room?:
           | {
               __typename?: 'Room';
               id: string;
+              type: RoomType;
+              displayName: string;
+              avatarUrl?: string | undefined;
+              createdDate: Date;
               unreadCount: number;
               messagesCount: number;
               lastMessage?:
@@ -41461,21 +41784,20 @@ export type UserConversationsQuery = {
                 | undefined;
             }
           | undefined;
-        user?:
-          | {
-              __typename?: 'User';
-              id: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                  }
-                | undefined;
-            }
-          | undefined;
+        members: Array<{
+          __typename?: 'Actor';
+          id: string;
+          type: ActorType;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }>;
       }>;
     };
   };
@@ -41489,7 +41811,7 @@ export type UserConversationsUnreadCountQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      users: Array<{
+      conversations: Array<{
         __typename?: 'Conversation';
         id: string;
         room?: { __typename?: 'Room'; id: string; unreadCount: number } | undefined;

@@ -1,8 +1,8 @@
+import { Box, type BoxProps } from '@mui/material';
+import { Trans, type TransProps } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { Box, BoxProps } from '@mui/material';
-import { Trans, TransProps } from 'react-i18next';
 import Paragraph from '@/domain/shared/components/Text/Paragraph';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface PlatformIntroductionProps {
   label: TransProps<TranslationKey>['i18nKey'];

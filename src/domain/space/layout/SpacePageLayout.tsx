@@ -1,26 +1,26 @@
-import PlatformNavigationBar from '@/main/ui/platformNavigation/PlatformNavigationBar';
-import { Outlet } from 'react-router-dom';
-import SpaceBreadcrumbs from '../components/spaceBreadcrumbs/SpaceBreadcrumbs';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import SpacePageBanner from './tabbedLayout/layout/SpacePageBanner';
-import PlatformFooter from '@/main/ui/platformFooter/PlatformFooter';
-import { Paper, Box } from '@mui/material';
-import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
-import SearchDialog from '@/main/search/SearchDialog';
-import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { Box, Paper } from '@mui/material';
 import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpaceTabs from './tabbedLayout/Tabs/SpaceTabs';
-import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import { gutters } from '@/core/ui/grid/utils';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import { useSectionIndex } from './useSectionIndex';
-import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
-import { SpaceVisibilityNotice } from '@/domain/space/layout/tabbedLayout/layout/SpaceVisibilityNotice';
-import { useSpace } from '@/domain/space/context/useSpace';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { SpaceVisibilityNotice } from '@/domain/space/layout/tabbedLayout/layout/SpaceVisibilityNotice';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import SearchDialog from '@/main/search/SearchDialog';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import PlatformFooter from '@/main/ui/platformFooter/PlatformFooter';
+import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
+import PlatformNavigationBar from '@/main/ui/platformNavigation/PlatformNavigationBar';
+import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
+import SubspacePageBanner from '../components/SubspacePageBanner/SubspacePageBanner';
+import SpaceBreadcrumbs from '../components/spaceBreadcrumbs/SpaceBreadcrumbs';
+import SpacePageBanner from './tabbedLayout/layout/SpacePageBanner';
+import SpaceTabs from './tabbedLayout/Tabs/SpaceTabs';
+import { useSectionIndex } from './useSectionIndex';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = () => {
@@ -48,7 +48,7 @@ export const SpacePageLayout = () => {
         <SpaceTabs
           mobile={isSmallScreen}
           onMenuOpen={setTabsMenuOpen}
-          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
+          currentTab={{ sectionIndex: parseInt(sectionIndex, 10) }}
         />
       )}
       <Outlet />
@@ -56,7 +56,7 @@ export const SpacePageLayout = () => {
         <SpaceTabs
           mobile={isSmallScreen}
           onMenuOpen={setTabsMenuOpen}
-          currentTab={{ sectionIndex: parseInt(sectionIndex) }}
+          currentTab={{ sectionIndex: parseInt(sectionIndex, 10) }}
         />
       )}
 
@@ -69,8 +69,8 @@ export const SpacePageLayout = () => {
       <PlatformFooter />
 
       {isSmallScreen && (
-        <Box component={Paper} square position="fixed" bottom={0} left={0} right={0}>
-          <PoweredBy compact />
+        <Box component={Paper} square={true} position="fixed" bottom={0} left={0} right={0}>
+          <PoweredBy compact={true} />
         </Box>
       )}
       <SearchDialog />

@@ -1,4 +1,4 @@
-import { styled, Tab, TabProps } from '@mui/material';
+import { styled, Tab, type TabProps } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 interface NagivationTabProps extends TabProps {

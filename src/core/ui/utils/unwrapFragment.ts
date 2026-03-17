@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 const unwrapFragment = (children: ReactNode | ReactNode[], keyPrefix = 'unwrapped-'): ReactNode[] => {
   if (!children) {
@@ -9,7 +9,7 @@ const unwrapFragment = (children: ReactNode | ReactNode[], keyPrefix = 'unwrappe
 
   React.Children.forEach(children, (child, i) => {
     if (isFragmentElement(child)) {
-      unwrapped.push(...unwrapFragment(child.props.children), keyPrefix + i + '-');
+      unwrapped.push(...unwrapFragment(child.props.children), `${keyPrefix + i}-`);
     } else if (React.isValidElement(child)) {
       if (child.key == null) {
         unwrapped.push(React.cloneElement(child, { key: keyPrefix + i }));

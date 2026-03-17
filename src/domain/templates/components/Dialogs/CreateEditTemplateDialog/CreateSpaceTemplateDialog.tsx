@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import CreateTemplateDialog from './CreateTemplateDialog';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useCreateTemplateFromSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
-import { TemplateSpaceFormSubmittedValues } from '../../Forms/TemplateSpaceForm';
-import { toCreateTemplateFromSpaceMutationVariables } from '../../Forms/common/mappings';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { toCreateTemplateFromSpaceMutationVariables } from '../../Forms/common/mappings';
+import type { TemplateSpaceFormSubmittedValues } from '../../Forms/TemplateSpaceForm';
+import CreateTemplateDialog from './CreateTemplateDialog';
 
 interface CreateSpaceTemplateDialogProps {
   open: boolean;

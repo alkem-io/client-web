@@ -1,13 +1,13 @@
-import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography/components';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Divider } from '@mui/material';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
-import {
-  PlatformNotificationSettings,
+import { BlockTitle, Caption } from '@/core/ui/typography/components';
+import type {
   PlatformAdminNotificationSettings,
+  PlatformNotificationSettings,
 } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
-import { ReactNode } from 'react';
 
 interface CombinedPlatformNotificationsSettingsProps {
   currentPlatformSettings: PlatformNotificationSettings | undefined;

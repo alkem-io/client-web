@@ -1,15 +1,15 @@
+import { ArrowRight } from '@mui/icons-material';
+import { Box, Button, Divider, styled, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import i18n from '@/core/i18n/config';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
-import { ArrowRight } from '@mui/icons-material';
-import { Button, Divider, styled, Tooltip, Box } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
-import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
-import { gutters } from '@/core/ui/grid/utils';
+import type { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
+import type { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 interface InnovationFlowChipsProps extends InnovationFlowVisualizerProps {}
 
@@ -61,12 +61,12 @@ const InnovationFlowChips = ({
 
   return (
     <>
-      <Gutters row disablePadding alignItems="start" overflow="hidden">
+      <Gutters row={true} disablePadding={true} alignItems="start" overflow="hidden">
         {settingsButton}
-        {settingsButton && <Divider orientation="vertical" flexItem />}
+        {settingsButton && <Divider orientation="vertical" flexItem={true} />}
         <Gutters
           row={columns > 4}
-          disablePadding
+          disablePadding={true}
           flexGrow={1}
           flexShrink={1}
           minWidth={0}
@@ -77,7 +77,7 @@ const InnovationFlowChips = ({
             <Button
               key={state.displayName}
               variant={getStateButtonVariant(state)}
-              disableElevation
+              disableElevation={true}
               sx={{
                 backgroundColor: getStateButtonBackgroundColor(state),
                 borderColor: 'divider',
@@ -95,14 +95,12 @@ const InnovationFlowChips = ({
               aria-label={getStateAriaLabel(state.displayName)}
               onClick={() => onSelectState?.(state)}
             >
-              <Caption noWrap>
-                <>{getStateName(state.displayName)}</>
-              </Caption>
+              <Caption noWrap={true}>{getStateName(state.displayName)}</Caption>
             </Button>
           ))}
         </Gutters>
         {createButton && (
-          <Gutters row disablePadding>
+          <Gutters row={true} disablePadding={true}>
             {createButton}
           </Gutters>
         )}

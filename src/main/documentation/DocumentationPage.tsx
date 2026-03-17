@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import useNavigate from '@/core/routing/useNavigate';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { useLocation } from 'react-router-dom';
 import Gutters from '@/core/ui/grid/Gutters';
+import scrollToTop from '@/core/ui/utils/scrollToTop';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import { useTranslation } from 'react-i18next';
-import scrollToTop from '@/core/ui/utils/scrollToTop';
-import useNavigate from '@/core/routing/useNavigate';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
-import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const DEFAULT_HEIGHT = '100vh';
-const enum SupportedMessageTypes {
+enum SupportedMessageTypes {
   PageHeight = 'PAGE_HEIGHT',
   PageChange = 'PAGE_CHANGE',
 }
@@ -84,9 +84,9 @@ const DocumentationPage = () => {
       breadcrumbs={<TopLevelPageBreadcrumbs />}
     >
       <PageContent>
-        <PageContentBlock fullHeight>
+        <PageContentBlock fullHeight={true}>
           <Gutters
-            disablePadding
+            disablePadding={true}
             sx={{
               overflow: 'hidden',
             }}

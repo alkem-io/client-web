@@ -1,14 +1,14 @@
+import { init as initApm, type UserObject } from '@elastic/apm-rum';
 import { useCallback, useMemo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { init as initApm, UserObject } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
+import { v4 as uuidv4 } from 'uuid';
+import { useUserGeo } from '@/core/analytics/geo';
 import { error as logError } from '@/core/logging/sentry/log';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
-import { useUserGeo } from '@/core/analytics/geo';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07

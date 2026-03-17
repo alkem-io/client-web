@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 type Rendered<Consumed extends {}> = (props: Consumed) => ReactElement | null;
 
@@ -10,7 +10,7 @@ export type ComponentOrChildrenFn<Provided extends {}> =
       children: Rendered<Provided>;
     };
 
-// @ts-ignore TS5UPGRADE
+// @ts-expect-error TS5UPGRADE
 export type ContainerPropsWithProvided<TProps, TProvidedProps> = TProps & ComponentOrChildrenFn<TProvidedProps>;
 
 export const renderComponentOrChildrenFn = <Consumed extends {}, Provided extends Consumed>(

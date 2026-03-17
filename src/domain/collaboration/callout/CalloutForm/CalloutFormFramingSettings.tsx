@@ -1,30 +1,30 @@
 import BlockIcon from '@mui/icons-material/Block';
-import CampaignIcon from '@mui/icons-material/Campaign';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import { Tooltip } from '@mui/material';
+import { useField, useFormikContext } from 'formik';
+import { Suspense, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import EditButton from '@/core/ui/actions/EditButton';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
 import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
-import { gutters } from '@/core/ui/grid/utils';
-import { useTranslation } from 'react-i18next';
-import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import { useField, useFormikContext } from 'formik';
-import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import { Tooltip } from '@mui/material';
-import EditButton from '@/core/ui/actions/EditButton';
-import { Suspense, useMemo } from 'react';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import Loading from '@/core/ui/loading/Loading';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import type { CalloutFormSubmittedValues } from './CalloutFormModel';
 
 const CalloutFramingMediaGalleryField = lazyWithGlobalErrorHandler(
   () => import('../CalloutFramings/CalloutFramingMediaGalleryField')
@@ -101,7 +101,6 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           mediaGallery: undefined,
         };
         break;
-      case CalloutFramingType.None:
       default:
         newFraming = {
           ...framing,
@@ -177,7 +176,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
       return (
         <Tooltip title={t('callout.create.framingSettings.whiteboard.onlyRealTimeEditorAvailable')}>
           <span>
-            <EditButton disabled />
+            <EditButton disabled={true} />
           </span>
         </Tooltip>
       );
@@ -192,17 +191,17 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
         <PageContentBlockHeader
           title={t('callout.create.framingSettings.title')}
           actions={radioButtons}
-          autoCollapseActions
+          autoCollapseActions={true}
         />
       </PageContentBlock>
 
       {framing.whiteboard && framing.type === CalloutFramingType.Whiteboard && (
-        <PageContentBlock disablePadding>
+        <PageContentBlock disablePadding={true}>
           <FormikWhiteboardPreview
             name="framing.whiteboard.content"
             previewImagesName="framing.whiteboard.previewImages"
             previewSettingsName="framing.whiteboard.previewSettings"
-            canEdit
+            canEdit={true}
             editButton={editButton}
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
@@ -217,31 +216,29 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           placeholder={t('components.callout-creation.framing.memo.placeholder')}
           rows={10}
           name={nameOf<CalloutFormSubmittedValues>('framing.memo.markdown')}
-          hideImageOptions
+          hideImageOptions={true}
           maxLength={MARKDOWN_TEXT_LENGTH}
         />
       )}
 
       {framing.type === CalloutFramingType.Link && (
-        <PageContentBlockSeamless row disablePadding>
-          <>
-            <FormikInputField
-              containerProps={{ width: '70%' }}
-              name="framing.link.profile.displayName"
-              title={t('components.callout-creation.framing.link.name')}
-              value={framing.link?.profile.displayName || ''}
-              onChange={e => handleLinkChange('displayName', e.target.value)}
-              required
-            />
-            <FormikInputField
-              containerProps={{ width: '30%' }}
-              name="framing.link.uri"
-              title={t('components.callout-creation.framing.link.url')}
-              value={framing.link?.uri || ''}
-              onChange={e => handleLinkChange('uri', e.target.value)}
-              required
-            />
-          </>
+        <PageContentBlockSeamless row={true} disablePadding={true}>
+          <FormikInputField
+            containerProps={{ width: '70%' }}
+            name="framing.link.profile.displayName"
+            title={t('components.callout-creation.framing.link.name')}
+            value={framing.link?.profile.displayName || ''}
+            onChange={e => handleLinkChange('displayName', e.target.value)}
+            required={true}
+          />
+          <FormikInputField
+            containerProps={{ width: '30%' }}
+            name="framing.link.uri"
+            title={t('components.callout-creation.framing.link.url')}
+            value={framing.link?.uri || ''}
+            onChange={e => handleLinkChange('uri', e.target.value)}
+            required={true}
+          />
         </PageContentBlockSeamless>
       )}
 

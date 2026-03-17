@@ -1,7 +1,7 @@
-import { useAvailableUsersForElevatedRoleQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AVAILABLE_USERS_PAGE_SIZE, AvailableUsersResponse } from './common';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useCallback } from 'react';
+import { useAvailableUsersForElevatedRoleQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse } from './common';
 
 type useRoleSetAvailableUsersParams = {
   roleSetId: string | undefined;
@@ -23,7 +23,12 @@ const useRoleSetAvailableUsersOnRoleSet = ({
   skip,
 }: useRoleSetAvailableUsersParams): useRoleSetAvailableUsersOnRoleSetProvided => {
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const { data, loading, fetchMore: fetchMoreRaw, refetch } = useAvailableUsersForElevatedRoleQuery({
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreRaw,
+    refetch,
+  } = useAvailableUsersForElevatedRoleQuery({
     variables: {
       first: AVAILABLE_USERS_PAGE_SIZE,
       roleSetId: roleSetId!,

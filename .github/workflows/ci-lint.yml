@@ -6,12 +6,18 @@ on:
   pull_request:
     branches: [develop, main]
 
+env:
+  NODE_VERSION: '24.14.0'
+
 jobs:
-  lint:
+  setup:
     runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -21,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.14.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -39,5 +45,119 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm run lint:prod
+  typecheck:
+    needs: setup
+    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript type-check
+        run: pnpm exec tsc --noEmit
+
+  lint:
+    needs: setup
+    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Biome lint and format check
+        run: pnpm biome ci .
+
+  eslint-compiler:
+    needs: setup
+    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Clean untracked files
+        run: git clean -fdx -e node_modules -e .pnpm-store
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: ESLint React Compiler rule
+        run: pnpm eslint .

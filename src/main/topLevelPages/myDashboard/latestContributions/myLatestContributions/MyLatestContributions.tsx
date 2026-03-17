@@ -1,28 +1,28 @@
+import { Box, type SelectChangeEvent } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsGroupedQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
-  ActivityLogCalloutWhiteboardContentModifiedFragment,
-  ActivityLogCalloutWhiteboardCreatedFragment,
+  type ActivityLogCalloutWhiteboardContentModifiedFragment,
+  type ActivityLogCalloutWhiteboardCreatedFragment,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { Box, SelectChangeEvent } from '@mui/material';
-import {
-  ActivityLogResultType,
-  ActivityViewChooser,
-} from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import { Caption, CaptionSmall } from '@/core/ui/typography/components';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
-import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
+import { Caption, CaptionSmall } from '@/core/ui/typography/components';
+import {
+  type ActivityLogResultType,
+  ActivityViewChooser,
+} from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardContext } from '../../DashboardContext';
 import { DashboardDialog } from '../../DashboardDialogs/DashboardDialogsProps';
-import { SpaceOption } from '../LatestContributions';
+import type { SpaceOption } from '../LatestContributions';
+import { type LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
 
@@ -122,7 +122,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
 
   return (
     <>
-      <Gutters disableGap disablePadding>
+      <Gutters disableGap={true} disablePadding={true}>
         <Box display="flex" justifyContent="end" alignItems="center">
           <SeamlessSelect
             value={filter.space}

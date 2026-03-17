@@ -1,4 +1,4 @@
-import { CropConfig } from '@/core/utils/images/cropImage';
+import type { CropConfig } from '@/core/utils/images/cropImage';
 
 const MIN_SCALE = 1;
 const ZERO_PAN = { x: 0, y: 0 };

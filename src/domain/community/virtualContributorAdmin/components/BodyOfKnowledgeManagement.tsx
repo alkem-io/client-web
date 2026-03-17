@@ -1,19 +1,19 @@
+import { Box, Button, Tooltip } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorSettingsMutation,
   useVirtualContributorKnowledgeBaseLastUpdatedQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
-import { Trans, useTranslation } from 'react-i18next';
-import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AiPersonaEngine, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Box, Button, Tooltip } from '@mui/material';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
 
 interface BodyOfKnowledgeManagementProps {
@@ -111,7 +111,7 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
             }
             placement="top-start"
           >
-            <Gutters disablePadding>
+            <Gutters disablePadding={true}>
               <SwitchSettingsGroup
                 options={{
                   listedInStore: {

@@ -1,17 +1,15 @@
+import { Box, Button, type ButtonProps, DialogContent, Skeleton, TextField } from '@mui/material';
+import { type FC, type PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
 import { isAbsoluteUrl } from '@/core/utils/links';
-import { Box, Button, ButtonProps, DialogContent, Skeleton, TextField } from '@mui/material';
-import { FC, PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
-import { AlkemioShareHandler } from './platforms/ShareOnAlkemio';
-import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
-import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
+import { AlkemioShareHandler, ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
+import { ClipboardShareHandler, ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 
 const buildFullUrl = (url: string) =>
-  isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
+  isAbsoluteUrl(url) ? url : `${window.location.protocol}//${window.location.host}${url}`;
 
 export interface ShareComponentProps extends PropsWithChildren {
   url: string;

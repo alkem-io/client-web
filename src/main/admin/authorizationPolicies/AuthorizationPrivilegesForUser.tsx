@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import { Autocomplete, Chip, CircularProgress, TextField } from '@mui/material';
+import { useMemo, useState } from 'react';
 import { validate as validateUUID } from 'uuid';
 import { useAuthorizationPrivilegesForUserQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Autocomplete, Chip, CircularProgress, TextField } from '@mui/material';
-import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
 import { BlockTitle } from '@/core/ui/typography';
+import type { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
-import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 
 interface AuthorizationDialogProps {
   authorizationPolicyId: string;
@@ -62,7 +62,7 @@ const AuthorizationPrivilegesForUser = ({ authorizationPolicyId }: Authorization
         getOptionLabel={option => (typeof option === 'string' ? option : option.value)}
         options={userList}
         loading={loading}
-        freeSolo
+        freeSolo={true}
         renderInput={params => (
           <TextField
             {...params}
@@ -83,7 +83,7 @@ const AuthorizationPrivilegesForUser = ({ authorizationPolicyId }: Authorization
         )}
       />
       {user && <BlockTitle>{`Authorization Privileges for User ${user?.value}`}</BlockTitle>}
-      <Gutters row disablePadding flexWrap="wrap">
+      <Gutters row={true} disablePadding={true} flexWrap="wrap">
         {loading && <Loading />}
         {!loading &&
           data?.lookup.authorizationPrivilegesForUser?.map(privilege => (

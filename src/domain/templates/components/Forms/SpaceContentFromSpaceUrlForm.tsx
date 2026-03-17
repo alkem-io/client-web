@@ -1,12 +1,13 @@
 import { Box, Button, TextField } from '@mui/material';
-import React, { useImperativeHandle, useState } from 'react';
+import type React from 'react';
+import { useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUrlResolverLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { UrlType } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Gutters from '@/core/ui/grid/Gutters';
 import { Text } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { useUrlResolverLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import Gutters from '@/core/ui/grid/Gutters';
-import { UrlType } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceContentFromSpaceUrlFormRef {
   resetForm: () => void;
@@ -80,7 +81,7 @@ const SpaceContentFromSpaceUrlForm = ({
         <form onSubmit={e => e.preventDefault()}>
           <PageContentBlock>
             <Text>{t('templateLibrary.spaceTemplates.findByUrl.description')}</Text>
-            <Gutters disablePadding row alignItems="baseline">
+            <Gutters disablePadding={true} row={true} alignItems="baseline">
               <TextField
                 value={url}
                 onChange={e => setUrl(e.target.value)}

@@ -1,10 +1,10 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
-import { ApmBase } from '@elastic/apm-rum';
+import type { ApmBase } from '@elastic/apm-rum';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApmInit } from '@/core/analytics/apm/useApmInit';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { AUTH_PAGE_PREFIXES } from '@/core/auth/authentication/constants/authentication.constants';
+import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export interface ApmContextProps {
   apm?: ApmBase;

@@ -1,4 +1,4 @@
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import type { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceSettingsPrivacy {
   mode: SpacePrivacyMode;

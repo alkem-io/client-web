@@ -1,14 +1,14 @@
-import { ChangeEvent } from 'react';
 import {
   Autocomplete,
   Box,
   Chip,
   CircularProgress,
   FormHelperText,
-  OutlinedTextFieldProps,
+  type OutlinedTextFieldProps,
   TextField,
-  TextFieldProps,
+  type TextFieldProps,
 } from '@mui/material';
+import type { ChangeEvent } from 'react';
 import HelpButton from '@/core/ui/button/HelpButton';
 
 const DEFAULT_MIN_LENGTH = 2;
@@ -43,9 +43,9 @@ export const TagsInput = ({
 }: TagsInputProps & {
   ref?: React.Ref<unknown>;
 }) => {
-  const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
+  const handleChange = (_e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
     const changedValues = newValue.map(x => (Array.isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);
-    onChange && onChange(changedValues);
+    onChange?.(changedValues);
   };
 
   return (
@@ -54,15 +54,15 @@ export const TagsInput = ({
         ref={ref}
         aria-label="Filter"
         id="card-filter"
-        multiple
-        fullWidth
-        freeSolo
-        autoSelect
-        disableCloseOnSelect
+        multiple={true}
+        fullWidth={true}
+        freeSolo={true}
+        autoSelect={true}
+        disableCloseOnSelect={true}
         options={[]}
         value={value}
         onChange={handleChange}
-        disableClearable
+        disableClearable={true}
         disabled={loading || readOnly || disabled}
         sx={{
           ':root': {

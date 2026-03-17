@@ -1,8 +1,8 @@
-import { gutters } from '@/core/ui/grid/utils';
-import { Chip, SxProps } from '@mui/material';
-import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
+import { Chip, type SxProps } from '@mui/material';
+import Autocomplete, { type AutocompleteProps, type AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useCallback, useMemo } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
 
 export interface SearchTagsInputProps {
@@ -54,9 +54,9 @@ const SearchTagsInput = ({
   return (
     <Autocomplete
       aria-label="Filter"
-      multiple
+      multiple={true}
       fullWidth={fullWidth}
-      freeSolo
+      freeSolo={true}
       disableCloseOnSelect={disableCloseOnSelect}
       options={options}
       getOptionLabel={option => option}

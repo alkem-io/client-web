@@ -1,5 +1,5 @@
+import { describe, expect, it } from 'vitest';
 import emailParser from './emailParser';
-import { expect, it, describe } from 'vitest';
 
 describe('emailParser', () => {
   it('should parse a single email', () => {

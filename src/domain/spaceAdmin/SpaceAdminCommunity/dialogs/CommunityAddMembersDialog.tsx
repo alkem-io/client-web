@@ -1,15 +1,15 @@
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
-import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
+import type { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
-import { Identifiable } from '@/core/utils/Identifiable';
-import Gutters from '@/core/ui/grid/Gutters';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 interface Entity extends Identifiable {
   email?: string;
@@ -24,7 +24,7 @@ type GetterParams = Entity | undefined;
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
   fetchAvailableEntities: (filter?: string) => Promise<Entity[] | undefined>;
-  onAdd: (memberId: string) => Promise<unknown> | undefined | void;
+  onAdd: (memberId: string) => Promise<unknown> | void | void;
   allowSearchByURL?: boolean;
 }
 const PAGE_SIZE = 10;
@@ -53,14 +53,14 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
   const [addedMemberIds, setAddedMemberIds] = useState<string[]>([]);
 
   const fetchData = async () => {
-    let fetched = await fetchAvailableEntities(filter);
+    const fetched = await fetchAvailableEntities(filter);
     setData(fetched);
   };
 
-  const createCellText = (row: Entity) => `${row.profile?.displayName ?? ''} ${row.email ? '(' + row.email + ')' : ''}`;
+  const createCellText = (row: Entity) => `${row.profile?.displayName ?? ''} ${row.email ? `(${row.email})` : ''}`;
 
   const parseAndSetFilter = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    let filterValue = event.target.value;
+    const filterValue = event.target.value;
     setFilter(filterValue);
   };
 
@@ -91,7 +91,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
   };
 
   return (
-    <DialogWithGrid open columns={12} onClose={onClose} aria-labelledby="community-add-members-dialog">
+    <DialogWithGrid open={true} columns={12} onClose={onClose} aria-labelledby="community-add-members-dialog">
       <DialogHeader id="community-add-members-dialog" onClose={onClose}>
         {t('community.addMember')}
       </DialogHeader>
@@ -106,7 +106,7 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
               label={t('common.search')}
               placeholder={t('common.search')}
               size="small"
-              fullWidth
+              fullWidth={true}
             />
             <DataGridTable
               rows={availableEntities}

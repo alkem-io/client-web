@@ -1,11 +1,11 @@
-import { ReactNode, useMemo } from 'react';
-import { Tooltip, TooltipProps } from '@mui/material';
+import { Tooltip, type TooltipProps } from '@mui/material';
+import { type ReactNode, useMemo } from 'react';
 import { useContributorTooltipLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 import GridProvider from '@/core/ui/grid/GridProvider';
-import UserCard from '@/domain/community/user/userCard/UserCard';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import UserCard from '@/domain/community/user/userCard/UserCard';
 
 interface ContributorTooltipProps extends Omit<TooltipProps, 'title'> {
   contributorId: string;
@@ -93,7 +93,7 @@ const ContributorTooltip = ({
     <Tooltip
       title={tooltipContent}
       onOpen={onOpenTooltipShow}
-      arrow
+      arrow={true}
       {...props}
       slotProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent', paddingY: 0 } } } }}
     >

@@ -3,9 +3,9 @@ import {
   useSpaceSettingsQuery,
   useSpaceStorageAggregatorIdQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { defaultSpaceSettings } from '../../spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
+import { defaultSpaceSettings } from '../../spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 
 export const useVideoCall = (spaceId?: string, spaceNameId = '', requiredPrivilege = AuthorizationPrivilege.Read) => {
   const { data, loading: loadingAuthorizationPrivileges } = useSpacePrivilegesQuery({

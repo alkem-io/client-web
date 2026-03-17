@@ -1,5 +1,5 @@
-import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import type { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 export interface MemoFieldSubmittedValues {
   contentUpdatePolicy?: ContentUpdatePolicy;

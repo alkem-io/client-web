@@ -1,14 +1,14 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { CommunityMembershipPolicy, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle, BlockSectionTitle } from '@/core/ui/typography';
 import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { CommunityMembershipPolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
-import { isSubspace, isNotLastLevel } from '@/domain/space/utils/spaceLevel';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { isNotLastLevel, isSubspace } from '@/domain/space/utils/spaceLevel';
 
 interface MembershipSettingsProps {
   currentPolicy?: CommunityMembershipPolicy;

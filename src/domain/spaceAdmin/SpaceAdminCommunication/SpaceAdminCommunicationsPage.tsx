@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import SpaceAdminCommunityUpdatesPage from './SpaceAdminCommunityUpdatesPage';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import SpaceAdminCommunityUpdatesPage from './SpaceAdminCommunityUpdatesPage';
 
 export interface SpaceAdminCommunicationsPageProps extends SettingsPageProps {
   communityId: string;

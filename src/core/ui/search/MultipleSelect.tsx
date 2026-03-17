@@ -1,23 +1,23 @@
 import SearchIcon from '@mui/icons-material/Search';
-import Box, { BoxProps } from '@mui/material/Box';
+import { Chip, TextField } from '@mui/material';
+import Box, { type BoxProps } from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { delay, uniq } from 'lodash-es';
 import {
+  type ChangeEventHandler,
+  type KeyboardEventHandler,
+  type PropsWithChildren,
   useCallback,
-  ChangeEventHandler,
-  KeyboardEventHandler,
-  PropsWithChildren,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
-import { Chip, TextField } from '@mui/material';
-import { delay, uniq } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../grid/utils';
 import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
 import { useScreenSize } from '../grid/constants';
+import { gutters } from '../grid/utils';
 
 export interface MultipleSelectProps {
   value: string[];
@@ -57,7 +57,7 @@ const SelectedTerms = ({
       <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
     ))}
     {selectedTerms.length > maxTermsVisible && (
-      <Tooltip title={selectedTerms.join(', ')} arrow>
+      <Tooltip title={selectedTerms.join(', ')} arrow={true}>
         <Chip key="ellipsis" label="..." />
       </Tooltip>
     )}
@@ -184,7 +184,7 @@ const MultipleSelect = ({
             id="overlay-example"
             title={t('pages.search.max-tags-reached', { max: MAX_TERMS_SEARCH })}
             open={isTooltipShown}
-            arrow
+            arrow={true}
           >
             <Box>
               <TextField

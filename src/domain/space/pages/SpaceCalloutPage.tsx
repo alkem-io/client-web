@@ -1,8 +1,8 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { SpaceCalloutDialogProps } from '@/domain/space/pages/SpaceCalloutDialogProps';
-import { useSpace } from '../context/useSpace';
-import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import type { SpaceCalloutDialogProps } from '@/domain/space/pages/SpaceCalloutDialogProps';
 import { SpaceTabbedPages } from '@/domain/space/routing/SpaceRoutes';
+import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { useSpace } from '../context/useSpace';
 
 const renderPage = () => <SpaceTabbedPages />;
 

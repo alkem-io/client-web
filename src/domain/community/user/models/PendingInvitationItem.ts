@@ -1,6 +1,6 @@
-import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import type { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
 
 export interface PendingInvitationItem extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {

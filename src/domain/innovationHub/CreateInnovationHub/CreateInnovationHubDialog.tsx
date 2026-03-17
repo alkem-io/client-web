@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle } from '@/core/ui/typography';
-import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
+import { useTranslation } from 'react-i18next';
 import { useCreateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
 import { InnovationHubType } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { BlockTitle } from '@/core/ui/typography';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import InnovationHubForm, { type InnovationHubFormValues } from '../InnovationHubsSettings/InnovationHubForm';
 
 type CreateInnovationHubDialogProps = {
   accountId: string | undefined;
@@ -53,18 +53,16 @@ const CreateInnovationHubDialog = ({ accountId, open = false, onClose }: CreateI
   }
 
   return (
-    <>
-      <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-hub">
-        <DialogHeader id="create-innovation-hub" onClose={onClose}>
-          <BlockTitle>{t('pages.admin.innovationHubs.create')}</BlockTitle>
-        </DialogHeader>
-        <DialogContent>
-          <StorageConfigContextProvider accountId={accountId} locationType="account">
-            <InnovationHubForm isNew onSubmit={handleSubmit} loading={loading} />
-          </StorageConfigContextProvider>
-        </DialogContent>
-      </DialogWithGrid>
-    </>
+    <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-hub">
+      <DialogHeader id="create-innovation-hub" onClose={onClose}>
+        <BlockTitle>{t('pages.admin.innovationHubs.create')}</BlockTitle>
+      </DialogHeader>
+      <DialogContent>
+        <StorageConfigContextProvider accountId={accountId} locationType="account">
+          <InnovationHubForm isNew={true} onSubmit={handleSubmit} loading={loading} />
+        </StorageConfigContextProvider>
+      </DialogContent>
+    </DialogWithGrid>
   );
 };
 

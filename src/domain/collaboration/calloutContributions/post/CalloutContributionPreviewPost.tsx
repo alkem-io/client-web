@@ -1,9 +1,9 @@
 import { Box, styled } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
-import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import References from '@/domain/shared/components/References/References';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import type { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 
 const MIN_HEIGHT_DESCRIPTION_GUTTERS = 15;
 

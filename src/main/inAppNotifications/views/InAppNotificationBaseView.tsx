@@ -1,33 +1,33 @@
-import { useCallback } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { DeleteOutline } from '@mui/icons-material';
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import {
   Badge,
   Box,
   Divider,
   ListItemButton,
-  ListItemButtonProps,
-  ListItemButtonTypeMap,
+  type ListItemButtonProps,
+  type ListItemButtonTypeMap,
   Typography,
 } from '@mui/material';
-import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
-import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
-import { DeleteOutline } from '@mui/icons-material';
-import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { useCallback } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { NotificationEventInAppState, VisualType } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
+import ActionsMenu from '@/core/ui/card/ActionsMenu';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink, { type RouterLinkProps } from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { Caption } from '@/core/ui/typography';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { gutters } from '@/core/ui/grid/utils';
-import ActionsMenu from '@/core/ui/card/ActionsMenu';
-import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { NotificationEventInAppState, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useInAppNotifications } from '../useInAppNotifications';
-import { useInAppNotificationsContext } from '../InAppNotificationsContext';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { useInAppNotificationsContext } from '../InAppNotificationsContext';
+import type { InAppNotificationModel } from '../model/InAppNotificationModel';
+import { useInAppNotifications } from '../useInAppNotifications';
 
 const ACTIONS_WIDTH = 60;
 
@@ -119,7 +119,6 @@ export const InAppNotificationBaseView = ({
     (key: string) => {
       return (
         <Trans
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           i18nKey={key as any}
           values={values}
           components={{
@@ -138,9 +137,9 @@ export const InAppNotificationBaseView = ({
     if (values.comment) {
       return (
         <WrapperMarkdown
-          plain
-          disableParagraphPadding
-          caption
+          plain={true}
+          disableParagraphPadding={true}
+          caption={true}
           sx={{
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -188,11 +187,11 @@ export const InAppNotificationBaseView = ({
           </Badge>
         }
       >
-        <Gutters row disablePadding>
+        <Gutters row={true} disablePadding={true}>
           <Gutters
             flexGrow={1}
-            disablePadding
-            disableGap
+            disablePadding={true}
+            disableGap={true}
             justifyContent={'center'}
             sx={{ maxWidth: `calc(100% - ${ACTIONS_WIDTH}px)` }}
           >
@@ -256,14 +255,14 @@ export const InAppNotificationBaseView = ({
             </Typography>
             {renderComments()}
           </Gutters>
-          <Gutters disablePadding alignItems={'center'}>
+          <Gutters disablePadding={true} alignItems={'center'}>
             <ActionsMenu>{renderActions()}</ActionsMenu>
             <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
           </Gutters>
         </Gutters>
       </BadgeCardView>
       {!isMobile && (
-        <Gutters row disablePadding disableGap display={'flex'} justifyContent={'center'}>
+        <Gutters row={true} disablePadding={true} disableGap={true} display={'flex'} justifyContent={'center'}>
           <Divider sx={{ maxWidth: '300px', flex: 1 }} />
         </Gutters>
       )}

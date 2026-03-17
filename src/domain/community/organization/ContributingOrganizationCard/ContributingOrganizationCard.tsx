@@ -1,4 +1,6 @@
-import ContributorCard, { ContributorCardProps } from '@/domain/community/contributor/ContributorCard/ContributorCard';
+import ContributorCard, {
+  type ContributorCardProps,
+} from '@/domain/community/contributor/ContributorCard/ContributorCard';
 import CardMemberIcon from '@/domain/community/membership/CardMemberIcon/CardMemberIcon';
 
 interface ContributingOrganizationCardProps extends ContributorCardProps {

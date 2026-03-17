@@ -1,17 +1,17 @@
 import { useContext, useState } from 'react';
-import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
-import SubspacesListDialog from '../../components/SubspacesListDialog';
+import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
-import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CreateSubspace from '../../components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import SubspacesListDialog from '../../components/SubspacesListDialog';
+import { SubspaceDialog } from '../../components/subspaces/SubspaceDialog';
+import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { isSmallScreen } = useScreenSize();

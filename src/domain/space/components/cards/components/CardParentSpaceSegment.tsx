@@ -1,8 +1,9 @@
-import React, { ComponentType, PropsWithChildren } from 'react';
-import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
-import { SvgIconProps, SxProps, Theme } from '@mui/material';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { LockOutlined } from '@mui/icons-material';
+import type { SvgIconProps, SxProps, Theme } from '@mui/material';
+import type React from 'react';
+import type { ComponentType, PropsWithChildren } from 'react';
+import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
+import RouterLink from '@/core/ui/link/RouterLink';
 
 interface CardParentSpaceSegmentProps {
   iconComponent?: ComponentType<SvgIconProps>;
@@ -27,7 +28,7 @@ const CardParentSpaceSegment = ({
       icon={Icon ? <Icon fontSize="small" color="primary" /> : undefined}
       secondaryIcon={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
       onClick={stopPropagation}
-      disablePadding
+      disablePadding={true}
       sx={{
         '& .MuiTypography-root': {
           display: '-webkit-box',

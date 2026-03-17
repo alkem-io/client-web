@@ -1,8 +1,8 @@
-import DataGridTable from '@/core/ui/table/DataGridTable';
-import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import CheckIcon from '@mui/icons-material/Check';
+import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useState } from 'react';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import DataGridTable from '@/core/ui/table/DataGridTable';
 
 export interface LicensePlan {
   id: string;
@@ -55,7 +55,7 @@ const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }
         disableDelete={plan => !isLicensePlanActive(plan)}
         onDelete={plan => setDeletingPlanId(plan.id)}
         dependencies={[activeLicensePlanIds]}
-        hideFooter
+        hideFooter={true}
       />
       <ConfirmationDialog
         entities={{

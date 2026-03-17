@@ -1,5 +1,3 @@
-import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import { SubspaceDialog } from './SubspaceDialog';
 import {
   AccountTreeOutlined,
   CalendarMonthOutlined,
@@ -14,13 +12,15 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import { MENU_STATE_KEY, MenuState } from '../../layout/SubspaceInfoColumn';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import { Caption } from '@/core/ui/typography';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { MENU_STATE_KEY, MenuState } from '../../layout/SubspaceInfoColumn';
+import { SubspaceDialog } from './SubspaceDialog';
 
 const ACTION_CONFIG = {
   [SubspaceDialog.About]: InfoOutlined,
@@ -75,14 +75,14 @@ export const DialogActionButton = ({
           key={dialog}
           iconComponent={Icon}
           route={`${url}/${dialog}`}
-          replace
+          replace={true}
           onClick={onClick}
           typographyComponent={props => <Caption {...props} />}
         >
           {tooltip}
         </NavigatableMenuItem>
       ) : (
-        <Link to={`${url}/${dialog}`} replace style={{ minWidth: 0 }}>
+        <Link to={`${url}/${dialog}`} replace={true} style={{ minWidth: 0 }}>
           {actionDisplay === 'fullWidth' ? (
             <FullWidthButton
               startIcon={<Icon />}
@@ -97,7 +97,7 @@ export const DialogActionButton = ({
               tooltip={tooltip}
               tooltipPlacement={isCollapsed ? 'right' : 'bottom'}
               sx={{ maxWidth: '100%', width: '100%' }}
-              iconButton
+              iconButton={true}
             >
               <Icon />
             </ButtonWithTooltip>

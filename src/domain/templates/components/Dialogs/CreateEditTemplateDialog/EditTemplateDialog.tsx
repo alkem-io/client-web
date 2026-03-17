@@ -1,12 +1,12 @@
-import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import TemplateForm, { AnyTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateForm';
-import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { useTranslation } from 'react-i18next';
+import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import TemplateForm, { type AnyTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateForm';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 
 interface EditTemplateDialogProps {
   open: boolean;
@@ -61,7 +61,7 @@ const EditTemplateDialog = ({
         templateType={templateType}
         onDelete={onDelete}
         onDirtyChange={setIsFormDirty}
-        editMode
+        editMode={true}
       >
         {({ actions }) => (
           <>

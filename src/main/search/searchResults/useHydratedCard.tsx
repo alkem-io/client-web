@@ -1,32 +1,32 @@
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  SearchResultOrganizationFragment,
-  SearchResultPostFragment,
-  SearchResultSpaceFragment,
-  SearchResultType,
-  SearchResultUserFragment,
-  SearchResultMemoFragment,
-  SearchResultWhiteboardFragment,
-  UserRolesSearchCardsQuery,
+  type SearchResultMemoFragment,
+  type SearchResultOrganizationFragment,
+  type SearchResultPostFragment,
+  type SearchResultSpaceFragment,
+  type SearchResultType,
+  type SearchResultUserFragment,
+  type SearchResultWhiteboardFragment,
+  type UserRolesSearchCardsQuery,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { RoleType } from '@/domain/community/user/constants/RoleType';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { TypedSearchResult } from '../SearchView';
-import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
-import { SearchContributionMemoCard } from '@/domain/shared/components/search-cards/SearchContributionMemoCard';
-import { SearchContributionWhiteboardCard } from '@/domain/shared/components/search-cards/SearchContributionWhiteboardCard';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import ContributingOrganizationCard from '@/domain/community/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
+import { RoleType } from '@/domain/community/user/constants/RoleType';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { SearchContributionMemoCard } from '@/domain/shared/components/search-cards/SearchContributionMemoCard';
+import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
+import { SearchContributionWhiteboardCard } from '@/domain/shared/components/search-cards/SearchContributionWhiteboardCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { ComponentType } from 'react';
-import { SvgIconProps } from '@mui/material';
-import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import type { TypedSearchResult } from '../SearchView';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -236,9 +236,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
   );
 };
 
-interface HydratedCardGetter<Data> {
-  (data: Data): null | React.ReactElement;
-}
+type HydratedCardGetter<Data> = (data: Data) => null | React.ReactElement;
 
 interface UseHydrateCardProvided {
   hydrateUserCard: HydratedCardGetter<TypedSearchResult<SearchResultType.User, SearchResultUserFragment>>;

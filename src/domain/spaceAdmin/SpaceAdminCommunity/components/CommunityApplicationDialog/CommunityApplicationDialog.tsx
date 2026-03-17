@@ -1,13 +1,13 @@
+import { Box, Button, Dialog } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useCommunityApplicationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { formatDateTime } from '@/core/utils/time/utils';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
-import { Box, Button, Dialog } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 
 export interface ApplicationDialogProps {
   application: Identifiable;
@@ -32,7 +32,7 @@ export const CommunityApplicationDialog = ({
   const nextEvents = application?.nextEvents ?? [];
 
   return (
-    <Dialog open maxWidth="md" fullWidth aria-labelledby="dialog-title">
+    <Dialog open={true} maxWidth="md" fullWidth={true} aria-labelledby="dialog-title">
       <DialogHeader onClose={onClose}>
         <ProfileChip
           displayName={contributor?.profile?.displayName}
@@ -75,7 +75,7 @@ export const CommunityApplicationDialog = ({
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    onSetNewState && onSetNewState(applicationId, stateName);
+                    onSetNewState?.(applicationId, stateName);
                     onClose();
                   }}
                 >

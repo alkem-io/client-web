@@ -4,21 +4,21 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@/main/test/testUtils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen, waitFor } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/core/i18n/config';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
-import { FC, PropsWithChildren, ReactElement } from 'react';
-import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import i18n from '@/core/i18n/config';
-import { I18nextProvider } from 'react-i18next';
-import userEvent from '@testing-library/user-event';
 import {
-  SessionStorageMock,
   createSessionStorageMockInstance,
+  type SessionStorageMock,
   setSessionStorageImplementation,
 } from './utils/sessionStorageMock';
 
@@ -102,12 +102,16 @@ describe('Session Clear on Browser Restart', () => {
     mockLogWarn.mockClear();
     startBrowserSession();
     sessionStorage.clear();
-    localStorage.clear();
+    if (typeof localStorage !== 'undefined' && typeof localStorage.clear === 'function') {
+      localStorage.clear();
+    }
   });
 
   afterEach(() => {
     cleanup();
-    localStorage.clear();
+    if (typeof localStorage !== 'undefined' && typeof localStorage.clear === 'function') {
+      localStorage.clear();
+    }
     getActiveSessionStorage().clear();
   });
 
@@ -179,7 +183,9 @@ describe('Session Clear on Browser Restart', () => {
   describe('Session storage behavior verification', () => {
     it('should use session storage (not local storage) for guest names', async () => {
       // Verify that only sessionStorage is used, not localStorage
-      localStorage.clear();
+      if (typeof localStorage !== 'undefined' && typeof localStorage.clear === 'function') {
+        localStorage.clear();
+      }
       sessionStorage.clear();
 
       renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-type-test" />);
@@ -192,7 +198,9 @@ describe('Session Clear on Browser Restart', () => {
       });
 
       // Should NOT be in localStorage
-      expect(localStorage.getItem('alkemio_guest_name')).toBeNull();
+      if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+        expect(localStorage.getItem('alkemio_guest_name')).toBeNull();
+      }
     });
 
     it('should persist within same session across page reloads', async () => {
@@ -255,8 +263,12 @@ describe('Session Clear on Browser Restart', () => {
 
   describe('Session vs persistent storage distinction', () => {
     it('should demonstrate difference between session and local storage', async () => {
-      // Set something in localStorage (persistent)
-      localStorage.setItem('persistent_data', 'persists-across-sessions');
+      const hasLocalStorage = typeof localStorage !== 'undefined' && typeof localStorage.setItem === 'function';
+
+      // Set something in localStorage (persistent) — skip if unavailable in test env
+      if (hasLocalStorage) {
+        localStorage.setItem('persistent_data', 'persists-across-sessions');
+      }
 
       // Set guest name in sessionStorage
       renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-comparison" />);
@@ -281,10 +293,10 @@ describe('Session Clear on Browser Restart', () => {
       expect(sessionStorage.getItem('alkemio_guest_name')).toBeNull();
 
       // But localStorage data would persist (in real browser restart)
-      expect(localStorage.getItem('persistent_data')).toBe('persists-across-sessions');
-
-      // Cleanup
-      localStorage.clear();
+      if (hasLocalStorage) {
+        expect(localStorage.getItem('persistent_data')).toBe('persists-across-sessions');
+        localStorage.clear();
+      }
     });
 
     it('should not persist guest name beyond browser session', () => {

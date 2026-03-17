@@ -1,15 +1,15 @@
 import { Box, Button, IconButton } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import TemplateActionButton from '../Buttons/TemplateActionButton';
+import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 export interface WhiteboardDialogTemplatesLibraryProps {
   editModeEnabled?: boolean;
   disabled?: boolean;
@@ -68,7 +68,7 @@ const WhiteboardDialogTemplatesLibrary = ({
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}
-            enablePlatformTemplates
+            enablePlatformTemplates={true}
           />
         </Box>
       )}

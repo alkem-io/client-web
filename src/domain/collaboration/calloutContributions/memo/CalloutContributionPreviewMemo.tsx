@@ -1,8 +1,8 @@
 import { gutters } from '@/core/ui/grid/utils';
-import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 import Loading from '@/core/ui/loading/Loading';
-import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
+import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
+import type { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 
 interface CalloutContributionPreviewMemoProps extends CalloutContributionPreviewComponentProps {}
 
@@ -20,7 +20,7 @@ const CalloutContributionPreviewMemo = ({
   return loading ? (
     <Loading />
   ) : (
-    <MemoPreview memo={displayMemo} onClick={onOpenContribution} sx={{ height: gutters(16) }} seamless />
+    <MemoPreview memo={displayMemo} onClick={onOpenContribution} sx={{ height: gutters(16) }} seamless={true} />
   );
 };
 

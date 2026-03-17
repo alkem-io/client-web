@@ -1,5 +1,5 @@
-import { UpdateTagsetInput } from '@/core/apollo/generated/graphql-schema';
-import { TagsetModel } from './TagsetModel';
+import type { UpdateTagsetInput } from '@/core/apollo/generated/graphql-schema';
+import type { TagsetModel } from './TagsetModel';
 
 type Tagset = {
   id?: string;

@@ -1,11 +1,11 @@
+import type { FC, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import EntitySettingsLayout from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { FC, PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
+import type { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { spaceAdminTabsL1 } from './SpaceAdminTabsL1';
 import { spaceAdminTabsL2 } from './SpaceAdminTabsL2';
 

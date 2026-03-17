@@ -1,6 +1,6 @@
-import { Button } from '@mui/material';
-import { ReactNode, useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Button } from '@mui/material';
+import { type ReactNode, useState } from 'react';
 
 type SeeMoreExpandableProps = {
   label?: ReactNode;

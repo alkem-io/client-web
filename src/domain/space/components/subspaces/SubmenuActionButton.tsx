@@ -1,12 +1,12 @@
-import { useState, useRef } from 'react';
-import { Menu } from '@mui/material';
 import { MoreHoriz } from '@mui/icons-material';
-import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import { DialogActionButton } from './DialogActionButton';
-import { SubspaceDialog } from './SubspaceDialog';
+import { Menu } from '@mui/material';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import SwapColors from '@/core/ui/palette/SwapColors';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { gutters } from '@/core/ui/grid/utils';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { DialogActionButton } from './DialogActionButton';
+import type { SubspaceDialog } from './SubspaceDialog';
 
 interface SubmenuActionButtonProps {
   dialogs: SubspaceDialog[];
@@ -39,7 +39,7 @@ export const SubmenuActionButton = ({ dialogs, icon = <MoreHoriz />, tooltip }: 
         variant="contained"
         tooltip={tooltip || t('common.more')}
         tooltipPlacement="bottom"
-        iconButton
+        iconButton={true}
         onClick={handleClick}
         aria-controls={open ? 'submenu-actions' : undefined}
         aria-haspopup="menu"
@@ -54,7 +54,7 @@ export const SubmenuActionButton = ({ dialogs, icon = <MoreHoriz />, tooltip }: 
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
-          autoFocus
+          autoFocus={true}
           disableAutoFocusItem={false}
           variant="menu"
           anchorOrigin={{

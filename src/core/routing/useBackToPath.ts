@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import useNavigate from './useNavigate';
-import useCanGoBack from './useCanGoBack';
-import { normalizeLink } from '../utils/links';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { normalizeLink } from '../utils/links';
 import { getPreviousSafePath } from './NavigationHistory';
+import useCanGoBack from './useCanGoBack';
+import useNavigate from './useNavigate';
 
 const ROUTE_HOME = `/${TopLevelRoutePath.Home}`;
 

@@ -1,5 +1,5 @@
-import { useUserOrganizationIdsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
+import { useUserOrganizationIdsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const useUserOrganizationIds = (userId: string | undefined) => {
   const { data } = useUserOrganizationIdsQuery({

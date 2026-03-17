@@ -1,7 +1,3 @@
-import { gutters } from '@/core/ui/grid/utils';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { BlockTitle } from '@/core/ui/typography';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import {
   Box,
@@ -14,9 +10,13 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import { FC, useRef, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FILTER_OFF, FilterConfig, FilterDefinition } from './Filter';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { BlockTitle } from '@/core/ui/typography';
+import { FILTER_OFF, type FilterConfig, type FilterDefinition } from './Filter';
 
 interface EntityFilterProps {
   title?: string;
@@ -70,7 +70,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
               onClick={() => handleChange(key)}
               disabled={config[key].disabled}
             >
-              <>{t(config[key].title)}</>
+              {t(config[key].title)}
             </MenuItem>
           ))}
         </Menu>

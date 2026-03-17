@@ -1,5 +1,5 @@
-import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
 import { Box, Skeleton } from '@mui/material';
+import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
 import CircleTag from '../tags/CircleTag';
 import { Caption } from '../typography';
 

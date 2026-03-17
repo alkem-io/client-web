@@ -1,19 +1,19 @@
-import { Formik } from 'formik';
-import { useTranslation } from 'react-i18next';
-import { pullAt } from 'lodash-es';
-import * as yup from 'yup';
-import { Box, Button, Tooltip } from '@mui/material';
-import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
 import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined';
-import { gutters } from '@/core/ui/grid/utils';
-import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
+import { Box, Button, Tooltip } from '@mui/material';
+import { Formik } from 'formik';
+import { pullAt } from 'lodash-es';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import { Actions } from '@/core/ui/actions/Actions';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { BoKCalloutsFormValues } from './AddContentProps';
-import { PostItem } from './PostItem';
-import { DocumentItem } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/DocumentItem';
+import { gutters } from '@/core/ui/grid/utils';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { DocumentItem } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/DocumentItem';
+import type { BoKCalloutsFormValues } from './AddContentProps';
+import { PostItem } from './PostItem';
 
 const MAX_POSTS = 25;
 
@@ -84,7 +84,12 @@ export const AddContentForm = ({
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} validateOnMount>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+      validateOnMount={true}
+    >
       {({ values: { posts, documents }, isValid, setFieldValue, submitForm }) => {
         const moreThanOnePost = posts.length > 1;
         const maxPostsReached = posts.length >= MAX_POSTS;
@@ -174,9 +179,7 @@ export const AddContentForm = ({
                   {t('buttons.cancel')}
                 </Button>
                 <Tooltip
-                  title={
-                    Boolean(posts.length) ? undefined : t('createVirtualContributorWizard.addContent.submitDisabled')
-                  }
+                  title={posts.length ? undefined : t('createVirtualContributorWizard.addContent.submitDisabled')}
                   placement={'bottom-start'}
                 >
                   <span>

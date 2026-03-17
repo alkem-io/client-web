@@ -1,10 +1,10 @@
-import {
+import type {
   NotificationEvent,
   NotificationEventCategory,
   NotificationEventInAppState,
 } from '@/core/apollo/generated/graphql-schema';
-import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import {
+import type { InAppNotificationModel } from '../model/InAppNotificationModel';
+import type {
   InAppNotificationIncomingPayloadModel,
   InAppNotificationPayloadModel,
 } from '../model/InAppNotificationPayloadModel';

@@ -1,42 +1,39 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   BinaryFileData,
   BinaryFiles,
   ExcalidrawImperativeAPI,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import Semaphore from 'ts-semaphore';
+import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
-import Semaphore from 'ts-semaphore';
-import { dataUrlToFile } from './fileStore/fileConverters';
-import { WhiteboardFileCache } from './fileStore/WhiteboardFileCache';
-import { FileUploader, type UploadFailure } from './fileStore/FileUploader';
-import { FileDownloader, type DownloadFailure } from './fileStore/FileDownloader';
 import {
-  validateWhiteboardImageFile,
-  type ImageValidationResult,
-} from './fileStore/fileValidation';
-import {
-  convertLocalFilesToRemoteInWhiteboard as convertFilesInWhiteboard,
   type ConversionResult,
+  convertLocalFilesToRemoteInWhiteboard as convertFilesInWhiteboard,
 } from './fileStore/convertLocalFilesToRemote';
+import { type DownloadFailure, FileDownloader } from './fileStore/FileDownloader';
+import { FileUploader, type UploadFailure } from './fileStore/FileUploader';
+import { dataUrlToFile } from './fileStore/fileConverters';
+import { type ImageValidationResult, validateWhiteboardImageFile } from './fileStore/fileValidation';
+import { WhiteboardFileCache } from './fileStore/WhiteboardFileCache';
 import type {
-  BinaryFileDataWithUrl,
   BinaryFileDataWithOptionalUrl,
-  BinaryFilesWithUrl,
+  BinaryFileDataWithUrl,
   BinaryFilesWithOptionalUrl,
+  BinaryFilesWithUrl,
   WhiteboardWithFiles,
 } from './types';
 
+export type { ConversionResult } from './fileStore/convertLocalFilesToRemote';
 // Re-export types for backward compatibility
 export type {
-  BinaryFileDataWithUrl,
   BinaryFileDataWithOptionalUrl,
-  BinaryFilesWithUrl,
+  BinaryFileDataWithUrl,
   BinaryFilesWithOptionalUrl,
+  BinaryFilesWithUrl,
   WhiteboardWithFiles,
 } from './types';
-export type { ConversionResult } from './fileStore/convertLocalFilesToRemote';
 
 interface Props {
   storageBucketId?: string;
@@ -58,9 +55,7 @@ export interface WhiteboardFilesManager {
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
   getUploadedFiles: (filesInExcalidraw: BinaryFiles) => Promise<BinaryFilesWithOptionalUrl>;
   pushFilesToExcalidraw: () => Promise<void>;
-  convertLocalFilesToRemoteInWhiteboard: <W extends WhiteboardWithFiles>(
-    whiteboard: W
-  ) => Promise<ConversionResult<W>>;
+  convertLocalFilesToRemoteInWhiteboard: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<ConversionResult<W>>;
   convertLocalFileToRemote: (file: BinaryFileData & { url?: string }) => Promise<BinaryFileDataWithUrl | undefined>;
   loadAndTryConvertEmbeddedFiles: (files: BinaryFilesWithOptionalUrl) => Promise<BinaryFilesWithUrl>;
   // Failure tracking and retry APIs (T029)
@@ -272,10 +267,10 @@ const useWhiteboardFilesManager = ({
           cache.set(file.id, result);
           return result;
         } catch (e) {
-          error(
-            `Failed to upload file ${file.id}: ${e instanceof Error ? e.message : 'Unknown error'}`,
-            { category: TagCategoryValues.WHITEBOARD, label: 'convert-upload-failed' }
-          );
+          error(`Failed to upload file ${file.id}: ${e instanceof Error ? e.message : 'Unknown error'}`, {
+            category: TagCategoryValues.WHITEBOARD,
+            label: 'convert-upload-failed',
+          });
           return undefined;
         }
       }
@@ -338,9 +333,13 @@ const useWhiteboardFilesManager = ({
 
     excalidrawAPI?.addFiles(filesWithDataUrl);
 
-    const { whiteboard: { files: uploadedFiles } } = await convertLocalFilesToRemoteInWhiteboard({ files });
+    const {
+      whiteboard: { files: uploadedFiles },
+    } = await convertLocalFilesToRemoteInWhiteboard({ files });
 
-    return Object.fromEntries(Object.entries(uploadedFiles ?? {}).filter(([_, file]) => file.url)) as BinaryFilesWithUrl;
+    return Object.fromEntries(
+      Object.entries(uploadedFiles ?? {}).filter(([_, file]) => file.url)
+    ) as BinaryFilesWithUrl;
   };
 
   /**

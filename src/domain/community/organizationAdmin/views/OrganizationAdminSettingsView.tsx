@@ -1,6 +1,4 @@
 import { useMemo } from 'react';
-import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import Loading from '@/core/ui/loading/Loading';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   useOrganizationSettingsQuery,
@@ -8,8 +6,10 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle } from '@/core/ui/typography/components';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
+import Loading from '@/core/ui/loading/Loading';
+import { BlockTitle } from '@/core/ui/typography/components';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 
 const defaultOrganizationSettings = {
   privacy: {
@@ -73,25 +73,23 @@ export const OrganizationAdminSettingsView = () => {
   return (
     <PageContent background="transparent">
       {!loading && (
-        <>
-          <PageContentBlock>
-            <BlockTitle>{t('pages.admin.organization.settings.title')}</BlockTitle>
-            <SwitchSettingsGroup
-              options={{
-                allowUsersMatchingDomainToJoin: {
-                  checked: currentSettings?.membership?.allowUsersMatchingDomainToJoin || false,
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.organization.settings.membership.usersMatchingEmail"
-                      components={{ b: <strong /> }}
-                    />
-                  ),
-                },
-              }}
-              onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-            />
-          </PageContentBlock>
-        </>
+        <PageContentBlock>
+          <BlockTitle>{t('pages.admin.organization.settings.title')}</BlockTitle>
+          <SwitchSettingsGroup
+            options={{
+              allowUsersMatchingDomainToJoin: {
+                checked: currentSettings?.membership?.allowUsersMatchingDomainToJoin || false,
+                label: (
+                  <Trans
+                    i18nKey="pages.admin.organization.settings.membership.usersMatchingEmail"
+                    components={{ b: <strong /> }}
+                  />
+                ),
+              },
+            }}
+            onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+          />
+        </PageContentBlock>
       )}
     </PageContent>
   );

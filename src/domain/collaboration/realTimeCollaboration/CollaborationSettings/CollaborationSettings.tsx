@@ -1,13 +1,13 @@
-import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import Gutters from '@/core/ui/grid/Gutters';
 import { Alert, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import GridItem from '@/core/ui/grid/GridItem';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
+import type { Location } from '@/core/ui/location/getLocationString';
+import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import useContentUpdatePolicyManager from './useContentUpdatePolicyManager';
 
 type CollaborationSettingsProps = {
@@ -43,7 +43,7 @@ const CollaborationSettings = ({ element, elementType, guestAccessEnabled }: Col
 
   const [shareSettings, setShareSettings] = useState(contentUpdatePolicy);
 
-  const handleSettingsChange = (event: unknown, value: string) => {
+  const handleSettingsChange = (_event: unknown, value: string) => {
     setShareSettings(value as ContentUpdatePolicy);
     onChange?.(value as ContentUpdatePolicy);
   };
@@ -61,15 +61,17 @@ const CollaborationSettings = ({ element, elementType, guestAccessEnabled }: Col
         <BlockTitle>{t('common.Settings')}</BlockTitle>
         <Caption>{t('components.shareSettings.description', { elementName })}</Caption>
       </Gutters>
-      <Gutters row disablePadding>
+      <Gutters row={true} disablePadding={true}>
         <GridItem columns={4}>
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <BlockSectionTitle>{t('components.shareSettings.ownedBy.title', { elementName })}</BlockSectionTitle>
-            {element?.createdBy?.profile && <ContributorCardHorizontal profile={element.createdBy.profile} seamless />}
+            {element?.createdBy?.profile && (
+              <ContributorCardHorizontal profile={element.createdBy.profile} seamless={true} />
+            )}
           </Gutters>
         </GridItem>
         <GridItem columns={4}>
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <BlockSectionTitle id="rt-collaboration-share-settings">
               {t('components.shareSettings.editableBy.title', { elementName })}
             </BlockSectionTitle>

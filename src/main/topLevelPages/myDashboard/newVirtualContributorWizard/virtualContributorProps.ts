@@ -1,6 +1,6 @@
-import { ComponentType } from 'react';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { ComponentType } from 'react';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface UserAccountProps {
   id: string;
@@ -17,7 +17,7 @@ export interface UserAccountProps {
   }>;
 }
 
-interface VirtualContributorWizardProps {}
+type VirtualContributorWizardProps = {};
 
 export interface useVirtualContributorWizardProvided {
   startWizard: (initAccount?: UserAccountProps | undefined, accountName?: string) => void;

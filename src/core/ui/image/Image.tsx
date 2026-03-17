@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
 import useImageErrorHandler from './useImageErrorHandler';
 
 export type ImageProps = BoxProps<'img'>;

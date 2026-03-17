@@ -1,7 +1,7 @@
-import { useAllTemplatesInTemplatesSetQuery } from '@/core/apollo/generated/apollo-hooks';
-import LinksList from '@/domain/shared/components/List/LinksList';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import { useAllTemplatesInTemplatesSetQuery } from '@/core/apollo/generated/apollo-hooks';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import LinksList from '@/domain/shared/components/List/LinksList';
 
 interface InnovationPackTemplateMenuProps {
   templatesSetId?: string;

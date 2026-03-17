@@ -1,12 +1,12 @@
+import type { ApolloError } from '@apollo/client';
 import { useCallback, useMemo, useState } from 'react';
-import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useUpdateWhiteboardGuestAccessMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   trackGuestAccessToggleAttempt,
   trackGuestAccessToggleFailure,
   trackGuestAccessToggleSuccess,
 } from '@/core/analytics/events/collaborationGuestAccess';
+import { useUpdateWhiteboardGuestAccessMutation } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 

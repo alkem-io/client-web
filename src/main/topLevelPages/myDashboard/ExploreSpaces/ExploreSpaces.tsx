@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ExploreSpacesContainer from './ExploreSpacesContainer';
 import { ExploreSpacesView, SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 

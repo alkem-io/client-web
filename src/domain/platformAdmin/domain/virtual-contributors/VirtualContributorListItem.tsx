@@ -1,12 +1,11 @@
-import React from 'react';
-import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
-import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
+  AccountOwnerColumn,
   AdminListItemLayout,
   ListedInStoreColumn,
   SearchVisibilityColumn,
-  AccountOwnerColumn,
 } from '@/domain/platformAdmin/components/AdminListItemLayout';
+import ListItemLink, { type ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 
 interface VirtualContributorListItemProps extends ListItemLinkProps {
   listedInStore: boolean;

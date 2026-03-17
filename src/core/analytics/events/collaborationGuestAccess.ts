@@ -1,5 +1,4 @@
-import { info, warn } from '@/core/logging/sentry/log';
-import { TagCategoryValues } from '@/core/logging/sentry/log';
+import { info, TagCategoryValues, warn } from '@/core/logging/sentry/log';
 
 const EVENT_NAMESPACE = 'collaboration.guestAccess';
 

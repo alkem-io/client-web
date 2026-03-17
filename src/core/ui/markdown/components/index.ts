@@ -1,12 +1,12 @@
-import MarkdownHeading from './MarkdownHeading';
-import MarkdownParagraph from './MarkdownParagraph';
-import MarkdownMedia from './MarkdownMedia';
-import MarkdownLink from './MarkdownLink';
-import MarkdownListItem from './MarkdownListItem';
-import createMarkdownList from './MarkdownList';
 import MarkdownBlockquote from './MarkdownBlockquote';
 import MarkdownCode from './MarkdownCode';
+import MarkdownHeading from './MarkdownHeading';
 import MarkdownInlineCode from './MarkdownInlineCode';
+import MarkdownLink from './MarkdownLink';
+import createMarkdownList from './MarkdownList';
+import MarkdownListItem from './MarkdownListItem';
+import MarkdownMedia from './MarkdownMedia';
+import MarkdownParagraph from './MarkdownParagraph';
 
 const headings = {
   h1: MarkdownHeading,

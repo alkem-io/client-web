@@ -1,12 +1,12 @@
-import React, { useMemo } from 'react';
-import NotificationView from '@/core/ui/notifications/NotificationView';
 import { Box, Link, SnackbarContent, useTheme } from '@mui/material';
-import { rem } from '@/core/ui/typography/utils';
-import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
-import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { useSpace } from '@/domain/space/context/useSpace';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import NotificationView from '@/core/ui/notifications/NotificationView';
+import { rem } from '@/core/ui/typography/utils';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
+import { useSpace } from '@/domain/space/context/useSpace';
 
 type SpaceVisibilityNoticeProps = {
   spaceLevel?: SpaceLevel;
@@ -73,7 +73,7 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
 
   return (
     <NotificationView
-      open
+      open={true}
       onClose={(_, reason) => {
         if (reason === 'clickaway') return;
       }}

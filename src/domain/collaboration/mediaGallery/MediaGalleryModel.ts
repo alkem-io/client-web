@@ -1,4 +1,4 @@
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 export interface MediaGalleryModel {
   id: string;

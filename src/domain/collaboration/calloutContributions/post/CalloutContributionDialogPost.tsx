@@ -1,31 +1,31 @@
-import { useEffect, useState } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
+import { EditOutlined } from '@mui/icons-material';
 import { Autocomplete, DialogActions, DialogContent, TextField } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
-import PostForm, { PostFormInput, PostFormOutput } from '../../post/PostForm/PostForm';
-import usePostSettings from '../../post/graphql/usePostSettings';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { PostSettingsFragment, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useDeleteContributionMutation,
   useMoveContributionToCalloutMutation,
   usePostCalloutsInCalloutSetQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { normalizeLink } from '@/core/utils/links';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
-import { EditOutlined } from '@mui/icons-material';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import Gutters from '@/core/ui/grid/Gutters';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import SaveButton from '@/core/ui/actions/SaveButton';
+import { AuthorizationPrivilege, type PostSettingsFragment } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import { normalizeLink } from '@/core/utils/links';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import usePostSettings from '../../post/graphql/usePostSettings';
+import PostForm, { type PostFormInput, type PostFormOutput } from '../../post/PostForm/PostForm';
+import type { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 
 interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {}
 
@@ -178,7 +178,7 @@ const CalloutContributionDialogPost = ({
         <DialogContent>
           <StorageConfigContextProvider locationType="post" postId={postId}>
             <PostForm
-              edit
+              edit={true}
               loading={postSettings.loading || postSettings.updating || isMovingContribution}
               post={toPostFormInput(postSettings.post)}
               onChange={setPost}
@@ -188,19 +188,19 @@ const CalloutContributionDialogPost = ({
               disableRichMedia={calloutRestrictions?.disableRichMedia}
             >
               {() => (
-                <Gutters disablePadding paddingTop={gutters(2)}>
+                <Gutters disablePadding={true} paddingTop={gutters(2)}>
                   {canMoveCard && (
                     <>
                       <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
                       <Autocomplete
-                        disablePortal
+                        disablePortal={true}
                         options={calloutsOfTypePost}
                         value={calloutsOfTypePost.find(({ id }) => id === targetCalloutId)}
                         getOptionLabel={callout => callout.framing.profile.displayName}
-                        onChange={(event, callout) => {
+                        onChange={(_event, callout) => {
                           setTargetCalloutId(callout?.id);
                         }}
-                        disableClearable
+                        disableClearable={true}
                         renderInput={params => (
                           <TextField
                             {...params}

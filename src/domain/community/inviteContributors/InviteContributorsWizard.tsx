@@ -1,10 +1,10 @@
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { Button, ButtonProps } from '@mui/material';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import InviteContributorsDialog from './InviteContributorsDialog';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { Button, type ButtonProps } from '@mui/material';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import InviteContributorsDialog from './InviteContributorsDialog';
 
 interface InviteContributorsWizardProps extends ButtonProps {
   contributorType: ActorType;

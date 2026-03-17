@@ -1,22 +1,22 @@
+import { AddPhotoAlternateOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import { Editor } from '@tiptap/react';
+import type { Editor } from '@tiptap/react';
+import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import FormikFileInput from '../FormikFileInput/FormikFileInput';
-import { AddPhotoAlternateOutlined } from '@mui/icons-material';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle } from '@/core/ui/typography';
+import FormikFileInput from '../FormikFileInput/FormikFileInput';
 import FormikInputField from '../FormikInputField/FormikInputField';
-import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
-import { urlValidator } from '../validator/urlValidator';
-import { textLengthValidator } from '../validator/textLengthValidator';
 import { ALT_TEXT_LENGTH, MID_TEXT_LENGTH } from '../field-length.constants';
+import { textLengthValidator } from '../validator/textLengthValidator';
+import { urlValidator } from '../validator/urlValidator';
+import MarkdownInputToolbarButton, { type MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
 interface InsertImageButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;

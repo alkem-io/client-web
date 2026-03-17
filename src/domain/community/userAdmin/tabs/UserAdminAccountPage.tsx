@@ -1,7 +1,7 @@
 import { useAccountInformationQuery, useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
+import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 import useUserRouteContext from '../../user/routing/useUserRouteContext';
 
 export const UserAdminAccountPage = () => {

@@ -1,21 +1,21 @@
+import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
+import { Box, Button } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Caption, CaptionSmall } from '@/core/ui/typography';
-import { Box, Button } from '@mui/material';
-import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
-import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
-import Gutters from '@/core/ui/grid/Gutters';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { gutters, useGridItem } from '@/core/ui/grid/utils';
-import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { ExploreSpacesViewProps, SpaceWithParent } from './ExploreSpacesTypes';
-import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters, useGridItem } from '@/core/ui/grid/utils';
+import { Caption, CaptionSmall } from '@/core/ui/typography';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import type { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import type { ExploreSpacesViewProps, SpaceWithParent } from './ExploreSpacesTypes';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -118,13 +118,13 @@ export const ExploreSpacesView = ({
 
   return (
     <>
-      <Gutters row disablePadding maxWidth="100%" alignItems="center">
+      <Gutters row={true} disablePadding={true} maxWidth="100%" alignItems="center">
         <Caption gap={gutters(0.5)} display={'flex'} justifyContent={'center'}>
           <RocketLaunchOutlinedIcon fontSize="small" />
           <span>{t('pages.exploreSpaces.title')}</span>
         </Caption>
       </Gutters>
-      <Gutters row disablePadding flexWrap="wrap" justifyContent="center" paddingTop={gutters(0.2)}>
+      <Gutters row={true} disablePadding={true} flexWrap="wrap" justifyContent="center" paddingTop={gutters(0.2)}>
         <SearchTagsInput
           value={searchTerms}
           placeholder={t('pages.exploreSpaces.search.placeholder')}
@@ -132,13 +132,13 @@ export const ExploreSpacesView = ({
           fullWidth={false}
           sx={{ flexGrow: 1, flexBasis: getGridItemStyle(3).width }}
         />
-        <Gutters row disablePadding maxWidth="100%" alignItems="center" sx={{ flexWrap: 'wrap' }}>
+        <Gutters row={true} disablePadding={true} maxWidth="100%" alignItems="center" sx={{ flexWrap: 'wrap' }}>
           <Button
             variant={SpacesExplorerMembershipFilter.All === selectedFilter ? 'contained' : 'outlined'}
             sx={{ textTransform: 'none', flexShrink: 1 }}
             onClick={() => onFilterChange(SpacesExplorerMembershipFilter.All)}
           >
-            <Caption noWrap>{t('pages.exploreSpaces.activeSpacesFilter')}</Caption>
+            <Caption noWrap={true}>{t('pages.exploreSpaces.activeSpacesFilter')}</Caption>
           </Button>
           {enabledFilters.map((filter, i) => (
             <Button
@@ -147,7 +147,7 @@ export const ExploreSpacesView = ({
               sx={{ textTransform: 'none', flexShrink: 1 }}
               onClick={() => onFilterChange(filter)}
             >
-              <Caption noWrap>{filterNames[i]}</Caption>
+              <Caption noWrap={true}>{filterNames[i]}</Caption>
             </Button>
           ))}
         </Gutters>
@@ -161,7 +161,7 @@ export const ExploreSpacesView = ({
         {visibleFirstWelcomeSpace && renderSpaceCard(welcomeSpace)}
         {spacesLength > 0 && (
           <>
-            {visibleSpaces!.map(space =>
+            {visibleSpaces?.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : renderSpaceCard(space)
             )}
             {enableLazyLoading && loader}

@@ -1,8 +1,8 @@
+import { Button, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { AUTH_VERIFY_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { BlockTitle } from '@/core/ui/typography';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-import { AUTH_VERIFY_PATH } from '@/core/auth/authentication/constants/authentication.constants';
-import { Button, Link } from '@mui/material';
 
 const EmailVerificationNotice = ({ returnUrl }: { returnUrl: string }) => {
   const { t } = useTranslation();

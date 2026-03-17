@@ -1,6 +1,6 @@
-import React, { ReactElement, ReactNode } from 'react';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
+import RouterLink from '@/core/ui/link/RouterLink';
 
 export interface ListItemLinkProps {
   icon?: ReactElement;

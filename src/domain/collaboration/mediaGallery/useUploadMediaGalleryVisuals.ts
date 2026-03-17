@@ -1,11 +1,11 @@
-import { useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
+import { useCallback } from 'react';
 import {
-  useUploadVisualMutation,
   useAddVisualToMediaGalleryMutation,
   useDeleteVisualFromMediaGalleryMutation,
+  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { getMediaGalleryVisualType } from './mediaGalleryVisualType';
 
 interface MediaGalleryFormVisual {

@@ -1,7 +1,7 @@
-import { Box, BoxProps } from '@mui/material';
-import { Children, PropsWithChildren, ReactNode } from 'react';
-import { Caption } from '@/core/ui/typography';
+import { Box, type BoxProps } from '@mui/material';
+import { Children, type PropsWithChildren, type ReactNode } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
 import { useScreenSize } from '../../grid/constants';
 
 type PageFooterProps = {
@@ -16,7 +16,6 @@ const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWit
 
   const childrenCount = Children.count(children);
   if (childrenCount % 2 !== 0) {
-    console.warn(`Pass an even number of children for a Footer to be symmetrical. Received ${childrenCount} children.`);
   }
   const childrenArray = Children.toArray(children);
   const firstChildren = childrenArray.slice(0, Math.floor(childrenCount / 2)).map(wrapChild);

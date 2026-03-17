@@ -1,9 +1,9 @@
+import { ButtonBase, type SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import RouterLink from '../link/RouterLink';
 import { CaptionSmall } from '../typography';
-import { ButtonBase, SxProps } from '@mui/material';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { Theme } from '@mui/material/styles';
 
 type SeeMoreProps = {
   label?: TranslationKey;
@@ -18,7 +18,7 @@ const SeeMore = ({ label = 'buttons.see-all', subject, to, onClick, sx }: SeeMor
 
   return (
     <CaptionSmall component={to ? RouterLink : ButtonBase} to={to} textAlign="right" onClick={onClick} sx={sx}>
-      <>{t(label, { subject })}</>
+      {t(label, { subject })}
     </CaptionSmall>
   );
 };

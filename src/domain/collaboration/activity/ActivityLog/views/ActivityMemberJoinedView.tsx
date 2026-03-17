@@ -1,9 +1,9 @@
-import { ActivityBaseView } from './ActivityBaseView';
-import { ActivityViewProps } from './ActivityViewProps';
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
-import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import type { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
+import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
+import { ActivityBaseView } from './ActivityBaseView';
+import type { ActivityViewProps } from './ActivityViewProps';
 
 interface ActivityMemberJoinedViewProps extends ActivityViewProps {
   member: AuthorModel;

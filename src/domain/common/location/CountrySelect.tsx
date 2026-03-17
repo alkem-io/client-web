@@ -1,7 +1,6 @@
-import { TextField } from '@mui/material';
-import { Autocomplete } from '@mui/material';
+import { Autocomplete, TextField } from '@mui/material';
 import { useField } from 'formik';
-import { COUNTRIES, CountryType } from './countries.constants';
+import { COUNTRIES, type CountryType } from './countries.constants';
 
 type CountrySelectProps = {
   title?: string;
@@ -25,12 +24,12 @@ export const CountrySelect = ({
 
   return (
     <Autocomplete
-      autoHighlight
+      autoHighlight={true}
       options={COUNTRIES}
       getOptionLabel={getCountryName}
       isOptionEqualToValue={compareCountries}
       value={field.value}
-      onChange={(event, newValue) => {
+      onChange={(_event, newValue) => {
         helper.setValue(newValue);
       }}
       disabled={readOnly}
@@ -51,7 +50,7 @@ export const CountrySelect = ({
           }}
         />
       )}
-      fullWidth
+      fullWidth={true}
     />
   );
 };

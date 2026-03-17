@@ -1,9 +1,9 @@
-import OrganizationPageView from '../views/OrganizationPageView';
-import Loading from '@/core/ui/loading/Loading';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
+import Loading from '@/core/ui/loading/Loading';
 import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useOrganizationProvider from '../useOrganization/useOrganization';
+import OrganizationPageView from '../views/OrganizationPageView';
 
 export const OrganizationPage = () => {
   const { organizationId, loading: resolvingOrganization } = useUrlResolver();

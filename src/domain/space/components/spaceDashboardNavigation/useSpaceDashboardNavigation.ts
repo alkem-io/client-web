@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import {
   useSpaceDashboardNavigationSubspacesQuery,
   useSpacePrivilegesQuery,
@@ -5,12 +6,11 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  MyMembershipsRoleSetFragment,
+  type MyMembershipsRoleSetFragment,
   SpaceSortMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
-import { useCallback, useMemo } from 'react';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 interface UseSpaceDashboardNavigationProps {
   spaceId: string | undefined;

@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, useContext } from 'react';
+import { createContext, type FC, type PropsWithChildren, useContext } from 'react';
 
 interface AcceptTermsContextProps extends PropsWithChildren {
   hasAcceptedTerms: boolean;

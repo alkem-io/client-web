@@ -1,4 +1,4 @@
-import { Navigate, NavigateProps, useParams } from 'react-router-dom';
+import { Navigate, type NavigateProps, useParams } from 'react-router-dom';
 
 interface RedirectProps extends NavigateProps {
   to: string;
@@ -14,7 +14,7 @@ interface RedirectProps extends NavigateProps {
 const Redirect = ({ to, ...props }: RedirectProps) => {
   const match = useParams();
 
-  return <Navigate to={`../${to}/${match['*']}`} replace {...props} />;
+  return <Navigate to={`../${to}/${match['*']}`} replace={true} {...props} />;
 };
 
 export default Redirect;

@@ -1,9 +1,9 @@
 import { Dialog, DialogContent } from '@mui/material';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
-import CalloutsList from './CalloutsList';
-import useCalloutsSet from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useCalloutsSet from '../../calloutsSet/useCalloutsSet/useCalloutsSet';
+import CalloutsList from './CalloutsList';
 
 export interface CalloutsListDialogProps {
   open?: boolean;
@@ -21,7 +21,7 @@ const CalloutsListDialog = ({ open = false, onClose }: CalloutsListDialogProps) 
   });
 
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} fullWidth={true}>
       <DialogHeader onClose={onClose} title={t('callout.calloutsList.title')} />
       <DialogContent>
         <CalloutsList

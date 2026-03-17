@@ -1,32 +1,32 @@
-import React, { useMemo, useCallback } from 'react';
-import { groupBy } from 'lodash-es';
 import { Button, Tooltip } from '@mui/material';
+import { groupBy } from 'lodash-es';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContent from '@/core/ui/content/PageContent';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import VCProfileContentView from './VCProfileContentView';
-import Gutters from '@/core/ui/grid/Gutters';
-import { Caption, CardText } from '@/core/ui/typography';
-import References from '@/domain/shared/components/References/References';
-import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import { gutters } from '@/core/ui/grid/utils';
-import useNavigate from '@/core/routing/useNavigate';
-import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
-import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
 import {
   AiPersonaEngine,
   SpaceLevel,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
-import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
-import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
-import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
-import { EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
+import useNavigate from '@/core/routing/useNavigate';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption, CardText } from '@/core/ui/typography';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
+import References from '@/domain/shared/components/References/References';
+import { isSocialNetworkSupported } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
+import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
+import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
+import type { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
+import { EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
+import type { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import VCProfileContentView from './VCProfileContentView';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -82,8 +82,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
         </Button>
       ) : (
         <Tooltip title={t('components.profile.fields.bodyOfKnowledge.privateBokTooltip')} placement="bottom-start">
-          <Gutters disableGap disablePadding>
-            <Button disabled color="primary" variant="outlined" sx={bokVisitButtonStyles}>
+          <Gutters disableGap={true} disablePadding={true}>
+            <Button disabled={true} color="primary" variant="outlined" sx={bokVisitButtonStyles}>
               {t('buttons.visit')}
             </Button>
           </Gutters>
@@ -95,7 +95,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
   return (
     <PageContent>
       <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
-        <PageContentBlock disableGap>
+        <PageContentBlock disableGap={true}>
           <ProfileDetail
             title={t('components.profile.fields.description.title')}
             value={virtualContributor?.profile?.description ?? ''}
@@ -105,12 +105,12 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
+          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless={true} />
         </PageContentBlock>
 
         <PageContentBlock>
-          <Gutters disableGap disablePadding>
-            <Gutters disableGap disablePadding marginBottom={gutters(1)}>
+          <Gutters disableGap={true} disablePadding={true}>
+            <Gutters disableGap={true} disablePadding={true} marginBottom={gutters(1)}>
               <ProfileDetail title={t('components.profile.fields.references.title')} aria-label="references" />
             </Gutters>
 
@@ -123,8 +123,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
         {hasKnowledgeBase && (
           <PageContentBlock>
-            <Gutters disableGap disablePadding>
-              <Gutters disableGap disablePadding>
+            <Gutters disableGap={true} disablePadding={true}>
+              <Gutters disableGap={true} disablePadding={true}>
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
                   value={knowledgeBaseDescription || t('virtualContributorSpaceSettings.placeholder')}
@@ -139,8 +139,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
         {hasSpaceKnowledge && (
           <PageContentBlock>
-            <Gutters disableGap disablePadding>
-              <Gutters disableGap disablePadding>
+            <Gutters disableGap={true} disablePadding={true}>
+              <Gutters disableGap={true} disablePadding={true}>
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
                   value={virtualContributor?.bodyOfKnowledgeDescription || ''}
@@ -153,7 +153,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                   })}
                 </Caption>
 
-                <Gutters disableGap disablePadding paddingTop={1}>
+                <Gutters disableGap={true} disablePadding={true} paddingTop={1}>
                   <SpaceCardHorizontal
                     space={{
                       id: virtualContributor?.bodyOfKnowledgeID,
@@ -162,10 +162,10 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                     }}
                     size="small"
                     deepness={0}
-                    seamless
+                    seamless={true}
                     sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
-                    disableHoverState
-                    disableTagline
+                    disableHoverState={true}
+                    disableTagline={true}
                   />
                 </Gutters>
               </Gutters>
@@ -175,8 +175,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
         {isExternal && (
           <PageContentBlock>
-            <Gutters disableGap disablePadding>
-              <Gutters disableGap disablePadding>
+            <Gutters disableGap={true} disablePadding={true}>
+              <Gutters disableGap={true} disablePadding={true}>
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
                   value={t('components.profile.fields.engines.externalVCDescription', {

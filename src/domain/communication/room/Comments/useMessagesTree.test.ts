@@ -1,5 +1,5 @@
-import { buildMessagesTree, IdentifiableReply } from './useMessagesTree';
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
+import { buildMessagesTree, type IdentifiableReply } from './useMessagesTree';
 
 describe('buildMessagesTree', () => {
   test('builds a simple tree', () => {

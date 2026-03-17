@@ -1,8 +1,8 @@
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import { visit } from 'unist-util-visit';
 import type { Root, Text } from 'mdast';
+import remarkGfm from 'remark-gfm';
+import remarkParse from 'remark-parse';
+import { unified } from 'unified';
+import { visit } from 'unist-util-visit';
 
 /**
  * Converts markdown content to plain text by stripping all formatting.

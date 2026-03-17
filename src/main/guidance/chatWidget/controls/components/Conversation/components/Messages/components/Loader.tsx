@@ -1,5 +1,5 @@
-import Box from '@mui/material/Box';
 import { keyframes } from '@emotion/react';
+import Box from '@mui/material/Box';
 
 type Props = {
   typing: boolean;

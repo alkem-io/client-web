@@ -1,22 +1,3 @@
-import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CalloutContributionType,
-  CalloutVisibility,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { gutters } from '@/core/ui/grid/utils';
-import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
-import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
@@ -33,19 +14,39 @@ import {
 } from '@mui/icons-material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import { Box, Collapse, Menu } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import type React from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
-import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
-import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
-import { LinkContribution } from '../../calloutContributions/link/models/LinkContribution';
-import { PostContribution } from '../../calloutContributions/post/PostCard';
-import { WhiteboardContribution } from '../../calloutContributions/whiteboard/WhiteboardCard';
-import { CalloutSummary } from '../CalloutSummary';
-import { CalloutLayoutEvents } from '../CalloutViewTypes';
-import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  type CalloutContributionType,
+  type CalloutVisibility,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
+import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import type { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
+import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CalloutContributionsSortDialog from '../../calloutContributions/calloutsContributionsSortDialog/CalloutContributionsSortDialog';
-import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import type { LinkContribution } from '../../calloutContributions/link/models/LinkContribution';
+import type { PostContribution } from '../../calloutContributions/post/PostCard';
+import type { WhiteboardContribution } from '../../calloutContributions/whiteboard/WhiteboardCard';
+import type { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
+import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
+import { CalloutSummary } from '../CalloutSummary';
+import type { CalloutLayoutEvents } from '../CalloutViewTypes';
+import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -278,7 +279,7 @@ const CalloutSettingsContainer = ({
           };
         }}
       />
-      <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit>
+      <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit={true}>
         <Menu
           anchorEl={positionAnchorEl}
           open={positionDialogOpen}

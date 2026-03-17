@@ -1,4 +1,4 @@
-import { Link, LinkProps } from '@mui/material';
+import { Link, type LinkProps } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 
 interface FooterLinkProps extends LinkProps {}

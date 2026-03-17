@@ -1,15 +1,11 @@
-import { useRef } from 'react';
-import { ReactNode } from 'react';
+import Box from '@mui/material/Box';
+import { type ReactNode, useRef } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-
 import Header from './components/Header';
 import Messages from './components/Messages/Messages';
 import Sender from './components/Sender';
 
-import Box from '@mui/material/Box';
-
 export interface ISenderRef {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelectEmoji: (event: any) => void;
 }
 

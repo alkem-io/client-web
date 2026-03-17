@@ -1,13 +1,13 @@
+import { DialogContent } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { AddContentForm } from './AddContentForm';
-import { AddContentProps } from './AddContentProps';
+import { Caption } from '@/core/ui/typography';
 import CancelDialog from '../CancelDialog';
+import { AddContentForm } from './AddContentForm';
+import type { AddContentProps } from './AddContentProps';
 
 const AddContent = ({ onClose, onCreateVC, titleId }: AddContentProps) => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const AddContent = ({ onClose, onCreateVC, titleId }: AddContentProps) => {
     <>
       <DialogHeader onClose={onCancel} title={t('createVirtualContributorWizard.addContent.title')} id={titleId} />
       <DialogContent>
-        <Gutters disablePadding paddingBottom={gutters(2)}>
+        <Gutters disablePadding={true} paddingBottom={gutters(2)}>
           <Caption>
             {`${t('createVirtualContributorWizard.addContent.description')}
             ${t('createVirtualContributorWizard.addContent.descriptionBold')}`}

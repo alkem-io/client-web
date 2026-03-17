@@ -1,20 +1,20 @@
-import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
-import * as yup from 'yup';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
-import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import { Actions } from '@/core/ui/actions/Actions';
+import { Button } from '@mui/material';
 import { Formik } from 'formik';
 import { useMemo, useRef, useState } from 'react';
-import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AiPersonaEngine, OpenAiModel } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
-import { Button } from '@mui/material';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 
 type ExternalConfigFields = {
   apiKey?: string;
@@ -109,45 +109,38 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            enableReinitialize
-            validateOnMount
+            enableReinitialize={true}
+            validateOnMount={true}
             onSubmit={() => {}}
           >
-            <>
-              <FormikEffect
-                onChange={(values: FormValueType) => setExternalConfig({ ...externalConfig, ...values })}
-                onStatusChange={(isValid: boolean) => setIsValid(isValid)}
-              />
+            <FormikEffect
+              onChange={(values: FormValueType) => setExternalConfig({ ...externalConfig, ...values })}
+              onStatusChange={(isValid: boolean) => setIsValid(isValid)}
+            />
+            <FormikInputField
+              inputProps={{ ref: apiKeyRef }}
+              name="apiKey"
+              placeholder={t('pages.virtualContributorProfile.settings.externalConfig.apiKeyPlaceholder', {
+                value: aiPersona?.externalConfig?.apiKey,
+              })}
+              title={t('pages.virtualContributorProfile.settings.externalConfig.apiKey')}
+            />
+            {isAssistantFieldAvailable && (
               <FormikInputField
-                inputProps={{ ref: apiKeyRef }}
-                name="apiKey"
-                placeholder={t('pages.virtualContributorProfile.settings.externalConfig.apiKeyPlaceholder', {
-                  value: aiPersona?.externalConfig?.apiKey,
-                })}
-                title={t('pages.virtualContributorProfile.settings.externalConfig.apiKey')}
+                name="assistantId"
+                title={t('pages.virtualContributorProfile.settings.externalConfig.assistantId')}
               />
-              {isAssistantFieldAvailable && (
-                <FormikInputField
-                  name="assistantId"
-                  title={t('pages.virtualContributorProfile.settings.externalConfig.assistantId')}
-                />
-              )}
-              <FormikSelect
-                name="model"
-                title={t('pages.virtualContributorProfile.settings.externalConfig.model')}
-                values={Object.values(OpenAiModel).map(model => ({ id: model, name: model }))}
-              />
-              <Actions>
-                <Button
-                  variant="contained"
-                  loading={loading || updateLoading}
-                  disabled={!isValid}
-                  onClick={handleSubmit}
-                >
-                  {t('pages.virtualContributorProfile.settings.externalConfig.saveBtn')}
-                </Button>
-              </Actions>
-            </>
+            )}
+            <FormikSelect
+              name="model"
+              title={t('pages.virtualContributorProfile.settings.externalConfig.model')}
+              values={Object.values(OpenAiModel).map(model => ({ id: model, name: model }))}
+            />
+            <Actions>
+              <Button variant="contained" loading={loading || updateLoading} disabled={!isValid} onClick={handleSubmit}>
+                {t('pages.virtualContributorProfile.settings.externalConfig.saveBtn')}
+              </Button>
+            </Actions>
           </Formik>
         </PageContentBlock>
       </PageContentColumn>

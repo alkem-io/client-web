@@ -1,12 +1,12 @@
+import { useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 import {
   CalloutFragmentDoc,
   useDeleteCalloutMutation,
   useUpdateCalloutVisibilityMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { useApolloClient } from '@apollo/client';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 type useCalloutEditProvided = {
   changeCalloutVisibility: (

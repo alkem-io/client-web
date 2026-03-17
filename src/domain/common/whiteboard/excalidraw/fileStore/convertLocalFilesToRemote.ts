@@ -7,9 +7,7 @@ export interface ConversionResult<W> {
   unrecoverableFiles: string[];
 }
 
-export interface FileConverter {
-  (file: BinaryFileData & { url?: string }): Promise<BinaryFileDataWithUrl | undefined>;
-}
+export type FileConverter = (file: BinaryFileData & { url?: string }) => Promise<BinaryFileDataWithUrl | undefined>;
 
 export interface ConversionLogger {
   onFilePreservedWithDataUrl?: (fileId: string) => void;
