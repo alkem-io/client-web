@@ -42,8 +42,8 @@ Replace each `produce()` call with spread syntax. One file at a time, verify bui
 Migrate `@hello-pangea/dnd` usages to `@dnd-kit`. Remove `@hello-pangea/dnd`.
 
 ### Phase 6: Hooks-First Refactoring
-1. Convert 10 render-prop Containers to custom hooks
-2. Audit 17 impure View files, extract business logic to hooks
+1. Convert 14 render-prop Containers to custom hooks
+2. Audit 19 impure View files, extract business logic to hooks
 3. Delete `SimpleContainerProps` and `src/core/container/`
 
 ## Manual Testing Checklist

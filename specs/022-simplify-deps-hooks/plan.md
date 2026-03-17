@@ -12,8 +12,8 @@ Reduce the project's dependency count by 15+ packages and refactor the component
 **Language/Version**: TypeScript 5.8.3, React 19.2.1
 **Primary Dependencies**: Apollo Client 3.10, React Router 7.4, @dnd-kit 6.3/10.0, Vite 7.3
 **Storage**: N/A (Apollo cache, no direct storage changes)
-**Testing**: Vitest 4.0 with jsdom, 247+ tests across 19+ files
-**Target Platform**: Web (modern browsers, Node 24+)
+**Testing**: Vitest 4.0 with jsdom, 555 tests across 50+ files
+**Target Platform**: Web (modern browsers, Node >=22.0.0)
 **Project Type**: Web SPA
 **Performance Goals**: Reduce vendor bundle by ≥25 KB gzipped; eliminate runtime CSS-in-JS overhead from removed libs
 **Constraints**: Zero user-facing behavior changes; all existing tests must pass; React Compiler compatibility
