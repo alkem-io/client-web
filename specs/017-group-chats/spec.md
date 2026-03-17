@@ -187,6 +187,7 @@ As a user, I want to see group membership changes and new messages in real-time 
 - **FR-013**: System MUST display group conversations in the same conversation list as direct conversations.
 - **FR-014**: System MUST visually distinguish group conversations from direct conversations (e.g., group name, group avatar, member count).
 - **FR-015**: System MUST show message previews and timestamps for group conversations in the list.
+- **FR-015a**: System MUST order the unified conversation list by most recent activity: `lastMessage.timestamp` takes priority; for conversations without messages, `room.createdDate` is used as the fallback sort key. Newly created conversations MUST appear at the top of the list immediately.
 
 #### Group Management (Details + Members)
 

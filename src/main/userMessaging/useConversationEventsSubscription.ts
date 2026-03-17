@@ -87,7 +87,13 @@ const MessageCacheFragment = gql`
 `;
 
 export const useConversationEventsSubscription = (selectedRoomId: string | null) => {
-  const { isEnabled, selectedConversationId, setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
+  const {
+    isEnabled,
+    selectedConversationId,
+    setSelectedConversationId,
+    setSelectedRoomId,
+    newlyCreatedConversationId,
+  } = useUserMessagingContext();
   const { isAuthenticated, userModel } = useCurrentUserContext();
   const client = useApolloClient();
   const currentUserId = userModel?.id;
@@ -115,8 +121,10 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       // user knows they were added. The server returns unreadCount=0 (correct
       // for Matrix), so we override it client-side only for conversations
       // arriving via the subscription (new ones), not old ones loaded by query.
+      // Skip the override for the creator's own conversation (they already know about it).
+      const isOwnCreation = conversation.id === newlyCreatedConversationId;
       const effectiveUnreadCount =
-        room.type === RoomType.ConversationGroup ? Math.max(room.unreadCount, 1) : room.unreadCount;
+        room.type === RoomType.ConversationGroup && !isOwnCreation ? Math.max(room.unreadCount, 1) : room.unreadCount;
 
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
         if (!existing?.me?.conversations?.conversations) return existing;
@@ -186,7 +194,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         }
       );
     },
-    [client]
+    [client, newlyCreatedConversationId]
   );
 
   const handleConversationUpdated = useCallback(
@@ -225,16 +233,21 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
     (event: ConversationDeletedEvent) => {
       clearSelectionIfActive(event.conversationID);
 
-      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-        if (!existing?.me?.conversations?.conversations) return existing;
+      // Read room ID before removing from list so we can evict it
+      const existing = client.cache.readQuery<UserConversationsQuery>({ query: UserConversationsDocument });
+      const deletedConv = existing?.me?.conversations?.conversations?.find(c => c.id === event.conversationID);
+      const deletedRoomId = deletedConv?.room?.id;
+
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, data => {
+        if (!data?.me?.conversations?.conversations) return data;
 
         return {
-          ...existing,
+          ...data,
           me: {
-            ...existing.me,
+            ...data.me,
             conversations: {
-              ...existing.me.conversations,
-              conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversationID),
+              ...data.me.conversations,
+              conversations: data.me.conversations.conversations.filter(c => c.id !== event.conversationID),
             },
           },
         };
@@ -242,21 +255,27 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
       client.cache.updateQuery<UserConversationsUnreadCountQuery>(
         { query: UserConversationsUnreadCountDocument },
-        existing => {
-          if (!existing?.me?.conversations?.conversations) return existing;
+        data => {
+          if (!data?.me?.conversations?.conversations) return data;
 
           return {
-            ...existing,
+            ...data,
             me: {
-              ...existing.me,
+              ...data.me,
               conversations: {
-                ...existing.me.conversations,
-                conversations: existing.me.conversations.conversations.filter(c => c.id !== event.conversationID),
+                ...data.me.conversations,
+                conversations: data.me.conversations.conversations.filter(c => c.id !== event.conversationID),
               },
             },
           };
         }
       );
+
+      // Evict normalized entities to free memory and prevent stale references
+      evictFromCache(client.cache, event.conversationID, 'Conversation');
+      if (deletedRoomId) {
+        evictFromCache(client.cache, deletedRoomId, 'Room');
+      }
     },
     [client, clearSelectionIfActive]
   );

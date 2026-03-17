@@ -472,7 +472,7 @@ export const UserMessagingConversationView = ({
           onClose={() => setIsManageDialogOpen(false)}
           conversationId={conversation.id}
           currentMembers={conversation.members}
-          displayName={conversation.displayName}
+          displayName={conversation.roomDisplayName}
           avatarUrl={conversation.avatarUri}
           onLeaveGroup={() => {
             setIsManageDialogOpen(false);

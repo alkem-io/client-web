@@ -26,6 +26,8 @@ pnpm codegen
 
 This will produce TypeScript errors because existing `.graphql` files reference removed fields. That's expected — fixing these errors is the first implementation task.
 
+> **Important**: After every `pnpm codegen` run, commit the regenerated files under `src/core/apollo/generated/` alongside your `.graphql` changes. CI requires these to be up-to-date.
+
 ## Step 2: Fix Codegen Errors
 
 After codegen, the generated types will reflect the new schema. Fix all `.graphql` documents:
@@ -35,7 +37,7 @@ After codegen, the generated types will reflect the new schema. Fix all `.graphq
 3. **`src/main/userMessaging/graphql/ConversationEvents.graphql`** — Replace `user` → `members`, add new event types
 4. **`src/main/guidance/chatWidget/ChatWidgetQueries.graphql`** — Replace `virtualContributor(wellKnown:)` with new lookup
 
-Re-run codegen after fixing documents:
+Re-run codegen after fixing documents and commit the regenerated `src/core/apollo/generated/` files:
 
 ```bash
 pnpm codegen

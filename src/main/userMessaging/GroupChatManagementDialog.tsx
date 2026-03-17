@@ -178,13 +178,13 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
                         type: ActorType.User,
                         profile: {
                           __typename: 'Profile' as const,
-                          id: '',
+                          id: `temp-profile-${value.id}`,
                           displayName: value.profile?.displayName ?? '',
                           url: '',
                           avatar: value.profile?.visual
                             ? {
                                 __typename: 'Visual' as const,
-                                id: '',
+                                id: `temp-visual-${value.id}`,
                                 uri: value.profile.visual.uri,
                               }
                             : undefined,
@@ -308,11 +308,11 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={gutters()}>
           {/* Avatar upload */}
-          <Box display="flex" flexDirection="row" alignItems="center" gap={gutters()}>
-            <FileUploadWrapper
-              onFileSelected={handleAvatarFileSelected}
-              allowedTypes={visualConstraints?.allowedTypes ?? []}
-            >
+          <FileUploadWrapper
+            onFileSelected={handleAvatarFileSelected}
+            allowedTypes={visualConstraints?.allowedTypes ?? []}
+          >
+            <Box display="flex" flexDirection="row" alignItems="center" gap={gutters()} sx={{ cursor: 'pointer' }}>
               {isUploading ? (
                 <Skeleton variant="circular" width={80} height={80} />
               ) : (
@@ -320,23 +320,22 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
                   src={avatarUrl || undefined}
                   alt={editedDisplayName}
                   size="large"
-                  sx={{ cursor: 'pointer', boxShadow: '0 0 4px rgba(0, 0, 0, 0.2)' }}
+                  sx={{ boxShadow: '0 0 4px rgba(0, 0, 0, 0.2)' }}
                 />
               )}
-            </FileUploadWrapper>
-            <Caption
-              sx={{
-                fontFamily: '"Montserrat", sans-serif',
-                fontWeight: 500,
-                fontSize: 12,
-                textTransform: 'uppercase',
-                color: '#1D384A',
-                cursor: 'pointer',
-              }}
-            >
-              {t('components.userMessaging.editProfilePicture' as TranslationKey)}
-            </Caption>
-          </Box>
+              <Caption
+                sx={{
+                  fontFamily: '"Montserrat", sans-serif',
+                  fontWeight: 500,
+                  fontSize: 12,
+                  textTransform: 'uppercase',
+                  color: '#1D384A',
+                }}
+              >
+                {t('components.userMessaging.editProfilePicture' as TranslationKey)}
+              </Caption>
+            </Box>
+          </FileUploadWrapper>
 
           {cropDialogOpen && visualConstraints && (
             <CropDialog

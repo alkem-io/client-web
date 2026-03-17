@@ -17,7 +17,10 @@ query UserConversations {
         id
         room {
           id
+          type
           displayName # Group name (null for direct)
+          avatarUrl   # Custom group avatar
+          createdDate # Fallback sort key for empty conversations
           unreadCount
           messagesCount
           lastMessage {
