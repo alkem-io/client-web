@@ -1,11 +1,19 @@
 query ConversationWithGuidanceVc {
   me {
-    conversations{
-      conversationGuidanceVc: virtualContributor(wellKnown: CHAT_GUIDANCE) {
+    conversations {
+      conversations {
+        id
         room {
           id
         }
-        id
+        members {
+          id
+          type
+          profile {
+            id
+            displayName
+          }
+        }
       }
     }
   }

@@ -1,0 +1,3 @@
+mutation AssignConversationMember($memberData: AssignConversationMemberInput!) {
+  assignConversationMember(memberData: $memberData)
+}
