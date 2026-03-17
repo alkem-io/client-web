@@ -19,8 +19,8 @@
 
 **Purpose**: Capture baseline metrics before any changes
 
-- [ ] T001 Run `pnpm analyze` and record baseline bundle sizes in build/stats.html
-- [ ] T002 Run `pnpm vitest run` and confirm all 247+ tests pass as baseline
+- [x] T001 Run `pnpm analyze` and record baseline bundle sizes in build/stats.html
+- [x] T002 Run `pnpm vitest run` and confirm all 247+ tests pass as baseline (555 tests pass, 50 files)
 
 **Checkpoint**: Baseline recorded — ready to begin dependency cleanup
 
@@ -34,16 +34,16 @@
 
 ### Implementation for User Story 1
 
-- [ ] T003 [P] [US1] Remove `@atlaskit/pragmatic-drag-and-drop` from dependencies in package.json
-- [ ] T004 [P] [US1] Remove `date-fns` from dependencies in package.json
-- [ ] T005 [P] [US1] Remove `@sentry/tracing` from dependencies in package.json
-- [ ] T006a [US1] Update `src/domain/shared/components/WithApmTransaction/WithApmTransaction.tsx` — replace `withTransaction` import from `@elastic/apm-rum-react` with equivalent from `@elastic/apm-rum` or inline/remove the wrapper
-- [ ] T006b [US1] Remove `@elastic/apm-rum-react` from dependencies in package.json (depends on T006a)
-- [ ] T007 [P] [US1] Remove `@types/jest` from devDependencies in package.json
-- [ ] T008 [P] [US1] Remove `source-map-explorer` from devDependencies in package.json
-- [ ] T009 [P] [US1] Remove `@types/yup` from devDependencies in package.json
-- [ ] T010 [US1] Run `pnpm install` to update lockfile after all removals
-- [ ] T011 [US1] Verify: `pnpm lint && pnpm vitest run && pnpm build` — all pass
+- [x] T003 [P] [US1] Remove `@atlaskit/pragmatic-drag-and-drop` from dependencies in package.json
+- [x] T004 [P] [US1] Remove `date-fns` from dependencies in package.json
+- [x] T005 [P] [US1] Remove `@sentry/tracing` from dependencies in package.json
+- [x] T006a [US1] Update `src/domain/shared/components/WithApmTransaction/WithApmTransaction.tsx` — replace `withTransaction` import from `@elastic/apm-rum-react` with equivalent from `@elastic/apm-rum` or inline/remove the wrapper
+- [x] T006b [US1] Remove `@elastic/apm-rum-react` from dependencies in package.json (depends on T006a)
+- [x] T007 [P] [US1] Remove `@types/jest` from devDependencies in package.json
+- [x] T008 [P] [US1] Remove `source-map-explorer` from devDependencies in package.json
+- [x] T009 [P] [US1] Remove `@types/yup` from devDependencies in package.json
+- [x] T010 [US1] Run `pnpm install` to update lockfile after all removals
+- [x] T011 [US1] Verify: `pnpm lint && pnpm vitest run && pnpm build` — all pass
 
 **Checkpoint**: 7 unused packages removed. Build and tests pass. One code change: WithApmTransaction.tsx updated.
 
@@ -57,13 +57,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T012 [US3] Create `src/core/state/global/notifications/useNotifications.ts` — define NotificationAction union type (`PUSH | CLEAR`), implement notificationReducer (PUSH appends with UUID, CLEAR filters by id), export useNotifications() hook returning `[notifications, dispatch]`
-- [ ] T013 [US3] Update `src/core/state/GlobalStateProvider.tsx` — replace `useActorRef(notificationMachine)` with `useNotifications()`, update Context value to provide notifications and dispatch
-- [ ] T014 [US3] Update `src/core/ui/notifications/NotificationHandler.tsx` — replace `useSelector` from `@xstate/react` with `useContext`, replace `send()` calls with `dispatch()` calls
-- [ ] T015 [US3] Delete `src/core/state/global/notifications/notificationMachine.ts`
-- [ ] T015a [US3] Remove commented-out xstate import (`// import { t } from 'xstate';`) in `src/domain/templates/hooks/useCreateInputFromTemplate.ts`
-- [ ] T016 [US3] Remove `xstate` and `@xstate/react` from dependencies in package.json
-- [ ] T017 [US3] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no xstate imports remain
+- [x] T012 [US3] Create `src/core/state/global/notifications/useNotifications.ts` — define NotificationAction union type (`PUSH | CLEAR`), implement notificationReducer (PUSH appends with UUID, CLEAR filters by id), export useNotifications() hook returning `[notifications, dispatch]`
+- [x] T013 [US3] Update `src/core/state/GlobalStateProvider.tsx` — replace `useActorRef(notificationMachine)` with `useNotifications()`, update Context value to provide notifications and dispatch
+- [x] T014 [US3] Update `src/core/ui/notifications/NotificationHandler.tsx` — replace `useSelector` from `@xstate/react` with `useContext`, replace `send()` calls with `dispatch()` calls
+- [x] T015 [US3] Delete `src/core/state/global/notifications/notificationMachine.ts`
+- [x] T015a [US3] Remove commented-out xstate import (`// import { t } from 'xstate';`) in `src/domain/templates/hooks/useCreateInputFromTemplate.ts`
+- [x] T016 [US3] Remove `xstate` and `@xstate/react` from dependencies in package.json
+- [x] T017 [US3] Run `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — all pass, no xstate imports remain
 
 **Checkpoint**: Notification system uses useReducer + Context. ~25 KB removed from vendor bundle.
 
