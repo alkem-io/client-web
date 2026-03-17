@@ -187,42 +187,42 @@
 
 #### Collaboration domain (3 files)
 
-- [ ] T064 [P] [US6] Audit `CalloutView.tsx` — extract business logic (custom hooks like useCalloutComments) to colocated hook, keep View as pure presentation
-- [ ] T065 [P] [US6] Audit `CalloutsGroupView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T066 [P] [US6] Audit `WhiteboardView.tsx` — extract business logic to colocated hook or merge into parent
+- [x] T064 [P] [US6] Audit `CalloutView.tsx` — already pure: business logic abstracted into custom hooks (useCalloutComments, useCalloutSettings); only UI state (commentsCollapsed) remains
+- [x] T065 [P] [US6] Audit `CalloutsGroupView.tsx` — already pure: manages only dialog visibility; delegates business logic to children
+- [x] T066 [P] [US6] Audit `WhiteboardView.tsx` — extracted Apollo sync, authorization, guest access to `useWhiteboardViewState` hook
 
 #### Communication domain (3 files)
 
-- [ ] T067 [P] [US6] Audit `MessageWithRepliesView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T068 [P] [US6] Audit `DiscussionView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T069 [P] [US6] Audit `UserMessagingConversationView.tsx` — extract UI state + effects to colocated hook
+- [x] T067 [P] [US6] Audit `MessageWithRepliesView.tsx` — already pure: only local UI state (reply form visibility), no business logic
+- [x] T068 [P] [US6] Audit `DiscussionView.tsx` — already pure: data via props, legitimate reaction mutations, UI collapse state only
+- [x] T069 [P] [US6] Audit `UserMessagingConversationView.tsx` — extracted mutations, subscriptions, read receipts to `useConversationView` hook
 
 #### Community domain (6 files)
 
-- [ ] T070 [P] [US6] Audit `AssociatesView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T071 [P] [US6] Audit `CommunityUpdatesView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T072 [P] [US6] Audit `AccountResourcesView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T073 [P] [US6] Audit `ContributorAccountView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T073a [P] [US6] Audit `src/domain/community/organizationAdmin/views/OrganizationAssociatesView.tsx` — extract useState/Apollo hook usage to colocated hook or merge into parent
-- [ ] T073b [P] [US6] Audit `src/domain/community/organizationAdmin/views/OrganizationAuthorizationRoleAssignementView.tsx` — extract useState/Apollo hook usage to colocated hook or merge into parent
+- [x] T070 [P] [US6] Audit `AssociatesView.tsx` — already pure: UI-only show/hide toggle state
+- [x] T071 [P] [US6] Audit `CommunityUpdatesView.tsx` — extracted stub/removal tracking, memberMap, clipboard to `useCommunityUpdatesViewState` hook
+- [x] T072 [P] [US6] Audit `AccountResourcesView.tsx` — already pure: UI-only pagination state
+- [x] T073 [P] [US6] Audit `ContributorAccountView.tsx` — extracted 5 mutations + delete coordination to `useAccountEntityDeletion` hook
+- [x] T073a [P] [US6] Audit `src/domain/community/organizationAdmin/views/OrganizationAssociatesView.tsx` — already properly structured: business logic in custom hooks (useRoleSetManager, useRoleSetAvailableUsers)
+- [x] T073b [P] [US6] Audit `src/domain/community/organizationAdmin/views/OrganizationAuthorizationRoleAssignementView.tsx` — already properly structured: business logic in custom hooks
 
 #### Space domain (3 files)
 
-- [ ] T074 [P] [US6] Audit `SpaceDashboardView.tsx` — extract 4 state pieces + localStorage effects to `useSpaceDashboard.ts` hook, merge remaining View into `SpaceDashboardPage.tsx` if trivial
-- [ ] T075 [P] [US6] Audit `SubspaceView.tsx` — extract business logic to colocated hook or merge into parent
-- [ ] T076 [P] [US6] Audit `DashboardNavigationItemView.tsx` — extract business logic to colocated hook or merge into parent
+- [x] T074 [P] [US6] Audit `SpaceDashboardView.tsx` — extracted cache/localStorage effects to `useSpaceDashboardDialogs` hook
+- [x] T075 [P] [US6] Audit `SubspaceView.tsx` — already pure: only search filter UI state, filtering via useMemo
+- [x] T076 [P] [US6] Audit `DashboardNavigationItemView.tsx` — already pure: specialized tree UI component with useImperativeHandle for scroll coordination
 
 #### Timeline domain (1 file)
 
-- [ ] T077 [P] [US6] Audit `CalendarEventDetailView.tsx` — extract business logic to colocated hook or merge into parent
+- [x] T077 [P] [US6] Audit `CalendarEventDetailView.tsx` — already pure: business logic in custom hooks (useCalendarEvent, useCommentReactionsMutations)
 
 #### Main (3 files)
 
-- [ ] T078 [P] [US6] Audit `SpaceExplorerView.tsx` — extract business logic to colocated hook or merge into parent Page
-- [ ] T079 [P] [US6] Audit `ExploreSpacesView.tsx` — extract business logic to colocated hook or merge into parent Page
-- [ ] T080 [P] [US6] Audit `SearchView.tsx` — extract business logic to colocated hook or merge into parent
+- [x] T078 [P] [US6] Audit `SpaceExplorerView.tsx` — extracted Apollo queries + messaging to `useSpaceExplorerViewState` hook
+- [x] T079 [P] [US6] Audit `ExploreSpacesView.tsx` — already pure: business logic in custom hooks, minimal UI state
+- [x] T080 [P] [US6] Audit `SearchView.tsx` — extracted all search logic (~400 lines) to `useSearchViewState` hook
 
-- [ ] T081 [US6] Run `pnpm lint && pnpm vitest run && pnpm build` — all pass, all View files are pure presentation
+- [x] T081 [US6] Run `pnpm lint && pnpm vitest run && pnpm build` — all pass, all View files audited and business logic extracted where needed
 
 **Checkpoint**: All 19 impure Views refactored. Every View is now pure presentation.
 
