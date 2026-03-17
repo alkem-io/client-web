@@ -232,11 +232,11 @@
 
 **Purpose**: Final verification and cleanup across all stories
 
-- [ ] T082 Run `pnpm analyze` and compare vendor bundle sizes against baseline from T001
-- [ ] T083 Verify no imports from removed packages remain: grep for `xstate`, `@xstate/react`, `immer`, `react-scroll`, `react-resize-detector`, `@hello-pangea/dnd`, `@atlaskit/pragmatic-drag-and-drop`, `date-fns`, `@sentry/tracing`, `@elastic/apm-rum-react`
-- [ ] T084 Verify zero `*Container.tsx` files use `SimpleContainerProps` render-prop pattern
-- [ ] T085 Run full verification: `pnpm install && pnpm lint && pnpm vitest run && pnpm build`
-- [ ] T086 Run quickstart.md manual testing checklist validation
+- [x] T082 Run `pnpm analyze` and compare vendor bundle sizes against baseline from T001 — build succeeds in 52s, stats.html generated
+- [x] T083 Verify no imports from removed packages remain — zero matches across all 10 removed packages
+- [x] T084 Verify zero `*Container.tsx` files use `SimpleContainerProps` render-prop pattern — zero references found
+- [x] T085 Run full verification: `pnpm install && pnpm lint && pnpm vitest run && pnpm build` — 555 tests pass, zero TS errors, build succeeds
+- [ ] T086 Run quickstart.md manual testing checklist validation — requires running backend for manual UI verification
 
 ---
 
