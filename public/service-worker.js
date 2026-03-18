@@ -63,6 +63,95 @@ self.addEventListener('message', event => {
   }
 });
 
+// --- Push Notification Handlers ---
+
+self.addEventListener('push', event => {
+  if (!event.data) return;
+
+  const payload = event.data.json();
+  const { title, body, url, eventType } = payload;
+
+  const showNotification = async () => {
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const hasFocusedClient = clients.some(client => client.focused);
+
+    if (hasFocusedClient) {
+      // App is in foreground — skip push notification (in-app notifications handle it)
+      return;
+    }
+
+    return self.registration.showNotification(title, {
+      body,
+      icon: '/android-chrome-192x192.png',
+      badge: '/android-chrome-192x192.png',
+      data: { url },
+      tag: eventType,
+    });
+  };
+
+  event.waitUntil(showNotification());
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  const url = event.notification.data?.url || '/';
+  // Resolve relative URLs to absolute
+  const absoluteUrl = new URL(url, self.location.origin).href;
+
+  const handleClick = async () => {
+    const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const existingClient = allClients.find(client => client.url && new URL(client.url).origin === self.location.origin);
+
+    if (existingClient) {
+      await existingClient.focus();
+      // Navigate directly if the client supports it, otherwise use postMessage
+      if ('navigate' in existingClient) {
+        await existingClient.navigate(absoluteUrl);
+      } else {
+        existingClient.postMessage({ type: 'PUSH_NOTIFICATION_CLICK', url });
+      }
+    } else {
+      await self.clients.openWindow(absoluteUrl);
+    }
+  };
+
+  event.waitUntil(handleClick());
+});
+
+self.addEventListener('pushsubscriptionchange', event => {
+  const resubscribe = async () => {
+    try {
+      // Try to get the VAPID key from the old subscription's options
+      const oldSubscription = event.oldSubscription;
+      const applicationServerKey = oldSubscription?.options?.applicationServerKey;
+
+      if (!applicationServerKey) {
+        console.error('[SW] No application server key available for re-subscription');
+        return;
+      }
+
+      const newSubscription = await self.registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey,
+      });
+
+      // Notify the client about the subscription change
+      const clients = await self.clients.matchAll({ type: 'window' });
+      for (const client of clients) {
+        client.postMessage({
+          type: 'PUSH_SUBSCRIPTION_CHANGED',
+          subscription: newSubscription.toJSON(),
+        });
+      }
+    } catch (error) {
+      console.error('[SW] Failed to re-subscribe after pushsubscriptionchange:', error);
+    }
+  };
+
+  event.waitUntil(resubscribe());
+});
+
 /* the following could be used for handling network failures but also caching strategies */
 /* for now we don't want interceptions or caching */
 

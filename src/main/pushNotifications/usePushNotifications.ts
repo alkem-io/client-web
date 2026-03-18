@@ -1,0 +1,169 @@
+import { useCallback, useEffect, useState } from 'react';
+import {
+  useVapidPublicKeyQuery,
+  useSubscribeToPushNotificationsMutation,
+  useUnsubscribeFromPushNotificationsMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import { urlBase64ToUint8Array } from '@/main/pushNotifications/urlBase64ToUint8Array';
+
+const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
+
+export type PushNotificationState = {
+  isSupported: boolean;
+  isServerEnabled: boolean;
+  permissionState: NotificationPermission;
+  isSubscribed: boolean;
+  currentSubscriptionId: string | null;
+  subscribe: () => Promise<void>;
+  unsubscribe: () => Promise<void>;
+  loading: boolean;
+  requiresPWAMode: boolean;
+  isPrivateBrowsing: boolean;
+};
+
+function detectIOSNonPWA(): boolean {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isStandalone = 'standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true;
+  return isIOS && !isStandalone;
+}
+
+export function usePushNotifications(): PushNotificationState {
+  const isSupported = 'PushManager' in window && 'serviceWorker' in navigator && 'Notification' in window;
+
+  const { data: vapidData, loading: vapidLoading } = useVapidPublicKeyQuery({ skip: !isSupported });
+  const vapidPublicKey = vapidData?.vapidPublicKey ?? null;
+  const isServerEnabled = vapidPublicKey !== null;
+
+  const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
+  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+
+  const [permissionState, setPermissionState] = useState<NotificationPermission>(
+    isSupported ? Notification.permission : 'default'
+  );
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [currentSubscriptionId, setCurrentSubscriptionId] = useState<string | null>(
+    sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)
+  );
+  const [loading, setLoading] = useState(false);
+  const [requiresPWAMode] = useState(() => (isSupported ? detectIOSNonPWA() : false));
+  const [isPrivateBrowsing, setIsPrivateBrowsing] = useState(false);
+
+  // Detect private browsing
+  useEffect(() => {
+    if (!isSupported) return;
+    navigator.storage.estimate().then(estimate => {
+      // In private browsing, quota is typically very limited
+      if (estimate.quota !== undefined && estimate.quota < 120_000_000) {
+        setIsPrivateBrowsing(true);
+      }
+    }).catch(() => {
+      // storage.estimate() not available — can't detect
+    });
+  }, [isSupported]);
+
+  // Check initial subscription state
+  useEffect(() => {
+    if (!isSupported || !isServerEnabled) return;
+
+    navigator.serviceWorker.ready.then(registration => {
+      registration.pushManager.getSubscription().then(subscription => {
+        setIsSubscribed(subscription !== null);
+      });
+    });
+  }, [isSupported, isServerEnabled]);
+
+  const subscribe = useCallback(async () => {
+    if (!isSupported || !vapidPublicKey) return;
+
+    setLoading(true);
+    let browserSubscription: PushSubscription | null = null;
+
+    try {
+      const permission = await Notification.requestPermission();
+      setPermissionState(permission);
+
+      if (permission !== 'granted') {
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+
+      browserSubscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey,
+      });
+
+      const subscriptionJSON = browserSubscription.toJSON();
+      const result = await subscribeMutation({
+        variables: {
+          subscriptionData: {
+            endpoint: subscriptionJSON.endpoint!,
+            p256dh: subscriptionJSON.keys!.p256dh,
+            auth: subscriptionJSON.keys!.auth,
+            userAgent: navigator.userAgent,
+          },
+        },
+      });
+
+      const serverSubscriptionId = result.data?.subscribeToPushNotifications?.id;
+      if (serverSubscriptionId) {
+        sessionStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, serverSubscriptionId);
+        setCurrentSubscriptionId(serverSubscriptionId);
+      }
+      setIsSubscribed(true);
+    } catch (error) {
+      // FR-014: Rollback browser subscription on server error
+      if (browserSubscription) {
+        try {
+          await browserSubscription.unsubscribe();
+        } catch {
+          // Best effort rollback
+        }
+      }
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [isSupported, vapidPublicKey, subscribeMutation]);
+
+  const unsubscribe = useCallback(async () => {
+    setLoading(true);
+    try {
+      const subscriptionId = currentSubscriptionId ?? sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+
+      if (subscriptionId) {
+        await unsubscribeMutation({
+          variables: {
+            subscriptionData: { subscriptionID: subscriptionId },
+          },
+        });
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+      if (subscription) {
+        await subscription.unsubscribe();
+      }
+
+      sessionStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+      setCurrentSubscriptionId(null);
+      setIsSubscribed(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentSubscriptionId, unsubscribeMutation]);
+
+  return {
+    isSupported,
+    isServerEnabled: isServerEnabled && !vapidLoading,
+    permissionState,
+    isSubscribed,
+    currentSubscriptionId,
+    subscribe,
+    unsubscribe,
+    loading,
+    requiresPWAMode,
+    isPrivateBrowsing,
+  };
+}

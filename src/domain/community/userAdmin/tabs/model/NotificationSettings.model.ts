@@ -2,6 +2,7 @@
 export interface NotificationChannels {
   email: boolean;
   inApp: boolean;
+  push: boolean;
 }
 
 // Space notification settings

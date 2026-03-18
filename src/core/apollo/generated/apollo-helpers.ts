@@ -2753,11 +2753,13 @@ export type MutationKeySpecifier = (
   | 'sendMessageToUsers'
   | 'setDefaultCalloutTemplateOnInnovationFlowState'
   | 'setPlatformWellKnownVirtualContributor'
+  | 'subscribeToPushNotifications'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
+  | 'unsubscribeFromPushNotifications'
   | 'updateApplicationFormOnRoleSet'
   | 'updateBaselineLicensePlanOnAccount'
   | 'updateCalendarEvent'
@@ -2952,11 +2954,13 @@ export type MutationFieldPolicy = {
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   setDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscribeToPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  unsubscribeFromPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3029,12 +3033,14 @@ export type NVPFieldPolicy = {
 export type NotificationRecipientResultKeySpecifier = (
   | 'emailRecipients'
   | 'inAppRecipients'
+  | 'pushRecipients'
   | 'triggeredBy'
   | NotificationRecipientResultKeySpecifier
 )[];
 export type NotificationRecipientResultFieldPolicy = {
   emailRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
+  pushRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
@@ -3578,6 +3584,21 @@ export type PruneInAppNotificationAdminResultFieldPolicy = {
   removedCountExceedingUserLimit?: FieldPolicy<any> | FieldReadFunction<any>;
   removedCountOutsideRetentionPeriod?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PushSubscriptionKeySpecifier = (
+  | 'createdDate'
+  | 'id'
+  | 'lastActiveDate'
+  | 'status'
+  | 'userAgent'
+  | PushSubscriptionKeySpecifier
+)[];
+export type PushSubscriptionFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastActiveDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  userAgent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type QueryKeySpecifier = (
   | 'accounts'
   | 'activityFeed'
@@ -3592,6 +3613,7 @@ export type QueryKeySpecifier = (
   | 'lookup'
   | 'lookupByName'
   | 'me'
+  | 'myPushSubscriptions'
   | 'notificationRecipients'
   | 'organization'
   | 'organizations'
@@ -3612,6 +3634,7 @@ export type QueryKeySpecifier = (
   | 'users'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
+  | 'vapidPublicKey'
   | 'virtualContributor'
   | 'virtualContributors'
   | QueryKeySpecifier
@@ -3630,6 +3653,7 @@ export type QueryFieldPolicy = {
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
+  myPushSubscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3650,6 +3674,7 @@ export type QueryFieldPolicy = {
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
+  vapidPublicKey?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4914,11 +4939,13 @@ export type UserSettingsNotificationFieldPolicy = {
 export type UserSettingsNotificationChannelsKeySpecifier = (
   | 'email'
   | 'inApp'
+  | 'push'
   | UserSettingsNotificationChannelsKeySpecifier
 )[];
 export type UserSettingsNotificationChannelsFieldPolicy = {
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   inApp?: FieldPolicy<any> | FieldReadFunction<any>;
+  push?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationOrganizationKeySpecifier = (
   | 'adminMentioned'
@@ -6368,6 +6395,10 @@ export type StrictTypedTypePolicies = {
       | PruneInAppNotificationAdminResultKeySpecifier
       | (() => undefined | PruneInAppNotificationAdminResultKeySpecifier);
     fields?: PruneInAppNotificationAdminResultFieldPolicy;
+  };
+  PushSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PushSubscriptionKeySpecifier | (() => undefined | PushSubscriptionKeySpecifier);
+    fields?: PushSubscriptionFieldPolicy;
   };
   Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);

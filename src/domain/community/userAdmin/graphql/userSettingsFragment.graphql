@@ -16,38 +16,46 @@ fragment userSettingsFragment on UserSettings {
         userProfileRemoved {
           email
           inApp
+          push
         }
         userProfileCreated {
           email
           inApp
+          push
         }
         spaceCreated {
           email
           inApp
+          push
         }
         userGlobalRoleChanged {
           email
           inApp
+          push
         }
       }
       # non-admin settings
       forumDiscussionComment {
         email
         inApp
+        push
       }
       forumDiscussionCreated {
         email
         inApp
+        push
       }
     }
     organization {
       adminMentioned {
         email
         inApp
+        push
       }
       adminMessageReceived {
         email
         inApp
+        push
       }
     }
     space {
@@ -56,44 +64,54 @@ fragment userSettingsFragment on UserSettings {
         communityApplicationReceived {
           email
           inApp
+          push
         }
         collaborationCalloutContributionCreated {
           email
           inApp
+          push
         }
         communityNewMember {
           email
           inApp
+          push
         }
         communicationMessageReceived {
           email
           inApp
+          push
         }
       }
       # Member related notifications
       collaborationCalloutContributionCreated {
         email
         inApp
+        push
       }
       communicationUpdates {
         email
         inApp
+        push
       }
       collaborationCalloutPublished {
         email
         inApp
+        push
       }
       collaborationCalloutComment {
         email
         inApp
+        push
       }
       collaborationCalloutPostContributionComment {
         email
         inApp
+        push
       }
       communityCalendarEvents {
         email
         inApp
+        push
       }
     }
     user {
@@ -101,29 +119,35 @@ fragment userSettingsFragment on UserSettings {
         spaceCommunityInvitationReceived {
           email
           inApp
+          push
         }
         spaceCommunityJoined {
           email
           inApp
+          push
         }
       }
       mentioned {
         email
         inApp
+        push
       }
       commentReply {
         email
         inApp
+        push
       }
       messageReceived {
         email
         inApp
+        push
       }
     }
     virtualContributor {
       adminSpaceCommunityInvitation {
         email
         inApp
+        push
       }
     }
   }
