@@ -5,6 +5,12 @@
 **Status**: Draft
 **Input**: Replace monolithic UrlResolverProvider with per-entity nameId resolution hooks. Separate route parsing (client), nameId-to-ID translation (auth-free lookupByName), and permission checking (entity queries). Enable non-blocking page rendering with skeleton states instead of full-page loading spinners.
 
+## Clarifications
+
+### Session 2026-03-18
+
+- Q: Can the server be fully detached from route knowledge? → A: No. The server has two URL services: a **parser** (`url.resolver.service.ts`, 1100 lines) and a **generator** (`url.generator.service.ts`, 1250 lines). Only the parser is removed. The generator produces `profile.url` (a computed field used in 156+ client locations for navigation) and must continue generating valid URLs with nameIds. Route segment names (e.g., `/challenges/`, `/collaboration/`) remain shared between server generator and client routes.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Faster Page Load with Skeleton States (Priority: P1)
@@ -58,19 +64,20 @@ As a user who navigates to a URL with an invalid nameId (e.g., a deleted space, 
 
 ---
 
-### User Story 4 - Client-Owned Route Changes (Priority: P2)
+### User Story 4 - Reduced Server-Client Route Coupling (Priority: P2)
 
-As a developer, I want to add, modify, or remove routes in the client application without requiring corresponding changes on the server, so that route management is faster and less error-prone.
+As a developer, I want to eliminate the server's role in **parsing** URLs, so that the server no longer needs to understand client route structures for navigation resolution. The server retains its role in **generating** entity URLs (via `profile.url`), which is a separate concern.
 
-**Why this priority**: This is a key architectural improvement that enables faster iteration. Currently, the server duplicates all route patterns for URL parsing, meaning every route change requires coordinated client + server deployments.
+**Why this priority**: Currently the server has two URL-related services: one that **generates** URLs for entity profiles (1250 lines, must stay) and one that **parses** URLs to resolve nameIds to IDs (1100 lines, to be removed). The parsing service duplicates client route patterns, meaning route changes to URL structure require coordinated deployments. Removing the parsing service eliminates this duplication.
 
-**Independent Test**: Can be tested by adding a new route on the client that uses an existing entity type and verifying it works without any server-side changes.
+**Independent Test**: Can be tested by adding a new client route under an existing entity (e.g., a new settings sub-page) and verifying it works without changes to the server's URL resolver.
 
 **Acceptance Scenarios**:
 
-1. **Given** a developer adds a new client route under an existing entity (e.g., a new tab in a space), **When** the route is deployed, **Then** it works correctly without any server-side changes.
-2. **Given** a developer renames a route segment (e.g., `/challenges/` to `/subspaces/`), **When** the change is deployed, **Then** only the client code needs to change; the server's nameId-to-ID translation continues to work unchanged.
+1. **Given** a developer adds a new client route under an existing entity (e.g., a new tab in a space), **When** the route is deployed, **Then** it works correctly without any changes to the server's URL parsing logic.
+2. **Given** the server's URL generation service (`UrlGeneratorService`) produces a `profile.url` for an entity, **When** the client navigates to that URL, **Then** the client's route matching and per-entity resolution hooks handle the navigation without the server needing to parse the URL.
 3. **Given** the existing set of entity types (Space, Organization, User, VirtualContributor, InnovationPack, InnovationHub, ForumDiscussion), **When** a client route references any of these entities by nameId, **Then** the client can resolve the nameId to an ID using lightweight lookups without the server parsing the full URL.
+4. **Given** the server still generates `profile.url` values for all entities, **When** a route segment name changes (e.g., `/challenges/` to `/subspaces/`), **Then** both the client route definitions and the server's URL generator must be updated to stay consistent.
 
 ---
 
@@ -98,6 +105,7 @@ As a developer preparing for a future UI library migration, I want URL resolutio
 - How does the system handle a nameId that contains special characters or URL-encoded segments?
 - What happens when a cached nameId-to-ID mapping becomes stale (e.g., entity was deleted after caching)?
 - How does the `/user/me` special route continue to work without the URL resolver (currently handled via MeUserContext)?
+- What happens if the server's `profile.url` generation and the client's route definitions drift out of sync (e.g., server generates `/challenges/` but client expects `/subspaces/`)?
 
 ## Requirements *(mandatory)*
 
@@ -112,10 +120,12 @@ As a developer preparing for a future UI library migration, I want URL resolutio
 - **FR-007**: System MUST resolve all current entity types via nameId: Space, User, Organization, VirtualContributor, InnovationPack, InnovationHub, and ForumDiscussion.
 - **FR-008**: System MUST support resolution of nested entities (callouts, posts, whiteboards, memos, calendar events, templates) within their parent entity context.
 - **FR-009**: NameId-to-ID translation MUST NOT perform authorization checks; authorization MUST remain the responsibility of entity data queries.
-- **FR-010**: Route definitions MUST reside entirely on the client; the server MUST NOT need to parse or understand URL path structures.
+- **FR-010**: The server MUST NOT need to **parse** URLs to resolve nameIds to IDs (eliminating the URL resolver service). The server's URL **generation** service (`UrlGeneratorService`, which produces `profile.url` for entities) remains unchanged and continues to generate navigable URLs using nameIds. Route segment names (e.g., `/challenges/`, `/collaboration/`) remain shared knowledge between the server's URL generator and the client's route definitions.
 - **FR-011**: System MUST continue to handle the `/user/me` special route independently of the URL resolver.
 - **FR-012**: All existing navigation flows (direct URL access, in-app navigation, browser back/forward, bookmarks) MUST continue to work correctly after the migration.
 - **FR-013**: System MUST handle the case where navigating between sub-pages of the same entity (e.g., `/space/settings/templates` to `/space/settings/templates/templateId`) does not produce stale cached data for the parent page.
+- **FR-014**: The server's `profile.url` generation (computed field on all entity profiles) MUST continue to produce valid, navigable URLs. The client MUST be able to use `profile.url` values directly for in-app navigation without additional transformation.
+- **FR-015**: The client MUST consume `profile.url` as an opaque navigation token for link generation (breadcrumbs, cards, redirects). The client MUST NOT parse `profile.url` to extract nameIds for resolution purposes; nameIds MUST come from route parameters.
 
 ### Key Entities
 
@@ -124,6 +134,7 @@ As a developer preparing for a future UI library migration, I want URL resolutio
 - **Contributor**: A user, organization, or virtual contributor, each identified by a unique nameId in the URL.
 - **Collaboration Entity**: Nested entities within spaces (callouts, posts, whiteboards, memos) identified by nameId within their parent's context.
 - **Permission Set**: The set of privileges (Read, Update, Create, CreateSubspace) a user has on a given entity, returned by entity data queries via `myPrivileges`.
+- **Profile URL**: A computed, absolute URL generated by the server for every entity profile (e.g., `https://app.alkem.io/my-space/challenges/my-challenge`). Uses nameIds, not UUIDs. Consumed by the client as an opaque navigation token in 156+ locations (links, breadcrumbs, cards, redirects). Not stored in the database; recomputed on each request by the server's `UrlGeneratorService`.
 
 ## Success Criteria *(mandatory)*
 
@@ -131,8 +142,8 @@ As a developer preparing for a future UI library migration, I want URL resolutio
 
 - **SC-001**: Users see a page layout (navigation, skeleton placeholders) within 200ms of navigation, rather than a blank loading spinner.
 - **SC-002**: All existing automated tests pass without modification (except tests directly testing the removed URL resolver).
-- **SC-003**: Adding a new client-side route under an existing entity type requires zero server-side changes.
+- **SC-003**: Adding a new client-side route under an existing entity type (e.g., a new settings sub-page, a new tab) requires zero server-side changes. Route segment renames that affect server-generated `profile.url` paths still require coordinated updates.
 - **SC-004**: The total number of network requests for a typical space page load does not increase by more than 1 additional request compared to the current implementation.
 - **SC-005**: 100% of current access control behaviors (forbidden redirect, not-found redirect, unauthenticated redirect, about page fallback) are preserved identically.
 - **SC-006**: Per-entity resolution hooks and context providers contain zero UI-framework-specific imports.
-- **SC-007**: The removed server-side URL resolver code reduces the server codebase by approximately 1,100+ lines.
+- **SC-007**: The removed server-side URL **parsing/resolver** code (`url.resolver.service.ts` and related files) reduces the server codebase by approximately 1,100+ lines. The server's URL **generation** service (`url.generator.service.ts`, ~1,250 lines) remains unchanged.

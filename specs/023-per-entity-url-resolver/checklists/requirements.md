@@ -2,6 +2,7 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-03-16
+**Updated**: 2026-03-18
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
@@ -31,6 +32,5 @@
 
 ## Notes
 
-- All items pass validation. Spec is ready for `/speckit.clarify` or `/speckit.plan`.
-- SC-001 (200ms layout render) is a user-perception metric, not an implementation target — verifiable via browser performance tools.
-- SC-004 references "1 additional request" which is a reasonable bound given the architectural change from 1 monolithic query to per-entity queries.
+- All items pass validation. Spec is ready for `/speckit.plan`.
+- **2026-03-18 update**: Refined FR-010, SC-003, SC-007 to accurately distinguish URL parsing (removed) from URL generation (kept). Added FR-014 and FR-015 for `profile.url` handling. Added Profile URL to Key Entities. Added edge case for server/client URL pattern drift. User Story 4 rewritten to reflect reduced (not eliminated) server coupling.
