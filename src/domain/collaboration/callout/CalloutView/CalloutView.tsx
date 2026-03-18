@@ -41,7 +41,8 @@ import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
 import CalloutFramingPoll from '../CalloutFramings/CalloutFramingPoll';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import type { BaseCalloutViewProps } from '../CalloutViewTypes';
-import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import CalloutSettingsUI from '../calloutBlock/CalloutSettingsUI';
+import useCalloutSettings from '../calloutBlock/useCalloutSettings';
 import useCalloutComments from '../commentsToCallout/useCalloutComments';
 import CalloutViewLayout from './CalloutViewLayout';
 
@@ -112,8 +113,20 @@ const CalloutView = ({
     setCommentsCollapsed(prev => !prev);
   }, []);
 
+  const calloutSettings = useCalloutSettings({
+    callout,
+    expanded,
+    onExpand,
+    calloutRestrictions,
+    ...calloutSettingsProps,
+  });
+
   if (!callout || loading) {
     return <CalloutViewSkeleton />;
+  }
+
+  if (calloutSettings.dontShow) {
+    return null;
   }
 
   const handleClickOnContribution = (contribution: AnyContribution) => {
@@ -133,219 +146,212 @@ const CalloutView = ({
   };
 
   return (
-    <CalloutSettingsContainer
-      callout={callout}
-      expanded={expanded}
-      onExpand={onExpand}
-      calloutRestrictions={calloutRestrictions}
-      {...calloutSettingsProps}
-    >
-      {calloutSettingsProvided => (
-        <CalloutViewLayout
-          callout={callout}
-          contentRef={scrollerRef}
-          {...calloutSettingsProvided}
-          expanded={expanded}
-          onExpand={onExpand}
-          onCollapse={onCollapse}
-          calloutActions={calloutActions}
-          defaultCollapsed={defaultCollapsed}
-        >
-          {/* Whiteboard framing */}
-          {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
+    <>
+      <CalloutSettingsUI settings={calloutSettings} />
+      <CalloutViewLayout
+        callout={callout}
+        contentRef={scrollerRef}
+        {...calloutSettings.provided}
+        expanded={expanded}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        calloutActions={calloutActions}
+        defaultCollapsed={defaultCollapsed}
+      >
+        {/* Whiteboard framing */}
+        {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
 
-          {/* Memo framing */}
-          {callout.framing.type === CalloutFramingType.Memo && <CalloutFramingMemo callout={callout} />}
+        {/* Memo framing */}
+        {callout.framing.type === CalloutFramingType.Memo && <CalloutFramingMemo callout={callout} />}
 
-          {/* Link framing */}
-          {callout.framing.type === CalloutFramingType.Link && <CalloutFramingLink callout={callout} />}
+        {/* Link framing */}
+        {callout.framing.type === CalloutFramingType.Link && <CalloutFramingLink callout={callout} />}
 
-          {/* Media Gallery framing */}
-          {callout.framing.type === CalloutFramingType.MediaGallery && (
-            <CalloutFramingMediaGallery
-              callout={callout}
-              canEdit={callout.editable}
-              calloutRestrictions={calloutRestrictions}
-            />
-          )}
+        {/* Media Gallery framing */}
+        {callout.framing.type === CalloutFramingType.MediaGallery && (
+          <CalloutFramingMediaGallery
+            callout={callout}
+            canEdit={callout.editable}
+            calloutRestrictions={calloutRestrictions}
+          />
+        )}
 
-          {/* Poll framing */}
-          {callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}
+        {/* Poll framing */}
+        {callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}
 
-          {/* Collaborate with links */}
-          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
-            <CalloutContributionsLink
-              callout={callout}
-              expanded={expanded}
-              onExpand={onExpand}
-              onCollapse={onCollapse}
-              onCalloutUpdate={onCalloutUpdate}
-              calloutRestrictions={calloutRestrictions}
-            />
-          )}
+        {/* Collaborate with links */}
+        {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
+          <CalloutContributionsLink
+            callout={callout}
+            expanded={expanded}
+            onExpand={onExpand}
+            onCollapse={onCollapse}
+            onCalloutUpdate={onCalloutUpdate}
+            calloutRestrictions={calloutRestrictions}
+          />
+        )}
 
-          {/* Collaborate with Whiteboards */}
-          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
-            <CalloutContributionsBlock
-              callout={callout}
-              contributionType={CalloutContributionType.Whiteboard}
-              createContributionButtonComponent={CreateContributionButtonWhiteboard}
-              calloutRestrictions={calloutRestrictions}
-              onCalloutContributionsUpdate={onCalloutUpdate}
-            >
-              {/* If there is a contributionId show the scroller */}
-              {contributionId && (
-                <CalloutContributionsHorizontalPager
-                  callout={callout}
-                  loading={loading}
-                  contributionType={CalloutContributionType.Whiteboard}
-                  contributionSelectedId={contributionId}
-                  cardComponent={WhiteboardCard}
-                  onClickOnContribution={handleClickOnContribution}
-                />
-              )}
-              {contributionId && (
-                /* Selected Contribution */
-                <CalloutContributionPreview
-                  key={contributionId}
-                  ref={contributionPreviewRef}
-                  callout={callout}
-                  contributionId={contributionId}
-                  previewComponent={CalloutContributionPreviewWhiteboard}
-                  dialogComponent={CalloutContributionDialogWhiteboard}
-                  openContributionDialogOnLoad={true}
-                  calloutRestrictions={calloutRestrictions}
-                  onCalloutUpdate={onCalloutUpdate}
-                />
-              )}
-              {/* else show the expandable container with the cards */}
-              {!contributionId && (
-                <ContributionsCardsExpandable
-                  callout={callout}
-                  loading={loading}
-                  contributionType={CalloutContributionType.Whiteboard}
-                  expanded={expanded}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
-                  onCalloutUpdate={onCalloutUpdate}
-                  contributionCardComponent={WhiteboardCard}
-                  onClickOnContribution={handleClickOnContribution}
-                />
-              )}
-            </CalloutContributionsBlock>
-          )}
-
-          {/* Collaborate with Posts */}
-          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
-            <CalloutContributionsBlock
-              callout={callout}
-              contributionType={CalloutContributionType.Post}
-              createContributionButtonComponent={CreateContributionButtonPost}
-              calloutRestrictions={calloutRestrictions}
-              onCalloutContributionsUpdate={onCalloutUpdate}
-            >
-              {/* If there is a contributionId show the scroller */}
-              {contributionId && (
-                <CalloutContributionsHorizontalPager
-                  callout={callout}
-                  contributionType={CalloutContributionType.Post}
-                  contributionSelectedId={contributionId}
-                  cardComponent={PostCard}
-                  onClickOnContribution={handleClickOnContribution}
-                />
-              )}
-              {contributionId && (
-                /* Selected Contribution */
-                <CalloutContributionPreview
-                  ref={contributionPreviewRef}
-                  callout={callout}
-                  contributionId={contributionId}
-                  previewComponent={CalloutContributionPreviewPost}
-                  dialogComponent={CalloutContributionDialogPost}
-                  calloutRestrictions={calloutRestrictions}
-                  onCalloutUpdate={onCalloutUpdate}
-                />
-              )}
-              {/* else show the expandable container with the cards */}
-              {!contributionId && (
-                <ContributionsCardsExpandable
-                  callout={callout}
-                  contributionType={CalloutContributionType.Post}
-                  expanded={expanded}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
-                  onCalloutUpdate={onCalloutUpdate}
-                  contributionCardComponent={PostCard}
-                  onClickOnContribution={handleClickOnContribution}
-                />
-              )}
-            </CalloutContributionsBlock>
-          )}
-
-          {/* Collaborate with Memos */}
-          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo) && (
-            <CalloutContributionsBlock
-              callout={callout}
-              contributionType={CalloutContributionType.Memo}
-              createContributionButtonComponent={CreateContributionButtonMemo}
-              calloutRestrictions={calloutRestrictions}
-              onCalloutContributionsUpdate={onCalloutUpdate}
-            >
-              {/* If there is a contributionId show the scroller */}
-              {contributionId && (
-                <CalloutContributionsHorizontalPager
-                  callout={callout}
-                  contributionType={CalloutContributionType.Memo}
-                  contributionSelectedId={contributionId}
-                  cardComponent={MemoCard}
-                  onClickOnContribution={handleClickOnContribution}
-                />
-              )}
-              {contributionId && (
-                /* Selected Contribution */
-                <CalloutContributionPreview
-                  key={contributionId}
-                  ref={contributionPreviewRef}
-                  callout={callout}
-                  contributionId={contributionId}
-                  previewComponent={CalloutContributionPreviewMemo}
-                  dialogComponent={CalloutContributionDialogMemo}
-                  openContributionDialogOnLoad={true}
-                  calloutRestrictions={calloutRestrictions}
-                  onCalloutUpdate={onCalloutUpdate}
-                />
-              )}
-              {/* else show the expandable container with the cards */}
-              {!contributionId && (
-                <ContributionsCardsExpandable
-                  callout={callout}
-                  contributionType={CalloutContributionType.Memo}
-                  expanded={expanded}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
-                  onCalloutUpdate={onCalloutUpdate}
-                  contributionCardComponent={MemoCard}
-                  onClickOnContribution={handleClickOnContribution}
-                />
-              )}
-            </CalloutContributionsBlock>
-          )}
-
-          {/* Comments: contribution comments for Posts, callout comments when no contribution, hidden for non-Post contributions and during loading */}
-          {!isContributionCommentsLoading && (showContributionComments || (!contributionId && callout.comments)) && (
-            <Gutters disableVerticalPadding={true} disableGap={true}>
-              <CommentsComponent
-                {...(showContributionComments ? contributionComments : calloutComments)}
-                loading={loading || (showContributionComments ? contributionComments.loading : calloutComments.loading)}
-                collapsed={commentsCollapsed}
-                onToggleCollapse={toggleCommentsCollapse}
-                isMember={myMembershipStatus === CommunityMembershipStatus.Member}
+        {/* Collaborate with Whiteboards */}
+        {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
+          <CalloutContributionsBlock
+            callout={callout}
+            contributionType={CalloutContributionType.Whiteboard}
+            createContributionButtonComponent={CreateContributionButtonWhiteboard}
+            calloutRestrictions={calloutRestrictions}
+            onCalloutContributionsUpdate={onCalloutUpdate}
+          >
+            {/* If there is a contributionId show the scroller */}
+            {contributionId && (
+              <CalloutContributionsHorizontalPager
+                callout={callout}
+                loading={loading}
+                contributionType={CalloutContributionType.Whiteboard}
+                contributionSelectedId={contributionId}
+                cardComponent={WhiteboardCard}
+                onClickOnContribution={handleClickOnContribution}
               />
-            </Gutters>
-          )}
-        </CalloutViewLayout>
-      )}
-    </CalloutSettingsContainer>
+            )}
+            {contributionId && (
+              /* Selected Contribution */
+              <CalloutContributionPreview
+                key={contributionId}
+                ref={contributionPreviewRef}
+                callout={callout}
+                contributionId={contributionId}
+                previewComponent={CalloutContributionPreviewWhiteboard}
+                dialogComponent={CalloutContributionDialogWhiteboard}
+                openContributionDialogOnLoad={true}
+                calloutRestrictions={calloutRestrictions}
+                onCalloutUpdate={onCalloutUpdate}
+              />
+            )}
+            {/* else show the expandable container with the cards */}
+            {!contributionId && (
+              <ContributionsCardsExpandable
+                callout={callout}
+                loading={loading}
+                contributionType={CalloutContributionType.Whiteboard}
+                expanded={expanded}
+                onExpand={onExpand}
+                onCollapse={onCollapse}
+                onCalloutUpdate={onCalloutUpdate}
+                contributionCardComponent={WhiteboardCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+          </CalloutContributionsBlock>
+        )}
+
+        {/* Collaborate with Posts */}
+        {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
+          <CalloutContributionsBlock
+            callout={callout}
+            contributionType={CalloutContributionType.Post}
+            createContributionButtonComponent={CreateContributionButtonPost}
+            calloutRestrictions={calloutRestrictions}
+            onCalloutContributionsUpdate={onCalloutUpdate}
+          >
+            {/* If there is a contributionId show the scroller */}
+            {contributionId && (
+              <CalloutContributionsHorizontalPager
+                callout={callout}
+                contributionType={CalloutContributionType.Post}
+                contributionSelectedId={contributionId}
+                cardComponent={PostCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+            {contributionId && (
+              /* Selected Contribution */
+              <CalloutContributionPreview
+                ref={contributionPreviewRef}
+                callout={callout}
+                contributionId={contributionId}
+                previewComponent={CalloutContributionPreviewPost}
+                dialogComponent={CalloutContributionDialogPost}
+                calloutRestrictions={calloutRestrictions}
+                onCalloutUpdate={onCalloutUpdate}
+              />
+            )}
+            {/* else show the expandable container with the cards */}
+            {!contributionId && (
+              <ContributionsCardsExpandable
+                callout={callout}
+                contributionType={CalloutContributionType.Post}
+                expanded={expanded}
+                onExpand={onExpand}
+                onCollapse={onCollapse}
+                onCalloutUpdate={onCalloutUpdate}
+                contributionCardComponent={PostCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+          </CalloutContributionsBlock>
+        )}
+
+        {/* Collaborate with Memos */}
+        {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo) && (
+          <CalloutContributionsBlock
+            callout={callout}
+            contributionType={CalloutContributionType.Memo}
+            createContributionButtonComponent={CreateContributionButtonMemo}
+            calloutRestrictions={calloutRestrictions}
+            onCalloutContributionsUpdate={onCalloutUpdate}
+          >
+            {/* If there is a contributionId show the scroller */}
+            {contributionId && (
+              <CalloutContributionsHorizontalPager
+                callout={callout}
+                contributionType={CalloutContributionType.Memo}
+                contributionSelectedId={contributionId}
+                cardComponent={MemoCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+            {contributionId && (
+              /* Selected Contribution */
+              <CalloutContributionPreview
+                key={contributionId}
+                ref={contributionPreviewRef}
+                callout={callout}
+                contributionId={contributionId}
+                previewComponent={CalloutContributionPreviewMemo}
+                dialogComponent={CalloutContributionDialogMemo}
+                openContributionDialogOnLoad={true}
+                calloutRestrictions={calloutRestrictions}
+                onCalloutUpdate={onCalloutUpdate}
+              />
+            )}
+            {/* else show the expandable container with the cards */}
+            {!contributionId && (
+              <ContributionsCardsExpandable
+                callout={callout}
+                contributionType={CalloutContributionType.Memo}
+                expanded={expanded}
+                onExpand={onExpand}
+                onCollapse={onCollapse}
+                onCalloutUpdate={onCalloutUpdate}
+                contributionCardComponent={MemoCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+          </CalloutContributionsBlock>
+        )}
+
+        {/* Comments: contribution comments for Posts, callout comments when no contribution, hidden for non-Post contributions and during loading */}
+        {!isContributionCommentsLoading && (showContributionComments || (!contributionId && callout.comments)) && (
+          <Gutters disableVerticalPadding={true} disableGap={true}>
+            <CommentsComponent
+              {...(showContributionComments ? contributionComments : calloutComments)}
+              loading={loading || (showContributionComments ? contributionComments.loading : calloutComments.loading)}
+              collapsed={commentsCollapsed}
+              onToggleCollapse={toggleCommentsCollapse}
+              isMember={myMembershipStatus === CommunityMembershipStatus.Member}
+            />
+          </Gutters>
+        )}
+      </CalloutViewLayout>
+    </>
   );
 };
 

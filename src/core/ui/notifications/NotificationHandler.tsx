@@ -1,6 +1,5 @@
 import { Alert } from '@mui/material';
-import { useSelector } from '@xstate/react';
-import { CLEAR_NOTIFICATION, type Notification } from '@/core/state/global/notifications/notificationMachine';
+import { CLEAR_NOTIFICATION, type Notification } from '@/core/state/global/notifications/useNotifications';
 import { useGlobalState } from '@/core/state/useGlobalState';
 import { getNotificationAutoHideDuration } from './constants';
 import { ErrorNotificationContent } from './ErrorNotificationContent';
@@ -16,12 +15,10 @@ const NotificationContent = ({ notification }: { notification: Notification }) =
 };
 
 export const NotificationHandler = () => {
-  const { notificationsService } = useGlobalState();
-
-  const notifications = useSelector(notificationsService, state => state.context.notifications);
+  const { notifications, notificationsDispatch } = useGlobalState();
 
   const closeMessage = (id: string): void => {
-    notificationsService.send({ type: CLEAR_NOTIFICATION, payload: { id } });
+    notificationsDispatch({ type: CLEAR_NOTIFICATION, payload: { id } });
   };
 
   return (

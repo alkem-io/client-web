@@ -2726,7 +2726,8 @@
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "License updated successfully",
-            "deletedSuccessfully": "{{entity}} deleted successfully"
+            "deletedSuccessfully": "{{entity}} deleted successfully",
+            "deleteFailed": "Failed to delete {{entity}}"
           },
           "settings": {
             "description": "Here you can edit the visibility $t(common.settings) of your {{entity}}."
@@ -3402,7 +3403,13 @@
       },
       "updates": {
         "title": "Updates from the $t(common.leads) ({{count}})",
-        "no-data": "No updates available"
+        "no-data": "No updates available",
+        "copy": {
+          "noContent": "No content to copy",
+          "success": "Post copied to clipboard",
+          "failed": "Failed to copy content",
+          "unsupported": "Clipboard not supported"
+        }
       }
     },
     "whiteboard": {

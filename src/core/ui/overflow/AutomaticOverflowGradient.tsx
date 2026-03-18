@@ -1,6 +1,6 @@
 import { Box, type BoxProps } from '@mui/material';
 import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { gutters } from '../grid/utils';
 import { type BackgroundColor, overflowBorderGradient } from './utils';
 
@@ -23,7 +23,7 @@ const AutomaticOverflowGradient = ({
   ...props
 }: AutomaticOverflowGradientProps) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
-  const { ref: internalRef, height } = useResizeDetector();
+  const { ref: internalRef, height } = useResizeObserver();
   const outerRef = useRef<HTMLElement>(null);
   const prevOverflowingRef = useRef<boolean | null>(null);
   useLayoutEffect(() => {

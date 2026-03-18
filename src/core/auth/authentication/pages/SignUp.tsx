@@ -1,6 +1,6 @@
 import { Box, Card } from '@mui/material';
 import type { UiContainer, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
-import { produce } from 'immer';
+
 import { sortBy } from 'lodash-es';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -63,10 +63,12 @@ const SignUp = () => {
   // Sign Up flow is a flow reduced to just showing Accept Terms checkbox, Email and a selection of Sign Up options.
   const signUpFlow =
     flow &&
-    produce(flow, nextFlow => {
+    (() => {
+      const clone = structuredClone(flow);
       // sort the nodes alphabetically by name so `Accept terms` goes above `Email` field - not ideal but should do
-      nextFlow.ui.nodes = sortBy(getMinimalSocialLoginNodes(nextFlow.ui), ['attributes.name']);
-    });
+      clone.ui.nodes = sortBy(getMinimalSocialLoginNodes(clone.ui), ['attributes.name']);
+      return clone;
+    })();
 
   useEffect(() => {
     if (!signUpFlow) {

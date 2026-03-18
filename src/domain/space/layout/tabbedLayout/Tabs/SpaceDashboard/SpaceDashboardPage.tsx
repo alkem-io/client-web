@@ -7,7 +7,7 @@ import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import ApplicationButton from '@/domain/community/applicationButton/ApplicationButton';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
@@ -72,33 +72,26 @@ const SpaceDashboardPage = () => {
     about: spaceData?.about,
   };
 
+  const { applicationButtonProps, loading: applicationButtonLoading } = useApplicationButton({ spaceId });
+
   const updatesUrl = buildUpdatesUrl(spaceData?.about.profile.url ?? '');
   const communityId = spaceData?.about.membership.communityID;
 
   return (
     <>
-      {!loading && (
-        <ApplicationButtonContainer spaceId={spaceId}>
-          {(applicationButtonProps, loading) => {
-            if (loading || applicationButtonProps.isMember) {
-              return null;
-            }
-            return (
-              <PageContent gridContainerProps={{ paddingBottom: 0 }} sx={{ flexGrow: 0 }}>
-                <PageContentColumn columns={12}>
-                  <ApplicationButton
-                    {...applicationButtonProps}
-                    loading={loading}
-                    component={FullWidthButton}
-                    extended={!isSmallScreen}
-                    spaceId={spaceId}
-                    spaceLevel={spaceLevel}
-                  />
-                </PageContentColumn>
-              </PageContent>
-            );
-          }}
-        </ApplicationButtonContainer>
+      {!loading && !applicationButtonProps.isMember && (
+        <PageContent gridContainerProps={{ paddingBottom: 0 }} sx={{ flexGrow: 0 }}>
+          <PageContentColumn columns={12}>
+            <ApplicationButton
+              {...applicationButtonProps}
+              loading={applicationButtonLoading}
+              component={FullWidthButton}
+              extended={!isSmallScreen}
+              spaceId={spaceId}
+              spaceLevel={spaceLevel}
+            />
+          </PageContentColumn>
+        </PageContent>
       )}
 
       <SpaceDashboardView

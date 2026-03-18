@@ -1,7 +1,7 @@
 import { Box, type BoxProps, type SvgIconProps, type TypographyProps } from '@mui/material';
 import type { BoxTypeMap } from '@mui/system';
 import { type PropsWithChildren, type ReactElement, type ReactNode, useEffect, useRef, useState } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
 import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
@@ -34,7 +34,7 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
 }: PropsWithChildren<PageContentBlockHeaderProps> & Omit<BoxProps<D, P>, 'title'>) => {
   const nextBlock = useNextBlockAnchor();
 
-  const { ref: actionsContainerRef, width } = useResizeDetector();
+  const { ref: actionsContainerRef, width } = useResizeObserver();
   const actionsRef = useRef<HTMLDivElement>(null);
 
   const [actionsCollapsed, setActionsCollapsed] = useState(false);

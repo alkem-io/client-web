@@ -9,7 +9,7 @@ import {
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, Divider, MenuList, Typography } from '@mui/material';
+import { Box, Divider, Menu, MenuItem, MenuList, Typography } from '@mui/material';
 import FocusTrap from '@mui/material/Unstable_TrapFocus';
 import { type PropsWithChildren, type ReactNode, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import Avatar from '@/core/ui/avatar/Avatar';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import LanguageSelect from '@/core/ui/language/LanguageSelect';
+import useLanguageSelect from '@/core/ui/language/useLanguageSelect';
 import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import { BlockTitle, Caption } from '@/core/ui/typography';
@@ -72,6 +72,23 @@ const PlatformNavigationUserMenu = ({
   const isAdmin = userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
+
+  const {
+    openSelect,
+    isOpen: isLanguageMenuOpen,
+    menuProps: languageMenuProps,
+    languages,
+  } = useLanguageSelect({
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+    transformOrigin: {
+      vertical: 'top',
+      horizontal: 'left',
+    },
+    zIndex: PLATFORM_NAVIGATION_MENU_Z_INDEX + 1,
+  });
 
   // the roles should follow the order
   const getRole = (): string | null => {
@@ -165,30 +182,16 @@ const PlatformNavigationUserMenu = ({
                 {t('common.administration')}
               </NavigatableMenuItem>
             )}
-            <LanguageSelect
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
+            <NavigatableMenuItem
+              id="language-button"
+              iconComponent={LanguageOutlined}
+              onClick={event => openSelect(event.currentTarget as HTMLElement)}
+              aria-controls={isLanguageMenuOpen ? 'language-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={isLanguageMenuOpen ? 'true' : undefined}
             >
-              {({ openSelect, isOpen }) => (
-                <NavigatableMenuItem
-                  id="language-button"
-                  iconComponent={LanguageOutlined}
-                  onClick={event => openSelect(event.currentTarget as HTMLElement)}
-                  aria-controls={isOpen ? 'language-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={isOpen ? 'true' : undefined}
-                >
-                  {t('buttons.changeLanguage')}
-                </NavigatableMenuItem>
-              )}
-            </LanguageSelect>
+              {t('buttons.changeLanguage')}
+            </NavigatableMenuItem>
             <NavigatableMenuItem
               iconComponent={HelpOutlineIcon}
               onClick={() => {
@@ -218,6 +221,13 @@ const PlatformNavigationUserMenu = ({
       <Suspense fallback={null}>
         <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       </Suspense>
+      <Menu {...languageMenuProps}>
+        {languages.map(lng => (
+          <MenuItem key={lng.key} selected={lng.selected} onClick={lng.onClick}>
+            <Caption lang={lng.lang}>{lng.label}</Caption>
+          </MenuItem>
+        ))}
+      </Menu>
     </>
   );
 };
