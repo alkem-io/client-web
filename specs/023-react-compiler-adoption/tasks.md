@@ -1,0 +1,274 @@
+# Tasks: React Compiler Adoption — Remove Manual Memoization
+
+**Input**: Design documents from `/specs/023-react-compiler-adoption/`
+**Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/
+
+**Tests**: No test tasks generated — the existing test suite (19 files, 247+ tests) serves as the regression gate. Each batch validates with `pnpm vitest run`.
+
+**Organization**: Tasks grouped by user story. US1 and US5 (both P1) are foundational — must complete before removal begins. US3 domain removal tasks are individually parallelizable.
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: Can run in parallel (different files, no dependencies)
+- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
+- Include exact file paths in descriptions
+
+---
+
+## Phase 1: Setup (Shared Infrastructure)
+
+**Purpose**: Establish migration baseline and tooling
+
+- [ ] T001 Run `npx react-compiler-healthcheck` and record compiler coverage baseline in specs/023-react-compiler-adoption/
+- [ ] T002 Generate full memoization inventory: run grep counts for useMemo, useCallback, and React.memo across src/core/, src/domain/, src/main/, and src/dev/ — record in specs/023-react-compiler-adoption/
+
+---
+
+## Phase 2: Foundational (US1 Bail-Out Resolution + US5 Performance Baseline)
+
+**Purpose**: Fix compiler bail-outs and capture performance baseline. MUST complete before ANY memoization removal.
+
+**CRITICAL**: No removal work (Phases 3-4) can begin until this phase is complete.
+
+### US5: Performance Baseline
+
+- [ ] T003 [US5] Capture baseline Lighthouse benchmarks by running `pnpm benchmark --build-name "pre-migration-baseline"` against localhost:3000 (minimum 3 runs)
+- [ ] T004 [US5] Capture baseline bundle size by running `pnpm build` and recording total JS/CSS asset sizes, then `pnpm analyze` for detailed breakdown
+- [ ] T005 [US5] Record baseline metrics summary (Lighthouse scores, bundle size, FCP, LCP, TTI, TBT) in specs/023-react-compiler-adoption/ for future comparison
+
+### US1: Compiler Bail-Out Resolution
+
+- [ ] T006 [P] [US1] Fix SearchBar.tsx: replace `window.location.href = ...` with `navigate()` (already imported) in src/main/ui/layout/topBar/SearchBar.tsx and remove the eslint-disable react-compiler comment
+- [ ] T007 [P] [US1] Fix useGuestSessionReturn.ts: refactor `globalThis.location.href` assignment to proper navigation pattern in src/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn.ts and remove the eslint-disable react-compiler comment
+- [ ] T008 [P] [US1] Verify useKeepElementScroll.ts: check if the compiler actually bails out (DOM mutation is already inside useEffect) in src/domain/shared/utils/scroll/useKeepElementScroll.ts — if false positive, remove the eslint-disable comment; if real, fix the pattern
+- [ ] T009 [P] [US1] Fix CollaborativeExcalidrawWrapper.tsx: move `combinedCollabApiRef.current = collabApi` ref assignment to useEffect in src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx and remove the eslint-disable react-compiler comment
+- [ ] T010 [US1] Assess InnovationFlowDragNDropEditor.tsx: evaluate if @hello-pangea/dnd render props content can be extracted into separate components in src/domain/collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor.tsx — if not feasible, document as permanent exception alongside the existing `'use no memo'` directive
+- [ ] T011 [P] [US1] Document GlobalErrorContext.tsx as permanent exception: update eslint-disable comment with detailed reason in src/core/lazyLoading/GlobalErrorContext.tsx (singleton module-level mutation during render — intentional pattern)
+- [ ] T012 [P] [US1] Document class error boundaries as permanent compiler exceptions: add comments to Error40XBoundaryInternal and LinesFitterErrorBoundary explaining React requires class components for error boundaries
+- [ ] T013 [P] [US1] Verify Kratos passkey components: confirm `new Function()` call sites in KratosPasskeyIconButton and KratosPasskeyButton are isolated leaf components that don't affect compiler optimization of surrounding code
+- [ ] T014 [US1] Audit .push() call sites for render-time mutations: scan all 124 .push() occurrences across 67 files, identify any that execute during render (not in callbacks/effects/utilities), and refactor those to immutable patterns (spread, map, filter)
+- [ ] T015 [US1] Validate bail-out fixes: run `pnpm eslint --no-error-on-unmatched-pattern "src/**/*.tsx" "src/**/*.ts"` and confirm zero compiler errors excluding documented permanent exceptions
+- [ ] T015a [US1] Run `npx react-compiler-healthcheck` and compare against T001 baseline to confirm compiler coverage increased or remained stable after bail-out fixes
+- [ ] T016 [US1] [US5] Run `pnpm vitest run` and `pnpm benchmark --build-name "post-bailout-fixes"` then `pnpm benchmark:compare pre-migration-baseline post-bailout-fixes` to validate no regressions from bail-out fixes
+- [ ] T016a [US5] Human review gate: review the benchmark:compare report from T016, spot-check 2-3 complex components (SearchBar, InnovationFlowDragNDropEditor, CollaborativeExcalidrawWrapper) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
+
+**Checkpoint**: All fixable bail-outs resolved. Permanent exceptions documented. Performance baseline captured. Ready for memoization removal.
+
+---
+
+## Phase 3: User Story 2 — Core/Shared Layer Memoization Removal (Priority: P2)
+
+**Goal**: Remove ~119 useMemo (96 core + 23 shared) + ~96 useCallback (67 core + 29 shared) from src/core/ and src/domain/shared/, plus 2 React.memo wrappers.
+
+**Independent Test**: Run `pnpm vitest run` + `pnpm eslint` after each batch. Compare `pnpm benchmark` against baseline.
+
+### Batch 3a: Shared Hooks and Utilities
+
+- [ ] T017 [US2] Remove all useMemo and useCallback from src/domain/shared/ — unwrap to plain expressions/functions, clean unused React imports, delete orphaned eslint-disable comments
+- [ ] T018 [US2] Validate batch 3a: run `pnpm vitest run` + `pnpm eslint` and confirm zero failures and zero new compiler bail-outs
+
+### Batch 3b: Core UI Components
+
+- [ ] T019 [P] [US2] Remove React.memo wrapper from src/core/ui/forms/MarkdownInput/MarkdownInput.tsx (line 45) — convert `memo<MarkdownInputProps>(...)` to plain component export, clean unused memo import
+- [ ] T020 [P] [US2] Remove React.memo wrapper from src/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput.tsx (line 30) — convert `memo<MarkdownInputProps>(...)` to plain component export, clean unused memo import
+- [ ] T021 [US2] Remove all useMemo and useCallback from src/core/ui/ — unwrap to plain expressions/functions, clean unused React imports, delete orphaned eslint-disable comments
+- [ ] T022 [US2] Validate batch 3b: run `pnpm vitest run` + `pnpm eslint` and confirm zero failures
+
+### Batch 3c: Core Infrastructure and Providers
+
+- [ ] T023 [US2] Remove all useMemo and useCallback from src/core/ (excluding src/core/ui/ already done) — covers apollo/, auth/, routing/, state/, analytics/, i18n/, and other core subdirectories
+- [ ] T024 [US2] Validate batch 3c: run `pnpm vitest run` + `pnpm build` + `pnpm eslint` — this batch is higher risk since it's foundational code used everywhere
+
+### Phase 3 Performance Gate
+
+- [ ] T025 [US2] [US5] Run `pnpm benchmark --build-name "post-phase3-core"` then `pnpm benchmark:compare pre-migration-baseline post-phase3-core` — any measurable Lighthouse score decrease blocks further work
+- [ ] T025a [US5] Human review gate: review the benchmark:compare report from T025, spot-check 2-3 complex components (SpaceDashboard, MarkdownInput, Whiteboard) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
+
+**Checkpoint**: Core/shared layer is clean. All 119 useMemo + 96 useCallback + 2 React.memo removed from core/shared. Tests pass. Performance validated.
+
+---
+
+## Phase 4: User Story 3 — Domain Component Memoization Removal (Priority: P3)
+
+**Goal**: Remove ~443 useMemo + ~202 useCallback across 17 domain subdirectories (shared already done) plus src/main/ and src/dev/.
+
+**Independent Test**: Run `pnpm vitest run` + `pnpm eslint` after each domain. Final `pnpm benchmark:compare` after all domains complete.
+
+**Execution**: Each domain task is independently executable. Tasks marked [P] can run in parallel on separate branches/worktrees. After each domain: validate with `pnpm vitest run` + `pnpm eslint`.
+
+### Low-Risk Domains (small, isolated)
+
+- [ ] T026 [P] [US3] Remove all useMemo/useCallback from src/domain/timeline/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T027 [P] [US3] Remove all useMemo/useCallback from src/domain/license/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T028 [P] [US3] Remove all useMemo/useCallback from src/domain/storage/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T029 [P] [US3] Remove all useMemo/useCallback from src/domain/access/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T030 [P] [US3] Remove all useMemo/useCallback from src/domain/InnovationPack/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+
+### Medium-Risk Domains
+
+- [ ] T031 [P] [US3] Remove all useMemo/useCallback from src/domain/account/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T032 [P] [US3] Remove all useMemo/useCallback from src/domain/communication/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T033 [P] [US3] Remove all useMemo/useCallback from src/domain/community/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T034 [P] [US3] Remove all useMemo/useCallback from src/domain/templates/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T035 [P] [US3] Remove all useMemo/useCallback from src/domain/templates-manager/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T036 [P] [US3] Remove all useMemo/useCallback from src/domain/innovationHub/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T037 [P] [US3] Remove all useMemo/useCallback from src/domain/platform/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T038 [P] [US3] Remove all useMemo/useCallback from src/domain/platformAdmin/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T039 [P] [US3] Remove all useMemo/useCallback from src/domain/spaceAdmin/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+
+### High-Risk Domains (largest, most complex)
+
+- [ ] T040 [P] [US3] Remove all useMemo/useCallback from src/domain/common/ — unwrap to plain expressions/functions, clean imports. NOTE: includes whiteboard components — verify CollaborativeExcalidrawWrapper.tsx exception is preserved. Validate with `pnpm vitest run`
+- [ ] T041 [P] [US3] Remove all useMemo/useCallback from src/domain/space/ — largest domain, unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T042 [P] [US3] Remove all useMemo/useCallback from src/domain/collaboration/ — unwrap to plain expressions/functions, clean imports. NOTE: preserve eslint-disable in InnovationFlowDragNDropEditor.tsx (permanent exception). Validate with `pnpm vitest run`
+
+### App Layer (src/main/ and src/dev/)
+
+- [ ] T043 [P] [US3] Remove all useMemo/useCallback from src/main/ (~64 useMemo, ~53 useCallback) — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [ ] T044 [P] [US3] Remove useMemo from src/dev/ (2 occurrences) — unwrap to plain expressions, clean imports
+
+### Phase 4 Validation
+
+- [ ] T045 [US3] Full codebase validation: run `pnpm vitest run` + `pnpm eslint` + `pnpm build` + `pnpm tsc --noEmit` to confirm everything compiles and passes
+- [ ] T046 [US3] Verify zero remaining useMemo/useCallback/React.memo: grep entire src/ for `useMemo\(`, `useCallback\(`, `memo\(` — only documented exceptions should remain
+- [ ] T047 [US3] [US5] Run `pnpm benchmark --build-name "post-phase4-domains"` then `pnpm benchmark:compare pre-migration-baseline post-phase4-domains` — any measurable Lighthouse score decrease triggers investigation
+- [ ] T047a [US5] Human review gate: review the benchmark:compare report from T047, spot-check complex components (SpaceDashboard, Whiteboard, SearchBar, InnovationFlow) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
+
+**Checkpoint**: All domain components migrated. Zero useMemo/useCallback/React.memo outside exceptions. Tests pass. Performance validated.
+
+---
+
+## Phase 5: User Story 4 — Lint Rules & Prevention (Priority: P4)
+
+**Goal**: Add lint rules to prevent reintroduction. Transition warn → error once validated.
+
+**Independent Test**: Attempt to add useMemo/useCallback/React.memo in any file and confirm the linter flags it.
+
+### Implementation
+
+- [ ] T048 [US4] Add `no-restricted-syntax` rules to eslint.config.mjs with AST selectors for useMemo, useCallback, and React.memo — set to `warn` level initially (see research.md R6 for exact config)
+- [ ] T049 [US4] Validate lint rules: create a temporary test file with useMemo/useCallback/React.memo, run `pnpm eslint`, confirm all three trigger warnings, then delete the test file
+- [ ] T050 [US4] Transition lint rules from `warn` to `error` in eslint.config.mjs — migration is complete, strict enforcement begins
+- [ ] T051 [US4] Run `pnpm eslint` on full codebase to confirm zero errors (only documented exceptions with eslint-disable should exist)
+
+**Checkpoint**: Lint rules prevent reintroduction. Migration enforcement is active.
+
+---
+
+## Phase 6: Polish & Cross-Cutting Concerns
+
+**Purpose**: Final validation and documentation updates
+
+- [ ] T052 [P] Run final `pnpm benchmark --build-name "post-migration-final"` and generate full comparison report with `pnpm benchmark:compare pre-migration-baseline post-migration-final`
+- [ ] T053 [P] Run final `pnpm analyze` and compare bundle size against baseline from T004 — document the delta in specs/023-react-compiler-adoption/
+- [ ] T054 [P] Run `pnpm benchmark:memory` to check for memory leak regressions post-migration
+- [ ] T055 Update CLAUDE.md to document the no-memoization policy: add guidance that useMemo/useCallback/React.memo are prohibited, compiler handles optimization, and exceptions require eslint-disable with reason
+- [ ] T056 Verify Biome's `useExhaustiveDependencies: 'off'` in biome.json is documented as intentional (compiler handles dependency tracking)
+- [ ] T057 Run quickstart.md validation: follow the quickstart steps end-to-end to confirm documentation accuracy
+- [ ] T058 [US5] Post-deployment monitoring: after each phase ships to production, review Sentry transaction traces and Elastic APM RUM data for 1 week to confirm no real-user performance regressions — document findings in specs/023-react-compiler-adoption/
+
+---
+
+## Dependencies & Execution Order
+
+### Phase Dependencies
+
+- **Setup (Phase 1)**: No dependencies — can start immediately
+- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS all removal work
+- **US2 Core/Shared (Phase 3)**: Depends on Phase 2 completion (bail-outs fixed, baseline captured)
+- **US3 Domain (Phase 4)**: Depends on Phase 3 completion (core layer clean first)
+- **US4 Lint Rules (Phase 5)**: Depends on Phase 4 completion (all domains migrated before enforcing)
+- **Polish (Phase 6)**: Depends on Phase 5 completion
+
+### User Story Dependencies
+
+- **US1 (P1) Bail-Out Resolution**: Can start after Setup — no dependencies on other stories
+- **US5 (P1) Performance Baseline**: Can start after Setup — parallel with US1
+- **US2 (P2) Core/Shared Removal**: Depends on US1 + US5 (bail-outs fixed, baseline captured)
+- **US3 (P3) Domain Removal**: Depends on US2 (core layer must be clean first)
+- **US4 (P4) Lint Rules**: Depends on US3 (all domains must be migrated before enforcing)
+
+### Within Each User Story
+
+- Bail-out fixes (US1): fix in confidence order (low risk first)
+- Core removal (US2): shared → core UI → core infrastructure (risk order)
+- Domain removal (US3): low-risk → medium-risk → high-risk domains
+- Performance validation after each phase gate
+
+### Parallel Opportunities
+
+- **Phase 2**: T006, T007, T008, T009, T011, T012, T013 can all run in parallel (different files)
+- **Phase 3**: T019 and T020 (React.memo removals) can run in parallel
+- **Phase 4**: ALL domain tasks (T026-T044) can run in parallel — they touch different directories with no cross-dependencies. This is the biggest parallel opportunity (19 independent tasks)
+- **Phase 5**: T048-T051 are sequential (each depends on the previous)
+- **Phase 6**: T052, T053, T054 can run in parallel
+
+---
+
+## Parallel Example: Phase 4 Domain Removal
+
+```bash
+# Launch all low-risk domains in parallel:
+Task: "T026 Remove useMemo/useCallback from src/domain/timeline/"
+Task: "T027 Remove useMemo/useCallback from src/domain/license/"
+Task: "T028 Remove useMemo/useCallback from src/domain/storage/"
+Task: "T029 Remove useMemo/useCallback from src/domain/access/"
+Task: "T030 Remove useMemo/useCallback from src/domain/InnovationPack/"
+
+# Then all medium-risk domains in parallel:
+Task: "T031 Remove useMemo/useCallback from src/domain/account/"
+Task: "T032 Remove useMemo/useCallback from src/domain/communication/"
+... (T033-T039)
+
+# Then high-risk domains in parallel:
+Task: "T040 Remove useMemo/useCallback from src/domain/common/"
+Task: "T041 Remove useMemo/useCallback from src/domain/space/"
+Task: "T042 Remove useMemo/useCallback from src/domain/collaboration/"
+
+# Then app layer in parallel:
+Task: "T043 Remove useMemo/useCallback from src/main/"
+Task: "T044 Remove useMemo from src/dev/"
+```
+
+---
+
+## Implementation Strategy
+
+### MVP First (US1 + US5 Only — Phase 2)
+
+1. Complete Phase 1: Setup (baseline counts, healthcheck)
+2. Complete Phase 2: Fix bail-outs + capture performance baseline
+3. **STOP and VALIDATE**: Compiler covers entire codebase. Baseline recorded.
+4. This alone provides value: cleaner compiler coverage, documented exceptions
+
+### Incremental Delivery
+
+1. Setup + Foundational → Bail-outs fixed, baseline captured
+2. Add US2 (Core/Shared) → Test + benchmark → Performance gate
+3. Add US3 (Domains) → One domain at a time → Performance gate after all
+4. Add US4 (Lint Rules) → Enforcement active
+5. Each phase adds value. Can pause between any phase without losing progress.
+
+### Parallel Team Strategy
+
+With multiple developers or Claude Code instances:
+
+1. Team completes Setup + Foundational together
+2. Once Phase 2 complete:
+   - Sequential: Core/Shared (Phase 3) must finish before Domain (Phase 4)
+3. Once Phase 3 complete:
+   - **Maximum parallelism**: All 19 domain tasks (T026-T044) can run simultaneously in separate worktrees
+   - Each domain is an independent atomic transformation + validation
+4. Once all domains complete: Lint rules (Phase 5) + Polish (Phase 6)
+
+---
+
+## Notes
+
+- [P] tasks = different files/directories, no dependencies
+- [Story] label maps task to specific user story for traceability
+- Every removal task follows the same pattern: unwrap useMemo/useCallback → plain expression/function, remove React.memo → plain export, clean unused imports, delete orphaned eslint-disable comments
+- Preserve documented exceptions (GlobalErrorContext.tsx, InnovationFlowDragNDropEditor.tsx, class error boundaries)
+- Commit after each domain or logical batch
+- Performance gate is strict: any measurable Lighthouse decrease blocks progress (per clarification)
+- Stop at any checkpoint to validate independently
