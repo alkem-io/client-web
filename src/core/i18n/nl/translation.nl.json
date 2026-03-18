@@ -90,11 +90,11 @@
       }
     },
     "addToCalendar": {
-      "button": "Add to calendar",
-      "google": "Google Calendar",
+      "button": "Voeg toe aan agenda",
+      "google": "Google Agenda",
       "outlook": "Outlook",
-      "iCal": "Apple calendar & Other apps",
-      "exportAll": "Export all future events to calendar"
+      "iCal": "Apple agenda & andere apps",
+      "exportAll": "Alle toekomstige afspraken exporteren naar agenda"
     },
     "no-data": "Geen evenementen gevonden",
     "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
@@ -1315,7 +1315,7 @@
   },
   "components": {
     "subspacePinIndicator": {
-      "tooltip": "Pinned $t(common.subspace)"
+      "tooltip": "Vastgepinde $t(common.subspace)"
     },
     "calloutTemplateDialog": {
       "typeReadonly": "Zodra een $t(common.template) is gemaakt, kan het type niet worden gewijzigd. Als je een ander type nodig hebt, maak dan een nieuwe $t(common.template)."
@@ -2285,7 +2285,28 @@
       "startTyping": "Begin met typen om gebruikers te zoeken",
       "searchUsers": "Gebruikers zoeken...",
       "searchConversations": "Zoek...",
-      "createChat": "Chat aanmaken"
+      "createChat": "Chat aanmaken",
+      "startGroupChat": "Start group chat",
+      "groupChatName": "Group name",
+      "groupChatNameRequired": "Group name is required",
+      "selectMembers": "Add members",
+      "selectMembersHint": "Search and add members to the group",
+      "createGroupChat": "Start group convo",
+      "editProfilePicture": "Edit profile picture",
+      "addMembers": "Add members",
+      "groupMembers": "Members",
+      "remove": "Remove",
+      "manageGroup": "Manage group",
+      "leaveGroup": "Leave group",
+      "leaveGroupConfirmTitle": "Leave group chat?",
+      "leaveGroupConfirmMessage": "You will lose access to this group chat and won’t be able to read or send messages.",
+      "noMembersSelected": "Add at least one member",
+      "membersCount_one": "{{count}} member",
+      "membersCount_other": "{{count}} members",
+      "saveGroup": "Save Group",
+      "discardChangesTitle": "Unsaved changes",
+      "discardChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
+      "discardChanges": "Discard"
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Je $t(common.space) is klaar!",
@@ -2494,7 +2515,13 @@
           },
           "layout": {
             "description": "Hier kan je de opmaak aanpassen voor deze {{entity}}.",
-            "innovationFlowEditor": "$t(common.space) tabs"
+            "innovationFlowEditor": "$t(common.space) tabs",
+            "calloutDisplayMode": {
+              "title": "$t(common.Post) description display",
+              "expanded": "Expanded",
+              "collapsed": "Collapsed",
+              "description": "Collapse $t(common.post) descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+            }
           },
           "context": {
             "description": "Je kunt hier de context van deze {{entity}} aanpassen, dat is openbaar. Deze informatie is ook zichtbaar voor niet-$t(common.members)."
@@ -2603,7 +2630,8 @@
             "moreInfo": "Meer over Alkemio licenties kan <moreinfo>hier</moreinfo> gevonden worden.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "Licentie is met succes bijgewerkt",
-            "deletedSuccessfully": "{{entity}} succesvol verwijderd"
+            "deletedSuccessfully": "{{entity}} succesvol verwijderd",
+            "deleteFailed": "Failed to delete {{entity}}"
           },
           "settings": {
             "description": "Hier kun je de zichtbaarheidsinstellingen van je {{entity}} aanpassen."
@@ -2724,13 +2752,13 @@
               }
             },
             "reorderSubspaces": "$t(common.subspaces) bewerken",
-            "sortBy": "Sort By:",
+            "sortBy": "Sorteren op:",
             "sortMode": {
-              "alphabetical": "Alphabetical",
-              "custom": "Custom"
+              "alphabetical": "Alfabetisch",
+              "custom": "Aangepast"
             },
-            "pinSpace": "Pin Space",
-            "unpinSpace": "Unpin Space"
+            "pinSpace": "Space vastpinnen",
+            "unpinSpace": "Space ontpinnen"
           }
         },
         "authorization": {
@@ -3279,7 +3307,13 @@
       },
       "updates": {
         "title": "Updates van de $t(common.leads) ({{count}})",
-        "no-data": "Geen updates beschikbaar"
+        "no-data": "Geen updates beschikbaar",
+        "copy": {
+          "noContent": "No content to copy",
+          "success": "Post copied to clipboard",
+          "failed": "Failed to copy content",
+          "unsupported": "Clipboard not supported"
+        }
       }
     },
     "whiteboard": {
@@ -4344,8 +4378,8 @@
       "recurringMessage": "Sluit alle Alkemio tabbladen en laad opnieuw om bij te werken."
     },
     "onlineStatus": {
-      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
-      "restored": "Your connection has been restored."
+      "offline": "U bent momenteel offline. Bewaar alle lopende werkzaamheden lokaal omdat niet-opgeslagen gegevens mogelijk verloren gaan.",
+      "restored": "Uw verbinding is hersteld."
     }
   }
 }
