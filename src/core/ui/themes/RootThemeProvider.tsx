@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { theme } from './default/Theme';
 
 const RootThemeProvider = ({ children }: PropsWithChildren) => {

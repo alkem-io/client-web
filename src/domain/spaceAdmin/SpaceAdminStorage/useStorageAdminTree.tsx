@@ -1,26 +1,25 @@
-import { produce } from 'immer';
+import { FolderCopyOutlined } from '@mui/icons-material';
+import HistoryIcon from '@mui/icons-material/History';
+import ImageIcon from '@mui/icons-material/Image';
+import type { TFunction } from 'i18next';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSpaceStorageAdminPageLazyQuery,
   useStorageAggregatorLookupLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { TFunction } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import HistoryIcon from '@mui/icons-material/History';
 import {
-  DocumentDataFragment,
-  LoadableStorageAggregatorFragment,
+  type DocumentDataFragment,
+  type LoadableStorageAggregatorFragment,
   SpaceLevel,
-  StorageAggregatorFragment,
-  StorageBucketFragment,
+  type StorageAggregatorFragment,
+  type StorageBucketFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '@/domain/shared/icons/profileIcons';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { SpaceL2Icon } from '@/domain/space/icons/SpaceL2Icon';
-import { FolderCopyOutlined } from '@mui/icons-material';
-import { StorageAdminTreeItem } from './model/StorageAdminTreeItem';
+import type { StorageAdminTreeItem } from './model/StorageAdminTreeItem';
 
 export interface StorageAdminGridRow extends Omit<StorageAdminTreeItem, 'childItems'> {
   nestLevel: number;
@@ -44,7 +43,6 @@ export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) =>
       return SpaceL1Icon;
     case SpaceLevel.L2:
       return SpaceL2Icon;
-    case SpaceLevel.L0:
     default:
       return SpaceL0Icon;
   }
@@ -57,8 +55,8 @@ const newDocumentRow = (document: DocumentDataFragment): StorageAdminTreeItem =>
   size: document.size,
   uploadedBy: document.createdBy
     ? {
-        url: document.createdBy.profile.url,
-        displayName: document.createdBy.profile.displayName,
+        url: document.createdBy.profile?.url ?? '',
+        displayName: document.createdBy.profile?.displayName ?? '',
       }
     : undefined,
   uploadedAt: document.uploadedDate,
@@ -231,25 +229,25 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
         throw new Error('Cannot find storageAggregator');
       }
 
-      setTreeData(treeData =>
-        produce(treeData, next => {
-          addStorageAggregator(storageAggregator, next.root);
-        })
-      );
+      setTreeData(treeData => {
+        const next = structuredClone(treeData);
+        addStorageAggregator(storageAggregator, next.root);
+        return next;
+      });
     };
     fetchData();
   }, [spaceId]);
 
   // Just a helper to set row loading state
   const setBranchLoading = async (storageAggregatorId: string, loading: boolean) => {
-    setTreeData(treeData =>
-      produce(treeData, next => {
-        const branch = findBranch(next.root, storageAggregatorId);
-        if (branch) {
-          branch.loading = loading;
-        }
-      })
-    );
+    setTreeData(treeData => {
+      const next = structuredClone(treeData);
+      const branch = findBranch(next.root, storageAggregatorId);
+      if (branch) {
+        branch.loading = loading;
+      }
+      return next;
+    });
   };
 
   // Load a lazy-loadable branch
@@ -264,48 +262,46 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
         setBranchLoading(storageAggregatorId, false);
         throw new Error(`Cannot load storageAggregator ${storageAggregatorId}`);
       }
-      setTreeData(treeData =>
-        produce(treeData, next => {
-          // Put the children inside the branch
-          const branch = findBranch(next.root, storageAggregatorId);
-          if (branch) {
-            branch.collapsed = false;
-            branch.loading = false;
-            branch.loaded = true;
-            branch.childItems = branch.childItems ?? [];
-            addStorageAggregator(storageAggregator, branch.childItems);
-          }
-        })
-      );
+      setTreeData(treeData => {
+        const next = structuredClone(treeData);
+        const branch = findBranch(next.root, storageAggregatorId);
+        if (branch) {
+          branch.collapsed = false;
+          branch.loading = false;
+          branch.loaded = true;
+          branch.childItems = branch.childItems ?? [];
+          addStorageAggregator(storageAggregator, branch.childItems);
+        }
+        return next;
+      });
     }, 100);
   };
 
   // User clicks to Collapse or unCollapse branches:
   const openBranch = async (storageAggregatorId: string) => {
-    setTreeData(treeData =>
-      produce(treeData, next => {
-        const branch = findBranch(next.root, storageAggregatorId);
-        if (branch && branch.collapsible) {
-          if (branch.loaded) {
-            branch.collapsed = false;
-          } else {
-            // If the branch is not yet loaded, query it
-            loadBranch(storageAggregatorId);
-          }
+    setTreeData(treeData => {
+      const next = structuredClone(treeData);
+      const branch = findBranch(next.root, storageAggregatorId);
+      if (branch?.collapsible) {
+        if (branch.loaded) {
+          branch.collapsed = false;
+        } else {
+          loadBranch(storageAggregatorId);
         }
-      })
-    );
+      }
+      return next;
+    });
   };
 
   const closeBranch = (storageAggregatorId: string) => {
-    setTreeData(treeData =>
-      produce(treeData, next => {
-        const branch = findBranch(next.root, storageAggregatorId);
-        if (branch && branch.collapsible) {
-          branch.collapsed = true;
-        }
-      })
-    );
+    setTreeData(treeData => {
+      const next = structuredClone(treeData);
+      const branch = findBranch(next.root, storageAggregatorId);
+      if (branch?.collapsible) {
+        branch.collapsed = true;
+      }
+      return next;
+    });
   };
 
   return {

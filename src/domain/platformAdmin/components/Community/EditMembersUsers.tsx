@@ -1,17 +1,17 @@
-import { Member } from '@/domain/community/user/models/UserModel';
 import { Box, Typography } from '@mui/material';
 import TableCell from '@mui/material/TableCell';
-import { FC } from 'react';
-import { AvailableMembers, EditMembers } from './EditMembers';
-import { TabPanel } from '@/domain/common/layout/TabPanel';
+import type { FC } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { TabPanel } from '@/domain/common/layout/TabPanel';
+import type { Member } from '@/domain/community/user/models/UserModel';
+import { AvailableMembers, EditMembers } from './EditMembers';
 
 export interface EditMemberUsersProps {
   members: Member[];
   availableMembers: {
     id: string;
-    profile: { displayName: string };
+    profile?: { displayName: string };
     email?: string;
   }[];
   updating?: boolean;
@@ -66,7 +66,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
               renderRow={(m, Cell) => (
                 <>
                   <TableCell>
-                    <Cell>{m.profile.displayName}</Cell>
+                    <Cell>{m.profile?.displayName}</Cell>
                   </TableCell>
                   <TableCell>
                     <Cell>{m.firstName}</Cell>
@@ -111,7 +111,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
               updating={updating}
               header={<TableCell>Full Name (email)</TableCell>}
               renderRow={m => (
-                <TableCell>{m.email ? `${m.profile.displayName} (${m.email})` : m.profile.displayName}</TableCell>
+                <TableCell>{m.email ? `${m.profile?.displayName} (${m.email})` : m.profile?.displayName}</TableCell>
               )}
               renderEmptyRow={Cell => (
                 <TableCell>

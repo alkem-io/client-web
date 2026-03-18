@@ -1,13 +1,13 @@
-import { ComponentType, PropsWithChildren, ReactNode } from 'react';
-import { Box, SvgIconProps } from '@mui/material';
-import { BlockTitle } from '../typography';
+import { Box, type SvgIconProps } from '@mui/material';
+import type { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
+import Avatar from '../avatar/Avatar';
 import { gutters } from '../grid/utils';
 import RoundedIcon from '../icon/RoundedIcon';
 import BadgeCardView from '../list/BadgeCardView';
-import Avatar from '../avatar/Avatar';
-import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import SwapColors from '../palette/SwapColors';
+import { BlockTitle } from '../typography';
 
 type CardTitleSectionProps = {
   title?: ReactNode;
@@ -15,7 +15,7 @@ type CardTitleSectionProps = {
   iconComponent?: ComponentType<SvgIconProps>;
   author?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       avatar?: {
         uri: string;
@@ -31,8 +31,8 @@ const CardHeader = ({
   author,
   children,
 }: PropsWithChildren<CardTitleSectionProps>) => {
-  const avatar = author?.profile.avatar?.uri ? (
-    <ContributorTooltip contributorId={author.id} contributorType={RoleSetContributorType.User}>
+  const avatar = author?.profile?.avatar?.uri ? (
+    <ContributorTooltip contributorId={author.id} contributorType={ActorType.User}>
       <Avatar size="xsmall" src={author.profile.avatar.uri} alt={author.profile.displayName} />
     </ContributorTooltip>
   ) : undefined;
@@ -43,7 +43,7 @@ const CardHeader = ({
       visual={iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} />}
       visualRight={avatar}
       height={gutters(3.5)}
-      padding
+      padding={true}
       alignItems="start"
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}

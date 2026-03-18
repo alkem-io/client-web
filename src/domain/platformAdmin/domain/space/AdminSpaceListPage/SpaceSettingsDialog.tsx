@@ -1,28 +1,28 @@
-import React, { useMemo, useState } from 'react';
-import * as yup from 'yup';
-import { Formik } from 'formik';
 import { Button, CircularProgress } from '@mui/material';
+import { Formik } from 'formik';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import * as yup from 'yup';
 import {
   refetchPlatformAdminSpacesListQuery,
   useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { BlockTitle } from '@/core/ui/typography';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
-import { gutters } from '@/core/ui/grid/utils';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
+import type { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
+import type { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ManageLicensePlansDialog from './ManageLicensePlansDialog';
-import { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
 
 interface SpaceSettingsDialogProps {
   open: boolean;
@@ -67,6 +67,10 @@ const SpaceSettingsDialog = ({ open, onClose, space }: SpaceSettingsDialogProps)
           id: SpaceVisibility.Demo,
           name: t(`common.enums.space-visibility.${SpaceVisibility.Demo}` as const) as string,
         },
+        {
+          id: SpaceVisibility.Inactive,
+          name: t(`common.enums.space-visibility.${SpaceVisibility.Inactive}` as const) as string,
+        },
       ] as const,
     [t]
   );
@@ -87,7 +91,7 @@ const SpaceSettingsDialog = ({ open, onClose, space }: SpaceSettingsDialogProps)
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
+          enableReinitialize={true}
           onSubmit={handleSubmit}
         >
           {({ handleSubmit, isValid }) => (
@@ -100,7 +104,7 @@ const SpaceSettingsDialog = ({ open, onClose, space }: SpaceSettingsDialogProps)
                   name="nameId"
                   title={t('components.nameSegment.nameID.title')}
                   placeholder={t('components.nameSegment.nameID.placeholder')}
-                  required
+                  required={true}
                   disabled={saving || !space?.canUpdate}
                 />
                 <FormikAutocomplete

@@ -1,15 +1,16 @@
 import {
-  CalloutAllowedContributors,
+  CalloutAllowedActors,
   CalloutFramingType,
   CalloutVisibility,
+  type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
-import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
-import { CalloutStructuredResponseType } from './CalloutForm';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
+import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
+import type { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
+import type { CalloutStructuredResponseType } from './CalloutForm';
 
 export interface CalloutFormSubmittedValues {
   framing: {
@@ -30,6 +31,24 @@ export interface CalloutFormSubmittedValues {
         displayName: string;
       };
     };
+    mediaGallery?: {
+      visuals: {
+        id?: string;
+        /** Stable client-side identifier for new visuals that don't yet have a server id. Used as React key and @dnd-kit sortable id. */
+        clientId?: string;
+        uri: string | undefined;
+        /**
+         * Optional local file to upload as part of the media gallery visual.
+         * When present, the uri is only used for local preview purposes.
+         */
+        file?: File;
+        previewUrl?: string;
+        name?: string;
+        alternativeText?: string;
+        visualType?: VisualType;
+        sortOrder?: number;
+      }[];
+    };
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {
@@ -39,7 +58,7 @@ export interface CalloutFormSubmittedValues {
     contribution: {
       enabled: boolean;
       allowedTypes: CalloutStructuredResponseType;
-      canAddContributions: CalloutAllowedContributors;
+      canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
     framing: {
@@ -61,6 +80,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     whiteboard: undefined,
     memo: undefined,
     link: undefined,
+    mediaGallery: { visuals: [] },
   },
   contributionDefaults: {
     defaultDisplayName: '',
@@ -74,7 +94,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     contribution: {
       enabled: true,
       allowedTypes: 'none' as CalloutStructuredResponseType,
-      canAddContributions: CalloutAllowedContributors.Members,
+      canAddContributions: CalloutAllowedActors.Members,
       commentsEnabled: true,
     },
     framing: {

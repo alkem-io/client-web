@@ -1,23 +1,23 @@
-import { ReactNode } from 'react';
 import { Dialog, DialogActions } from '@mui/material';
 import { Form, Formik } from 'formik';
-import * as yup from 'yup';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import * as yup from 'yup';
+import { useVirtualContributorProfileQuery } from '@/core/apollo/generated/apollo-hooks';
+import SendButton from '@/core/ui/actions/SendButton';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import SendButton from '@/core/ui/actions/SendButton';
-import Gutters from '@/core/ui/grid/Gutters';
-import GridContainer from '@/core/ui/grid/GridContainer';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useVirtualContributorProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption, Text } from '@/core/ui/typography';
+import type { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 
 type MessageDialogProps = {
   open: boolean;
@@ -66,14 +66,14 @@ const InviteVirtualContributorDialog = ({
   const initialValues: InviteContributorsData = {
     welcomeMessage: t('community.invitations.inviteContributorsDialog.vcs.defaultVCInvitationMessage', {
       space: spaceDisplayName,
-      name: vcProfile?.lookup.virtualContributor?.profile.displayName ?? '',
+      name: vcProfile?.lookup.virtualContributor?.profile?.displayName ?? '',
     }) as string,
     invitedUserEmails: [],
     invitedContributorIds: [],
   };
 
   return (
-    <Dialog open={open} fullWidth maxWidth="md">
+    <Dialog open={open} fullWidth={true} maxWidth="md">
       <DialogHeader onClose={onClose}>
         <BlockTitle>{title}</BlockTitle>
       </DialogHeader>
@@ -82,16 +82,16 @@ const InviteVirtualContributorDialog = ({
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
+          enableReinitialize={true}
           onSubmit={handleSendMessage}
         >
           {({ handleSubmit, isValid }) => (
-            <Form noValidate autoComplete="off">
+            <Form noValidate={true} autoComplete="off">
               <GridContainer paddingLeft={0}>
                 <GridProvider columns={columns}>
                   <ProfileChip
-                    displayName={vcProfile?.lookup.virtualContributor?.profile.displayName ?? ''}
-                    avatarUrl={vcProfile?.lookup.virtualContributor?.profile.avatar?.uri ?? ''}
+                    displayName={vcProfile?.lookup.virtualContributor?.profile?.displayName ?? ''}
+                    avatarUrl={vcProfile?.lookup.virtualContributor?.profile?.avatar?.uri ?? ''}
                   />
                 </GridProvider>
               </GridContainer>
@@ -99,7 +99,7 @@ const InviteVirtualContributorDialog = ({
                 name="welcomeMessage"
                 title={t('messaging.message')}
                 placeholder={t('messaging.message')}
-                multiline
+                multiline={true}
                 rows={5}
                 maxLength={LONG_TEXT_LENGTH}
               />

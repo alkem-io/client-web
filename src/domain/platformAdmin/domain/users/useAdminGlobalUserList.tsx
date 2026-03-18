@@ -1,20 +1,20 @@
+import type { ApolloError } from '@apollo/client';
 import { useCallback, useMemo, useState } from 'react';
-import { ApolloError } from '@apollo/client';
-import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
+import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminUsersListQuery,
   useAssignLicensePlanToAccountMutation,
   useDeleteUserMutation,
+  usePlatformAdminUsersListQuery,
   usePlatformLicensingPlansQuery,
   useRevokeLicensePlanFromAccountMutation,
-  usePlatformAdminUsersListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
+import type { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 
 type Provided = {
   loading: boolean;
@@ -92,9 +92,9 @@ const useAdminGlobalUserList = ({
       (data?.platformAdmin.users.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
         id,
         accountId: account?.id,
-        value: `${profile.displayName} (${email})`,
-        url: buildSettingsUrl(profile.url),
-        avatar: profile.visual,
+        value: `${profile?.displayName ?? ''} (${email})`,
+        url: buildSettingsUrl(profile?.url ?? ''),
+        avatar: profile?.visual,
         activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)

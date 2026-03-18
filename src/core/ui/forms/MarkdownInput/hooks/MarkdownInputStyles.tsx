@@ -1,4 +1,3 @@
-import React from 'react';
 import { GlobalStyles } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 

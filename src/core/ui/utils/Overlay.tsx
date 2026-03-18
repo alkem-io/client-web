@@ -1,6 +1,6 @@
-import { Box, BoxProps, SxProps, Theme } from '@mui/material';
+import { Box, type BoxProps, type SxProps, type Theme } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 
 const Overlay = ({ fade = false, sx, ...props }: { fade?: boolean | number } & BoxProps) => {
   const faderStyle: SxProps<Theme> = fade

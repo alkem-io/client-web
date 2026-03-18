@@ -1,18 +1,18 @@
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { Box, Button, styled } from '@mui/material';
+import { times } from 'lodash-es';
+import { type ComponentType, useEffect, useMemo, useState } from 'react';
+import type { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import { useColumns } from '@/core/ui/grid/GridContext';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, Button, styled } from '@mui/material';
-import React, { ComponentType, useEffect, useMemo, useState } from 'react';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
+import type { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
+import type { AnyContribution } from './interfaces/AnyContributionType';
+import type { CalloutContributionCardComponentProps } from './interfaces/CalloutContributionCardComponentProps';
 import useCalloutContributions from './useCalloutContributions/useCalloutContributions';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import { AnyContribution } from './interfaces/AnyContributionType';
-import { CalloutContributionCardComponentProps } from './interfaces/CalloutContributionCardComponentProps';
-import { times } from 'lodash';
-import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
-import { useColumns } from '@/core/ui/grid/GridContext';
 
 const ResponsiveConfiguration: Record<
   number, // key: Number of columns available
@@ -24,21 +24,21 @@ const ResponsiveConfiguration: Record<
     SingleRow: boolean; // All cards in a single row
   }
 > = {
-  [4]: {
+  4: {
     PageSize: 3,
     ColumnsPerCard: 4,
     ColumnsScroller: 4,
     ScrollerButtons: 'small',
     SingleRow: false,
   },
-  [8]: {
+  8: {
     PageSize: 3,
     ColumnsPerCard: 2,
     ColumnsScroller: 6,
     ScrollerButtons: 'small',
     SingleRow: true,
   },
-  [12]: {
+  12: {
     PageSize: 5,
     ColumnsPerCard: 2,
     ColumnsScroller: 11,
@@ -147,8 +147,8 @@ const CalloutContributionsHorizontalPager = ({
   return (
     <>
       <Gutters
-        row
-        disablePadding
+        row={true}
+        disablePadding={true}
         justifyContent={fullRow ? 'space-between' : undefined}
         ref={inViewRef}
         flexWrap={responsiveConfig.SingleRow ? 'nowrap' : 'wrap'}
@@ -158,7 +158,7 @@ const CalloutContributionsHorizontalPager = ({
             <KeyboardDoubleArrowLeftIcon />
           </ScrollButton>
         )}
-        <GridProvider columns={responsiveConfig.ColumnsScroller} force>
+        <GridProvider columns={responsiveConfig.ColumnsScroller} force={true}>
           {loading &&
             times(5, index => <ContributeCardSkeleton key={index} columns={responsiveConfig.ColumnsPerCard} />)}
           {!loading &&

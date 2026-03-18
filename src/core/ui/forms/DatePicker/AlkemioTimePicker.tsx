@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
-import { Box, BoxProps, MenuItem, Select, SelectProps, styled } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import { times } from 'lodash';
+import { Box, type BoxProps, MenuItem, Select, type SelectProps, styled } from '@mui/material';
+import dayjs, { type Dayjs } from 'dayjs';
+import { times } from 'lodash-es';
+import { useMemo } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 
 export interface AlkemioTimePickerProps
@@ -12,7 +12,6 @@ export interface AlkemioTimePickerProps
   onChange?: (date: Date) => void;
   onBlur?: () => void;
   minTime?: Dayjs;
-  // @ts-ignore react-18 allow string and translations (hard to type)
   error?: unknown;
   containerProps?: BoxProps;
 }
@@ -63,8 +62,8 @@ const AlkemioTimePicker = ({
         }}
         IconComponent={ScheduleIcon}
         MenuProps={{ sx: { '.MuiPaper-root': { maxHeight: gutters(12) } } }}
-        fullWidth
-        notched
+        fullWidth={true}
+        notched={true}
         inputProps={{
           'aria-label': typeof timePickerProps.label === 'string' ? timePickerProps.label : undefined,
         }}

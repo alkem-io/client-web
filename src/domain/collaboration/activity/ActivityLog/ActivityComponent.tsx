@@ -1,20 +1,22 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityEventType,
-  ActivityLogCalendarEventCreatedFragment,
-  ActivityLogCalloutDiscussionCommentFragment,
-  ActivityLogCalloutLinkCreatedFragment,
-  ActivityLogCalloutMemoCreatedFragment,
-  ActivityLogCalloutPostCommentFragment,
-  ActivityLogCalloutPostCreatedFragment,
-  ActivityLogCalloutPublishedFragment,
-  ActivityLogCalloutWhiteboardContentModifiedFragment,
-  ActivityLogCalloutWhiteboardCreatedFragment,
-  ActivityLogEntry,
-  ActivityLogMemberJoinedFragment,
-  ActivityLogUpdateSentFragment,
-  ActivityLogSubspaceCreatedFragment,
+  type ActivityLogCalendarEventCreatedFragment,
+  type ActivityLogCalloutDiscussionCommentFragment,
+  type ActivityLogCalloutLinkCreatedFragment,
+  type ActivityLogCalloutMemoCreatedFragment,
+  type ActivityLogCalloutPostCommentFragment,
+  type ActivityLogCalloutPostCreatedFragment,
+  type ActivityLogCalloutPublishedFragment,
+  type ActivityLogCalloutWhiteboardContentModifiedFragment,
+  type ActivityLogCalloutWhiteboardCreatedFragment,
+  type ActivityLogEntry,
+  type ActivityLogMemberJoinedFragment,
+  type ActivityLogSubspaceCreatedFragment,
+  type ActivityLogUpdateSentFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import {
   ActivityCalloutLinkCreatedView,
   ActivityCalloutMemoActivityView,
@@ -22,22 +24,20 @@ import {
   ActivityCalloutPostCreatedView,
   ActivityCalloutPublishedView,
   ActivityCalloutWhiteboardActivityView,
-  ActivitySubspaceCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
   ActivityMemberJoinedView,
-  ActivityViewProps,
+  ActivitySubspaceCreatedView,
+  type ActivityViewProps,
 } from './views';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
-import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
-import { useTranslation } from 'react-i18next';
+import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
     spaceDisplayName: string;
     triggeredBy: {
-      profile: {
+      profile?: {
         avatar: {
           uri: string;
         };
@@ -85,9 +85,9 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
           return (
             <ActivityViewChooser
               activity={activity}
-              avatarUrl={activity.triggeredBy.profile.avatar?.uri ?? ''}
+              avatarUrl={activity.triggeredBy.profile?.avatar?.uri ?? ''}
               avatarAlt={
-                activity.triggeredBy.profile.displayName
+                activity.triggeredBy.profile?.displayName
                   ? t('common.avatar-of', { user: activity.triggeredBy.profile.displayName })
                   : t('common.avatar')
               }
@@ -124,9 +124,10 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
       return <ActivityCalloutLinkCreatedView {...activity} {...rest} />;
     case ActivityEventType.DiscussionComment:
       return <ActivityDiscussionCommentCreatedView {...activity} {...rest} />;
-    case ActivityEventType.MemberJoined:
-      const userAuthor = buildAuthorFromUser(activity.contributor);
+    case ActivityEventType.MemberJoined: {
+      const userAuthor = buildAuthorFromUser(activity.actor);
       return <ActivityMemberJoinedView member={userAuthor} {...activity} {...rest} />;
+    }
     case ActivityEventType.SubspaceCreated:
       return <ActivitySubspaceCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalendarEventCreated:

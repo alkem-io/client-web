@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { gutters } from '../grid/utils';
 
 const CardFooter = ({ children, ...containerProps }: PropsWithChildren<BoxProps>) => (

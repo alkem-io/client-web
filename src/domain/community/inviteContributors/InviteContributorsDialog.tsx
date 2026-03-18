@@ -1,13 +1,13 @@
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { InviteContributorsDialogProps } from './InviteContributorsProps';
-import InviteVCsDialog from './virtualContributors/InviteVCsDialog';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { InviteContributorsDialogProps } from './InviteContributorsProps';
 import InviteUsersDialog from './users/InviteUsersDialog';
+import InviteVCsDialog from './virtualContributors/InviteVCsDialog';
 
 const InviteContributorsDialog = (props: InviteContributorsDialogProps) => {
   switch (props.type) {
-    case RoleSetContributorType.User:
+    case ActorType.User:
       return <InviteUsersDialog {...props} />;
-    case RoleSetContributorType.Virtual:
+    case ActorType.VirtualContributor:
       return <InviteVCsDialog {...props} />;
     default:
       throw new Error('Unsupported contributor type!');

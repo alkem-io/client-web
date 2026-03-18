@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getGuestName, getGuestWhiteboardUrl, clearGuestWhiteboardUrl } from '../utils/sessionStorage';
+import { clearGuestWhiteboardUrl, getGuestName, getGuestWhiteboardUrl } from '../utils/sessionStorage';
 
 interface UseGuestSessionReturnResult {
   shouldShowNotification: boolean;
@@ -16,8 +16,6 @@ export const useGuestSessionReturn = (): UseGuestSessionReturnResult => {
   const guestName = getGuestName();
   const whiteboardUrl = getGuestWhiteboardUrl();
   const shouldShowNotification = Boolean(guestName && whiteboardUrl);
-
-  console.log('useGuestSessionReturn:', { guestName, whiteboardUrl, shouldShowNotification });
 
   const handleBackToWhiteboard = useCallback(() => {
     if (whiteboardUrl) {

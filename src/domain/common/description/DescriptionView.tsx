@@ -1,6 +1,6 @@
-import { Box, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import { noop } from 'lodash';
+import { Box, IconButton } from '@mui/material';
+import { noop } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -15,9 +15,9 @@ export const DescriptionView = ({ description, canEdit = false, onEditClick = no
   const { t } = useTranslation();
 
   return (
-    <Gutters disablePadding row alignItems="flex-start">
+    <Gutters disablePadding={true} row={true} alignItems="flex-start">
       <Box flex={1} sx={{ wordWrap: 'break-word' }}>
-        <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
+        <WrapperMarkdown disableParagraphPadding={true}>{description ?? ''}</WrapperMarkdown>
       </Box>
       {canEdit && (
         <IconButton

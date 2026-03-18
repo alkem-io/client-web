@@ -1,45 +1,40 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import Loading from '@/core/ui/loading/Loading';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Identifiable } from '@/core/utils/Identifiable';
-import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DialogContent } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { Formik } from 'formik';
-import { FormikProps } from 'formik/dist/types';
+import type { FormikProps } from 'formik/dist/types';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
-import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
-import WhiteboardDialogFooter from './WhiteboardDialogFooter';
-import WhiteboardDisplayName from './WhiteboardDisplayName';
+import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
+import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import mergeWhiteboard from '../utils/mergeWhiteboard';
+import whiteboardValidationSchema, { type WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
+import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import {
   DefaultWhiteboardPreviewSettings,
-  WhiteboardPreviewSettings,
+  type WhiteboardPreviewSettings,
 } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
-import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
-
-/** Extended CollabState that includes emoji reaction placement controls for headerActions */
-export interface WhiteboardHeaderState extends CollabState {
-  isReadOnly: boolean;
-  emojiPlacementInfo: EmojiReactionPlacementInfo | null;
-  onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
-}
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
+import type {
+  PreviewImageDimensions,
+  WhiteboardPreviewImage,
+} from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import WhiteboardDialogFooter from './WhiteboardDialogFooter';
+import WhiteboardDisplayName from './WhiteboardDisplayName';
 
 export interface WhiteboardDetails {
   id: string;
@@ -56,14 +51,18 @@ export interface WhiteboardDetails {
   profile: {
     id: string;
     displayName: string;
-    storageBucket: { id: string };
+    storageBucket: {
+      id: string;
+      allowedMimeTypes: string[];
+      maxFileSize: number;
+    };
     visual?: Identifiable & PreviewImageDimensions;
     preview?: Identifiable & PreviewImageDimensions;
     url?: string;
   };
   createdBy?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       url: string;
       avatar?: { id: string; uri: string };
@@ -93,7 +92,7 @@ interface WhiteboardDialogProps {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    headerActions?: (state: WhiteboardHeaderState) => ReactNode;
+    headerActions?: (state: CollabState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
@@ -125,8 +124,24 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    allowedMimeTypes: whiteboard?.profile?.storageBucket.allowedMimeTypes,
+    maxFileSize: whiteboard?.profile?.storageBucket.maxFileSize,
     allowFallbackToAttached: options.allowFilesAttached,
   });
+
+  const failureState = filesManager.getFailureState();
+
+  // Show notification when image failures occur
+  useEffect(() => {
+    if (failureState.hasFailures) {
+      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
+      const message =
+        totalFailures === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
+      notify(message, 'warning');
+    }
+  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
 
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
@@ -302,17 +317,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           onSceneInitChange: setSceneInitialized,
         }}
       >
-        {({
-          children,
-          mode,
-          modeReason,
-          collaborating,
-          connecting,
-          restartCollaboration,
-          isReadOnly,
-          emojiPlacementInfo,
-          onEmojiPlacementModeChange,
-        }) => {
+        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
           return (
             <Formik
               innerRef={formikRef}
@@ -324,7 +329,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 open={options.show}
                 aria-labelledby="whiteboard-dialog"
                 maxWidth={false}
-                fullWidth
+                fullWidth={true}
                 fullScreen={options.fullscreen}
                 onClose={onClose}
               >
@@ -335,8 +340,6 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     collaborating,
                     connecting,
                     isReadOnly,
-                    emojiPlacementInfo,
-                    onEmojiPlacementModeChange,
                   })}
                   onClose={onClose}
                   titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
@@ -353,7 +356,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     onImportTemplate={handleImportTemplate}
                   />
                 </DialogHeader>
-                <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
+                <DialogContent sx={{ paddingY: 0, display: 'flex', flexDirection: 'column' }}>{children}</DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
                   whiteboardUrl={whiteboard.profile.url}

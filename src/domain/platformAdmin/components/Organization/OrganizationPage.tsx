@@ -1,22 +1,25 @@
 import { useTranslation } from 'react-i18next';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { EditMode } from '@/core/ui/forms/editMode';
-import { CreateOrganizationInput, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
-import Loading from '@/core/ui/loading/Loading';
-import OrganizationForm from './OrganizationForm';
+import type { CreateOrganizationInput, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
+import { EditMode } from '@/core/ui/forms/editMode';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { formatLocation } from '@/domain/common/location/LocationUtils';
 import { EmptyProfileModel } from '@/domain/common/profile/ProfileModel';
+import {
+  EmptyOrganizationModel,
+  type OrganizationModel,
+} from '@/domain/community/organization/model/OrganizationModel';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import OrganizationForm from './OrganizationForm';
 
 type Props = {
   mode: EditMode;
@@ -37,7 +40,7 @@ const OrganizationPage = ({ mode }: Props) => {
     ...(organizationData ?? EmptyOrganizationModel),
     profile: {
       ...(organizationData?.profile ?? EmptyProfileModel),
-      location: formatLocation(organizationData?.profile.location),
+      location: formatLocation(organizationData?.profile?.location),
     },
   };
 
@@ -46,14 +49,16 @@ const OrganizationPage = ({ mode }: Props) => {
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
-    onError: error => console.error(error.message),
+    onError: _error => {},
   });
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
-      const organizationURL = data.createOrganization.profile.url;
+      const organizationURL = data.createOrganization.profile?.url;
       notify(t('pages.admin.organization.notifications.organization-created'), 'success');
-      navigate(organizationURL);
+      if (organizationURL) {
+        navigate(organizationURL);
+      }
     },
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
@@ -98,7 +103,7 @@ const OrganizationPage = ({ mode }: Props) => {
         legalEntityName,
         website,
       } = editedOrganization as UpdateOrganizationInput;
-      const profileId = organization?.profile.id;
+      const profileId = organization?.profile?.id;
       const references = profileData?.references;
       const tagsetsToAdd = profileData?.tagsets?.filter(x => !x.ID) || [];
 

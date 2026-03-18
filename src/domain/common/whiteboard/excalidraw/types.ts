@@ -1,7 +1,7 @@
 import type { BinaryFileData } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 
-export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
+export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
 export type BinaryFilesWithOptionalUrl = Record<string, BinaryFileDataWithOptionalUrl>;
 

@@ -1,8 +1,8 @@
-import PostMessageToCommentsForm, { PostMessageToCommentsFormProps } from './PostMessageToCommentsForm';
-import MessageView, { MessageViewProps } from './MessageView';
-import MessageWithRepliesView from './MessageWithRepliesView';
-import { Message } from '../models/Message';
 import { useTranslation } from 'react-i18next';
+import type { Message } from '../models/Message';
+import MessageView, { type MessageViewProps } from './MessageView';
+import MessageWithRepliesView from './MessageWithRepliesView';
+import PostMessageToCommentsForm, { type PostMessageToCommentsFormProps } from './PostMessageToCommentsForm';
 import useMessagesTree from './useMessagesTree';
 import useRestoredMessages from './useRestoredMessages';
 
@@ -18,6 +18,7 @@ export interface MessagesThreadProps {
   canAddReaction: MessageViewProps['canAddReaction'];
   addReaction: MessageViewProps['addReaction'];
   removeReaction: MessageViewProps['removeReaction'];
+  sortOrder?: 'asc' | 'desc';
 }
 
 const MessagesThread = ({
@@ -32,10 +33,11 @@ const MessagesThread = ({
   canAddReaction,
   addReaction,
   removeReaction,
+  sortOrder,
 }: MessagesThreadProps) => {
   const { t } = useTranslation();
 
-  const messagesWithRestored = useRestoredMessages(messages);
+  const messagesWithRestored = useRestoredMessages(messages, sortOrder);
 
   const rootMessages = useMessagesTree(messagesWithRestored);
 

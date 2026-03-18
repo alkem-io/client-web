@@ -1,57 +1,41 @@
-import { useState, useEffect, ReactNode, useCallback, PropsWithChildren } from 'react';
-
-import { Box, Link } from '@mui/material';
+import { Box, CircularProgress, Link } from '@mui/material';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NetworkStatus } from '@apollo/client';
-
-import Gutters from '@/core/ui/grid/Gutters';
 import {
-  useSearchQuery,
-  useSpaceUrlResolverQuery,
-  useSearchScopeDetailsSpaceQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { gutters } from '@/core/ui/grid/utils';
-import {
-  SearchQuery,
-  SearchResult,
   SearchCategory,
+  type SearchResult,
+  type SearchResultCalloutFragment,
+  type SearchResultMemoFragment,
+  type SearchResultOrganizationFragment,
+  type SearchResultPostFragment,
+  type SearchResultSpaceFragment,
   SearchResultType,
-  SearchResultPostFragment,
-  SearchResultUserFragment,
-  SearchResultSpaceFragment,
-  SearchResultCalloutFragment,
-  SearchResultOrganizationFragment,
-  SearchResultMemoFragment,
-  SearchResultWhiteboardFragment,
+  type SearchResultUserFragment,
+  type SearchResultWhiteboardFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useNavigate from '@/core/routing/useNavigate';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
-import { useMemoizedQueryParams } from '@/core/routing/useQueryParams';
-import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
+import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
+import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import { buildLoginUrl } from '../routing/urlBuilders';
+import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
 import {
-  FilterConfig,
-  FilterDefinition,
-  calloutFilterConfig,
-  framingFilterConfig,
   contributionFilterConfig,
   contributorFilterConfig,
   FILTER_OFF,
+  type FilterConfig,
+  type FilterDefinition,
+  framingFilterConfig,
 } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutAndFramingCard from './searchResults/SearchResultsCalloutAndFramingCard';
-
-import { useSearchTerms } from './useSearchTerms';
-import { buildLoginUrl } from '../routing/urlBuilders';
-import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
-import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
 import SearchCategoriesMenu from './ui/SearchCategoriesMenu';
+import { useSearchViewState } from './useSearchViewState';
 
 export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
   ResultFragment & { type: Type };
@@ -72,27 +56,8 @@ interface SearchViewProps {
   spaceFilterTitle: ReactNode;
 }
 
-interface SearchViewSections {
-  spaceResults?: SearchResultMetaType[];
-  calloutResults?: SearchResultMetaType[];
-  framingResults?: SearchResultMetaType[]; // framingResults merged into calloutResults
-  contributionResults?: SearchResultMetaType[];
-  contributorResults?: SearchResultMetaType[];
-}
-
-type ResultsCursors = {
-  spaceCursor: string | undefined;
-  calloutCursor: string | undefined;
-  framingCursor: string | undefined;
-  contributionCursor: string | undefined;
-  contributorCursor: string | undefined;
-};
-
 const SEARCH_RESULTS_COUNT = 4;
 export const MAX_TERMS_SEARCH = 5;
-const tagsetNames = ['skills', 'keywords'];
-
-const concatSearchResults = <T,>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
 
 const interlaceAndFilterArrays = <T extends { type: SearchResultType }>(
   a: T[] = [],
@@ -118,394 +83,40 @@ const interlaceAndFilterArrays = <T extends { type: SearchResultType }>(
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: SearchViewProps) => {
-  const [canSpaceLoadMore, setCanSpaceLoadMore] = useState(true);
-  const [canCalloutLoadMore, setCanCalloutLoadMore] = useState(true);
-  const [canFramingLoadMore, setCanFramingLoadMore] = useState(true);
-  const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
-  const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
-
-  const [resultsCursors, setResultsCursors] = useState<ResultsCursors>({
-    spaceCursor: undefined,
-    calloutCursor: undefined,
-    framingCursor: undefined,
-    contributionCursor: undefined,
-    contributorCursor: undefined,
-  });
-  const [spaceFilter, setSpaceFilter] = useState<FilterDefinition>(spaceFilterConfig.all);
-  const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
-  const [framingFilter, setFramingFilter] = useState<FilterDefinition>(framingFilterConfig.all);
-  const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
-  const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
-
-  const navigate = useNavigate();
-
   const { t } = useTranslation();
-
-  const termsFromUrl = useSearchTerms();
-
-  const queryParams = useMemoizedQueryParams();
-
-  const { isAuthenticated } = useCurrentUserContext();
-
-  const spaceNameId = queryParams[SEARCH_SPACE_URL_PARAM]?.[0] ?? undefined;
-
-  const handleTermsChange = useCallback(
-    (newValue: string[]) => {
-      setCanSpaceLoadMore(true);
-      setCanCalloutLoadMore(true);
-      setCanFramingLoadMore(true);
-      setCanContributionLoadMore(true);
-      setContributorCanLoadMore(true);
-
-      const params = new URLSearchParams(
-        Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
-      );
-
-      params.delete(SEARCH_TERMS_URL_PARAM);
-
-      for (const term of newValue) {
-        params.append(SEARCH_TERMS_URL_PARAM, term);
-      }
-
-      if (newValue.length === 0) {
-        params.append(SEARCH_TERMS_URL_PARAM, '');
-      }
-
-      navigate(`${searchRoute}?${params}`);
-    },
-    [searchRoute, queryParams, navigate]
-  );
-
-  const handleSearchInPlatform = useCallback(() => {
-    const params = new URLSearchParams(
-      Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
-    );
-
-    params.delete(SEARCH_SPACE_URL_PARAM);
-
-    navigate(`${searchRoute}?${params}`);
-  }, [searchRoute, queryParams, navigate]);
-
-  const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
-    variables: { spaceNameId: spaceNameId! },
-    skip: !spaceNameId,
-  });
-
-  const spaceId = spaceIdData?.lookupByName.space?.id;
-
-  const hasNoTermsLength = termsFromUrl.length === 0;
 
   const {
     data,
-    networkStatus,
-    loading: isSearching,
-    fetchMore,
-  } = useSearchQuery({
-    variables: {
-      searchData: {
-        tagsetNames,
-        terms: termsFromUrl,
-        searchInSpaceFilter: spaceId,
-        filters: [
-          {
-            category: SearchCategory.Spaces,
-            size: SEARCH_RESULTS_COUNT,
-            types: spaceFilterConfig.all.value,
-            cursor: undefined,
-          },
-          {
-            category: SearchCategory.CollaborationTools,
-            size: SEARCH_RESULTS_COUNT,
-            types: calloutFilterConfig.all.value,
-            cursor: undefined,
-          },
-          {
-            category: SearchCategory.Framings,
-            size: SEARCH_RESULTS_COUNT,
-            types: framingFilterConfig.all.value,
-            cursor: undefined,
-          },
-          {
-            category: SearchCategory.Contributions,
-            size: SEARCH_RESULTS_COUNT,
-            types: contributionFilterConfig.all.value,
-            cursor: undefined,
-          },
-          {
-            category: SearchCategory.Contributors,
-            size: SEARCH_RESULTS_COUNT,
-            types: contributorFilterConfig.all.value,
-            cursor: undefined,
-          },
-        ],
-      },
-    },
-    fetchPolicy: 'no-cache',
-    skip: hasNoTermsLength || resolvingSpace,
-  });
-
-  const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
-    toResultType(hasNoTermsLength ? undefined : data);
-
-  const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
-  });
-
-  const fetchNewResults = useCallback(
-    (resultsType: SearchCategory) => {
-      const getFetchFilters = () => {
-        switch (resultsType) {
-          case SearchCategory.Spaces: {
-            return [
-              {
-                category: SearchCategory.Spaces,
-                size: SEARCH_RESULTS_COUNT,
-                types: spaceFilter.value,
-                cursor: resultsCursors.spaceCursor,
-              },
-            ];
-          }
-
-          case SearchCategory.CollaborationTools: {
-            return [
-              {
-                category: SearchCategory.CollaborationTools,
-                size: SEARCH_RESULTS_COUNT,
-                // types: calloutFilter.value,  // Callouts do not have type filter
-                cursor: resultsCursors.calloutCursor,
-              },
-            ];
-          }
-
-          case SearchCategory.Framings: {
-            return [
-              {
-                category: SearchCategory.Framings,
-                size: SEARCH_RESULTS_COUNT,
-                types: framingFilter.value,
-                cursor: resultsCursors.framingCursor,
-              },
-            ];
-          }
-
-          case SearchCategory.Contributions: {
-            return [
-              {
-                category: SearchCategory.Contributions,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributionFilter.value,
-                cursor: resultsCursors.contributionCursor,
-              },
-            ];
-          }
-
-          case SearchCategory.Contributors: {
-            return [
-              {
-                category: SearchCategory.Contributors,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributorFilter.value,
-                cursor: resultsCursors.contributorCursor,
-              },
-            ];
-          }
-
-          default: {
-            return [
-              {
-                category: SearchCategory.Spaces,
-                size: SEARCH_RESULTS_COUNT,
-                types: spaceFilter.value,
-                cursor: resultsCursors.spaceCursor,
-              },
-              {
-                category: SearchCategory.CollaborationTools,
-                size: SEARCH_RESULTS_COUNT,
-                // types: calloutFilter.value,  // Callouts do not have type filter
-                cursor: resultsCursors.calloutCursor,
-              },
-              {
-                category: SearchCategory.Framings,
-                size: SEARCH_RESULTS_COUNT,
-                types: framingFilter.value,
-                cursor: resultsCursors.framingCursor,
-              },
-              {
-                category: SearchCategory.Contributions,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributionFilter.value,
-                cursor: resultsCursors.contributionCursor,
-              },
-              {
-                category: SearchCategory.Contributors,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributorFilter.value,
-                cursor: resultsCursors.contributorCursor,
-              },
-            ];
-          }
-        }
-      };
-
-      fetchMore({
-        variables: {
-          searchData: {
-            tagsetNames,
-            terms: termsFromUrl,
-            filters: getFetchFilters(),
-            searchInSpaceFilter: spaceId,
-          },
-        },
-
-        updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
-          switch (resultsType) {
-            case SearchCategory.Spaces: {
-              setCanSpaceLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
-              break;
-            }
-
-            case SearchCategory.CollaborationTools: {
-              setCanCalloutLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
-              break;
-            }
-            case SearchCategory.Framings: {
-              setCanFramingLoadMore(fetchMoreResult?.search?.framingResults?.results?.length > 0);
-              break;
-            }
-
-            case SearchCategory.Contributions: {
-              setCanContributionLoadMore(fetchMoreResult?.search?.contributionResults?.results?.length > 0);
-              break;
-            }
-
-            case SearchCategory.Contributors: {
-              setContributorCanLoadMore(fetchMoreResult?.search?.contributorResults?.results?.length > 0);
-              break;
-            }
-
-            default: {
-              break;
-            }
-          }
-
-          switch (resultsType) {
-            case SearchCategory.Spaces: {
-              return {
-                search: {
-                  ...prev.search,
-                  spaceResults: {
-                    ...fetchMoreResult.search.spaceResults,
-                    results: concatSearchResults(
-                      prev.search.spaceResults?.results,
-                      fetchMoreResult.search.spaceResults?.results
-                    ),
-                  },
-                },
-              };
-            }
-
-            case SearchCategory.CollaborationTools: {
-              return {
-                search: {
-                  ...prev.search,
-                  calloutResults: {
-                    ...fetchMoreResult.search.calloutResults,
-                    results: concatSearchResults(
-                      prev.search.calloutResults?.results,
-                      fetchMoreResult.search.calloutResults?.results
-                    ),
-                  },
-                },
-              };
-            }
-
-            case SearchCategory.Framings: {
-              return {
-                search: {
-                  ...prev.search,
-                  framingResults: {
-                    ...fetchMoreResult.search.framingResults,
-                    results: concatSearchResults(
-                      prev.search.framingResults?.results,
-                      fetchMoreResult.search.framingResults?.results
-                    ),
-                  },
-                },
-              };
-            }
-
-            case SearchCategory.Contributions: {
-              return {
-                search: {
-                  ...prev.search,
-                  contributionResults: {
-                    ...fetchMoreResult.search.contributionResults,
-                    results: concatSearchResults(
-                      prev.search.contributionResults?.results,
-                      fetchMoreResult.search.contributionResults?.results
-                    ),
-                  },
-                },
-              };
-            }
-
-            case SearchCategory.Contributors: {
-              return {
-                search: {
-                  ...prev.search,
-                  contributorResults: {
-                    ...fetchMoreResult.search.contributorResults,
-                    results: concatSearchResults(
-                      prev.search.contributorResults?.results,
-                      fetchMoreResult.search.contributorResults?.results
-                    ),
-                  },
-                },
-              };
-            }
-
-            default:
-              return prev;
-          }
-        },
-      });
-    },
-    [
-      spaceId,
-      termsFromUrl,
-      resultsCursors,
-      spaceFilter.value,
-      calloutFilter.value,
-      framingFilter.value,
-      contributionFilter.value,
-      contributorFilter.value,
-      fetchMore,
-    ]
-  );
-
-  useEffect(() => {
-    if (hasNoTermsLength) {
-      setSpaceFilter(spaceFilterConfig.all);
-      setCalloutFilter(calloutFilterConfig.all);
-      setFramingFilter(framingFilterConfig.all);
-      setContributionFilter(contributionFilterConfig.all);
-      setContributorFilter(contributorFilterConfig.all);
-    }
-  }, [hasNoTermsLength]);
-
-  useEffect(() => {
-    if (data?.search && !isSearching)
-      setResultsCursors({
-        spaceCursor: data.search.spaceResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-        calloutCursor: data.search.calloutResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-        framingCursor: data.search.framingResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-        contributionCursor: data.search.contributionResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-        contributorCursor: data.search.contributorResults?.cursor ?? undefined, // This check is required since the BE return `null` when cursor is missing
-      });
-  }, [data, isSearching]);
-
-  const isSearchingForMore = networkStatus === NetworkStatus.fetchMore;
+    termsFromUrl,
+    isAuthenticated,
+    isSearching,
+    isSearchingForMore,
+    hasNoTermsLength,
+    spaceId,
+    spaceDetails,
+    spaceDetailsLoading: loading,
+    spaceResults,
+    calloutResults,
+    framingResults,
+    contributionResults,
+    contributorResults,
+    spaceFilter,
+    setSpaceFilter,
+    framingFilter,
+    setFramingFilter,
+    contributionFilter,
+    setContributionFilter,
+    contributorFilter,
+    setContributorFilter,
+    canSpaceLoadMore,
+    canCalloutLoadMore,
+    canFramingLoadMore,
+    canContributionLoadMore,
+    canContributorLoadMore,
+    handleTermsChange,
+    handleSearchInPlatform,
+    fetchNewResults,
+  } = useSearchViewState(searchRoute, spaceFilterConfig);
 
   const filteredSpaceResults =
     spaceFilter.typename === 'all'
@@ -549,7 +160,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
   return (
     <PageContentColumn columns={12}>
       <PageContentBlockSeamless
-        disablePadding
+        disablePadding={true}
         sx={{
           position: 'sticky',
           top: 0,
@@ -558,7 +169,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           marginTop: 0.5,
         }}
       >
-        <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />
+        <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus={true} />
       </PageContentBlockSeamless>
 
       {spaceId && (
@@ -587,10 +198,18 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
         </Box>
       )}
 
-      <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
+      <Gutters disablePadding={true} sx={{ width: '100%', flexDirection: 'row' }}>
         <SearchCategoriesMenu results={data?.search} />
 
-        <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
+        <Gutters disablePadding={true} sx={{ width: '100%', flexDirection: 'column' }}>
+          {isSearching && !isSearchingForMore && !hasNoTermsLength && (
+            <Box display="flex" justifyContent="center" alignItems="center" paddingY={4} gap={1}>
+              <CircularProgress size={20} />
+              <Box component="span" color="primary.main" fontSize="0.875rem">
+                {t('pages.search.loading')}
+              </Box>
+            </Box>
+          )}
           {(data?.search?.spaceResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
@@ -651,13 +270,13 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               />
             </SectionWrapper>
           )}
-          {(data?.search?.contributorResults.results?.length ?? 0) > 0 && (
+          {(data?.search?.actorResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="contributors"
                 title={t('common.contributors')}
                 filterTitle={t('pages.search.filter.type.contributor')}
-                count={data?.search?.contributorResults?.total ?? 0}
+                count={data?.search?.actorResults?.total ?? 0}
                 filterConfig={contributorFilterConfig}
                 results={filteredContributorResults}
                 currentFilter={contributorFilter}
@@ -676,36 +295,6 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
 };
 
 export default SearchView;
-
-function toResultType(query?: SearchQuery): SearchViewSections {
-  const spaceResults = (query?.search.spaceResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
-  );
-
-  const calloutResults = (query?.search.calloutResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
-  );
-
-  const framingResults = (query?.search.framingResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
-  );
-
-  const contributionResults = (query?.search.contributionResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
-  );
-
-  const contributorResults = (query?.search.contributorResults?.results || []).map<SearchResultMetaType>(
-    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
-  );
-
-  return {
-    spaceResults,
-    calloutResults,
-    framingResults,
-    contributionResults,
-    contributorResults,
-  };
-}
 
 function SectionWrapper({ children }: PropsWithChildren) {
   return <Box sx={{ display: 'flex', flexDirection: 'row', gap: gutters(1) }}>{children}</Box>;

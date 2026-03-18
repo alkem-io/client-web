@@ -1,7 +1,7 @@
-import { LocationModel } from './LocationModel';
+import type { CreateLocationInput, UpdateLocationInput } from '@/core/apollo/generated/graphql-schema';
 import { COUNTRIES } from './countries.constants';
-import { LocationModelMapped } from './LocationModelMapped';
-import { CreateLocationInput, UpdateLocationInput } from '@/core/apollo/generated/graphql-schema';
+import type { LocationModel } from './LocationModel';
+import type { LocationModelMapped } from './LocationModelMapped';
 
 /**
  * formatLocation turns a Location coming from a GraphQL query into a Location usable by the UI.

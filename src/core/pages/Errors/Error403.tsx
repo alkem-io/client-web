@@ -1,15 +1,15 @@
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { gutters } from '@/core/ui/grid/utils';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { PageTitle, Tagline } from '@/core/ui/typography';
-import PageContent from '@/core/ui/content/PageContent';
-import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import { usePageTitle } from '@/core/routing/usePageTitle';
 
 export const Error403 = () => {
   const { t } = useTranslation();

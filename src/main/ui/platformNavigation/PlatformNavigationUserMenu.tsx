@@ -1,8 +1,3 @@
-import { PropsWithChildren, ReactNode, useState, Suspense } from 'react';
-import { Box, Divider, MenuList, Typography } from '@mui/material';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
 import {
   AssignmentIndOutlined,
   DashboardOutlined,
@@ -11,29 +6,34 @@ import {
   LanguageOutlined,
   MeetingRoomOutlined,
 } from '@mui/icons-material';
-import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
-import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import Gutters from '@/core/ui/grid/Gutters';
-import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
-import LanguageSelect from '@/core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import SettingsIcon from '@mui/icons-material/SettingsOutlined';
+import { Box, Divider, Menu, MenuItem, MenuList, Typography } from '@mui/material';
+import FocusTrap from '@mui/material/Unstable_TrapFocus';
+import { type PropsWithChildren, type ReactNode, Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
-import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
-import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Avatar from '@/core/ui/avatar/Avatar';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import useLanguageSelect from '@/core/ui/language/useLanguageSelect';
+import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
+import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
-import FocusTrap from '@mui/material/Unstable_TrapFocus';
-import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 
 const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/pendingMembership/PendingMembershipsDialog')
@@ -73,6 +73,23 @@ const PlatformNavigationUserMenu = ({
 
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
+  const {
+    openSelect,
+    isOpen: isLanguageMenuOpen,
+    menuProps: languageMenuProps,
+    languages,
+  } = useLanguageSelect({
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+    transformOrigin: {
+      vertical: 'top',
+      horizontal: 'left',
+    },
+    zIndex: PLATFORM_NAVIGATION_MENU_Z_INDEX + 1,
+  });
+
   // the roles should follow the order
   const getRole = (): string | null => {
     for (const platformRole of platformRoles) {
@@ -99,17 +116,17 @@ const PlatformNavigationUserMenu = ({
     <>
       <Wrapper ref={ref}>
         {userModel && (
-          <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
+          <Gutters disableGap={true} alignItems="center" sx={{ paddingBottom: 1 }}>
             <Avatar
               size="large"
-              src={userModel.profile.avatar?.uri}
+              src={userModel.profile?.avatar?.uri}
               alt={
                 userModel.profile?.displayName
                   ? t('common.avatar-of', { user: userModel.profile?.displayName })
                   : t('common.avatar')
               }
             />
-            <BlockTitle lineHeight={gutters(2)}>{userModel.profile.displayName}</BlockTitle>
+            <BlockTitle lineHeight={gutters(2)}>{userModel.profile?.displayName}</BlockTitle>
             {role && (
               <Caption color="neutralMedium.main" textTransform="uppercase">
                 {role}
@@ -117,8 +134,8 @@ const PlatformNavigationUserMenu = ({
             )}
           </Gutters>
         )}
-        <FocusTrap open>
-          <MenuList autoFocus disablePadding sx={{ paddingY: 1, outline: 'none' }}>
+        <FocusTrap open={true}>
+          <MenuList autoFocus={true} disablePadding={true} sx={{ paddingY: 1, outline: 'none' }}>
             {!isAuthenticated && (
               <NavigatableMenuItem
                 iconComponent={MeetingRoomOutlined}
@@ -165,30 +182,16 @@ const PlatformNavigationUserMenu = ({
                 {t('common.administration')}
               </NavigatableMenuItem>
             )}
-            <LanguageSelect
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
+            <NavigatableMenuItem
+              id="language-button"
+              iconComponent={LanguageOutlined}
+              onClick={event => openSelect(event.currentTarget as HTMLElement)}
+              aria-controls={isLanguageMenuOpen ? 'language-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={isLanguageMenuOpen ? 'true' : undefined}
             >
-              {({ openSelect, isOpen }) => (
-                <NavigatableMenuItem
-                  id="language-button"
-                  iconComponent={LanguageOutlined}
-                  onClick={event => openSelect(event.currentTarget as HTMLElement)}
-                  aria-controls={isOpen ? 'language-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={isOpen ? 'true' : undefined}
-                >
-                  {t('buttons.changeLanguage')}
-                </NavigatableMenuItem>
-              )}
-            </LanguageSelect>
+              {t('buttons.changeLanguage')}
+            </NavigatableMenuItem>
             <NavigatableMenuItem
               iconComponent={HelpOutlineIcon}
               onClick={() => {
@@ -203,7 +206,7 @@ const PlatformNavigationUserMenu = ({
                 {t('buttons.sign-out')}
               </NavigatableMenuItem>
             )}
-            <NavigatableMenuItem tabOnly iconComponent={ExitToAppOutlined} onClick={onClose}>
+            <NavigatableMenuItem tabOnly={true} iconComponent={ExitToAppOutlined} onClick={onClose}>
               {t('components.navigation.exitMenu')}
             </NavigatableMenuItem>
             {footer}
@@ -218,6 +221,13 @@ const PlatformNavigationUserMenu = ({
       <Suspense fallback={null}>
         <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
       </Suspense>
+      <Menu {...languageMenuProps}>
+        {languages.map(lng => (
+          <MenuItem key={lng.key} selected={lng.selected} onClick={lng.onClick}>
+            <Caption lang={lng.lang}>{lng.label}</Caption>
+          </MenuItem>
+        ))}
+      </Menu>
     </>
   );
 };

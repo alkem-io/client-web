@@ -3,22 +3,22 @@ import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { BlockSectionTitle } from '@/core/ui/typography';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { subdomainValidator } from '@/core/ui/forms/validator/subdomainValidator';
-import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import Gutters from '@/core/ui/grid/Gutters';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
-import { nameOf } from '@/core/utils/nameOf';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { subdomainValidator } from '@/core/ui/forms/validator/subdomainValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { nameOf } from '@/core/utils/nameOf';
+import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
+import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 
 export interface InnovationHubFormValues {
   subdomain: string;
@@ -73,17 +73,22 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
   });
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize={true}
+      onSubmit={onSubmit}
+    >
       {({ errors, handleSubmit }) => {
         return (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <FormikInputField
               name="subdomain"
               title={t('pages.admin.innovationHubs.fields.subdomain')}
-              required
+              required={true}
               disabled={!isNew}
             />
-            <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} required />
+            <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} required={true} />
             <FormikInputField
               name="profile.tagline"
               title={t('components.profile.fields.tagline.title')}

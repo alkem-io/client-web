@@ -4,14 +4,14 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, waitFor, cleanup, screen } from '@/main/test/testUtils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen, waitFor } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
-import { MockedProvider } from '@apollo/client/testing';
 import { InMemoryCache } from '@apollo/client';
-import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import { MockedProvider } from '@apollo/client/testing';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { CurrentUserLightDocument, GetPublicWhiteboardDocument } from '@/core/apollo/generated/apollo-hooks';
+import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { sessionStorageMock } from './utils/sessionStorageMock';
 
@@ -72,6 +72,8 @@ const mockWhiteboardData = {
         url: 'http://test.url',
         storageBucket: {
           id: 'bucket-id',
+          allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+          maxFileSize: 15728640,
         },
       },
       createdDate: '2023-01-01T00:00:00Z',
@@ -95,7 +97,7 @@ const mocks = [
   },
   {
     request: {
-      query: CurrentUserFullDocument,
+      query: CurrentUserLightDocument,
       variables: {},
     },
     result: {

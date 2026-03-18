@@ -6,6 +6,16 @@ query memoDetails($id: UUID!) {
   }
 }
 
+mutation updateMemoDisplayName($memoId: UUID!, $displayName: String!) {
+  updateMemo(memoData: { ID: $memoId, profile: { displayName: $displayName } }) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
 fragment MemoProfile on Profile {
   id
   displayName

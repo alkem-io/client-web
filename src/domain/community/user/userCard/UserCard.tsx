@@ -1,18 +1,18 @@
-import { MouseEventHandler, ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PersonIcon from '@mui/icons-material/Person';
-import { Box, GridLegacy, IconButton, Skeleton, SvgIcon } from '@mui/material';
+import { Box, GridLegacy, IconButton, Skeleton, type SvgIcon } from '@mui/material';
+import { noop } from 'lodash-es';
+import { type MouseEventHandler, type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
 import ContributeCard from '@/core/ui/card/ContributeCard';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import { gutters } from '@/core/ui/grid/utils';
 import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
-import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { Caption } from '@/core/ui/typography';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { noop } from 'lodash';
 
 /* todo add jobTitle */
 export interface UserCardProps {
@@ -128,14 +128,14 @@ const UserCard = ({
           <ExpandableCardFooter
             expanded={isExpanded}
             expandable={tags.length > 0}
-            tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage />}
+            tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage={true} />}
           />
         </Box>
       ) : (
         <ExpandableCardFooter
           expandable={false}
           expanded={isExpanded}
-          tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage />}
+          tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage={true} />}
         />
       )}
     </ContributeCard>
@@ -152,10 +152,10 @@ type InfoRowProps = {
 };
 
 const InfoRow = ({ icon: Icon, text, ariaLabel, loading }: InfoRowProps) => (
-  <GridLegacy item xs={12} zeroMinWidth>
+  <GridLegacy item={true} xs={12} zeroMinWidth={true}>
     <Box display="flex" alignItems="center">
       <Icon fontSize="small" />
-      <Caption noWrap aria-label={ariaLabel} display="flex" flexGrow={1}>
+      <Caption noWrap={true} aria-label={ariaLabel} display="flex" flexGrow={1}>
         {loading ? <Skeleton width="70%" /> : text}
       </Caption>
     </Box>

@@ -1,9 +1,9 @@
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { useTranslation } from 'react-i18next';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import useCommunityUpdates from '@/domain/communication/updates/CommunityUpdatesContainer/useCommunityUpdates';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 
 export interface CommunityUpdatesDialogProps {
@@ -23,37 +23,39 @@ const CommunityUpdatesDialog = ({
 }: CommunityUpdatesDialogProps) => {
   const { t } = useTranslation();
 
+  const {
+    entities: { messages, authors },
+    actions,
+    state: { retrievingUpdateMessages },
+  } = useCommunityUpdates({ communityId });
+
   return (
-    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
+    <Dialog open={open} maxWidth="md" fullWidth={true} aria-labelledby="community-updates-dialog-title">
       <DialogHeader
         onClose={onClose}
         actions={<ShareButton url={shareUrl} entityTypeName="updates" />}
         title={t('dashboard-updates-section.dialog-title')}
       />
-      <DialogContent dividers>
+      <DialogContent dividers={true}>
         <Box marginBottom={2} marginTop={4}>
-          <CommunityUpdatesContainer communityId={communityId}>
-            {({ messages, authors }, actions, { retrievingUpdateMessages }) => (
-              <CommunityUpdatesView
-                entities={{ messages, authors }}
-                actions={{
-                  onSubmit: message => actions.onSubmit(message, communityId),
-                  onRemove: messageId => actions.onRemove(messageId, communityId),
-                }}
-                state={{
-                  loadingMessages: retrievingUpdateMessages || loading,
-                  submittingMessage: false,
-                  removingMessage: false,
-                }}
-                options={{
-                  hideHeaders: true,
-                  disableCollapse: true,
-                  disableElevation: true,
-                  itemsPerRow: 1,
-                }}
-              />
-            )}
-          </CommunityUpdatesContainer>
+          <CommunityUpdatesView
+            entities={{ messages, authors }}
+            actions={{
+              onSubmit: message => actions.onSubmit(message, communityId),
+              onRemove: messageId => actions.onRemove(messageId, communityId),
+            }}
+            state={{
+              loadingMessages: retrievingUpdateMessages || loading,
+              submittingMessage: false,
+              removingMessage: false,
+            }}
+            options={{
+              hideHeaders: true,
+              disableCollapse: true,
+              disableElevation: true,
+              itemsPerRow: 1,
+            }}
+          />
         </Box>
       </DialogContent>
       <DialogActions>

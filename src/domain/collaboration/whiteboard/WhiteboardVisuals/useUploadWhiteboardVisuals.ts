@@ -1,6 +1,6 @@
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
-import { WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
 
 interface VisualsIds {
   cardVisualId?: string;

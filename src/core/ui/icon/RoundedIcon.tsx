@@ -1,7 +1,7 @@
-import { ComponentType } from 'react';
-import { BoxProps, SvgIconProps, useTheme } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import RoundedBadge, { RoundedBadgeProps } from './RoundedBadge';
+import { type BoxProps, type SvgIconProps, useTheme } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import type { ComponentType } from 'react';
+import RoundedBadge, { type RoundedBadgeProps } from './RoundedBadge';
 
 type IconSize = SvgIconProps['fontSize'] | 'xsmall';
 type Variant = 'filled' | 'outlined';

@@ -1,11 +1,12 @@
-import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
-import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
 import Delete from '@mui/icons-material/Delete';
 import { Button, FormControl, IconButton, InputLabel, List, OutlinedInput } from '@mui/material';
-import { omit } from 'lodash';
-import React, { ComponentType, useMemo, useState } from 'react';
+import { omit } from 'lodash-es';
+import type React from 'react';
+import { type ComponentType, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import RemoveModal from '@/core/ui/dialogs/RemoveModal';
+import ListItemLink, { type ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
+import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
 
 const MAX_ITEMS_LIMIT = 1000;
 
@@ -86,7 +87,7 @@ export const SearchableTable = <
 
   return (
     <>
-      <FormControl fullWidth size={'small'}>
+      <FormControl fullWidth={true} size={'small'}>
         <OutlinedInput
           placeholder={t('components.searchableList.placeholder')}
           onChange={handleSearch}

@@ -1,29 +1,29 @@
-import { useCallback, useState } from 'react';
-import { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { Box, ButtonBase } from '@mui/material';
-import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import RoleSetContributorsBlockWideContent from './RoleSetContributorsBlockWideContent';
-import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
-import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { gutters } from '@/core/ui/grid/utils';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import Loading from '@/core/ui/loading/Loading';
-import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
+import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import InviteContributorsWizard from '../../inviteContributors/InviteContributorsWizard';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
+import RoleSetContributorsBlockWideContent from './RoleSetContributorsBlockWideContent';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
-type RoleSetContributorTypesBlockWideProps = {
+type ActorTypesBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   level?: SpaceLevel;
@@ -36,15 +36,15 @@ type RoleSetContributorTypesBlockWideProps = {
 const config = [
   {
     label: 'common.people',
-    value: RoleSetContributorType.User,
+    value: ActorType.User,
   },
   {
     label: 'common.organizations',
-    value: RoleSetContributorType.Organization,
+    value: ActorType.Organization,
   },
 ] as const;
 
-const RoleSetContributorTypesBlockWide = ({
+const ActorTypesBlockWide = ({
   users,
   showUsers,
   organizations,
@@ -52,12 +52,12 @@ const RoleSetContributorTypesBlockWide = ({
   hasInvitePrivilege,
   isDialogView = false,
   isLoading = false,
-}: RoleSetContributorTypesBlockWideProps) => {
+}: ActorTypesBlockWideProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
 
-  const [contributorType, setContributorType] = useState(RoleSetContributorType.User);
+  const [contributorType, setContributorType] = useState(ActorType.User);
   const [filter, onFilterChange] = useState<string[]>([]);
 
   // People that can be invited to the community
@@ -93,7 +93,7 @@ const RoleSetContributorTypesBlockWide = ({
         {hasInvitePrivilege && (
           <Box textAlign="right">
             <InviteContributorsWizard
-              contributorType={RoleSetContributorType.User}
+              contributorType={ActorType.User}
               filterContributors={filterInviteeContributors}
               onlyFromParentCommunity={level === SpaceLevel.L2}
             />
@@ -111,7 +111,7 @@ const RoleSetContributorTypesBlockWide = ({
                   marginLeft: theme => theme.spacing(2),
                 }}
                 size="xsmall"
-                inlineTerms
+                inlineTerms={true}
               />
             }
           >
@@ -122,8 +122,8 @@ const RoleSetContributorTypesBlockWide = ({
             organizations={organizations}
             contributorType={contributorType}
             filter={filter}
-            nested
-            compactView
+            nested={true}
+            compactView={true}
           />
         </PageContentBlock>
       </>
@@ -146,7 +146,7 @@ const RoleSetContributorTypesBlockWide = ({
                 marginLeft: theme => theme.spacing(2),
               }}
               size="xsmall"
-              inlineTerms
+              inlineTerms={true}
             />
           }
         >
@@ -158,11 +158,11 @@ const RoleSetContributorTypesBlockWide = ({
             organizations={organizations}
             contributorType={contributorType}
             filter={filter}
-            nested
-            compactView
+            nested={true}
+            compactView={true}
           />
         ) : (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <ImageBackdrop
               src={grayedOutUsersImgSrc}
               backdropMessage="login"
@@ -202,4 +202,4 @@ const RoleSetContributorTypesBlockWide = ({
   );
 };
 
-export default RoleSetContributorTypesBlockWide;
+export default ActorTypesBlockWide;

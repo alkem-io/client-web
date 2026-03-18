@@ -1,18 +1,9 @@
-import { Message } from '@/core/apollo/generated/graphql-schema';
-import SaveButton from '@/core/ui/actions/SaveButton';
-import Avatar from '@/core/ui/avatar/Avatar';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import {
+  alpha,
   Backdrop,
   Box,
   Card,
@@ -23,22 +14,30 @@ import {
   Collapse,
   Divider,
   GridLegacy,
-  GridLegacyProps,
+  type GridLegacyProps,
   IconButton,
   Link,
   Skeleton,
   Tooltip,
   Typography,
-  alpha,
 } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { keyBy } from 'lodash';
-import orderBy from 'lodash/orderBy';
-import { useEffect, useMemo, useState } from 'react';
+import { orderBy } from 'lodash-es';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import type { Message } from '@/core/apollo/generated/graphql-schema';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import Avatar from '@/core/ui/avatar/Avatar';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
+import { useCommunityUpdatesViewState } from './useCommunityUpdatesViewState';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -74,9 +73,7 @@ const expandStyles = theme => ({
 });
 
 export const CommunityUpdatesView = ({ entities, actions, state, options }: CommunityUpdatesViewProps) => {
-  const notify = useNotification();
   const { t } = useTranslation();
-  // entities
   const { messages, authors } = entities;
   const { loadingMessages, removingMessage } = state;
   const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
@@ -91,39 +88,13 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
-  const [stubMessageId, setStubMessageId] = useState<string | null>(null);
-  const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
-  const memberMap = useMemo(() => keyBy(authors, m => m.id), [authors]);
+
+  const { stubMessageId, setStubMessageId, removedMessageId, setRemovedMessageId, memberMap, handleCopy } =
+    useCommunityUpdatesViewState(orderedMessages, authors);
 
   const displayCardActions = canCopy || canRemove || !disableCollapse;
   const lastItemIndex = orderedMessages.length - 1;
-
-  //effects
-  useEffect(() => {
-    setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
-  }, [setStubMessageId, orderedMessages]);
-
-  useEffect(() => {
-    setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
-  }, [setRemovedMessageId, orderedMessages]);
-  // TODO: Some translations are missing
-
-  const handleCopy = (message: string) => {
-    if (!message) {
-      notify('No content to copy', 'error');
-      return;
-    }
-
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard
-        .writeText(message)
-        .then(() => notify('Post copied to clipboard', 'info'))
-        .catch(() => notify('Failed to copy content', 'error'));
-    } else {
-      notify('Clipboard not supported', 'error');
-    }
-  };
 
   return (
     <>
@@ -131,7 +102,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
+          enableReinitialize={true}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             const onSubmit = actions?.onSubmit;
             if (onSubmit) {
@@ -147,18 +118,18 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
         >
           {({ isValid, handleSubmit, isSubmitting }) => {
             return (
-              <Form noValidate onSubmit={handleSubmit}>
-                <GridLegacy container spacing={2}>
-                  <GridLegacy item xs={12}>
+              <Form noValidate={true} onSubmit={handleSubmit}>
+                <GridLegacy container={true} spacing={2}>
+                  <GridLegacy item={true} xs={12}>
                     <FormikMarkdownField
                       name="community-update"
                       rows={30}
                       title={t('components.communityUpdates.title')}
-                      required
+                      required={true}
                       maxLength={MARKDOWN_TEXT_LENGTH}
                     />
                   </GridLegacy>
-                  <GridLegacy container item xs={12} justifyContent="flex-end">
+                  <GridLegacy container={true} item={true} xs={12} justifyContent="flex-end">
                     <SaveButton
                       type="submit"
                       disabled={!isValid}
@@ -175,24 +146,29 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
         </Formik>
       )}
       {!hideHeaders && orderedMessages.length > 0 && (
-        <GridLegacy container spacing={2}>
-          <GridLegacy item xs={12}>
+        <GridLegacy container={true} spacing={2}>
+          <GridLegacy item={true} xs={12}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
               {t('components.communityUpdates.updatesTitle')}
             </Typography>
           </GridLegacy>
         </GridLegacy>
       )}
-      <GridLegacy container spacing={2}>
+      <GridLegacy container={true} spacing={2}>
         {stubMessageId && (
-          <GridLegacy key={stubMessageId} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridLegacyProps['lg']}>
+          <GridLegacy
+            key={stubMessageId}
+            item={true}
+            xs={12}
+            lg={(12 / (itemsPerRow || 2)) as keyof GridLegacyProps['lg']}
+          >
             <Card elevation={2}>
               <CardHeader title={<Skeleton />} subheader={<Skeleton />} />
               <CardContent sx={{ position: 'relative' }}>
                 <Skeleton height={40} />
               </CardContent>
-              <CardActions disableSpacing>
-                <IconButton disabled sx={theme => expandStyles(theme)} size="large">
+              <CardActions disableSpacing={true}>
+                <IconButton disabled={true} sx={theme => expandStyles(theme)} size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               </CardActions>
@@ -200,7 +176,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           </GridLegacy>
         )}
         {orderedMessages.length === 0 && !stubMessageId && !loadingMessages && (
-          <GridLegacy item>
+          <GridLegacy item={true}>
             <Typography align={'center'} variant={'subtitle1'}>
               {t('common.no-updates')}
             </Typography>
@@ -212,7 +188,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           const removed = removedMessageId === m.id && state.removingMessage;
           const member = m.sender?.id ? memberMap[m.sender.id] : undefined;
           return (
-            <GridLegacy key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridLegacyProps['lg']}>
+            <GridLegacy key={m.id} item={true} xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridLegacyProps['lg']}>
               <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>
                 <Backdrop open={removed} style={{ position: 'absolute', zIndex: 1 }} />
                 <CardHeader
@@ -233,7 +209,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                       </Link>
                     )
                   }
-                  title={member?.displayName || m.sender?.profile.displayName}
+                  title={member?.displayName || m.sender?.profile?.displayName}
                   subheader={new Date(m.timestamp).toLocaleString()}
                   action={
                     canEdit ? (
@@ -283,7 +259,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                   </Collapse>
                 </CardContent>
                 {displayCardActions && (
-                  <CardActions disableSpacing>
+                  <CardActions disableSpacing={true}>
                     {canCopy && (
                       <Tooltip title="Copy content to clipboard" placement="right">
                         <IconButton onClick={() => handleCopy(m.message)} size="large" aria-label="copy">
@@ -329,7 +305,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           );
         })}
         {loadingMessages && (
-          <GridLegacy container item xs={12} justifyContent="center">
+          <GridLegacy container={true} item={true} xs={12} justifyContent="center">
             <CircularProgress />
           </GridLegacy>
         )}

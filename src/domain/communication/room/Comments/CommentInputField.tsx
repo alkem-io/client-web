@@ -1,14 +1,24 @@
-import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, styled, Tooltip } from '@mui/material';
-import React, { PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
+import { HelpOutlineOutlined } from '@mui/icons-material';
+import {
+  Box,
+  IconButton,
+  type InputBaseComponentProps,
+  Paper,
+  Popper,
+  type PopperProps,
+  styled,
+  Tooltip,
+} from '@mui/material';
+import type React from 'react';
+import { type PropsWithChildren, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
+import { Mention, MentionsInput, type OnChangeHandlerFunc, type SuggestionDataItem } from 'react-mentions';
 import { useMentionableContributorsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { HelpOutlineOutlined } from '@mui/icons-material';
-import Gutters from '@/core/ui/grid/Gutters';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 
@@ -35,7 +45,7 @@ const SuggestionsVCDisclaimer = () => {
   const { t } = useTranslation();
   return (
     <Gutters
-      row
+      row={true}
       height={gutters(2)}
       alignItems="center"
       justifyContent="space-between"
@@ -44,7 +54,11 @@ const SuggestionsVCDisclaimer = () => {
       paddingX={gutters(0.5)}
     >
       {t('components.post-comment.vcInteractions.disclaimer')}
-      <Tooltip title={<Caption>{t('components.post-comment.vcInteractions.help')}</Caption>} placement="top" arrow>
+      <Tooltip
+        title={<Caption>{t('components.post-comment.vcInteractions.help')}</Caption>}
+        placement="top"
+        arrow={true}
+      >
         <IconButton size="small" aria-label={t('components.post-comment.vcInteractions.help')}>
           <HelpOutlineOutlined fontSize="small" />
         </IconButton>
@@ -67,7 +81,7 @@ const SuggestionsContainer = ({
   disclaimer = null,
 }: PropsWithChildren<SuggestionsContainerProps>) => {
   return (
-    <Popper open placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
+    <Popper open={true} placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
       <Paper elevation={3}>
         <Box
           sx={theme => ({
@@ -165,8 +179,8 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
   const subspaceRoleSetId = subspace.about.membership?.roleSetID;
   const roleSetId = subspaceRoleSetId ? subspaceRoleSetId : spaceRoleSetId;
 
-  const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>
-    currentMentionedUsersRef.current.some(mention => mention.id === profile.url);
+  const isAlreadyMentioned = ({ profile }: { profile?: { url: string } }) =>
+    currentMentionedUsersRef.current.some(mention => mention.id === profile?.url);
 
   const hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
 
@@ -196,11 +210,11 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
 
     if (!hasVcInteraction && vcEnabled) {
       data?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.forEach(vc => {
-        if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
+        if (!isAlreadyMentioned(vc) && vc.profile?.displayName.toLowerCase().includes(search.toLowerCase())) {
           mentionableContributors.push({
-            id: vc.profile.url,
-            display: vc.profile.displayName,
-            avatarUrl: vc.profile.avatar?.uri,
+            id: vc.profile?.url ?? '',
+            display: vc.profile?.displayName ?? '',
+            avatarUrl: vc.profile?.avatar?.uri,
             virtualContributor: true,
           });
         }
@@ -210,11 +224,11 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
     data?.usersPaginated.users.forEach(user => {
       if (!isAlreadyMentioned(user)) {
         mentionableContributors.push({
-          id: user.profile.url,
-          display: user.profile.displayName,
-          avatarUrl: user.profile.avatar?.uri,
-          city: user.profile.location?.city,
-          country: user.profile.location?.country,
+          id: user.profile?.url ?? '',
+          display: user.profile?.displayName ?? '',
+          avatarUrl: user.profile?.avatar?.uri,
+          city: user.profile?.location?.city,
+          country: user.profile?.location?.country,
         });
       }
     });
@@ -287,8 +301,8 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
             textarea.setAttribute('aria-label', ariaLabel);
           }
         }}
-        forceSuggestionsAboveCursor
-        allowSpaceInQuery
+        forceSuggestionsAboveCursor={true}
+        allowSpaceInQuery={true}
         customSuggestionsContainer={children => (
           <SuggestionsContainer
             anchorElement={popperAnchor}
@@ -301,7 +315,7 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
         <Mention
           trigger={MENTION_SYMBOL}
           data={findMentionableContributors}
-          appendSpaceOnAdd
+          appendSpaceOnAdd={true}
           displayTransform={(_, display) => `${MENTION_SYMBOL}${display}`}
           renderSuggestion={(suggestion, _, __, ___, focused) => {
             const user = suggestion as EnrichedSuggestionDataItem;

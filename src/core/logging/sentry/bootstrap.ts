@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/react';
 import { useEffect } from 'react';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
-import * as Sentry from '@sentry/react';
 
 const DEFAULT_ENVIRONMENT = 'development';
 
@@ -19,7 +19,7 @@ const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string, environment
       integrations: [reactRouterV6BrowserTracingIntegration],
       tracesSampleRate: 1.0,
       environment: environment ?? DEFAULT_ENVIRONMENT,
-      release: `client-web@${import.meta.env.VITE_APP_BUILD_VERSION}`,
+      release: `client-web@${import.meta.env.VITE_BUILD_VERSION}`,
     });
   }
 };

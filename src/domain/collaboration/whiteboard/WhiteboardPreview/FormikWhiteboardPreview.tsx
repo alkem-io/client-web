@@ -1,22 +1,27 @@
-import { Box, BoxProps, IconButton, Skeleton, styled } from '@mui/material';
-import { useField } from 'formik';
-import { MouseEventHandler, useMemo, useState, useImperativeHandle, ReactNode } from 'react';
-import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
-import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
-import { BlockTitle } from '@/core/ui/typography';
-import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { Box, type BoxProps, IconButton, Skeleton, styled } from '@mui/material';
+import { useField } from 'formik';
+import { isEqual } from 'lodash-es';
+import { type MouseEventHandler, type ReactNode, useImperativeHandle, useMemo, useState } from 'react';
+import { type VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import EditButton from '@/core/ui/actions/EditButton';
-import { gutters } from '@/core/ui/grid/utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
-import { DefaultWhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { isEqual } from 'lodash';
+import {
+  DefaultWhiteboardPreviewSettings,
+  type WhiteboardPreviewSettings,
+} from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type {
+  PreviewImageDimensions,
+  WhiteboardPreviewImage,
+} from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -102,7 +107,12 @@ const FormikWhiteboardPreview = ({
       id: '__template',
       nameID: '__template',
       // Needed to pass yup validation of WhiteboardDialog
-      profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
+      profile: {
+        id: '__templateProfile',
+        displayName: '__template',
+        url: '',
+        storageBucket: { id: '', allowedMimeTypes: [], maxFileSize: 0 },
+      },
       content: field.value,
       previewSettings: previewSettingsField.value ?? DefaultWhiteboardPreviewSettings,
     };

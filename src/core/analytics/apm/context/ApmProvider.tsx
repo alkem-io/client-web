@@ -1,8 +1,10 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
-import { ApmBase } from '@elastic/apm-rum';
+import type { ApmBase } from '@elastic/apm-rum';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useApmInit } from '@/core/analytics/apm/useApmInit';
+import { AUTH_PAGE_PREFIXES } from '@/core/auth/authentication/constants/authentication.constants';
+import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 
 export interface ApmContextProps {
   apm?: ApmBase;
@@ -17,12 +19,16 @@ export const ApmContext = createContext<ApmContextProps>({
 export const ApmProvider = ({ children }: PropsWithChildren) => {
   const [apm, setApm] = useState<ApmBase | undefined>();
   const [user, setUser] = useState<CurrentUserModel>();
+  const { pathname } = useLocation();
+  const isAuthPage = AUTH_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
 
   const initFn = useApmInit(user);
 
   useEffect(() => {
-    setApm(initFn);
-  }, [initFn]);
+    if (!isAuthPage) {
+      setApm(initFn);
+    }
+  }, [initFn, isAuthPage]);
 
   const value = useMemo(() => ({ apm, setUser }), [apm]);
 

@@ -1,19 +1,19 @@
 import { useTranslation } from 'react-i18next';
-import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
-import AssociatedOrganizationsLazilyFetched from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
-import { CaptionSmall } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import AccountResourcesView, {
-  AccountResourcesProps,
-} from '@/domain/community/contributor/Account/AccountResourcesView';
-import useFilteredMemberships from '../hooks/useFilteredMemberships';
-import { RoleType } from '../constants/RoleType';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { CaptionSmall } from '@/core/ui/typography';
+import AccountResourcesView, {
+  type AccountResourcesProps,
+} from '@/domain/community/contributor/Account/AccountResourcesView';
+import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
+import AssociatedOrganizationsLazilyFetched from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import UserProfileView, { type UserProfileViewProps } from '@/domain/community/profile/views/UserProfileView';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import { RoleType } from '../constants/RoleType';
+import useFilteredMemberships from '../hooks/useFilteredMemberships';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
@@ -36,7 +36,7 @@ export const UserProfilePageView = ({
     RoleType.Admin,
   ]);
 
-  const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
+  const hasAccountResources = accountResources?.spaces && accountResources.spaces.length > 0;
 
   return (
     <PageContent>

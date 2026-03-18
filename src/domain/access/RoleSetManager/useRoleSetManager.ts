@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
-import { PartialRecord } from '@/core/utils/PartialRecord';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
+  ActorType,
   AuthorizationPrivilege,
   RoleName,
-  RoleSetContributorType,
-  RoleSetMemberOrganizationFragment,
-  RoleSetMemberUserFragment,
-  RoleSetMemberVirtualContributorFragment,
+  type RoleSetMemberOrganizationFragment,
+  type RoleSetMemberUserFragment,
+  type RoleSetMemberVirtualContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import type { PartialRecord } from '@/core/utils/PartialRecord';
+import type { RoleDefinition } from '../model/RoleDefinitionModel';
 import useRoleSetManagerRolesAssignment, {
-  useRoleSetManagerRolesAssignmentProvided,
+  type useRoleSetManagerRolesAssignmentProvided,
 } from './RolesAssignment/useRoleSetManagerRolesAssignment';
-import { RoleDefinition } from '../model/RoleDefinitionModel';
 
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
@@ -70,7 +70,7 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
 type useRoleSetManagerParams = {
   roleSetId: string | undefined;
   relevantRoles: readonly RoleName[];
-  contributorTypes?: readonly RoleSetContributorType[];
+  contributorTypes?: readonly ActorType[];
   fetchContributors?: boolean;
   fetchRoleDefinitions?: boolean;
   onChange?: () => void;
@@ -82,7 +82,7 @@ const useRoleSetManager = ({
   relevantRoles,
   fetchContributors = false,
   fetchRoleDefinitions = false,
-  contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
+  contributorTypes = [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
   onChange,
   skip,
 }: useRoleSetManagerParams): useRoleSetManagerProvided => {
@@ -122,9 +122,9 @@ const useRoleSetManager = ({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
-      includeUsers: fetchContributors && contributorTypes.includes(RoleSetContributorType.User),
-      includeOrganizations: fetchContributors && contributorTypes.includes(RoleSetContributorType.Organization),
-      includeVirtualContributors: fetchContributors && contributorTypes.includes(RoleSetContributorType.Virtual),
+      includeUsers: fetchContributors && contributorTypes.includes(ActorType.User),
+      includeOrganizations: fetchContributors && contributorTypes.includes(ActorType.Organization),
+      includeVirtualContributors: fetchContributors && contributorTypes.includes(ActorType.VirtualContributor),
       includeRoleDefinitions: fetchRoleDefinitions,
     },
     skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,

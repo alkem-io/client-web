@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { ActivityBaseView } from './ActivityBaseView';
 
 export const ActivityLoadingView = ({ rows }: { rows: number }) => (
@@ -6,7 +6,7 @@ export const ActivityLoadingView = ({ rows }: { rows: number }) => (
     {times(rows, i => (
       <ActivityBaseView
         key={`_activity_log_loading_view_row_${i}`}
-        loading
+        loading={true}
         type={undefined}
         avatarUrl={undefined}
         title=""

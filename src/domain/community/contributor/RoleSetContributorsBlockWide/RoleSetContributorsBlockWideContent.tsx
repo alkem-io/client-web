@@ -1,17 +1,17 @@
 import { Box } from '@mui/material';
-import ContributorCardSquare, { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
-import GridItem from '@/core/ui/grid/GridItem';
-import Gutters from '@/core/ui/grid/Gutters';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import GridProvider from '@/core/ui/grid/GridProvider';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardSquare, { type ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 
-type RoleSetContributorTypesBlockWideContentProps = {
+type ActorTypesBlockWideContentProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   nested?: boolean;
-  contributorType: RoleSetContributorType;
+  contributorType: ActorType;
   filter: string[];
   compactView?: boolean;
 };
@@ -29,14 +29,14 @@ const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => 
   );
 };
 
-const RoleSetContributorTypesBlockWideContent = ({
+const ActorTypesBlockWideContent = ({
   nested = false,
   users,
   organizations,
   contributorType,
   filter,
   compactView = false,
-}: RoleSetContributorTypesBlockWideContentProps) => {
+}: ActorTypesBlockWideContentProps) => {
   const { isMediumSmallScreen } = useScreenSize();
 
   const columns = useColumns();
@@ -45,8 +45,8 @@ const RoleSetContributorTypesBlockWideContent = ({
 
   return (
     <GridProvider columns={isMediumSmallScreen ? columns / 2 : columns}>
-      <Gutters row flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
-        {contributorType === RoleSetContributorType.User &&
+      <Gutters row={true} flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
+        {contributorType === ActorType.User &&
           users
             ?.filter(filterFn(filter))
             .slice(0, compactView ? compactViewItemsLimit : undefined)
@@ -57,7 +57,7 @@ const RoleSetContributorTypesBlockWideContent = ({
                 </Box>
               </GridItem>
             ))}
-        {contributorType === RoleSetContributorType.Organization &&
+        {contributorType === ActorType.Organization &&
           organizations
             ?.filter(filterFn(filter))
             .slice(0, compactView ? compactViewItemsLimit : undefined)
@@ -73,4 +73,4 @@ const RoleSetContributorTypesBlockWideContent = ({
   );
 };
 
-export default RoleSetContributorTypesBlockWideContent;
+export default ActorTypesBlockWideContent;

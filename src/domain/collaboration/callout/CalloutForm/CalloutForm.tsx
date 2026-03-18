@@ -1,36 +1,36 @@
+import { Box } from '@mui/material';
+import { Formik, type FormikConfig } from 'formik';
+import { cloneDeep } from 'lodash-es';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import {
-  CalloutAllowedContributors,
+  CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
+import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { nameOf } from '@/core/utils/nameOf';
+import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import { Box } from '@mui/material';
-import { Formik, FormikConfig } from 'formik';
-import { cloneDeep } from 'lodash';
-import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
-import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { type CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -82,8 +82,8 @@ export const calloutValidationSchema = yup.object().shape({
         .oneOf(['none', ...Object.values(CalloutContributionType)].filter(value => typeof value === 'string'))
         .required(),
       canAddContributions: yup
-        .mixed<CalloutAllowedContributors>()
-        .oneOf(Object.values(CalloutAllowedContributors).filter(value => typeof value === 'string'))
+        .mixed<CalloutAllowedActors>()
+        .oneOf(Object.values(CalloutAllowedActors).filter(value => typeof value === 'string'))
         .required(),
       commentsEnabled: yup.boolean().required(),
     }),
@@ -146,8 +146,8 @@ const CalloutForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={calloutValidationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={() => {}}
     >
       {formikState => (
@@ -158,7 +158,7 @@ const CalloutForm = ({
               <FormikInputField
                 name={nameOf<CalloutFormSubmittedValues>('framing.profile.displayName')}
                 title={t('common.title')}
-                required
+                required={true}
                 containerProps={{ sx: { flex: 1 } }}
               />
               <Box sx={isSmallScreen ? undefined : { width: '30%', minWidth: gutters(10) }}>
@@ -174,26 +174,26 @@ const CalloutForm = ({
               title={t('components.callout-creation.info-step.description')}
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}
-              temporaryLocation={!Boolean(callout?.id)}
+              temporaryLocation={!callout?.id}
               hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
             <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} edit={edit} template={template} />
             {formikState.values.framing.profile.id ? (
               <ProfileReferenceSegment
                 profileId={formikState.values.framing.profile.id}
-                compactMode
+                compactMode={true}
                 fieldName="framing.profile.references"
                 references={formikState.values.framing.profile.references ?? []}
                 marginTop={gutters(-1)}
-                fullWidth
+                fullWidth={true}
               />
             ) : (
               <ReferenceSegment
                 fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
-                compactMode
+                compactMode={true}
                 references={formikState.values.framing.profile.references}
                 temporaryLocation={calloutRestrictions?.temporaryLocation}
-                fullWidth
+                fullWidth={true}
               />
             )}
             <CalloutFormContributionSettings calloutRestrictions={calloutRestrictions} />

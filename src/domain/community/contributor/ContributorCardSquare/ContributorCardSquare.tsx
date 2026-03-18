@@ -1,8 +1,11 @@
+import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUsersMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
@@ -10,9 +13,6 @@ import ConditionalLink from '@/core/ui/link/ConditionalLink';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
-import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 type ContributorCardTooltip = {
   tags: string[];
@@ -29,7 +29,7 @@ export interface ContributorCardSquareProps {
   tooltip?: ContributorCardTooltip;
   url: string;
   isContactable?: boolean;
-  contributorType: RoleSetContributorType;
+  contributorType: ActorType;
   roleName?: ReactNode;
 }
 
@@ -50,7 +50,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
         throw new Error('User not loaded.');
       }
 
-      if (contributorType === RoleSetContributorType.User) {
+      if (contributorType === ActorType.User) {
         await sendMessageToUser({
           variables: {
             messageData: {
@@ -60,7 +60,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
           },
         });
       }
-      if (contributorType === RoleSetContributorType.Organization) {
+      if (contributorType === ActorType.Organization) {
         await sendMessageToOrganization({
           variables: {
             messageData: {
@@ -79,7 +79,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
       ({ children }) =>
         tooltip ? (
           <Tooltip
-            arrow
+            arrow={true}
             title={
               <GridProvider columns={3}>
                 <Box width={gutters(15)}>
@@ -102,7 +102,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
             <Box>{children}</Box>
           </Tooltip>
         ) : (
-          <>{children}</>
+          children
         ),
     [displayName, avatar, tooltip, isContactable]
   );

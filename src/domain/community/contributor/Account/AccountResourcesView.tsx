@@ -1,23 +1,23 @@
+import { ExpandMore } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import { useState } from 'react';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { BlockTitle } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel, type SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
+import { BlockTitle } from '@/core/ui/typography';
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import GridItem from '@/core/ui/grid/GridItem';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { Button } from '@mui/material';
-import { Actions } from '@/core/ui/actions/Actions';
-import { ExpandMore } from '@mui/icons-material';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 const VISIBLE_SPACE_LIMIT = 6;
@@ -36,11 +36,12 @@ export interface AccountResourcesProps {
   id: string;
   spaces: {
     id: string;
+    visibility: SpaceVisibility;
     about: SpaceAboutLightModel;
   }[];
   virtualContributors: {
     id: string;
-    profile: AccountProfile;
+    profile?: AccountProfile;
   }[];
   innovationPacks: {
     id: string;
@@ -85,7 +86,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
       {accountResources?.spaces && accountResources?.spaces.length > 0 && (
-        <PageContentBlockGrid disablePadding>
+        <PageContentBlockGrid disablePadding={true}>
           <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
             {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => {
               const avatarUris = collectSubspaceAvatars(
@@ -110,11 +111,12 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
                   displayName={contributionItem.about.profile.displayName}
                   banner={contributionItem.about.profile.cardBanner}
                   spaceUri={contributionItem.about.profile.url}
+                  spaceVisibility={contributionItem.visibility}
                   isPrivate={!contributionItem.about.isContentPublic}
                   level={SpaceLevel.L0}
                   avatarUris={avatarUris}
                   tags={contributionItem.about.profile.tagset?.tags}
-                  compact
+                  compact={true}
                 />
               );
             })}
@@ -132,14 +134,14 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
           </Button>
         </Actions>
       )}
-      <PageContentBlockGrid disablePadding>
+      <PageContentBlockGrid disablePadding={true}>
         {accountResources?.virtualContributors && accountResources?.virtualContributors.length > 0 && (
           <GridItem columns={resourceColumns}>
             <Gutters>
               <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 {accountResources?.virtualContributors?.map(vc => (
-                  <ContributorCardHorizontal key={vc.id} profile={vc.profile} withUnifiedTitle seamless />
+                  <ContributorCardHorizontal key={vc.id} profile={vc.profile} withUnifiedTitle={true} seamless={true} />
                 ))}
               </Gutters>
             </Gutters>
@@ -149,7 +151,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
           <GridItem columns={resourceColumns}>
             <Gutters>
               <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 {accountResources?.innovationPacks?.map(pack => (
                   <InnovationPackCardHorizontal key={pack.id} {...pack} />
                 ))}
@@ -161,7 +163,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
           <GridItem columns={resourceColumns}>
             <Gutters>
               <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 {accountResources?.innovationHubs?.map(hub => (
                   <InnovationHubCardHorizontal key={hub.id} {...hub} />
                 ))}

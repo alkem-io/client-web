@@ -1,6 +1,6 @@
-import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { PreviewImageDimensions } from '../../whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { PreviewImageDimensions } from '../../whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface MemoModelFull {
   id: string;
@@ -19,7 +19,7 @@ export interface MemoModelFull {
   };
   createdBy?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       url: string;
       avatar?: { id: string; uri: string };

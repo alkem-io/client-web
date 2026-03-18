@@ -1,9 +1,9 @@
-import { MouseEventHandler, ReactNode } from 'react';
-import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
-import GridContainer from '../grid/GridContainer';
+import { Dialog as MuiDialog, type DialogProps as MuiDialogProps, Paper, type PaperProps } from '@mui/material';
+import type { MouseEventHandler, ReactNode } from 'react';
 import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns, useScreenSize } from '../grid/constants';
+import GridContainer from '../grid/GridContainer';
+import GridItem, { type GridItemProps } from '../grid/GridItem';
 import GridProvider from '../grid/GridProvider';
-import GridItem, { GridItemProps } from '../grid/GridItem';
 
 interface DialogContainerProps extends PaperProps {
   columns?: GridItemProps['columns'];
@@ -42,7 +42,7 @@ const DialogContainer = ({
       disablePadding={fullScreen}
       sx={{ paddingY: fullScreen ? 0 : 4 }}
     >
-      <GridProvider columns={containerColumns} force>
+      <GridProvider columns={containerColumns} force={true}>
         <GridItem columns={columns}>
           <Paper {...paperProps}>
             <GridProvider columns={columns ?? containerColumns}>{children}</GridProvider>
@@ -93,17 +93,23 @@ const DialogWithGrid = ({
       fullScreen={isFullScreen}
       {...dialogProps}
       sx={{
-        '& > .MuiDialog-container > .MuiBox-root > .MuiPaper-root': {
+        '& .MuiDialog-container > .MuiBox-root > .MuiPaper-root': {
           ...(fullScreen === false ? { height: '85vh' } : fullScreen === true ? { height: 1, maxHeight: 1 } : {}), // fullScreen === undefined
         },
         '.MuiDialog-paper': {
           maxWidth: '100vw',
           margin: 0,
-          height: 'auto',
+          // height: 'auto',
           maxHeight: isFullScreen ? '100vh' : '100%',
           ...(fullHeight && {
             minHeight: 'auto',
           }),
+        },
+        '& .MuiDialog-container > .MuiBox-root': {
+          ...(isFullScreen ? { padding: 0 } : {}),
+        },
+        '& .MuiDialogContent-root.MuiDialogContent-dividers': {
+          ...(isFullScreen ? { border: 0 } : {}),
         },
         ...sx,
       }}

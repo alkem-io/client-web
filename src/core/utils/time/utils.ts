@@ -1,5 +1,5 @@
-import type { TFunction } from 'i18next';
 import dayjs from 'dayjs';
+import type { TFunction } from 'i18next';
 
 // Note: In this file some dates are recreated with
 //  `new Date(something that is supposed to be already a Date)`
@@ -91,7 +91,7 @@ export const formatLongDateTimeString = ({
   if ((durationDays || 0) > 0 && durationMinutes && durationMinutes > 0) {
     const endDate = getEndDateByDuration(startDate, durationMinutes);
 
-    longDateTimeString += ' - ' + endDate.toLocaleDateString(LocaleId, longDayFormatOptions);
+    longDateTimeString += ` - ${endDate.toLocaleDateString(LocaleId, longDayFormatOptions)}`;
   }
 
   return longDateTimeString;

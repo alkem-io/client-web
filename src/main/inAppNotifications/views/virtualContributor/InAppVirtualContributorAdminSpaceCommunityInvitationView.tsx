@@ -1,6 +1,6 @@
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
-import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 import { getInvitationsDialogUrl } from '@/main/routing/urlBuilders';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppVirtualContributorAdminSpaceCommunityInvitationView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
@@ -13,7 +13,7 @@ export const InAppVirtualContributorAdminSpaceCommunityInvitationView = (notific
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
-    contributorName: payload.contributor?.profile?.displayName,
+    contributorName: payload.actor?.profile?.displayName,
   };
 
   return (

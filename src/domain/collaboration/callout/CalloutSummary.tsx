@@ -1,7 +1,7 @@
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { Box, Typography, styled } from '@mui/material';
-import { ComponentType, PropsWithChildren } from 'react';
+import { Box, styled, Typography } from '@mui/material';
+import type { ComponentType, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 export type CalloutSummaryFields = {
   framing: {

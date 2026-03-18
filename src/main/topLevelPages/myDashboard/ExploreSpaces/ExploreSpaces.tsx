@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import ExploreSpacesContainer from './ExploreSpacesContainer';
+import { useState } from 'react';
 import { ExploreSpacesView, SpacesExplorerMembershipFilter } from './ExploreSpacesView';
+import useExploreSpaces from './useExploreSpaces';
 
 interface ExploreSpacesProps {
   itemsPerRow?: number;
@@ -11,20 +11,16 @@ const ExploreSpaces = ({ itemsPerRow, itemsLimit }: ExploreSpacesProps) => {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>(SpacesExplorerMembershipFilter.All);
 
+  const provided = useExploreSpaces({ searchTerms, selectedFilter });
+
   return (
-    <ExploreSpacesContainer searchTerms={searchTerms} selectedFilter={selectedFilter}>
-      {provided => {
-        return (
-          <ExploreSpacesView
-            {...provided}
-            setSearchTerms={setSearchTerms}
-            setSelectedFilter={setSelectedFilter}
-            itemsPerRow={itemsPerRow}
-            itemsLimit={itemsLimit}
-          />
-        );
-      }}
-    </ExploreSpacesContainer>
+    <ExploreSpacesView
+      {...provided}
+      setSearchTerms={setSearchTerms}
+      setSelectedFilter={setSelectedFilter}
+      itemsPerRow={itemsPerRow}
+      itemsLimit={itemsLimit}
+    />
   );
 };
 

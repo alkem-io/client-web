@@ -1,25 +1,24 @@
 import { useCallback, useMemo, useState } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminOrganizationsListQuery,
-  usePlatformAdminOrganizationsListQuery,
   useAdminOrganizationVerifyMutation,
   useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
+  usePlatformAdminOrganizationsListQuery,
   usePlatformLicensingPlansQuery,
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
-import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
-import { useTranslation } from 'react-i18next';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
-import { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
+import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   OrgVerificationLifecycleEvents,
   OrgVerificationLifecycleStates,
 } from '@/domain/community/organization/model/OrganizationVerification';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import type { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 
 const PAGE_SIZE = 10;
 
@@ -162,10 +161,10 @@ export const usePlatformAdminOrganizationsList = () => {
       data?.platformAdmin.organizations?.organization.map(org => ({
         id: org.id,
         accountId: org.account?.id,
-        value: org.profile.displayName,
-        url: buildSettingsUrl(org.profile.url),
+        value: org.profile?.displayName ?? '',
+        url: buildSettingsUrl(org.profile?.url ?? ''),
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
-        avatar: org.profile.visual,
+        avatar: org.profile?.visual,
         activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)

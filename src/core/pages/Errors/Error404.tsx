@@ -1,19 +1,19 @@
+import { EastOutlined } from '@mui/icons-material';
+import { Box, Link, type LinkProps, styled } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { log404NotFound } from '@/core/logging/sentry/log';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { Box, Link, LinkProps, styled } from '@mui/material';
-import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
-import { PageTitle, Tagline, Text } from '@/core/ui/typography';
-import { EastOutlined } from '@mui/icons-material';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import SearchBar from '@/main/ui/layout/topBar/SearchBar';
+import { usePageTitle } from '@/core/routing/usePageTitle';
 import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { gutters } from '@/core/ui/grid/utils';
+import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
-import { useLocation } from 'react-router-dom';
-import { usePageTitle } from '@/core/routing/usePageTitle';
+import { PageTitle, Tagline, Text } from '@/core/ui/typography';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import SearchBar from '@/main/ui/layout/topBar/SearchBar';
 
 export const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -105,7 +105,7 @@ export const Error404 = () => {
                 })}
               />
               <Tagline sx={{ marginTop: gutters(2) }}>{t('pages.four-ou-four.message')}</Tagline>
-              <StyledSearchBox withRedirect />
+              <StyledSearchBox withRedirect={true} />
               <UsefulLinks>
                 <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
                   {t('common.home')}

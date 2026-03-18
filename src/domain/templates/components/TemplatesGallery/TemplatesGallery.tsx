@@ -1,11 +1,11 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import { times } from 'lodash-es';
+import type { PropsWithChildren, ReactNode } from 'react';
+import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import TemplateCard from '../cards/TemplateCard';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
-import { times } from 'lodash';
 
 type TemplatesGalleryProps = {
   headerText: string;

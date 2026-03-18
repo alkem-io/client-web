@@ -1,21 +1,21 @@
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import useContributionProvider, {
-  ContributionDetails,
-} from '../../profile/useContributionProvider/useContributionProvider';
-import { useCallback, useState } from 'react';
-import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import CardActions from '@/core/ui/card/CardActions';
+import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
+import { useCallback, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import CardActions from '@/core/ui/card/CardActions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Caption } from '@/core/ui/typography';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useParentSpaceInfo } from '@/domain/space/components/cards/utils/useParentSpaceInfo';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import { useParentSpaceInfo } from '@/domain/space/components/cards/utils/useParentSpaceInfo';
+import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import useContributionProvider, {
+  type ContributionDetails,
+} from '../../profile/useContributionProvider/useContributionProvider';
 
 export type ContributionCardProps = {
   onLeave?: () => Promise<unknown>;
@@ -85,7 +85,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
         banner={details.about.profile.cardBanner}
         tags={details.about.profile.tagset?.tags}
         spaceUri={details.about.profile.url}
-        spaceVisibility={undefined}
+        spaceVisibility={details.visibility}
         level={details.level}
         member={details.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member}
         isPrivate={!details.about.isContentPublic}

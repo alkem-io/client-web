@@ -1,23 +1,23 @@
-import { Box, FormControlLabel, IconButton, Skeleton, Switch, useTheme } from '@mui/material';
 import { Add } from '@mui/icons-material';
+import { Box, FormControlLabel, IconButton, Skeleton, Switch, useTheme } from '@mui/material';
+import dayjs from 'dayjs';
+import { groupBy, sortBy, times } from 'lodash-es';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
-import useNavigate from '@/core/routing/useNavigate';
-import { groupBy, sortBy, times } from 'lodash';
 import { useSpaceCalendarEventsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockFooter from '@/core/ui/content/PageContentBlockFooter';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '@/core/ui/grid/utils';
-import { Caption, Text } from '@/core/ui/typography';
-import CalendarEventView from '@/domain/timeline/calendar/views/CalendarEventView';
-import PageContentBlockFooter from '@/core/ui/content/PageContentBlockFooter';
-import FullCalendar, { INTERNAL_DATE_FORMAT } from '@/domain/timeline/calendar/components/FullCalendar';
-import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '@/domain/timeline/calendar/CalendarDialog';
-import { useQueryParams } from '@/core/routing/useQueryParams';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { Actions } from '@/core/ui/actions/Actions';
+import { Caption, Text } from '@/core/ui/typography';
+import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '@/domain/timeline/calendar/CalendarDialog';
+import FullCalendar, { INTERNAL_DATE_FORMAT } from '@/domain/timeline/calendar/components/FullCalendar';
+import CalendarEventView from '@/domain/timeline/calendar/views/CalendarEventView';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -66,8 +66,8 @@ const DashboardCalendarSection = ({ spaceId, level }: DashboardCalendarSectionPr
       dayjs(event.startDate).isBefore(dayjs().startOf('day')) ? 'past' : 'future'
     );
     return [
-      ...sortBy(eventGroups['future'], event => dayjs(event.startDate).valueOf()),
-      ...sortBy(eventGroups['past'], event => -dayjs(event.startDate).valueOf()),
+      ...sortBy(eventGroups.future, event => dayjs(event.startDate).valueOf()),
+      ...sortBy(eventGroups.past, event => -dayjs(event.startDate).valueOf()),
     ].slice(0, MAX_NUMBER_OF_EVENTS);
   }, [allEvents]);
 
@@ -105,7 +105,7 @@ const DashboardCalendarSection = ({ spaceId, level }: DashboardCalendarSectionPr
       </Box>
       <PageContentBlockFooter>
         <FormControlLabel
-          control={<Switch size="small" value={isCalendarView} onChange={(e, checked) => setCalendarView(checked)} />}
+          control={<Switch size="small" value={isCalendarView} onChange={(_e, checked) => setCalendarView(checked)} />}
           label={<Caption>{t('calendar.show-calendar')}</Caption>}
         />
         {hasCreatePrivilege && (

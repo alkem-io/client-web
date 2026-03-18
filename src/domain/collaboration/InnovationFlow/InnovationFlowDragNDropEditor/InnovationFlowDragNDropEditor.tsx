@@ -1,43 +1,57 @@
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { EditOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, DialogContent, IconButton, type IconButtonProps, styled } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import i18n from '@/core/i18n/config';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
-import { EditOutlined } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
-import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
-import { gutters } from '@/core/ui/grid/utils';
-import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
-import InnovationFlowStateForm, { InnovationFlowStateFormValues } from './InnovationFlowStateForm';
-import InnovationFlowStateMenu from './InnovationFlowStateMenu';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import SetDefaultTemplateDialog from '../InnovationFlowDialogs/SetDefaultTemplateDialog';
-
-const STATES_DROPPABLE_ID = '__states';
+import type { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
+import InnovationFlowStateForm, { type InnovationFlowStateFormValues } from './InnovationFlowStateForm';
+import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
 const StyledDragAndDropBlock = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   gap: gutters(1)(theme),
   alignItems: 'stretch',
-  '& div[data-rbd-drop-indicator]': {
-    background: theme.palette.primary.main,
-  },
 }));
 
 export interface InnovationFlowDragNDropEditorProps {
-  onUnhandledDragEnd?: OnDragEndResponder;
-  children?: (state: Identifiable & InnovationFlowStateModel) => React.ReactNode;
+  onUnhandledDragEnd?: (event: DragEndEvent) => void;
+  children?: (
+    state: Identifiable & InnovationFlowStateModel,
+    dropIndicator: { activeId: string | null; overId: string | null }
+  ) => React.ReactNode;
+  renderDragOverlay?: (activeId: string) => React.ReactNode;
   innovationFlow:
     | {
         currentState?: Identifiable;
@@ -81,9 +95,106 @@ const AddButton = (props: IconButtonProps) => {
   );
 };
 
+const SortableFlowState = ({
+  state,
+  disabled,
+  currentStateId,
+  croppedDescriptions,
+  children,
+  getStateName,
+  onUpdateCurrentState,
+  onEdit,
+  onAddStateAfter,
+  onDelete,
+  onSetDefaultTemplate,
+  disableStateNumberChange,
+  canAddState,
+}: {
+  state: Identifiable & InnovationFlowStateModel;
+  disabled: boolean;
+  currentStateId: string | undefined;
+  croppedDescriptions: boolean | undefined;
+  children: React.ReactNode | undefined;
+  getStateName: (name: string) => string;
+  onUpdateCurrentState: ((stateId: string) => void) | undefined;
+  onEdit: () => void;
+  onAddStateAfter: (stateBefore: string) => void;
+  onDelete: () => void;
+  onSetDefaultTemplate: () => void;
+  disableStateNumberChange: boolean;
+  canAddState: boolean;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: state.id,
+    disabled,
+  });
+
+  const isCurrentState = currentStateId === state.id;
+
+  return (
+    <PageContentBlock
+      columns={3}
+      ref={setNodeRef}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        transition,
+      }}
+      sx={{ borderColor: isCurrentState ? 'primary.main' : undefined, opacity: isDragging ? 0.5 : 1 }}
+      {...attributes}
+    >
+      <PageContentBlockHeader
+        title={
+          <Caption
+            noWrap={true}
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              cursor: disabled ? undefined : 'grab',
+              touchAction: 'none',
+            }}
+            {...listeners}
+          >
+            {getStateName(state.displayName)}
+          </Caption>
+        }
+        sx={{ userSelect: 'none' }}
+        actions={
+          <InnovationFlowStateMenu
+            stateId={state.id}
+            isCurrentState={isCurrentState}
+            onUpdateCurrentState={onUpdateCurrentState}
+            onAddStateAfter={onAddStateAfter}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onSetDefaultTemplate={onSetDefaultTemplate}
+            disableStateNumberChange={disableStateNumberChange}
+            disableAddStateAfter={!canAddState}
+            disableRemoveState={disableStateNumberChange}
+          />
+        }
+      />
+      {state.description?.trim() &&
+        (croppedDescriptions ? (
+          <CroppedMarkdown
+            automaticOverflowDetector={true}
+            backgroundColor="paper"
+            maxHeightGutters={3}
+            minHeightGutters={1}
+          >
+            {state.description}
+          </CroppedMarkdown>
+        ) : (
+          <WrapperMarkdown card={true}>{state.description}</WrapperMarkdown>
+        ))}
+      {children}
+    </PageContentBlock>
+  );
+};
+
 const InnovationFlowDragNDropEditor = ({
   innovationFlow,
   children,
+  renderDragOverlay,
   croppedDescriptions,
   onUnhandledDragEnd,
   onUpdateFlowStateOrder,
@@ -94,11 +205,9 @@ const InnovationFlowDragNDropEditor = ({
   onSetDefaultTemplate,
   disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
-  // eslint-disable-next-line react-compiler/react-compiler -- Required: @hello-pangea/dnd render props pattern breaks with React Compiler memoization
-  'use no memo';
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const innovationFlowStates = innovationFlow?.states;
+  const innovationFlowStates = innovationFlow?.states ?? [];
   const currentStateId = innovationFlow?.currentState?.id;
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
@@ -108,6 +217,8 @@ const InnovationFlowDragNDropEditor = ({
   const [editFlowState, setEditFlowState] = useState<(Identifiable & InnovationFlowStateModel) | undefined>();
   const [deleteFlowStateId, setDeleteFlowStateId] = useState<string | undefined>();
   const [setDefaultTemplateStateId, setSetDefaultTemplateStateId] = useState<string | undefined>();
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const [overDragId, setOverDragId] = useState<string | null>(null);
 
   // Track if we've already processed the editTab param to avoid re-triggering
   const editTabProcessedRef = useRef<string | null>(null);
@@ -129,16 +240,40 @@ const InnovationFlowDragNDropEditor = ({
     }
   }, [searchParams, innovationFlowStates, setSearchParams]);
 
-  const handleDragEnd: OnDragEndResponder = (result, provided) => {
-    const { draggableId, destination } = result;
-    if (destination?.droppableId === STATES_DROPPABLE_ID) {
-      if (onUpdateFlowStateOrder && destination) {
-        onUpdateFlowStateOrder(draggableId, destination.index);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const stateIds = innovationFlowStates.map(s => s.id);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(event.active.id as string);
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    setOverDragId(event.over ? (event.over.id as string) : null);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDragId(null);
+    setOverDragId(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
+      onUnhandledDragEnd?.(event);
+      return;
+    }
+    // Check if this is a state reorder (active item is a flow state)
+    const isStateItem = stateIds.includes(active.id as string);
+    if (isStateItem) {
+      const newIndex = stateIds.indexOf(over.id as string);
+      if (newIndex !== -1) {
+        onUpdateFlowStateOrder(active.id as string, newIndex);
       }
       return;
     }
-    // Maybe some children drag&drop happened, handle it outside here
-    onUnhandledDragEnd?.(result, provided);
+    // Not a state drag — delegate to external handler
+    onUnhandledDragEnd?.(event);
   };
 
   const getStateName = (state: string) =>
@@ -147,78 +282,45 @@ const InnovationFlowDragNDropEditor = ({
       : state;
 
   const canAddState =
-    !disableStateNumberChange &&
-    (innovationFlowStates ?? []).length < (innovationFlow?.settings.maximumNumberOfStates ?? 0);
+    !disableStateNumberChange && innovationFlowStates.length < (innovationFlow?.settings.maximumNumberOfStates ?? 0);
 
   return (
     <>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
-          {parentDroppableProvided => (
-            <Box ref={parentDroppableProvided.innerRef}>
-              <StyledDragAndDropBlock>
-                {innovationFlowStates?.map((state, index) => (
-                  <Draggable
-                    key={state.id}
-                    draggableId={state.id}
-                    index={index}
-                    isDragDisabled={disableStateNumberChange}
-                  >
-                    {parentProvider => {
-                      const isCurrentState = currentStateId === state.id;
-                      return (
-                        <PageContentBlock
-                          key={state.id}
-                          columns={3}
-                          ref={parentProvider.innerRef}
-                          sx={{ borderColor: isCurrentState ? 'primary.main' : undefined }}
-                          {...parentProvider.draggableProps}
-                        >
-                          <PageContentBlockHeader
-                            title={
-                              <Caption {...parentProvider.dragHandleProps}>
-                                <>{getStateName(state.displayName)}</>
-                              </Caption>
-                            }
-                            sx={{ userSelect: 'none' }}
-                            actions={
-                              <InnovationFlowStateMenu
-                                stateId={state.id}
-                                isCurrentState={isCurrentState}
-                                onUpdateCurrentState={onUpdateCurrentState}
-                                onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
-                                onEdit={() => setEditFlowState(state)}
-                                onDelete={() => setDeleteFlowStateId(state.id)}
-                                onSetDefaultTemplate={() => setSetDefaultTemplateStateId(state.id)}
-                                disableStateNumberChange={disableStateNumberChange}
-                                disableAddStateAfter={!canAddState}
-                                disableRemoveState={disableStateNumberChange}
-                              />
-                            }
-                          />
-                          {state.description?.trim() &&
-                            (croppedDescriptions ? (
-                              <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3} minHeightGutters={1}>
-                                {state.description}
-                              </CroppedMarkdown>
-                            ) : (
-                              <WrapperMarkdown card>{state.description}</WrapperMarkdown>
-                            ))}
-                          {children?.(state)}
-                        </PageContentBlock>
-                      );
-                    }}
-                  </Draggable>
-                ))}
-                {parentDroppableProvided.placeholder}
-                {!disableStateNumberChange && (
-                  <AddButton onClick={() => setCreateFlowState({ last: true })} disabled={!canAddState} />
-                )}
-              </StyledDragAndDropBlock>
-            </Box>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={stateIds} strategy={horizontalListSortingStrategy}>
+          <StyledDragAndDropBlock>
+            {innovationFlowStates.map(state => (
+              <SortableFlowState
+                key={state.id}
+                state={state}
+                disabled={disableStateNumberChange}
+                currentStateId={currentStateId}
+                croppedDescriptions={croppedDescriptions}
+                getStateName={getStateName}
+                onUpdateCurrentState={onUpdateCurrentState}
+                onEdit={() => setEditFlowState(state)}
+                onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
+                onDelete={() => setDeleteFlowStateId(state.id)}
+                onSetDefaultTemplate={() => setSetDefaultTemplateStateId(state.id)}
+                disableStateNumberChange={disableStateNumberChange}
+                canAddState={canAddState}
+              >
+                {children?.(state, { activeId: activeDragId, overId: overDragId })}
+              </SortableFlowState>
+            ))}
+            {!disableStateNumberChange && (
+              <AddButton onClick={() => setCreateFlowState({ last: true })} disabled={!canAddState} />
+            )}
+          </StyledDragAndDropBlock>
+        </SortableContext>
+        <DragOverlay dropAnimation={null}>{activeDragId && renderDragOverlay?.(activeDragId)}</DragOverlay>
+      </DndContext>
       {/* Dialogs for Flow States management */}
 
       <DialogWithGrid
@@ -234,9 +336,11 @@ const InnovationFlowDragNDropEditor = ({
         />
         <DialogContent>
           <InnovationFlowStateForm
-            forbiddenFlowStateNames={innovationFlowStates?.map(state => state.displayName)}
+            forbiddenFlowStateNames={innovationFlowStates.map(state => state.displayName)}
             onSubmit={async newState => {
-              await onCreateFlowState(newState, createFlowState!);
+              if (createFlowState) {
+                await onCreateFlowState(newState, createFlowState);
+              }
               setCreateFlowState(undefined);
             }}
             onCancel={() => setCreateFlowState(undefined)}
@@ -258,10 +362,12 @@ const InnovationFlowDragNDropEditor = ({
           <InnovationFlowStateForm
             state={editFlowState}
             forbiddenFlowStateNames={innovationFlowStates
-              ?.filter(state => state.displayName !== editFlowState?.displayName)
+              .filter(state => !editFlowState || state.displayName !== editFlowState.displayName)
               .map(state => state.displayName)}
             onSubmit={async newState => {
-              await onEditFlowState(editFlowState!.id, newState);
+              if (editFlowState) {
+                await onEditFlowState(editFlowState.id, newState);
+              }
               setEditFlowState(undefined);
             }}
             onCancel={() => setEditFlowState(undefined)}
@@ -271,7 +377,9 @@ const InnovationFlowDragNDropEditor = ({
       <ConfirmationDialog
         actions={{
           onConfirm: () => {
-            onDeleteFlowState(deleteFlowStateId!);
+            if (deleteFlowStateId) {
+              onDeleteFlowState(deleteFlowStateId);
+            }
             setDeleteFlowStateId(undefined);
           },
           onCancel: () => setDeleteFlowStateId(undefined),

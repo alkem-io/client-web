@@ -1,47 +1,46 @@
 import {
-  CalloutFramingType,
-  CreateCalloutInput,
-  CreateProfileInput,
-  CreateReferenceInput,
-  CreateTemplateFromSpaceMutationVariables,
-  CreateTemplateFromContentSpaceMutationVariables,
-  CreateWhiteboardInput,
-  UpdateCalloutTemplateMutationVariables,
-  UpdateCommunityGuidelinesMutationVariables,
-  UpdateProfileInput,
-  UpdateTagsetInput,
-  UpdateTemplateFromSpaceMutationVariables,
-  VisualType,
   CalloutContributionType,
-  CreateLinkInput,
-  CreateMemoInput,
-  UpdateWhiteboardMutationVariables,
-  WhiteboardPreviewSettings,
-} from '@/core/apollo/generated/graphql-schema';
-import {
-  CreateTemplateMutationVariables,
+  CalloutFramingType,
+  type CreateCalloutInput,
+  type CreateLinkInput,
+  type CreateMemoInput,
+  type CreateProfileInput,
+  type CreateReferenceInput,
+  type CreateTemplateFromContentSpaceMutationVariables,
+  type CreateTemplateFromSpaceMutationVariables,
+  type CreateTemplateMutationVariables,
+  type CreateWhiteboardInput,
   TemplateType,
-  UpdateTemplateMutationVariables,
+  type UpdateCalloutTemplateMutationVariables,
+  type UpdateCommunityGuidelinesMutationVariables,
+  type UpdateProfileInput,
+  type UpdateTagsetInput,
+  type UpdateTemplateFromSpaceMutationVariables,
+  type UpdateTemplateMutationVariables,
+  type UpdateWhiteboardMutationVariables,
+  VisualType,
+  type WhiteboardPreviewSettings,
 } from '@/core/apollo/generated/graphql-schema';
-import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
-import { TemplateCommunityGuidelinesFormSubmittedValues } from '../TemplateCommunityGuidelinesForm';
-import { TemplateWhiteboardFormSubmittedValues } from '../TemplateWhiteboardForm';
-import { TemplateCalloutFormSubmittedValues } from '../TemplateCalloutForm';
-import { TemplateSpaceFormSubmittedValues } from '../TemplateSpaceForm';
-import { TemplatePostFormSubmittedValues } from '../TemplatePostForm';
-import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
-import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 import {
   mapCalloutSettingsFormToCalloutSettingsModel,
   mapCalloutSettingsFormToCalloutUpdateSettings,
   mapLinkDataToUpdateLinkInput,
 } from '@/domain/collaboration/callout/models/mappings';
+import type { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
-import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
+import type { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
+import type { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
+import type { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import type { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
+import type { TemplateCalloutFormSubmittedValues } from '../TemplateCalloutForm';
+import type { TemplateCommunityGuidelinesFormSubmittedValues } from '../TemplateCommunityGuidelinesForm';
+import type { AnyTemplateFormSubmittedValues } from '../TemplateForm';
+import type { TemplatePostFormSubmittedValues } from '../TemplatePostForm';
+import type { TemplateSpaceFormSubmittedValues } from '../TemplateSpaceForm';
+import type { TemplateWhiteboardFormSubmittedValues } from '../TemplateWhiteboardForm';
 
 interface EntityWithProfile {
   profile: {
@@ -402,6 +401,7 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateWhiteboardVariables?: UpdateWhiteboardMutationVariables;
   updateCalloutVariables?: UpdateCalloutTemplateMutationVariables;
+  updateCalloutMediaGallery?: CalloutFormSubmittedValues['framing']['mediaGallery'];
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
   updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
@@ -447,9 +447,17 @@ export const toUpdateTemplateMutationVariables = (
         delete updateCalloutVariables.calloutData?.contributionDefaults?.whiteboardContent;
       }
 
+      const updateCalloutMediaGallery =
+        calloutTemplateData.callout?.framing.type === CalloutFramingType.MediaGallery
+          ? {
+              visuals: calloutTemplateData.callout?.framing.mediaGallery?.visuals ?? [],
+            }
+          : undefined;
+
       return {
         updateTemplateVariables,
         updateCalloutVariables,
+        updateCalloutMediaGallery,
       };
     }
     case TemplateType.Space: {

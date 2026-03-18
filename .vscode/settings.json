@@ -1,7 +1,18 @@
 {
-  "eslint.validate": ["typescript", "typescriptreact"],
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "files.eol": "\n",
   "typescript.tsdk": "node_modules/typescript/lib",
@@ -62,6 +73,7 @@
   },
   "chat.tools.terminal.autoApprove": {
     ".specify/scripts/bash/": true,
-    ".specify/scripts/powershell/": true
+    ".specify/scripts/powershell/": true,
+    "pnpm": true
   }
 }

@@ -1,21 +1,20 @@
-import { Identifiable } from '@/core/utils/Identifiable';
-import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
-import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { Skeleton, TableProps, TextField, Typography } from '@mui/material';
+import { Skeleton, type TableProps, TextField, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { styled } from '@mui/material/styles';
-import { times } from 'lodash';
-import debounce from 'lodash/debounce';
-import React, { ComponentType, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react';
+import { debounce, times } from 'lodash-es';
+import React, { type ComponentType, type PropsWithChildren, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import { Filter } from '../Common/Filter';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
@@ -40,7 +39,7 @@ const FILTER_DEBOUNCE = 500;
 
 const ScrollableTable = (props: TableProps) => (
   <TableContainer sx={{ maxHeight: theme => theme.spacing(75) }}>
-    <Table stickyHeader size="small" {...props} />
+    <Table stickyHeader={true} size="small" {...props} />
   </TableContainer>
 );
 
@@ -181,7 +180,7 @@ export const AvailableMembers = <Member extends Identifiable>({
         placeholder={t('components.filter.placeholder')}
         onChange={handleSearchTermChange}
         size="small"
-        fullWidth
+        fullWidth={true}
         InputLabelProps={{ shrink: true }}
         sx={{ background: theme => theme.palette.primary.contrastText }}
       />

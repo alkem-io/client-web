@@ -24,11 +24,8 @@ fragment AdminCommunityApplication on Application {
   updatedDate
   state
   nextEvents
-  contributor {
+  actor {
     ...AdminCommunityCandidateMember
-    ... on User {
-      email
-    }
   }
 }
 
@@ -38,12 +35,8 @@ fragment AdminCommunityInvitation on Invitation {
   updatedDate
   state
   nextEvents
-  contributorType
-  contributor {
+  actor {
     ...AdminCommunityCandidateMember
-    ... on User {
-      email
-    }
   }
 }
 
@@ -53,8 +46,9 @@ fragment AdminPlatformInvitationCommunity on PlatformInvitation {
   email
 }
 
-fragment AdminCommunityCandidateMember on Contributor {
+fragment AdminCommunityCandidateMember on Actor {
   id
+  type
   profile {
     id
     displayName

@@ -1,18 +1,19 @@
+import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
-import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
-import { UsersRoute } from '../domain/users/routing/UsersRoute';
-import { SpacesRoute } from '../domain/space/routing/SpacesRoute';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
-import AdminInnovationPacksRoutes from '@/domain/platformAdmin/domain/innovationPacks/AdminInnovationPackRoutes';
-import AdminInnovationHubsRoutes from '@/domain/platformAdmin/domain/innovationHubs/InnovationHubsAdminRoutes';
-import VirtualContributorsRoutes from '../domain/virtual-contributors/VirtualContributorsRoutes';
-import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
-import AdminOrganizationsRoutes from '../domain/organizations/AdminOrganizationsRoutes';
 import { usePageTitle } from '@/core/routing/usePageTitle';
-import { useTranslation } from 'react-i18next';
+import AdminInnovationHubsRoutes from '@/domain/platformAdmin/domain/innovationHubs/InnovationHubsAdminRoutes';
+import AdminInnovationPacksRoutes from '@/domain/platformAdmin/domain/innovationPacks/AdminInnovationPackRoutes';
+import TransferPage from '@/domain/platformAdmin/management/transfer/TransferPage';
+import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
+import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
+import AdminOrganizationsRoutes from '../domain/organizations/AdminOrganizationsRoutes';
+import { SpacesRoute } from '../domain/space/routing/SpacesRoute';
+import { UsersRoute } from '../domain/users/routing/UsersRoute';
+import VirtualContributorsRoutes from '../domain/virtual-contributors/VirtualContributorsRoutes';
+import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 
 const PlatformAdminRoute = () => {
   useTransactionScope({ type: 'admin' });
@@ -25,7 +26,7 @@ const PlatformAdminRoute = () => {
     <NoIdentityRedirect>
       <NonPlatformAdminRedirect>
         <Routes>
-          <Route index element={<Navigate to="spaces" replace />} />
+          <Route index={true} element={<Navigate to="spaces" replace={true} />} />
           <Route path="spaces/*" element={<SpacesRoute />} />
           <Route path="users/*" element={<UsersRoute />} />
           <Route path="authorization-policies/*" element={<AuthorizationPoliciesPage />} />
@@ -34,6 +35,7 @@ const PlatformAdminRoute = () => {
           <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />
           <Route path="innovation-hubs/*" element={<AdminInnovationHubsRoutes />} />
           <Route path="virtual-contributors/*" element={<VirtualContributorsRoutes />} />
+          <Route path="transfer/*" element={<TransferPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </NonPlatformAdminRedirect>

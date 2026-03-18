@@ -1,7 +1,6 @@
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { SpaceLevel, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { SpaceLevel, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface ExploreSpacesContainerEntities {
   spaces: SpaceWithParent[] | undefined;
@@ -15,11 +14,6 @@ export interface ExploreSpacesContainerEntities {
     name: string;
     tags: string[];
   }[];
-}
-
-export interface ExploreSpacesContainerProps extends SimpleContainerProps<ExploreSpacesContainerEntities> {
-  searchTerms: string[];
-  selectedFilter: string;
 }
 
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
@@ -55,11 +49,7 @@ export interface ExploreSpacesViewProps {
     key: string;
     name: string;
   }[];
-  welcomeSpace?: {
-    id: string;
-    about: SpaceAboutLightModel;
-    level: SpaceLevel.L0;
-  };
+  welcomeSpace?: SpaceWithParent;
   itemsPerRow?: number;
   itemsLimit?: number;
 }

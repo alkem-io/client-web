@@ -1,4 +1,8 @@
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import type {
+  CalloutDescriptionDisplayMode,
+  CommunityMembershipPolicy,
+  SpacePrivacyMode,
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceSettingsPrivacy {
   mode: SpacePrivacyMode;
@@ -18,6 +22,10 @@ export interface SpaceSettingsCollaboration {
   allowEventsFromSubspaces: boolean;
   allowMembersToVideoCall: boolean;
   allowGuestContributions: boolean;
+}
+
+export interface SpaceSettingsLayout {
+  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 }
 
 export interface SpaceSettingsModel {

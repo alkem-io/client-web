@@ -1,17 +1,17 @@
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import { Box, Skeleton } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardHeaderDetail from '@/core/ui/card/CardHeaderDetail';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration } from '@/core/utils/time/utils';
+import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
 export interface EventCardHeaderProps {
   event:
@@ -51,7 +51,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
           durationDays={event?.durationDays ?? 0}
           durationMinutes={event?.durationMinutes ?? 0}
           marginLeft={0.5}
-          tooltipDisabled
+          tooltipDisabled={true}
         />
       }
       height={isSmallScreen ? 'auto' : gutters(3)}
@@ -59,7 +59,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
     >
-      <BlockSectionTitle noWrap>{event?.profile.displayName}</BlockSectionTitle>
+      <BlockSectionTitle noWrap={true}>{event?.profile.displayName}</BlockSectionTitle>
       <Box display="flex" gap={isSmallScreen ? 0 : gutters()} flexDirection={isSmallScreen ? 'column' : 'row'}>
         {event && (
           <>

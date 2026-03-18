@@ -1,13 +1,4 @@
-import {
-  createContext,
-  Dispatch,
-  PropsWithChildren,
-  ReactElement,
-  useContext,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, type Dispatch, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 type CharacterCountContextValue = {
   characterCount: number;
@@ -40,17 +31,7 @@ export const useSetCharacterCount = () => {
   return setCharacterCount;
 };
 
-interface CharacterCountContainerProps {
-  onChange?: (characterCount: number) => void;
-  children: ({ characterCount }) => ReactElement | null;
-}
-
-export const CharacterCountContainer = ({ onChange, children }: CharacterCountContainerProps) => {
+export const useCharacterCount = () => {
   const { characterCount } = useCharacterCountContext();
-
-  useLayoutEffect(() => {
-    onChange?.(characterCount);
-  }, [characterCount]);
-
-  return children({ characterCount });
+  return characterCount;
 };

@@ -1,14 +1,14 @@
+import { DesignServicesOutlined } from '@mui/icons-material';
 import { Skeleton } from '@mui/material';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
+import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
+import CardDetails from '@/core/ui/card/CardDetails';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
-import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
-import { DesignServicesOutlined } from '@mui/icons-material';
-import CardDetails from '@/core/ui/card/CardDetails';
-import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
-import { Visual } from '@/domain/common/visual/Visual';
-import { GenericCalloutIcon } from '../icons/calloutIcons';
+import ContributeCard, { type ContributeCardProps } from '@/core/ui/card/ContributeCard';
 import RouterLink from '@/core/ui/link/RouterLink';
+import type { Visual } from '@/domain/common/visual/Visual';
+import { GenericCalloutIcon } from '../icons/calloutIcons';
 
 export interface CalloutCardCallout {
   framing: {

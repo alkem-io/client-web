@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
-export interface Callback<Args extends unknown[], Result> {
-  (...args: Args): Promise<Result>;
-}
+export type Callback<Args extends unknown[], Result> = (...args: Args) => Promise<Result>;
 
 export type Provided<Args extends unknown[], Result> = [
   callback: Callback<Args, Result>,
   isLoading: boolean,
-  error: Error | undefined
+  error: Error | undefined,
 ];
 
 const useLoadingState = <Args extends unknown[], Result>(

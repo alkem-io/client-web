@@ -1,9 +1,9 @@
+import type { SvgIconComponent } from '@mui/icons-material';
 import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
-import { ReactNode } from 'react';
-import { times } from 'lodash';
-import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import { times } from 'lodash-es';
+import type { ReactNode } from 'react';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { SvgIconComponent } from '@mui/icons-material';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 
 interface LinkItem {
@@ -35,13 +35,13 @@ const LinksList = ({ links, loading, emptyListCaption }: LinksListProps) => {
         const { id, url, title, icon: IconComponent, count } = link;
         if (!url) return null;
         return (
-          <ListItem key={id} disableGutters component={RouterLink} to={url ?? ''}>
+          <ListItem key={id} disableGutters={true} component={RouterLink} to={url ?? ''}>
             {IconComponent ? (
               <ListItemIcon>
                 <IconComponent sx={{ color: theme.palette.primary.dark }} />
               </ListItemIcon>
             ) : null}
-            <BlockSectionTitle minWidth={0} noWrap>
+            <BlockSectionTitle minWidth={0} noWrap={true}>
               <EllipsableWithCount count={count}>{title}</EllipsableWithCount>
             </BlockSectionTitle>
           </ListItem>

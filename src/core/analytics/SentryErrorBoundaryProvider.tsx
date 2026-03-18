@@ -1,8 +1,8 @@
+import * as Sentry from '@sentry/react';
+import type { PropsWithChildren } from 'react';
 import sentryBootstrap from '@/core/logging/sentry/bootstrap';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import * as Sentry from '@sentry/react';
-import { PropsWithChildren } from 'react';
 
 /**
  * Extracts numericCode from an error if it exists as a property.

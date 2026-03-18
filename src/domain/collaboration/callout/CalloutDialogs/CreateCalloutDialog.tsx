@@ -1,37 +1,38 @@
-import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip, Box } from '@mui/material';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import { Box, Button, Checkbox, DialogActions, DialogContent, FormControlLabel, Tooltip } from '@mui/material';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  CreateCalloutContributionInput,
   CalloutContributionType,
   CalloutVisibility,
+  type CreateCalloutContributionInput,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useCalloutTemplateImport } from './useCalloutTemplateImport';
-import {
-  CalloutCreationTypeWithPreviewImages,
-  useCalloutCreationWithPreviewImages,
-} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import CalloutForm from '../CalloutForm/CalloutForm';
-import { CalloutFormSubmittedValues, isEmptyCalloutForm } from '../CalloutForm/CalloutFormModel';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import Gutters from '@/core/ui/grid/Gutters';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import scrollToTop from '@/core/ui/utils/scrollToTop';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   mapProfileModelToCreateProfileInput,
   mapProfileTagsToCreateTags,
 } from '@/domain/common/profile/ProfileModelUtils';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import scrollToTop from '@/core/ui/utils/scrollToTop';
-import Gutters from '@/core/ui/grid/Gutters';
-import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import type { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
+import {
+  type CalloutCreationTypeWithPreviewImages,
+  useCalloutCreationWithPreviewImages,
+} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
+import CalloutForm from '../CalloutForm/CalloutForm';
+import { type CalloutFormSubmittedValues, isEmptyCalloutForm } from '../CalloutForm/CalloutFormModel';
+import type { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { useCalloutTemplateImport } from './useCalloutTemplateImport';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -56,11 +57,12 @@ const CreateCalloutDialog = ({
   calloutRestrictions,
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
-  const { isSmallScreen: isMobile } = useScreenSize();
 
   const ensurePresence = useEnsurePresence();
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
+  const notify = useNotification();
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -100,10 +102,12 @@ const CreateCalloutDialog = ({
     async (visibility: CalloutVisibility = CalloutVisibility.Published) => {
       const formData = ensurePresence(calloutFormData);
       // Map the profile to CreateProfileInput
+      const { mediaGallery, ...framingData } = formData.framing;
       const framing = {
-        ...formData.framing,
-        profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
-        tags: mapProfileTagsToCreateTags(formData.framing.profile),
+        ...framingData,
+        profile: mapProfileModelToCreateProfileInput(framingData.profile),
+        tags: mapProfileTagsToCreateTags(framingData.profile),
+        // Map media gallery items to CreateMediaGalleryInput
       };
 
       // And map the radio button allowed contribution types to an array
@@ -129,7 +133,7 @@ const CreateCalloutDialog = ({
             : undefined,
       };
 
-      let contributions: CreateCalloutContributionInput[] = [];
+      const contributions: CreateCalloutContributionInput[] = [];
       formData.contributions?.links?.forEach(link => {
         contributions.push({
           type: CalloutContributionType.Link,
@@ -153,7 +157,18 @@ const CreateCalloutDialog = ({
         sendNotification,
       };
 
-      await handleCreateCallout(createCalloutInput);
+      const createdCallout = await handleCreateCallout(createCalloutInput);
+      if (mediaGallery?.visuals?.length) {
+        try {
+          await uploadMediaGalleryVisuals({
+            mediaGalleryId: createdCallout?.framing.mediaGallery?.id,
+            visuals: mediaGallery.visuals,
+            reuploadVisuals: true,
+          });
+        } catch {
+          notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: t('common.callout') }), 'error');
+        }
+      }
       handleClose();
       setTimeout(scrollToTop, 100);
     }
@@ -164,8 +179,7 @@ const CreateCalloutDialog = ({
       <DialogWithGrid
         open={open}
         onClose={handleCloseButtonClick}
-        fullWidth
-        fullScreen={isMobile}
+        fullWidth={true}
         aria-labelledby="create-callout-dialog"
       >
         <DialogHeader
@@ -192,7 +206,7 @@ const CreateCalloutDialog = ({
         </DialogContent>
         <DialogActions>
           {isValid && (
-            <Gutters disableGap row paddingY={0} flex={1} alignItems="center">
+            <Gutters disableGap={true} row={true} paddingY={0} flex={1} alignItems="center">
               <Tooltip title={t('callout.create.notification.description')} placement="top">
                 <FormControlLabel
                   disabled={publishingCallout}
@@ -236,7 +250,7 @@ const CreateCalloutDialog = ({
         open={importDialogOpen}
         onSelectTemplate={handleSelectTemplate}
         onClose={() => setImportDialogOpen(false)}
-        enablePlatformTemplates
+        enablePlatformTemplates={true}
       />
       <ConfirmationDialog
         entities={{

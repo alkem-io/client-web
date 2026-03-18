@@ -1,24 +1,33 @@
-import { throttle } from 'lodash';
+import type {
+  reconcileElements as ExcalidrawReconcileElements,
+  restoreElements as ExcalidrawRestoreElements,
+} from '@alkemio/excalidraw';
+import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
+import type {
+  CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
+  hashElementsVersion as ExcalidrawHashElementsVersion,
+  newElementWith as ExcalidrawNewElementWith,
+} from '@alkemio/excalidraw/dist/types/element/src';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type {
+  ReconciledExcalidrawElement,
+  RemoteExcalidrawElement,
+} from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
 import type {
   Collaborator,
   ExcalidrawImperativeAPI,
   Gesture,
   SocketId,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type {
-  reconcileElements as ExcalidrawReconcileElements,
-  restoreElements as ExcalidrawRestoreElements,
-} from '@alkemio/excalidraw';
-import type {
-  hashElementsVersion as ExcalidrawHashElementsVersion,
-  CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
-  newElementWith as ExcalidrawNewElementWith,
-} from '@alkemio/excalidraw/dist/types/element/src';
+import { throttle } from 'lodash-es';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import type { BinaryFilesWithOptionalUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { getCollabServer, type SocketUpdateData, type SocketUpdateDataSource } from './data';
 import {
   ACTIVE_THRESHOLD,
-  CollaboratorMode,
-  CollaboratorModeEvent,
+  type CollaboratorMode,
+  type CollaboratorModeEvent,
   CURSOR_SYNC_TIMEOUT,
   EVENT,
   IDLE_THRESHOLD,
@@ -26,17 +35,8 @@ import {
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
-import { UserIdleState, isImageElement } from './utils';
-import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
-import { BinaryFilesWithOptionalUrl, BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-import type {
-  ReconciledExcalidrawElement,
-  RemoteExcalidrawElement,
-} from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
-import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { isImageElement, UserIdleState } from './utils';
 
 type CollabState = {
   errorMessage: string;
@@ -52,6 +52,8 @@ export interface CollabProps {
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   onSceneInitChange: (initialized: boolean) => void;
+  onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
+  onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
 }
 
 type IncomingClientBroadcastData = {
@@ -60,6 +62,15 @@ type IncomingClientBroadcastData = {
     [key: string]: unknown;
   };
 };
+
+// Callback type for incoming emoji reaction events
+export type OnIncomingEmojiReactionCallback = (payload: { id: string; emoji: string; x: number; y: number }) => void;
+// Callback type for incoming countdown timer events
+export type OnIncomingCountdownTimerCallback = (payload: {
+  remainingSeconds: number;
+  active: boolean;
+  startedBy: string;
+}) => void;
 
 // List of used functions from Excalidraw that will be lazy loaded
 type ExcalidrawUtils = {
@@ -83,6 +94,8 @@ class Collab {
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
+  private onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
+  private onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
   private collaborationMode: CollaboratorMode | undefined = undefined;
 
@@ -104,7 +117,21 @@ class Collab {
     this.filesManager = props.filesManager;
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.onSceneInitChange = props.onSceneInitChange;
+    this.onIncomingEmojiReaction = props.onIncomingEmojiReaction;
+    this.onIncomingCountdownTimer = props.onIncomingCountdownTimer;
     this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
+  }
+
+  /**
+   * Update incoming-event callbacks after construction.
+   * Needed because excalidrawApi may be null at construction time and become available later.
+   */
+  updateIncomingCallbacks(callbacks: {
+    onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
+    onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
+  }) {
+    this.onIncomingEmojiReaction = callbacks.onIncomingEmojiReaction;
+    this.onIncomingCountdownTimer = callbacks.onIncomingCountdownTimer;
   }
 
   init() {
@@ -155,6 +182,43 @@ class Collab {
       elements,
       captureUpdate: CaptureUpdateAction.NEVER,
     });
+  };
+
+  /**
+   * Broadcast an ephemeral floating emoji reactions to other clients.
+   * Uses volatile channel for real-time animations; missing packets won't cause issues.
+   */
+  broadcastEmojiReaction = async (emoji: string, x: number, y: number) => {
+    try {
+      const data = {
+        type: WS_SCENE_EVENT_TYPES.EMOJI_REACTION,
+        payload: {
+          emoji,
+          x,
+          y,
+          id: `${this.portal.roomId}_${Date.now()}`,
+        },
+      } as SocketUpdateData;
+      await this.portal._broadcastSocketData(data, { volatile: true });
+    } catch (_e) {}
+  };
+
+  /**
+   * Broadcast countdown timer state to other clients.
+   * Uses volatile channel for real-time updates; missing packets won't cause issues.
+   */
+  broadcastCountdownTimer = async (remainingSeconds: number, startedBy: string, active: boolean) => {
+    try {
+      const data = {
+        type: WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER,
+        payload: {
+          remainingSeconds,
+          active,
+          startedBy,
+        },
+      } as SocketUpdateData;
+      await this.portal._broadcastSocketData(data, { volatile: true });
+    } catch (_e) {}
   };
 
   public isCollaborating = () => {
@@ -220,7 +284,7 @@ class Collab {
                   maxZoom: 1, // 100% zoom, in the whiteboard
                 });
               } catch (error) {
-                console.warn('Error trying to fit to content:', error, ' - ignoring');
+                logWarn(`Error trying to fit to content: ${error}`, { category: TagCategoryValues.WHITEBOARD });
               }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
@@ -254,6 +318,31 @@ class Collab {
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles)
                 );
+                return;
+              }
+              if (isEmojiReactionPayload(data)) {
+                try {
+                  const { emoji, x, y, id } = data.payload;
+                  // Forward to callback to display (optional subscriber)
+                  this.onIncomingEmojiReaction?.({
+                    id: id || `${data.type}_${Date.now()}`,
+                    emoji,
+                    x,
+                    y,
+                  });
+                } catch (_e) {}
+                return;
+              }
+              if (isCountdownTimerPayload(data)) {
+                try {
+                  const { remainingSeconds, active, startedBy } = data.payload;
+                  // Forward to callback to display (optional subscriber)
+                  this.onIncomingCountdownTimer?.({
+                    remainingSeconds,
+                    active,
+                    startedBy,
+                  });
+                } catch (_e) {}
                 return;
               }
             },
@@ -446,7 +535,7 @@ class Collab {
   };
 
   private throttledSyncScene = throttle(
-    async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+    async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithOptionalUrl) => {
       const { hashElementsVersion } = await this.excalidrawUtils;
       const newVersion = hashElementsVersion(elements);
 
@@ -459,7 +548,7 @@ class Collab {
     SCENE_SYNC_TIMEOUT
   );
 
-  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithOptionalUrl) => {
     this.throttledSyncScene(elements, files);
   };
 
@@ -481,3 +570,8 @@ const isMouseLocationPayload = (data: IncomingClientBroadcastData): data is Sock
   data.type === WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
 const isSceneUpdatePayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_UPDATE'] =>
   data.type === WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
+const isEmojiReactionPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['EMOJI_REACTION'] =>
+  data.type === WS_SCENE_EVENT_TYPES.EMOJI_REACTION;
+const isCountdownTimerPayload = (
+  data: IncomingClientBroadcastData
+): data is SocketUpdateDataSource['COUNTDOWN_TIMER'] => data.type === WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER;

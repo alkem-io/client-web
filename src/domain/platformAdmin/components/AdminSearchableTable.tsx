@@ -1,3 +1,4 @@
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import {
   FormControl,
   IconButton,
@@ -11,17 +12,17 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import { times } from 'lodash-es';
+import type React from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
-import { times } from 'lodash';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContent from '@/core/ui/content/PageContent';
-import { BlockTitle, CardTitle } from '@/core/ui/typography';
+import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import RouterLink from '@/core/ui/link/RouterLink';
+import { BlockTitle, CardTitle } from '@/core/ui/typography';
+import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 
 export interface AdminTableColumn<Item extends AdminSearchableTableItem = AdminSearchableTableItem> {
   header: string;
@@ -152,7 +153,7 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
 
   return (
     <PageContent>
-      <FormControl fullWidth size="small">
+      <FormControl fullWidth={true} size="small">
         <OutlinedInput
           value={searchTerm}
           placeholder={t('components.searchableList.placeholder')}

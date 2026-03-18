@@ -12,7 +12,7 @@ export const dataUrlToFile = async (
   dataUrl: string,
   fileName: string = 'from data',
   mimeType: string | undefined = undefined,
-  lastModified: number = new Date().getTime()
+  lastModified: number = Date.now()
 ): Promise<File> => {
   if (!isValidDataURL(dataUrl)) {
     throw new Error('Not a valid dataURL detected');

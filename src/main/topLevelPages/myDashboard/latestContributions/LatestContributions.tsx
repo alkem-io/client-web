@@ -1,27 +1,24 @@
+import { Box, type SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActivityEventType, ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
+import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import Loading from '@/core/ui/loading/Loading';
+import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
+import { Caption } from '@/core/ui/typography';
 import {
-  ActivityLogResultType,
+  type ActivityLogResultType,
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import {
-  ActivityEventType,
-  ActivityFeedRoles,
-} from '@/core/apollo/generated/graphql-schema';
-import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
-import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import { gutters } from '@/core/ui/grid/utils';
-import Gutters from '@/core/ui/grid/Gutters';
-import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
-import Loading from '@/core/ui/loading/Loading';
 import { useDashboardContext } from '../DashboardContext';
-import { Caption } from '@/core/ui/typography';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { type LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -94,7 +91,11 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   }, [spaceMemberships, t]);
 
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const { data, loading, fetchMore: fetchMoreRaw } = useLatestContributionsQuery({
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreRaw,
+  } = useLatestContributionsQuery({
     variables: {
       first: LATEST_CONTRIBUTIONS_PAGE_SIZE,
       filter: {
@@ -149,9 +150,9 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
       <ActivityViewChooser
         key={activity.id}
         activity={activity as ActivityLogResultType}
-        avatarUrl={activity.triggeredBy.profile.avatar?.uri ?? ''}
+        avatarUrl={activity.triggeredBy.profile?.avatar?.uri ?? ''}
         avatarAlt={
-          activity.triggeredBy.profile.displayName
+          activity.triggeredBy.profile?.displayName
             ? t('common.avatar-of', { user: activity.triggeredBy.profile.displayName })
             : t('common.avatar')
         }
@@ -161,8 +162,8 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   return (
     <>
       <Gutters
-        disablePadding
-        disableGap
+        disablePadding={true}
+        disableGap={true}
         sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isSmallScreen ? gutters(30) : 0 }}
       >
         <Box display="flex" justifyContent="end" alignItems="center">
@@ -171,7 +172,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
             options={spaceOptions}
             label={t('pages.home.sections.latestContributions.filter.space.label')}
             onChange={handleSpaceSelect}
-            shrink
+            shrink={true}
           />
           <SeamlessSelect
             value={filter.role}

@@ -1,5 +1,5 @@
 mutation AssignPlatformRoleToUser($role: RoleName!, $contributorId: UUID!) {
-  assignPlatformRoleToUser(roleData: { role: $role, contributorID: $contributorId }) {
+  assignPlatformRoleToUser(roleData: { role: $role, actorID: $contributorId }) {
     id
   }
 }

@@ -1,5 +1,5 @@
-import { PropsWithChildren, Ref } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import type { PropsWithChildren, Ref } from 'react';
 import { gutters } from '../grid/utils';
 import { overflowBorderGradient } from './utils';
 

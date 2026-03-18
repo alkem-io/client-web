@@ -1,23 +1,23 @@
-import { nameOfUrl } from '@/main/routing/urlParams';
 import { Route, Routes } from 'react-router-dom';
-import VCProfilePage from '../vcProfilePage/VCProfilePage';
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { buildVCKnowledgeBaseUrl } from '@/main/routing/urlBuilders';
+import { nameOfUrl } from '@/main/routing/urlParams';
+import VCProfilePage from '../vcProfilePage/VCProfilePage';
 import { virtualContributorsCalloutRestrictions } from './virtualContributorsCalloutRestrictions';
 
 export const VCKnowledgeBaseRoute = () => {
   return (
     <Routes>
-      <Route index element={<VCProfilePage openKnowledgeBaseDialog />} />
+      <Route index={true} element={<VCProfilePage openKnowledgeBaseDialog={true} />} />
       <Route
         path={`/:${nameOfUrl.calloutNameId}/*`}
         element={
-          <VCProfilePage openKnowledgeBaseDialog>
-            {(vc?: { profile: { url: string } }) => (
+          <VCProfilePage openKnowledgeBaseDialog={true}>
+            {(vc?: { profile?: { url: string } }) => (
               <CalloutPage
-                parentRoute={buildVCKnowledgeBaseUrl(vc?.profile.url)}
+                parentRoute={buildVCKnowledgeBaseUrl(vc?.profile?.url)}
                 renderPage={() => <></>}
-                disableCalloutsClassification
+                disableCalloutsClassification={true}
                 calloutRestrictions={virtualContributorsCalloutRestrictions}
               />
             )}

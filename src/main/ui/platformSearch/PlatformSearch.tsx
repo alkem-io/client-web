@@ -1,15 +1,16 @@
+import type React from 'react';
+import { type PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import React, { PropsWithChildren, useState } from 'react';
-import { useSpace } from '@/domain/space/context/useSpace';
-import SearchBox from '@/core/ui/search/SearchBox';
-import useNavigate from '@/core/routing/useNavigate';
 import { useLocation } from 'react-router-dom';
+import useNavigate from '@/core/routing/useNavigate';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { gutters } from '@/core/ui/grid/utils';
-import { Collapsible } from '@/core/ui/navigation/Collapsible';
-import { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
-import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from '@/main/search/constants';
+import type { Collapsible } from '@/core/ui/navigation/Collapsible';
+import type { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
+import SearchBox from '@/core/ui/search/SearchBox';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from '@/main/search/constants';
 
 export enum SearchScope {
   Platform,
@@ -42,18 +43,19 @@ const PlatformSearch = ({
   const { space } = useSpace();
   const { about } = space;
 
-  const searchOptions: SearchOption[] | undefined = !space || !space.nameID
-    ? undefined
-    : [
-        {
-          value: SearchScope.Space,
-          label: t('components.search.scope.space', about.profile),
-        },
-        {
-          value: SearchScope.Platform,
-          label: t('components.search.scope.platform'),
-        },
-      ];
+  const searchOptions: SearchOption[] | undefined =
+    !space || !space.nameID
+      ? undefined
+      : [
+          {
+            value: SearchScope.Space,
+            label: t('components.search.scope.space', about.profile),
+          },
+          {
+            value: SearchScope.Platform,
+            label: t('components.search.scope.platform'),
+          },
+        ];
 
   const defaultSearchOption = space.nameID ? SearchScope.Space : SearchScope.Platform;
 

@@ -1,10 +1,10 @@
-import { ReactNode, useMemo, useState } from 'react';
-import filterFn, { ValueType } from '@/core/utils/filtering/filterFn';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
+import { type ReactNode, useMemo, useState } from 'react';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import filterFn, { type ValueType } from '@/core/utils/filtering/filterFn';
 import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
+import type { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
+import LibraryTemplatesView, { type LibraryTemplatesFilter } from './LibraryTemplatesView';
 
 type DashboardLibraryTemplatesProps = {
   headerTitle: ReactNode;
@@ -18,7 +18,7 @@ const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueTyp
   values: compact([
     template.template.profile.displayName,
     template.innovationPack?.profile.displayName,
-    template.innovationPack?.provider?.profile.displayName,
+    template.innovationPack?.provider?.profile?.displayName,
     ...(template.template.profile.defaultTagset?.tags ?? []),
   ]),
 });
@@ -92,7 +92,7 @@ const DashboardLibraryTemplates = ({
         />
       </DialogWithGrid>
       {selectedTemplate && (
-        <PreviewTemplateDialog open template={selectedTemplate} onClose={() => setSelectedTemplate(undefined)} />
+        <PreviewTemplateDialog open={true} template={selectedTemplate} onClose={() => setSelectedTemplate(undefined)} />
       )}
     </>
   );

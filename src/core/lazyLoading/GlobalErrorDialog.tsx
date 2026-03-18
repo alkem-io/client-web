@@ -1,9 +1,9 @@
-import React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Box, Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import type React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useGlobalError } from './GlobalErrorContext';
 import { LazyLoadError } from './lazyWithGlobalErrorHandler';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const ErrorTranslationMappings = (error: Error): TranslationKey => {
   if (error instanceof LazyLoadError) {

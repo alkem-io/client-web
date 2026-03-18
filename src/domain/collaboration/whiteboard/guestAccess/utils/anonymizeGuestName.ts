@@ -38,10 +38,7 @@
  * @see {@link https://github.com/alkem-io/client-web/blob/develop/specs/002-guest-whiteboard-access/spec.md | Feature Spec}
  * @see FR-018..FR-023 in spec for full derivation requirements
  */
-export const anonymizeGuestName = (
-  firstName?: string | null,
-  lastName?: string | null
-): string | null => {
+export const anonymizeGuestName = (firstName?: string | null, lastName?: string | null): string | null => {
   const f = (firstName || '').trim();
   const l = (lastName || '').trim();
 

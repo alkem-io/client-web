@@ -1,10 +1,15 @@
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Box, Button, CircularProgress, useTheme } from '@mui/material';
+import { noop } from 'lodash-es';
+import { type FC, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   useDeleteSpaceMutation,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useSpaceTemplatesManagerQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -17,19 +22,14 @@ import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import { Box, Button, CircularProgress, useTheme } from '@mui/material';
-import { noop } from 'lodash';
-import { FC, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { isSubspace } from '@/domain/space/utils/spaceLevel';
+import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
 import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDeleteDialog';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
-import { useSpaceSettingsUpdate } from './useSpaceSettingsUpdate';
-import { VisibilitySettings } from './components/VisibilitySettings';
-import { MembershipSettings } from './components/MembershipSettings';
 import { MemberActionsSettings } from './components/MemberActionsSettings';
-import { isSubspace } from '@/domain/space/utils/spaceLevel';
+import { MembershipSettings } from './components/MembershipSettings';
+import { VisibilitySettings } from './components/VisibilitySettings';
+import { useSpaceSettingsUpdate } from './useSpaceSettingsUpdate';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -137,7 +137,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               <MembershipSettings
                 currentPolicy={currentSettings?.membership?.policy}
                 hostOrganizationTrusted={currentSettings.hostOrganizationTrusted}
-                providerDisplayName={provider?.profile.displayName}
+                providerDisplayName={provider?.profile?.displayName}
                 level={level}
                 onUpdate={updateSettings}
               />
@@ -164,7 +164,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               <PageContentBlock>
                 <PageContentBlockHeader title={t('pages.admin.space.settings.copySpace.title')} />
                 <Text>{t('pages.admin.space.settings.copySpace.description')}</Text>
-                <Gutters disablePadding row>
+                <Gutters disablePadding={true} row={true}>
                   {canCreateTemplate ? (
                     <Button variant="contained" onClick={() => setSaveAsTemplateDialogOpen(true)}>
                       {t('pages.admin.space.settings.copySpace.createTemplate')}
@@ -179,13 +179,13 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                       {t('pages.admin.space.settings.copySpace.createTemplate')}
                     </ButtonWithTooltip>
                   )}
-                  <Button variant="outlined" onClick={/* PENDING */ () => {}} disabled>
+                  <Button variant="outlined" onClick={/* PENDING */ () => {}} disabled={true}>
                     {t('pages.admin.space.settings.copySpace.duplicate')}
                   </Button>
                 </Gutters>
                 {saveAsTemplateDialogOpen && templatesSet && (
                   <CreateSpaceTemplateDialog
-                    open
+                    open={true}
                     onClose={() => setSaveAsTemplateDialogOpen(false)}
                     spaceId={spaceId}
                     templatesSetId={templatesSet.id}

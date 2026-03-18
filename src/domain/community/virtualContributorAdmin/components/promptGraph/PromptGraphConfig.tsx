@@ -1,19 +1,20 @@
+import { Alert, Switch } from '@mui/material';
+import { Formik } from 'formik';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useAiPersonaQuery,
   useUpdateAiPersonaMutation,
   useUpdateVirtualContributorPlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import type { PromptGraphInput, UpdateAiPersonaInput } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
-import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import { Switch, Alert } from '@mui/material';
-import { Formik } from 'formik';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { FormNodeValue, FormValueType, PromptGraphNode } from './types';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import PromptGraphConfigForm from './PromptGraphConfigForm';
+import type { FormNodeValue, FormValueType, PromptGraphNode } from './types';
 import { transformNodesMapToArray } from './utils';
 
 type PromptGraphConfigProps = {
@@ -24,6 +25,11 @@ type PromptGraphConfigProps = {
     } | null;
   };
   isPlatformAdmin?: boolean;
+};
+
+// Local override: Server accepts null for promptGraph (to trigger reset), but codegen only generates T | undefined
+type UpdateAiPersonaInputWithNull = Omit<UpdateAiPersonaInput, 'promptGraph'> & {
+  promptGraph?: PromptGraphInput | null;
 };
 
 const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigProps) => {
@@ -38,7 +44,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   });
   const aiPersona = data?.virtualContributor?.aiPersona;
 
-  const [updateAiPersona] = useUpdateAiPersonaMutation();
+  const [updateAiPersona, { loading: isResetting }] = useUpdateAiPersonaMutation();
   const [updatePlatformSettings, { loading: updatingPlatformSettings }] =
     useUpdateVirtualContributorPlatformSettingsMutation();
 
@@ -93,6 +99,30 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
     });
   };
 
+  const handleReset = () => {
+    if (!aiPersona) return;
+
+    // Server accepts null for promptGraph to trigger reset (see UpdateAiPersonaInput on server)
+    // Cast required: codegen only generates T | undefined, not T | null | undefined
+    // Note: codegen.yml could be configured (maybeValue/inputMaybeValue: T | null | undefined) to support null globally,
+    // but this would be a breaking change affecting all generated types across the codebase. Many places may assume
+    // optional fields cannot be null, leading to runtime errors. The local override is safer and more explicit.
+    const resetData: UpdateAiPersonaInputWithNull = {
+      ID: aiPersona.id,
+      promptGraph: null,
+    };
+
+    updateAiPersona({
+      variables: {
+        aiPersonaData: resetData as UpdateAiPersonaInput,
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.settings.promptGraph.resetSuccess'), 'success');
+      },
+      refetchQueries: ['AiPersona'],
+    });
+  };
+
   if (!vc) return null;
 
   const availableVariables = 'duration, audience, workshop_type, role, purpose';
@@ -141,12 +171,14 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
             {t('pages.virtualContributorProfile.settings.promptGraph.infoText', { availableVariables })}
           </Caption>
           {promptGraphEditingEnabled && (
-            <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={() => {}}>
+            <Formik initialValues={initialValues} enableReinitialize={true} validateOnMount={true} onSubmit={() => {}}>
               <PromptGraphConfigForm
                 promptGraph={promptGraph}
                 setIsValid={setIsValid}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
+                handleReset={handleReset}
+                isResetting={isResetting}
               />
             </Formik>
           )}

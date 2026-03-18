@@ -1,5 +1,5 @@
-import { Tab, TabProps } from '@mui/material';
-import React from 'react';
+import { Tab, type TabProps } from '@mui/material';
+import type React from 'react';
 
 interface HeaderNavigationButtonProps extends TabProps {}
 

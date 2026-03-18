@@ -1,21 +1,21 @@
+import { uniqBy } from 'lodash-es';
 import {
   CalloutContributionType,
   CalloutFramingType,
-  UpdateLinkInput,
-  VisualType,
+  type UpdateLinkInput,
+  type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
-import { CalloutSettingsModelFull } from './CalloutSettingsModel';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { ProfileModel } from '@/domain/common/profile/ProfileModel';
-import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUtils';
+import type { ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUtils';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { type CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
+import type { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
+import type { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { CalloutRestrictions } from '../CalloutRestrictionsTypes';
+import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
-import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
-import { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { uniqBy } from 'lodash';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
@@ -42,6 +42,9 @@ export const mapCalloutTemplateToCalloutForm = (
         profile: {
           displayName: string;
         };
+      };
+      mediaGallery?: {
+        visuals?: VisualModel[];
       };
     };
     settings: CalloutSettingsModelFull;
@@ -96,6 +99,17 @@ export const mapCalloutTemplateToCalloutForm = (
             },
           }
         : undefined,
+      mediaGallery: calloutTemplate.framing.mediaGallery
+        ? {
+            visuals:
+              calloutTemplate.framing.mediaGallery.visuals?.map(v => ({
+                id: v.id,
+                uri: v.uri,
+                name: v.name,
+                alternativeText: v.alternativeText || '',
+              })) ?? [],
+          }
+        : undefined,
     };
     const templateContributionDefaults =
       mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
@@ -111,6 +125,7 @@ export const mapCalloutTemplateToCalloutForm = (
       templateFraming.type = CalloutFramingType.None;
       templateFraming.memo = undefined;
     }
+
     if (
       calloutRestrictions?.disableWhiteboards &&
       templateSettings.contribution.allowedTypes === CalloutContributionType.Whiteboard
@@ -118,6 +133,7 @@ export const mapCalloutTemplateToCalloutForm = (
       templateSettings.contribution.allowedTypes = 'none';
       templateContributionDefaults.whiteboardContent = undefined;
     }
+
     if (calloutRestrictions?.disableComments) {
       templateSettings.contribution.commentsEnabled = false;
       templateSettings.framing.commentsEnabled = false;

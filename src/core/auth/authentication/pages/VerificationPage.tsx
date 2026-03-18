@@ -1,18 +1,18 @@
-import { FC, MouseEventHandler, useMemo } from 'react';
+import type { VerificationFlow } from '@ory/kratos-client';
+
+import { type FC, type MouseEventHandler, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import KratosUI from '../components/KratosUI';
-import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
-import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import KratosForm from '../components/Kratos/KratosForm';
-import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
+import Loading from '@/core/ui/loading/Loading';
 import { BlockTitle } from '@/core/ui/typography';
-import { VerificationFlow } from '@ory/kratos-client';
-import { useGetReturnUrl, useReturnUrl } from '../utils/useSignUpReturnUrl';
-import { produce } from 'immer';
-import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
+import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
+import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
+import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
+import KratosForm from '../components/Kratos/KratosForm';
+import KratosUI from '../components/KratosUI';
+import { useGetReturnUrl, useReturnUrl } from '../utils/useSignUpReturnUrl';
 
 interface RegisterPageProps {
   flow?: string;
@@ -38,17 +38,19 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const ui = useMemo(() => {
     return (
       verificationFlow?.ui &&
-      produce(verificationFlow.ui, nextUi => {
-        const continueButton = nextUi.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
+      (() => {
+        const ui = structuredClone(verificationFlow.ui);
+        const continueButton = ui.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
         if (!continueButton) {
-          return;
+          return ui;
         }
         if (isAnchorNode(continueButton)) {
           continueButton.attributes.href = verificationFlow.ui.action ?? returnUrl;
         }
-      })
+        return ui;
+      })()
     );
-  }, [verificationFlow]);
+  }, [verificationFlow, returnUrl]);
 
   if (loading) {
     return <Loading text={t('kratos.loading-flow')} />;
@@ -60,7 +62,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <AuthenticationLayout>
-      <AuthFormHeader title={t('pages.verification.header')} hideMessage />
+      <AuthFormHeader title={t('pages.verification.header')} hideMessage={true} />
       <KratosForm ui={ui} onClick={handleFormClick}>
         <AuthPageContentContainer>
           {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}

@@ -1,15 +1,15 @@
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import VisibilityForm from '../components/VisibilityForm';
-import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
-import { PromptGraphConfig } from '../components/promptGraph';
-import { PromptConfig } from '../components/PromptConfig';
-import ExternalConfig from '../components/ExternalConfig';
 import { AiPersonaEngine, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
+import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
+import ExternalConfig from '../components/ExternalConfig';
+import { PromptConfig } from '../components/PromptConfig';
+import { PromptGraphConfig } from '../components/promptGraph';
+import VisibilityForm from '../components/VisibilityForm';
+import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 
 const VirtualContributorSettingsPage = () => {
   const { vcId } = useUrlResolver();
@@ -38,20 +38,20 @@ const VirtualContributorSettingsPage = () => {
     vc?.aiPersona?.engine === AiPersonaEngine.Expert &&
     (isPlatformAdmin || vc.platformSettings?.promptGraphEditingEnabled);
 
-  if (!vc || !vc.aiPersona) {
+  if (!vc || !vc.aiPersona || !vc.profile) {
     return null;
   }
+
+  const vcWithProfile = { ...vc, profile: vc.profile, aiPersona: vc.aiPersona };
 
   return (
     <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vc?.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
-        <VisibilityForm vc={vc} />
-        <BodyOfKnowledgeManagement vc={vc} />
-        {canShowPromptGraphSection && (
-          <PromptGraphConfig vc={vc} isPlatformAdmin={!!isPlatformAdmin} />
-        )}
-        {isPromptConfigAvailable && <PromptConfig vc={vc} />}
-        {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
+        <VisibilityForm vc={vcWithProfile} />
+        <BodyOfKnowledgeManagement vc={vcWithProfile} />
+        {canShowPromptGraphSection && <PromptGraphConfig vc={vcWithProfile} isPlatformAdmin={!!isPlatformAdmin} />}
+        {isPromptConfigAvailable && <PromptConfig vc={vcWithProfile} />}
+        {isExternalConfigAvailable && <ExternalConfig vc={vcWithProfile} />}
       </VCSettingsPageLayout>
     </StorageConfigContextProvider>
   );

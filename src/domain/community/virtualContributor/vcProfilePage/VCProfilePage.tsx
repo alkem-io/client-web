@@ -1,30 +1,29 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import VCPageLayout from '../layout/VCPageLayout';
-import VCProfilePageView from './VCProfilePageView';
 import {
   useSpaceBodyOfKnowledgeAboutQuery,
   useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
   useVirtualContributorProfileWithModelCardQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import Loading from '@/core/ui/loading/Loading';
-import { Error404 } from '@/core/pages/Errors/Error404';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { AuthorizationPrivilege, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
-import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
+import Loading from '@/core/ui/loading/Loading';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import VCPageLayout from '../layout/VCPageLayout';
+import type { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
+import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
+import VCProfilePageView from './VCProfilePageView';
 
 /**
  * children will have the virtual contributor data available if it is loaded
  */
 interface VirtualContributorProvided {
   id: string;
-  profile: {
+  profile?: {
     displayName: string;
     url: string;
   };

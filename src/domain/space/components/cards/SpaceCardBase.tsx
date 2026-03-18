@@ -1,19 +1,22 @@
-import React, { PropsWithChildren, ReactNode, ReactElement } from 'react';
-import { Box } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import { gutters } from '@/core/ui/grid/utils';
-import CardContent from '@/core/ui/card/CardContent';
-import RouterLink from '@/core/ui/link/RouterLink';
-import CardBanner, { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
+import { Box } from '@mui/material';
+import React, { type PropsWithChildren, type ReactElement, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceCardBanner } from './components/SpaceCardBanner';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import CardContent from '@/core/ui/card/CardContent';
+import CardBanner, { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
 import CardTags from '@/core/ui/card/CardTags';
+import ContributeCard, { type ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import type { SpaceCardBanner } from './components/SpaceCardBanner';
 
 export const CARD_FOOTER_HEIGHT = gutters(3);
+
+// Minimum card width to prevent content (avatar, title, tags) from collapsing on narrow viewports
+const CARD_MIN_WIDTH = 230;
 
 export interface SpaceCardProps extends ContributeCardProps {
   header: ReactNode | null;
@@ -57,7 +60,7 @@ const SpaceCardBase = ({
   // Compact tile mode - banner fills entire card, footer overlaid at bottom with BadgeCardView
   if (header === null) {
     return (
-      <ContributeCard sx={{ position: 'relative', overflow: 'hidden' }} {...containerProps}>
+      <ContributeCard sx={{ position: 'relative', overflow: 'hidden', minWidth: CARD_MIN_WIDTH }} {...containerProps}>
         <Box {...wrapperProps} sx={{ position: 'relative', height: '100%' }}>
           <CardBanner
             src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
@@ -111,8 +114,9 @@ const SpaceCardBase = ({
 
   // Regular mode - standard card layout with header and content
   return (
-    <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
-      <Box {...wrapperProps}>
+    <ContributeCard sx={{ position: 'relative', minWidth: CARD_MIN_WIDTH }} {...containerProps}>
+      <Box {...wrapperProps} sx={{ position: 'relative' }}>
+        {iconOverlay && <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 1 }}>{iconOverlay}</Box>}
         <CardBanner
           src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
@@ -136,7 +140,7 @@ const SpaceCardBase = ({
       <CardContent flexGrow={1} paddingBottom={1}>
         {children}
         {actions}
-        {tags && <CardTags disableIndentation tags={tags} />}
+        {tags && <CardTags disableIndentation={true} tags={tags} />}
       </CardContent>
     </ContributeCard>
   );

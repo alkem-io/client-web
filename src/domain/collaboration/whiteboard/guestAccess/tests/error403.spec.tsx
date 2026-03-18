@@ -5,24 +5,24 @@
  * Spec: 002-guest-whiteboard-access, US4 - Load Failure Handling
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
 import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { cleanup, render, screen } from '@testing-library/react';
+import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
-import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { CurrentUserLightDocument, GetPublicWhiteboardDocument } from '@/core/apollo/generated/apollo-hooks';
+import i18n from '@/core/i18n/config';
+import { GlobalErrorProvider } from '@/core/lazyLoading/GlobalErrorContext';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { GlobalErrorProvider } from '@/core/lazyLoading/GlobalErrorContext';
-import { I18nextProvider } from 'react-i18next';
-import i18n from '@/core/i18n/config';
+import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
 
 import '@testing-library/jest-dom/vitest';
 
 const buildCurrentUserMock = (): MockedResponse => ({
   request: {
-    query: CurrentUserFullDocument,
+    query: CurrentUserLightDocument,
   },
   result: {
     data: {
@@ -33,23 +33,17 @@ const buildCurrentUserMock = (): MockedResponse => ({
           firstName: 'Guest',
           lastName: 'User',
           email: 'guest.user@example.com',
-          phone: '',
           profile: {
             __typename: 'Profile',
             id: 'user-current-profile',
             displayName: 'Guest User',
-            tagline: null,
-            location: {
-              __typename: 'Location',
-              id: 'user-current-location',
-              country: null,
-              city: null,
-            },
-            description: null,
             avatar: null,
-            references: [],
-            tagsets: [],
-            url: null,
+            url: '',
+          },
+          settings: {
+            __typename: 'UserSettings',
+            id: 'user-current-settings',
+            homeSpace: { __typename: 'UserSettingsHomeSpace', spaceID: undefined, autoRedirect: false },
           },
           account: {
             __typename: 'Account',

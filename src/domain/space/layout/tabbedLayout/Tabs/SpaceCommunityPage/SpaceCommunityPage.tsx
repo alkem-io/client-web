@@ -1,39 +1,39 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContent from '@/core/ui/content/PageContent';
-import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
 import {
-  DirectMessageDialog,
-  MessageReceiverChipData,
-} from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
-import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
-import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
-import {
+  ActorType,
   AuthorizationPrivilege,
   LicenseEntitlementType,
   RoleName,
-  RoleSetContributorType,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
-import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
-import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import {
+  DirectMessageDialog,
+  type MessageReceiverChipData,
+} from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
+import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
+import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
+import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
+import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
+import type { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
+import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import ExpandableDescription from '@/domain/space/components/ExpandableDescription';
+import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
+import { useSpace } from '@/domain/space/context/useSpace';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import useCurrentTabPosition from '../../useCurrentTabPosition';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
-import ExpandableDescription from '@/domain/space/components/ExpandableDescription';
-import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
-import { Identifiable } from '@/core/utils/Identifiable';
 
 const SpaceCommunityPage = () => {
   const { space, entitlements } = useSpace();
@@ -72,11 +72,7 @@ const SpaceCommunityPage = () => {
   } = useRoleSetManager({
     roleSetId: membership?.roleSetID,
     relevantRoles: [RoleName.Member, RoleName.Lead],
-    contributorTypes: [
-      RoleSetContributorType.User,
-      RoleSetContributorType.Organization,
-      RoleSetContributorType.Virtual,
-    ],
+    contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member];
@@ -102,17 +98,17 @@ const SpaceCommunityPage = () => {
     () =>
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
         id: user.id,
-        displayName: user.profile.displayName,
-        country: user.profile.location?.country,
-        city: user.profile.location?.city,
-        avatarUri: user.profile.avatar?.uri,
+        displayName: user.profile?.displayName ?? '',
+        country: user.profile?.location?.country,
+        city: user.profile?.location?.city,
+        avatarUri: user.profile?.avatar?.uri,
       })),
     [leadUsers]
   );
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
-  let virtualContributors: VirtualContributorProps[] =
+  const virtualContributors: VirtualContributorProps[] =
     memberVirtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
   const hasInvitePrivilege =
@@ -134,7 +130,7 @@ const SpaceCommunityPage = () => {
     <PageContent>
       <InfoColumn>
         {tabDescription && (
-          <PageContentBlock accent>
+          <PageContentBlock accent={true}>
             <ExpandableDescription
               description={tabDescription}
               editPath={SPACE_LAYOUT_EDIT_PATH}
@@ -152,7 +148,7 @@ const SpaceCommunityPage = () => {
         </ContactLeadsButton>
         {hasInvitePrivilege && (
           <InviteContributorsWizard
-            contributorType={RoleSetContributorType.User}
+            contributorType={ActorType.User}
             sx={{ width: '100%' }}
             filterContributors={filterInviteeContributors}
           />

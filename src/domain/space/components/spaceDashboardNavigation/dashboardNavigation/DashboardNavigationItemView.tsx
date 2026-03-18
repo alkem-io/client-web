@@ -1,13 +1,15 @@
 import { ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
-import { Box, Collapse, IconButton, Tooltip, TooltipProps } from '@mui/material';
-import React, { MouseEventHandler, useImperativeHandle, useRef, useState } from 'react';
+import { Box, Collapse, IconButton, Tooltip, type TooltipProps } from '@mui/material';
+import type React from 'react';
+import { type MouseEventHandler, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption } from '@/core/ui/typography';
 import SpaceAvatar from '../../SpaceAvatar';
-import RouterLink from '@/core/ui/link/RouterLink';
+import SubspacePinIndicator from '../../SubspacePinIndicator';
+import type { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { getIndentStyle } from './utils';
-import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 
 export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];
@@ -37,6 +39,7 @@ const DashboardNavigationItemView = ({
   children,
   avatar,
   private: isPrivate = false,
+  pinned: isPinned = false,
   tooltipPlacement,
   level = 0,
   onClick,
@@ -110,13 +113,13 @@ const DashboardNavigationItemView = ({
           ref={hostContainerRef}
           component={RouterLink}
           to={url ?? ''}
-          keepScroll
+          keepScroll={true}
           visual={
             <Tooltip
               disableHoverListener={!compact}
               title={<Caption>{displayName}</Caption>}
               placement={tooltipPlacement}
-              arrow
+              arrow={true}
             >
               <Box>
                 <SpaceAvatar src={avatar?.uri} size="medium" spaceId={id} alt={avatar?.alternativeText} />
@@ -124,26 +127,32 @@ const DashboardNavigationItemView = ({
             </Tooltip>
           }
           visualRight={
-            isPrivate ? (
-              <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
-                placement={tooltipPlacement}
-                arrow
-              >
-                <Box>
-                  <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
-                    <LockOutlined />
-                  </IconButton>
-                </Box>
-              </Tooltip>
-            ) : hasChildren ? (
-              <IconButton onClick={toggleExpand} aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}>
-                {isExpanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            ) : undefined
+            <Box display="flex" alignItems="center" gap={0.5}>
+              {isPinned && <SubspacePinIndicator />}
+              {isPrivate ? (
+                <Tooltip
+                  title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
+                  placement={tooltipPlacement}
+                  arrow={true}
+                >
+                  <Box>
+                    <IconButton disableRipple={true} onClick={preventDefault} aria-label={t('common.lock')}>
+                      <LockOutlined />
+                    </IconButton>
+                  </Box>
+                </Tooltip>
+              ) : hasChildren ? (
+                <IconButton
+                  onClick={toggleExpand}
+                  aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+                >
+                  {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+              ) : undefined}
+            </Box>
           }
-          padding
-          square
+          padding={true}
+          square={true}
           sx={{
             ...getIndentStyle(level, compact),
             '&.Mui-focusVisible': {
@@ -172,7 +181,7 @@ const DashboardNavigationItemView = ({
                 ref={ref}
                 level={level + 1}
                 tooltipPlacement={tooltipPlacement}
-                subspaceOfCurrent
+                subspaceOfCurrent={true}
                 compact={compact}
                 itemProps={itemProps}
                 onToggle={onToggle}

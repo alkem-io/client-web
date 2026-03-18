@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Trans, useTranslation } from 'react-i18next';
-import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
-import { BlockSectionTitle, Caption } from '@/core/ui/typography';
-import { Button, Checkbox, FormControlLabel, Link } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { Button, Checkbox, FormControlLabel, Link } from '@mui/material';
+import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import Gutters from '@/core/ui/grid/Gutters';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface CommunityMemberSettingsDialogProps {
   member: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       avatar?: {
         uri: string;
@@ -68,24 +68,24 @@ const CommunityMemberSettingsDialog = ({
 
   return (
     <>
-      <DialogWithGrid open columns={12} onClose={onClose} aria-labelledby="community-member-settings-dialog">
+      <DialogWithGrid open={true} columns={12} onClose={onClose} aria-labelledby="community-member-settings-dialog">
         <DialogHeader id="community-member-settings-dialog" onClose={onClose}>
           {t('community.memberSettings.title')}
         </DialogHeader>
         <Gutters>
           <ProfileChip
             key={member.id}
-            displayName={member.profile.displayName}
-            avatarUrl={member.profile.avatar?.uri}
-            city={member.profile.location?.city}
-            country={member.profile.location?.country}
+            displayName={member.profile?.displayName ?? ''}
+            avatarUrl={member.profile?.avatar?.uri}
+            city={member.profile?.location?.city}
+            country={member.profile?.location?.country}
           />
           <BlockSectionTitle>{t('common.role')}</BlockSectionTitle>
           <FormControlLabel
             control={
               <Checkbox
                 checked={isLead}
-                onChange={(event, newValue) => setIsLead(newValue)}
+                onChange={(_event, newValue) => setIsLead(newValue)}
                 disabled={(!canAddLead && !member.isLead) || (!canRemoveLead && member.isLead)}
               />
             }
@@ -99,7 +99,7 @@ const CommunityMemberSettingsDialog = ({
             <>
               <BlockSectionTitle>{t('common.authorization')}</BlockSectionTitle>
               <FormControlLabel
-                control={<Checkbox checked={isAdmin} onChange={(event, newValue) => setIsAdmin(newValue)} />}
+                control={<Checkbox checked={isAdmin} onChange={(_event, newValue) => setIsAdmin(newValue)} />}
                 label={<Trans i18nKey="community.memberSettings.admin" components={{ b: <strong /> }} />}
               />
             </>
@@ -136,7 +136,7 @@ const CommunityMemberSettingsDialog = ({
           entities={{
             title: t('community.memberSettings.removeMember.dialogTitle'),
             content: t('community.memberSettings.removeMember.dialogContent', {
-              member: member.profile.displayName,
+              member: member.profile?.displayName,
               memberFirstName: member.firstName,
               // TODO: Add Space name to this message
             }),

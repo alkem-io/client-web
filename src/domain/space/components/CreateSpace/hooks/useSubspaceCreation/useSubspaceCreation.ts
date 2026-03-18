@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  CreateSubspaceMutationOptions,
-  refetchCurrentUserFullQuery,
+  type CreateSubspaceMutationOptions,
+  refetchCurrentUserLightQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
@@ -16,9 +15,10 @@ import {
   TagsetType,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useUploadVisualsOnCreate from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
-import { useTranslation } from 'react-i18next';
 
 interface SubspaceCreationInput {
   spaceID: string;
@@ -49,7 +49,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const {
-    refetchQueries = [refetchCurrentUserFullQuery()], // default to refetching user provider
+    refetchQueries = [refetchCurrentUserLightQuery()], // default to refetching user provider
     ...restMutationOptions
   } = mutationOptions;
 
@@ -120,6 +120,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
             id: '',
             level: SpaceLevel.L1,
             visibility: SpaceVisibility.Active,
+            pinned: false,
+            sortOrder: 0,
             about: {
               id: '',
               why: value.about.why,

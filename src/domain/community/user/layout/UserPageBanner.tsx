@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { useUserProvider } from '../hooks/useUserProvider';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
+import { useUserProvider } from '../hooks/useUserProvider';
 import useUserRouteContext from '../routing/useUserRouteContext';
 
 const UserPageBanner = () => {
@@ -40,7 +40,7 @@ const UserPageBanner = () => {
       entityId={userId}
       profile={profile}
       onSendMessage={handleSendMessage}
-      settingsUri={user && isCurrentUser ? buildSettingsUrl(getProfileUrl(user?.profile.url) ?? '') : undefined}
+      settingsUri={user && isCurrentUser ? buildSettingsUrl(getProfileUrl(user?.profile?.url) ?? '') : undefined}
       loading={loading || routeLoading}
     />
   );

@@ -1,14 +1,14 @@
-import OrganizationPageBanner from '@/domain/community/organization/OrganizationPageBanner';
-import React, { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined } from '@mui/icons-material';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import useOrganizationProvider from '../useOrganization/useOrganization';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import OrganizationPageBanner from '@/domain/community/organization/OrganizationPageBanner';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import useOrganizationProvider from '../useOrganization/useOrganization';
 
-interface OrganizationPageLayoutProps {}
+type OrganizationPageLayoutProps = {};
 
 const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutProps>) => {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
   const { loading, organization, permissions, handleSendMessage } = useOrganizationProvider();
 
   // Set browser tab title to "[Organization Name] | Alkemio"
-  usePageTitle(organization?.profile.displayName);
+  usePageTitle(organization?.profile?.displayName);
 
   return (
     <TopLevelLayout
@@ -25,11 +25,11 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
           <BreadcrumbsItem iconComponent={Diversity3Outlined}>{t('common.organizations')}</BreadcrumbsItem>
           <BreadcrumbsItem
             loading={loading}
-            avatar={organization?.profile.avatar}
+            avatar={organization?.profile?.avatar}
             iconComponent={Diversity3Outlined}
-            uri={organization?.profile.url}
+            uri={organization?.profile?.url}
           >
-            {organization?.profile.displayName}
+            {organization?.profile?.displayName}
           </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }

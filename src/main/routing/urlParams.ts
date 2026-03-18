@@ -24,9 +24,7 @@ const nameOf = <T>() => {
   return new Proxy(
     {},
     {
-      get: function (_target, prop) {
-        return prop;
-      },
+      get: (_target, prop) => prop,
     }
   ) as {
     [P in keyof T]: P;

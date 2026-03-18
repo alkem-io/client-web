@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
-import { OrganizationNotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
 import { NotificationValidationType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
+import { BlockTitle, Caption } from '@/core/ui/typography/components';
+import type { OrganizationNotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
 
 interface OrganizationNotificationsSettingsProps {
   currentOrgSettings: OrganizationNotificationSettings | undefined;

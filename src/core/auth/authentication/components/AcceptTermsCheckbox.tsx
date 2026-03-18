@@ -1,4 +1,4 @@
-import { Box, BoxProps, Checkbox, FormControlLabel, FormControlLabelProps } from '@mui/material';
+import { Box, type BoxProps, Checkbox, FormControlLabel, type FormControlLabelProps } from '@mui/material';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 
@@ -30,7 +30,7 @@ const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxP
       onChange={(_event, nextValue) => onChange?.(nextValue)}
       control={<Checkbox />}
       label={<Box sx={{ fontSize: 15, color: theme => theme.palette.neutral.light }}>{label}</Box>}
-      disableTypography
+      disableTypography={true}
       sx={{ fontSize: 15, color: theme => theme.palette.neutral.light, marginBottom: 0 }}
       {...props}
     />

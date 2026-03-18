@@ -1,5 +1,5 @@
 import { Container } from '@mui/material';
-import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
+import useCommunityUpdates from '@/domain/communication/updates/CommunityUpdatesContainer/useCommunityUpdates';
 import { CommunityUpdatesView } from '@/domain/community/community/views/CommunityUpdates/CommunityUpdatesView';
 
 interface SpaceAdminCommunityUpdatesPageProps {
@@ -11,29 +11,35 @@ export const SpaceAdminCommunityUpdatesPage = ({ communityId }: SpaceAdminCommun
     return <Container maxWidth="xl">No community</Container>;
   }
 
+  return <SpaceAdminCommunityUpdatesPageInner communityId={communityId} />;
+};
+
+const SpaceAdminCommunityUpdatesPageInner = ({ communityId }: { communityId: string }) => {
+  const {
+    entities: { messages, authors },
+    actions,
+    state,
+  } = useCommunityUpdates({ communityId });
+
   return (
     <Container maxWidth="xl">
-      <CommunityUpdatesContainer communityId={communityId}>
-        {({ messages, authors }, actions, loading) => (
-          <CommunityUpdatesView
-            entities={{ messages, authors }}
-            actions={{
-              onSubmit: message => actions.onSubmit(message, communityId),
-              onRemove: messageId => actions.onRemove(messageId, communityId),
-            }}
-            state={{
-              loadingMessages: loading.retrievingUpdateMessages,
-              submittingMessage: loading.sendingUpdateMessage,
-              removingMessage: loading.removingUpdateMessage,
-            }}
-            options={{
-              canEdit: true,
-              canCopy: true,
-              canRemove: true,
-            }}
-          />
-        )}
-      </CommunityUpdatesContainer>
+      <CommunityUpdatesView
+        entities={{ messages, authors }}
+        actions={{
+          onSubmit: message => actions.onSubmit(message, communityId),
+          onRemove: messageId => actions.onRemove(messageId, communityId),
+        }}
+        state={{
+          loadingMessages: state.retrievingUpdateMessages,
+          submittingMessage: state.sendingUpdateMessage,
+          removingMessage: state.removingUpdateMessage,
+        }}
+        options={{
+          canEdit: true,
+          canCopy: true,
+          canRemove: true,
+        }}
+      />
     </Container>
   );
 };

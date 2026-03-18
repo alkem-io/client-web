@@ -1,15 +1,15 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { CaptionSmall, Text } from '@/core/ui/typography';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-import { CalloutModelLight } from '../callout/models/CalloutModelLight';
 import { getCalloutIconBasedOnType } from '../callout/icons/calloutIcons';
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { CalloutModelLight } from '../callout/models/CalloutModelLight';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;

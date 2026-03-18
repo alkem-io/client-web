@@ -1,15 +1,15 @@
-import { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
-import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
-import { BlockSectionTitle, CardText, Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
-import LinkButton from '@/core/ui/button/LinkButton';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import LinkButton from '@/core/ui/button/LinkButton';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, Caption, CardText } from '@/core/ui/typography';
+import type { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
+import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
 
 type InvitationCardHorizontalProps = {
   invitation: InvitationWithMeta | undefined;
@@ -36,9 +36,9 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
         />
       }
       onClick={onClick}
-      outlined
+      outlined={true}
     >
-      <Gutters disablePadding row>
+      <Gutters disablePadding={true} row={true}>
         <Box flex={1}>
           <BlockSectionTitle>
             <DetailedActivityDescription
@@ -48,7 +48,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
               spaceLevel={invitation.space.level}
               createdDate={invitation.invitation.createdDate}
               author={{ displayName: invitation.userDisplayName }}
-              type={invitation.invitation.contributorType}
+              type={invitation.invitation.actor?.type}
             />
           </BlockSectionTitle>
           <CardText
@@ -59,7 +59,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
             }}
           >
             {invitation.invitation.welcomeMessage && (
-              <WrapperMarkdown card plain multiline>
+              <WrapperMarkdown card={true} plain={true} multiline={true}>
                 {invitation.invitation.welcomeMessage}
               </WrapperMarkdown>
             )}

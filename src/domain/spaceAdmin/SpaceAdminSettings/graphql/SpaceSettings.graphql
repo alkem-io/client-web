@@ -44,4 +44,8 @@ fragment SpaceSettings on SpaceSettings {
     allowMembersToVideoCall
     allowGuestContributions
   }
+  sortMode
+  layout {
+    calloutDescriptionDisplayMode
+  }
 }

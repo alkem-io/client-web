@@ -1,46 +1,41 @@
-import { useCallback, useRef, useState } from 'react';
-import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Button, Icon, IconButton, Tooltip } from '@mui/material';
+import { useCallback, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ActorType, LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
-import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
-import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
-import { BlockTitle, Caption, Text } from '@/core/ui/typography';
-import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
-import { Trans, useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
-import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityVirtualContributors from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityVirtualContributors';
-import CommunityGuidelinesContainer, {
-  CommunityGuidelines,
-} from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
-import {
-  LicenseEntitlementType,
-  RoleSetContributorType,
-  SpaceLevel,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
-import { TemplateCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCommunityGuidelinesForm';
-import { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
-import useCommunityAdmin from './hooks/useCommunityAdmin';
-import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
-import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption, Text } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
+import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
+import useCommunityGuidelines, {
+  type CommunityGuidelines,
+} from '@/domain/community/community/CommunityGuidelines/useCommunityGuidelines';
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
+import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
+import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
+import CommunityVirtualContributors from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityVirtualContributors';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
+import type { TemplateCommunityGuidelinesFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCommunityGuidelinesForm';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import type { SpaceAboutLightModel } from '../../space/about/model/spaceAboutLight.model';
+import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import useCommunityAdmin from './hooks/useCommunityAdmin';
+import useVirtualContributorsAdmin from './hooks/useVirtualContributorsAdmin';
 
 export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   about: SpaceAboutLightModel;
@@ -140,6 +135,15 @@ const SpaceAdminCommunityPage = ({
     spaceVirtualContributorEntitlementEnabled &&
     (permissions.canAddVirtualContributorsFromAccount || permissions.canAddVirtualContributors);
 
+  const {
+    communityGuidelines,
+    profileId,
+    loading: communityGuidelinesLoading,
+    onSelectCommunityGuidelinesTemplate,
+    onUpdateCommunityGuidelines,
+    onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
+  } = useCommunityGuidelines(communityGuidelinesId);
+
   const currentCommunityGuidelines = useRef<CommunityGuidelines | undefined>(undefined);
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -171,13 +175,13 @@ const SpaceAdminCommunityPage = ({
           <PageContentBlock>
             <PageContentBlockHeader title={t('community.pendingMemberships')}>
               <InviteContributorsWizard
-                contributorType={RoleSetContributorType.User}
+                contributorType={ActorType.User}
                 filterContributors={filterInviteeContributors}
                 onlyFromParentCommunity={level === SpaceLevel.L2}
               >
                 {t('buttons.invite')}
               </InviteContributorsWizard>
-              <Tooltip title={t('community.applicationsHelp')} arrow>
+              <Tooltip title={t('community.applicationsHelp')} arrow={true}>
                 <IconButton aria-label={t('common.help')} sx={{ marginLeft: gutters() }}>
                   <HelpOutlineIcon sx={{ color: theme => theme.palette.common.black }} />
                 </IconButton>
@@ -203,68 +207,55 @@ const SpaceAdminCommunityPage = ({
         </PageContentBlockCollapsible>
 
         {communityGuidelinesEnabled && (
-          <CommunityGuidelinesContainer communityGuidelinesId={communityGuidelinesId}>
-            {({
-              communityGuidelines,
-              profileId,
-              loading,
-              onSelectCommunityGuidelinesTemplate,
-              onUpdateCommunityGuidelines,
-              onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
-            }) => {
-              return (
+          <>
+            <PageContentBlockCollapsible
+              header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+              primaryAction={
                 <>
-                  <PageContentBlockCollapsible
-                    header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
-                    primaryAction={
-                      <>
-                        <Button
-                          variant="outlined"
-                          onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
-                          startIcon={<InnovationLibraryIcon />}
-                        >
-                          {t('common.library')}
-                        </Button>
-
-                        <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
-                          <IconButton
-                            aria-label={t('buttons.saveAsTemplate')}
-                            onClick={() => {
-                              currentCommunityGuidelines.current = communityGuidelines;
-                              setSaveAsTemplateDialogOpen(true);
-                            }}
-                            sx={{ marginLeft: gutters(0.5) }}
-                          >
-                            <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
-                          </IconButton>
-                        </Tooltip>
-                      </>
-                    }
+                  <Button
+                    variant="outlined"
+                    onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                    startIcon={<InnovationLibraryIcon />}
                   >
-                    <CommunityGuidelinesForm
-                      data={communityGuidelines}
-                      loading={loading}
-                      profileId={profileId}
-                      onSubmit={onUpdateCommunityGuidelines}
-                      onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
-                    />
-                  </PageContentBlockCollapsible>
+                    {t('common.library')}
+                  </Button>
 
-                  <ImportTemplatesDialog
-                    open={communityGuidelinesTemplatesDialogOpen}
-                    templateType={TemplateType.CommunityGuidelines}
-                    onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
-                    onSelectTemplate={async (template: Identifiable) => {
-                      await onSelectCommunityGuidelinesTemplate(template);
-                      setCommunityGuidelinesTemplatesDialogOpen(false);
-                    }}
-                    enablePlatformTemplates
-                    actionButton={() => <TemplateActionButton />}
-                  />
+                  <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
+                    <IconButton
+                      aria-label={t('buttons.saveAsTemplate')}
+                      onClick={() => {
+                        currentCommunityGuidelines.current = communityGuidelines;
+                        setSaveAsTemplateDialogOpen(true);
+                      }}
+                      sx={{ marginLeft: gutters(0.5) }}
+                    >
+                      <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
+                    </IconButton>
+                  </Tooltip>
                 </>
-              );
-            }}
-          </CommunityGuidelinesContainer>
+              }
+            >
+              <CommunityGuidelinesForm
+                data={communityGuidelines}
+                loading={communityGuidelinesLoading}
+                profileId={profileId}
+                onSubmit={onUpdateCommunityGuidelines}
+                onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
+              />
+            </PageContentBlockCollapsible>
+
+            <ImportTemplatesDialog
+              open={communityGuidelinesTemplatesDialogOpen}
+              templateType={TemplateType.CommunityGuidelines}
+              onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
+              onSelectTemplate={async (template: Identifiable) => {
+                await onSelectCommunityGuidelinesTemplate(template);
+                setCommunityGuidelinesTemplatesDialogOpen(false);
+              }}
+              enablePlatformTemplates={true}
+              actionButton={() => <TemplateActionButton />}
+            />
+          </>
         )}
 
         {communityGuidelinesTemplatesEnabled && (
@@ -278,6 +269,7 @@ const SpaceAdminCommunityPage = ({
                 type: TemplateType.CommunityGuidelines,
                 communityGuidelines: {
                   id: '',
+                  // biome-ignore lint/style/noNonNullAssertion: ref is set from query data before dialog opens
                   profile: currentCommunityGuidelines.current!,
                 },
               })

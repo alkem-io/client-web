@@ -1,15 +1,17 @@
-import { PropsWithChildren, ReactElement, useMemo } from 'react';
+import type { SvgIconProps } from '@mui/material';
+import { type PropsWithChildren, type ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationsView from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
+import ContributorCardHorizontal, {
+  type ContributorCardHorizontalProps,
+} from '@/core/ui/card/ContributorCardHorizontal';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { SvgIconProps } from '@mui/material';
-import DashboardLeads from './DashboardLeads';
-import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { ContributorViewModel } from '../utils/ContributorViewModel';
-import { ProfileType } from '@/core/apollo/generated/graphql-schema';
+import AssociatedOrganizationsView from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsView';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { ContributorViewModel } from '../utils/ContributorViewModel';
+import DashboardLeads from './DashboardLeads';
 
 const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 
@@ -53,10 +55,10 @@ const EntityDashboardLeadsSection = ({
         onContact: () => {
           sendMessage(getMessageType(ProfileType.Organization), {
             id: org.id,
-            avatarUri: org.profile.avatar?.uri,
-            displayName: org.profile.displayName,
-            city: org.profile.location?.city,
-            country: org.profile.location?.country,
+            avatarUri: org.profile?.avatar?.uri,
+            displayName: org.profile?.displayName,
+            city: org.profile?.location?.city,
+            country: org.profile?.location?.country,
           });
         },
       })),
@@ -71,10 +73,10 @@ const EntityDashboardLeadsSection = ({
       onContact: () => {
         sendMessage(getMessageType(ProfileType.User), {
           id: user.id,
-          avatarUri: user.profile.avatar?.uri,
-          displayName: user.profile.displayName,
-          city: user.profile.location?.city,
-          country: user.profile.location?.country,
+          avatarUri: user.profile?.avatar?.uri,
+          displayName: user.profile?.displayName,
+          city: user.profile?.location?.city,
+          country: user.profile?.location?.country,
         });
       },
     }));

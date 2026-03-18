@@ -1,17 +1,17 @@
-import { PropsWithChildren, ReactElement } from 'react';
-import { Box, GridLegacy, IconButton, SvgIconProps } from '@mui/material';
-import Loading from '@/core/ui/loading/Loading';
-import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import LocationCaption from '@/core/ui/location/LocationCaption';
-import { MetricViewItem } from '@/domain/platform/metrics/views/MetricsView';
-import { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
-import SpaceMetrics from '@/domain/space/components/SpaceMetrics';
-import useMetricsItems from '@/domain/platform/metrics/utils/useMetricsItems';
 import { EditOutlined } from '@mui/icons-material';
-import { noop } from 'lodash';
+import { Box, GridLegacy, IconButton, type SvgIconProps } from '@mui/material';
+import { noop } from 'lodash-es';
+import type { PropsWithChildren, ReactElement } from 'react';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import Loading from '@/core/ui/loading/Loading';
+import LocationCaption from '@/core/ui/location/LocationCaption';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import type { Metric } from '@/domain/platform/metrics/utils/getMetricCount';
+import useMetricsItems from '@/domain/platform/metrics/utils/useMetricsItems';
+import { MetricViewItem } from '@/domain/platform/metrics/views/MetricsView';
+import SpaceMetrics from '@/domain/space/components/SpaceMetrics';
 
 export interface AboutDescriptionProps extends PropsWithChildren {
   title?: string;
@@ -78,11 +78,11 @@ const AboutDescription = ({
       {description && <WrapperMarkdown>{description}</WrapperMarkdown>}
       {children}
       {(location || metrics) && (
-        <GridLegacy container spacing={1}>
-          <GridLegacy item xs={6}>
+        <GridLegacy container={true} spacing={1}>
+          <GridLegacy item={true} xs={6}>
             {location && <LocationCaption color="white" {...location} />}
           </GridLegacy>
-          <GridLegacy item xs={6}>
+          <GridLegacy item={true} xs={6}>
             {metricsItems?.[0] && <MetricViewItem text={metricsItems[0].name} count={metricsItems[0].count} />}
           </GridLegacy>
         </GridLegacy>

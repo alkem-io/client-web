@@ -1,12 +1,12 @@
-import { useState, SyntheticEvent } from 'react';
+import { Box, Tab, Tabs } from '@mui/material';
+import { type SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Tabs, Tab } from '@mui/material';
-import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
-import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import OrganizationAuthorizationRoleAssignementView from '../views/OrganizationAuthorizationRoleAssignementView';
-import Gutters from '@/core/ui/grid/Gutters';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import Gutters from '@/core/ui/grid/Gutters';
 import { TabPanel } from '@/domain/common/layout/TabPanel';
+import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
+import OrganizationAuthorizationRoleAssignementView from '../views/OrganizationAuthorizationRoleAssignementView';
 
 const OrganizationAdminAuthorizationPage = () => {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ const OrganizationAdminAuthorizationPage = () => {
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Authorization}>
-      <Gutters disablePadding>
+      <Gutters disablePadding={true}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
             <Tab label={t('common.admin')} sx={{ paddingX: 1 }} />

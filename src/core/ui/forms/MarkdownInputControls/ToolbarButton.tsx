@@ -1,9 +1,9 @@
-import { Editor } from '@tiptap/react';
-import React, { useEffect, useState } from 'react';
-import { produce } from 'immer';
-import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
-import { ChainedCommands } from '@tiptap/core';
+import type { ChainedCommands } from '@tiptap/core';
+import type { Editor } from '@tiptap/react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
+import MarkdownInputToolbarButton, { type MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 
 export interface ToolbarButtonProps extends MarkdownInputToolbarButtonProps {
   component?: React.ComponentType<MarkdownInputToolbarButtonProps>;
@@ -39,11 +39,11 @@ const ToolbarButton = ({
     }
   };
 
-  const produceButtonState = (prevState: ButtonState = {}) =>
-    produce(prevState, nextState => {
-      nextState.active = getActiveState();
-      nextState.disabled = getDisabledState();
-    });
+  const produceButtonState = (prevState: ButtonState = {}): ButtonState => ({
+    ...prevState,
+    active: getActiveState(),
+    disabled: getDisabledState(),
+  });
 
   const [state, setState] = useState<ButtonState>({ disabled: true, active: false });
 

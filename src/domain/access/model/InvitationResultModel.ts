@@ -1,12 +1,12 @@
-import { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
+import type { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 
 type InvitationResultModel = {
   type: RoleSetInvitationResultType;
   invitation?: {
     id: string;
-    contributor: {
+    actor: {
       id: string;
-      profile: { displayName: string };
+      profile?: { displayName: string };
     };
   };
   platformInvitation?: {

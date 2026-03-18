@@ -5,16 +5,16 @@
  * Spec: 002-guest-whiteboard-access, Phase 8 - Derived Authenticated Guest Name
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import type { FC, PropsWithChildren } from 'react';
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { I18nextProvider } from 'react-i18next';
+import { CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
 import i18n from '@/core/i18n/config';
-import { CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
 import { sessionStorageMock } from './utils/sessionStorageMock';
@@ -46,7 +46,7 @@ const buildUserMock = ({
 }): MockedResponse[] => [
   {
     request: {
-      query: CurrentUserFullDocument,
+      query: CurrentUserLightDocument,
     },
     result: {
       data: {
@@ -57,23 +57,17 @@ const buildUserMock = ({
                 firstName,
                 lastName,
                 email: 'user@example.com',
-                phone: '',
                 profile: {
                   id: `${id}-profile`,
                   displayName: 'Test User',
-                  tagline: null,
-                  location: {
-                    id: `${id}-location`,
-                    country: null,
-                    city: null,
-                    __typename: 'Location',
-                  },
-                  description: null,
                   avatar: null,
-                  references: [],
-                  tagsets: [],
-                  url: null,
+                  url: '',
                   __typename: 'Profile',
+                },
+                settings: {
+                  id: `${id}-settings`,
+                  homeSpace: { spaceID: undefined, autoRedirect: false, __typename: 'UserSettingsHomeSpace' },
+                  __typename: 'UserSettings',
                 },
                 account: {
                   id: `${id}-account`,
@@ -165,7 +159,7 @@ describe('Guest whiteboard fallback prompt derivation', () => {
     const mocks: MockedResponse[] = [
       {
         request: {
-          query: CurrentUserFullDocument,
+          query: CurrentUserLightDocument,
         },
         error: new Error('Network error fetching user data'),
       },

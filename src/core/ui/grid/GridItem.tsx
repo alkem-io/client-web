@@ -1,6 +1,6 @@
-import { cloneElement, ReactElement } from 'react';
-import { SxProps } from '@mui/material';
-import { GridItemStyle, useGridItem } from './utils';
+import type { SxProps } from '@mui/material';
+import { cloneElement, type ReactElement } from 'react';
+import { type GridItemStyle, useGridItem } from './utils';
 
 export interface GridItemProps {
   columns?: number;

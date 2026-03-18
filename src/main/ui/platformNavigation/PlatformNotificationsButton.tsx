@@ -1,9 +1,9 @@
-import { IconButton, Paper } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import { IconButton, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import BadgeCounter from '@/core/ui/icon/BadgeCounter';
-import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
+import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 
 export const PlatformNotificationsButton = () => {
   const { isEnabled, setIsOpen } = useInAppNotificationsContext();

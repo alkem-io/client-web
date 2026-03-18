@@ -2,15 +2,15 @@ import { Button } from '@mui/material';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
-import Gutters from '@/core/ui/grid/Gutters';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import type { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 
 export interface InnovationFlowStateFormValues extends Omit<InnovationFlowStateModel, 'id'> {}
 
@@ -57,10 +57,15 @@ const InnovationFlowStateForm = ({
   );
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={handleSave}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize={true}
+      onSubmit={handleSave}
+    >
       {({ handleSubmit, isValid }) => {
         return (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <FormikInputField name="displayName" title={t('common.title')} maxLength={SMALL_TEXT_LENGTH} />
             <FormikMarkdownField name="description" title={t('common.description')} maxLength={MARKDOWN_TEXT_LENGTH} />
             <Actions justifyContent="end">

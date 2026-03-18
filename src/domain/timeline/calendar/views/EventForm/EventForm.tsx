@@ -1,23 +1,23 @@
-import { useEffect } from 'react';
-import { Form, useFormikContext } from 'formik';
-import { useTranslation } from 'react-i18next';
 import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
+import dayjs from 'dayjs';
+import { Form, useFormikContext } from 'formik';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Actions } from '@/core/ui/actions/Actions';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import FormikDatePicker from '@/core/ui/forms/DatePicker/FormikDatePicker';
+import FormikDurationMinutes from '@/core/ui/forms/DatePicker/FormikDurationMinutes';
+import FormikTimePicker from '@/core/ui/forms/DatePicker/FormikTimePicker';
+import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikDurationMinutes from '@/core/ui/forms/DatePicker/FormikDurationMinutes';
 import { isSameDay } from '@/core/utils/time/utils';
-import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
-import FormikDatePicker from '@/core/ui/forms/DatePicker/FormikDatePicker';
-import FormikTimePicker from '@/core/ui/forms/DatePicker/FormikTimePicker';
-import dayjs from 'dayjs';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { CalendarEventFormData } from '@/domain/timeline/calendar/CalendarEventsContainer';
-import { Actions } from '@/core/ui/actions/Actions';
-import { EventFormProps } from './EventForm.model';
-import SaveButton from '@/core/ui/actions/SaveButton';
+import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalendarEvents';
+import type { EventFormProps } from './EventForm.model';
 
 type DateType = Date | undefined;
 
@@ -54,15 +54,15 @@ const EventForm = ({
     <>
       <DialogContent>
         <Form>
-          <Gutters disablePadding>
-            <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+          <Gutters disablePadding={true}>
+            <Gutters disablePadding={true} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
               <Box sx={{ flex: 1 }}>
                 <FormikInputField name="displayName" title={t('fields.displayName')} />
               </Box>
               <FormikAutocomplete name="type" label={t('calendar.event.type')} values={typeOptions} sx={{ flex: 1 }} />
             </Gutters>
-            <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
-              <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
+            <Gutters disablePadding={true} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+              <Gutters disablePadding={true} sx={{ flexDirection: 'row', flexGrow: 1 }}>
                 <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
                 <FormikTimePicker
                   name="startDate"
@@ -84,8 +84,8 @@ const EventForm = ({
                   sx={{ flexShrink: 0 }}
                 />
               </Gutters>
-              <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
-                <FormikDatePicker name="endDate" label={t('common.date')} minDate={startDate} disabled={wholeDay} />
+              <Gutters disablePadding={true} sx={{ flexDirection: 'row', flexGrow: 1 }}>
+                <FormikDatePicker name="endDate" label={t('common.date')} minDate={startDate} />
                 {isSameDay(startDate, endDate) ? (
                   <FormikDurationMinutes
                     name="durationMinutes"
@@ -112,12 +112,12 @@ const EventForm = ({
               sx={{ marginBottom: gutters(-1) }}
               temporaryLocation={temporaryLocation}
             />
-            <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
-              <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth />
+            <Gutters disablePadding={true} sx={{ flexDirection: 'row', flexGrow: 1 }}>
+              <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth={true} />
               <TagsetField name="tags" title={t('common.tags')} />
             </Gutters>
             {isSubspace && (
-              <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
+              <Gutters disablePadding={true} sx={{ flexDirection: 'row', flexGrow: 1 }}>
                 <FormControlLabel
                   control={
                     <Switch

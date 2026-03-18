@@ -1,4 +1,4 @@
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 
 export interface Location {
   city?: string | undefined;

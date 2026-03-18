@@ -1,6 +1,6 @@
+import { groupBy, sortBy } from 'lodash-es';
 import { useMemo } from 'react';
-import { groupBy } from 'lodash';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 const ROOT_THREAD = Symbol('root');
 
@@ -25,7 +25,8 @@ export const buildMessagesTree = <Message extends IdentifiableReply>(
 
   return groupedMessages?.[ROOT_THREAD]?.map(message => ({
     ...message,
-    replies: groupedMessages[message.id],
+    replies:
+      groupedMessages[message.id] && sortBy(groupedMessages[message.id], r => ('createdAt' in r ? r.createdAt : 0)),
   }));
 };
 

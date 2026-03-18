@@ -1,5 +1,5 @@
-import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
-import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
+import { Link as MuiLink, type LinkProps as MuiLinkProps } from '@mui/material';
+import { Link as ReactRouterLink, type LinkProps as ReactRouterLinkProps } from 'react-router-dom';
 import { isAbsoluteUrl, normalizeLink } from '@/core/utils/links';
 import { useUrlBase } from './UrlBase';
 

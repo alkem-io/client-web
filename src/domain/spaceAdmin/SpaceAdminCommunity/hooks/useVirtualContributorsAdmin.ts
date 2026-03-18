@@ -1,10 +1,10 @@
-import { AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import {
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useAvailableVirtualContributorsInSpaceAccountLazyQuery,
   useAvailableVirtualContributorsInSpaceLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { type AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
 
 interface useVirtualContributorsAdminParams {
   level: SpaceLevel;
@@ -13,7 +13,7 @@ interface useVirtualContributorsAdminParams {
 }
 
 export interface ContributorNameProps extends Identifiable {
-  profile: {
+  profile?: {
     displayName: string;
   };
 }
@@ -23,7 +23,7 @@ export interface useVirtualContributorsAdminProvided {
     getAvailable: (filter?: string) => Promise<
       {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
           url: string;
         };
@@ -35,7 +35,7 @@ export interface useVirtualContributorsAdminProvided {
     getAvailableInLibrary: (filter: string | undefined) => Promise<
       {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
           url: string;
         };
@@ -54,7 +54,7 @@ const useVirtualContributorsAdmin = ({
 }: useVirtualContributorsAdminParams): useVirtualContributorsAdminProvided => {
   // Filter functions for contributors already in the role
   const filterByName = (vc: ContributorNameProps, filter?: string) =>
-    vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
+    (vc.profile?.displayName ?? '').toLowerCase().includes(filter?.toLowerCase() ?? '');
 
   const filterExisting = (currentMembers: Identifiable[]) => (contributor: Identifiable) =>
     !currentMembers.some(member => member.id === contributor.id);

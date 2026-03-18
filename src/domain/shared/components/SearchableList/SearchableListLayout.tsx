@@ -1,12 +1,12 @@
-import RouterLink from '@/core/ui/link/RouterLink';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button } from '@mui/material';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { BlockTitle } from '@/core/ui/typography';
 
 interface ListPageProps extends PropsWithChildren {
   title?: string;
@@ -22,12 +22,12 @@ const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, children }) =
         {(title || newLink) && (
           <Gutters paddingY={0} sx={{ width: '100%' }}>
             {title && (
-              <Gutters row justifyContent="space-between" alignItems="center" disablePadding>
+              <Gutters row={true} justifyContent="space-between" alignItems="center" disablePadding={true}>
                 <BlockTitle>{title}</BlockTitle>
               </Gutters>
             )}
             {newLink && (
-              <Gutters disablePadding disableGap alignItems={'flex-end'}>
+              <Gutters disablePadding={true} disableGap={true} alignItems={'flex-end'}>
                 <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newLink}>
                   {t('buttons.create')}
                 </Button>
@@ -35,7 +35,7 @@ const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, children }) =
             )}
           </Gutters>
         )}
-        <Gutters disablePadding sx={{ width: '100%' }}>
+        <Gutters disablePadding={true} sx={{ width: '100%' }}>
           {children}
         </Gutters>
       </PageContentColumn>

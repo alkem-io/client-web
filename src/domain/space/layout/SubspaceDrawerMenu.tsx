@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { Box, IconButton, Paper, Drawer, MenuList } from '@mui/material';
 import { Menu } from '@mui/icons-material';
+import { Box, Drawer, IconButton, MenuList, Paper } from '@mui/material';
+import { useState } from 'react';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import SwapColors from '@/core/ui/palette/SwapColors';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
+import type { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
+import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
+import SpaceWelcomeBlock, { type SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
-import { gutters } from '@/core/ui/grid/utils';
-import Gutters from '@/core/ui/grid/Gutters';
-import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
-import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
-import SwapColors from '@/core/ui/palette/SwapColors';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import SpaceWelcomeBlock, { SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
-import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 interface SubspaceDrawerMenuProps {
   innovationFlowStates?: InnovationFlowStateModel[];
@@ -47,8 +47,8 @@ export const SubspaceDrawerMenu = ({
   const showInnovationFlowStates = innovationFlowStates && selectedInnovationFlowState;
   return (
     <>
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
-        <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square={true}>
+        <Gutters row={true} padding={1} paddingBottom={0} justifyContent="space-between">
           <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
             <Menu />
           </IconButton>
@@ -66,7 +66,7 @@ export const SubspaceDrawerMenu = ({
 
           <Box width={gutters(2)} />
         </Gutters>
-        <PoweredBy compact />
+        <PoweredBy compact={true} />
       </Paper>
 
       <SwapColors>

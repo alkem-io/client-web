@@ -1,31 +1,31 @@
-import { Box, Link } from '@mui/material';
-import { useMemo, useState } from 'react';
-import type { TFunction } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
-import DataGridTable from '@/core/ui/table/DataGridTable';
-import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
-import { gutters } from '@/core/ui/grid/utils';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
-import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog/CommunityApplicationDialog';
-import { CommunityInvitationDialog } from './CommunityInvitationDialog/CommunityInvitationDialog';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Box, Link } from '@mui/material';
+import type { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
+import type { TFunction } from 'i18next';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { formatDateTime } from '@/core/utils/time/utils';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { MembershipTableItem } from '../../../access/model/MembershipTableItem';
-import { MembershipType } from '../../../access/model/MembershipType';
-import { ApplicationModel } from '@/domain/access/model/ApplicationModel';
-import { InvitationModel } from '@/domain/access/model/InvitationModel';
+import { gutters } from '@/core/ui/grid/utils';
 import DataGridActionButton from '@/core/ui/table/DataGridActionButton';
+import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
+import DataGridTable from '@/core/ui/table/DataGridTable';
+import { formatDateTime } from '@/core/utils/time/utils';
+import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
+import type { InvitationModel } from '@/domain/access/model/InvitationModel';
 import {
   ApplicationEvent,
   ApplicationState,
   InvitationEvent,
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { CommunityApplicationDialog } from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityApplicationDialog/CommunityApplicationDialog';
+import type { MembershipTableItem } from '../../../access/model/MembershipTableItem';
+import { MembershipType } from '../../../access/model/MembershipType';
+import { CommunityInvitationDialog } from './CommunityInvitationDialog/CommunityInvitationDialog';
 
 type RenderParams = GridRenderCellParams<MembershipTableItem>;
 type GetterParams = MembershipTableItem | undefined;
@@ -128,16 +128,16 @@ interface CommunityApplicationsProps {
 const NO_DATA_PLACEHOLDER = '—';
 
 const CreatePendingMembershipForApplication = (application: ApplicationModel) => {
-  const applicant = application.contributor;
+  const applicant = application.actor;
   const result: MembershipTableItem = {
     id: application.id,
     type: MembershipType.Application,
-    contributorType: RoleSetContributorType.User,
-    displayName: applicant.profile.displayName,
-    url: applicant.profile.url,
+    contributorType: ActorType.User,
+    displayName: applicant.profile?.displayName ?? '',
+    url: applicant.profile?.url ?? '',
     state: application.state,
     nextEvents: application.nextEvents || [],
-    email: (applicant as User).email,
+    email: applicant.profile?.email,
     createdDate: new Date(application.createdDate),
     updatedDate: new Date(application.updatedDate),
     contributor: applicant,
@@ -146,16 +146,16 @@ const CreatePendingMembershipForApplication = (application: ApplicationModel) =>
 };
 
 const CreatePendingMembershipForInvitation = (invitation: InvitationModel) => {
-  const contributor = invitation.contributor;
+  const contributor = invitation.actor;
   const result: MembershipTableItem = {
     id: invitation.id,
     type: MembershipType.Invitation,
     contributorType: invitation.contributorType,
-    displayName: contributor.profile.displayName,
+    displayName: contributor.profile?.displayName ?? '',
     nextEvents: invitation.nextEvents || [],
-    url: contributor.profile.url,
+    url: contributor.profile?.url ?? '',
     state: invitation.state,
-    email: (contributor as User).email,
+    email: contributor.profile?.email,
     createdDate: new Date(invitation.createdDate),
     updatedDate: new Date(invitation.updatedDate),
     contributor: contributor,
@@ -167,7 +167,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: PlatformInvita
   const result: MembershipTableItem = {
     id: invitation.id,
     type: MembershipType.PlatformInvitation,
-    contributorType: RoleSetContributorType.User,
+    contributorType: ActorType.User,
     nextEvents: [],
     displayName: invitation.email,
     url: '',

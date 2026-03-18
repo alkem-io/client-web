@@ -1,10 +1,10 @@
-import {
+import type {
   AuthorizationPrivilege,
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
-import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import { MemoModelLight } from '../../memo/model/MemoModelLight';
+import type { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
+import type { MemoModelLight } from '../../memo/model/MemoModelLight';
 
 export interface CalloutModelLight {
   id: string;
@@ -48,7 +48,7 @@ export type CalloutModelExtension<T> = T & {
   createdBy?:
     | {
         id: string;
-        profile: {
+        profile?: {
           displayName: string;
         };
       }

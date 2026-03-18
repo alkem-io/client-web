@@ -1,14 +1,14 @@
+import type { ApolloError } from '@apollo/client';
 import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { ApolloError } from '@apollo/client';
-import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { useLocation } from 'react-router-dom';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
-import { CalloutModelExtension } from '../models/CalloutModelLight';
+import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
-import { useDeepCompareMemoize } from 'use-deep-compare-effect';
+import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+import type { CalloutModelExtension } from '../models/CalloutModelLight';
 
 interface useCalloutDetailsProvided {
   callout: CalloutDetailsModelExtended | undefined;
@@ -69,6 +69,7 @@ const useCalloutDetails = ({
       movable: canMoveCallouts,
       canBeSavedAsTemplate,
       classificationTagsets: [],
+      publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
       ...memoizedOverrideCalloutSettings,
     };
   }, [data, loading, calloutsSetId, canMoveCallouts, canBeSavedAsTemplate, memoizedOverrideCalloutSettings]);

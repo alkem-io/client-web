@@ -1,26 +1,27 @@
-import { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GuestSessionProvider } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
-import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
-import { useGuestWhiteboardAccess } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestWhiteboardAccess';
-import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
-import { setGuestWhiteboardUrl } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
-import { useCurrentUserFullQuery } from '@/core/apollo/generated/apollo-hooks';
-import { buildSignUpUrl } from '@/main/routing/urlBuilders';
-import WhiteboardDialog, {
-  WhiteboardDetails,
-} from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
-import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import PublicWhiteboardLayout from './PublicWhiteboardLayout';
-import JoinWhiteboardDialog from './JoinWhiteboardDialog';
-import PublicWhiteboardError from './PublicWhiteboardError';
-import Loading from '@/core/ui/loading/Loading';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Loading from '@/core/ui/loading/Loading';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
+import { GuestSessionProvider } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
+import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
+import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
+import { useGuestWhiteboardAccess } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestWhiteboardAccess';
+import { setGuestWhiteboardUrl } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import WhiteboardDialog, {
+  type WhiteboardDetails,
+} from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
+import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { buildSignUpUrl } from '@/main/routing/urlBuilders';
+import JoinWhiteboardDialog from './JoinWhiteboardDialog';
+import PublicWhiteboardError from './PublicWhiteboardError';
+import PublicWhiteboardLayout from './PublicWhiteboardLayout';
 
 /**
  * Inner component that uses guest session context
@@ -33,7 +34,7 @@ const PublicWhiteboardPageContent: FC = () => {
 
   // Check if user is authenticated
   // Use errorPolicy 'ignore' and context flag to prevent error toaster on public page
-  const { data: currentUser, loading: userLoading } = useCurrentUserFullQuery({
+  const { data: currentUser, loading: userLoading } = useCurrentUserLightQuery({
     errorPolicy: 'ignore',
     context: {
       skipGlobalErrorHandler: true,
@@ -49,7 +50,9 @@ const PublicWhiteboardPageContent: FC = () => {
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
+  const { isSmallScreen } = useScreenSize();
   const { fullscreen, setFullscreen } = useFullscreen();
+  const isFullscreen = fullscreen || isSmallScreen;
   const { t } = useTranslation();
 
   const whiteboardDetails = useMemo<WhiteboardDetails | undefined>(() => {
@@ -146,7 +149,7 @@ const PublicWhiteboardPageContent: FC = () => {
   if (!isAuthenticated && needsGuestName) {
     return (
       <PublicWhiteboardLayout>
-        <JoinWhiteboardDialog open onSubmit={handleGuestNameSubmit} />
+        <JoinWhiteboardDialog open={true} onSubmit={handleGuestNameSubmit} />
       </PublicWhiteboardLayout>
     );
   }
@@ -180,7 +183,7 @@ const PublicWhiteboardPageContent: FC = () => {
           canEdit: true, // Guests can edit via collaboration
           canDelete: false, // Guests cannot delete
           dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
-          fullscreen,
+          fullscreen: isFullscreen,
           previewSettingsDialogOpen: previewSettingsDialogOpen,
           readOnlyDisplayName: true, // Guests cannot edit display name
           headerActions: () => (
@@ -192,7 +195,7 @@ const PublicWhiteboardPageContent: FC = () => {
                 showShareOnAlkemio={false}
               />
 
-              <FullscreenButton />
+              {!isSmallScreen && <FullscreenButton />}
 
               <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
             </>

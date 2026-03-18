@@ -1,47 +1,47 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  refetchMyResourcesQuery,
+  useAllSpaceSubspacesLazyQuery,
+  useAssignRoleToVirtualContributorMutation,
+  useCreateLinkOnCalloutMutation,
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
-  useSubspaceCommunityAndRoleSetIdLazyQuery,
-  useAssignRoleToVirtualContributorMutation,
-  useCreateLinkOnCalloutMutation,
-  useAllSpaceSubspacesLazyQuery,
-  refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
-  useUploadVisualMutation,
   useSpaceAboutBaseLazyQuery,
+  useSubspaceCommunityAndRoleSetIdLazyQuery,
+  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  VirtualContributorBodyOfKnowledgeType,
   AuthorizationPrivilege,
+  type CreateCalloutInput,
+  type CreateVirtualContributorOnAccountMutationVariables,
   RoleName,
-  CreateCalloutInput,
-  CreateVirtualContributorOnAccountMutationVariables,
+  VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
-import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
-import LoadingState from './LoadingState';
+import useNavigate from '@/core/routing/useNavigate';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import type { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import AddContent from './AddContent/AddContent';
 import {
-  BoKCalloutsFormValues,
-  DocumentValues,
+  type BoKCalloutsFormValues,
+  type DocumentValues,
   getDocumentCalloutRequestData,
   getPostCalloutRequestData,
 } from './AddContent/AddContentProps';
-import ExistingSpace, { SelectableKnowledgeSpace } from './ExistingSpace';
-import { useTranslation } from 'react-i18next';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import useNavigate from '@/core/routing/useNavigate';
-import { addVCCreationCache } from './TryVC/utils';
-import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
-import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
-import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import ChooseCommunity from './ChooseCommunity';
+import CreateExternalAIDialog, { type ExternalVcFormValues } from './CreateExternalAIDialog';
+import CreateNewVirtualContributor, { type VirtualContributorFromProps } from './CreateNewVirtualContributor';
+import ExistingSpace, { type SelectableKnowledgeSpace } from './ExistingSpace';
+import LoadingState from './LoadingState';
 import TryVcInfo from './TryVC/TryVcInfo';
-import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import { addVCCreationCache } from './TryVC/utils';
+import type { UserAccountProps, useVirtualContributorWizardProvided } from './virtualContributorProps';
 
 const steps = {
   initial: 'initial',
@@ -78,7 +78,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
   const [createdVc, setCreatedVc] = useState<
-    { id: string; profile: { url: string; avatar?: { id: string } } } | undefined
+    { id: string; profile?: { url: string; avatar?: { id: string } } } | undefined
   >();
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
@@ -184,7 +184,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           accountID: myAccountId!,
           about: {
             profileData: {
-              displayName: `${accountName || userModel?.profile.displayName} - ${t('common.space')}`,
+              displayName: `${accountName || userModel?.profile?.displayName} - ${t('common.space')}`,
             },
           },
           collaborationData: {
@@ -321,10 +321,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
   };
 
-  const notifyErrorOnAddToCommunity = () => {
-    // No need to spam the user with error messages, the VC was created successfully
-    console.warn('Try your VC flow was skipped. Unable to add to community.');
-  };
+  const notifyErrorOnAddToCommunity = () => {};
 
   // post creation navigation
   const [getNewSpaceUrl] = useSpaceAboutBaseLazyQuery();
@@ -531,7 +528,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
       // navigate to VC page
       if (createdVc) {
-        navigate(createdVc.profile.url);
+        navigate(createdVc.profile?.url ?? '');
       }
     }
   };
@@ -587,7 +584,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             <TryVcInfo
               titleId="virtual-contributor-wizard"
               vcName={virtualContributorInput?.name ?? ''}
-              url={createdVc?.profile.url}
+              url={createdVc?.profile?.url}
               onClose={handleCloseWizard}
             />
           )}

@@ -1,12 +1,12 @@
+import { Box, DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
-import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
-import { Box, DialogContent } from '@mui/material';
+import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
 import ContributorChip from '../components/ContributorChip/ContributorChip';
 import { ContributorSelectorType } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.models';
-import { gutters } from '@/core/ui/grid/utils';
 
 interface InvitationsResultDialogContentProps {
   invitationsResults: InvitationResultModel[];
@@ -32,7 +32,7 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
 
   return (
     <DialogContent>
-      <Gutters disablePadding>
+      <Gutters disablePadding={true}>
         {successfulInvitations.length > 0 && (
           <>
             <Caption>{t('community.invitations.inviteContributorsDialog.users.success')}</Caption>
@@ -43,8 +43,8 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
                     key={invite.invitation.id}
                     contributor={{
                       type: ContributorSelectorType.User,
-                      id: invite.invitation.contributor.id,
-                      displayName: invite.invitation.contributor.profile.displayName,
+                      id: invite.invitation.actor.id,
+                      displayName: invite.invitation.actor.profile?.displayName ?? '',
                     }}
                   />
                 ) : invite.platformInvitation ? (
@@ -67,7 +67,7 @@ const InvitationsResultDialogContent = ({ invitationsResults }: InvitationsResul
               {failedInvitations.map(invite =>
                 invite.invitation ? (
                   <li key={invite.invitation.id}>
-                    <Caption display="inline">{invite.invitation.contributor.profile.displayName}</Caption>
+                    <Caption display="inline">{invite.invitation.actor.profile?.displayName}</Caption>
                     <CaptionSmall marginLeft={gutters()} display="inline">
                       {t(`community.invitations.inviteContributorsDialog.users.results.${invite.type}`)}
                     </CaptionSmall>

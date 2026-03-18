@@ -1,21 +1,24 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import SpaceAdminSettingsPage, {
-  SpaceAdminSettingsPageProps,
+  type SpaceAdminSettingsPageProps,
 } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage';
 import SpaceAdminSubspacesPage, {
-  SpaceAdminSubspacesPageProps,
+  type SpaceAdminSubspacesPageProps,
 } from '@/domain/spaceAdmin/SpaceAdminSubspaces/SpaceAdminSubspacesPage';
-import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
-import SpaceAdminCommunityPage, { SpaceAdminCommunityPageProps } from '../SpaceAdminCommunity/SpaceAdminCommunityPage';
-import SpaceAdminCommunicationsPage, {
-  SpaceAdminCommunicationsPageProps,
-} from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpace } from '../../space/context/useSpace';
-import SpaceAdminAboutPage, { SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
+import SpaceAdminAboutPage, { type SpaceAdminAboutPageProps } from '../SpaceAdminAbout/SpaceAdminAboutPage';
+import SpaceAdminCommunicationsPage, {
+  type SpaceAdminCommunicationsPageProps,
+} from '../SpaceAdminCommunication/SpaceAdminCommunicationsPage';
+import SpaceAdminCommunityPage, {
+  type SpaceAdminCommunityPageProps,
+} from '../SpaceAdminCommunity/SpaceAdminCommunityPage';
+import SpaceAdminLayoutPage, { type SpaceAdminLayoutPageProps } from '../SpaceAdminLayout/SpaceAdminLayoutPage';
+import NonSpaceAdminRedirect from './NonSpaceAdminRedirect';
 
 export const SpaceAdminL1Route: FC = () => {
   const { space, entitlements } = useSpace();
@@ -57,6 +60,11 @@ export const SpaceAdminL1Route: FC = () => {
     spaceId: subspaceId,
   };
 
+  const layoutPageProps: SpaceAdminLayoutPageProps = {
+    useL0Layout: false,
+    spaceId: subspaceId,
+  };
+
   const subspacesPageProps: SpaceAdminSubspacesPageProps = {
     useL0Layout: false,
     spaceId: subspaceId,
@@ -68,8 +76,9 @@ export const SpaceAdminL1Route: FC = () => {
       <StorageConfigContextProvider locationType="space" spaceId={subspace?.id}>
         <Routes>
           <Route path={'/'}>
-            <Route index element={<Navigate to="about" replace />} />
+            <Route index={true} element={<Navigate to="about" replace={true} />} />
             <Route path="about" element={<SpaceAdminAboutPage {...aboutPageProps} />} />
+            <Route path="layout" element={<SpaceAdminLayoutPage {...layoutPageProps} />} />
             <Route path="communications" element={<SpaceAdminCommunicationsPage {...communicationsPageProps} />} />
             <Route path="opportunities/*" element={<SpaceAdminSubspacesPage {...subspacesPageProps} />} />
             <Route path="community" element={<SpaceAdminCommunityPage {...communityPageProps} />} />

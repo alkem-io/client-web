@@ -1,8 +1,8 @@
-import { LinkContribution } from './models/LinkContribution';
+import { times } from 'lodash-es';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import GuttersGrid from '@/core/ui/grid/GuttersGrid';
 import ReferenceView, { ReferenceViewSkeleton } from '@/domain/shared/components/References/ReferenceView';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { times } from 'lodash';
+import type { LinkContribution } from './models/LinkContribution';
 
 interface LinkContributionsListProps {
   contributions: LinkContribution[];

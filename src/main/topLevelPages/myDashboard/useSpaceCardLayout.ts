@@ -17,7 +17,7 @@ export const useSpaceCardLayout = () => {
       // - Standard layout: 3 cards, each taking columns/3 (e.g., 4 cols each for 12-col grid)
       // - Homepage special layout: first card = 3 cols, remaining = 3 cols each
       return {
-        visibleSpaces: 3,
+        visibleSpaces: 4,
         cardColumns: columns / 3,
         firstCardColumns: 3,
         remainingCardColumns: 3,

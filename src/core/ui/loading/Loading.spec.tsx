@@ -1,8 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen } from '@/main/test/testUtils';
+
 import { describe, expect, test } from 'vitest';
+import { render, screen } from '@/main/test/testUtils';
 import { Caption } from '../typography';
 import Loading from './Loading';
 

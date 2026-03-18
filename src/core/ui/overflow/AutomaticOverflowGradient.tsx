@@ -1,14 +1,15 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { gutters } from '../grid/utils';
-import { BackgroundColor, overflowBorderGradient } from './utils';
-import { useResizeDetector } from 'react-resize-detector';
+import { type BackgroundColor, overflowBorderGradient } from './utils';
 
 export interface AutomaticOverflowGradientProps extends BoxProps {
   lastLine?: boolean;
   backgroundColor?: BackgroundColor;
   overflowMarker?: ReactNode;
   expanderButton?: ReactNode;
+  onOverflowChange?: (isOverflowing: boolean) => void;
 }
 
 const AutomaticOverflowGradient = ({
@@ -17,17 +18,24 @@ const AutomaticOverflowGradient = ({
   sx,
   overflowMarker,
   expanderButton,
+  onOverflowChange,
   children,
   ...props
 }: AutomaticOverflowGradientProps) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
-  const { ref: internalRef, height } = useResizeDetector();
+  const { ref: internalRef, height } = useResizeObserver();
   const outerRef = useRef<HTMLElement>(null);
-  useEffect(() => {
+  const prevOverflowingRef = useRef<boolean | null>(null);
+  useLayoutEffect(() => {
     if (outerRef.current && internalRef.current) {
-      setIsOverflowing(internalRef.current.scrollHeight > outerRef.current.clientHeight);
+      const overflowing = internalRef.current.scrollHeight > outerRef.current.clientHeight;
+      setIsOverflowing(overflowing);
+      if (prevOverflowingRef.current !== overflowing) {
+        prevOverflowingRef.current = overflowing;
+        onOverflowChange?.(overflowing);
+      }
     }
-  }, [outerRef, internalRef, height, children]);
+  }, [outerRef, internalRef, height, children, onOverflowChange]);
 
   return (
     <>

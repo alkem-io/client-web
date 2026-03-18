@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutAllowedContributors,
+import type {
+  CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
@@ -10,10 +10,11 @@ import {
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
   CreateTagsetInput,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
+import type { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
+import type { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
-import { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 
 export interface CalloutCreationType {
   classification?: {
@@ -29,6 +30,19 @@ export interface CalloutCreationType {
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     tags?: string[];
+    mediaGallery?: {
+      nameID?: string;
+      visuals: {
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        name: VisualType;
+        uri: string;
+        alternativeText?: string;
+      }[];
+    };
   };
   settings?: {
     framing?: {
@@ -37,7 +51,7 @@ export interface CalloutCreationType {
     contribution?: {
       enabled?: boolean;
       allowedTypes?: CalloutContributionType[];
-      canAddContributions?: CalloutAllowedContributors;
+      canAddContributions?: CalloutAllowedActors;
       commentsEnabled?: boolean;
     };
     visibility?: CalloutVisibility;

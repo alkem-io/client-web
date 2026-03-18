@@ -4,8 +4,9 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import { render } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import PublicWhiteboardLayout from '@/main/public/whiteboard/PublicWhiteboardLayout';
 
@@ -213,10 +214,8 @@ describe('Post-Authentication Layout Persistence', () => {
         <div key="error">Error State</div>,
       ];
 
-      contents.forEach((content) => {
-        const { container, unmount } = render(
-          <PublicWhiteboardLayout>{content}</PublicWhiteboardLayout>
-        );
+      contents.forEach(content => {
+        const { container, unmount } = render(<PublicWhiteboardLayout>{content}</PublicWhiteboardLayout>);
 
         const layoutBox = container.querySelector('div[class*="MuiBox"]');
         if (layoutBox) {

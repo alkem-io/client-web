@@ -1,13 +1,13 @@
-import { FC } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
+import type { FC } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { CommunityMembershipPolicy, type SpaceLevel, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle, Caption } from '@/core/ui/typography';
 import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
-import { CommunityMembershipPolicy, SpacePrivacyMode, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { isSubspace } from '@/domain/space/utils/spaceLevel';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import { isSubspace } from '@/domain/space/utils/spaceLevel';
 
 interface VisibilitySettingsProps {
   currentMode?: SpacePrivacyMode;
@@ -53,7 +53,7 @@ export const VisibilitySettings: FC<VisibilitySettingsProps> = ({
         onChange={onUpdate}
       />
       {showMembershipWarning && (
-        <Gutters disablePadding row alignItems="flex-start" gap={gutters(0.5)}>
+        <Gutters disablePadding={true} row={true} alignItems="flex-start" gap={gutters(0.5)}>
           <GppMaybeOutlinedIcon fontSize="small" color="error" />
           <Caption>
             <Trans

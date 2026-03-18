@@ -1,8 +1,8 @@
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React from 'react';
-import { Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import { DataPoint } from './types';
+import { Caption } from '@/core/ui/typography';
+import type { DataPoint } from './types';
 
 type StatePropsProps = {
   promptGraph: {

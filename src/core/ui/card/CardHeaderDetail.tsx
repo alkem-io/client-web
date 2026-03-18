@@ -1,5 +1,5 @@
-import { Box, SvgIconProps, TypographyProps } from '@mui/material';
-import React, { PropsWithChildren, ReactElement } from 'react';
+import { Box, type SvgIconProps, type TypographyProps } from '@mui/material';
+import React, { type PropsWithChildren, type ReactElement } from 'react';
 import { gutters } from '../grid/utils';
 import { CardText } from '../typography';
 
@@ -22,7 +22,7 @@ const CardHeaderDetail = ({
 }: PropsWithChildren<CardHeaderDetailProps>) => (
   <Box display="flex" alignItems={'center'} gap={gutters(0.5)} {...containerProps}>
     {iconComponent && React.cloneElement(iconComponent, { sx: { ...iconStyles }, ...iconComponent.props })}
-    <CardText color="inherit" noWrap>
+    <CardText color="inherit" noWrap={true}>
       {children}
     </CardText>
   </Box>

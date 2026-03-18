@@ -1,5 +1,5 @@
-import { VirtualContributorWithModelCardFragment, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
-import { VirtualContributorModelCard, EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
+import { AiPersonaEngine, type VirtualContributorWithModelCardFragment } from '@/core/apollo/generated/graphql-schema';
+import { EMPTY_MODEL_CARD, type VirtualContributorModelCard } from '../model/VirtualContributorModelCardModel';
 
 export function createAiPersonaModelCardModelFromFragment(
   vcData: VirtualContributorWithModelCardFragment | undefined

@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
-- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 22.21.1)
+- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
 - Always use pnpm; the lockfile is authoritative
 - All commits must be signed
 
@@ -25,9 +25,6 @@ pnpm build
 
 # Type checking + linting
 pnpm lint
-
-# Production-specific linting (uses NODE_ENV=production)
-pnpm lint:prod
 
 # Run tests (non-interactive)
 pnpm vitest run
@@ -279,3 +276,9 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 - GraphQL header injection (`x-guest-name`)
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
+
+## Recent Changes
+
+- Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
+- Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
+- CI lint workflow split into parallel jobs: typecheck, biome, eslint-compiler

@@ -1,16 +1,16 @@
-import React, { ReactElement, Ref } from 'react';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { Box, CircularProgress, Paper, useTheme } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
 import { Person } from '@mui/icons-material';
+import { Box, CircularProgress, Paper, useTheme } from '@mui/material';
+import type { ReactElement, Ref } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { gutters } from '@/core/ui/grid/utils';
+import BadgeLabel from '@/core/ui/icon/BadgeLabel';
+import NavigationItemContainer from '@/core/ui/navigation/NavigationItemContainer';
 import SwapColors from '@/core/ui/palette/SwapColors';
 import MenuTriggerButton from '@/core/ui/tooltip/MenuTriggerButton';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
-import NavigationItemContainer from '@/core/ui/navigation/NavigationItemContainer';
-import { useTranslation } from 'react-i18next';
-import BadgeLabel from '@/core/ui/icon/BadgeLabel';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 interface PlatformNavigationUserAvatarProps {
   children: ReactElement<{ onClose?: () => void }>;
@@ -27,7 +27,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
 
   return (
     <MenuTriggerButton
-      keepMounted
+      keepMounted={true}
       drawer={drawer}
       placement="bottom-end"
       renderTrigger={({ ref, onClick, ...props }) => (
@@ -35,7 +35,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
           <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative" overflow="visible">
             <Paper
               component={Avatar}
-              src={userModel?.profile.avatar?.uri}
+              src={userModel?.profile?.avatar?.uri}
               sx={{
                 padding: 0,
                 cursor: 'pointer',

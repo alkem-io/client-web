@@ -1,16 +1,17 @@
-import React, { memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { Box, useTheme } from '@mui/material';
-import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
-import { CharacterCountContainer } from './CharacterCountContext';
-import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
+import type { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
+import { type Editor, EditorContent } from '@tiptap/react';
+import type React from 'react';
+import { memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { EditorContent, Editor } from '@tiptap/react';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
+import { useCharacterCount } from './CharacterCountContext';
+import { MarkdownInputStyles } from './hooks/MarkdownInputStyles';
 import { useEditorConfig } from './hooks/useEditorConfig';
 import { useImageUpload } from './hooks/useImageUpload';
-import { useMarkdownInputUI } from './hooks/useMarkdownInputUI';
 import { useMarkdownEditor } from './hooks/useMarkdownEditor';
-import { MarkdownInputStyles } from './hooks/MarkdownInputStyles';
+import { useMarkdownInputUI } from './hooks/useMarkdownInputUI';
 
 export interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -169,34 +170,50 @@ export const MarkdownInput = memo<MarkdownInputProps>(
           <Box position="relative" style={{ minHeight: prevEditorHeight }}>
             <EditorContent editor={editor} />
 
-            <CharacterCountContainer>
-              {({ characterCount }) =>
-                typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
-                  <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    bottom={0}
-                    right={0}
-                    sx={{
-                      pointerEvents: 'none',
-                      color: 'transparent',
-                      mark: {
-                        color: theme.palette.error.main,
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
-                    <EditorContent editor={shadowEditor} />
-                  </Box>
-                )
-              }
-            </CharacterCountContainer>
+            <OverflowHighlight
+              maxLength={maxLength}
+              shadowEditor={shadowEditor}
+              errorColor={theme.palette.error.main}
+            />
           </Box>
         </Box>
       </Box>
     );
   }
 );
+
+const OverflowHighlight = ({
+  maxLength,
+  shadowEditor,
+  errorColor,
+}: {
+  maxLength: number | undefined;
+  shadowEditor: Editor | null;
+  errorColor: string;
+}) => {
+  const characterCount = useCharacterCount();
+  if (typeof maxLength === 'undefined' || characterCount <= maxLength) {
+    return null;
+  }
+  return (
+    <Box
+      position="absolute"
+      top={0}
+      left={0}
+      bottom={0}
+      right={0}
+      sx={{
+        pointerEvents: 'none',
+        color: 'transparent',
+        mark: {
+          color: errorColor,
+          backgroundColor: 'transparent',
+        },
+      }}
+    >
+      <EditorContent editor={shadowEditor} />
+    </Box>
+  );
+};
 
 export default MarkdownInput;

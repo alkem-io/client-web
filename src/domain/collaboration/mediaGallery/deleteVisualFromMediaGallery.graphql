@@ -1,0 +1,5 @@
+mutation deleteVisualFromMediaGallery($deleteData: DeleteVisualFromMediaGalleryInput!) {
+  deleteVisualFromMediaGallery(deleteData: $deleteData) {
+    id
+  }
+}

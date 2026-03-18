@@ -1,18 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  ActivityComponent,
-  ActivityComponentProps,
-} from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import { Caption } from '@/core/ui/typography';
+import { Box } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import TopCalloutDetails from '@/domain/collaboration/calloutsSet/TopCallout/TopCalloutDetails';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { gutters } from '@/core/ui/grid/utils';
+import { Actions } from '@/core/ui/actions/Actions';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Box } from '@mui/material';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/constants';
-import { Actions } from '@/core/ui/actions/Actions';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import {
+  ActivityComponent,
+  type ActivityComponentProps,
+} from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
+import TopCalloutDetails from '@/domain/collaboration/calloutsSet/TopCallout/TopCalloutDetails';
+import { RECENT_ACTIVITIES_LIMIT_EXPANDED, RECENT_ACTIVITIES_LIMIT_INITIAL } from '../../common/constants';
 
 export interface RecentContributionsBlockProps extends ActivityComponentProps {
   readUsersAccess: boolean;
@@ -104,11 +104,9 @@ const RecentContributionsBlock = ({
         {mode === Mode.RecentActivity && (
           <>
             {readUsersAccess && entityReadAccess && showActivities && (
-              <>
-                <Gutters disablePadding>
-                  <ActivityComponent activities={activities} />
-                </Gutters>
-              </>
+              <Gutters disablePadding={true}>
+                <ActivityComponent activities={activities} />
+              </Gutters>
             )}
             {accessErrorTypeName && (
               <Caption>
@@ -121,7 +119,7 @@ const RecentContributionsBlock = ({
         )}
 
         {mode === Mode.TopCallouts && (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             {topCallouts?.map(callout => (
               <TopCalloutDetails
                 key={callout.id}

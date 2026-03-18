@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import Gutters from '@/core/ui/grid/Gutters';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
-import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
+import { Formik } from 'formik';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
+import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 type CommunityGuidelinesFormProps = {
   data: FormValues | undefined;
@@ -67,7 +67,12 @@ const CommunityGuidelinesForm = ({
 
   return (
     <>
-      <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize={true}
+        onSubmit={onSubmit}
+      >
         {({ values, handleSubmit, isValid }) => {
           return (
             <Gutters>

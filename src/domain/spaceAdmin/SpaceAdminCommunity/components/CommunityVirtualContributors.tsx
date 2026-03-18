@@ -1,27 +1,27 @@
+import { Remove } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, IconButton, Link, TextField } from '@mui/material';
 import {
-  GridColDef,
-  GridFilterModel,
-  GridInitialState,
+  type GridColDef,
+  type GridFilterModel,
+  type GridInitialState,
   GridLogicOperator,
-  GridRenderCellParams,
+  type GridRenderCellParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Actions } from '@/core/ui/actions/Actions';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
-import CommunityAddMembersDialog from '../dialogs/CommunityAddMembersDialog';
-import { Remove } from '@mui/icons-material';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { Actions } from '@/core/ui/actions/Actions';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
+import type { ContributorViewModel } from '@/domain/community/community/utils/ContributorViewModel';
 import InviteVirtualContributorDialog from '@/domain/community/inviteContributors/virtualContributors/InviteVirtualContributorDialog';
-import { ContributorViewModel } from '@/domain/community/community/utils/ContributorViewModel';
-import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
-import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
+import CommunityAddMembersDialog from '../dialogs/CommunityAddMembersDialog';
 
 type RenderParams = GridRenderCellParams<ContributorViewModel>;
 type GetterParams = ContributorViewModel | undefined;
@@ -48,7 +48,7 @@ const initialState: GridInitialState = {
 
 interface Entity extends Identifiable {
   email?: string;
-  profile: {
+  profile?: {
     displayName: string;
   };
 }
@@ -59,7 +59,7 @@ type CommunityVirtualContributorsProps = {
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
   fetchAvailableVirtualContributorsInLibrary: (filter?: string) => Promise<Entity[] | undefined>;
-  onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
+  onAddMember: (memberId: string) => Promise<unknown> | void | void;
   loading?: boolean;
   inviteContributors: (params: InviteContributorsData) => Promise<unknown>;
   spaceDisplayName?: string;
@@ -83,11 +83,11 @@ const CommunityVirtualContributors = ({
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
-          {row.profile.displayName}
+        <Link href={row.profile?.url} target="_blank">
+          {row.profile?.displayName}
         </Link>
       ),
-      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile?.displayName,
       filterable: false,
       flex: 1,
     },
@@ -174,7 +174,7 @@ const CommunityVirtualContributors = ({
         label={t('common.search')}
         placeholder={t('common.search')}
         size="small"
-        fullWidth
+        fullWidth={true}
       />
       <Box minHeight={gutters(25)}>
         {loading ? (
@@ -224,7 +224,7 @@ const CommunityVirtualContributors = ({
         <CommunityAddMembersDialog
           onAdd={onAddClick}
           fetchAvailableEntities={getFilteredVirtualContributors}
-          allowSearchByURL
+          allowSearchByURL={true}
           onClose={() => setAddingNewMember(false)}
         />
       )}

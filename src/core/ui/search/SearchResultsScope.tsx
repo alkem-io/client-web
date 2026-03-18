@@ -1,8 +1,8 @@
-import Gutters from '../grid/Gutters';
 import { Box } from '@mui/material';
-import { Caption } from '../typography';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReactNode } from 'react';
+import Gutters from '../grid/Gutters';
+import { Caption } from '../typography';
 
 interface SearchResultsScopeProps {
   currentScope: ReactNode;
@@ -13,7 +13,7 @@ const SearchResultsScope = ({ currentScope, alternativeScope }: SearchResultsSco
   const { t } = useTranslation();
 
   return (
-    <Gutters row disablePadding>
+    <Gutters row={true} disablePadding={true}>
       <Box display="flex" gap={0.5} alignItems="center">
         <Caption>{t('components.searchScope.currentScope')}</Caption>
         {currentScope}

@@ -1,4 +1,4 @@
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppUserSpaceCommunityJoinedView = (notification: InAppNotificationModel) => {
@@ -18,6 +18,7 @@ export const InAppUserSpaceCommunityJoinedView = (notification: InAppNotificatio
       notification={notification}
       values={notificationTextValues}
       url={payload.space?.about?.profile?.url}
+      forceReload={true}
     />
   );
 };

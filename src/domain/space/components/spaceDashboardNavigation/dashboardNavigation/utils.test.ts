@@ -1,6 +1,6 @@
-import { expect, it, describe } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 import { findCurrentPath } from './utils';
-import { DashboardNavigationItem } from '../useSpaceDashboardNavigation';
 
 const dashboardNavigation: DashboardNavigationItem = {
   id: 'space_0',

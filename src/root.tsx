@@ -1,14 +1,19 @@
-import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
-import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import { ApmProvider, ApmUserSetter } from '@/core/analytics/apm/context';
 import { UserGeoProvider } from '@/core/analytics/geo';
+import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
+import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import '@/core/i18n/config';
+import GlobalStyles from '@mui/material/GlobalStyles';
+import { StyledEngineProvider, type Theme } from '@mui/material/styles';
+import { type FC, Suspense } from 'react';
+import { CookiesProvider } from 'react-cookie';
+import { BrowserRouter } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
-import { Error40X } from './core/pages/Errors/Error40X';
-import ScrollToTop from '@/core/routing/ScrollToTop';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
+import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
@@ -16,20 +21,15 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import GlobalStyles from '@mui/material/GlobalStyles';
-import { StyledEngineProvider, Theme } from '@mui/material/styles';
-import { FC } from 'react';
-import { CookiesProvider } from 'react-cookie';
-import { BrowserRouter } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
+import { Error40X } from './core/pages/Errors/Error40X';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
+import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
-import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Suspense } from 'react';
 
 const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
 const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
@@ -116,7 +116,7 @@ const globalStyles = (theme: Theme) => ({
 
 const Root: FC = () => {
   return (
-    <StyledEngineProvider injectFirst>
+    <StyledEngineProvider injectFirst={true}>
       <RootThemeProvider>
         <GlobalStyles styles={globalStyles} />
         <CookiesProvider>
@@ -125,8 +125,8 @@ const Root: FC = () => {
               <SentryErrorBoundaryProvider>
                 <GlobalStateProvider>
                   <GlobalErrorProvider>
-                    <BrowserRouter>
-                      <AuthenticationProvider>
+                    <AuthenticationProvider>
+                      <BrowserRouter>
                         <UserGeoProvider>
                           <ApmProvider>
                             <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
@@ -145,6 +145,7 @@ const Root: FC = () => {
                                         <UserMessagingDialog />
                                       </Suspense>
                                       <VersionHandling />
+                                      <OnlineStatusNotification />
                                       <Error40XBoundary
                                         errorComponent={errorState => (
                                           <TopLevelLayout>
@@ -164,8 +165,8 @@ const Root: FC = () => {
                             </AlkemioApolloProvider>
                           </ApmProvider>
                         </UserGeoProvider>
-                      </AuthenticationProvider>
-                    </BrowserRouter>
+                      </BrowserRouter>
+                    </AuthenticationProvider>
                   </GlobalErrorProvider>
                 </GlobalStateProvider>
               </SentryErrorBoundaryProvider>

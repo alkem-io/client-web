@@ -1,4 +1,4 @@
-import { UrlType } from '../apollo/generated/graphql-schema';
+import type { UrlType } from '../apollo/generated/graphql-schema';
 
 export interface ClosestAncestor {
   url: string;

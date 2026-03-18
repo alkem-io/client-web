@@ -1,8 +1,8 @@
+import React, { type PropsWithChildren } from 'react';
 import { useOrganizationInfoQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, type OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import React, { PropsWithChildren } from 'react';
 
 type OrganizationContextProps = {
   organization?: OrganizationInfoFragment;
@@ -32,7 +32,7 @@ const OrganizationProvider = ({ children }: PropsWithChildren) => {
     skip: !organizationId || isUserLoading,
   });
   const organization = data?.lookup.organization;
-  const displayName = organization?.profile.displayName || '';
+  const displayName = organization?.profile?.displayName || '';
 
   return (
     <OrganizationContext

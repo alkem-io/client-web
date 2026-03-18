@@ -2,10 +2,10 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem as MuiMenuItem,
-  MenuItemProps as MuiMenuItemProps,
-  SvgIconProps,
+  type MenuItemProps as MuiMenuItemProps,
+  type SvgIconProps,
 } from '@mui/material';
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
 
 interface MenuItemProps extends MuiMenuItemProps {
   iconComponent: ComponentType<SvgIconProps>;

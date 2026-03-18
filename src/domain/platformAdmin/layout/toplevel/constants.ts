@@ -1,9 +1,10 @@
-import { TabDefinition } from '../EntitySettingsLayout/EntitySettingsTabs';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import PsychologyIcon from '@mui/icons-material/Psychology';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import type { TabDefinition } from '../EntitySettingsLayout/EntitySettingsTabs';
 
 export enum AdminSection {
   Space = 'spaces',
@@ -14,6 +15,7 @@ export enum AdminSection {
   VirtualContributors = 'virtualContributors',
   Authorization = 'authorization',
   AuthorizationPolicies = 'authorizationPolicies',
+  Transfer = 'transfer',
 }
 
 export const adminTabs: TabDefinition<AdminSection>[] = [
@@ -56,5 +58,10 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
     section: AdminSection.AuthorizationPolicies,
     route: '/admin/authorization-policies',
     icon: GppGoodOutlinedIcon,
+  },
+  {
+    section: AdminSection.Transfer,
+    route: '/admin/transfer',
+    icon: SwapHorizIcon,
   },
 ];

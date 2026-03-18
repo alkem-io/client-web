@@ -1,29 +1,29 @@
-import { useTranslation } from 'react-i18next';
-import { InviteContributorsDialogProps } from '../InviteContributorsProps';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions } from '@mui/material';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { Formik } from 'formik';
+import { compact } from 'lodash-es';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import SendButton from '@/core/ui/actions/SendButton';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { Caption } from '@/core/ui/typography';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   ContributorSelectorType,
-  SelectedContributor,
+  type SelectedContributor,
 } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.models';
 import { SelectedContributorsArraySchema } from '../components/FormikContributorsSelectorField/FormikContributorsSelectorField.validation';
-import SendButton from '@/core/ui/actions/SendButton';
-import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import { compact } from 'lodash';
-import { useState } from 'react';
-import InvitationResultModel from '@/domain/access/model/InvitationResultModel';
+import type { InviteContributorsDialogProps } from '../InviteContributorsProps';
 import InvitationsResultDialogContent from './InvitationsResultDialogContent';
 import InviteUsersFormDialogContent from './InviteUsersFormDialogContent';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Caption } from '@/core/ui/typography';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -109,10 +109,10 @@ const InviteUsersDialog = ({
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        enableReinitialize
-        validateOnMount
-        validateOnBlur
-        validateOnChange
+        enableReinitialize={true}
+        validateOnMount={true}
+        validateOnBlur={true}
+        validateOnChange={true}
         onSubmit={onSubmit}
       >
         {({ handleSubmit, isValid, setFieldValue, getFieldMeta, getFieldProps }) => {

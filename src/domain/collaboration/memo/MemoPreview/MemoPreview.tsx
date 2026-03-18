@@ -1,19 +1,18 @@
-import { MemoIcon } from '../icon/MemoIcon';
+import { Box, type BoxProps, Button, type ButtonProps, type SxProps, styled } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import type { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MouseEventHandler } from 'react';
-import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
-import { gutters } from '@/core/ui/grid/utils';
-import { Box, BoxProps, Button, ButtonProps, SxProps } from '@mui/material';
-import { styled } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import Centered from '@/core/ui/utils/Centered';
-import { Theme } from '@mui/material/styles';
 import {
-  previewContainerStyles,
-  previewButtonStyles,
   chipButtonPositionStyles,
+  previewButtonStyles,
   previewContainerBottomGradientStyles,
+  previewContainerStyles,
 } from '../../common/PreviewStyles';
+import { MemoIcon } from '../icon/MemoIcon';
 
 type MemoPreviewProps = {
   displayName?: string;
@@ -101,7 +100,7 @@ const MemoPreview = ({ memo, onClick, seamless, sx }: MemoPreviewProps) => {
     return (
       <Container onClick={onClick} sx={sx} seamless={seamless}>
         <ContentContainer withMinHeight={isInteractivePreview} seamless={seamless}>
-          <Gutters disablePadding sx={{ width: '100%' }}>
+          <Gutters disablePadding={true} sx={{ width: '100%' }}>
             <CroppedMarkdown
               backgroundColor="paper"
               minHeightGutters={3}

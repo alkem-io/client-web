@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import CountrySelect from './CountrySelect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import Gutters from '@/core/ui/grid/Gutters';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import CountrySelect from './CountrySelect';
 
 type LocationSegmentProps = {
   cityFieldName?: string;
@@ -23,7 +23,7 @@ export const LocationSegment = ({
   const { isSmallScreen } = useScreenSize();
 
   return (
-    <Gutters disablePadding row={!isSmallScreen}>
+    <Gutters disablePadding={true} row={!isSmallScreen}>
       <FormikInputField
         name={cityFieldName}
         title={t('components.profileSegment.location.city.name')}
@@ -31,7 +31,7 @@ export const LocationSegment = ({
         readOnly={readonly}
         disabled={disabled}
         required={required}
-        fullWidth
+        fullWidth={true}
       />
       <CountrySelect
         name={countryFieldName}

@@ -1,6 +1,6 @@
-import { TemplateBase } from './TemplateBase';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TemplateBase } from './TemplateBase';
 
 export interface CommunityGuidelinesTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.CommunityGuidelines;

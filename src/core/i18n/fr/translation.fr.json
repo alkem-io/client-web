@@ -1,4 +1,9 @@
 {
+  "comments": {
+    "expandAll_one": "{{count}} comment on this post, click here to see all",
+    "expandAll_other": "{{count}} comments on this post, click here to see all",
+    "collapse": "Collapse comments"
+  },
   "chatbot": {
     "title": "Aide",
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
@@ -84,6 +89,13 @@
         "positive": "L'heure de fin de l'événement ne peut pas être avant l'heure de début de l'événement"
       }
     },
+    "addToCalendar": {
+      "button": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "iCal": "Apple calendar & Other apps",
+      "exportAll": "Export all future events to calendar"
+    },
     "no-data": "Aucun événement trouvé",
     "no-upcoming-events": "Actuellement, il n'y a aucun événement à venir à afficher",
     "past-events": "Événements passés",
@@ -117,6 +129,7 @@
     "expandWindow": "Expand Window",
     "see-more": "Voir plus",
     "see-all": "Plus de {{subject}}",
+    "showAll": "Show all",
     "readMore": "Pour en savoir plus",
     "ellipsisReadMore": "... Read more",
     "showLess": "Show less",
@@ -124,6 +137,7 @@
     "home": "Ma page d'accueil",
     "take-me-home": "Me ramener à l'accueil",
     "close": "Fermer",
+    "download": "Download",
     "yes": "Oui",
     "no": "Non",
     "yesClose": "Oui, fermer",
@@ -138,6 +152,7 @@
     "remove": "Retirer",
     "cancel": "Annuler",
     "upload": "Télécharger",
+    "uploadMedia": "Upload Media",
     "explore-and-connect": "Explorer et se connecter",
     "send-message": "Envoyez le message",
     "edit-members": "Edit $t(common.members)",
@@ -220,6 +235,7 @@
     "validation": {
       "fill-fields": "Remplissez le champ obligatoire!"
     },
+    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
     "social-login": {
       "connect": "Se connecter à {{provider}}",
       "providers": {
@@ -265,6 +281,7 @@
     "avatar": "Avatar",
     "avatar-of": "Avatar de {{user}}",
     "authorizationPolicies": "Authorization Policies",
+    "transfer": "Transfer",
     "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Nom",
@@ -370,6 +387,7 @@
     "noneTemplates": "No templates",
     "templateTypes": "Template types",
     "template": "Modèle",
+    "template-lowercase": "template",
     "group": "Groupe",
     "groups": "Groupes",
     "user-group": "Groupe d'utilisateurs",
@@ -410,6 +428,7 @@
     "Community": "Communauté",
     "community": "communauté",
     "library": "Bibliothèque",
+    "image": "Image",
     "templateLibrary": "Best practices",
     "people": "Personnes",
     "Settings": "Paramètres",
@@ -418,6 +437,7 @@
     "search": "Recherche...",
     "Storage": "Stockage",
     "storage": "stockage",
+    "retrying": "Retrying...",
     "type": "Type",
     "reference": "Référence",
     "references": "Références",
@@ -503,7 +523,8 @@
       "space-visibility": {
         "ACTIVE": "Actif",
         "ARCHIVED": "Archivé",
-        "DEMO": "Démo"
+        "DEMO": "Démo",
+        "INACTIVE": "Inactive"
       },
       "searchVisibility": {
         "ACCOUNT": "$t(common.Account), $t(common.subspaces) & $t(common.opportunties)",
@@ -565,7 +586,9 @@
       "roleSetContributorType": {
         "USER": "Utilisateur",
         "ORGANIZATION": "$t(common.Organization), $t(common.subspaces) & $t(common.opportunties)",
-        "VIRTUAL": "$t(common.virtualContributor), $t(common.subspaces) & $t(common.opportunties)"
+        "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)",
+        "ACCOUNT": "Account",
+        "SPACE": "$t(common.space)"
       }
     },
     "blocks": {
@@ -606,7 +629,9 @@
         "month_one": "{{count}}mo",
         "month_other": "{{count}}mo",
         "year_one": "{{count}}y",
-        "year_other": "{{count}}y"
+        "year_other": "{{count}}y",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y"
       },
       "long": {
         "timeAgo": "Il y a {{time}}",
@@ -621,9 +646,10 @@
         "month_one": "{{count}} mois",
         "month_other": "{{count}} mois",
         "year_one": "{{count}} an",
-        "year_other": "{{count}} ans"
-      },
-      "moreThan1Year": "> 1 year ago"
+        "year_other": "{{count}} ans",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years"
+      }
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
@@ -691,7 +717,10 @@
       "inviteButton": {
         "USER": "Invite people to this $t(common.space)",
         "ORGANIZATION": "Invite people to this $t(common.space)",
-        "VIRTUAL": "Invite $t(common.virtualContributor)"
+        "VIRTUAL": "Invite $t(common.virtualContributor)",
+        "VIRTUAL_CONTRIBUTOR": "Invite $t(common.virtualContributor)",
+        "ACCOUNT": "Invite to this $t(common.space)",
+        "SPACE": "Invite to this $t(common.space)"
       },
       "inviteToRole": "Invite to be a: ",
       "inviteContributorsDialog": {
@@ -767,6 +796,7 @@
     },
     "pendingMembership": {
       "pendingMemberships": "My Pending $t(common.Memberships)",
+      "empty": "You don't have any open invitations or applications at the moment.",
       "pendingMembershipsWithCount": "My Pending $t(common.Memberships) ({{count}})",
       "invitationsSectionTitle": "Invitations",
       "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtualContributor)",
@@ -832,6 +862,13 @@
         "link": {
           "title": "Call To Action",
           "tooltip": "Add a call to action to this $t(common.post)"
+        },
+        "mediaGallery": {
+          "title": "Media Gallery",
+          "tooltip": "Add an image gallery to this $t(common.post)",
+          "nItems": "{{count}} images in the gallery",
+          "deleteItem": "Remove image from gallery",
+          "emptyGallery": "No images yet. Click the + button to add images."
         }
       },
       "contributionSettings": {
@@ -955,14 +992,16 @@
     },
     "whiteboard": {
       "clickToSee": "Click to see the full $t(common.whiteboard)",
-      "emojiReaction": {
-        "addEmoji": "Add emoji reaction",
-        "title": "Add Emoji",
-        "hint": "Select an emoji, then click on the canvas",
-        "clickToPlace": "Click on canvas to place {{emoji}}",
-        "placementMode": "Click to place emoji: {{emoji}}",
-        "gridLabel": "Select an emoji",
-        "noEmojis": "No emojis available"
+      "images": {
+        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
+        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
+        "maxSizeFallback": "the allowed limit",
+        "uploadFailed": "Couldn't upload the image. Please try again.",
+        "downloadFailed": "Couldn't load the image. Please try again.",
+        "retry": "Retry",
+        "singleFailure": "An image could not be loaded",
+        "multipleFailures_one": "{{count}} image could not be loaded",
+        "multipleFailures_other": "{{count}} images could not be loaded"
       }
     },
     "memo": {
@@ -1275,6 +1314,9 @@
     }
   },
   "components": {
+    "subspacePinIndicator": {
+      "tooltip": "Pinned $t(common.subspace)"
+    },
     "calloutTemplateDialog": {
       "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
@@ -1383,23 +1425,23 @@
             "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
           },
           "importCalloutsDialog": {
-            "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "title": "Apply new $t(common.template-lowercase)",
+            "description": "You are about to apply a new $t(common.template-lowercase). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
             "option1": {
               "label": "Replace with new flow",
               "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
             },
             "option2": {
-              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
-              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+              "label": "Replace and add $t(common.template-lowercase) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template-lowercase) in addition to your existing ones."
             },
             "option3": {
-              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
-              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
+              "label": "Replace flow without adding $t(common.template-lowercase) $t(common.posts)",
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template-lowercase) $t(common.posts)."
             },
             "confirmDelete": {
               "title": "Confirm Deletion",
-              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template-lowercase). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
             },
             "apply": "Appliquer"
           }
@@ -1487,7 +1529,7 @@
         "dialogHeader": "Convertir la sélection en lien hypertexte"
       },
       "validation": {
-        "maxLength": "Le texte qui en résulte va au-delà de la taille acceptée par le serveur."
+        "maxLength": "This text exceeds the length limits for this field."
       },
       "embed": {
         "iframeAria": "{{title}}",
@@ -1523,7 +1565,7 @@
       },
       "redirectDialog": {
         "title": "We are redirecting you...",
-        "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
+        "message": "It looks like you don’t have permission to view this item, or it may have been moved or deleted.<br/> We’re taking you to the nearest available page.",
         "countdown": "Redirecting in {{seconds}} seconds...",
         "cancelCountdown": "[Click to cancel]",
         "goNow": "Go now"
@@ -1599,6 +1641,31 @@
         "memo": {
           "name": "Contenu",
           "placeholder": "(Optional) Add some content to the $t(common.memo)"
+        },
+        "mediaGallery": {
+          "name": "Media Gallery",
+          "previewNotAvailable": "Preview available after save.",
+          "imageNotAvailable": "Image not available",
+          "galleryItem": "Gallery Image",
+          "navigation": {
+            "ariaLabel": "Gallery navigation",
+            "previous": "Previous image",
+            "next": "Next image",
+            "goToImage": "Go to image {{number}}"
+          },
+          "errors": {
+            "title": "Image Upload Errors",
+            "missingConstraints": "Unable to load media gallery items image constraints.",
+            "invalidFileType": "Invalid file type: {{fileType}}. Supported types are: {{allowedTypes}}.",
+            "imageDimensions": {
+              "minWidth": "Image width is too small ({{imagePx}}px). Minimum width is {{constraintPx}}px.",
+              "maxWidth": "Image width is too large ({{imagePx}}px). Maximum width is {{constraintPx}}px.",
+              "minHeight": "Image height is too small ({{imagePx}}px). Minimum height is {{constraintPx}}px.",
+              "maxHeight": "Image height is too large ({{imagePx}}px). Maximum height is {{constraintPx}}px."
+            },
+            "invalidImage": "The uploaded file is not a valid image.",
+            "failedToReadFile": "Failed to read the uploaded file."
+          }
         }
       },
       "template-step": {
@@ -2262,6 +2329,21 @@
     "remove": "Supprimer de …"
   },
   "pages": {
+    "titles": {
+      "alkemio": "Alkemio",
+      "separator": " | ",
+      "forum": "Forum",
+      "spaces": "Spaces",
+      "contributors": "Contributors",
+      "templateLibrary": "Template Library",
+      "globalAdmin": "Global Administration",
+      "admin": "Administration",
+      "documentation": "Documentation",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "notFound": "Page Not Found",
+      "restricted": "Access Restricted"
+    },
     "generic": {
       "sections": {
         "dashboard": {
@@ -2306,6 +2388,10 @@
       "demoNotice": {
         "demoSpace": "Demo $t(common.space)",
         "demoSubspace": "This {{space}} is within a Demo $t(common.space)."
+      },
+      "inactiveNotice": {
+        "inactiveSpace": "Inactive Space",
+        "inactiveSubspace": "This {{space}} is within an Inactive Space."
       }
     },
     "contribute": {
@@ -2331,6 +2417,73 @@
       }
     },
     "admin": {
+      "transferCallout": {
+        "sectionTitle": "Transfer Callout",
+        "calloutUrl": "Callout URL",
+        "calloutUrlPlaceholder": "Paste callout URL or path",
+        "targetSpaceUrl": "Target Space URL",
+        "targetSpaceUrlPlaceholder": "Paste space URL or path",
+        "lookup": "Lookup",
+        "calloutInfo": "Callout Info",
+        "targetSpaceInfo": "Target Space Info",
+        "description": "Description",
+        "createdBy": "Created By",
+        "contributions": "Contributions",
+        "contributionsSummary": "{{posts}} posts, {{whiteboards}} whiteboards, {{links}} links, {{memos}} memos",
+        "level": "Level",
+        "calloutsSetId": "CalloutsSet ID",
+        "transferButton": "Transfer Callout",
+        "transferring": "Transferring...",
+        "urlNotFound": "URL not found",
+        "urlNotCallout": "URL does not resolve to a callout",
+        "urlNotSpace": "URL does not resolve to a space",
+        "missingTransferOffer": "Missing TransferResourceOffer privilege on source calloutsSet",
+        "missingTransferAccept": "Missing TransferResourceAccept privilege on target calloutsSet",
+        "successTitle": "Transfer Successful",
+        "successMessage": "Callout \"{{calloutName}}\" has been transferred to \"{{spaceName}}\".",
+        "transferFailed": "Failed to transfer callout",
+        "close": "Close",
+        "unknown": "Unknown",
+        "urlRequired": "URL is required",
+        "confirmTitle": "Are you sure?",
+        "confirmWarning1": "Ensure the same Innovation State (e.g., Home) exists in the space you are transferring the callout to.",
+        "confirmWarning2": "Note that any existing links to this callout in activity or notifications may become broken.",
+        "confirmWarning3": "If the callout contains Virtual Contributions and the particular Virtual Contributor is not part of the target space, the callout will be broken.",
+        "confirmWarning4": "The callout creator will remain unchanged, even if they are not part of the target community.",
+        "confirmButton": "Transfer"
+      },
+      "transferSpace": {
+        "sectionTitle": "Transfer Space",
+        "spaceUrl": "Space URL",
+        "spaceUrlPlaceholder": "Paste L0 space URL or path",
+        "targetAccountUrl": "Target Account Owner URL",
+        "targetAccountUrlPlaceholder": "Paste user or organization URL",
+        "lookup": "Lookup",
+        "spaceInfo": "Space Info",
+        "targetAccountInfo": "Target Account Info",
+        "description": "Description",
+        "level": "Level",
+        "accountId": "Account ID",
+        "accountOwnerType": "Account Owner Type",
+        "accountOwnerTypeUser": "User",
+        "accountOwnerTypeOrganization": "Organization",
+        "transferButton": "Transfer Space",
+        "transferring": "Transferring...",
+        "urlNotFound": "URL not found",
+        "urlNotSpace": "URL does not resolve to a space",
+        "notL0Space": "Only L0 (top-level) spaces can be transferred",
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "missingTransferOffer": "Missing TransferResourceOffer privilege on the space's account",
+        "missingTransferAccept": "Missing TransferResourceAccept privilege on the target account",
+        "successTitle": "Transfer Successful",
+        "successMessage": "Space \"{{spaceName}}\" has been transferred to \"{{accountOwnerName}}\".",
+        "transferFailed": "Failed to transfer space",
+        "close": "Close",
+        "urlRequired": "URL is required",
+        "confirmTitle": "Are you sure?",
+        "confirmWarning1": "After the transfer, ensure the new owner (or organization Admins) are added as admins in the community.",
+        "confirmButton": "Transfer"
+      },
       "generic": {
         "sections": {
           "profile": {
@@ -2570,7 +2723,14 @@
                 "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
             },
-            "reorderSubspaces": "Reorder $t(common.subspaces)"
+            "reorderSubspaces": "Reorder $t(common.subspaces)",
+            "sortBy": "Sort By:",
+            "sortMode": {
+              "alphabetical": "Alphabetical",
+              "custom": "Custom"
+            },
+            "pinSpace": "Pin Space",
+            "unpinSpace": "Unpin Space"
           }
         },
         "authorization": {
@@ -2599,7 +2759,8 @@
             "public": "<b>Public:</b> This $t(common.space) and its contents are visible for everyone on the platform. Users can only contribute if they are a $t(common.member).",
             "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to $t(common.members). Please note that both the information in the $t(common.profile) and the context are publicly visible.",
             "publicSubspace": "<b>Public:</b> This $t(common.subspace) and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this $t(common.subspace) and its contents will be visible to all users, including those outside the $t(common.space).",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
+            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace).",
+            "membershipWarning": "<b>Please note that users can join this {{entity}} without explicit approval. You can change this in the membership settings below.</b>"
           },
           "license-features": {
             "title": "$t(common.space) Features",
@@ -2736,6 +2897,14 @@
         "title": "Whiteboard Preview",
         "description1": "Resolution : {{width}} largeur x {{height}} hauteur (pixels)"
       },
+      "MEDIA_GALLERY_IMAGE": {
+        "title": "Media Gallery Image",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "MEDIA_GALLERY_VIDEO": {
+        "title": "Media Gallery Video",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
       "form": {
         "altText": {
           "placeholder": "Exemple: montagnes recouvertes de neige multiples",
@@ -2800,7 +2969,8 @@
           "noResults": "No results of this type matched your search terms."
         }
       },
-      "spaceFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)"
+      "spaceFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)",
+      "loading": "Searching..."
     },
     "exploreSpaces": {
       "fullName": "Explore $t(common.spaces)",
@@ -3253,6 +3423,7 @@
       }
     },
     "memo": {
+      "editDisplayName": "Edit title",
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this $t(common.memo). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
@@ -3465,6 +3636,8 @@
         "promptGraph": {
           "editingEnabledLabel": "Allow editing of the prompt graph (platform-wide setting)",
           "saveBtn": "Save Prompt Graph",
+          "resetBtn": "Reset to Default",
+          "resetSuccess": "Prompt graph reset to default successfully",
           "title": "Prompt Graph",
           "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
           "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
@@ -3704,7 +3877,98 @@
       "BAD_USER_INPUT": "Bad user input: {{message}}",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
-      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
+      "userMessages": {
+        "notFound": {
+          "entity": "Couldn't find what you were looking for.",
+          "resource": "Resource not found.",
+          "account": "Account not found.",
+          "license": "License not found.",
+          "storageBucket": "Storage bucket not found.",
+          "tagset": "Tagset not found.",
+          "mimeType": "MIME type not found.",
+          "matrixEntity": "Matrix entity not found.",
+          "userIdentity": "User identity not found.",
+          "pagination": "Pagination cursor not found."
+        },
+        "authorization": {
+          "unauthenticated": "You might not be logged in.",
+          "unauthorized": "Access denied.",
+          "forbidden": "Access denied.",
+          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenLicensePolicy": "License restriction.",
+          "invalidPolicy": "Invalid authorization policy.",
+          "authorizationReset": "Authorization reset in progress.",
+          "userNotVerified": "User is not verified.",
+          "subscriptionNotAuthenticated": "Subscription requires authentication.",
+          "apiRestricted": "API access restricted.",
+          "invalidToken": "Invalid token.",
+          "bearerToken": "Bearer token error.",
+          "sessionExpired": "Session expired.",
+          "sessionExtend": "Unable to extend session.",
+          "loginFlow": "Login flow error.",
+          "loginFlowInit": "Unable to initialize login flow."
+        },
+        "validation": {
+          "badUserInput": "{{message}}",
+          "inputValidation": "Input validation error.",
+          "invalidUuid": "Invalid identifier format.",
+          "formatNotSupported": "Format not supported.",
+          "invalidStateTransition": "Invalid state transition.",
+          "invalidTemplateType": "Invalid template type.",
+          "groupNotInitialized": "Group not initialized.",
+          "entityNotInitialized": "Entity not initialized.",
+          "relationNotLoaded": "Relation not loaded.",
+          "paginationOutOfBound": "Pagination input out of bounds.",
+          "paginationParamNotFound": "Pagination parameter not found.",
+          "forumDiscussionCategory": "Invalid discussion category.",
+          "notSupported": "Operation not supported."
+        },
+        "operations": {
+          "operationNotAllowed": "Operation not allowed.",
+          "notEnabled": "Feature not enabled.",
+          "messagingNotEnabled": "Messaging not enabled.",
+          "roleSetRole": "Role set error.",
+          "roleSetInvitation": "Invitation error.",
+          "roleLimitsViolated": "Role limits exceeded.",
+          "licenseEntitlementNotAvailable": "License entitlement not available.",
+          "licenseEntitlementNotSupported": "License entitlement not supported.",
+          "calloutClosed": "Callout is closed.",
+          "userAlreadyRegistered": "User already registered.",
+          "userNotRegistered": "User not registered.",
+          "noAgentForUser": "No agent for user.",
+          "userIdentityDeletionFailed": "User identity deletion failed."
+        },
+        "system": {
+          "bootstrapFailed": "System initialization failed.",
+          "notificationPayloadBuilder": "Notification error.",
+          "geoLocationError": "Geolocation error.",
+          "geoServiceNotAvailable": "Geolocation service not available.",
+          "geoServiceError": "Geolocation service error.",
+          "geoServiceRequestLimit": "Geolocation request limit exceeded.",
+          "storageDisabled": "Storage is disabled.",
+          "storageUploadFailed": "Upload failed.",
+          "localStorageSaveFailed": "Local storage save failed.",
+          "localStorageReadFailed": "Local storage read failed.",
+          "localStorageDeleteFailed": "Local storage delete failed.",
+          "documentSaveFailed": "Document save failed.",
+          "documentReadFailed": "Document read failed.",
+          "documentDeleteFailed": "Document delete failed.",
+          "urlResolverError": "URL resolver error.",
+          "excalidrawAmqpResult": "Excalidraw service error.",
+          "excalidrawRedisAdapterInit": "Excalidraw initialization error.",
+          "excalidrawServerInit": "Excalidraw server initialization error."
+        },
+        "fallback": "An unexpected error occurred. Reference: {{errorId}}"
+      },
+      "support": {
+        "linkText": "Contact Support",
+        "errorCode": "Error Code: {{code}}",
+        "emailSubject": "Support Request - Error {{code}}",
+        "emailSubjectGeneric": "Support Request",
+        "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
+        "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you."
+      }
     }
   },
   "dashboard-updates-section": {
@@ -4087,6 +4351,10 @@
     "appVersion": {
       "message": "A new version of the app is available.",
       "recurringMessage": "Please close all Alkemio tabs and reload to update."
+    },
+    "onlineStatus": {
+      "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
+      "restored": "Your connection has been restored."
     }
   }
 }

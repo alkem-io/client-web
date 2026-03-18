@@ -1,7 +1,7 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 import { useTranslation } from 'react-i18next';
-import { CalloutModelLight } from '../../callout/models/CalloutModelLight';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
+import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
+import type { CalloutModelLight } from '../../callout/models/CalloutModelLight';
 
 type CalloutsListItemTitleProps = {
   callout: CalloutModelLight;
@@ -20,11 +20,9 @@ const CalloutsListItemTitle = ({ callout }: CalloutsListItemTitleProps) => {
       {SEPARATOR}
       {flowState && (
         <strong>
-          <>
-            {i18n.exists(`common.enums.innovationFlowState.${flowState}`)
-              ? t(`common.enums.innovationFlowState.${flowState}` as TranslationKey)
-              : flowState}
-          </>
+          {i18n.exists(`common.enums.innovationFlowState.${flowState}`)
+            ? t(`common.enums.innovationFlowState.${flowState}` as TranslationKey)
+            : flowState}
         </strong>
       )}
     </EllipsableWithCount>

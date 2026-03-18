@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from '@/main/test/testUtils';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { describe, expect, it, vi } from 'vitest';
-import WhiteboardGuestAccessSection from '../WhiteboardGuestAccessSection';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { fireEvent, render, screen } from '@/main/test/testUtils';
+import type { UseWhiteboardGuestAccessResult } from '../../hooks/useWhiteboardGuestAccess';
 import WhiteboardGuestAccessControls from '../WhiteboardGuestAccessControls';
-import { UseWhiteboardGuestAccessResult } from '../../hooks/useWhiteboardGuestAccess';
+import WhiteboardGuestAccessSection from '../WhiteboardGuestAccessSection';
 
 const buildGuestAccess = (overrides: Partial<UseWhiteboardGuestAccessResult> = {}): UseWhiteboardGuestAccessResult => ({
   enabled: false,
@@ -43,14 +43,14 @@ describe('WhiteboardGuestAccessSection', () => {
     expect(screen.queryByTestId('guest-access-section')).not.toBeInTheDocument();
   });
 
-  it('shows guest link for non-privileged users when guest access is enabled', () => {
+  it('hides guest link for non-privileged users even when guest access is enabled', () => {
     render(
-      <WhiteboardGuestAccessControls whiteboard={{ authorization: { myPrivileges: [] } }} guestAccessEnabled>
+      <WhiteboardGuestAccessControls whiteboard={{ authorization: { myPrivileges: [] } }}>
         <WhiteboardGuestAccessSection guestAccess={buildGuestAccess({ enabled: true })} />
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByRole('textbox', { name: /guest access url/i })).toBeInTheDocument();
+    expect(screen.queryByTestId('guest-access-section')).not.toBeInTheDocument();
   });
 
   it('invokes onToggle when the switch is clicked', () => {

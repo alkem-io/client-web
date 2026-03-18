@@ -1,18 +1,33 @@
-import SingleInvitationFull from '@/domain/community/invitations/SingleInvitationFull';
-import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import type { PendingInvitationsQuery } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import SingleInvitationFull from '@/domain/community/invitations/SingleInvitationFull';
+import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
+import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 
-export const InvitationsBlock = () => {
-  const { data } = usePendingInvitationsQuery();
+type CommunityInvitation = PendingInvitationsQuery['me']['communityInvitations'][number];
+
+const InvitationItem = ({ invitation }: { invitation: CommunityInvitation }) => {
   const navigate = useNavigate();
-
-  const communityInvitations = data?.me.communityInvitations ?? [];
 
   const onInvitationAccept = (spaceUrl: string) => {
     navigate(spaceUrl);
   };
+
+  const props = useInvitationActions({
+    onAccept: onInvitationAccept,
+    spaceId: invitation.spacePendingMembershipInfo.id,
+  });
+
+  return <SingleInvitationFull invitation={invitation} {...props} />;
+};
+
+export const InvitationsBlock = () => {
+  const { count } = usePendingInvitationsCount();
+  const { data } = usePendingInvitationsQuery({ skip: count === 0 });
+
+  const communityInvitations = data?.me.communityInvitations ?? [];
 
   if (!communityInvitations.length) {
     return null;
@@ -21,13 +36,7 @@ export const InvitationsBlock = () => {
   return (
     <PageContentBlock columns={12}>
       {communityInvitations.map(invitation => (
-        <InvitationActionsContainer
-          key={invitation.id}
-          onAccept={onInvitationAccept}
-          spaceId={invitation.spacePendingMembershipInfo.id}
-        >
-          {props => <SingleInvitationFull invitation={invitation} {...props} />}
-        </InvitationActionsContainer>
+        <InvitationItem key={invitation.id} invitation={invitation} />
       ))}
     </PageContentBlock>
   );

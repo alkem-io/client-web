@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 // Extended to include lead users and organizations for card display
 export type SpaceAboutLightModel = {
@@ -13,7 +13,7 @@ export type SpaceAboutLightModel = {
     communityID?: string;
     leadUsers?: Array<{
       id: string;
-      profile: {
+      profile?: {
         id: string;
         url: string;
         displayName: string;
@@ -25,7 +25,7 @@ export type SpaceAboutLightModel = {
     }>;
     leadOrganizations?: Array<{
       id: string;
-      profile: {
+      profile?: {
         id: string;
         url: string;
         displayName: string;

@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogContent } from '@mui/material';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 export type KnowledgeBaseProfileType = {
@@ -38,7 +38,7 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
   });
 
   return (
-    <DialogWithGrid open aria-labelledby="description-dialog-title" onClose={onClose}>
+    <DialogWithGrid open={true} aria-labelledby="description-dialog-title" onClose={onClose}>
       <DialogHeader id="description-dialog-title" onClose={onClose}>
         {t('buttons.edit')}
       </DialogHeader>
@@ -46,8 +46,8 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
-          validateOnMount
+          enableReinitialize={true}
+          validateOnMount={true}
           onSubmit={onSave}
         >
           {({ handleSubmit, isValid }) => {
@@ -58,7 +58,7 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
                   title={t('components.post-creation.info-step.description')}
                   placeholder={t('components.post-creation.info-step.description-placeholder')}
                   rows={7}
-                  required
+                  required={true}
                   maxLength={LONG_MARKDOWN_TEXT_LENGTH}
                 />
                 <Actions justifyContent="end">

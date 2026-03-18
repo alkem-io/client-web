@@ -1,28 +1,30 @@
-import React, { ReactNode, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { HdrStrongOutlined } from '@mui/icons-material';
+import { defer } from 'lodash-es';
+import React, { type ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import BackButton from '@/core/ui/actions/BackButton';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
+import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
+import InvitationDialog from '../invitations/InvitationDialog';
+import useInvitationActions from '../invitations/useInvitationActions';
+import type { PendingApplicationItem } from '../user/models/PendingApplicationItem';
+import type { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 import {
-  ApplicationHydrator,
-  InvitationHydrator,
-  InvitationWithMeta,
+  type InvitationWithMeta,
+  useApplicationHydrator,
+  useInvitationHydrator,
   usePendingMemberships,
 } from './PendingMemberships';
-import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
-import InvitationDialog from '../invitations/InvitationDialog';
-import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
-import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
-import BackButton from '@/core/ui/actions/BackButton';
-import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
-import { defer } from 'lodash';
-import Loading from '@/core/ui/loading/Loading';
 
 interface SectionProps<T> {
   title: string;
@@ -45,6 +47,73 @@ const Section = <T extends { id: string }>({ title, items, children }: SectionPr
   );
 };
 
+const HydratedInvitationCard = ({
+  invitation,
+  onClick,
+}: {
+  invitation: PendingInvitationItem;
+  onClick: (inv: InvitationWithMeta) => void;
+}) => {
+  const { invitation: hydrated } = useInvitationHydrator(invitation);
+  return <InvitationCardHorizontal invitation={hydrated} onClick={() => hydrated && onClick(hydrated)} />;
+};
+
+const HydratedApplicationCard = ({
+  application,
+  onClick,
+}: {
+  application: PendingApplicationItem;
+  onClick: (url: string) => void;
+}) => {
+  const { application: hydrated } = useApplicationHydrator(application);
+  if (!hydrated) return null;
+  return (
+    <SpaceCardBase
+      header={hydrated.space.about.profile.displayName}
+      tags={hydrated.space.about.profile.tagset?.tags ?? []}
+      banner={hydrated.space.about.profile.cardBanner}
+      spaceUri={hydrated.space.about.profile.url}
+      onClick={() => onClick(hydrated.space.about.profile.url)}
+    >
+      <SpaceCardTagline>{hydrated.space.about.profile.tagline ?? ''}</SpaceCardTagline>
+    </SpaceCardBase>
+  );
+};
+
+const InvitationDialogWithActions = ({
+  onAccept,
+  onReject,
+  currentInvitation,
+  openDialog,
+  closeDialog,
+  setOpenDialog,
+}: {
+  onAccept: () => void;
+  onReject: () => void;
+  currentInvitation: PendingInvitationItem | undefined;
+  openDialog: ReturnType<typeof usePendingMembershipsDialog>['openDialog'];
+  closeDialog: () => void;
+  setOpenDialog: ReturnType<typeof usePendingMembershipsDialog>['setOpenDialog'];
+}) => {
+  const props = useInvitationActions({
+    onAccept,
+    onReject,
+    spaceId: currentInvitation?.spacePendingMembershipInfo.id,
+  });
+
+  return (
+    <InvitationDialog
+      open={openDialog?.type === PendingMembershipsDialogType.InvitationView}
+      onClose={closeDialog}
+      invitation={currentInvitation}
+      actions={
+        <BackButton onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })} />
+      }
+      {...props}
+    />
+  );
+};
+
 const PendingMembershipsDialog = () => {
   const { t } = useTranslation();
 
@@ -58,7 +127,7 @@ const PendingMembershipsDialog = () => {
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      spaceUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.about.profile.url,
+      spaceUri: invitation.actor?.type === ActorType.VirtualContributor ? undefined : space.about.profile.url,
     });
   };
 
@@ -82,11 +151,11 @@ const PendingMembershipsDialog = () => {
       : undefined;
 
   const virtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributorType === RoleSetContributorType.Virtual
+    invitation => invitation.invitation.actor?.type === ActorType.VirtualContributor
   );
 
   const nonVirtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
+    invitation => invitation.invitation.actor?.type !== ActorType.VirtualContributor
   );
 
   const isEmpty =
@@ -121,7 +190,7 @@ const PendingMembershipsDialog = () => {
         <DialogHeader
           id="pending-memberships-dialog"
           title={
-            <Gutters row disablePadding>
+            <Gutters row={true} disablePadding={true}>
               <HdrStrongOutlined fontSize="small" />
               {t('community.pendingMembership.pendingMemberships')}
             </Gutters>
@@ -137,54 +206,24 @@ const PendingMembershipsDialog = () => {
                 title={t('community.pendingMembership.invitationsSectionTitle')}
                 items={nonVirtualContributorInvitations}
               >
-                {invitation => (
-                  <InvitationHydrator invitation={invitation}>
-                    {({ invitation }) => (
-                      <InvitationCardHorizontal
-                        invitation={invitation}
-                        onClick={() => invitation && handleInvitationCardClick(invitation)}
-                      />
-                    )}
-                  </InvitationHydrator>
-                )}
+                {invitation => <HydratedInvitationCard invitation={invitation} onClick={handleInvitationCardClick} />}
               </Section>
               <Section
                 title={t('community.pendingMembership.virtualInvitationsSectionTitle')}
                 items={virtualContributorInvitations}
               >
-                {invitation => (
-                  <InvitationHydrator invitation={invitation}>
-                    {({ invitation }) => (
-                      <InvitationCardHorizontal
-                        invitation={invitation}
-                        onClick={() => invitation && handleInvitationCardClick(invitation)}
-                      />
-                    )}
-                  </InvitationHydrator>
-                )}
+                {invitation => <HydratedInvitationCard invitation={invitation} onClick={handleInvitationCardClick} />}
               </Section>
               {applications?.length ? (
                 <>
                   <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
                   <ScrollableCardsLayoutContainer>
                     {applications.map(application => (
-                      <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
-                        {({ application: hydratedApplication }) =>
-                          hydratedApplication && (
-                            <SpaceCardBase
-                              header={hydratedApplication.space.about.profile.displayName}
-                              tags={hydratedApplication.space.about.profile.tagset?.tags ?? []}
-                              banner={hydratedApplication.space.about.profile.cardBanner}
-                              spaceUri={hydratedApplication.space.about.profile.url}
-                              onClick={() => handleSpaceCardClick(hydratedApplication.space.about.profile.url)}
-                            >
-                              <SpaceCardTagline>
-                                {hydratedApplication.space.about.profile.tagline ?? ''}
-                              </SpaceCardTagline>
-                            </SpaceCardBase>
-                          )
-                        }
-                      </ApplicationHydrator>
+                      <HydratedApplicationCard
+                        key={application.id}
+                        application={application}
+                        onClick={handleSpaceCardClick}
+                      />
                     ))}
                   </ScrollableCardsLayoutContainer>
                 </>
@@ -193,25 +232,14 @@ const PendingMembershipsDialog = () => {
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationActionsContainer
+      <InvitationDialogWithActions
         onAccept={onInvitationAccept}
         onReject={onInvitationReject}
-        spaceId={currentInvitation?.spacePendingMembershipInfo.id}
-      >
-        {props => (
-          <InvitationDialog
-            open={openDialog?.type === PendingMembershipsDialogType.InvitationView}
-            onClose={closeDialog}
-            invitation={currentInvitation}
-            actions={
-              <BackButton
-                onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
-              />
-            }
-            {...props}
-          />
-        )}
-      </InvitationActionsContainer>
+        currentInvitation={currentInvitation}
+        openDialog={openDialog}
+        closeDialog={closeDialog}
+        setOpenDialog={setOpenDialog}
+      />
     </>
   );
 };

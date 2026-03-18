@@ -1,4 +1,4 @@
-import { ElementType, useEffect } from 'react';
+import { type ElementType, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface Options {

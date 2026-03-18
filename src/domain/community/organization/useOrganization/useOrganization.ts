@@ -1,21 +1,21 @@
+import type { ParseKeys } from 'i18next/typescript/t';
+import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
+  ActorType,
   AuthorizationPrivilege,
-  OrganizationInfoFragment,
-  RoleSetContributorType,
+  type OrganizationInfoFragment,
+  RoleName,
   SpaceLevel,
   TagsetReservedName,
-  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
-import { useCallback, useMemo } from 'react';
-import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { useTranslation } from 'react-i18next';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import type { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import { useOrganizationContext } from '../hooks/useOrganizationContext';
-import { ParseKeys } from 'i18next/typescript/t';
 
 export interface UseOrganizationProvided {
   organization?: OrganizationInfoFragment;
@@ -45,7 +45,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
   const { usersByRole } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Organization,
-    contributorTypes: [RoleSetContributorType.User],
+    contributorTypes: [ActorType.User],
     fetchContributors: true,
     skip: !organizationId,
   });
@@ -58,24 +58,24 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
     skip: !organizationId || !canReadUsers,
   });
   const references = useMemo(() => {
-    const result = [...(organization?.profile.references ?? [])];
+    const result = [...(organization?.profile?.references ?? [])];
     if (organization?.contactEmail)
       result.push({ id: '_email', name: SocialNetworkEnum.email, uri: organization.contactEmail });
     if (organization?.website)
       result.push({ id: '_website', name: SocialNetworkEnum.website, uri: organization.website });
     return result;
-  }, [organization?.profile.references]);
+  }, [organization?.profile?.references]);
 
   const keywords = useMemo(
     () =>
-      organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())
+      organization?.profile?.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())
         ?.tags || [],
     [organization]
   );
 
   const capabilities = useMemo(
     () =>
-      organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities.toLowerCase())
+      organization?.profile?.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities.toLowerCase())
         ?.tags || [],
     [organization]
   );
@@ -91,18 +91,18 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
     return (
       usersWithRoles?.map<ContributorCardSquareProps>(x => ({
         id: x.id,
-        displayName: x.profile.displayName,
+        displayName: x.profile?.displayName ?? '',
 
         roleName: x.roles.map(role => t(`common.roles.${role}` as ParseKeys)).join(', '),
-        avatar: x.profile.avatar?.uri,
+        avatar: x.profile?.avatar?.uri,
         tooltip: {
-          city: x.profile.location?.city,
-          country: x.profile.location?.country && COUNTRIES_BY_CODE[x.profile.location?.country],
-          tags: x.profile.tagsets?.flatMap(x => x.tags) || [],
+          city: x.profile?.location?.city,
+          country: x.profile?.location?.country && COUNTRIES_BY_CODE[x.profile.location?.country],
+          tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
         },
-        url: x.profile.url,
+        url: x.profile?.url ?? '',
         isContactable: x.isContactable,
-        contributorType: RoleSetContributorType.User,
+        contributorType: ActorType.User,
       })) || []
     );
   }, [usersWithRoles]);
@@ -114,7 +114,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
       spaceLevel: SpaceLevel.L0,
       id: x.id,
       contributorId: organizationId,
-      contributorType: RoleSetContributorType.Organization,
+      contributorType: ActorType.Organization,
       roles: x.roles,
     }));
 
@@ -125,7 +125,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
           spaceLevel: c.level,
           id: c.id,
           contributorId: organizationId,
-          contributorType: RoleSetContributorType.Organization,
+          contributorType: ActorType.Organization,
           roles: c.roles,
         }))
       ) || [];

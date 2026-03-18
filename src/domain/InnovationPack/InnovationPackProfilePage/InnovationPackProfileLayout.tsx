@@ -1,22 +1,22 @@
-import { PropsWithChildren, useMemo } from 'react';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { Identifiable } from '@/core/utils/Identifiable';
-import ProfilePageBanner, { ProfilePageBannerProps } from '@/domain/common/profile/ProfilePageBanner';
-import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
-import { Visual } from '@/domain/common/visual/Visual';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { useTranslation } from 'react-i18next';
-import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { Settings } from '@mui/icons-material';
+import { type PropsWithChildren, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import ProfilePageBanner, { type ProfilePageBannerProps } from '@/domain/common/profile/ProfilePageBanner';
+import type { Visual } from '@/domain/common/visual/Visual';
+import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 
 interface InnovationPackProfileLayoutProps {
   innovationPack:
     | (Identifiable & {
         profile: ProfilePageBannerProps['profile'];
         provider: {
-          profile: {
+          profile?: {
             displayName: string;
             avatar?: Visual;
           };
@@ -38,7 +38,7 @@ const InnovationPackProfileLayout = ({
   const profile = useMemo(() => {
     return {
       ...innovationPack?.profile,
-      tagline: innovationPack?.provider?.profile.displayName,
+      tagline: innovationPack?.provider?.profile?.displayName,
     } as ProfilePageBannerProps['profile'];
   }, [innovationPack]);
 

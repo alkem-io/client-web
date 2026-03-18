@@ -1,22 +1,21 @@
-import React from 'react';
-import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import * as yup from 'yup';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { gutters } from '@/core/ui/grid/utils';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import FormikReferenceSegment from '@/domain/platformAdmin/components/Common/FormikReferenceSegment';
+import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import type { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { gutters } from '@/core/ui/grid/utils';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
-import { TemplateFormProps } from './TemplateForm';
+import type { TemplateFormProps } from './TemplateForm';
+import TemplateFormBase, { type TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 
 interface TemplateContentGuidelines {
   profile: {
@@ -96,7 +95,7 @@ const TemplateCommunityGuidelinesForm = ({
           {profileId ? (
             <ProfileReferenceSegment
               profileId={profileId}
-              compactMode
+              compactMode={true}
               fieldName="communityGuidelines.profile.references"
               references={
                 values.communityGuidelines?.profile?.references?.map(ref => ({
@@ -110,7 +109,7 @@ const TemplateCommunityGuidelinesForm = ({
             />
           ) : (
             <FormikReferenceSegment
-              compactMode
+              compactMode={true}
               fieldName="communityGuidelines.profile.references"
               marginTop={gutters(-1)}
             />

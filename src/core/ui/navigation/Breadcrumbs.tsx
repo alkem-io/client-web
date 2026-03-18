@@ -1,22 +1,22 @@
+import { DoubleArrow } from '@mui/icons-material';
+import { Box, ClickAwayListener } from '@mui/material';
+import { some } from 'lodash-es';
 import {
   cloneElement,
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type MouseEventHandler,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
-import { Box, ClickAwayListener } from '@mui/material';
-import { DoubleArrow } from '@mui/icons-material';
-import { gutters } from '../grid/utils';
-import { Expandable } from './Expandable';
-import { some } from 'lodash';
-import { Collapsible } from './Collapsible';
-import { UncontrolledExpandable } from './UncontrolledExpandable';
-import flattenChildren from '../utils/flattenChildren';
 import { useScreenSize } from '../grid/constants';
+import { gutters } from '../grid/utils';
+import flattenChildren from '../utils/flattenChildren';
+import type { Collapsible } from './Collapsible';
+import type { Expandable } from './Expandable';
+import type { UncontrolledExpandable } from './UncontrolledExpandable';
 
 export type OneOrMany<Item> = Item | Item[];
 

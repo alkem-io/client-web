@@ -1,4 +1,4 @@
-import { ApolloCache } from '@apollo/client';
+import type { ApolloCache } from '@apollo/client';
 
 interface CacheWithAccessibleRootQuery<T> extends ApolloCache<T> {
   data: {

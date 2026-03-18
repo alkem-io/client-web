@@ -1,12 +1,12 @@
-import React, { ReactNode } from 'react';
-import ReferenceView from './ReferenceView';
-import { Box, BoxProps } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
 import { OpenInNew } from '@mui/icons-material';
-import RouterLink from '@/core/ui/link/RouterLink';
+import { Box, type BoxProps } from '@mui/material';
+import type { ReactNode } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { Text } from '@/core/ui/typography';
-import { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
+import type { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
+import ReferenceView from './ReferenceView';
 
 interface ReferencesProps<T extends ReferenceModelWithOptionalAuthorization> {
   references: T[] | undefined;

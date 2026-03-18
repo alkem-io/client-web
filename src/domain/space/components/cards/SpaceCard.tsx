@@ -1,17 +1,17 @@
-import { ReactNode } from 'react';
-import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import SpaceCardBase, { SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
-import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
-import SpaceLeads, { Lead, LeadOrganization, LeadType } from './components/SpaceLeads';
-import SpaceParentInfo from './components/SpaceParentInfo';
-import { ParentInfo } from './utils/useSubspaceCardData';
-import StackedAvatar from './components/StackedAvatar';
-import SpaceCardTagsOverlay from './components/SpaceCardTagsOverlay';
-import SpaceVisibilityBanner from './components/SpaceVisibilityBanner';
 import { Box } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import SpaceCardBase, { type SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
+import SpaceCardTagsOverlay from './components/SpaceCardTagsOverlay';
+import SpaceLeads, { type Lead, type LeadOrganization, type LeadType } from './components/SpaceLeads';
+import SpaceParentInfo from './components/SpaceParentInfo';
+import SpaceVisibilityBanner from './components/SpaceVisibilityBanner';
+import StackedAvatar from './components/StackedAvatar';
+import type { ParentInfo } from './utils/useSubspaceCardData';
 
 interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   spaceId?: string;
@@ -70,7 +70,12 @@ const SpaceCard = ({
         spaceId={props.spaceId}
         locked={isPrivate}
         visual={visualContent}
-        bannerOverlay={tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact /> : undefined}
+        bannerOverlay={
+          <>
+            {showVisibilityBanner && <SpaceVisibilityBanner visibility={spaceVisibility} />}
+            {tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact={true} /> : undefined}
+          </>
+        }
         iconOverlay={iconOverlay}
         sx={{
           position: 'relative',
@@ -82,7 +87,7 @@ const SpaceCard = ({
         {/* Display name and optional parent info - rendered in BadgeCardView footer */}
         <Box display="flex" flexDirection="column" gap={0} width="100%">
           <BlockTitle
-            noWrap
+            noWrap={true}
             sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -103,7 +108,7 @@ const SpaceCard = ({
       header={
         <Box display="flex" flexDirection="column" gap={0} width="100%">
           <BlockTitle
-            noWrap
+            noWrap={true}
             sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -123,6 +128,7 @@ const SpaceCard = ({
           {tags && tags.length > 0 && <SpaceCardTagsOverlay tags={tags} />}
         </>
       }
+      iconOverlay={iconOverlay}
       tags={undefined}
       {...props}
     >

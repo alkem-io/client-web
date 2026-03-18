@@ -1,26 +1,39 @@
-import React from 'react';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import { TemplateCardProps } from './TemplateCard';
-import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import { Box } from '@mui/material';
+import type { FC } from 'react';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import CardImage from '@/core/ui/card/CardImage';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import type { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import type { TemplateCardProps } from './TemplateCard';
+import TemplateCardLayout from './TemplateCardLayout';
 
 interface SpaceTemplateCardProps extends TemplateCardProps {
   template: SpaceTemplate;
 }
 
-const SpaceTemplateCard = ({ template, loading, ...props }: SpaceTemplateCardProps) => {
-  if (loading || !template) {
-    return <SpaceCard displayName="" {...props} />;
-  }
-
-  // todo: we don't have the contentSpace data available
+const SpaceTemplateCard: FC<SpaceTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   return (
-    <SpaceCard
-      spaceId={template.id}
-      displayName={template.profile.displayName}
-      banner={template.contentSpace?.about?.profile?.cardBanner}
-      isPrivate={template.contentSpace?.about?.isContentPublic === false}
+    <TemplateCardLayout
+      templateName={template?.profile.displayName}
+      innovationPack={innovationPack}
+      tags={template?.profile.defaultTagset?.tags ?? []}
+      loading={loading}
       {...props}
-    />
+    >
+      <CardImage
+        src={template?.contentSpace?.about?.profile?.cardBanner?.uri}
+        defaultImage={
+          <Box
+            component="img"
+            display="block"
+            width="100%"
+            sx={{ aspectRatio: '16 / 9', objectFit: 'cover' }}
+            src={getDefaultSpaceVisualUrl(VisualType.Card, template?.contentSpace?.id)}
+          />
+        }
+        alt={template?.profile.displayName}
+      />
+    </TemplateCardLayout>
   );
 };
 

@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import KratosUI from '../components/KratosUI';
-import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import Loading from '@/core/ui/loading/Loading';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from '../components/Kratos/constants';
 import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
+import { KRATOS_REMOVED_FIELDS_DEFAULT, type KratosRemovedFieldAttributes } from '../components/Kratos/constants';
+import KratosForm from '../components/Kratos/KratosForm';
+import KratosUI from '../components/KratosUI';
 
 const REMOVED_FIELDS: readonly KratosRemovedFieldAttributes[] = [
   ...KRATOS_REMOVED_FIELDS_DEFAULT,
@@ -32,7 +32,7 @@ export const SettingsPage = ({ flow }: { flow: string }) => {
 
   return (
     <AuthenticationLayout>
-      <AuthFormHeader title={t('pages.settings.header')} hideMessage />
+      <AuthFormHeader title={t('pages.settings.header')} hideMessage={true} />
       <KratosForm ui={settingsFlow?.ui}>
         <AuthPageContentContainer>
           <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} flowType="settings" />

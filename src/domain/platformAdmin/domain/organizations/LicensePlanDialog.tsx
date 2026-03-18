@@ -1,9 +1,9 @@
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import LicensePlansTable from '@/domain/platformAdmin/domain/space/AdminSpaceListPage/LicensePlansTable';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import AssignPlan from '@/domain/platformAdmin/domain/space/AdminSpaceListPage/AssignPlan';
+import LicensePlansTable from '@/domain/platformAdmin/domain/space/AdminSpaceListPage/LicensePlansTable';
 
 type LicensePlanDialogProps = {
   accountId: string;

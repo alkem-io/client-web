@@ -1,4 +1,4 @@
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import type { ActorType } from '@/core/apollo/generated/graphql-schema';
 
 export type ApplicationModel = {
   id: string;
@@ -6,10 +6,10 @@ export type ApplicationModel = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  contributorType: RoleSetContributorType;
-  contributor: {
+  contributorType: ActorType;
+  actor: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       email?: string;
       url: string;

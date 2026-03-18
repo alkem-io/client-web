@@ -1,7 +1,7 @@
-import React, { cloneElement, ReactElement } from 'react';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
+import { cloneElement, type ReactElement } from 'react';
 import { Trans } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 type ElementProps<Props extends {}> = Record<string, Partial<Props> | true>;
 
@@ -26,7 +26,7 @@ const TranslateWithElements =
     const components = mapValues(elementProps, props => cloneElement(element, props === true ? undefined : props));
 
     // Typescript fails to handle the type
-    // @ts-ignore
+    // @ts-expect-error
     return <Trans i18nKey={key} components={components} values={translateValues} />;
   };
 

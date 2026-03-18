@@ -20,9 +20,7 @@ export const guestHeaderLink = new ApolloLink((operation, forward) => {
           },
         }));
       }
-    } catch (error) {
-      console.warn('Failed to read guest name from session storage:', error);
-    }
+    } catch (_error) {}
   }
 
   return forward(operation);

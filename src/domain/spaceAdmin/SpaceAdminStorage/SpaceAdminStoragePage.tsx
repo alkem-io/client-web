@@ -1,26 +1,35 @@
-import { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
-import { FC, useMemo, useState } from 'react';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import {
+  Box,
+  type BoxProps,
+  CircularProgress,
+  IconButton,
+  Link,
+  type LinkProps,
+  Skeleton,
+  useTheme,
+} from '@mui/material';
+import type { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
+import { times } from 'lodash-es';
+import { type FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, type DocumentDataFragment } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import DataGridTable from '@/core/ui/table/DataGridTable';
+import { formatFileSize } from '@/core/utils/Storage';
+import { formatDateTime } from '@/core/utils/time/utils';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import { Box, BoxProps, CircularProgress, IconButton, Link, LinkProps, Skeleton, useTheme } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
-import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, DocumentDataFragment } from '@/core/apollo/generated/graphql-schema';
-import { formatFileSize } from '@/core/utils/Storage';
-import RouterLink from '@/core/ui/link/RouterLink';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { times } from 'lodash';
-import { formatDateTime } from '@/core/utils/time/utils';
-import DataGridTable from '@/core/ui/table/DataGridTable';
-import useStorageAdminTree, { StorageAdminGridRow } from './useStorageAdminTree';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import useStorageAdminTree, { type StorageAdminGridRow } from './useStorageAdminTree';
 
 export interface SpaceAdminStoragePageProps extends SettingsPageProps {
   spaceId: string;

@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
-import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
-import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import React, { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
 
 export const OrganizationAssociatesView: FC = () => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ export const OrganizationAssociatesView: FC = () => {
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Associate],
-    contributorTypes: [RoleSetContributorType.User],
+    contributorTypes: [ActorType.User],
     fetchContributors: true,
   });
 

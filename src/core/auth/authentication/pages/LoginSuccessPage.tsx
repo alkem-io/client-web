@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useGetReturnUrl } from '../utils/useSignUpReturnUrl';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { clearAllGuestSessionData } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useGetReturnUrl } from '../utils/useSignUpReturnUrl';
 
 export const LoginSuccessPage = () => {
   const returnUrl = useGetReturnUrl();

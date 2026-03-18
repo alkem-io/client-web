@@ -1,13 +1,19 @@
-import { useMemo } from 'react';
-import { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
-import { ActivityCreatedDocument, useActivityLogOnCollaborationQuery } from '@/core/apollo/generated/apollo-hooks';
-import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  ActivityCreatedSubscription,
-  ActivityCreatedSubscriptionVariables,
-  ActivityEventType,
-  ActivityLogOnCollaborationFragment,
+  ActivityCreatedDocument,
+  useActivityLogOnCollaborationQuery,
+  useActorDetailsLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import {
+  type ActivityCreatedSubscription,
+  type ActivityCreatedSubscriptionVariables,
+  type ActivityEventType,
+  type ActivityLogOnCollaborationFragment,
+  type ActorDetailsQuery,
+  ActorType,
 } from '@/core/apollo/generated/graphql-schema';
+import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
+import type { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
 
 const useActivityOnCollaborationSubscription = (collaborationID: string, { types }: { types?: ActivityEventType[] }) =>
   createUseSubscriptionToSubEntityHook<
@@ -62,18 +68,70 @@ const useActivityOnCollaboration = (
   useActivityOnCollaborationSubscription(collaborationID!, { types })(
     activityLogData,
     data => data?.activityLogOnCollaboration,
-    // @ts-ignore react-18
+    // @ts-expect-error react-18
     subscribeToMore,
     { skip: !collaborationID }
   );
+
+  // Fetch actor-specific details for MemberJoined activity contributors
+  type ActorDetail = NonNullable<ActorDetailsQuery['actor']>;
+  const [fetchActorDetails] = useActorDetailsLazyQuery();
+  const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
+
+  const memberJoinedContributorIds = useMemo(() => {
+    const entries = activityLogData?.activityLogOnCollaboration ?? [];
+    return [
+      ...new Set(entries.filter((e): e is typeof e & { actor: { id: string } } => 'actor' in e).map(e => e.actor.id)),
+    ];
+  }, [activityLogData]);
+
+  useEffect(() => {
+    if (memberJoinedContributorIds.length === 0) {
+      return;
+    }
+    const fetchAll = async () => {
+      const results = await Promise.all(
+        memberJoinedContributorIds.map(actorId => fetchActorDetails({ variables: { actorId } }))
+      );
+      const newMap: Record<string, ActorDetail> = {};
+      for (const result of results) {
+        const actor = result.data?.actor;
+        if (actor) {
+          newMap[actor.id] = actor;
+        }
+      }
+      setActorDetailsMap(newMap);
+    };
+    fetchAll();
+  }, [memberJoinedContributorIds, fetchActorDetails]);
+
+  // Extract type-specific fields from actor details to enrich contributors
+  const getExtraContributorFields = (actorDetail: ActorDetail | undefined): Record<string, unknown> => {
+    if (!actorDetail) return {};
+    if (actorDetail.type === ActorType.User && 'firstName' in actorDetail) {
+      return { firstName: actorDetail.firstName, lastName: actorDetail.lastName };
+    }
+    if (actorDetail.type === ActorType.Organization && 'contactEmail' in actorDetail) {
+      return { contactEmail: actorDetail.contactEmail };
+    }
+    return {};
+  };
 
   const activities = useMemo<ActivityLogResultType[] | undefined>(() => {
     if (!activityLogData) {
       return undefined;
     }
 
-    return activityLogData.activityLogOnCollaboration as ActivityLogResultType[];
-  }, [activityLogData]);
+    return activityLogData.activityLogOnCollaboration.map(entry => {
+      if ('actor' in entry) {
+        const extra = getExtraContributorFields(actorDetailsMap[entry.actor.id]);
+        if (Object.keys(extra).length > 0) {
+          return { ...entry, actor: { ...entry.actor, ...extra } } as ActivityLogResultType;
+        }
+      }
+      return entry as ActivityLogResultType;
+    });
+  }, [activityLogData, actorDetailsMap]);
 
   const fetchMoreActivities = (limit: number) => {
     refetch({

@@ -1,25 +1,25 @@
 import { DeleteOutline } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, BoxProps, Divider, Link } from '@mui/material';
+import { Box, type BoxProps, Divider, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { FieldArray, useFormikContext } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
-import { Caption, BlockSectionTitle } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -112,7 +112,7 @@ export const ReferenceSegment = ({
   return (
     <FieldArray name={fieldName}>
       {({ push, remove }) => (
-        <Gutters disablePadding {...props}>
+        <Gutters disablePadding={true} {...props}>
           {addButtonPosition === 'start' && (
             <Box display="flex" alignItems="center">
               <IconButton
@@ -132,8 +132,8 @@ export const ReferenceSegment = ({
             <Caption>{t('components.referenceSegment.missing-references')}</Caption>
           ) : (
             references?.map((attachment, index) => (
-              <Gutters key={attachment.id ?? attachment.ID ?? index} disablePadding>
-                <Gutters row={!isSmallScreen} disablePadding alignItems="start">
+              <Gutters key={attachment.id ?? attachment.ID ?? index} disablePadding={true}>
+                <Gutters row={!isSmallScreen} disablePadding={true} alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
                     title={t('common.title')}
@@ -190,7 +190,7 @@ export const ReferenceSegment = ({
                   </Box>
                 </Gutters>
                 {!compactMode && (
-                  <Gutters disablePadding>
+                  <Gutters disablePadding={true}>
                     <FormikInputField
                       name={`${fieldName}.${index}.description`}
                       title={'Description'}

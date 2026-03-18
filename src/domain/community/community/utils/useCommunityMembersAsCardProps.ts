@@ -1,10 +1,10 @@
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import { useMemo } from 'react';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { WithId } from '@/core/utils/WithId';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { ContributorViewModel } from './ContributorViewModel';
-import { WithId } from '@/core/utils/WithId';
+import type { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import type { UserCardProps } from '@/domain/community/user/userCard/UserCard';
+import type { ContributorViewModel } from './ContributorViewModel';
 
 interface RoleSetMembers {
   memberUsers?: ContributorViewModel[];
@@ -23,16 +23,16 @@ type Options = {
 
 const mapUserToContributorCardProps = (user: ContributorViewModel): ContributorCardSquareProps => ({
   id: user.id,
-  avatar: user.profile.avatar?.uri,
-  displayName: user.profile.displayName,
-  url: user.profile.url,
+  avatar: user.profile?.avatar?.uri,
+  displayName: user.profile?.displayName ?? '',
+  url: user.profile?.url ?? '',
   tooltip: {
-    tags: user.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
-    city: user.profile.location?.city,
-    country: user.profile.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
+    tags: user.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
+    city: user.profile?.location?.city,
+    country: user.profile?.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
   },
   isContactable: user.isContactable,
-  contributorType: RoleSetContributorType.User,
+  contributorType: ActorType.User,
 });
 
 export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): ContributorCardSquareProps => ({
@@ -46,19 +46,19 @@ export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): Con
     country: user.country,
   },
   isContactable: user.isContactable ?? true,
-  contributorType: RoleSetContributorType.User,
+  contributorType: ActorType.User,
 });
 
 const mapOrganizationToContributorCardProps = (org: ContributorViewModel): ContributorCardSquareProps => ({
   id: org.id,
-  avatar: org.profile.avatar?.uri,
-  displayName: org.profile.displayName,
-  url: org.profile.url,
+  avatar: org.profile?.avatar?.uri,
+  displayName: org.profile?.displayName ?? '',
+  url: org.profile?.url ?? '',
   tooltip: {
-    tags: org.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
+    tags: org.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
   },
   isContactable: true,
-  contributorType: RoleSetContributorType.Organization,
+  contributorType: ActorType.Organization,
 });
 
 const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | undefined =>

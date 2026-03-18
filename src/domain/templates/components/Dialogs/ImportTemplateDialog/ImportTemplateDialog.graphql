@@ -17,7 +17,7 @@ query ImportTemplateDialog(
             id
             profile {
               id
-              visual(type: CARD) {
+              cardBanner: visual(type: CARD) {
                 id
                 uri
               }
@@ -57,7 +57,7 @@ query ImportTemplateDialogPlatformTemplates(
               id
               profile {
                 id
-                visual(type: CARD) {
+                cardBanner: visual(type: CARD) {
                   id
                   uri
                 }

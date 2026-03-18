@@ -1,5 +1,5 @@
-import { styled } from '@mui/material';
 import ImportContactsTwoToneIcon from '@mui/icons-material/ImportContactsTwoTone';
+import { styled } from '@mui/material';
 
 // The original material icon has a shadow on the left page of the book.
 // See https://mui.com/material-ui/material-icons/?query=contact&theme=Two+tone&selected=ImportContactsTwoTone

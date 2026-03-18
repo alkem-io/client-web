@@ -1,18 +1,18 @@
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { times } from 'lodash-es';
+import { type ComponentType, useEffect, useState } from 'react';
+import type { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
-import { times } from 'lodash';
-import { ComponentType, useEffect, useState } from 'react';
-import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
-import { AnyContribution } from '../interfaces/AnyContributionType';
-import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
+import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
+import type { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
+import type { AnyContribution } from '../interfaces/AnyContributionType';
+import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import PaginationExpander from './PaginationExpander';
-import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
-import { gutters } from '@/core/ui/grid/utils';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
@@ -84,8 +84,8 @@ const ContributionsCardsExpandable = ({
           />
         }
       >
-        <GridProvider columns={gridColumns} force>
-          <Gutters ref={inViewRef} disablePadding row flexWrap="wrap">
+        <GridProvider columns={gridColumns} force={true}>
+          <Gutters ref={inViewRef} disablePadding={true} row={true} flexWrap="wrap">
             {contributions.map(contribution => (
               <Card
                 key={contribution.id}

@@ -1,8 +1,8 @@
-import { AuthorizationPrivilege, ProfileType, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege, ProfileType, TagsetType } from '@/core/apollo/generated/graphql-schema';
 
 export type ContributorModel = {
   id: string;
-  profile: {
+  profile?: {
     id: string;
     displayName: string;
     url: string;

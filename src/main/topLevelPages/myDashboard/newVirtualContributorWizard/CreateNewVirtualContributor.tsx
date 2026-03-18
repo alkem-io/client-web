@@ -1,36 +1,36 @@
-import { MouseEvent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Form, Formik } from 'formik';
-import * as yup from 'yup';
-import { Box, Button, ButtonProps, DialogContent, Tooltip } from '@mui/material';
-import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
-import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import Gutters from '@/core/ui/grid/Gutters';
-import Loading from '@/core/ui/loading/Loading';
-import LogoSmallImage from '@/main/ui/logo/logoSmall.svg?react';
-import GridContainer from '@/core/ui/grid/GridContainer';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import GridItem from '@/core/ui/grid/GridItem';
-import { Actions } from '@/core/ui/actions/Actions';
-import { theme } from '@/core/ui/themes/default/Theme';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
-import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
+import { Box, Button, type ButtonProps, DialogContent, Tooltip } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { type MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import {
-  VisualType,
   AiPersonaEngine,
   VirtualContributorBodyOfKnowledgeType,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import { theme } from '@/core/ui/themes/default/Theme';
+import { Caption } from '@/core/ui/typography';
+import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import LogoSmallImage from '@/main/ui/logo/logoSmall.svg?react';
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
@@ -152,23 +152,23 @@ const CreateNewVirtualContributor = ({
         {loading && <Loading />}
 
         {!loading && (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <Caption>{t('createVirtualContributorWizard.initial.profileDescription')}</Caption>
 
-            <GridContainer disablePadding sx={{ display: 'contents' }}>
+            <GridContainer disablePadding={true} sx={{ display: 'contents' }}>
               <GridProvider columns={12}>
                 <Formik
                   initialValues={initialValues}
                   validationSchema={validationSchema}
-                  enableReinitialize
+                  enableReinitialize={true}
                   onSubmit={handleSubmit}
                 >
                   {({ isValid }) => {
                     return (
-                      <Form noValidate>
+                      <Form noValidate={true}>
                         <GridItem columns={isMobile ? cols : 8}>
-                          <Gutters disablePadding>
-                            <Gutters disablePadding flexDirection="row">
+                          <Gutters disablePadding={true}>
+                            <Gutters disablePadding={true} flexDirection="row">
                               <FormikVisualUpload
                                 flex={1}
                                 name="visuals.avatar"
@@ -176,12 +176,12 @@ const CreateNewVirtualContributor = ({
                                 onChangeAvatar={onChangeAvatar}
                               />
 
-                              <Gutters disablePadding flex={2}>
+                              <Gutters disablePadding={true} flex={2}>
                                 <FormikInputField
                                   name="name"
                                   title={t('components.nameSegment.name')}
                                   placeholder={t('components.nameSegment.name')}
-                                  required
+                                  required={true}
                                 />
 
                                 <FormikInputField
@@ -197,13 +197,13 @@ const CreateNewVirtualContributor = ({
                               title={t('components.profileSegment.description.name')}
                               placeholder={t('components.profileSegment.description.placeholder')}
                               rows={10}
-                              multiline
-                              hideImageOptions
+                              multiline={true}
+                              hideImageOptions={true}
                             />
                           </Gutters>
                         </GridItem>
                         <GridItem columns={isMobile ? cols : 8}>
-                          <Gutters disablePadding paddingTop={gutters()}>
+                          <Gutters disablePadding={true} paddingTop={gutters()}>
                             <Caption>{t('createVirtualContributorWizard.initial.description')}</Caption>
                             <Box
                               display="flex"

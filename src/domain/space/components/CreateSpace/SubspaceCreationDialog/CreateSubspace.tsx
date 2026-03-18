@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { SpaceCreationDialog } from '../common/SpaceCreationDialog';
-import { SpaceFormValues } from '../common/SpaceCreationDialog.models';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CreateSubspaceForm } from './CreateSubspaceForm';
+import useNavigate from '@/core/routing/useNavigate';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
 import SpaceL1Icon2 from '../../../icons/SpaceL1Icon2';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { SpaceCreationDialog } from '../common/SpaceCreationDialog';
+import type { SpaceFormValues } from '../common/SpaceCreationDialog.models';
+import { CreateSubspaceForm } from './CreateSubspaceForm';
 
 type SubspaceCreatedResult = Identifiable & {
   about: {

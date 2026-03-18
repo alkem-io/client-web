@@ -1,50 +1,50 @@
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  SearchResultOrganizationFragment,
-  SearchResultPostFragment,
-  SearchResultSpaceFragment,
-  SearchResultType,
-  SearchResultUserFragment,
-  SearchResultMemoFragment,
-  SearchResultWhiteboardFragment,
-  UserRolesSearchCardsQuery,
+  type SearchResultMemoFragment,
+  type SearchResultOrganizationFragment,
+  type SearchResultPostFragment,
+  type SearchResultSpaceFragment,
+  type SearchResultType,
+  type SearchResultUserFragment,
+  type SearchResultWhiteboardFragment,
+  type UserRolesSearchCardsQuery,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import { RoleType } from '@/domain/community/user/constants/RoleType';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { TypedSearchResult } from '../SearchView';
-import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
-import { SearchContributionMemoCard } from '@/domain/shared/components/search-cards/SearchContributionMemoCard';
-import { SearchContributionWhiteboardCard } from '@/domain/shared/components/search-cards/SearchContributionWhiteboardCard';
-import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import ContributingOrganizationCard from '@/domain/community/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
+import { RoleType } from '@/domain/community/user/constants/RoleType';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { SearchContributionMemoCard } from '@/domain/shared/components/search-cards/SearchContributionMemoCard';
+import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
+import { SearchContributionWhiteboardCard } from '@/domain/shared/components/search-cards/SearchContributionWhiteboardCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { ComponentType } from 'react';
-import { SvgIconProps } from '@mui/material';
-import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
+import type { TypedSearchResult } from '../SearchView';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
   const profile = user.profile;
-  const avatarUri = profile.visual?.uri;
-  const { country, city } = profile.location ?? {};
-  const tags = profile.tagsets?.[0]?.tags ?? [];
+  const avatarUri = profile?.visual?.uri;
+  const { country, city } = profile?.location ?? {};
+  const tags = profile?.tagsets?.[0]?.tags ?? [];
 
   return (
     <ContributingUserCard
       id={user.id}
-      displayName={user.profile.displayName}
-      description={profile.description}
+      displayName={user.profile?.displayName ?? ''}
+      description={profile?.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
       tags={tags}
-      userUri={user.profile.url}
+      userUri={user.profile?.url ?? ''}
       matchedTerms={data.terms}
       isContactable={user.isContactable}
     />
@@ -57,23 +57,23 @@ const _hydrateOrganizationCard = (
 ) => {
   const organization = data.organization;
   const profile = data.organization.profile;
-  const avatarUri = profile.visual?.uri;
-  const { country, city } = profile.location ?? {};
-  const url = organization.profile.url;
-  const tags = profile.tagsets?.[0]?.tags ?? [];
+  const avatarUri = profile?.visual?.uri;
+  const { country, city } = profile?.location ?? {};
+  const url = organization.profile?.url;
+  const tags = profile?.tagsets?.[0]?.tags ?? [];
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);
   const isMember = organizationRoles?.roles.some(x => x === RoleType.Associate);
 
   return (
     <ContributingOrganizationCard
-      displayName={organization.profile.displayName}
-      description={profile.description}
+      displayName={organization.profile?.displayName ?? ''}
+      description={profile?.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
       tags={tags}
-      userUri={url}
+      userUri={url ?? ''}
       member={isMember}
       matchedTerms={data.terms}
     />
@@ -153,7 +153,7 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
   return (
     <SearchContributionCardCard
       name={card.profile.displayName}
-      author={card.createdBy?.profile.displayName}
+      author={card.createdBy?.profile?.displayName}
       description={card.profile.description}
       tags={card.profile.tagset?.tags}
       createdDate={card.createdDate}
@@ -185,7 +185,7 @@ const hydrateMemo = (data: TypedSearchResult<SearchResultType.Memo, SearchResult
   return (
     <SearchContributionMemoCard
       name={memo.profile.displayName}
-      author={memo.createdBy?.profile.displayName}
+      author={memo.createdBy?.profile?.displayName}
       description={memo.markdown}
       tags={memo.profile.tagset?.tags}
       createdDate={memo.createdDate}
@@ -216,7 +216,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
   return (
     <SearchContributionWhiteboardCard
       name={whiteboard.profile.displayName}
-      author={whiteboard.createdBy?.profile.displayName}
+      author={whiteboard.createdBy?.profile?.displayName}
       visual={whiteboard.profile.preview}
       tags={whiteboard.profile.tagset?.tags}
       createdDate={whiteboard.createdDate}
@@ -236,9 +236,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
   );
 };
 
-interface HydratedCardGetter<Data> {
-  (data: Data): null | React.ReactElement;
-}
+type HydratedCardGetter<Data> = (data: Data) => null | React.ReactElement;
 
 interface UseHydrateCardProvided {
   hydrateUserCard: HydratedCardGetter<TypedSearchResult<SearchResultType.User, SearchResultUserFragment>>;

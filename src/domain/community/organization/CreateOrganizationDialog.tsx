@@ -1,15 +1,15 @@
+import { DialogContent } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useCreateOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { CreateOrganizationInput, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
+import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
+import useNavigate from '@/core/routing/useNavigate';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { DialogContent } from '@mui/material';
-import Gutters from '@/core/ui/grid/Gutters';
-import OrganizationForm from '@/domain/platformAdmin/components/Organization/OrganizationForm';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { useCreateOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
-import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
-import { CreateOrganizationInput, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
+import Gutters from '@/core/ui/grid/Gutters';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import useNavigate from '@/core/routing/useNavigate';
-import { useTranslation } from 'react-i18next';
+import OrganizationForm from '@/domain/platformAdmin/components/Organization/OrganizationForm';
 
 export interface CreateOrganizationDialogProps {
   open: boolean;
@@ -23,10 +23,12 @@ export const CreateOrganizationDialog = ({ open, onClose }: CreateOrganizationDi
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
-      const organizationURL = data.createOrganization.profile.url;
+      const organizationURL = data.createOrganization.profile?.url;
 
       notify(t('pages.admin.organization.notifications.organization-created'), 'success');
-      navigate(organizationURL);
+      if (organizationURL) {
+        navigate(organizationURL);
+      }
     },
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
@@ -55,7 +57,7 @@ export const CreateOrganizationDialog = ({ open, onClose }: CreateOrganizationDi
       />
 
       <DialogContent>
-        <Gutters disableGap disablePadding sx={{ display: 'flex' }}>
+        <Gutters disableGap={true} disablePadding={true} sx={{ display: 'flex' }}>
           <OrganizationForm editMode={EditMode.new} onSave={handleSubmit} onBack={onClose} />
         </Gutters>
       </DialogContent>

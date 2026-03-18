@@ -1,18 +1,18 @@
+import { ApolloClient, from, InMemoryCache, type NormalizedCacheObject } from '@apollo/client';
+import { once } from 'lodash-es';
 import { useMemo, useRef } from 'react';
-import { from, InMemoryCache, NormalizedCacheObject, ApolloClient } from '@apollo/client';
-import { once } from 'lodash';
 import { env } from '@/main/env';
+import { typePolicies } from '../config/typePolicies';
 import {
-  omitTypenameLink,
   consoleLink,
   guestHeaderLink,
-  retryLink,
-  redirectLink,
   httpLink,
+  omitTypenameLink,
+  redirectLink,
+  retryLink,
   useErrorHandlerLink,
   useErrorLoggerLink,
 } from '../graphqlLinks';
-import { typePolicies } from '../config/typePolicies';
 
 const enableQueryDebug = !!(env && env?.VITE_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.VITE_APP_LOG_ERRORS === 'true');

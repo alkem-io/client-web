@@ -1,13 +1,13 @@
 import { Box, Skeleton } from '@mui/material';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
-import RouterLink from '@/core/ui/link/RouterLink';
-import { BlockTitle } from '@/core/ui/typography';
-import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
-import { gutters } from '@/core/ui/grid/utils';
-import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
+import type { AvatarSize } from '@/core/ui/avatar/Avatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
-import { AvatarSize } from '@/core/ui/avatar/Avatar';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
+import { BlockTitle } from '@/core/ui/typography';
+import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
+import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
 
 export const InnovationHubCardHorizontalSkeleton = () => (
   <BadgeCardView
@@ -51,7 +51,7 @@ const InnovationHubCardHorizontal = ({
       component={RouterLink}
       to={buildInnovationHubUrl(subdomain)}
       target="_blank"
-      strict
+      strict={true}
       actions={actions ? <ActionsMenu>{actions}</ActionsMenu> : undefined}
     >
       <Box display="flex" flexDirection="row" justifyContent="space-between">

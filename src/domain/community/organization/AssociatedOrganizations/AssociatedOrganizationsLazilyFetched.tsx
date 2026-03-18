@@ -1,9 +1,9 @@
-import AssociatedOrganizationsDashboardSection, {
-  AssociatedOrganizationsDashboardSectionProps,
-} from './AssociatedOrganizationsDashboardSection';
-import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import AssociatedOrganizationCard from './AssociatedOrganizationCard';
-import { Identifiable } from '@/core/utils/Identifiable';
+import AssociatedOrganizationsDashboardSection, {
+  type AssociatedOrganizationsDashboardSectionProps,
+} from './AssociatedOrganizationsDashboardSection';
+import useAssociatedOrganization from './useAssociatedOrganization';
 
 interface AssociatedOrganizationsLazilyFetchedProps
   extends Omit<
@@ -23,13 +23,9 @@ interface OrganizationCardLazilyFetchedProps {
 }
 
 const OrganizationCardLazilyFetched = ({ organizationId, enableLeave }: OrganizationCardLazilyFetchedProps) => {
-  return (
-    <AssociatedOrganizationContainer
-      organizationId={organizationId}
-      enableLeave={enableLeave}
-      component={AssociatedOrganizationCard}
-    />
-  );
+  const provided = useAssociatedOrganization({ organizationId, enableLeave });
+
+  return <AssociatedOrganizationCard {...provided} />;
 };
 
 export const AssociatedOrganizationsLazilyFetched = ({

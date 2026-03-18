@@ -1,5 +1,5 @@
-import { ReactElement } from 'react';
-import { Snackbar, SnackbarProps } from '@mui/material';
+import { Snackbar, type SnackbarProps } from '@mui/material';
+import type { ReactElement } from 'react';
 
 export interface NotificationViewProps {
   open: boolean;

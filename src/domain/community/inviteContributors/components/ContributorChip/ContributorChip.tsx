@@ -1,14 +1,14 @@
+import ClearIcon from '@mui/icons-material/Clear';
+import { Box, type BoxProps, styled, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, BoxProps, styled, Tooltip } from '@mui/material';
+import { Caption } from '@/core/ui/typography';
+import ContributorTooltip from '../../../contributor/ContributorTooltip/ContributorTooltip';
 import {
   ContributorSelectorType,
-  SelectedContributor,
+  type SelectedContributor,
 } from '../FormikContributorsSelectorField/FormikContributorsSelectorField.models';
-import { Caption } from '@/core/ui/typography';
-import ClearIcon from '@mui/icons-material/Clear';
-import ContributorTooltip from '../../../contributor/ContributorTooltip/ContributorTooltip';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
 
 interface ContributorChipProps {
   contributor: SelectedContributor;
@@ -45,11 +45,7 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
   switch (contributor.type) {
     case ContributorSelectorType.User:
       return (
-        <ContributorTooltip
-          contributorId={contributor.id}
-          contributorType={RoleSetContributorType.User}
-          override={validationError}
-        >
+        <ContributorTooltip contributorId={contributor.id} contributorType={ActorType.User} override={validationError}>
           <StyledChip invalid={!!validationError}>
             <Caption>{contributor.displayName}</Caption>
             {onRemove && <ClearIcon fontSize="small" onClick={onRemove} />}
@@ -59,7 +55,7 @@ const ContributorChip = ({ contributor, validationError, onRemove }: Contributor
     case ContributorSelectorType.Email:
       return (
         <Tooltip
-          arrow
+          arrow={true}
           title={
             validationError
               ? validationError

@@ -1,0 +1,9 @@
+mutation addVisualToMediaGallery($addData: AddVisualToMediaGalleryInput!) {
+  addVisualToMediaGallery(addData: $addData) {
+    id
+    uri
+    name
+    alternativeText
+    sortOrder
+  }
+}

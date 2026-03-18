@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 
 export interface MemoModel {
   id: string;
@@ -9,7 +9,7 @@ export interface MemoModel {
   markdown?: string;
   createdBy?: {
     id: string;
-    profile: {
+    profile?: {
       displayName: string;
       url: string;
       avatar?: { id: string; uri: string };

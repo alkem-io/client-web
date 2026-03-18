@@ -1,16 +1,15 @@
-import { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { AssignmentIndOutlined } from '@mui/icons-material';
-import UserPageBanner from './UserPageBanner';
-import { useUserProvider } from '../hooks/useUserProvider';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Settings } from '@mui/icons-material';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { useUserProvider } from '../hooks/useUserProvider';
 import useUserRouteContext from '../routing/useUserRouteContext';
+import UserPageBanner from './UserPageBanner';
 
 type UserPageLayoutProps = Record<string, never>;
 
@@ -21,7 +20,7 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
   const { userModel: user, loading } = useUserProvider(userId);
 
   // Set browser tab title to "[User Name] | Alkemio"
-  usePageTitle(user?.profile.displayName);
+  usePageTitle(user?.profile?.displayName);
 
   const settings = pathname.split('/').includes('settings');
 
@@ -34,11 +33,11 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={routeLoading || loading || !user}
-            avatar={user?.profile.avatar}
+            avatar={user?.profile?.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={getProfileUrl(user?.profile.url)}
+            uri={getProfileUrl(user?.profile?.url)}
           >
-            {user?.profile.displayName}
+            {user?.profile?.displayName}
           </BreadcrumbsItem>
           {settings && (
             <BreadcrumbsItem iconComponent={Settings} aria-label={t('common.settings')}>

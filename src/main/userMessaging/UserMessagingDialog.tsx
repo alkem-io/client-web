@@ -1,18 +1,19 @@
-import { DialogContent, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { DialogContent, IconButton } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useUserMessagingContext } from './UserMessagingContext';
-import { useUserConversations } from './useUserConversations';
-import { useConversationMessages } from './useConversationMessages';
-import { useConversationEventsSubscription } from './useConversationEventsSubscription';
-import { UserMessagingChatList } from './UserMessagingChatList';
-import { UserMessagingConversationView } from './UserMessagingConversationView';
-import { NewMessageDialog } from './NewMessageDialog';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { NewMessageDialog } from './NewMessageDialog';
+import { UserMessagingChatList } from './UserMessagingChatList';
+import { useUserMessagingContext } from './UserMessagingContext';
+import { UserMessagingConversationView } from './UserMessagingConversationView';
+import { useConversationEventsSubscription } from './useConversationEventsSubscription';
+import { useConversationMessages } from './useConversationMessages';
+import { useUnreadConversationsCount } from './useUnreadConversationsCount';
+import { useUserConversations } from './useUserConversations';
 
 const UserMessagingDialog = () => {
   const { t } = useTranslation();
@@ -24,9 +25,13 @@ const UserMessagingDialog = () => {
     selectedRoomId,
     setSelectedRoomId,
     setTotalUnreadCount,
+    setNewlyCreatedConversationId,
   } = useUserMessagingContext();
 
-  // Query for conversation list (light - no messages)
+  // Lightweight query for badge count on app load (no messages, no user profiles)
+  const initialUnreadCount = useUnreadConversationsCount();
+
+  // Full query for conversation list (only when dialog is open)
   const { conversations, totalUnreadCount, isLoading } = useUserConversations();
 
   // Query for messages of selected conversation (on demand)
@@ -35,10 +40,10 @@ const UserMessagingDialog = () => {
   const { isSmallScreen: isMobile } = useScreenSize();
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
 
-  // Sync total unread count to context (for button badge)
+  // Sync unread count to context: use full query count when dialog is open, lightweight count otherwise
   useEffect(() => {
-    setTotalUnreadCount(totalUnreadCount);
-  }, [totalUnreadCount, setTotalUnreadCount]);
+    setTotalUnreadCount(isOpen ? totalUnreadCount : initialUnreadCount);
+  }, [isOpen, totalUnreadCount, initialUnreadCount, setTotalUnreadCount]);
 
   // Subscribe to conversation events (new messages, new conversations, read receipts)
   useConversationEventsSubscription(selectedRoomId);
@@ -74,16 +79,14 @@ const UserMessagingDialog = () => {
     setIsNewMessageDialogOpen(false);
   };
 
-  const handleNewMessageSent = async (userId: string) => {
-    // Find the conversation with this user and select it
-    // The subscription will handle adding new conversations, but we can also check if it exists
-    const existingConversation = conversations.find(conv => conv.user?.id === userId);
+  const handleNewConvMessageSent = (conversationId: string, roomId: string) => {
+    // Track the newly created conversation so it appears at the top of the list
+    setNewlyCreatedConversationId(conversationId);
 
-    if (existingConversation) {
-      setSelectedConversationId(existingConversation.id);
-      setSelectedRoomId(existingConversation.roomId);
-    }
-    // If not found, the conversationCreated event from subscription will add it
+    // Select immediately — the subscription will add the conversation to the cache
+    // and selectedConversation will resolve on the next render
+    setSelectedConversationId(conversationId);
+    setSelectedRoomId(roomId);
   };
 
   // Mobile view: show either the list or the conversation
@@ -93,23 +96,25 @@ const UserMessagingDialog = () => {
         <DialogWithGrid
           open={isOpen}
           columns={12}
-          fullScreen
+          fullScreen={true}
           onClose={handleClose}
           aria-labelledby={t('components.userMessaging.title' as const)}
         >
-          {/* Close button */}
-          <IconButton
-            onClick={handleClose}
-            aria-label={t('buttons.close')}
-            sx={theme => ({
-              position: 'absolute',
-              top: theme.spacing(2),
-              right: theme.spacing(2),
-              zIndex: 1,
-            })}
-          >
-            <CloseIcon />
-          </IconButton>
+          {/* Close button — hidden when a conversation is open (back button is available instead) */}
+          {!selectedConversationId && (
+            <IconButton
+              onClick={handleClose}
+              aria-label={t('buttons.close')}
+              sx={theme => ({
+                position: 'absolute',
+                top: theme.spacing(2),
+                right: theme.spacing(2),
+                zIndex: 1,
+              })}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
           <DialogContent
             sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%' }}
           >
@@ -119,7 +124,9 @@ const UserMessagingDialog = () => {
                 messages={messages}
                 messagesLoading={messagesLoading}
                 onBack={handleBack}
-                showBackButton
+                showBackButton={true}
+                onLeaveConversation={handleBack}
+                onClose={handleClose}
               />
             ) : (
               <UserMessagingChatList
@@ -135,7 +142,7 @@ const UserMessagingDialog = () => {
         <NewMessageDialog
           open={isNewMessageDialogOpen}
           onClose={handleCloseNewMessage}
-          onConversationCreated={handleNewMessageSent}
+          onConversationCreated={handleNewConvMessageSent}
         />
       </>
     );
@@ -147,7 +154,7 @@ const UserMessagingDialog = () => {
       <DialogWithGrid
         open={isOpen}
         columns={8}
-        fullHeight
+        fullHeight={true}
         maxWidth={false}
         onClose={handleClose}
         aria-labelledby={t('components.userMessaging.title' as const)}
@@ -160,22 +167,9 @@ const UserMessagingDialog = () => {
           },
         }}
       >
-        {/* Close button */}
-        <IconButton
-          onClick={handleClose}
-          aria-label={t('buttons.close')}
-          sx={theme => ({
-            position: 'absolute',
-            top: theme.spacing(2),
-            right: theme.spacing(2),
-            zIndex: 1,
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
         <DialogContent sx={{ padding: 0, display: 'flex', height: '100%' }}>
           <PageContentBlockSeamless
-            disablePadding
+            disablePadding={true}
             columns={3}
             sx={{
               borderRight: theme => `1px solid ${theme.palette.divider}`,
@@ -190,11 +184,18 @@ const UserMessagingDialog = () => {
               onNewMessage={handleOpenNewMessage}
             />
           </PageContentBlockSeamless>
-          <PageContentBlockSeamless disablePadding disableGap columns={5} sx={{ flexGrow: 1, height: '100%' }}>
+          <PageContentBlockSeamless
+            disablePadding={true}
+            disableGap={true}
+            columns={5}
+            sx={{ flexGrow: 1, height: '100%' }}
+          >
             <UserMessagingConversationView
               conversation={selectedConversation}
               messages={messages}
               messagesLoading={messagesLoading}
+              onLeaveConversation={handleBack}
+              onClose={handleClose}
             />
           </PageContentBlockSeamless>
         </DialogContent>
@@ -202,7 +203,7 @@ const UserMessagingDialog = () => {
       <NewMessageDialog
         open={isNewMessageDialogOpen}
         onClose={handleCloseNewMessage}
-        onConversationCreated={handleNewMessageSent}
+        onConversationCreated={handleNewConvMessageSent}
       />
     </>
   );

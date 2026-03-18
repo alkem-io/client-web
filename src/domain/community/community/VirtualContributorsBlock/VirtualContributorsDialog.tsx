@@ -1,21 +1,21 @@
+import { DialogContent, ListItemButton, type ListItemButtonProps, type ListItemButtonTypeMap } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import Gutters from '@/core/ui/grid/Gutters';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import type { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
-import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import { BlockSectionTitle } from '@/core/ui/typography';
-import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import RouterLink, { type RouterLinkProps } from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import SearchField from '@/core/ui/search/SearchField';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 
 export interface VirtualContributorProps {
   id: string;
   searchVisibility?: SearchVisibility;
-  profile: {
+  profile?: {
     displayName: string;
     tagline?: string;
     avatar?: {
@@ -43,7 +43,7 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
     () =>
       (virtualContributors.length > 0 && filter.length > 0
         ? virtualContributors.filter((virtualContributor: VirtualContributorProps) =>
-            virtualContributor.profile.displayName.toLowerCase().includes(filter.toLowerCase())
+            (virtualContributor.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase())
           )
         : virtualContributors) ?? [],
     [virtualContributors, filter]
@@ -65,26 +65,26 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
       />
 
       <DialogContent>
-        <Gutters disablePadding>
+        <Gutters disablePadding={true}>
           {filteredVCs.map(vc => (
             <BadgeCardView
               variant="rounded"
               visual={
                 <Avatar
-                  src={vc.profile.avatar?.uri}
+                  src={vc.profile?.avatar?.uri}
                   alt={
-                    vc.profile.displayName
+                    vc.profile?.displayName
                       ? t('common.avatar-of', { user: vc.profile.displayName })
                       : t('common.avatar')
                   }
                 />
               }
               component={Wrapper}
-              to={vc.profile.url}
+              to={vc.profile?.url ?? ''}
               key={vc.id}
             >
-              <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
-              <BlockSectionTitle>{vc.profile.tagline}</BlockSectionTitle>
+              <BlockSectionTitle>{vc.profile?.displayName}</BlockSectionTitle>
+              <BlockSectionTitle>{vc.profile?.tagline}</BlockSectionTitle>
             </BadgeCardView>
           ))}
         </Gutters>

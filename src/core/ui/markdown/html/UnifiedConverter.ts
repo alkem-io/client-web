@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next';
-import { Converter } from './Converter';
-import { once } from 'lodash';
 import type { Element, ElementContent } from 'hast';
+import { defaultHandlers as defaultHTMLHandlers, type State as H2MState } from 'hast-util-to-mdast';
+import { once } from 'lodash-es';
 import type { Html, Parent as MDASTParent, PhrasingContent } from 'mdast';
-import { State as M2HState } from 'mdast-util-to-hast';
-import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-util-to-mdast';
+import type { State as M2HState } from 'mdast-util-to-hast';
+import { useTranslation } from 'react-i18next';
 import { emptyParagraph, html, text } from '../utils/unist-builders';
+import type { Converter } from './Converter';
 
 // Not sure why it doesn't have the tagName property in TS, it's always there when debugging.
 // Also this overrides the children to be Element[] for cleaner code in this file, we don't access properties inside children, so it's safe.
@@ -80,7 +80,7 @@ const UnifiedConverter = (): Converter => {
       unified()
         .use(rehypeParse, { fragment: true }) // don't expect a full HTML Document
         .use(rehypeRaw)
-        // @ts-ignore
+        // @ts-expect-error
         .use(rehypeRemark, {
           handlers: {
             p: (state: H2MState, element: Element, parent: Parent | undefined) => {

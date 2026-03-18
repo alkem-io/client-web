@@ -1,8 +1,8 @@
 import { MenuItem } from '@mui/material';
-import { ChainedCommands } from '@tiptap/core';
-import { Editor } from '@tiptap/react';
-import { produce } from 'immer';
-import React, { useEffect, useState } from 'react';
+import type { ChainedCommands } from '@tiptap/core';
+import type { Editor } from '@tiptap/react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 interface ToolbarMenuItemProps {
   editor: Editor | null;
@@ -31,11 +31,11 @@ const ToolbarMenuItem = ({ editor, command, specs, onClick, children, ...menuIte
     }
   };
 
-  const produceButtonState = (prevState: ButtonState = {}) =>
-    produce(prevState, nextState => {
-      nextState.active = getActiveState();
-      nextState.disabled = getDisabledState();
-    });
+  const produceButtonState = (prevState: ButtonState = {}): ButtonState => ({
+    ...prevState,
+    active: getActiveState(),
+    disabled: getDisabledState(),
+  });
 
   const [state, setState] = useState<ButtonState>({ disabled: true, active: false });
 
@@ -62,7 +62,7 @@ const ToolbarMenuItem = ({ editor, command, specs, onClick, children, ...menuIte
     <MenuItem
       onClick={() => {
         editor && command(editor.chain().focus()).run();
-        onClick && onClick();
+        onClick?.();
       }}
       disabled={state.disabled}
       selected={state.active}

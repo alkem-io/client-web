@@ -1,10 +1,10 @@
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { CalloutTemplate } from './CalloutTemplate';
-import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
-import { PostTemplate } from './PostTemplate';
-import { WhiteboardTemplate } from './WhiteboardTemplate';
-import { SpaceTemplate } from './SpaceTemplate';
+import type { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { CalloutTemplate } from './CalloutTemplate';
+import type { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
+import type { PostTemplate } from './PostTemplate';
+import type { SpaceTemplate } from './SpaceTemplate';
+import type { WhiteboardTemplate } from './WhiteboardTemplate';
 
 export type AnyTemplate =
   | CalloutTemplate
@@ -40,7 +40,7 @@ export interface TemplateInnovationPack extends Identifiable {
     displayName: string;
   };
   provider?: {
-    profile: {
+    profile?: {
       displayName: string;
       avatar?: {
         id: string;

@@ -1,4 +1,4 @@
-import { TagsetType, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 
 export interface TagsetModel {
   id: string;

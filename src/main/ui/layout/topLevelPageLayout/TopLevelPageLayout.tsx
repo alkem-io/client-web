@@ -1,9 +1,9 @@
-import { PropsWithChildren, ReactNode } from 'react';
-import { PageBannerCardProps } from '@/main/topLevelPages/pageBannerCard/PageBannerCard';
-import TopLevelLayout from '../TopLevelLayout';
+import type { PropsWithChildren, ReactNode } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
+import type { PageBannerCardProps } from '@/main/topLevelPages/pageBannerCard/PageBannerCard';
+import type { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
+import TopLevelLayout from '../TopLevelLayout';
 import TopLevelPageBanner from './TopLevelPageBanner';
-import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
 
 interface TopLevelPageLayoutProps extends PageBannerCardProps {
   ribbon?: ReactNode;

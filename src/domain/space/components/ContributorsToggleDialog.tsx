@@ -1,26 +1,21 @@
-import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCommunityAvailableVCsQuery,
   useSubspaceCommunityAndRoleSetIdQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { ActorType, AuthorizationPrivilege, RoleName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { Caption } from '@/core/ui/typography';
-import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
-import {
-  AuthorizationPrivilege,
-  RoleName,
-  RoleSetContributorType,
-  SearchVisibility,
-} from '@/core/apollo/generated/graphql-schema';
-import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import type { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import type { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
+import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface ContributorsToggleDialogProps {
@@ -47,7 +42,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
   const { usersByRole, organizationsByRole, myPrivileges } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
-    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+    contributorTypes: [ActorType.User, ActorType.Organization],
     fetchContributors: true,
   });
   const memberUsers = usersByRole[RoleName.Member] ?? [];
@@ -55,18 +50,18 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
 
   const users: ContributorCardSquareProps[] | undefined = memberUsers.map(user => ({
     id: user.id,
-    avatar: user.profile.avatar?.uri,
-    displayName: user.profile.displayName,
-    url: user.profile.url,
-    contributorType: RoleSetContributorType.User,
+    avatar: user.profile?.avatar?.uri,
+    displayName: user.profile?.displayName ?? '',
+    url: user.profile?.url ?? '',
+    contributorType: ActorType.User,
   }));
 
   const organizations: ContributorCardSquareProps[] | undefined = memberOrganizations.map(organization => ({
     id: organization.id,
-    avatar: organization.profile.avatar?.uri,
-    displayName: organization.profile.displayName,
-    url: organization.profile.url,
-    contributorType: RoleSetContributorType.Organization,
+    avatar: organization.profile?.avatar?.uri,
+    displayName: organization.profile?.displayName ?? '',
+    url: organization.profile?.url ?? '',
+    contributorType: ActorType.Organization,
   }));
 
   // get the mentionable VCs as they are the ones that can be used in the community
@@ -83,9 +78,9 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
         id: vc.id,
         searchVisibility: vc.searchVisibility,
         profile: {
-          displayName: vc.profile.displayName,
-          avatar: { uri: vc.profile.avatar?.uri ?? '' },
-          url: vc.profile.url,
+          displayName: vc.profile?.displayName ?? '',
+          avatar: { uri: vc.profile?.avatar?.uri ?? '' },
+          url: vc.profile?.url ?? '',
         },
       })) ?? []
     );
@@ -98,20 +93,26 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
     myPrivileges?.some(privilege => [AuthorizationPrivilege.RolesetEntryRoleInvite].includes(privilege)) ?? false;
 
   return (
-    <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title" onClose={onClose}>
+    <DialogWithGrid
+      open={open}
+      fullWidth={true}
+      columns={12}
+      aria-labelledby="contributors-dialog-title"
+      onClose={onClose}
+    >
       <DialogHeader id="contributors-dialog-title" onClose={onClose} title={t('common.contributors')} />
       <DialogContent>
         {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
         {isAuthenticated && (
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <RoleSetContributorsBlockWide
-              showUsers
+              showUsers={true}
               users={users}
               organizations={organizations}
               level={spaceLevel}
               hasInvitePrivilege={hasInvitePrivilege}
               isLoading={loading}
-              isDialogView
+              isDialogView={true}
             />
             {virtualContributors.length > 0 && (
               <RoleSetVirtualContributorsBlockWide

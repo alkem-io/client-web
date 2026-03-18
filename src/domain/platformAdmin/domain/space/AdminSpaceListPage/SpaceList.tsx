@@ -1,21 +1,21 @@
-import React, { FC, useMemo, useState, useEffect, useCallback } from 'react';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { Chip, IconButton } from '@mui/material';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminSpacesListQuery,
-  usePlatformAdminSpacesListQuery,
   useDeleteSpaceMutation,
+  usePlatformAdminSpacesListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import { SpacePrivacyMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
-import { SpaceVisibility, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import AdminSearchableTable, { AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
-import { Chip, IconButton } from '@mui/material';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AccountOwnerColumn } from '@/domain/platformAdmin/components/AdminListItemLayout';
-import { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import AdminSearchableTable, { type AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
 import SpaceSettingsDialog from '@/domain/platformAdmin/domain/space/AdminSpaceListPage/SpaceSettingsDialog';
+import type { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 const INITIAL_PAGE_SIZE = 10;
 const PAGE_SIZE = 10;

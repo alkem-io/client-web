@@ -1,19 +1,19 @@
-import { ReactNode, useMemo } from 'react';
+import dayjs from 'dayjs';
 import { Formik } from 'formik';
+import { type ReactNode, useMemo } from 'react';
 import * as yup from 'yup';
-import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
-import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '@/core/apollo/generated/graphql-schema';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
+import DialogHeader, { type DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
+import type { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import dayjs from 'dayjs';
-import { isSameDay } from '@/core/utils/time/utils';
-import EventForm from './EventForm/EventForm';
-import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
-import GridProvider from '@/core/ui/grid/GridProvider';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { isSameDay } from '@/core/utils/time/utils';
+import type { CalendarEventDetailData } from '../useCalendarEventDetail';
+import type { CalendarEventFormData } from '../useCalendarEvents';
+import EventForm from './EventForm/EventForm';
 
 const DEFAULT_DURATION_MINUTES = 30;
 
@@ -22,7 +22,7 @@ export interface CalendarEventFormProps {
   dialogTitle: string;
   dialogTitleId?: string;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (eventValues: CalendarEventFormData) => void;
+  onSubmit: (eventValues: CalendarEventFormData) => void | Promise<void>;
   isSubmitting: boolean;
   actions?: ReactNode;
   temporaryLocation?: boolean;
@@ -142,7 +142,7 @@ const CalendarEventForm = ({
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
-        enableReinitialize
+        enableReinitialize={true}
       >
         <EventForm
           typeOptions={typeOptions}

@@ -10,8 +10,13 @@ query SpaceDashboardNavigationSubspaces($spaceId: UUID!) {
         ...SpaceAboutCardBanner
         isContentPublic
       }
+      settings {
+        sortMode
+      }
       subspaces {
         id
+        sortOrder
+        pinned
         about {
           ...SpaceAboutCardAvatar
           isContentPublic

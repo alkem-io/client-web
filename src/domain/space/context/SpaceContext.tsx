@@ -1,13 +1,13 @@
+import React, { type PropsWithChildren, useMemo } from 'react';
 import { useSpaceAboutBaseQuery, useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  LicenseEntitlementType,
+  type LicenseEntitlementType,
   SpaceLevel,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import React, { PropsWithChildren, useMemo } from 'react';
 
 export interface SpacePermissions {
   canRead: boolean;

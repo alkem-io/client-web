@@ -1,31 +1,31 @@
-import { MouseEventHandler, useState, useEffect, useRef } from 'react';
-import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import { Actions } from '@/core/ui/actions/Actions';
+import { DialogContent } from '@mui/material';
+import { type MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Visual } from '@/domain/common/visual/Visual';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import {
   MemoStatus,
-  RealTimeCollaborationState,
+  type RealTimeCollaborationState,
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
+import type { Visual } from '@/domain/common/visual/Visual';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 interface MemoFooterProps {
   memoUrl: string | undefined;
   createdBy:
     | (Identifiable & {
-        profile: {
+        profile?: {
           displayName: string;
           url: string;
           avatar?: Visual;
@@ -150,8 +150,8 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
     if (createdBy) {
       sendMessage('user', {
         id: createdBy.id,
-        displayName: createdBy.profile.displayName,
-        avatarUri: createdBy.profile.avatar?.uri,
+        displayName: createdBy.profile?.displayName ?? '',
+        avatarUri: createdBy.profile?.avatar?.uri,
       });
     }
   };
@@ -171,16 +171,16 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
               i18nKey={`pages.memo.readonlyReason.${delayedReadonlyReason}` as const}
               values={{
                 spaceLevel: t(`common.space-level.${spaceLevel}`),
-                ownerName: createdBy?.profile.displayName,
+                ownerName: createdBy?.profile?.displayName,
               }}
               components={{
-                ownerlink: createdBy ? (
+                ownerlink: createdBy?.profile ? (
                   <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
                 ) : (
                   <span />
                 ),
                 spacelink: spaceAboutProfile ? (
-                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument={true} />
                 ) : (
                   <span />
                 ),
@@ -213,16 +213,16 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
               i18nKey={`pages.memo.readonlyDialog.reason.${collaborationState?.readOnlyCode ?? 'generic'}` as const}
               values={{
                 spaceLevel: t(`common.space-level.${spaceLevel}`),
-                ownerName: createdBy?.profile.displayName,
+                ownerName: createdBy?.profile?.displayName,
               }}
               components={{
-                ownerlink: createdBy ? (
+                ownerlink: createdBy?.profile ? (
                   <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
                 ) : (
                   <span />
                 ),
                 spacelink: spaceAboutProfile ? (
-                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument={true} />
                 ) : (
                   <span />
                 ),

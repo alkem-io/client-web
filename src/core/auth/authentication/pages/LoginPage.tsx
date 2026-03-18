@@ -1,32 +1,35 @@
 import { Box } from '@mui/material';
-import { produce } from 'immer';
-import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
-import KratosUI from '../components/KratosUI';
+import type { LoginFlow } from '@ory/kratos-client';
+
 import { useEffect, useLayoutEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Loading from '@/core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
-import { LoginFlow } from '@ory/kratos-client';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import Loading from '@/core/ui/loading/Loading';
+import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
+import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
+import AuthenticationLayout from '../AuthenticationLayout';
+import { AuthFormHeader } from '../components/AuthFormHeader';
+import KratosForm from '../components/Kratos/KratosForm';
+import KratosUI from '../components/KratosUI';
 import {
   AUTH_REMINDER_PATH,
   AUTH_RESET_PASSWORD_PATH,
   PARAM_NAME_RETURN_URL,
 } from '../constants/authentication.constants';
-import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
-import KratosForm from '../components/Kratos/KratosForm';
-import AuthenticationLayout from '../AuthenticationLayout';
-import { AuthFormHeader } from '../components/AuthFormHeader';
-import { useQueryParams } from '@/core/routing/useQueryParams';
-import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
-import { usePageTitle } from '@/core/routing/usePageTitle';
+import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
+import type { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 
 interface LoginPageProps {
   flow?: string;
 }
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
+// Custom client-side message ID for account lockout (HTTP 429 Too Many Requests).
+// Not from Ory Kratos — prefixed with 9xxx to avoid collisions with Kratos message IDs.
+const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 
 const isEmailNotVerified = (flow: LoginFlow) => {
   return (flow.ui?.messages ?? []).some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
@@ -56,14 +59,28 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
+  const isLockedOut = params.get('lockout') === 'true';
+  const retryAfterRaw = Number(params.get('retry_after'));
+  const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
+  const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
-    produce(loginFlow.ui, ui => {
+    (() => {
+      const ui = structuredClone(loginFlow.ui);
       if (kratosErrors) {
         ui.messages = kratosErrors;
       }
-    });
+      if (isLockedOut) {
+        const lockoutMessage = {
+          id: ACCOUNT_LOCKOUT_MESSAGE_ID,
+          type: 'error' as const,
+          text: t('authentication.lockout', { minutes: lockoutMinutes }),
+        };
+        ui.messages = [...(ui.messages ?? []), lockoutMessage];
+      }
+      return ui;
+    })();
 
   useEffect(() => {
     setReturnUrl(returnUrl);

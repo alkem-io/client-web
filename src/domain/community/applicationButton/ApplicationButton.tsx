@@ -1,20 +1,41 @@
-import { Button as MuiButton, CircularProgress } from '@mui/material';
+import { AddOutlined, PersonOutlined } from '@mui/icons-material';
+import { CircularProgress, type Button as MuiButton } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import PreApplicationDialog from './PreApplicationDialog';
-import isApplicationPending from './isApplicationPending';
-import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
-import PreJoinParentDialog from './PreJoinParentDialog';
-import { AddOutlined, PersonOutlined } from '@mui/icons-material';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
-import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
-import InvitationDialog from '@/domain/community/invitations/InvitationDialog';
-import useNavigate from '@/core/routing/useNavigate';
-import ApplicationDialog from './ApplicationDialog';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import InvitationDialog from '@/domain/community/invitations/InvitationDialog';
+import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
+import type { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import ApplicationDialog from './ApplicationDialog';
+import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
+import isApplicationPending from './isApplicationPending';
+import PreApplicationDialog from './PreApplicationDialog';
+import PreJoinParentDialog from './PreJoinParentDialog';
+
+const InvitationDialogWithActions = ({
+  onUpdate,
+  spaceId,
+  open,
+  onClose,
+  invitation,
+}: {
+  onUpdate: () => void;
+  spaceId: string | undefined;
+  open: boolean;
+  onClose: () => void;
+  invitation: PendingInvitationItem | undefined;
+}) => {
+  const props = useInvitationActions({
+    onUpdate,
+    spaceId,
+  });
+
+  return <InvitationDialog open={open} onClose={onClose} invitation={invitation} {...props} />;
+};
 
 export interface ApplicationButtonProps {
   spaceId: string | undefined;
@@ -149,7 +170,7 @@ export const ApplicationButton = ({
 
   const renderApplicationButton = () => {
     if (loading) {
-      return <Button ref={ref} disabled startIcon={<CircularProgress size={24} />} />;
+      return <Button ref={ref} disabled={true} startIcon={<CircularProgress size={24} />} />;
     }
 
     if (!isAuthenticated) {
@@ -166,7 +187,7 @@ export const ApplicationButton = ({
           ref={ref}
           variant="outlined"
           startIcon={<PersonOutlined />}
-          disabled
+          disabled={true}
           sx={{
             '&.Mui-disabled': {
               color: 'primary.main',
@@ -209,7 +230,7 @@ export const ApplicationButton = ({
 
     if (isApplicationPending(applicationState)) {
       return (
-        <Button ref={ref} disabled>
+        <Button ref={ref} disabled={true}>
           {t('components.application-button.apply-pending')}
         </Button>
       );
@@ -235,7 +256,7 @@ export const ApplicationButton = ({
       return (
         <Button
           ref={ref}
-          disabled
+          disabled={true}
           variant="outlined"
           sx={{
             '&.Mui-disabled': {
@@ -251,7 +272,7 @@ export const ApplicationButton = ({
 
     if (isApplicationPending(parentApplicationState)) {
       return (
-        <Button ref={ref} disabled>
+        <Button ref={ref} disabled={true}>
           {t('components.application-button.parent-pending')}
         </Button>
       );
@@ -274,7 +295,7 @@ export const ApplicationButton = ({
     }
 
     return (
-      <Button ref={ref} disabled variant={'contained'}>
+      <Button ref={ref} disabled={true} variant={'contained'}>
         {t('components.application-button.apply-disabled')}
       </Button>
     );
@@ -313,19 +334,13 @@ export const ApplicationButton = ({
           onClose={() => setIsApplicationSubmittedDialogOpen(false)}
         />
         <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
-        <InvitationActionsContainer
+        <InvitationDialogWithActions
           onUpdate={handleAcceptInvitation}
           spaceId={userInvitation?.spacePendingMembershipInfo.id}
-        >
-          {props => (
-            <InvitationDialog
-              open={isInvitationDialogOpen}
-              onClose={handleClose}
-              invitation={userInvitation}
-              {...props}
-            />
-          )}
-        </InvitationActionsContainer>
+          open={isInvitationDialogOpen}
+          onClose={handleClose}
+          invitation={userInvitation}
+        />
       </RootThemeProvider>
     </>
   );

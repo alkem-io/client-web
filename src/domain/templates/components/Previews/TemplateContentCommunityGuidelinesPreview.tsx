@@ -1,11 +1,11 @@
-import { PropsWithChildren } from 'react';
-import { BlockSectionTitle, Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import References from '@/domain/shared/components/References/References';
 import { Skeleton } from '@mui/material';
-import { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import type { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
+import References from '@/domain/shared/components/References/References';
 
 interface TemplateContentCommunityGuidelinesPreviewProps {
   loading?: boolean;

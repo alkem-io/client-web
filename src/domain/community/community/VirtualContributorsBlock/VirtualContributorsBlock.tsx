@@ -1,19 +1,19 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import Avatar from '@/core/ui/avatar/Avatar';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
-import Loading from '@/core/ui/loading/Loading';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import Avatar from '@/core/ui/avatar/Avatar';
-import { BlockSectionTitle } from '@/core/ui/typography';
-import RouterLink from '@/core/ui/link/RouterLink';
-import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
-import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import Gutters from '@/core/ui/grid/Gutters';
-import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import Loading from '@/core/ui/loading/Loading';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import InviteContributorsDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
+import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
+import VirtualContributorsDialog, { type VirtualContributorProps } from './VirtualContributorsDialog';
 
 export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
@@ -47,7 +47,7 @@ const VirtualContributorsBlock = ({
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.contributors.virtualContributors.title')} icon={<VCIcon />} />
       {loading && <Loading />}
-      <Gutters disablePadding>
+      <Gutters disablePadding={true}>
         {showInviteOption && (
           <DashboardAddButton
             sx={{ padding: 0, textAlign: 'left' }}
@@ -57,20 +57,20 @@ const VirtualContributorsBlock = ({
         )}
         {visibleVCs?.map(vc => (
           <BadgeCardView
-            key={vc.profile.displayName}
+            key={vc.profile?.displayName}
             variant="rounded"
             visual={
               <Avatar
-                src={vc.profile.avatar?.uri}
+                src={vc.profile?.avatar?.uri}
                 alt={
-                  vc.profile.displayName ? t('common.avatar-of', { user: vc.profile.displayName }) : t('common.avatar')
+                  vc.profile?.displayName ? t('common.avatar-of', { user: vc.profile.displayName }) : t('common.avatar')
                 }
               />
             }
             component={RouterLink}
-            to={vc.profile.url}
+            to={vc.profile?.url ?? ''}
           >
-            <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
+            <BlockSectionTitle>{vc.profile?.displayName}</BlockSectionTitle>
           </BadgeCardView>
         ))}
       </Gutters>
@@ -82,7 +82,7 @@ const VirtualContributorsBlock = ({
         <InviteContributorsDialog
           open={inviteDialogOpen}
           onClose={closeInviteDialog}
-          type={RoleSetContributorType.Virtual}
+          type={ActorType.VirtualContributor}
         />
       )}
     </PageContentBlock>

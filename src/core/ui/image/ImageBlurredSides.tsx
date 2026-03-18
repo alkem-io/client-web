@@ -1,4 +1,4 @@
-import { Box, BoxProps, useTheme } from '@mui/material';
+import { Box, type BoxProps, useTheme } from '@mui/material';
 import Image from './Image';
 
 type BlurRadius = number | string;

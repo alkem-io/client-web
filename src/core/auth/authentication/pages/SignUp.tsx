@@ -1,26 +1,26 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { UiContainer, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 import { Box, Card } from '@mui/material';
+import type { UiContainer, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+
+import { sortBy } from 'lodash-es';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
-import Footer from '@/main/ui/platformFooter/PlatformFooter';
-import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import Overlay from '@/core/ui/utils/Overlay';
-import Image from '@/core/ui/image/Image';
-import FixedHeightLogo from '../components/FixedHeightLogo';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import Image from '@/core/ui/image/Image';
 import PageBannerCardWrapper from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import { Text } from '@/core/ui/typography';
+import Overlay from '@/core/ui/utils/Overlay';
+import GuestSessionNotification from '@/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification';
+import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import Footer from '@/main/ui/platformFooter/PlatformFooter';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
-import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
-import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
-import { produce } from 'immer';
-import KratosUI from '../components/KratosUI';
-import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
-import PlatformIntroduction from '../components/PlatformIntroduction';
-import { useTranslation } from 'react-i18next';
-import KratosForm from '../components/Kratos/KratosForm';
+import { AuthFormHeader } from '../components/AuthFormHeader';
+import FixedHeightLogo from '../components/FixedHeightLogo';
 import {
   KRATOS_INPUT_NAME_CSRF,
   KRATOS_REQUIRED_FIELDS,
@@ -28,13 +28,13 @@ import {
   KRATOS_TRAIT_NAME_LAST_NAME,
 } from '../components/Kratos/constants';
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
+import KratosForm from '../components/Kratos/KratosForm';
+import KratosUI from '../components/KratosUI';
+import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
+import PlatformIntroduction from '../components/PlatformIntroduction';
+import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
+import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import { useReturnUrl } from '../utils/useSignUpReturnUrl';
-import { useQueryParams } from '@/core/routing/useQueryParams';
-import { AuthFormHeader } from '../components/AuthFormHeader';
-import { sortBy } from 'lodash';
-import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
-import GuestSessionNotification from '@/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification';
-import { usePageTitle } from '@/core/routing/usePageTitle';
 
 const getMinimalSocialLoginNodes = (ui: UiContainer) =>
   ui.nodes.filter(
@@ -63,10 +63,12 @@ const SignUp = () => {
   // Sign Up flow is a flow reduced to just showing Accept Terms checkbox, Email and a selection of Sign Up options.
   const signUpFlow =
     flow &&
-    produce(flow, nextFlow => {
+    (() => {
+      const clone = structuredClone(flow);
       // sort the nodes alphabetically by name so `Accept terms` goes above `Email` field - not ideal but should do
-      nextFlow.ui.nodes = sortBy(getMinimalSocialLoginNodes(nextFlow.ui), ['attributes.name']);
-    });
+      clone.ui.nodes = sortBy(getMinimalSocialLoginNodes(clone.ui), ['attributes.name']);
+      return clone;
+    })();
 
   useEffect(() => {
     if (!signUpFlow) {
@@ -152,8 +154,8 @@ const SignUp = () => {
       </Overlay>
       <Gutters
         component="main"
-        row
-        fullHeight
+        row={true}
+        fullHeight={true}
         sx={{
           padding: { xs: 1, sm: 6 },
           zIndex: 999,
@@ -166,9 +168,9 @@ const SignUp = () => {
         }}
       >
         <PageBannerCardWrapper sx={{ maxWidth: { xs: '100%', sm: '100%', md: '260px' }, maxHeight: '114px' }}>
-          <Gutters disablePadding gap={gutters(0.5)}>
+          <Gutters disablePadding={true} gap={gutters(0.5)}>
             <FixedHeightLogo />
-            <Text color="textSecondary" noWrap sx={{ paddingLeft: gutters(0.7) }}>
+            <Text color="textSecondary" noWrap={true} sx={{ paddingLeft: gutters(0.7) }}>
               {t('pages.registration.logo-subtitle')}
             </Text>
           </Gutters>
@@ -197,7 +199,7 @@ const SignUp = () => {
           }}
         >
           <Card sx={{ height: 'fit-content' }}>
-            <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
+            <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage={true} />
             <KratosForm ui={signUpFlow?.ui}>
               <AuthPageContentContainer>
                 <PlatformIntroduction label="pages.registration.introduction-short" />

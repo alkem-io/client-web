@@ -1,6 +1,6 @@
-import { InAppNotificationModel } from '../../model/InAppNotificationModel';
-import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import type { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppSpaceCommunicationUpdateView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;

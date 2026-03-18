@@ -1,6 +1,6 @@
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
-import { alpha } from '@mui/material/styles';
 import { Box, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 interface GuestVisibilityBadgeProps {
@@ -29,7 +29,7 @@ const GuestVisibilityBadge = ({ size = 'default', className, ...rest }: GuestVis
       })}
       {...rest}
     >
-      <Box component={PublicOutlinedIcon} sx={{ fontSize: '1.1em' }} aria-hidden />
+      <Box component={PublicOutlinedIcon} sx={{ fontSize: '1.1em' }} aria-hidden={true} />
       <Typography variant="caption" component="span" color="inherit">
         {t('share-dialog.guest-access.visibility-warning')}
       </Typography>

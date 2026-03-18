@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import SingleUpdateView from '@/domain/communication/updates/views/SingleUpdateView';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SeeMore from '@/core/ui/content/SeeMore';
+import useCommunityUpdates from '@/domain/communication/updates/CommunityUpdatesContainer/useCommunityUpdates';
+import SingleUpdateView from '@/domain/communication/updates/views/SingleUpdateView';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import ShareButton from '../ShareDialog/ShareButton';
 
 export interface DashboardUpdatesSectionProps {
@@ -16,40 +16,41 @@ export interface DashboardUpdatesSectionProps {
 const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId, shareUrl }) => {
   const { t } = useTranslation();
 
-  return (
-    <CommunityUpdatesContainer communityId={communityId}>
-      {(entities, _, { retrievingUpdateMessages }) => {
-        const messages = [...entities.messages];
-        const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-        const sender = latestMessage?.sender;
-        const latestMessageAuthor = sender?.id ? buildAuthorFromUser(sender) : undefined;
+  const {
+    entities,
+    state: { retrievingUpdateMessages },
+  } = useCommunityUpdates({ communityId });
 
-        return entities.messages.length ? (
-          <PageContentBlock>
-            <PageContentBlockHeader
-              title={t('dashboard-updates-section.title', { count: messages.length })}
-              actions={<ShareButton url={shareUrl} entityTypeName="updates" />}
-            />
-            {retrievingUpdateMessages ? (
-              <SingleUpdateView loading={retrievingUpdateMessages} />
-            ) : !messages.length && !retrievingUpdateMessages ? (
-              t('dashboard-updates-section.no-data')
-            ) : (
-              <SingleUpdateView
-                loading={retrievingUpdateMessages}
-                author={latestMessageAuthor}
-                createdDate={new Date(latestMessage.timestamp)}
-                content={latestMessage.message}
-              />
-            )}
-            {/* The Updates dialog is in the first tab, SpaceDashboardPage */}
-            <SeeMore subject={t('common.updates')} to={shareUrl} />
-          </PageContentBlock>
-        ) : (
-          <></>
-        );
-      }}
-    </CommunityUpdatesContainer>
+  const messages = [...entities.messages];
+  const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
+  const sender = latestMessage?.sender;
+  const latestMessageAuthor = sender?.id ? buildAuthorFromUser(sender) : undefined;
+
+  if (!entities.messages.length) {
+    return null;
+  }
+
+  return (
+    <PageContentBlock>
+      <PageContentBlockHeader
+        title={t('dashboard-updates-section.title', { count: messages.length })}
+        actions={<ShareButton url={shareUrl} entityTypeName="updates" />}
+      />
+      {retrievingUpdateMessages ? (
+        <SingleUpdateView loading={retrievingUpdateMessages} />
+      ) : !messages.length && !retrievingUpdateMessages ? (
+        t('dashboard-updates-section.no-data')
+      ) : (
+        <SingleUpdateView
+          loading={retrievingUpdateMessages}
+          author={latestMessageAuthor}
+          createdDate={new Date(latestMessage.timestamp)}
+          content={latestMessage.message}
+        />
+      )}
+      {/* The Updates dialog is in the first tab, SpaceDashboardPage */}
+      <SeeMore subject={t('common.updates')} to={shareUrl} />
+    </PageContentBlock>
   );
 };
 

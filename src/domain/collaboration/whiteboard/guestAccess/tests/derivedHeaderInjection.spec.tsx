@@ -5,19 +5,19 @@
  * Spec: 002-guest-whiteboard-access, Phase 8 - Derived Authenticated Guest Name
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, waitFor } from '@testing-library/react';
 import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
-import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
-import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { I18nextProvider } from 'react-i18next';
+import { CurrentUserLightDocument, GetPublicWhiteboardDocument } from '@/core/apollo/generated/apollo-hooks';
 import i18n from '@/core/i18n/config';
 import { GlobalErrorProvider } from '@/core/lazyLoading/GlobalErrorContext';
+import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
 
 const buildCurrentUserMock = ({
   id,
@@ -31,7 +31,7 @@ const buildCurrentUserMock = ({
   email?: string;
 }): MockedResponse => ({
   request: {
-    query: CurrentUserFullDocument,
+    query: CurrentUserLightDocument,
   },
   result: {
     data: {
@@ -42,23 +42,17 @@ const buildCurrentUserMock = ({
           firstName,
           lastName,
           email,
-          phone: '',
           profile: {
             id: `${id}-profile`,
             displayName: `${firstName ?? lastName ?? 'Guest'} Profile`,
-            tagline: null,
-            location: {
-              id: `${id}-location`,
-              country: null,
-              city: null,
-              __typename: 'Location',
-            },
-            description: null,
             avatar: null,
-            references: [],
-            tagsets: [],
-            url: null,
+            url: '',
             __typename: 'Profile',
+          },
+          settings: {
+            id: `${id}-settings`,
+            homeSpace: { spaceID: undefined, autoRedirect: false, __typename: 'UserSettingsHomeSpace' },
+            __typename: 'UserSettings',
           },
           account: {
             id: `${id}-account`,
@@ -107,6 +101,8 @@ const createWhiteboard = ({
     storageBucket: {
       __typename: 'StorageBucket' as const,
       id: storageBucketId,
+      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+      maxFileSize: 15728640,
     },
   },
   createdDate: '2024-01-01T00:00:00.000Z',

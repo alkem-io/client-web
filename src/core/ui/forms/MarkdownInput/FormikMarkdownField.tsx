@@ -1,15 +1,15 @@
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { FormControl, FormHelperText, InputLabel, type InputProps, OutlinedInput, useFormControl } from '@mui/material';
+import { useField } from 'formik';
+import { type ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { error as logError } from '@/core/logging/sentry/log';
 import { gutters } from '@/core/ui/grid/utils';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
-import { useField } from 'formik';
-import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import CharacterCounter from '../characterCounter/CharacterCounter';
-import { MarkdownTextMaxLength } from '../field-length.constants';
-import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
-import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
+import type { MarkdownTextMaxLength } from '../field-length.constants';
+import { CharacterCountContextProvider, useCharacterCount } from './CharacterCountContext';
+import MarkdownInput, { type MarkdownInputRefApi } from './MarkdownInput';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 
 interface MarkdownFieldProps extends InputProps {
@@ -126,7 +126,7 @@ export const FormikMarkdownField = ({
   const labelOffset = inputElement?.getLabelOffset();
 
   return (
-    <FormControl required={required} disabled={disabled} error={isError} fullWidth>
+    <FormControl required={required} disabled={disabled} error={isError} fullWidth={true}>
       <CharacterCountContextProvider>
         <FilledDetector value={inputElement?.value} />
         {labelOffset && (
@@ -156,24 +156,40 @@ export const FormikMarkdownField = ({
           }}
           readOnly={readOnly}
           placeholder={placeholder}
-          multiline
+          multiline={true}
           sx={{
             '&.MuiOutlinedInput-root': {
               padding: gutters(0.5),
             },
           }}
         />
-        <CharacterCountContainer>
-          {({ characterCount }) => (
-            <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
-              <FormHelperText error={isError}>
-                <>{helperText}</>
-              </FormHelperText>
-            </CharacterCounter>
-          )}
-        </CharacterCountContainer>
+        <CharacterCounterSection
+          maxLength={maxLength}
+          counterDisabled={counterDisabled}
+          isError={isError}
+          helperText={helperText}
+        />
       </CharacterCountContextProvider>
     </FormControl>
+  );
+};
+
+const CharacterCounterSection = ({
+  maxLength,
+  counterDisabled,
+  isError,
+  helperText,
+}: {
+  maxLength: MarkdownTextMaxLength | undefined;
+  counterDisabled: boolean;
+  isError: boolean;
+  helperText: string | undefined;
+}) => {
+  const characterCount = useCharacterCount();
+  return (
+    <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
+      <FormHelperText error={isError}>{helperText}</FormHelperText>
+    </CharacterCounter>
   );
 };
 

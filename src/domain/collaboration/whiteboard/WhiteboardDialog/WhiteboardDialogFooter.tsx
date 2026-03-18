@@ -1,26 +1,26 @@
-import { MouseEventHandler, useState } from 'react';
-import { gutters } from '@/core/ui/grid/utils';
-import { Box, Button, DialogContent } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
 import { DeleteOutline, Public } from '@mui/icons-material';
-import { Actions } from '@/core/ui/actions/Actions';
+import { Box, Button, DialogContent } from '@mui/material';
+import { type MouseEventHandler, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Visual } from '@/domain/common/visual/Visual';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { Visual } from '@/domain/common/visual/Visual';
 import {
-  CollaboratorMode,
+  type CollaboratorMode,
   CollaboratorModeReasons,
 } from '@/domain/common/whiteboard/excalidraw/collab/excalidrawAppConstants';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
 
@@ -35,7 +35,7 @@ interface WhiteboardDialogFooterProps {
   guestContributionsAllowed?: boolean;
   createdBy:
     | (Identifiable & {
-        profile: {
+        profile?: {
           displayName: string;
           url: string;
           avatar?: Visual;
@@ -125,8 +125,8 @@ const WhiteboardDialogFooter = ({
     event.preventDefault();
     sendMessage('user', {
       id: createdBy?.id ?? '',
-      displayName: createdBy?.profile.displayName,
-      avatarUri: createdBy?.profile.avatar?.uri,
+      displayName: createdBy?.profile?.displayName,
+      avatarUri: createdBy?.profile?.avatar?.uri,
     });
   };
 
@@ -139,9 +139,7 @@ const WhiteboardDialogFooter = ({
 
   const canRestart =
     readonlyReason === ReadonlyReason.Readonly &&
-    (!collaboratorModeReason ||
-      collaboratorModeReason === CollaboratorModeReasons.INACTIVITY ||
-      collaboratorModeReason === CollaboratorModeReasons.ROOM_CAPACITY_REACHED);
+    (!collaboratorModeReason || collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
 
   return (
     <>
@@ -173,16 +171,16 @@ const WhiteboardDialogFooter = ({
                 i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
                 values={{
                   spaceLevel: t(`common.space-level.${spaceLevel}`),
-                  ownerName: createdBy?.profile.displayName,
+                  ownerName: createdBy?.profile?.displayName,
                 }}
                 components={{
-                  ownerlink: createdBy ? (
+                  ownerlink: createdBy?.profile ? (
                     <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
                   ) : (
                     <span />
                   ),
                   spacelink: spaceAboutProfile ? (
-                    <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                    <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument={true} />
                   ) : (
                     <span />
                   ),

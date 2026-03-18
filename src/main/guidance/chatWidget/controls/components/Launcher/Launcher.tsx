@@ -1,12 +1,10 @@
-import Badge from './components/Badge';
-import { useMessages } from '../../context/MessagesContext';
-import { useChatBehavior } from '../../context/ChatBehaviorContext';
-import { slideIn, rotationLr, rotationRl } from './LauncherStyles';
-
 import { Box, IconButton } from '@mui/material';
-
-import openLauncherImg from '../../assets/launcher_button.svg';
 import close from '../../assets/clear-button.svg';
+import openLauncherImg from '../../assets/launcher_button.svg';
+import { useChatBehavior } from '../../context/ChatBehaviorContext';
+import { useMessages } from '../../context/MessagesContext';
+import Badge from './components/Badge';
+import { rotationLr, rotationRl, slideIn } from './LauncherStyles';
 
 type Props = {
   toggle: () => void;

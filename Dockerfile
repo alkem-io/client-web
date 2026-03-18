@@ -1,4 +1,4 @@
-FROM node:22.21.1-alpine as builder
+FROM node:24.14.0-alpine as builder
 
 # Create app directory
 WORKDIR /app
@@ -6,19 +6,16 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
-ARG ARG_GRAPHQL_ENDPOINT=/graphql
-ENV VITE_APP_GRAPHQL_ENDPOINT=${ARG_GRAPHQL_ENDPOINT}
-
 # set build version, date and revision
 ARG ARG_BUILD_ENVIRONMENT=development
 ARG ARG_BUILD_VERSION=dev
 ARG ARG_BUILD_DATE
 ARG ARG_BUILD_REVISION
 ARG ARG_SENTRY_AUTH_TOKEN
-ENV VITE_APP_BUILD_VERSION=${ARG_BUILD_VERSION}
-ENV VITE_APP_BUILD_DATE=${ARG_BUILD_DATE}
-ENV VITE_APP_BUILD_REVISION=${ARG_BUILD_REVISION}
-ENV VITE_APP_SENTRY_AUTH_TOKEN=${ARG_SENTRY_AUTH_TOKEN}
+ENV VITE_BUILD_VERSION=${ARG_BUILD_VERSION}
+ENV VITE_BUILD_DATE=${ARG_BUILD_DATE}
+ENV VITE_BUILD_REVISION=${ARG_BUILD_REVISION}
+ENV SENTRY_AUTH_TOKEN=${ARG_SENTRY_AUTH_TOKEN}
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND pnpm-lock.yaml are copied
@@ -32,7 +29,7 @@ RUN pnpm install
 # Everything for now
 COPY . .
 
-# Conditionally run pnpm run build based on ARG_GRAPHQL_ENDPOINT
+# Conditionally run pnpm run build based on ARG_BUILD_ENVIRONMENT
 RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
   pnpm run-script build:dev; \
   else \

@@ -1,23 +1,23 @@
-import { Avatar, Box, Button, IconButton, Link, TextField } from '@mui/material';
-import {
-  GridColDef,
-  GridFilterModel,
-  GridInitialState,
-  GridLogicOperator,
-  GridRenderCellParams,
-} from '@mui/x-data-grid';
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import { Avatar, Box, Button, IconButton, Link, TextField } from '@mui/material';
+import {
+  type GridColDef,
+  type GridFilterModel,
+  type GridInitialState,
+  GridLogicOperator,
+  type GridRenderCellParams,
+} from '@mui/x-data-grid';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
+import type { ContributorViewModel } from '../../../community/community/utils/ContributorViewModel';
+import CommunityAddMembersDialog, { type CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDialog';
-import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
-import { ContributorViewModel } from '../../../community/community/utils/ContributorViewModel';
 
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewModel {
   isMember: boolean;
@@ -51,7 +51,7 @@ interface CommunityOrganizationsProps {
   organizations: OrganizationDetailsFragmentWithRoles[] | undefined;
   onOrganizationLeadChange: (organizationId, newValue) => Promise<unknown> | void;
   canAddOrganizations: boolean;
-  onAddMember: (organizationId) => Promise<unknown> | undefined;
+  onAddMember: (organizationId) => Promise<unknown> | void;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   onRemoveMember: (organizationId) => Promise<unknown> | void;
   memberRoleDefinition?: {
@@ -90,11 +90,11 @@ const CommunityOrganizations = ({
       sortable: false,
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
+        <Link href={row.profile?.url} target="_blank">
           <Avatar
-            src={row.profile.avatar?.uri}
+            src={row.profile?.avatar?.uri}
             alt={
-              row.profile.displayName ? t('common.avatar-of', { user: row.profile.displayName }) : t('common.avatar')
+              row.profile?.displayName ? t('common.avatar-of', { user: row.profile.displayName }) : t('common.avatar')
             }
           />
         </Link>
@@ -104,11 +104,11 @@ const CommunityOrganizations = ({
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderCell: ({ row }: RenderParams) => (
-        <Link href={row.profile.url} target="_blank">
-          {row.profile.displayName}
+        <Link href={row.profile?.url} target="_blank">
+          {row.profile?.displayName}
         </Link>
       ),
-      valueGetter: (_, row: GetterParams) => row?.profile.displayName,
+      valueGetter: (_, row: GetterParams) => row?.profile?.displayName,
       flex: 1,
       filterable: false,
     },
@@ -160,7 +160,7 @@ const CommunityOrganizations = ({
         label={t('common.search')}
         placeholder={t('common.search')}
         size="small"
-        fullWidth
+        fullWidth={true}
       />
       <Box minHeight={gutters(25)}>
         {loading ? (

@@ -1,9 +1,11 @@
 ---
 name: Epic
-about: A theme of work that contain sub-tasks required to complete the larger goal / larger user-story
+about: A theme of work that contain sub-tasks required to complete the larger goal
+  / larger user-story
 title: ''
-labels: 'client, epic, Rhea Team'
+labels: CE, client, epic
 assignees: ''
+
 ---
 
 ## Description

@@ -1,19 +1,19 @@
-import { useState, Suspense } from 'react';
+import { sortedUniq } from 'lodash-es';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContent from '@/core/ui/content/PageContent';
-import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
-import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import InfoColumn from '@/core/ui/content/InfoColumn';
-import ContentColumn from '@/core/ui/content/ContentColumn';
-import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
-import useSpaceTabProvider from '../../SpaceTabProvider';
-import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Loading from '@/core/ui/loading/Loading';
+import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import CalloutsSetTagCloud from '@/domain/collaboration/calloutsSet/tagCloud/CalloutsSetTagCloud';
-import { sortedUniq } from 'lodash';
+import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
+import useSpaceTabProvider from '../../SpaceTabProvider';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')

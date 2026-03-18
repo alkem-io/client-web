@@ -1,5 +1,5 @@
+import type { Editor } from '@tiptap/core';
 import { useEffect, useState } from 'react';
-import { Editor } from '@tiptap/core';
 
 /**
  * Determines if the current selection is inside a table

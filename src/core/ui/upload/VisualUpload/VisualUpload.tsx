@@ -1,4 +1,4 @@
-import { Avatar, Box, BoxProps, Skeleton } from '@mui/material';
+import { Avatar, Box, type BoxProps, Skeleton } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -6,10 +6,10 @@ import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import UploadButton from '@/core/ui/button/UploadButton';
 import Image from '@/core/ui/image/Image';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from './CropDialog';
-import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
-import { VisualUploadModel } from './VisualUpload.model';
+import type { VisualUploadModel } from './VisualUpload.model';
 
 const DEFAULT_SIZE = 128;
 

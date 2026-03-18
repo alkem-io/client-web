@@ -1,16 +1,16 @@
-import React, { FC, useMemo, useState } from 'react';
-import AdminLayout from '../../layout/toplevel/AdminLayout';
-import { AdminSection } from '../../layout/toplevel/constants';
+import { type FC, useMemo, useState } from 'react';
 import { usePlatformAdminVirtualContributorsListQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
-import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import AdminSearchableTable, { AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
 import {
+  AccountOwnerColumn,
   ListedInStoreColumn,
   SearchVisibilityColumn,
-  AccountOwnerColumn,
 } from '@/domain/platformAdmin/components/AdminListItemLayout';
-import { VirtualContributorTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import AdminSearchableTable, { type AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
+import type { VirtualContributorTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 
 const INITIAL_PAGE_SIZE = 10;
 const PAGE_SIZE = 10;
@@ -54,8 +54,8 @@ const VirtualContributorsPage: FC = () => {
 
         return {
           id: vc.id,
-          value: vc.profile.displayName,
-          url: vc.profile.url,
+          value: vc.profile?.displayName ?? '',
+          url: vc.profile?.url ?? '',
           listedInStore: vc.listedInStore,
           searchVisibility: vc.searchVisibility,
           accountOwner,
@@ -78,7 +78,7 @@ const VirtualContributorsPage: FC = () => {
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
           totalCount={allVirtualContributors.length}
-          clientSide
+          clientSide={true}
         />
       </SearchableListLayout>
     </AdminLayout>

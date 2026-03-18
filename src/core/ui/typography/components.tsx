@@ -1,4 +1,4 @@
-import { lighten, Typography, TypographyProps } from '@mui/material';
+import { lighten, Typography, type TypographyProps } from '@mui/material';
 import provideStaticProps from '@/core/utils/provideStaticProps';
 
 export const PageTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {

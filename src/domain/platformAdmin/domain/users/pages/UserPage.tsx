@@ -1,19 +1,19 @@
-import { FC, useState } from 'react';
-import useNavigate from '@/core/routing/useNavigate';
-import UserForm from '@/domain/community/user/userForm/UserForm';
-import Loading from '@/core/ui/loading/Loading';
+import { type FC, useState } from 'react';
 import {
   useCreateTagsetOnProfileMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
   useUserQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { EditMode } from '@/core/ui/forms/editMode';
-import { UserModel } from '@/domain/community/user/models/UserModel';
-import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import useNavigate from '@/core/routing/useNavigate';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { EditMode } from '@/core/ui/forms/editMode';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { UserModel } from '@/domain/community/user/models/UserModel';
+import UserForm from '@/domain/community/user/userForm/UserForm';
+import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface UserPageProps {
   readOnly?: boolean;
@@ -66,8 +66,8 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
   const isSaving = updateMutationLoading;
 
   const handleSave = async (editedUser: UserModel) => {
-    const profileId = editedUser.profile.id;
-    const tagsetsToAdd = editedUser.profile.tagsets?.filter(x => !x.id) ?? [];
+    const profileId = editedUser.profile?.id;
+    const tagsetsToAdd = editedUser.profile?.tagsets?.filter(x => !x.id) ?? [];
 
     for (const tagset of tagsetsToAdd) {
       await createTagset({
@@ -112,7 +112,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
         editMode={readOnly ? EditMode.readOnly : EditMode.edit}
         onSave={handleSave}
         user={user}
-        avatar={user?.profile.avatar}
+        avatar={user?.profile?.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <ConfirmationDialog

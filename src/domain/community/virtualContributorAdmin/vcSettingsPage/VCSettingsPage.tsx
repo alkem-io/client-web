@@ -1,20 +1,20 @@
-import Loading from '@/core/ui/loading/Loading';
+import { useTranslation } from 'react-i18next';
 import {
   useSpaceBodyOfKnowledgeAboutQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import VirtualContributorForm from './VirtualContributorForm';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import PageContent from '@/core/ui/content/PageContent';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
+import VirtualContributorForm from './VirtualContributorForm';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
@@ -28,13 +28,13 @@ export const VCSettingsPage = () => {
     skip: !vcId,
   });
 
+  const vc = data?.lookup.virtualContributor;
+
   const { data: bokProfile } = useSpaceBodyOfKnowledgeAboutQuery({
     variables: {
-      spaceId: data?.lookup.virtualContributor?.bodyOfKnowledgeID!,
+      spaceId: vc?.bodyOfKnowledgeID!,
     },
-    skip:
-      !data?.lookup.virtualContributor?.bodyOfKnowledgeID ||
-      data?.lookup.virtualContributor?.bodyOfKnowledgeType !== VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
+    skip: !vc?.bodyOfKnowledgeID || vc?.bodyOfKnowledgeType !== VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
@@ -62,19 +62,16 @@ export const VCSettingsPage = () => {
   }
 
   return (
-    <StorageConfigContextProvider
-      locationType="virtualContributor"
-      virtualContributorId={data?.lookup.virtualContributor?.id ?? ''}
-    >
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vc?.id ?? ''}>
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
-              {data?.lookup.virtualContributor && (
+              {vc?.profile && (
                 <VirtualContributorForm
-                  virtualContributor={data?.lookup.virtualContributor}
+                  virtualContributor={{ ...vc, profile: vc.profile }}
                   bokProfile={bokProfile?.lookup.space?.about.profile}
-                  avatar={data?.lookup.virtualContributor.profile.avatar}
+                  avatar={vc.profile?.avatar}
                   onSave={handleUpdate}
                 />
               )}

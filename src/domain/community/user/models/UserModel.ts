@@ -1,8 +1,8 @@
-import { CountryType } from '@/domain/common/location/countries.constants';
-import { Organization } from '@/core/apollo/generated/graphql-schema';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { LocationModel } from '@/domain/common/location/LocationModel';
+import type { Organization } from '@/core/apollo/generated/graphql-schema';
+import type { CountryType } from '@/domain/common/location/countries.constants';
+import type { LocationModel } from '@/domain/common/location/LocationModel';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface UserModel {
   id: string;
@@ -11,7 +11,7 @@ export interface UserModel {
   email: string;
   phone?: string;
   agent?: {};
-  profile: {
+  profile?: {
     id?: string;
     displayName: string;
     description?: string;
@@ -84,7 +84,7 @@ export interface UserFormGenerated {
 
 export interface Member {
   id: string;
-  profile: { id: string; displayName: string };
+  profile?: { id: string; displayName: string };
   firstName: string;
   lastName: string;
   email: string;
