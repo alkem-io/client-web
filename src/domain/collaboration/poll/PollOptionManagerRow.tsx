@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, TextField, Tooltip, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 
@@ -35,6 +35,12 @@ const PollOptionManagerRow = ({
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(option.text);
+
+  // Reset edit state when the option changes (e.g. parent reorders or replaces the option)
+  useEffect(() => {
+    setEditText(option.text);
+    setIsEditing(false);
+  }, [option.id]);
 
   const handleConfirmEdit = () => {
     if (editText.trim() && editText !== option.text) {

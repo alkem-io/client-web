@@ -17,7 +17,6 @@ import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/Pr
 import ReferenceSegment from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { TagsetSegment } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
 import { calloutValidationSchema } from './CalloutForm.validation.schema';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
@@ -68,7 +67,7 @@ const CalloutForm = ({
 
       return emptyCallout;
     }
-  }, [callout, DefaultCalloutSettings]);
+  }, [callout, calloutRestrictions?.disableComments, calloutRestrictions?.disableCommentsToContributions]);
 
   return (
     <Formik

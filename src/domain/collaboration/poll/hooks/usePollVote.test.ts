@@ -4,9 +4,11 @@ import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollMo
 import { usePollVote } from './usePollVote';
 
 const mockCastPollVoteMutation = vi.fn().mockResolvedValue({ data: {} });
+const mockRemovePollVoteMutation = vi.fn().mockResolvedValue({ data: {} });
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCastPollVoteMutation: () => [mockCastPollVoteMutation, { loading: false, error: undefined }],
+  useRemovePollVoteMutation: () => [mockRemovePollVoteMutation, { loading: false, error: undefined }],
 }));
 
 const basePoll: PollDetailsModel = {
@@ -14,6 +16,7 @@ const basePoll: PollDetailsModel = {
   title: 'Test Poll',
   status: 'OPEN' as never,
   settings: {
+    allowContributorsAddOptions: false,
     minResponses: 1,
     maxResponses: 1,
     resultsVisibility: 'VISIBLE' as never,

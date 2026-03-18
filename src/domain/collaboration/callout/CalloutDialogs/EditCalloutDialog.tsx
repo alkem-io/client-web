@@ -66,6 +66,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
             .sort((a: { sortOrder: number }, b: { sortOrder: number }) => a.sortOrder - b.sortOrder)
             .map((o: { id: string; text: string }) => ({ id: o.id, text: o.text })),
           settings: {
+            allowContributorsAddOptions: framingData.poll.settings.allowContributorsAddOptions,
             minResponses: framingData.poll.settings.minResponses,
             maxResponses: framingData.poll.settings.maxResponses,
             resultsVisibility: framingData.poll.settings.resultsVisibility,
@@ -316,7 +317,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
     // Handle poll option changes via dedicated mutations
     if (pollId && formData.framing.poll && originalPollOptions) {
-      await savePollOptionChanges(formData.framing.poll.options, originalPollOptions);
+      try {
+        await savePollOptionChanges(formData.framing.poll.options, originalPollOptions);
+      } catch {
+        notify(t('poll.error.optionActionFailed'), 'error');
+        return; // Don't close the dialog so the user can retry
+      }
     }
 
     handleClose();
