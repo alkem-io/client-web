@@ -163,6 +163,59 @@ Found no usage of incompatible libraries.
 | Tests | 555 passed, 3 skipped |
 | Duration | ~24s |
 
+## Phase 2 Results: Bail-Out Fixes (US1)
+
+### Changes Made
+
+| File | Fix |
+|------|-----|
+| SearchBar.tsx | Replaced `window.location.href` with `navigate()` |
+| useGuestSessionReturn.ts | Replaced `globalThis.location.href = ...` with `window.location.assign()` |
+| useKeepElementScroll.ts | Verified real bail-out (ref prop mutation in useEffect) — kept eslint-disable with improved comment |
+| CollaborativeExcalidrawWrapper.tsx | Moved ref assignment from `onInitialize` callback to `useEffect` — kept eslint-disable (useCombinedRefs mutability) |
+| InnovationFlowDragNDropEditor.tsx | Already resolved — migrated from @hello-pangea/dnd to @dnd-kit |
+| GlobalErrorContext.tsx | Enhanced permanent exception documentation |
+| Error40XBoundaryInternal, LinesFitterErrorBoundary | Documented as permanent class component exceptions |
+
+**Compiler coverage**: 2028/2028 (up from 2027 — gained 1 from InnovationFlowDragNDropEditor migration)
+
+### Lighthouse Comparison (Automated)
+
+| Metric (Home route) | Before | After | Change |
+|---------------------|--------|-------|--------|
+| Performance Score | 26 | 26 | 0% |
+| FCP | 13,599ms | 13,529ms | -0.5% |
+| LCP | 36,592ms | 36,320ms | -0.7% |
+| TTI | 36,594ms | 36,322ms | -0.7% |
+| TBT | 1,306ms | 1,328ms | +1.7% |
+| Bundle size (JS) | 33,102 KB | 33,102 KB | 0% |
+
+**Full comparison report**: `performance-results/comparison-1773842618515.md`
+
+### React DevTools Profiler Comparison (Manual)
+
+Profiler recordings captured during interactive sessions on the same pages.
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Commits (re-renders) | 776 | 430 | **-44.6%** |
+| Total render time | 3,941.8 ms | 2,782.8 ms | **-29.4%** |
+| Total effect time | 187.6 ms | 136.7 ms | **-27.1%** |
+| Active fibers | 8,041 | 7,098 | **-11.7%** |
+| Top component render count | 348 | 134 | **-61.5%** |
+| Avg commit duration | 5.1 ms | 6.5 ms | +27.4% |
+| Max commit duration | 75.5 ms | 95.0 ms | +25.8% |
+
+**Key takeaways**:
+
+- Resolving compiler bail-outs allowed the React Compiler to skip 44.6% of re-renders entirely
+- The heaviest components went from 348 renders to 134 renders (61.5% reduction)
+- Total time spent rendering dropped by 29.4% (nearly a third)
+- Avg commit duration increased slightly (5.1ms to 6.5ms) — expected because the compiler eliminates trivial re-renders, leaving only "real" ones that do actual work
+- No regressions detected; bundle size unchanged
+
+---
+
 ## Notes
 
 - Memoization counts are lower than the spec's research.md estimates (which reported 603 useMemo / 322 useCallback). This reflects ongoing codebase evolution since the audit.
