@@ -1,13 +1,15 @@
-import { Box, Button } from '@mui/material';
+import { Box, CircularProgress, Link } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollStatus } from '@/core/apollo/generated/graphql-schema';
-import Gutters from '@/core/ui/grid/Gutters';
+import { PollResultsVisibility, PollStatus } from '@/core/apollo/generated/graphql-schema';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography/components';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
 import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
+
+const CHECKBOX_DEBOUNCE_MS = 5_000;
 
 type PollViewProps = {
   poll: PollDetailsModel;
@@ -20,55 +22,84 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const mySelectedOptionIds = poll.myVote?.selectedOptions.map(o => o.id) ?? [];
   const hasVoted = poll.myVote !== null;
   const isClosed = poll.status === PollStatus.Closed;
+  const isAnonymous = !(poll.settings.resultsVisibility === PollResultsVisibility.Visible);
+  const isSingleChoice = poll.settings.maxResponses === 1;
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(mySelectedOptionIds);
-  const [isChangingVote, setIsChangingVote] = useState(false);
   const [voteRevoked, setVoteRevoked] = useState(false);
   const hadVotedRef = useRef(hasVoted);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync local selection with server state when myVote changes (e.g., after mutation or subscription)
+  useEffect(() => {
+    const serverIds = poll.myVote?.selectedOptions.map(o => o.id) ?? [];
+    setSelectedOptionIds(serverIds);
+  }, [poll.myVote]);
 
   // Handle vote revocation from subscription updates (myVote goes non-null → null)
   useEffect(() => {
     if (hadVotedRef.current && !hasVoted) {
-      setIsChangingVote(false);
       setSelectedOptionIds([]);
       setVoteRevoked(true);
     }
     hadVotedRef.current = hasVoted;
   }, [hasVoted]);
 
-  // When changing vote and options update via subscription, remove selections for deleted options
+  // When options update via subscription, remove selections for deleted options
   useEffect(() => {
-    if (isChangingVote) {
-      const currentOptionIds = new Set(poll.options.map(o => o.id));
-      setSelectedOptionIds(prev => prev.filter(id => currentOptionIds.has(id)));
-    }
-  }, [poll.options, isChangingVote]);
+    const currentOptionIds = new Set(poll.options.map(o => o.id));
+    setSelectedOptionIds(prev => {
+      const filtered = prev.filter(id => currentOptionIds.has(id));
+      return filtered.length === prev.length ? prev : filtered;
+    });
+  }, [poll.options]);
 
-  const { castVote, loading, error: voteError } = usePollVote({ pollId: poll.id, poll });
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
-  const isVotingMode = canVote && !isClosed && (!hasVoted || isChangingVote);
+  const { castVote, removeVote, loading, error: voteError } = usePollVote({ pollId: poll.id, poll });
+
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+
   const showResults = poll.canSeeDetailedResults;
   const showTotalOnly = !poll.canSeeDetailedResults && poll.totalVotes != null;
-  const isBelowMin = selectedOptionIds.length < poll.settings.minResponses;
 
-  const handleVoteSubmit = () => {
-    castVote(selectedOptionIds);
-    setIsChangingVote(false);
+  const submitVote = (optionIds: string[]) => {
+    if (optionIds.length < poll.settings.minResponses) return;
+    castVote(optionIds);
     setVoteRevoked(false);
   };
 
-  const handleChangeVote = () => {
-    setSelectedOptionIds(mySelectedOptionIds);
-    setIsChangingVote(true);
-  };
+  const handleChange = (newSelectedIds: string[]) => {
+    setSelectedOptionIds(newSelectedIds);
 
-  const handleCancelChange = () => {
-    setSelectedOptionIds(mySelectedOptionIds);
-    setIsChangingVote(false);
-  };
+    if (!canVote || isClosed) return;
 
-  // Determine which option IDs to display as selected in the controls
-  const displayedSelectedIds = isVotingMode ? selectedOptionIds : mySelectedOptionIds;
+    if (debounceTimerRef.current) {
+      // Clear any pending debounce
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+
+    if (isSingleChoice) {
+      // Single-choice: emit immediately
+      submitVote(newSelectedIds);
+    } else {
+      // Multi-choice: debounce 5 seconds
+      if (newSelectedIds.length >= poll.settings.minResponses) {
+        debounceTimerRef.current = setTimeout(() => {
+          debounceTimerRef.current = null;
+          submitVote(newSelectedIds);
+        }, CHECKBOX_DEBOUNCE_MS);
+      }
+    }
+  };
 
   return (
     <Box>
@@ -82,40 +113,38 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
       )}
       <PollVotingControls
         options={poll.options}
-        selectedOptionIds={displayedSelectedIds}
+        selectedOptionIds={selectedOptionIds}
         maxResponses={poll.settings.maxResponses}
         minResponses={poll.settings.minResponses}
-        disabled={loading}
-        readOnly={!isVotingMode}
+        isClosed={isClosed}
         showResults={showResults}
         resultsDetail={poll.settings.resultsDetail}
-        onChange={setSelectedOptionIds}
+        onChange={handleChange}
       />
 
-      {isVotingMode && (
-        <Gutters row={true} disablePadding={true} mt={1}>
-          <Button
-            variant="contained"
-            onClick={handleVoteSubmit}
-            disabled={loading || isBelowMin || selectedOptionIds.length === 0}
-          >
-            {t('poll.vote.button')}
-          </Button>
-          {isChangingVote && (
-            <Button onClick={handleCancelChange} disabled={loading} variant="outlined">
-              {t('poll.vote.cancelButton')}
-            </Button>
-          )}
-        </Gutters>
-      )}
-
-      {!isVotingMode && hasVoted && canVote && !isClosed && (
-        <Box mt={1}>
-          <Button variant="text" onClick={handleChangeVote}>
-            {t('poll.vote.changeMyVote')}
-          </Button>
-        </Box>
-      )}
+      <Box mt={1} display="flex" alignItems="center" gap={0.5} justifyContent="space-between">
+        {loading && (
+          <Box display="flex" alignItems="center" gap={1}>
+            <CircularProgress size={12} />
+            <Caption color="text.secondary">{t('poll.status.submitting')}</Caption>
+          </Box>
+        )}
+        {!loading && hasVoted && !isClosed && (
+          <Caption color="text.secondary">
+            {t('poll.status.voted')}{' '}
+            <Link
+              component="button"
+              variant="caption"
+              sx={{ verticalAlign: 'baseline' }}
+              onClick={() => setConfirmRemoveOpen(true)}
+            >
+              {t('poll.status.removeMyVote')}
+            </Link>
+          </Caption>
+        )}
+        {isClosed && <Caption color="text.secondary">{t('poll.status.closed')}</Caption>}
+        {isAnonymous && <Caption color="text.secondary">{t('poll.results.anonymousPoll')}</Caption>}
+      </Box>
 
       {!showResults && !showTotalOnly && poll.totalVotes === 0 && (
         <Box textAlign="center" paddingY={gutters()}>
@@ -134,6 +163,27 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
           {t('poll.error.voteFailed')}
         </Caption>
       )}
+
+      <ConfirmationDialog
+        entities={{
+          titleId: 'poll.removeVoteConfirm.title',
+          contentId: 'poll.removeVoteConfirm.content',
+          confirmButtonTextId: 'poll.removeVoteConfirm.confirm',
+        }}
+        options={{
+          show: confirmRemoveOpen,
+        }}
+        actions={{
+          onConfirm: () => {
+            removeVote();
+            setConfirmRemoveOpen(false);
+          },
+          onCancel: () => setConfirmRemoveOpen(false),
+        }}
+        state={{
+          isLoading: loading,
+        }}
+      />
     </Box>
   );
 };

@@ -27,3 +27,11 @@ mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
     ...PollDetails
   }
 }
+
+mutation RemovePollVote($pollId: UUID!) {
+  removePollVote(voteData:  {
+     pollID: $pollId
+  }) {
+    ...PollDetails
+  }
+}

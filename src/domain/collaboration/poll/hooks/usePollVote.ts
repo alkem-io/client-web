@@ -1,6 +1,6 @@
 import { useCallback, useTransition } from 'react';
-import { useCastPollVoteMutation } from '@/core/apollo/generated/apollo-hooks';
-import { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
+import { useCastPollVoteMutation, useRemovePollVoteMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 
 type UsePollVoteParams = {
   pollId: string;
@@ -11,6 +11,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   const [isPending, startTransition] = useTransition();
 
   const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation();
+  const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation();
 
   const castVote = useCallback(
     (selectedOptionIds: string[]) => {
@@ -92,9 +93,20 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
     [pollId, poll, castPollVoteMutation, startTransition]
   );
 
+  const removeVote = () => {
+    startTransition(async () => {
+      await removePollVoteMutation({
+        variables: {
+          pollId,
+        },
+      });
+    });
+  };
+
   return {
     castVote,
-    loading: isPending || mutationLoading,
-    error,
+    removeVote,
+    loading: isPending || mutationLoading || removeLoading,
+    error: error || removeError,
   };
 };

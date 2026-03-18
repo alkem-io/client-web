@@ -2378,19 +2378,22 @@
   },
   "poll": {
     "vote": {
-      "button": "Vote",
-      "changeMyVote": "Change My Vote",
-      "cancelButton": "Cancel",
-      "submitted": "Your vote has been recorded",
       "minRequired": "Select at least {{min}} option(s)",
       "maxReached": "Maximum {{max}} selections allowed"
+    },
+    "status": {
+      "submitting": "Submitting your vote\u2026",
+      "voted": "Voted.",
+      "removeMyVote": "Remove my vote",
+      "closed": "Poll closed"
     },
     "results": {
       "noVotes": "No votes yet",
       "totalVotes_zero": "{{count}} votes",
       "totalVotes": "{{count}} vote",
       "totalVotes_plural": "{{count}} votes",
-      "voters": "Voters"
+      "voters": "Voters",
+      "anonymousPoll": "This is an anonymous poll"
     },
     "options": {
       "add": "Add Option",
@@ -2435,6 +2438,11 @@
     },
     "subscription": {
       "voteRevoked": "Your vote was affected by a $t(common.poll) change. Please vote again."
+    },
+    "removeVoteConfirm": {
+      "title": "Remove your vote",
+      "content": "Are you sure you want to remove your vote from this $t(common.poll)?",
+      "confirm": "Remove vote"
     }
   },
   "pages": {

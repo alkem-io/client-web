@@ -2759,6 +2759,7 @@ export type MutationKeySpecifier = (
   | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removePollOption'
+  | 'removePollVote'
   | 'removeReactionToMessageInRoom'
   | 'removeRole'
   | 'removeRoleFromOrganization'
@@ -2963,6 +2964,7 @@ export type MutationFieldPolicy = {
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
+  removePollVote?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRole?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;

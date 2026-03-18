@@ -20,8 +20,7 @@ type PollVotingControlsProps = {
   selectedOptionIds: string[];
   maxResponses: number;
   minResponses: number;
-  disabled?: boolean;
-  readOnly?: boolean;
+  isClosed?: boolean;
   showResults?: boolean;
   resultsDetail?: PollResultsDetail;
   onChange: (selectedIds: string[]) => void;
@@ -82,7 +81,7 @@ const OptionLabel = ({
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0, ml: 1 }}>
             {showPercentage && (
               <Typography variant="caption" color="text.secondary">
-                {Math.round(option.votePercentage!)}%
+                {Math.round(option.votePercentage ?? 0)}%
               </Typography>
             )}
             {showCount && (
@@ -103,8 +102,7 @@ const PollVotingControls = ({
   selectedOptionIds,
   maxResponses,
   minResponses,
-  disabled = false,
-  readOnly = false,
+  isClosed = false,
   showResults = false,
   resultsDetail,
   onChange,
@@ -115,11 +113,10 @@ const PollVotingControls = ({
   const isUnlimited = maxResponses === 0;
   const isMaxReached = !isUnlimited && selectedOptionIds.length >= maxResponses;
   const isBelowMin = selectedOptionIds.length < minResponses;
-  const isDisabled = disabled || readOnly;
 
   if (isSingleChoice) {
     return (
-      <FormControl component="fieldset" disabled={isDisabled} fullWidth={true}>
+      <FormControl component="fieldset" disabled={isClosed} fullWidth={true}>
         <RadioGroup value={selectedOptionIds[0] ?? ''} onChange={(_event, value) => onChange([value])}>
           {options.map(option => (
             <FormControlLabel
@@ -144,7 +141,7 @@ const PollVotingControls = ({
   };
 
   return (
-    <FormControl component="fieldset" disabled={isDisabled} fullWidth={true}>
+    <FormControl component="fieldset" disabled={isClosed} fullWidth={true}>
       <FormGroup>
         {options.map(option => {
           const isSelected = selectedOptionIds.includes(option.id);
@@ -157,7 +154,7 @@ const PollVotingControls = ({
                 <Checkbox
                   checked={isSelected}
                   onChange={(_event, checked) => handleCheckboxChange(option.id, checked)}
-                  disabled={isDisabled || isDisabledByMax}
+                  disabled={isClosed || isDisabledByMax}
                 />
               }
               label={<OptionLabel option={option} showResults={showResults} resultsDetail={resultsDetail} />}
@@ -166,8 +163,8 @@ const PollVotingControls = ({
           );
         })}
       </FormGroup>
-      {!readOnly && isMaxReached && <FormHelperText>{t('poll.vote.maxReached', { max: maxResponses })}</FormHelperText>}
-      {!readOnly && isBelowMin && selectedOptionIds.length > 0 && (
+      {!isClosed && isMaxReached && <FormHelperText>{t('poll.vote.maxReached', { max: maxResponses })}</FormHelperText>}
+      {!isClosed && isBelowMin && selectedOptionIds.length > 0 && (
         <FormHelperText>{t('poll.vote.minRequired', { min: minResponses })}</FormHelperText>
       )}
     </FormControl>

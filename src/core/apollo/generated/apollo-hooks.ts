@@ -8024,6 +8024,39 @@ export function useReorderPollOptionsMutation(baseOptions?: Apollo.MutationHookO
 export type ReorderPollOptionsMutationHookResult = ReturnType<typeof useReorderPollOptionsMutation>;
 export type ReorderPollOptionsMutationResult = Apollo.MutationResult<SchemaTypes.ReorderPollOptionsMutation>;
 export type ReorderPollOptionsMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>;
+export const RemovePollVoteDocument = gql`
+    mutation RemovePollVote($pollId: UUID!) {
+  removePollVote(voteData: {pollID: $pollId}) {
+    ...PollDetails
+  }
+}
+    ${PollDetailsFragmentDoc}`;
+export type RemovePollVoteMutationFn = Apollo.MutationFunction<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>;
+
+/**
+ * __useRemovePollVoteMutation__
+ *
+ * To run a mutation, you first call `useRemovePollVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePollVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePollVoteMutation, { data, loading, error }] = useRemovePollVoteMutation({
+ *   variables: {
+ *      pollId: // value for 'pollId'
+ *   },
+ * });
+ */
+export function useRemovePollVoteMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>(RemovePollVoteDocument, options);
+      }
+export type RemovePollVoteMutationHookResult = ReturnType<typeof useRemovePollVoteMutation>;
+export type RemovePollVoteMutationResult = Apollo.MutationResult<SchemaTypes.RemovePollVoteMutation>;
+export type RemovePollVoteMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>;
 export const PollVoteUpdatedDocument = gql`
     subscription PollVoteUpdated($pollID: UUID!) {
   pollVoteUpdated(pollID: $pollID) {

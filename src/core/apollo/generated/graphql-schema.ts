@@ -4620,6 +4620,8 @@ export type Mutation = {
   removePlatformRoleFromUser: User;
   /** Remove an option from a Poll. Requires UPDATE privilege. Poll must retain at least 2 options. Votes that selected this option are deleted and affected voters are notified. */
   removePollOption: Poll;
+  /** Remove the current user vote from a Poll. Requires CONTRIBUTE privilege on the Poll. If the user has not voted, returns a validation error. */
+  removePollVote: Poll;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
   /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
@@ -5218,6 +5220,10 @@ export type MutationRemovePlatformRoleFromUserArgs = {
 
 export type MutationRemovePollOptionArgs = {
   optionData: RemovePollOptionInput;
+};
+
+export type MutationRemovePollVoteArgs = {
+  voteData: RemovePollVoteInput;
 };
 
 export type MutationRemoveReactionToMessageInRoomArgs = {
@@ -6868,6 +6874,11 @@ export type RemovePlatformRoleInput = {
 
 export type RemovePollOptionInput = {
   optionID: Scalars['UUID']['input'];
+  pollID: Scalars['UUID']['input'];
+};
+
+export type RemovePollVoteInput = {
+  /** The ID of the Poll from which to remove the current user vote. */
   pollID: Scalars['UUID']['input'];
 };
 
@@ -17250,6 +17261,66 @@ export type ReorderPollOptionsMutationVariables = Exact<{
 export type ReorderPollOptionsMutation = {
   __typename?: 'Mutation';
   reorderPollOptions: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    deadline?: Date | undefined;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
+};
+
+export type RemovePollVoteMutationVariables = Exact<{
+  pollId: Scalars['UUID']['input'];
+}>;
+
+export type RemovePollVoteMutation = {
+  __typename?: 'Mutation';
+  removePollVote: {
     __typename?: 'Poll';
     id: string;
     createdDate: Date;

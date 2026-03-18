@@ -1,4 +1,5 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
+import { compact } from 'lodash-es';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -45,6 +46,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   const { data, loading: loadingCallout } = useCalloutContentQuery({
     variables: {
+      // biome-ignore lint/style/noNonNullAssertion: Ensured by skip
       calloutId: calloutId!,
     },
     skip: !calloutId || !open,
@@ -173,9 +175,9 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   /**
    * Diff form options against original options and apply mutations:
-   * 1. Remove options that were deleted
-   * 2. Update options whose text changed
-   * 3. Add new options (no id)
+   * 1. Add new options first (no id) — ensures we never drop below the minimum option count
+   * 2. Remove options that were deleted
+   * 3. Update options whose text changed
    * 4. Reorder if order changed
    */
   const savePollOptionChanges = async (
@@ -183,16 +185,24 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     origOptions: { id: string; text: string }[]
   ) => {
     const originalIds = new Set(origOptions.map(o => o.id));
-    const formIds = new Set(formOptions.filter(o => o.id).map(o => o.id!));
+    const formIds = new Set<string>(compact(formOptions.map(o => o.id)));
 
-    // 1. Remove deleted options
+    // 1. Add new options first (those without an id)
+    // Done before removals to avoid temporarily violating the server's minimum-2-options rule
+    for (const opt of formOptions) {
+      if (!opt.id) {
+        await addOption(opt.text);
+      }
+    }
+
+    // 2. Remove deleted options
     for (const orig of origOptions) {
       if (!formIds.has(orig.id)) {
         await removeOption(orig.id);
       }
     }
 
-    // 2. Update options whose text changed
+    // 3. Update options whose text changed
     for (const opt of formOptions) {
       if (opt.id && originalIds.has(opt.id)) {
         const orig = origOptions.find(o => o.id === opt.id);
@@ -202,18 +212,11 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       }
     }
 
-    // 3. Add new options (those without an id)
-    for (const opt of formOptions) {
-      if (!opt.id) {
-        await addOption(opt.text);
-      }
-    }
-
     // 4. Reorder if the order of existing options changed
     // After adds, we need the IDs of all options in the new order.
     // For existing options we have IDs; new options got IDs from addOption.
     // We reorder using only existing option IDs in the new order.
-    const existingIdsInNewOrder = formOptions.filter(o => o.id).map(o => o.id!);
+    const existingIdsInNewOrder = compact(formOptions.map(o => o.id));
     const existingIdsInOrigOrder = origOptions.filter(o => formIds.has(o.id)).map(o => o.id);
     const orderChanged = existingIdsInNewOrder.some((id, i) => id !== existingIdsInOrigOrder[i]);
     if (orderChanged && existingIdsInNewOrder.length > 1) {
@@ -223,6 +226,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
+    const requiredCalloutId = ensurePresence(calloutId);
     // Map the profile to CreateProfileInput
     const { memo, mediaGallery, poll: _poll, ...framingData } = formData.framing;
     const framing = {
@@ -236,6 +240,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       link:
         formData.framing.type === CalloutFramingType.Link
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
+          : undefined,
+      poll:
+        formData.framing.type === CalloutFramingType.Poll
+          ? {
+              title: formData.framing.poll?.title ?? '',
+            }
           : undefined,
       // mediaGallery is updated separately image by image
     };
@@ -270,7 +280,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     };
 
     const updateCalloutContentInput: UpdateCalloutEntityInput = {
-      ID: calloutId!,
+      ID: requiredCalloutId,
       ...formData,
       framing,
       settings,

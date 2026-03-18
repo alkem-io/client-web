@@ -132,7 +132,7 @@ const PollOptionManager = ({ poll, pollId }: PollOptionManagerProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmAction(null)}>{t('poll.vote.cancelButton')}</Button>
+          <Button onClick={() => setConfirmAction(null)}>{t('buttons.cancel')}</Button>
           <Button onClick={handleConfirmAction} color="error" autoFocus={true}>
             {t('buttons.confirm')}
           </Button>
