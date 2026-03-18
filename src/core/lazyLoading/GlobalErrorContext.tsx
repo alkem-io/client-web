@@ -24,8 +24,10 @@ const GlobalErrorContext = createContext<GlobalErrorContextType | undefined>(und
 export const GlobalErrorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [error, setError] = useState<Error | null>(null);
 
-  // Set the global error function during initialization
-  // eslint-disable-next-line react-compiler/react-compiler -- Intentional singleton pattern for global error handler
+  // Permanent React Compiler exception: intentional singleton module-level mutation during render.
+  // setGlobalError is a module-scoped variable that must be set synchronously during provider render
+  // so that lazyWithGlobalErrorHandler can trigger error state from outside the React tree.
+  // eslint-disable-next-line react-compiler/react-compiler
   setGlobalError = setError;
 
   return <GlobalErrorContext value={{ error, setError }}>{children}</GlobalErrorContext>;
