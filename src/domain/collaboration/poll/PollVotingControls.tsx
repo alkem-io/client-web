@@ -1,3 +1,5 @@
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
   Checkbox,
@@ -5,15 +7,21 @@ import {
   FormControlLabel,
   FormGroup,
   FormHelperText,
+  IconButton,
+  InputAdornment,
   Radio,
   RadioGroup,
+  TextField,
   Typography,
 } from '@mui/material';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollResultsDetail } from '@/core/apollo/generated/graphql-schema';
-import { Text } from '@/core/ui/typography';
+import { CaptionSmall, Text } from '@/core/ui/typography';
 import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 import PollVoterAvatars from '@/domain/collaboration/poll/PollVoterAvatars';
+
+const CUSTOM_OPTION_SENTINEL = '__custom__';
 
 type PollVotingControlsProps = {
   options: PollOptionModel[];
@@ -24,6 +32,9 @@ type PollVotingControlsProps = {
   showResults?: boolean;
   resultsDetail?: PollResultsDetail;
   onChange: (selectedIds: string[]) => void;
+  showAddCustomOption?: boolean;
+  onSubmitCustomOption?: (text: string) => void;
+  isAddingCustomOption?: boolean;
 };
 
 const OptionLabel = ({
@@ -97,6 +108,94 @@ const OptionLabel = ({
   );
 };
 
+const CustomOptionRow = ({
+  isActive,
+  onActivate,
+  onDeactivate,
+  onSubmit,
+  isLoading,
+}: {
+  isActive: boolean;
+  onActivate: () => void;
+  onDeactivate: () => void;
+  onSubmit: (text: string) => void;
+  isLoading: boolean;
+}) => {
+  const { t } = useTranslation();
+  const [text, setText] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isValid = text.trim().length > 0 && text.length <= 512;
+
+  const handleSubmit = () => {
+    if (!isValid || isLoading) return;
+    onSubmit(text.trim());
+    setText('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      onDeactivate();
+    }
+  };
+
+  if (!isActive) {
+    return (
+      <Box
+        sx={{ cursor: 'pointer', py: 1, display: 'flex', alignItems: 'start', height: '60px', mb: '5px' }}
+        onClick={onActivate}
+      >
+        <CaptionSmall color="text.secondary">{t('poll.customOption.placeholder')}</CaptionSmall>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ py: 0.5, display: 'flex', alignItems: 'center', flex: 1, minWidth: 0, height: '60px', mb: '5px' }}>
+      <TextField
+        inputRef={inputRef}
+        autoFocus={true}
+        fullWidth={true}
+        size="small"
+        value={text}
+        onChange={e => setText(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={t('poll.customOption.placeholder')}
+        disabled={isLoading}
+        slotProps={{
+          htmlInput: { maxLength: 512 },
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton size="small" onClick={handleSubmit} disabled={!isValid || isLoading} edge="end">
+                  <CheckIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={e => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onDeactivate();
+                  }}
+                  disabled={isLoading}
+                  edge="end"
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
+      />
+    </Box>
+  );
+};
+
 const PollVotingControls = ({
   options,
   selectedOptionIds,
@@ -106,18 +205,48 @@ const PollVotingControls = ({
   showResults = false,
   resultsDetail,
   onChange,
+  showAddCustomOption = false,
+  onSubmitCustomOption,
+  isAddingCustomOption = false,
 }: PollVotingControlsProps) => {
   const { t } = useTranslation();
+
+  const [customOptionActive, setCustomOptionActive] = useState(false);
 
   const isSingleChoice = maxResponses === 1;
   const isUnlimited = maxResponses === 0;
   const isMaxReached = !isUnlimited && selectedOptionIds.length >= maxResponses;
   const isBelowMin = selectedOptionIds.length < minResponses;
 
+  const handleCustomOptionActivate = () => {
+    setCustomOptionActive(true);
+  };
+
+  const handleCustomOptionDeactivate = () => {
+    setCustomOptionActive(false);
+  };
+
+  const handleCustomOptionSubmit = (text: string) => {
+    onSubmitCustomOption?.(text);
+    setCustomOptionActive(false);
+  };
+
   if (isSingleChoice) {
+    const radioValue = customOptionActive ? CUSTOM_OPTION_SENTINEL : (selectedOptionIds[0] ?? '');
+
     return (
       <FormControl component="fieldset" disabled={isClosed} fullWidth={true}>
-        <RadioGroup value={selectedOptionIds[0] ?? ''} onChange={(_event, value) => onChange([value])}>
+        <RadioGroup
+          value={radioValue}
+          onChange={(_event, value) => {
+            if (value === CUSTOM_OPTION_SENTINEL) {
+              handleCustomOptionActivate();
+            } else {
+              setCustomOptionActive(false);
+              onChange([value]);
+            }
+          }}
+        >
           {options.map(option => (
             <FormControlLabel
               key={option.id}
@@ -127,6 +256,22 @@ const PollVotingControls = ({
               sx={{ alignItems: 'flex-start', mr: 0, '& .MuiFormControlLabel-label': { flex: 1, minWidth: 0 } }}
             />
           ))}
+          {showAddCustomOption && (
+            <FormControlLabel
+              value={CUSTOM_OPTION_SENTINEL}
+              control={<Radio />}
+              label={
+                <CustomOptionRow
+                  isActive={customOptionActive}
+                  onActivate={handleCustomOptionActivate}
+                  onDeactivate={handleCustomOptionDeactivate}
+                  onSubmit={handleCustomOptionSubmit}
+                  isLoading={isAddingCustomOption}
+                />
+              }
+              sx={{ alignItems: 'flex-start', mr: 0, '& .MuiFormControlLabel-label': { flex: 1, minWidth: 0 } }}
+            />
+          )}
         </RadioGroup>
       </FormControl>
     );
@@ -162,6 +307,33 @@ const PollVotingControls = ({
             />
           );
         })}
+        {showAddCustomOption && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={customOptionActive}
+                onChange={(_event, checked) => {
+                  if (checked) {
+                    handleCustomOptionActivate();
+                  } else {
+                    handleCustomOptionDeactivate();
+                  }
+                }}
+                disabled={isClosed}
+              />
+            }
+            label={
+              <CustomOptionRow
+                isActive={customOptionActive}
+                onActivate={handleCustomOptionActivate}
+                onDeactivate={handleCustomOptionDeactivate}
+                onSubmit={handleCustomOptionSubmit}
+                isLoading={isAddingCustomOption}
+              />
+            }
+            sx={{ alignItems: 'flex-start', mr: 0, '& .MuiFormControlLabel-label': { flex: 1, minWidth: 0 } }}
+          />
+        )}
       </FormGroup>
       {!isClosed && isMaxReached && <FormHelperText>{t('poll.vote.maxReached', { max: maxResponses })}</FormHelperText>}
       {!isClosed && isBelowMin && selectedOptionIds.length > 0 && (

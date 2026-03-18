@@ -9,20 +9,20 @@
 
 ### User Story 1 — Viewing a Poll and Casting a Vote (Priority: P1)
 
-A space member navigates to a collaboration space and sees a poll callout. The poll displays its title, the callout description as the poll prompt, and a list of selectable options. Voting is immediate — there is no explicit "Vote" button. For single-choice polls (radio buttons), clicking an option emits the vote immediately. For multi-choice polls (checkboxes), clicking a checkbox starts a 5-second countdown; if no further changes are made within 5 seconds the vote is emitted automatically. If another checkbox is toggled before the countdown expires, the timer resets. A status bar (`<Caption>`) below the controls replaces the former vote button, showing contextual state: a loading spinner with "Submitting your vote…" during submission, "Voted" with a "remove my vote" link after voting, or "Poll closed" when the poll is closed. Poll controls (radios/checkboxes) are **never disabled** unless the poll is closed — the user can always click to change their vote directly.
+A space member navigates to a collaboration space and sees a poll callout. The poll displays its title, the callout description as the poll prompt, and a list of selectable options. Voting is immediate — there is no explicit "Vote" button. For single-choice polls (radio buttons), clicking an option emits the vote immediately. For multi-choice polls (checkboxes), clicking a checkbox starts a 2-second countdown; if no further changes are made within 2 seconds the vote is emitted automatically. If another checkbox is toggled before the countdown expires, the timer resets. A status bar (`<Caption>`) below the controls replaces the former vote button, showing contextual state: a loading spinner with "Submitting your vote…" during submission, "Voted" with a "remove my vote" link after voting, or "Poll closed" when the poll is closed. Poll controls (radios/checkboxes) are **never disabled** unless the poll is closed — the user can always click to change their vote directly.
 
 **Why this priority**: Voting is the core interaction of the feature. Without a way to view and vote on polls, no other functionality matters. This is the minimum viable product.
 
-**Independent Test**: Can be fully tested by navigating to a space containing a poll callout, selecting an option, and verifying the vote is emitted (immediately for single-choice, after 5s for multi-choice).
+**Independent Test**: Can be fully tested by navigating to a space containing a poll callout, selecting an option, and verifying the vote is emitted (immediately for single-choice, after 2s for multi-choice).
 
 **Acceptance Scenarios**:
 
 1. **Given** a space member views a callout with framing type POLL, **When** the poll loads, **Then** the poll title, prompt (from callout description), and all options are displayed in their defined order.
 2. **Given** a single-choice poll (maxResponses = 1), **When** the member clicks a radio option, **Then** only one option can be selected at a time and the vote is emitted immediately (no button needed).
-3. **Given** a multi-choice poll (maxResponses > 1 or 0 for unlimited), **When** the member clicks a checkbox, **Then** a 5-second countdown starts. If no further checkbox changes occur within 5 seconds, the vote is emitted automatically.
-4. **Given** a multi-choice poll, **When** the member clicks another checkbox before the 5-second countdown expires, **Then** the countdown resets to 5 seconds.
+3. **Given** a multi-choice poll (maxResponses > 1 or 0 for unlimited), **When** the member clicks a checkbox, **Then** a 2-second countdown starts. If no further checkbox changes occur within 2 seconds, the vote is emitted automatically.
+4. **Given** a multi-choice poll, **When** the member clicks another checkbox before the 2-second countdown expires, **Then** the countdown resets to 2 seconds.
 5. **Given** a multi-choice poll with maxResponses = 3 and the member has already selected 3 options, **When** they try to select a fourth, **Then** the UI prevents the selection and indicates the maximum has been reached.
-6. **Given** minResponses = 2 and the member has selected only 1 checkbox, **When** the 5-second countdown triggers, **Then** the vote is NOT emitted and a helper message indicates the minimum number of selections required.
+6. **Given** minResponses = 2 and the member has selected only 1 checkbox, **When** the 2-second countdown triggers, **Then** the vote is NOT emitted and a helper message indicates the minimum number of selections required.
 7. **Given** the vote is being submitted, **When** the mutation is in flight, **Then** the status bar shows a small loading spinner with "Submitting your vote…".
 8. **Given** the member has voted successfully, **When** the mutation completes, **Then** the status bar shows "Voted" followed by a "remove my vote" link, and their selected options are visually highlighted.
 9. **Given** the member has already voted (myVote is not null), **When** they view the poll, **Then** their previously selected options are checked/selected and they can directly click any radio or checkbox to change their vote (no separate "Change Vote" mode).
@@ -66,7 +66,7 @@ A space facilitator (user with callout creation rights) creates a new poll withi
 1. **Given** a user with callout creation rights opens the create callout dialog, **When** they select the framing type, **Then** "Poll" appears as an option alongside existing types (Whiteboard, Link, Memo, etc.).
 2. **Given** the user selects Poll type, **When** the form renders, **Then** it shows fields for: poll title, callout description (serves as prompt), and a dynamic list of option text inputs (minimum 2).
 3. **Given** the user has entered a title and fewer than 2 options, **When** they attempt to submit, **Then** validation prevents submission with a message indicating at least 2 options are required.
-4. **Given** the user enters poll details, **When** they click the "Settings" button, **Then** a dialog opens with two sections: **Voting options** with checkboxes — "Allow multiple responses per user" (unchecked = single choice min=1/max=1, checked = unlimited multi-choice min=1/max=0) with a gear icon button that reveals detailed min/max numeric fields (with +/- stepper buttons and an infinity button for unlimited max), and "Allow users to add new options" (shown but currently disabled — reserved for future server support); and **Display options** with checkboxes — "Only show results after a user has voted" (checked = resultsVisibility HIDDEN, unchecked = VISIBLE; TOTAL_ONLY is not exposed in the creation UI) and "Show avatars of voters in the results" (checked = resultsDetail FULL, unchecked = PERCENTAGE; COUNT is not exposed in the creation UI). The dialog's Close button is disabled when validation errors exist in the settings; attempting to close shows a confirmation dialog warning that saving the callout will be blocked.
+4. **Given** the user enters poll details, **When** they click the "Settings" button, **Then** a dialog opens with two sections: **Voting options** with checkboxes — "Allow multiple responses per user" (unchecked = single choice min=1/max=1, checked = unlimited multi-choice min=1/max=0) with a gear icon button that reveals detailed min/max numeric fields (with +/- stepper buttons and an infinity button for unlimited max), and "Allow users to add new options" checkbox — when checked, sets allowContributorsAddOptions to true; and **Display options** with checkboxes — "Only show results after a user has voted" (checked = resultsVisibility HIDDEN, unchecked = VISIBLE; TOTAL_ONLY is not exposed in the creation UI) and "Show avatars of voters in the results" (checked = resultsDetail FULL, unchecked = PERCENTAGE; COUNT is not exposed in the creation UI). The dialog's Close button is disabled when validation errors exist in the settings; attempting to close shows a confirmation dialog warning that saving the callout will be blocked.
 5. **Given** the user is reordering poll options during creation, **When** they drag an option to a new position, **Then** the option moves to the new position via drag-and-drop (using @dnd-kit).
 6. **Given** all fields are valid, **When** the user submits, **Then** the createCallout mutation is called with framing.type = POLL and framing.poll populated, and the new poll callout appears in the space.
 7. **Given** the user adds options, **When** clicking "Add Option," **Then** a new empty text input is appended to the options list.
@@ -76,7 +76,7 @@ A space facilitator (user with callout creation rights) creates a new poll withi
 
 ### User Story 4 — Changing a Vote (Priority: P4)
 
-A member who has already voted on a poll can change their vote at any time by simply clicking a different option. There is no separate "Change Vote" mode or button — the controls are always interactive (unless the poll is closed). For single-choice polls, clicking a different radio emits the new vote immediately. For multi-choice polls, toggling any checkbox resets the 5-second debounce timer before the updated selection set is submitted. The vote is replaced entirely (not partially modified).
+A member who has already voted on a poll can change their vote at any time by simply clicking a different option. There is no separate "Change Vote" mode or button — the controls are always interactive (unless the poll is closed). For single-choice polls, clicking a different radio emits the new vote immediately. For multi-choice polls, toggling any checkbox resets the 2-second debounce timer before the updated selection set is submitted. The vote is replaced entirely (not partially modified).
 
 **Why this priority**: Vote changing is a natural extension of voting. It improves user confidence since mistakes can be corrected.
 
@@ -85,7 +85,7 @@ A member who has already voted on a poll can change their vote at any time by si
 **Acceptance Scenarios**:
 
 1. **Given** a member has already voted on a single-choice poll, **When** they click a different radio option, **Then** the new vote is emitted immediately and the old vote is entirely replaced.
-2. **Given** a member has already voted on a multi-choice poll, **When** they toggle a checkbox, **Then** a 5-second debounce timer starts (or resets) before the full updated selection set is submitted.
+2. **Given** a member has already voted on a multi-choice poll, **When** they toggle a checkbox, **Then** a 2-second debounce timer starts (or resets) before the full updated selection set is submitted.
 3. **Given** the member changes their vote, **When** the castPollVote mutation completes, **Then** the results update to reflect the change, and the status bar shows "Voted" with the "remove my vote" link.
 4. **Given** the poll is closed, **When** the member views their past vote, **Then** controls are disabled and no vote change is possible.
 
@@ -106,7 +106,7 @@ A callout editor (facilitator/admin) can manage the options of an existing poll 
 3. **Given** the editor edits an option's text in the form, **When** they save the callout, **Then** the updatePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted.
 4. **Given** the editor removes an option in the form, **When** they save the callout, **Then** the removePollOption mutation is called. If the option had votes, a confirmation dialog warns that affected votes will be deleted. At least 2 options must remain.
 5. **Given** the editor reorders options via drag-and-drop in the form, **When** they save the callout, **Then** the reorderPollOptions mutation is called with the full set of option IDs in the new order.
-6. **Given** the editor clicks "Settings" in the Edit Callout dialog for a poll, **When** the settings dialog opens, **Then** all settings checkboxes ("Allow multiple responses per user", "Only show results after a user has voted", "Show avatars of voters in the results") and the gear icon button are shown in a disabled read-only state. The gear icon is always present (not conditional on custom values); clicking it in read-only mode is a no-op.
+6. **Given** the editor clicks "Settings" in the Edit Callout dialog for a poll, **When** the settings dialog opens, **Then** all settings checkboxes ("Allow multiple responses per user", "Allow users to add new options", "Only show results after a user has voted", "Show avatars of voters in the results") and the gear icon button are shown in a disabled read-only state. The gear icon is always present (not conditional on custom values); clicking it in read-only mode is a no-op.
 7. **Given** only 2 options remain in the form, **When** the editor tries to remove one, **Then** the remove button is disabled/hidden (minimum 2 enforced).
 8. **Given** a callout editor views a poll in the callout view, **When** they look at the poll, **Then** NO inline edit controls are shown — the poll view is read-only (voting and results only). Editing is only available through the Edit Callout dialog accessed via the callout settings menu.
 
@@ -148,6 +148,29 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 
 ---
 
+### User Story 8 — Contributor-Added Poll Options (Priority: P8)
+
+When `allowContributorsAddOptions` is enabled in poll settings, users with CONTRIBUTE privilege can add their own custom option to the poll and immediately vote on it. A special row appears at the bottom of the poll options (radio for single-choice, checkbox for multi-choice) labeled "Add a custom response...". Clicking it transforms into a text field with a checkmark submit button. Submitting adds the option via mutation and immediately casts a vote. Escape dismisses. Max 10 options enforced.
+
+**Why this priority**: Contributor-added options increase engagement by allowing the community to shape the poll collaboratively. This builds on the existing voting and option management infrastructure.
+
+**Independent Test**: Enable allowContributorsAddOptions on a poll → as a contributor, click the custom option row → type a new option → submit → verify the option is added and a vote is cast.
+
+**Acceptance Scenarios**:
+
+1. **Given** allowContributorsAddOptions is true and the poll is OPEN and has fewer than 10 options, **When** a user with CONTRIBUTE privilege views the poll, **Then** a special "Add a custom response..." row appears after the last option (radio for single-choice, checkbox for multi-choice).
+2. **Given** the user clicks the "Add a custom response..." radio/checkbox, **When** clicked, **Then** the label transforms into a TextField with InputAdornment containing a checkmark IconButton, and the text field is focused.
+3. **Given** the text field is visible, **When** the user types a valid option (non-empty, max 512 chars) and clicks the checkmark or presses Enter, **Then** the addPollOption mutation is called, followed immediately by castPollVote with the new option selected (single-choice: just the new option; multi-choice: all currently selected options plus the new one).
+4. **Given** the add+vote operation is in progress, **When** the status bar updates, **Then** it shows "Adding option..." during addPollOption, then "Submitting your vote..." during castPollVote.
+5. **Given** the text field is visible, **When** the user presses Escape, **Then** the text field disappears, the special radio/checkbox is deselected, and the row returns to its "Add a custom response..." label state.
+6. **Given** the poll already has 10 options, **When** the user views the poll, **Then** the "Add a custom response..." row does NOT appear.
+7. **Given** allowContributorsAddOptions is false, **When** any user views the poll, **Then** the "Add a custom response..." row does NOT appear.
+8. **Given** the poll is CLOSED, **When** the user views the poll, **Then** the "Add a custom response..." row does NOT appear.
+9. **Given** the user added a custom option and voted on it, **When** they later remove their vote, **Then** the option remains as a normal poll option.
+10. **Given** the user successfully adds a custom option and votes, **When** the mutations complete and the poll re-renders, **Then** the new option appears as a normal option in the list, and a new "Add a custom response..." row appears at the bottom (if still under 10 options).
+
+---
+
 ### Edge Cases
 
 - What happens when the user votes on a poll but loses network connection mid-request? The UI should show an error state and allow retry without corrupting the local state.
@@ -156,6 +179,7 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 - What happens when maxResponses = 0 (unlimited) and a user selects all options? This is a valid state and should be allowed.
 - What happens when the poll callout is viewed by a user without CONTRIBUTE privilege (e.g., non-member)? The poll should be read-only — options visible but no vote controls shown.
 - What happens when the poll has many options (e.g., 20)? The option list should be scrollable or expandable without breaking the layout.
+- What happens when the poll has 10 options and allowContributorsAddOptions is true? The "Add a custom response..." row is hidden; the maximum of 10 options is a hard cap.
 
 ## Requirements _(mandatory)_
 
@@ -173,7 +197,7 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 - **FR-005**: The client MUST render single-choice selection controls (radio buttons or equivalent) when maxResponses = 1.
 - **FR-006**: The client MUST render multi-choice selection controls (checkboxes or equivalent) when maxResponses != 1.
 - **FR-007**: The client MUST enforce the minResponses and maxResponses constraints in the UI before allowing vote submission.
-- **FR-008**: For single-choice polls (maxResponses = 1), the client MUST call the `castPollVote` mutation immediately when the user clicks a radio option. For multi-choice polls, the client MUST start a 5-second debounce timer on each checkbox change and emit the vote automatically when the timer expires. The timer MUST reset on each subsequent checkbox change.
+- **FR-008**: For single-choice polls (maxResponses = 1), the client MUST call the `castPollVote` mutation immediately when the user clicks a radio option. For multi-choice polls, the client MUST start a 2-second debounce timer on each checkbox change and emit the vote automatically when the timer expires. The timer MUST reset on each subsequent checkbox change.
 - **FR-008b**: The client MUST NOT emit a debounced multi-choice vote if the current selection count is below `minResponses`.
 - **FR-009**: The client MUST highlight the user's currently selected options when `myVote` is present.
 - **FR-010**: The client MUST allow users to change their vote directly by clicking controls — no separate "Change Vote" mode or button is used. Controls are always interactive unless the poll is closed.
@@ -190,8 +214,8 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 **Poll Creation**
 
 - **FR-015**: The client MUST add "Poll" as a selectable framing type in the create callout dialog.
-- **FR-016**: The client MUST provide a form for poll creation with fields: title (optional), options (dynamic list with drag-and-drop reordering, minimum 2), and a "Settings" button that opens a dialog with two sections: **Voting options** ("Allow multiple responses per user" checkbox: unchecked = single choice min=1/max=1, checked = unlimited multi-choice min=1/max=0; a gear icon button next to it that reveals detailed min/max numeric fields with +/- stepper buttons and an infinity button for unlimited max; "Allow users to add new options" checkbox shown but disabled, reserved for future server support) and **Display options** ("Only show results after a user has voted" checkbox: checked = resultsVisibility HIDDEN, unchecked = VISIBLE; "Show avatars of voters in the results" checkbox: checked = resultsDetail FULL, unchecked = PERCENTAGE). The TOTAL_ONLY resultsVisibility value and COUNT resultsDetail value are intentionally not exposed in the creation UI — the server retains full support and renders them correctly on existing polls. The settings dialog Close button MUST be disabled when validation errors exist; attempting to close with errors shows a confirmation dialog. All settings MUST be disabled/read-only when editing an existing callout.
-- **FR-017**: The client MUST validate that at least 2 options are provided and option text is not empty before submission. Additionally, the validation schema MUST enforce: (1) minResponses ≤ number of options, (2) maxResponses ≤ number of options (when maxResponses > 0), and (3) minResponses ≤ maxResponses (when maxResponses > 0). Validation errors on these cross-field rules are shown on the corresponding settings field and prevent closing the settings dialog.
+- **FR-016**: The client MUST provide a form for poll creation with fields: title (optional), options (dynamic list with drag-and-drop reordering, minimum 2), and a "Settings" button that opens a dialog with two sections: **Voting options** ("Allow multiple responses per user" checkbox: unchecked = single choice min=1/max=1, checked = unlimited multi-choice min=1/max=0; a gear icon button next to it that reveals detailed min/max numeric fields with +/- stepper buttons and an infinity button for unlimited max; "Allow users to add new options" checkbox — when checked, contributors can add their own options to the poll (see FR-034–FR-037)) and **Display options** ("Only show results after a user has voted" checkbox: checked = resultsVisibility HIDDEN, unchecked = VISIBLE; "Show avatars of voters in the results" checkbox: checked = resultsDetail FULL, unchecked = PERCENTAGE). The TOTAL_ONLY resultsVisibility value and COUNT resultsDetail value are intentionally not exposed in the creation UI — the server retains full support and renders them correctly on existing polls. The settings dialog Close button MUST be disabled when validation errors exist; attempting to close with errors shows a confirmation dialog. All settings MUST be disabled/read-only when editing an existing callout.
+- **FR-017**: The client MUST validate that at least 2 options are provided, option text is not empty, and a maximum of 10 options are allowed before submission. Additionally, the validation schema MUST enforce: (1) minResponses ≤ number of options, (2) maxResponses ≤ number of options (when maxResponses > 0), and (3) minResponses ≤ maxResponses (when maxResponses > 0). Validation errors on these cross-field rules are shown on the corresponding settings field and prevent closing the settings dialog.
 - **FR-018**: The client MUST send the poll data via the existing createCallout mutation with framing.type = POLL and framing.poll populated.
 
 **Option Management**
@@ -221,12 +245,19 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 - **FR-025**: The client MUST hide vote controls for users without CONTRIBUTE privilege on the poll.
 - **FR-026**: The client MUST hide option management controls for users without UPDATE privilege on the parent callout.
 
+**Contributor-Added Options**
+
+- **FR-034**: When `allowContributorsAddOptions` is true, the poll is OPEN, the user has CONTRIBUTE privilege, and fewer than 10 options exist, the client MUST render a special "Add a custom response..." row at the bottom of the poll options list — a radio button for single-choice polls or a checkbox for multi-choice polls.
+- **FR-035**: When the user activates the "Add a custom response..." control, the client MUST replace the label with a TextField containing an InputAdornment with a checkmark IconButton for submission and a close IconButton for dismissal. The TextField MUST be auto-focused. Pressing Enter MUST trigger submission. Pressing Escape or clicking the close button MUST dismiss the text field and deselect the control.
+- **FR-036**: On submission, the client MUST call addPollOption followed by castPollVote. For single-choice polls, the vote selects only the new option. For multi-choice polls, the vote includes all currently selected options plus the new option. The status bar MUST show "Adding option..." during addPollOption and "Submitting your vote..." during castPollVote.
+- **FR-037**: The client MUST enforce a hard maximum of 10 poll options. The "Add a custom response..." row MUST NOT appear when 10 options already exist. This limit is independent of minResponses and maxResponses.
+
 ### Key Entities
 
 - **Poll**: A community voting element attached to a callout framing. Contains a title, status (OPEN/CLOSED), immutable settings (minResponses, maxResponses, resultsVisibility, resultsDetail), a list of options, total vote count, and the current user's vote.
 - **PollOption**: A selectable choice within a poll. Has display text, a sort order, and (when results are visible) vote count, vote percentage, and voter list.
 - **PollVote**: The current user's vote on a poll. Contains the list of selected options.
-- **PollSettings**: Configuration for a poll. Defines response count limits and results visibility/detail level. Immutable after creation.
+- **PollSettings**: Configuration for a poll. Defines response count limits, results visibility/detail level, and whether contributors can add their own options. Polls have a hard maximum of 10 options. Immutable after creation.
 
 ## Success Criteria _(mandatory)_
 

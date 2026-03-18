@@ -86,16 +86,16 @@
 
 ## Phase 3: User Story 1 — Viewing a Poll and Casting a Vote (Priority: P1) 🎯 MVP
 
-**Goal**: Space members can see a poll callout, view its options, and vote by clicking directly. Single-choice votes emit immediately on radio click; multi-choice votes emit after a 5-second debounce. After voting, selected options are highlighted, the status bar shows "Voted", and results appear according to visibility settings.
+**Goal**: Space members can see a poll callout, view its options, and vote by clicking directly. Single-choice votes emit immediately on radio click; multi-choice votes emit after a 2-second debounce. After voting, selected options are highlighted, the status bar shows "Voted", and results appear according to visibility settings.
 
-**Independent Test**: Navigate to a space with a poll callout → click a radio option (single-choice) or check options and wait 5s (multi-choice) → verify vote is emitted, status bar shows "Voted", and results update.
+**Independent Test**: Navigate to a space with a poll callout → click a radio option (single-choice) or check options and wait 2s (multi-choice) → verify vote is emitted, status bar shows "Voted", and results update.
 
 ### Implementation for User Story 1
 
 - [x] T013 [P] [US1] Render "No votes yet" empty state inline in `PollView` — displays `poll.results.noVotes` i18n key via `<Caption>` when `totalVotes` is 0 and no results are shown. No separate `PollEmptyState` component was created; the empty state is a few lines directly in PollView
 - [x] T014 [P] [US1] Create `PollVotingControls` component in `src/domain/collaboration/poll/PollVotingControls.tsx` — renders MUI RadioGroup when `settings.maxResponses === 1` (single-choice) or MUI Checkbox group otherwise (multi-choice). Props: options list, selected option IDs, maxResponses, minResponses, isClosed flag, onChange callback. Controls are always enabled unless `isClosed` is true. Enforces maxResponses limit by disabling unselected checkboxes when limit is reached. Shows `poll.vote.minRequired` helper text when fewer than minResponses are selected
-- [x] T015 [US1] Create `usePollVote` hook in `src/domain/collaboration/poll/hooks/usePollVote.ts` — wraps the generated `useCastPollVoteMutation` and `useRemovePollVoteMutation` hooks. Accepts pollID and the current poll data (PollDetailsModel). Returns `{ castVote(selectedOptionIDs), removeVote(), loading, error }`. `castVote` is called immediately by PollView for single-choice (on radio change) and after 5s debounce for multi-choice. `removeVote` is called when the user clicks "remove my vote" in the status bar. Uses `useTransition` for concurrent safety. Provides an Apollo `optimisticResponse` that spreads the current poll data and overrides `myVote.selectedOptions` with the new selection and increments/decrements option `voteCount`/`votePercentage` locally, following the pattern in `useCalloutManager.ts` and `useSubspaceCreation.ts`. The mutation returns the full updated Poll via `...PollDetails` fragment which reconciles the cache with the server response
-- [x] T016 [US1] Create `PollView` component in `src/domain/collaboration/poll/PollView.tsx` — main poll display component. Props: poll data (PollDetailsModel), canVote flag (boolean for CONTRIBUTE privilege). No buttons — voting is immediate. For single-choice: radio click triggers `castPollVote` immediately. For multi-choice: checkbox toggle starts a 5-second debounce timer; vote is auto-emitted when timer expires (suppressed if below minResponses). Uses `usePollVote` hook for mutation. Status bar (`<Caption>`) below controls shows: spinner + "Submitting your vote…" during mutation, "Voted" + "remove my vote" link after voting, "Poll closed" when CLOSED. Controls always enabled unless poll is CLOSED. When `myVote` is present, selected options are pre-checked. Shows "No votes yet" empty state inline when totalVotes is 0. Shows results inline when `canSeeDetailedResults` is true
+- [x] T015 [US1] Create `usePollVote` hook in `src/domain/collaboration/poll/hooks/usePollVote.ts` — wraps the generated `useCastPollVoteMutation` and `useRemovePollVoteMutation` hooks. Accepts pollID and the current poll data (PollDetailsModel). Returns `{ castVote(selectedOptionIDs), removeVote(), loading, error }`. `castVote` is called immediately by PollView for single-choice (on radio change) and after 2s debounce for multi-choice. `removeVote` is called when the user clicks "remove my vote" in the status bar. Uses `useTransition` for concurrent safety. Provides an Apollo `optimisticResponse` that spreads the current poll data and overrides `myVote.selectedOptions` with the new selection and increments/decrements option `voteCount`/`votePercentage` locally, following the pattern in `useCalloutManager.ts` and `useSubspaceCreation.ts`. The mutation returns the full updated Poll via `...PollDetails` fragment which reconciles the cache with the server response
+- [x] T016 [US1] Create `PollView` component in `src/domain/collaboration/poll/PollView.tsx` — main poll display component. Props: poll data (PollDetailsModel), canVote flag (boolean for CONTRIBUTE privilege). No buttons — voting is immediate. For single-choice: radio click triggers `castPollVote` immediately. For multi-choice: checkbox toggle starts a 2-second debounce timer; vote is auto-emitted when timer expires (suppressed if below minResponses). Uses `usePollVote` hook for mutation. Status bar (`<Caption>`) below controls shows: spinner + "Submitting your vote…" during mutation, "Voted" + "remove my vote" link after voting, "Poll closed" when CLOSED. Controls always enabled unless poll is CLOSED. When `myVote` is present, selected options are pre-checked. Shows "No votes yet" empty state inline when totalVotes is 0. Shows results inline when `canSeeDetailedResults` is true
 - [x] T017 [US1] Create `CalloutFramingPoll` component in `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — framing display component following the same pattern as `CalloutFramingWhiteboard.tsx` and `CalloutFramingMemo.tsx`. Props: `callout: CalloutDetailsModel`. Returns null if `callout.framing.poll` is undefined. Determines `canVote` from `callout.authorization?.myPrivileges` (checks for CONTRIBUTE privilege). Renders `PollView` with the poll data and canVote flag. Note: PollView is read-only (no editable prop) — option management is done via the Edit Callout dialog
 - [x] T018 [US1] Add POLL conditional rendering to `CalloutView` in `src/domain/collaboration/callout/CalloutView/CalloutView.tsx` — add `{callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}` alongside the existing Whiteboard, Memo, Link, and MediaGallery conditionals
 
@@ -154,11 +154,11 @@
 
 **Goal**: Members who have already voted can change their vote at any time by simply clicking a different option. There is no separate "Change Vote" mode — controls are always interactive. The vote is replaced entirely.
 
-**Independent Test**: Vote on a poll → click a different radio (single-choice) or toggle checkboxes and wait 5s (multi-choice) → verify the new selection replaces the old one.
+**Independent Test**: Vote on a poll → click a different radio (single-choice) or toggle checkboxes and wait 2s (multi-choice) → verify the new selection replaces the old one.
 
 ### Implementation for User Story 4
 
-- [x] T029 [US4] Vote changing is handled by the same immediate/debounced voting mechanism in `PollView` — no additional `isChangingVote` state or buttons needed. When `myVote` is present, the user's current selections are pre-checked. Clicking a different radio (single-choice) emits the new vote immediately. Toggling checkboxes (multi-choice) triggers the same 5-second debounce. The `usePollVote` hook is reused — `castPollVote` handles both initial votes and vote updates server-side (upsert). The status bar shows "Voted" with "remove my vote" link after the mutation completes.
+- [x] T029 [US4] Vote changing is handled by the same immediate/debounced voting mechanism in `PollView` — no additional `isChangingVote` state or buttons needed. When `myVote` is present, the user's current selections are pre-checked. Clicking a different radio (single-choice) emits the new vote immediately. Toggling checkboxes (multi-choice) triggers the same 2-second debounce. The `usePollVote` hook is reused — `castPollVote` handles both initial votes and vote updates server-side (upsert). The status bar shows "Voted" with "remove my vote" link after the mutation completes.
 
 **Checkpoint**: Vote changing is functional via direct interaction. The full vote lifecycle (cast → view results → change directly → re-view results) works end-to-end.
 
@@ -208,7 +208,7 @@
 
 - [x] T040 [P] Verify WCAG 2.1 AA compliance for all poll controls — ensure radio buttons, checkboxes, status bar (spinner live region, link semantics), progress bars, and option management controls have proper ARIA labels, keyboard navigation (Tab, Enter, Space), focus indicators, and screen reader announcements. Check in `src/domain/collaboration/poll/PollVotingControls.tsx`, `PollView.tsx`, `PollVoterAvatars.tsx`
 - [x] T041 [P] Add error handling for poll mutations — in `usePollVote.ts` and `usePollOptionManagement.ts`, handle GraphQL errors gracefully: display user-friendly error messages via snackbar/toast using the `poll.error.*` i18n keys from T011, handle stale option errors (option removed while voting) by prompting the user to refresh, handle network failures with retry affordance
-- [x] T042 [P] Create unit tests for `usePollVote` hook in `src/domain/collaboration/poll/hooks/usePollVote.test.ts` — test cases: (1) castVote calls the mutation with correct pollID and selectedOptionIDs, (2) optimistic response correctly updates myVote and option vote counts, (3) loading state transitions (false → true → false), (4) error state is populated on mutation failure, (5) single-choice: castVote is called immediately on radio change, (6) multi-choice debounce: castVote is NOT called until 5s elapse after last checkbox change (use `vi.useFakeTimers()`), (7) debounce reset: subsequent checkbox toggle resets the 5s timer, (8) debounce suppression: vote is NOT emitted if selection count is below minResponses when timer fires. Use Vitest with `vi.fn()` mocks for the generated mutation hook, following the patterns in existing test files like `useMessagesTree.test.ts`
+- [x] T042 [P] Create unit tests for `usePollVote` hook in `src/domain/collaboration/poll/hooks/usePollVote.test.ts` — test cases: (1) castVote calls the mutation with correct pollID and selectedOptionIDs, (2) optimistic response correctly updates myVote and option vote counts, (3) loading state transitions (false → true → false), (4) error state is populated on mutation failure, (5) single-choice: castVote is called immediately on radio change, (6) multi-choice debounce: castVote is NOT called until 2s elapse after last checkbox change (use `vi.useFakeTimers()`), (7) debounce reset: subsequent checkbox toggle resets the 2s timer, (8) debounce suppression: vote is NOT emitted if selection count is below minResponses when timer fires. Use Vitest with `vi.fn()` mocks for the generated mutation hook, following the patterns in existing test files like `useMessagesTree.test.ts`
 - [x] T043 [P] Create unit tests for `usePollOptionManagement` hook in `src/domain/collaboration/poll/hooks/usePollOptionManagement.test.ts` — test cases: (1) addOption calls mutation with correct pollID and text, (2) updateOption calls mutation with correct optionID and text, (3) removeOption calls mutation with correct optionID, (4) reorderOptions calls mutation with full option ID list in new order, (5) loading state aggregates across all mutation loading states. Use Vitest with `vi.fn()` mocks for generated mutation hooks
 - [x] T044 [P] Create unit tests for poll form validation in `src/domain/collaboration/poll/PollFormFields.test.tsx` — test cases: (1) form renders with minimum 2 option inputs, (2) "Add Option" button appends a new input, (3) remove button is hidden when only 2 options remain, (4) submit is blocked when option text is empty, (5) submit is blocked when fewer than 2 options exist, (6) drag-and-drop correctly reorders options via @dnd-kit SortableContext
 - [x] T045 Run `pnpm lint` to verify no linting errors across all new and modified files
@@ -270,6 +270,25 @@
 
 ---
 
+## Phase 12: User Story 8 — Contributor-Added Poll Options (Priority: P8)
+
+**Purpose**: Allow contributors to add their own custom options to a poll and vote on them inline, when the poll setting `allowContributorsAddOptions` is enabled.
+
+**Prerequisites**: Phases 1–4b complete (poll display, voting, results). US5 (option management hooks).
+
+**Independent Test**: Enable `allowContributorsAddOptions` on a poll → as a contributor, click "Add a custom response..." → type option text → submit → verify option is added and vote is cast.
+
+- [ ] T059 [P] [US8] Add i18n keys to `src/core/i18n/en/translation.en.json`:
+  - `poll.status.addingOption` — "Adding option…"
+  - `poll.customOption.placeholder` — "Add a custom response…"
+- [ ] T060 [US8] Update `PollVotingControls` in `src/domain/collaboration/poll/PollVotingControls.tsx` — add a trailing "Add a custom response…" row (radio for single-choice, checkbox for multi-choice). Props added: `showAddCustomOption: boolean`, `onSubmitCustomOption: (text: string) => void`, `isAddingCustomOption: boolean` (loading state). When the control is clicked, the label transforms into a `TextField` with `InputAdornment` containing a checkmark `IconButton`. Enter triggers submit, Escape deselects and hides text field. Row hidden when `showAddCustomOption` is false.
+- [ ] T061 [US8] Update `PollView` in `src/domain/collaboration/poll/PollView.tsx` — wire `usePollOptionManagement` for `addOption`. Compute `showAddCustomOption` from `allowContributorsAddOptions && canVote && !isClosed && options.length < 10`. On custom option submit: call `addOption(text)` → extract new option ID from mutation result → call `castVote` immediately (single-choice: [newOptionId], multi-choice: [...selectedOptionIds, newOptionId]). Status bar shows "Adding option…" then "Submitting your vote…".
+- [ ] T062 [US8] Update `CalloutFramingPoll` in `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — pass `allowContributorsAddOptions` from poll settings down to `PollView` (already available via `poll.settings.allowContributorsAddOptions`).
+- [ ] T063 [US8] Update spec and data-model: add US-8 to spec.md, add 10-option max to validation rules, remove "disabled/reserved" language from FR-016. _(This task is being done as part of the current implementation.)_
+- [ ] T064 [US8] Run `pnpm lint` and `pnpm vitest run` to verify no regressions.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -284,6 +303,7 @@
   - US5 (P5): Depends on US1 (Edit Callout dialog uses PollFormFields which shares the poll domain)
   - US6 (P6): No dependencies on other stories (separate notification settings area)
 - **Subscriptions (Phase 10)**: Depends on Phase 4b (poll display + voting). Requires server subscriptions deployed
+- **Contributor Options (Phase 12)**: Depends on Phase 4b (poll display + voting) and US5 (option management hooks)
 - **Polish (Phase 9)**: Depends on all user stories being complete
 
 ### User Story Dependencies
@@ -295,6 +315,7 @@ Phase 2 (Foundational)
   │   │   └── US7 (Subscriptions) — extends PollView + CalloutFramingPoll
   │   ├── US4 (Changing Vote) — extends PollView
   │   └── US5 (Option Management) — extends PollView
+  │       └── US8 (Contributor-Added Options) — extends PollView + PollVotingControls
   ├── US3 (Creating a Poll) — independent (callout form)
   └── US6 (Notification Prefs) — independent (user settings)
 ```

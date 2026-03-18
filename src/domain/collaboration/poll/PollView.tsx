@@ -5,11 +5,13 @@ import { PollResultsVisibility, PollStatus } from '@/core/apollo/generated/graph
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography/components';
+import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
 import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
 
-const CHECKBOX_DEBOUNCE_MS = 5_000;
+const CHECKBOX_DEBOUNCE_MS = 2_000;
+const MAX_POLL_OPTIONS = 10;
 
 type PollViewProps = {
   poll: PollDetailsModel;
@@ -27,6 +29,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(mySelectedOptionIds);
   const [voteRevoked, setVoteRevoked] = useState(false);
+  const [addingOptionStatus, setAddingOptionStatus] = useState<'idle' | 'adding' | 'voting'>('idle');
   const hadVotedRef = useRef(hasVoted);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -63,12 +66,18 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
     };
   }, []);
 
-  const { castVote, removeVote, loading, error: voteError } = usePollVote({ pollId: poll.id, poll });
+  const { castVote, removeVote, loading: voteLoading, error: voteError } = usePollVote({ pollId: poll.id, poll });
+  const { addOption } = usePollOptionManagement({ pollId: poll.id });
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
 
   const showResults = poll.canSeeDetailedResults;
   const showTotalOnly = !poll.canSeeDetailedResults && poll.totalVotes != null;
+
+  const showAddCustomOption =
+    poll.settings.allowContributorsAddOptions && canVote && !isClosed && poll.options.length < MAX_POLL_OPTIONS;
+
+  const loading = voteLoading || addingOptionStatus !== 'idle';
 
   const submitVote = (optionIds: string[]) => {
     if (optionIds.length < poll.settings.minResponses) return;
@@ -91,7 +100,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
       // Single-choice: emit immediately
       submitVote(newSelectedIds);
     } else {
-      // Multi-choice: debounce 5 seconds
+      // Multi-choice: debounce 2 seconds
       if (newSelectedIds.length >= poll.settings.minResponses) {
         debounceTimerRef.current = setTimeout(() => {
           debounceTimerRef.current = null;
@@ -100,6 +109,46 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
       }
     }
   };
+
+  const handleSubmitCustomOption = async (text: string) => {
+    if (!canVote || isClosed) return;
+
+    // Cancel any pending debounce
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+
+    setAddingOptionStatus('adding');
+    try {
+      const result = await addOption(text);
+      const updatedPoll = result.data?.addPollOption;
+      if (!updatedPoll) return;
+
+      // Find the new option by comparing with current options
+      const currentOptionIds = new Set(poll.options.map(o => o.id));
+      const newOption = updatedPoll.options.find(o => !currentOptionIds.has(o.id));
+      if (!newOption) return;
+
+      setAddingOptionStatus('voting');
+
+      const voteOptionIds = isSingleChoice ? [newOption.id] : [...selectedOptionIds, newOption.id];
+
+      castVote(voteOptionIds);
+      setVoteRevoked(false);
+    } finally {
+      setAddingOptionStatus('idle');
+    }
+  };
+
+  const statusMessage =
+    addingOptionStatus === 'adding'
+      ? t('poll.status.addingOption')
+      : addingOptionStatus === 'voting'
+        ? t('poll.status.submitting')
+        : voteLoading
+          ? t('poll.status.submitting')
+          : null;
 
   return (
     <Box>
@@ -120,13 +169,16 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
         showResults={showResults}
         resultsDetail={poll.settings.resultsDetail}
         onChange={handleChange}
+        showAddCustomOption={showAddCustomOption}
+        onSubmitCustomOption={handleSubmitCustomOption}
+        isAddingCustomOption={addingOptionStatus !== 'idle'}
       />
 
       <Box mt={1} display="flex" alignItems="center" gap={0.5} justifyContent="space-between">
-        {loading && (
+        {statusMessage && (
           <Box display="flex" alignItems="center" gap={1}>
             <CircularProgress size={12} />
-            <Caption color="text.secondary">{t('poll.status.submitting')}</Caption>
+            <Caption color="text.secondary">{statusMessage}</Caption>
           </Box>
         )}
         {!loading && hasVoted && !isClosed && (

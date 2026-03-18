@@ -53,11 +53,11 @@ All NEEDS CLARIFICATION items from the technical context have been resolved thro
 **Decision**: ~~(Superseded — see below)~~ Originally used a two-state button pattern. **Updated 2026-03-18** to immediate voting with no buttons:
 
 - **Single-choice (radio)**: clicking a radio emits `castPollVote` immediately.
-- **Multi-choice (checkbox)**: each checkbox toggle starts a 5-second debounce timer. When the timer expires without further changes, the vote is emitted. If the selection count is below `minResponses`, the vote is NOT emitted.
+- **Multi-choice (checkbox)**: each checkbox toggle starts a 2-second debounce timer. When the timer expires without further changes, the vote is emitted. If the selection count is below `minResponses`, the vote is NOT emitted.
 - **Status bar**: a `<Caption>` replaces all buttons — shows spinner + "Submitting your vote…" during mutation, "Voted" + "remove my vote" link after, or "Poll closed" when closed.
 - **Controls always active**: radios/checkboxes are never disabled except when the poll is CLOSED. No separate "Change Vote" mode — users click directly to change.
 
-**Rationale**: Immediate voting removes friction for the most common case (single-choice). The 5-second debounce for multi-choice gives users time to make multiple selections without firing a mutation per click. This approach aligns with modern polling UIs (e.g., Slack polls) where interaction is instant.
+**Rationale**: Immediate voting removes friction for the most common case (single-choice). The 2-second debounce for multi-choice gives users time to make multiple selections without firing a mutation per click. This approach aligns with modern polling UIs (e.g., Slack polls) where interaction is instant.
 
 **Alternatives considered**:
 

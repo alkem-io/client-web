@@ -195,7 +195,7 @@ Removed the explicit "Vote" / "Change My Vote" / "Cancel" buttons. Voting is now
 frictionless:
 
 - **Single-choice (radio)**: clicking a radio option emits the `castPollVote` mutation immediately.
-- **Multi-choice (checkbox)**: toggling any checkbox starts a 5-second debounce timer. If the timer
+- **Multi-choice (checkbox)**: toggling any checkbox starts a 2-second debounce timer. If the timer
   expires without further changes, the vote is emitted. Each subsequent checkbox toggle resets the
   timer. If the selection count is below `minResponses` when the timer fires, the vote is NOT emitted.
 - **Status bar**: a `<Caption>` component replaces all vote-related buttons. It shows:

@@ -37,12 +37,12 @@
 1. Navigate to the space containing the poll
 2. The poll displays with selectable options
 3. For single-choice (maxResponses = 1): Click a radio button — the vote is emitted immediately
-4. For multi-choice: Check one or more options (up to maxResponses limit) — the vote is emitted automatically after 5 seconds of no further changes
+4. For multi-choice: Check one or more options (up to maxResponses limit) — the vote is emitted automatically after 2 seconds of no further changes
 
 **Verify**:
 
 - Single-choice: vote is submitted instantly on radio click
-- Multi-choice: status bar shows "Submitting your vote…" with a spinner after the 5s debounce
+- Multi-choice: status bar shows "Submitting your vote…" with a spinner after the 2s debounce
 - After mutation completes, status bar shows "Voted" with a "remove my vote" link
 - Your selected option(s) are visually highlighted (checked state)
 - Results display according to the poll's visibility settings
@@ -57,7 +57,7 @@
 1. View the poll you already voted on
 2. Your current selections are checked/highlighted
 3. For single-choice: Click a different radio option — the new vote is emitted immediately
-4. For multi-choice: Toggle checkboxes to change selections — the updated vote is emitted after 5 seconds of no further changes
+4. For multi-choice: Toggle checkboxes to change selections — the updated vote is emitted after 2 seconds of no further changes
 
 **Verify**:
 
@@ -138,12 +138,12 @@ All option management is done via the **Edit Callout dialog** — the inline pol
    - At least 4 options
 2. As a member, view the poll
 3. Select 1 checkbox
-4. Wait 5 seconds
+4. Wait 2 seconds
 5. **Verify**: Vote is NOT emitted (below minResponses); helper text indicates minimum 2 required
 6. Select a second checkbox
-7. Wait 5 seconds
-8. **Verify**: Vote IS emitted after 5s debounce (meets minResponses); status bar shows "Voted"
-9. Select all remaining options, waiting 5s after the last click
+7. Wait 2 seconds
+8. **Verify**: Vote IS emitted after 2s debounce (meets minResponses); status bar shows "Voted"
+9. Select all remaining options, waiting 2s after the last click
 10. **Verify**: All selections are valid (unlimited max); vote emitted with all selected options
 
 ---

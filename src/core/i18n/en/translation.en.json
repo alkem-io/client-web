@@ -2383,6 +2383,7 @@
     },
     "status": {
       "submitting": "Submitting your vote\u2026",
+      "addingOption": "Adding option\u2026",
       "voted": "Voted.",
       "removeMyVote": "Remove my vote",
       "closed": "Poll closed"
@@ -2438,6 +2439,9 @@
     },
     "subscription": {
       "voteRevoked": "Your vote was affected by a $t(common.poll) change. Please vote again."
+    },
+    "customOption": {
+      "placeholder": "Add a custom response\u2026"
     },
     "removeVoteConfirm": {
       "title": "Remove your vote",
