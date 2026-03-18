@@ -35,4 +35,4 @@
 - FR-003 references `canSeeDetailedResults` boolean — this is a domain concept from the server contract, not an implementation detail. The client spec treats it as business logic input.
 - Notifications (US6/FR-023-024) depend on server notification infrastructure being deployed first.
 - CLOSED status and deadline features are explicitly deferred (documented in Assumptions).
-- All 26 functional requirements map to testable acceptance scenarios in the user stories.
+- All 36 functional requirements (FR-001 through FR-033, plus FR-008b, FR-010b, FR-010c) map to testable acceptance scenarios in the user stories.

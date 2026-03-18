@@ -3,27 +3,30 @@
 **Feature Branch**: `018-community-polls`
 **Created**: 2026-03-03
 **Status**: Draft
-**Input**: User description: "Client-side UI for creating, configuring, voting on, and viewing results of community polls within collaboration spaces. Based on server spec at specs/server/."
+**Input**: User description: "Client-side UI for creating, configuring, voting on, and viewing results of community polls within collaboration spaces. Based on server spec at specs/038-community-polls/."
 
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 — Viewing a Poll and Casting a Vote (Priority: P1)
 
-A space member navigates to a collaboration space and sees a poll callout. The poll displays its title, the callout description as the poll prompt, and a list of selectable options. The member selects one or more options (depending on poll settings) and submits their vote. Upon voting, the UI immediately reflects their selection and shows results according to the poll's visibility and detail settings.
+A space member navigates to a collaboration space and sees a poll callout. The poll displays its title, the callout description as the poll prompt, and a list of selectable options. Voting is immediate — there is no explicit "Vote" button. For single-choice polls (radio buttons), clicking an option emits the vote immediately. For multi-choice polls (checkboxes), clicking a checkbox starts a 5-second countdown; if no further changes are made within 5 seconds the vote is emitted automatically. If another checkbox is toggled before the countdown expires, the timer resets. A status bar (`<Caption>`) below the controls replaces the former vote button, showing contextual state: a loading spinner with "Submitting your vote…" during submission, "Voted" with a "remove my vote" link after voting, or "Poll closed" when the poll is closed. Poll controls (radios/checkboxes) are **never disabled** unless the poll is closed — the user can always click to change their vote directly.
 
 **Why this priority**: Voting is the core interaction of the feature. Without a way to view and vote on polls, no other functionality matters. This is the minimum viable product.
 
-**Independent Test**: Can be fully tested by navigating to a space containing a poll callout, selecting options, and submitting a vote. Delivers the core value of community polling.
+**Independent Test**: Can be fully tested by navigating to a space containing a poll callout, selecting an option, and verifying the vote is emitted (immediately for single-choice, after 5s for multi-choice).
 
 **Acceptance Scenarios**:
 
 1. **Given** a space member views a callout with framing type POLL, **When** the poll loads, **Then** the poll title, prompt (from callout description), and all options are displayed in their defined order.
-2. **Given** a single-choice poll (maxResponses = 1), **When** the member selects an option, **Then** only one option can be selected at a time (radio-button behavior).
-3. **Given** a multi-choice poll (maxResponses > 1 or 0 for unlimited), **When** the member selects options, **Then** checkboxes allow multiple selections up to the configured maximum.
-4. **Given** a multi-choice poll with maxResponses = 3 and the member has already selected 3 options, **When** they try to select a fourth, **Then** the UI prevents the selection and indicates the maximum has been reached.
-5. **Given** minResponses = 2 and the member has selected only 1 option, **When** they attempt to submit, **Then** the submit action is disabled with a message indicating the minimum number of selections required.
-6. **Given** the member submits their vote successfully, **When** the mutation completes, **Then** the UI updates to show their vote is recorded, their selected options are visually highlighted, and results are displayed according to the poll's visibility settings.
-7. **Given** the member has already voted (myVote is not null), **When** they view the poll, **Then** their previously selected options are highlighted and a "Change Vote" action is available.
+2. **Given** a single-choice poll (maxResponses = 1), **When** the member clicks a radio option, **Then** only one option can be selected at a time and the vote is emitted immediately (no button needed).
+3. **Given** a multi-choice poll (maxResponses > 1 or 0 for unlimited), **When** the member clicks a checkbox, **Then** a 5-second countdown starts. If no further checkbox changes occur within 5 seconds, the vote is emitted automatically.
+4. **Given** a multi-choice poll, **When** the member clicks another checkbox before the 5-second countdown expires, **Then** the countdown resets to 5 seconds.
+5. **Given** a multi-choice poll with maxResponses = 3 and the member has already selected 3 options, **When** they try to select a fourth, **Then** the UI prevents the selection and indicates the maximum has been reached.
+6. **Given** minResponses = 2 and the member has selected only 1 checkbox, **When** the 5-second countdown triggers, **Then** the vote is NOT emitted and a helper message indicates the minimum number of selections required.
+7. **Given** the vote is being submitted, **When** the mutation is in flight, **Then** the status bar shows a small loading spinner with "Submitting your vote…".
+8. **Given** the member has voted successfully, **When** the mutation completes, **Then** the status bar shows "Voted" followed by a "remove my vote" link, and their selected options are visually highlighted.
+9. **Given** the member has already voted (myVote is not null), **When** they view the poll, **Then** their previously selected options are checked/selected and they can directly click any radio or checkbox to change their vote (no separate "Change Vote" mode).
+10. **Given** the poll is closed (status = CLOSED), **When** the member views the poll, **Then** all controls are disabled and the status bar shows "Poll closed".
 
 ---
 
@@ -73,18 +76,18 @@ A space facilitator (user with callout creation rights) creates a new poll withi
 
 ### User Story 4 — Changing a Vote (Priority: P4)
 
-A member who has already voted on a poll decides to change their mind. They can modify their selections and re-submit. The vote is replaced entirely (not partially modified).
+A member who has already voted on a poll can change their vote at any time by simply clicking a different option. There is no separate "Change Vote" mode or button — the controls are always interactive (unless the poll is closed). For single-choice polls, clicking a different radio emits the new vote immediately. For multi-choice polls, toggling any checkbox resets the 5-second debounce timer before the updated selection set is submitted. The vote is replaced entirely (not partially modified).
 
 **Why this priority**: Vote changing is a natural extension of voting. It improves user confidence since mistakes can be corrected.
 
-**Independent Test**: Can be tested by voting on a poll, then changing the selection and re-submitting, verifying the new selections replace the old ones.
+**Independent Test**: Can be tested by voting on a poll, then clicking a different option and verifying the new selection replaces the old one.
 
 **Acceptance Scenarios**:
 
-1. **Given** a member has already voted on a poll, **When** they view the poll, **Then** their current selections are highlighted and a "Change Vote" control is visible.
-2. **Given** the member clicks "Change Vote," **When** the poll enters edit mode, **Then** the member can modify their selections (select/deselect options).
-3. **Given** the member modifies their selections and submits, **When** the castPollVote mutation completes, **Then** the old vote is entirely replaced, results update to reflect the change, and their new selections are highlighted.
-4. **Given** the member is changing their vote, **When** they decide not to change, **Then** a "Cancel" action returns to the previous state without modifying their vote.
+1. **Given** a member has already voted on a single-choice poll, **When** they click a different radio option, **Then** the new vote is emitted immediately and the old vote is entirely replaced.
+2. **Given** a member has already voted on a multi-choice poll, **When** they toggle a checkbox, **Then** a 5-second debounce timer starts (or resets) before the full updated selection set is submitted.
+3. **Given** the member changes their vote, **When** the castPollVote mutation completes, **Then** the results update to reflect the change, and the status bar shows "Voted" with the "remove my vote" link.
+4. **Given** the poll is closed, **When** the member views their past vote, **Then** controls are disabled and no vote change is possible.
 
 ---
 
@@ -141,7 +144,7 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 5. **Given** a poll with resultsVisibility = TOTAL_ONLY and the member has NOT voted, **When** another user votes, **Then** only the total vote count updates; no per-option details are shown.
 6. **Given** a member has voted on a poll, **When** a facilitator removes an option the member voted for, **Then** the member's `myVote` becomes null (vote revoked) and the UI returns to voting mode.
 7. **Given** a member navigates away from the poll callout, **When** the callout is no longer visible, **Then** the subscription is unsubscribed to avoid unnecessary network traffic.
-8. **Given** a member is in the middle of changing their vote (selection mode), **When** a subscription update arrives, **Then** the option list updates but the member's in-progress selection is preserved where possible.
+8. **Given** a member is in the middle of a multi-choice debounce countdown, **When** a subscription update arrives, **Then** the option list updates but the member's in-progress selection and countdown timer are preserved where possible.
 
 ---
 
@@ -161,7 +164,7 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 **Poll Display**
 
 - **FR-001**: The client MUST render a poll callout when the callout framing type is POLL, displaying the poll title, the callout framing description as the prompt, and all options.
-- **FR-002**: The client MUST display options in vote-count-descending order (as returned by the server) when showing results, and in sort-order when the user has not yet voted and results are hidden.
+- **FR-002**: The client MUST display options in `sortOrder ASC` (the order defined by the poll creator), as returned by the server. The server always returns options in `sortOrder ASC` regardless of vote counts or visibility state.
 - **FR-003**: The client MUST use the `canSeeDetailedResults` boolean from the server to determine whether to render per-option result details (counts, percentages, voters).
 - **FR-004**: The client MUST display only the total vote count when `canSeeDetailedResults` is false but `totalVotes` is not null (TOTAL_ONLY visibility for non-voters).
 
@@ -170,9 +173,12 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 - **FR-005**: The client MUST render single-choice selection controls (radio buttons or equivalent) when maxResponses = 1.
 - **FR-006**: The client MUST render multi-choice selection controls (checkboxes or equivalent) when maxResponses != 1.
 - **FR-007**: The client MUST enforce the minResponses and maxResponses constraints in the UI before allowing vote submission.
-- **FR-008**: The client MUST call the `castPollVote` mutation with the complete set of selected option IDs when the user submits a vote.
+- **FR-008**: For single-choice polls (maxResponses = 1), the client MUST call the `castPollVote` mutation immediately when the user clicks a radio option. For multi-choice polls, the client MUST start a 5-second debounce timer on each checkbox change and emit the vote automatically when the timer expires. The timer MUST reset on each subsequent checkbox change.
+- **FR-008b**: The client MUST NOT emit a debounced multi-choice vote if the current selection count is below `minResponses`.
 - **FR-009**: The client MUST highlight the user's currently selected options when `myVote` is present.
-- **FR-010**: The client MUST allow users to change their vote by re-entering selection mode and submitting a new complete selection set.
+- **FR-010**: The client MUST allow users to change their vote directly by clicking controls — no separate "Change Vote" mode or button is used. Controls are always interactive unless the poll is closed.
+- **FR-010b**: The client MUST display a status bar (`<Caption>`) below the poll controls showing contextual state: (a) a `CircularProgress` spinner with "Submitting your vote…" while a vote mutation is in flight, (b) "Voted" with a "remove my vote" text link when the user has voted, (c) "Poll closed" when `poll.status === CLOSED`. The status bar replaces the former Vote / Change Vote / Cancel buttons. Clicking "remove my vote" calls the `removePollVote` mutation, clears `myVote`, and returns the user to the unvoted state.
+- **FR-010c**: The client MUST NOT render a "Vote" button, "Change My Vote" button, or "Cancel" button. All voting interaction happens via direct control clicks.
 
 **Results Display**
 
@@ -208,7 +214,7 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 - **FR-030**: When a `pollOptionsChanged` event is received, the client MUST update the Apollo cache with the new options list and any updated vote data as returned by the server.
 - **FR-031**: The client MUST NOT replicate visibility filtering logic — the server's field resolvers handle filtering based on resultsVisibility, resultsDetail, and the viewer's voted status. The client renders whatever data it receives.
 - **FR-032**: When a subscription update sets `myVote` to null (vote revoked due to option change), the client MUST transition the UI back to voting mode.
-- **FR-033**: When a subscription update arrives while the user is in vote-change mode, the client MUST update the option list and results but MUST preserve the user's in-progress selection state where possible.
+- **FR-033**: When a subscription update arrives while the user is in the middle of a multi-choice debounce countdown, the client MUST update the option list and results but MUST preserve the user's in-progress selection and countdown timer where possible.
 
 **Authorization**
 
@@ -229,20 +235,20 @@ A space member is viewing a poll callout. When another user casts a vote or a fa
 - **SC-001**: A facilitator can create a poll callout with title, description, and options in under 2 minutes.
 - **SC-002**: A space member can view a poll and cast a vote in under 30 seconds.
 - **SC-003**: 100% of votes cast through the UI are accurately reflected in the results display after mutation completion.
-- **SC-004**: Results display correctly adapts to all applicable visibility states (HIDDEN, VISIBLE) and voted/not-voted states. Note: TOTAL_ONLY is retained server-side and rendered correctly by the client for legacy polls, but is not exposed in the poll creation UI.
-- **SC-005**: Results display correctly adapts to the exposed resultsDetail levels (PERCENTAGE and FULL). Note: COUNT is retained server-side and rendered correctly by the client for legacy polls, but is not exposed in the poll creation UI.
+- **SC-004**: Results display correctly adapts to all three visibility states (HIDDEN, TOTAL_ONLY, VISIBLE) and voted/not-voted states. Note: TOTAL_ONLY is not exposed in the poll creation UI but the client renders it correctly when encountered.
+- **SC-005**: Results display correctly adapts to all three resultsDetail levels (PERCENTAGE, COUNT, FULL). Note: COUNT is not exposed in the poll creation UI but the client renders it correctly when encountered.
 - **SC-006**: A facilitator can add, edit, remove, and reorder poll options via the Edit Callout dialog, with confirmation dialogs shown when votes would be affected.
 - **SC-007**: 90% of first-time users successfully cast a vote without needing help or documentation.
 - **SC-008**: All poll UI elements meet WCAG 2.1 AA accessibility requirements, including keyboard navigation and screen reader support.
 
 ## Assumptions
 
-- The server API follows the GraphQL contract defined in `specs/server/contracts/schema.graphql`.
+- The server API follows the GraphQL contract defined in `specs/038-community-polls/`.
 - Poll creation follows the existing createCallout pattern (same as Whiteboard, Link, Memo).
 - The `canSeeDetailedResults` boolean from the server is the single source of truth for whether to render per-option details; the client does not need to replicate the visibility matrix logic.
-- Options are returned pre-sorted by the server (by vote count descending, ties by sortOrder); the client renders them in the order received.
+- Options are returned pre-sorted by the server in `sortOrder ASC` (configured option order); the client renders them in the order received.
 - Vote changes use the same `castPollVote` mutation as initial votes (server handles upsert).
 - Notification preferences follow the existing user settings pattern already implemented for other notification types.
 - Real-time updates are delivered via two GraphQL subscriptions (`pollVoteUpdated` and `pollOptionsChanged`). The server handles visibility filtering at the field-resolver level — the client trusts the data it receives without replicating the visibility matrix.
-- The poll's `status` field (OPEN/CLOSED) is always OPEN in this iteration; CLOSED behavior is deferred.
+- The poll's `status` field (OPEN/CLOSED) is always OPEN in this iteration (no server API to close polls yet), but the client renders CLOSED state correctly: all controls disabled and status bar shows "Poll closed" (FR-010b). Manual closing via API is a future server feature.
 - The `deadline` field is always null in this iteration; deadline-based auto-close is deferred.

@@ -169,6 +169,17 @@ mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
   }
 }
 
+"""
+Remove the current user's vote from a poll.
+Requires CONTRIBUTE privilege on the poll (space membership).
+Returns the full updated Poll for cache update.
+"""
+mutation RemovePollVote($pollID: UUID!) {
+  removePollVote(pollID: $pollID) {
+    ...PollDetails
+  }
+}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # POLL CREATION
 # ─────────────────────────────────────────────────────────────────────────────

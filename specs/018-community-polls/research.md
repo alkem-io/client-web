@@ -50,14 +50,19 @@ All NEEDS CLARIFICATION items from the technical context have been resolved thro
 
 ## Decision 4: Vote Submission UX Pattern
 
-**Decision**: Use a two-state pattern: "selection mode" (user selects options) and "submitted mode" (user sees their vote highlighted with results). A "Vote" button submits. After voting, a "Change Vote" button re-enters selection mode. Use `useTransition` for the mutation to keep UI responsive during submission.
+**Decision**: ~~(Superseded — see below)~~ Originally used a two-state button pattern. **Updated 2026-03-18** to immediate voting with no buttons:
 
-**Rationale**: This matches the `castPollVote` mutation contract — votes are always submitted as a complete selection set (no partial modifications). The two-state approach keeps the UI clear about what the user is doing. `useTransition` follows the React 19 concurrent discipline from the constitution.
+- **Single-choice (radio)**: clicking a radio emits `castPollVote` immediately.
+- **Multi-choice (checkbox)**: each checkbox toggle starts a 5-second debounce timer. When the timer expires without further changes, the vote is emitted. If the selection count is below `minResponses`, the vote is NOT emitted.
+- **Status bar**: a `<Caption>` replaces all buttons — shows spinner + "Submitting your vote…" during mutation, "Voted" + "remove my vote" link after, or "Poll closed" when closed.
+- **Controls always active**: radios/checkboxes are never disabled except when the poll is CLOSED. No separate "Change Vote" mode — users click directly to change.
+
+**Rationale**: Immediate voting removes friction for the most common case (single-choice). The 5-second debounce for multi-choice gives users time to make multiple selections without firing a mutation per click. This approach aligns with modern polling UIs (e.g., Slack polls) where interaction is instant.
 
 **Alternatives considered**:
 
-- Instant-vote on click (no explicit submit button) — rejected because multi-choice polls need a "submit" action, and single-choice polls benefit from the ability to review before committing.
-- Modal/dialog for vote changing — rejected as unnecessary friction; inline re-selection is simpler.
+- Explicit "Vote" button with two-state pattern (original design) — **rejected and migrated away from** because the extra button click adds unnecessary friction, especially for single-choice polls where the user's intent is clear on radio click.
+- Modal/dialog for vote changing — rejected as unnecessary friction; direct click is simpler.
 
 ---
 

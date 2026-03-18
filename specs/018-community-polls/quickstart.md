@@ -22,11 +22,10 @@
 4. In the poll form:
    - Enter a **poll title** (e.g., "Vote for your preferred venue")
    - Add at least 2 options (e.g., "Italian Restaurant", "Sushi Bar", "Burger Joint")
-   - Optionally expand **Advanced Settings** to configure:
-     - Min responses: 1 (default)
-     - Max responses: 1 (default, single-choice) — set to 0 for unlimited multi-choice
-     - Results visibility: VISIBLE (default)
-     - Results detail: FULL (default)
+   - Optionally click the **Settings** button to configure:
+     - "Allow multiple responses per user" checkbox (unchecked = single-choice, checked = multi-choice; gear icon reveals min/max fields)
+     - "Only show results after a user has voted" checkbox (unchecked = VISIBLE, checked = HIDDEN)
+     - "Show avatars of voters in the results" checkbox (checked = FULL, unchecked = PERCENTAGE)
 5. Click "Post" to publish
 
 **Verify**: The poll callout appears in the space with the ballot icon, title, prompt text, and selectable options.
@@ -37,14 +36,15 @@
 
 1. Navigate to the space containing the poll
 2. The poll displays with selectable options
-3. For single-choice (maxResponses = 1): Click a radio button to select one option
-4. For multi-choice: Check one or more options (up to maxResponses limit)
-5. Click "Vote" to submit
+3. For single-choice (maxResponses = 1): Click a radio button — the vote is emitted immediately
+4. For multi-choice: Check one or more options (up to maxResponses limit) — the vote is emitted automatically after 5 seconds of no further changes
 
 **Verify**:
 
-- The UI updates to show your vote is recorded
-- Your selected option(s) are visually highlighted
+- Single-choice: vote is submitted instantly on radio click
+- Multi-choice: status bar shows "Submitting your vote…" with a spinner after the 5s debounce
+- After mutation completes, status bar shows "Voted" with a "remove my vote" link
+- Your selected option(s) are visually highlighted (checked state)
 - Results display according to the poll's visibility settings
 - If resultsDetail = FULL: see vote counts, percentages, and voter avatars
 - If resultsDetail = COUNT: see vote counts only
@@ -55,16 +55,15 @@
 ## Step 3: Change a Vote (as Regular Member)
 
 1. View the poll you already voted on
-2. Your current selections are highlighted
-3. Click "Change Vote"
-4. Modify your selections (deselect current, select new)
-5. Click "Vote" to submit the updated selection
+2. Your current selections are checked/highlighted
+3. For single-choice: Click a different radio option — the new vote is emitted immediately
+4. For multi-choice: Toggle checkboxes to change selections — the updated vote is emitted after 5 seconds of no further changes
 
 **Verify**:
 
-- Old selections are replaced entirely
+- Old selections are replaced entirely by the new selection set
 - Results update to reflect the change
-- New selections are highlighted
+- Status bar shows "Voted" with "remove my vote" link after mutation completes
 
 ---
 
@@ -96,35 +95,36 @@
 
 ## Step 5: Manage Poll Options (as Facilitator)
 
+All option management is done via the **Edit Callout dialog** — the inline poll view is read-only (voting and results only).
+
 ### Add an Option
 
 1. View a poll you can edit
-2. Enter edit mode
-3. Click "Add Option"
+2. Open the callout settings menu (three-dot menu) → click "Edit"
+3. In the Edit Callout dialog, click "Add Option"
 4. Enter text for the new option
-5. Confirm
+5. Save the dialog
 
 **Verify**: New option appears at the end of the list.
 
 ### Edit an Option
 
-1. In edit mode, click edit on an existing option
-2. Change the text
-3. Confirm
+1. In the Edit Callout dialog, change the text of an existing option
+2. Save the dialog
 
 **Verify**: If the option had votes, a confirmation dialog warns that affected votes will be deleted. After confirming, the option text is updated and affected votes are removed.
 
 ### Remove an Option
 
-1. In edit mode, click remove on an option
-2. Confirm
+1. In the Edit Callout dialog, click the remove button on an option
+2. Save the dialog
 
 **Verify**: Confirmation dialog if votes exist. After confirming, option is removed. Cannot remove when only 2 options remain (button disabled).
 
 ### Reorder Options
 
-1. In edit mode, drag options or use up/down controls
-2. Confirm the new order
+1. In the Edit Callout dialog, drag options using the drag handles to reorder
+2. Save the dialog
 
 **Verify**: Options appear in the new order. Vote counts and results are unaffected.
 
@@ -137,15 +137,14 @@
    - maxResponses: 0 (unlimited)
    - At least 4 options
 2. As a member, view the poll
-3. Select 1 option
-4. **Verify**: "Vote" button is disabled (minimum 2 required)
-5. Select a second option
-6. **Verify**: "Vote" button is enabled
-7. Select all options
-8. **Verify**: All selections are valid (unlimited max)
-9. Submit vote
-
-**Verify**: Vote recorded with all selected options.
+3. Select 1 checkbox
+4. Wait 5 seconds
+5. **Verify**: Vote is NOT emitted (below minResponses); helper text indicates minimum 2 required
+6. Select a second checkbox
+7. Wait 5 seconds
+8. **Verify**: Vote IS emitted after 5s debounce (meets minResponses); status bar shows "Voted"
+9. Select all remaining options, waiting 5s after the last click
+10. **Verify**: All selections are valid (unlimited max); vote emitted with all selected options
 
 ---
 

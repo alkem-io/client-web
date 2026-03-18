@@ -31,14 +31,14 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 | II  | React 19 Concurrent UX Discipline | PASS   | Vote submission uses `useTransition`. Rendering is pure and concurrency-safe. No legacy lifecycle patterns.                                                     |
 | III | GraphQL Contract Fidelity         | PASS   | All data access via generated hooks from codegen. No raw `useQuery`. Poll fragment added to existing CalloutContent query. Cache updates via mutation response. |
 | IV  | State & Side-Effect Isolation     | PASS   | Poll state lives in Apollo cache. No component-local side effects beyond React hooks.                                                                           |
-| V   | Experience Quality & Safeguards   | PASS   | WCAG 2.1 AA for all poll controls (radio, checkbox, buttons). Keyboard navigation. ARIA labels.                                                                 |
+| V   | Experience Quality & Safeguards   | PASS   | WCAG 2.1 AA for all poll controls (radio, checkbox, status bar links). Keyboard navigation. ARIA labels. Spinner uses `aria-live` for screen readers.            |
 
 ### Architecture Standards
 
 | #   | Standard                  | Status | Notes                                                                                                                                                                            |
 | --- | ------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Feature directory mapping | PASS   | `src/domain/collaboration/poll/` for domain logic, `CalloutFramings/CalloutFramingPoll.tsx` for framing display.                                                                 |
-| 2   | MUI theming               | PASS   | All UI uses MUI components (RadioGroup, Checkbox, LinearProgress, Button, Typography).                                                                                           |
+| 2   | MUI theming               | PASS   | All UI uses MUI components (RadioGroup, Checkbox, Button, Typography) with custom Box-based progress bars (background fill).                                                     |
 | 3   | Internationalization      | PASS   | All user-visible strings via `t()`. New keys in `translation.en.json`.                                                                                                           |
 | 4   | Build determinism         | N/A    | No Vite config changes.                                                                                                                                                          |
 | 5   | Import transparency       | PASS   | No barrel exports. All imports use explicit file paths.                                                                                                                          |
@@ -71,14 +71,14 @@ specs/018-community-polls/
 ```text
 src/domain/collaboration/
 ├── poll/                                    # NEW: Poll domain directory
-│   ├── PollView.tsx                         # Main poll display — orchestrates unified voting+results view
+│   ├── PollView.tsx                         # Main poll display — orchestrates voting+results+status bar
+│   │                                        #   No vote/cancel/change buttons — voting is immediate (radio) or debounced (checkbox)
+│   │                                        #   Status bar: spinner+"Submitting…", "Voted [remove my vote]", "Poll closed"
 │   ├── PollVotingControls.tsx               # Unified radio/checkbox controls with inline progress bars as labels
-│   │                                        #   In voting mode: controls enabled, results shown if canSeeDetailedResults
-│   │                                        #   In results mode: controls disabled, user's vote pre-selected
-│   ├── PollOptionResultRow.tsx              # Single option result row (progress bar + counts/percentages)
-│   ├── PollResultsDisplay.tsx               # [DEPRECATED] Standalone results — kept temporarily, to be removed
+│   │                                        #   Controls always enabled unless poll is closed
+│   │                                        #   No readOnly mode — user clicks to vote/change at any time
+│   ├── PollOptionResultRow.tsx              # [ORPHANED] Standalone result row — superseded by OptionLabel in PollVotingControls, to be removed
 │   ├── PollVoterAvatars.tsx                 # Voter avatar group (FULL detail)
-│   ├── PollEmptyState.tsx                   # "No votes yet" empty state
 │   ├── PollFormFields.tsx                   # Creation & edit form fields (title, options with drag-and-drop reorder, settings button)
 │   ├── PollFormSettingsSection.tsx          # Checkbox-based settings dialog (readonly when editing)
 │   ├── models/
@@ -141,15 +141,12 @@ No constitution violations to justify. All design decisions follow established p
 
 Merged the previously separate PollVotingControls (voting only) and PollResultsDisplay (results only)
 into a single unified component in PollVotingControls. The component renders radio/checkbox controls
-with progress bars as labels (inline results), toggling between enabled (voting mode) and disabled
-(results mode) states. This provides a cleaner, more compact UX where the user always sees the same
-layout regardless of state. The "Change Vote" button is positioned below the results.
+with progress bars as labels (inline results). PollResultsDisplay has been removed.
 
-- PollResultsDisplay is kept temporarily but deprecated (will be deleted in a follow-up).
-- The blueish background highlight for selected votes is removed; selection is shown only via the
-  radio/checkbox checked state.
-- When `canSeeDetailedResults` is false, progress bars and counts are hidden even in voting mode,
-  respecting admin visibility settings.
+- Selection is shown only via the radio/checkbox checked state (no blueish background highlight).
+- When `canSeeDetailedResults` is false, progress bars and counts are hidden, respecting admin visibility settings.
+- Note: The original design had enabled/disabled toggling and a "Change Vote" button — this was superseded
+  by the "Immediate Voting UX" decision below (2026-03-18).
 
 ### Design Decision: Real-Time Subscriptions (2026-03-11)
 
@@ -158,7 +155,7 @@ Added two GraphQL subscriptions for real-time poll updates:
 - `pollVoteUpdated(pollID: UUID!)` — fires when any user casts/updates a vote
 - `pollOptionsChanged(pollID: UUID!)` — fires when options are added/edited/removed/reordered
 
-Both return the full `Poll` object. The server's field resolvers handle visibility filtering
+Both return wrapper types (`PollVoteUpdatedSubscriptionResult` / `PollOptionsChangedSubscriptionResult`) containing `pollEventType` and `poll` (the full `Poll` object). The server's field resolvers handle visibility filtering
 (resultsVisibility, resultsDetail, voted status) — the client trusts the data it receives
 without replicating the visibility matrix. Key behaviors:
 
@@ -191,3 +188,30 @@ and resultsDetail) with a simplified checkbox-based UI:
   with a confirmation dialog if the user attempts to close anyway.
 - Created reusable `FormikFormattedInputField` component for the max responses field (displays "Any"
   when value is 0, numeric value when focused).
+
+### Design Decision: Immediate Voting UX — No Vote Button (2026-03-18)
+
+Removed the explicit "Vote" / "Change My Vote" / "Cancel" buttons. Voting is now immediate and
+frictionless:
+
+- **Single-choice (radio)**: clicking a radio option emits the `castPollVote` mutation immediately.
+- **Multi-choice (checkbox)**: toggling any checkbox starts a 5-second debounce timer. If the timer
+  expires without further changes, the vote is emitted. Each subsequent checkbox toggle resets the
+  timer. If the selection count is below `minResponses` when the timer fires, the vote is NOT emitted.
+- **Status bar**: a `<Caption>` component replaces all vote-related buttons. It shows:
+  - `CircularProgress` (size 12) + "Submitting your vote…" during mutation flight
+  - "Voted." + a "remove my vote" text link after successful vote
+  - "Poll closed" when `poll.status === CLOSED`
+- **Controls always enabled**: radios/checkboxes are never disabled except when the poll is closed.
+  The `readOnly` prop on `PollVotingControls` is removed. Previously voted users can click directly
+  to change their vote — no separate "change vote" mode.
+- The `isChangingVote` state and all related button rendering in `PollView` are removed.
+- `PollVotingControls` receives a new `isClosed` prop instead of `readOnly` + `disabled`.
+
+Impact on components:
+- `PollView.tsx`: major refactor — remove buttons, add debounce logic, add status bar
+- `PollVotingControls.tsx`: remove `readOnly`/`disabled` props, add `isClosed` prop
+- i18n: add `poll.status.submitting`, `poll.status.voted`, `poll.status.removeMyVote`,
+  `poll.status.closed`; remove obsolete `poll.vote.button`, `poll.vote.changeMyVote`,
+  `poll.vote.cancelButton`
+
