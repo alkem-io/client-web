@@ -70,6 +70,11 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
     setFieldValue(`${settingsPath}.resultsDetail`, checked ? PollResultsDetail.Full : PollResultsDetail.Percentage);
   };
 
+  const handleAllowUserOptionsChange = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    if (readOnly) return;
+    setFieldValue(`${settingsPath}.allowContributorsAddOptions`, checked);
+  };
+
   const handleMinChoicesLessClick = () => {
     if (readOnly) return;
     setFieldValue(`${settingsPath}.minResponses`, Math.max((values.framing.poll?.settings.minResponses ?? 0) - 1, 1));
@@ -217,7 +222,16 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
                 />
               </Box>
             </Collapse>
-            <FormControlLabel control={<Checkbox disabled={true} />} label={t('poll.create.allowUserOptions')} />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={settings?.allowContributorsAddOptions ?? false}
+                  onChange={handleAllowUserOptionsChange}
+                  disabled={readOnly}
+                />
+              }
+              label={t('poll.create.allowUserOptions')}
+            />
           </FormGroup>
 
           <Caption>{t('poll.create.displayOptions')}</Caption>

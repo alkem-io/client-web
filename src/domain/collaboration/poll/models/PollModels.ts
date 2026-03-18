@@ -1,6 +1,7 @@
-import { PollResultsDetail, PollResultsVisibility, PollStatus } from '@/core/apollo/generated/graphql-schema';
+import type { PollResultsDetail, PollResultsVisibility, PollStatus } from '@/core/apollo/generated/graphql-schema';
 
 export type PollSettingsModel = {
+  allowContributorsAddOptions: boolean;
   minResponses: number;
   maxResponses: number;
   resultsVisibility: PollResultsVisibility;
@@ -54,6 +55,7 @@ export type PollFormValues = {
 };
 
 export type PollSettingsFormValues = {
+  allowContributorsAddOptions: boolean;
   minResponses: number;
   maxResponses: number;
   resultsVisibility: PollResultsVisibility;

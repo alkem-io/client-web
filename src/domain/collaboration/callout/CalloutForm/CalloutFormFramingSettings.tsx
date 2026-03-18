@@ -115,6 +115,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
             title: '',
             options: [{ text: '' }, { text: '' }],
             settings: {
+              allowContributorsAddOptions: false,
               minResponses: 1,
               maxResponses: 1,
               resultsVisibility: PollResultsVisibility.Visible,

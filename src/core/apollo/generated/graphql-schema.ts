@@ -1266,7 +1266,7 @@ export enum CalloutsSetType {
 export type CastPollVoteInput = {
   /** The ID of the Poll to vote on. */
   pollID: Scalars['UUID']['input'];
-  /** The complete set of selected PollOption IDs. When updating an existing vote, the entire selection set must be provided. Count must be ≥ poll.minResponses and ≤ poll.maxResponses (0 = unlimited). All IDs must belong to the specified poll. */
+  /** The complete set of selected PollOption IDs. When updating an existing vote, the entire selection set must be provided. Count must be ≥ poll.minResponses and ≤ poll.maxResponses. All IDs must belong to the specified poll. */
   selectedOptionIDs: Array<Scalars['UUID']['input']>;
 };
 
@@ -4386,7 +4386,7 @@ export type Mutation = {
   addIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Adds a full email address to the platform notification blacklist */
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
-  /** Add a new option to a Poll. Requires UPDATE privilege on the Poll. The new option is appended with the next available sort order. */
+  /** Add a new option to a Poll. Requires UPDATE privilege, or CONTRIBUTE privilege when the poll setting allowContributorsAddOptions is enabled. The new option is appended with the next available sort order. */
   addPollOption: Poll;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
@@ -6242,6 +6242,8 @@ export enum PollResultsVisibility {
 
 export type PollSettings = {
   __typename?: 'PollSettings';
+  /** Whether users with CONTRIBUTE privilege can add new options to the poll. Immutable after poll creation. Default: false. */
+  allowContributorsAddOptions: Scalars['Boolean']['output'];
   /** Maximum number of options a voter may select (0 = unlimited). Immutable after poll creation. */
   maxResponses: Scalars['Int']['output'];
   /** Minimum number of options a voter must select (≥ 1). Immutable after poll creation. */
@@ -6254,6 +6256,8 @@ export type PollSettings = {
 
 export type PollSettingsData = {
   __typename?: 'PollSettingsData';
+  /** Whether voters can add new options to the poll. Defaults to false. */
+  allowContributorsAddOptions?: Maybe<Scalars['Boolean']['output']>;
   /** Maximum selections allowed. Defaults to 1. Set to 0 for unlimited. */
   maxResponses?: Maybe<Scalars['Int']['output']>;
   /** Minimum selections required. Defaults to 1. */
@@ -6265,6 +6269,8 @@ export type PollSettingsData = {
 };
 
 export type PollSettingsInput = {
+  /** Whether voters can add new options to the poll. Defaults to false. */
+  allowContributorsAddOptions?: InputMaybe<Scalars['Boolean']['input']>;
   /** Maximum selections allowed. Defaults to 1. Set to 0 for unlimited. */
   maxResponses?: InputMaybe<Scalars['Int']['input']>;
   /** Minimum selections required. Defaults to 1. */
@@ -13345,6 +13351,7 @@ export type CalloutContentQuery = {
                   canSeeDetailedResults: boolean;
                   settings: {
                     __typename?: 'PollSettings';
+                    allowContributorsAddOptions: boolean;
                     minResponses: number;
                     maxResponses: number;
                     resultsVisibility: PollResultsVisibility;
@@ -13652,6 +13659,7 @@ export type UpdateCalloutContentMutation = {
             canSeeDetailedResults: boolean;
             settings: {
               __typename?: 'PollSettings';
+              allowContributorsAddOptions: boolean;
               minResponses: number;
               maxResponses: number;
               resultsVisibility: PollResultsVisibility;
@@ -14056,6 +14064,7 @@ export type UpdateCalloutVisibilityMutation = {
             canSeeDetailedResults: boolean;
             settings: {
               __typename?: 'PollSettings';
+              allowContributorsAddOptions: boolean;
               minResponses: number;
               maxResponses: number;
               resultsVisibility: PollResultsVisibility;
@@ -15574,6 +15583,7 @@ export type CreateCalloutMutation = {
             canSeeDetailedResults: boolean;
             settings: {
               __typename?: 'PollSettings';
+              allowContributorsAddOptions: boolean;
               minResponses: number;
               maxResponses: number;
               resultsVisibility: PollResultsVisibility;
@@ -16090,6 +16100,7 @@ export type CalloutDetailsQuery = {
                   canSeeDetailedResults: boolean;
                   settings: {
                     __typename?: 'PollSettings';
+                    allowContributorsAddOptions: boolean;
                     minResponses: number;
                     maxResponses: number;
                     resultsVisibility: PollResultsVisibility;
@@ -16539,6 +16550,7 @@ export type CalloutDetailsFragment = {
           canSeeDetailedResults: boolean;
           settings: {
             __typename?: 'PollSettings';
+            allowContributorsAddOptions: boolean;
             minResponses: number;
             maxResponses: number;
             resultsVisibility: PollResultsVisibility;
@@ -16921,6 +16933,7 @@ export type MemoDetailsFragment = {
 
 export type PollSettingsFieldsFragment = {
   __typename?: 'PollSettings';
+  allowContributorsAddOptions: boolean;
   minResponses: number;
   maxResponses: number;
   resultsVisibility: PollResultsVisibility;
@@ -16973,6 +16986,7 @@ export type PollDetailsFragment = {
   canSeeDetailedResults: boolean;
   settings: {
     __typename?: 'PollSettings';
+    allowContributorsAddOptions: boolean;
     minResponses: number;
     maxResponses: number;
     resultsVisibility: PollResultsVisibility;
@@ -17032,6 +17046,7 @@ export type CastPollVoteMutation = {
     canSeeDetailedResults: boolean;
     settings: {
       __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
       minResponses: number;
       maxResponses: number;
       resultsVisibility: PollResultsVisibility;
@@ -17092,6 +17107,7 @@ export type AddPollOptionMutation = {
     canSeeDetailedResults: boolean;
     settings: {
       __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
       minResponses: number;
       maxResponses: number;
       resultsVisibility: PollResultsVisibility;
@@ -17152,6 +17168,7 @@ export type UpdatePollOptionMutation = {
     canSeeDetailedResults: boolean;
     settings: {
       __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
       minResponses: number;
       maxResponses: number;
       resultsVisibility: PollResultsVisibility;
@@ -17212,6 +17229,7 @@ export type RemovePollOptionMutation = {
     canSeeDetailedResults: boolean;
     settings: {
       __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
       minResponses: number;
       maxResponses: number;
       resultsVisibility: PollResultsVisibility;
@@ -17272,6 +17290,7 @@ export type ReorderPollOptionsMutation = {
     canSeeDetailedResults: boolean;
     settings: {
       __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
       minResponses: number;
       maxResponses: number;
       resultsVisibility: PollResultsVisibility;
@@ -17332,6 +17351,7 @@ export type RemovePollVoteMutation = {
     canSeeDetailedResults: boolean;
     settings: {
       __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
       minResponses: number;
       maxResponses: number;
       resultsVisibility: PollResultsVisibility;
@@ -17395,6 +17415,7 @@ export type PollVoteUpdatedSubscription = {
       canSeeDetailedResults: boolean;
       settings: {
         __typename?: 'PollSettings';
+        allowContributorsAddOptions: boolean;
         minResponses: number;
         maxResponses: number;
         resultsVisibility: PollResultsVisibility;
@@ -17459,6 +17480,7 @@ export type PollOptionsChangedSubscription = {
       canSeeDetailedResults: boolean;
       settings: {
         __typename?: 'PollSettings';
+        allowContributorsAddOptions: boolean;
         minResponses: number;
         maxResponses: number;
         resultsVisibility: PollResultsVisibility;

@@ -1,4 +1,5 @@
 fragment PollSettingsFields on PollSettings {
+  allowContributorsAddOptions
   minResponses
   maxResponses
   resultsVisibility

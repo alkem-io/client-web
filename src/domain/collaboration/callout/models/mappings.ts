@@ -51,6 +51,7 @@ export const mapCalloutTemplateToCalloutForm = (
       poll?: {
         title: string;
         settings: {
+          allowContributorsAddOptions?: boolean;
           minResponses: number;
           maxResponses: number;
           resultsVisibility: PollResultsVisibility;
@@ -127,6 +128,7 @@ export const mapCalloutTemplateToCalloutForm = (
             title: calloutTemplate.framing.poll.title,
             options: calloutTemplate.framing.poll.options.map(o => ({ text: o.text })),
             settings: {
+              allowContributorsAddOptions: calloutTemplate.framing.poll.settings.allowContributorsAddOptions ?? false,
               minResponses: calloutTemplate.framing.poll.settings.minResponses,
               maxResponses: calloutTemplate.framing.poll.settings.maxResponses,
               resultsVisibility: calloutTemplate.framing.poll.settings.resultsVisibility,

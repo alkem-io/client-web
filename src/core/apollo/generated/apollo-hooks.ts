@@ -840,6 +840,7 @@ export const MediaGalleryVisualsFragmentDoc = gql`
     `;
 export const PollSettingsFieldsFragmentDoc = gql`
     fragment PollSettingsFields on PollSettings {
+  allowContributorsAddOptions
   minResponses
   maxResponses
   resultsVisibility

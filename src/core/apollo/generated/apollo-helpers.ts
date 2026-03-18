@@ -3498,6 +3498,7 @@ export type PollOptionsChangedSubscriptionResultFieldPolicy = {
   pollEventType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PollSettingsKeySpecifier = (
+  | 'allowContributorsAddOptions'
   | 'maxResponses'
   | 'minResponses'
   | 'resultsDetail'
@@ -3505,12 +3506,14 @@ export type PollSettingsKeySpecifier = (
   | PollSettingsKeySpecifier
 )[];
 export type PollSettingsFieldPolicy = {
+  allowContributorsAddOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   maxResponses?: FieldPolicy<any> | FieldReadFunction<any>;
   minResponses?: FieldPolicy<any> | FieldReadFunction<any>;
   resultsDetail?: FieldPolicy<any> | FieldReadFunction<any>;
   resultsVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PollSettingsDataKeySpecifier = (
+  | 'allowContributorsAddOptions'
   | 'maxResponses'
   | 'minResponses'
   | 'resultsDetail'
@@ -3518,6 +3521,7 @@ export type PollSettingsDataKeySpecifier = (
   | PollSettingsDataKeySpecifier
 )[];
 export type PollSettingsDataFieldPolicy = {
+  allowContributorsAddOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   maxResponses?: FieldPolicy<any> | FieldReadFunction<any>;
   minResponses?: FieldPolicy<any> | FieldReadFunction<any>;
   resultsDetail?: FieldPolicy<any> | FieldReadFunction<any>;
