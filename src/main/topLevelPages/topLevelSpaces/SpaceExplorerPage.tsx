@@ -5,8 +5,8 @@ import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubO
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import SpaceExplorerContainer from './SpaceExplorerContainer';
 import { SpaceExplorerView } from './SpaceExplorerView';
+import useSpaceExplorer from './useSpaceExplorer';
 
 const SpaceExplorerPage = () => {
   const { t } = useTranslation();
@@ -15,6 +15,8 @@ const SpaceExplorerPage = () => {
   usePageTitle(t('pages.titles.spaces'));
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.subspaces' });
+
+  const provided = useSpaceExplorer();
 
   return (
     <TopLevelPageLayout
@@ -28,11 +30,7 @@ const SpaceExplorerPage = () => {
         </TopLevelPageBreadcrumbs>
       }
     >
-      <SpaceExplorerContainer>
-        {provided => {
-          return <SpaceExplorerView {...provided} />;
-        }}
-      </SpaceExplorerContainer>
+      <SpaceExplorerView {...provided} />
     </TopLevelPageLayout>
   );
 };

@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react';
 import { useCalendarEventDetailsQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, type CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { type ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import type { Message } from '@/domain/communication/room/models/Message';
@@ -12,7 +11,11 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
-type Provided = {
+type UseCalendarEventDetailParams = {
+  eventId: string | undefined;
+};
+
+type UseCalendarEventDetailResult = {
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (authorId: string | undefined) => boolean;
@@ -37,11 +40,7 @@ type Provided = {
   postingReply: boolean;
 };
 
-export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<{ eventId: string | undefined }, Provided>;
-
-// TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx
-// Maybe put common logic together
-const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDetailContainerProps) => {
+const useCalendarEventDetail = ({ eventId }: UseCalendarEventDetailParams): UseCalendarEventDetailResult => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const {
@@ -49,7 +48,7 @@ const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDet
     loading: loadingEvent,
     error,
   } = useCalendarEventDetailsQuery({
-    variables: { eventId: eventId! },
+    variables: { eventId: eventId ?? '' },
     skip: !eventId,
     fetchPolicy: 'cache-and-network',
   });
@@ -83,7 +82,7 @@ const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDet
   const commentsPrivileges = event?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
-    authorId => canDeleteComments || (isAuthenticated && authorId === userModel?.id),
+    (authorId: string | undefined) => canDeleteComments || (isAuthenticated && authorId === userModel?.id),
     [userModel, isAuthenticated, canDeleteComments]
   );
 
@@ -111,7 +110,7 @@ const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDet
     isSubscribedToMessages,
   });
 
-  return renderComponentOrChildrenFn(rendered, {
+  return {
     canReadComments,
     canPostComments,
     canDeleteComment,
@@ -128,7 +127,7 @@ const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDet
     error,
     deletingComment,
     ...postMessageProps,
-  });
+  };
 };
 
-export default CalendarEventDetailContainer;
+export default useCalendarEventDetail;

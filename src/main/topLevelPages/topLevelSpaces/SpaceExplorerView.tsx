@@ -4,7 +4,6 @@ import { compact } from 'lodash-es';
 import type React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -19,14 +18,14 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { Visual } from '@/domain/common/visual/Visual';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import type { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+import type { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import { useSpaceExplorerViewState } from './useSpaceExplorerViewState';
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -85,33 +84,7 @@ export const SpaceExplorerView = ({
   loadingSearchResults = null,
 }: SpaceExplorerViewProps) => {
   const { t } = useTranslation();
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-    dialogTitle: t('send-message-dialog.direct-message-title'),
-  });
-
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
-
-  const spaceNameId = t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId');
-  const { data: spaceIdData } = useSpaceUrlResolverQuery({
-    variables: { spaceNameId: spaceNameId },
-    skip: !spaceNameId,
-  });
-  const welcomeSpaceId = spaceIdData?.lookupByName.space?.id;
-
-  const { data: spaceExplorerData } = useSpaceExplorerWelcomeSpaceQuery({
-    variables: { spaceId: welcomeSpaceId! },
-    skip: !welcomeSpaceId,
-  });
-  const welcomeSpace = spaceExplorerData?.lookup.space;
+  const { handleContactLead, directMessageDialog, welcomeSpace } = useSpaceExplorerViewState();
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);

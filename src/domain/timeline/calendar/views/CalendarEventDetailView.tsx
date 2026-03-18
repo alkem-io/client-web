@@ -2,13 +2,12 @@ import { Box } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useResizeDetector } from 'react-resize-detector';
-import { animateScroll as scroller } from 'react-scroll';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockBanner from '@/core/ui/content/PageContentBlockBanner';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { BlockSectionTitle } from '@/core/ui/typography';
@@ -62,7 +61,7 @@ const CalendarEventDetailView = ({ eventId }: CalendarEventDetailViewProps) => {
   const deleteComment = (id: string) => (comments.roomId ? actions.deleteMessage(comments.roomId, id) : undefined);
   const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
-  const { height: containerHeight = 0 } = useResizeDetector({
+  const { height: containerHeight = 0 } = useResizeObserver({
     targetRef: commentsContainerRef,
   });
 
@@ -79,7 +78,7 @@ const CalendarEventDetailView = ({ eventId }: CalendarEventDetailViewProps) => {
 
   useEffect(() => {
     if (wasScrolledToBottomRef.current && commentsContainerRef.current) {
-      scroller.scrollToBottom({ container: commentsContainerRef.current });
+      commentsContainerRef.current.scrollTo({ top: commentsContainerRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [comments]);
 

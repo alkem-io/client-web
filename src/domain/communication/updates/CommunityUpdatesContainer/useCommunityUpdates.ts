@@ -1,4 +1,3 @@
-import type React from 'react';
 import { useCallback } from 'react';
 import {
   refetchCommunityUpdatesQuery,
@@ -12,17 +11,8 @@ import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
-export interface CommunityUpdatesContainerProps {
-  communityId: string | undefined;
-  children: (
-    entities: CommunityUpdatesEntities,
-    actions: CommunityUpdatesActions,
-    loading: CommunityUpdatesState
-  ) => React.ReactNode;
-}
-
 export interface CommunityUpdatesActions {
-  onLoadMore: () => void; // TODO will be implemented in a separate issue
+  onLoadMore: () => void;
   onSubmit: (message: string, communityId: Community['id']) => Promise<Message | undefined>;
   onRemove: (messageId: string, communityId: Community['id']) => Promise<string | undefined>;
 }
@@ -38,14 +28,24 @@ export interface CommunityUpdatesEntities {
   authors: AuthorModel[];
 }
 
-const EMPTY = [];
+type UseCommunityUpdatesParams = {
+  communityId: string | undefined;
+};
 
-export const CommunityUpdatesContainer = ({ communityId, children }: CommunityUpdatesContainerProps) => {
+type UseCommunityUpdatesResult = {
+  entities: CommunityUpdatesEntities;
+  actions: CommunityUpdatesActions;
+  state: CommunityUpdatesState;
+};
+
+const EMPTY: Message[] = [];
+
+const useCommunityUpdates = ({ communityId }: UseCommunityUpdatesParams): UseCommunityUpdatesResult => {
   const { isFeatureEnabled } = useConfig();
 
   const { data, loading } = useCommunityUpdatesQuery({
     variables: {
-      communityId: communityId!,
+      communityId: communityId ?? '',
     },
     skip: !communityId,
   });
@@ -83,7 +83,7 @@ export const CommunityUpdatesContainer = ({ communityId, children }: CommunityUp
       }
       const update = await removeUpdate({
         variables: { messageData: { messageID, roomID } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ communityId: communityId! })],
+        refetchQueries: [refetchCommunityUpdatesQuery({ communityId: communityId ?? '' })],
       });
       return update.data?.removeMessageOnRoom;
     },
@@ -101,17 +101,16 @@ export const CommunityUpdatesContainer = ({ communityId, children }: CommunityUp
       authors.push(buildAuthorFromUser(message.sender));
     }
   }
-  return (
-    <>
-      {children(
-        { messages, authors },
-        { onLoadMore, onSubmit, onRemove },
-        {
-          retrievingUpdateMessages: loading,
-          sendingUpdateMessage: loadingSendUpdate,
-          removingUpdateMessage: loadingRemoveUpdate,
-        }
-      )}
-    </>
-  );
+
+  return {
+    entities: { messages, authors },
+    actions: { onLoadMore, onSubmit, onRemove },
+    state: {
+      retrievingUpdateMessages: loading,
+      sendingUpdateMessage: loadingSendUpdate,
+      removingUpdateMessage: loadingRemoveUpdate,
+    },
+  };
 };
+
+export default useCommunityUpdates;

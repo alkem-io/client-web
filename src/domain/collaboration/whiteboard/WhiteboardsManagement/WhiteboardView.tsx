@@ -1,7 +1,6 @@
 import { Divider } from '@mui/material';
-import { type ReactNode, useEffect, useState } from 'react';
-import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { type ReactNode, useState } from 'react';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
@@ -10,13 +9,11 @@ import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollabo
 import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
-import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
-import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
-import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
 import WhiteboardDialog, { type WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
 import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
+import { useWhiteboardViewState } from './useWhiteboardViewState';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -52,8 +49,19 @@ const WhiteboardView = ({
   ...whiteboardsState
 }: WhiteboardViewProps) => {
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
-  const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
+
+  const {
+    lastSuccessfulSavedDate,
+    setLastSuccessfulSavedDate,
+    hasUpdatePrivileges,
+    hasUpdateContentPrivileges,
+    hasDeletePrivileges,
+    hasPublicSharePrivilege,
+    guestAccess,
+    actionsState,
+    actions,
+  } = useWhiteboardViewState({ whiteboard, authorization, guestShareUrl, preventWhiteboardDeletion });
 
   const { fullscreen, setFullscreen } = useFullscreen();
   const { isSmallScreen } = useScreenSize();
@@ -67,96 +75,66 @@ const WhiteboardView = ({
     }
   };
 
-  // Todo: need to decide who can edit what whiteboards, for now tie to UpdateContent. May need to extend the information on a Whiteboard
-  // to include who created it etc.
-  // Also to have in mind: In SingleWhiteboard Callout whiteboards, users may not have CreateWhiteboard privilege to add another whiteboard but may have privilege
-  // to update an existing whiteboard
-  const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-  const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
-  const hasDeletePrivileges =
-    !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
-  const hasPublicSharePrivilege =
-    whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
-
-  const computedGuestShareUrl = guestShareUrl ?? buildGuestShareUrl(whiteboard?.id ?? whiteboard?.nameID);
-  const guestAccess = useWhiteboardGuestAccess({ whiteboard, guestShareUrl: computedGuestShareUrl });
-
-  const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
-    variables: { whiteboardId: whiteboard?.id! },
-    skip: !whiteboard?.id,
-    fetchPolicy: 'network-only',
-  });
-
-  useEffect(() => {
-    // on the initialization of lastSuccessfulSavedDate take the date from the database
-    if (!lastSuccessfulSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-      setLastSuccessfulSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
-    }
-  }, [lastSuccessfulSavedDate, lastSaved?.lookup.whiteboard?.updatedDate]);
-
   return (
-    <WhiteboardActionsContainer>
-      {({ state: actionsState, actions }) => (
-        <WhiteboardDialog
-          entities={{ whiteboard }}
-          lastSuccessfulSavedDate={lastSuccessfulSavedDate}
-          actions={{
-            onCancel: handleCancel,
-            setConsecutiveSaveErrors,
-            onUpdate: actions.onUpdate,
-            onDelete: async () => {
-              await actions.onDelete(whiteboard!);
-              onWhiteboardDeleted?.();
-            },
-            setLastSuccessfulSavedDate,
-            onChangeDisplayName: actions.onChangeDisplayName,
-            onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
-          }}
-          options={{
-            canEdit: hasUpdateContentPrivileges,
-            canDelete: hasDeletePrivileges,
-            show: Boolean(whiteboardId),
-            dialogTitle: displayName,
-            readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
-            fullscreen: isFullscreen,
-            previewSettingsDialogOpen: previewSettingsDialogOpen,
-            headerActions: (collabState: CollabState) => (
-              <>
-                <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  <WhiteboardGuestAccessControls whiteboard={whiteboard}>
-                    <WhiteboardGuestAccessSection guestAccess={guestAccess} />
-                  </WhiteboardGuestAccessControls>
-                  {hasUpdatePrivileges && (
-                    <>
-                      {hasPublicSharePrivilege && (
-                        <Divider orientation="horizontal" flexItem={true} sx={{ marginTop: gutters(1) }} />
-                      )}
-                      <CollaborationSettings
-                        element={whiteboard}
-                        elementType="whiteboard"
-                        guestAccessEnabled={guestAccess.enabled}
-                      />
-                    </>
+    <WhiteboardDialog
+      entities={{ whiteboard }}
+      lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+      actions={{
+        onCancel: handleCancel,
+        setConsecutiveSaveErrors,
+        onUpdate: actions.onUpdate,
+        onDelete: async () => {
+          if (!whiteboard) return;
+          await actions.onDelete(whiteboard);
+          onWhiteboardDeleted?.();
+        },
+        setLastSuccessfulSavedDate,
+        onChangeDisplayName: actions.onChangeDisplayName,
+        onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
+      }}
+      options={{
+        canEdit: hasUpdateContentPrivileges,
+        canDelete: hasDeletePrivileges,
+        show: Boolean(whiteboardId),
+        dialogTitle: displayName,
+        readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
+        fullscreen: isFullscreen,
+        previewSettingsDialogOpen: previewSettingsDialogOpen,
+        headerActions: (collabState: CollabState) => (
+          <>
+            <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
+              <WhiteboardGuestAccessControls whiteboard={whiteboard}>
+                <WhiteboardGuestAccessSection guestAccess={guestAccess} />
+              </WhiteboardGuestAccessControls>
+              {hasUpdatePrivileges && (
+                <>
+                  {hasPublicSharePrivilege && (
+                    <Divider orientation="horizontal" flexItem={true} sx={{ marginTop: gutters(1) }} />
                   )}
-                </ShareButton>
+                  <CollaborationSettings
+                    element={whiteboard}
+                    elementType="whiteboard"
+                    guestAccessEnabled={guestAccess.enabled}
+                  />
+                </>
+              )}
+            </ShareButton>
 
-                {!isSmallScreen && <FullscreenButton />}
+            {!isSmallScreen && <FullscreenButton />}
 
-                <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+            <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
-                {hasUpdatePrivileges && collabState.mode === 'write' && (
-                  <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
-                )}
-              </>
-            ),
-          }}
-          state={{
-            ...whiteboardsState,
-            ...actionsState,
-          }}
-        />
-      )}
-    </WhiteboardActionsContainer>
+            {hasUpdatePrivileges && collabState.mode === 'write' && (
+              <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+            )}
+          </>
+        ),
+      }}
+      state={{
+        ...whiteboardsState,
+        ...actionsState,
+      }}
+    />
   );
 };
 

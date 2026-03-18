@@ -1,6 +1,6 @@
 import { Box, type BoxProps } from '@mui/material';
 import { type ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
 
 enum Stage {
@@ -123,7 +123,7 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
     containerRef.current = wrapperElementRef.current?.parentElement ?? null;
   }, [wrapperElementRef.current]);
 
-  const { width } = useResizeDetector({ targetRef: containerRef });
+  const { width } = useResizeObserver({ targetRef: containerRef });
 
   useLayoutEffect(() => {
     dispatch({

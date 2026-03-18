@@ -22,8 +22,8 @@ import {
   Typography,
 } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { keyBy, orderBy } from 'lodash-es';
-import { useEffect, useMemo, useState } from 'react';
+import { orderBy } from 'lodash-es';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import type { Message } from '@/core/apollo/generated/graphql-schema';
@@ -34,10 +34,10 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
+import { useCommunityUpdatesViewState } from './useCommunityUpdatesViewState';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -73,9 +73,7 @@ const expandStyles = theme => ({
 });
 
 export const CommunityUpdatesView = ({ entities, actions, state, options }: CommunityUpdatesViewProps) => {
-  const notify = useNotification();
   const { t } = useTranslation();
-  // entities
   const { messages, authors } = entities;
   const { loadingMessages, removingMessage } = state;
   const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
@@ -90,39 +88,13 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
-  const [stubMessageId, setStubMessageId] = useState<string | null>(null);
-  const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
-  const memberMap = useMemo(() => keyBy(authors, m => m.id), [authors]);
+
+  const { stubMessageId, setStubMessageId, removedMessageId, setRemovedMessageId, memberMap, handleCopy } =
+    useCommunityUpdatesViewState(orderedMessages, authors);
 
   const displayCardActions = canCopy || canRemove || !disableCollapse;
   const lastItemIndex = orderedMessages.length - 1;
-
-  //effects
-  useEffect(() => {
-    setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
-  }, [setStubMessageId, orderedMessages]);
-
-  useEffect(() => {
-    setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
-  }, [setRemovedMessageId, orderedMessages]);
-  // TODO: Some translations are missing
-
-  const handleCopy = (message: string) => {
-    if (!message) {
-      notify('No content to copy', 'error');
-      return;
-    }
-
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard
-        .writeText(message)
-        .then(() => notify('Post copied to clipboard', 'info'))
-        .catch(() => notify('Failed to copy content', 'error'));
-    } else {
-      notify('Clipboard not supported', 'error');
-    }
-  };
 
   return (
     <>

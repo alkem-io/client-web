@@ -14,11 +14,6 @@ import {
 } from '@mui/material';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useLeaveConversationMutation,
-  useMarkMessageAsReadMutation,
-  useSendMessageToRoomMutation,
-} from '@/core/apollo/generated/apollo-hooks';
 import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -26,15 +21,14 @@ import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
-import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import CommentReactions from '@/domain/communication/room/Comments/CommentReactions';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
-import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { GroupChatManagementDialog } from './GroupChatManagementDialog';
 import { GroupCompositeAvatar } from './GroupCompositeAvatar';
 import type { ConversationMessage } from './useConversationMessages';
+import { useConversationView } from './useConversationView';
 import type { UserConversation } from './useUserConversations';
 
 interface MessageBubbleProps {
@@ -223,47 +217,21 @@ export const UserMessagingConversationView = ({
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
   const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
-  const [leaveConversation] = useLeaveConversationMutation();
 
   const isGroup = conversation?.isGroup ?? false;
 
+  const {
+    isSending,
+    handleLeaveGroup: leaveGroup,
+    handleSendMessage,
+    handleAddReaction,
+    handleRemoveReaction,
+  } = useConversationView(conversation, messages, onLeaveConversation);
+
   const handleLeaveGroup = async () => {
-    if (!conversation) return;
-    // Fire-and-forget: the subscription (MEMBER_REMOVED / CONVERSATION_DELETED) handles cache removal
-    await leaveConversation({
-      variables: { leaveData: { conversationID: conversation.id } },
-    });
+    await leaveGroup();
     setIsLeaveConfirmOpen(false);
-    onLeaveConversation?.();
   };
-
-  const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
-  const { addReaction, removeReaction } = useCommentReactionsMutations(conversation?.roomId);
-  useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
-  const [markAsRead] = useMarkMessageAsReadMutation();
-  const lastMarkedRef = useRef<string | null>(null);
-
-  // Send read receipt to Matrix when messages are available
-  useEffect(() => {
-    if (!conversation?.roomId || !messages.length) return;
-
-    const lastMessage = messages[messages.length - 1];
-    const key = `${conversation.roomId}:${lastMessage.id}`;
-
-    // Skip if we already marked this exact message as read
-    if (lastMarkedRef.current === key) return;
-    lastMarkedRef.current = key;
-
-    const roomId = conversation.roomId;
-    markAsRead({
-      variables: {
-        messageData: {
-          roomID: roomId,
-          messageID: lastMessage.id,
-        },
-      },
-    }).catch(_error => {});
-  }, [conversation?.roomId, messages, markAsRead]);
 
   // Scroll to bottom when messages change
   useLayoutEffect(() => {
@@ -273,40 +241,6 @@ export const UserMessagingConversationView = ({
 
     return () => clearTimeout(timeoutId);
   }, [messages.length, conversation?.roomId]);
-
-  const handleSendMessage = async (message: string) => {
-    if (!conversation?.roomId || !message.trim()) {
-      return;
-    }
-
-    try {
-      await sendMessage({
-        variables: {
-          messageData: {
-            roomID: conversation.roomId,
-            message: message.trim(),
-          },
-        },
-      });
-      return true; // Return true to reset the form
-    } catch (_error) {
-      return false;
-    }
-  };
-
-  const handleAddReaction = (messageId: string) => (emoji: string) => {
-    if (!conversation?.roomId) {
-      return;
-    }
-    return addReaction({ emoji, messageId });
-  };
-
-  const handleRemoveReaction = (reactionId: string) => {
-    if (!conversation?.roomId) {
-      return;
-    }
-    return removeReaction(reactionId);
-  };
 
   if (!conversation) {
     return (
