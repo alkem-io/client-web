@@ -1,0 +1,9 @@
+query MyPushSubscriptions {
+  myPushSubscriptions {
+    id
+    createdDate
+    status
+    userAgent
+    lastActiveDate
+  }
+}

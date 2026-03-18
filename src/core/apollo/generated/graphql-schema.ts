@@ -4666,6 +4666,8 @@ export type Mutation = {
   setDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
   setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
+  /** Subscribe the current user's device to push notifications. If the subscription endpoint already exists, it is updated. If the user has reached the maximum number of subscriptions (10), the oldest subscription is automatically replaced. */
+  subscribeToPushNotifications: PushSubscription;
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4676,6 +4678,8 @@ export type Mutation = {
   transferSpaceToAccount: Space;
   /** Transfer the specified Virtual Contributor to another Account. */
   transferVirtualContributorToAccount: InnovationPack;
+  /** Remove a push notification subscription for the current user. */
+  unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
   /** Update the baseline License Plan on the specified Account. */
@@ -5312,6 +5316,10 @@ export type MutationSetPlatformWellKnownVirtualContributorArgs = {
   mappingData: SetPlatformWellKnownVirtualContributorInput;
 };
 
+export type MutationSubscribeToPushNotificationsArgs = {
+  subscriptionData: SubscribeToPushNotificationsInput;
+};
+
 export type MutationTransferCalloutArgs = {
   transferData: TransferCalloutInput;
 };
@@ -5330,6 +5338,10 @@ export type MutationTransferSpaceToAccountArgs = {
 
 export type MutationTransferVirtualContributorToAccountArgs = {
   transferData: TransferAccountVirtualContributorInput;
+};
+
+export type MutationUnsubscribeFromPushNotificationsArgs = {
+  subscriptionData: UnsubscribeFromPushNotificationsInput;
 };
 
 export type MutationUpdateApplicationFormOnRoleSetArgs = {
@@ -5682,6 +5694,8 @@ export type NotificationRecipientResult = {
   emailRecipients: Array<User>;
   /** The in-app recipients for the notification. */
   inAppRecipients: Array<User>;
+  /** The push recipients for the notification. */
+  pushRecipients: Array<User>;
   /** The user that triggered the event. */
   triggeredBy?: Maybe<User>;
 };
@@ -5706,6 +5720,8 @@ export type NotificationSettingInput = {
   email?: InputMaybe<Scalars['Boolean']['input']>;
   /** Enable in-app notifications for this setting */
   inApp?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Enable push notifications for this setting */
+  push?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export enum OpenAiModel {
@@ -6527,6 +6543,27 @@ export type PruneInAppNotificationAdminResult = {
   removedCountOutsideRetentionPeriod: Scalars['Int']['output'];
 };
 
+/** Represents a user's push notification subscription for a specific device/browser. */
+export type PushSubscription = {
+  __typename?: 'PushSubscription';
+  /** When this subscription was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** Unique identifier for this subscription. */
+  id: Scalars['UUID']['output'];
+  /** Last time a notification was successfully delivered to this subscription. */
+  lastActiveDate?: Maybe<Scalars['DateTime']['output']>;
+  /** Current status of the subscription. */
+  status: PushSubscriptionStatus;
+  /** Browser/device user agent string for display purposes. */
+  userAgent?: Maybe<Scalars['String']['output']>;
+};
+
+/** Status of a push notification subscription. */
+export enum PushSubscriptionStatus {
+  Active = 'ACTIVE',
+  Expired = 'EXPIRED',
+}
+
 export type Query = {
   __typename?: 'Query';
   /** The Accounts on this platform; If accessed through an Innovation Hub will return ONLY the Accounts defined in it. */
@@ -6555,6 +6592,8 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
+  /** Returns the current user's active push notification subscriptions. Requires authentication. */
+  myPushSubscriptions: Array<PushSubscription>;
   /** The notificationRecipients for the provided event on the given entity. */
   notificationRecipients: NotificationRecipientResult;
   /** A particular Organization */
@@ -6595,6 +6634,8 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+  /** Returns the VAPID public key needed by clients to subscribe to push notifications. Returns null if push notifications are not enabled on this server. */
+  vapidPublicKey?: Maybe<Scalars['String']['output']>;
   /** A particular VirtualContributor */
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform; only accessible to platform admins */
@@ -7900,6 +7941,17 @@ export type StorageConfig = {
   file: FileStorageConfig;
 };
 
+export type SubscribeToPushNotificationsInput = {
+  /** The auth key from PushSubscription.getKey('auth'), Base64URL-encoded */
+  auth: Scalars['String']['input'];
+  /** The push service endpoint URL from PushSubscription.endpoint */
+  endpoint: Scalars['String']['input'];
+  /** The p256dh key from PushSubscription.getKey('p256dh'), Base64URL-encoded */
+  p256dh: Scalars['String']['input'];
+  /** Optional browser/device user agent for display in subscription management UI */
+  userAgent?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   activityCreated: ActivityCreatedSubscriptionResult;
@@ -8242,6 +8294,11 @@ export type TransferCalloutInput = {
   calloutID: Scalars['UUID']['input'];
   /** The target CalloutsSet to which the Callout will be transferred. */
   targetCalloutsSetID: Scalars['UUID']['input'];
+};
+
+export type UnsubscribeFromPushNotificationsInput = {
+  /** The ID of the push subscription to remove. */
+  subscriptionID: Scalars['UUID']['input'];
 };
 
 export type UpdateAiPersonaInput = {
@@ -9326,6 +9383,8 @@ export type UserSettingsNotificationChannels = {
   email: Scalars['Boolean']['output'];
   /** Receive notifications by inApp. */
   inApp: Scalars['Boolean']['output'];
+  /** Receive push notifications. */
+  push: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsNotificationOrganization = {
@@ -21746,67 +21805,102 @@ export type UpdateUserSettingsMutation = {
     id: string;
     settings: {
       __typename?: 'UserSettings';
+      id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         user: {
           __typename?: 'UserSettingsNotificationUser';
-          mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean; push: boolean };
+          commentReply: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          messageReceived: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           membership: {
             __typename?: 'UserSettingsNotificationUserMembership';
             spaceCommunityInvitationReceived: {
               __typename?: 'UserSettingsNotificationChannels';
               email: boolean;
               inApp: boolean;
+              push: boolean;
             };
-            spaceCommunityJoined: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            spaceCommunityJoined: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
           };
         };
         space: {
           __typename?: 'UserSettingsNotificationSpace';
-          communicationUpdates: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          communicationUpdates: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           collaborationCalloutPublished: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           collaborationCalloutComment: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           collaborationCalloutContributionCreated: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           collaborationCalloutPostContributionComment: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
-          communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          communityCalendarEvents: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           collaborationPollVoteCastOnOwnPoll: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           collaborationPollVoteCastOnPollIVotedOn: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           collaborationPollModifiedOnPollIVotedOn: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           collaborationPollVoteAffectedByOptionChange: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
           admin: {
             __typename?: 'UserSettingsNotificationSpaceAdmin';
@@ -21814,36 +21908,84 @@ export type UpdateUserSettingsMutation = {
               __typename?: 'UserSettingsNotificationChannels';
               email: boolean;
               inApp: boolean;
+              push: boolean;
             };
-            communityNewMember: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            communityNewMember: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
             collaborationCalloutContributionCreated: {
               __typename?: 'UserSettingsNotificationChannels';
               email: boolean;
               inApp: boolean;
+              push: boolean;
             };
             communicationMessageReceived: {
               __typename?: 'UserSettingsNotificationChannels';
               email: boolean;
               inApp: boolean;
+              push: boolean;
             };
           };
         };
         platform: {
           __typename?: 'UserSettingsNotificationPlatform';
-          forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          forumDiscussionComment: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          forumDiscussionCreated: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           admin: {
             __typename?: 'UserSettingsNotificationPlatformAdmin';
-            userProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-            userProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-            userGlobalRoleChanged: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-            spaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            userProfileCreated: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
+            userProfileRemoved: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
+            userGlobalRoleChanged: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
+            spaceCreated: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+              push: boolean;
+            };
           };
         };
         organization: {
           __typename?: 'UserSettingsNotificationOrganization';
-          adminMentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          adminMessageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          adminMentioned: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          adminMessageReceived: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
         };
         virtualContributor: {
           __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -21851,6 +21993,7 @@ export type UpdateUserSettingsMutation = {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
+            push: boolean;
           };
         };
       };
@@ -21870,18 +22013,58 @@ export type UserSettingsFragmentFragment = {
       __typename?: 'UserSettingsNotificationPlatform';
       admin: {
         __typename?: 'UserSettingsNotificationPlatformAdmin';
-        userProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-        userProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-        spaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-        userGlobalRoleChanged: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        userProfileRemoved: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
+        userProfileCreated: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
+        spaceCreated: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
+        userGlobalRoleChanged: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
       };
-      forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      forumDiscussionComment: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      forumDiscussionCreated: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     organization: {
       __typename?: 'UserSettingsNotificationOrganization';
-      adminMentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      adminMessageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      adminMentioned: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      adminMessageReceived: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     space: {
       __typename?: 'UserSettingsNotificationSpace';
@@ -21891,56 +22074,86 @@ export type UserSettingsFragmentFragment = {
           __typename?: 'UserSettingsNotificationChannels';
           email: boolean;
           inApp: boolean;
+          push: boolean;
         };
         collaborationCalloutContributionCreated: {
           __typename?: 'UserSettingsNotificationChannels';
           email: boolean;
           inApp: boolean;
+          push: boolean;
         };
-        communityNewMember: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        communityNewMember: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
         communicationMessageReceived: {
           __typename?: 'UserSettingsNotificationChannels';
           email: boolean;
           inApp: boolean;
+          push: boolean;
         };
       };
       collaborationCalloutContributionCreated: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
-      communicationUpdates: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      communicationUpdates: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
       collaborationCalloutPublished: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
-      collaborationCalloutComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      collaborationCalloutComment: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
       collaborationCalloutPostContributionComment: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
-      communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      communityCalendarEvents: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
       collaborationPollVoteCastOnOwnPoll: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
       collaborationPollVoteCastOnPollIVotedOn: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
       collaborationPollModifiedOnPollIVotedOn: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
       collaborationPollVoteAffectedByOptionChange: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
     };
     user: {
@@ -21951,12 +22164,23 @@ export type UserSettingsFragmentFragment = {
           __typename?: 'UserSettingsNotificationChannels';
           email: boolean;
           inApp: boolean;
+          push: boolean;
         };
-        spaceCommunityJoined: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        spaceCommunityJoined: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+          push: boolean;
+        };
       };
-      mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean; push: boolean };
+      commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean; push: boolean };
+      messageReceived: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -21964,6 +22188,7 @@ export type UserSettingsFragmentFragment = {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
+        push: boolean;
       };
     };
   };
@@ -21997,37 +22222,53 @@ export type UserSettingsQuery = {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                   userProfileCreated: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
-                  spaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                  spaceCreated: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                    push: boolean;
+                  };
                   userGlobalRoleChanged: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                 };
                 forumDiscussionComment: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 forumDiscussionCreated: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
               };
               organization: {
                 __typename?: 'UserSettingsNotificationOrganization';
-                adminMentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                adminMentioned: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
                 adminMessageReceived: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
               };
               space: {
@@ -22038,52 +22279,62 @@ export type UserSettingsQuery = {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                   collaborationCalloutContributionCreated: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                   communityNewMember: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                   communicationMessageReceived: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                 };
                 collaborationCalloutContributionCreated: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 communicationUpdates: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationCalloutPublished: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationCalloutComment: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationCalloutPostContributionComment: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 communityCalendarEvents: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationPollVoteCastOnOwnPoll: {
                   __typename?: 'UserSettingsNotificationChannels';
@@ -22114,16 +22365,33 @@ export type UserSettingsQuery = {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                   spaceCommunityJoined: {
                     __typename?: 'UserSettingsNotificationChannels';
                     email: boolean;
                     inApp: boolean;
+                    push: boolean;
                   };
                 };
-                mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-                commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-                messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                mentioned: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                commentReply: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                messageReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
               };
               virtualContributor: {
                 __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -22131,6 +22399,7 @@ export type UserSettingsQuery = {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
               };
             };
@@ -36906,6 +37175,49 @@ export type InAppNotificationsUnreadCountQuery = {
   __typename?: 'Query';
   me: { __typename?: 'MeQueryResults'; notificationsUnreadCount: number };
 };
+
+export type MyPushSubscriptionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyPushSubscriptionsQuery = {
+  __typename?: 'Query';
+  myPushSubscriptions: Array<{
+    __typename?: 'PushSubscription';
+    id: string;
+    createdDate: Date;
+    status: PushSubscriptionStatus;
+    userAgent?: string | undefined;
+    lastActiveDate?: Date | undefined;
+  }>;
+};
+
+export type SubscribeToPushNotificationsMutationVariables = Exact<{
+  subscriptionData: SubscribeToPushNotificationsInput;
+}>;
+
+export type SubscribeToPushNotificationsMutation = {
+  __typename?: 'Mutation';
+  subscribeToPushNotifications: {
+    __typename?: 'PushSubscription';
+    id: string;
+    createdDate: Date;
+    status: PushSubscriptionStatus;
+    userAgent?: string | undefined;
+    lastActiveDate?: Date | undefined;
+  };
+};
+
+export type UnsubscribeFromPushNotificationsMutationVariables = Exact<{
+  subscriptionData: UnsubscribeFromPushNotificationsInput;
+}>;
+
+export type UnsubscribeFromPushNotificationsMutation = {
+  __typename?: 'Mutation';
+  unsubscribeFromPushNotifications: { __typename?: 'PushSubscription'; id: string; status: PushSubscriptionStatus };
+};
+
+export type VapidPublicKeyQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VapidPublicKeyQuery = { __typename?: 'Query'; vapidPublicKey?: string | undefined };
 
 export type UrlResolverQueryVariables = Exact<{
   url: Scalars['String']['input'];

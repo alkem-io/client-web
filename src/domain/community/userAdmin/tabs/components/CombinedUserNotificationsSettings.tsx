@@ -1,36 +1,42 @@
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
-import { NotificationValidationType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
+import TripleSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/TripleSwitchSettingsGroup';
+import { NotificationValidationType, type ChannelType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
 import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import type { UserNotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
 
 interface CombinedUserNotificationsSettingsProps {
   currentUserSettings: UserNotificationSettings | undefined;
-  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
+  onUpdateSettings: (property: string, type: ChannelType, value: boolean) => Promise<void>;
+  isPushEnabled: boolean;
+  isPushAvailable: boolean;
 }
 
 export const CombinedUserNotificationsSettings = ({
   currentUserSettings,
   onUpdateSettings,
+  isPushEnabled,
+  isPushAvailable,
 }: CombinedUserNotificationsSettingsProps) => {
   const { t } = useTranslation();
 
   const userOptions = {
-    // User interaction notifications
     commentReply: {
       inAppChecked: currentUserSettings?.commentReply?.inApp || false,
       emailChecked: currentUserSettings?.commentReply?.email || false,
+      pushChecked: currentUserSettings?.commentReply?.push || false,
       label: t('pages.userNotificationsSettings.user.settings.commentReply'),
     },
     mentioned: {
       inAppChecked: currentUserSettings?.mentioned?.inApp || false,
       emailChecked: currentUserSettings?.mentioned?.email || false,
+      pushChecked: currentUserSettings?.mentioned?.push || false,
       label: t('pages.userNotificationsSettings.user.settings.mentioned'),
     },
     messageReceived: {
       inAppChecked: currentUserSettings?.messageReceived?.inApp || false,
       emailChecked: currentUserSettings?.messageReceived?.email || false,
+      pushChecked: currentUserSettings?.messageReceived?.push || false,
       label: t('pages.userNotificationsSettings.user.settings.messageReceived'),
       validationRules: [
         {
@@ -39,10 +45,10 @@ export const CombinedUserNotificationsSettings = ({
         },
       ],
     },
-    // User membership notifications
     'membership.spaceCommunityInvitationReceived': {
       inAppChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.inApp || false,
       emailChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.email || false,
+      pushChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.push || false,
       label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityInvitation'),
       validationRules: [
         {
@@ -54,6 +60,7 @@ export const CombinedUserNotificationsSettings = ({
     'membership.spaceCommunityJoined': {
       inAppChecked: currentUserSettings?.membership?.spaceCommunityJoined?.inApp || false,
       emailChecked: currentUserSettings?.membership?.spaceCommunityJoined?.email || false,
+      pushChecked: currentUserSettings?.membership?.spaceCommunityJoined?.push || false,
       label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityJoined'),
     },
   };
@@ -62,7 +69,12 @@ export const CombinedUserNotificationsSettings = ({
     <PageContentBlock>
       <BlockTitle>{t('pages.userNotificationsSettings.user.title')}</BlockTitle>
       <Caption>{t('pages.userNotificationsSettings.user.subtitle')}</Caption>
-      <DualSwitchSettingsGroup options={userOptions} onChange={onUpdateSettings} />
+      <TripleSwitchSettingsGroup
+        options={userOptions}
+        onChange={onUpdateSettings}
+        isPushEnabled={isPushEnabled}
+        isPushAvailable={isPushAvailable}
+      />
     </PageContentBlock>
   );
 };
