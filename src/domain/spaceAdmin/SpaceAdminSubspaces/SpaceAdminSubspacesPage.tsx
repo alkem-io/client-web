@@ -27,7 +27,7 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import InnovationFlowCalloutsPreview from '@/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import { type SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
+import type { SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';

@@ -1,5 +1,4 @@
 // TODO: Implement template creation from createInput service
-// import { t } from 'xstate';
 // import { CreateTemplateMutationVariables, TemplateType } from '@/core/apollo/generated/graphql-schema';
 // import { AnyTemplate } from '../models/TemplateBase';
 // import { useCreateCalloutInputLazyQuery } from '@/core/apollo/generated/apollo-hooks';

@@ -3,7 +3,7 @@ import type { GraphQLError, GraphQLFormattedError } from 'graphql';
 import type { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
-import type { Severity } from '@/core/state/global/notifications/notificationMachine';
+import type { Severity } from '@/core/state/global/notifications/useNotifications';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 

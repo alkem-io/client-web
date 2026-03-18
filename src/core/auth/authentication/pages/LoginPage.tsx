@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import type { LoginFlow } from '@ory/kratos-client';
-import { produce } from 'immer';
+
 import { useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -66,7 +66,8 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
-    produce(loginFlow.ui, ui => {
+    (() => {
+      const ui = structuredClone(loginFlow.ui);
       if (kratosErrors) {
         ui.messages = kratosErrors;
       }
@@ -78,7 +79,8 @@ const LoginPage = ({ flow }: LoginPageProps) => {
         };
         ui.messages = [...(ui.messages ?? []), lockoutMessage];
       }
-    });
+      return ui;
+    })();
 
   useEffect(() => {
     setReturnUrl(returnUrl);

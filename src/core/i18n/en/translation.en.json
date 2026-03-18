@@ -2285,7 +2285,28 @@
       "startTyping": "Start typing to search users",
       "searchUsers": "Search users...",
       "searchConversations": "Search...",
-      "createChat": "Create Chat"
+      "createChat": "Create Chat",
+      "startGroupChat": "Start group chat",
+      "groupChatName": "Group name",
+      "groupChatNameRequired": "Group name is required",
+      "selectMembers": "Add members",
+      "selectMembersHint": "Search and add members to the group",
+      "createGroupChat": "Start group convo",
+      "editProfilePicture": "Edit profile picture",
+      "addMembers": "Add members",
+      "groupMembers": "Members",
+      "remove": "Remove",
+      "manageGroup": "Manage group",
+      "leaveGroup": "Leave group",
+      "leaveGroupConfirmTitle": "Leave group chat?",
+      "leaveGroupConfirmMessage": "You will lose access to this group chat and won’t be able to read or send messages.",
+      "noMembersSelected": "Add at least one member",
+      "membersCount_one": "{{count}} member",
+      "membersCount_other": "{{count}} members",
+      "saveGroup": "Save Group",
+      "discardChangesTitle": "Unsaved changes",
+      "discardChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
+      "discardChanges": "Discard"
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
@@ -2494,7 +2515,13 @@
           },
           "layout": {
             "description": "Here you can edit the layout for this {{entity}}.",
-            "innovationFlowEditor": "$t(common.space) tabs"
+            "innovationFlowEditor": "$t(common.space) tabs",
+            "calloutDisplayMode": {
+              "title": "$t(common.Post) description display",
+              "expanded": "Expanded",
+              "collapsed": "Collapsed",
+              "description": "Collapse $t(common.post) descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+            }
           },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-$t(common.members)."
@@ -2603,7 +2630,8 @@
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "License updated successfully",
-            "deletedSuccessfully": "{{entity}} deleted successfully"
+            "deletedSuccessfully": "{{entity}} deleted successfully",
+            "deleteFailed": "Failed to delete {{entity}}"
           },
           "settings": {
             "description": "Here you can edit the visibility $t(common.settings) of your {{entity}}."
@@ -3279,7 +3307,13 @@
       },
       "updates": {
         "title": "Updates from the $t(common.leads) ({{count}})",
-        "no-data": "No updates available"
+        "no-data": "No updates available",
+        "copy": {
+          "noContent": "No content to copy",
+          "success": "Post copied to clipboard",
+          "failed": "Failed to copy content",
+          "unsupported": "Clipboard not supported"
+        }
       }
     },
     "whiteboard": {

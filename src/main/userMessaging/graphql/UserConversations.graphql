@@ -1,10 +1,14 @@
 query UserConversations {
   me {
     conversations {
-      users {
+      conversations {
         id
         room {
           id
+          type
+          displayName
+          avatarUrl
+          createdDate
           unreadCount
           messagesCount
           lastMessage {
@@ -37,8 +41,9 @@ query UserConversations {
             }
           }
         }
-        user {
+        members {
           id
+          type
           profile {
             id
             displayName

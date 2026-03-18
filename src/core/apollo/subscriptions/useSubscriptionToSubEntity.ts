@@ -1,6 +1,5 @@
 import type { OperationVariables, TypedDocumentNode } from '@apollo/client';
 import type { SubscribeToMoreFunction } from '@apollo/client/core/watchQueryOptions';
-import { produce } from 'immer';
 import useSubscribeToMore, { type Options } from './useSubscribeToMore';
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
@@ -24,8 +23,8 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  * @param options.subscriptionDocument - the subscription document to fetch.
  * @param options.getSubscriptionVariables - the function that constructs subscription variables by reading the entity.
  * @param options.updateSubEntity - the callback that updates cache based on the received subscription message; it should
- * just mutate the cache data directly by leveraging property assignments, array.push(), etc.; immutability / producing new
- * structures is ensured/handled by 'immer'.
+ * just mutate the cache data directly by leveraging property assignments, array.push(), etc.; a deep clone via
+ * structuredClone is used to ensure immutability.
  */
 // todo rename createUseSubscriptionToParentQuery
 const createUseSubscriptionToSubEntityHook =
@@ -48,10 +47,13 @@ const createUseSubscriptionToSubEntityHook =
       document: options.subscriptionDocument,
       variables,
       updateQuery: (prev, { subscriptionData }) => {
-        return produce(prev, next => {
-          const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
-          options.updateSubEntity(nextSubEntity, subscriptionData.data as SubEntitySubscription);
-        });
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const next = structuredClone(prev);
+        const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
+        options.updateSubEntity(nextSubEntity, subscriptionData.data as SubEntitySubscription);
+        return next;
       },
       ...subscriptionOptions,
       skip,
