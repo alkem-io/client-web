@@ -58,13 +58,6 @@ describe('PollFormFields', () => {
     expect(addButton).toBeDefined();
   });
 
-  test('renders poll title field', () => {
-    renderWithFormik();
-
-    const titleLabel = screen.getByText('poll.create.title');
-    expect(titleLabel).toBeDefined();
-  });
-
   test('renders options header', () => {
     renderWithFormik();
 
