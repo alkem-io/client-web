@@ -35,3 +35,9 @@ mutation RemovePollVote($pollId: UUID!) {
     ...PollDetails
   }
 }
+
+mutation UpdatePollStatus($statusData: UpdatePollStatusInput!) {
+  updatePollStatus(statusData: $statusData) {
+    ...PollDetails
+  }
+}

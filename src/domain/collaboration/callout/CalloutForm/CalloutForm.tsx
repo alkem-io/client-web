@@ -3,7 +3,7 @@ import { Formik, type FormikConfig } from 'formik';
 import { cloneDeep } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import type { CalloutContributionType, PollStatus } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -37,6 +37,8 @@ export interface CalloutFormProps {
   edit?: boolean;
   /** is the form used inside a template creation flow */
   template?: boolean;
+  pollId?: string;
+  pollStatus?: PollStatus;
 }
 
 const CalloutForm = ({
@@ -48,6 +50,8 @@ const CalloutForm = ({
   edit = false,
   template = false,
   children,
+  pollId,
+  pollStatus,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
@@ -104,7 +108,13 @@ const CalloutForm = ({
               temporaryLocation={!callout?.id}
               hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
-            <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} edit={edit} template={template} />
+            <CalloutFormFramingSettings
+              calloutRestrictions={calloutRestrictions}
+              edit={edit}
+              template={template}
+              pollId={pollId}
+              pollStatus={pollStatus}
+            />
             {formikState.values.framing.profile.id ? (
               <ProfileReferenceSegment
                 profileId={formikState.values.framing.profile.id}

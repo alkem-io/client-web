@@ -8,12 +8,17 @@ import {
 } from '@dnd-kit/sortable';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Box, IconButton } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { FieldArray, getIn, useFormikContext } from 'formik';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUpdatePollStatusMutation } from '@/core/apollo/generated/apollo-hooks';
+import { PollStatus } from '@/core/apollo/generated/graphql-schema';
 import AddButton from '@/core/ui/button/AddButton';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Caption } from '@/core/ui/typography';
 import type { PollFormOptionValue } from '@/domain/collaboration/poll/models/PollModels';
 import PollFormSettingsSection from '@/domain/collaboration/poll/PollFormSettingsSection';
@@ -29,11 +34,19 @@ interface SortableOptionRowProps {
   formPrefix: string;
   canRemove: boolean;
   onRemove: () => void;
+  disabled?: boolean;
 }
 
-const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: SortableOptionRowProps) => {
+const SortableOptionRow = ({
+  id,
+  index,
+  formPrefix,
+  canRemove,
+  onRemove,
+  disabled = false,
+}: SortableOptionRowProps) => {
   const { t } = useTranslation();
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled });
 
   return (
     <Box
@@ -55,8 +68,9 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
         size="small"
         {...listeners}
         {...attributes}
+        disabled={disabled}
         aria-label={t('poll.options.reorder')}
-        sx={{ mt: 1, cursor: 'grab', touchAction: 'none' }}
+        sx={{ mt: 1, cursor: disabled ? 'default' : 'grab', touchAction: 'none' }}
       >
         <DragIndicatorIcon fontSize="small" />
       </IconButton>
@@ -65,10 +79,17 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
         name={`${formPrefix}.options.${index}.text`}
         required={true}
         maxLength={512}
+        disabled={disabled}
         containerProps={{ sx: { flex: 1 } }}
       />
       {canRemove && (
-        <IconButton onClick={onRemove} size="small" aria-label={t('poll.options.remove')} sx={{ mt: 1 }}>
+        <IconButton
+          onClick={onRemove}
+          size="small"
+          disabled={disabled}
+          aria-label={t('poll.options.remove')}
+          sx={{ mt: 1 }}
+        >
           <DeleteOutlineIcon fontSize="small" />
         </IconButton>
       )}
@@ -78,15 +99,20 @@ const SortableOptionRow = ({ id, index, formPrefix, canRemove, onRemove }: Sorta
 
 interface PollFormFieldsProps {
   formPrefix?: string;
-  /**
-   * If true the settings will be read only.
-   */
   readOnlySettings?: boolean;
+  pollId?: string;
+  pollStatus?: PollStatus;
 }
 
-const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnlySettings = false }: PollFormFieldsProps) => {
+const PollFormFields = ({
+  formPrefix = FIELD_PREFIX,
+  readOnlySettings = false,
+  pollId,
+  pollStatus,
+}: PollFormFieldsProps) => {
   const { t } = useTranslation();
   const { values } = useFormikContext<CalloutFormSubmittedValues>();
+  const notify = useNotification();
 
   const options: PollFormOptionValue[] = getIn(values, `${formPrefix}.options`) ?? [];
 
@@ -97,6 +123,33 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnlySettings = false }:
 
   // Use stable IDs for sortable: existing options use their id, new ones use index-based keys
   const itemIds = options.map((option, index) => option.id ?? `new-${index}`);
+
+  const isEditing = Boolean(pollId); // Editing an existing poll or creating a new one
+  // New polls are always open by default
+  const isOpen = !isEditing || pollStatus === PollStatus.Open;
+
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [updatePollStatus, { loading: updatingStatus }] = useUpdatePollStatusMutation();
+
+  const handleStatusChange = async () => {
+    if (!pollId) return;
+    const newStatus = isOpen ? PollStatus.Closed : PollStatus.Open;
+    try {
+      await updatePollStatus({
+        variables: {
+          statusData: {
+            pollID: pollId,
+            status: newStatus,
+          },
+        },
+      });
+      notify(isOpen ? t('poll.manage.closePollSuccess') : t('poll.manage.reopenPollSuccess'), 'success');
+    } catch {
+      notify(t('poll.manage.statusChangeFailed'), 'error');
+    } finally {
+      setConfirmDialogOpen(false);
+    }
+  };
 
   return (
     <Box>
@@ -130,21 +183,55 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnlySettings = false }:
                         formPrefix={formPrefix}
                         canRemove={options.length > MIN_POLL_OPTIONS}
                         onRemove={() => arrayHelpers.remove(index)}
+                        disabled={!isOpen}
                       />
                     </Gutters>
                   ))}
                 </SortableContext>
               </DndContext>
               <Gutters row={true} disablePadding={true} justifyContent="space-between">
-                <AddButton
-                  onClick={() => arrayHelpers.push({ text: '' })}
-                  disabled={options.length >= MAX_POLL_OPTIONS}
-                  caption={t('poll.options.add')}
-                />
-                <PollFormSettingsSection fieldPrefix={formPrefix} readOnly={readOnlySettings} />
+                {isOpen && (
+                  <AddButton
+                    onClick={() => arrayHelpers.push({ text: '' })}
+                    disabled={options.length >= MAX_POLL_OPTIONS}
+                    caption={t('poll.options.add')}
+                  />
+                )}
+                {!isOpen && <Caption>{t('poll.status.closed')}</Caption>}
+                <Gutters disablePadding={true} row={true} gap={1} alignItems="center">
+                  {isEditing && (
+                    <Button
+                      variant="outlined"
+                      loading={updatingStatus}
+                      disabled={updatingStatus}
+                      onClick={() => setConfirmDialogOpen(true)}
+                    >
+                      {isOpen ? t('poll.manage.closePoll') : t('poll.manage.reopenPoll')}
+                    </Button>
+                  )}
+                  <PollFormSettingsSection fieldPrefix={formPrefix} readOnly={readOnlySettings} />
+                </Gutters>
               </Gutters>
             </Gutters>
           );
+        }}
+      />
+
+      <ConfirmationDialog
+        entities={{
+          title: isOpen ? t('poll.manage.closePollConfirm.title') : t('poll.manage.reopenPollConfirm.title'),
+          content: isOpen ? t('poll.manage.closePollConfirm.content') : t('poll.manage.reopenPollConfirm.content'),
+          confirmButtonText: isOpen ? t('poll.manage.closePoll') : t('poll.manage.reopenPoll'),
+        }}
+        actions={{
+          onCancel: () => setConfirmDialogOpen(false),
+          onConfirm: handleStatusChange,
+        }}
+        options={{
+          show: confirmDialogOpen,
+        }}
+        state={{
+          isLoading: updatingStatus,
         }}
       />
     </Box>

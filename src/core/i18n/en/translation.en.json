@@ -104,6 +104,7 @@
     "adminsOnly": "Since there are no events, this block is only visible for $t(common.admins) and $t(common.leads)"
   },
   "buttons": {
+    "accept": "Accept",
     "add": "Add",
     "leave": "Leave",
     "learn-more": "Learn more",
@@ -2432,7 +2433,20 @@
     },
     "manage": {
       "editPoll": "Edit $t(common.poll)",
-      "done": "Done"
+      "done": "Done",
+      "closePoll": "Close poll",
+      "reopenPoll": "Reopen poll",
+      "closePollConfirm": {
+        "title": "Close poll",
+        "content": "Are you sure you want to close this poll? Users will no longer be able to vote."
+      },
+      "reopenPollConfirm": {
+        "title": "Reopen poll",
+        "content": "Are you sure you want to reopen this poll? Users will be able to vote again."
+      },
+      "closePollSuccess": "Poll closed successfully",
+      "reopenPollSuccess": "Poll reopened successfully",
+      "statusChangeFailed": "Failed to update poll status. Please try again."
     },
     "error": {
       "voteFailed": "Failed to submit your vote. Please try again.",

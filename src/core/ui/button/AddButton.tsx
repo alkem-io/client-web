@@ -13,12 +13,24 @@ type AddButtonProps = {
 
 const AddButton = ({ onClick, caption, disabled, ...props }: AddButtonProps) => {
   const { t } = useTranslation();
-  const [handleClick, loading] = useLoadingState(async () => await onClick());
+  const [handleClick, loading] = useLoadingState(async () => {
+    if (loading) return;
+    await onClick();
+  });
   return (
     <Box
       display="flex"
       alignItems="center"
       role="button"
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (!disabled) {
+            handleClick();
+          }
+        }
+      }}
       aria-label={caption ?? t('buttons.add')}
       {...(disabled ? undefined : { sx: { cursor: 'pointer' }, onClick: handleClick })}
       {...props}

@@ -146,6 +146,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   );
 
   const pollId = useMemo(() => data?.lookup.callout?.framing.poll?.id, [data?.lookup.callout?.framing.poll?.id]);
+  const pollStatus = data?.lookup.callout?.framing.poll?.status;
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -361,6 +362,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 onChange={setCalloutFormData}
                 onStatusChanged={handleStatusChange}
                 edit={true}
+                pollId={pollId}
+                pollStatus={pollStatus}
                 /* Users cannot change the allowedTypes on an already created callout for now */
                 calloutRestrictions={{
                   ...calloutRestrictions,

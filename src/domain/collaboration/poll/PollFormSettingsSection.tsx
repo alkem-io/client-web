@@ -148,12 +148,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
 
   return (
     <>
-      <Button
-        variant="outlined"
-        startIcon={<SettingsOutlinedIcon />}
-        onClick={() => setOpen(true)}
-        sx={{ alignSelf: 'flex-start', mt: 1 }}
-      >
+      <Button variant="outlined" startIcon={<SettingsOutlinedIcon />} onClick={() => setOpen(true)}>
         {t('poll.create.settings')}
       </Button>
 
@@ -250,7 +245,7 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
           <Tooltip title={error ? t('poll.create.fixErrorsBeforeClosingTooltip') : ''} arrow={true}>
             <span>
               <Button onClick={handleCloseDialog} variant="contained" disabled={!!error}>
-                {t('buttons.close')}
+                {t('buttons.accept')}
               </Button>
             </span>
           </Tooltip>

@@ -17396,6 +17396,66 @@ export type RemovePollVoteMutation = {
   };
 };
 
+export type UpdatePollStatusMutationVariables = Exact<{
+  statusData: UpdatePollStatusInput;
+}>;
+
+export type UpdatePollStatusMutation = {
+  __typename?: 'Mutation';
+  updatePollStatus: {
+    __typename?: 'Poll';
+    id: string;
+    createdDate: Date;
+    updatedDate: Date;
+    title: string;
+    status: PollStatus;
+    totalVotes?: number | undefined;
+    canSeeDetailedResults: boolean;
+    settings: {
+      __typename?: 'PollSettings';
+      allowContributorsAddOptions: boolean;
+      minResponses: number;
+      maxResponses: number;
+      resultsVisibility: PollResultsVisibility;
+      resultsDetail: PollResultsDetail;
+    };
+    options: Array<{
+      __typename?: 'PollOption';
+      id: string;
+      createdDate: Date;
+      updatedDate: Date;
+      text: string;
+      sortOrder: number;
+      voteCount?: number | undefined;
+      votePercentage?: number | undefined;
+      voters?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                }
+              | undefined;
+          }>
+        | undefined;
+    }>;
+    myVote?:
+      | {
+          __typename?: 'PollVote';
+          id: string;
+          createdDate: Date;
+          updatedDate: Date;
+          createdBy: string;
+          selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
+        }
+      | undefined;
+  };
+};
+
 export type PollVoteUpdatedSubscriptionVariables = Exact<{
   pollID: Scalars['UUID']['input'];
 }>;

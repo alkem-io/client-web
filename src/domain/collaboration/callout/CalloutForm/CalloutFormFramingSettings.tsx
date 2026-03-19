@@ -6,7 +6,12 @@ import { Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { Suspense, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutFramingType, PollResultsDetail, PollResultsVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutFramingType,
+  PollResultsDetail,
+  PollResultsVisibility,
+  type PollStatus,
+} from '@/core/apollo/generated/graphql-schema';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import EditButton from '@/core/ui/actions/EditButton';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -37,9 +42,17 @@ interface CalloutFormFramingSettingsProps {
   edit?: boolean;
   /** Indicates if the form is used in a template context */
   template?: boolean;
+  pollId?: string;
+  pollStatus?: PollStatus;
 }
 
-const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: CalloutFormFramingSettingsProps) => {
+const CalloutFormFramingSettings = ({
+  calloutRestrictions,
+  edit,
+  template,
+  pollId,
+  pollStatus,
+}: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
@@ -285,7 +298,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
 
       {framing.poll && framing.type === CalloutFramingType.Poll && (
         <PageContentBlock sx={{ marginBottom: gutters() }}>
-          <PollFormFields readOnlySettings={edit} />
+          <PollFormFields readOnlySettings={edit} pollId={pollId} pollStatus={pollStatus} />
         </PageContentBlock>
       )}
     </>

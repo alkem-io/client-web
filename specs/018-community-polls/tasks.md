@@ -292,6 +292,26 @@
 
 ---
 
+## Phase 13: User Story 9 — Closing and Reopening a Poll (Priority: P9)
+
+**Purpose**: Allow callout editors to close or reopen a poll from the Edit Callout dialog, controlling the poll lifecycle.
+
+**Prerequisites**: Phase 2 (foundational types), US5 (Edit Callout dialog poll support).
+
+**Independent Test**: As a facilitator, open the Edit Callout dialog on an open poll → click "Close poll" → confirm → verify the poll status changes and a success toast appears. Reopen the dialog → click "Reopen poll" → confirm → verify the poll reopens.
+
+- [x] T065 [P] [US9] Add `UpdatePollStatus` GraphQL mutation to `src/domain/collaboration/poll/graphql/pollMutations.graphql` — `mutation UpdatePollStatus($statusData: UpdatePollStatusInput!) { updatePollStatus(statusData: $statusData) { ...PollDetails } }`. Run `pnpm codegen` to generate `useUpdatePollStatusMutation` hook.
+- [x] T066 [P] [US9] Add i18n keys to `src/core/i18n/en/translation.en.json` — `poll.manage.closePoll` ("Close poll"), `poll.manage.reopenPoll` ("Reopen poll"), `poll.manage.closePollConfirm.title` ("Close poll"), `poll.manage.closePollConfirm.content` ("Are you sure you want to close this poll? Users will no longer be able to vote."), `poll.manage.reopenPollConfirm.title` ("Reopen poll"), `poll.manage.reopenPollConfirm.content` ("Are you sure you want to reopen this poll? Users will be able to vote again."), `poll.manage.closePollSuccess` ("Poll closed successfully"), `poll.manage.reopenPollSuccess` ("Poll reopened successfully"), `poll.manage.statusChangeFailed` ("Failed to update poll status. Please try again.").
+- [x] T067 [US9] Add `pollId?: string` and `pollStatus?: PollStatus` props to `PollFormFields` in `src/domain/collaboration/poll/PollFormFields.tsx` — when `pollId` is present (editing), render a "Close poll" / "Reopen poll" button (based on `pollStatus`). On click, show a `ConfirmationDialog` with context-appropriate messaging. On confirm, call `useUpdatePollStatusMutation` with the poll ID and new status. Show loading state on the button via MUI `loading` prop. Show success/error toast via `useNotification`. The button is hidden during creation (when `pollId` is undefined).
+- [x] T068 [US9] Thread `pollId` and `pollStatus` props through the component chain: `EditCalloutDialog` → `CalloutForm` (new props) → `CalloutFormFramingSettings` (new props) → `PollFormFields`. In `EditCalloutDialog`, derive `pollStatus` from `data?.lookup.callout?.framing.poll?.status` (pollId was already available).
+- [x] T069 [US9] Update `PollFormFields.test.tsx` — add mock for `useUpdatePollStatusMutation` and `useNotification` to fix test failures from new imports.
+- [x] T070 [US9] Update spec.md — add US9 user story, FR-038 through FR-042, and update status assumption.
+- [x] T071 [US9] Run `pnpm lint` and `pnpm vitest run` to verify no regressions.
+
+**Checkpoint**: Facilitators can close and reopen polls from the Edit Callout dialog. The poll lifecycle is fully manageable from the client.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -307,6 +327,7 @@
   - US6 (P6): No dependencies on other stories (separate notification settings area)
 - **Subscriptions (Phase 10)**: Depends on Phase 4b (poll display + voting). Requires server subscriptions deployed
 - **Contributor Options (Phase 12)**: Depends on Phase 4b (poll display + voting) and US5 (option management hooks)
+- **Close/Reopen (Phase 13)**: Depends on Phase 2 (foundational types) and US5 (Edit Callout dialog poll support)
 - **Polish (Phase 9)**: Depends on all user stories being complete
 
 ### User Story Dependencies
@@ -318,7 +339,8 @@ Phase 2 (Foundational)
   │   │   └── US7 (Subscriptions) — extends PollView + CalloutFramingPoll
   │   ├── US4 (Changing Vote) — extends PollView
   │   └── US5 (Option Management) — extends PollView
-  │       └── US8 (Contributor-Added Options) — extends PollView + PollVotingControls
+  │       ├── US8 (Contributor-Added Options) — extends PollView + PollVotingControls
+  │       └── US9 (Close/Reopen Poll) — extends PollFormFields + EditCalloutDialog
   ├── US3 (Creating a Poll) — independent (callout form)
   └── US6 (Notification Prefs) — independent (user settings)
 ```

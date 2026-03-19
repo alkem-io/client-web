@@ -15,8 +15,17 @@ vi.mock('@/core/apollo/generated/graphql-schema', async () => {
     ...actual,
     PollResultsVisibility: { Visible: 'VISIBLE', Hidden: 'HIDDEN', TotalOnly: 'TOTAL_ONLY' },
     PollResultsDetail: { Full: 'FULL', Count: 'COUNT', Percentage: 'PERCENTAGE' },
+    PollStatus: { Open: 'OPEN', Closed: 'CLOSED' },
   };
 });
+
+vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
+  useUpdatePollStatusMutation: () => [vi.fn(), { loading: false }],
+}));
+
+vi.mock('@/core/ui/notifications/useNotification', () => ({
+  useNotification: () => vi.fn(),
+}));
 
 const defaultValues = {
   framing: {

@@ -8057,6 +8057,39 @@ export function useRemovePollVoteMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePollVoteMutationHookResult = ReturnType<typeof useRemovePollVoteMutation>;
 export type RemovePollVoteMutationResult = Apollo.MutationResult<SchemaTypes.RemovePollVoteMutation>;
 export type RemovePollVoteMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>;
+export const UpdatePollStatusDocument = gql`
+    mutation UpdatePollStatus($statusData: UpdatePollStatusInput!) {
+  updatePollStatus(statusData: $statusData) {
+    ...PollDetails
+  }
+}
+    ${PollDetailsFragmentDoc}`;
+export type UpdatePollStatusMutationFn = Apollo.MutationFunction<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>;
+
+/**
+ * __useUpdatePollStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdatePollStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePollStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePollStatusMutation, { data, loading, error }] = useUpdatePollStatusMutation({
+ *   variables: {
+ *      statusData: // value for 'statusData'
+ *   },
+ * });
+ */
+export function useUpdatePollStatusMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>(UpdatePollStatusDocument, options);
+      }
+export type UpdatePollStatusMutationHookResult = ReturnType<typeof useUpdatePollStatusMutation>;
+export type UpdatePollStatusMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePollStatusMutation>;
+export type UpdatePollStatusMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>;
 export const PollVoteUpdatedDocument = gql`
     subscription PollVoteUpdated($pollID: UUID!) {
   pollVoteUpdated(pollID: $pollID) {

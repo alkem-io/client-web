@@ -171,6 +171,27 @@ When `allowContributorsAddOptions` is enabled in poll settings, users with CONTR
 
 ---
 
+### User Story 9 — Closing and Reopening a Poll (Priority: P9)
+
+A callout editor (facilitator/admin) can close or reopen a poll from the Edit Callout dialog. When editing a poll, a "Close poll" button appears (or "Reopen poll" if the poll is already closed). Clicking the button shows a confirmation dialog. On confirmation, the `updatePollStatus` mutation is called. A loading state disables the button during the mutation, and a toast notification confirms success or reports failure.
+
+**Why this priority**: Closing/reopening polls is an administrative action that controls the poll lifecycle. The core voting flow works without it, but facilitators need to be able to end voting when appropriate.
+
+**Independent Test**: As a facilitator, open the Edit Callout dialog on an open poll → click "Close poll" → confirm → verify the poll status changes and a success toast appears. Open the dialog again → click "Reopen poll" → confirm → verify the poll reopens.
+
+**Acceptance Scenarios**:
+
+1. **Given** a callout editor opens the Edit Callout dialog for a poll that is OPEN, **When** the dialog loads, **Then** a "Close poll" button is visible in the poll form.
+2. **Given** a callout editor opens the Edit Callout dialog for a poll that is CLOSED, **When** the dialog loads, **Then** a "Reopen poll" button is visible in the poll form.
+3. **Given** the editor is creating a new poll (not editing), **When** the form renders, **Then** no close/reopen button is shown.
+4. **Given** the editor clicks "Close poll", **When** the confirmation dialog appears, **Then** it warns that users will no longer be able to vote.
+5. **Given** the editor clicks "Reopen poll", **When** the confirmation dialog appears, **Then** it explains that users will be able to vote again.
+6. **Given** the editor confirms the action, **When** the mutation is in flight, **Then** the confirm button shows a loading state and the close/reopen button in the form is disabled.
+7. **Given** the mutation completes successfully, **When** the UI updates, **Then** a success toast notification is shown ("Poll closed successfully" or "Poll reopened successfully").
+8. **Given** the mutation fails, **When** the error occurs, **Then** an error toast notification is shown ("Failed to update poll status. Please try again.").
+
+---
+
 ### Edge Cases
 
 - What happens when the user votes on a poll but loses network connection mid-request? The UI should show an error state and allow retry without corrupting the local state.
@@ -252,6 +273,14 @@ When `allowContributorsAddOptions` is enabled in poll settings, users with CONTR
 - **FR-036**: On submission, the client MUST call addPollOption followed by castPollVote. For single-choice polls, the vote selects only the new option. For multi-choice polls, the vote includes all currently selected options plus the new option. The status bar MUST show "Adding option..." during addPollOption and "Submitting your vote..." during castPollVote.
 - **FR-037**: The client MUST enforce a hard maximum of 10 poll options. The "Add a custom response..." row MUST NOT appear when 10 options already exist. This limit is independent of minResponses and maxResponses.
 
+**Poll Status Management**
+
+- **FR-038**: The client MUST display a "Close poll" button in the Edit Callout dialog when the poll status is OPEN, and a "Reopen poll" button when the poll status is CLOSED. The button MUST NOT be shown during poll creation (only when editing).
+- **FR-039**: The client MUST show a confirmation dialog before changing poll status, with context-appropriate messaging (closing warns voting will stop, reopening explains voting will resume).
+- **FR-040**: The client MUST call the `updatePollStatus` mutation with the poll ID and the new status (CLOSED or OPEN) when the user confirms the action.
+- **FR-041**: The client MUST show a loading state on the button while the mutation is in flight and disable it to prevent duplicate submissions.
+- **FR-042**: The client MUST show a success toast notification when the status change completes and an error toast notification when it fails.
+
 ### Key Entities
 
 - **Poll**: A community voting element attached to a callout framing. Contains a title, status (OPEN/CLOSED), immutable settings (minResponses, maxResponses, resultsVisibility, resultsDetail), a list of options, total vote count, and the current user's vote.
@@ -281,5 +310,5 @@ When `allowContributorsAddOptions` is enabled in poll settings, users with CONTR
 - Vote changes use the same `castPollVote` mutation as initial votes (server handles upsert).
 - Notification preferences follow the existing user settings pattern already implemented for other notification types.
 - Real-time updates are delivered via two GraphQL subscriptions (`pollVoteUpdated` and `pollOptionsChanged`). The server handles visibility filtering at the field-resolver level — the client trusts the data it receives without replicating the visibility matrix.
-- The poll's `status` field (OPEN/CLOSED) is always OPEN in this iteration (no server API to close polls yet), but the client renders CLOSED state correctly: all controls disabled and status bar shows "Poll closed" (FR-010b). Manual closing via API is a future server feature.
+- The poll's `status` field (OPEN/CLOSED) can be changed by callout editors via the `updatePollStatus` mutation (FR-038–FR-042). The client renders CLOSED state correctly: all controls disabled and status bar shows "Poll closed" (FR-010b).
 - The `deadline` field is always null in this iteration; deadline-based auto-close is deferred.
