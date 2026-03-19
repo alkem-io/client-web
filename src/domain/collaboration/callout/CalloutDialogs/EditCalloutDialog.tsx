@@ -190,9 +190,20 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
     // 1. Add new options first (those without an id)
     // Done before removals to avoid temporarily violating the server's minimum-2-options rule
-    for (const opt of formOptions) {
-      if (!opt.id) {
-        await addOption(opt.text);
+    // Track the returned IDs so we can include them in the reorder call
+    const newOptionIds = new Map<number, string>();
+    const knownIds = new Set(compact(formOptions.map(o => o.id)));
+    for (let i = 0; i < formOptions.length; i++) {
+      if (!formOptions[i].id) {
+        const result = await addOption(formOptions[i].text);
+        const addedPoll = result.data?.addPollOption;
+        if (addedPoll) {
+          const addedOption = addedPoll.options.find(o => !knownIds.has(o.id));
+          if (addedOption) {
+            newOptionIds.set(i, addedOption.id);
+            knownIds.add(addedOption.id);
+          }
+        }
       }
     }
 
@@ -213,15 +224,14 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       }
     }
 
-    // 4. Reorder if the order of existing options changed
-    // After adds, we need the IDs of all options in the new order.
-    // For existing options we have IDs; new options got IDs from addOption.
-    // We reorder using only existing option IDs in the new order.
-    const existingIdsInNewOrder = compact(formOptions.map(o => o.id));
+    // 4. Reorder if the order changed (including newly-added options)
+    const allIdsInNewOrder = formOptions.map((o, i) => o.id ?? newOptionIds.get(i)).filter(Boolean) as string[];
     const existingIdsInOrigOrder = origOptions.filter(o => formIds.has(o.id)).map(o => o.id);
-    const orderChanged = existingIdsInNewOrder.some((id, i) => id !== existingIdsInOrigOrder[i]);
-    if (orderChanged && existingIdsInNewOrder.length > 1) {
-      await reorderOptions(existingIdsInNewOrder);
+    const orderChanged =
+      allIdsInNewOrder.length !== existingIdsInOrigOrder.length ||
+      allIdsInNewOrder.some((id, i) => id !== existingIdsInOrigOrder[i]);
+    if (orderChanged && allIdsInNewOrder.length > 1) {
+      await reorderOptions(allIdsInNewOrder);
     }
   };
 

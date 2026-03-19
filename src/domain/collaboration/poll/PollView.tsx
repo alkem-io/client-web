@@ -22,12 +22,14 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const { t } = useTranslation();
 
   const mySelectedOptionIds = poll.myVote?.selectedOptions.map(o => o.id) ?? [];
-  const hasVoted = poll.myVote !== null;
+  const hasVoted = !!poll.myVote;
   const isClosed = poll.status === PollStatus.Closed;
   const isAnonymous = !(poll.settings.resultsVisibility === PollResultsVisibility.Visible);
   const isSingleChoice = poll.settings.maxResponses === 1;
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(mySelectedOptionIds);
+  const selectedOptionIdsRef = useRef(selectedOptionIds);
+  selectedOptionIdsRef.current = selectedOptionIds;
   const [voteRevoked, setVoteRevoked] = useState(false);
   const [addingOptionStatus, setAddingOptionStatus] = useState<'idle' | 'adding' | 'voting'>('idle');
   const hadVotedRef = useRef(hasVoted);
@@ -132,9 +134,9 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
 
       setAddingOptionStatus('voting');
 
-      const voteOptionIds = isSingleChoice ? [newOption.id] : [...selectedOptionIds, newOption.id];
+      const voteOptionIds = isSingleChoice ? [newOption.id] : [...selectedOptionIdsRef.current, newOption.id];
 
-      castVote(voteOptionIds);
+      await castVote(voteOptionIds);
       setVoteRevoked(false);
     } finally {
       setAddingOptionStatus('idle');
