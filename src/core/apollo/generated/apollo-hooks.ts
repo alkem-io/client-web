@@ -890,7 +890,6 @@ export const PollDetailsFragmentDoc = gql`
   settings {
     ...PollSettingsFields
   }
-  deadline
   totalVotes
   canSeeDetailedResults
   options {

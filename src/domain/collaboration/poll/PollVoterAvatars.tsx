@@ -1,4 +1,5 @@
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
 import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
@@ -10,9 +11,10 @@ type PollVoterAvatarsProps = {
   voters?: Voter[];
 };
 
-const MAX_VISIBLE = 5;
+const MAX_VISIBLE = 10;
 
 const PollVoterAvatars = ({ voters }: PollVoterAvatarsProps) => {
+  const { t } = useTranslation();
   if (!voters || voters.length === 0) {
     return null;
   }
@@ -48,22 +50,25 @@ const PollVoterAvatars = ({ voters }: PollVoterAvatarsProps) => {
         ) : null
       )}
       {remaining > 0 && (
-        <Box
-          sx={{
-            width: 20,
-            height: 20,
-            borderRadius: '50%',
-            backgroundColor: 'action.selected',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.625rem',
-            color: 'text.secondary',
-            fontWeight: 600,
-          }}
-        >
-          +{remaining}
-        </Box>
+        <Tooltip title={t('poll.results.votersMore', { count: remaining })} arrow={true}>
+          <Box
+            sx={{
+              width: 20,
+              height: 20,
+              borderRadius: '50%',
+              backgroundColor: 'action.selected',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '0.625rem',
+              color: 'text.secondary',
+              fontWeight: 600,
+              marginLeft: '5px !important',
+            }}
+          >
+            +{remaining}
+          </Box>
+        </Tooltip>
       )}
     </Box>
   );

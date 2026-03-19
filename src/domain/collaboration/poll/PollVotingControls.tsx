@@ -12,12 +12,11 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollResultsDetail } from '@/core/apollo/generated/graphql-schema';
-import { CaptionSmall, Text } from '@/core/ui/typography';
+import { Caption, CaptionSmall, Text } from '@/core/ui/typography';
 import type { PollOptionModel } from '@/domain/collaboration/poll/models/PollModels';
 import PollVoterAvatars from '@/domain/collaboration/poll/PollVoterAvatars';
 
@@ -90,16 +89,8 @@ const OptionLabel = ({
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text color="text.primary">{option.text}</Text>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexShrink: 0, ml: 1 }}>
-            {showPercentage && (
-              <Typography variant="caption" color="text.secondary">
-                {Math.round(option.votePercentage ?? 0)}%
-              </Typography>
-            )}
-            {showCount && (
-              <Typography variant="caption" color="text.secondary">
-                ({option.voteCount})
-              </Typography>
-            )}
+            {showPercentage && <Caption color="text.secondary">{Math.round(option.votePercentage ?? 0)}%</Caption>}
+            {showCount && <Caption color="text.secondary">({option.voteCount})</Caption>}
           </Box>
         </Box>
         {showVoters && option.voters && <PollVoterAvatars voters={option.voters} />}

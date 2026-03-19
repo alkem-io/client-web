@@ -220,7 +220,7 @@ When `allowContributorsAddOptions` is enabled in poll settings, users with CONTR
 
 **Option Management**
 
-- **FR-019**: The client MUST provide UI controls in the Edit Callout dialog for callout editors to add, edit, remove, and reorder poll options. The inline poll view in the callout MUST NOT contain option management controls.
+- **FR-019**: The client MUST provide UI controls in the Edit Callout dialog for callout editors to add, edit, remove, and reorder poll options. The inline poll view in the callout MUST NOT contain option management controls. The "Add Option" control MUST be disabled when the poll already has 10 options (the same `MAX_POLL_OPTIONS` limit enforced by FR-017 for creation and FR-037 for contributor additions applies globally to facilitator edits).
 - **FR-020**: The client MUST show a confirmation dialog before editing or removing an option that has votes, warning the user that affected votes will be deleted.
 - **FR-021**: The client MUST prevent removing options when only 2 remain.
 - **FR-022**: The client MUST call the appropriate mutations (addPollOption, updatePollOption, removePollOption, reorderPollOptions) for each management action.

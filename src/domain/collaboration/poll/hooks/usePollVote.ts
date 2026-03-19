@@ -1,4 +1,4 @@
-import { useCallback, useTransition } from 'react';
+import { useCallback, useState, useTransition } from 'react';
 import { useCastPollVoteMutation, useRemovePollVoteMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 
@@ -9,6 +9,7 @@ type UsePollVoteParams = {
 
 export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   const [isPending, startTransition] = useTransition();
+  const [voteRemoved, setVoteRemoved] = useState(false);
 
   const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation();
   const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation();
@@ -17,6 +18,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
     (selectedOptionIds: string[]) => {
       const newTotalVotes = (poll.totalVotes ?? 0) + (poll.myVote ? 0 : 1);
       const now = new Date();
+      setVoteRemoved(false);
 
       return castPollVoteMutation({
         variables: {
@@ -37,7 +39,6 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
               __typename: 'PollSettings',
               ...poll.settings,
             },
-            deadline: undefined,
             totalVotes: newTotalVotes,
             canSeeDetailedResults: poll.canSeeDetailedResults,
             options: poll.options.map(option => {
@@ -100,6 +101,8 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   );
 
   const removeVote = useCallback(() => {
+    setVoteRemoved(true);
+
     startTransition(async () => {
       await removePollVoteMutation({
         variables: {
@@ -117,7 +120,6 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
               __typename: 'PollSettings',
               ...poll.settings,
             },
-            deadline: undefined,
             totalVotes: Math.max((poll.totalVotes ?? 1) - 1, 0),
             canSeeDetailedResults: poll.canSeeDetailedResults,
             options: poll.options.map(option => {
@@ -164,6 +166,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   return {
     castVote,
     removeVote,
+    voteRemoved,
     loading: isPending || mutationLoading || removeLoading,
     error: error || removeError,
   };

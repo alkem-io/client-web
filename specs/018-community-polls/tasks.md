@@ -68,6 +68,9 @@
     ~~`poll.create.resultsVisibility`, `poll.create.resultsVisibility.VISIBLE/HIDDEN/TOTAL_ONLY`, `poll.create.resultsDetail`, `poll.create.resultsDetail.FULL/COUNT/PERCENTAGE`~~
     Replaced by checkbox-based keys added in T058: `poll.create.votingOptions`, `poll.create.displayOptions`, `poll.create.allowMultipleResponses`, `poll.create.onlyShowResultsAfterVoted`, `poll.create.showVoterAvatars`, etc.
   - `poll.manage.editPoll` — "Edit Poll"
+
+**Constraints / Validation Rules** (cross-cutting, used by Phases 5 and 12):
+- `MAX_POLL_OPTIONS = 10` — hard cap on the number of poll options (defined in `PollFormFields.tsx`, enforced in the creation validation schema and in `PollView` for contributor-added options). Rationale: keeps the UI scannable, aligns with the server-side limit, and avoids performance degradation in result rendering.
   - `poll.manage.done` — "Done"
   - `poll.error.voteFailed` — "Failed to submit your vote. Please try again."
   - `poll.error.staleOption` — "This poll has been updated. Please refresh and try again."
@@ -177,7 +180,7 @@
 - [x] T031b [US3+US5] Move `PollFormSettingsSection` from inline Accordion to a separate dialog — replaced by T058 (Poll Settings Form Simplification). The settings button/dialog pattern and readOnly prop are retained; the controls were simplified from radio buttons to checkboxes in T058
 - [x] T032 [US5] Map poll data correctly in `EditCalloutDialog` in `src/domain/collaboration/callout/CalloutDialogs/EditCalloutDialog.tsx` — when loading poll callout data for editing, transform the server poll data (with full PollOptionModel objects) into PollFormValues (with PollFormOptionValue[] `{ id, text }` options) so the Formik form can work correctly. Map `poll.options` sorted by `sortOrder` to `{ id, text }[]` preserving option IDs for change detection on save
 - [x] T033 [US5] Remove inline edit controls from `PollView` in `src/domain/collaboration/poll/PollView.tsx` — remove `isManaging` state, the "Edit Poll" button, and the `PollOptionManager` rendering. Remove the `editable` prop from PollView (it becomes purely a voting + results component). Update `CalloutFramingPoll` to no longer pass `editable`
-- [ ] T033b [US5] Remove orphaned files from `src/domain/collaboration/poll/`: `PollOptionManager.tsx`, `PollOptionManagerRow.tsx` (option management moved to Edit Callout form), and `PollOptionResultRow.tsx` (superseded by inline `OptionLabel` in `PollVotingControls`)
+- [x] T033b [US5] Remove orphaned files from `src/domain/collaboration/poll/`: `PollOptionManager.tsx`, `PollOptionManagerRow.tsx` (option management moved to Edit Callout form), and `PollOptionResultRow.tsx` (superseded by inline `OptionLabel` in `PollVotingControls`)
 
 **Checkpoint**: Option management is fully functional via the Edit Callout dialog. The PollView is a clean, read-only voting + results component. Facilitators use the same Edit Callout dialog (settings menu → Edit) to manage poll options, consistent with how all other framing types are edited.
 
@@ -278,14 +281,14 @@
 
 **Independent Test**: Enable `allowContributorsAddOptions` on a poll → as a contributor, click "Add a custom response..." → type option text → submit → verify option is added and vote is cast.
 
-- [ ] T059 [P] [US8] Add i18n keys to `src/core/i18n/en/translation.en.json`:
+- [x] T059 [P] [US8] Add i18n keys to `src/core/i18n/en/translation.en.json`:
   - `poll.status.addingOption` — "Adding option…"
   - `poll.customOption.placeholder` — "Add a custom response…"
-- [ ] T060 [US8] Update `PollVotingControls` in `src/domain/collaboration/poll/PollVotingControls.tsx` — add a trailing "Add a custom response…" row (radio for single-choice, checkbox for multi-choice). Props added: `showAddCustomOption: boolean`, `onSubmitCustomOption: (text: string) => void`, `isAddingCustomOption: boolean` (loading state). When the control is clicked, the label transforms into a `TextField` with `InputAdornment` containing a checkmark `IconButton`. Enter triggers submit, Escape deselects and hides text field. Row hidden when `showAddCustomOption` is false.
-- [ ] T061 [US8] Update `PollView` in `src/domain/collaboration/poll/PollView.tsx` — wire `usePollOptionManagement` for `addOption`. Compute `showAddCustomOption` from `allowContributorsAddOptions && canVote && !isClosed && options.length < 10`. On custom option submit: call `addOption(text)` → extract new option ID from mutation result → call `castVote` immediately (single-choice: [newOptionId], multi-choice: [...selectedOptionIds, newOptionId]). Status bar shows "Adding option…" then "Submitting your vote…".
-- [ ] T062 [US8] Update `CalloutFramingPoll` in `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — pass `allowContributorsAddOptions` from poll settings down to `PollView` (already available via `poll.settings.allowContributorsAddOptions`).
-- [ ] T063 [US8] Update spec and data-model: add US-8 to spec.md, add 10-option max to validation rules, remove "disabled/reserved" language from FR-016. _(This task is being done as part of the current implementation.)_
-- [ ] T064 [US8] Run `pnpm lint` and `pnpm vitest run` to verify no regressions.
+- [x] T060 [US8] Update `PollVotingControls` in `src/domain/collaboration/poll/PollVotingControls.tsx` — add a trailing "Add a custom response…" row (radio for single-choice, checkbox for multi-choice). Props added: `showAddCustomOption: boolean`, `onSubmitCustomOption: (text: string) => void`, `isAddingCustomOption: boolean` (loading state). When the control is clicked, the label transforms into a `TextField` with `InputAdornment` containing a checkmark `IconButton`. Enter triggers submit, Escape deselects and hides text field. Row hidden when `showAddCustomOption` is false.
+- [x] T061 [US8] Update `PollView` in `src/domain/collaboration/poll/PollView.tsx` — wire `usePollOptionManagement` for `addOption`. Compute `showAddCustomOption` from `allowContributorsAddOptions && canVote && !isClosed && options.length < MAX_POLL_OPTIONS` (see Phase 2 Constraints). On custom option submit: call `addOption(text)` → extract new option ID from mutation result → call `castVote` immediately (single-choice: [newOptionId], multi-choice: [...selectedOptionIds, newOptionId]). Status bar shows "Adding option…" then "Submitting your vote…".
+- [x] T062 [US8] Update `CalloutFramingPoll` in `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — pass `allowContributorsAddOptions` from poll settings down to `PollView` (already available via `poll.settings.allowContributorsAddOptions`).
+- [x] T063 [US8] Update spec and data-model: add US-8 to spec.md, add 10-option max to validation rules, remove "disabled/reserved" language from FR-016.
+- [x] T064 [US8] Run `pnpm lint` and `pnpm vitest run` to verify no regressions.
 
 ---
 

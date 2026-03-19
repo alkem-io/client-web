@@ -46,7 +46,6 @@ fragment PollDetails on Poll {
   settings {
     ...PollSettingsFields
   }
-  deadline
   totalVotes
   canSeeDetailedResults
   options {

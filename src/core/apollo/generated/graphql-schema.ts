@@ -3077,6 +3077,8 @@ export type InAppNotificationPayloadSpaceCollaborationPoll = InAppNotificationPa
   __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll';
   /** The Callout that contains the poll. */
   callout: Callout;
+  /** The Poll this notification relates to. */
+  poll: Poll;
   /** The ID of the Poll this notification relates to. */
   pollID: Scalars['UUID']['output'];
   /** Where the callout is located. */
@@ -4732,6 +4734,8 @@ export type Mutation = {
   updatePlatformSettings: PlatformSettings;
   /** Update the text of an existing Poll option. Requires UPDATE privilege. Votes that selected this option are deleted and affected voters are notified. */
   updatePollOption: Poll;
+  /** Change the status of a Poll (OPEN ↔ CLOSED). Requires UPDATE privilege on the parent Callout. When a poll is CLOSED, all state-mutating operations are rejected. Idempotent: setting to current status succeeds without error. */
+  updatePollStatus: Poll;
   /** Updates the specified Post. */
   updatePost: Post;
   /** Updates the specified Profile. */
@@ -5442,6 +5446,10 @@ export type MutationUpdatePlatformSettingsArgs = {
 
 export type MutationUpdatePollOptionArgs = {
   optionData: UpdatePollOptionInput;
+};
+
+export type MutationUpdatePollStatusArgs = {
+  statusData: UpdatePollStatusInput;
 };
 
 export type MutationUpdatePostArgs = {
@@ -6281,7 +6289,7 @@ export type PollSettingsInput = {
   resultsVisibility?: InputMaybe<PollResultsVisibility>;
 };
 
-/** Lifecycle status of a Poll. Only OPEN is enforced in this iteration; CLOSED is reserved for future use. */
+/** Lifecycle status of a Poll. OPEN allows voting and option management; CLOSED prevents all state-mutating operations. */
 export enum PollStatus {
   Closed = 'CLOSED',
   Open = 'OPEN',
@@ -8639,6 +8647,13 @@ export type UpdatePollOptionInput = {
   optionID: Scalars['UUID']['input'];
   pollID: Scalars['UUID']['input'];
   text: Scalars['String']['input'];
+};
+
+export type UpdatePollStatusInput = {
+  /** The ID of the Poll to update. */
+  pollID: Scalars['UUID']['input'];
+  /** The new status for the poll. */
+  status: PollStatus;
 };
 
 export type UpdatePostInput = {
@@ -13346,7 +13361,6 @@ export type CalloutContentQuery = {
                   updatedDate: Date;
                   title: string;
                   status: PollStatus;
-                  deadline?: Date | undefined;
                   totalVotes?: number | undefined;
                   canSeeDetailedResults: boolean;
                   settings: {
@@ -13654,7 +13668,6 @@ export type UpdateCalloutContentMutation = {
             updatedDate: Date;
             title: string;
             status: PollStatus;
-            deadline?: Date | undefined;
             totalVotes?: number | undefined;
             canSeeDetailedResults: boolean;
             settings: {
@@ -14059,7 +14072,6 @@ export type UpdateCalloutVisibilityMutation = {
             updatedDate: Date;
             title: string;
             status: PollStatus;
-            deadline?: Date | undefined;
             totalVotes?: number | undefined;
             canSeeDetailedResults: boolean;
             settings: {
@@ -15578,7 +15590,6 @@ export type CreateCalloutMutation = {
             updatedDate: Date;
             title: string;
             status: PollStatus;
-            deadline?: Date | undefined;
             totalVotes?: number | undefined;
             canSeeDetailedResults: boolean;
             settings: {
@@ -16095,7 +16106,6 @@ export type CalloutDetailsQuery = {
                   updatedDate: Date;
                   title: string;
                   status: PollStatus;
-                  deadline?: Date | undefined;
                   totalVotes?: number | undefined;
                   canSeeDetailedResults: boolean;
                   settings: {
@@ -16545,7 +16555,6 @@ export type CalloutDetailsFragment = {
           updatedDate: Date;
           title: string;
           status: PollStatus;
-          deadline?: Date | undefined;
           totalVotes?: number | undefined;
           canSeeDetailedResults: boolean;
           settings: {
@@ -16981,7 +16990,6 @@ export type PollDetailsFragment = {
   updatedDate: Date;
   title: string;
   status: PollStatus;
-  deadline?: Date | undefined;
   totalVotes?: number | undefined;
   canSeeDetailedResults: boolean;
   settings: {
@@ -17041,7 +17049,6 @@ export type CastPollVoteMutation = {
     updatedDate: Date;
     title: string;
     status: PollStatus;
-    deadline?: Date | undefined;
     totalVotes?: number | undefined;
     canSeeDetailedResults: boolean;
     settings: {
@@ -17102,7 +17109,6 @@ export type AddPollOptionMutation = {
     updatedDate: Date;
     title: string;
     status: PollStatus;
-    deadline?: Date | undefined;
     totalVotes?: number | undefined;
     canSeeDetailedResults: boolean;
     settings: {
@@ -17163,7 +17169,6 @@ export type UpdatePollOptionMutation = {
     updatedDate: Date;
     title: string;
     status: PollStatus;
-    deadline?: Date | undefined;
     totalVotes?: number | undefined;
     canSeeDetailedResults: boolean;
     settings: {
@@ -17224,7 +17229,6 @@ export type RemovePollOptionMutation = {
     updatedDate: Date;
     title: string;
     status: PollStatus;
-    deadline?: Date | undefined;
     totalVotes?: number | undefined;
     canSeeDetailedResults: boolean;
     settings: {
@@ -17285,7 +17289,6 @@ export type ReorderPollOptionsMutation = {
     updatedDate: Date;
     title: string;
     status: PollStatus;
-    deadline?: Date | undefined;
     totalVotes?: number | undefined;
     canSeeDetailedResults: boolean;
     settings: {
@@ -17346,7 +17349,6 @@ export type RemovePollVoteMutation = {
     updatedDate: Date;
     title: string;
     status: PollStatus;
-    deadline?: Date | undefined;
     totalVotes?: number | undefined;
     canSeeDetailedResults: boolean;
     settings: {
@@ -17410,7 +17412,6 @@ export type PollVoteUpdatedSubscription = {
       updatedDate: Date;
       title: string;
       status: PollStatus;
-      deadline?: Date | undefined;
       totalVotes?: number | undefined;
       canSeeDetailedResults: boolean;
       settings: {
@@ -17475,7 +17476,6 @@ export type PollOptionsChangedSubscription = {
       updatedDate: Date;
       title: string;
       status: PollStatus;
-      deadline?: Date | undefined;
       totalVotes?: number | undefined;
       canSeeDetailedResults: boolean;
       settings: {

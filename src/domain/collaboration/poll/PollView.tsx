@@ -13,6 +13,65 @@ import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
 
 const CHECKBOX_DEBOUNCE_MS = 2_000;
 
+/**
+ * Encapsulates debounced submission logic with a visual progress indicator.
+ * Returns scheduling/cancellation controls and UI state (isDebouncing, progress%).
+ */
+const useDebouncedSubmit = (delayMs: number) => {
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const [debounceProgress, setDebounceProgress] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const cancel = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setIsDebouncing(false);
+    setDebounceProgress(0);
+  };
+
+  const schedule = (callback: () => void) => {
+    cancel();
+    setIsDebouncing(true);
+    setDebounceProgress(0);
+    timerRef.current = setTimeout(() => {
+      timerRef.current = null;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      setIsDebouncing(false);
+      callback();
+    }, delayMs);
+    intervalRef.current = setInterval(() => {
+      if (timerRef.current === null && intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        return;
+      }
+      setDebounceProgress(prev => {
+        return Math.min(100, prev + (50 / delayMs) * 100);
+      });
+    }, 50);
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  return { isDebouncing, debounceProgress, schedule, cancel };
+};
+
 type PollViewProps = {
   poll: PollDetailsModel;
   canVote?: boolean;
@@ -33,7 +92,13 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const [voteRevoked, setVoteRevoked] = useState(false);
   const [addingOptionStatus, setAddingOptionStatus] = useState<'idle' | 'adding' | 'voting'>('idle');
   const hadVotedRef = useRef(hasVoted);
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const {
+    isDebouncing,
+    debounceProgress,
+    schedule: scheduleDebounce,
+    cancel: cancelDebounce,
+  } = useDebouncedSubmit(CHECKBOX_DEBOUNCE_MS);
 
   // Sync local selection with server state when myVote changes (e.g., after mutation or subscription)
   useEffect(() => {
@@ -59,16 +124,13 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
     });
   }, [poll.options]);
 
-  // Cleanup debounce timer on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  const { castVote, removeVote, loading: voteLoading, error: voteError } = usePollVote({ pollId: poll.id, poll });
+  const {
+    castVote,
+    removeVote,
+    voteRemoved,
+    loading: voteLoading,
+    error: voteError,
+  } = usePollVote({ pollId: poll.id, poll });
   const { addOption } = usePollOptionManagement({ pollId: poll.id });
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
@@ -88,26 +150,24 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   };
 
   const handleChange = (newSelectedIds: string[]) => {
-    setSelectedOptionIds(newSelectedIds);
-
     if (!canVote || isClosed) return;
 
-    if (debounceTimerRef.current) {
-      // Clear any pending debounce
-      clearTimeout(debounceTimerRef.current);
-      debounceTimerRef.current = null;
-    }
+    setSelectedOptionIds(newSelectedIds);
+    cancelDebounce();
 
     if (isSingleChoice) {
       // Single-choice: emit immediately
       submitVote(newSelectedIds);
     } else {
-      // Multi-choice: debounce 2 seconds
-      if (newSelectedIds.length >= poll.settings.minResponses) {
-        debounceTimerRef.current = setTimeout(() => {
-          debounceTimerRef.current = null;
-          submitVote(newSelectedIds);
-        }, CHECKBOX_DEBOUNCE_MS);
+      // Multi-choice: debounce
+      if (
+        newSelectedIds.length >= poll.settings.minResponses &&
+        (poll.settings.maxResponses === 0 || newSelectedIds.length <= poll.settings.maxResponses)
+      ) {
+        scheduleDebounce(() => submitVote(newSelectedIds));
+      } else {
+        // Selection is not anymore a valid vote, remove my vote if any
+        scheduleDebounce(() => removeVote());
       }
     }
   };
@@ -115,11 +175,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const handleSubmitCustomOption = async (text: string) => {
     if (!canVote || isClosed) return;
 
-    // Cancel any pending debounce
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-      debounceTimerRef.current = null;
-    }
+    cancelDebounce();
 
     setAddingOptionStatus('adding');
     try {
@@ -150,7 +206,9 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
         ? t('poll.status.submitting')
         : voteLoading
           ? t('poll.status.submitting')
-          : null;
+          : isDebouncing
+            ? t('poll.status.preparingVote')
+            : null;
 
   return (
     <Box>
@@ -179,7 +237,8 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
       <Box mt={1} display="flex" alignItems="center" gap={0.5} justifyContent="space-between">
         {statusMessage && (
           <Box display="flex" alignItems="center" gap={1}>
-            <CircularProgress size={12} />
+            {isDebouncing && <CircularProgress variant="determinate" size={12} value={debounceProgress} />}
+            {!isDebouncing && <CircularProgress size={12} />}
             <Caption color="text.secondary">{statusMessage}</Caption>
           </Box>
         )}
@@ -206,7 +265,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
         </Box>
       )}
 
-      {voteRevoked && !hasVoted && (
+      {voteRevoked && !hasVoted && !voteRemoved && (
         <Caption color="warning.main" sx={{ mt: 1 }}>
           {t('poll.subscription.voteRevoked')}
         </Caption>

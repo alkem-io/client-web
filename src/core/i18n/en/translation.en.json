@@ -2382,8 +2382,9 @@
       "maxReached": "Maximum {{max}} selections allowed"
     },
     "status": {
-      "submitting": "Submitting your vote\u2026",
-      "addingOption": "Adding option\u2026",
+      "submitting": "Submitting your vote...",
+      "preparingVote": "Preparing vote...",
+      "addingOption": "Adding option...",
       "voted": "Voted.",
       "removeMyVote": "Remove my vote",
       "closed": "Poll closed"
@@ -2391,10 +2392,12 @@
     "results": {
       "noVotes": "No votes yet",
       "totalVotes_zero": "{{count}} votes",
-      "totalVotes": "{{count}} vote",
-      "totalVotes_plural": "{{count}} votes",
+      "totalVotes_one": "{{count}} vote",
+      "totalVotes_other": "{{count}} votes",
       "voters": "Voters",
-      "anonymousPoll": "This is an anonymous poll"
+      "anonymousPoll": "This is an anonymous poll",
+      "votersMore_one": "{{count}} more voter",
+      "votersMore_other": "{{count}} more voters"
     },
     "options": {
       "add": "Add Option",
@@ -2441,7 +2444,7 @@
       "voteRevoked": "Your vote was affected by a $t(common.poll) change. Please vote again."
     },
     "customOption": {
-      "placeholder": "Add a custom response\u2026"
+      "placeholder": "Add a custom response..."
     },
     "removeVoteConfirm": {
       "title": "Remove your vote",

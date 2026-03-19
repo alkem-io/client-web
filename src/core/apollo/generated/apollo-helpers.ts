@@ -1803,6 +1803,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPol
 };
 export type InAppNotificationPayloadSpaceCollaborationPollKeySpecifier = (
   | 'callout'
+  | 'poll'
   | 'pollID'
   | 'space'
   | 'type'
@@ -1810,6 +1811,7 @@ export type InAppNotificationPayloadSpaceCollaborationPollKeySpecifier = (
 )[];
 export type InAppNotificationPayloadSpaceCollaborationPollFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  poll?: FieldPolicy<any> | FieldReadFunction<any>;
   pollID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2815,6 +2817,7 @@ export type MutationKeySpecifier = (
   | 'updateOrganizationSettings'
   | 'updatePlatformSettings'
   | 'updatePollOption'
+  | 'updatePollStatus'
   | 'updatePost'
   | 'updateProfile'
   | 'updateReference'
@@ -3020,6 +3023,7 @@ export type MutationFieldPolicy = {
   updateOrganizationSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePollStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
