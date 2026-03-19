@@ -119,7 +119,7 @@ export const useUserConversations = () => {
           return bTime - aTime;
         })
     );
-  }, [data?.me?.conversations?.conversations, newlyCreatedConversationId, currentUser?.id]);
+  }, [data?.me?.conversations?.conversations, newlyCreatedConversationId, currentUser?.id, guidanceVcId]);
 
   const totalUnreadCount = useMemo(() => {
     return conversations.filter(conv => conv.unreadCount > 0).length;
