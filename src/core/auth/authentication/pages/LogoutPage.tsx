@@ -55,7 +55,7 @@ const LogoutPage = () => {
     return () => {};
   }, [logoutUrl, getLogoutUrl]);
 
-  if (error) return <Typography>{error}</Typography>;
+  if (error) return <Typography>{String(error)}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;
 };
 
