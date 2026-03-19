@@ -58,7 +58,8 @@ export const PushSubscriptionsList = () => {
       <Caption sx={{ mb: 1 }}>{t('pages.userNotificationsSettings.push.deviceManagement.title')}</Caption>
       {subscriptions.map(sub => {
         const isCurrentDevice = sub.id === currentSubscriptionId;
-        const deviceLabel = parseUserAgent(sub.userAgent) || t('pages.userNotificationsSettings.push.deviceManagement.unknownDevice');
+        const deviceLabel =
+          parseUserAgent(sub.userAgent) || t('pages.userNotificationsSettings.push.deviceManagement.unknownDevice');
         const createdDate = sub.createdDate ? new Date(sub.createdDate).toLocaleDateString() : '';
 
         return (

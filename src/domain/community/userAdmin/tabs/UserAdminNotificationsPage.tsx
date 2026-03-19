@@ -1,15 +1,19 @@
-import { useCallback, useMemo, useReducer } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Alert, Box, Switch } from '@mui/material';
-import { refetchUserSettingsQuery, useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useMemo, useReducer } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  refetchUserSettingsQuery,
+  useUpdateUserSettingsMutation,
+  useUserSettingsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   type UpdateUserSettingsNotificationInput,
 } from '@/core/apollo/generated/graphql-schema';
-import type { ChannelType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
 import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import type { ChannelType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
 import Loading from '@/core/ui/loading/Loading';
 import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
@@ -62,9 +66,7 @@ type OptimisticOverride = {
   value: boolean;
 };
 
-type OverridesAction =
-  | { type: 'set'; override: OptimisticOverride }
-  | { type: 'clear' };
+type OverridesAction = { type: 'set'; override: OptimisticOverride } | { type: 'clear' };
 
 function overridesReducer(state: OptimisticOverride[], action: OverridesAction): OptimisticOverride[] {
   switch (action.type) {
@@ -218,62 +220,197 @@ const UserAdminNotificationsPage = () => {
     return {
       space: serverSettings.space
         ? {
-            communicationUpdates: applyOverrides(serverSettings.space.communicationUpdates, overrides, NotificationGroup.SPACE, 'communicationUpdates'),
-            collaborationCalloutPublished: applyOverrides(serverSettings.space.collaborationCalloutPublished, overrides, NotificationGroup.SPACE, 'collaborationCalloutPublished'),
-            collaborationCalloutPostContributionComment: applyOverrides(serverSettings.space.collaborationCalloutPostContributionComment, overrides, NotificationGroup.SPACE, 'collaborationCalloutPostContributionComment'),
-            collaborationCalloutContributionCreated: applyOverrides(serverSettings.space.collaborationCalloutContributionCreated, overrides, NotificationGroup.SPACE, 'collaborationCalloutContributionCreated'),
-            collaborationCalloutComment: applyOverrides(serverSettings.space.collaborationCalloutComment, overrides, NotificationGroup.SPACE, 'collaborationCalloutComment'),
-            communityCalendarEvents: applyOverrides(serverSettings.space.communityCalendarEvents, overrides, NotificationGroup.SPACE, 'communityCalendarEvents'),
-            collaborationPollVoteCastOnOwnPoll: applyOverrides(serverSettings.space.collaborationPollVoteCastOnOwnPoll, overrides, NotificationGroup.SPACE, 'collaborationPollVoteCastOnOwnPoll'),
-            collaborationPollVoteCastOnPollIVotedOn: applyOverrides(serverSettings.space.collaborationPollVoteCastOnPollIVotedOn, overrides, NotificationGroup.SPACE, 'collaborationPollVoteCastOnPollIVotedOn'),
-            collaborationPollModifiedOnPollIVotedOn: applyOverrides(serverSettings.space.collaborationPollModifiedOnPollIVotedOn, overrides, NotificationGroup.SPACE, 'collaborationPollModifiedOnPollIVotedOn'),
-            collaborationPollVoteAffectedByOptionChange: applyOverrides(serverSettings.space.collaborationPollVoteAffectedByOptionChange, overrides, NotificationGroup.SPACE, 'collaborationPollVoteAffectedByOptionChange'),
+            communicationUpdates: applyOverrides(
+              serverSettings.space.communicationUpdates,
+              overrides,
+              NotificationGroup.SPACE,
+              'communicationUpdates'
+            ),
+            collaborationCalloutPublished: applyOverrides(
+              serverSettings.space.collaborationCalloutPublished,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationCalloutPublished'
+            ),
+            collaborationCalloutPostContributionComment: applyOverrides(
+              serverSettings.space.collaborationCalloutPostContributionComment,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationCalloutPostContributionComment'
+            ),
+            collaborationCalloutContributionCreated: applyOverrides(
+              serverSettings.space.collaborationCalloutContributionCreated,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationCalloutContributionCreated'
+            ),
+            collaborationCalloutComment: applyOverrides(
+              serverSettings.space.collaborationCalloutComment,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationCalloutComment'
+            ),
+            communityCalendarEvents: applyOverrides(
+              serverSettings.space.communityCalendarEvents,
+              overrides,
+              NotificationGroup.SPACE,
+              'communityCalendarEvents'
+            ),
+            collaborationPollVoteCastOnOwnPoll: applyOverrides(
+              serverSettings.space.collaborationPollVoteCastOnOwnPoll,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationPollVoteCastOnOwnPoll'
+            ),
+            collaborationPollVoteCastOnPollIVotedOn: applyOverrides(
+              serverSettings.space.collaborationPollVoteCastOnPollIVotedOn,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationPollVoteCastOnPollIVotedOn'
+            ),
+            collaborationPollModifiedOnPollIVotedOn: applyOverrides(
+              serverSettings.space.collaborationPollModifiedOnPollIVotedOn,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationPollModifiedOnPollIVotedOn'
+            ),
+            collaborationPollVoteAffectedByOptionChange: applyOverrides(
+              serverSettings.space.collaborationPollVoteAffectedByOptionChange,
+              overrides,
+              NotificationGroup.SPACE,
+              'collaborationPollVoteAffectedByOptionChange'
+            ),
           }
         : undefined,
       spaceAdmin: serverSettings.spaceAdmin
         ? {
-            communityApplicationReceived: applyOverrides(serverSettings.spaceAdmin.communityApplicationReceived, overrides, NotificationGroup.SPACE_ADMIN, 'communityApplicationReceived'),
-            communityNewMember: applyOverrides(serverSettings.spaceAdmin.communityNewMember, overrides, NotificationGroup.SPACE_ADMIN, 'communityNewMember'),
-            collaborationCalloutContributionCreated: applyOverrides(serverSettings.spaceAdmin.collaborationCalloutContributionCreated, overrides, NotificationGroup.SPACE_ADMIN, 'collaborationCalloutContributionCreated'),
-            communicationMessageReceived: applyOverrides(serverSettings.spaceAdmin.communicationMessageReceived, overrides, NotificationGroup.SPACE_ADMIN, 'communicationMessageReceived'),
+            communityApplicationReceived: applyOverrides(
+              serverSettings.spaceAdmin.communityApplicationReceived,
+              overrides,
+              NotificationGroup.SPACE_ADMIN,
+              'communityApplicationReceived'
+            ),
+            communityNewMember: applyOverrides(
+              serverSettings.spaceAdmin.communityNewMember,
+              overrides,
+              NotificationGroup.SPACE_ADMIN,
+              'communityNewMember'
+            ),
+            collaborationCalloutContributionCreated: applyOverrides(
+              serverSettings.spaceAdmin.collaborationCalloutContributionCreated,
+              overrides,
+              NotificationGroup.SPACE_ADMIN,
+              'collaborationCalloutContributionCreated'
+            ),
+            communicationMessageReceived: applyOverrides(
+              serverSettings.spaceAdmin.communicationMessageReceived,
+              overrides,
+              NotificationGroup.SPACE_ADMIN,
+              'communicationMessageReceived'
+            ),
           }
         : undefined,
       user: serverSettings.user
         ? {
-            commentReply: applyOverrides(serverSettings.user.commentReply, overrides, NotificationGroup.USER, 'commentReply'),
+            commentReply: applyOverrides(
+              serverSettings.user.commentReply,
+              overrides,
+              NotificationGroup.USER,
+              'commentReply'
+            ),
             mentioned: applyOverrides(serverSettings.user.mentioned, overrides, NotificationGroup.USER, 'mentioned'),
-            messageReceived: applyOverrides(serverSettings.user.messageReceived, overrides, NotificationGroup.USER, 'messageReceived'),
+            messageReceived: applyOverrides(
+              serverSettings.user.messageReceived,
+              overrides,
+              NotificationGroup.USER,
+              'messageReceived'
+            ),
             membership: serverSettings.user.membership
               ? {
-                  spaceCommunityInvitationReceived: applyOverrides(serverSettings.user.membership.spaceCommunityInvitationReceived, overrides, NotificationGroup.USER, 'membership.spaceCommunityInvitationReceived'),
-                  spaceCommunityJoined: applyOverrides(serverSettings.user.membership.spaceCommunityJoined, overrides, NotificationGroup.USER, 'membership.spaceCommunityJoined'),
+                  spaceCommunityInvitationReceived: applyOverrides(
+                    serverSettings.user.membership.spaceCommunityInvitationReceived,
+                    overrides,
+                    NotificationGroup.USER,
+                    'membership.spaceCommunityInvitationReceived'
+                  ),
+                  spaceCommunityJoined: applyOverrides(
+                    serverSettings.user.membership.spaceCommunityJoined,
+                    overrides,
+                    NotificationGroup.USER,
+                    'membership.spaceCommunityJoined'
+                  ),
                 }
               : undefined,
           }
         : undefined,
       organization: serverSettings.organization
         ? {
-            adminMentioned: applyOverrides(serverSettings.organization.adminMentioned, overrides, NotificationGroup.ORGANIZATION, 'adminMentioned'),
-            adminMessageReceived: applyOverrides(serverSettings.organization.adminMessageReceived, overrides, NotificationGroup.ORGANIZATION, 'adminMessageReceived'),
+            adminMentioned: applyOverrides(
+              serverSettings.organization.adminMentioned,
+              overrides,
+              NotificationGroup.ORGANIZATION,
+              'adminMentioned'
+            ),
+            adminMessageReceived: applyOverrides(
+              serverSettings.organization.adminMessageReceived,
+              overrides,
+              NotificationGroup.ORGANIZATION,
+              'adminMessageReceived'
+            ),
           }
         : undefined,
       platform: serverSettings.platform
         ? {
-            forumDiscussionComment: applyOverrides(serverSettings.platform.forumDiscussionComment, overrides, NotificationGroup.PLATFORM, 'forumDiscussionComment'),
-            forumDiscussionCreated: applyOverrides(serverSettings.platform.forumDiscussionCreated, overrides, NotificationGroup.PLATFORM, 'forumDiscussionCreated'),
+            forumDiscussionComment: applyOverrides(
+              serverSettings.platform.forumDiscussionComment,
+              overrides,
+              NotificationGroup.PLATFORM,
+              'forumDiscussionComment'
+            ),
+            forumDiscussionCreated: applyOverrides(
+              serverSettings.platform.forumDiscussionCreated,
+              overrides,
+              NotificationGroup.PLATFORM,
+              'forumDiscussionCreated'
+            ),
           }
         : undefined,
       platformAdmin: serverSettings.platformAdmin
         ? {
-            userProfileCreated: applyOverrides(serverSettings.platformAdmin.userProfileCreated, overrides, NotificationGroup.PLATFORM_ADMIN, 'userProfileCreated'),
-            userProfileRemoved: applyOverrides(serverSettings.platformAdmin.userProfileRemoved, overrides, NotificationGroup.PLATFORM_ADMIN, 'userProfileRemoved'),
-            userGlobalRoleChanged: applyOverrides(serverSettings.platformAdmin.userGlobalRoleChanged, overrides, NotificationGroup.PLATFORM_ADMIN, 'userGlobalRoleChanged'),
-            spaceCreated: applyOverrides(serverSettings.platformAdmin.spaceCreated, overrides, NotificationGroup.PLATFORM_ADMIN, 'spaceCreated'),
+            userProfileCreated: applyOverrides(
+              serverSettings.platformAdmin.userProfileCreated,
+              overrides,
+              NotificationGroup.PLATFORM_ADMIN,
+              'userProfileCreated'
+            ),
+            userProfileRemoved: applyOverrides(
+              serverSettings.platformAdmin.userProfileRemoved,
+              overrides,
+              NotificationGroup.PLATFORM_ADMIN,
+              'userProfileRemoved'
+            ),
+            userGlobalRoleChanged: applyOverrides(
+              serverSettings.platformAdmin.userGlobalRoleChanged,
+              overrides,
+              NotificationGroup.PLATFORM_ADMIN,
+              'userGlobalRoleChanged'
+            ),
+            spaceCreated: applyOverrides(
+              serverSettings.platformAdmin.spaceCreated,
+              overrides,
+              NotificationGroup.PLATFORM_ADMIN,
+              'spaceCreated'
+            ),
           }
         : undefined,
       virtualContributor: serverSettings.virtualContributor
         ? {
-            adminSpaceCommunityInvitation: applyOverrides(serverSettings.virtualContributor.adminSpaceCommunityInvitation, overrides, NotificationGroup.VIRTUAL_CONTRIBUTOR, 'adminSpaceCommunityInvitation'),
+            adminSpaceCommunityInvitation: applyOverrides(
+              serverSettings.virtualContributor.adminSpaceCommunityInvitation,
+              overrides,
+              NotificationGroup.VIRTUAL_CONTRIBUTOR,
+              'adminSpaceCommunityInvitation'
+            ),
           }
         : undefined,
     };
@@ -294,54 +431,210 @@ const UserAdminNotificationsPage = () => {
   // Helper functions for building notification settings objects
   // These use serverSettings (not currentSettings with overrides) to avoid sending optimistic values
   const buildSpaceSettings = (property: string, type: ChannelType, value: boolean) => ({
-    communicationUpdates: createNotificationChannel(type, property, 'communicationUpdates', value, serverSettings.space?.communicationUpdates),
-    collaborationCalloutPublished: createNotificationChannel(type, property, 'collaborationCalloutPublished', value, serverSettings.space?.collaborationCalloutPublished),
-    collaborationCalloutPostContributionComment: createNotificationChannel(type, property, 'collaborationCalloutPostContributionComment', value, serverSettings.space?.collaborationCalloutPostContributionComment),
-    collaborationCalloutContributionCreated: createNotificationChannel(type, property, 'collaborationCalloutContributionCreated', value, serverSettings.space?.collaborationCalloutContributionCreated),
-    collaborationCalloutComment: createNotificationChannel(type, property, 'collaborationCalloutComment', value, serverSettings.space?.collaborationCalloutComment),
-    communityCalendarEvents: createNotificationChannel(type, property, 'communityCalendarEvents', value, serverSettings.space?.communityCalendarEvents),
-    collaborationPollVoteCastOnOwnPoll: createNotificationChannel(type, property, 'collaborationPollVoteCastOnOwnPoll', value, serverSettings.space?.collaborationPollVoteCastOnOwnPoll),
-    collaborationPollVoteCastOnPollIVotedOn: createNotificationChannel(type, property, 'collaborationPollVoteCastOnPollIVotedOn', value, serverSettings.space?.collaborationPollVoteCastOnPollIVotedOn),
-    collaborationPollModifiedOnPollIVotedOn: createNotificationChannel(type, property, 'collaborationPollModifiedOnPollIVotedOn', value, serverSettings.space?.collaborationPollModifiedOnPollIVotedOn),
-    collaborationPollVoteAffectedByOptionChange: createNotificationChannel(type, property, 'collaborationPollVoteAffectedByOptionChange', value, serverSettings.space?.collaborationPollVoteAffectedByOptionChange),
+    communicationUpdates: createNotificationChannel(
+      type,
+      property,
+      'communicationUpdates',
+      value,
+      serverSettings.space?.communicationUpdates
+    ),
+    collaborationCalloutPublished: createNotificationChannel(
+      type,
+      property,
+      'collaborationCalloutPublished',
+      value,
+      serverSettings.space?.collaborationCalloutPublished
+    ),
+    collaborationCalloutPostContributionComment: createNotificationChannel(
+      type,
+      property,
+      'collaborationCalloutPostContributionComment',
+      value,
+      serverSettings.space?.collaborationCalloutPostContributionComment
+    ),
+    collaborationCalloutContributionCreated: createNotificationChannel(
+      type,
+      property,
+      'collaborationCalloutContributionCreated',
+      value,
+      serverSettings.space?.collaborationCalloutContributionCreated
+    ),
+    collaborationCalloutComment: createNotificationChannel(
+      type,
+      property,
+      'collaborationCalloutComment',
+      value,
+      serverSettings.space?.collaborationCalloutComment
+    ),
+    communityCalendarEvents: createNotificationChannel(
+      type,
+      property,
+      'communityCalendarEvents',
+      value,
+      serverSettings.space?.communityCalendarEvents
+    ),
+    collaborationPollVoteCastOnOwnPoll: createNotificationChannel(
+      type,
+      property,
+      'collaborationPollVoteCastOnOwnPoll',
+      value,
+      serverSettings.space?.collaborationPollVoteCastOnOwnPoll
+    ),
+    collaborationPollVoteCastOnPollIVotedOn: createNotificationChannel(
+      type,
+      property,
+      'collaborationPollVoteCastOnPollIVotedOn',
+      value,
+      serverSettings.space?.collaborationPollVoteCastOnPollIVotedOn
+    ),
+    collaborationPollModifiedOnPollIVotedOn: createNotificationChannel(
+      type,
+      property,
+      'collaborationPollModifiedOnPollIVotedOn',
+      value,
+      serverSettings.space?.collaborationPollModifiedOnPollIVotedOn
+    ),
+    collaborationPollVoteAffectedByOptionChange: createNotificationChannel(
+      type,
+      property,
+      'collaborationPollVoteAffectedByOptionChange',
+      value,
+      serverSettings.space?.collaborationPollVoteAffectedByOptionChange
+    ),
   });
 
   const buildSpaceAdminSettings = (property: string, type: ChannelType, value: boolean) => ({
-    communityApplicationReceived: createNotificationChannel(type, property, 'communityApplicationReceived', value, serverSettings.spaceAdmin?.communityApplicationReceived),
-    communityNewMember: createNotificationChannel(type, property, 'communityNewMember', value, serverSettings.spaceAdmin?.communityNewMember),
-    collaborationCalloutContributionCreated: createNotificationChannel(type, property, 'collaborationCalloutContributionCreated', value, serverSettings.spaceAdmin?.collaborationCalloutContributionCreated),
-    communicationMessageReceived: createNotificationChannel(type, property, 'communicationMessageReceived', value, serverSettings.spaceAdmin?.communicationMessageReceived),
+    communityApplicationReceived: createNotificationChannel(
+      type,
+      property,
+      'communityApplicationReceived',
+      value,
+      serverSettings.spaceAdmin?.communityApplicationReceived
+    ),
+    communityNewMember: createNotificationChannel(
+      type,
+      property,
+      'communityNewMember',
+      value,
+      serverSettings.spaceAdmin?.communityNewMember
+    ),
+    collaborationCalloutContributionCreated: createNotificationChannel(
+      type,
+      property,
+      'collaborationCalloutContributionCreated',
+      value,
+      serverSettings.spaceAdmin?.collaborationCalloutContributionCreated
+    ),
+    communicationMessageReceived: createNotificationChannel(
+      type,
+      property,
+      'communicationMessageReceived',
+      value,
+      serverSettings.spaceAdmin?.communicationMessageReceived
+    ),
   });
 
   const buildUserSettings = (property: string, type: ChannelType, value: boolean) => ({
     commentReply: createNotificationChannel(type, property, 'commentReply', value, serverSettings.user?.commentReply),
     mentioned: createNotificationChannel(type, property, 'mentioned', value, serverSettings.user?.mentioned),
-    messageReceived: createNotificationChannel(type, property, 'messageReceived', value, serverSettings.user?.messageReceived),
+    messageReceived: createNotificationChannel(
+      type,
+      property,
+      'messageReceived',
+      value,
+      serverSettings.user?.messageReceived
+    ),
     membership: {
-      spaceCommunityInvitationReceived: createNotificationChannel(type, property, 'membership.spaceCommunityInvitationReceived', value, serverSettings.user?.membership?.spaceCommunityInvitationReceived),
-      spaceCommunityJoined: createNotificationChannel(type, property, 'membership.spaceCommunityJoined', value, serverSettings.user?.membership?.spaceCommunityJoined),
+      spaceCommunityInvitationReceived: createNotificationChannel(
+        type,
+        property,
+        'membership.spaceCommunityInvitationReceived',
+        value,
+        serverSettings.user?.membership?.spaceCommunityInvitationReceived
+      ),
+      spaceCommunityJoined: createNotificationChannel(
+        type,
+        property,
+        'membership.spaceCommunityJoined',
+        value,
+        serverSettings.user?.membership?.spaceCommunityJoined
+      ),
     },
   });
 
   const buildOrganizationSettings = (property: string, type: ChannelType, value: boolean) => ({
-    adminMentioned: createNotificationChannel(type, property, 'adminMentioned', value, serverSettings.organization?.adminMentioned),
-    adminMessageReceived: createNotificationChannel(type, property, 'adminMessageReceived', value, serverSettings.organization?.adminMessageReceived),
+    adminMentioned: createNotificationChannel(
+      type,
+      property,
+      'adminMentioned',
+      value,
+      serverSettings.organization?.adminMentioned
+    ),
+    adminMessageReceived: createNotificationChannel(
+      type,
+      property,
+      'adminMessageReceived',
+      value,
+      serverSettings.organization?.adminMessageReceived
+    ),
   });
 
   const buildPlatformSettings = (property: string, type: ChannelType, value: boolean) => ({
-    forumDiscussionComment: createNotificationChannel(type, property, 'forumDiscussionComment', value, serverSettings.platform?.forumDiscussionComment),
-    forumDiscussionCreated: createNotificationChannel(type, property, 'forumDiscussionCreated', value, serverSettings.platform?.forumDiscussionCreated),
+    forumDiscussionComment: createNotificationChannel(
+      type,
+      property,
+      'forumDiscussionComment',
+      value,
+      serverSettings.platform?.forumDiscussionComment
+    ),
+    forumDiscussionCreated: createNotificationChannel(
+      type,
+      property,
+      'forumDiscussionCreated',
+      value,
+      serverSettings.platform?.forumDiscussionCreated
+    ),
   });
 
   const buildPlatformAdminSettings = (property: string, type: ChannelType, value: boolean) => ({
-    userProfileCreated: createNotificationChannel(type, property, 'userProfileCreated', value, serverSettings.platformAdmin?.userProfileCreated),
-    userProfileRemoved: createNotificationChannel(type, property, 'userProfileRemoved', value, serverSettings.platformAdmin?.userProfileRemoved),
-    userGlobalRoleChanged: createNotificationChannel(type, property, 'userGlobalRoleChanged', value, serverSettings.platformAdmin?.userGlobalRoleChanged),
-    spaceCreated: createNotificationChannel(type, property, 'spaceCreated', value, serverSettings.platformAdmin?.spaceCreated),
+    userProfileCreated: createNotificationChannel(
+      type,
+      property,
+      'userProfileCreated',
+      value,
+      serverSettings.platformAdmin?.userProfileCreated
+    ),
+    userProfileRemoved: createNotificationChannel(
+      type,
+      property,
+      'userProfileRemoved',
+      value,
+      serverSettings.platformAdmin?.userProfileRemoved
+    ),
+    userGlobalRoleChanged: createNotificationChannel(
+      type,
+      property,
+      'userGlobalRoleChanged',
+      value,
+      serverSettings.platformAdmin?.userGlobalRoleChanged
+    ),
+    spaceCreated: createNotificationChannel(
+      type,
+      property,
+      'spaceCreated',
+      value,
+      serverSettings.platformAdmin?.spaceCreated
+    ),
   });
 
   const buildVCSettings = (property: string, type: ChannelType, value: boolean) => ({
-    adminSpaceCommunityInvitation: createNotificationChannel(type, property, 'adminSpaceCommunityInvitation', value, serverSettings.virtualContributor?.adminSpaceCommunityInvitation),
+    adminSpaceCommunityInvitation: createNotificationChannel(
+      type,
+      property,
+      'adminSpaceCommunityInvitation',
+      value,
+      serverSettings.virtualContributor?.adminSpaceCommunityInvitation
+    ),
   });
 
   // Unified update handler that processes a single notification setting update
@@ -363,8 +656,12 @@ const UserAdminNotificationsPage = () => {
         settingsVariable.space = {
           communicationUpdates: preserveChannel(serverSettings.space?.communicationUpdates),
           collaborationCalloutPublished: preserveChannel(serverSettings.space?.collaborationCalloutPublished),
-          collaborationCalloutPostContributionComment: preserveChannel(serverSettings.space?.collaborationCalloutPostContributionComment),
-          collaborationCalloutContributionCreated: preserveChannel(serverSettings.space?.collaborationCalloutContributionCreated),
+          collaborationCalloutPostContributionComment: preserveChannel(
+            serverSettings.space?.collaborationCalloutPostContributionComment
+          ),
+          collaborationCalloutContributionCreated: preserveChannel(
+            serverSettings.space?.collaborationCalloutContributionCreated
+          ),
           collaborationCalloutComment: preserveChannel(serverSettings.space?.collaborationCalloutComment),
           communityCalendarEvents: preserveChannel(serverSettings.space?.communityCalendarEvents),
           collaborationPollVoteCastOnOwnPoll: preserveChannel(serverSettings.space?.collaborationPollVoteCastOnOwnPoll),
