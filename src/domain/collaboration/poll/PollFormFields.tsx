@@ -8,7 +8,9 @@ import {
 } from '@dnd-kit/sortable';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Box, Button, IconButton } from '@mui/material';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockOutlineIcon from '@mui/icons-material/LockOutline';
+import { Box, Button, IconButton, Tooltip } from '@mui/material';
 import { FieldArray, getIn, useFormikContext } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -200,14 +202,17 @@ const PollFormFields = ({
                 {!isOpen && <Caption>{t('poll.status.closed')}</Caption>}
                 <Gutters disablePadding={true} row={true} gap={1} alignItems="center">
                   {isEditing && (
-                    <Button
-                      variant="outlined"
-                      loading={updatingStatus}
-                      disabled={updatingStatus}
-                      onClick={() => setConfirmDialogOpen(true)}
-                    >
-                      {isOpen ? t('poll.manage.closePoll') : t('poll.manage.reopenPoll')}
-                    </Button>
+                    <Tooltip title={isOpen ? t('poll.status.open') : t('poll.status.closed')} arrow={true}>
+                      <Button
+                        variant="text"
+                        loading={updatingStatus}
+                        disabled={updatingStatus}
+                        onClick={() => setConfirmDialogOpen(true)}
+                        startIcon={isOpen ? <LockOpenIcon /> : <LockOutlineIcon />}
+                      >
+                        {isOpen ? t('poll.manage.closePoll') : t('poll.manage.reopenPoll')}
+                      </Button>
+                    </Tooltip>
                   )}
                   <PollFormSettingsSection fieldPrefix={formPrefix} readOnly={readOnlySettings} />
                 </Gutters>

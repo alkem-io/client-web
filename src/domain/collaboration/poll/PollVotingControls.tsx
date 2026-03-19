@@ -138,7 +138,10 @@ const CustomOptionRow = ({
     return (
       <Box
         sx={{ cursor: 'pointer', py: 1, display: 'flex', alignItems: 'start', height: '60px', mb: '5px' }}
-        onClick={onActivate}
+        onClick={e => {
+          e.preventDefault();
+          onActivate();
+        }}
       >
         <CaptionSmall color="text.secondary">{t('poll.customOption.placeholder')}</CaptionSmall>
       </Box>
@@ -162,7 +165,17 @@ const CustomOptionRow = ({
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton size="small" onClick={handleSubmit} disabled={!isValid || isLoading} edge="end">
+                <IconButton
+                  size="small"
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={e => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleSubmit();
+                  }}
+                  disabled={!isValid || isLoading}
+                  edge="end"
+                >
                   <CheckIcon fontSize="small" />
                 </IconButton>
                 <IconButton

@@ -2388,6 +2388,7 @@
       "addingOption": "Adding option...",
       "voted": "Voted.",
       "removeMyVote": "Remove my vote",
+      "open": "Poll is open",
       "closed": "Poll closed"
     },
     "results": {

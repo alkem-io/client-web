@@ -1,5 +1,11 @@
+import { useApolloClient } from '@apollo/client';
 import { useCallback, useState, useTransition } from 'react';
-import { useCastPollVoteMutation, useRemovePollVoteMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  PollDetailsFragmentDoc,
+  useCastPollVoteMutation,
+  useRemovePollVoteMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import type { PollDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 
 type UsePollVoteParams = {
@@ -10,6 +16,7 @@ type UsePollVoteParams = {
 export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   const [isPending, startTransition] = useTransition();
   const [voteRemoved, setVoteRemoved] = useState(false);
+  const apolloClient = useApolloClient();
 
   const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation();
   const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation();
@@ -104,6 +111,18 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
     setVoteRemoved(true);
 
     startTransition(async () => {
+      // Make sure we have voted, and not removed the vote from some other tab
+      // the cache is up to date thanks to the subscription
+      const cachedPoll = apolloClient.readFragment<PollDetailsFragment>({
+        id: apolloClient.cache.identify({ __typename: 'Poll', id: poll.id }),
+        fragment: PollDetailsFragmentDoc,
+        fragmentName: 'PollDetails',
+      });
+
+      if (!cachedPoll?.myVote) {
+        return;
+      }
+
       await removePollVoteMutation({
         variables: {
           pollId,
@@ -161,7 +180,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
         },
       });
     });
-  }, [pollId, poll, removePollVoteMutation, startTransition]);
+  }, [pollId, poll, removePollVoteMutation, startTransition, apolloClient]);
 
   return {
     castVote,
