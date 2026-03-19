@@ -109,6 +109,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   // Handle vote revocation from subscription updates (myVote goes non-null → null)
   useEffect(() => {
     if (hadVotedRef.current && !hasVoted) {
+      cancelDebounce();
       setSelectedOptionIds([]);
       setVoteRevoked(true);
     }
