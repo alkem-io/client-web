@@ -1,5 +1,14 @@
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Box, Button, CircularProgress, DialogActions, DialogContent, IconButton, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  DialogActions,
+  DialogContent,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
 import { useEffect, useMemo, useState } from 'react';
@@ -179,6 +188,17 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
         onClose={handleClose}
       />
       <DialogContent>
+        <Typography
+          sx={{
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: 400,
+            fontSize: 12,
+            color: 'neutral.light',
+            marginBottom: 2,
+          }}
+        >
+          {t('components.userMessaging.newMessageSubtitle' as TranslationKey)}
+        </Typography>
         <Box display="flex" flexDirection="column">
           {/* User search */}
           <Autocomplete
