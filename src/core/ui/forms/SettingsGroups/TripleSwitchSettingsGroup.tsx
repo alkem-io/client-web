@@ -82,6 +82,8 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
             isPushAvailable,
           });
 
+          const labelId = `notification-label-${String(key)}`;
+
           return (
             <Box key={String(key)} sx={{ display: 'flex', alignItems: 'center', py: 0.5 }}>
               {isInAppNotificationsEnabled && (
@@ -96,6 +98,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
                       disabled={switchStates.inApp.disabled || isAnyLoading}
                       onChange={(_event, newValue) => handleChange(key, 'inApp', newValue)}
                       size="small"
+                      inputProps={{ 'aria-labelledby': labelId }}
                     />
                   </NotificationSwitchTooltip>
                 </Box>
@@ -111,6 +114,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
                     disabled={switchStates.email.disabled || isAnyLoading}
                     onChange={(_event, newValue) => handleChange(key, 'email', newValue)}
                     size="small"
+                    inputProps={{ 'aria-labelledby': labelId }}
                   />
                 </NotificationSwitchTooltip>
               </Box>
@@ -126,13 +130,13 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
                       disabled={switchStates.push.disabled || isAnyLoading}
                       onChange={(_event, newValue) => handleChange(key, 'push', newValue)}
                       size="small"
-                      aria-label={`Push notification toggle for ${String(key)}`}
+                      inputProps={{ 'aria-labelledby': labelId }}
                     />
                   </NotificationSwitchTooltip>
                 </Box>
               )}
               <Box sx={{ flex: 1, pl: 2 }}>
-                <Caption>{option.label}</Caption>
+                <Caption id={labelId}>{option.label}</Caption>
               </Box>
             </Box>
           );

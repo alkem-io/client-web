@@ -743,7 +743,7 @@ const UserAdminNotificationsPage = () => {
                       {t('pages.userNotificationsSettings.push.permissionDenied')}
                     </Alert>
                   )}
-                  {isPushEnabled && <PushSubscriptionsList />}
+                  {isPushAvailable && <PushSubscriptionsList />}
                 </PageContentBlock>
               </PageContentColumn>
             )}

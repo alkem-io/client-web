@@ -21,7 +21,7 @@ Represents a user's browser push registration on a specific device.
 **Relationships**: Belongs to a single authenticated user. A user can have multiple subscriptions (one per device/browser).
 
 **State transitions**:
-```
+```text
 [Not subscribed] --subscribe()--> ACTIVE --expire/rotate--> EXPIRED --refresh()--> ACTIVE
                                   ACTIVE --unsubscribe()--> [Deleted]
 ```

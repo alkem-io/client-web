@@ -247,6 +247,6 @@ With multiple developers after Foundational is complete:
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - No new npm dependencies — native Push API + Service Worker API only
-- `pnpm codegen` requires backend with push feature (server Feature 038) running at `localhost:4000/graphql`
+- `pnpm codegen` requires backend with push feature (server Feature 038) running at `localhost:3000/graphql`
 - Service worker is plain JS (not bundled) — changes to `public/service-worker.js` are immediate on reload
 - All user-facing strings via `react-i18next` `t()` function — only edit `translation.en.json`

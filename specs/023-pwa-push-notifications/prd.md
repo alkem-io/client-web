@@ -1,6 +1,6 @@
 # PRD: PWA Push Notifications — Client Web
 
-**Feature**: 022-pwa-push-notifications | **Date**: 2026-03-16
+**Feature**: 023-pwa-push-notifications | **Date**: 2026-03-16
 **Server Feature**: 038-pwa-push-notifications (fully implemented)
 
 ---
@@ -29,7 +29,7 @@ Add browser push notification support to the Alkemio client-web application. The
 
 | ID | Story | Acceptance Criteria |
 |----|-------|---------------------|
-| US-1 | As a user, I want to be prompted to enable push notifications so I can stay informed | Permission prompt shown once after login (dismissible, not on every visit) |
+| US-1 | As a user, I want to enable push notifications from Settings so I can stay informed | Permission requested only when user toggles the push master switch in Settings → Notifications (no auto-prompt) |
 | US-2 | As a user, I want to receive browser push notifications for platform events | Push notification shown with title, body, and app icon; tapping opens the relevant page |
 | US-3 | As a user, I want to manage which notification categories send push notifications | Each category in Settings → Notifications has a push toggle (alongside email/inApp) |
 | US-4 | As a user, I want to unsubscribe from push notifications | Single-click disable in settings removes subscription from server |
@@ -197,13 +197,12 @@ Run codegen to generate typed hooks: `pnpm graphql:codegen`
 
 ### 5.5 Permission Prompt UX
 
-**Trigger**: Do NOT auto-prompt on first visit. Instead:
+**Trigger**: Permission is requested ONLY from the Settings → Notifications page when the user explicitly toggles the push master switch.
 
 | Trigger Point | Behavior |
 |---------------|----------|
 | Settings page | User explicitly enables push via toggle → triggers `Notification.requestPermission()` |
-| Soft prompt (optional) | After user has been active for N sessions, show a dismissible in-app banner: "Want push notifications? Enable in Settings" |
-| Post-login (deferred) | If user previously granted permission and subscription expired, silently re-subscribe |
+| Return visit (deferred) | If user previously granted permission and subscription expired, silently re-subscribe (no prompt) |
 
 **Never**:
 - Auto-prompt on page load (causes high denial rates)
@@ -364,8 +363,7 @@ notifications.push.promptBody
 
 ### Phase 3 — Polish (US-8, US-9)
 
-1. Soft opt-in banner with contextual triggers
-2. "Permission denied" guidance UI
+1. "Permission denied" guidance UI
 3. Browser compatibility guards (hide UI on unsupported)
 4. Edge case handling (incognito mode, iOS Home Screen requirement)
 

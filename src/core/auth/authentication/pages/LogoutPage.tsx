@@ -15,13 +15,11 @@ async function cleanupPushSubscription(
     const subscriptionId = sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
 
     if (subscriptionId) {
-      // Fire-and-forget: don't block logout on server cleanup
-      unsubscribeMutation({
+      await unsubscribeMutation({
         variables: { subscriptionData: { subscriptionID: subscriptionId } },
       }).catch(() => {});
     }
 
-    // Clean up browser-side subscription
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
@@ -29,10 +27,9 @@ async function cleanupPushSubscription(
         await subscription.unsubscribe();
       }
     }
-
+  } finally {
+    // Always clear the cached ID, even if cleanup partially fails
     sessionStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
-  } catch {
-    // Non-critical: don't block logout
   }
 }
 
@@ -45,10 +42,11 @@ const LogoutPage = () => {
 
   useEffect(() => {
     if (logoutUrl) {
-      // Clean up push subscription before redirecting (fire-and-forget)
-      cleanupPushSubscription(unsubscribeMutation);
-      clearReturnUrl();
-      window.location.replace(logoutUrl);
+      // Wait for push cleanup before redirecting to avoid leaving stale subscriptions
+      cleanupPushSubscription(unsubscribeMutation).finally(() => {
+        clearReturnUrl();
+        window.location.replace(logoutUrl);
+      });
     } else {
       getLogoutUrl();
     }

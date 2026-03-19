@@ -43,29 +43,22 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
         const subscription = await registration.pushManager.getSubscription();
 
         if (!subscription) {
-          // No browser subscription — silently re-subscribe
-          const _vapidResponse = await fetch('/api/private/non-interactive/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: '{ vapidPublicKey }' }),
-          }).catch(() => null);
-
-          // Can't silently refresh without VAPID key available from context
-          // The hook already has it, but we'd need a different approach
-          // For now, rely on the hook's isSubscribed state being false to prompt user
+          // No browser subscription and permission is granted — use the hook's subscribe
+          // to silently re-create and register with server
+          await pushState.subscribe();
           return;
         }
 
-        // Subscription exists in browser — verify it exists on server
+        // Browser subscription exists — verify it's registered on the server
         const { data } = await fetchSubscriptions();
         const serverSubscriptions = data?.myPushSubscriptions ?? [];
-        const _endpoint = subscription.endpoint;
-        const matchingServer = serverSubscriptions.find(
-          sub => sub.id === sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)
-        );
+        const cachedId = sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+        const matchingServer = cachedId
+          ? serverSubscriptions.find(sub => sub.id === cachedId)
+          : undefined;
 
-        if (!matchingServer && serverSubscriptions.length > 0) {
-          // Browser subscription exists but no matching server record — re-register
+        if (!matchingServer) {
+          // No matching server record — re-register this browser's subscription
           const subscriptionJSON = subscription.toJSON();
           const result = await subscribeMutation({
             variables: {

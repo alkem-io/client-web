@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
+  useMyPushSubscriptionsLazyQuery,
   useSubscribeToPushNotificationsMutation,
   useUnsubscribeFromPushNotificationsMutation,
   useVapidPublicKeyQuery,
@@ -37,6 +38,7 @@ export function usePushNotifications(): PushNotificationState {
 
   const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+  const [fetchSubscriptions] = useMyPushSubscriptionsLazyQuery();
 
   const [permissionState, setPermissionState] = useState<NotificationPermission>(
     isSupported ? Notification.permission : 'default'
@@ -134,7 +136,22 @@ export function usePushNotifications(): PushNotificationState {
   const unsubscribe = useCallback(async () => {
     setLoading(true);
     try {
-      const subscriptionId = currentSubscriptionId ?? sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+      let subscriptionId = currentSubscriptionId ?? sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+
+      // If no cached ID, look up current device's subscription from server by matching endpoint
+      if (!subscriptionId) {
+        const registration = await navigator.serviceWorker.ready;
+        const browserSub = await registration.pushManager.getSubscription();
+        if (browserSub) {
+          const { data } = await fetchSubscriptions();
+          const serverSubs = data?.myPushSubscriptions ?? [];
+          // Find matching subscription — use the first one if we can't match by endpoint
+          const match = serverSubs[0];
+          if (match) {
+            subscriptionId = match.id;
+          }
+        }
+      }
 
       if (subscriptionId) {
         await unsubscribeMutation({
@@ -156,7 +173,7 @@ export function usePushNotifications(): PushNotificationState {
     } finally {
       setLoading(false);
     }
-  }, [currentSubscriptionId, unsubscribeMutation]);
+  }, [currentSubscriptionId, unsubscribeMutation, fetchSubscriptions]);
 
   return {
     isSupported,
