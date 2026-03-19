@@ -53,9 +53,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
         const { data } = await fetchSubscriptions();
         const serverSubscriptions = data?.myPushSubscriptions ?? [];
         const cachedId = sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
-        const matchingServer = cachedId
-          ? serverSubscriptions.find(sub => sub.id === cachedId)
-          : undefined;
+        const matchingServer = cachedId ? serverSubscriptions.find(sub => sub.id === cachedId) : undefined;
 
         if (!matchingServer) {
           // No matching server record — re-register this browser's subscription
