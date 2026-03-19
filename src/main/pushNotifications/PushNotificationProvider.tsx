@@ -71,8 +71,8 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
             variables: {
               subscriptionData: {
                 endpoint: subscriptionJSON.endpoint!,
-                p256dh: subscriptionJSON.keys?.p256dh,
-                auth: subscriptionJSON.keys?.auth,
+                p256dh: subscriptionJSON.keys?.p256dh ?? '',
+                auth: subscriptionJSON.keys?.auth ?? '',
                 userAgent: navigator.userAgent,
               },
             },
