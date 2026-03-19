@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import { FieldArray, Formik } from 'formik';
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 import * as yup from 'yup';
@@ -88,36 +88,33 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
   // Delete uploaded documents when links are removed or dialog is cancelled
   const { deleteDocumentById, deleteDocumentsById } = useDeleteDocument();
 
-  const deleteAllUploadedDocuments = useCallback(async () => {
+  const deleteAllUploadedDocuments = async () => {
     const documentIds = Array.from(uploadedDocumentIds.current.values());
     await deleteDocumentsById(documentIds);
     uploadedDocumentIds.current.clear();
-  }, [deleteDocumentsById]);
+  };
 
-  const handleDocumentUploaded = useCallback((linkId: string, document: UploadedDocument) => {
+  const handleDocumentUploaded = (linkId: string, document: UploadedDocument) => {
     uploadedDocumentIds.current.set(linkId, document.id);
-  }, []);
+  };
 
   const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
     await onSave(currentLinks);
     onClose();
   });
 
-  const initialValues: FormValueType = useMemo(
-    () => ({
-      links: open
-        ? [
-            {
-              id: generateLocalId(),
-              name: newLinkName(t, 0),
-              uri: '',
-              description: '',
-            },
-          ]
-        : [],
-    }),
-    [open, t]
-  );
+  const initialValues: FormValueType = {
+    links: open
+      ? [
+          {
+            id: generateLocalId(),
+            name: newLinkName(t, 0),
+            uri: '',
+            description: '',
+          },
+        ]
+      : [],
+  };
 
   const validationSchema = yup.object().shape({
     links: linkSegmentSchema,

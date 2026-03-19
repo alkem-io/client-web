@@ -1,5 +1,5 @@
 import type { Session } from '@ory/kratos-client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';
 
@@ -37,9 +37,7 @@ export const useWhoami = () => {
         .finally(() => setLoading(false));
   }, [kratosClient, t]);
 
-  const verified = useMemo(() => {
-    return session?.identity?.verifiable_addresses?.[0].verified || false;
-  }, [session]);
+  const verified = session?.identity?.verifiable_addresses?.[0].verified || false;
 
   return { session, loading, error, isAuthenticated, verified };
 };

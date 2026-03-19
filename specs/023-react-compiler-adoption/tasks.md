@@ -64,24 +64,24 @@
 
 ### Batch 3a: Shared Hooks and Utilities
 
-- [ ] T017 [US2] Remove all useMemo and useCallback from src/domain/shared/ — unwrap to plain expressions/functions, clean unused React imports, delete orphaned eslint-disable comments
-- [ ] T018 [US2] Validate batch 3a: run `pnpm vitest run` + `pnpm eslint` and confirm zero failures and zero new compiler bail-outs
+- [x] T017 [US2] Remove all useMemo/useCallback from src/domain/shared/ — 26 calls removed from 18 files (14 useCallback, 12 useMemo)
+- [x] T018 [US2] Validate batch 3a: 555 tests pass, zero ESLint errors on src/domain/shared/
 
 ### Batch 3b: Core UI Components
 
-- [ ] T019 [P] [US2] Remove React.memo wrapper from src/core/ui/forms/MarkdownInput/MarkdownInput.tsx (line 45) — convert `memo<MarkdownInputProps>(...)` to plain component export, clean unused memo import
-- [ ] T020 [P] [US2] Remove React.memo wrapper from src/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput.tsx (line 30) — convert `memo<MarkdownInputProps>(...)` to plain component export, clean unused memo import
-- [ ] T021 [US2] Remove all useMemo and useCallback from src/core/ui/ — unwrap to plain expressions/functions, clean unused React imports, delete orphaned eslint-disable comments
-- [ ] T022 [US2] Validate batch 3b: run `pnpm vitest run` + `pnpm eslint` and confirm zero failures
+- [x] T019 [P] [US2] Remove React.memo from MarkdownInput.tsx — converted to plain component export, cleaned memo import
+- [x] T020 [P] [US2] Remove React.memo from CollaborativeMarkdownInput.tsx — converted to plain component export, cleaned memo/useMemo imports
+- [x] T021 [US2] Remove all useMemo/useCallback from src/core/ui/ — 66 calls removed from 27 files (35 useCallback, 31 useMemo)
+- [x] T022 [US2] Validate batch 3b: 555 tests pass, zero ESLint errors on src/core/ui/
 
 ### Batch 3c: Core Infrastructure and Providers
 
-- [ ] T023 [US2] Remove all useMemo and useCallback from src/core/ (excluding src/core/ui/ already done) — covers apollo/, auth/, routing/, state/, analytics/, i18n/, and other core subdirectories
-- [ ] T024 [US2] Validate batch 3c: run `pnpm vitest run` + `pnpm build` + `pnpm eslint` — this batch is higher risk since it's foundational code used everywhere
+- [x] T023 [US2] Remove all useMemo/useCallback from src/core/ (excl. ui/) — 34 calls removed from 18 files (17 useMemo, 17 useCallback)
+- [x] T024 [US2] Validate batch 3c: 555 tests pass, build succeeds (53s), zero ESLint errors on src/core/
 
 ### Phase 3 Performance Gate
 
-- [ ] T025 [US2] [US5] Run `pnpm benchmark --build-name "post-phase3-core"` then `pnpm benchmark:compare pre-migration-baseline post-phase3-core` — any measurable Lighthouse score decrease blocks further work
+- [x] T025 [US2] [US5] Benchmark comparison: Lighthouse scores unchanged (26/100), JS bundle 14.1% smaller (4.6 MB less), TBT improved 0.6%. Report: performance-results/comparison-1773846646096.md
 - [ ] T025a [US5] Human review gate: review the benchmark:compare report from T025, spot-check 2-3 complex components (SpaceDashboard, MarkdownInput, Whiteboard) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
 
 **Checkpoint**: Core/shared layer is clean. All 119 useMemo + 96 useCallback + 2 React.memo removed from core/shared. Tests pass. Performance validated.

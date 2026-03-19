@@ -1,5 +1,6 @@
 import type { ChainedCommands } from '@tiptap/core';
 import type { Editor } from '@tiptap/react';
+import { produce } from 'immer';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
@@ -39,11 +40,11 @@ const ToolbarButton = ({
     }
   };
 
-  const produceButtonState = (prevState: ButtonState = {}): ButtonState => ({
-    ...prevState,
-    active: getActiveState(),
-    disabled: getDisabledState(),
-  });
+  const produceButtonState = (prevState: ButtonState = {}) =>
+    produce(prevState, nextState => {
+      nextState.active = getActiveState();
+      nextState.disabled = getDisabledState();
+    });
 
   const [state, setState] = useState<ButtonState>({ disabled: true, active: false });
 

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKratosClient } from './useKratosClient';
 
@@ -9,7 +9,7 @@ export const useLogoutUrl = () => {
   const [loading, setLoading] = useState<boolean>();
   const [logoutUrl, setLogoutUrl] = useState<string>();
 
-  const getLogoutUrl = useCallback(async () => {
+  const getLogoutUrl = async () => {
     if (!client) {
       return;
     }
@@ -25,12 +25,12 @@ export const useLogoutUrl = () => {
     } finally {
       setLoading(false);
     }
-  }, [client, t]);
+  };
 
   return {
     logoutUrl,
     error,
     loading,
-    getLogoutUrl: useCallback(() => getLogoutUrl(), [getLogoutUrl]),
+    getLogoutUrl: () => getLogoutUrl(),
   };
 };

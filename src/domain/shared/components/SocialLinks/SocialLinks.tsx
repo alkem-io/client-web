@@ -1,6 +1,6 @@
 import { Block, Mail, Public } from '@mui/icons-material';
 import { Box, Link, type SvgIconProps, Typography } from '@mui/material';
-import { type FC, useMemo } from 'react';
+import type { FC } from 'react';
 import * as yup from 'yup';
 import BlueSky from '@/domain/shared/components/SocialLinks/icons/BlueSky';
 import GitHub from './icons/GitHub';
@@ -51,17 +51,14 @@ const schema = yup.string().url();
 const schemaEmail = yup.string().email();
 
 export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) => {
-  const filteredSortedItems = useMemo(
-    () =>
-      items
-        ?.filter(
-          link =>
-            link.url &&
-            (link.type === SocialNetworkEnum.email ? schemaEmail.isValidSync(link.url) : schema.isValidSync(link.url))
-        )
-        .sort((a, b) => SocialNetworksSortOrder[a.type] - SocialNetworksSortOrder[b.type]) || [],
-    [items]
-  );
+  const filteredSortedItems =
+    items
+      ?.filter(
+        link =>
+          link.url &&
+          (link.type === SocialNetworkEnum.email ? schemaEmail.isValidSync(link.url) : schema.isValidSync(link.url))
+      )
+      .sort((a, b) => SocialNetworksSortOrder[a.type] - SocialNetworksSortOrder[b.type]) || [];
 
   if (!filteredSortedItems.length) {
     return null;

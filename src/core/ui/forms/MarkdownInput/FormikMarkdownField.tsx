@@ -8,7 +8,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import type { MarkdownTextMaxLength } from '../field-length.constants';
-import { CharacterCountContextProvider, useCharacterCount } from './CharacterCountContext';
+import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import MarkdownInput, { type MarkdownInputRefApi } from './MarkdownInput';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 
@@ -163,33 +163,15 @@ export const FormikMarkdownField = ({
             },
           }}
         />
-        <CharacterCounterSection
-          maxLength={maxLength}
-          counterDisabled={counterDisabled}
-          isError={isError}
-          helperText={helperText}
-        />
+        <CharacterCountContainer>
+          {({ characterCount }) => (
+            <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
+              <FormHelperText error={isError}>{helperText}</FormHelperText>
+            </CharacterCounter>
+          )}
+        </CharacterCountContainer>
       </CharacterCountContextProvider>
     </FormControl>
-  );
-};
-
-const CharacterCounterSection = ({
-  maxLength,
-  counterDisabled,
-  isError,
-  helperText,
-}: {
-  maxLength: MarkdownTextMaxLength | undefined;
-  counterDisabled: boolean;
-  isError: boolean;
-  helperText: string | undefined;
-}) => {
-  const characterCount = useCharacterCount();
-  return (
-    <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
-      <FormHelperText error={isError}>{helperText}</FormHelperText>
-    </CharacterCounter>
   );
 };
 

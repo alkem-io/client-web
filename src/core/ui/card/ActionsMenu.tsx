@@ -1,14 +1,6 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ClickAwayListener, IconButton, Menu } from '@mui/material';
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  type MouseEvent,
-  type PropsWithChildren,
-  useCallback,
-  useState,
-} from 'react';
+import { Children, cloneElement, isValidElement, type MouseEvent, type PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type ClickableProps = {
@@ -22,15 +14,15 @@ const ActionsMenu = ({ children }: PropsWithChildren) => {
   const settingsOpened = Boolean(settingsAnchorEl);
 
   // prevent the redirection of Link components when clicking on the ActionsMenu
-  const onMenuClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+  const onMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setSettingsAnchorEl(event.currentTarget);
-  }, []);
+  };
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setSettingsAnchorEl(null);
-  }, [setSettingsAnchorEl]);
+  };
 
   // close the menu on every item click
   const clonedChildren = Children.map(children, child => {

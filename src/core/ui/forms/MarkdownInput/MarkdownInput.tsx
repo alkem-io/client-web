@@ -6,7 +6,7 @@ import { memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react
 import { gutters } from '@/core/ui/grid/utils';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
-import { useCharacterCount } from './CharacterCountContext';
+import { CharacterCountContainer } from './CharacterCountContext';
 import { MarkdownInputStyles } from './hooks/MarkdownInputStyles';
 import { useEditorConfig } from './hooks/useEditorConfig';
 import { useImageUpload } from './hooks/useImageUpload';
@@ -170,50 +170,34 @@ export const MarkdownInput = memo<MarkdownInputProps>(
           <Box position="relative" style={{ minHeight: prevEditorHeight }}>
             <EditorContent editor={editor} />
 
-            <OverflowHighlight
-              maxLength={maxLength}
-              shadowEditor={shadowEditor}
-              errorColor={theme.palette.error.main}
-            />
+            <CharacterCountContainer>
+              {({ characterCount }) =>
+                typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    sx={{
+                      pointerEvents: 'none',
+                      color: 'transparent',
+                      mark: {
+                        color: theme.palette.error.main,
+                        backgroundColor: 'transparent',
+                      },
+                    }}
+                  >
+                    <EditorContent editor={shadowEditor} />
+                  </Box>
+                )
+              }
+            </CharacterCountContainer>
           </Box>
         </Box>
       </Box>
     );
   }
 );
-
-const OverflowHighlight = ({
-  maxLength,
-  shadowEditor,
-  errorColor,
-}: {
-  maxLength: number | undefined;
-  shadowEditor: Editor | null;
-  errorColor: string;
-}) => {
-  const characterCount = useCharacterCount();
-  if (typeof maxLength === 'undefined' || characterCount <= maxLength) {
-    return null;
-  }
-  return (
-    <Box
-      position="absolute"
-      top={0}
-      left={0}
-      bottom={0}
-      right={0}
-      sx={{
-        pointerEvents: 'none',
-        color: 'transparent',
-        mark: {
-          color: errorColor,
-          backgroundColor: 'transparent',
-        },
-      }}
-    >
-      <EditorContent editor={shadowEditor} />
-    </Box>
-  );
-};
 
 export default MarkdownInput;

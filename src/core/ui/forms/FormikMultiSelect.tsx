@@ -1,6 +1,6 @@
 import { Autocomplete, Chip, TextField, type TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
-import { type ReactElement, type SyntheticEvent, useMemo } from 'react';
+import type { ReactElement, SyntheticEvent } from 'react';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
@@ -37,7 +37,7 @@ export const FormikMultiSelect = ({
 
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return helpText;
     }
@@ -47,16 +47,14 @@ export const FormikMultiSelect = ({
     }
 
     return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, helpText, name, tErr]);
+  })();
 
-  const selectedValues = useMemo(() => {
-    const fieldSelectedValues = values.filter(option => field.value?.includes(option.id)) ?? [];
-    // Ensure fixed options are always included in selected values
-    const allFixedOptions = fixedOptions.filter(
-      option => !fieldSelectedValues.some(selected => selected.id === option.id)
-    );
-    return [...fieldSelectedValues, ...allFixedOptions];
-  }, [values, field.value, fixedOptions]);
+  const fieldSelectedValues = values.filter(option => field.value?.includes(option.id)) ?? [];
+  // Ensure fixed options are always included in selected values
+  const allFixedOptions = fixedOptions.filter(
+    option => !fieldSelectedValues.some(selected => selected.id === option.id)
+  );
+  const selectedValues = [...fieldSelectedValues, ...allFixedOptions];
 
   const handleChange = (_event: SyntheticEvent, newValues: FormikSelectValue[]) => {
     // Filter out fixed options from the change since they should always be present

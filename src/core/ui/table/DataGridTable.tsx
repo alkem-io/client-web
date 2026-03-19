@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, styled } from '@mui/material';
 import { DataGrid, type DataGridProps, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
-import React, { type ReactNode, useMemo } from 'react';
+import React, { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -71,19 +71,15 @@ const DataGridTable = <Item extends Identifiable>({
 }: DataGridTableProps<Item>) => {
   const { t } = useTranslation();
 
-  const columnDefinitions = useMemo<GridColDef<Item>[]>(
-    () =>
-      columns.map(column => {
-        return {
-          headerName: t(`fields.${column.field}` as TranslationKey) as string,
-          renderHeader: ({ colDef }) => <>{colDef.headerName}</>,
-          ...column,
-        };
-      }),
-    [t, columns, dependencies]
-  );
+  const columnDefinitions: GridColDef<Item>[] = columns.map(column => {
+    return {
+      headerName: t(`fields.${column.field}` as TranslationKey) as string,
+      renderHeader: ({ colDef }) => <>{colDef.headerName}</>,
+      ...column,
+    };
+  });
 
-  const actionsColumnDefinition = useMemo<GridColDef<Item> | undefined>(() => {
+  const actionsColumnDefinition: GridColDef<Item> | undefined = (() => {
     const actionDefinitions = [...(actions ?? [])];
     if (!onDelete && actionDefinitions.length === 0) {
       return undefined;
@@ -123,12 +119,11 @@ const DataGridTable = <Item extends Identifiable>({
         );
       },
     };
-  }, [actions, onDelete, canDelete, disableDelete, t, dependencies]);
+  })();
 
-  const mergedColumnDefinitions = useMemo(
-    () => (actionsColumnDefinition ? [...columnDefinitions, actionsColumnDefinition] : columnDefinitions),
-    [columnDefinitions, actionsColumnDefinition]
-  );
+  const mergedColumnDefinitions = actionsColumnDefinition
+    ? [...columnDefinitions, actionsColumnDefinition]
+    : columnDefinitions;
 
   return (
     <StyledDataGrid

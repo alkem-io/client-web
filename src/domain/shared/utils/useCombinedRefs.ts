@@ -1,4 +1,4 @@
-import { type RefObject, useMemo, useRef } from 'react';
+import { type RefObject, useRef } from 'react';
 
 type FunctionalRef<T> = (refValue: T) => void;
 
@@ -20,15 +20,12 @@ export const useCombinedRefs = <T>(initialValue: T, ...refs: Ref<T>[]): RefObjec
     });
   };
 
-  return useMemo(
-    () => ({
-      set current(current: T) {
-        updateAllRefs(current);
-      },
-      get current() {
-        return currentHolder.current;
-      },
-    }),
-    refs
-  );
+  return {
+    set current(current: T) {
+      updateAllRefs(current);
+    },
+    get current() {
+      return currentHolder.current;
+    },
+  } as RefObject<T>;
 };
