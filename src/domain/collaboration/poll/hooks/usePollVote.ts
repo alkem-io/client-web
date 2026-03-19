@@ -154,7 +154,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
                 })),
               };
             }),
-            myVote: null,
+            myVote: undefined,
           },
         },
       });

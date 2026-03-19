@@ -82,6 +82,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     whiteboard: undefined,
     memo: undefined,
     link: undefined,
+    poll: undefined,
     mediaGallery: { visuals: [] },
   },
   contributionDefaults: {
@@ -114,6 +115,7 @@ export const isEmptyCalloutForm = (calloutFormData: CalloutFormSubmittedValues |
     !calloutFormData.framing.profile.displayName &&
     !calloutFormData.framing.profile.description &&
     !calloutFormData.framing.whiteboard?.content &&
+    !calloutFormData.framing.poll?.options?.some(o => o.text) &&
     calloutFormData.framing.profile.tagsets.every(tagset => tagset.tags.length === 0) &&
     calloutFormData.settings.contribution.allowedTypes === 'none'
   ) {

@@ -8,10 +8,10 @@ import { Caption } from '@/core/ui/typography/components';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
 import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
+import { MAX_POLL_OPTIONS } from '@/domain/collaboration/poll/PollFormFields';
 import PollVotingControls from '@/domain/collaboration/poll/PollVotingControls';
 
 const CHECKBOX_DEBOUNCE_MS = 2_000;
-const MAX_POLL_OPTIONS = 10;
 
 type PollViewProps = {
   poll: PollDetailsModel;

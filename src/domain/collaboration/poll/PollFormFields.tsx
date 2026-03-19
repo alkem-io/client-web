@@ -9,14 +9,15 @@ import {
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, IconButton } from '@mui/material';
-import { FieldArray, useFormikContext } from 'formik';
+import { FieldArray, getIn, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import AddButton from '@/core/ui/button/AddButton';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption } from '@/core/ui/typography';
-import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
+import type { PollFormOptionValue } from '@/domain/collaboration/poll/models/PollModels';
 import PollFormSettingsSection from '@/domain/collaboration/poll/PollFormSettingsSection';
+import type { CalloutFormSubmittedValues } from '../callout/CalloutForm/CalloutFormModel';
 
 const FIELD_PREFIX = 'framing.poll';
 export const MIN_POLL_OPTIONS = 2;
@@ -87,7 +88,7 @@ const PollFormFields = ({ formPrefix = FIELD_PREFIX, readOnlySettings = false }:
   const { t } = useTranslation();
   const { values } = useFormikContext<CalloutFormSubmittedValues>();
 
-  const options = values.framing.poll?.options ?? [];
+  const options: PollFormOptionValue[] = getIn(values, `${formPrefix}.options`) ?? [];
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
