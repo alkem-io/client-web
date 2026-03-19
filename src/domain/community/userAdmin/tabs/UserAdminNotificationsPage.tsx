@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Box, Switch } from '@mui/material';
-import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { refetchUserSettingsQuery, useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   type UpdateUserSettingsNotificationInput,
@@ -54,6 +54,39 @@ type NotificationUpdate = {
   value: boolean;
 };
 
+// Optimistic overrides: track individual setting changes so the UI updates immediately
+type OptimisticOverride = {
+  group: NotificationGroup;
+  property: string;
+  channelType: ChannelType;
+  value: boolean;
+};
+
+type OverridesAction =
+  | { type: 'set'; override: OptimisticOverride }
+  | { type: 'clear' };
+
+function overridesReducer(state: OptimisticOverride[], action: OverridesAction): OptimisticOverride[] {
+  switch (action.type) {
+    case 'set':
+      return [
+        ...state.filter(
+          o =>
+            !(
+              o.group === action.override.group &&
+              o.property === action.override.property &&
+              o.channelType === action.override.channelType
+            )
+        ),
+        action.override,
+      ];
+    case 'clear':
+      return [];
+    default:
+      return state;
+  }
+}
+
 // Helper function to create notification channel objects
 const createNotificationChannel = (
   type: ChannelType,
@@ -73,6 +106,26 @@ const preserveChannel = (channel?: NotificationChannels): NotificationChannels =
   inApp: channel?.inApp ?? false,
   push: channel?.push ?? false,
 });
+
+// Apply optimistic overrides to a NotificationChannels object
+const applyOverrides = (
+  channel: NotificationChannels | undefined,
+  overrides: OptimisticOverride[],
+  group: NotificationGroup,
+  property: string
+): NotificationChannels | undefined => {
+  const matching = overrides.filter(o => o.group === group && o.property === property);
+  if (matching.length === 0) return channel;
+  const base: NotificationChannels = {
+    email: channel?.email ?? false,
+    inApp: channel?.inApp ?? false,
+    push: channel?.push ?? false,
+  };
+  for (const o of matching) {
+    base[o.channelType] = o.value;
+  }
+  return base;
+};
 
 const UserAdminNotificationsPage = () => {
   const { t } = useTranslation();
@@ -135,12 +188,16 @@ const UserAdminNotificationsPage = () => {
   const { data: userProfileData, loading } = useUserSettingsQuery({
     variables: { userID },
     skip: isLoadingUser || !userID,
+    fetchPolicy: 'cache-and-network',
   });
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
-  // Current settings grouped by category with proper model
-  const currentSettings = useMemo((): NotificationSettings => {
+  // Optimistic overrides for immediate UI feedback
+  const [overrides, dispatchOverrides] = useReducer(overridesReducer, []);
+
+  // Server settings from the query
+  const serverSettings = useMemo((): NotificationSettings => {
     const notification = userProfileData?.lookup.user?.settings?.notification;
 
     return {
@@ -153,6 +210,70 @@ const UserAdminNotificationsPage = () => {
       virtualContributor: notification?.virtualContributor as VCNotificationSettings | undefined,
     };
   }, [userProfileData]);
+
+  // Merge server settings with optimistic overrides for the UI
+  const currentSettings = useMemo((): NotificationSettings => {
+    if (overrides.length === 0) return serverSettings;
+
+    return {
+      space: serverSettings.space
+        ? {
+            communicationUpdates: applyOverrides(serverSettings.space.communicationUpdates, overrides, NotificationGroup.SPACE, 'communicationUpdates'),
+            collaborationCalloutPublished: applyOverrides(serverSettings.space.collaborationCalloutPublished, overrides, NotificationGroup.SPACE, 'collaborationCalloutPublished'),
+            collaborationCalloutPostContributionComment: applyOverrides(serverSettings.space.collaborationCalloutPostContributionComment, overrides, NotificationGroup.SPACE, 'collaborationCalloutPostContributionComment'),
+            collaborationCalloutContributionCreated: applyOverrides(serverSettings.space.collaborationCalloutContributionCreated, overrides, NotificationGroup.SPACE, 'collaborationCalloutContributionCreated'),
+            collaborationCalloutComment: applyOverrides(serverSettings.space.collaborationCalloutComment, overrides, NotificationGroup.SPACE, 'collaborationCalloutComment'),
+            communityCalendarEvents: applyOverrides(serverSettings.space.communityCalendarEvents, overrides, NotificationGroup.SPACE, 'communityCalendarEvents'),
+          }
+        : undefined,
+      spaceAdmin: serverSettings.spaceAdmin
+        ? {
+            communityApplicationReceived: applyOverrides(serverSettings.spaceAdmin.communityApplicationReceived, overrides, NotificationGroup.SPACE_ADMIN, 'communityApplicationReceived'),
+            communityNewMember: applyOverrides(serverSettings.spaceAdmin.communityNewMember, overrides, NotificationGroup.SPACE_ADMIN, 'communityNewMember'),
+            collaborationCalloutContributionCreated: applyOverrides(serverSettings.spaceAdmin.collaborationCalloutContributionCreated, overrides, NotificationGroup.SPACE_ADMIN, 'collaborationCalloutContributionCreated'),
+            communicationMessageReceived: applyOverrides(serverSettings.spaceAdmin.communicationMessageReceived, overrides, NotificationGroup.SPACE_ADMIN, 'communicationMessageReceived'),
+          }
+        : undefined,
+      user: serverSettings.user
+        ? {
+            commentReply: applyOverrides(serverSettings.user.commentReply, overrides, NotificationGroup.USER, 'commentReply'),
+            mentioned: applyOverrides(serverSettings.user.mentioned, overrides, NotificationGroup.USER, 'mentioned'),
+            messageReceived: applyOverrides(serverSettings.user.messageReceived, overrides, NotificationGroup.USER, 'messageReceived'),
+            membership: serverSettings.user.membership
+              ? {
+                  spaceCommunityInvitationReceived: applyOverrides(serverSettings.user.membership.spaceCommunityInvitationReceived, overrides, NotificationGroup.USER, 'membership.spaceCommunityInvitationReceived'),
+                  spaceCommunityJoined: applyOverrides(serverSettings.user.membership.spaceCommunityJoined, overrides, NotificationGroup.USER, 'membership.spaceCommunityJoined'),
+                }
+              : undefined,
+          }
+        : undefined,
+      organization: serverSettings.organization
+        ? {
+            adminMentioned: applyOverrides(serverSettings.organization.adminMentioned, overrides, NotificationGroup.ORGANIZATION, 'adminMentioned'),
+            adminMessageReceived: applyOverrides(serverSettings.organization.adminMessageReceived, overrides, NotificationGroup.ORGANIZATION, 'adminMessageReceived'),
+          }
+        : undefined,
+      platform: serverSettings.platform
+        ? {
+            forumDiscussionComment: applyOverrides(serverSettings.platform.forumDiscussionComment, overrides, NotificationGroup.PLATFORM, 'forumDiscussionComment'),
+            forumDiscussionCreated: applyOverrides(serverSettings.platform.forumDiscussionCreated, overrides, NotificationGroup.PLATFORM, 'forumDiscussionCreated'),
+          }
+        : undefined,
+      platformAdmin: serverSettings.platformAdmin
+        ? {
+            userProfileCreated: applyOverrides(serverSettings.platformAdmin.userProfileCreated, overrides, NotificationGroup.PLATFORM_ADMIN, 'userProfileCreated'),
+            userProfileRemoved: applyOverrides(serverSettings.platformAdmin.userProfileRemoved, overrides, NotificationGroup.PLATFORM_ADMIN, 'userProfileRemoved'),
+            userGlobalRoleChanged: applyOverrides(serverSettings.platformAdmin.userGlobalRoleChanged, overrides, NotificationGroup.PLATFORM_ADMIN, 'userGlobalRoleChanged'),
+            spaceCreated: applyOverrides(serverSettings.platformAdmin.spaceCreated, overrides, NotificationGroup.PLATFORM_ADMIN, 'spaceCreated'),
+          }
+        : undefined,
+      virtualContributor: serverSettings.virtualContributor
+        ? {
+            adminSpaceCommunityInvitation: applyOverrides(serverSettings.virtualContributor.adminSpaceCommunityInvitation, overrides, NotificationGroup.VIRTUAL_CONTRIBUTOR, 'adminSpaceCommunityInvitation'),
+          }
+        : undefined,
+    };
+  }, [serverSettings, overrides]);
 
   if (loading || isLoadingUser) {
     return <Loading />;
@@ -167,55 +288,62 @@ const UserAdminNotificationsPage = () => {
   };
 
   // Helper functions for building notification settings objects
+  // These use serverSettings (not currentSettings with overrides) to avoid sending optimistic values
   const buildSpaceSettings = (property: string, type: ChannelType, value: boolean) => ({
-    communicationUpdates: createNotificationChannel(type, property, 'communicationUpdates', value, currentSettings.space?.communicationUpdates),
-    collaborationCalloutPublished: createNotificationChannel(type, property, 'collaborationCalloutPublished', value, currentSettings.space?.collaborationCalloutPublished),
-    collaborationCalloutPostContributionComment: createNotificationChannel(type, property, 'collaborationCalloutPostContributionComment', value, currentSettings.space?.collaborationCalloutPostContributionComment),
-    collaborationCalloutContributionCreated: createNotificationChannel(type, property, 'collaborationCalloutContributionCreated', value, currentSettings.space?.collaborationCalloutContributionCreated),
-    collaborationCalloutComment: createNotificationChannel(type, property, 'collaborationCalloutComment', value, currentSettings.space?.collaborationCalloutComment),
-    communityCalendarEvents: createNotificationChannel(type, property, 'communityCalendarEvents', value, currentSettings.space?.communityCalendarEvents),
+    communicationUpdates: createNotificationChannel(type, property, 'communicationUpdates', value, serverSettings.space?.communicationUpdates),
+    collaborationCalloutPublished: createNotificationChannel(type, property, 'collaborationCalloutPublished', value, serverSettings.space?.collaborationCalloutPublished),
+    collaborationCalloutPostContributionComment: createNotificationChannel(type, property, 'collaborationCalloutPostContributionComment', value, serverSettings.space?.collaborationCalloutPostContributionComment),
+    collaborationCalloutContributionCreated: createNotificationChannel(type, property, 'collaborationCalloutContributionCreated', value, serverSettings.space?.collaborationCalloutContributionCreated),
+    collaborationCalloutComment: createNotificationChannel(type, property, 'collaborationCalloutComment', value, serverSettings.space?.collaborationCalloutComment),
+    communityCalendarEvents: createNotificationChannel(type, property, 'communityCalendarEvents', value, serverSettings.space?.communityCalendarEvents),
   });
 
   const buildSpaceAdminSettings = (property: string, type: ChannelType, value: boolean) => ({
-    communityApplicationReceived: createNotificationChannel(type, property, 'communityApplicationReceived', value, currentSettings.spaceAdmin?.communityApplicationReceived),
-    communityNewMember: createNotificationChannel(type, property, 'communityNewMember', value, currentSettings.spaceAdmin?.communityNewMember),
-    collaborationCalloutContributionCreated: createNotificationChannel(type, property, 'collaborationCalloutContributionCreated', value, currentSettings.spaceAdmin?.collaborationCalloutContributionCreated),
-    communicationMessageReceived: createNotificationChannel(type, property, 'communicationMessageReceived', value, currentSettings.spaceAdmin?.communicationMessageReceived),
+    communityApplicationReceived: createNotificationChannel(type, property, 'communityApplicationReceived', value, serverSettings.spaceAdmin?.communityApplicationReceived),
+    communityNewMember: createNotificationChannel(type, property, 'communityNewMember', value, serverSettings.spaceAdmin?.communityNewMember),
+    collaborationCalloutContributionCreated: createNotificationChannel(type, property, 'collaborationCalloutContributionCreated', value, serverSettings.spaceAdmin?.collaborationCalloutContributionCreated),
+    communicationMessageReceived: createNotificationChannel(type, property, 'communicationMessageReceived', value, serverSettings.spaceAdmin?.communicationMessageReceived),
   });
 
   const buildUserSettings = (property: string, type: ChannelType, value: boolean) => ({
-    commentReply: createNotificationChannel(type, property, 'commentReply', value, currentSettings.user?.commentReply),
-    mentioned: createNotificationChannel(type, property, 'mentioned', value, currentSettings.user?.mentioned),
-    messageReceived: createNotificationChannel(type, property, 'messageReceived', value, currentSettings.user?.messageReceived),
+    commentReply: createNotificationChannel(type, property, 'commentReply', value, serverSettings.user?.commentReply),
+    mentioned: createNotificationChannel(type, property, 'mentioned', value, serverSettings.user?.mentioned),
+    messageReceived: createNotificationChannel(type, property, 'messageReceived', value, serverSettings.user?.messageReceived),
     membership: {
-      spaceCommunityInvitationReceived: createNotificationChannel(type, property, 'membership.spaceCommunityInvitationReceived', value, currentSettings.user?.membership?.spaceCommunityInvitationReceived),
-      spaceCommunityJoined: createNotificationChannel(type, property, 'membership.spaceCommunityJoined', value, currentSettings.user?.membership?.spaceCommunityJoined),
+      spaceCommunityInvitationReceived: createNotificationChannel(type, property, 'membership.spaceCommunityInvitationReceived', value, serverSettings.user?.membership?.spaceCommunityInvitationReceived),
+      spaceCommunityJoined: createNotificationChannel(type, property, 'membership.spaceCommunityJoined', value, serverSettings.user?.membership?.spaceCommunityJoined),
     },
   });
 
   const buildOrganizationSettings = (property: string, type: ChannelType, value: boolean) => ({
-    adminMentioned: createNotificationChannel(type, property, 'adminMentioned', value, currentSettings.organization?.adminMentioned),
-    adminMessageReceived: createNotificationChannel(type, property, 'adminMessageReceived', value, currentSettings.organization?.adminMessageReceived),
+    adminMentioned: createNotificationChannel(type, property, 'adminMentioned', value, serverSettings.organization?.adminMentioned),
+    adminMessageReceived: createNotificationChannel(type, property, 'adminMessageReceived', value, serverSettings.organization?.adminMessageReceived),
   });
 
   const buildPlatformSettings = (property: string, type: ChannelType, value: boolean) => ({
-    forumDiscussionComment: createNotificationChannel(type, property, 'forumDiscussionComment', value, currentSettings.platform?.forumDiscussionComment),
-    forumDiscussionCreated: createNotificationChannel(type, property, 'forumDiscussionCreated', value, currentSettings.platform?.forumDiscussionCreated),
+    forumDiscussionComment: createNotificationChannel(type, property, 'forumDiscussionComment', value, serverSettings.platform?.forumDiscussionComment),
+    forumDiscussionCreated: createNotificationChannel(type, property, 'forumDiscussionCreated', value, serverSettings.platform?.forumDiscussionCreated),
   });
 
   const buildPlatformAdminSettings = (property: string, type: ChannelType, value: boolean) => ({
-    userProfileCreated: createNotificationChannel(type, property, 'userProfileCreated', value, currentSettings.platformAdmin?.userProfileCreated),
-    userProfileRemoved: createNotificationChannel(type, property, 'userProfileRemoved', value, currentSettings.platformAdmin?.userProfileRemoved),
-    userGlobalRoleChanged: createNotificationChannel(type, property, 'userGlobalRoleChanged', value, currentSettings.platformAdmin?.userGlobalRoleChanged),
-    spaceCreated: createNotificationChannel(type, property, 'spaceCreated', value, currentSettings.platformAdmin?.spaceCreated),
+    userProfileCreated: createNotificationChannel(type, property, 'userProfileCreated', value, serverSettings.platformAdmin?.userProfileCreated),
+    userProfileRemoved: createNotificationChannel(type, property, 'userProfileRemoved', value, serverSettings.platformAdmin?.userProfileRemoved),
+    userGlobalRoleChanged: createNotificationChannel(type, property, 'userGlobalRoleChanged', value, serverSettings.platformAdmin?.userGlobalRoleChanged),
+    spaceCreated: createNotificationChannel(type, property, 'spaceCreated', value, serverSettings.platformAdmin?.spaceCreated),
   });
 
   const buildVCSettings = (property: string, type: ChannelType, value: boolean) => ({
-    adminSpaceCommunityInvitation: createNotificationChannel(type, property, 'adminSpaceCommunityInvitation', value, currentSettings.virtualContributor?.adminSpaceCommunityInvitation),
+    adminSpaceCommunityInvitation: createNotificationChannel(type, property, 'adminSpaceCommunityInvitation', value, serverSettings.virtualContributor?.adminSpaceCommunityInvitation),
   });
 
   // Unified update handler that processes a single notification setting update
   const handleUpdateSettings = async ({ group, property, type, value }: NotificationUpdate) => {
+    // Immediately apply the change to local state for instant UI feedback
+    dispatchOverrides({
+      type: 'set',
+      override: { group, property, channelType: type, value },
+    });
+
     const settingsVariable: UpdateUserSettingsNotificationInput = {};
 
     switch (group) {
@@ -225,12 +353,12 @@ const UserAdminNotificationsPage = () => {
 
       case NotificationGroup.SPACE_ADMIN:
         settingsVariable.space = {
-          communicationUpdates: preserveChannel(currentSettings.space?.communicationUpdates),
-          collaborationCalloutPublished: preserveChannel(currentSettings.space?.collaborationCalloutPublished),
-          collaborationCalloutPostContributionComment: preserveChannel(currentSettings.space?.collaborationCalloutPostContributionComment),
-          collaborationCalloutContributionCreated: preserveChannel(currentSettings.space?.collaborationCalloutContributionCreated),
-          collaborationCalloutComment: preserveChannel(currentSettings.space?.collaborationCalloutComment),
-          communityCalendarEvents: preserveChannel(currentSettings.space?.communityCalendarEvents),
+          communicationUpdates: preserveChannel(serverSettings.space?.communicationUpdates),
+          collaborationCalloutPublished: preserveChannel(serverSettings.space?.collaborationCalloutPublished),
+          collaborationCalloutPostContributionComment: preserveChannel(serverSettings.space?.collaborationCalloutPostContributionComment),
+          collaborationCalloutContributionCreated: preserveChannel(serverSettings.space?.collaborationCalloutContributionCreated),
+          collaborationCalloutComment: preserveChannel(serverSettings.space?.collaborationCalloutComment),
+          communityCalendarEvents: preserveChannel(serverSettings.space?.communityCalendarEvents),
           admin: buildSpaceAdminSettings(property, type, value),
         };
         break;
@@ -249,8 +377,8 @@ const UserAdminNotificationsPage = () => {
 
       case NotificationGroup.PLATFORM_ADMIN:
         settingsVariable.platform = {
-          forumDiscussionComment: preserveChannel(currentSettings.platform?.forumDiscussionComment),
-          forumDiscussionCreated: preserveChannel(currentSettings.platform?.forumDiscussionCreated),
+          forumDiscussionComment: preserveChannel(serverSettings.platform?.forumDiscussionComment),
+          forumDiscussionCreated: preserveChannel(serverSettings.platform?.forumDiscussionCreated),
           admin: buildPlatformAdminSettings(property, type, value),
         };
         break;
@@ -272,7 +400,12 @@ const UserAdminNotificationsPage = () => {
           },
         },
       },
+      refetchQueries: [refetchUserSettingsQuery({ userID })],
+      awaitRefetchQueries: true,
     });
+
+    // Clear overrides after the server data has been refetched
+    dispatchOverrides({ type: 'clear' });
   };
 
   const showSpaceAdminSettings = isPlatformAdmin || isSpaceAdmin || isSpaceLead;
