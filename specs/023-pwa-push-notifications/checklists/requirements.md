@@ -32,5 +32,5 @@
 ## Notes
 
 - All items pass validation. Spec is ready for `/speckit.clarify` or `/speckit.plan`.
-- Assumptions section documents that server-side infrastructure is fully implemented (as stated in PRD).
+- Assumptions section documents that server-side infrastructure is a dependency (see server PR #5884).
 - PRD technical details (hook interfaces, file paths, component names) were intentionally omitted from spec to keep it stakeholder-focused — these will be addressed during `/speckit.plan`.

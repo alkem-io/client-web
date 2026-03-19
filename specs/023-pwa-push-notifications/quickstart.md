@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-1. **Backend with push feature deployed** — Server Feature 038 must be running at `localhost:3000` (via Traefik). The GraphQL schema at `localhost:4000/graphql` must include push notification types.
+1. **Backend with push feature deployed** — Server Feature 038 must be running at `localhost:3000` (via Traefik). The GraphQL schema at `localhost:3000/graphql` must include push notification types.
 2. **Node ≥22.0.0, pnpm ≥10.17.1** — as per project requirements
 3. **HTTPS or localhost** — Push API requires a secure context. `localhost` is treated as secure by browsers.
 
@@ -16,7 +16,7 @@
 # Install dependencies
 pnpm install
 
-# Regenerate GraphQL types (requires backend running at localhost:4000/graphql)
+# Regenerate GraphQL types (requires backend running at localhost:3000/graphql)
 pnpm codegen
 
 # Start dev server
@@ -89,7 +89,7 @@ pnpm test
 ### 6. Linting and Type Checking
 
 ```bash
-# Full lint (typecheck + biome + eslint-compiler)
+# Full lint (typecheck + ESLint)
 pnpm lint
 
 # Format

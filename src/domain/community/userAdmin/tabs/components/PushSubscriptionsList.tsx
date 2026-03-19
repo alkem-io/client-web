@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useMyPushSubscriptionsQuery,
@@ -17,13 +18,14 @@ function parseUserAgent(userAgent: string | null | undefined): string {
   else if (userAgent.includes('Safari')) browser = 'Safari';
   else browser = 'Browser';
 
-  // Extract OS
+  // Extract OS — check mobile platforms before desktop to avoid misidentification
+  // (Android UA contains "Linux", iOS Safari contains "Mac OS X")
   let os = '';
-  if (userAgent.includes('Windows')) os = 'Windows';
+  if (userAgent.includes('Android')) os = 'Android';
+  else if (userAgent.includes('iPhone') || userAgent.includes('iPad') || userAgent.includes('iPod')) os = 'iOS';
+  else if (userAgent.includes('Windows')) os = 'Windows';
   else if (userAgent.includes('Mac OS')) os = 'macOS';
   else if (userAgent.includes('Linux')) os = 'Linux';
-  else if (userAgent.includes('Android')) os = 'Android';
-  else if (userAgent.includes('iOS') || userAgent.includes('iPhone') || userAgent.includes('iPad')) os = 'iOS';
 
   return os ? `${browser} on ${os}` : browser;
 }
@@ -32,6 +34,7 @@ export const PushSubscriptionsList = () => {
   const { t } = useTranslation();
   const { data, loading, refetch } = useMyPushSubscriptionsQuery();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   const subscriptions = data?.myPushSubscriptions ?? [];
   const currentSubscriptionId = sessionStorage.getItem('alkemio_push_subscription_id');
@@ -50,6 +53,7 @@ export const PushSubscriptionsList = () => {
     await unsubscribeMutation({
       variables: { subscriptionData: { subscriptionID: subscriptionId } },
     });
+    setConfirmingId(null);
     await refetch();
   };
 
@@ -61,6 +65,7 @@ export const PushSubscriptionsList = () => {
         const deviceLabel =
           parseUserAgent(sub.userAgent) || t('pages.userNotificationsSettings.push.deviceManagement.unknownDevice');
         const createdDate = sub.createdDate ? new Date(sub.createdDate).toLocaleDateString() : '';
+        const isConfirming = confirmingId === sub.id;
 
         return (
           <Box
@@ -91,14 +96,30 @@ export const PushSubscriptionsList = () => {
               )}
             </Box>
             {!isCurrentDevice && (
-              <Button
-                size="small"
-                color="error"
-                onClick={() => handleRemove(sub.id)}
-                aria-label={`${t('pages.userNotificationsSettings.push.deviceManagement.removeDevice')} ${deviceLabel}`}
-              >
-                {t('pages.userNotificationsSettings.push.deviceManagement.removeDevice')}
-              </Button>
+              <>
+                {isConfirming ? (
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <Typography variant="caption">
+                      {t('pages.userNotificationsSettings.push.deviceManagement.removeConfirmation')}
+                    </Typography>
+                    <Button size="small" color="error" onClick={() => handleRemove(sub.id)}>
+                      {t('pages.userNotificationsSettings.push.deviceManagement.removeDevice')}
+                    </Button>
+                    <Button size="small" onClick={() => setConfirmingId(null)}>
+                      {t('buttons.cancel')}
+                    </Button>
+                  </Box>
+                ) : (
+                  <Button
+                    size="small"
+                    color="error"
+                    onClick={() => setConfirmingId(sub.id)}
+                    aria-label={`${t('pages.userNotificationsSettings.push.deviceManagement.removeDevice')} ${deviceLabel}`}
+                  >
+                    {t('pages.userNotificationsSettings.push.deviceManagement.removeDevice')}
+                  </Button>
+                )}
+              </>
             )}
           </Box>
         );
