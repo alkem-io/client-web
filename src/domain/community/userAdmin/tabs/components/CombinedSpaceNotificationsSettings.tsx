@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import TripleSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/TripleSwitchSettingsGroup';
 import {
+  type ChannelType,
   type NotificationOption,
   NotificationValidationType,
-  type ChannelType,
 } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
 import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import type {

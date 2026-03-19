@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  useVapidPublicKeyQuery,
   useSubscribeToPushNotificationsMutation,
   useUnsubscribeFromPushNotificationsMutation,
+  useVapidPublicKeyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { urlBase64ToUint8Array } from '@/main/pushNotifications/urlBase64ToUint8Array';
 
@@ -22,7 +22,8 @@ export type PushNotificationState = {
 };
 
 function detectIOSNonPWA(): boolean {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isStandalone = 'standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true;
   return isIOS && !isStandalone;
 }
@@ -51,14 +52,17 @@ export function usePushNotifications(): PushNotificationState {
   // Detect private browsing
   useEffect(() => {
     if (!isSupported) return;
-    navigator.storage.estimate().then(estimate => {
-      // In private browsing, quota is typically very limited
-      if (estimate.quota !== undefined && estimate.quota < 120_000_000) {
-        setIsPrivateBrowsing(true);
-      }
-    }).catch(() => {
-      // storage.estimate() not available — can't detect
-    });
+    navigator.storage
+      .estimate()
+      .then(estimate => {
+        // In private browsing, quota is typically very limited
+        if (estimate.quota !== undefined && estimate.quota < 120_000_000) {
+          setIsPrivateBrowsing(true);
+        }
+      })
+      .catch(() => {
+        // storage.estimate() not available — can't detect
+      });
   }, [isSupported]);
 
   // Check initial subscription state
@@ -99,8 +103,8 @@ export function usePushNotifications(): PushNotificationState {
         variables: {
           subscriptionData: {
             endpoint: subscriptionJSON.endpoint!,
-            p256dh: subscriptionJSON.keys!.p256dh,
-            auth: subscriptionJSON.keys!.auth,
+            p256dh: subscriptionJSON.keys?.p256dh,
+            auth: subscriptionJSON.keys?.auth,
             userAgent: navigator.userAgent,
           },
         },

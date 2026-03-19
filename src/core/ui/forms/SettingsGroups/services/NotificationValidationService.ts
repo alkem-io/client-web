@@ -54,8 +54,7 @@ export class NotificationValidationService {
     // Check for require-at-least-one rule (considers all three channels)
     const requireAtLeastOneRule = rules.find(rule => rule.type === NotificationValidationType.REQUIRE_AT_LEAST_ONE);
     if (requireAtLeastOneRule) {
-      const enabledCount =
-        (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
+      const enabledCount = (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
 
       const isThisChecked = switchType === 'inApp' ? option.inAppChecked : option.emailChecked;
 
@@ -95,8 +94,7 @@ export class NotificationValidationService {
     // Check for require-at-least-one rule (considers all three channels)
     const requireAtLeastOneRule = rules.find(rule => rule.type === NotificationValidationType.REQUIRE_AT_LEAST_ONE);
     if (requireAtLeastOneRule) {
-      const enabledCount =
-        (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
+      const enabledCount = (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
 
       if (option.pushChecked && enabledCount <= 1) {
         return {

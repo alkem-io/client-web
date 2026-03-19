@@ -1,10 +1,10 @@
 import { Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import Loading from '@/core/ui/loading/Loading';
-import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
 
 const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
 
@@ -55,12 +55,7 @@ const LogoutPage = () => {
     return () => {};
   }, [logoutUrl, getLogoutUrl]);
 
-  if (error)
-    return (
-      <Typography>
-        <>{error}</>
-      </Typography>
-    );
+  if (error) return <Typography>{error}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;
 };
 

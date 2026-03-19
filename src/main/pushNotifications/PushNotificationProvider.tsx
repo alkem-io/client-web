@@ -1,11 +1,11 @@
 import { createContext, type FC, type PropsWithChildren, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { type PushNotificationState, usePushNotifications } from '@/main/pushNotifications/usePushNotifications';
 import {
   useMyPushSubscriptionsLazyQuery,
   useSubscribeToPushNotificationsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { type PushNotificationState, usePushNotifications } from '@/main/pushNotifications/usePushNotifications';
 
 const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
 
@@ -44,7 +44,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
 
         if (!subscription) {
           // No browser subscription — silently re-subscribe
-          const vapidResponse = await fetch('/api/private/non-interactive/graphql', {
+          const _vapidResponse = await fetch('/api/private/non-interactive/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query: '{ vapidPublicKey }' }),
@@ -59,8 +59,10 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
         // Subscription exists in browser — verify it exists on server
         const { data } = await fetchSubscriptions();
         const serverSubscriptions = data?.myPushSubscriptions ?? [];
-        const endpoint = subscription.endpoint;
-        const matchingServer = serverSubscriptions.find(sub => sub.id === sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY));
+        const _endpoint = subscription.endpoint;
+        const matchingServer = serverSubscriptions.find(
+          sub => sub.id === sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)
+        );
 
         if (!matchingServer && serverSubscriptions.length > 0) {
           // Browser subscription exists but no matching server record — re-register
@@ -69,8 +71,8 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
             variables: {
               subscriptionData: {
                 endpoint: subscriptionJSON.endpoint!,
-                p256dh: subscriptionJSON.keys!.p256dh,
-                auth: subscriptionJSON.keys!.auth,
+                p256dh: subscriptionJSON.keys?.p256dh,
+                auth: subscriptionJSON.keys?.auth,
                 userAgent: navigator.userAgent,
               },
             },
@@ -109,14 +111,16 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
               userAgent: navigator.userAgent,
             },
           },
-        }).then(result => {
-          const newId = result.data?.subscribeToPushNotifications?.id;
-          if (newId) {
-            sessionStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, newId);
-          }
-        }).catch(() => {
-          // Non-critical
-        });
+        })
+          .then(result => {
+            const newId = result.data?.subscribeToPushNotifications?.id;
+            if (newId) {
+              sessionStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, newId);
+            }
+          })
+          .catch(() => {
+            // Non-critical
+          });
       }
     };
 
@@ -124,22 +128,14 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
     return () => navigator.serviceWorker.removeEventListener('message', handleMessage);
   }, [pushState.isSupported, navigate, subscribeMutation]);
 
-  return (
-    <PushNotificationContext.Provider value={pushState}>
-      {children}
-    </PushNotificationContext.Provider>
-  );
+  return <PushNotificationContext.Provider value={pushState}>{children}</PushNotificationContext.Provider>;
 };
 
 export const PushNotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isAuthenticated } = useCurrentUserContext();
 
   if (!isAuthenticated) {
-    return (
-      <PushNotificationContext.Provider value={defaultState}>
-        {children}
-      </PushNotificationContext.Provider>
-    );
+    return <PushNotificationContext.Provider value={defaultState}>{children}</PushNotificationContext.Provider>;
   }
 
   return <PushNotificationProviderInner>{children}</PushNotificationProviderInner>;
