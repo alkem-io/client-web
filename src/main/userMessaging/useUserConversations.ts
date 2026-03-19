@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { type ActorType, RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -35,10 +35,32 @@ export const useUserConversations = () => {
   const { isEnabled, isOpen, newlyCreatedConversationId } = useUserMessagingContext();
   const { userModel: currentUser } = useCurrentUserContext();
 
+  const skip = !isEnabled || !isOpen;
+
   const { data, loading, error } = useUserConversationsQuery({
-    skip: !isEnabled || !isOpen,
+    skip,
     fetchPolicy: 'cache-and-network',
   });
+
+  useEffect(() => {
+    console.log('[FullConvQuery] Skip conditions:', { isEnabled, isOpen, skip });
+  }, [isEnabled, isOpen, skip]);
+
+  useEffect(() => {
+    if (skip) return;
+    console.log('[FullConvQuery] Query state:', { loading, hasError: !!error, hasData: !!data });
+    if (data?.me?.conversations?.conversations) {
+      const convs = data.me.conversations.conversations;
+      console.log(
+        '[FullConvQuery] Raw data:',
+        convs.map(c => ({
+          id: c.id.slice(0, 8),
+          roomId: c.room?.id?.slice(0, 8),
+          unreadCount: c.room?.unreadCount,
+        }))
+      );
+    }
+  }, [data, loading, error, skip]);
 
   const conversations = useMemo<UserConversation[]>(() => {
     if (!data?.me?.conversations?.conversations) {

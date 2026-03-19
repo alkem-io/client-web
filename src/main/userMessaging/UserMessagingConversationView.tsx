@@ -251,10 +251,14 @@ export const UserMessagingConversationView = ({
     const key = `${conversation.roomId}:${lastMessage.id}`;
 
     // Skip if we already marked this exact message as read
-    if (lastMarkedRef.current === key) return;
+    if (lastMarkedRef.current === key) {
+      console.log('[MarkAsRead] Skipping duplicate:', { roomId: conversation.roomId.slice(0, 8), messageId: lastMessage.id.slice(0, 8) });
+      return;
+    }
     lastMarkedRef.current = key;
 
     const roomId = conversation.roomId;
+    console.log('[MarkAsRead] Sending mutation:', { roomId: roomId.slice(0, 8), messageId: lastMessage.id.slice(0, 8) });
     markAsRead({
       variables: {
         messageData: {
@@ -262,7 +266,9 @@ export const UserMessagingConversationView = ({
           messageID: lastMessage.id,
         },
       },
-    }).catch(_error => {});
+    })
+      .then(() => console.log('[MarkAsRead] Mutation succeeded'))
+      .catch(error => console.log('[MarkAsRead] Mutation failed:', error));
   }, [conversation?.roomId, messages, markAsRead]);
 
   // Scroll to bottom when messages change
