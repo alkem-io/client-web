@@ -1,18 +1,17 @@
-import { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { AssignmentIndOutlined } from '@mui/icons-material';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import { AssignmentIndOutlined, Settings } from '@mui/icons-material';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import VCPageBanner from './VCPageBanner';
-import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { Settings } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import VCPageBanner from './VCPageBanner';
 
-interface VCPageLayoutProps {}
+type VCPageLayoutProps = {};
 
 const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
   const { t } = useTranslation();

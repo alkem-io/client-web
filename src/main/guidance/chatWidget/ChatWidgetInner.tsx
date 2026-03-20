@@ -1,20 +1,20 @@
-import { gutters } from '@/core/ui/grid/utils';
-import logoSrc from '@/main/ui/logo/logoSmall.svg';
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import Widget from './controls/Widget';
-import { useMessages } from './controls/context/MessagesContext';
-import { useChatBehavior } from './controls/context/ChatBehaviorContext';
-import { CHAT_LOADER_TIMEOUT_MS } from './constants';
 import { useTranslation } from 'react-i18next';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import logoSrc from '@/main/ui/logo/logoSmall.svg';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
+import { CHAT_LOADER_TIMEOUT_MS } from './constants';
+import { useChatBehavior } from './controls/context/ChatBehaviorContext';
+import { useMessages } from './controls/context/MessagesContext';
+import Widget from './controls/Widget';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 const Loading = () => {
   const theme = useTheme();
@@ -159,8 +159,8 @@ const ChatWidgetInner = () => {
       <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')} onClick={onWidgetContainerClick}>
         <Widget
           senderPlaceHolder="Type a message..."
-          showCloseButton
-          autofocus
+          showCloseButton={true}
+          autofocus={true}
           chatId="rcw-chat-container"
           launcherOpenLabel="Open chat"
           launcherCloseLabel="Close chat"
@@ -169,7 +169,7 @@ const ChatWidgetInner = () => {
           sendButtonAlt="Send"
           imagePreview={false}
           zoomStep={80}
-          showBadge
+          showBadge={true}
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle=""

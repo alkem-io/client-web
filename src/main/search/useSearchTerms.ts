@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 
 import { useLocation } from 'react-router-dom';
-
-import { MAX_TERMS_SEARCH } from './SearchView';
 import { SEARCH_TERMS_URL_PARAM } from './constants';
+import { MAX_TERMS_SEARCH } from './SearchView';
 
 export const useSearchTerms = () => {
   const { search } = useLocation();

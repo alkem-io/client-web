@@ -1,12 +1,12 @@
 import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { ROUTE_HOME } from './constants';
-import { useConfig } from '../config/useConfig';
-import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
-import useLandingUrl from '@/main/landing/useLandingUrl';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useNavigate from '@/core/routing/useNavigate';
+import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
+import useLandingUrl from '@/main/landing/useLandingUrl';
+import { useConfig } from '../config/useConfig';
+import { ROUTE_HOME } from './constants';
 import { useHomeRedirect } from './useHomeRedirect';
 
 const RedirectToLanding = () => {

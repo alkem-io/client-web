@@ -1,19 +1,19 @@
-import { PropsWithChildren } from 'react';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Visual } from '@/domain/common/visual/Visual';
-import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import { useTranslation } from 'react-i18next';
-import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { Settings, VisibilityOutlined } from '@mui/icons-material';
-import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
-import PageBannerCardWithVisual from '@/domain/space/components/cards/components/PageBannerCardWithVisual';
-import { PageTitle } from '@/core/ui/typography';
-import RouterLink from '@/core/ui/link/RouterLink';
-import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
 import { IconButton } from '@mui/material';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
+import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import { PageTitle } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { Visual } from '@/domain/common/visual/Visual';
+import PageBannerCardWithVisual from '@/domain/space/components/cards/components/PageBannerCardWithVisual';
+import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
 
 interface InnovationHubProfileLayoutProps {
@@ -56,7 +56,7 @@ const InnovationHubProfileLayout = ({
           cardComponent={PageBannerCardWithVisual}
           header={
             <>
-              <PageTitle color="primary" noWrap>
+              <PageTitle color="primary" noWrap={true}>
                 {t('common.innovation-hub')}: {profile?.displayName}
               </PageTitle>
               <Actions gap={0}>

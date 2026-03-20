@@ -1,11 +1,18 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ClickAwayListener, IconButton, Menu } from '@mui/material';
-import { Children, MouseEvent, PropsWithChildren, cloneElement, isValidElement, useCallback, useState } from 'react';
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type MouseEvent,
+  type PropsWithChildren,
+  useCallback,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 type ClickableProps = {
   onClick?: (e: MouseEvent<HTMLElement>) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
 

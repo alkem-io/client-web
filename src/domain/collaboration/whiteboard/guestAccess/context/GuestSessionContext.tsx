@@ -1,7 +1,6 @@
-import { createContext, FC, ReactNode, useState, useEffect, useContext } from 'react';
+import { createContext, type FC, type ReactNode, useContext, useEffect, useState } from 'react';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { clearGuestWhiteboardUrl } from '../utils/sessionStorage';
-
 
 const STORAGE_KEY = 'alkemio_guest_name';
 

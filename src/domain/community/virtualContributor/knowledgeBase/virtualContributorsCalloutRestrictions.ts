@@ -1,4 +1,4 @@
-import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 export const virtualContributorsCalloutRestrictions: CalloutRestrictions = {
   disableRichMedia: true,

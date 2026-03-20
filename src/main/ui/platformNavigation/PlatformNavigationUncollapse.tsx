@@ -1,8 +1,8 @@
-import React from 'react';
+import { ArrowBackIosNew } from '@mui/icons-material';
 import { Fade, IconButton } from '@mui/material';
+import type React from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import { ArrowBackIosNew } from '@mui/icons-material';
 import { useElevationContext } from '@/core/ui/utils/ElevationContext';
 
 interface PlatformNavigationUncollapseProps {

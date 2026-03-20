@@ -1,27 +1,27 @@
-import { ReactNode, useMemo, useRef, useState } from 'react';
 import { Box, Button, Dialog, DialogContent } from '@mui/material';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useTranslation } from 'react-i18next';
-import Gutters from '@/core/ui/grid/Gutters';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
+import { type ReactNode, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { BlockTitle } from '@/core/ui/typography';
-import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
-import { Actions } from '@/core/ui/actions/Actions';
-import { gutters } from '@/core/ui/grid/utils';
-import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
-import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
-import { nameOf } from '@/core/utils/nameOf';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import useLoadingState from '../../utils/useLoadingState';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import { nameOf } from '@/core/utils/nameOf';
+import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
+import type { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
+import useLoadingState from '../../utils/useLoadingState';
 import useDeleteDocument from './useDeleteDocument';
 
 const validationSchema = yup.object().shape({
@@ -69,106 +69,99 @@ const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelet
   const [handleSave, isSaving] = useLoadingState((values: LinkDetails) => onSave(values));
 
   return (
-    <>
-      <Dialog open={open} aria-labelledby="link-edit" fullWidth maxWidth="lg">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          validateOnMount
-          onSubmit={() => {}}
-        >
-          {formikState => {
-            const { values, isValid } = formikState;
+    <Dialog open={open} aria-labelledby="link-edit" fullWidth={true} maxWidth="lg">
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize={true}
+        validateOnMount={true}
+        onSubmit={() => {}}
+      >
+        {formikState => {
+          const { values, isValid } = formikState;
 
-            const handleOnClose = () => {
-              if (hasFormChanges(values, initialValues)) {
-                setCanceling(true);
-              } else {
-                onClose();
-              }
-            };
-
-            const handleConfirmCancelling = async () => {
-              // If a new file was uploaded, delete it
-              if (uploadedDocumentId.current) {
-                await deleteDocumentById(uploadedDocumentId.current);
-                uploadedDocumentId.current = undefined;
-              }
-              setCanceling(false);
+          const handleOnClose = () => {
+            if (hasFormChanges(values, initialValues)) {
+              setCanceling(true);
+            } else {
               onClose();
-            };
+            }
+          };
 
-            return (
-              <>
-                <DialogHeader onClose={handleOnClose}>
-                  <Box display="flex" alignItems="center">
-                    <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
-                    <BlockTitle>{title}</BlockTitle>
-                  </Box>
-                </DialogHeader>
-                <DialogContent>
-                  <Gutters>
-                    <Gutters row={!isMediumSmallScreen} disablePadding alignItems="start">
-                      <FormikInputField
-                        name={nameOf<LinkDetails>('profile.displayName')}
-                        title={t('common.title')}
-                        fullWidth={isMediumSmallScreen}
+          const handleConfirmCancelling = async () => {
+            // If a new file was uploaded, delete it
+            if (uploadedDocumentId.current) {
+              await deleteDocumentById(uploadedDocumentId.current);
+              uploadedDocumentId.current = undefined;
+            }
+            setCanceling(false);
+            onClose();
+          };
+
+          return (
+            <>
+              <DialogHeader onClose={handleOnClose}>
+                <Box display="flex" alignItems="center">
+                  <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
+                  <BlockTitle>{title}</BlockTitle>
+                </Box>
+              </DialogHeader>
+              <DialogContent>
+                <Gutters>
+                  <Gutters row={!isMediumSmallScreen} disablePadding={true} alignItems="start">
+                    <FormikInputField
+                      name={nameOf<LinkDetails>('profile.displayName')}
+                      title={t('common.title')}
+                      fullWidth={isMediumSmallScreen}
+                    />
+                    <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
+                      <FormikFileInput
+                        name={nameOf<LinkDetails>('uri')}
+                        title={t('common.url')}
+                        sx={{ flexGrow: 1 }}
+                        temporaryLocation={true}
+                        onDocumentUploaded={document => {
+                          uploadedDocumentId.current = document.id;
+                        }}
                       />
-                      <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
-                        <FormikFileInput
-                          name={nameOf<LinkDetails>('uri')}
-                          title={t('common.url')}
-                          sx={{ flexGrow: 1 }}
-                          temporaryLocation
-                          onDocumentUploaded={document => {
-                            uploadedDocumentId.current = document.id;
-                          }}
-                        />
-                      </Box>
-                    </Gutters>
-                    <Gutters disablePadding>
-                      <FormikInputField
-                        name={nameOf<LinkDetails>('profile.description')}
-                        title={t('common.description')}
-                        multiline
-                        rows={3}
-                      />
-                    </Gutters>
+                    </Box>
                   </Gutters>
-                  <Actions paddingX={gutters()}>
-                    {canDelete && <DeleteButton onClick={onDelete} />}
-                    <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleSave(values)}
-                      loading={isSaving}
-                      disabled={!isValid}
-                    >
-                      {t('buttons.save')}
-                    </Button>
-                  </Actions>
-                </DialogContent>
-                <ConfirmationDialog
-                  actions={{
-                    onConfirm: handleConfirmCancelling,
-                    onCancel: () => setCanceling(false),
-                  }}
-                  options={{
-                    show: isCanceling,
-                  }}
-                  entities={{
-                    titleId: 'callout.link-collection.cancel-confirm-title',
-                    contentId: 'callout.link-collection.cancel-confirm',
-                    confirmButtonTextId: 'buttons.yesClose',
-                  }}
-                />
-              </>
-            );
-          }}
-        </Formik>
-      </Dialog>
-    </>
+                  <Gutters disablePadding={true}>
+                    <FormikInputField
+                      name={nameOf<LinkDetails>('profile.description')}
+                      title={t('common.description')}
+                      multiline={true}
+                      rows={3}
+                    />
+                  </Gutters>
+                </Gutters>
+                <Actions paddingX={gutters()}>
+                  {canDelete && <DeleteButton onClick={onDelete} />}
+                  <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
+                  <Button variant="contained" onClick={() => handleSave(values)} loading={isSaving} disabled={!isValid}>
+                    {t('buttons.save')}
+                  </Button>
+                </Actions>
+              </DialogContent>
+              <ConfirmationDialog
+                actions={{
+                  onConfirm: handleConfirmCancelling,
+                  onCancel: () => setCanceling(false),
+                }}
+                options={{
+                  show: isCanceling,
+                }}
+                entities={{
+                  titleId: 'callout.link-collection.cancel-confirm-title',
+                  contentId: 'callout.link-collection.cancel-confirm',
+                  confirmButtonTextId: 'buttons.yesClose',
+                }}
+              />
+            </>
+          );
+        }}
+      </Formik>
+    </Dialog>
   );
 };
 

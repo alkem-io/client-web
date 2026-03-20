@@ -1,10 +1,10 @@
-import { FC, useCallback, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { type FC, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { Text } from '@/core/ui/typography';
-import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
+import { ShareButton, type ShareOnPlatformButtonProps, type ShareOnPlatformHandlerProps } from '../ShareDialog';
 
 export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();

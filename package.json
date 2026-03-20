@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.135.1",
+  "version": "0.136.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -21,11 +21,10 @@
     "build:dev": "cross-env NODE_ENV=development node buildConfiguration && cross-env NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:sentry": "cross-env NODE_ENV=production node buildConfiguration && cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite -c vite.sentry.config.mjs build",
     "codegen": "graphql-codegen --config codegen.yml",
-    "format": "prettier --write src/**/*.ts{,x}",
+    "format": "biome format --write .",
     "gulp": "gulp",
-    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
-    "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
+    "lint": "tsc --noEmit && biome ci . && eslint .",
+    "lint:fix": "tsc --noEmit && biome check --write . && eslint .",
     "prune": "rm -rf node_modules && pnpm install",
     "serve:dev": "serve -s build -l 3001",
     "spellcheck": "npx cspell '**/*.{ts,tsx}' >> cspell-report.txt",
@@ -52,22 +51,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "eslintIgnore": [
-    "src/generated/graphql.tsx",
-    "**/node_modules/**",
-    "**/build**"
-  ],
-  "jest": {
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/src/graphql",
-      "<rootDir>/src/generated",
-      "<rootDir>/src/sentry"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.js"
-    ],
-    "testEnvironment": "jsdom"
   },
   "pnpm": {
     "overrides": {
@@ -191,7 +174,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
+    "@biomejs/biome": "^2.4.6",
     "@graphql-codegen/cli": "^5.0.5",
     "@graphql-codegen/import-types-preset": "^3.0.0",
     "@graphql-codegen/typescript": "^4.1.6",
@@ -199,11 +182,10 @@
     "@graphql-codegen/typescript-operations": "^4.6.0",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
     "@sentry/vite-plugin": "^2.7.1",
+    "@swc/core": "^1.15.18",
     "@testing-library/jest-dom": "^6.6.3",
-    "@types/eslint-plugin-jsx-a11y": "^6.2.4",
     "@types/lodash-es": "^4.17.12",
     "@types/react-mentions": "^4.1.8",
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "@vitest/browser": "^4.0.16",
     "@vitest/coverage-istanbul": "^4.0.16",
@@ -211,18 +193,15 @@
     "baseline-browser-mapping": "^2.9.17",
     "chrome-launcher": "^1.2.1",
     "eslint": "^9.2.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "husky": "^4.3.7",
     "lighthouse": "^12.2.1",
     "lint-staged": "^13.0.3",
     "playwright": "^1.57.0",
-    "prettier": "^3.5.3",
     "rollup-plugin-visualizer": "^6.0.5",
     "serve": "^14.2.4",
     "source-map-explorer": "^2.5.3",
+    "unplugin-swc": "^1.5.9",
     "vite": "^7.3.0",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.2.0",

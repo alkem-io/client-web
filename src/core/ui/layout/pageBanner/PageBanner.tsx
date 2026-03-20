@@ -1,16 +1,16 @@
-import Gutters from '@/core/ui/grid/Gutters';
-import { GridItemStyle, gutters } from '@/core/ui/grid/utils';
-import { MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '@/core/ui/grid/constants';
-import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
-import { useTranslation } from 'react-i18next';
-import { ComponentType, ReactElement, ReactNode, useState } from 'react';
-import { Visual } from '@/domain/common/visual/Visual';
 import { Box, Skeleton } from '@mui/material';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import GridItem from '@/core/ui/grid/GridItem';
+import { type ComponentType, type ReactElement, type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '@/core/ui/grid/constants';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import { type GridItemStyle, gutters } from '@/core/ui/grid/utils';
+import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import Overlay from '@/core/ui/utils/Overlay';
+import type { Visual } from '@/domain/common/visual/Visual';
 
 export interface PageBannerProps {
   banner: Visual | undefined;

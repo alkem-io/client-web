@@ -1,4 +1,4 @@
-import { UiNodeAttributes } from '@ory/kratos-client';
+import type { UiNodeAttributes } from '@ory/kratos-client';
 
 export const KRATOS_INPUT_NAME_CSRF = 'csrf_token';
 export const KRATOS_TRAIT_NAME_FIRST_NAME = 'traits.name.first';

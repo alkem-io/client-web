@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, type BoxProps } from '@mui/material';
+import type { ReactNode } from 'react';
 import Centered from '../utils/Centered';
 
 export const CARD_IMAGE_ASPECT_RATIO_DEFAULT = '16/10';

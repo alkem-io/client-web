@@ -1,15 +1,15 @@
+import { sortBy } from 'lodash-es';
+import { type Ref, useMemo, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { useCalloutContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  AuthorizationPrivilege,
-  CalloutContributionsQuery,
+  type AuthorizationPrivilege,
+  type CalloutContributionsQuery,
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Ref, useMemo, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
 import useCalloutPostCreatedSubscription from '../post/useCalloutPostCreatedSubscription';
-import { sortBy } from 'lodash-es';
 
 interface useCalloutContributionsProps {
   callout:

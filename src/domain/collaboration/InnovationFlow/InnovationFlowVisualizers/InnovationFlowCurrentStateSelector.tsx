@@ -1,8 +1,8 @@
-import { Button, IconButton } from '@mui/material';
-import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { NavigateBeforeOutlined, NavigateNextOutlined } from '@mui/icons-material';
+import { Button, IconButton } from '@mui/material';
+import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
+import type { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 interface InnovationFlowCurrentStateSelectorProps extends InnovationFlowVisualizerProps {}
 
@@ -30,7 +30,7 @@ const InnovationFlowCurrentStateSelector = ({
   const isCurrentState = selectedStateName === currentStateName;
 
   return (
-    <Gutters row gap={1} disablePadding alignItems="center" {...props}>
+    <Gutters row={true} gap={1} disablePadding={true} alignItems="center" {...props}>
       <IconButton disabled={selectedStateIndex === 0} onClick={handleSelectPrevState}>
         <NavigateBeforeOutlined />
       </IconButton>

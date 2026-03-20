@@ -1,4 +1,4 @@
-import { Tooltip, TooltipProps } from '@mui/material';
+import { Tooltip, type TooltipProps } from '@mui/material';
 import { useState } from 'react';
 
 interface ToggleableTooltipProps extends TooltipProps {

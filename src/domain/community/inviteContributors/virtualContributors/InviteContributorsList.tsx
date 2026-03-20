@@ -1,8 +1,8 @@
+import { noop } from 'lodash-es';
+import GridContainer from '@/core/ui/grid/GridContainer';
 import GridItem from '@/core/ui/grid/GridItem';
 import UserCard from '../../user/userCard/UserCard';
-import GridContainer from '@/core/ui/grid/GridContainer';
-import { ContributorProps } from '../InviteContributorsProps';
-import { noop } from 'lodash-es';
+import type { ContributorProps } from '../InviteContributorsProps';
 
 interface InviteContributorsListProps {
   contributors: ContributorProps[] | undefined;

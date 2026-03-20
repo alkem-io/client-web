@@ -1,5 +1,6 @@
-import React, { Ref } from 'react';
-import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+import type React from 'react';
+import type { Ref } from 'react';
+import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 
 export interface CalloutLayoutProps {
   callout: CalloutDetailsModelExtended;

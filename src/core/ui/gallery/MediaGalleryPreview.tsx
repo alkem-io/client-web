@@ -1,7 +1,6 @@
-import React from 'react';
 import { Box, styled } from '@mui/material';
-import { gutters } from '../grid/utils';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '../grid/utils';
 
 const GalleryWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -47,20 +46,18 @@ const MediaGalleryPreview = ({ visuals }: MediaGalleryProps) => {
   }
 
   return (
-    <>
-      <GalleryWrapper>
-        {visuals.map(item => {
-          return (
-            <GalleryItem key={item.id}>
-              <img
-                src={item.uri}
-                alt={item.alternateText || t('components.callout-creation.framing.mediaGallery.galleryItem')}
-              />
-            </GalleryItem>
-          );
-        })}
-      </GalleryWrapper>
-    </>
+    <GalleryWrapper>
+      {visuals.map(item => {
+        return (
+          <GalleryItem key={item.id}>
+            <img
+              src={item.uri}
+              alt={item.alternateText || t('components.callout-creation.framing.mediaGallery.galleryItem')}
+            />
+          </GalleryItem>
+        );
+      })}
+    </GalleryWrapper>
   );
 };
 

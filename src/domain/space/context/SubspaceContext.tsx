@@ -1,8 +1,8 @@
+import React, { type FC, type PropsWithChildren, useMemo } from 'react';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
+import type { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import React, { FC, PropsWithChildren, useMemo } from 'react';
 
 interface SubspacePermissions {
   canUpdate: boolean;

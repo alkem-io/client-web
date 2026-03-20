@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 
 interface UseAutomaticTooltipResult {
   containerReference: RefObject<HTMLDivElement | null>;
@@ -37,7 +37,7 @@ interface UseAutomaticTooltipResult {
 const useAutomaticTooltip = (): UseAutomaticTooltipResult => {
   const container = useRef<HTMLDivElement>(null);
   const refs = useRef<HTMLElement[]>([]);
-  const addRef = function (element: HTMLElement | null, tooltip?: string) {
+  const addRef = (element: HTMLElement | null, tooltip?: string) => {
     if (element !== null && refs.current.indexOf(element) === -1) {
       element.dataset.tooltip = tooltip;
       refs.current.push(element);
@@ -46,7 +46,7 @@ const useAutomaticTooltip = (): UseAutomaticTooltipResult => {
 
   useEffect(() => {
     refs.current?.forEach(element => {
-      if (element && element.parentElement) {
+      if (element?.parentElement) {
         // Detect if text-overflow: ellipsis is being applied:
         if (element.parentElement.offsetWidth < element.offsetWidth) {
           if (element.dataset.tooltip && element.dataset.tooltip !== 'undefined') {

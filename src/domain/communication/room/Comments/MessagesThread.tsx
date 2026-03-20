@@ -1,8 +1,8 @@
-import PostMessageToCommentsForm, { PostMessageToCommentsFormProps } from './PostMessageToCommentsForm';
-import MessageView, { MessageViewProps } from './MessageView';
-import MessageWithRepliesView from './MessageWithRepliesView';
-import { Message } from '../models/Message';
 import { useTranslation } from 'react-i18next';
+import type { Message } from '../models/Message';
+import MessageView, { type MessageViewProps } from './MessageView';
+import MessageWithRepliesView from './MessageWithRepliesView';
+import PostMessageToCommentsForm, { type PostMessageToCommentsFormProps } from './PostMessageToCommentsForm';
 import useMessagesTree from './useMessagesTree';
 import useRestoredMessages from './useRestoredMessages';
 

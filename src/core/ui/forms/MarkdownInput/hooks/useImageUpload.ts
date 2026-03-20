@@ -1,9 +1,9 @@
+import type { EditorView } from '@tiptap/pm/view';
+import type { Editor } from '@tiptap/react';
 import { useCallback } from 'react';
-import { EditorView } from '@tiptap/pm/view';
+import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../notifications/useNotification';
-import { useTranslation } from 'react-i18next';
-import { Editor } from '@tiptap/react';
 
 interface UseImageUploadProps {
   storageBucketId?: string;
@@ -27,8 +27,7 @@ export const useImageUpload = ({
       const editor = getEditor?.();
       editor?.commands.setImage({ src: data.uploadFileOnStorageBucket.url, alt: 'pasted-image' });
     },
-    onError: error => {
-      console.error('File upload failed:', error.message);
+    onError: _error => {
       notify(t('components.file-upload.file-upload-error'), 'error');
     },
   });

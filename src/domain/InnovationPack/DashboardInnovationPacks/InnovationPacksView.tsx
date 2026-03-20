@@ -1,19 +1,17 @@
-import { Dispatch, ReactNode } from 'react';
-import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
-import MultipleSelect from '@/core/ui/search/MultipleSelect';
-import InnovationPackCard, { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
-import { Identifiable } from '@/core/utils/Identifiable';
-import SeeMore from '@/core/ui/content/SeeMore';
+import { Box, Button, Skeleton, useTheme } from '@mui/material';
+import type { Dispatch, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { Box, Button } from '@mui/material';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
-import GridItem from '@/core/ui/grid/GridItem';
-import { Skeleton } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
-import { useTheme } from '@mui/material';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock, { type PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
+import SeeMore from '@/core/ui/content/SeeMore';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import GridItem from '@/core/ui/grid/GridItem';
+import { gutters } from '@/core/ui/grid/utils';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import InnovationPackCard, { type InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 
 interface InnovationPacksViewProps extends PageContentBlockProps {
   filter: string[];
@@ -55,11 +53,13 @@ const InnovationPacksView = ({
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
-        actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" inlineTerms />}
+        actions={
+          <MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" inlineTerms={true} />
+        }
         id={id}
       />
 
-      <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
+      <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight={true}>
         {loading
           ? Array.from({ length: isSmallScreen ? 2 : 5 }).map((_, idx) => (
               <Skeleton

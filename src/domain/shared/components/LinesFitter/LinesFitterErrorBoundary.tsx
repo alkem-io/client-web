@@ -1,5 +1,5 @@
+import { Box, type BoxProps } from '@mui/material';
 import React from 'react';
-import { Box, BoxProps } from '@mui/material';
 
 export default class LinesFitterErrorBoundary extends React.Component<BoxProps, { hasError: boolean }> {
   constructor(props) {

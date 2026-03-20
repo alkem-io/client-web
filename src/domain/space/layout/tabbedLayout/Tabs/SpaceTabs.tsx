@@ -1,9 +1,4 @@
-import { ReactNode, useLayoutEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
-import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import HeaderNavigationButton from '@/domain/shared/components/PageHeader/HeaderNavigationButton';
+import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined, VideocamOutlined } from '@mui/icons-material';
 import {
   alpha,
   BottomNavigation,
@@ -15,21 +10,26 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  TabProps,
+  type TabProps,
   useTheme,
 } from '@mui/material';
-import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined, VideocamOutlined } from '@mui/icons-material';
+import { type ReactNode, useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
-import getEntityColor from '@/domain/shared/utils/getEntityColor';
-import useShare from '@/core/utils/Share';
 import { gutters } from '@/core/ui/grid/utils';
-import ActivityDialog from '../../../components/Activity/ActivityDialog';
+import useShare from '@/core/utils/Share';
+import HeaderNavigationButton from '@/domain/shared/components/PageHeader/HeaderNavigationButton';
+import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
+import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import VideoCallDialog from '@/domain/space/components/VideoCallDialog/VideoCallDialog';
+import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import ActivityDialog from '../../../components/Activity/ActivityDialog';
 import { useSpace } from '../../../context/useSpace';
 import { useVideoCall } from '../../../hooks/useVideoCall';
-import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
-import { useLocation } from 'react-router-dom';
 
 type TabDefinition = {
   label: ReactNode;
@@ -102,9 +102,9 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
   const navigationContent = mobile ? (
     <BottomNavigation
-      showLabels
+      showLabels={true}
       value={selectedTab}
-      onChange={(event, nextValue) => {
+      onChange={(_event, nextValue) => {
         switch (nextValue) {
           case NavigationActions.Share: {
             share();
@@ -193,7 +193,11 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
   return (
     <>
       {mobile && (
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }} elevation={3} square>
+        <Paper
+          sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, paddingBottom: gutters() }}
+          elevation={3}
+          square={true}
+        >
           {navigationContent}
         </Paper>
       )}
@@ -216,7 +220,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
           <List>
             {actions?.map((action, index) => (
-              <ListItem key={`action_${index}`} disablePadding>
+              <ListItem key={`action_${index}`} disablePadding={true}>
                 <ListItemButton
                   onClick={() => {
                     setIsDrawerOpen(false);
@@ -228,7 +232,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 </ListItemButton>
               </ListItem>
             ))}
-            <ListItem disablePadding>
+            <ListItem disablePadding={true}>
               <ListItemButton
                 onClick={() => {
                   setIsDrawerOpen(false);
@@ -242,7 +246,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
               </ListItemButton>
             </ListItem>
             {isVideoCallEnabled && (
-              <ListItem disablePadding>
+              <ListItem disablePadding={true}>
                 <ListItemButton
                   onClick={() => {
                     setIsDrawerOpen(false);
@@ -256,7 +260,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 </ListItemButton>
               </ListItem>
             )}
-            <ListItem disablePadding>
+            <ListItem disablePadding={true}>
               <ListItemButton
                 onClick={() => {
                   setIsDrawerOpen(false);
@@ -269,7 +273,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 <ListItemText primary={t('buttons.share')} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
+            <ListItem disablePadding={true}>
               <ListItemButton onClick={() => navigate(settingsUrl)}>
                 <ListItemIcon>
                   <SettingsOutlined />

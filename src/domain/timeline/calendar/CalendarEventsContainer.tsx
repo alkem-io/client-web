@@ -1,3 +1,6 @@
+import type { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
+import type React from 'react';
+import { useCallback } from 'react';
 import {
   refetchCalendarEventImportUrlsQuery,
   refetchSpaceCalendarEventsQuery,
@@ -8,20 +11,18 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  CalendarEvent,
-  CalendarEventInfoFragment,
+  type CalendarEvent,
+  type CalendarEventInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { isSameDay } from '@/core/utils/time/utils';
+import type { LocationModel } from '@/domain/common/location/LocationModel';
 import {
   mapProfileModelToCreateProfileInput,
   mapProfileModelToUpdateProfileInput,
 } from '@/domain/common/profile/ProfileModelUtils';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import React, { useCallback } from 'react';
-import { LocationModel } from '@/domain/common/location/LocationModel';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface CalendarEventFormData
   extends Pick<

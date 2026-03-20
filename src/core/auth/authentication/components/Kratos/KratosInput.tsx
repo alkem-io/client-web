@@ -1,13 +1,13 @@
-import { InputAdornment, OutlinedInputProps, TextField, Tooltip } from '@mui/material';
-import { UiNodeInputAttributes } from '@ory/kratos-client';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { FC, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
-import { KratosInputExtraProps, KratosProps } from './KratosProps';
+import { InputAdornment, type OutlinedInputProps, TextField, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import type { UiNodeInputAttributes } from '@ory/kratos-client';
+import { type FC, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { KRATOS_TRAIT_NAME_FIRST_NAME, KRATOS_TRAIT_NAME_LAST_NAME } from './constants';
+import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
+import type { KratosInputExtraProps, KratosProps } from './KratosProps';
 
 interface KratosInputProps extends KratosProps, KratosInputExtraProps {
   disabled?: boolean;
@@ -36,7 +36,7 @@ export const KratosInput: FC<KratosInputProps> = ({
   const isInputTextObscured = inputType === 'password';
 
   let helperText = '';
-  if (!value && touched) helperText = t('forms.validations.required') + ' ';
+  if (!value && touched) helperText = `${t('forms.validations.required')} `;
   if (node.messages && node.messages.length > 0) helperText = helperText + node.messages?.map(x => x.text).join(' ');
 
   let InputProps: Partial<OutlinedInputProps> = {
@@ -66,7 +66,7 @@ export const KratosInput: FC<KratosInputProps> = ({
   return (
     <Tooltip
       title={t('pages.accept-terms.tooltip')}
-      arrow
+      arrow={true}
       placement="top"
       disableFocusListener={!disabled}
       disableHoverListener={!disabled}
@@ -82,7 +82,7 @@ export const KratosInput: FC<KratosInputProps> = ({
         required={required}
         disabled={attributes.disabled || disabled}
         autoComplete={autoComplete}
-        fullWidth
+        fullWidth={true}
         InputProps={{ ...InputProps }}
         InputLabelProps={{ shrink: true }}
         inputProps={isNameField ? { minLength: 1 } : undefined}

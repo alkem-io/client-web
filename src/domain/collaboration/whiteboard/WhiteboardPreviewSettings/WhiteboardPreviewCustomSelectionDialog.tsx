@@ -1,18 +1,18 @@
+import { Check, Close, Replay } from '@mui/icons-material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Slider } from '@mui/material';
+import { type PointerEvent, useCallback, useEffect, useRef, useState, type WheelEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import ReactCrop, { type Crop } from 'react-image-crop';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Slider } from '@mui/material';
-import { WhiteboardPreviewSettingsIcon } from './icons/WhiteboardPreviewIcons';
-import { useTranslation } from 'react-i18next';
-import { Check, Close, Replay } from '@mui/icons-material';
 import Loading from '@/core/ui/loading/Loading';
-import ReactCrop, { Crop } from 'react-image-crop';
-import { PointerEvent, useCallback, useEffect, useRef, useState, WheelEvent } from 'react';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
-import { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { CropConfig } from '@/core/utils/images/cropImage';
+import type { CropConfig } from '@/core/utils/images/cropImage';
 import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardVisuals/utils/getDefaultCropConfigForWhiteboardPreview';
 import validateCropConfig from '../WhiteboardVisuals/utils/validateCropConfig';
+import type { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { WhiteboardPreviewSettingsIcon } from './icons/WhiteboardPreviewIcons';
 import { clampCoordinatesTranslation, translateCropConfig } from './WhiteboardPreviewCustomSelectionDialog.utils';
 
 interface WhiteboardPreviewCustomSelectionDialogProps {
@@ -231,7 +231,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
               minWidth={imgRef.current?.width ? imgRef.current.width * MINIMUM_SELECTION_SIZE : undefined}
               crop={crop}
               onChange={onCropChange}
-              keepSelection
+              keepSelection={true}
             >
               <img
                 src={imageObjectUrl}
@@ -251,7 +251,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
           step={SCALE_STEP}
           value={imgScale}
           disabled={!ready}
-          onChange={(event, value) => {
+          onChange={(_event, value) => {
             const nextScale = value as number;
             setImgScale(nextScale);
             setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, nextScale));
@@ -263,7 +263,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
           <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop} disabled={!ready}>
             {t('pages.whiteboard.previewSettings.cropDialog.reset')}
           </Button>
-          <Divider orientation="vertical" flexItem />
+          <Divider orientation="vertical" flexItem={true} />
           <Button variant="outlined" startIcon={<Close />} onClick={onClose}>
             {t('pages.whiteboard.previewSettings.cropDialog.cancel')}
           </Button>

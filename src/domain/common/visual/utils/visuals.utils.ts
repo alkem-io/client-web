@@ -1,5 +1,5 @@
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 export type EntityVisualUrls = {
   avatarUrl?: string | undefined;

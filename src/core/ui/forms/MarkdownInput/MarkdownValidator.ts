@@ -1,8 +1,8 @@
 import { string } from 'yup';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { ValidationMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation/ValidationMessageWithPayload';
-import { MarkdownTextMaxLength } from '../field-length.constants';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import type { ValidationMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation/ValidationMessageWithPayload';
+import type { MarkdownTextMaxLength } from '../field-length.constants';
 
 const translationKey: TranslationKey = 'components.wysiwyg-editor.validation.maxLength';
 

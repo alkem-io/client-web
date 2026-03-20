@@ -1,7 +1,7 @@
-import { Tooltip, TooltipProps } from '@mui/material';
-import UserCard, { UserCardProps } from '@/domain/community/user/userCard/UserCard';
-import RootThemeProvider from '../themes/RootThemeProvider';
+import { Tooltip, type TooltipProps } from '@mui/material';
+import UserCard, { type UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import GridProvider from '../grid/GridProvider';
+import RootThemeProvider from '../themes/RootThemeProvider';
 import { CONTRIBUTE_CARD_COLUMNS } from './ContributeCard';
 
 interface ContributorTooltipProps extends UserCardProps {

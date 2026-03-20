@@ -1,9 +1,9 @@
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { Box, Button, Link, Typography, styled } from '@mui/material';
-import { FC, useCallback } from 'react';
+import { Box, Button, Link, styled, Typography } from '@mui/material';
+import { type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 
 const FullscreenBox = styled(Box)(() => ({
   display: 'flex',

@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { useTranslation, Trans, TransProps } from 'react-i18next';
-import { UiText } from '@ory/kratos-client/api';
+import type { UiText } from '@ory/kratos-client/api';
 import { has } from 'lodash-es';
+import type { ReactNode } from 'react';
+import { Trans, type TransProps, useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 /**
  * A message from Kratos is received in the form of an object with an id property. Kratos docs say:

@@ -1,8 +1,8 @@
-import {
+import type {
+  ActorType,
   CalendarEventType,
   ForumDiscussionCategory,
   NotificationEventPayload,
-  ActorType,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 

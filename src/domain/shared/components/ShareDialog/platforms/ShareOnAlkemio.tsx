@@ -1,17 +1,17 @@
-import { FC, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Form, Formik } from 'formik';
-import * as yup from 'yup';
 import { Alert, Box, Button, DialogActions } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { type FC, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { useShareLinkWithUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import SendButton from '@/core/ui/actions/SendButton';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { FormikUserSelector } from '@/domain/community/user/FormikUserSelector/FormikUserSelector';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption, Text } from '@/core/ui/typography';
-import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
-import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import SendButton from '@/core/ui/actions/SendButton';
-import { useShareLinkWithUserMutation } from '@/core/apollo/generated/apollo-hooks';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { FormikUserSelector } from '@/domain/community/user/FormikUserSelector/FormikUserSelector';
+import { ShareButton, type ShareOnPlatformButtonProps, type ShareOnPlatformHandlerProps } from '../ShareDialog';
 
 const ICON_URL = '/share-dialog/alkemio.png';
 
@@ -102,9 +102,14 @@ export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
 
   return (
     <Box>
-      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        enableReinitialize={true}
+      >
         {({ handleSubmit, isValid }) => (
-          <Form noValidate autoComplete="off">
+          <Form noValidate={true} autoComplete="off">
             <Text marginBottom={gutters(1)}>
               {t('share-dialog.platforms.alkemio.description', { entity: t(`common.${entityTypeName}` as const) })}
             </Text>
@@ -115,7 +120,7 @@ export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
               name="message"
               title={t('messaging.message-optional')}
               placeholder={t('messaging.message-optional')}
-              multiline
+              multiline={true}
               rows={5}
               onFocus={handleSetMessageFalse}
               maxLength={LONG_TEXT_LENGTH}

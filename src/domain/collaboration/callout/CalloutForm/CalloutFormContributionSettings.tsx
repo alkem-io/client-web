@@ -1,27 +1,27 @@
-import { useMemo, useState } from 'react';
-import { Box, Button } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { gutters } from '@/core/ui/grid/utils';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
-import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
-import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-import { CalloutStructuredResponseType } from './CalloutForm';
-import { CalloutFormSubmittedValues } from './CalloutFormModel';
-import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
-import { contributionIcons, GenericCalloutIcon } from '../../callout/icons/calloutIcons';
+import BlockIcon from '@mui/icons-material/Block';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
+import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
+import { Box, Button } from '@mui/material';
+import { useField } from 'formik';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { nameOf } from '@/core/utils/nameOf';
+import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import { contributionIcons, GenericCalloutIcon } from '../../callout/icons/calloutIcons';
+import type { CalloutStructuredResponseType } from './CalloutForm';
+import type { CalloutFormSubmittedValues } from './CalloutFormModel';
 import ContributionSettingsDialog from './ContributionSettingsDialog/ContributionSettingsDialog';
 import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
 import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/ContributionsSettingsWhiteboard';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import { nameOf } from '@/core/utils/nameOf';
-import { useField } from 'formik';
 
 interface CalloutFormContributionSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -77,7 +77,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
   return (
     <PageContentBlockCollapsible
       header={<PageContentBlockHeader title={t('callout.create.contributionSettings.title')} />}
-      seamless
+      seamless={true}
     >
       <Box display="flex" gap={gutters()} flexDirection={isMediumSmallScreen ? 'column' : 'row'}>
         <PageContentBlock sx={{ flex: 1, minWidth: 300 }}>

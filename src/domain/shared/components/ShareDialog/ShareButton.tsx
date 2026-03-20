@@ -1,9 +1,9 @@
-import React, { FC, ReactNode, useState } from 'react';
-import { Button, IconButton, IconButtonProps, Tooltip } from '@mui/material';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { ShareDialog, ShareComponentProps } from './ShareDialog';
+import { Button, IconButton, type IconButtonProps, Tooltip } from '@mui/material';
+import { type FC, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SwapColors from '@/core/ui/palette/SwapColors';
+import { type ShareComponentProps, ShareDialog } from './ShareDialog';
 
 interface ShareButtonProps extends Omit<ShareComponentProps, 'url'> {
   url: string | undefined;
@@ -36,7 +36,7 @@ const ShareButton: FC<ShareButtonProps> = ({
 
   return (
     <>
-      <Tooltip title={disabled ? tooltipIfDisabled : tooltip} arrow placement="top">
+      <Tooltip title={disabled ? tooltipIfDisabled : tooltip} arrow={true} placement="top">
         {title ? (
           <Button
             variant="contained"

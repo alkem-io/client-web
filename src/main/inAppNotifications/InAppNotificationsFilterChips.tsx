@@ -1,9 +1,9 @@
 import { Box, Chip, MenuItem, Select, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { NotificationFilterType } from './notificationFilters';
+import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { NotificationFilterType } from './notificationFilters';
 
 interface InAppNotificationsFilterChipsProps {
   selectedFilter: NotificationFilterType;
@@ -47,7 +47,7 @@ export const InAppNotificationsFilterChips = ({
         <Select
           value={selectedFilter}
           onChange={e => onFilterChange(e.target.value as NotificationFilterType)}
-          fullWidth
+          fullWidth={true}
           size="small"
           sx={{
             '& .MuiSelect-select': {

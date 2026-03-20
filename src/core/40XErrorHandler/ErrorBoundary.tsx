@@ -1,8 +1,8 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
-import { ClosestAncestor, NotAuthorizedError, NotFoundError } from './40XErrors';
 import { setNavigationHistoryError } from '../routing/NavigationHistory';
+import { type ClosestAncestor, NotAuthorizedError, NotFoundError } from './40XErrors';
+import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
 
 interface Props extends React.PropsWithChildren {
   errorComponent: (errorState: State) => React.ReactNode;

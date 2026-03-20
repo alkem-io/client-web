@@ -1,3 +1,10 @@
+import { Box, DialogContent } from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import { Formik } from 'formik';
+import { type PropsWithChildren, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -6,13 +13,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle, Text } from '@/core/ui/typography/components';
-import { Box, DialogContent } from '@mui/material';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import { Formik } from 'formik';
-import { PropsWithChildren, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
 
 export type CalloutSummaryFields = {
   framing: {
@@ -64,19 +64,25 @@ const CalloutVisibilityChangeDialog = ({
   });
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
+    <Dialog
+      open={open}
+      maxWidth="md"
+      fullWidth={true}
+      aria-labelledby="callout-visibility-dialog-title"
+      onClose={onClose}
+    >
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        enableReinitialize
-        validateOnMount
+        enableReinitialize={true}
+        validateOnMount={true}
         onSubmit={handleVisibilityChanged}
       >
         {({ handleSubmit }) => (
           <>
             <DialogHeader title={title} onClose={onClose} id="callout-visibility-dialog-title" />
             <DialogContent>
-              <Gutters disablePadding>
+              <Gutters disablePadding={true}>
                 <Box>
                   <BlockTitle>{t('common.title')}</BlockTitle>
                   <Text>{callout?.framing.profile.displayName}</Text>

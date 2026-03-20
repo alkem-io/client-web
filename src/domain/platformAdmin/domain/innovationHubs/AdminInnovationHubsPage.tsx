@@ -1,22 +1,22 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
-import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
-import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminInnovationHubsQuery,
-  usePlatformAdminInnovationHubsQuery,
   useDeleteInnovationHubMutation,
+  usePlatformAdminInnovationHubsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useTranslation } from 'react-i18next';
 import Loading from '@/core/ui/loading/Loading';
-import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import AdminSearchableTable, { AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
+  AccountOwnerColumn,
   ListedInStoreColumn,
   SearchVisibilityColumn,
-  AccountOwnerColumn,
 } from '@/domain/platformAdmin/components/AdminListItemLayout';
-import { InnovationHubTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import AdminSearchableTable, { type AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
+import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
+import type { InnovationHubTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 
 const INITIAL_PAGE_SIZE = 10;
 const PAGE_SIZE = 10;

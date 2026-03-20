@@ -1,8 +1,3 @@
-import { ComponentType } from 'react';
-import { ProfileType } from '@/core/apollo/generated/graphql-schema';
-import { SvgIconProps } from '@mui/material';
-import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
-import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import {
   Campaign,
   ChatBubbleOutline,
@@ -14,15 +9,20 @@ import {
   InventoryOutlined,
   PeopleAltOutlined,
   PersonOutline,
-  SvgIconComponent,
+  type SvgIconComponent,
 } from '@mui/icons-material';
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
+import { warn } from '@/core/logging/sentry/log';
 import {
   calloutFramingIcons,
   contributionIcons,
   GenericCalloutIcon,
 } from '@/domain/collaboration/callout/icons/calloutIcons';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import { warn } from '@/core/logging/sentry/log';
+import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
 
 export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {

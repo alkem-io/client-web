@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles';
+import type { Components, Theme } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 
 const MuiMenuItem: Components<Theme>['MuiMenuItem'] = {

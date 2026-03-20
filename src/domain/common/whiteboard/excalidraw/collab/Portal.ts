@@ -1,17 +1,21 @@
-import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource, SyncableExcalidrawElement } from './data';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import { UserIdleState } from './utils';
-import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-
-import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
-import { Socket } from 'socket.io-client';
-import { BinaryFileDataWithOptionalUrl, BinaryFilesWithOptionalUrl } from '../types';
-import { isFileRenderable, shouldStripDataUrlForBroadcast } from '../fileStore/fileAvailability';
 import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/dist/types/element/src';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { Socket } from 'socket.io-client';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { TagCategoryValues, warn } from '@/core/logging/sentry/log';
 import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
-import { warn, TagCategoryValues } from '@/core/logging/sentry/log';
+import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { isFileRenderable, shouldStripDataUrlForBroadcast } from '../fileStore/fileAvailability';
+import type { BinaryFileDataWithOptionalUrl, BinaryFilesWithOptionalUrl } from '../types';
+import {
+  isSyncableElement,
+  type SocketUpdateData,
+  type SocketUpdateDataSource,
+  type SyncableExcalidrawElement,
+} from './data';
+import { type CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
+import type { UserIdleState } from './utils';
 
 interface PortalProps {
   onRemoteSave: () => void;
@@ -219,21 +223,24 @@ class Portal {
 
     const emptyDataURL = '' as DataURL;
     const skippedFiles: string[] = [];
-    const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithOptionalUrl>>((result, fileId) => {
-      const file = allFiles[fileId];
-      // Skip files that have no usable retrieval path (neither url nor dataURL)
-      if (!isFileRenderable(file)) {
-        skippedFiles.push(fileId);
+    const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithOptionalUrl>>(
+      (result, fileId) => {
+        const file = allFiles[fileId];
+        // Skip files that have no usable retrieval path (neither url nor dataURL)
+        if (!isFileRenderable(file)) {
+          skippedFiles.push(fileId);
+          return result;
+        }
+        if (syncAll || !this.broadcastedFiles.has(fileId)) {
+          // Only strip dataURL when url is usable; otherwise peers need dataURL to render
+          const dataURL = shouldStripDataUrlForBroadcast(file) ? emptyDataURL : file.dataURL;
+          result[fileId] = { ...file, dataURL };
+          this.broadcastedFiles.add(fileId);
+        }
         return result;
-      }
-      if (syncAll || !this.broadcastedFiles.has(fileId)) {
-        // Only strip dataURL when url is usable; otherwise peers need dataURL to render
-        const dataURL = shouldStripDataUrlForBroadcast(file) ? emptyDataURL : file.dataURL;
-        result[fileId] = { ...file, dataURL };
-        this.broadcastedFiles.add(fileId);
-      }
-      return result;
-    }, {});
+      },
+      {}
+    );
 
     // Log diagnostic info if files were skipped due to lack of retrieval path (FR-007)
     if (skippedFiles.length > 0) {

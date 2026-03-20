@@ -1,8 +1,8 @@
+import type { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import type { ActivityCalloutValues } from '@/domain/shared/types/ActivityCalloutValues';
 import { ActivityBaseView } from './ActivityBaseView';
-import { ActivityViewProps } from './ActivityViewProps';
-import { ActivityCalloutValues } from '@/domain/shared/types/ActivityCalloutValues';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
+import type { ActivityViewProps } from './ActivityViewProps';
 
 interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
   callout: ActivityCalloutValues;

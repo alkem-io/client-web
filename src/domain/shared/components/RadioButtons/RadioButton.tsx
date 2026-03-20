@@ -1,9 +1,8 @@
-import React, { ComponentType, PropsWithChildren } from 'react';
-import { Box, IconButton, SvgIconProps, useTheme } from '@mui/material';
-import { styled } from '@mui/material';
-import { Caption, Text } from '@/core/ui/typography';
+import { Box, IconButton, type SvgIconProps, styled, useTheme } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import type { ComponentType, PropsWithChildren } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Theme } from '@mui/material/styles';
+import { Caption, Text } from '@/core/ui/typography';
 
 export interface RadioButtonProps<Value> {
   value: Value;

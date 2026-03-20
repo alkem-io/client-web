@@ -1,6 +1,6 @@
-import filterFn, { ValueType } from './filterFn';
-import { Identifiable } from '../Identifiable';
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
+import type { Identifiable } from '../Identifiable';
+import filterFn, { type ValueType } from './filterFn';
 
 type TestDataType = Identifiable & {
   about?: {

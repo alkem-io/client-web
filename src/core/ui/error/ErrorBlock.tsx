@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 const ErrorBlock = ({ blockName }: { blockName: string }) => {
   const { t } = useTranslation();
   return (
-    <GridLegacy container justifyContent={'center'} alignItems={'center'}>
+    <GridLegacy container={true} justifyContent={'center'} alignItems={'center'}>
       <ReportGmailerrorred fontSize="large" color="warning" />
       <Box marginLeft={3}>
         <Typography color="neutralMedium.main">

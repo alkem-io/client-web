@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, ButtonProps } from '@mui/material';
-import { ButtonTypeMap } from '@mui/material/Button/Button';
+import { Button, type ButtonProps } from '@mui/material';
+import type { ButtonTypeMap } from '@mui/material/Button/Button';
+import type React from 'react';
 
 const ButtonNarrow = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
   ...props

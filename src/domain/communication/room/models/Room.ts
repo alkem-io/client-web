@@ -1,5 +1,5 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { Message } from './Message';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { Message } from './Message';
 
 export interface Room {
   id: string;

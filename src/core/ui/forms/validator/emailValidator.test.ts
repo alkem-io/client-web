@@ -76,7 +76,7 @@ describe('emailValidator', () => {
 
     test('uses SMALL_TEXT_LENGTH as default maxLength', async () => {
       const validator = emailValidator();
-      const longEmail = 'a'.repeat(120) + '@example.com'; // > 128 chars (SMALL_TEXT_LENGTH)
+      const longEmail = `${'a'.repeat(120)}@example.com`; // > 128 chars (SMALL_TEXT_LENGTH)
       await expect(validator.validate(longEmail)).rejects.toThrow();
     });
   });

@@ -1,9 +1,9 @@
-import { Trans, useTranslation } from 'react-i18next';
-import { Caption } from '@/core/ui/typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Button } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
 
 interface PaginationExpanderProps {
   onClick: () => void;

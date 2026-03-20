@@ -1,5 +1,7 @@
-import CalloutCard, { CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
-import SearchResultsCalloutCardFooter, { SearchResultsCalloutCardFooterProps } from './SearchResultsCalloutCardFooter';
+import CalloutCard, { type CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
+import SearchResultsCalloutCardFooter, {
+  type SearchResultsCalloutCardFooterProps,
+} from './SearchResultsCalloutCardFooter';
 
 interface SearchResultsCalloutCardProps {
   result:

@@ -1,7 +1,7 @@
 import { Avatar as MUIAvatar } from '@mui/material';
+import type { HTMLAttributes } from 'react';
 import useImageErrorHandler from '../image/useImageErrorHandler';
-import { HTMLAttributes } from 'react';
-import { CustomAvatarProps } from './Avatar';
+import type { CustomAvatarProps } from './Avatar';
 
 const ErrorHandlingAvatar = ({
   onError,

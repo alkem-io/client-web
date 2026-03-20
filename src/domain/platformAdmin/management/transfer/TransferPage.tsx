@@ -1,17 +1,17 @@
-import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
-import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
-import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
-import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
-import AdminBreadcrumbs from '@/main/admin/AdminBreadcrumbs';
-import PageContent from '@/core/ui/content/PageContent';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
+import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
+import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
+import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
+import SpacePageBanner from '@/domain/space/layout/tabbedLayout/layout/SpacePageBanner';
+import AdminBreadcrumbs from '@/main/admin/AdminBreadcrumbs';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TransferCalloutSection from './transferCallout/TransferCalloutSection';
 import TransferSpaceSection from './transferSpace/TransferSpaceSection';
-import { Caption } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
 
 const currentTab = AdminSection.Transfer;
 
@@ -23,7 +23,7 @@ const TransferPage = () => {
     <TopLevelLayout
       header={
         <>
-          <SpacePageBanner title={t('common.administration')} isAdmin />
+          <SpacePageBanner title={t('common.administration')} isAdmin={true} />
           <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Space}>
             {adminTabs.map(tab => (
               <HeaderNavigationTab

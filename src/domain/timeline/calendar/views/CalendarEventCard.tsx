@@ -1,12 +1,13 @@
-import React, { useCallback } from 'react';
-import ContributeCard from '@/core/ui/card/ContributeCard';
-import CardDetails from '@/core/ui/card/CardDetails';
+import type React from 'react';
+import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import CardDescription from '@/core/ui/card/CardDescription';
+import CardDetails from '@/core/ui/card/CardDetails';
 import CardFooter from '@/core/ui/card/CardFooter';
-import EventCardHeader, { EventCardHeaderProps } from './EventCardHeader';
+import ContributeCard from '@/core/ui/card/ContributeCard';
 import { gutters } from '@/core/ui/grid/utils';
 import { CaptionSmall } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
+import EventCardHeader, { type EventCardHeaderProps } from './EventCardHeader';
 
 export interface CalendarEventCardProps {
   event: NonNullable<EventCardHeaderProps['event']> & {
@@ -40,7 +41,7 @@ const CalendarEventCard = ({
   return (
     <ContributeCard onClick={handleClick} columns={0} ref={ref} highlighted={highlighted}>
       <EventCardHeader event={event} />
-      <CardDetails transparent>
+      <CardDetails transparent={true}>
         <CardDescription marginLeft={gutters(2.5)} paddingY={0} overflow="hidden" overflowGradientColor="paper">
           {event.profile.description ?? ''}
         </CardDescription>

@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import { overflowBorderGradient } from '@/core/ui/overflow/utils';
 

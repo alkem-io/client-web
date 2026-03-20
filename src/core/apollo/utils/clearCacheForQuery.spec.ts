@@ -1,5 +1,5 @@
+import { describe, expect, test } from 'vitest';
 import { getRegExpForQueryName } from './clearCacheForQuery';
-import { expect, test, describe } from 'vitest';
 
 describe('getRegExpForQueryName', () => {
   const sampleQueryName = 'sampleQueryName';

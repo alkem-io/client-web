@@ -1,11 +1,11 @@
 import { Route } from 'react-router-dom';
-import TypographyDemo from './ui/TypographyDemo';
-import GridDemo from './ui/GridDemo';
 import DashboardComponentsDemo from './ui/DashboardComponentsDemo';
+import DashboardNavigationDemo from './ui/DashboardNavigationDemo';
+import GridDemo from './ui/GridDemo';
+import SearchCardsDemo from './ui/SearchCardsDemo';
 import SpaceCardsDemo from './ui/SpaceCardsDemo';
 import TableDemo from './ui/TableDemo';
-import SearchCardsDemo from './ui/SearchCardsDemo';
-import DashboardNavigationDemo from './ui/DashboardNavigationDemo';
+import TypographyDemo from './ui/TypographyDemo';
 
 const devRoutes = () => (
   <Route path="dev">

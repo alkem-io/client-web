@@ -1,19 +1,19 @@
+import { Alert, DialogActions, DialogContent } from '@mui/material';
+import { Formik, type FormikState } from 'formik';
+import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import SendButton from '@/core/ui/actions/SendButton';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography/components';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
-import SendButton from '@/core/ui/actions/SendButton';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { Alert, DialogActions, DialogContent } from '@mui/material';
-import { Formik, FormikState } from 'formik';
-import { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface MessageReceiverChipData {
   id: string;
@@ -79,7 +79,7 @@ export const DirectMessageDialog = ({
     <DialogWithGrid
       columns={12}
       open={open}
-      fullWidth
+      fullWidth={true}
       maxWidth="md"
       aria-labelledby="direct-message-dialog"
       onClose={handleClose}
@@ -88,13 +88,13 @@ export const DirectMessageDialog = ({
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        enableReinitialize
+        enableReinitialize={true}
         onSubmit={handleSendMessage}
       >
         {({ handleSubmit, isValid }) => (
           <>
             <DialogContent>
-              <GridContainer disablePadding marginBottom={gutters(1)}>
+              <GridContainer disablePadding={true} marginBottom={gutters(1)}>
                 {messageReceivers?.map(receiver => (
                   <ProfileChip
                     key={receiver.id}
@@ -109,7 +109,7 @@ export const DirectMessageDialog = ({
                 name="message"
                 title={t('messaging.message')}
                 placeholder={t('messaging.message')}
-                multiline
+                multiline={true}
                 rows={5}
                 onFocus={() => setMessageSent(false)}
                 maxLength={LONG_TEXT_LENGTH}

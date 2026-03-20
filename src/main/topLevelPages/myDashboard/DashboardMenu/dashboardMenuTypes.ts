@@ -1,6 +1,6 @@
-import { ComponentType } from 'react';
-import { SvgIconProps } from '@mui/material';
-import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import type { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 
 export type DashboardMenuProps = {
   compact?: boolean;

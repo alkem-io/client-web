@@ -1,10 +1,10 @@
-import { PropsWithChildren } from 'react';
-import { IconButton } from '@mui/material';
-import { Theme } from '@mui/material/styles';
-import { ExpandContentIcon } from './ExpandContent';
-import PageContentBlockHeader, { PageContentBlockHeaderProps } from './PageContentBlockHeader';
 import { Close } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ExpandContentIcon } from './ExpandContent';
+import PageContentBlockHeader, { type PageContentBlockHeaderProps } from './PageContentBlockHeader';
 
 interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHeaderProps {
   onDialogOpen?: () => void;

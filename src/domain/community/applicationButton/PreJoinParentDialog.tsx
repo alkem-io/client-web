@@ -1,13 +1,13 @@
-import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { useSpace } from '@/domain/space/context/useSpace';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { BlockTitle } from '@/core/ui/typography';
-import { Actions } from '@/core/ui/actions/Actions';
-import { gutters } from '@/core/ui/grid/utils';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { Trans, useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import { useSpace } from '@/domain/space/context/useSpace';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export interface PreJoinParentDialogProps {
   open: boolean;

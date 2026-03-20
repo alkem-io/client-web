@@ -1,21 +1,21 @@
+import type { ParseKeys } from 'i18next/typescript/t';
+import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  AuthorizationPrivilege,
-  OrganizationInfoFragment,
   ActorType,
+  AuthorizationPrivilege,
+  type OrganizationInfoFragment,
+  RoleName,
   SpaceLevel,
   TagsetReservedName,
-  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
-import { useCallback, useMemo } from 'react';
-import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
-import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { useTranslation } from 'react-i18next';
+import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
+import type { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import { useOrganizationContext } from '../hooks/useOrganizationContext';
-import { ParseKeys } from 'i18next/typescript/t';
 
 export interface UseOrganizationProvided {
   organization?: OrganizationInfoFragment;

@@ -1,7 +1,8 @@
-import React, { PropsWithChildren } from 'react';
 import { Paper } from '@mui/material';
-import SwapColors from '@/core/ui/palette/SwapColors';
+import type React from 'react';
+import type { PropsWithChildren } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
+import SwapColors from '@/core/ui/palette/SwapColors';
 
 const CookieConsent = ({
   ref,
@@ -13,7 +14,7 @@ const CookieConsent = ({
     <SwapColors>
       <Paper
         ref={ref}
-        square
+        square={true}
         sx={{
           left: '0',
           bottom: '0',

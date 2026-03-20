@@ -1,14 +1,15 @@
-import { useTranslation } from 'react-i18next';
-import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { Caption } from '@/core/ui/typography';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
-import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
-import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import { times } from 'lodash-es';
-import SearchField from '@/core/ui/search/SearchField';
-import React, { useMemo, useState } from 'react';
+import type React from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
+import SearchField from '@/core/ui/search/SearchField';
+import { Caption } from '@/core/ui/typography';
+import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
+import type { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 
 export interface ImportTemplatesDialogGalleryProps {
   templates: AnyTemplateWithInnovationPack[] | undefined;
@@ -56,7 +57,7 @@ const ImportTemplatesDialogGallery = ({
     <GridProvider columns={12}>
       {showHeader && (
         <Gutters sx={{ paddingX: 0, paddingTop: 0 }} alignItems={'center'} flexDirection={{ xs: 'column', sm: 'row' }}>
-          <Gutters disablePadding disableGap flex={'1'}>
+          <Gutters disablePadding={true} disableGap={true} flex={'1'}>
             {children}
           </Gutters>
           {hasTemplates && (

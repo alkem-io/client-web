@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 // Extended to include lead users and organizations for card display
 export type SpaceAboutLightModel = {

@@ -1,13 +1,13 @@
+import { VideocamOutlined } from '@mui/icons-material';
 import { Button, DialogActions, DialogContent, Link } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { BlockTitle } from '@/core/ui/typography';
-import { VideocamOutlined } from '@mui/icons-material';
-import { useVideoCall } from '../../hooks/useVideoCall';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useState, useEffect } from 'react';
+import { BlockTitle } from '@/core/ui/typography';
+import { useVideoCall } from '../../hooks/useVideoCall';
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;

@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
-import ContributorCardSquare, { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
-import GridItem from '@/core/ui/grid/GridItem';
-import Gutters from '@/core/ui/grid/Gutters';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import { useColumns } from '@/core/ui/grid/GridContext';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import GridItem from '@/core/ui/grid/GridItem';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardSquare, { type ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 
 type ActorTypesBlockWideContentProps = {
   users: ContributorCardSquareProps[] | undefined;
@@ -45,7 +45,7 @@ const ActorTypesBlockWideContent = ({
 
   return (
     <GridProvider columns={isMediumSmallScreen ? columns / 2 : columns}>
-      <Gutters row flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
+      <Gutters row={true} flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
         {contributorType === ActorType.User &&
           users
             ?.filter(filterFn(filter))

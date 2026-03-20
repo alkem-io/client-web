@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
 import { Tooltip } from '@mui/material';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import type { FC } from 'react';
+import type { CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import CalendarEventBadge from './CalendarEventBadge';
 
 interface CalendarEventViewProps
@@ -34,7 +34,7 @@ const EventDescription: FC<EventDescriptionProps> = ({ children }) => {
 
   if (isCut) {
     return (
-      <Tooltip title={<WrapperMarkdown>{children}</WrapperMarkdown>} placement="top-start" disableInteractive>
+      <Tooltip title={<WrapperMarkdown>{children}</WrapperMarkdown>} placement="top-start" disableInteractive={true}>
         {formattedDescription}
       </Tooltip>
     );

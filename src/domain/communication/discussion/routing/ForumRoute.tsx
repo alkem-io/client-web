@@ -1,16 +1,16 @@
 import { Route, Routes } from 'react-router-dom';
+import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import ForumPage from '../pages/ForumPage';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
-import LastReleaseDiscussion from '../pages/LastReleaseDiscussion';
 import Discussion from '../pages/Discussion';
-import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
+import ForumPage from '../pages/ForumPage';
+import LastReleaseDiscussion from '../pages/LastReleaseDiscussion';
 
 export const ForumRoute = () => (
   <Routes>
     <Route path={'/'}>
-      <Route index element={<ForumPage />} />
+      <Route index={true} element={<ForumPage />} />
       <Route path="/new" element={<ForumPage dialog="new" />} />
       <Route path={`discussion/:${nameOfUrl.discussionNameId}`} element={<Discussion />} />
       <Route path={'/releases'} element={<ForumPage categorySelected={ForumDiscussionCategory.Releases} />} />

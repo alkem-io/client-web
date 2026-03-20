@@ -1,7 +1,7 @@
-import AcceptTermsButton, { AcceptTermsButtonProps } from './AcceptTermsButton';
+import type { ButtonProps } from '@mui/material';
+import type { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import AcceptTermsButton, { type AcceptTermsButtonProps } from './AcceptTermsButton';
 import { getNodeName, getNodeValue } from './Kratos/helpers';
-import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
-import { ButtonProps } from '@mui/material';
 
 interface KratosAcceptTermsButtonProps extends AcceptTermsButtonProps {
   node: UiNode & { attributes: UiNodeInputAttributes };

@@ -1,7 +1,7 @@
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { BlockSectionTitle } from '@/core/ui/typography';
 import { Box } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
+import type { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { BlockSectionTitle } from '@/core/ui/typography';
 
 type VisualDescriptionProps = {
   visualTypeName: VisualType.Avatar | VisualType.Banner | VisualType.Card;

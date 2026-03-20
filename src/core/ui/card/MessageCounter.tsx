@@ -1,8 +1,9 @@
-import { PropsWithChildren } from 'react';
-import { Box } from '@mui/material';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import Icon, { IconProps } from '../icon/Icon';
+import { Box } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import { Caption } from '@/core/ui/typography';
+import Icon, { type IconProps } from '../icon/Icon';
+
 interface MessageCounterProps
   extends PropsWithChildren<{
     commentsCount: number | undefined;

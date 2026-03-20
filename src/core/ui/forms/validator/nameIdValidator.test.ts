@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { nameIdValidator, NAMEID_MAX_LENGTH } from './nameIdValidator';
+import { NAMEID_MAX_LENGTH, nameIdValidator } from './nameIdValidator';
 
 describe('nameIdValidator', () => {
   describe('basic functionality', () => {

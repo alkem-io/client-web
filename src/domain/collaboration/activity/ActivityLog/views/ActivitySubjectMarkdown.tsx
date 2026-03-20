@@ -1,7 +1,7 @@
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 const ActivitySubjectMarkdown = ({ children }: { children: string }) => (
-  <WrapperMarkdown plain card caption>
+  <WrapperMarkdown plain={true} card={true} caption={true}>
     {children}
   </WrapperMarkdown>
 );

@@ -1,9 +1,9 @@
-import { Box, BoxProps, styled } from '@mui/material';
-import LogoImage from '../../logo/logoPreview.svg?react';
-import { env } from '@/main/env';
+import { Box, type BoxProps, styled } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { useTranslation } from 'react-i18next';
+import { env } from '@/main/env';
+import LogoImage from '../../logo/logoPreview.svg?react';
 
 export interface LogoComponentProps extends BoxProps {
   url?: string;

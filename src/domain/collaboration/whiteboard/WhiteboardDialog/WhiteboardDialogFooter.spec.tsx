@@ -7,12 +7,12 @@
  * when guestContributionsAllowed is true.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@/main/test/testUtils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
-import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 
 // Mock dependencies
 vi.mock('@/domain/space/context/useSpace', () => ({

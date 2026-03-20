@@ -1,22 +1,20 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Outlet, Navigate } from 'react-router-dom';
-import { Error404 } from '@/core/pages/Errors/Error404';
-import { nameOfUrl } from '@/main/routing/urlParams';
-import SubspaceAboutPage from '../about/SubspaceAboutPage';
-import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
-import Redirect from '@/core/routing/Redirect';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import SubspaceCalloutPage from '../pages/SubspaceCalloutPage';
-import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
-import SubspaceSettingsRoute from './SubspaceSettingsRoute';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { SubspacePageLayout } from '../layout/SubspacePageLayout';
+import { createContext, type Dispatch, type SetStateAction, useState } from 'react';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { createContext } from 'react';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import Redirect from '@/core/routing/Redirect';
 import Loading from '@/core/ui/loading/Loading';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { nameOfUrl } from '@/main/routing/urlParams';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import SubspaceAboutPage from '../about/SubspaceAboutPage';
+import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
+import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
+import { SubspacePageLayout } from '../layout/SubspacePageLayout';
+import SubspaceCalloutPage from '../pages/SubspaceCalloutPage';
+import SubspaceSettingsRoute from './SubspaceSettingsRoute';
 export interface InnovationFlowStateContextProps {
   selectedInnovationFlowState?: string;
   setSelectedInnovationFlowState?: Dispatch<SetStateAction<string>>;
@@ -42,7 +40,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
     return (
       <Routes>
         <Route path={EntityPageSection.About} element={<SubspaceAboutPage />} />
-        <Route path="*" element={<Navigate to={`../${EntityPageSection.About}`} replace />} />
+        <Route path="*" element={<Navigate to={`../${EntityPageSection.About}`} replace={true} />} />
       </Routes>
     );
   }
@@ -63,7 +61,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
           <Route element={level === SpaceLevel.L2 ? <Outlet /> : <SubspacePageLayout />}>
             {/* legacy routes */}
             <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
-            <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
+            <Route path={EntityPageSection.Dashboard} element={<Navigate replace={true} to="/" />} />
 
             {/* current routes */}
             <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
@@ -75,13 +73,13 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
               element={<SubspaceCalloutPage />}
             />
-            <Route index element={<SubspaceHomePage />} />
-            <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />
+            <Route index={true} element={<SubspaceHomePage />} />
+            <Route index={true} path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />
 
             {/* define l2 subspace routes explicitly  although they are recursive */}
             <Route path={`/opportunities/:${nameOfUrl.subsubspaceNameId}/*`}>
               <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
-              <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
+              <Route path={EntityPageSection.Dashboard} element={<Navigate replace={true} to="/" />} />
               <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
               <Route
                 path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
@@ -91,8 +89,12 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
                 path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
                 element={<SubspaceCalloutPage />}
               />
-              <Route index element={<SubspaceHomePage />} />
-              <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />
+              <Route index={true} element={<SubspaceHomePage />} />
+              <Route
+                index={true}
+                path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`}
+                element={<SubspaceHomePage />}
+              />
             </Route>
             <Route
               path="*"

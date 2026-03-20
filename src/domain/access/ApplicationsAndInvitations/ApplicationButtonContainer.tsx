@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useApplicationButtonQuery,
   useCurrentUserFullLazyQuery,
@@ -11,9 +13,7 @@ import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
+import type { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
 
 export interface ApplicationButtonContainerProps {
   parentSpaceId?: string;

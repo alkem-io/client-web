@@ -1,22 +1,22 @@
+import { Divider } from '@mui/material';
+import { type ReactNode, useEffect, useState } from 'react';
+import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
-import { Divider } from '@mui/material';
-import { useState, useEffect, ReactNode } from 'react';
-import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
-import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
-import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
-import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
-import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
-import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
+import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
 import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
+import WhiteboardDialog, { type WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
+import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
 import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
-import { gutters } from '@/core/ui/grid/utils';
-import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -129,7 +129,7 @@ const WhiteboardView = ({
                   {hasUpdatePrivileges && (
                     <>
                       {hasPublicSharePrivilege && (
-                        <Divider orientation="horizontal" flexItem sx={{ marginTop: gutters(1) }} />
+                        <Divider orientation="horizontal" flexItem={true} sx={{ marginTop: gutters(1) }} />
                       )}
                       <CollaborationSettings
                         element={whiteboard}

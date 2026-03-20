@@ -1,15 +1,15 @@
-import { CommunityMembershipStatus, RoleName, ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import SwapColors from '@/core/ui/palette/SwapColors';
-import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import { ActorType, CommunityMembershipStatus, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import { SPACE_LAYOUT_EDIT_PATH, SUBSPACE_ABOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import useCurrentTabPosition from '@/domain/space/layout/tabbedLayout/useCurrentTabPosition';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import ExpandableDescription from './ExpandableDescription';
 
 export interface SpaceWelcomeBlockProps {
@@ -53,17 +53,17 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: Sp
 
   return (
     <>
-      <SwapColors swap>{directMessageDialog}</SwapColors>
+      <SwapColors swap={true}>{directMessageDialog}</SwapColors>
       <ExpandableDescription
         description={welcomeDescription}
         editPath={editPath}
         canEdit={canEdit}
-        disableParagraphPadding
+        disableParagraphPadding={true}
         useEditTab={isL0}
         headerSlot={showMemberIcon ? <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} /> : undefined}
       />
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
-        <Gutters flexWrap="wrap" row disablePadding>
+        <Gutters flexWrap="wrap" row={true} disablePadding={true}>
           {leadUsers.slice(0, 2).map(user => (
             <ContributorCardHorizontal
               key={user.id}
@@ -77,7 +77,7 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: Sp
                   city: user.profile?.location?.city,
                 });
               }}
-              seamless
+              seamless={true}
             />
           ))}
           {leadOrganizations.slice(0, 2).map(org => (
@@ -93,7 +93,7 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: Sp
                   city: org.profile?.location?.city,
                 });
               }}
-              seamless
+              seamless={true}
             />
           ))}
         </Gutters>

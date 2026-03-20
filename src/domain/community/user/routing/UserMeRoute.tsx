@@ -1,9 +1,9 @@
-import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Outlet } from 'react-router-dom';
+import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import Loading from '@/core/ui/loading/Loading';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { MeUserProvider } from './MeUserContext';
-import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 
 const UserMeRoute = () => {
   const { t } = useTranslation();

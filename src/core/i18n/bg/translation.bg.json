@@ -2285,7 +2285,28 @@
       "startTyping": "Започнете да пишете, за да търсите потребители",
       "searchUsers": "Търсене на потребители...",
       "searchConversations": "Търсене...",
-      "createChat": "Създай чат"
+      "createChat": "Създай чат",
+      "startGroupChat": "Start group chat",
+      "groupChatName": "Group name",
+      "groupChatNameRequired": "Group name is required",
+      "selectMembers": "Add members",
+      "selectMembersHint": "Search and add members to the group",
+      "createGroupChat": "Start group convo",
+      "editProfilePicture": "Edit profile picture",
+      "addMembers": "Add members",
+      "groupMembers": "Members",
+      "remove": "Remove",
+      "manageGroup": "Manage group",
+      "leaveGroup": "Leave group",
+      "leaveGroupConfirmTitle": "Leave group chat?",
+      "leaveGroupConfirmMessage": "You will lose access to this group chat and won’t be able to read or send messages.",
+      "noMembersSelected": "Add at least one member",
+      "membersCount_one": "{{count}} member",
+      "membersCount_other": "{{count}} members",
+      "saveGroup": "Save Group",
+      "discardChangesTitle": "Unsaved changes",
+      "discardChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
+      "discardChanges": "Discard"
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Вашият/а $t(common.space) е готов/а!",
@@ -2494,7 +2515,13 @@
           },
           "layout": {
             "description": "Тук можете да редактирате подредбата за този {{entity}}.",
-            "innovationFlowEditor": "$t(common.space) раздели"
+            "innovationFlowEditor": "$t(common.space) раздели",
+            "calloutDisplayMode": {
+              "title": "$t(common.Post) description display",
+              "expanded": "Expanded",
+              "collapsed": "Collapsed",
+              "description": "Collapse $t(common.post) descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+            }
           },
           "context": {
             "description": "Тук можете да редактирате контекста за този {{entity}}, който е публично видим. Тази информация е видима и за не-$t(common.members)."
@@ -2603,7 +2630,8 @@
             "moreInfo": "Повече информация за лицензите на Alkemio може да намерите <moreinfo>тук</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "Лицензът е актуализиран успешно",
-            "deletedSuccessfully": "{{entity}} е изтрит успешно"
+            "deletedSuccessfully": "{{entity}} е изтрит успешно",
+            "deleteFailed": "Failed to delete {{entity}}"
           },
           "settings": {
             "description": "Тук можете да редактирате видимостта $t(common.settings) на вашия {{entity}}."
@@ -3279,7 +3307,13 @@
       },
       "updates": {
         "title": "Актуализации от $t(common.leads) ({{count}})",
-        "no-data": "Няма налични актуализации"
+        "no-data": "Няма налични актуализации",
+        "copy": {
+          "noContent": "No content to copy",
+          "success": "Post copied to clipboard",
+          "failed": "Failed to copy content",
+          "unsupported": "Clipboard not supported"
+        }
       }
     },
     "whiteboard": {

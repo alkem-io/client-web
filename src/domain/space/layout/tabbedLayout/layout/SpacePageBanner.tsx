@@ -1,19 +1,19 @@
-import { ReactNode, useState } from 'react';
-import { Box, BoxProps, Skeleton, styled } from '@mui/material';
-import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
-import { PageTitle, Tagline } from '@/core/ui/typography';
-import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
+import { Box, type BoxProps, Skeleton, styled } from '@mui/material';
+import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
-import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '../../../context/useSpace';
-import { useTranslation } from 'react-i18next';
-import { getDefaultSpaceVisualUrl } from '../../../icons/defaultVisualUrls';
-import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
+import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
+import { PageTitle, Tagline } from '@/core/ui/typography';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
+import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
+import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
 import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useSpace } from '../../../context/useSpace';
+import { getDefaultSpaceVisualUrl } from '../../../icons/defaultVisualUrls';
 
 export const TITLE_HEIGHT = 6;
 
@@ -128,12 +128,12 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
         )}
       </Box>
       <Title>
-        <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
+        <PageTitle noWrap={true} ref={element => addAutomaticTooltip(element)}>
           {bannerTitle}
           {!bannerTitle && (dataLoading || loading) && <Skeleton variant="text" animation="wave" />}
         </PageTitle>
         {profile?.tagline ? (
-          <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
+          <Tagline noWrap={true} ref={element => addAutomaticTooltip(element)}>
             {profile?.tagline}
           </Tagline>
         ) : null}

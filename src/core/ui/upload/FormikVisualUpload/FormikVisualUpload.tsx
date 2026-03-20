@@ -1,18 +1,18 @@
-import { Box, BoxProps, Skeleton } from '@mui/material';
+import { Box, type BoxProps, Skeleton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
+import { useField } from 'formik';
+import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { VisualType } from '@/core/apollo/generated/graphql-schema';
 import UploadButton from '@/core/ui/button/UploadButton';
 import Image from '@/core/ui/image/Image';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import { gutters } from '../../grid/utils';
+import { Caption } from '../../typography';
 import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from '../VisualUpload/CropDialog';
-import { useField } from 'formik';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { Caption } from '../../typography';
-import { gutters } from '../../grid/utils';
-import { VisualUploadModel } from '../VisualUpload/VisualUpload.model';
+import type { VisualUploadModel } from '../VisualUpload/VisualUpload.model';
 
 const DEFAULT_SIZE = 70;
 

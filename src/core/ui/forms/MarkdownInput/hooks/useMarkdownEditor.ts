@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Editor, useEditor } from '@tiptap/react';
+import type { EditorOptions } from '@tiptap/core';
 import { EditorState } from '@tiptap/pm/state';
+import { type Editor, useEditor } from '@tiptap/react';
 import { Selection } from 'prosemirror-state';
-import { FormEvent } from 'react';
+import { type FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import UnifiedConverter from '@/core/ui/markdown/html/UnifiedConverter';
 import { useSetCharacterCount } from '../CharacterCountContext';
-import { EditorOptions } from '@tiptap/core';
 
 interface UseMarkdownEditorProps {
   value?: string;
@@ -105,9 +104,7 @@ export const useMarkdownEditor = ({
 
         try {
           shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
-        } catch (error) {
-          console.error('Failed to update shadow editor state:', error);
-        }
+        } catch (_error) {}
 
         const end = Selection.atEnd(shadowEditor.state.doc).from;
         const overflow = contentLength - maxLength;

@@ -1,14 +1,14 @@
-import { Box, BoxProps, styled } from '@mui/material';
-import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Box, type BoxProps, styled } from '@mui/material';
+import { Form, Formik, type FormikHelpers } from 'formik';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
-import { gutters } from '@/core/ui/grid/utils';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import Avatar, { type CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import FormikCommentInputField, { type FormikCommentInputFieldProps } from './FormikCommentInputField';
 
 const UserAvatar = styled(Avatar)<CustomAvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -78,11 +78,11 @@ const PostMessageToCommentsForm = ({
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
+          enableReinitialize={true}
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form noValidate>
+            <Form noValidate={true}>
               <FormikCommentInputField
                 vcInteractions={vcInteractions}
                 vcEnabled={vcEnabled}
@@ -94,8 +94,8 @@ const PostMessageToCommentsForm = ({
                 disabled={disabled}
                 submitting={isSubmitting}
                 maxLength={maxLength}
-                submitOnReturnKey
-                required
+                submitOnReturnKey={true}
+                required={true}
                 sx={{
                   height: gutters(2),
                 }}

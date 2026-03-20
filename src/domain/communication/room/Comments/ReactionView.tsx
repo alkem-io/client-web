@@ -1,6 +1,6 @@
 import { Chip, Paper, Tooltip } from '@mui/material';
-import { Caption, CardText, Text } from '@/core/ui/typography/components';
 import Gutters from '@/core/ui/grid/Gutters';
+import { Caption, CardText, Text } from '@/core/ui/typography/components';
 
 export interface ReactionViewReaction {
   emoji: string;
@@ -27,7 +27,7 @@ const ReactionView = ({ reaction, onRemoveReaction }: ReactionViewProps) => {
     <Tooltip
       title={
         <Paper variant="outlined">
-          <Gutters row>
+          <Gutters row={true}>
             <Text>{reaction.emoji}</Text>
             <Caption>
               {reaction.senders.map(({ profile }) => profile?.displayName).join(SENDERS_JOIN_SEPARATOR)}

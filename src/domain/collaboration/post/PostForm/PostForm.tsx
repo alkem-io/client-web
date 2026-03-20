@@ -1,21 +1,21 @@
-import { Post } from '@/core/apollo/generated/graphql-schema';
-import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import Gutters from '@/core/ui/grid/Gutters';
-import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
-import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import { Formik, FormikConfig } from 'formik';
+import { Formik, type FormikConfig } from 'formik';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import type { Post } from '@/core/apollo/generated/graphql-schema';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import type { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
+import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import type { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
 
 type FormValue = {
   name: string;
@@ -98,18 +98,18 @@ const PostForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      enableReinitialize={true}
+      validateOnMount={true}
       onSubmit={() => {}}
     >
       {formikState => (
         <>
-          <Gutters disablePadding>
+          <Gutters disablePadding={true}>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} canSave={canSave} />
             <FormikInputField
               name={'name'}
               title={t('common.title')}
-              required
+              required={true}
               placeholder={t('components.post-creation.info-step.name-help-text')}
             />
             <FormikMarkdownField
@@ -117,7 +117,7 @@ const PostForm = ({
               title={t('components.post-creation.info-step.description')}
               placeholder={t('components.post-creation.info-step.description-placeholder')}
               rows={7}
-              required
+              required={true}
               maxLength={LONG_MARKDOWN_TEXT_LENGTH}
               loading={loading}
               hideImageOptions={disableRichMedia}
@@ -128,13 +128,11 @@ const PostForm = ({
               loading={loading}
             />
             {edit && (
-              <>
-                <ReferenceSegment
-                  references={formikState.values.references}
-                  onAdd={push => onAddReference?.(push, formikState.values.references?.length)}
-                  onRemove={onRemoveReference}
-                />
-              </>
+              <ReferenceSegment
+                references={formikState.values.references}
+                onAdd={push => onAddReference?.(push, formikState.values.references?.length)}
+                onRemove={onRemoveReference}
+              />
             )}
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}

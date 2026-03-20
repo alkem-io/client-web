@@ -1,12 +1,12 @@
 import { Box, Skeleton } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
-import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import { Caption } from '@/core/ui/typography';
-import { gutters } from '@/core/ui/grid/utils';
-import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
 import { useTranslation } from 'react-i18next';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
+import { Caption } from '@/core/ui/typography';
+import type { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 
 export interface SingleUpdateViewProps {
   author?: AuthorModel;
@@ -43,7 +43,7 @@ const SingleUpdateView = ({ author, createdDate, content = '', loading }: Single
         </Box>
       ) : (
         <OverflowGradient maxHeight={gutters(11)}>
-          <WrapperMarkdown disableParagraphPadding>{content}</WrapperMarkdown>
+          <WrapperMarkdown disableParagraphPadding={true}>{content}</WrapperMarkdown>
         </OverflowGradient>
       )}
     </>

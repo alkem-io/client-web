@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import {
-  useCalloutUrlResolveQuery,
   useCalloutLookupQuery,
-  useSpaceUrlResolveQuery,
+  useCalloutUrlResolveQuery,
   useSpaceCalloutsSetLookupQuery,
+  useSpaceUrlResolveQuery,
   useTransferCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';

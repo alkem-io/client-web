@@ -1,5 +1,5 @@
-import { SxProps } from '@mui/material';
-import { Theme } from '@mui/material/styles';
+import type { SxProps } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 import { gutters } from '../grid/utils';
 
 const webkitLineClamp = (lines: number, options: { keepMinHeight?: boolean } = {}): SxProps<Theme> => ({

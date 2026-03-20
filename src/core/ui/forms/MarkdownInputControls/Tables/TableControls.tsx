@@ -1,21 +1,22 @@
-import { ChainedCommands, Editor } from '@tiptap/react';
-import React, { useState } from 'react';
 import {
-  TableChartOutlined,
-  DeleteForever,
+  BorderBottom,
   BorderLeft,
   BorderRight,
   BorderTop,
-  BorderBottom,
+  DeleteForever,
   DeleteSweep,
+  TableChartOutlined,
 } from '@mui/icons-material';
-import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import MarkdownInputToolbarButton from '../MarkdownInputToolbarButton';
+import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import type { ChainedCommands, Editor } from '@tiptap/react';
+import type React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import MarkdownInputToolbarButton from '../MarkdownInputToolbarButton';
+import ToolbarMenuItem from '../ToolbarMenuItem';
 import InsertTableMenu from './InsertTableMenu';
 import TableOperationsIcon from './TableOperationsIcon';
-import ToolbarMenuItem from '../ToolbarMenuItem';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface TableControlsProps {
   editor: Editor | null;

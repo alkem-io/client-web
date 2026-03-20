@@ -1,14 +1,14 @@
-import { Box } from '@mui/material';
-import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
-import React, { useMemo } from 'react';
-import { CalloutContributionType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { Identifiable } from '@/core/utils/Identifiable';
-import { Caption } from '@/core/ui/typography';
-import Gutters from '@/core/ui/grid/Gutters';
 import { LibraryBooksOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { useMemo } from 'react';
+import { CalloutContributionType, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import CardMatchedTerms from '@/core/ui/card/CardMatchedTerms';
+import Gutters from '@/core/ui/grid/Gutters';
 import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
+import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 export interface SearchResultsCalloutCardFooterProps {
   callout: CalloutContributionsProps['callout'];

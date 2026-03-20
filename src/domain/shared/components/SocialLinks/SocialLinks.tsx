@@ -1,11 +1,11 @@
 import { Block, Mail, Public } from '@mui/icons-material';
-import { Box, Link, SvgIconProps, Typography } from '@mui/material';
-import { FC, useMemo } from 'react';
+import { Box, Link, type SvgIconProps, Typography } from '@mui/material';
+import { type FC, useMemo } from 'react';
 import * as yup from 'yup';
+import BlueSky from '@/domain/shared/components/SocialLinks/icons/BlueSky';
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
-import BlueSky from '@/domain/shared/components/SocialLinks/icons/BlueSky';
 import { SocialNetworkEnum, SocialNetworksSortOrder } from './models/SocialNetworks';
 
 interface SocialLinksProps {

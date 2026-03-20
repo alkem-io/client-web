@@ -2,7 +2,7 @@ import {
   VirtualContributorModelCardEntry,
   VirtualContributorModelCardEntryFlagName,
 } from '@/core/apollo/generated/graphql-schema';
-import { VirtualContributorModelCard } from '../model/VirtualContributorModelCardModel';
+import type { VirtualContributorModelCard } from '../model/VirtualContributorModelCardModel';
 
 export const useTemporaryHardCodedVCProfilePageData = (modelCard: VirtualContributorModelCard) => {
   // TODO: the logic here should be isGeneric, isAssistant and isExternal = isGeneric || isAssistant;

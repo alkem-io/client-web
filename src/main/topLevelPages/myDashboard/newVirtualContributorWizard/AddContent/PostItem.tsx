@@ -1,13 +1,12 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Tooltip, IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { PostValues } from './AddContentProps';
+import type { PostValues } from './AddContentProps';
 
 interface PostItemProps {
   post: PostValues;
@@ -20,11 +19,11 @@ export const PostItem = ({ post, index, onDelete, hasDelete }: PostItemProps) =>
   const { t } = useTranslation();
 
   return (
-    <Gutters key={index} disablePadding>
+    <Gutters key={index} disablePadding={true}>
       <FormikInputField
         name={`posts[${index}].title`}
         title={t('createVirtualContributorWizard.addContent.post.title')}
-        required
+        required={true}
         value={post.title}
       />
       <Box display="flex" flexDirection="column">
@@ -33,7 +32,7 @@ export const PostItem = ({ post, index, onDelete, hasDelete }: PostItemProps) =>
           title={t('common.post')}
           rows={7}
           maxLength={LONG_MARKDOWN_TEXT_LENGTH}
-          hideImageOptions
+          hideImageOptions={true}
           value={post.description}
         />
         {hasDelete && (

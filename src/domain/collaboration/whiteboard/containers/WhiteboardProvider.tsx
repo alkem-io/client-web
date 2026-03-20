@@ -1,10 +1,10 @@
+import type React from 'react';
 import { useWhiteboardFromCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
+import type {
   CollaborationWithWhiteboardDetailsFragment,
   WhiteboardDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import React from 'react';
 import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 
 interface WhiteboardProviderProps {

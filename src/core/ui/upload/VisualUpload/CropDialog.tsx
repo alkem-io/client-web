@@ -1,18 +1,18 @@
-import { Box, Button, Dialog, DialogContent, DialogProps, FormHelperText, Link } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, type DialogProps, FormHelperText, Link } from '@mui/material';
 import { Form, Formik } from 'formik';
-import * as yup from 'yup';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ReactCrop, { Crop } from 'react-image-crop';
+import ReactCrop, { type Crop } from 'react-image-crop';
+import * as yup from 'yup';
 import 'react-image-crop/dist/ReactCrop.css';
 import Resizer from 'react-image-file-resizer';
-import Gutters from '@/core/ui/grid/Gutters';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Actions } from '@/core/ui/actions/Actions';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { ALT_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
+import Gutters from '@/core/ui/grid/Gutters';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 type CropDialogConfig = {
   aspectRatio?: number;
@@ -26,6 +26,7 @@ interface CropDialogInterface extends DialogProps {
   file?: File;
   onSave?: (data: { file: File; altText: string }) => Promise<void> | void;
   config: CropDialogConfig;
+  hideAltText?: boolean;
 }
 
 interface CropDialogFormValues {
@@ -38,7 +39,7 @@ const MIN_WIDTH = 200;
 const MAX_HEIGHT = 400;
 const MIN_HEIGHT = 200;
 
-export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterface) => {
+export const CropDialog = ({ file, onSave, config, hideAltText, ...rest }: CropDialogInterface) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
@@ -173,7 +174,7 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
     [maxHeight, maxWidth, minHeight, minWidth]
   );
 
-  const handleClose = useCallback(() => rest.onClose && rest.onClose({}, 'escapeKeyDown'), [rest]);
+  const handleClose = useCallback(() => rest.onClose?.({}, 'escapeKeyDown'), [rest]);
 
   const handleSave = useCallback(
     async (values: CropDialogFormValues) => {
@@ -187,7 +188,7 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
 
   return (
     <Dialog
-      fullWidth
+      fullWidth={true}
       maxWidth={'md'}
       sx={{
         '& img': {
@@ -220,15 +221,17 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
                   },
                 })}
               </FormHelperText>
-              <Box>
-                <FormikInputField
-                  title={t('common.description')}
-                  placeholder={t('pages.visualEdit.form.altText.placeholder')}
-                  name="altText"
-                  maxLength={ALT_TEXT_LENGTH}
-                  helpIconText={t('pages.visualEdit.form.altText.helpText')}
-                />
-              </Box>
+              {!hideAltText && (
+                <Box>
+                  <FormikInputField
+                    title={t('common.description')}
+                    placeholder={t('pages.visualEdit.form.altText.placeholder')}
+                    name="altText"
+                    maxLength={ALT_TEXT_LENGTH}
+                    helpIconText={t('pages.visualEdit.form.altText.helpText')}
+                  />
+                </Box>
+              )}
               <Actions justifyContent="space-between">
                 <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">

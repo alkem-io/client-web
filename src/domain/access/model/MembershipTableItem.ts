@@ -1,5 +1,5 @@
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { MembershipType } from './MembershipType';
+import type { ActorType } from '@/core/apollo/generated/graphql-schema';
+import type { MembershipType } from './MembershipType';
 
 export type MembershipTableItem = {
   id: string;

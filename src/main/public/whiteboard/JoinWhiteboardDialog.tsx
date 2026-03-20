@@ -1,12 +1,12 @@
-import { FC, useTransition } from 'react';
-import { Dialog, DialogContent, Button, Typography, Stack, Box } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, Stack, Typography } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { type FC, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { Formik, Form } from 'formik';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
-import { clearGuestSessionOnSignIn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
 import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
+import { clearGuestSessionOnSignIn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
+import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 
 export interface JoinWhiteboardDialogProps {
@@ -59,7 +59,7 @@ const JoinWhiteboardDialog: FC<JoinWhiteboardDialogProps> = ({ open, onSubmit })
       open={open}
       aria-labelledby="join-dialog-title"
       maxWidth="sm"
-      fullWidth
+      fullWidth={true}
       PaperProps={{
         sx: theme => ({
           borderRadius: 1.5, // 12px
@@ -75,11 +75,11 @@ const JoinWhiteboardDialog: FC<JoinWhiteboardDialogProps> = ({ open, onSubmit })
           initialValues={{ guestName: '' }}
           validate={validate}
           onSubmit={handleSubmit}
-          validateOnChange
-          validateOnBlur
+          validateOnChange={true}
+          validateOnBlur={true}
         >
           {({ isValid, dirty }) => (
-            <Form noValidate>
+            <Form noValidate={true}>
               <Stack spacing={2.5}>
                 {/* Header Section */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -121,8 +121,8 @@ const JoinWhiteboardDialog: FC<JoinWhiteboardDialogProps> = ({ open, onSubmit })
                     <FormikInputField
                       name="guestName"
                       title="" // No visible label in design
-                      required
-                      fullWidth
+                      required={true}
+                      fullWidth={true}
                       placeholder={t('pages.public.whiteboard.join.placeholder')}
                       aria-label={t('pages.public.whiteboard.join.guestNameLabel')}
                       autoComplete="off"
@@ -132,7 +132,7 @@ const JoinWhiteboardDialog: FC<JoinWhiteboardDialogProps> = ({ open, onSubmit })
                   <Button
                     type="submit"
                     variant="contained"
-                    fullWidth
+                    fullWidth={true}
                     disabled={isPending || !isValid || !dirty}
                     sx={{ py: 1.25 }}
                   >
@@ -141,7 +141,13 @@ const JoinWhiteboardDialog: FC<JoinWhiteboardDialogProps> = ({ open, onSubmit })
                       : t('pages.public.whiteboard.join.joinButton')}
                   </Button>
 
-                  <Button onClick={handleSignIn} variant="outlined" fullWidth disabled={isPending} sx={{ py: 1.25 }}>
+                  <Button
+                    onClick={handleSignIn}
+                    variant="outlined"
+                    fullWidth={true}
+                    disabled={isPending}
+                    sx={{ py: 1.25 }}
+                  >
                     {t('pages.public.whiteboard.join.signInButton')}
                   </Button>
                 </Box>

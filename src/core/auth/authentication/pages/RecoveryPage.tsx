@@ -1,16 +1,16 @@
-import { FC } from 'react';
+import { Box } from '@mui/material';
+import type { UiContainer } from '@ory/kratos-client/dist/api';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import KratosUI from '../components/KratosUI';
-import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import Loading from '@/core/ui/loading/Loading';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
-import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
-import { isInputNode } from '../components/Kratos/helpers';
-import { UiContainer } from '@ory/kratos-client/dist/api';
 import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
-import { Box } from '@mui/material';
+import { isInputNode } from '../components/Kratos/helpers';
+import KratosForm from '../components/Kratos/KratosForm';
+import KratosUI from '../components/KratosUI';
 
 interface RegisterPageProps {
   flow: string;

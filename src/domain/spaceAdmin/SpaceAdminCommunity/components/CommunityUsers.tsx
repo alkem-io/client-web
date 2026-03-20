@@ -2,11 +2,11 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, Link, TextField } from '@mui/material';
 import {
-  GridColDef,
-  GridFilterModel,
-  GridInitialState,
+  type GridColDef,
+  type GridFilterModel,
+  type GridInitialState,
   GridLogicOperator,
-  GridRenderCellParams,
+  type GridRenderCellParams,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,10 @@ import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
-import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
+import CommunityAddMembersDialog, { type CommunityAddMembersDialogProps } from '../dialogs/CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from '../dialogs/CommunityMemberSettingsDialog';
+import type { CommunityMemberUserFragmentWithRoles } from '../hooks/useCommunityAdmin';
 import useCommunityPolicyChecker from '../hooks/useCommunityPolicyChecker';
-import { CommunityMemberUserFragmentWithRoles } from '../hooks/useCommunityAdmin';
 
 type RenderParams = GridRenderCellParams<CommunityMemberUserFragmentWithRoles>;
 type GetterParams = CommunityMemberUserFragmentWithRoles | undefined;
@@ -48,7 +48,7 @@ interface CommunityUsersProps {
   onUserAuthorizationChange?: (userId: string, newValue: boolean) => Promise<unknown> | void;
   onRemoveMember: (userId: string) => Promise<unknown> | void;
   canAddUsers: boolean;
-  onAddMember: (memberId: string) => Promise<unknown> | undefined;
+  onAddMember: (memberId: string) => Promise<unknown> | void;
   fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   memberRoleDefinition?: {
     organizationPolicy: { minimum: number; maximum: number };
@@ -153,7 +153,7 @@ const CommunityUsers = ({
         label={t('common.search')}
         placeholder={t('common.search')}
         size="small"
-        fullWidth
+        fullWidth={true}
       />
       <Box minHeight={gutters(25)}>
         {loading ? (

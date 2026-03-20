@@ -1,5 +1,5 @@
-import { InnovationFlowState, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { TemplateBase } from './TemplateBase';
+import type { InnovationFlowState, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import type { TemplateBase } from './TemplateBase';
 
 export interface SpaceTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Space;

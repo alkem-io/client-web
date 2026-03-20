@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { ButtonBase, IconButton, Tooltip } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import { ButtonBase, IconButton, Tooltip } from '@mui/material';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MediaGallery from '@/core/ui/gallery/MediaGallery';
-import { MediaGalleryItem } from '@/core/ui/gallery/types';
-import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
+import type { MediaGalleryItem } from '@/core/ui/gallery/types';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import ImagePlaceholder from '@/core/ui/image/ImagePlaceholder';
+import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
-import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import type { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingMediaGalleryProps {
   callout: CalloutDetailsModel;
@@ -51,7 +51,7 @@ const CalloutFramingMediaGallery = ({
   }
 
   const addButton = canEdit ? (
-    <Tooltip title={t('buttons.uploadMedia')} arrow>
+    <Tooltip title={t('buttons.uploadMedia')} arrow={true}>
       <IconButton aria-label={t('buttons.uploadMedia')} size="small" onClick={() => setEditDialogOpen(true)}>
         <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
       </IconButton>

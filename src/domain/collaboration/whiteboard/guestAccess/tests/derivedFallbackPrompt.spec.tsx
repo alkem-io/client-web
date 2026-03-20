@@ -5,16 +5,16 @@
  * Spec: 002-guest-whiteboard-access, Phase 8 - Derived Authenticated Guest Name
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import type { FC, PropsWithChildren } from 'react';
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '@/core/i18n/config';
 import { CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
+import i18n from '@/core/i18n/config';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
 import { sessionStorageMock } from './utils/sessionStorageMock';

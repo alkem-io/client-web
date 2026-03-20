@@ -1,11 +1,11 @@
-import { FilterConfig, FilterDefinition } from './Filter';
-import { ComponentType, ReactNode } from 'react';
-import { EntityFilter } from './EntityFilter';
-import CardsLayout from '@/domain/collaboration/callout/components/CardsLayout';
+import type { ComponentType, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { useTranslation } from 'react-i18next';
-import { Identifiable } from '@/core/utils/Identifiable';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import CardsLayout from '@/domain/collaboration/callout/components/CardsLayout';
+import { EntityFilter } from './EntityFilter';
+import type { FilterConfig, FilterDefinition } from './Filter';
 
 interface ResultSectionProps<Result extends Identifiable> {
   title: ReactNode;
@@ -57,12 +57,12 @@ const SearchResultSection = <Result extends Identifiable>({
       />
 
       <CardsLayout
-        globalSearch
+        globalSearch={true}
         loading={loading}
         items={loading ? [undefined, undefined] : results}
         deps={[currentFilter]}
         cards={false}
-        disablePadding
+        disablePadding={true}
         isButtonDisabled={!canLoadMore}
         onClickLoadMore={() => (canLoadMore ? onClickLoadMore?.() : undefined)}
       >

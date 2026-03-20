@@ -7,5 +7,5 @@ export const formatFileSize = (fileSize: number | undefined, decimalPlaces: numb
     return '';
   }
   const u = Math.floor(Math.log(fileSize) / Math.log(unitSize));
-  return (fileSize / Math.pow(unitSize, u)).toFixed(u === 0 ? 0 : decimalPlaces) + ' ' + units[u];
+  return `${(fileSize / unitSize ** u).toFixed(u === 0 ? 0 : decimalPlaces)} ${units[u]}`;
 };

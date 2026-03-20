@@ -1,15 +1,15 @@
-import { useOptimistic, useTransition, useCallback } from 'react';
-import { useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useCallback, useOptimistic, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { defaultSpaceSettings } from './SpaceDefaultSettings';
-import {
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type {
   SpaceSettingsCollaboration,
   SpaceSettingsMembership,
   SpaceSettingsPrivacy,
 } from '@/domain/space/settings/SpaceSettingsModel';
+import { defaultSpaceSettings } from './SpaceDefaultSettings';
 
 export interface SpaceSettingsUpdateParams {
   privacyMode?: SpacePrivacyMode;

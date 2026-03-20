@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 export interface SubspaceProfile {
   id: string;

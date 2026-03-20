@@ -1,6 +1,3 @@
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
-import { ComponentType } from 'react';
-import { SvgIconProps } from '@mui/material';
 import {
   CalendarMonthOutlined,
   ChatBubbleOutlineOutlined,
@@ -9,10 +6,13 @@ import {
   NotesOutlined,
   PersonOutlined,
 } from '@mui/icons-material';
-import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
+import type { SvgIconProps } from '@mui/material';
+import type { ComponentType } from 'react';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
-import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 
 const ActivityIcon: Record<
   Exclude<ActivityEventType, ActivityEventType.CalloutPublished>,

@@ -2,7 +2,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
+import { useMemo } from 'react';
 import {
   useUploadFileMutation,
   useUploadFileOnLinkMutation,
@@ -10,7 +10,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import UploadButton from '@/core/ui/button/UploadButton';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useMemo } from 'react';
+import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 
 const DEFAULT_REFERENCE_TYPE = 'reference';
 
@@ -30,7 +30,7 @@ type FileUploadProps = {
   storageConfig: StorageConfig;
 };
 
-const bytesInMegabyte = Math.pow(1024, 2);
+const bytesInMegabyte = 1024 ** 2;
 
 const FileUploadButton = ({
   onUpload,

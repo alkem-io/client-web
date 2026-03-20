@@ -2285,7 +2285,28 @@
       "startTyping": "crwdns43408:0crwdne43408:0",
       "searchUsers": "crwdns43410:0crwdne43410:0",
       "searchConversations": "crwdns43412:0crwdne43412:0",
-      "createChat": "crwdns43414:0crwdne43414:0"
+      "createChat": "crwdns43414:0crwdne43414:0",
+      "startGroupChat": "crwdns44438:0crwdne44438:0",
+      "groupChatName": "crwdns44440:0crwdne44440:0",
+      "groupChatNameRequired": "crwdns44442:0crwdne44442:0",
+      "selectMembers": "crwdns44444:0crwdne44444:0",
+      "selectMembersHint": "crwdns44446:0crwdne44446:0",
+      "createGroupChat": "crwdns44448:0crwdne44448:0",
+      "editProfilePicture": "crwdns44450:0crwdne44450:0",
+      "addMembers": "crwdns44452:0crwdne44452:0",
+      "groupMembers": "crwdns44454:0crwdne44454:0",
+      "remove": "crwdns44456:0crwdne44456:0",
+      "manageGroup": "crwdns44458:0crwdne44458:0",
+      "leaveGroup": "crwdns44460:0crwdne44460:0",
+      "leaveGroupConfirmTitle": "crwdns44462:0crwdne44462:0",
+      "leaveGroupConfirmMessage": "crwdns44464:0crwdne44464:0",
+      "noMembersSelected": "crwdns44466:0crwdne44466:0",
+      "membersCount_one": "crwdns44468:0{{count}}crwdne44468:0",
+      "membersCount_other": "crwdns44470:0{{count}}crwdne44470:0",
+      "saveGroup": "crwdns44472:0crwdne44472:0",
+      "discardChangesTitle": "crwdns44474:0crwdne44474:0",
+      "discardChangesMessage": "crwdns44476:0crwdne44476:0",
+      "discardChanges": "crwdns44478:0crwdne44478:0"
     },
     "spaceWelcomeDialog": {
       "title": "crwdns40288:0$t(common.space)crwdne40288:0",
@@ -2494,7 +2515,13 @@
           },
           "layout": {
             "description": "crwdns36783:0{{entity}}crwdne36783:0",
-            "innovationFlowEditor": "crwdns40300:0$t(common.space)crwdne40300:0"
+            "innovationFlowEditor": "crwdns40300:0$t(common.space)crwdne40300:0",
+            "calloutDisplayMode": {
+              "title": "crwdns44480:0$t(common.Post)crwdne44480:0",
+              "expanded": "crwdns44482:0crwdne44482:0",
+              "collapsed": "crwdns44484:0crwdne44484:0",
+              "description": "crwdns44486:0$t(common.post)crwdne44486:0"
+            }
           },
           "context": {
             "description": "crwdns42584:0{{entity}}crwdnd42584:0$t(common.members)crwdne42584:0"
@@ -2603,7 +2630,8 @@
             "moreInfo": "crwdns19724:0crwdne19724:0",
             "moreInfoUrl": "crwdns19726:0$t(plansTable.seeMoreUrl)crwdne19726:0",
             "licenseUpdated": "crwdns19728:0crwdne19728:0",
-            "deletedSuccessfully": "crwdns19730:0{{entity}}crwdne19730:0"
+            "deletedSuccessfully": "crwdns19730:0{{entity}}crwdne19730:0",
+            "deleteFailed": "crwdns44488:0{{entity}}crwdne44488:0"
           },
           "settings": {
             "description": "crwdns41282:0$t(common.settings)crwdnd41282:0{{entity}}crwdne41282:0"
@@ -3288,7 +3316,13 @@
       },
       "updates": {
         "title": "crwdns41556:0$t(common.leads)crwdnd41556:0{{count}}crwdne41556:0",
-        "no-data": "crwdns20346:0crwdne20346:0"
+        "no-data": "crwdns20346:0crwdne20346:0",
+        "copy": {
+          "noContent": "crwdns44490:0crwdne44490:0",
+          "success": "crwdns44492:0crwdne44492:0",
+          "failed": "crwdns44494:0crwdne44494:0",
+          "unsupported": "crwdns44496:0crwdne44496:0"
+        }
       }
     },
     "whiteboard": {

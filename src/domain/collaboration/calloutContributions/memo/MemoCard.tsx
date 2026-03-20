@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardHeader from '@/core/ui/card/CardHeader';
-import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
-import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
+import ContributeCard from '@/core/ui/card/ContributeCard';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { formatDate } from '@/core/utils/time/utils';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
+import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
+import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
 interface MemoCardProps extends CalloutContributionCardComponentProps {}
 
@@ -28,7 +28,7 @@ const MemoCard = ({ contribution, columns, callout, onClick, selected }: MemoCar
       <MemoPreview
         memo={memo}
         displayName={memo?.profile.displayName}
-        seamless
+        seamless={true}
         sx={{
           height: gutters(4),
           margin: 0,

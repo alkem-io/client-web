@@ -1,9 +1,9 @@
-import { ReactNode, useMemo, useState } from 'react';
-import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import { Identifiable } from '@/core/utils/Identifiable';
-import filterFn, { ValueType } from '@/core/utils/filtering/filterFn';
-import InnovationPacksView from './InnovationPacksView';
+import { type ReactNode, useMemo, useState } from 'react';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import filterFn, { type ValueType } from '@/core/utils/filtering/filterFn';
+import type { Identifiable } from '@/core/utils/Identifiable';
+import type { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
+import InnovationPacksView from './InnovationPacksView';
 
 type DashboardInnovationPacksProps = {
   headerTitle: ReactNode;

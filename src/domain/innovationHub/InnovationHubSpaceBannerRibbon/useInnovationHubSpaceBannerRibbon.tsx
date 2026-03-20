@@ -1,5 +1,5 @@
-import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Trans, useTranslation } from 'react-i18next';
+import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 
 type UseInnovationHubBannerRibbonOptions = {

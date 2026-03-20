@@ -1,4 +1,4 @@
-import { TypographyVariantsOptions } from '@mui/material/styles/createTypography';
+import type { TypographyVariantsOptions } from '@mui/material/styles/createTypography';
 import { GUTTER_PX } from '../grid/constants';
 import { rem } from './utils';
 
