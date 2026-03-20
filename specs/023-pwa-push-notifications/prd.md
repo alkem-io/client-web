@@ -180,7 +180,7 @@ Add to `src/` (exact location follows project conventions):
 | `subscribeToPushNotifications.graphql` | Subscribe mutation |
 | `unsubscribeFromPushNotifications.graphql` | Unsubscribe mutation |
 
-Run codegen to generate typed hooks: `pnpm graphql:codegen`
+Run codegen to generate typed hooks: `pnpm codegen`
 
 ### 5.4 Notification Settings UI Extension
 
@@ -267,7 +267,6 @@ notifications.push.promptBody
 |-----------|----------|---------|
 | `PushNotificationProvider` | `src/main/pushNotifications/` | Context provider wrapping the app; queries VAPID key, manages subscription state |
 | `usePushNotifications` | `src/main/pushNotifications/` | Core hook (see §5.2) |
-| `PushNotificationBanner` | `src/main/pushNotifications/` | Soft opt-in banner (dismissible, shown contextually) |
 | `PushSubscriptionsList` | `src/domain/community/userAdmin/tabs/` | Lists active subscriptions with remove buttons |
 | `TripleSwitchSettingsGroup` | `src/domain/community/userAdmin/tabs/` | Triple toggle (email/inApp/push) for notification categories |
 

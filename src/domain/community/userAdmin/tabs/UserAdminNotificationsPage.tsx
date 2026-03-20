@@ -66,7 +66,9 @@ type OptimisticOverride = {
   value: boolean;
 };
 
-type OverridesAction = { type: 'set'; override: OptimisticOverride } | { type: 'clear' };
+type OverridesAction =
+  | { type: 'set'; override: OptimisticOverride }
+  | { type: 'clear'; group: NotificationGroup; property: string; channelType: ChannelType };
 
 function overridesReducer(state: OptimisticOverride[], action: OverridesAction): OptimisticOverride[] {
   switch (action.type) {
@@ -83,7 +85,9 @@ function overridesReducer(state: OptimisticOverride[], action: OverridesAction):
         action.override,
       ];
     case 'clear':
-      return [];
+      return state.filter(
+        o => !(o.group === action.group && o.property === action.property && o.channelType === action.channelType)
+      );
     default:
       return state;
   }
@@ -657,8 +661,8 @@ const UserAdminNotificationsPage = () => {
       awaitRefetchQueries: true,
     });
 
-    // Clear overrides after the server data has been refetched
-    dispatchOverrides({ type: 'clear' });
+    // Clear only this specific override after the server data has been refetched
+    dispatchOverrides({ type: 'clear', group, property, channelType: type });
   };
 
   const showSpaceAdminSettings = isPlatformAdmin || isSpaceAdmin || isSpaceLead;
