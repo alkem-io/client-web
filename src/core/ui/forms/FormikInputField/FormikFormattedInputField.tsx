@@ -1,6 +1,6 @@
 import { useField } from 'formik';
-import { FocusEvent, useState } from 'react';
-import FormikInputField, { FormikInputFieldProps } from './FormikInputField';
+import { type FocusEvent, useState } from 'react';
+import FormikInputField, { type FormikInputFieldProps } from './FormikInputField';
 
 export type ValueFormatterContext = {
   isFocused: boolean;
