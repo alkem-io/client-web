@@ -26088,6 +26088,79 @@ export function refetchConversationWithGuidanceVcQuery(
 ) {
   return { query: ConversationWithGuidanceVcDocument, variables: variables };
 }
+export const PlatformGuidanceVcDocument = gql`
+    query PlatformGuidanceVc {
+  platform {
+    wellKnownVirtualContributors {
+      mappings {
+        virtualContributorID
+        wellKnown
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePlatformGuidanceVcQuery__
+ *
+ * To run a query within a React component, call `usePlatformGuidanceVcQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformGuidanceVcQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformGuidanceVcQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformGuidanceVcQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformGuidanceVcQuery,
+    SchemaTypes.PlatformGuidanceVcQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformGuidanceVcQuery, SchemaTypes.PlatformGuidanceVcQueryVariables>(
+    PlatformGuidanceVcDocument,
+    options
+  );
+}
+export function usePlatformGuidanceVcLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformGuidanceVcQuery,
+    SchemaTypes.PlatformGuidanceVcQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformGuidanceVcQuery, SchemaTypes.PlatformGuidanceVcQueryVariables>(
+    PlatformGuidanceVcDocument,
+    options
+  );
+}
+export function usePlatformGuidanceVcSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.PlatformGuidanceVcQuery, SchemaTypes.PlatformGuidanceVcQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.PlatformGuidanceVcQuery, SchemaTypes.PlatformGuidanceVcQueryVariables>(
+    PlatformGuidanceVcDocument,
+    options
+  );
+}
+export type PlatformGuidanceVcQueryHookResult = ReturnType<typeof usePlatformGuidanceVcQuery>;
+export type PlatformGuidanceVcLazyQueryHookResult = ReturnType<typeof usePlatformGuidanceVcLazyQuery>;
+export type PlatformGuidanceVcSuspenseQueryHookResult = ReturnType<typeof usePlatformGuidanceVcSuspenseQuery>;
+export type PlatformGuidanceVcQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformGuidanceVcQuery,
+  SchemaTypes.PlatformGuidanceVcQueryVariables
+>;
+export function refetchPlatformGuidanceVcQuery(variables?: SchemaTypes.PlatformGuidanceVcQueryVariables) {
+  return { query: PlatformGuidanceVcDocument, variables: variables };
+}
 export const NotificationsUnreadCountDocument = gql`
     subscription NotificationsUnreadCount {
   notificationsUnreadCount
