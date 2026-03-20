@@ -69,11 +69,12 @@ export function usePushNotifications(): PushNotificationState {
   useEffect(() => {
     if (!isSupported || !isServerEnabled) return;
 
-    navigator.serviceWorker.ready.then(registration => {
-      registration.pushManager.getSubscription().then(subscription => {
-        setIsSubscribed(subscription !== null);
+    navigator.serviceWorker.ready
+      .then(registration => registration.pushManager.getSubscription())
+      .then(subscription => setIsSubscribed(subscription !== null))
+      .catch(() => {
+        // Non-critical: SW or push manager unavailable
       });
-    });
   }, [isSupported, isServerEnabled]);
 
   const subscribe = useCallback(async () => {
@@ -99,10 +100,13 @@ export function usePushNotifications(): PushNotificationState {
       });
 
       const subscriptionJSON = browserSubscription.toJSON();
+      if (!subscriptionJSON.endpoint) {
+        throw new Error('Push subscription has no endpoint');
+      }
       const result = await subscribeMutation({
         variables: {
           subscriptionData: {
-            endpoint: subscriptionJSON.endpoint!,
+            endpoint: subscriptionJSON.endpoint,
             p256dh: subscriptionJSON.keys?.p256dh ?? '',
             auth: subscriptionJSON.keys?.auth ?? '',
             userAgent: navigator.userAgent,

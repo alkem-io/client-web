@@ -136,7 +136,7 @@ Every notification category's channels object now includes `push: Boolean!` alon
 | `push` event listener | Parse JSON payload, call `self.registration.showNotification()` with title, body, icon, badge, deep-link data, tag (eventType for grouping) |
 | `notificationclick` handler | Close notification, focus existing client window or `clients.openWindow(url)` |
 | `pushsubscriptionchange` handler | Re-subscribe and POST new subscription to server (handles browser key rotation) |
-| Icon/badge assets | Use existing PWA icons (`/icons/icon-192x192.png` for icon, `/icons/icon-128x128.png` for badge) |
+| Icon/badge assets | Use existing PWA icons (`/android-chrome-192x192.png` for both icon and badge) |
 
 ### 5.2 Push Subscription Management Hook
 
@@ -166,7 +166,7 @@ interface UsePushNotifications {
 - Check `'PushManager' in window` and `'serviceWorker' in navigator` for `isSupported`
 - Use `Notification.permission` for current permission state
 - On `subscribe()`: request permission → `registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey })` → call `subscribeToPushNotifications` mutation
-- On `unsubscribe()`: call `PushSubscription.unsubscribe()` browser API → call `unsubscribeFromPushNotifications` mutation
+- On `unsubscribe()`: call `unsubscribeFromPushNotifications` mutation (if cached subscription ID available) → call `PushSubscription.unsubscribe()` browser API. If no cached ID, skip the server mutation and only remove the browser subscription (server cleans orphaned records on delivery failure)
 - Convert VAPID public key from Base64URL string to `Uint8Array` for `applicationServerKey`
 
 ### 5.3 GraphQL Documents
@@ -223,7 +223,7 @@ App Load
   │   ├─ 'default' → show opt-in UI
   │   └─ 'granted' → check existing subscription
   │       ├─ has subscription? → validate & refresh if needed
-  │       └─ no subscription? → auto-subscribe (user already granted)
+  │       └─ no subscription? → silently re-subscribe (only if user has not explicitly disabled push)
   │
   └─ Listen for pushsubscriptionchange → re-register
 ```
