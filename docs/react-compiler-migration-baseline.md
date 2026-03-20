@@ -72,9 +72,21 @@ Found no usage of incompatible libraries.
 | KratosPasskeyIconButton.tsx | `new Function()` inside useCallback | No bail-out (isolated in callback) |
 | KratosPasskeyButton.tsx | `new Function()` inside useCallback | No bail-out (isolated in callback) |
 
-## Bundle Size Baseline
+## Bundle Size
 
-### Build Summary
+### Production Build Comparison
+
+| Metric | Develop | This Branch | Change |
+|--------|---------|-------------|--------|
+| Total JS (raw) | 14.19 MB | 14.20 MB | +0.07% (unchanged) |
+| Total CSS (raw) | 0.16 MB | 0.16 MB | 0% |
+| JS chunk count | 326 | 326 | 0 |
+| CSS file count | 6 | 6 | 0 |
+| Build time | ~61s | ~59s | — |
+
+> **Note**: The Phase 3 comparison report (`comparison-1773846646096.md`) reported a "14.1% JS reduction" — this measured **dev server transfer size** (Vite HMR modules), not production bundle. Production bundle size is unchanged.
+
+### Pre-Migration Build Summary
 
 | Metric | Value |
 |--------|-------|
@@ -192,27 +204,31 @@ Found no usage of incompatible libraries.
 
 **Full comparison report**: `performance-results/comparison-1773842618515.md`
 
-### React DevTools Profiler Comparison (Manual)
+### React DevTools Profiler — Full Comparison (Manual)
 
 Profiler recordings captured during interactive sessions on the same pages.
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Commits (re-renders) | 776 | 430 | **-44.6%** |
-| Total render time | 3,941.8 ms | 2,782.8 ms | **-29.4%** |
-| Total effect time | 187.6 ms | 136.7 ms | **-27.1%** |
-| Active fibers | 8,041 | 7,098 | **-11.7%** |
-| Top component render count | 348 | 134 | **-61.5%** |
-| Avg commit duration | 5.1 ms | 6.5 ms | +27.4% |
-| Max commit duration | 75.5 ms | 95.0 ms | +25.8% |
+**Develop** = `develop` branch (no compiler adoption work). **Pre-removal** = this branch after bail-out fixes, before memoization removal. **Post-Phase 2** = after bail-out fixes.
+
+| Metric | Develop | Pre-removal | Post-Phase 2 | Develop → Post-Phase 2 |
+|--------|---------|-------------|--------------|------------------------|
+| Commits (re-renders) | 690 | 776 | 430 | **-37.7%** |
+| Total render time | 2,495.9 ms | 3,941.8 ms | 2,782.8 ms | +11.5% |
+| Total effect time | 203.3 ms | 187.6 ms | 136.7 ms | **-32.8%** |
+| Active fibers | 10,236 | 8,041 | 7,098 | **-30.7%** |
+| Top component render count | 83 | 348 | 134 | +61.4% |
+| Avg commit duration | 3.6 ms | 5.1 ms | 6.5 ms | +80.6% |
+| Max commit duration | 187.6 ms | 75.5 ms | 95.0 ms | **-49.4%** |
+
+**Raw data**: `performance-results/profiling-data.20-03-2026.11-27-55.json` (develop)
 
 **Key takeaways**:
 
-- Resolving compiler bail-outs allowed the React Compiler to skip 44.6% of re-renders entirely
-- The heaviest components went from 348 renders to 134 renders (61.5% reduction)
-- Total time spent rendering dropped by 29.4% (nearly a third)
-- Avg commit duration increased slightly (5.1ms to 6.5ms) — expected because the compiler eliminates trivial re-renders, leaving only "real" ones that do actual work
-- No regressions detected; bundle size unchanged
+- vs develop: 37.7% fewer re-renders, 30.7% fewer active fibers, 32.8% less effect time, max commit halved
+- Total render time is 11.5% higher than develop — the branch includes additional features/refactors (spec 022 hooks-first refactoring, dnd-kit migration) that add component complexity
+- Avg commit duration higher (3.6ms → 6.5ms) — the compiler eliminates trivial re-renders, leaving only "real" ones that do actual work, so the average goes up while total count goes down
+- Top component render count higher than develop (134 vs 83) — likely due to new hook-based containers replacing class-based ones with different render characteristics
+- Max commit duration cut in half (187.6ms → 95.0ms) — major tail-latency improvement
 
 ---
 

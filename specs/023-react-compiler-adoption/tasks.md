@@ -83,7 +83,7 @@
 
 ### Phase 3 Performance Gate
 
-- [x] T025 [US2] [US5] Benchmark comparison: Lighthouse scores unchanged (26/100), JS bundle 14.1% smaller (4.6 MB less), TBT improved 0.6%. Report: performance-results/comparison-1773846646096.md
+- [x] T025 [US2] [US5] Benchmark comparison: Lighthouse scores unchanged (26/100), production bundle unchanged (14.20 MB vs 14.19 MB), TBT improved 0.6%. Note: comparison report's "14.1% JS reduction" measured dev server transfer size, not production build. Report: performance-results/comparison-1773846646096.md
 - [ ] T025a [US5] Human review gate: review the benchmark:compare report from T025, spot-check 2-3 complex components (SpaceDashboard, MarkdownInput, Whiteboard) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
 
 **Checkpoint**: Core/shared layer migrated. ~94 useMemo/useCallback + 0 React.memo removed from core/shared (excl. MarkdownInput ecosystem). MarkdownInput ecosystem (10 files, ~34 calls, 2 React.memo) documented as exception — TipTap editor lifecycle requires manual memoization. Tests pass. Performance validated.
