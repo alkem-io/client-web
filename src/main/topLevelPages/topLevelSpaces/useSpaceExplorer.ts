@@ -15,7 +15,6 @@ import {
   type SpaceExplorerSearchSpaceFragment,
   type SpaceExplorerSubspacesQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { TypedSearchResult } from '@/main/search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, type SpaceWithParent } from './SpaceExplorerView';
@@ -33,9 +32,7 @@ export interface SpacesExplorerContainerEntities {
   loadingSearchResults: boolean | null;
 }
 
-interface SpaceExplorerContainerProps extends SimpleContainerProps<SpacesExplorerContainerEntities> {}
-
-const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
+const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const { userModel, isAuthenticated, loading: loadingUser } = useCurrentUserContext();
 
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
@@ -214,7 +211,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
     return flattenedSpaces;
   }, [flattenedSpaces, membershipFilter, shouldSearch]);
 
-  const provided = {
+  return {
     spaces: filteredSpaces,
     authenticated: isAuthenticated,
     searchTerms,
@@ -226,8 +223,6 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
     setSearchTerms,
     loadingSearchResults,
   };
-
-  return <>{children(provided)}</>;
 };
 
-export default SpaceExplorerContainer;
+export default useSpaceExplorer;

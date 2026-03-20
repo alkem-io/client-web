@@ -2516,7 +2516,13 @@
           },
           "layout": {
             "description": "Here you can edit the layout for this {{entity}}.",
-            "innovationFlowEditor": "$t(common.space) tabs"
+            "innovationFlowEditor": "$t(common.space) tabs",
+            "calloutDisplayMode": {
+              "title": "$t(common.Post) description display",
+              "expanded": "Expanded",
+              "collapsed": "Collapsed",
+              "description": "Collapse $t(common.post) descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+            }
           },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-$t(common.members)."
@@ -2625,7 +2631,8 @@
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "License updated successfully",
-            "deletedSuccessfully": "{{entity}} deleted successfully"
+            "deletedSuccessfully": "{{entity}} deleted successfully",
+            "deleteFailed": "Failed to delete {{entity}}"
           },
           "settings": {
             "description": "Here you can edit the visibility $t(common.settings) of your {{entity}}."
@@ -3301,7 +3308,13 @@
       },
       "updates": {
         "title": "Updates from the $t(common.leads) ({{count}})",
-        "no-data": "No updates available"
+        "no-data": "No updates available",
+        "copy": {
+          "noContent": "No content to copy",
+          "success": "Post copied to clipboard",
+          "failed": "Failed to copy content",
+          "unsupported": "Clipboard not supported"
+        }
       }
     },
     "whiteboard": {

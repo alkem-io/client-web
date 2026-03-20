@@ -1133,6 +1133,11 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
+export enum CalloutDescriptionDisplayMode {
+  Collapsed = 'COLLAPSED',
+  Expanded = 'EXPANDED',
+}
+
 export type CalloutFraming = {
   __typename?: 'CalloutFraming';
   /** The authorization rules for the entity */
@@ -2240,10 +2245,17 @@ export type CreateSpaceSettingsCollaborationInput = {
 
 export type CreateSpaceSettingsInput = {
   collaboration?: InputMaybe<CreateSpaceSettingsCollaborationInput>;
+  /** The layout settings for this Space. */
+  layout?: InputMaybe<CreateSpaceSettingsLayoutInput>;
   membership?: InputMaybe<CreateSpaceSettingsMembershipInput>;
   privacy?: InputMaybe<CreateSpaceSettingsPrivacyInput>;
   /** The sort mode for subspaces: Alphabetical or Custom. */
   sortMode?: InputMaybe<SpaceSortMode>;
+};
+
+export type CreateSpaceSettingsLayoutInput = {
+  /** The default display mode for callout descriptions. */
+  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 };
 
 export type CreateSpaceSettingsMembershipInput = {
@@ -6539,6 +6551,8 @@ export type RelayPaginatedSpace = ActorFull & {
   credentials?: Maybe<Array<Credential>>;
   /** The ID of the Actor */
   id: Scalars['UUID']['output'];
+  /** The layout settings for this Space. Accessible without READ privilege. */
+  layout: SpaceSettingsLayout;
   /** The level of this Space, representing the number of Spaces above this one. */
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
@@ -7308,6 +7322,8 @@ export type Space = ActorFull & {
   credentials?: Maybe<Array<Credential>>;
   /** The ID of the Actor */
   id: Scalars['UUID']['output'];
+  /** The layout settings for this Space. Accessible without READ privilege. */
+  layout: SpaceSettingsLayout;
   /** The level of this Space, representing the number of Spaces above this one. */
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
@@ -7434,6 +7450,8 @@ export type SpaceSettings = {
   __typename?: 'SpaceSettings';
   /** The collaboration settings for this Space. */
   collaboration: SpaceSettingsCollaboration;
+  /** The layout settings for this Space. */
+  layout: SpaceSettingsLayout;
   /** The membership settings for this Space. */
   membership: SpaceSettingsMembership;
   /** The privacy settings for this Space */
@@ -7456,6 +7474,12 @@ export type SpaceSettingsCollaboration = {
   allowMembersToVideoCall: Scalars['Boolean']['output'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['output'];
+};
+
+export type SpaceSettingsLayout = {
+  __typename?: 'SpaceSettingsLayout';
+  /** The default display mode for callout descriptions in this Space. */
+  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 };
 
 export type SpaceSettingsMembership = {
@@ -8415,6 +8439,8 @@ export type UpdateSpaceSettingsCollaborationInput = {
 
 export type UpdateSpaceSettingsEntityInput = {
   collaboration?: InputMaybe<UpdateSpaceSettingsCollaborationInput>;
+  /** The layout settings for this Space. */
+  layout?: InputMaybe<UpdateSpaceSettingsLayoutInput>;
   membership?: InputMaybe<UpdateSpaceSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateSpaceSettingsPrivacyInput>;
   /** The sort mode for subspaces: Alphabetical or Custom. */
@@ -8426,6 +8452,11 @@ export type UpdateSpaceSettingsInput = {
   settings: UpdateSpaceSettingsEntityInput;
   /** The identifier for the Space whose settings are to be updated. */
   spaceID: Scalars['String']['input'];
+};
+
+export type UpdateSpaceSettingsLayoutInput = {
+  /** The default display mode for callout descriptions. */
+  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 };
 
 export type UpdateSpaceSettingsMembershipInput = {
@@ -27015,6 +27046,10 @@ export type SpaceSettingsQuery = {
               allowMembersToVideoCall: boolean;
               allowGuestContributions: boolean;
             };
+            layout: {
+              __typename?: 'SpaceSettingsLayout';
+              calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
+            };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
         }
@@ -27041,6 +27076,7 @@ export type SpaceSettingsFragment = {
     allowMembersToVideoCall: boolean;
     allowGuestContributions: boolean;
   };
+  layout: { __typename?: 'SpaceSettingsLayout'; calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode };
 };
 
 export type UpdateSpaceSettingsMutationVariables = Exact<{
@@ -27071,6 +27107,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToVideoCall: boolean;
         allowGuestContributions: boolean;
       };
+      layout: { __typename?: 'SpaceSettingsLayout'; calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode };
     };
   };
 };

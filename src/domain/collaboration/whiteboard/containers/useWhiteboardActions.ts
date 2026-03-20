@@ -7,13 +7,12 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { CreateWhiteboardInput } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 interface WhiteboardWithPreviewVisuals {
-  nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals
+  nameID: string;
   profile: {
     visual?: {
       id: string;
@@ -48,12 +47,7 @@ export interface WhiteboardActionsContainerState {
   uploadingVisuals?: boolean;
 }
 
-interface WhiteboardChildProps {
-  state: WhiteboardActionsContainerState;
-  actions: IWhiteboardActions;
-}
-
-const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<WhiteboardChildProps>) => {
+const useWhiteboardActions = () => {
   const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
@@ -179,19 +173,14 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
     [handleUploadWhiteboardVisuals]
   );
 
-  return (
-    <>
-      {children({
-        state: {
-          creatingWhiteboard,
-          deletingWhiteboard,
-          updatingWhiteboard,
-          uploadingVisuals,
-        },
-        actions,
-      })}
-    </>
-  );
+  const state: WhiteboardActionsContainerState = {
+    creatingWhiteboard,
+    deletingWhiteboard,
+    updatingWhiteboard,
+    uploadingVisuals,
+  };
+
+  return { state, actions };
 };
 
-export default WhiteboardActionsContainer;
+export default useWhiteboardActions;

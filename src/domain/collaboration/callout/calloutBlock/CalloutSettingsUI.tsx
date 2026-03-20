@@ -14,176 +14,75 @@ import {
 } from '@mui/icons-material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import { Box, Collapse, Menu } from '@mui/material';
-import type React from 'react';
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  type CalloutContributionType,
-  type CalloutVisibility,
-  TemplateType,
-} from '@/core/apollo/generated/graphql-schema';
-import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import type { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import type { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
-import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import CalloutContributionsSortDialog from '../../calloutContributions/calloutsContributionsSortDialog/CalloutContributionsSortDialog';
-import type { LinkContribution } from '../../calloutContributions/link/models/LinkContribution';
-import type { PostContribution } from '../../calloutContributions/post/PostCard';
-import type { WhiteboardContribution } from '../../calloutContributions/whiteboard/WhiteboardCard';
-import type { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
 import { CalloutSummary } from '../CalloutSummary';
-import type { CalloutLayoutEvents } from '../CalloutViewTypes';
-import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import type { UseCalloutSettingsResult } from './useCalloutSettings';
 
-interface CalloutSettingsProvided {
-  settingsOpen: boolean;
-  onOpenSettings: (event: React.MouseEvent<HTMLElement>) => void;
-  onCloseSettings: () => void;
+interface CalloutSettingsUIProps {
+  settings: UseCalloutSettingsResult;
 }
 
-export interface CalloutSettingsContainerProps
-  extends CalloutLayoutEvents,
-    Partial<CalloutSortProps>,
-    SimpleContainerProps<CalloutSettingsProvided> {
-  callout: CalloutDetailsModelExtended;
-  items?: {
-    posts?: PostContribution[];
-    whiteboards?: WhiteboardContribution[];
-    links?: LinkContribution[];
-  };
-  expanded?: boolean;
-  onExpand?: (callout: CalloutDetailsModelExtended) => void;
-  disableRichMedia?: boolean;
-  calloutRestrictions?: CalloutRestrictions;
-}
-
-const CalloutSettingsContainer = ({
-  callout,
-  onVisibilityChange,
-  onCalloutDelete,
-  topCallout,
-  bottomCallout,
-  onMoveUp,
-  onMoveDown,
-  onMoveToTop,
-  onMoveToBottom,
-  expanded = false,
-  onExpand,
-  children,
-  calloutRestrictions,
-}: CalloutSettingsContainerProps) => {
+const CalloutSettingsUI = ({ settings }: CalloutSettingsUIProps) => {
   const { t } = useTranslation();
-  const ensurePresence = useEnsurePresence();
 
-  // levelZeroSpaceId is needed to save callout as template in this space
-  const { levelZeroSpaceId } = useUrlResolver();
-
-  const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
-  const settingsOpened = Boolean(settingsAnchorEl);
-  const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
-  const handleSettingsClose = () => setSettingsAnchorEl(null);
-
-  const [visibilityDialogOpen, setVisibilityDialogOpen] = useState(false);
-  const handleVisibilityDialogOpen = () => {
-    setVisibilityDialogOpen(true);
-    setSettingsAnchorEl(null);
-  };
-  const visDialogTitle = useMemo(
-    () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
-    [callout.draft, t]
-  );
-  const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
-    await onVisibilityChange?.(callout, visibility, sendNotification);
-    setVisibilityDialogOpen(false);
-  };
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const handleDeleteDialogOpen = () => {
-    setDeleteDialogOpen(true);
-    setSettingsAnchorEl(null);
-  };
-
-  const [sortDialogOpen, setSortDialogOpen] = useState(false);
-  const handleSortDialogOpen = () => {
-    setSortDialogOpen(true);
-    setSettingsAnchorEl(null);
-  };
-  const handleSortDialogClose = () => setSortDialogOpen(false);
-
-  const [handleDelete, loadingDelete] = useLoadingState(async () => {
-    await onCalloutDelete?.(callout);
-    setDeleteDialogOpen(false);
-  });
-
-  const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
-  const handleSaveAsTemplateDialogOpen = () => {
-    setSaveAsTemplateDialogOpen(true);
-    setSettingsAnchorEl(null);
-  };
-
-  const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
-  const handleSaveAsTemplate = async (values: TemplateCalloutFormSubmittedValues) => {
-    const requiredSpaceId = ensurePresence(levelZeroSpaceId);
-
-    await handleCreateCalloutTemplate(values, requiredSpaceId);
-    setSaveAsTemplateDialogOpen(false);
-  };
-  const [editDialogOpened, setEditDialogOpened] = useState(false);
-  const handleEditDialogOpen = () => {
-    setSettingsAnchorEl(null);
-    setEditDialogOpened(true);
-  };
-
-  const [positionAnchorEl, setPositionAnchorEl] = useState<null | HTMLElement>(null);
-  const handlePositionClose = () => {
-    setPositionDialogOpen(false);
-    setPositionAnchorEl(null);
-  };
-  const [positionDialogOpen, setPositionDialogOpen] = useState(false);
-  const handlePositionDialogOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setPositionDialogOpen(true);
-    setPositionAnchorEl(event.target as HTMLElement);
-  };
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
-
-  const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-
-  const handleMove = (callback?: (id: string) => void) => () => {
-    handleSettingsClose();
-    handlePositionClose();
-    callback?.(callout.id);
-  };
-
-  const isCollection = (callout: { settings: { contribution: { allowedTypes: CalloutContributionType[] } } }) =>
-    callout.settings.contribution.allowedTypes.length > 0;
-
-  const [fetchCalloutContent] = useCalloutContentLazyQuery();
-
-  if (dontShow) {
-    return null;
-  }
-
-  const canBeSavedAsTemplate = callout.canBeSavedAsTemplate;
+  const {
+    callout,
+    settingsAnchorEl,
+    settingsOpened,
+    handleSettingsClose,
+    visibilityDialogOpen,
+    setVisibilityDialogOpen,
+    visDialogTitle,
+    handleVisibilityDialogOpen,
+    handleVisibilityChange,
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    handleDeleteDialogOpen,
+    handleDelete,
+    loadingDelete,
+    sortDialogOpen,
+    handleSortDialogOpen,
+    handleSortDialogClose,
+    saveAsTemplateDialogOpen,
+    setSaveAsTemplateDialogOpen,
+    handleSaveAsTemplateDialogOpen,
+    handleSaveAsTemplate,
+    fetchCalloutContent,
+    editDialogOpened,
+    setEditDialogOpened,
+    handleEditDialogOpen,
+    positionAnchorEl,
+    positionDialogOpen,
+    handlePositionClose,
+    handlePositionDialogOpen,
+    shareDialogOpen,
+    setShareDialogOpen,
+    canBeSavedAsTemplate,
+    isCollection,
+    handleMove,
+    topCallout,
+    bottomCallout,
+    onMoveUp,
+    onMoveDown,
+    onMoveToTop,
+    onMoveToBottom,
+    expanded,
+    onExpand,
+    calloutRestrictions,
+  } = settings;
 
   return (
     <>
-      {children({
-        settingsOpen: settingsOpened,
-        onOpenSettings: handleSettingsOpened,
-        onCloseSettings: handleSettingsClose,
-      })}
       <Menu
         id="callout-settings-menu"
         aria-labelledby="callout-settings-button"
@@ -214,7 +113,7 @@ const CalloutSettingsContainer = ({
             {t('buttons.delete')}
           </MenuItemWithIcon>
         )}
-        {callout.editable && isCollection(callout) && (
+        {callout.editable && isCollection && (
           <MenuItemWithIcon key="sort" iconComponent={SwapVerticalCircleOutlined} onClick={handleSortDialogOpen}>
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
@@ -242,7 +141,7 @@ const CalloutSettingsContainer = ({
             iconComponent={ExpandContentIcon}
             onClick={() => {
               onExpand?.(callout);
-              setSettingsAnchorEl(null);
+              handleSettingsClose();
             }}
           >
             {t('common.fullScreen')}
@@ -356,4 +255,4 @@ const CalloutSettingsContainer = ({
   );
 };
 
-export default CalloutSettingsContainer;
+export default CalloutSettingsUI;

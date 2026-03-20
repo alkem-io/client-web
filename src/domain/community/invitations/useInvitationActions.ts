@@ -5,11 +5,17 @@ import {
   refetchSpaceAboutBaseQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { InvitationEvent } from './InvitationApplicationConstants';
 
-type InvitationActionsContainerProvided = {
+interface UseInvitationActionsParams {
+  onUpdate?: () => void;
+  onAccept?: (spaceUrl: string) => void;
+  onReject?: () => void;
+  spaceId?: string;
+}
+
+type UseInvitationActionsReturn = {
   updating: boolean;
   acceptInvitation: (invitationId: string, spaceUrl: string) => void;
   accepting: boolean;
@@ -17,24 +23,12 @@ type InvitationActionsContainerProvided = {
   rejecting: boolean;
 };
 
-interface InvitationActionsContainerProps extends SimpleContainerProps<InvitationActionsContainerProvided> {
-  onUpdate?: () => void;
-  onAccept?: (spaceUrl: string) => void;
-  onReject?: () => void;
-  /**
-   * When provided, the SpaceAboutBaseQuery for this space will be refetched after accepting
-   * an invitation, ensuring the user's new permissions are reflected immediately.
-   */
-  spaceId?: string;
-}
-
-const InvitationActionsContainer = ({
+const useInvitationActions = ({
   onUpdate,
   onAccept,
   onReject,
   spaceId,
-  children,
-}: InvitationActionsContainerProps) => {
+}: UseInvitationActionsParams): UseInvitationActionsReturn => {
   const [invitationStateEventMutation] = useInvitationStateEventMutation();
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
@@ -76,17 +70,13 @@ const InvitationActionsContainer = ({
     })
   );
 
-  return (
-    <>
-      {children({
-        updating: isUpdatingInvitationState,
-        acceptInvitation,
-        accepting: isAccepting,
-        rejectInvitation,
-        rejecting: isRejecting,
-      })}
-    </>
-  );
+  return {
+    updating: isUpdatingInvitationState,
+    acceptInvitation,
+    accepting: isAccepting,
+    rejectInvitation,
+    rejecting: isRejecting,
+  };
 };
 
-export default InvitationActionsContainer;
+export default useInvitationActions;

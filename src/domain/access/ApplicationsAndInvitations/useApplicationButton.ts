@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useApplicationButtonQuery,
@@ -15,21 +14,19 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
 
-export interface ApplicationButtonContainerProps {
+export interface UseApplicationButtonParams {
   parentSpaceId?: string;
   spaceId?: string;
   loading?: boolean;
   onJoin?: (params: { communityId: string }) => void;
-  children: (props: Omit<ApplicationButtonProps, 'spaceId' | 'spaceLevel'>, loading: boolean) => ReactNode;
 }
 
-export const ApplicationButtonContainer = ({
+const useApplicationButton = ({
   parentSpaceId,
   spaceId,
   loading: loadingParams = false,
   onJoin,
-  children,
-}: ApplicationButtonContainerProps) => {
+}: UseApplicationButtonParams) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
@@ -50,7 +47,7 @@ export const ApplicationButtonContainer = ({
     refetch,
   } = useApplicationButtonQuery({
     variables: {
-      spaceId: spaceId!,
+      spaceId: spaceId ?? '',
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     },
@@ -65,14 +62,14 @@ export const ApplicationButtonContainer = ({
     const refetchSpaceQuery = parentSpaceId ? fetchSubspace : fetchSpace;
 
     await refetch({
-      spaceId: spaceId!,
+      spaceId: spaceId ?? '',
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     });
 
     refetchSpaceQuery({
       variables: {
-        spaceId: spaceId!,
+        spaceId: spaceId ?? '',
       },
     });
 
@@ -171,7 +168,7 @@ export const ApplicationButtonContainer = ({
     loading,
   };
 
-  return <>{children(applicationButtonProps, loading)}</>;
+  return { applicationButtonProps, loading };
 };
 
-export default ApplicationButtonContainer;
+export default useApplicationButton;

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceCollaborationIdQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceCollaborationIdQuery, useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -11,19 +11,27 @@ import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLay
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { useSpace } from '../../space/context/useSpace';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
+import CalloutDisplayModeSettings from '../SpaceAdminSettings/components/CalloutDisplayModeSettings';
+import { useSpaceSettingsUpdate } from '../SpaceAdminSettings/useSpaceSettingsUpdate';
 
 export interface SpaceAdminLayoutPageProps extends SettingsPageProps {
   useL0Layout: boolean;
+  spaceId?: string;
 }
 
-const SpaceAdminLayoutPage: FC<SpaceAdminLayoutPageProps> = ({ useL0Layout, routePrefix = '../' }) => {
+const SpaceAdminLayoutPage: FC<SpaceAdminLayoutPageProps> = ({
+  useL0Layout,
+  spaceId: spaceIdProp,
+  routePrefix = '../',
+}) => {
   const { t } = useTranslation();
   const { space, loading: spaceLoading } = useSpace();
+  const spaceId = spaceIdProp || space.id;
   const { data: collaborationData, loading: collaborationLoading } = useSpaceCollaborationIdQuery({
     variables: {
-      spaceId: space.id,
+      spaceId,
     },
-    skip: !space.id,
+    skip: !spaceId,
   });
   const collaborationId = collaborationData?.lookup.space?.collaboration.id;
 
@@ -33,6 +41,25 @@ const SpaceAdminLayoutPage: FC<SpaceAdminLayoutPageProps> = ({ useL0Layout, rout
   });
   const { innovationFlow, callouts } = data;
   const loading = spaceLoading || collaborationLoading || state.loading;
+
+  const { data: spaceSettingsData } = useSpaceSettingsQuery({
+    variables: { spaceId },
+    skip: !spaceId,
+  });
+
+  const spaceSettings = spaceSettingsData?.lookup.space?.settings;
+
+  const currentSettings = {
+    privacy: spaceSettings?.privacy,
+    membership: spaceSettings?.membership,
+    collaboration: spaceSettings?.collaboration,
+    layout: spaceSettings?.layout,
+  };
+
+  const { updateSettings } = useSpaceSettingsUpdate({
+    spaceId,
+    currentSettings,
+  });
 
   return (
     <LayoutSwitcher currentTab={SettingsSection.Layout} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
@@ -55,6 +82,7 @@ const SpaceAdminLayoutPage: FC<SpaceAdminLayoutPageProps> = ({ useL0Layout, rout
             />
           </Box>
         </PageContentBlock>
+        <CalloutDisplayModeSettings currentLayout={currentSettings.layout} onUpdate={updateSettings} />
       </PageContentColumn>
     </LayoutSwitcher>
   );

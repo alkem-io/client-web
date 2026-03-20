@@ -11,8 +11,8 @@ import {
 import type React from 'react';
 import { type ReactElement, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useResizeDetector } from 'react-resize-detector';
 import type { ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import type { ROLE_OPTION_ALL } from '@/main/topLevelPages/myDashboard/latestContributions/LatestContributionsProps';
 import SeamlessSelect, { type CustomSelectOption } from '../forms/select/SeamlessSelect';
 import { gutters } from '../grid/utils';
@@ -99,7 +99,7 @@ const SearchBox = (<Option extends string | number>({
     selectOpenStateRef.current = false;
   };
 
-  const { ref, width } = useResizeDetector();
+  const { ref, width } = useResizeObserver();
 
   useImperativeHandle(forwardedRef, () => {
     const collapse = () => {

@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
@@ -9,7 +9,6 @@ import {
   AuthorizationPrivilege,
   type CommunityGuidelinesSummaryFragment,
   type SpaceLevel,
-  type VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -28,7 +27,7 @@ export interface InvitationWithMeta extends Omit<PendingInvitationItem, 'space'>
   space: SpaceDetails;
 }
 
-interface ApplicationWithMeta extends Identifiable {
+export interface ApplicationWithMeta extends Identifiable {
   space: SpaceDetails;
 }
 
@@ -57,49 +56,35 @@ export const usePendingMemberships = ({ skip = false }: PendingMembershipsProps)
   };
 };
 
-interface InvitationHydratorProvided {
+interface UseInvitationHydratorResult {
   invitation: InvitationWithMeta | undefined;
   communityGuidelines?: CommunityGuidelinesSummaryFragment;
 }
 
-type InvitationHydratorProps = {
-  invitation: PendingInvitationItem;
-  children: (provided: InvitationHydratorProvided) => ReactNode;
-  withCommunityGuidelines?: boolean;
-} & (
-  | {
-      withSpaceDetails?: false;
-    }
-  | {
-      withSpaceDetails: true;
-    }
-);
+export const useInvitationHydrator = (
+  invitation: PendingInvitationItem | undefined,
+  { withCommunityGuidelines = false } = {}
+): UseInvitationHydratorResult => {
+  const spaceId = invitation?.spacePendingMembershipInfo.id ?? '';
 
-export const InvitationHydrator = ({
-  invitation,
-
-  withCommunityGuidelines = false,
-  children,
-}: InvitationHydratorProps) => {
   const { data: spacePrivileges } = useSpacePrivilegesQuery({
-    variables: {
-      spaceId: invitation.spacePendingMembershipInfo.id,
-    },
+    variables: { spaceId },
+    skip: !invitation,
   });
   const hasReadAboutPrivilege = spacePrivileges?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.ReadAbout
   );
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.spacePendingMembershipInfo.id,
+      spaceId,
       includeCommunityGuidelines: withCommunityGuidelines,
     },
-    skip: !hasReadAboutPrivilege,
+    skip: !invitation || !hasReadAboutPrivilege,
   });
 
   const space = spaceData?.lookup.space;
 
-  const userId = invitation.invitation.createdBy?.id;
+  const userId = invitation?.invitation.createdBy?.id;
 
   const { data: userData } = usePendingMembershipsUserQuery({
     variables: { userId: userId! },
@@ -130,33 +115,28 @@ export const InvitationHydrator = ({
 
   const communityGuidelines = space?.about.guidelines;
 
-  return <>{children({ invitation: hydratedInvitation, communityGuidelines })}</>;
+  return { invitation: hydratedInvitation, communityGuidelines };
 };
 
-interface ApplicationHydratorProvided {
+interface UseApplicationHydratorResult {
   application: ApplicationWithMeta | undefined;
 }
 
-interface ApplicationHydratorProps {
-  application: PendingApplicationItem;
-  visualType: VisualType;
-  children: (provided: ApplicationHydratorProvided) => ReactNode;
-}
+export const useApplicationHydrator = (
+  application: PendingApplicationItem | undefined
+): UseApplicationHydratorResult => {
+  const spaceId = application?.spacePendingMembershipInfo.id ?? '';
 
-export const ApplicationHydrator = ({ application, children }: ApplicationHydratorProps) => {
   const { data: spacePrivileges } = useSpacePrivilegesQuery({
-    variables: {
-      spaceId: application.spacePendingMembershipInfo.id,
-    },
+    variables: { spaceId },
+    skip: !application,
   });
   const hasReadAboutPrivilege = spacePrivileges?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.ReadAbout
   );
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
-    variables: {
-      spaceId: application.spacePendingMembershipInfo.id,
-    },
-    skip: !hasReadAboutPrivilege,
+    variables: { spaceId },
+    skip: !application || !hasReadAboutPrivilege,
   });
 
   const space = spaceData?.lookup.space;
@@ -179,5 +159,5 @@ export const ApplicationHydrator = ({ application, children }: ApplicationHydrat
     };
   }, [application, space]);
 
-  return <>{children({ application: hydratedApplication })}</>;
+  return { application: hydratedApplication };
 };
