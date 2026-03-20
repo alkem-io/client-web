@@ -92,7 +92,9 @@ eslint.config.mjs            # Phase 4: add no-restricted-syntax rules
 
 ### Phase 2 — Core/Shared Layer Removal
 
-**Goal**: Remove 119 useMemo (96 core + 23 shared) + 96 useCallback (67 core + 29 shared) from `src/core/` and `src/domain/shared/`.
+**Goal**: Remove useMemo/useCallback from `src/core/` and `src/domain/shared/`, plus React.memo wrappers where safe.
+
+**Exception**: The MarkdownInput/CollaborativeMarkdownInput ecosystem (10 files, ~34 calls, 2 React.memo) is excluded — TipTap editor lifecycle dependencies cause functional regressions when memoization is removed.
 
 **Batch order**:
 
@@ -101,9 +103,9 @@ eslint.config.mjs            # Phase 4: add no-restricted-syntax rules
    - Lower risk — utilities have fewer UI side effects
    - Validate: `pnpm vitest run`
 
-2. **Batch 2b — Core UI components** (`src/core/ui/`)
+2. **Batch 2b — Core UI components** (`src/core/ui/`, excl. MarkdownInput ecosystem)
    - Buttons, inputs, dialogs, forms
-   - Includes the 2 React.memo wrappers in MarkdownInput and CollaborativeMarkdownInput
+   - ~~Includes the 2 React.memo wrappers in MarkdownInput and CollaborativeMarkdownInput~~ — **SKIPPED**: TipTap editor lifecycle requires manual memoization
    - Validate: `pnpm vitest run` + visual QA on editor pages
 
 3. **Batch 2c — Core infrastructure and providers** (`src/core/` excluding ui/)
@@ -190,3 +192,4 @@ No constitution violations to justify. The migration is a simplification — it 
 | GlobalErrorContext.tsx | Singleton module-level mutation during render | Keep eslint-disable with reason |
 | InnovationFlowDragNDropEditor.tsx | @hello-pangea/dnd render props; uses `'use no memo'` | Keep directive; reassess if library adds hooks API |
 | KratosPasskeyIconButton / KratosPasskeyButton | `new Function()` — already isolated leaf components | No action needed; compiler skips dynamic code |
+| MarkdownInput ecosystem (10 files) | TipTap editor lifecycle dependencies cause regressions when memoization removed | Keep React.memo + useMemo/useCallback; reassess after TipTap upgrade |

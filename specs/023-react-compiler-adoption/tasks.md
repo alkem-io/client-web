@@ -58,7 +58,9 @@
 
 ## Phase 3: User Story 2 — Core/Shared Layer Memoization Removal (Priority: P2)
 
-**Goal**: Remove ~119 useMemo (96 core + 23 shared) + ~96 useCallback (67 core + 29 shared) from src/core/ and src/domain/shared/, plus 2 React.memo wrappers.
+**Goal**: Remove useMemo/useCallback from src/core/ and src/domain/shared/, plus React.memo wrappers where safe.
+
+**Exception**: The MarkdownInput/CollaborativeMarkdownInput ecosystem (10 files, ~34 calls, 2 React.memo) was excluded — these components have complex TipTap editor lifecycle dependencies where removing memoization caused functional regressions.
 
 **Independent Test**: Run `pnpm vitest run` + `pnpm eslint` after each batch. Compare `pnpm benchmark` against baseline.
 
@@ -69,9 +71,9 @@
 
 ### Batch 3b: Core UI Components
 
-- [x] T019 [P] [US2] Remove React.memo from MarkdownInput.tsx — converted to plain component export, cleaned memo import
-- [x] T020 [P] [US2] Remove React.memo from CollaborativeMarkdownInput.tsx — converted to plain component export, cleaned memo/useMemo imports
-- [x] T021 [US2] Remove all useMemo/useCallback from src/core/ui/ — 66 calls removed from 27 files (35 useCallback, 31 useMemo)
+- [ ] T019 [P] [US2] ~~Remove React.memo from MarkdownInput.tsx~~ — **SKIPPED**: React.memo kept; removing it caused functional regressions due to TipTap editor lifecycle dependencies
+- [ ] T020 [P] [US2] ~~Remove React.memo from CollaborativeMarkdownInput.tsx~~ — **SKIPPED**: React.memo kept; same TipTap lifecycle issue as T019
+- [x] T021 [US2] Remove useMemo/useCallback from src/core/ui/ (excl. MarkdownInput ecosystem) — 66 calls removed from 27 files (35 useCallback, 31 useMemo). **Excluded**: MarkdownInput, CollaborativeMarkdownInput, and their hooks (10 files, ~34 calls) — TipTap editor lifecycle requires manual memoization
 - [x] T022 [US2] Validate batch 3b: 555 tests pass, zero ESLint errors on src/core/ui/
 
 ### Batch 3c: Core Infrastructure and Providers
@@ -84,7 +86,7 @@
 - [x] T025 [US2] [US5] Benchmark comparison: Lighthouse scores unchanged (26/100), JS bundle 14.1% smaller (4.6 MB less), TBT improved 0.6%. Report: performance-results/comparison-1773846646096.md
 - [ ] T025a [US5] Human review gate: review the benchmark:compare report from T025, spot-check 2-3 complex components (SpaceDashboard, MarkdownInput, Whiteboard) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
 
-**Checkpoint**: Core/shared layer is clean. All 119 useMemo + 96 useCallback + 2 React.memo removed from core/shared. Tests pass. Performance validated.
+**Checkpoint**: Core/shared layer migrated. ~94 useMemo/useCallback + 0 React.memo removed from core/shared (excl. MarkdownInput ecosystem). MarkdownInput ecosystem (10 files, ~34 calls, 2 React.memo) documented as exception — TipTap editor lifecycle requires manual memoization. Tests pass. Performance validated.
 
 ---
 
