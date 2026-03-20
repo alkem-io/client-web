@@ -12,7 +12,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useLeaveConversationMutation,
@@ -218,6 +218,10 @@ export const UserMessagingConversationView = ({
   const { t } = useTranslation();
   const { userModel } = useCurrentUserContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isNearBottomRef = useRef(true);
+  const prevRoomIdRef = useRef<string | null>(null);
+  const pendingScrollRef = useRef(false);
 
   // Group menu state
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
@@ -252,13 +256,19 @@ export const UserMessagingConversationView = ({
 
     // Skip if we already marked this exact message as read
     if (lastMarkedRef.current === key) {
-      console.log('[MarkAsRead] Skipping duplicate:', { roomId: conversation.roomId.slice(0, 8), messageId: lastMessage.id.slice(0, 8) });
+      console.log('[MarkAsRead] Skipping duplicate:', {
+        roomId: conversation.roomId.slice(0, 8),
+        messageId: lastMessage.id.slice(0, 8),
+      });
       return;
     }
     lastMarkedRef.current = key;
 
     const roomId = conversation.roomId;
-    console.log('[MarkAsRead] Sending mutation:', { roomId: roomId.slice(0, 8), messageId: lastMessage.id.slice(0, 8) });
+    console.log('[MarkAsRead] Sending mutation:', {
+      roomId: roomId.slice(0, 8),
+      messageId: lastMessage.id.slice(0, 8),
+    });
     markAsRead({
       variables: {
         messageData: {
@@ -271,19 +281,56 @@ export const UserMessagingConversationView = ({
       .catch(error => console.log('[MarkAsRead] Mutation failed:', error));
   }, [conversation?.roomId, messages, markAsRead]);
 
-  // Scroll to bottom when messages change
-  useLayoutEffect(() => {
-    const timeoutId = setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+  // Track whether the user is scrolled near the bottom of the message list
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const threshold = 150;
+    isNearBottomRef.current = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+  }, []);
 
-    return () => clearTimeout(timeoutId);
-  }, [messages.length, conversation?.roomId]);
+  // Scroll to bottom on conversation switch or new messages (only if near bottom).
+  // Uses useEffect (not useLayoutEffect) because the flex container's height isn't
+  // resolved until after the browser layout pass.
+  // Uses pendingScrollRef to persist the scroll intent across re-renders, avoiding the
+  // race condition where setTimeout cleanup cancelled the pending scroll.
+  // Includes messagesLoading in deps because cache-and-network returns loading=true
+  // even on cache hits — the JSX renders a Loading spinner instead of messages, so
+  // scrolling during that phase is a no-op. The pending flag must survive until
+  // loading finishes and messages are actually in the DOM.
+  useEffect(() => {
+    const currentRoomId = conversation?.roomId ?? null;
+    const isConversationSwitch = prevRoomIdRef.current !== currentRoomId;
+
+    if (isConversationSwitch) {
+      prevRoomIdRef.current = currentRoomId;
+      isNearBottomRef.current = true;
+      pendingScrollRef.current = true;
+    }
+
+    const container = scrollContainerRef.current;
+    // Wait until messages are rendered (not behind a Loading spinner)
+    if (!container || messages.length === 0 || messagesLoading) return;
+
+    if (pendingScrollRef.current) {
+      pendingScrollRef.current = false;
+      container.scrollTop = container.scrollHeight;
+      return;
+    }
+
+    if (isNearBottomRef.current) {
+      container.scrollTop = container.scrollHeight;
+    }
+    // User has scrolled up to read old messages: don't auto-scroll
+  }, [messages.length, conversation?.roomId, messagesLoading]);
 
   const handleSendMessage = async (message: string) => {
     if (!conversation?.roomId || !message.trim()) {
       return;
     }
+
+    // Always scroll to bottom after sending own message
+    isNearBottomRef.current = true;
 
     try {
       await sendMessage({
@@ -459,6 +506,8 @@ export const UserMessagingConversationView = ({
 
       {/* Messages */}
       <Box
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
         flex={1}
         overflow="auto"
         paddingX={gutters()}
