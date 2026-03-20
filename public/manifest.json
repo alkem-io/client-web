@@ -31,5 +31,6 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "categories": ["productivity", "collaboration", "tools", "education"]
+  "categories": ["productivity", "collaboration", "tools", "education"],
+  "gcm_sender_id": "103953800507"
 }
