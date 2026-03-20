@@ -8,6 +8,7 @@ import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { EmptyTagset, type TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
+import type { PollFormValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import type { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
 import type { CalloutStructuredResponseType } from './CalloutForm';
@@ -49,6 +50,7 @@ export interface CalloutFormSubmittedValues {
         sortOrder?: number;
       }[];
     };
+    poll?: PollFormValues;
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {
@@ -80,6 +82,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     whiteboard: undefined,
     memo: undefined,
     link: undefined,
+    poll: undefined,
     mediaGallery: { visuals: [] },
   },
   contributionDefaults: {
@@ -112,6 +115,7 @@ export const isEmptyCalloutForm = (calloutFormData: CalloutFormSubmittedValues |
     !calloutFormData.framing.profile.displayName &&
     !calloutFormData.framing.profile.description &&
     !calloutFormData.framing.whiteboard?.content &&
+    !calloutFormData.framing.poll?.options?.some(o => o.text) &&
     calloutFormData.framing.profile.tagsets.every(tagset => tagset.tags.length === 0) &&
     calloutFormData.settings.contribution.allowedTypes === 'none'
   ) {

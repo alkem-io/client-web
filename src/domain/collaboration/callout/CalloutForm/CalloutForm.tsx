@@ -3,99 +3,26 @@ import { Formik, type FormikConfig } from 'formik';
 import { cloneDeep } from 'lodash-es';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
-import {
-  CalloutAllowedActors,
-  CalloutContributionType,
-  CalloutFramingType,
-  CalloutVisibility,
-} from '@/core/apollo/generated/graphql-schema';
+import type { CalloutContributionType, PollStatus } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { nameOf } from '@/core/utils/nameOf';
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
-import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import ReferenceSegment from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import { TagsetSegment } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import type { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
+import { calloutValidationSchema } from './CalloutForm.validation.schema';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { type CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
-
-export const calloutValidationSchema = yup.object().shape({
-  framing: yup.object().shape({
-    profile: yup.object().shape({
-      id: textLengthValidator(),
-      displayName: displayNameValidator({ required: true }),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
-      tagsets: tagsetsSegmentSchema,
-      references: referenceSegmentSchema,
-    }),
-    type: yup
-      .mixed<CalloutFramingType>()
-      .oneOf(Object.values(CalloutFramingType).filter(value => typeof value === 'string'))
-      .required(),
-    whiteboard: yup.object().when(['type'], ([type], schema) => {
-      return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
-    }),
-    link: yup.object().when(['type'], ([type], schema) => {
-      return type === CalloutFramingType.Link
-        ? schema
-            .shape({
-              uri: urlValidator({ required: true }),
-              profile: yup
-                .object()
-                .shape({
-                  displayName: displayNameValidator({ required: true }),
-                })
-                .required(),
-            })
-            .required()
-        : schema.nullable();
-    }),
-  }),
-  contributionDefaults: yup.object().shape({
-    defaultDisplayName: displayNameValidator().optional().nullable(),
-    postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
-    whiteboardContent: textLengthValidator().nullable(),
-  }),
-  contributions: yup.object().shape({
-    links: referenceSegmentSchema.nullable(),
-  }),
-  settings: yup.object().shape({
-    contribution: yup.object().shape({
-      enabled: yup.boolean().required(),
-      allowedTypes: yup
-        .mixed<string>()
-        .oneOf(['none', ...Object.values(CalloutContributionType)].filter(value => typeof value === 'string'))
-        .required(),
-      canAddContributions: yup
-        .mixed<CalloutAllowedActors>()
-        .oneOf(Object.values(CalloutAllowedActors).filter(value => typeof value === 'string'))
-        .required(),
-      commentsEnabled: yup.boolean().required(),
-    }),
-    framing: yup.object().shape({
-      commentsEnabled: yup.boolean().required(),
-    }),
-    visibility: yup
-      .mixed<CalloutVisibility>()
-      .oneOf(Object.values(CalloutVisibility).filter(value => typeof value === 'string'))
-      .required(),
-  }),
-});
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
 
@@ -110,6 +37,8 @@ export interface CalloutFormProps {
   edit?: boolean;
   /** is the form used inside a template creation flow */
   template?: boolean;
+  pollId?: string;
+  pollStatus?: PollStatus;
 }
 
 const CalloutForm = ({
@@ -121,6 +50,8 @@ const CalloutForm = ({
   edit = false,
   template = false,
   children,
+  pollId,
+  pollStatus,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
@@ -140,7 +71,7 @@ const CalloutForm = ({
 
       return emptyCallout;
     }
-  }, [callout, DefaultCalloutSettings]);
+  }, [callout, calloutRestrictions?.disableComments, calloutRestrictions?.disableCommentsToContributions]);
 
   return (
     <Formik
@@ -177,7 +108,13 @@ const CalloutForm = ({
               temporaryLocation={!callout?.id}
               hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
-            <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} edit={edit} template={template} />
+            <CalloutFormFramingSettings
+              calloutRestrictions={calloutRestrictions}
+              edit={edit}
+              template={template}
+              pollId={pollId}
+              pollStatus={pollStatus}
+            />
             {formikState.values.framing.profile.id ? (
               <ProfileReferenceSegment
                 profileId={formikState.values.framing.profile.id}

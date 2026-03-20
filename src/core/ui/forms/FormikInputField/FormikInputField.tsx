@@ -45,6 +45,10 @@ export const FormikInputField = ({
   containerProps,
   ...rest
 }: FormikInputFieldProps) => {
+  // NOTE: FormikFormattedInputField is using this component for DRY  it relies on the fact that value/onChange/onBlur
+  // are not destructured by FormikInputField and therefore pass through rest.
+  // If this component needs to explicitly destructure those props, this override mechanism would silently break.
+  // Make sure it doesn't
   const tErr = useValidationMessageTranslation();
   const [field, meta, helpers] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
