@@ -6,10 +6,10 @@ import {
   useResetConversationVcMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { type ConversationMessage, useConversationMessages } from '@/main/userMessaging/useConversationMessages';
+import { useGuidanceVcId } from './useGuidanceVcId';
 
 // Message format expected by ChatWidgetInner
 interface GuidanceMessage {
@@ -33,13 +33,16 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { t } = useTranslation();
 
   // 1. Get guidance conversation ID
+  const { guidanceVcId, loading: guidanceVcIdLoading } = useGuidanceVcId({ skip });
   const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
-  // Find the guidance VC conversation by looking for a conversation with a VirtualContributor member
-  const conversation = conversationGuidanceData?.me.conversations.conversations.find(conv =>
-    conv.members.some(member => member.type === ActorType.VirtualContributor)
-  );
+  // Find the guidance VC conversation by matching the concrete well-known guidance VC ID
+  const conversation = guidanceVcId
+    ? conversationGuidanceData?.me.conversations.conversations.find(conv =>
+        conv.members.some(member => member.id === guidanceVcId)
+      )
+    : undefined;
   const conversationId = conversation?.id ?? null;
 
   // 2. Use shared hook for messages
@@ -142,7 +145,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   });
 
   return {
-    loading: conversationIdLoading || messagesLoading || loadingClearChat,
+    loading: guidanceVcIdLoading || conversationIdLoading || messagesLoading || loadingClearChat,
     messages,
     isSubscribedToMessages,
     clearChat,

@@ -33025,6 +33025,23 @@ export type ConversationWithGuidanceVcQuery = {
   };
 };
 
+export type PlatformGuidanceVcQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformGuidanceVcQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    wellKnownVirtualContributors: {
+      __typename?: 'PlatformWellKnownVirtualContributors';
+      mappings: Array<{
+        __typename?: 'PlatformWellKnownVirtualContributorMapping';
+        virtualContributorID: string;
+        wellKnown: VirtualContributorWellKnown;
+      }>;
+    };
+  };
+};
+
 export type NotificationsUnreadCountSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type NotificationsUnreadCountSubscription = { __typename?: 'Subscription'; notificationsUnreadCount: number };

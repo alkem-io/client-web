@@ -1,0 +1,10 @@
+query PlatformGuidanceVc {
+  platform {
+    wellKnownVirtualContributors {
+      mappings {
+        virtualContributorID
+        wellKnown
+      }
+    }
+  }
+}
