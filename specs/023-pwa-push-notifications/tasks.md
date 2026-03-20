@@ -107,7 +107,7 @@
 ### Implementation for User Story 4
 
 - [x] T027 [US4] Create `PushSubscriptionsList` component in `src/domain/community/userAdmin/tabs/components/PushSubscriptionsList.tsx` — query `useMyPushSubscriptionsQuery` to fetch active subscriptions, display list with device label (parsed from `userAgent` field — browser name + OS), creation date (formatted), and a "Remove" button per subscription; highlight current device; call `useUnsubscribeFromPushNotificationsMutation` on remove, update Apollo cache to remove deleted item; show empty state when no subscriptions
-- [x] T028 [US4] Integrate `PushSubscriptionsList` into notification settings page — in `UserAdminNotificationsPage.tsx`, render `PushSubscriptionsList` below the master push toggle when push is enabled and the user has active subscriptions; conditionally hide when push is not enabled or not available
+- [x] T028 [US4] Integrate `PushSubscriptionsList` into notification settings page — in `UserAdminNotificationsPage.tsx`, render `PushSubscriptionsList` below the master push toggle when push is available (independent of current browser's subscription state, so users can manage other devices); conditionally hide only when push is not available
 
 **Checkpoint**: User Story 4 complete — users see all their subscribed devices and can remove individual ones.
 

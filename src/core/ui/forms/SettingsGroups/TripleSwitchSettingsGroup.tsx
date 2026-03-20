@@ -1,5 +1,5 @@
 import { Box, CircularProgress, FormGroup, Switch, type SwitchProps } from '@mui/material';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
@@ -33,6 +33,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
   const { t } = useTranslation();
   const { isEnabled: isInAppNotificationsEnabled } = useInAppNotificationsContext();
   const [itemLoading, setItemLoading] = useState<{ key: keyof T; type: ChannelType } | undefined>();
+  const idPrefix = useId();
 
   const handleChange = async (key: keyof T, type: ChannelType, newValue: boolean) => {
     const option = options[key];
@@ -55,15 +56,15 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
       <Box sx={{ display: 'flex', mb: 1, alignItems: 'center' }}>
         {isInAppNotificationsEnabled && (
           <Box sx={{ width: 60, textAlign: 'center' }}>
-            <CaptionSmall>{t('common.inApp')}</CaptionSmall>
+            <CaptionSmall id={`${idPrefix}-header-inapp`}>{t('common.inApp')}</CaptionSmall>
           </Box>
         )}
         <Box sx={{ width: 60, textAlign: 'center' }}>
-          <CaptionSmall>{t('common.email')}</CaptionSmall>
+          <CaptionSmall id={`${idPrefix}-header-email`}>{t('common.email')}</CaptionSmall>
         </Box>
         {isPushAvailable && (
           <Box sx={{ width: 60, textAlign: 'center' }}>
-            <CaptionSmall>{t('common.push')}</CaptionSmall>
+            <CaptionSmall id={`${idPrefix}-header-push`}>{t('common.push')}</CaptionSmall>
           </Box>
         )}
         <Box sx={{ flex: 1 }} />
@@ -82,7 +83,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
             isPushAvailable,
           });
 
-          const labelId = `notification-label-${String(key)}`;
+          const labelId = `${idPrefix}-label-${String(key)}`;
 
           return (
             <Box key={String(key)} sx={{ display: 'flex', alignItems: 'center', py: 0.5 }}>
@@ -98,7 +99,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
                       disabled={switchStates.inApp.disabled || isAnyLoading}
                       onChange={(_event, newValue) => handleChange(key, 'inApp', newValue)}
                       size="small"
-                      inputProps={{ 'aria-labelledby': labelId }}
+                      inputProps={{ 'aria-labelledby': `${idPrefix}-header-inapp ${labelId}` }}
                     />
                   </NotificationSwitchTooltip>
                 </Box>
@@ -114,7 +115,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
                     disabled={switchStates.email.disabled || isAnyLoading}
                     onChange={(_event, newValue) => handleChange(key, 'email', newValue)}
                     size="small"
-                    inputProps={{ 'aria-labelledby': labelId }}
+                    inputProps={{ 'aria-labelledby': `${idPrefix}-header-email ${labelId}` }}
                   />
                 </NotificationSwitchTooltip>
               </Box>
@@ -130,7 +131,7 @@ function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>
                       disabled={switchStates.push.disabled || isAnyLoading}
                       onChange={(_event, newValue) => handleChange(key, 'push', newValue)}
                       size="small"
-                      inputProps={{ 'aria-labelledby': labelId }}
+                      inputProps={{ 'aria-labelledby': `${idPrefix}-header-push ${labelId}` }}
                     />
                   </NotificationSwitchTooltip>
                 </Box>
