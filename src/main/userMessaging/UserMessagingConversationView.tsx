@@ -12,7 +12,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useLeaveConversationMutation,
@@ -221,6 +221,7 @@ export const UserMessagingConversationView = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isNearBottomRef = useRef(true);
   const prevRoomIdRef = useRef<string | null>(null);
+  const pendingScrollRef = useRef(false);
 
   // Group menu state
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
@@ -288,32 +289,40 @@ export const UserMessagingConversationView = ({
     isNearBottomRef.current = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
   }, []);
 
-  // Scroll to bottom on conversation switch (instant) or new messages (smooth, only if near bottom)
-  useLayoutEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container || messages.length === 0) return;
-
-    const isConversationSwitch = prevRoomIdRef.current !== conversation?.roomId;
-    prevRoomIdRef.current = conversation?.roomId ?? null;
+  // Scroll to bottom on conversation switch or new messages (only if near bottom).
+  // Uses useEffect (not useLayoutEffect) because the flex container's height isn't
+  // resolved until after the browser layout pass.
+  // Uses pendingScrollRef to persist the scroll intent across re-renders, avoiding the
+  // race condition where setTimeout cleanup cancelled the pending scroll.
+  // Includes messagesLoading in deps because cache-and-network returns loading=true
+  // even on cache hits — the JSX renders a Loading spinner instead of messages, so
+  // scrolling during that phase is a no-op. The pending flag must survive until
+  // loading finishes and messages are actually in the DOM.
+  useEffect(() => {
+    const currentRoomId = conversation?.roomId ?? null;
+    const isConversationSwitch = prevRoomIdRef.current !== currentRoomId;
 
     if (isConversationSwitch) {
-      // Switching conversations: always scroll to bottom instantly
-      const timeoutId = setTimeout(() => {
-        container.scrollTop = container.scrollHeight;
-        isNearBottomRef.current = true;
-      }, 50);
-      return () => clearTimeout(timeoutId);
+      prevRoomIdRef.current = currentRoomId;
+      isNearBottomRef.current = true;
+      pendingScrollRef.current = true;
+    }
+
+    const container = scrollContainerRef.current;
+    // Wait until messages are rendered (not behind a Loading spinner)
+    if (!container || messages.length === 0 || messagesLoading) return;
+
+    if (pendingScrollRef.current) {
+      pendingScrollRef.current = false;
+      container.scrollTop = container.scrollHeight;
+      return;
     }
 
     if (isNearBottomRef.current) {
-      // New message while already at bottom: scroll smoothly
-      const timeoutId = setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      return () => clearTimeout(timeoutId);
+      container.scrollTop = container.scrollHeight;
     }
     // User has scrolled up to read old messages: don't auto-scroll
-  }, [messages.length, conversation?.roomId]);
+  }, [messages.length, conversation?.roomId, messagesLoading]);
 
   const handleSendMessage = async (message: string) => {
     if (!conversation?.roomId || !message.trim()) {
