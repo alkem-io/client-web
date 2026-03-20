@@ -94,6 +94,9 @@ fragment CalloutDetails on Callout {
     mediaGallery {
       ...MediaGalleryVisuals
     }
+    poll {
+      ...PollDetails
+    }
   }
   contributionDefaults {
     id

@@ -1,9 +1,9 @@
 import { Box, MenuItem, Slide } from '@mui/material';
 import { cloneElement, type ReactElement, type Ref, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useResizeDetector } from 'react-resize-detector';
 import { GUTTER_PX, useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
 import type { Collapsible } from '@/core/ui/navigation/Collapsible';
 import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
@@ -69,7 +69,7 @@ const PlatformNavigationBar = ({ breadcrumbs, staticPosition }: PlatformNavigati
     setRightSideShift(prevShift => prevShift || containerRight - contentRight);
   };
 
-  const { height: breadcrumbsHeight = 0, ref: breadcrumbsWrapperRef } = useResizeDetector();
+  const { height: breadcrumbsHeight = 0, ref: breadcrumbsWrapperRef } = useResizeObserver();
 
   const breadcrumbsVerticalShift =
     breadcrumbsHeight > GUTTER_PX * 2 ? (NAVIGATION_CONTENT_HEIGHT_GUTTERS * GUTTER_PX - breadcrumbsHeight) / 2 : 0;

@@ -1,4 +1,4 @@
-import type { Severity } from '@/core/state/global/notifications/notificationMachine';
+import type { Severity } from '@/core/state/global/notifications/useNotifications';
 
 const NOTIFICATION_AUTO_HIDE_DURATIONS: Record<Severity, number> = {
   error: 15000,

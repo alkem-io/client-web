@@ -4,13 +4,6 @@ import { Button, IconButton, Link } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
-  useCreateWingbackAccountMutation,
-  useDeleteInnovationHubMutation,
-  useDeleteInnovationPackMutation,
-  useDeleteSpaceMutation,
-  useDeleteVirtualContributorOnAccountMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import {
   AuthorizationPrivilege,
   type LicenseEntitlement,
   LicenseEntitlementType,
@@ -25,10 +18,8 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Gutters from '@/core/ui/grid/Gutters';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
-import useEnsurePresence from '@/core/utils/ensurePresence';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
@@ -43,13 +34,7 @@ import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmD
 import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
 import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
-
-enum Entities {
-  Space = 'Space',
-  VirtualContributor = 'VirtualContributor',
-  InnovationPack = 'InnovationPack',
-  InnovationHub = 'InnovationHub',
-}
+import { AccountEntityType, useAccountEntityDeletion } from './useAccountEntityDeletion';
 
 const SHORT_NON_SPACE_DESCRIPTION = 'components.deleteEntity.confirmDialog.descriptionShort';
 
@@ -166,17 +151,27 @@ const StyledCreationButton = ({ disabled, onClick }: { disabled: boolean; onClic
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const notify = useNotification();
-  const ensurePresence = useEnsurePresence();
   const { locations } = useConfig();
   const supportLink = locations?.support;
   const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
   const [createInnovationPackDialogOpen, setCreateInnovationPackDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-  const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
+
+  const {
+    deleteDialogOpen,
+    entity,
+    clearDeleteState,
+    openDeleteDialog,
+    deleteEntity,
+    getEntityName,
+    deleteSpaceLoading,
+    deleteVCLoading,
+    deletePackLoading,
+    deleteHubLoading,
+    isWingbackCreating,
+    onCreateWingbackAccount,
+  } = useAccountEntityDeletion(account?.id);
 
   const myAccountEntitlements = account?.license?.availableEntitlements || [];
   const myAccountEntitlementDetails = account?.license?.entitlements || [];
@@ -237,184 +232,13 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationHub) ??
     {};
 
-  const clearDeleteState = () => {
-    setDeleteDialogOpen(false);
-    setSelectedEntity(undefined);
-    setSelectedId(undefined);
-    setDeleteDialogOpen(false);
-  };
-  // Space deletion
-  const [deleteSpace, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
-    onCompleted: () => {
-      clearDeleteState();
-      notify(t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.space') }), 'success');
-    },
-    refetchQueries: ['AccountInformation'],
-  });
-
-  const handleDeleteSpace = () => {
-    const requiredSpaceId = ensurePresence(selectedId, 'SpaceId');
-    return deleteSpace({
-      variables: {
-        spaceId: requiredSpaceId,
-      },
-    });
-  };
-
-  const onDeleteSpaceClick = (spaceId: string) => {
-    setSelectedEntity(Entities.Space);
-    setSelectedId(spaceId);
-    setDeleteDialogOpen(true);
-  };
-
-  // VC Deletion
-  const [deleteVCMutation, { loading: deleteVCLoading }] = useDeleteVirtualContributorOnAccountMutation({
-    onCompleted: () => {
-      clearDeleteState();
-      notify(
-        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.virtualContributor') }),
-        'success'
-      );
-    },
-    refetchQueries: ['AccountInformation'],
-  });
-
-  const deleteVC = () => {
-    if (!selectedId) {
-      return;
-    }
-
-    return deleteVCMutation({
-      variables: {
-        virtualContributorData: {
-          ID: selectedId,
-        },
-      },
-    });
-  };
-
-  const onDeleteVCClick = (id: string) => {
-    setSelectedEntity(Entities.VirtualContributor);
-    setSelectedId(id);
-    setDeleteDialogOpen(true);
-  };
-
-  // Pack Deletion
-  const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
-    onCompleted: () => {
-      clearDeleteState();
-      notify(
-        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.innovationPack') }),
-        'success'
-      );
-    },
-    refetchQueries: ['AccountInformation'],
-  });
-
-  const deletePack = () => {
-    if (!selectedId) {
-      return;
-    }
-
-    return deletePackMutation({
-      variables: {
-        innovationPackId: selectedId,
-      },
-    });
-  };
-
-  const onDeletePackClick = (id: string) => {
-    setSelectedEntity(Entities.InnovationPack);
-    setSelectedId(id);
-    setDeleteDialogOpen(true);
-  };
-
-  // Hub Deletion
-  const [deleteHubMutation, { loading: deleteHubLoading }] = useDeleteInnovationHubMutation({
-    onCompleted: () => {
-      clearDeleteState();
-      notify(
-        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.innovation-hub') }),
-        'success'
-      );
-    },
-    refetchQueries: ['AccountInformation'],
-  });
-
-  const deleteHub = () => {
-    if (!selectedId) {
-      return;
-    }
-
-    return deleteHubMutation({
-      variables: {
-        innovationHubId: selectedId,
-      },
-    });
-  };
-
-  const onDeleteHubClick = (id: string) => {
-    setSelectedEntity(Entities.InnovationHub);
-    setSelectedId(id);
-    setDeleteDialogOpen(true);
-  };
-
-  const deleteEntity = () => {
-    switch (entity) {
-      case Entities.Space:
-        return handleDeleteSpace();
-      case Entities.VirtualContributor:
-        return deleteVC();
-      case Entities.InnovationPack:
-        return deletePack();
-      case Entities.InnovationHub:
-        return deleteHub();
-    }
-  };
-
-  // Wingback account creation
-  const [createWingbackAccount, { loading: isWingbackCreating }] = useCreateWingbackAccountMutation({
-    onCompleted: () => {
-      notify(t('pages.admin.generic.sections.account.externalSubAdded'), 'success');
-    },
-    onError: () => {
-      notify(t('pages.admin.generic.sections.account.externalSubErrored'), 'error');
-    },
-    refetchQueries: ['AccountInformation'],
-  });
-
-  const onCreateWingbackAccountClick = () => {
-    if (!account?.id) {
-      return;
-    }
-
-    createWingbackAccount({
-      variables: {
-        accountID: account.id,
-      },
-    });
-  };
-
-  const getEntityName = (entity: Entities | undefined) => {
-    switch (entity) {
-      case Entities.VirtualContributor:
-        return t('common.virtualContributor');
-      case Entities.InnovationPack:
-        return t('common.innovationPack');
-      case Entities.InnovationHub:
-        return t('common.innovation-hub');
-      default:
-        return t('common.space');
-    }
-  };
-
   const getSpaceActions = (id: string) =>
     canDeleteEntities && (
       <MenuItemWithIcon
         key="delete"
         disabled={deleteSpaceLoading}
         iconComponent={DeleteOutline}
-        onClick={() => onDeleteSpaceClick(id)}
+        onClick={() => openDeleteDialog(AccountEntityType.Space, id)}
       >
         {t('buttons.delete')}
       </MenuItemWithIcon>
@@ -426,7 +250,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         key="delete"
         disabled={deleteVCLoading}
         iconComponent={DeleteOutline}
-        onClick={() => onDeleteVCClick(id)}
+        onClick={() => openDeleteDialog(AccountEntityType.VirtualContributor, id)}
       >
         {t('buttons.delete')}
       </MenuItemWithIcon>
@@ -438,7 +262,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         key="delete"
         disabled={deletePackLoading}
         iconComponent={DeleteOutline}
-        onClick={() => onDeletePackClick(id)}
+        onClick={() => openDeleteDialog(AccountEntityType.InnovationPack, id)}
       >
         {t('buttons.delete')}
       </MenuItemWithIcon>
@@ -451,7 +275,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           key="delete"
           disabled={deleteHubLoading}
           iconComponent={DeleteOutline}
-          onClick={() => onDeleteHubClick(hub.id)}
+          onClick={() => openDeleteDialog(AccountEntityType.InnovationHub, hub.id)}
         >
           {t('buttons.delete')}
         </MenuItemWithIcon>
@@ -489,7 +313,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 disabled={!enableWingbackAccountCreation}
                 loading={isWingbackCreating}
                 sx={{ textTransform: 'none', flexShrink: 1 }}
-                onClick={onCreateWingbackAccountClick}
+                onClick={onCreateWingbackAccount}
               >
                 <Caption noWrap={true}>{t('pages.admin.generic.sections.account.addExternalSub')}</Caption>
               </Button>
@@ -685,7 +509,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               open={deleteDialogOpen}
               onClose={clearDeleteState}
               onDelete={deleteEntity}
-              description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
+              description={entity === AccountEntityType.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
             />
           )}
         </PageContentBlock>

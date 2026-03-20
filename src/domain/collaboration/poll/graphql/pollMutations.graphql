@@ -1,0 +1,43 @@
+mutation CastPollVote($voteData: CastPollVoteInput!) {
+  castPollVote(voteData: $voteData) {
+    ...PollDetails
+  }
+}
+
+mutation AddPollOption($optionData: AddPollOptionInput!) {
+  addPollOption(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+mutation UpdatePollOption($optionData: UpdatePollOptionInput!) {
+  updatePollOption(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+mutation RemovePollOption($optionData: RemovePollOptionInput!) {
+  removePollOption(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
+  reorderPollOptions(optionData: $optionData) {
+    ...PollDetails
+  }
+}
+
+mutation RemovePollVote($pollId: UUID!) {
+  removePollVote(voteData:  {
+     pollID: $pollId
+  }) {
+    ...PollDetails
+  }
+}
+
+mutation UpdatePollStatus($statusData: UpdatePollStatusInput!) {
+  updatePollStatus(statusData: $statusData) {
+    ...PollDetails
+  }
+}

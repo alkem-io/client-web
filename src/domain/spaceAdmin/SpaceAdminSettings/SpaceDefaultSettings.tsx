@@ -1,4 +1,8 @@
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutDescriptionDisplayMode,
+  CommunityMembershipPolicy,
+  SpacePrivacyMode,
+} from '@/core/apollo/generated/graphql-schema';
 
 export const defaultSpaceSettings = {
   privacy: {
@@ -18,5 +22,8 @@ export const defaultSpaceSettings = {
     allowEventsFromSubspaces: true,
     allowMembersToVideoCall: false,
     allowGuestContributions: false,
+  },
+  layout: {
+    calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode.Expanded,
   },
 };
