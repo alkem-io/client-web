@@ -193,7 +193,10 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     // Done before removals to avoid temporarily violating the server's minimum-2-options rule
     // Track the returned IDs so we can include them in the reorder call
     const newOptionIds = new Map<number, string>();
-    const knownIds = new Set(compact(formOptions.map(o => o.id)));
+    // Seed knownIds with ALL original IDs (including pending-removal ones) so that when we
+    // search the addPollOption response for the newly added option we don't accidentally
+    // match an option that already existed but hasn't been removed yet (removals happen in step 2).
+    const knownIds = new Set(origOptions.map(o => o.id));
     for (let i = 0; i < formOptions.length; i++) {
       if (!formOptions[i].id) {
         const result = await addOption(formOptions[i].text);

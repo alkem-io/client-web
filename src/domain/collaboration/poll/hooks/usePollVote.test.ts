@@ -5,6 +5,13 @@ import { usePollVote } from './usePollVote';
 
 const mockCastPollVoteMutation = vi.fn().mockResolvedValue({ data: {} });
 const mockRemovePollVoteMutation = vi.fn().mockResolvedValue({ data: {} });
+const mockApolloClient = {
+  readFragment: vi.fn(),
+};
+
+vi.mock('@apollo/client', () => ({
+  useApolloClient: () => mockApolloClient,
+}));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCastPollVoteMutation: () => [mockCastPollVoteMutation, { loading: false, error: undefined }],
