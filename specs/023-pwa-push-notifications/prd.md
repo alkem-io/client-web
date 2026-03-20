@@ -32,7 +32,7 @@ Add browser push notification support to the Alkemio client-web application. The
 | US-1 | As a user, I want to enable push notifications from Settings so I can stay informed | Permission requested only when user toggles the push master switch in Settings → Notifications (no auto-prompt) |
 | US-2 | As a user, I want to receive browser push notifications for platform events | Push notification shown with title, body, and app icon; tapping opens the relevant page |
 | US-3 | As a user, I want to manage which notification categories send push notifications | Each category in Settings → Notifications has a push toggle (alongside email/inApp) |
-| US-4 | As a user, I want to unsubscribe from push notifications | Single-click disable in settings removes subscription from server |
+| US-4 | As a user, I want to unsubscribe from push notifications | Single-click disable in settings removes browser subscription; server record removed when cached ID available, otherwise cleaned up on delivery failure |
 
 ### P2 — Enhanced
 
@@ -135,7 +135,7 @@ Every notification category's channels object now includes `push: Boolean!` alon
 |-------------|---------|
 | `push` event listener | Parse JSON payload, call `self.registration.showNotification()` with title, body, icon, badge, deep-link data, tag (eventType for grouping) |
 | `notificationclick` handler | Close notification, focus existing client window or `clients.openWindow(url)` |
-| `pushsubscriptionchange` handler | Re-subscribe and POST new subscription to server (handles browser key rotation) |
+| `pushsubscriptionchange` handler | Re-subscribe in SW and notify client via `postMessage`; `PushNotificationProvider` performs the authenticated server mutation (handles browser key rotation) |
 | Icon/badge assets | Use existing PWA icons (`/android-chrome-192x192.png` for both icon and badge) |
 
 ### 5.2 Push Subscription Management Hook
@@ -210,7 +210,7 @@ Run codegen to generate typed hooks: `pnpm codegen`
 
 ### 5.6 Subscription Lifecycle
 
-```
+```text
 App Load
   ├─ vapidPublicKey query
   │   └─ null? → hide all push UI
@@ -244,17 +244,20 @@ Add to `public/manifest.json`:
 
 Add translation keys to `src/core/i18n/en/translation.en.json`:
 
-```
-notifications.push.enable
-notifications.push.disable
-notifications.push.permissionDenied
-notifications.push.unsupported
-notifications.push.subscribed
-notifications.push.unsubscribed
-notifications.push.devices
-notifications.push.removeDevice
-notifications.push.promptTitle
-notifications.push.promptBody
+```text
+pages.userNotificationsSettings.push.masterToggle
+pages.userNotificationsSettings.push.masterToggleDescription
+pages.userNotificationsSettings.push.permissionDenied
+pages.userNotificationsSettings.push.subscribeError
+pages.userNotificationsSettings.push.unsubscribeError
+pages.userNotificationsSettings.push.requiresPWA
+pages.userNotificationsSettings.push.deviceManagement.title
+pages.userNotificationsSettings.push.deviceManagement.currentDevice
+pages.userNotificationsSettings.push.deviceManagement.removeDevice
+pages.userNotificationsSettings.push.deviceManagement.removeConfirmation
+pages.userNotificationsSettings.push.deviceManagement.emptyState
+pages.userNotificationsSettings.push.deviceManagement.unknownDevice
+common.push
 ```
 
 ---

@@ -46,12 +46,12 @@ export function usePushNotifications(): PushNotificationState {
     sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)
   );
   const [loading, setLoading] = useState(false);
-  const [requiresPWAMode] = useState(() => (isSupported ? detectIOSNonPWA() : false));
+  const [requiresPWAMode] = useState(detectIOSNonPWA);
   const [isPrivateBrowsing, setIsPrivateBrowsing] = useState(false);
 
   // Detect private browsing
   useEffect(() => {
-    if (!isSupported) return;
+    if (!isSupported || typeof navigator.storage?.estimate !== 'function') return;
     navigator.storage
       .estimate()
       .then(estimate => {
