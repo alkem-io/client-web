@@ -207,6 +207,7 @@ Run codegen to generate typed hooks: `pnpm codegen`
 **Never**:
 - Auto-prompt on page load (causes high denial rates)
 - Show push UI when `Notification.permission === 'denied'` (explain how to reset in browser)
+- Show push UI in private/incognito browsing mode (detected via `navigator.storage.estimate()` quota check)
 
 ### 5.6 Subscription Lifecycle
 
@@ -270,8 +271,8 @@ common.push
 |-----------|----------|---------|
 | `PushNotificationProvider` | `src/main/pushNotifications/` | Context provider wrapping the app; queries VAPID key, manages subscription state |
 | `usePushNotifications` | `src/main/pushNotifications/` | Core hook (see §5.2) |
-| `PushSubscriptionsList` | `src/domain/community/userAdmin/tabs/` | Lists active subscriptions with remove buttons |
-| `TripleSwitchSettingsGroup` | `src/domain/community/userAdmin/tabs/` | Triple toggle (email/inApp/push) for notification categories |
+| `PushSubscriptionsList` | `src/domain/community/userAdmin/tabs/components/` | Lists active subscriptions with remove buttons |
+| `TripleSwitchSettingsGroup` | `src/core/ui/forms/SettingsGroups/` | Triple toggle (email/inApp/push) for notification categories |
 
 ### Modified Components
 
@@ -279,8 +280,8 @@ common.push
 |-----------|--------|
 | `public/service-worker.js` | Add `push`, `notificationclick`, `pushsubscriptionchange` event listeners |
 | `src/serviceWorker.ts` | No changes needed (registration already in place) |
-| `src/root.tsx` | Add `PushNotificationProvider` in provider tree (after `AuthenticationProvider`, before `InAppNotificationsProvider`) |
-| `UserAdminNotificationsPage` | Replace `DualSwitchSettingsGroup` with `TripleSwitchSettingsGroup`; add device management section |
+| `src/root.tsx` | Add `PushNotificationProvider` in provider tree (after `InAppNotificationsProvider`, before `UserMessagingProvider`) |
+| `UserAdminNotificationsPage` | Use `TripleSwitchSettingsGroup` for all notification categories (replaces inline dual-toggle pattern); add device management section; add optimistic updates via `useReducer` for instant UI feedback |
 | `CombinedUserNotificationsSettings` | Pass push channel data |
 | `CombinedSpaceNotificationsSettings` | Pass push channel data |
 | `CombinedPlatformNotificationsSettings` | Pass push channel data |
@@ -300,7 +301,8 @@ common.push
 | Browser doesn't support Push API | Hide all push UI; `isSupported = false` |
 | Server returns `vapidPublicKey = null` | Hide all push UI; `isServerEnabled = false` |
 | User denies permission | Show message: "Push notifications blocked. You can enable them in your browser settings." |
-| `PushManager.subscribe()` fails | Log error, show toast, keep UI in unsubscribed state |
+| `PushManager.subscribe()` fails | Log error, show error alert, keep UI in unsubscribed state |
+| Private/incognito browsing detected | Hide push UI entirely (subscriptions don't persist in private mode) |
 | Server mutation fails | Rollback browser subscription (`PushSubscription.unsubscribe()`), show error toast |
 | Service worker not registered | Attempt registration; if fails, treat as unsupported |
 | Subscription expires (pushsubscriptionchange) | Silently re-subscribe and register with server |

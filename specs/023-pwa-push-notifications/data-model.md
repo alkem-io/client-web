@@ -57,7 +57,7 @@ Per-category notification channel preferences.
 
 | Field | Type | Source |
 |-------|------|--------|
-| `isSupported` | `boolean` | Feature detection: `'PushManager' in window && 'serviceWorker' in navigator` |
+| `isSupported` | `boolean` | Feature detection: `'PushManager' in window && 'serviceWorker' in navigator && 'Notification' in window` |
 | `isServerEnabled` | `boolean` | `vapidPublicKey !== null` from GraphQL query |
 | `permissionState` | `NotificationPermission` | `Notification.permission` (`'default'` \| `'granted'` \| `'denied'`) |
 | `isSubscribed` | `boolean` | Current device has active push subscription |
@@ -65,6 +65,8 @@ Per-category notification channel preferences.
 | `subscribe` | `() => Promise<void>` | Request permission + create subscription + register with server |
 | `unsubscribe` | `() => Promise<void>` | Remove subscription from browser + server |
 | `loading` | `boolean` | Async operation in progress |
+| `requiresPWAMode` | `boolean` | iOS detected but not in standalone/PWA mode |
+| `isPrivateBrowsing` | `boolean` | Private/incognito mode detected (via `navigator.storage.estimate()` quota < 120MB) |
 
 ### Session Storage
 

@@ -242,6 +242,26 @@ With multiple developers after Foundational is complete:
 
 ---
 
+## Post-Implementation: Rebase Integration (2026-03-23)
+
+During rebase onto `develop`, the poll notifications feature (PR #9391) was merged. The following additional work was required:
+
+- Added `push` field to 4 new poll notification types in GraphQL fragments (`userSettingsFragment.graphql`, `updateUserSettings.graphql`)
+- Added `push` field to poll notification types in generated `apollo-hooks.ts` inline GQL documents
+- Added `push` field to poll notification types in generated `graphql-schema.ts`
+- Added `pushChecked` to poll notification options in `CombinedSpaceNotificationsSettings.tsx`
+- Added poll fields to `buildSpaceSettings()`, `preserveChannel()` calls, and `applyOverrides()` in `UserAdminNotificationsPage.tsx`
+
+The 4 poll notification types integrated:
+- `collaborationPollVoteCastOnOwnPoll`
+- `collaborationPollVoteCastOnPollIVotedOn`
+- `collaborationPollModifiedOnPollIVotedOn`
+- `collaborationPollVoteAffectedByOptionChange`
+
+> **Note**: Push delivery for poll events depends on server-side handler implementation. The client correctly saves push preferences for poll categories, but the server may not yet dispatch push notifications for poll events.
+
+---
+
 ## Notes
 
 - [P] tasks = different files, no dependencies
@@ -250,3 +270,4 @@ With multiple developers after Foundational is complete:
 - `pnpm codegen` requires backend with push feature (server Feature 038) running at `localhost:3000/graphql`
 - Service worker is plain JS (not bundled) — changes to `public/service-worker.js` are immediate on reload
 - All user-facing strings via `react-i18next` `t()` function — only edit `translation.en.json`
+- The project uses Biome 2.4.6 for linting and formatting (not ESLint/Prettier)

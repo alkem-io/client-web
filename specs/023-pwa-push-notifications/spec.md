@@ -2,7 +2,7 @@
 
 **Feature Branch**: `023-pwa-push-notifications`
 **Created**: 2026-03-16
-**Status**: Draft
+**Status**: Implemented
 **Input**: User description: "Add browser push notification support to Alkemio client-web. Server-side infrastructure is fully implemented."
 
 ## User Scenarios & Testing *(mandatory)*
@@ -137,7 +137,7 @@ As a user on an unsupported browser (no Push API) or when the server has push di
 ### Key Entities
 
 - **Push Subscription**: Represents a user's browser push registration on a specific device. Key attributes: unique identifier, creation date, status (active/expired), device label (auto-detected from User-Agent as browser name + OS, e.g., "Chrome on macOS"), last active date. Belongs to a single user; a user can have multiple subscriptions.
-- **Notification Category**: Represents a type of platform event that can trigger notifications. Each category has channel preferences (email, in-app, push) that the user can independently control.
+- **Notification Category**: Represents a type of platform event that can trigger notifications. Each category has channel preferences (email, in-app, push) that the user can independently control. Categories include space member notifications (callout published, comments, contributions, calendar events, poll vote/modification events), space admin notifications, user notifications (mentions, replies, messages, membership), organization notifications, platform/forum notifications, platform admin notifications, and virtual contributor notifications.
 - **VAPID Configuration**: Server-provided public key retrieved via a dedicated GraphQL query. When absent or query returns null, indicates push is disabled platform-wide. The client must discover and use existing server GraphQL operations for VAPID key retrieval, subscription creation, subscription removal, and subscription listing.
 
 ## Clarifications

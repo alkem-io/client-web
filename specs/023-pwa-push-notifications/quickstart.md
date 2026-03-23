@@ -69,8 +69,12 @@ The service worker at `public/service-worker.js` is a plain JS file served stati
 | `src/main/pushNotifications/PushNotificationProvider.tsx` | App-level context |
 | `src/main/pushNotifications/graphql/*.graphql` | GraphQL documents |
 | `src/core/ui/forms/SettingsGroups/TripleSwitchSettingsGroup.tsx` | Triple toggle UI |
+| `src/core/ui/forms/SettingsGroups/services/NotificationValidationService.ts` | Switch validation logic |
+| `src/core/ui/forms/SettingsGroups/types/NotificationTypes.ts` | Shared types (ChannelType, NotificationOption) |
 | `src/domain/community/userAdmin/tabs/UserAdminNotificationsPage.tsx` | Settings page integration |
+| `src/domain/community/userAdmin/tabs/components/PushSubscriptionsList.tsx` | Device management UI |
 | `src/domain/community/userAdmin/tabs/model/NotificationSettings.model.ts` | Data model |
+| `src/core/auth/authentication/pages/LogoutPage.tsx` | Logout push cleanup |
 | `src/core/i18n/en/translation.en.json` | Translation keys |
 
 ### 5. Running Tests
@@ -79,22 +83,23 @@ The service worker at `public/service-worker.js` is a plain JS file served stati
 # Run all tests
 pnpm vitest run
 
-# Run a specific test file
-pnpm vitest run src/main/pushNotifications/usePushNotifications.test.ts --reporter=basic
-
 # Watch mode
 pnpm test
 ```
 
+> Note: No push-specific unit tests exist currently. Push functionality is verified via manual testing (see §2 above).
+
 ### 6. Linting and Type Checking
 
 ```bash
-# Full lint (typecheck + ESLint)
+# Full lint (typecheck + Biome)
 pnpm lint
 
-# Format
+# Format (Biome)
 pnpm format
 ```
+
+> The project uses Biome 2.4.6 for linting and formatting. ESLint is retained only for the `react-compiler` rule.
 
 ### 7. Verifying Bundle Impact
 

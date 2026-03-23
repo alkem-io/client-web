@@ -77,9 +77,9 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 ## R5: Extending Notification Settings from Dual to Triple Toggle
 
-**Decision**: Create a new `TripleSwitchSettingsGroup` component that extends the existing `DualSwitchSettingsGroup` pattern with a third "push" column. The push column is conditionally rendered based on push support and server enablement.
+**Decision**: Create a new `TripleSwitchSettingsGroup` component in `src/core/ui/forms/SettingsGroups/` that follows the existing `DualSwitchSettingsGroup` pattern with a third "push" column. The push column is conditionally rendered based on push support and server enablement. The existing `DualSwitchSettingsGroup` is preserved for potential future use in non-push contexts.
 
-**Rationale**: The existing `DualSwitchSettingsGroup` renders inApp + email columns. Rather than modifying it (risk of breaking existing behavior), a new `TripleSwitchSettingsGroup` adds the push column while maintaining the same API pattern. The existing component remains for contexts where push isn't applicable.
+**Rationale**: The existing `DualSwitchSettingsGroup` renders inApp + email columns. Rather than modifying it (risk of breaking existing behavior), a new `TripleSwitchSettingsGroup` adds the push column while maintaining the same API pattern. The existing component is kept in the codebase unchanged.
 
 **Alternatives considered**:
 - Modifying `DualSwitchSettingsGroup` to accept variable columns — increases complexity; existing component is well-tested
@@ -88,8 +88,11 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 **Key integration points**:
 - `NotificationChannels` interface: Add `push: boolean`
 - `NotificationOption` type: Add `pushChecked: boolean`
-- `NotificationValidationService`: Extend to handle three-way validation
-- `UserAdminNotificationsPage`: Switch to `TripleSwitchSettingsGroup` when push is available
+- `NotificationValidationService`: Extend to handle three-way validation (including `REQUIRE_AT_LEAST_ONE` across all three channels)
+- `UserAdminNotificationsPage`: Use `TripleSwitchSettingsGroup` for all notification category groups
+- All Combined*Settings components updated to pass `pushChecked`, `isPushEnabled`, and `isPushAvailable` props
+
+**Implementation note**: The `UserAdminNotificationsPage` was also refactored to use optimistic updates via `useReducer` for instant UI feedback when toggling settings. Server settings (`serverSettings`) are used in mutation payloads to avoid sending optimistic values, while `currentSettings` (with overrides applied) drives the UI.
 
 ---
 
@@ -152,12 +155,16 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 **Decision**: Expected bundle impact is well under the 20 KB gzipped threshold.
 
 **Rationale**: The implementation uses only native browser APIs (Push API, Notification API, Service Worker API). No new npm dependencies. New code consists of:
-- `usePushNotifications` hook: ~150 lines
-- `PushNotificationProvider`: ~80 lines
-- `TripleSwitchSettingsGroup`: ~120 lines
-- `PushSubscriptionsList`: ~80 lines
-- GraphQL documents: negligible (codegen adds to existing generated files)
-- Service worker additions: ~60 lines (not in main bundle)
-- Utility functions: ~20 lines
+- `usePushNotifications` hook: ~183 lines
+- `PushNotificationProvider`: ~134 lines
+- `TripleSwitchSettingsGroup`: ~150 lines
+- `PushSubscriptionsList`: ~130 lines
+- `NotificationValidationService`: ~148 lines
+- `NotificationTypes.ts`: ~35 lines
+- `NotificationSettings.model.ts`: ~75 lines
+- GraphQL documents: 4 files (~30 lines total, plus codegen additions)
+- Service worker additions: ~110 lines (not in main bundle)
+- Utility functions: ~6 lines
+- `UserAdminNotificationsPage` changes: ~835 lines total (significant refactor with optimistic updates)
 
-**Estimated total**: ~450 lines of new TypeScript ≈ ~3-5 KB gzipped. Well within budget.
+**Estimated total**: Well within the 20 KB gzipped budget. The bulk of the changes are in notification settings UI, which was refactored from a simpler pattern to support three channels with optimistic updates.
