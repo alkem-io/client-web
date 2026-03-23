@@ -124,6 +124,7 @@ export interface CommentInputFieldProps {
   threadId?: string;
   'aria-label'?: string;
   placeholder?: string;
+  mentionsEnabled?: boolean;
 }
 
 const StyledCommentInput = styled(Box)(({ theme }) => ({
@@ -162,6 +163,7 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
     threadId,
     'aria-label': ariaLabel,
     placeholder,
+    mentionsEnabled = true,
   } = props as CommentInputFieldProps;
 
   const { t } = useTranslation();
@@ -314,7 +316,7 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
       >
         <Mention
           trigger={MENTION_SYMBOL}
-          data={findMentionableContributors}
+          data={mentionsEnabled ? findMentionableContributors : []}
           appendSpaceOnAdd={true}
           displayTransform={(_, display) => `${MENTION_SYMBOL}${display}`}
           renderSuggestion={(suggestion, _, __, ___, focused) => {
@@ -338,7 +340,7 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
           markup={`[${MENTION_SYMBOL}__display__](__id__)`}
         />
       </MentionsInput>
-      {tooltipOpen && (
+      {mentionsEnabled && tooltipOpen && (
         <SuggestionsContainer anchorElement={popperAnchor}>
           <Caption sx={{ padding: gutters() }}>{t('components.post-comment.tooltip.mentions')}</Caption>
         </SuggestionsContainer>

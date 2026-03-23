@@ -59,6 +59,7 @@ export interface FormikCommentInputFieldProps extends InputProps {
   threadId?: string;
   title?: string;
   placeholder?: string;
+  mentionsEnabled?: boolean;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
@@ -77,6 +78,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   threadId = '',
   title,
   placeholder,
+  mentionsEnabled = true,
   ..._restProps
 }) => {
   const ref = useRef<HTMLElement>(null);
@@ -165,14 +167,16 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         anchorElement={emojiButtonRef.current}
         onEmojiClick={emojiClick}
       />
-      <IconButton
-        size="small"
-        onClick={mentionButtonClick}
-        disabled={inactive || readOnly}
-        aria-label={t('messaging.addMention')}
-      >
-        <AlternateEmailIcon fontSize="small" />
-      </IconButton>
+      {mentionsEnabled && (
+        <IconButton
+          size="small"
+          onClick={mentionButtonClick}
+          disabled={inactive || readOnly}
+          aria-label={t('messaging.addMention')}
+        >
+          <AlternateEmailIcon fontSize="small" />
+        </IconButton>
+      )}
     </>
   );
 
@@ -228,6 +232,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               popperAnchor: ref.current,
               'aria-label': title || placeholder || t('messaging.message'),
               placeholder: placeholder,
+              mentionsEnabled,
             }}
             fullWidth={true}
           />
