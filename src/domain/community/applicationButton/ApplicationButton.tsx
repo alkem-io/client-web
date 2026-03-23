@@ -6,8 +6,8 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import InvitationActionsContainer from '@/domain/community/invitations/InvitationActionsContainer';
 import InvitationDialog from '@/domain/community/invitations/InvitationDialog';
+import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import type { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import ApplicationDialog from './ApplicationDialog';
@@ -15,6 +15,27 @@ import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
 import isApplicationPending from './isApplicationPending';
 import PreApplicationDialog from './PreApplicationDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
+
+const InvitationDialogWithActions = ({
+  onUpdate,
+  spaceId,
+  open,
+  onClose,
+  invitation,
+}: {
+  onUpdate: () => void;
+  spaceId: string | undefined;
+  open: boolean;
+  onClose: () => void;
+  invitation: PendingInvitationItem | undefined;
+}) => {
+  const props = useInvitationActions({
+    onUpdate,
+    spaceId,
+  });
+
+  return <InvitationDialog open={open} onClose={onClose} invitation={invitation} {...props} />;
+};
 
 export interface ApplicationButtonProps {
   spaceId: string | undefined;
@@ -313,19 +334,13 @@ export const ApplicationButton = ({
           onClose={() => setIsApplicationSubmittedDialogOpen(false)}
         />
         <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
-        <InvitationActionsContainer
+        <InvitationDialogWithActions
           onUpdate={handleAcceptInvitation}
           spaceId={userInvitation?.spacePendingMembershipInfo.id}
-        >
-          {props => (
-            <InvitationDialog
-              open={isInvitationDialogOpen}
-              onClose={handleClose}
-              invitation={userInvitation}
-              {...props}
-            />
-          )}
-        </InvitationActionsContainer>
+          open={isInvitationDialogOpen}
+          onClose={handleClose}
+          invitation={userInvitation}
+        />
       </RootThemeProvider>
     </>
   );

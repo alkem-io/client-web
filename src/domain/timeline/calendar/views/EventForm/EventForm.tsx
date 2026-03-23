@@ -16,7 +16,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { isSameDay } from '@/core/utils/time/utils';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
-import type { CalendarEventFormData } from '@/domain/timeline/calendar/CalendarEventsContainer';
+import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalendarEvents';
 import type { EventFormProps } from './EventForm.model';
 
 type DateType = Date | undefined;

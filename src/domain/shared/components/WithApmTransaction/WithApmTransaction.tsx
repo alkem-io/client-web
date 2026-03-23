@@ -1,11 +1,18 @@
-import { withTransaction } from '@elastic/apm-rum-react';
 import type React from 'react';
-import type { FC } from 'react';
+import { type FC, useContext, useEffect } from 'react';
+import { ApmContext } from '@/core/analytics/apm/context/ApmProvider';
 
 type Props = { path: string; children: React.ReactElement };
 
 export const WithApmTransaction: FC<Props> = ({ path, children }) => {
-  const Component = withTransaction(path, 'route-change')(children.type);
+  const { apm } = useContext(ApmContext);
 
-  return <Component {...(children.props || {})} />;
+  useEffect(() => {
+    const transaction = apm?.startTransaction(path, 'route-change', { managed: true });
+    return () => {
+      transaction?.end();
+    };
+  }, [apm, path]);
+
+  return children;
 };

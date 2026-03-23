@@ -13,6 +13,7 @@ import type {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import type { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
+import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
@@ -43,6 +44,7 @@ export interface CalloutCreationType {
         alternativeText?: string;
       }[];
     };
+    poll?: PollFormFieldSubmittedValues;
   };
   settings?: {
     framing?: {

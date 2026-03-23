@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
+import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import CookieSettings from './CookieSettings';
 import ConsentContainer from './components/ConsentContainer';
@@ -12,7 +12,7 @@ const CookieConsent = ({ ref }) => {
 
   const containerRef = useCombinedRefs(null, ref);
 
-  useResizeDetector({
+  useResizeObserver({
     targetRef: containerRef,
     onResize: () => {
       typeof ref === 'function' && ref(containerRef.current);

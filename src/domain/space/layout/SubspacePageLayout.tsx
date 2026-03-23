@@ -15,7 +15,7 @@ import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { theme } from '@/core/ui/themes/default/Theme';
-import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
+import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
@@ -46,11 +46,15 @@ export const SubspacePageLayout = () => {
   usePageTitle(subspaceContext.about.profile.displayName);
 
   const { spaceLevel, spaceId, parentSpaceId } = useUrlResolver();
+  const { applicationButtonProps, loading: applicationButtonLoading } = useApplicationButton({
+    spaceId,
+    parentSpaceId,
+  });
   const { selectedInnovationFlowState: selectedFlowStateName, setSelectedInnovationFlowState } =
     useContext(InnovationFlowStateContext);
   const { data: subspacePageData } = useSubspacePageQuery({
     variables: {
-      spaceId: spaceId!,
+      spaceId: spaceId ?? '',
     },
     skip: !spaceId || spaceLevel === SpaceLevel.L0 || !permissions.canRead,
   });
@@ -128,25 +132,18 @@ export const SubspacePageLayout = () => {
       <PageContent>
         <SubspaceInfoColumn subspace={subspace} />
         <PageContentColumnBase columns={isCollapsed ? 12 : 9} flexBasis={0} flexGrow={1} flexShrink={1} minWidth={0}>
-          <ApplicationButtonContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
-            {(applicationButtonProps, loading) => {
-              if (loading || applicationButtonProps.isMember) {
-                return null;
-              }
-              return (
-                <PageContentColumn columns={9}>
-                  <ApplicationButton
-                    {...applicationButtonProps}
-                    loading={loading}
-                    component={FullWidthButton}
-                    extended={hasExtendedApplicationButton}
-                    spaceId={spaceId}
-                    spaceLevel={SpaceLevel.L1}
-                  />
-                </PageContentColumn>
-              );
-            }}
-          </ApplicationButtonContainer>
+          {!applicationButtonLoading && !applicationButtonProps.isMember && (
+            <PageContentColumn columns={9}>
+              <ApplicationButton
+                {...applicationButtonProps}
+                loading={applicationButtonLoading}
+                component={FullWidthButton}
+                extended={hasExtendedApplicationButton}
+                spaceId={spaceId}
+                spaceLevel={SpaceLevel.L1}
+              />
+            </PageContentColumn>
+          )}
           {!isSmallScreen && showInnovationFlowStates && (
             <Box
               sx={{
@@ -199,7 +196,7 @@ export const SubspacePageLayout = () => {
         selectedInnovationFlowState={selectedFlowStateName}
         currentInnovationFlowStateDisplayName={currentInnovationFlowStateDisplayName}
         createButton={createButton}
-        onSelectState={setSelectedInnovationFlowState!}
+        onSelectState={setSelectedInnovationFlowState ?? (() => {})}
         about={about}
         isVideoCallEnabled={isVideoCallEnabled}
         canEdit={permissions.canUpdate}

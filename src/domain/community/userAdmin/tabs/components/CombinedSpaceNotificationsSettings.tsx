@@ -63,6 +63,26 @@ export const CombinedSpaceNotificationsSettings = ({
         emailChecked: currentSpaceSettings?.communityCalendarEvents?.email || false,
         label: t('pages.userNotificationsSettings.space.settings.communityCalendarEvents'),
       },
+      collaborationPollVoteCastOnOwnPoll: {
+        inAppChecked: currentSpaceSettings?.collaborationPollVoteCastOnOwnPoll?.inApp || false,
+        emailChecked: currentSpaceSettings?.collaborationPollVoteCastOnOwnPoll?.email || false,
+        label: t('pages.userNotificationsSettings.space.settings.collaborationPollVoteCastOnOwnPoll'),
+      },
+      collaborationPollVoteCastOnPollIVotedOn: {
+        inAppChecked: currentSpaceSettings?.collaborationPollVoteCastOnPollIVotedOn?.inApp || false,
+        emailChecked: currentSpaceSettings?.collaborationPollVoteCastOnPollIVotedOn?.email || false,
+        label: t('pages.userNotificationsSettings.space.settings.collaborationPollVoteCastOnPollIVotedOn'),
+      },
+      collaborationPollModifiedOnPollIVotedOn: {
+        inAppChecked: currentSpaceSettings?.collaborationPollModifiedOnPollIVotedOn?.inApp || false,
+        emailChecked: currentSpaceSettings?.collaborationPollModifiedOnPollIVotedOn?.email || false,
+        label: t('pages.userNotificationsSettings.space.settings.collaborationPollModifiedOnPollIVotedOn'),
+      },
+      collaborationPollVoteAffectedByOptionChange: {
+        inAppChecked: currentSpaceSettings?.collaborationPollVoteAffectedByOptionChange?.inApp || false,
+        emailChecked: currentSpaceSettings?.collaborationPollVoteAffectedByOptionChange?.email || false,
+        label: t('pages.userNotificationsSettings.space.settings.collaborationPollVoteAffectedByOptionChange'),
+      },
     };
 
     // Add space admin notifications if user has admin privileges

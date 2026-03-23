@@ -1,6 +1,6 @@
 import { Card } from '@mui/material';
 import type { UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client'; // Added UiNodeInputAttributes
-import { produce } from 'immer';
+
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation } from 'react-router-dom';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
@@ -40,12 +40,14 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
 
   const registrationFlowWithAcceptedTerms =
     registrationFlow &&
-    produce(registrationFlow, nextFlow => {
-      const termsCheckbox = nextFlow?.ui.nodes.find(isAcceptTermsCheckbox);
+    (() => {
+      const clone = structuredClone(registrationFlow);
+      const termsCheckbox = clone.ui.nodes.find(isAcceptTermsCheckbox);
       if (termsCheckbox && isInputNode(termsCheckbox) && !termsCheckbox.attributes.value) {
         termsCheckbox.attributes.value = hasAcceptedTerms;
       }
-    });
+      return clone;
+    })();
 
   const termsCheckbox = registrationFlowWithAcceptedTerms?.ui.nodes.find(isAcceptTermsCheckbox);
 

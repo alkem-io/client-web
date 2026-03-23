@@ -20,6 +20,9 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
         allowGuestContributions
       }
       sortMode
+      layout {
+        calloutDescriptionDisplayMode
+      }
     }
   }
 }

@@ -1,5 +1,4 @@
 import { DeleteOutline } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
 import { Box, type BoxProps, Divider, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -7,6 +6,7 @@ import { FieldArray, useFormikContext } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import AddButton from '@/core/ui/button/AddButton';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -14,7 +14,7 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
-import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import type { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -114,19 +114,11 @@ export const ReferenceSegment = ({
       {({ push, remove }) => (
         <Gutters disablePadding={true} {...props}>
           {addButtonPosition === 'start' && (
-            <Box display="flex" alignItems="center">
-              <IconButton
-                aria-label={t('components.referenceSegment.addReference')}
-                onClick={() => {
-                  handleAdd(push);
-                }}
-                color="primary"
-                disabled={disabled || adding}
-              >
-                <AddIcon />
-              </IconButton>
-              <BlockSectionTitle>{addButtonLabel ?? t('components.referenceSegment.addReference')}</BlockSectionTitle>
-            </Box>
+            <AddButton
+              caption={addButtonLabel ?? t('components.referenceSegment.addReference')}
+              onClick={() => handleAdd(push)}
+              disabled={disabled || adding}
+            />
           )}
           {!compactMode && references?.length === 0 ? (
             <Caption>{t('components.referenceSegment.missing-references')}</Caption>
@@ -204,19 +196,13 @@ export const ReferenceSegment = ({
             ))
           )}
           {addButtonPosition === 'end' && (
-            <Box display="flex" alignItems="center" justifyContent="end">
-              <BlockSectionTitle>{addButtonLabel ?? t('components.referenceSegment.addReference')}</BlockSectionTitle>
-              <IconButton
-                aria-label={t('components.referenceSegment.addReference')}
-                onClick={() => {
-                  handleAdd(push);
-                }}
-                color="primary"
-                disabled={disabled || adding}
-              >
-                <AddIcon />
-              </IconButton>
-            </Box>
+            <AddButton
+              caption={addButtonLabel ?? t('components.referenceSegment.addReference')}
+              onClick={() => handleAdd(push)}
+              disabled={disabled || adding}
+              flexDirection="row-reverse"
+              justifyContent="right"
+            />
           )}
         </Gutters>
       )}
