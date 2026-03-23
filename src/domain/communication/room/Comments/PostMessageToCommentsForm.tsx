@@ -24,6 +24,7 @@ export interface PostMessageToCommentsFormProps {
   vcInteractions?: FormikCommentInputFieldProps['vcInteractions'];
   vcEnabled?: boolean;
   threadId?: string;
+  mentionsEnabled?: boolean;
 }
 
 type formValues = {
@@ -39,6 +40,7 @@ const PostMessageToCommentsForm = ({
   vcInteractions,
   vcEnabled = true,
   threadId,
+  mentionsEnabled,
   ...containerProps
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
@@ -100,6 +102,7 @@ const PostMessageToCommentsForm = ({
                   height: gutters(2),
                 }}
                 compactMode={isSmallScreen}
+                mentionsEnabled={mentionsEnabled}
               />
             </Form>
           )}

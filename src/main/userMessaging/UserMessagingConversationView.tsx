@@ -486,6 +486,7 @@ export const UserMessagingConversationView = ({
           onPostComment={handleSendMessage}
           placeholder={t('components.userMessaging.typeMessage' as const)}
           disabled={isSending}
+          mentionsEnabled={false}
         />
       </Box>
     </Box>
