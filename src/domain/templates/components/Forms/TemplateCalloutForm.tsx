@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import CalloutForm, { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
+import CalloutForm from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
+import { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm.validation.schema';
 import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 import { DefaultCalloutSettings } from '@/domain/collaboration/callout/models/CalloutSettingsModel';
 import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '@/domain/collaboration/callout/models/mappings';

@@ -51,6 +51,9 @@ query CalloutContent($calloutId: UUID!) {
         mediaGallery {
           ...MediaGalleryVisuals
         }
+        poll {
+          ...PollDetails
+        }
       }
       contributionDefaults {
         id

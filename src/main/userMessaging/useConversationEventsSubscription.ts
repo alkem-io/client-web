@@ -462,6 +462,15 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       const sender = event.message.sender;
       const isOwnMessage = sender && 'id' in sender && sender.id === currentUserId;
 
+      console.log('[Sub:MessageReceived]', {
+        roomId: event.roomId?.slice(0, 8),
+        messageId: event.message.id?.slice(0, 8),
+        isViewing,
+        isOwnMessage,
+        willIncrement: !isViewing && !isOwnMessage,
+        roomCacheId,
+      });
+
       // Write lastMessage to cache first to get a proper reference
       const lastMessageRef = client.cache.writeFragment({
         data: {
@@ -621,7 +630,17 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         id: event.roomId,
       });
 
-      if (!roomCacheId) return;
+      console.log('[Sub:ReadReceipt]', {
+        roomId: event.roomId?.slice(0, 8),
+        lastReadEventId: event.lastReadEventId?.slice(0, 8),
+        roomCacheId,
+        roomExists: !!roomCacheId,
+      });
+
+      if (!roomCacheId) {
+        console.log('[Sub:ReadReceipt] BAIL: Room not in cache');
+        return;
+      }
 
       // Read current room data to check lastMessage
       const roomData = client.cache.readFragment<{
@@ -633,8 +652,15 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
       const lastMessageId = roomData?.lastMessage?.id;
 
+      console.log('[Sub:ReadReceipt]', {
+        lastMessageId: lastMessageId?.slice(0, 8),
+        matchesLastRead: event.lastReadEventId === lastMessageId,
+        hasRoomData: !!roomData,
+      });
+
       if (event.lastReadEventId === lastMessageId) {
         // User read ALL messages -> unreadCount = 0
+        console.log('[Sub:ReadReceipt] Setting unreadCount=0 (all read)');
         client.cache.modify({
           id: roomCacheId,
           fields: {
@@ -650,19 +676,28 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           fragment: RoomMessagesFragment,
         });
 
+        console.log('[Sub:ReadReceipt] Partial read path:', {
+          hasMessages: !!fullRoomData?.messages,
+          messageCount: fullRoomData?.messages?.length ?? 0,
+        });
+
         if (fullRoomData?.messages) {
           const readIndex = fullRoomData.messages.findIndex(m => m.id === event.lastReadEventId);
           if (readIndex !== -1) {
             const unreadCount = fullRoomData.messages.length - readIndex - 1;
+            console.log('[Sub:ReadReceipt] Setting unreadCount=', unreadCount, '(partial, readIndex=', readIndex, ')');
             client.cache.modify({
               id: roomCacheId,
               fields: {
                 unreadCount: () => unreadCount,
               },
             });
+          } else {
+            console.log('[Sub:ReadReceipt] NO UPDATE: lastReadEventId not found in cached messages');
           }
+        } else {
+          console.log('[Sub:ReadReceipt] NO UPDATE: messages not in cache');
         }
-        // If messages not in cache, count will sync on next query
       }
     },
     [client]
@@ -673,6 +708,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
     onData: ({ data }) => {
       const event = data.data?.conversationEvents;
       if (!event) return;
+
+      console.log('[Sub:Event]', event.eventType);
 
       switch (event.eventType) {
         case ConversationEventType.ConversationCreated:
