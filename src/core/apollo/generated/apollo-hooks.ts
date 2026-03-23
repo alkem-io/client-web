@@ -9496,7 +9496,10 @@ export function useUpdateMemoDisplayNameMutation(
 }
 export type UpdateMemoDisplayNameMutationHookResult = ReturnType<typeof useUpdateMemoDisplayNameMutation>;
 export type UpdateMemoDisplayNameMutationResult = Apollo.MutationResult<SchemaTypes.UpdateMemoDisplayNameMutation>;
-export type UpdateMemoDisplayNameMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.UpdateMemoDisplayNameMutation, SchemaTypes.UpdateMemoDisplayNameMutationVariables>;
+export type UpdateMemoDisplayNameMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateMemoDisplayNameMutation,
+  SchemaTypes.UpdateMemoDisplayNameMutationVariables
+>;
 export const CastPollVoteDocument = gql`
     mutation CastPollVote($voteData: CastPollVoteInput!) {
   castPollVote(voteData: $voteData) {
@@ -9504,7 +9507,10 @@ export const CastPollVoteDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type CastPollVoteMutationFn = Apollo.MutationFunction<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>;
+export type CastPollVoteMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CastPollVoteMutation,
+  SchemaTypes.CastPollVoteMutationVariables
+>;
 
 /**
  * __useCastPollVoteMutation__
@@ -9523,13 +9529,21 @@ export type CastPollVoteMutationFn = Apollo.MutationFunction<SchemaTypes.CastPol
  *   },
  * });
  */
-export function useCastPollVoteMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>(CastPollVoteDocument, options);
-      }
+export function useCastPollVoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>(
+    CastPollVoteDocument,
+    options
+  );
+}
 export type CastPollVoteMutationHookResult = ReturnType<typeof useCastPollVoteMutation>;
 export type CastPollVoteMutationResult = Apollo.MutationResult<SchemaTypes.CastPollVoteMutation>;
-export type CastPollVoteMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.CastPollVoteMutation, SchemaTypes.CastPollVoteMutationVariables>;
+export type CastPollVoteMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CastPollVoteMutation,
+  SchemaTypes.CastPollVoteMutationVariables
+>;
 export const AddPollOptionDocument = gql`
     mutation AddPollOption($optionData: AddPollOptionInput!) {
   addPollOption(optionData: $optionData) {
@@ -9537,7 +9551,10 @@ export const AddPollOptionDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type AddPollOptionMutationFn = Apollo.MutationFunction<SchemaTypes.AddPollOptionMutation, SchemaTypes.AddPollOptionMutationVariables>;
+export type AddPollOptionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddPollOptionMutation,
+  SchemaTypes.AddPollOptionMutationVariables
+>;
 
 /**
  * __useAddPollOptionMutation__
@@ -9556,13 +9573,24 @@ export type AddPollOptionMutationFn = Apollo.MutationFunction<SchemaTypes.AddPol
  *   },
  * });
  */
-export function useAddPollOptionMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.AddPollOptionMutation, SchemaTypes.AddPollOptionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.AddPollOptionMutation, SchemaTypes.AddPollOptionMutationVariables>(AddPollOptionDocument, options);
-      }
+export function useAddPollOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddPollOptionMutation,
+    SchemaTypes.AddPollOptionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.AddPollOptionMutation, SchemaTypes.AddPollOptionMutationVariables>(
+    AddPollOptionDocument,
+    options
+  );
+}
 export type AddPollOptionMutationHookResult = ReturnType<typeof useAddPollOptionMutation>;
 export type AddPollOptionMutationResult = Apollo.MutationResult<SchemaTypes.AddPollOptionMutation>;
-export type AddPollOptionMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.AddPollOptionMutation, SchemaTypes.AddPollOptionMutationVariables>;
+export type AddPollOptionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddPollOptionMutation,
+  SchemaTypes.AddPollOptionMutationVariables
+>;
 export const UpdatePollOptionDocument = gql`
     mutation UpdatePollOption($optionData: UpdatePollOptionInput!) {
   updatePollOption(optionData: $optionData) {
@@ -9570,7 +9598,10 @@ export const UpdatePollOptionDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type UpdatePollOptionMutationFn = Apollo.MutationFunction<SchemaTypes.UpdatePollOptionMutation, SchemaTypes.UpdatePollOptionMutationVariables>;
+export type UpdatePollOptionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePollOptionMutation,
+  SchemaTypes.UpdatePollOptionMutationVariables
+>;
 
 /**
  * __useUpdatePollOptionMutation__
@@ -9589,13 +9620,24 @@ export type UpdatePollOptionMutationFn = Apollo.MutationFunction<SchemaTypes.Upd
  *   },
  * });
  */
-export function useUpdatePollOptionMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdatePollOptionMutation, SchemaTypes.UpdatePollOptionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.UpdatePollOptionMutation, SchemaTypes.UpdatePollOptionMutationVariables>(UpdatePollOptionDocument, options);
-      }
+export function useUpdatePollOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePollOptionMutation,
+    SchemaTypes.UpdatePollOptionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdatePollOptionMutation, SchemaTypes.UpdatePollOptionMutationVariables>(
+    UpdatePollOptionDocument,
+    options
+  );
+}
 export type UpdatePollOptionMutationHookResult = ReturnType<typeof useUpdatePollOptionMutation>;
 export type UpdatePollOptionMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePollOptionMutation>;
-export type UpdatePollOptionMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.UpdatePollOptionMutation, SchemaTypes.UpdatePollOptionMutationVariables>;
+export type UpdatePollOptionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePollOptionMutation,
+  SchemaTypes.UpdatePollOptionMutationVariables
+>;
 export const RemovePollOptionDocument = gql`
     mutation RemovePollOption($optionData: RemovePollOptionInput!) {
   removePollOption(optionData: $optionData) {
@@ -9603,7 +9645,10 @@ export const RemovePollOptionDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type RemovePollOptionMutationFn = Apollo.MutationFunction<SchemaTypes.RemovePollOptionMutation, SchemaTypes.RemovePollOptionMutationVariables>;
+export type RemovePollOptionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemovePollOptionMutation,
+  SchemaTypes.RemovePollOptionMutationVariables
+>;
 
 /**
  * __useRemovePollOptionMutation__
@@ -9622,13 +9667,24 @@ export type RemovePollOptionMutationFn = Apollo.MutationFunction<SchemaTypes.Rem
  *   },
  * });
  */
-export function useRemovePollOptionMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.RemovePollOptionMutation, SchemaTypes.RemovePollOptionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.RemovePollOptionMutation, SchemaTypes.RemovePollOptionMutationVariables>(RemovePollOptionDocument, options);
-      }
+export function useRemovePollOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemovePollOptionMutation,
+    SchemaTypes.RemovePollOptionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemovePollOptionMutation, SchemaTypes.RemovePollOptionMutationVariables>(
+    RemovePollOptionDocument,
+    options
+  );
+}
 export type RemovePollOptionMutationHookResult = ReturnType<typeof useRemovePollOptionMutation>;
 export type RemovePollOptionMutationResult = Apollo.MutationResult<SchemaTypes.RemovePollOptionMutation>;
-export type RemovePollOptionMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.RemovePollOptionMutation, SchemaTypes.RemovePollOptionMutationVariables>;
+export type RemovePollOptionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemovePollOptionMutation,
+  SchemaTypes.RemovePollOptionMutationVariables
+>;
 export const ReorderPollOptionsDocument = gql`
     mutation ReorderPollOptions($optionData: ReorderPollOptionsInput!) {
   reorderPollOptions(optionData: $optionData) {
@@ -9636,7 +9692,10 @@ export const ReorderPollOptionsDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type ReorderPollOptionsMutationFn = Apollo.MutationFunction<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>;
+export type ReorderPollOptionsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ReorderPollOptionsMutation,
+  SchemaTypes.ReorderPollOptionsMutationVariables
+>;
 
 /**
  * __useReorderPollOptionsMutation__
@@ -9655,13 +9714,24 @@ export type ReorderPollOptionsMutationFn = Apollo.MutationFunction<SchemaTypes.R
  *   },
  * });
  */
-export function useReorderPollOptionsMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>(ReorderPollOptionsDocument, options);
-      }
+export function useReorderPollOptionsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ReorderPollOptionsMutation,
+    SchemaTypes.ReorderPollOptionsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>(
+    ReorderPollOptionsDocument,
+    options
+  );
+}
 export type ReorderPollOptionsMutationHookResult = ReturnType<typeof useReorderPollOptionsMutation>;
 export type ReorderPollOptionsMutationResult = Apollo.MutationResult<SchemaTypes.ReorderPollOptionsMutation>;
-export type ReorderPollOptionsMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.ReorderPollOptionsMutation, SchemaTypes.ReorderPollOptionsMutationVariables>;
+export type ReorderPollOptionsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ReorderPollOptionsMutation,
+  SchemaTypes.ReorderPollOptionsMutationVariables
+>;
 export const RemovePollVoteDocument = gql`
     mutation RemovePollVote($pollId: UUID!) {
   removePollVote(voteData: {pollID: $pollId}) {
@@ -9669,7 +9739,10 @@ export const RemovePollVoteDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type RemovePollVoteMutationFn = Apollo.MutationFunction<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>;
+export type RemovePollVoteMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemovePollVoteMutation,
+  SchemaTypes.RemovePollVoteMutationVariables
+>;
 
 /**
  * __useRemovePollVoteMutation__
@@ -9688,13 +9761,24 @@ export type RemovePollVoteMutationFn = Apollo.MutationFunction<SchemaTypes.Remov
  *   },
  * });
  */
-export function useRemovePollVoteMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>(RemovePollVoteDocument, options);
-      }
+export function useRemovePollVoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemovePollVoteMutation,
+    SchemaTypes.RemovePollVoteMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>(
+    RemovePollVoteDocument,
+    options
+  );
+}
 export type RemovePollVoteMutationHookResult = ReturnType<typeof useRemovePollVoteMutation>;
 export type RemovePollVoteMutationResult = Apollo.MutationResult<SchemaTypes.RemovePollVoteMutation>;
-export type RemovePollVoteMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.RemovePollVoteMutation, SchemaTypes.RemovePollVoteMutationVariables>;
+export type RemovePollVoteMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemovePollVoteMutation,
+  SchemaTypes.RemovePollVoteMutationVariables
+>;
 export const UpdatePollStatusDocument = gql`
     mutation UpdatePollStatus($statusData: UpdatePollStatusInput!) {
   updatePollStatus(statusData: $statusData) {
@@ -9702,7 +9786,10 @@ export const UpdatePollStatusDocument = gql`
   }
 }
     ${PollDetailsFragmentDoc}`;
-export type UpdatePollStatusMutationFn = Apollo.MutationFunction<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>;
+export type UpdatePollStatusMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePollStatusMutation,
+  SchemaTypes.UpdatePollStatusMutationVariables
+>;
 
 /**
  * __useUpdatePollStatusMutation__
@@ -9721,13 +9808,24 @@ export type UpdatePollStatusMutationFn = Apollo.MutationFunction<SchemaTypes.Upd
  *   },
  * });
  */
-export function useUpdatePollStatusMutation(baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>(UpdatePollStatusDocument, options);
-      }
+export function useUpdatePollStatusMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePollStatusMutation,
+    SchemaTypes.UpdatePollStatusMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>(
+    UpdatePollStatusDocument,
+    options
+  );
+}
 export type UpdatePollStatusMutationHookResult = ReturnType<typeof useUpdatePollStatusMutation>;
 export type UpdatePollStatusMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePollStatusMutation>;
-export type UpdatePollStatusMutationOptions = Apollo.BaseMutationOptions<SchemaTypes.UpdatePollStatusMutation, SchemaTypes.UpdatePollStatusMutationVariables>;
+export type UpdatePollStatusMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePollStatusMutation,
+  SchemaTypes.UpdatePollStatusMutationVariables
+>;
 export const PollVoteUpdatedDocument = gql`
     subscription PollVoteUpdated($pollID: UUID!) {
   pollVoteUpdated(pollID: $pollID) {
@@ -9755,10 +9853,19 @@ export const PollVoteUpdatedDocument = gql`
  *   },
  * });
  */
-export function usePollVoteUpdatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<SchemaTypes.PollVoteUpdatedSubscription, SchemaTypes.PollVoteUpdatedSubscriptionVariables> & ({ variables: SchemaTypes.PollVoteUpdatedSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<SchemaTypes.PollVoteUpdatedSubscription, SchemaTypes.PollVoteUpdatedSubscriptionVariables>(PollVoteUpdatedDocument, options);
-      }
+export function usePollVoteUpdatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.PollVoteUpdatedSubscription,
+    SchemaTypes.PollVoteUpdatedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.PollVoteUpdatedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.PollVoteUpdatedSubscription,
+    SchemaTypes.PollVoteUpdatedSubscriptionVariables
+  >(PollVoteUpdatedDocument, options);
+}
 export type PollVoteUpdatedSubscriptionHookResult = ReturnType<typeof usePollVoteUpdatedSubscription>;
 export type PollVoteUpdatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.PollVoteUpdatedSubscription>;
 export const PollOptionsChangedDocument = gql`
@@ -9788,12 +9895,22 @@ export const PollOptionsChangedDocument = gql`
  *   },
  * });
  */
-export function usePollOptionsChangedSubscription(baseOptions: Apollo.SubscriptionHookOptions<SchemaTypes.PollOptionsChangedSubscription, SchemaTypes.PollOptionsChangedSubscriptionVariables> & ({ variables: SchemaTypes.PollOptionsChangedSubscriptionVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<SchemaTypes.PollOptionsChangedSubscription, SchemaTypes.PollOptionsChangedSubscriptionVariables>(PollOptionsChangedDocument, options);
-      }
+export function usePollOptionsChangedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.PollOptionsChangedSubscription,
+    SchemaTypes.PollOptionsChangedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.PollOptionsChangedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.PollOptionsChangedSubscription,
+    SchemaTypes.PollOptionsChangedSubscriptionVariables
+  >(PollOptionsChangedDocument, options);
+}
 export type PollOptionsChangedSubscriptionHookResult = ReturnType<typeof usePollOptionsChangedSubscription>;
-export type PollOptionsChangedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.PollOptionsChangedSubscription>;
+export type PollOptionsChangedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.PollOptionsChangedSubscription>;
 export const CalloutSettingsDocument = gql`
     query CalloutSettings($calloutId: UUID!) {
   lookup {

@@ -669,9 +669,15 @@ const UserAdminNotificationsPage = () => {
           collaborationCalloutComment: preserveChannel(serverSettings.space?.collaborationCalloutComment),
           communityCalendarEvents: preserveChannel(serverSettings.space?.communityCalendarEvents),
           collaborationPollVoteCastOnOwnPoll: preserveChannel(serverSettings.space?.collaborationPollVoteCastOnOwnPoll),
-          collaborationPollVoteCastOnPollIVotedOn: preserveChannel(serverSettings.space?.collaborationPollVoteCastOnPollIVotedOn),
-          collaborationPollModifiedOnPollIVotedOn: preserveChannel(serverSettings.space?.collaborationPollModifiedOnPollIVotedOn),
-          collaborationPollVoteAffectedByOptionChange: preserveChannel(serverSettings.space?.collaborationPollVoteAffectedByOptionChange),
+          collaborationPollVoteCastOnPollIVotedOn: preserveChannel(
+            serverSettings.space?.collaborationPollVoteCastOnPollIVotedOn
+          ),
+          collaborationPollModifiedOnPollIVotedOn: preserveChannel(
+            serverSettings.space?.collaborationPollModifiedOnPollIVotedOn
+          ),
+          collaborationPollVoteAffectedByOptionChange: preserveChannel(
+            serverSettings.space?.collaborationPollVoteAffectedByOptionChange
+          ),
           admin: buildSpaceAdminSettings(property, type, value),
         };
         break;
