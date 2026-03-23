@@ -123,6 +123,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
               disableMemos: !createMode,
               disableLinks: !createMode,
               disableMediaGallery: !createMode,
+              disablePolls: true,
             }}
             onChange={calloutFormValues => {
               setFieldValue('callout', calloutFormValues);
