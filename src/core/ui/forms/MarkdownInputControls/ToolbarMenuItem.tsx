@@ -31,7 +31,8 @@ const ToolbarMenuItem = ({ editor, command, specs, onClick, children, ...menuIte
     }
   };
 
-  const produceButtonState = (): ButtonState => ({
+  const produceButtonState = (prevState: ButtonState = {}): ButtonState => ({
+    ...prevState,
     active: getActiveState(),
     disabled: getDisabledState(),
   });

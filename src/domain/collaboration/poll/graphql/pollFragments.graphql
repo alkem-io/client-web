@@ -1,0 +1,57 @@
+fragment PollSettingsFields on PollSettings {
+  allowContributorsAddOptions
+  minResponses
+  maxResponses
+  resultsVisibility
+  resultsDetail
+}
+
+fragment PollOptionFields on PollOption {
+  id
+  createdDate
+  updatedDate
+  text
+  sortOrder
+  voteCount
+  votePercentage
+  voters {
+    id
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+fragment PollVoteFields on PollVote {
+  id
+  createdDate
+  updatedDate
+  createdBy
+  selectedOptions {
+    id
+  }
+}
+
+fragment PollDetails on Poll {
+  id
+  createdDate
+  updatedDate
+  title
+  status
+  settings {
+    ...PollSettingsFields
+  }
+  totalVotes
+  canSeeDetailedResults
+  options {
+    ...PollOptionFields
+  }
+  myVote {
+    ...PollVoteFields
+  }
+}

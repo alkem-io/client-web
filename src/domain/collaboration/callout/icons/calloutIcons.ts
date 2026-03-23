@@ -1,4 +1,5 @@
 import { LibraryBooksOutlined } from '@mui/icons-material';
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import { type SvgIconProps, Tooltip } from '@mui/material';
 import React, { type ComponentType } from 'react';
@@ -18,6 +19,7 @@ export const calloutFramingIcons: Record<CalloutFramingType, ComponentType<SvgIc
   [CalloutFramingType.Whiteboard]: WhiteboardIcon,
   [CalloutFramingType.Link]: CtaIcon,
   [CalloutFramingType.MediaGallery]: PermMediaIcon,
+  [CalloutFramingType.Poll]: ChecklistRtlIcon,
 };
 
 export const contributionIcons: Record<CalloutContributionType, ComponentType<SvgIconProps>> = {

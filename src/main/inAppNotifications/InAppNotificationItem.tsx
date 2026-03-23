@@ -18,6 +18,7 @@ import { InAppSpaceCollaborationCalloutCommentView } from './views/space/InAppSp
 import { InAppSpaceCollaborationCalloutContributionView } from './views/space/InAppSpaceCollaborationCalloutContributionView';
 import { InAppSpaceCollaborationCalloutPostContributionCommentView } from './views/space/InAppSpaceCollaborationCalloutPostContributionCommentView';
 import { InAppSpaceCollaborationCalloutPublishedView } from './views/space/InAppSpaceCollaborationCalloutPublishedView';
+import { InAppSpaceCollaborationPollView } from './views/space/InAppSpaceCollaborationPollView';
 import { InAppSpaceCommunicationUpdateView } from './views/space/InAppSpaceCommunicationUpdateView';
 import { InAppSpaceCommunityCalendarEventCommentView } from './views/space/InAppSpaceCommunityCalendarEventCommentView';
 import { InAppSpaceCommunityCalendarEventCreatedView } from './views/space/InAppSpaceCommunityCalendarEventCreatedView';
@@ -94,6 +95,11 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppSpaceCommunityCalendarEventCreatedView {...item} />;
     case NotificationEvent.SpaceCommunityCalendarEventComment:
       return <InAppSpaceCommunityCalendarEventCommentView {...item} />;
+    case NotificationEvent.SpaceCollaborationPollVoteCastOnOwnPoll:
+    case NotificationEvent.SpaceCollaborationPollVoteCastOnPollIVotedOn:
+    case NotificationEvent.SpaceCollaborationPollModifiedOnPollIVotedOn:
+    case NotificationEvent.SpaceCollaborationPollVoteAffectedByOptionChange:
+      return <InAppSpaceCollaborationPollView {...item} />;
 
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {

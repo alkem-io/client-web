@@ -39,7 +39,8 @@ const ToolbarButton = ({
     }
   };
 
-  const produceButtonState = (): ButtonState => ({
+  const produceButtonState = (prevState: ButtonState = {}): ButtonState => ({
+    ...prevState,
     active: getActiveState(),
     disabled: getDisabledState(),
   });

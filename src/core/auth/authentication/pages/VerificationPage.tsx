@@ -1,5 +1,4 @@
 import type { VerificationFlow } from '@ory/kratos-client';
-
 import type { FC, MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
