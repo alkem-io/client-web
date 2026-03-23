@@ -1723,18 +1723,22 @@ export const UserSettingsFragmentFragmentDoc = gql`
       collaborationPollVoteCastOnOwnPoll {
         email
         inApp
+        push
       }
       collaborationPollVoteCastOnPollIVotedOn {
         email
         inApp
+        push
       }
       collaborationPollModifiedOnPollIVotedOn {
         email
         inApp
+        push
       }
       collaborationPollVoteAffectedByOptionChange {
         email
         inApp
+        push
       }
     }
     user {
@@ -15270,18 +15274,22 @@ export const UpdateUserSettingsDocument = gql`
           collaborationPollVoteCastOnOwnPoll {
             email
             inApp
+            push
           }
           collaborationPollVoteCastOnPollIVotedOn {
             email
             inApp
+            push
           }
           collaborationPollModifiedOnPollIVotedOn {
             email
             inApp
+            push
           }
           collaborationPollVoteAffectedByOptionChange {
             email
             inApp
+            push
           }
           admin {
             communityApplicationReceived {
