@@ -71,27 +71,15 @@ self.addEventListener('push', event => {
   const payload = event.data.json();
   const { title, body, url, eventType } = payload;
 
-  const showNotification = async () => {
-    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-    // Check if any Alkemio tab is both focused AND visible (not hidden behind another tab)
-    const hasVisibleFocusedClient = clients.some(client => client.focused && client.visibilityState === 'visible');
-
-    if (hasVisibleFocusedClient) {
-      // App is in foreground — skip push notification (in-app notifications handle it)
-      return;
-    }
-
-    return self.registration.showNotification(title, {
+  event.waitUntil(
+    self.registration.showNotification(title, {
       body,
       icon: '/android-chrome-192x192.png',
       badge: '/android-chrome-192x192.png',
       data: { url },
-      // Use eventType + timestamp to avoid replacing unread notifications of the same type
       tag: eventType && payload.timestamp ? `${eventType}-${payload.timestamp}` : undefined,
-    });
-  };
-
-  event.waitUntil(showNotification());
+    })
+  );
 });
 
 self.addEventListener('notificationclick', event => {
