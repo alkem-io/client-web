@@ -104,6 +104,8 @@
     "adminsOnly": "Тъй като няма събития, този блок е видим само за $t(common.admins) и $t(common.leads)"
   },
   "buttons": {
+    "accept": "Accept",
+    "add": "Add",
     "leave": "Напусни",
     "learn-more": "Научете повече",
     "load-more": "Зареди още",
@@ -383,6 +385,8 @@
     "role": "Роля",
     "agreement": "Споразумение",
     "agreements": "Споразумения",
+    "Poll": "Poll",
+    "poll": "poll",
     "templates": "Шаблони",
     "noneTemplates": "Няма шаблони",
     "templateTypes": "Типове шаблони",
@@ -659,7 +663,8 @@
       "POST": "$t(common.Post)",
       "WHITEBOARD": "$t(common.Whiteboard)",
       "MEMO": "$t(common.Memo)",
-      "NONE": "$t(common.Post)"
+      "NONE": "$t(common.Post)",
+      "POLL": "$t(common.Poll)"
     }
   },
   "community": {
@@ -869,6 +874,10 @@
           "nItems": "{{count}} images in the gallery",
           "deleteItem": "Remove image from gallery",
           "emptyGallery": "No images yet. Click the + button to add images."
+        },
+        "poll": {
+          "title": "$t(common.Poll)",
+          "tooltip": "Create a $t(common.poll) for community voting"
         }
       },
       "contributionSettings": {
@@ -1235,7 +1244,10 @@
       "invalidEmail": "Невалиден имейл адрес",
       "duplicateEmail": "Повтарящ се имейл адрес",
       "elementMustBeValidUrl": "{{name}} трябва да е валиден URL",
-      "acceptedTerms": "Трябва да приемете общите условия"
+      "acceptedTerms": "Трябва да приемете общите условия",
+      "pollMinResponsesWithinOptions": "Minimum choices needed to vote must be less than or equal to the number of options.",
+      "pollMaxResponsesWithinOptions": "Maximum choices allowed per vote must be less than or equal to the number of options.",
+      "pollMinResponsesWithinMaxResponses": "Minimum choices needed to vote must be less than or equal to maximum choices allowed per vote."
     }
   },
   "templateDialog": {
@@ -2259,6 +2271,22 @@
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
           "subject": "Нов $t(common.comment) към {{type}}: {{eventTitle}}",
           "description": "{{triggeredByName}} остави $t(common.comment) на {{eventTitle}} в календара на {{spaceName}}"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL": {
+          "subject": "{{triggeredByName}} voted on your $t(common.poll) \"{{calloutName}}\" in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_POLL_I_VOTED_ON": {
+          "subject": "{{triggeredByName}} also voted on \"{{calloutName}}\" in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
+          "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified",
+          "description": "{{triggeredByName}} modified a $t(common.poll) you voted on"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE": {
+          "subject": "Your vote on \"{{calloutName}}\" in {{spaceName}} was affected by a change",
+          "description": "{{triggeredByName}} changed an option on a $t(common.poll) you voted on, and your vote was removed"
         }
       },
       "emptyInbox": "Няма чакащи $t(common.notifications)",
@@ -2279,13 +2307,13 @@
       "noMessages": "Няма съобщения",
       "selectConversation": "Изберете разговор, за да започнете да изпращате съобщения",
       "typeMessage": "Напишете съобщение",
-      "newMessage": "Ново съобщение",
+      "newMessage": "Start a conversation",
       "selectUser": "До",
       "noUsersFound": "Не са намерени потребители",
       "startTyping": "Започнете да пишете, за да търсите потребители",
-      "searchUsers": "Търсене на потребители...",
+      "searchUsers": "Find user(s)",
       "searchConversations": "Търсене...",
-      "createChat": "Създай чат",
+      "createChat": "New Chat",
       "startGroupChat": "Start group chat",
       "groupChatName": "Group name",
       "groupChatNameRequired": "Group name is required",
@@ -2348,6 +2376,96 @@
     },
     "goToMainPage": "Интересувате ли се от сътрудничество в други $t(common.spaces)? Кликнете тук, за да ги видите всички на универсалната начална страница на Alkemio.",
     "remove": "Премахни от хъба"
+  },
+  "poll": {
+    "vote": {
+      "minRequired": "Select at least {{min}} option(s)",
+      "maxReached": "Maximum {{max}} selections allowed"
+    },
+    "status": {
+      "submitting": "Submitting your vote...",
+      "preparingVote": "Preparing vote...",
+      "addingOption": "Adding option...",
+      "voted": "Voted.",
+      "removeMyVote": "Remove my vote",
+      "open": "Poll is open",
+      "closed": "Poll closed"
+    },
+    "results": {
+      "noVotes": "No votes yet",
+      "totalVotes_zero": "{{count}} votes",
+      "totalVotes_one": "{{count}} vote",
+      "totalVotes_other": "{{count}} votes",
+      "voters": "Voters",
+      "anonymousPoll": "This is an anonymous poll",
+      "votersMore_one": "{{count}} more voter",
+      "votersMore_other": "{{count}} more voters"
+    },
+    "options": {
+      "add": "Add Option",
+      "remove": "Remove Option",
+      "edit": "Edit Option",
+      "reorder": "Reorder Options",
+      "minRequired": "At least 2 options are required",
+      "confirmEdit": "Editing this option will delete all votes for it. Continue?",
+      "confirmRemove": "Removing this option will delete all votes for it. Continue?"
+    },
+    "create": {
+      "title": "$t(common.Poll) Title",
+      "options": "Options",
+      "settings": "$t(common.settings)",
+      "settingsDialogTitle": "$t(common.Poll) $t(common.settings)",
+      "minResponses": "Minimum choices needed to vote",
+      "maxResponses": "Maximum choices allowed per vote",
+      "votingOptions": "Voting options",
+      "displayOptions": "Display options",
+      "allowMultipleResponses": "Allow multiple responses per user",
+      "allowMultipleResponsesSettingsTooltip": "Configure the maximum and minimum number of choices a user can select when voting",
+      "infiniteResponses": "Any",
+      "infiniteResponsesTooltip": "Allow unlimited responses",
+      "allowUserOptions": "Allow users to add new options",
+      "onlyShowResultsAfterVoted": "Only show results after a user has voted",
+      "showVoterAvatars": "Show avatars of voters in the results",
+      "fixErrorsBeforeClosingTooltip": "There are validation errors in the settings, please fix them before closing the dialog",
+      "closeConfirm": {
+        "title": "Close settings dialog",
+        "message": "There are validation errors in the settings, if you close the dialog you will not be able to save the $t(common.callout). Are you sure you want to close it?"
+      }
+    },
+    "manage": {
+      "editPoll": "Edit $t(common.poll)",
+      "done": "Done",
+      "closePoll": "Close poll",
+      "reopenPoll": "Reopen poll",
+      "closePollConfirm": {
+        "title": "Close poll",
+        "content": "Are you sure you want to close this poll? Users will no longer be able to vote."
+      },
+      "reopenPollConfirm": {
+        "title": "Reopen poll",
+        "content": "Are you sure you want to reopen this poll? Users will be able to vote again."
+      },
+      "closePollSuccess": "Poll closed successfully",
+      "reopenPollSuccess": "Poll reopened successfully",
+      "statusChangeFailed": "Failed to update poll status. Please try again."
+    },
+    "error": {
+      "voteFailed": "Failed to submit your vote. Please try again.",
+      "staleOption": "This $t(common.poll) has been updated. Please refresh and try again.",
+      "networkError": "Network error. Please check your connection and try again.",
+      "optionActionFailed": "Failed to update $t(common.poll) options. Please try again."
+    },
+    "subscription": {
+      "voteRevoked": "Your vote was affected by a $t(common.poll) change. Please vote again."
+    },
+    "customOption": {
+      "placeholder": "Add a custom response..."
+    },
+    "removeVoteConfirm": {
+      "title": "Remove your vote",
+      "content": "Are you sure you want to remove your vote from this $t(common.poll)?",
+      "confirm": "Remove vote"
+    }
   },
   "pages": {
     "titles": {
@@ -3748,9 +3866,13 @@
           "communicationUpdateSent": "Получаване на $t(common.notification), когато ново актуализиране е споделено с $t(common.community), в която съм $t(common.member)",
           "collaborationCalloutPublished": "Получаване на $t(common.notification), когато $t(common.callout) е публикуван в $t(common.community), в която съм $t(common.member)",
           "collaborationCalloutContributionCreated": "Получаване на $t(common.notification), когато ново допринасяне ($t(common.whiteboard), $t(common.post), връзка, $t(common.memo) и др.) е създадено в $t(common.community), в която съм $t(common.member)",
-          "collaborationCalloutComment": "Получаване на $t(common.notification), когато е направен $t(common.comment) върху $t(common.callout) в $t(common.community), в която съм $t(common.member)",
+          "collaborationCalloutComment": "Receive a $t(common.notification) when a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutPostContributionComment": "Получаване на $t(common.notification), когато нов $t(common.comment) е добавен към допринасяне в $t(common.callout) в $t(common.community), в която съм $t(common.member)",
-          "communityCalendarEvents": "Получавайте календарни $t(common.notifications) за $t(common.community), от които съм $t(common.member)"
+          "communityCalendarEvents": "Получавайте календарни $t(common.notifications) за $t(common.community), от които съм $t(common.member)",
+          "collaborationPollVoteCastOnOwnPoll": "Someone votes on a $t(common.poll) I created",
+          "collaborationPollVoteCastOnPollIVotedOn": "Someone votes on a $t(common.poll) I also voted on",
+          "collaborationPollModifiedOnPollIVotedOn": "A $t(common.poll) I voted on is modified",
+          "collaborationPollVoteAffectedByOptionChange": "My vote is affected by a $t(common.poll) option change"
         }
       },
       "spaceAdmin": {
