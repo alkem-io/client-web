@@ -2,7 +2,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Box, Button, CircularProgress, DialogActions, DialogContent, IconButton, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserConversationsDocument, useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -55,13 +55,15 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
     return contributors.filter(user => user.id !== currentUser?.id && !selectedIds.has(user.id));
   })();
 
-  const debouncedSetFilter = debounce((val: string) => {
-    setFilter(val ? { email: val, displayName: val } : undefined);
-  }, 300);
+  const debouncedSetFilter = useRef(
+    debounce((val: string) => {
+      setFilter(val ? { email: val, displayName: val } : undefined);
+    }, 300)
+  ).current;
 
   useEffect(() => {
     return () => debouncedSetFilter.cancel();
-  }, [debouncedSetFilter]);
+  }, []);
 
   const handleInputChange = (_event: React.SyntheticEvent, value: string) => {
     setInputValue(value);

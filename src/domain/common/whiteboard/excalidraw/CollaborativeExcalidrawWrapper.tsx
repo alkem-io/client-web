@@ -9,7 +9,7 @@ import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
-import { type PropsWithChildren, type Ref, Suspense, useEffect, useState } from 'react';
+import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -146,9 +146,15 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
-  const debouncedRefresh = debounce(async () => {
-    excalidrawApi?.refresh();
-  }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL);
+  // Keep useMemo: wraps debounce(). Without stable reference, debounce is recreated every render,
+  // resetting the timer and breaking the scroll-listener cleanup in useEffect.
+  const debouncedRefresh = useMemo(
+    () =>
+      debounce(async () => {
+        excalidrawApi?.refresh();
+      }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL),
+    [excalidrawApi]
+  );
 
   useEffect(() => {
     window.addEventListener('scroll', debouncedRefresh, true);

@@ -9,7 +9,7 @@ import {
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, DialogContent, Paper } from '@mui/material';
 import { isNumber, sortBy } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContributionsSortOrderQuery,
@@ -76,7 +76,9 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     skip: !open || !callout.id,
   });
 
-  const queryItems = (() => {
+  // Keep useMemo: derived data used to sync into local state via useEffect([data]).
+  // Local state is needed because drag-and-drop reorders items independently of server data.
+  const queryItems = useMemo(() => {
     return sortBy(
       data?.lookup.callout?.contributions
         .filter(
@@ -99,13 +101,13 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
         })),
       'sortOrder'
     );
-  })();
+  }, [data]);
 
   const [items, setItems] = useState(queryItems);
 
   useEffect(() => {
     setItems(queryItems);
-  }, [queryItems]);
+  }, [data]);
 
   const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
   const handleSortContributions = async (contributions: CalloutContributionsSortItem[]) => {

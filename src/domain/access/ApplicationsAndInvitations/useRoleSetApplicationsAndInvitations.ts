@@ -80,13 +80,11 @@ const useRoleSetApplicationsAndInvitations = ({
   type ActorDetail = NonNullable<ActorDetailsQuery['actor']>;
   const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
 
-  const contributorIds = (() => {
+  useEffect(() => {
     const appIds = data?.lookup.roleSet?.applications.map(app => app.actor.id) ?? [];
     const invIds = data?.lookup.roleSet?.invitations.map(inv => inv.actor.id) ?? [];
-    return [...new Set([...appIds, ...invIds])];
-  })();
+    const contributorIds = [...new Set([...appIds, ...invIds])];
 
-  useEffect(() => {
     if (contributorIds.length === 0) {
       return;
     }
@@ -103,7 +101,7 @@ const useRoleSetApplicationsAndInvitations = ({
       setActorDetailsMap(newMap);
     };
     fetchAll();
-  }, [contributorIds, fetchActorDetails]);
+  }, [data, fetchActorDetails]);
 
   const getActorEmail = (actorDetail: ActorDetail | undefined): string | undefined => {
     if (!actorDetail) return undefined;

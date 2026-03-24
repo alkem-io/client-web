@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { debounce } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -148,19 +148,21 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     </>
   );
 
-  const debouncedSetFilter = debounce((value: string) => {
-    setFilter(value);
-  }, 300);
+  const debouncedSetFilterRef = useRef(
+    debounce((value: string) => {
+      setFilter(value);
+    }, 300)
+  );
 
   // When `inputValue` changes, we update `filter` with delay. Do not use debouncing directly on the `onChange` prop since it will apply the delay
   // on every key press, which will cause the input to lag.
   useEffect(() => {
-    debouncedSetFilter(inputValue);
+    debouncedSetFilterRef.current(inputValue);
 
     return () => {
-      debouncedSetFilter.cancel();
+      debouncedSetFilterRef.current.cancel();
     };
-  }, [inputValue, debouncedSetFilter]);
+  }, [inputValue]);
 
   useEffect(() => {
     const fetchVirtualContributors = async () => {
@@ -184,13 +186,23 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     fetchVirtualContributors();
   }, [virtualContributors]);
 
-  const memoizedFilteredOnAccount = filter
-    ? onAccount?.filter(acc => (acc.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
-    : undefined;
+  // Keep useMemo: both filtered arrays are in useEffect deps. Without stable references,
+  // .filter() creates new arrays every render → effect fires → setState → infinite loop.
+  const memoizedFilteredOnAccount = useMemo(
+    () =>
+      filter
+        ? onAccount?.filter(acc => (acc.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
+        : undefined,
+    [filter, onAccount]
+  );
 
-  const memoizedFilteredInLibrary = filter
-    ? inLibrary?.filter(lib => (lib.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
-    : undefined;
+  const memoizedFilteredInLibrary = useMemo(
+    () =>
+      filter
+        ? inLibrary?.filter(lib => (lib.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
+        : undefined,
+    [filter, inLibrary]
+  );
 
   useEffect(() => {
     if (filter) {

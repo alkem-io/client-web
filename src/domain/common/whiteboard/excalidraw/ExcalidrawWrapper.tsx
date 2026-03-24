@@ -8,7 +8,7 @@ import type {
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash-es';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
@@ -76,14 +76,16 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     return addNewFile(file);
   };
 
-  const data = (() => {
+  // Keep useMemo: data is in useEffect deps. Without stable reference,
+  // JSON.parse creates a new object every render → effect fires every render → excess API calls.
+  const data = useMemo(() => {
     const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
 
     return {
       ...parsedData,
       ...whiteboardDefaults,
     };
-  })();
+  }, [whiteboard?.content]);
 
   useEffect(() => {
     loadFiles(data);
@@ -93,30 +95,36 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     pushFilesToExcalidraw();
   }, [filesManager]);
 
-  const refreshOnDataChange = debounce(async (state: RefreshWhiteboardStateParam) => {
-    excalidrawApi?.updateScene(state);
+  // Keep useMemo: wraps debounce(). Without stable reference, debounce is recreated every render,
+  // cancelling the previous timer — effectively disabling the debounce.
+  const refreshOnDataChange = useMemo(
+    () =>
+      debounce(async (state: RefreshWhiteboardStateParam) => {
+        excalidrawApi?.updateScene(state);
 
-    if (Array.isArray(state.elements) && state.elements.length > 0) {
-      excalidrawApi?.scrollToContent(state.elements, {
-        animate: false,
-        fitToViewport: true,
-        // both values help with scaling issue when the content is displayed
-        viewportZoomFactor: 0.75, // 75% of the viewport, on preview
-        maxZoom: 1, // 100% zoom, in the whiteboard
-      });
-    }
+        if (Array.isArray(state.elements) && state.elements.length > 0) {
+          excalidrawApi?.scrollToContent(state.elements, {
+            animate: false,
+            fitToViewport: true,
+            // both values help with scaling issue when the content is displayed
+            viewportZoomFactor: 0.75, // 75% of the viewport, on preview
+            maxZoom: 1, // 100% zoom, in the whiteboard
+          });
+        }
 
-    // Find the properties present in `state.files` and missing in currentFiles
-    // and put them into missingFiles: BinaryFileData[]
-    const currentFiles = excalidrawApi?.getFiles() ?? {};
-    const newFiles = state.files ?? {};
-    const missingFiles: BinaryFileData[] = compact(
-      Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
-    );
-    if (excalidrawApi && missingFiles.length > 0) {
-      excalidrawApi.addFiles(missingFiles);
-    }
-  }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL);
+        // Find the properties present in `state.files` and missing in currentFiles
+        // and put them into missingFiles: BinaryFileData[]
+        const currentFiles = excalidrawApi?.getFiles() ?? {};
+        const newFiles = state.files ?? {};
+        const missingFiles: BinaryFileData[] = compact(
+          Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
+        );
+        if (excalidrawApi && missingFiles.length > 0) {
+          excalidrawApi.addFiles(missingFiles);
+        }
+      }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL),
+    [excalidrawApi]
+  );
 
   useEffect(() => {
     // apparently when a whiteboard state is changed too fast

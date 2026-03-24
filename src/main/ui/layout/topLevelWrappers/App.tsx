@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
@@ -28,10 +28,12 @@ const App = () => {
 
   const [cookieConsentHeight, setCookieConsentHeight] = useState(0);
 
-  const cookieConsentRef = (element: HTMLDivElement | null) => {
+  // Keep useCallback: ref callback that calls setState. Without stable reference, React
+  // re-invokes with null then element on every render → setCookieConsentHeight oscillates → infinite loop.
+  const cookieConsentRef = useCallback((element: HTMLDivElement | null) => {
     const height = element?.getBoundingClientRect().height ?? 0;
     setCookieConsentHeight(height);
-  };
+  }, []);
 
   return (
     <>

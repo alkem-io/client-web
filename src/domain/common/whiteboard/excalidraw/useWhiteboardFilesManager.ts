@@ -3,7 +3,7 @@ import type {
   BinaryFiles,
   ExcalidrawImperativeAPI,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Semaphore from 'ts-semaphore';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -112,7 +112,7 @@ const useWhiteboardFilesManager = ({
   }, [storageBucketId, uploader]);
 
   // Force re-render when cache changes
-  const [_cacheVersion, setCacheVersion] = useState(0);
+  const [cacheVersion, setCacheVersion] = useState(0);
   useEffect(() => {
     return cache.subscribe(() => setCacheVersion(cache.getVersion()));
   }, [cache]);
@@ -389,24 +389,33 @@ const useWhiteboardFilesManager = ({
     downloader.clearAllFailures();
   };
 
-  return {
-    addNewFile,
-    validateFile,
-    loadFiles,
-    getUploadedFiles,
-    pushFilesToExcalidraw,
-    convertLocalFileToRemote,
-    convertLocalFilesToRemoteInWhiteboard,
-    loadAndTryConvertEmbeddedFiles,
-    getFailureState,
-    retryFailedDownloads,
-    clearFailures,
-
-    loading: {
-      uploadingFile,
-      downloadingFiles,
-    },
-  };
+  // Keep useMemo: consumers use this return value in useEffect deps (e.g. ExcalidrawWrapper).
+  // Note: uploadingFile is intentionally excluded — including it caused an infinite re-render loop.
+  return useMemo<WhiteboardFilesManager>(
+    () => ({
+      addNewFile,
+      validateFile,
+      loadFiles,
+      getUploadedFiles,
+      pushFilesToExcalidraw,
+      convertLocalFileToRemote,
+      convertLocalFilesToRemoteInWhiteboard,
+      loadAndTryConvertEmbeddedFiles,
+      getFailureState,
+      retryFailedDownloads,
+      clearFailures,
+      loading: {
+        uploadingFile,
+        downloadingFiles,
+      },
+    }),
+    // Note: uploadingFile is intentionally excluded. Including it caused an infinite re-render loop
+    // when uploads fail (e.g. permission denied): failed upload toggles loading state → new filesManager
+    // reference → component re-render → onChange fires → upload retry → loop. The loading.uploadingFile
+    // value in the returned object will be stale (captured at memoization time); consumers needing
+    // real-time upload status should use the Apollo mutation state directly.
+    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, guestName]
+  );
 };
 
 export default useWhiteboardFilesManager;

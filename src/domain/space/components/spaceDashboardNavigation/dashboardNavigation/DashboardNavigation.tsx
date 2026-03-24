@@ -2,7 +2,7 @@ import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
 import { Box, Button, Collapse, IconButton, Tooltip } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import { debounce, difference } from 'lodash-es';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -58,7 +58,12 @@ const DashboardNavigation = ({
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
 
-  const ids = dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : [];
+  // Keep useMemo: ids is in useLayoutEffect deps (line ~161). Without stable reference,
+  // new array every render → effect fires → setViewportSnap → re-render → infinite loop.
+  const ids = useMemo(
+    () => (dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : []),
+    [dashboardNavigationRoot]
+  );
 
   // Used only on top level where we have "Show all"
   const itemsCount = ids.length - 1;
@@ -167,13 +172,14 @@ const DashboardNavigation = ({
 
   const onRefsUpdated = useRef(debounce(() => adjustViewportFnRef.current())).current;
 
-  // Has to maintain stable id over renders, otherwise we get a loop because React always invokes a new functional ref
-  const itemRef = (element: DashboardNavigationItemViewApi | null) => {
+  // Keep useCallback: passed as ref={itemRef} to DashboardNavigationItemView. Without stable
+  // reference, React re-invokes the ref on every render → onRefsUpdated → setViewportSnap → infinite loop.
+  const itemRef = useCallback((element: DashboardNavigationItemViewApi | null) => {
     if (element && itemRefs[element.id] !== element) {
       itemRefs[element.id] = element;
       onRefsUpdated();
     }
-  };
+  }, []);
 
   const shouldShift = isSnapped && currentLevel !== -1 && !isTopLevel && !compact;
 

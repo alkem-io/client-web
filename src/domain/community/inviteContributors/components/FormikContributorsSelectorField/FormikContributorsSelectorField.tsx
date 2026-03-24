@@ -2,7 +2,7 @@ import { Box, Button, type SxProps, TextField, type Theme } from '@mui/material'
 import Autocomplete, { autocompleteClasses, createFilterOptions } from '@mui/material/Autocomplete';
 import { useField, useFormikContext } from 'formik';
 import { compact, debounce, isArray } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import type { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
@@ -172,16 +172,18 @@ const FormikContributorsSelectorField = ({
   };
 
   // Debounce avoids firing a query on every keystroke
-  const debouncedSetFilter = debounce((val: string) => {
-    setFilter(val ? { email: val, displayName: val } : undefined);
-  }, 300);
+  const debouncedSetFilter = useRef(
+    debounce((val: string) => {
+      setFilter(val ? { email: val, displayName: val } : undefined);
+    }, 300)
+  ).current;
 
   const onTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     debouncedSetFilter(value);
   };
 
   // Clean up debounce on unmount
-  useEffect(() => () => debouncedSetFilter.cancel(), [debouncedSetFilter]);
+  useEffect(() => () => debouncedSetFilter.cancel(), []);
 
   const onTextFieldKeyDown = (event: React.KeyboardEvent) => {
     helpers.setTouched(true);

@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   UserConversationsDocument,
@@ -128,13 +128,15 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     return contributors.filter(user => user.id !== currentUser?.id && !memberIds.has(user.id));
   })();
 
-  const debouncedSetFilter = debounce((val: string) => {
-    setFilter(val ? { email: val, displayName: val } : undefined);
-  }, 300);
+  const debouncedSetFilter = useRef(
+    debounce((val: string) => {
+      setFilter(val ? { email: val, displayName: val } : undefined);
+    }, 300)
+  ).current;
 
   useEffect(() => {
     return () => debouncedSetFilter.cancel();
-  }, [debouncedSetFilter]);
+  }, []);
 
   const handleInputChange = (_event: React.SyntheticEvent, value: string) => {
     setInputValue(value);

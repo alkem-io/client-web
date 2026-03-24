@@ -3,7 +3,7 @@ import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/exc
 import { DialogContent } from '@mui/material';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
@@ -253,19 +253,22 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const formikRef = useRef<FormikProps<WhiteboardFormSchema>>(null);
 
-  const initialValues = {
-    profile: {
-      displayName: whiteboard?.profile?.displayName ?? '',
-    },
-
-    previewSettings: whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
-  };
+  // Keep useMemo: passed as Formik initialValues prop. Effect resets form on [whiteboard?.id] change.
+  const initialValues = useMemo(
+    () => ({
+      profile: {
+        displayName: whiteboard?.profile?.displayName ?? '',
+      },
+      previewSettings: whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    }),
+    [whiteboard]
+  );
 
   useEffect(() => {
     formikRef.current?.resetForm({
       values: initialValues,
     });
-  }, [initialValues]);
+  }, [whiteboard?.id]);
 
   if (state?.loadingWhiteboardValue) {
     return <Loading text="Loading whiteboard..." />;

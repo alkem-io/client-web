@@ -10,7 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { debounce, times } from 'lodash-es';
-import React, { type ComponentType, type PropsWithChildren, type ReactNode, useEffect, useState } from 'react';
+import React, { type ComponentType, type PropsWithChildren, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
@@ -147,13 +147,17 @@ export const AvailableMembers = <Member extends Identifiable>({
   // TODO debounce upper
   // Rationale: search can also be local or debounced at the transport level. This view is too deep to care about it.
   // Debouncing here also limits how high can we raise the searchTerm state.
-  const onSearchTermChangeDebounced = debounce(onSearchTermChange, FILTER_DEBOUNCE);
+  const onSearchTermChangeRef = useRef(onSearchTermChange);
+  onSearchTermChangeRef.current = onSearchTermChange;
+  const onSearchTermChangeDebouncedRef = useRef(
+    debounce((term: string) => onSearchTermChangeRef.current(term), FILTER_DEBOUNCE)
+  );
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
 
   useEffect(() => {
-    onSearchTermChangeDebounced(searchTerm);
-  }, [searchTerm, onSearchTermChangeDebounced]);
+    onSearchTermChangeDebouncedRef.current(searchTerm);
+  }, [searchTerm]);
 
   const columnsCount = React.Children.count(renderHeader()) + 1;
 
