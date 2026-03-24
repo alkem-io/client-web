@@ -2425,7 +2425,7 @@
       "infiniteResponsesTooltip": "Allow unlimited responses",
       "allowUserOptions": "Allow users to add new options",
       "onlyShowResultsAfterVoted": "Only show results after a user has voted",
-      "showVoterAvatars": "Show avatars of voters in the results",
+      "showVoterAvatars": "Show avatars of voters in the results (anonymous if unchecked)",
       "fixErrorsBeforeClosingTooltip": "There are validation errors in the settings, please fix them before closing the dialog",
       "closeConfirm": {
         "title": "Close settings dialog",

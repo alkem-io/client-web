@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Link } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollResultsVisibility, PollStatus } from '@/core/apollo/generated/graphql-schema';
+import { PollResultsDetail, PollStatus } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography/components';
@@ -83,7 +83,7 @@ const PollView = ({ poll, canVote = false }: PollViewProps) => {
   const mySelectedOptionIds = poll.myVote?.selectedOptions.map(o => o.id) ?? [];
   const hasVoted = !!poll.myVote;
   const isClosed = poll.status === PollStatus.Closed;
-  const isAnonymous = !(poll.settings.resultsVisibility === PollResultsVisibility.Visible);
+  const isAnonymous = poll.settings.resultsDetail !== PollResultsDetail.Full;
   const isSingleChoice = poll.settings.maxResponses === 1;
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(mySelectedOptionIds);
