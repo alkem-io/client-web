@@ -1,10 +1,10 @@
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
 import {
-  closestCenter,
   DndContext,
   DragOverlay,
   KeyboardSensor,
   PointerSensor,
+  pointerWithin,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -288,7 +288,7 @@ const InnovationFlowDragNDropEditor = ({
     <>
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={pointerWithin}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}

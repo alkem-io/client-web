@@ -176,7 +176,6 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
       <DialogHeader
         id="new-message-dialog"
         title={t('components.userMessaging.newMessage' as TranslationKey)}
-        subtitle={t('components.userMessaging.newMessageSubtitle' as TranslationKey)}
         onClose={handleClose}
       />
       <DialogContent>
