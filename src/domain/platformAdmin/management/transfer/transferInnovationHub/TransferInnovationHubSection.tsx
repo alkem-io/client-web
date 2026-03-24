@@ -64,12 +64,12 @@ const TransferInnovationHubSection = () => {
       {error && <Caption color="error">{t(error)}</Caption>}
       {hub && (
         <PageContentBlock>
-          <Gutters disablePadding={true}>
+          <Gutters row={true} disablePadding={true} alignItems="baseline">
             <BlockSectionTitle>{t(`${T_PREFIX}.hubName`)}</BlockSectionTitle>
             <span>{hub.profile.displayName}</span>
           </Gutters>
           {currentAccountName && (
-            <Gutters disablePadding={true}>
+            <Gutters row={true} disablePadding={true} alignItems="baseline">
               <BlockSectionTitle>{t(`${T_PREFIX}.currentAccount`)}</BlockSectionTitle>
               <span>{currentAccountName}</span>
             </Gutters>

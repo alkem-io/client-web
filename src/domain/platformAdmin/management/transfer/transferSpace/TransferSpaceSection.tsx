@@ -106,15 +106,15 @@ const TransferSpaceSection = () => {
           {space && isL0Space && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.spaceInfo`)}</BlockTitle>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{space.about.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.description`)}</BlockSectionTitle>
                 <span>{space.about.profile.description}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.level`)}</BlockSectionTitle>
                 <span>{space.level}</span>
               </Gutters>
@@ -151,7 +151,7 @@ const TransferSpaceSection = () => {
           {accountOwner?.name && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.targetAccountInfo`)}</BlockTitle>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.accountOwnerType`)}</BlockSectionTitle>
                 <span>
                   {accountOwner.type === 'user'
@@ -159,12 +159,12 @@ const TransferSpaceSection = () => {
                     : t(`${T_PREFIX}.accountOwnerTypeOrganization`)}
                 </span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{accountOwner.name}</span>
               </Gutters>
               {accountOwner.accountId && (
-                <Gutters disablePadding={true}>
+                <Gutters row={true} disablePadding={true} alignItems="baseline">
                   <BlockSectionTitle>{t(`${T_PREFIX}.accountId`)}</BlockSectionTitle>
                   <span>{accountOwner.accountId}</span>
                 </Gutters>

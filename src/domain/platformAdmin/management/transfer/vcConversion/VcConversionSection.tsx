@@ -72,22 +72,22 @@ const VcConversionSection = () => {
       {error && <Caption color="error">{t(error)}</Caption>}
       {vc && (
         <PageContentBlock>
-          <Gutters disablePadding={true}>
+          <Gutters row={true} disablePadding={true} alignItems="baseline">
             <BlockSectionTitle>{t(`${T_PREFIX}.vcName`)}</BlockSectionTitle>
             <span>{vc.profile?.displayName}</span>
           </Gutters>
-          <Gutters disablePadding={true}>
+          <Gutters row={true} disablePadding={true} alignItems="baseline">
             <BlockSectionTitle>{t(`${T_PREFIX}.vcType`)}</BlockSectionTitle>
             <span>{bodyOfKnowledgeType}</span>
           </Gutters>
           {isSpaceBased && sourceSpaceName && (
             <>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.sourceSpace`)}</BlockSectionTitle>
                 <span>{sourceSpaceName}</span>
               </Gutters>
               {!spaceLoading && (
-                <Gutters disablePadding={true}>
+                <Gutters row={true} disablePadding={true} alignItems="baseline">
                   <BlockSectionTitle>{t(`${T_PREFIX}.calloutCount`)}</BlockSectionTitle>
                   <span>{calloutCount}</span>
                 </Gutters>

@@ -103,19 +103,19 @@ const TransferCalloutSection = () => {
           {callout && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.calloutInfo`)}</BlockTitle>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{callout.framing.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.description`)}</BlockSectionTitle>
                 <span>{callout.framing.profile.description}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.createdBy`)}</BlockSectionTitle>
                 <span>{callout.createdBy?.profile?.displayName ?? t(`${T_PREFIX}.unknown`)}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.contributions`)}</BlockSectionTitle>
                 <span>
                   {t(`${T_PREFIX}.contributionsSummary`, {
@@ -157,16 +157,16 @@ const TransferCalloutSection = () => {
           {space && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.targetSpaceInfo`)}</BlockTitle>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{space.about.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.level`)}</BlockSectionTitle>
                 <span>{space.level}</span>
               </Gutters>
               {calloutsSetId && (
-                <Gutters disablePadding={true}>
+                <Gutters row={true} disablePadding={true} alignItems="baseline">
                   <BlockSectionTitle>{t(`${T_PREFIX}.calloutsSetId`)}</BlockSectionTitle>
                   <span>{calloutsSetId}</span>
                 </Gutters>

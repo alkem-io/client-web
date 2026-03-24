@@ -64,12 +64,12 @@ const TransferVirtualContributorSection = () => {
       {error && <Caption color="error">{t(error)}</Caption>}
       {vc && (
         <PageContentBlock>
-          <Gutters disablePadding={true}>
+          <Gutters row={true} disablePadding={true} alignItems="baseline">
             <BlockSectionTitle>{t(`${T_PREFIX}.vcName`)}</BlockSectionTitle>
             <span>{vc.profile?.displayName}</span>
           </Gutters>
           {currentAccountName && (
-            <Gutters disablePadding={true}>
+            <Gutters row={true} disablePadding={true} alignItems="baseline">
               <BlockSectionTitle>{t(`${T_PREFIX}.currentAccount`)}</BlockSectionTitle>
               <span>{currentAccountName}</span>
             </Gutters>

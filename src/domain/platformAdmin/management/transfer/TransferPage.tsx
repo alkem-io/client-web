@@ -4,7 +4,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Gutters from '@/core/ui/grid/Gutters';
-import { BlockTitle, Caption } from '@/core/ui/typography';
+import { Caption, PageTitle } from '@/core/ui/typography';
 import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
 import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
 import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
@@ -55,15 +55,15 @@ const TransferPage = () => {
           </Gutters>
 
           {/* Conversions Area */}
-          <PageContentBlock>
-            <BlockTitle>{t(`${T_PREFIX}.conversionsArea`)}</BlockTitle>
+          <PageContentBlock accent={true}>
+            <PageTitle>{t(`${T_PREFIX}.conversionsArea`)}</PageTitle>
           </PageContentBlock>
           <SpaceConversionSection />
           <VcConversionSection />
 
           {/* Transfers Area */}
-          <PageContentBlock>
-            <BlockTitle>{t(`${T_PREFIX}.transfersArea`)}</BlockTitle>
+          <PageContentBlock accent={true} sx={{ marginTop: 3 }}>
+            <PageTitle>{t(`${T_PREFIX}.transfersArea`)}</PageTitle>
           </PageContentBlock>
           <TransferSpaceSection />
           <TransferInnovationHubSection />

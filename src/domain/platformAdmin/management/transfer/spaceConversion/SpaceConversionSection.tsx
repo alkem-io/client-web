@@ -65,22 +65,22 @@ const SpaceConversionSection = () => {
       {error && <Caption color="error">{t(error)}</Caption>}
       {space && resolvedLevel !== undefined && (
         <PageContentBlock>
-          <Gutters disablePadding={true}>
+          <Gutters row={true} disablePadding={true} alignItems="baseline">
             <BlockSectionTitle>{t(`${T_PREFIX}.spaceName`)}</BlockSectionTitle>
             <span>{space.about.profile.displayName}</span>
           </Gutters>
-          <Gutters disablePadding={true}>
+          <Gutters row={true} disablePadding={true} alignItems="baseline">
             <BlockSectionTitle>{t(`${T_PREFIX}.spaceLevel`)}</BlockSectionTitle>
             <span>{resolvedLevel}</span>
           </Gutters>
           {accountOwnerName && (
-            <Gutters disablePadding={true}>
+            <Gutters row={true} disablePadding={true} alignItems="baseline">
               <BlockSectionTitle>{t(`${T_PREFIX}.accountOwner`)}</BlockSectionTitle>
               <span>{accountOwnerName}</span>
             </Gutters>
           )}
           {communityCounts && (
-            <Gutters disablePadding={true}>
+            <Gutters row={true} disablePadding={true} alignItems="baseline">
               <BlockSectionTitle>{t(`${T_PREFIX}.communityMembers`)}</BlockSectionTitle>
               <span>
                 {communityCounts.memberUsers} members, {communityCounts.leadUsers} leads,{' '}
