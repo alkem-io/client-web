@@ -1,0 +1,73 @@
+query VcConversionUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    virtualContributor {
+      id
+    }
+  }
+}
+
+query VcConversionLookup($vcId: UUID!) {
+  lookup {
+    virtualContributor(ID: $vcId) {
+      id
+      about {
+        profile {
+          displayName
+          url
+        }
+      }
+      aiPersona {
+        bodyOfKnowledgeType
+        bodyOfKnowledgeID
+      }
+      account {
+        id
+        host {
+          ... on Organization {
+            profile {
+              displayName
+            }
+          }
+          ... on User {
+            profile {
+              displayName
+            }
+          }
+        }
+      }
+      authorization {
+        myPrivileges
+      }
+    }
+  }
+}
+
+query VcConversionSourceSpaceCallouts($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        profile {
+          displayName
+        }
+      }
+      collaboration {
+        calloutsSet {
+          callouts {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation ConvertVcToKnowledgeBase($virtualContributorID: UUID!) {
+  convertVirtualContributorToUseKnowledgeBase(
+    conversionData: { virtualContributorID: $virtualContributorID }
+  ) {
+    id
+  }
+}

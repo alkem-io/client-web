@@ -1,0 +1,49 @@
+query InnovationPackTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    innovationPack {
+      id
+    }
+  }
+}
+
+query InnovationPackTransferLookup($packId: UUID!) {
+  lookup {
+    innovationPack(ID: $packId) {
+      id
+      about {
+        profile {
+          displayName
+          url
+        }
+      }
+      account {
+        id
+        host {
+          ... on Organization {
+            profile {
+              displayName
+            }
+          }
+          ... on User {
+            profile {
+              displayName
+            }
+          }
+        }
+      }
+      authorization {
+        myPrivileges
+      }
+    }
+  }
+}
+
+mutation TransferInnovationPackToAccount($innovationPackID: UUID!, $targetAccountID: UUID!) {
+  transferInnovationPackToAccount(
+    transferData: { innovationPackID: $innovationPackID, targetAccountID: $targetAccountID }
+  ) {
+    id
+  }
+}

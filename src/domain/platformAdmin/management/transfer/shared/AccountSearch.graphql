@@ -1,0 +1,43 @@
+query AccountSearchUsers($first: Int!, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, filter: $filter) {
+      users {
+        id
+        account {
+          id
+          authorization {
+            myPrivileges
+          }
+        }
+        profile {
+          displayName
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}
+
+query AccountSearchOrganizations($first: Int!, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, filter: $filter) {
+      organization {
+        id
+        account {
+          id
+          authorization {
+            myPrivileges
+          }
+        }
+        profile {
+          displayName
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}

@@ -283,7 +283,7 @@
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
     "authorizationPolicies": "Authorization Policies",
-    "transfer": "Transfer",
+    "transfer": "Conversions & Transfers",
     "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Name",
@@ -2557,6 +2557,115 @@
       }
     },
     "admin": {
+      "conversionsAndTransfers": {
+        "pageTitle": "Conversions & Transfers",
+        "conversionsArea": "Conversions",
+        "transfersArea": "Transfers"
+      },
+      "spaceConversion": {
+        "sectionTitle": "Space Hierarchy Conversion",
+        "urlPlaceholder": "Paste space URL or path",
+        "resolve": "Resolve",
+        "urlRequired": "URL is required",
+        "noConversions": "L0 (top-level) spaces cannot be converted to a different hierarchy level.",
+        "spaceName": "Name",
+        "spaceLevel": "Level",
+        "accountOwner": "Account Owner",
+        "communityMembers": "Community Members",
+        "promoteL1ToL0": {
+          "button": "Promote to Space (L1 → L0)",
+          "confirmTitle": "Promote Subspace to Space?",
+          "confirmWarning": "This will promote the subspace to a top-level space. The innovation flow will be reset to defaults. Admin roles will be reset."
+        },
+        "demoteL1ToL2": {
+          "button": "Demote to Sub-subspace (L1 → L2)",
+          "confirmTitle": "Demote Subspace to Sub-subspace?",
+          "confirmWarning": "This will demote the subspace under the selected parent. All community members (users, organizations, and virtual contributors) will be REMOVED. Admin roles will be reset. This action cannot be easily undone.",
+          "noTargets": "No other subspaces exist in this space to serve as a parent.",
+          "targetLabel": "Select target parent subspace"
+        },
+        "promoteL2ToL1": {
+          "button": "Promote to Subspace (L2 → L1)",
+          "confirmTitle": "Promote Sub-subspace to Subspace?",
+          "confirmWarning": "This will promote the sub-subspace to a subspace. Admin roles will be reset."
+        },
+        "successMessage": "Space conversion completed successfully.",
+        "errorMessage": "Failed to convert space.",
+        "urlNotFound": "URL not found.",
+        "urlNotSpace": "URL does not resolve to a space."
+      },
+      "vcConversion": {
+        "sectionTitle": "Virtual Contributor Type Conversion",
+        "urlPlaceholder": "Paste virtual contributor URL or path",
+        "resolve": "Resolve",
+        "urlRequired": "URL is required",
+        "vcName": "Name",
+        "vcType": "Knowledge Type",
+        "sourceSpace": "Source Space",
+        "calloutCount": "Callouts to Migrate",
+        "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
+        "convertButton": "Convert to Knowledge Base",
+        "confirmTitle": "Convert Virtual Contributor?",
+        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "successMessage": "Virtual contributor conversion completed successfully.",
+        "errorMessage": "Failed to convert virtual contributor.",
+        "urlNotFound": "URL not found.",
+        "urlNotVc": "URL does not resolve to a virtual contributor."
+      },
+      "transferHub": {
+        "sectionTitle": "Transfer Innovation Hub",
+        "urlPlaceholder": "Paste innovation hub URL or path",
+        "resolve": "Resolve",
+        "urlRequired": "URL is required",
+        "hubName": "Name",
+        "currentAccount": "Current Account",
+        "targetAccountLabel": "Select target account",
+        "transferButton": "Transfer Innovation Hub",
+        "confirmTitle": "Transfer Innovation Hub?",
+        "confirmWarning": "This will transfer the innovation hub to the selected account. Ensure the target account has the necessary privileges.",
+        "successMessage": "Innovation hub transferred successfully.",
+        "errorMessage": "Failed to transfer innovation hub.",
+        "urlNotFound": "URL not found.",
+        "urlNotHub": "URL does not resolve to an innovation hub."
+      },
+      "transferPack": {
+        "sectionTitle": "Transfer Innovation Pack",
+        "urlPlaceholder": "Paste innovation pack URL or path",
+        "resolve": "Resolve",
+        "urlRequired": "URL is required",
+        "packName": "Name",
+        "currentAccount": "Current Account",
+        "targetAccountLabel": "Select target account",
+        "transferButton": "Transfer Innovation Pack",
+        "confirmTitle": "Transfer Innovation Pack?",
+        "confirmWarning": "This will transfer the innovation pack to the selected account. Ensure the target account has the necessary privileges.",
+        "successMessage": "Innovation pack transferred successfully.",
+        "errorMessage": "Failed to transfer innovation pack.",
+        "urlNotFound": "URL not found.",
+        "urlNotPack": "URL does not resolve to an innovation pack."
+      },
+      "transferVc": {
+        "sectionTitle": "Transfer Virtual Contributor",
+        "urlPlaceholder": "Paste virtual contributor URL or path",
+        "resolve": "Resolve",
+        "urlRequired": "URL is required",
+        "vcName": "Name",
+        "currentAccount": "Current Account",
+        "targetAccountLabel": "Select target account",
+        "transferButton": "Transfer Virtual Contributor",
+        "confirmTitle": "Transfer Virtual Contributor?",
+        "confirmWarning": "This will transfer the virtual contributor to the selected account. Ensure the target account has the necessary privileges.",
+        "successMessage": "Virtual contributor transferred successfully.",
+        "errorMessage": "Failed to transfer virtual contributor.",
+        "urlNotFound": "URL not found.",
+        "urlNotVc": "URL does not resolve to a virtual contributor."
+      },
+      "accountSearch": {
+        "searchPlaceholder": "Search by name...",
+        "noResults": "No accounts found with TransferResourceAccept privilege.",
+        "typeUser": "User",
+        "typeOrganization": "Organization"
+      },
       "transferCallout": {
         "sectionTitle": "Transfer Callout",
         "calloutUrl": "Callout URL",
