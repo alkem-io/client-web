@@ -1,10 +1,9 @@
-import { useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import Gutters from '@/core/ui/grid/Gutters';
-import { Caption, PageTitle } from '@/core/ui/typography';
+import { PageTitle } from '@/core/ui/typography';
 import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
 import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
 import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
@@ -25,7 +24,6 @@ const currentTab = AdminSection.Transfer;
 
 const TransferPage = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   return (
     <TopLevelLayout
@@ -48,28 +46,39 @@ const TransferPage = () => {
     >
       <PageContent>
         <PageContentColumn columns={12}>
-          <Gutters padding={0} gap={0} alignItems={'center'} flex={1}>
-            <Caption sx={{ color: theme.palette.error.main }} title={t('components.deleteEntity.title')}>
+          <Box
+            sx={{
+              border: 2,
+              borderColor: 'error.main',
+              borderRadius: 1,
+              padding: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              width: '100%',
+            }}
+          >
+            <PageTitle sx={{ color: 'error.main', textAlign: 'center' }}>
               {t('components.deleteEntity.title')}
-            </Caption>
-          </Gutters>
+            </PageTitle>
 
-          {/* Conversions Area */}
-          <PageContentBlock accent={true}>
-            <PageTitle>{t(`${T_PREFIX}.conversionsArea`)}</PageTitle>
-          </PageContentBlock>
-          <SpaceConversionSection />
-          <VcConversionSection />
+            {/* Conversions Area */}
+            <PageContentBlock accent={true}>
+              <PageTitle>{t(`${T_PREFIX}.conversionsArea`)}</PageTitle>
+            </PageContentBlock>
+            <SpaceConversionSection />
+            <VcConversionSection />
 
-          {/* Transfers Area */}
-          <PageContentBlock accent={true} sx={{ marginTop: 3 }}>
-            <PageTitle>{t(`${T_PREFIX}.transfersArea`)}</PageTitle>
-          </PageContentBlock>
-          <TransferSpaceSection />
-          <TransferInnovationHubSection />
-          <TransferInnovationPackSection />
-          <TransferVirtualContributorSection />
-          <TransferCalloutSection />
+            {/* Transfers Area */}
+            <PageContentBlock accent={true} sx={{ marginTop: 3 }}>
+              <PageTitle>{t(`${T_PREFIX}.transfersArea`)}</PageTitle>
+            </PageContentBlock>
+            <TransferSpaceSection />
+            <TransferInnovationHubSection />
+            <TransferInnovationPackSection />
+            <TransferVirtualContributorSection />
+            <TransferCalloutSection />
+          </Box>
         </PageContentColumn>
       </PageContent>
     </TopLevelLayout>
