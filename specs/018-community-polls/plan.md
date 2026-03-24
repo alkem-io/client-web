@@ -215,3 +215,14 @@ Impact on components:
   `poll.status.closed`; remove obsolete `poll.vote.button`, `poll.vote.changeMyVote`,
   `poll.vote.cancelButton`
 
+## Known Limitations
+
+### Poll Templates Not Supported (temporary)
+
+Poll callouts cannot be saved as or created from callout templates. Two guards enforce this:
+
+1. **Template creation form** (`TemplateCalloutForm.tsx`): `disablePolls: true` in `calloutRestrictions` — the Poll radio button is disabled when creating or editing callout templates.
+2. **Save as template** (`useCalloutDetails.ts`): `canBeSavedAsTemplate` is set to `false` when the callout's framing type is `Poll` — the "Save as template" menu item is hidden for poll callouts.
+
+Both are marked with `TODO` comments and should be removed once poll template support is implemented.
+

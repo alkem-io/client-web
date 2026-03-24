@@ -301,6 +301,10 @@ A callout editor (facilitator/admin) can close or reopen a poll from the Edit Ca
 - **SC-007**: 90% of first-time users successfully cast a vote without needing help or documentation.
 - **SC-008**: All poll UI elements meet WCAG 2.1 AA accessibility requirements, including keyboard navigation and screen reader support.
 
+## Known Limitations
+
+- **Poll templates not supported**: Poll callouts cannot be saved as templates and the Poll framing type is disabled in the callout template creation form. This is a temporary limitation until poll template support is implemented.
+
 ## Assumptions
 
 - The server API follows the GraphQL contract defined in `specs/038-community-polls/`.
