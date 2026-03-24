@@ -30,7 +30,7 @@ Build a unified "Conversions & Transfers" admin page that enables Platform Admin
 | # | Principle | Status | Evidence / Mitigation |
 |---|-----------|--------|----------------------|
 | I | Domain-Driven Frontend Boundaries | PASS | All new components go under `src/domain/platformAdmin/management/transfer/`. Domain hooks encapsulate GraphQL operations; section components orchestrate hooks and return UI. No business logic in components. |
-| II | React 19 Concurrent UX Discipline | PASS | Mutations use `useState` loading states consistent with existing transfer patterns. `useTransition` considered but existing pattern uses simpler `useState` + `try/finally` — matching established codebase convention. Confirmation dialogs are accessible and keyboard-navigable. |
+| II | React 19 Concurrent UX Discipline | PASS | Admin mutations are sub-second one-shot operations (not "long-running" data fetches or transitions that block paint), so `useState` + `try/finally` loading states are sufficient — `useTransition` and `useOptimistic` provide no UX benefit here since there is no optimistic state to show and no concurrent rendering to coordinate. Confirmation dialogs are accessible and keyboard-navigable. |
 | III | GraphQL Contract Fidelity | PASS | All operations use generated hooks from `apollo-hooks.ts`. 7 new `.graphql` documents require `pnpm codegen` in the implementation PR. No raw `useQuery`; no direct GraphQL type exports through UI contracts. |
 | IV | State & Side-Effect Isolation | PASS | State lives in Apollo cache + local component state (URL inputs, dialog open/close). No direct DOM manipulation. Notifications go through `useNotification` adapter. |
 | V | Experience Quality & Safeguards | PASS | All destructive operations (L1→L2, VC conversion, callout transfer) require explicit confirmation dialogs listing consequences. WCAG 2.1 AA: semantic HTML, keyboard navigation, ARIA labels on form inputs. Loading indicators prevent double-submission. |
@@ -138,7 +138,7 @@ src/domain/platformAdmin/management/transfer/
 | # | Principle | Status | Post-Design Evidence |
 |---|-----------|--------|---------------------|
 | I | Domain-Driven Frontend | PASS | All 6 new subdirectories under `src/domain/platformAdmin/management/transfer/`. Shared `AccountSearchPicker` in `shared/` — cross-cutting within the admin domain, not leaked outside. |
-| II | React 19 Concurrent UX | PASS | Design uses `useState` + `try/finally` loading pattern consistent with existing sections. No concurrent rendering risks — mutations are user-initiated one-at-a-time. |
+| II | React 19 Concurrent UX | PASS | Admin mutations are sub-second one-shot operations — `useState` + `try/finally` is appropriate because there is no optimistic state, no concurrent rendering risk, and no long-running transition to coordinate. `useTransition` would add complexity without UX benefit. |
 | III | GraphQL Contract Fidelity | PASS | 6 new `.graphql` documents defined in `contracts/`. All use generated hooks after `pnpm codegen`. No raw queries. Return types request only `{ id }` to avoid schema mismatches. |
 | IV | State & Side-Effect Isolation | PASS | All state is local (URL inputs, dialog open, loading flags) or Apollo cache. `useNotification` for side effects. No direct DOM manipulation. |
 | V | Experience Quality & Safeguards | PASS | 4 distinct confirmation dialogs with operation-specific consequences. WCAG: form inputs have labels, buttons have descriptive text, dialogs are keyboard-navigable. Empty picker states handled with explanatory messages. |

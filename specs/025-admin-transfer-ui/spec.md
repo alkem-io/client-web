@@ -102,7 +102,7 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 
 - **Invalid URL entry**: The system displays a clear "entity not found" error without crashing.
 - **Insufficient privileges**: The operation button is disabled or the mutation returns an authorization error displayed inline.
-- **Concurrent modification**: The mutation may fail with a conflict error, displayed to the admin with guidance to retry.
+- **Concurrent modification**: The mutation may fail with a conflict error, displayed to the admin with the message "This entity was modified by another operation. Please re-resolve the URL and try again."
 - **Already at target state**: Conversion options that are not applicable to the resolved entity's current level are hidden or disabled with an explanation.
 - **Network/server failure during operation**: The admin sees an error message. Backend mutations are atomic — no partial state. Safe to retry.
 - **Empty picker results**: When the searchable picker returns no results (e.g., no valid parent L1 spaces, no accessible accounts), the admin sees an explanatory message and the operation cannot proceed.
@@ -121,7 +121,11 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 #### Entity Resolution & State Display
 
 - **FR-003**: System MUST allow admins to identify source entities by URL and resolve them to display their current state.
-- **FR-004**: Before any conversion or transfer, system MUST display the entity's current state: name, level (for spaces), community member count (for spaces with destructive community changes), account owner, and relevant attributes.
+- **FR-004**: Before any conversion or transfer, system MUST display the entity's current state. Per entity type:
+  - **Space**: name, hierarchy level (L0/L1/L2), account owner; for L1 spaces additionally community member count, lead count, organization count, and VC count (needed for L1→L2 destruction warning).
+  - **Innovation Hub / Innovation Pack / Virtual Contributor**: name, current account owner.
+  - **Virtual Contributor (conversion)**: name, current type (Space-based / Knowledge Base-based), source space name, callout count to be moved.
+  - **Callout**: name, contribution count, current location (existing display, preserved).
 - **FR-005**: For L1 → L2 demotion, system MUST display the count of community members, leads, organizations, and virtual contributors that will be removed.
 - **FR-006**: For VC type conversion, system MUST display the number of callouts that will be moved from the source space.
 - **FR-025**: For space conversions, when a space URL is resolved, system MUST display only the conversion operations applicable to that space's current level (L0: none with informational message; L1: promote to L0 and demote to L2; L2: promote to L1).
@@ -145,7 +149,7 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 - **FR-012**: System MUST support promoting a subspace to a top-level space (L1 → L0), using the `convertSpaceL1ToSpaceL0` mutation.
 - **FR-013**: System MUST support promoting a sub-subspace to a subspace (L2 → L1), using the `convertSpaceL2ToSpaceL1` mutation.
 - **FR-014**: System MUST support demoting a subspace to a sub-subspace (L1 → L2), using the `convertSpaceL1ToSpaceL2` mutation.
-- **FR-015**: System MUST support converting a space-based VC to knowledge-base-based, using the `convertVirtualContributorToUseKnowledgeBase` mutation.
+- **FR-015**: System MUST support converting a space-based VC to knowledge-base-based, using the `convertVirtualContributorToUseKnowledgeBase` mutation. The server enforces that the VC and source space belong to the same account; if violated, the UI MUST display the server's authorization/constraint error via FR-023.
 
 #### Transfer Operations
 
@@ -178,7 +182,7 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 - **SC-001**: Platform admins can perform all 9 conversion/transfer operations from the UI without any direct API calls.
 - **SC-002**: Every destructive operation (L1→L2, VC conversion, callout transfer) presents a confirmation dialog that clearly lists all data changes, and the admin must actively confirm before execution.
 - **SC-003**: 100% of operations that violate constraints are rejected with a user-understandable error message before the mutation is attempted or upon server rejection.
-- **SC-004**: Admins can complete any single conversion or transfer operation (from entity identification to confirmation) in under 60 seconds.
+- **SC-004**: Admins can complete any single conversion or transfer operation (from entity identification to confirmation) in under 60 seconds of wall-clock time under normal network conditions.
 - **SC-005**: The existing transfer space and transfer callout functionality continues to work identically after the page is extended.
 - **SC-006**: All confirmation dialogs for destructive operations accurately describe the community and content impact specific to each operation type (no generic warnings).
 - **SC-007**: For space conversions, only the operations applicable to the resolved space's current level are presented — no invalid operation can be attempted from the UI.
