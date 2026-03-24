@@ -32,12 +32,7 @@ const useTransferInnovationHub = () => {
   });
 
   const hub = hubData?.lookup.innovationHub;
-  const accountHost = hub?.account?.host;
-  const currentAccountName = accountHost
-    ? 'profile' in accountHost
-      ? accountHost.profile.displayName
-      : undefined
-    : undefined;
+  const currentAccountName = hub?.account?.host?.profile?.displayName;
 
   // Mutation
   const [transferMutation, { loading: transferLoading }] = useTransferInnovationHubToAccountMutation();

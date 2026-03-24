@@ -74,7 +74,7 @@ const VcConversionSection = () => {
         <PageContentBlock>
           <Gutters disablePadding={true}>
             <BlockSectionTitle>{t(`${T_PREFIX}.vcName`)}</BlockSectionTitle>
-            <span>{vc.about.profile.displayName}</span>
+            <span>{vc.profile?.displayName}</span>
           </Gutters>
           <Gutters disablePadding={true}>
             <BlockSectionTitle>{t(`${T_PREFIX}.vcType`)}</BlockSectionTitle>

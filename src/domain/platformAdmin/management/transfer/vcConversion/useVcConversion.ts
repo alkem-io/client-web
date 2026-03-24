@@ -37,17 +37,12 @@ const useVcConversion = () => {
   });
 
   const vc = vcData?.lookup.virtualContributor;
-  const bodyOfKnowledgeType = vc?.aiPersona?.bodyOfKnowledgeType;
-  const bodyOfKnowledgeId = vc?.aiPersona?.bodyOfKnowledgeID;
+  const bodyOfKnowledgeType = vc?.bodyOfKnowledgeType;
+  const bodyOfKnowledgeId = vc?.bodyOfKnowledgeID;
   const isSpaceBased = bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioSpace;
   const isAlreadyConverted = bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase;
 
-  const accountHost = vc?.account?.host;
-  const accountOwnerName = accountHost
-    ? 'profile' in accountHost
-      ? accountHost.profile.displayName
-      : undefined
-    : undefined;
+  const accountOwnerName = vc?.account?.host?.profile?.displayName;
 
   // Step 3: Fetch source space callout count (only for space-based VCs)
   const { data: spaceData, loading: spaceLoading } = useVcConversionSourceSpaceCalloutsQuery({

@@ -12,24 +12,15 @@ query VcTransferLookup($vcId: UUID!) {
   lookup {
     virtualContributor(ID: $vcId) {
       id
-      about {
-        profile {
-          displayName
-          url
-        }
+      profile {
+        displayName
+        url
       }
       account {
         id
         host {
-          ... on Organization {
-            profile {
-              displayName
-            }
-          }
-          ... on User {
-            profile {
-              displayName
-            }
+          profile {
+            displayName
           }
         }
       }

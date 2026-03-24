@@ -86,11 +86,9 @@ describe('useVcConversion', () => {
       lookup: {
         virtualContributor: {
           id: 'vc-1',
-          about: { profile: { displayName: 'Space VC', url: '/vc' } },
-          aiPersona: {
-            bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
-            bodyOfKnowledgeID: 'source-space-1',
-          },
+          profile: { displayName: 'Space VC', url: '/vc' },
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
+          bodyOfKnowledgeID: 'source-space-1',
           account: { id: 'acc-1', host: { profile: { displayName: 'Owner' } } },
           authorization: { myPrivileges: [] },
         },
@@ -128,11 +126,9 @@ describe('useVcConversion', () => {
       lookup: {
         virtualContributor: {
           id: 'vc-2',
-          about: { profile: { displayName: 'KB VC', url: '/vc2' } },
-          aiPersona: {
-            bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase,
-            bodyOfKnowledgeID: null,
-          },
+          profile: { displayName: 'KB VC', url: '/vc2' },
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase,
+          bodyOfKnowledgeID: null,
           account: { id: 'acc-1', host: { profile: { displayName: 'Owner' } } },
           authorization: { myPrivileges: [] },
         },
@@ -158,11 +154,9 @@ describe('useVcConversion', () => {
       lookup: {
         virtualContributor: {
           id: 'vc-3',
-          about: { profile: { displayName: 'Other VC', url: '/vc3' } },
-          aiPersona: {
-            bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.Other,
-            bodyOfKnowledgeID: null,
-          },
+          profile: { displayName: 'Other VC', url: '/vc3' },
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.Other,
+          bodyOfKnowledgeID: null,
           account: { id: 'acc-1', host: { profile: { displayName: 'Owner' } } },
           authorization: { myPrivileges: [] },
         },

@@ -66,7 +66,7 @@ const TransferInnovationPackSection = () => {
         <PageContentBlock>
           <Gutters disablePadding={true}>
             <BlockSectionTitle>{t(`${T_PREFIX}.packName`)}</BlockSectionTitle>
-            <span>{pack.about.profile.displayName}</span>
+            <span>{pack.profile.displayName}</span>
           </Gutters>
           {currentAccountName && (
             <Gutters disablePadding={true}>

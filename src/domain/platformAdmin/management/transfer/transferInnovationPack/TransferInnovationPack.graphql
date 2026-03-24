@@ -12,25 +12,13 @@ query InnovationPackTransferLookup($packId: UUID!) {
   lookup {
     innovationPack(ID: $packId) {
       id
-      about {
+      profile {
+        displayName
+        url
+      }
+      provider {
         profile {
           displayName
-          url
-        }
-      }
-      account {
-        id
-        host {
-          ... on Organization {
-            profile {
-              displayName
-            }
-          }
-          ... on User {
-            profile {
-              displayName
-            }
-          }
         }
       }
       authorization {

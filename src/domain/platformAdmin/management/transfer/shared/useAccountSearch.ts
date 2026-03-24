@@ -30,21 +30,29 @@ const useAccountSearch = () => {
   const results: AccountSearchResult[] = useMemo(() => {
     const userResults: AccountSearchResult[] =
       usersData?.platformAdmin?.users?.users
-        ?.filter(u => u.account?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept))
+        ?.filter(
+          u =>
+            u.account?.id &&
+            u.account.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept)
+        )
         .map(u => ({
-          id: u.account?.id,
-          accountId: u.account?.id,
-          name: `${u.profile.displayName} (User)`,
+          id: u.account!.id,
+          accountId: u.account!.id,
+          name: `${u.profile?.displayName} (User)`,
           type: 'User' as const,
         })) ?? [];
 
     const orgResults: AccountSearchResult[] =
       orgsData?.platformAdmin?.organizations?.organization
-        ?.filter(o => o.account?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept))
+        ?.filter(
+          o =>
+            o.account?.id &&
+            o.account.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept)
+        )
         .map(o => ({
-          id: o.account?.id,
-          accountId: o.account?.id,
-          name: `${o.profile.displayName} (Organization)`,
+          id: o.account!.id,
+          accountId: o.account!.id,
+          name: `${o.profile?.displayName} (Organization)`,
           type: 'Organization' as const,
         })) ?? [];
 

@@ -32,12 +32,7 @@ const useTransferVirtualContributor = () => {
   });
 
   const vc = vcData?.lookup.virtualContributor;
-  const accountHost = vc?.account?.host;
-  const currentAccountName = accountHost
-    ? 'profile' in accountHost
-      ? accountHost.profile.displayName
-      : undefined
-    : undefined;
+  const currentAccountName = vc?.account?.host?.profile?.displayName;
 
   // Mutation
   const [transferMutation, { loading: transferLoading }] = useTransferVirtualContributorToAccountMutation();

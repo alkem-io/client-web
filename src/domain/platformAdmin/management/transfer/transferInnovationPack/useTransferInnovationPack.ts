@@ -32,12 +32,7 @@ const useTransferInnovationPack = () => {
   });
 
   const pack = packData?.lookup.innovationPack;
-  const accountHost = pack?.account?.host;
-  const currentAccountName = accountHost
-    ? 'profile' in accountHost
-      ? accountHost.profile.displayName
-      : undefined
-    : undefined;
+  const currentAccountName = pack?.provider?.profile?.displayName;
 
   // Mutation
   const [transferMutation, { loading: transferLoading }] = useTransferInnovationPackToAccountMutation();

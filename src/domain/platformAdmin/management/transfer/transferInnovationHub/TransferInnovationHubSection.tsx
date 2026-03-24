@@ -66,7 +66,7 @@ const TransferInnovationHubSection = () => {
         <PageContentBlock>
           <Gutters disablePadding={true}>
             <BlockSectionTitle>{t(`${T_PREFIX}.hubName`)}</BlockSectionTitle>
-            <span>{hub.about.profile.displayName}</span>
+            <span>{hub.profile.displayName}</span>
           </Gutters>
           {currentAccountName && (
             <Gutters disablePadding={true}>

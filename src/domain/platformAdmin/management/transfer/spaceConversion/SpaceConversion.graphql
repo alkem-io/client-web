@@ -24,15 +24,8 @@ query SpaceConversionLookup($spaceId: UUID!) {
       account {
         id
         host {
-          ... on Organization {
-            profile {
-              displayName
-            }
-          }
-          ... on User {
-            profile {
-              displayName
-            }
+          profile {
+            displayName
           }
         }
       }
@@ -77,21 +70,21 @@ query SpaceConversionSiblingSubspaces($levelZeroSpaceId: UUID!) {
 }
 
 mutation ConvertSpaceL1ToL0($spaceL1ID: UUID!) {
-  convertSpaceL1ToSpaceL0(conversionData: { spaceL1ID: $spaceL1ID }) {
+  convertSpaceL1ToSpaceL0(convertData: { spaceL1ID: $spaceL1ID }) {
     id
   }
 }
 
 mutation ConvertSpaceL1ToL2($spaceL1ID: UUID!, $parentSpaceL1ID: UUID!) {
   convertSpaceL1ToSpaceL2(
-    conversionData: { spaceL1ID: $spaceL1ID, parentSpaceL1ID: $parentSpaceL1ID }
+    convertData: { spaceL1ID: $spaceL1ID, parentSpaceL1ID: $parentSpaceL1ID }
   ) {
     id
   }
 }
 
 mutation ConvertSpaceL2ToL1($spaceL2ID: UUID!) {
-  convertSpaceL2ToSpaceL1(conversionData: { spaceL2ID: $spaceL2ID }) {
+  convertSpaceL2ToSpaceL1(convertData: { spaceL2ID: $spaceL2ID }) {
     id
   }
 }

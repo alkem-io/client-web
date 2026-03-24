@@ -80,12 +80,7 @@ const useSpaceConversion = () => {
     : undefined;
 
   // Account owner display name
-  const accountHost = space?.account?.host;
-  const accountOwnerName = accountHost
-    ? 'profile' in accountHost
-      ? accountHost.profile.displayName
-      : undefined
-    : undefined;
+  const accountOwnerName = space?.account?.host?.profile?.displayName;
 
   const handleResolve = (url: string) => {
     setSpaceUrl(toFullUrl(url));
