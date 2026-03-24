@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -39,9 +39,9 @@ const VirtualContributorsBlock = ({
 
   const visibleVCs = virtualContributors.slice(0, VIRTUAL_CONTRIBUTORS_LIMIT);
 
-  const onInvite = useCallback(() => {
+  const onInvite = () => {
     setInviteDialogOpen(true);
-  }, [setInviteDialogOpen]);
+  };
 
   return (
     <PageContentBlock>

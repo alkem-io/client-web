@@ -1,6 +1,5 @@
 import { Button, GridLegacy } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
@@ -44,15 +43,11 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
   });
 
-  const discussionCategories = useMemo(
-    () =>
-      categories.map(id => ({
-        id: id,
-        name: t(`common.enums.discussion-category.${id}` as const),
-        icon: <DiscussionIcon category={id} />,
-      })),
-    [t, categories]
-  );
+  const discussionCategories = categories.map(id => ({
+    id: id,
+    name: t(`common.enums.discussion-category.${id}` as const),
+    icon: <DiscussionIcon category={id} />,
+  }));
 
   return (
     <Formik

@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useAvailableUsersForElevatedRoleQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse } from './common';
@@ -31,7 +30,9 @@ const useRoleSetAvailableUsersOnRoleSet = ({
   } = useAvailableUsersForElevatedRoleQuery({
     variables: {
       first: AVAILABLE_USERS_PAGE_SIZE,
+      // biome-ignore lint/style/noNonNullAssertion: guarded by skip
       roleSetId: roleSetId!,
+      // biome-ignore lint/style/noNonNullAssertion: guarded by skip
       role: role!,
       filter: { displayName: filter },
     },
@@ -41,24 +42,23 @@ const useRoleSetAvailableUsersOnRoleSet = ({
   const pageInfo = data?.lookup.roleSet?.availableUsersForElevatedRole.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = useCallback(
-    async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
-      if (!data) {
-        return;
-      }
+  const fetchMore = async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
+    if (!data) {
+      return;
+    }
 
-      await fetchMoreRaw({
-        variables: {
-          first: itemsNumber,
-          after: pageInfo?.endCursor,
-          roleSetId: roleSetId!,
-          role: role!,
-          filter: { displayName: filter },
-        },
-      });
-    },
-    [data, fetchMoreRaw, pageInfo?.endCursor, roleSetId, role, filter, AVAILABLE_USERS_PAGE_SIZE]
-  );
+    await fetchMoreRaw({
+      variables: {
+        first: itemsNumber,
+        after: pageInfo?.endCursor,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by skip
+        roleSetId: roleSetId!,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by skip
+        role: role!,
+        filter: { displayName: filter },
+      },
+    });
+  };
 
   const users = data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [];
 

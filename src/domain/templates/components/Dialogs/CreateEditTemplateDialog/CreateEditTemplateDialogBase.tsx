@@ -1,7 +1,7 @@
 import { SaveOutlined } from '@mui/icons-material';
 import { Box, DialogActions, DialogContent } from '@mui/material';
 import type { FormikProps } from 'formik/dist/types';
-import { type ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
@@ -41,9 +41,9 @@ const CreateEditTemplateDialogBase = ({
   const { t } = useTranslation();
   const [actionsPortalContainer, setActionsPortalContainer] = useState<HTMLElement | null>(null);
 
-  const handleActionsPortalRef = useCallback((node: HTMLDivElement | null) => {
+  const handleActionsPortalRef = (node: HTMLDivElement | null) => {
     setActionsPortalContainer(node);
-  }, []);
+  };
 
   const titleLabel = editMode ? 'common.edit-entity' : 'common.create-new-entity';
 

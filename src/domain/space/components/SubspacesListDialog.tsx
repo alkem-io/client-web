@@ -1,5 +1,4 @@
 import { DialogContent } from '@mui/material';
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
@@ -38,16 +37,13 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
+  const handleContactLead = (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    sendMessage(leadType, {
+      id: leadId,
+      displayName: leadDisplayName,
+      avatarUri: leadAvatarUri,
+    });
+  };
 
   return (
     <>

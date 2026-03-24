@@ -9,7 +9,7 @@ import {
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, DialogContent, Paper } from '@mui/material';
 import { isNumber, sortBy } from 'lodash-es';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContributionsSortOrderQuery,
@@ -76,7 +76,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     skip: !open || !callout.id,
   });
 
-  const queryItems = useMemo(() => {
+  const queryItems = (() => {
     return sortBy(
       data?.lookup.callout?.contributions
         .filter(
@@ -99,7 +99,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
         })),
       'sortOrder'
     );
-  }, [data]);
+  })();
 
   const [items, setItems] = useState(queryItems);
 
@@ -123,7 +123,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const itemIds = useMemo(() => items?.map(item => item.id) ?? [], [items]);
+  const itemIds = items?.map(item => item.id) ?? [];
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;

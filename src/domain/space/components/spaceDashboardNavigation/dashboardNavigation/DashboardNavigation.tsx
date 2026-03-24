@@ -2,7 +2,7 @@ import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
 import { Box, Button, Collapse, IconButton, Tooltip } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import { debounce, difference } from 'lodash-es';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -58,10 +58,7 @@ const DashboardNavigation = ({
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
 
-  const ids = useMemo(
-    () => (dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : []),
-    [dashboardNavigationRoot]
-  );
+  const ids = dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : [];
 
   // Used only on top level where we have "Show all"
   const itemsCount = ids.length - 1;
@@ -171,12 +168,12 @@ const DashboardNavigation = ({
   const onRefsUpdated = useRef(debounce(() => adjustViewportFnRef.current())).current;
 
   // Has to maintain stable id over renders, otherwise we get a loop because React always invokes a new functional ref
-  const itemRef = useCallback((element: DashboardNavigationItemViewApi | null) => {
+  const itemRef = (element: DashboardNavigationItemViewApi | null) => {
     if (element && itemRefs[element.id] !== element) {
       itemRefs[element.id] = element;
       onRefsUpdated();
     }
-  }, []);
+  };
 
   const shouldShift = isSnapped && currentLevel !== -1 && !isTopLevel && !compact;
 

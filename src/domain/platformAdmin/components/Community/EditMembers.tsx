@@ -10,7 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { debounce, times } from 'lodash-es';
-import React, { type ComponentType, type PropsWithChildren, type ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { type ComponentType, type PropsWithChildren, type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
@@ -66,7 +66,7 @@ export const EditMembers = <Member extends Identifiable>({
   isRemoveDisabled, // Not used but leaving this in as it could be passed in to respect policy limits
 }: EditMembersProps<Member>) => {
   const { t } = useTranslation();
-  const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
+  const Cell = loading ? Skeleton : React.Fragment;
 
   const renderHeader = typeof header === 'function' ? header : () => header;
   return (
@@ -142,15 +142,12 @@ export const AvailableMembers = <Member extends Identifiable>({
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
+  const Cell = loading ? Skeleton : React.Fragment;
 
   // TODO debounce upper
   // Rationale: search can also be local or debounced at the transport level. This view is too deep to care about it.
   // Debouncing here also limits how high can we raise the searchTerm state.
-  const onSearchTermChangeDebounced = useMemo(
-    () => debounce(onSearchTermChange, FILTER_DEBOUNCE),
-    [onSearchTermChange]
-  );
+  const onSearchTermChangeDebounced = debounce(onSearchTermChange, FILTER_DEBOUNCE);
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
 
@@ -160,11 +157,7 @@ export const AvailableMembers = <Member extends Identifiable>({
 
   const columnsCount = React.Children.count(renderHeader()) + 1;
 
-  const Loader = useMemo(
-    () =>
-      ({ ref }) => <TableRowLoading ref={ref} colSpan={columnsCount} />,
-    [columnsCount]
-  );
+  const Loader = ({ ref }) => <TableRowLoading ref={ref} colSpan={columnsCount} />;
 
   const loader = useLazyLoading(Loader, {
     hasMore,

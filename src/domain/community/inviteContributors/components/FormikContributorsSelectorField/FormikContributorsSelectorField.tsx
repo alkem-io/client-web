@@ -2,7 +2,7 @@ import { Box, Button, type SxProps, TextField, type Theme } from '@mui/material'
 import Autocomplete, { autocompleteClasses, createFilterOptions } from '@mui/material/Autocomplete';
 import { useField, useFormikContext } from 'formik';
 import { compact, debounce, isArray } from 'lodash-es';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import type { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
@@ -63,10 +63,7 @@ const FormikContributorsSelectorField = ({
   const [field, meta, helpers] = useField<SelectedContributor[]>(name);
   const { validateForm } = useFormikContext();
 
-  const selectedUserIds = useMemo(
-    () => compact(field.value.map(user => user.type === ContributorSelectorType.User && user.id)),
-    [field.value]
-  );
+  const selectedUserIds = compact(field.value.map(user => user.type === ContributorSelectorType.User && user.id));
 
   const setFieldValue = (newValue: SelectedContributor[]) => {
     helpers.setValue(newValue);
@@ -126,7 +123,7 @@ const FormikContributorsSelectorField = ({
   const [inputValue, setInputValue] = useState('');
 
   // Filter out users that are already selected, and myself
-  const listedUsers = useMemo<(Hydration<ContributorItem> | typeof LOAD_MORE_OPTION)[]>(() => {
+  const listedUsers = (() => {
     if (!inputValue) {
       return [];
     }
@@ -148,18 +145,7 @@ const FormikContributorsSelectorField = ({
     } else {
       return listedUsers;
     }
-  }, [
-    currentUser?.id,
-    selectedUserIds,
-    contributors,
-    field.value,
-    inputValue,
-    hydrateUsers,
-    sortUsers,
-    filterUsers,
-    loadMoreInView,
-    hasMore,
-  ]);
+  })();
 
   const handleSelect = (value: (Identifiable & { profile?: { displayName: string } }) | string | null) => {
     helpers.setTouched(true);
@@ -186,13 +172,9 @@ const FormikContributorsSelectorField = ({
   };
 
   // Debounce avoids firing a query on every keystroke
-  const debouncedSetFilter = useMemo(
-    () =>
-      debounce((val: string) => {
-        setFilter(val ? { email: val, displayName: val } : undefined);
-      }, 300),
-    []
-  );
+  const debouncedSetFilter = debounce((val: string) => {
+    setFilter(val ? { email: val, displayName: val } : undefined);
+  }, 300);
 
   const onTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     debouncedSetFilter(value);

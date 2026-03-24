@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren, useMemo } from 'react';
+import React, { type PropsWithChildren } from 'react';
 import { useSpaceAboutBaseQuery, useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -88,7 +88,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
 
   const entitlements = spaceEntitlementsData?.lookup.space?.license?.availableEntitlements ?? [];
 
-  const permissions = useMemo<SpacePermissions>(() => {
+  const permissions = (() => {
     return {
       canRead: canRead,
       canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
@@ -97,9 +97,9 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       // 100% of the time, if the user is able to create a subspace they should be able to create a template
       canCreateTemplates: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
     };
-  }, [spacePrivileges]);
+  })();
 
-  const space = useMemo(() => {
+  const space = (() => {
     const aboutModel: SpaceAboutLightModel = {
       authorization: spaceData?.authorization,
       isContentPublic: spaceData?.about.isContentPublic ?? true,
@@ -124,7 +124,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       about: aboutModel,
       level: SpaceLevel.L0,
     };
-  }, [spaceData]);
+  })();
 
   const loading = urlResolverLoading || loadingSpaceQuery || loadingSpaceEntitlementsQuery || !spaceId;
   return (

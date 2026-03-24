@@ -2,7 +2,7 @@ import Delete from '@mui/icons-material/Delete';
 import { Button, FormControl, IconButton, InputLabel, List, OutlinedInput } from '@mui/material';
 import { omit } from 'lodash-es';
 import type React from 'react';
-import { type ComponentType, useMemo, useState } from 'react';
+import { type ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import ListItemLink, { type ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
@@ -57,12 +57,11 @@ export const SearchableTable = <
     setFilterBy(value);
   };
 
-  const filteredData = useMemo(
-    () => data.filter(item => (filterBy ? item.value.toLowerCase().includes(filterBy.toLowerCase()) : true)),
-    [filterBy, data]
+  const filteredData = data.filter(item =>
+    filterBy ? item.value.toLowerCase().includes(filterBy.toLowerCase()) : true
   );
 
-  const slicedData = useMemo(() => filteredData.slice(0, limit), [filteredData, limit]);
+  const slicedData = filteredData.slice(0, limit);
   const editSuffix = edit ? '/edit' : '';
 
   const handleRemoveItem = async () => {

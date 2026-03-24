@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   type CreateSpaceMutationOptions,
@@ -44,45 +43,42 @@ export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {
     refetchQueries,
     ...restMutationOptions,
   });
-  const handleCreateSpace = useCallback(
-    async (value: SpaceCreationInput) => {
-      const includeVisuals =
-        Boolean(value.about.profile.visuals.banner?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
+  const handleCreateSpace = async (value: SpaceCreationInput) => {
+    const includeVisuals =
+      Boolean(value.about.profile.visuals.banner?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
 
-      const { data } = await createSpace({
-        variables: {
-          spaceData: {
-            accountID: value.accountId,
-            licensePlanID: value.licensePlanId,
-            nameID: value.nameId,
-            spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
-            about: {
-              profileData: {
-                displayName: value.about.profile.displayName,
-                tagline: value.about.profile.tagline,
-                description: value.about.profile.description,
-                tags: value.about.profile.tags,
-              },
-              why: value.about.why,
+    const { data } = await createSpace({
+      variables: {
+        spaceData: {
+          accountID: value.accountId,
+          licensePlanID: value.licensePlanId,
+          nameID: value.nameId,
+          spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
+          about: {
+            profileData: {
+              displayName: value.about.profile.displayName,
+              tagline: value.about.profile.tagline,
+              description: value.about.profile.description,
+              tags: value.about.profile.tags,
             },
-            collaborationData: {
-              addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts, // we always want to add the default callouts
-              calloutsSetData: {},
-            },
+            why: value.about.why,
           },
-          includeVisuals,
+          collaborationData: {
+            addTutorialCallouts: value.addTutorialCallouts,
+            addCallouts: value.addCallouts, // we always want to add the default callouts
+            calloutsSetData: {},
+          },
         },
-      });
+        includeVisuals,
+      },
+    });
 
-      if (includeVisuals) {
-        await uploadVisuals(data?.createSpace.about.profile, value.about.profile.visuals);
-      }
+    if (includeVisuals) {
+      await uploadVisuals(data?.createSpace.about.profile, value.about.profile.visuals);
+    }
 
-      return data?.createSpace;
-    },
-    [createSpace, uploadVisuals]
-  );
+    return data?.createSpace;
+  };
 
   return { createSpace: handleCreateSpace, loading };
 };

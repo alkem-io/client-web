@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useConversationWithGuidanceVcQuery,
@@ -53,7 +52,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   } = useConversationMessages(conversationId);
 
   // 3. Transform to guidance message format and add intro message
-  const messages: GuidanceMessage[] = useMemo(() => {
+  const messages: GuidanceMessage[] = (() => {
     const introMessage: GuidanceMessage = {
       id: '__intro',
       createdAt: new Date(0), // Earliest possible date so it sorts first
@@ -75,13 +74,13 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     );
 
     return [introMessage, ...transformedMessages];
-  }, [conversationMessages, t]);
+  })();
 
   // Compute last message ID separately to avoid handleMarkAsRead recreation on every message change
-  const lastMessageId = useMemo(() => {
+  const lastMessageId = (() => {
     const lastMsg = conversationMessages[conversationMessages.length - 1];
     return lastMsg?.id;
-  }, [conversationMessages]);
+  })();
 
   // 4. Subscribe to room events
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId ?? undefined, !roomId);
@@ -89,7 +88,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   // 5. Mark as read mutation
   const [markMessageAsRead] = useMarkMessageAsReadMutation();
 
-  const handleMarkAsRead = useCallback(() => {
+  const handleMarkAsRead = () => {
     if (!roomId || !lastMessageId) {
       return;
     }
@@ -102,28 +101,25 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
         },
       },
     });
-  }, [roomId, lastMessageId, markMessageAsRead]);
+  };
 
   // 6. Send message mutation
   const [sendMessageToRoom] = useSendMessageToRoomMutation();
 
-  const handleSendMessage = useCallback(
-    async (message: string): Promise<void> => {
-      if (!roomId) {
-        return;
-      }
+  const handleSendMessage = async (message: string): Promise<void> => {
+    if (!roomId) {
+      return;
+    }
 
-      await sendMessageToRoom({
-        variables: {
-          messageData: {
-            roomID: roomId,
-            message,
-          },
+    await sendMessageToRoom({
+      variables: {
+        messageData: {
+          roomID: roomId,
+          message,
         },
-      });
-    },
-    [roomId, sendMessageToRoom]
-  );
+      },
+    });
+  };
 
   // 7. Reset conversation mutation (guidance-specific)
   const [resetConversationVc] = useResetConversationVcMutation();

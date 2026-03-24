@@ -100,39 +100,39 @@
 
 ### Low-Risk Domains (small, isolated)
 
-- [ ] T026 [P] [US3] Remove all useMemo/useCallback from src/domain/timeline/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T027 [P] [US3] Remove all useMemo/useCallback from src/domain/license/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T028 [P] [US3] Remove all useMemo/useCallback from src/domain/storage/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T029 [P] [US3] Remove all useMemo/useCallback from src/domain/access/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T030 [P] [US3] Remove all useMemo/useCallback from src/domain/InnovationPack/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [x] T026 [P] [US3] Remove all useMemo/useCallback from src/domain/timeline/ — 15 useMemo + 6 useCallback removed via jscodeshift codemod
+- [x] T027 [P] [US3] Remove all useMemo/useCallback from src/domain/license/ — no occurrences found (already clean)
+- [x] T028 [P] [US3] Remove all useMemo/useCallback from src/domain/storage/ — 1 useMemo removed
+- [x] T029 [P] [US3] Remove all useMemo/useCallback from src/domain/access/ — 5 useMemo + 2 useCallback removed
+- [x] T030 [P] [US3] Remove all useMemo/useCallback from src/domain/InnovationPack/ — 3 useMemo removed
 
 ### Medium-Risk Domains
 
-- [ ] T031 [P] [US3] Remove all useMemo/useCallback from src/domain/account/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T032 [P] [US3] Remove all useMemo/useCallback from src/domain/communication/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T033 [P] [US3] Remove all useMemo/useCallback from src/domain/community/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T034 [P] [US3] Remove all useMemo/useCallback from src/domain/templates/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T035 [P] [US3] Remove all useMemo/useCallback from src/domain/templates-manager/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T036 [P] [US3] Remove all useMemo/useCallback from src/domain/innovationHub/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T037 [P] [US3] Remove all useMemo/useCallback from src/domain/platform/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T038 [P] [US3] Remove all useMemo/useCallback from src/domain/platformAdmin/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T039 [P] [US3] Remove all useMemo/useCallback from src/domain/spaceAdmin/ — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
+- [x] T031 [P] [US3] Remove all useMemo/useCallback from src/domain/account/ — no occurrences found (already clean)
+- [x] T032 [P] [US3] Remove all useMemo/useCallback from src/domain/communication/ — 10 useMemo + 2 useCallback removed
+- [x] T033 [P] [US3] Remove all useMemo/useCallback from src/domain/community/ — 64 useMemo + 20 useCallback removed
+- [x] T034 [P] [US3] Remove all useMemo/useCallback from src/domain/templates/ — 6 useMemo + 2 useCallback removed
+- [x] T035 [P] [US3] Remove all useMemo/useCallback from src/domain/templates-manager/ — 1 useMemo removed
+- [x] T036 [P] [US3] Remove all useMemo/useCallback from src/domain/innovationHub/ — 1 useMemo + 1 useCallback removed
+- [x] T037 [P] [US3] Remove all useMemo/useCallback from src/domain/platform/ — 2 useMemo removed
+- [x] T038 [P] [US3] Remove all useMemo/useCallback from src/domain/platformAdmin/ — 25 useMemo + 8 useCallback removed
+- [x] T039 [P] [US3] Remove all useMemo/useCallback from src/domain/spaceAdmin/ — 10 useMemo + 2 useCallback removed
 
 ### High-Risk Domains (largest, most complex)
 
-- [ ] T040 [P] [US3] Remove all useMemo/useCallback from src/domain/common/ — unwrap to plain expressions/functions, clean imports. NOTE: includes whiteboard components — verify CollaborativeExcalidrawWrapper.tsx exception is preserved. Validate with `pnpm vitest run`
-- [ ] T041 [P] [US3] Remove all useMemo/useCallback from src/domain/space/ — largest domain, unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T042 [P] [US3] Remove all useMemo/useCallback from src/domain/collaboration/ — unwrap to plain expressions/functions, clean imports. NOTE: preserve eslint-disable in InnovationFlowDragNDropEditor.tsx (permanent exception). Validate with `pnpm vitest run`
+- [x] T040 [P] [US3] Remove all useMemo/useCallback from src/domain/common/ — 11 useMemo + 6 useCallback removed. CollaborativeExcalidrawWrapper.tsx eslint-disable preserved.
+- [x] T041 [P] [US3] Remove all useMemo/useCallback from src/domain/space/ — 19 useMemo + 12 useCallback removed. Fixed pre-existing type error in SubspaceContext.tsx (missing contextPrivileges in SubspacePermissions interface).
+- [x] T042 [P] [US3] Remove all useMemo/useCallback from src/domain/collaboration/ — 38 useMemo + 42 useCallback removed. All eslint-disable comments preserved.
 
 ### App Layer (src/main/ and src/dev/)
 
-- [ ] T043 [P] [US3] Remove all useMemo/useCallback from src/main/ (~64 useMemo, ~53 useCallback) — unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T044 [P] [US3] Remove useMemo from src/dev/ (2 occurrences) — unwrap to plain expressions, clean imports
+- [x] T043 [P] [US3] Remove all useMemo/useCallback from src/main/ — 32 useMemo + 41 useCallback removed. Fixed type annotation for GridColDef[] in SpaceAdminStoragePage.tsx.
+- [x] T044 [P] [US3] Remove useMemo from src/dev/ — 1 useMemo removed
 
 ### Phase 4 Validation
 
-- [ ] T045 [US3] Full codebase validation: run `pnpm vitest run` + `pnpm eslint` + `pnpm build` + `pnpm tsc --noEmit` to confirm everything compiles and passes
-- [ ] T046 [US3] Verify zero remaining useMemo/useCallback/React.memo: grep entire src/ for `useMemo\(`, `useCallback\(`, `memo\(` — only documented exceptions should remain
+- [x] T045 [US3] Full codebase validation: 569 tests passed, 0 ESLint compiler errors, 0 TypeScript errors. Block-body useMemo transformed to IIFEs to avoid Rules of Hooks violations.
+- [x] T046 [US3] Verified zero remaining useMemo/useCallback/React.memo outside documented exceptions. Only MarkdownInput ecosystem (10 files in src/core/ui/forms/) retains manual memoization as planned.
 - [ ] T047 [US3] [US5] Run `pnpm benchmark --build-name "post-phase4-domains"` then `pnpm benchmark:compare pre-migration-baseline post-phase4-domains` — any measurable Lighthouse score decrease triggers investigation
 - [ ] T047a [US5] Human review gate: review the benchmark:compare report from T047, spot-check complex components (SpaceDashboard, Whiteboard, SearchBar, InnovationFlow) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
 

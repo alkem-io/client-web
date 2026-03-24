@@ -4,7 +4,7 @@ import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
 import { Box, Button } from '@mui/material';
 import { useField } from 'formik';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -40,7 +40,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
   );
   const [contributionSettingsDialogOpen, setContributionSettingsDialogOpen] = useState<boolean>(false);
 
-  const SettingsComponent = useMemo(() => {
+  const SettingsComponent = (() => {
     switch (allowedTypesField.value) {
       case CalloutContributionType.Link:
         return ContributionsSettingsLink;
@@ -53,9 +53,9 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
       default:
         return undefined;
     }
-  }, [allowedTypesField.value]);
+  })();
 
-  const enabledSettings: FramingSettings = useMemo(() => {
+  const enabledSettings: FramingSettings = (() => {
     const result: FramingSettings = {
       commentsEnabled: true,
       canAddContributions: true,
@@ -70,7 +70,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
     }
 
     return result;
-  }, [allowedTypesField.value]);
+  })();
 
   const disabledTooltip = t('callout.create.contributionSettings.contributionTypes.tooltipDisabled');
 

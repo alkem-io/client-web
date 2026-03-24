@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { debounce } from 'lodash-es';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useVirtualContributorProviderLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -148,13 +148,9 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     </>
   );
 
-  const debouncedSetFilter = useMemo(
-    () =>
-      debounce((value: string) => {
-        setFilter(value);
-      }, 300),
-    []
-  );
+  const debouncedSetFilter = debounce((value: string) => {
+    setFilter(value);
+  }, 300);
 
   // When `inputValue` changes, we update `filter` with delay. Do not use debouncing directly on the `onChange` prop since it will apply the delay
   // on every key press, which will cause the input to lag.
@@ -188,21 +184,13 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     fetchVirtualContributors();
   }, [virtualContributors]);
 
-  const memoizedFilteredOnAccount = useMemo(
-    () =>
-      filter
-        ? onAccount?.filter(acc => (acc.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
-        : undefined,
-    [filter, onAccount]
-  );
+  const memoizedFilteredOnAccount = filter
+    ? onAccount?.filter(acc => (acc.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
+    : undefined;
 
-  const memoizedFilteredInLibrary = useMemo(
-    () =>
-      filter
-        ? inLibrary?.filter(lib => (lib.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
-        : undefined,
-    [filter, inLibrary]
-  );
+  const memoizedFilteredInLibrary = filter
+    ? inLibrary?.filter(lib => (lib.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase()))
+    : undefined;
 
   useEffect(() => {
     if (filter) {

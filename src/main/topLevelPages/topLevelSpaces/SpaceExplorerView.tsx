@@ -2,7 +2,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, Button, DialogContent, IconButton } from '@mui/material';
 import { compact } from 'lodash-es';
 import type React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -88,15 +88,11 @@ export const SpaceExplorerView = ({
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
-  const enabledFilters = useMemo(
-    () =>
-      compact([
-        SpacesExplorerMembershipFilter.All,
-        authenticated ? SpacesExplorerMembershipFilter.Member : undefined,
-        SpacesExplorerMembershipFilter.Public,
-      ]),
-    [authenticated]
-  );
+  const enabledFilters = compact([
+    SpacesExplorerMembershipFilter.All,
+    authenticated ? SpacesExplorerMembershipFilter.Member : undefined,
+    SpacesExplorerMembershipFilter.Public,
+  ]);
 
   const isCollapsed = !hasExpanded && membershipFilter !== SpacesExplorerMembershipFilter.Member;
 
@@ -106,14 +102,14 @@ export const SpaceExplorerView = ({
 
   const loader = useLazyLoading(Box, { fetchMore, loading, hasMore });
 
-  const shouldDisplayPrivacyInfo = membershipFilter !== SpacesExplorerMembershipFilter.Member;
+  const _shouldDisplayPrivacyInfo = membershipFilter !== SpacesExplorerMembershipFilter.Member;
 
   const visibleSpaces = isCollapsed ? spaces?.slice(0, ITEMS_LIMIT) : spaces;
 
   const hasNoMemberSpaces =
     (membershipFilter === SpacesExplorerMembershipFilter.Member && !authenticated) || spaces?.length === 0;
 
-  const renderVisibleSpaces = useCallback(() => {
+  const renderVisibleSpaces = () => {
     const vs: React.ReactElement[] = [];
 
     if (!visibleSpaces) {
@@ -172,7 +168,7 @@ export const SpaceExplorerView = ({
     });
 
     return vs;
-  }, [visibleSpaces, shouldDisplayPrivacyInfo, authenticated]);
+  };
 
   const getGridItemStyle = useGridItem();
 

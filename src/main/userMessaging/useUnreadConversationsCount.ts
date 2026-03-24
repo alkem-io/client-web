@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUserConversationsUnreadCountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUserMessagingContext } from './UserMessagingContext';
 
@@ -13,8 +13,10 @@ export const useUnreadConversationsCount = () => {
 
   useEffect(() => {
     if (!isEnabled) return;
+    // biome-ignore lint/suspicious/noConsole: debug logging
     console.log(DEBUG, 'Timer started, will fire in', DELAY_MS, 'ms');
     const timer = setTimeout(() => {
+      // biome-ignore lint/suspicious/noConsole: debug logging
       console.log(DEBUG, 'Timer fired, ready=true');
       setReady(true);
     }, DELAY_MS);
@@ -22,6 +24,7 @@ export const useUnreadConversationsCount = () => {
   }, [isEnabled]);
 
   useEffect(() => {
+    // biome-ignore lint/suspicious/noConsole: debug logging
     console.log(DEBUG, 'Skip conditions:', { isEnabled, ready, isOpen, skip });
   }, [isEnabled, ready, isOpen, skip]);
 
@@ -32,9 +35,11 @@ export const useUnreadConversationsCount = () => {
 
   useEffect(() => {
     if (skip) return;
+    // biome-ignore lint/suspicious/noConsole: debug logging
     console.log(DEBUG, 'Query state:', { loading, hasError: !!error, hasData: !!data });
     if (data?.me?.conversations?.conversations) {
       const convs = data.me.conversations.conversations;
+      // biome-ignore lint/suspicious/noConsole: debug logging
       console.log(
         DEBUG,
         'Raw data from query:',
@@ -43,12 +48,13 @@ export const useUnreadConversationsCount = () => {
     }
   }, [data, loading, error, skip]);
 
-  const totalUnreadCount = useMemo(() => {
+  const totalUnreadCount = (() => {
     if (!data?.me?.conversations?.conversations) return 0;
     return data.me.conversations.conversations.filter(conv => conv.room && conv.room.unreadCount > 0).length;
-  }, [data?.me?.conversations?.conversations]);
+  })();
 
   useEffect(() => {
+    // biome-ignore lint/suspicious/noConsole: debug logging
     console.log(DEBUG, 'Computed totalUnreadCount:', totalUnreadCount);
   }, [totalUnreadCount]);
 

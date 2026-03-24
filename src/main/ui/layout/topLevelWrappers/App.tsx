@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
@@ -28,10 +28,10 @@ const App = () => {
 
   const [cookieConsentHeight, setCookieConsentHeight] = useState(0);
 
-  const cookieConsentRef = useCallback((element: HTMLDivElement | null) => {
+  const cookieConsentRef = (element: HTMLDivElement | null) => {
     const height = element?.getBoundingClientRect().height ?? 0;
     setCookieConsentHeight(height);
-  }, []);
+  };
 
   return (
     <>

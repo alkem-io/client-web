@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityEventType,
@@ -72,9 +71,9 @@ export interface ActivityComponentProps {
 }
 
 export const ActivityComponent = ({ activities, limit }: ActivityComponentProps) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const display = useMemo(() => {
+  const display = (() => {
     if (!activities) {
       return null;
     }
@@ -97,7 +96,7 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
         })}
       </>
     );
-  }, [activities, limit, i18n.language]);
+  })();
 
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
@@ -135,5 +134,5 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.UpdateSent:
       return <ActivityUpdateSentView {...activity} {...rest} />;
   }
-  throw new Error(`Unable to choose a view for activity type: ${activity['type']}`);
+  throw new Error(`Unable to choose a view for activity type: ${activity.type}`);
 };

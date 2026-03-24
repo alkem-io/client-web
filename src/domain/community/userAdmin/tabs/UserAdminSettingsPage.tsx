@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContent from '@/core/ui/content/PageContent';
@@ -25,13 +24,13 @@ export const UserAdminSettingsPage = () => {
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
-  const currentSettings = useMemo(() => {
+  const currentSettings = (() => {
     const settings = data?.lookup.user?.settings;
 
     return {
       ...settings,
     };
-  }, [data, userID]);
+  })();
 
   if (loading) {
     return <Loading />;

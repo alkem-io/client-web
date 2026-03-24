@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import { times, without } from 'lodash-es';
-import { useMemo } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import PageContentBlock, { type PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
 import {
@@ -44,7 +43,7 @@ const CalloutsView = ({
 }: CalloutsViewProps) => {
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
-  const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
+  const sortedCallouts = callouts?.sort((a, b) => a.sortOrder - b.sortOrder);
 
   const sortEvents: CalloutSortEvents | undefined = onSortOrderUpdate && {
     onMoveToTop: movedCalloutId => {

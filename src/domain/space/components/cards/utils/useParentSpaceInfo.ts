@@ -1,6 +1,4 @@
-import { useMemo } from 'react';
 import { useParentSpaceInfoQuery } from '@/core/apollo/generated/apollo-hooks';
-import type { ParentInfo } from './useSubspaceCardData';
 
 /**
  * Hook to fetch and format parent space information for SpaceCard
@@ -16,7 +14,7 @@ export const useParentSpaceInfo = (parentSpaceId?: string) => {
   const parentSpace = data?.lookup.space;
 
   // Create parent info for SpaceCard
-  const parentInfo = useMemo<ParentInfo | undefined>(() => {
+  const parentInfo = (() => {
     if (!parentSpace?.about?.profile) {
       return undefined;
     }
@@ -32,16 +30,16 @@ export const useParentSpaceInfo = (parentSpaceId?: string) => {
           }
         : undefined,
     };
-  }, [parentSpace]);
+  })();
 
   // Get parent avatar URI for collectSubspaceAvatars
-  const parentAvatarUri = useMemo<string | undefined>(() => {
+  const parentAvatarUri = (() => {
     if (!parentSpace?.about?.profile) {
       return undefined;
     }
 
     return parentSpace.about.profile.avatar?.uri || parentSpace.about.profile.cardBanner?.uri;
-  }, [parentSpace]);
+  })();
 
   const parentDisplayName = parentSpace?.about?.profile.displayName;
 

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 
@@ -15,7 +14,7 @@ type UserCardData = {
 };
 
 const useUserCardProps = (data: UserCardData[] | undefined): (Identifiable & UserCardProps)[] | undefined => {
-  return useMemo(() => {
+  return (() => {
     if (!data) {
       return;
     }
@@ -30,7 +29,7 @@ const useUserCardProps = (data: UserCardData[] | undefined): (Identifiable & Use
       url: user.profile.url,
       isContactable: user.isContactable,
     }));
-  }, [data]);
+  })();
 };
 
 export default useUserCardProps;

@@ -1,7 +1,7 @@
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
-import { type ReactNode, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
@@ -71,15 +71,12 @@ const InvitationDialog = ({
     return t('community.pendingMembership.invitationDialog.actions.join');
   };
 
-  const onCardClick = useCallback(
-    (url: string) => {
-      if (url) {
-        navigate(url);
-        onClose();
-      }
-    },
-    [navigate, onClose]
-  );
+  const onCardClick = (url: string) => {
+    if (url) {
+      navigate(url);
+      onClose();
+    }
+  };
 
   return (
     <DialogWithGrid

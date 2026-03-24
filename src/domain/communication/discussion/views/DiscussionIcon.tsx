@@ -10,7 +10,7 @@ import {
 } from '@mui/icons-material';
 
 import type { SvgIconProps } from '@mui/material';
-import { createElement, type FC, useMemo } from 'react';
+import { createElement, type FC } from 'react';
 import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 import { type DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 
@@ -19,7 +19,7 @@ export interface DiscussionIconProps extends SvgIconProps {
 }
 
 export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) => {
-  const categoryIcon = useMemo(() => {
+  const categoryIcon = (() => {
     switch (category) {
       case ForumDiscussionCategory.Releases:
         return CelebrationIcon;
@@ -38,7 +38,7 @@ export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) =
       default:
         return QuestionAnswerOutlinedIcon;
     }
-  }, [category]);
+  })();
 
   return createElement(categoryIcon, { ...rest });
 };

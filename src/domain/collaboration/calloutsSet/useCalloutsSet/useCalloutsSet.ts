@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash-es';
-import { useCallback, useMemo } from 'react';
 import {
   useCalloutDetailsLazyQuery,
   useCalloutsOnCalloutsSetUsingClassificationQuery,
@@ -85,61 +84,54 @@ const useCalloutsSet = ({
 
   const calloutsSet = calloutsData?.lookup.calloutsSet;
 
-  const callouts = useMemo(
-    () =>
-      calloutsSet?.callouts
-        ?.map(cloneDeep) // Clone to be able to modify the callouts
-        .map(({ authorization, ...callout }) => {
-          const draft = callout?.settings.visibility === CalloutVisibility.Draft;
-          const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-          const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  const callouts = calloutsSet?.callouts
+    ?.map(cloneDeep) // Clone to be able to modify the callouts
+    .map(({ authorization, ...callout }) => {
+      const draft = callout?.settings.visibility === CalloutVisibility.Draft;
+      const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+      const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
-          const classification = callout.classification;
+      const classification = callout.classification;
 
-          const result: CalloutModelLightExtended = {
-            ...callout,
-            calloutsSetId: calloutsSet.id,
-            classification,
-            framing: {
-              profile: callout.framing.profile,
-              type: callout.framing.type,
-            },
-            authorization,
-            draft,
-            editable,
-            movable,
-            canBeSavedAsTemplate,
-            classificationTagsets,
-          };
-          return result;
-        }),
-    [calloutsSet, canBeSavedAsTemplate]
-  );
-
-  const submitCalloutsSortOrder = useCallback(
-    (calloutIds: string[]) => {
-      if (!calloutsSet) {
-        throw new Error('CalloutsSet is not loaded yet.');
-      }
-      return updateCalloutsSortOrderMutation({
-        variables: {
-          calloutsSetID: calloutsSet.id,
-          calloutIds,
+      const result: CalloutModelLightExtended = {
+        ...callout,
+        calloutsSetId: calloutsSet.id,
+        classification,
+        framing: {
+          profile: callout.framing.profile,
+          type: callout.framing.type,
         },
-      });
-    },
-    [calloutsSet]
-  );
+        authorization,
+        draft,
+        editable,
+        movable,
+        canBeSavedAsTemplate,
+        classificationTagsets,
+      };
+      return result;
+    });
 
-  const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
+  const submitCalloutsSortOrder = (calloutIds: string[]) => {
+    if (!calloutsSet) {
+      throw new Error('CalloutsSet is not loaded yet.');
+    }
+    return updateCalloutsSortOrderMutation({
+      variables: {
+        calloutsSetID: calloutsSet.id,
+        calloutIds,
+      },
+    });
+  };
 
-  const onCalloutsSortOrderUpdate = useCallback(() => {
+  const sortedCallouts = callouts?.sort((a, b) => a.sortOrder - b.sortOrder);
+
+  const onCalloutsSortOrderUpdate = () => {
     const relatedCalloutIds = sortedCallouts?.map(callout => callout.id) ?? [];
     return (update: OrderUpdate) => {
       const nextIds = update(relatedCalloutIds);
       return submitCalloutsSortOrder(nextIds);
     };
-  }, [submitCalloutsSortOrder]);
+  };
 
   const [updateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
 

@@ -1,5 +1,5 @@
 import { Box, type SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActivityEventType, ActivityFeedRoles } from '@/core/apollo/generated/graphql-schema';
@@ -75,7 +75,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
       space: event.target.value as string | typeof SPACE_OPTION_ALL,
     }));
 
-  const spaceOptions = useMemo<SpaceOption[]>(() => {
+  const spaceOptions = (() => {
     const spaces: SpaceOption[] =
       spaceMemberships?.map(space => ({
         value: space.id,
@@ -88,7 +88,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
     });
 
     return spaces;
-  }, [spaceMemberships, t]);
+  })();
 
   // Call the query hook directly instead of passing it to usePaginatedQuery
   const {
@@ -109,7 +109,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   const pageInfo = data?.activityFeed.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = useCallback(async () => {
+  const fetchMore = async () => {
     if (!data) {
       return;
     }
@@ -125,11 +125,11 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
         },
       },
     });
-  }, [data, fetchMoreRaw, pageInfo?.endCursor, filter.space, filter.role, LATEST_CONTRIBUTIONS_PAGE_SIZE]);
+  };
 
   const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });
 
-  const roleOptions = useMemo<RoleOption[]>(() => {
+  const roleOptions = (() => {
     const options: RoleOption[] = SELECTABLE_ROLES.map(role => ({
       value: role,
       label: t(`common.roles.${role}` as const),
@@ -141,7 +141,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
     });
 
     return options;
-  }, [t]);
+  })();
 
   const activityFeed = data?.activityFeed?.activityFeed;
 

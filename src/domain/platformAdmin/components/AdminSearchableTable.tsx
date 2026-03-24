@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { times } from 'lodash-es';
 import type React from 'react';
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContent from '@/core/ui/content/PageContent';
@@ -107,17 +107,13 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
       }
     : fetchMore || (async () => {});
 
-  const Loader = useMemo(
-    () =>
-      ({ ref }) => (
-        <>
-          <LoadingListItem ref={ref} />
-          {times(pageSize - 1, i => (
-            <LoadingListItem key={`__loading_${i}`} />
-          ))}
-        </>
-      ),
-    [pageSize]
+  const Loader = ({ ref }) => (
+    <>
+      <LoadingListItem ref={ref} />
+      {times(pageSize - 1, i => (
+        <LoadingListItem key={`__loading_${i}`} />
+      ))}
+    </>
   );
 
   const loader = useLazyLoading(Loader, {

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useColumns } from '@/core/ui/grid/GridContext';
 
 /**
@@ -11,7 +10,7 @@ export const useSpaceCardLayout = () => {
   const columns = useColumns();
 
   // Calculate visible spaces and card columns based on total columns
-  const { visibleSpaces, cardColumns, firstCardColumns, remainingCardColumns } = useMemo(() => {
+  const { visibleSpaces, cardColumns, firstCardColumns, remainingCardColumns } = (() => {
     if (columns >= 8) {
       // Desktop/tablet:
       // - Standard layout: 3 cards, each taking columns/3 (e.g., 4 cols each for 12-col grid)
@@ -31,7 +30,7 @@ export const useSpaceCardLayout = () => {
         remainingCardColumns: columns,
       };
     }
-  }, [columns]);
+  })();
 
   return { visibleSpaces, cardColumns, firstCardColumns, remainingCardColumns };
 };

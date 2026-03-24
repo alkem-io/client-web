@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActorType,
@@ -89,22 +89,16 @@ const SpaceCommunityPage = () => {
   );
 
   // People that can be invited to the community
-  const filterInviteeContributors = useCallback(
-    (contributor: Identifiable) => !(memberUsers ?? []).some(user => user.id === contributor.id),
-    [memberUsers]
-  );
+  const filterInviteeContributors = (contributor: Identifiable) =>
+    !(memberUsers ?? []).some(user => user.id === contributor.id);
 
-  const messageReceivers = useMemo(
-    () =>
-      (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
-        id: user.id,
-        displayName: user.profile?.displayName ?? '',
-        country: user.profile?.location?.country,
-        city: user.profile?.location?.city,
-        avatarUri: user.profile?.avatar?.uri,
-      })),
-    [leadUsers]
-  );
+  const messageReceivers = (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
+    id: user.id,
+    displayName: user.profile?.displayName ?? '',
+    country: user.profile?.location?.country,
+    city: user.profile?.location?.city,
+    avatarUri: user.profile?.avatar?.uri,
+  }));
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 

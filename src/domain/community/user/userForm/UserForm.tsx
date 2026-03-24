@@ -1,6 +1,5 @@
 import { Box, Button } from '@mui/material';
 import { Formik } from 'formik';
-import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { EditMode } from '@/core/ui/forms/editMode';
@@ -69,14 +68,11 @@ export const UserForm = ({
     tagsets,
   } = profile ?? {};
 
-  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
-    () => ({
-      blueSkyRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
-      githubRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
-      linkedinRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
-    }),
-    [references]
-  );
+  const { blueSkyRef, githubRef, linkedinRef } = {
+    blueSkyRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+    githubRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+    linkedinRef: references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+  };
 
   const initialValues: UserFormGenerated = {
     displayName: displayName || '',
@@ -127,51 +123,48 @@ export const UserForm = ({
    * @return void
    * @summary if edits current user data or creates a new one depending on the edit mode
    */
-  const handleSubmit = useCallback(
-    async (userData: UserFormGenerated) => {
-      const {
-        tagsets,
-        references: newReferences,
-        bio,
-        profileId,
-        city,
-        country,
-        linkedin,
-        bsky,
-        github,
+  const handleSubmit = async (userData: UserFormGenerated) => {
+    const {
+      tagsets,
+      references: newReferences,
+      bio,
+      profileId,
+      city,
+      country,
+      linkedin,
+      bsky,
+      github,
+      displayName,
+      tagline,
+      ...otherData
+    } = userData;
+
+    const finalReferences = [
+      ...newReferences,
+      { ...linkedinRef, uri: linkedin } as ReferenceModel,
+      { ...blueSkyRef, uri: bsky } as ReferenceModel,
+      { ...githubRef, uri: github } as ReferenceModel,
+    ];
+
+    const user: UserModel = {
+      ...currentUser,
+      ...otherData,
+      profile: {
+        id: profileId,
         displayName,
         tagline,
-        ...otherData
-      } = userData;
-
-      const finalReferences = [
-        ...newReferences,
-        { ...linkedinRef, uri: linkedin } as ReferenceModel,
-        { ...blueSkyRef, uri: bsky } as ReferenceModel,
-        { ...githubRef, uri: github } as ReferenceModel,
-      ];
-
-      const user: UserModel = {
-        ...currentUser,
-        ...otherData,
-        profile: {
-          id: profileId,
-          displayName,
-          tagline,
-          description: bio,
-          references: finalReferences,
-          location: {
-            id: '',
-            country: country?.code || '',
-            city: city ?? '',
-          },
-          tagsets,
+        description: bio,
+        references: finalReferences,
+        location: {
+          id: '',
+          country: country?.code || '',
+          city: city ?? '',
         },
-      };
-      onSave && (await onSave(user));
-    },
-    [linkedinRef, blueSkyRef, githubRef, currentUser, onSave]
-  );
+        tagsets,
+      },
+    };
+    onSave && (await onSave(user));
+  };
 
   return (
     <Formik

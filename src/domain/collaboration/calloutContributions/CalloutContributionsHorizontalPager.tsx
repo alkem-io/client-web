@@ -2,7 +2,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { Box, Button, styled } from '@mui/material';
 import { times } from 'lodash-es';
-import { type ComponentType, useEffect, useMemo, useState } from 'react';
+import { type ComponentType, useEffect, useState } from 'react';
 import type { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import { useColumns } from '@/core/ui/grid/GridContext';
@@ -110,13 +110,13 @@ const CalloutContributionsHorizontalPager = ({
     }
   }, [hasMore, items, loading, setFetchAll, total]);
 
-  const pages = useMemo(() => {
+  const pages = (() => {
     const chunkedPages: AnyContribution[][] = [];
     for (let i = 0; i < items.length; i += responsiveConfig.PageSize) {
       chunkedPages.push(items.slice(i, i + responsiveConfig.PageSize));
     }
     return chunkedPages;
-  }, [items, items.length, responsiveConfig, availableColumns]);
+  })();
 
   useEffect(() => {
     if (!autoSelectPage) {

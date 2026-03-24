@@ -1,4 +1,4 @@
-import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -13,9 +13,7 @@ import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/h
 import { useGuestWhiteboardAccess } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestWhiteboardAccess';
 import { setGuestWhiteboardUrl } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
-import WhiteboardDialog, {
-  type WhiteboardDetails,
-} from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
+import WhiteboardDialog from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
@@ -55,7 +53,7 @@ const PublicWhiteboardPageContent: FC = () => {
   const isFullscreen = fullscreen || isSmallScreen;
   const { t } = useTranslation();
 
-  const whiteboardDetails = useMemo<WhiteboardDetails | undefined>(() => {
+  const whiteboardDetails = (() => {
     if (!whiteboard) return undefined;
     return {
       id: whiteboard.id,
@@ -69,11 +67,11 @@ const PublicWhiteboardPageContent: FC = () => {
       },
       previewSettings: DefaultWhiteboardPreviewSettings,
     };
-  }, [whiteboard]);
+  })();
 
-  const computedGuestShareUrl = useMemo(() => {
+  const computedGuestShareUrl = (() => {
     return whiteboardDetails ? buildGuestShareUrl(whiteboardDetails.id ?? whiteboardDetails.nameID) : undefined;
-  }, [whiteboardDetails]);
+  })();
 
   // Track successful whiteboard load
   useEffect(() => {
@@ -112,7 +110,7 @@ const PublicWhiteboardPageContent: FC = () => {
     refetch();
   };
 
-  const handleCloseWhiteboard = useCallback(() => {
+  const handleCloseWhiteboard = () => {
     const currentPath = location.pathname;
 
     if (fullscreen) {
@@ -125,7 +123,7 @@ const PublicWhiteboardPageContent: FC = () => {
     } else {
       navigate('/home');
     }
-  }, [isAuthenticated, location.pathname, navigate, fullscreen, setFullscreen]);
+  };
 
   // Show loading state (including user authentication check)
   if (loading || userLoading) {

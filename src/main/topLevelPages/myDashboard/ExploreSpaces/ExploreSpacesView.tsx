@@ -1,6 +1,6 @@
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import { Box, Button } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -67,16 +67,13 @@ export const ExploreSpacesView = ({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
+  const handleContactLead = (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    sendMessage(leadType, {
+      id: leadId,
+      displayName: leadDisplayName,
+      avatarUri: leadAvatarUri,
+    });
+  };
 
   const renderSpaceCard = (space: SpaceWithParent | undefined) => {
     if (!space) {

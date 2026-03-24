@@ -1,6 +1,6 @@
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import { CircularProgress, type Button as MuiButton } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
@@ -301,10 +301,9 @@ export const ApplicationButton = ({
     );
   };
 
-  const dialogVariant = useMemo(
-    () => (isApplicationPending(parentApplicationState) ? 'dialog-parent-app-pending' : 'dialog-apply-parent'),
-    [parentApplicationState]
-  );
+  const dialogVariant = isApplicationPending(parentApplicationState)
+    ? 'dialog-parent-app-pending'
+    : 'dialog-apply-parent';
 
   return (
     <>

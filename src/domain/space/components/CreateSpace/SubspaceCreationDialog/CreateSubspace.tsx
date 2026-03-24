@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
@@ -35,37 +34,34 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId, onSubspac
     awaitRefetchQueries: true,
   });
 
-  const handleCreate = useCallback(
-    async (value: SpaceFormValues) => {
-      const spaceId = ensurePresence(parentSpaceId);
+  const handleCreate = async (value: SpaceFormValues) => {
+    const spaceId = ensurePresence(parentSpaceId);
 
-      const result = await createSubspace({
-        spaceID: spaceId,
-        about: {
-          profile: {
-            displayName: value.displayName,
-            tagline: value.tagline,
-            description: value.description,
-            visuals: value.visuals,
-            tags: value.tags,
-          },
-          why: value.why,
+    const result = await createSubspace({
+      spaceID: spaceId,
+      about: {
+        profile: {
+          displayName: value.displayName,
+          tagline: value.tagline,
+          description: value.description,
+          visuals: value.visuals,
+          tags: value.tags,
         },
-        addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
-        spaceTemplateId: value.spaceTemplateId,
-      });
+        why: value.why,
+      },
+      addTutorialCallouts: value.addTutorialCallouts,
+      addCallouts: value.addCallouts,
+      spaceTemplateId: value.spaceTemplateId,
+    });
 
-      const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
-      onClose?.();
-      if (onSubspaceCreated && result) {
-        onSubspaceCreated(result);
-      } else {
-        navigate(spaceUrl);
-      }
-    },
-    [navigate, createSubspace, parentSpaceId, onSubspaceCreated]
-  );
+    const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
+    onClose?.();
+    if (onSubspaceCreated && result) {
+      onSubspaceCreated(result);
+    } else {
+      navigate(spaceUrl);
+    }
+  };
 
   return (
     <SpaceCreationDialog

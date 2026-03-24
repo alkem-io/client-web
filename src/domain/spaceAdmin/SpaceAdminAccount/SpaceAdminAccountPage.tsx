@@ -1,7 +1,7 @@
 import CachedIcon from '@mui/icons-material/Cached';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, CircularProgress, Link } from '@mui/material';
-import { type FC, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   useDeleteSpaceMutation,
@@ -87,7 +87,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
     }
   }, [provider, organizationData]);
 
-  const plansData = useMemo(() => {
+  const plansData = (() => {
     const activeSubscription = space?.activeSubscription;
 
     // Need to clone the array to be able to sort it:
@@ -115,7 +115,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
       currentPlan,
       daysLeft,
     };
-  }, [data]);
+  })();
 
   const [deleteSpace] = useDeleteSpaceMutation({
     onCompleted: () => {

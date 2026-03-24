@@ -1,5 +1,5 @@
 import { compact } from 'lodash-es';
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NotAuthorizedError, NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -233,7 +233,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
   // Create cache for the resolver value
   const valueRef = useRef<UrlResolverContextValue>(emptyResult);
-  const value = useMemo<UrlResolverContextValue>(() => {
+  const value = (() => {
     // When URL is empty (e.g., /user/me routes), return empty non-loading context
     if (!currentUrl) {
       const cleared = { ...emptyResult, loading: false };
@@ -272,7 +272,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
             calloutId: calloutsSet?.calloutId,
             contributionId: calloutsSet?.contributionId,
             postId: calloutsSet?.postId,
-            whiteboardId: calloutsSet?.['whiteboardId'], // No whiteboards yet on VCKBs, so TypeScript is complaining
+            whiteboardId: calloutsSet?.whiteboardId, // No whiteboards yet on VCKBs, so TypeScript is complaining
           })
         ),
 
@@ -318,7 +318,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     }
     // if the value is not resolved and loading is complete return empty result
     return emptyResult;
-  }, [urlResolverData, urlResolverLoading, currentUrl]);
+  })();
 
   return <UrlResolverContext value={value}>{children}</UrlResolverContext>;
 };

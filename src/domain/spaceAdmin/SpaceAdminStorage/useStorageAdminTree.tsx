@@ -2,7 +2,7 @@ import { FolderCopyOutlined } from '@mui/icons-material';
 import HistoryIcon from '@mui/icons-material/History';
 import ImageIcon from '@mui/icons-material/Image';
 import type { TFunction } from 'i18next';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useSpaceStorageAdminPageLazyQuery,
@@ -305,7 +305,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
   };
 
   return {
-    data: useMemo(() => tree2Grid(treeData, t), [treeData]),
+    data: tree2Grid(treeData, t),
     loading: loadingSpace,
     openBranch,
     closeBranch,

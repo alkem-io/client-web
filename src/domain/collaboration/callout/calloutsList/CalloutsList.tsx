@@ -1,6 +1,6 @@
 import { List, ListItem, ListItemButton, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import { times } from 'lodash-es';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
@@ -31,10 +31,7 @@ const CalloutsList = <Callout extends CalloutModelLight>({
     return callout.framing.profile.displayName.toLowerCase().includes(lowerCaseFilter);
   };
 
-  const filteredCallouts = useMemo(
-    () => (callouts && filter.length > 0 ? callouts?.filter(filterCalloutCallback) : callouts),
-    [callouts, filter]
-  );
+  const filteredCallouts = callouts && filter.length > 0 ? callouts?.filter(filterCalloutCallback) : callouts;
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { compact } from 'lodash-es';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -53,7 +53,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   });
 
   // Map the received Callout content data to the CalloutFormSubmittedValues type
-  const callout = useMemo<CalloutFormSubmittedValues | undefined>(() => {
+  const callout = (() => {
     const calloutData = data?.lookup.callout;
     if (!calloutData) return undefined;
     const { mediaGallery, ...framingData } = calloutData.framing;
@@ -119,37 +119,28 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         id: undefined,
       },
     };
-  }, [data?.lookup.callout, loadingCallout]);
+  })();
 
   // Track original visual IDs to detect deletions
-  const originalVisualIds = useMemo(
-    () => data?.lookup.callout?.framing.mediaGallery?.visuals?.map(v => v.id) ?? [],
-    [data?.lookup.callout?.framing.mediaGallery?.visuals]
-  );
+  const originalVisualIds = data?.lookup.callout?.framing.mediaGallery?.visuals?.map(v => v.id) ?? [];
 
   // Track original sort orders to detect reordering
-  const originalSortOrders = useMemo(
-    () =>
-      Object.fromEntries(data?.lookup.callout?.framing.mediaGallery?.visuals?.map(v => [v.id, v.sortOrder ?? 0]) ?? []),
-    [data?.lookup.callout?.framing.mediaGallery?.visuals]
+  const originalSortOrders = Object.fromEntries(
+    data?.lookup.callout?.framing.mediaGallery?.visuals?.map(v => [v.id, v.sortOrder ?? 0]) ?? []
   );
 
   // Track original poll options for diffing on save
-  const originalPollOptions = useMemo(
-    () =>
-      data?.lookup.callout?.framing.poll?.options
-        ? [...data.lookup.callout.framing.poll.options]
-            .sort((a, b) => a.sortOrder - b.sortOrder)
-            .map(o => ({ id: o.id, text: o.text }))
-        : undefined,
-    [data?.lookup.callout?.framing.poll?.options]
-  );
+  const originalPollOptions = data?.lookup.callout?.framing.poll?.options
+    ? [...data.lookup.callout.framing.poll.options]
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map(o => ({ id: o.id, text: o.text }))
+    : undefined;
 
-  const pollId = useMemo(() => data?.lookup.callout?.framing.poll?.id, [data?.lookup.callout?.framing.poll?.id]);
+  const pollId = data?.lookup.callout?.framing.poll?.id;
   const pollStatus = data?.lookup.callout?.framing.poll?.status;
 
   const [isValid, setIsValid] = useState(false);
-  const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
+  const handleStatusChange = (isValid: boolean) => setIsValid(isValid);
 
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
 

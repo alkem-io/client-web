@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useUserContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
@@ -11,7 +10,7 @@ const useUserContributions = (userId: string | undefined) => {
     skip: !userId,
   });
 
-  return useMemo(() => {
+  return (() => {
     if (!data) {
       return undefined;
     }
@@ -42,7 +41,7 @@ const useUserContributions = (userId: string | undefined) => {
     });
 
     return contributions;
-  }, [data]);
+  })();
 };
 
 export default useUserContributions;

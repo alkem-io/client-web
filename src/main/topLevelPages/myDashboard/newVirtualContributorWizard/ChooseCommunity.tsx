@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -33,7 +33,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading, titl
     setConfirmDialogOpen(false);
   };
 
-  const listItems = useMemo(() => {
+  const listItems = (() => {
     const result: SelectableKnowledgeSpace[] = [];
     const addSelectableSpace = (space: SelectableSpace) => {
       result.push({
@@ -56,7 +56,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading, titl
     });
 
     return result;
-  }, [spaces]);
+  })();
 
   const initialValues = {
     spaceId: '',

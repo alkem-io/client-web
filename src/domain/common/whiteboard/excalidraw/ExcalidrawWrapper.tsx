@@ -4,12 +4,11 @@ import type {
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-  ExportOpts,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash-es';
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
@@ -62,32 +61,29 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
    * Validate file before adding to whiteboard.
    * Rejects invalid files with a user-visible notification.
    */
-  const handleGenerateIdForFile = useCallback(
-    async (file: File): Promise<string> => {
-      const validation = validateFile(file);
-      if (!validation.ok) {
-        const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
-        const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
-        const message: string =
-          validation.reason === 'unsupportedMimeType'
-            ? t('callout.whiteboard.images.unsupportedType', params)
-            : t('callout.whiteboard.images.tooLarge', params);
-        notify(message, 'error');
-        throw new Error(message);
-      }
-      return addNewFile(file);
-    },
-    [validateFile, addNewFile, t, notify]
-  );
+  const handleGenerateIdForFile = async (file: File): Promise<string> => {
+    const validation = validateFile(file);
+    if (!validation.ok) {
+      const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
+      const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
+      const message: string =
+        validation.reason === 'unsupportedMimeType'
+          ? t('callout.whiteboard.images.unsupportedType', params)
+          : t('callout.whiteboard.images.tooLarge', params);
+      notify(message, 'error');
+      throw new Error(message);
+    }
+    return addNewFile(file);
+  };
 
-  const data = useMemo(() => {
+  const data = (() => {
     const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
 
     return {
       ...parsedData,
       ...whiteboardDefaults,
     };
-  }, [whiteboard?.content]);
+  })();
 
   useEffect(() => {
     loadFiles(data);
@@ -97,34 +93,30 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     pushFilesToExcalidraw();
   }, [filesManager]);
 
-  const refreshOnDataChange = useMemo(
-    () =>
-      debounce(async (state: RefreshWhiteboardStateParam) => {
-        excalidrawApi?.updateScene(state);
+  const refreshOnDataChange = debounce(async (state: RefreshWhiteboardStateParam) => {
+    excalidrawApi?.updateScene(state);
 
-        if (Array.isArray(state.elements) && state.elements.length > 0) {
-          excalidrawApi?.scrollToContent(state.elements, {
-            animate: false,
-            fitToViewport: true,
-            // both values help with scaling issue when the content is displayed
-            viewportZoomFactor: 0.75, // 75% of the viewport, on preview
-            maxZoom: 1, // 100% zoom, in the whiteboard
-          });
-        }
+    if (Array.isArray(state.elements) && state.elements.length > 0) {
+      excalidrawApi?.scrollToContent(state.elements, {
+        animate: false,
+        fitToViewport: true,
+        // both values help with scaling issue when the content is displayed
+        viewportZoomFactor: 0.75, // 75% of the viewport, on preview
+        maxZoom: 1, // 100% zoom, in the whiteboard
+      });
+    }
 
-        // Find the properties present in `state.files` and missing in currentFiles
-        // and put them into missingFiles: BinaryFileData[]
-        const currentFiles = excalidrawApi?.getFiles() ?? {};
-        const newFiles = state.files ?? {};
-        const missingFiles: BinaryFileData[] = compact(
-          Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
-        );
-        if (excalidrawApi && missingFiles.length > 0) {
-          excalidrawApi.addFiles(missingFiles);
-        }
-      }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL),
-    [excalidrawApi]
-  );
+    // Find the properties present in `state.files` and missing in currentFiles
+    // and put them into missingFiles: BinaryFileData[]
+    const currentFiles = excalidrawApi?.getFiles() ?? {};
+    const newFiles = state.files ?? {};
+    const missingFiles: BinaryFileData[] = compact(
+      Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
+    );
+    if (excalidrawApi && missingFiles.length > 0) {
+      excalidrawApi.addFiles(missingFiles);
+    }
+  }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL);
 
   useEffect(() => {
     // apparently when a whiteboard state is changed too fast
@@ -148,59 +140,50 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     };
   }, [handleScroll]);
 
-  const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
-    () => (exportedElements, appState) => (
-      <Box className="Card">
-        <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
-          <BackupIcon />
-        </Box>
-        <h2>Save to the Alkemio</h2>
-        <Box className="Card-details">Save the scene in Alkemio and share it with others.</Box>
-        <button
-          className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
-          title="Save to Alkemio"
-          aria-label="Save to Alkemio"
-          type="button"
-          onClick={async () => {
-            if (actions.onUpdate) {
-              await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-              const closeButton = document.querySelector('.Modal__close') as HTMLElement;
-              closeButton?.click();
-            }
-          }}
-        >
-          <div className="ToolIcon__label">Save to Alkemio</div>
-        </button>
+  const renderCustomUI = (exportedElements, appState) => (
+    <Box className="Card">
+      <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
+        <BackupIcon />
       </Box>
-    ),
-    [data, actions]
+      <h2>Save to the Alkemio</h2>
+      <Box className="Card-details">Save the scene in Alkemio and share it with others.</Box>
+      <button
+        className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
+        title="Save to Alkemio"
+        aria-label="Save to Alkemio"
+        type="button"
+        onClick={async () => {
+          if (actions.onUpdate) {
+            await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
+            const closeButton = document.querySelector('.Modal__close') as HTMLElement;
+            closeButton?.click();
+          }
+        }}
+      >
+        <div className="ToolIcon__label">Save to Alkemio</div>
+      </button>
+    </Box>
   );
 
   // This needs to be removed in case it crashes the export window
   // We already have a Save button
-  const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
-    () => ({
-      canvasActions: {
-        export: {
-          saveFileToDisk: false,
-          renderCustomUI,
-        },
+  const UIOptions: ExcalidrawProps['UIOptions'] = {
+    canvasActions: {
+      export: {
+        saveFileToDisk: false,
+        renderCustomUI,
       },
-    }),
-    [renderCustomUI]
-  );
+    },
+  };
 
   const { UIOptions: externalUIOptions, ...restOptions } = options || {};
 
-  const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
+  const mergedUIOptions = merge(UIOptions, externalUIOptions);
 
-  const handleInitializeApi = useCallback(
-    (excalidrawApi: ExcalidrawImperativeAPI) => {
-      setExcalidrawApi(excalidrawApi);
-      actions.onInitApi?.(excalidrawApi);
-    },
-    [actions.onInitApi]
-  );
+  const handleInitializeApi = (excalidrawApi: ExcalidrawImperativeAPI) => {
+    setExcalidrawApi(excalidrawApi);
+    actions.onInitApi?.(excalidrawApi);
+  };
 
   return (
     <Box sx={{ height: 1, flexGrow: 1 }}>
