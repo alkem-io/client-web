@@ -1,7 +1,6 @@
 import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
 import { Box, Button, Collapse, IconButton, Tooltip } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
-import { produce } from 'immer';
 import { debounce, difference } from 'lodash-es';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -131,28 +130,28 @@ const DashboardNavigation = ({
     };
 
     if (!isSnapped || isTopLevel || !itemRef) {
-      setViewportSnap(snap =>
-        produce(snap, snap => {
-          const contentHeight = getContentHeight();
-          const maxHeight = hasHeightLimit && isTopLevel ? INITIAL_HEIGHT_LIMIT : Infinity;
-
-          snap.top = compact ? 0 : getRelativeOffsetTop(rootItem?.getChildrenDimensions());
-          snap.height = Math.min(maxHeight, contentHeight);
-        })
-      );
+      setViewportSnap(snap => {
+        const contentHeight = getContentHeight();
+        const maxHeight = hasHeightLimit && isTopLevel ? INITIAL_HEIGHT_LIMIT : Infinity;
+        return {
+          ...snap,
+          top: compact ? 0 : getRelativeOffsetTop(rootItem?.getChildrenDimensions()),
+          height: Math.min(maxHeight, contentHeight),
+        };
+      });
       return;
     }
 
-    setViewportSnap(snap =>
-      produce(snap, snap => {
-        const itemBounds = itemRef.getDimensions();
-        const parentBounds = contentWrapperRef.current?.getBoundingClientRect();
-        const offsetTop = getRelativeOffsetTop(itemBounds);
-
-        snap.height = itemBounds?.height ?? parentBounds?.height ?? 0;
-        snap.top = offsetTop;
-      })
-    );
+    setViewportSnap(snap => {
+      const itemBounds = itemRef.getDimensions();
+      const parentBounds = contentWrapperRef.current?.getBoundingClientRect();
+      const offsetTop = getRelativeOffsetTop(itemBounds);
+      return {
+        ...snap,
+        height: itemBounds?.height ?? parentBounds?.height ?? 0,
+        top: offsetTop,
+      };
+    });
   };
 
   const adjustViewportFnRef = useRef(adjustViewport);

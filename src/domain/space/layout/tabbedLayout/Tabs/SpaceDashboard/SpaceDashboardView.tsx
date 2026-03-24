@@ -1,5 +1,4 @@
 import { InfoOutlined } from '@mui/icons-material';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
@@ -15,16 +14,12 @@ import DashboardCalendarSection from '@/domain/shared/components/DashboardSectio
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import type { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
 import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
 import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
 import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import type { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
-import {
-  getVCCreationCache,
-  removeVCCreationCache,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
+import { useSpaceDashboardDialogs } from './useSpaceDashboardDialogs';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -57,10 +52,16 @@ const SpaceDashboardView = ({
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
 
-  const [aboutDialogOpen, setAboutDialogOpen] = useState<boolean>(false);
-  const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
-  const [openWelcome, setOpenWelcome] = useState(false);
-  const [vcId, setVcId] = useState<string>('');
+  const {
+    aboutDialogOpen,
+    setAboutDialogOpen,
+    tryVirtualContributorOpen,
+    onCloseTryVirtualContributor,
+    openWelcome,
+    onCloseWelcome,
+    vcId,
+  } = useSpaceDashboardDialogs(space?.id);
+
   const level = space?.level ?? SpaceLevel.L0;
   const about = space?.about;
 
@@ -69,40 +70,6 @@ const SpaceDashboardView = ({
   const { directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
-
-  const onCloseTryVirtualContributor = () => {
-    setTryVirtualContributorOpen(false);
-    removeVCCreationCache();
-  };
-
-  const onCloseWelcome = () => {
-    setOpenWelcome(false);
-    removeSpaceWelcomeCache();
-  };
-
-  useEffect(() => {
-    // on mount of a space, check the LS and show the try dialog if present
-    const cachedVCId = getVCCreationCache();
-
-    if (cachedVCId) {
-      setVcId(cachedVCId);
-      setTryVirtualContributorOpen(true);
-    }
-
-    return () => {
-      setAboutDialogOpen(false);
-      onCloseTryVirtualContributor();
-    };
-  }, []);
-
-  useEffect(() => {
-    // on space change, check the cache and show welcome
-    const cachedSpaceWelcome = getSpaceWelcomeCache();
-
-    if (space?.id && cachedSpaceWelcome === space?.id) {
-      setOpenWelcome(true);
-    }
-  }, [space?.id]);
 
   const membership = about?.membership;
   const communityId = membership?.communityID;

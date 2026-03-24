@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import CalloutForm, { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
+import CalloutForm from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
+import { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm.validation.schema';
 import type { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 import { DefaultCalloutSettings } from '@/domain/collaboration/callout/models/CalloutSettingsModel';
 import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '@/domain/collaboration/callout/models/mappings';
@@ -122,6 +123,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
               disableMemos: !createMode,
               disableLinks: !createMode,
               disableMediaGallery: !createMode,
+              disablePolls: true, // TODO: temporary until poll template support is implemented
             }}
             onChange={calloutFormValues => {
               setFieldValue('callout', calloutFormValues);

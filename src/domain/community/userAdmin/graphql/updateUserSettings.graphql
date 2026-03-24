@@ -56,6 +56,22 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             email
             inApp
           }
+          collaborationPollVoteCastOnOwnPoll {
+            email
+            inApp
+          }
+          collaborationPollVoteCastOnPollIVotedOn {
+            email
+            inApp
+          }
+          collaborationPollModifiedOnPollIVotedOn {
+            email
+            inApp
+          }
+          collaborationPollVoteAffectedByOptionChange {
+            email
+            inApp
+          }
           admin {
             communityApplicationReceived {
               email

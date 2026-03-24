@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { times, without } from 'lodash-es';
 import { useMemo } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
@@ -13,7 +14,7 @@ import type { CalloutModelLightExtended } from '../../callout/models/CalloutMode
 import { useCalloutManager } from '../../callout/utils/useCalloutManager';
 import type { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
 import type { CalloutSortEvents, CalloutSortProps } from './CalloutSortModels';
-import CalloutInViewWrapper from './CalloutsInViewWrapper';
+import useCalloutInView from './useCalloutInView';
 
 const CalloutsViewSkeleton = () => times(3).map(i => <CalloutViewSkeleton key={i} />);
 
@@ -21,6 +22,7 @@ export interface CalloutsViewProps {
   callouts: CalloutModelLightExtended[] | undefined;
   calloutsSetId: string | undefined;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
+  // biome-ignore lint/suspicious/noConfusingVoidType: callers return void from non-async callbacks
   onCalloutUpdate?: (calloutId: string) => Promise<unknown> | void;
   loading?: boolean;
   blockProps?:
@@ -109,33 +111,80 @@ const CalloutsView = ({
 
           return (
             <PageContentBlock key={callout.id} disablePadding={true} disableGap={true} {...computedBlockProps}>
-              <CalloutInViewWrapper
+              <CalloutInViewItem
                 calloutId={callout.id}
                 calloutsSetId={calloutsSetId}
                 withClassification={!disableClassification}
-              >
-                {({ callout: calloutDetails, loading, refetch }) => (
-                  <CalloutView
-                    callout={calloutDetails}
-                    loading={loading}
-                    contributionsCount={callout.activity}
-                    onCalloutUpdate={async () => {
-                      await onCalloutUpdate?.(callout.id);
-                      await refetch();
-                    }}
-                    onVisibilityChange={changeCalloutVisibility}
-                    onCalloutDelete={deleteCallout}
-                    onExpand={handleExpand}
-                    calloutRestrictions={calloutRestrictions}
-                    {...sortEvents}
-                    {...sortProps}
-                  />
-                )}
-              </CalloutInViewWrapper>
+                activity={callout.activity}
+                onCalloutUpdate={onCalloutUpdate ? () => onCalloutUpdate(callout.id) : undefined}
+                onVisibilityChange={changeCalloutVisibility}
+                onCalloutDelete={deleteCallout}
+                onExpand={handleExpand}
+                calloutRestrictions={calloutRestrictions}
+                sortEvents={sortEvents}
+                sortProps={sortProps}
+              />
             </PageContentBlock>
           );
         })}
     </>
+  );
+};
+
+const CalloutInViewItem = ({
+  calloutId,
+  calloutsSetId,
+  withClassification,
+  activity,
+  onCalloutUpdate,
+  onVisibilityChange,
+  onCalloutDelete,
+  onExpand,
+  calloutRestrictions,
+  sortEvents,
+  sortProps,
+}: {
+  calloutId: string;
+  calloutsSetId: string | undefined;
+  withClassification: boolean;
+  activity: number | undefined;
+  // biome-ignore lint/suspicious/noConfusingVoidType: callers return void from non-async callbacks
+  onCalloutUpdate: (() => Promise<unknown> | void) | undefined;
+  onVisibilityChange: ReturnType<typeof useCalloutManager>['changeCalloutVisibility'];
+  onCalloutDelete: ReturnType<typeof useCalloutManager>['deleteCallout'];
+  onExpand: (callout: CalloutDetailsModelExtended) => void;
+  calloutRestrictions: CalloutRestrictions | undefined;
+  sortEvents: CalloutSortEvents | undefined;
+  sortProps: CalloutSortProps;
+}) => {
+  const { ref, inView, callout, loading, refetch } = useCalloutInView({
+    calloutId,
+    calloutsSetId,
+    withClassification,
+  });
+
+  return (
+    <Box ref={ref}>
+      {inView && callout ? (
+        <CalloutView
+          callout={callout}
+          loading={loading}
+          contributionsCount={activity}
+          onCalloutUpdate={async () => {
+            await onCalloutUpdate?.();
+            await refetch();
+          }}
+          onVisibilityChange={onVisibilityChange}
+          onCalloutDelete={onCalloutDelete}
+          onExpand={onExpand}
+          calloutRestrictions={calloutRestrictions}
+          {...sortEvents}
+          {...sortProps}
+        />
+      ) : (
+        <CalloutViewSkeleton />
+      )}
+    </Box>
   );
 };
 

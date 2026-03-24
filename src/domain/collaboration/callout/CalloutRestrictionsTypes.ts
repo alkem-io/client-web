@@ -32,6 +32,10 @@ export interface CalloutRestrictions {
    */
   disableMediaGallery?: boolean;
   /**
+   * Disables Poll callouts in the callout framing.
+   */
+  disablePolls?: boolean;
+  /**
    * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;

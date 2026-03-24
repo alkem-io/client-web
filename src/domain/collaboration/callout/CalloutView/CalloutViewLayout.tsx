@@ -22,6 +22,7 @@ const CalloutViewLayout = ({
   settingsOpen,
   onOpenSettings,
   calloutActions = true,
+  defaultCollapsed,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -70,7 +71,9 @@ const CalloutViewLayout = ({
         }}
       >
         <Box sx={theme => ({ padding: theme.spacing(0, 2, 1) })}>
-          <ExpandableMarkdown caption={true}>{callout.framing.profile.description ?? ''}</ExpandableMarkdown>
+          <ExpandableMarkdown caption={true} defaultCollapsed={defaultCollapsed}>
+            {callout.framing.profile.description ?? ''}
+          </ExpandableMarkdown>
         </Box>
         {!skipReferences && !!callout.framing.profile.references?.length && (
           <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>

@@ -1,4 +1,5 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
+import { compact } from 'lodash-es';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -21,6 +22,8 @@ import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useUploadMediaGalleryVisuals from '../../mediaGallery/useUploadMediaGalleryVisuals';
+import { usePollOptionManagement } from '../../poll/hooks/usePollOptionManagement';
+import type { PollFormOptionValue } from '../../poll/models/PollModels';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import CalloutForm from '../CalloutForm/CalloutForm';
 import type { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
@@ -43,6 +46,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   const { data, loading: loadingCallout } = useCalloutContentQuery({
     variables: {
+      // biome-ignore lint/style/noNonNullAssertion: Ensured by skip
       calloutId: calloutId!,
     },
     skip: !calloutId || !open,
@@ -53,6 +57,23 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     const calloutData = data?.lookup.callout;
     if (!calloutData) return undefined;
     const { mediaGallery, ...framingData } = calloutData.framing;
+    // Map poll data from server model (PollDetailsModel with full option objects)
+    // to form model (PollFormValues with {id, text} options, sorted by sortOrder)
+    const pollFormValues = framingData.poll
+      ? {
+          title: framingData.poll.title,
+          options: [...framingData.poll.options]
+            .sort((a: { sortOrder: number }, b: { sortOrder: number }) => a.sortOrder - b.sortOrder)
+            .map((o: { id: string; text: string }) => ({ id: o.id, text: o.text })),
+          settings: {
+            allowContributorsAddOptions: framingData.poll.settings.allowContributorsAddOptions,
+            minResponses: framingData.poll.settings.minResponses,
+            maxResponses: framingData.poll.settings.maxResponses,
+            resultsVisibility: framingData.poll.settings.resultsVisibility,
+            resultsDetail: framingData.poll.settings.resultsDetail,
+          },
+        }
+      : undefined;
     return {
       ...calloutData,
       id: undefined,
@@ -81,6 +102,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           previewImages: [],
         },
         link: framingData.link,
+        poll: pollFormValues,
         mediaGallery: {
           ...mediaGallery,
           visuals:
@@ -112,6 +134,20 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     [data?.lookup.callout?.framing.mediaGallery?.visuals]
   );
 
+  // Track original poll options for diffing on save
+  const originalPollOptions = useMemo(
+    () =>
+      data?.lookup.callout?.framing.poll?.options
+        ? [...data.lookup.callout.framing.poll.options]
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+            .map(o => ({ id: o.id, text: o.text }))
+        : undefined,
+    [data?.lookup.callout?.framing.poll?.options]
+  );
+
+  const pollId = useMemo(() => data?.lookup.callout?.framing.poll?.id, [data?.lookup.callout?.framing.poll?.id]);
+  const pollStatus = data?.lookup.callout?.framing.poll?.status;
+
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
@@ -134,11 +170,80 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   const [updateCalloutContent] = useUpdateCalloutContentMutation();
   const { uploadVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
+  const { addOption, updateOption, removeOption, reorderOptions } = usePollOptionManagement({
+    pollId: pollId ?? '',
+  });
   const notify = useNotification();
+
+  /**
+   * Diff form options against original options and apply mutations:
+   * 1. Add new options first (no id) — ensures we never drop below the minimum option count
+   * 2. Remove options that were deleted
+   * 3. Update options whose text changed
+   * 4. Reorder if order changed
+   */
+  const savePollOptionChanges = async (
+    formOptions: PollFormOptionValue[],
+    origOptions: { id: string; text: string }[]
+  ) => {
+    const originalIds = new Set(origOptions.map(o => o.id));
+    const formIds = new Set<string>(compact(formOptions.map(o => o.id)));
+
+    // 1. Add new options first (those without an id)
+    // Done before removals to avoid temporarily violating the server's minimum-2-options rule
+    // Track the returned IDs so we can include them in the reorder call
+    const newOptionIds = new Map<number, string>();
+    // Seed knownIds with ALL original IDs (including pending-removal ones) so that when we
+    // search the addPollOption response for the newly added option we don't accidentally
+    // match an option that already existed but hasn't been removed yet (removals happen in step 2).
+    const knownIds = new Set(origOptions.map(o => o.id));
+    for (let i = 0; i < formOptions.length; i++) {
+      if (!formOptions[i].id) {
+        const result = await addOption(formOptions[i].text);
+        const addedPoll = result.data?.addPollOption;
+        if (addedPoll) {
+          const addedOption = addedPoll.options.find(o => !knownIds.has(o.id));
+          if (addedOption) {
+            newOptionIds.set(i, addedOption.id);
+            knownIds.add(addedOption.id);
+          }
+        }
+      }
+    }
+
+    // 2. Remove deleted options
+    for (const orig of origOptions) {
+      if (!formIds.has(orig.id)) {
+        await removeOption(orig.id);
+      }
+    }
+
+    // 3. Update options whose text changed
+    for (const opt of formOptions) {
+      if (opt.id && originalIds.has(opt.id)) {
+        const orig = origOptions.find(o => o.id === opt.id);
+        if (orig && orig.text !== opt.text) {
+          await updateOption(opt.id, opt.text);
+        }
+      }
+    }
+
+    // 4. Reorder if the order changed (including newly-added options)
+    const allIdsInNewOrder = formOptions.map((o, i) => o.id ?? newOptionIds.get(i)).filter(Boolean) as string[];
+    const existingIdsInOrigOrder = origOptions.filter(o => formIds.has(o.id)).map(o => o.id);
+    const orderChanged =
+      allIdsInNewOrder.length !== existingIdsInOrigOrder.length ||
+      allIdsInNewOrder.some((id, i) => id !== existingIdsInOrigOrder[i]);
+    if (orderChanged && allIdsInNewOrder.length > 1) {
+      await reorderOptions(allIdsInNewOrder);
+    }
+  };
+
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
+    const requiredCalloutId = ensurePresence(calloutId);
     // Map the profile to CreateProfileInput
-    const { memo, mediaGallery, ...framingData } = formData.framing;
+    const { memo, mediaGallery, poll: _poll, ...framingData } = formData.framing;
     const framing = {
       ...framingData,
       profile: mapProfileModelToUpdateProfileInput(formData.framing.profile),
@@ -150,6 +255,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       link:
         formData.framing.type === CalloutFramingType.Link
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
+          : undefined,
+      poll:
+        formData.framing.type === CalloutFramingType.Poll
+          ? {
+              title: formData.framing.poll?.title ?? '',
+            }
           : undefined,
       // mediaGallery is updated separately image by image
     };
@@ -184,7 +295,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     };
 
     const updateCalloutContentInput: UpdateCalloutEntityInput = {
-      ID: calloutId!,
+      ID: requiredCalloutId,
       ...formData,
       framing,
       settings,
@@ -218,6 +329,16 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       });
     }
 
+    // Handle poll option changes via dedicated mutations
+    if (pollId && formData.framing.poll && originalPollOptions) {
+      try {
+        await savePollOptionChanges(formData.framing.poll.options, originalPollOptions);
+      } catch {
+        notify(t('poll.error.optionActionFailed'), 'error');
+        return; // Don't close the dialog so the user can retry
+      }
+    }
+
     handleClose();
   });
 
@@ -244,6 +365,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 onChange={setCalloutFormData}
                 onStatusChanged={handleStatusChange}
                 edit={true}
+                pollId={pollId}
+                pollStatus={pollStatus}
                 /* Users cannot change the allowedTypes on an already created callout for now */
                 calloutRestrictions={{
                   ...calloutRestrictions,
@@ -256,6 +379,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                   disableWhiteboards: true,
                   disableLinks: true,
                   disableMediaGallery: true,
+                  disablePolls: true,
                 }}
               />
             </StorageConfigContextProvider>
