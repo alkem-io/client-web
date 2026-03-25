@@ -12,7 +12,7 @@ type AccountSearchPickerProps = {
 
 const AccountSearchPicker = ({ label, disabled, onSelect }: AccountSearchPickerProps) => {
   const { t } = useTranslation();
-  const { results, loading, handleSearch } = useAccountSearch();
+  const { results, loading, hasSearched, handleSearch } = useAccountSearch();
 
   return (
     <Autocomplete
@@ -20,7 +20,7 @@ const AccountSearchPicker = ({ label, disabled, onSelect }: AccountSearchPickerP
       getOptionLabel={option => option.name}
       loading={loading}
       disabled={disabled}
-      noOptionsText={t(`${T_PREFIX}.noResults`)}
+      noOptionsText={hasSearched ? t(`${T_PREFIX}.noResults`) : t(`${T_PREFIX}.typeToSearch`)}
       onInputChange={(_event, value) => handleSearch(value)}
       onChange={(_event, value) => onSelect(value?.accountId)}
       renderInput={params => (

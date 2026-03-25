@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Alert, Button, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,9 +33,10 @@ const SpaceConversionOperations = ({
   const { t } = useTranslation();
   const [confirmDialog, setConfirmDialog] = useState<'L1toL0' | 'L1toL2' | 'L2toL1' | null>(null);
   const [selectedParentId, setSelectedParentId] = useState<string | undefined>();
+  const [operation, setOperation] = useState<'promote' | 'demote'>('promote');
 
   if (level === SpaceLevel.L0) {
-    return <Caption>{t(`${T_PREFIX}.noConversions`)}</Caption>;
+    return <Alert severity="info">{t(`${T_PREFIX}.noConversions`)}</Alert>;
   }
 
   const handleConfirm = async () => {
@@ -75,40 +76,79 @@ const SpaceConversionOperations = ({
       <Gutters disablePadding={true}>
         {level === SpaceLevel.L1 && (
           <>
-            <Button variant="outlined" onClick={() => setConfirmDialog('L1toL0')} disabled={mutationLoading}>
-              {t(`${T_PREFIX}.promoteL1ToL0.button`)}
-            </Button>
-            {siblingSubspaces.length > 0 ? (
-              <Formik initialValues={{ parentSpaceId: '' }} onSubmit={() => Promise.resolve()}>
-                <Form>
-                  <Gutters disablePadding={true}>
-                    <FormikAutocomplete
-                      name="parentSpaceId"
-                      values={siblingSubspaces}
-                      label={t(`${T_PREFIX}.demoteL1ToL2.targetLabel`)}
-                      disabled={siblingsLoading || mutationLoading}
-                      onChange={value => setSelectedParentId(value?.id)}
-                    />
-                    <Button
-                      variant="outlined"
-                      color="warning"
-                      onClick={() => setConfirmDialog('L1toL2')}
-                      disabled={!selectedParentId || mutationLoading}
-                    >
-                      {t(`${T_PREFIX}.demoteL1ToL2.button`)}
-                    </Button>
-                  </Gutters>
-                </Form>
-              </Formik>
-            ) : (
-              !siblingsLoading && <Caption>{t(`${T_PREFIX}.demoteL1ToL2.noTargets`)}</Caption>
+            <ToggleButtonGroup
+              value={operation}
+              exclusive={true}
+              onChange={(_event, value) => value && setOperation(value)}
+              fullWidth={true}
+            >
+              <ToggleButton value="promote">{t(`${T_PREFIX}.promote`)}</ToggleButton>
+              <ToggleButton value="demote">{t(`${T_PREFIX}.demote`)}</ToggleButton>
+            </ToggleButtonGroup>
+            {operation === 'promote' && (
+              <>
+                <Alert severity="info" variant="outlined">
+                  {t(`${T_PREFIX}.promoteL1ToL0.hint`)}
+                </Alert>
+                <Button
+                  variant="outlined"
+                  onClick={() => setConfirmDialog('L1toL0')}
+                  disabled={mutationLoading}
+                  fullWidth={true}
+                >
+                  {t(`${T_PREFIX}.promoteL1ToL0.button`)}
+                </Button>
+              </>
+            )}
+            {operation === 'demote' && (
+              <>
+                <Alert severity="warning" variant="outlined">
+                  {t(`${T_PREFIX}.demoteL1ToL2.hint`)}
+                </Alert>
+                {siblingSubspaces.length > 0 ? (
+                  <Formik initialValues={{ parentSpaceId: '' }} onSubmit={() => Promise.resolve()}>
+                    <Form>
+                      <Gutters disablePadding={true}>
+                        <FormikAutocomplete
+                          name="parentSpaceId"
+                          values={siblingSubspaces}
+                          label={t(`${T_PREFIX}.demoteL1ToL2.targetLabel`)}
+                          disabled={siblingsLoading || mutationLoading}
+                          onChange={value => setSelectedParentId(value?.id)}
+                        />
+                        <Button
+                          variant="outlined"
+                          color="warning"
+                          onClick={() => setConfirmDialog('L1toL2')}
+                          disabled={!selectedParentId || mutationLoading}
+                          fullWidth={true}
+                        >
+                          {t(`${T_PREFIX}.demoteL1ToL2.button`)}
+                        </Button>
+                      </Gutters>
+                    </Form>
+                  </Formik>
+                ) : (
+                  !siblingsLoading && <Caption>{t(`${T_PREFIX}.demoteL1ToL2.noTargets`)}</Caption>
+                )}
+              </>
             )}
           </>
         )}
         {level === SpaceLevel.L2 && (
-          <Button variant="outlined" onClick={() => setConfirmDialog('L2toL1')} disabled={mutationLoading}>
-            {t(`${T_PREFIX}.promoteL2ToL1.button`)}
-          </Button>
+          <>
+            <Alert severity="info" variant="outlined">
+              {t(`${T_PREFIX}.promoteL2ToL1.hint`)}
+            </Alert>
+            <Button
+              variant="outlined"
+              onClick={() => setConfirmDialog('L2toL1')}
+              disabled={mutationLoading}
+              fullWidth={true}
+            >
+              {t(`${T_PREFIX}.promoteL2ToL1.button`)}
+            </Button>
+          </>
         )}
       </Gutters>
       {confirmDialog && (

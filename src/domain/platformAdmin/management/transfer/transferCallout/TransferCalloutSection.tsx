@@ -75,6 +75,7 @@ const TransferCalloutSection = () => {
   return (
     <PageContentBlock>
       <BlockTitle>{t(`${T_PREFIX}.sectionTitle`)}</BlockTitle>
+      <Caption>{t(`${T_PREFIX}.sectionDescription`)}</Caption>
       <Gutters row={true} disablePadding={true}>
         <PageContentColumn columns={6}>
           <PageContentBlockSeamless disablePadding={true}>

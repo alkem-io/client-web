@@ -14,8 +14,10 @@ type AccountSearchResult = FormikSelectValue & {
 const useAccountSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [searchUsers, { data: usersData, loading: usersLoading }] = useAccountSearchUsersLazyQuery();
-  const [searchOrgs, { data: orgsData, loading: orgsLoading }] = useAccountSearchOrganizationsLazyQuery();
+  const [searchUsers, { data: usersData, loading: usersLoading, called: usersCalled }] =
+    useAccountSearchUsersLazyQuery();
+  const [searchOrgs, { data: orgsData, loading: orgsLoading, called: orgsCalled }] =
+    useAccountSearchOrganizationsLazyQuery();
 
   const loading = usersLoading || orgsLoading;
 
@@ -59,10 +61,13 @@ const useAccountSearch = () => {
     return [...userResults, ...orgResults];
   }, [usersData, orgsData]);
 
+  const hasSearched = usersCalled || orgsCalled;
+
   return {
     searchTerm,
     results,
     loading,
+    hasSearched,
     handleSearch,
   };
 };

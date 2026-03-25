@@ -51,6 +51,7 @@ const VcConversionSection = () => {
   return (
     <PageContentBlock>
       <BlockTitle>{t(`${T_PREFIX}.sectionTitle`)}</BlockTitle>
+      <Caption>{t(`${T_PREFIX}.sectionDescription`)}</Caption>
       <PageContentBlockSeamless disablePadding={true}>
         <Formik initialValues={{ url: '' }} validationSchema={urlValidator} onSubmit={onSubmit}>
           {formik => (
