@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ActorType, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -38,51 +38,47 @@ const DetailedActivityDescription = ({
 }: ActivityDescriptionProps) => {
   const { t } = useTranslation();
 
-  const props = useMemo(() => {
-    const mergedValues = { ...values };
-    const mergedComponents = { ...components };
+  const mergedValues = { ...values };
+  const mergedComponents = { ...components };
 
-    mergedValues.time = formatTimeElapsed(createdDate, t);
+  mergedValues.time = formatTimeElapsed(createdDate, t);
 
-    if (author) {
-      mergedValues.user = author.displayName;
-      if (author.url) {
-        mergedComponents.userlink = <RouterLink to={author.url} />;
-      } else {
-        mergedComponents.userlink = <span />;
-      }
+  if (author) {
+    mergedValues.user = author.displayName;
+    if (author.url) {
+      mergedComponents.userlink = <RouterLink to={author.url} />;
     } else {
-      mergedValues.user = t('common.user');
+      mergedComponents.userlink = <span />;
     }
+  } else {
+    mergedValues.user = t('common.user');
+  }
 
-    mergedValues.space = spaceDisplayName;
+  mergedValues.space = spaceDisplayName;
 
-    mergedValues.invitedEntity =
-      type === ActorType.VirtualContributor
-        ? t('community.pendingMembership.vc')
-        : t('community.pendingMembership.you');
+  mergedValues.invitedEntity =
+    type === ActorType.VirtualContributor ? t('community.pendingMembership.vc') : t('community.pendingMembership.you');
 
-    const truncatedParentName =
-      spaceDisplayName && spaceDisplayName.length > PARENT_NAME_MAX_LENGTH
-        ? spaceDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
-        : spaceDisplayName;
-    if (truncatedParentName) {
-      mergedValues.spaceDisplayName = truncatedParentName;
-    }
+  const truncatedParentName =
+    spaceDisplayName && spaceDisplayName.length > PARENT_NAME_MAX_LENGTH
+      ? spaceDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('…')
+      : spaceDisplayName;
+  if (truncatedParentName) {
+    mergedValues.spaceDisplayName = truncatedParentName;
+  }
 
-    const SpaceIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
-    if (SpaceIcon) {
-      mergedComponents.parenticon = <SpaceIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
-      mergedComponents.spaceicon = <SpaceIcon fontSize="inherit" />;
-    }
+  const SpaceIcon = spaceLevel ? spaceLevelIcon[spaceLevel] : undefined;
+  if (SpaceIcon) {
+    mergedComponents.parenticon = <SpaceIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
+    mergedComponents.spaceicon = <SpaceIcon fontSize="inherit" />;
+  }
 
-    mergedComponents.parentlink = spaceUrl ? <RouterLink to={spaceUrl} /> : <span />;
+  mergedComponents.parentlink = spaceUrl ? <RouterLink to={spaceUrl} /> : <span />;
 
-    return {
-      values: mergedValues,
-      components: mergedComponents,
-    };
-  }, [createdDate, t, author, author?.displayName, author?.url, spaceDisplayName, spaceLevel, spaceUrl, i18nKey]);
+  const props = {
+    values: mergedValues,
+    components: mergedComponents,
+  };
 
   return (
     <>

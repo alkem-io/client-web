@@ -2,7 +2,7 @@ import { Box, Card } from '@mui/material';
 import type { UiContainer, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 
 import { sortBy } from 'lodash-es';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -104,7 +104,7 @@ const SignUp = () => {
     }
   }, [signUpFlow, firstName, lastName]);
 
-  const handleInputChange = useCallback((node: UiNode, value: string) => {
+  const handleInputChange = (node: UiNode, value: string) => {
     if (!isInputNode(node)) {
       return;
     }
@@ -119,15 +119,9 @@ const SignUp = () => {
     if (inputName === KRATOS_TRAIT_NAME_LAST_NAME) {
       setLastName(value);
     }
-  }, []);
+  };
 
-  const isSubmitDisabled = useMemo(() => {
-    if (!hasAcceptedTerms) {
-      return true;
-    }
-
-    return firstName.trim().length < 1 || lastName.trim().length < 1;
-  }, [firstName, hasAcceptedTerms, lastName]);
+  const isSubmitDisabled = !hasAcceptedTerms || firstName.trim().length < 1 || lastName.trim().length < 1;
 
   // Sign Up inits a new flow, otherwise Kratos complains about missing fields like email
   // which a user had no chance to fill because they weren't even on the page.
@@ -137,7 +131,7 @@ const SignUp = () => {
 
   useEffect(() => {
     setReturnUrl(returnUrl);
-  }, [returnUrl, setReturnUrl]);
+  }, [returnUrl]);
 
   if (!signUpFlow) {
     return null;

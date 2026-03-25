@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Box, FormControlLabel, IconButton, Skeleton, Switch, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import { groupBy, sortBy, times } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceCalendarEventsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -56,20 +56,15 @@ const DashboardCalendarSection = ({ spaceId, level }: DashboardCalendarSectionPr
   const collaboration = spaceData?.lookup.space?.collaboration;
 
   // TODO: Move this to server side
-  const allEvents = useMemo(
-    () => sortBy(collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
-    [collaboration]
-  );
+  const allEvents = sortBy(collaboration?.timeline?.calendar.events ?? [], event => event.startDate);
 
-  const events = useMemo(() => {
-    const eventGroups = groupBy(allEvents, event =>
-      dayjs(event.startDate).isBefore(dayjs().startOf('day')) ? 'past' : 'future'
-    );
-    return [
-      ...sortBy(eventGroups.future, event => dayjs(event.startDate).valueOf()),
-      ...sortBy(eventGroups.past, event => -dayjs(event.startDate).valueOf()),
-    ].slice(0, MAX_NUMBER_OF_EVENTS);
-  }, [allEvents]);
+  const eventGroups = groupBy(allEvents, event =>
+    dayjs(event.startDate).isBefore(dayjs().startOf('day')) ? 'past' : 'future'
+  );
+  const events = [
+    ...sortBy(eventGroups.future, event => dayjs(event.startDate).valueOf()),
+    ...sortBy(eventGroups.past, event => -dayjs(event.startDate).valueOf()),
+  ].slice(0, MAX_NUMBER_OF_EVENTS);
 
   const openDialog = () => navigate('calendar');
 

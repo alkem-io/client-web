@@ -1,6 +1,6 @@
 import { Alert, Box, Button, DialogActions } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { type FC, useCallback, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useShareLinkWithUserMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -24,9 +24,9 @@ interface ShareOnAlkemioData {
 export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     setShareHandler('alkemio');
-  }, [setShareHandler]);
+  };
 
   return (
     <ShareButton
@@ -48,17 +48,14 @@ export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
 
   const [isMessageSent, setMessageSent] = useState(false);
 
-  const initialValues: ShareOnAlkemioData = useMemo(
-    () => ({
+  const initialValues: ShareOnAlkemioData = {
+    url,
+    message: t('share-dialog.platforms.alkemio.default-template', {
       url,
-      message: t('share-dialog.platforms.alkemio.default-template', {
-        url,
-        entity: t(`common.${entityTypeName}` as const),
-      }),
-      users: [],
+      entity: t(`common.${entityTypeName}` as const),
     }),
-    [entityTypeName, t, url]
-  );
+    users: [],
+  };
 
   const validationSchema = yup.object().shape({
     url: textLengthValidator({ required: true }),
@@ -70,25 +67,22 @@ export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
   });
 
   const [shareLinkMutation, { loading, error }] = useShareLinkWithUserMutation();
-  const shareLink = useCallback(
-    async (receiverIds: string[], url: string, message: string) => {
-      // Make sure the message includes the link, if not, append it to the end:
-      // TODO: With a proper notification template for sharing entities this shouldn't be needed
-      if (message.indexOf(url) === -1) {
-        message = `${message}\n\n${url}`;
-      }
+  const shareLink = async (receiverIds: string[], url: string, message: string) => {
+    // Make sure the message includes the link, if not, append it to the end:
+    // TODO: With a proper notification template for sharing entities this shouldn't be needed
+    if (message.indexOf(url) === -1) {
+      message = `${message}\n\n${url}`;
+    }
 
-      await shareLinkMutation({
-        variables: {
-          messageData: {
-            receiverIds,
-            message,
-          },
+    await shareLinkMutation({
+      variables: {
+        messageData: {
+          receiverIds,
+          message,
         },
-      });
-    },
-    [shareLinkMutation]
-  );
+      },
+    });
+  };
 
   const onSubmit = async (values: ShareOnAlkemioData, { resetForm }) => {
     await shareLink(values.users, values.url, values.message);

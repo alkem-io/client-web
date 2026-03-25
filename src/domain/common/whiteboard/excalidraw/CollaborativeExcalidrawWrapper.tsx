@@ -199,10 +199,6 @@ const CollaborativeExcalidrawWrapper = ({
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Online: ${isOnline}`,
       });
     },
-    onInitialize: collabApi => {
-      // eslint-disable-next-line react-compiler/react-compiler
-      combinedCollabApiRef.current = collabApi;
-    },
     onSceneInitChange: (initialized: boolean) => {
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
@@ -210,6 +206,11 @@ const CollaborativeExcalidrawWrapper = ({
     onIncomingEmojiReaction: excalidrawApi?.dispatchIncomingEmojiReaction,
     onIncomingCountdownTimer: excalidrawApi?.dispatchIncomingCountdownTimer,
   });
+
+  useEffect(() => {
+    // eslint-disable-next-line react-compiler/react-compiler -- ref mutation from useCombinedRefs; compiler cannot infer mutability
+    combinedCollabApiRef.current = collabApi;
+  }, [collabApi]);
 
   // Handler for broadcasting emoji reactions to collaborators
   const handleRequestBroadcastEmojiReaction = useCallback(

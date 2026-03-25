@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { times } from 'lodash-es';
 import type React from 'react';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
@@ -72,17 +72,13 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
 
-  const Loader = useMemo(
-    () =>
-      ({ ref }) => (
-        <>
-          <LoadingListItem ref={ref} />
-          {times(pageSize - 1, i => (
-            <LoadingListItem key={`__loading_${i}`} />
-          ))}
-        </>
-      ),
-    [pageSize]
+  const Loader = ({ ref }) => (
+    <>
+      <LoadingListItem ref={ref} />
+      {times(pageSize - 1, i => (
+        <LoadingListItem key={`__loading_${i}`} />
+      ))}
+    </>
   );
 
   const loader = useLazyLoading(Loader, {

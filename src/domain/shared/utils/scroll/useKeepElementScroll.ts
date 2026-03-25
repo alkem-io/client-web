@@ -51,7 +51,7 @@ const useKeepElementScroll = ({ scrollContainerRef }: UseKeepElementScrollOption
     if (!container) {
       return;
     }
-    // eslint-disable-next-line react-compiler/react-compiler -- DOM property mutation is valid
+    // eslint-disable-next-line react-compiler/react-compiler -- DOM mutation on ref element inside useEffect is standard React pattern
     container.style.scrollBehavior = 'smooth';
     state.scroller = container;
     return () => {

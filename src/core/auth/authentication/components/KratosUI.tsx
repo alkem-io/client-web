@@ -2,7 +2,7 @@ import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import { Alert, Box, Button } from '@mui/material';
 import type { UiContainer, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash-es';
-import { type ComponentType, createContext, type FC, type PropsWithChildren, type ReactNode, useMemo } from 'react';
+import { type ComponentType, createContext, type FC, type PropsWithChildren, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
@@ -110,79 +110,73 @@ export const KratosUI: FC<KratosUIProps> = ({
   // Load Passkey script if present in nodes
   const { isReady: isPasskeyScriptReady } = usePasskeyScript(ui?.nodes);
 
-  const renderedNodes = useMemo(
-    () =>
-      ui?.nodes.filter(node => {
-        return !some(removedFields, fieldDef => isMatch(node.attributes, fieldDef));
-      }),
-    [ui, removedFields]
-  );
+  const renderedNodes = ui?.nodes.filter(node => {
+    return !some(removedFields, fieldDef => isMatch(node.attributes, fieldDef));
+  });
 
-  const nodesByGroup = useMemo(() => {
-    return renderedNodes?.reduce(
-      (acc, node) => {
-        // Skip script nodes - they are handled separately by usePasskeyScript
-        if (isScriptNode(node)) {
-          return acc;
-        }
-        if (isHiddenInput(node)) {
-          return { ...acc, hidden: [...acc.hidden, node] };
-        }
-        // Skip passkey autocomplete init nodes entirely - they initialize autocomplete, not visible buttons
-        if (isPasskeyAutocompleteInit(node)) {
-          return acc;
-        }
-        switch (node.group) {
-          case 'default':
-            return { ...acc, default: [...acc.default, node] };
-          case 'oidc':
-            return { ...acc, oidc: [...acc.oidc, node] };
-          case 'webauthn':
-          case 'passkey':
-            // Passkey trigger buttons go to passkey group
-            if (isPasskeyTrigger(node)) {
-              return { ...acc, passkey: [...acc.passkey, node] };
-            }
-            // Text nodes (existing credentials) go to passkeyCredentials
-            if (isTextNode(node)) {
-              return { ...acc, passkeyCredentials: [...acc.passkeyCredentials, node] };
-            }
-            // Remove buttons for existing credentials go to passkeyCredentials
-            if (isSubmitButton(node)) {
-              return { ...acc, passkeyCredentials: [...acc.passkeyCredentials, node] };
-            }
-            // Other passkey nodes (like hidden inputs) go to hidden or rest
-            if (isHiddenInput(node)) {
-              return { ...acc, hidden: [...acc.hidden, node] };
-            }
-            return { ...acc, rest: [...acc.rest, node] };
-          case 'code':
-          case 'password':
-            if (isSubmitButton(node)) {
-              return { ...acc, submit: [...acc.submit, node] };
-            }
-            return { ...acc, password: [...acc.password, node] };
-          case 'profile':
-            if (isSubmitButton(node)) {
-              return { ...acc, submit: [...acc.submit, node] };
-            }
-            return { ...acc, password: [...acc.password, node] };
-          default:
-            return { ...acc, rest: [...acc.rest, node] };
-        }
-      },
-      {
-        default: [],
-        oidc: [],
-        password: [],
-        passkey: [],
-        passkeyCredentials: [],
-        rest: [],
-        submit: [],
-        hidden: [],
-      } as NodeGroups
-    );
-  }, [renderedNodes]);
+  const nodesByGroup = renderedNodes?.reduce(
+    (acc, node) => {
+      // Skip script nodes - they are handled separately by usePasskeyScript
+      if (isScriptNode(node)) {
+        return acc;
+      }
+      if (isHiddenInput(node)) {
+        return { ...acc, hidden: [...acc.hidden, node] };
+      }
+      // Skip passkey autocomplete init nodes entirely - they initialize autocomplete, not visible buttons
+      if (isPasskeyAutocompleteInit(node)) {
+        return acc;
+      }
+      switch (node.group) {
+        case 'default':
+          return { ...acc, default: [...acc.default, node] };
+        case 'oidc':
+          return { ...acc, oidc: [...acc.oidc, node] };
+        case 'webauthn':
+        case 'passkey':
+          // Passkey trigger buttons go to passkey group
+          if (isPasskeyTrigger(node)) {
+            return { ...acc, passkey: [...acc.passkey, node] };
+          }
+          // Text nodes (existing credentials) go to passkeyCredentials
+          if (isTextNode(node)) {
+            return { ...acc, passkeyCredentials: [...acc.passkeyCredentials, node] };
+          }
+          // Remove buttons for existing credentials go to passkeyCredentials
+          if (isSubmitButton(node)) {
+            return { ...acc, passkeyCredentials: [...acc.passkeyCredentials, node] };
+          }
+          // Other passkey nodes (like hidden inputs) go to hidden or rest
+          if (isHiddenInput(node)) {
+            return { ...acc, hidden: [...acc.hidden, node] };
+          }
+          return { ...acc, rest: [...acc.rest, node] };
+        case 'code':
+        case 'password':
+          if (isSubmitButton(node)) {
+            return { ...acc, submit: [...acc.submit, node] };
+          }
+          return { ...acc, password: [...acc.password, node] };
+        case 'profile':
+          if (isSubmitButton(node)) {
+            return { ...acc, submit: [...acc.submit, node] };
+          }
+          return { ...acc, password: [...acc.password, node] };
+        default:
+          return { ...acc, rest: [...acc.rest, node] };
+      }
+    },
+    {
+      default: [],
+      oidc: [],
+      password: [],
+      passkey: [],
+      passkeyCredentials: [],
+      rest: [],
+      submit: [],
+      hidden: [],
+    } as NodeGroups
+  );
 
   if (!nodesByGroup || !ui) return null;
 

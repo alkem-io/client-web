@@ -36,7 +36,7 @@ const LogoutPage = () => {
       getLogoutUrl();
     }
     return () => {};
-  }, [logoutUrl, getLogoutUrl]);
+  }, [logoutUrl]);
 
   if (error)
     return (
