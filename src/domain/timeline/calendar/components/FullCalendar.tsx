@@ -2,6 +2,7 @@ import { Box, type BoxProps, styled, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
 import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { useNextBlockAnchor } from '@/core/ui/keyboardNavigation/NextBlockAnchor';
