@@ -136,22 +136,12 @@
 - [ ] T047 [US3] [US5] Run `pnpm benchmark --build-name "post-phase4-domains"` then `pnpm benchmark:compare pre-migration-baseline post-phase4-domains` — any measurable Lighthouse score decrease triggers investigation
 - [ ] T047a [US5] Human review gate: review the benchmark:compare report from T047, spot-check complex components (SpaceDashboard, Whiteboard, SearchBar, InnovationFlow) with React DevTools Profiler, verify all metrics in Human Benchmarking Checklist pass
 
-**Checkpoint**: All domain components migrated. Zero useMemo/useCallback/React.memo outside exceptions. Tests pass. Performance validated.
 
 ---
 
 ## Phase 5: User Story 4 — Lint Rules & Prevention (Priority: P4)
 
 **Goal**: Add lint rules to prevent reintroduction. Transition warn → error once validated.
-
-**Independent Test**: Attempt to add useMemo/useCallback/React.memo in any file and confirm the linter flags it.
-
-### Implementation
-
-- [ ] T048 [US4] Add `no-restricted-syntax` rules to eslint.config.mjs with AST selectors for useMemo, useCallback, and React.memo — set to `warn` level initially (see research.md R6 for exact config)
-- [ ] T049 [US4] Validate lint rules: create a temporary test file with useMemo/useCallback/React.memo, run `pnpm eslint`, confirm all three trigger warnings, then delete the test file
-- [ ] T050 [US4] Transition lint rules from `warn` to `error` in eslint.config.mjs — migration is complete, strict enforcement begins
-- [ ] T051 [US4] Run `pnpm eslint` on full codebase to confirm zero errors (only documented exceptions with eslint-disable should exist)
 
 **Checkpoint**: Lint rules prevent reintroduction. Migration enforcement is active.
 
