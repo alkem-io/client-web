@@ -35,6 +35,8 @@ const SpaceConversionOperations = ({
   const [selectedParentId, setSelectedParentId] = useState<string | undefined>();
   const [operation, setOperation] = useState<'promote' | 'demote'>('promote');
 
+  const hasValidParentSelection = Boolean(selectedParentId && siblingSubspaces.some(s => s.id === selectedParentId));
+
   if (level === SpaceLevel.L0) {
     return <Alert severity="info">{t(`${T_PREFIX}.noConversions`)}</Alert>;
   }
@@ -45,7 +47,7 @@ const SpaceConversionOperations = ({
         await onPromoteL1ToL0();
         break;
       case 'L1toL2':
-        if (selectedParentId) {
+        if (hasValidParentSelection && selectedParentId) {
           await onDemoteL1ToL2(selectedParentId);
         }
         break;
@@ -120,7 +122,7 @@ const SpaceConversionOperations = ({
                           variant="outlined"
                           color="warning"
                           onClick={() => setConfirmDialog('L1toL2')}
-                          disabled={!selectedParentId || mutationLoading}
+                          disabled={!hasValidParentSelection || mutationLoading}
                           fullWidth={true}
                         >
                           {t(`${T_PREFIX}.demoteL1ToL2.button`)}

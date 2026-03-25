@@ -43,9 +43,11 @@ const useTransferInnovationHub = () => {
     ? undefined
     : resolved?.state === UrlResolverResultState.NotFound
       ? (`${T_PREFIX}.urlNotFound` as const)
-      : resolved && resolved.type !== UrlType.InnovationHub
-        ? (`${T_PREFIX}.urlNotHub` as const)
-        : undefined;
+      : resolved?.state === UrlResolverResultState.Forbidden
+        ? (`${T_PREFIX}.urlForbidden` as const)
+        : resolved && resolved.type !== UrlType.InnovationHub
+          ? (`${T_PREFIX}.urlNotHub` as const)
+          : undefined;
 
   const handleResolve = (url: string) => {
     setHubUrl(toFullUrl(url));

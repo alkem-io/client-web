@@ -64,9 +64,11 @@ const useSpaceConversion = () => {
     ? undefined
     : resolved?.state === UrlResolverResultState.NotFound
       ? (`${T_PREFIX}.urlNotFound` as const)
-      : resolved && !resolvedSpaceId
-        ? (`${T_PREFIX}.urlNotSpace` as const)
-        : undefined;
+      : resolved?.state === UrlResolverResultState.Forbidden
+        ? (`${T_PREFIX}.urlForbidden` as const)
+        : resolved && !resolvedSpaceId
+          ? (`${T_PREFIX}.urlNotSpace` as const)
+          : undefined;
 
   // Community counts for L1→L2 warning
   const roleSet = space?.community?.roleSet;

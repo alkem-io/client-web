@@ -139,6 +139,7 @@ All 4 mutations follow the same pattern:
 - VC's `account` reference updated
 - Standard VC authorization policy re-applied
 - **Possible bug**: return type annotation says `IInnovationPack` but actually returns `IVirtualContributor` (line 496 of account.resolver.mutations.ts — likely a copy-paste error)
+- **Frontend mitigation**: request only `{ id }` from this mutation response. Do not rely on pack- or VC-specific return fields until the backend annotation/schema is corrected.
 
 ---
 

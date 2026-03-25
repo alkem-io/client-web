@@ -35,6 +35,7 @@ const useVcConversion = () => {
   const { data: vcData, loading: vcLoading } = useVcConversionLookupQuery({
     variables: { vcId: resolvedVcId! },
     skip: !resolvedVcId,
+    fetchPolicy: 'network-only',
   });
 
   const vc = vcData?.lookup.virtualContributor;
@@ -64,9 +65,11 @@ const useVcConversion = () => {
     ? undefined
     : resolved?.state === UrlResolverResultState.NotFound
       ? (`${T_PREFIX}.urlNotFound` as const)
-      : resolved && resolved.type !== UrlType.VirtualContributor
-        ? (`${T_PREFIX}.urlNotVc` as const)
-        : undefined;
+      : resolved?.state === UrlResolverResultState.Forbidden
+        ? (`${T_PREFIX}.urlForbidden` as const)
+        : resolved && resolved.type !== UrlType.VirtualContributor
+          ? (`${T_PREFIX}.urlNotVc` as const)
+          : undefined;
 
   const handleResolve = (url: string) => {
     setMutationCompleted(false);
@@ -78,6 +81,7 @@ const useVcConversion = () => {
     try {
       await convertMutation({ variables: { virtualContributorID: vc.id } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setVcUrl('');
       setMutationCompleted(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);

@@ -2597,6 +2597,7 @@
         "successMessage": "Space conversion completed successfully.",
         "errorMessage": "Failed to convert space.",
         "urlNotFound": "URL not found.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
         "urlNotSpace": "URL does not resolve to a space."
       },
       "vcConversion": {
@@ -2615,6 +2616,7 @@
         "successMessage": "Virtual contributor conversion completed successfully.",
         "errorMessage": "Failed to convert virtual contributor.",
         "urlNotFound": "URL not found.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
         "urlNotVc": "URL does not resolve to a virtual contributor."
       },
       "transferHub": {
@@ -2631,6 +2633,7 @@
         "successMessage": "$t(common.customHomepage) transferred successfully.",
         "errorMessage": "Failed to transfer $t(common.customHomepage).",
         "urlNotFound": "URL not found.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
         "urlNotHub": "URL does not resolve to a $t(common.customHomepage)."
       },
       "transferPack": {
@@ -2647,6 +2650,7 @@
         "successMessage": "$t(common.innovationPack) transferred successfully.",
         "errorMessage": "Failed to transfer $t(common.innovationPack).",
         "urlNotFound": "URL not found.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
         "urlNotPack": "URL does not resolve to a $t(common.innovationPack)."
       },
       "transferVc": {
@@ -2664,6 +2668,7 @@
         "successMessage": "Virtual contributor transferred successfully.",
         "errorMessage": "Failed to transfer virtual contributor.",
         "urlNotFound": "URL not found.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
         "urlNotVc": "URL does not resolve to a virtual contributor."
       },
       "accountSearch": {

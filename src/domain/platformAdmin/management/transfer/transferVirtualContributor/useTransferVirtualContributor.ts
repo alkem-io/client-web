@@ -43,9 +43,11 @@ const useTransferVirtualContributor = () => {
     ? undefined
     : resolved?.state === UrlResolverResultState.NotFound
       ? (`${T_PREFIX}.urlNotFound` as const)
-      : resolved && resolved.type !== UrlType.VirtualContributor
-        ? (`${T_PREFIX}.urlNotVc` as const)
-        : undefined;
+      : resolved?.state === UrlResolverResultState.Forbidden
+        ? (`${T_PREFIX}.urlForbidden` as const)
+        : resolved && resolved.type !== UrlType.VirtualContributor
+          ? (`${T_PREFIX}.urlNotVc` as const)
+          : undefined;
 
   const handleResolve = (url: string) => {
     setVcUrl(toFullUrl(url));
