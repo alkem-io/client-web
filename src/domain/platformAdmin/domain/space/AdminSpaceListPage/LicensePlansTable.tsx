@@ -54,7 +54,6 @@ const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }
         columns={columns}
         disableDelete={plan => !isLicensePlanActive(plan)}
         onDelete={plan => setDeletingPlanId(plan.id)}
-        dependencies={[activeLicensePlanIds]}
         hideFooter={true}
       />
       <ConfirmationDialog
