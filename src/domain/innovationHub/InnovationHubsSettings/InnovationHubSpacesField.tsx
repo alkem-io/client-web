@@ -219,7 +219,6 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
               pageSize: PAGE_SIZE,
             }}
             pageSizeOptions={[PAGE_SIZE]}
-            dependencies={[spaces, loadingItemId]}
           />
         </Gutters>
       </DialogWithGrid>

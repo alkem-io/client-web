@@ -1,7 +1,7 @@
 import { Chip, type SxProps } from '@mui/material';
 import Autocomplete, { type AutocompleteProps, type AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useCallback, useMemo } from 'react';
+
 import { gutters } from '@/core/ui/grid/utils';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
 
@@ -26,29 +26,26 @@ const SearchTagsInput = ({
   fullWidth = true,
   sx,
 }: SearchTagsInputProps) => {
-  const options = useMemo(() => uniqSortedByOccurrences(availableTags), [availableTags]);
+  const options = uniqSortedByOccurrences(availableTags);
 
   const handleChange: SearchTagsInputProps['onChange'] = (event, value, reason) => {
     const trimmedValues = value.map(x => x.trim().toLowerCase());
     onChange?.(event, trimmedValues, reason);
   };
 
-  const renderInput = useCallback(
-    (props: AutocompleteRenderInputParams) => (
-      <TextField
-        {...props}
-        variant="outlined"
-        placeholder={placeholder}
-        label={label}
-        sx={{
-          '.MuiTextField-root input': {
-            height: gutters(),
-            paddingY: 0,
-          },
-        }}
-      />
-    ),
-    [label, placeholder]
+  const renderInput = (props: AutocompleteRenderInputParams) => (
+    <TextField
+      {...props}
+      variant="outlined"
+      placeholder={placeholder}
+      label={label}
+      sx={{
+        '.MuiTextField-root input': {
+          height: gutters(),
+          paddingY: 0,
+        },
+      }}
+    />
   );
 
   return (

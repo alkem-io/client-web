@@ -134,7 +134,6 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
               initialState={initialState}
               pageSizeOptions={[PAGE_SIZE]}
               disableDelete={() => true}
-              dependencies={[availableEntities, loadingItemId]}
             />
           </>
         )}

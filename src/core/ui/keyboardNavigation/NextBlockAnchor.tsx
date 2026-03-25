@@ -4,7 +4,6 @@ import {
   type PropsWithChildren,
   type ReactElement,
   type RefObject,
-  useCallback,
   useContext,
 } from 'react';
 
@@ -16,7 +15,7 @@ export const BlockAnchorProvider = ({
   blockRef,
   children,
 }: PropsWithChildren<{ blockRef: RefObject<Element | null> }>) => {
-  const anchor = useCallback(() => blockRef.current?.nextElementSibling ?? null, [blockRef]);
+  const anchor = () => blockRef.current?.nextElementSibling ?? null;
 
   return <BlockAnchorContext value={anchor}>{children}</BlockAnchorContext>;
 };

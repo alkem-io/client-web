@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { type ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import Avatar, { type AvatarSize } from '../avatar/Avatar';
 import GridItem from '../grid/GridItem';
@@ -45,10 +45,7 @@ const ContributorCardHorizontal = ({
 }: ContributorCardHorizontalProps) => {
   const { t } = useTranslation();
 
-  const tags = useMemo(
-    () => (profile?.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : []),
-    [profile?.tagsets]
-  );
+  const tags = profile?.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : [];
 
   if (!seamless) {
     return (

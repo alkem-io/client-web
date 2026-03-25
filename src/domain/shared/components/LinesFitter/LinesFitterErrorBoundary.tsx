@@ -1,6 +1,7 @@
 import { Box, type BoxProps } from '@mui/material';
 import React from 'react';
 
+// Permanent React Compiler exception: React requires class components for error boundaries (no hook equivalent).
 export default class LinesFitterErrorBoundary extends React.Component<BoxProps, { hasError: boolean }> {
   constructor(props) {
     super(props);

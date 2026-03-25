@@ -175,7 +175,7 @@ The project uses React 19 with the React Compiler (babel-plugin-react-compiler) 
 - Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
 - Cleaner code with less boilerplate
 
-For more details, see `docs/react-compiler.md`.
+For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
 
 ## Build & Bundle Analysis
 

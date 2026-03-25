@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import { useField } from 'formik';
 import type React from 'react';
-import { useMemo } from 'react';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
@@ -44,13 +43,13 @@ export const FormikSelect = ({
   const [field, meta] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return _helperText;
     }
 
     return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, _helperText, name, tErr]);
+  })();
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth={true} error={isError}>
