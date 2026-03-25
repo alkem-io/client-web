@@ -55,7 +55,7 @@ const TransferInnovationPackSection = () => {
                   placeholder={t(`${T_PREFIX}.urlPlaceholder`)}
                   fullWidth={true}
                 />
-                <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.resolve`)}</FormikSubmitButtonPure>
+                <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
               </Gutters>
             </Form>
           )}
