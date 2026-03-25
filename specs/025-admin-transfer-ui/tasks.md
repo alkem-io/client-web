@@ -116,7 +116,34 @@
 
 ---
 
-## Phase 7: Polish & Cross-Cutting Concerns
+## Phase 7: UX Polish (2026-03-25)
+
+**Purpose**: Improve user guidance and visual clarity across all sections based on `conversion-transfer-analysis.md`
+
+### Terminology & i18n
+
+- [x] T038 [P] Rename UI labels to use `$t()` references to common i18n keys: "Innovation Pack" → `$t(common.innovationPack)` ("Template Pack"), "Callout" → `$t(common.post)` ("Post"), "Innovation Hub" → `$t(common.customHomepage)` ("Custom Homepage") — in `transferPack.*`, `transferCallout.*`, `transferHub.*` sections of `translation.en.json`
+- [x] T039 [P] Update demote picker label from "Select target parent subspace" to "Move under subspace" in `translation.en.json` under `pages.admin.spaceConversion.demoteL1ToL2.targetLabel`
+
+### Space Conversion UX
+
+- [x] T040 Replace plain `Caption` with `Alert severity="info"` for L0 "no conversions" message in `SpaceConversionOperations.tsx`
+- [x] T041 Add `ToggleButtonGroup` ("Promote" | "Demote") for L1 spaces in `SpaceConversionOperations.tsx` — mutually exclusive, defaults to "Promote", shows only selected operation's controls. Add i18n keys `promote` and `demote` under `pages.admin.spaceConversion`
+- [x] T042 Add contextual `Alert variant="outlined"` hints per operation in `SpaceConversionOperations.tsx`: `promoteL1ToL0.hint` (severity=info), `demoteL1ToL2.hint` (severity=warning), `promoteL2ToL1.hint` (severity=info). Add corresponding i18n keys under each operation
+
+### Section Descriptions
+
+- [x] T043 [P] Add `sectionDescription` i18n keys for all 7 sections: `spaceConversion`, `vcConversion`, `transferHub`, `transferPack`, `transferVc`, `transferCallout`, `transferSpace` in `translation.en.json`
+- [x] T044 [P] Add `<Caption>{t('...sectionDescription')}</Caption>` below `<BlockTitle>` in all 7 section components: `SpaceConversionSection.tsx`, `VcConversionSection.tsx`, `TransferCalloutSection.tsx`, `TransferSpaceSection.tsx`, `TransferInnovationHubSection.tsx`, `TransferInnovationPackSection.tsx`, `TransferVirtualContributorSection.tsx`
+
+### Bug Fixes
+
+- [x] T045 Fix `ConfirmationDialog` confirm button rendering empty when no `confirmButtonText` is provided — add fallback `t('buttons.confirm')` in `src/core/ui/dialogs/ConfirmationDialog.tsx` (line 69), matching existing cancel button fallback pattern
+- [x] T046 Fix `AccountSearchPicker` showing "No accounts found" before any search is executed — expose `hasSearched` (from Apollo `called` state) in `useAccountSearch.ts`, use it in `AccountSearchPicker.tsx` to show "Type at least 2 characters to search" initially. Add i18n key `pages.admin.accountSearch.typeToSearch`
+
+---
+
+## Phase 8: Validation & Cross-Cutting Concerns
 
 **Purpose**: Validation and verification across all user stories
 

@@ -2,8 +2,8 @@
 
 **Feature Branch**: `025-admin-transfer-ui`
 **Created**: 2026-03-23
-**Updated**: 2026-03-24
-**Status**: Draft
+**Updated**: 2026-03-25
+**Status**: In Progress
 **Scope**: Frontend only — all GraphQL mutations already exist in the backend schema; this feature builds the admin UI that calls them.
 **Input**: GitHub Issue [#9445](https://github.com/alkem-io/client-web/issues/9445) — Admin UI for Space Conversions & Resource Transfers
 **Server Reference**: `specs/080-move-spaces/spec.md`, `docs/conversion-transfer-analysis.md` (server repo)
@@ -16,14 +16,16 @@ As a **Platform Administrator**, I want to promote and demote spaces between hie
 
 The Conversions area provides a single entry point for space operations: the admin enters a space URL, the system resolves the space and displays its current state, then dynamically shows only the conversion operations applicable to that space's current level:
 
-- **L1 space → shows**: "Promote to Space (L1 → L0)" and "Demote to Sub-subspace (L1 → L2)"
-- **L2 space → shows**: "Promote to Subspace (L2 → L1)"
-- **L0 space → shows**: No conversions available (informational message)
+- **L1 space → shows**: A "Promote | Demote" toggle button group. Only the selected operation's controls are visible at a time (mutually exclusive).
+- **L2 space → shows**: "Promote to Subspace (L2 → L1)" with an info alert describing the impact.
+- **L0 space → shows**: No conversions available (informational `Alert` banner).
+
+Each operation displays a contextual `Alert` hint (info or warning severity) before the action controls, summarizing what will happen:
 
 Operation details:
-- **Promote subspace to top-level space** (L1 → L0): Elevates a subspace to become an independent space, inheriting the original L0's account. Innovation flow is reset to platform defaults. All L2 children are automatically promoted to L1.
-- **Promote sub-subspace to subspace** (L2 → L1): Elevates a sub-subspace to become a direct child of its grandparent L0 space. Lightweight — community members and leads are preserved.
-- **Demote subspace to sub-subspace** (L1 → L2): Nests a subspace under another subspace within the same L0 space. **Most destructive** — removes all community roles except user admins. The target parent L1 space is selected from a searchable picker showing only valid sibling L1 spaces within the same L0.
+- **Promote subspace to top-level space** (L1 → L0): Elevates a subspace to become an independent space, inheriting the original L0's account. Innovation flow is reset to platform defaults. All L2 children are automatically promoted to L1. **Hint (info)**: Community members and leads are preserved; innovation flow reset; child sub-subspaces auto-promoted.
+- **Promote sub-subspace to subspace** (L2 → L1): Elevates a sub-subspace to become a direct child of its grandparent L0 space. Lightweight — community members and leads are preserved. **Hint (info)**: Lightweight conversion, everything preserved, admin roles reset.
+- **Demote subspace to sub-subspace** (L1 → L2): Nests a subspace under another subspace within the same L0 space. **Most destructive** — removes all community roles except user admins. The target parent L1 space is selected from a searchable picker (label: "Move under subspace") showing only valid sibling L1 spaces within the same L0. **Hint (warning)**: All community removed except user admins.
 
 **Why this priority**: These are the most impactful structural operations. Space hierarchy changes are the primary reason admins currently need direct API access. Providing a UI eliminates the most common admin support burden.
 
@@ -31,20 +33,22 @@ Operation details:
 
 **Acceptance Scenarios**:
 
-1. **Given** the admin is on the Conversions & Transfers page in the Conversions area, **When** they enter an L1 subspace URL, **Then** the system displays the space's current state (name, level, community size, account) and shows two available operations: "Promote to Space" and "Demote to Sub-subspace."
-2. **Given** the admin selects "Promote to Space (L1 → L0)", **When** the confirmation dialog appears, **Then** it warns that innovation flow will be reset to platform defaults and all L2 children will be promoted to L1.
-3. **Given** the admin enters an L2 sub-subspace URL, **When** it is resolved, **Then** only "Promote to Subspace (L2 → L1)" is available, and the confirmation dialog indicates community members and leads are preserved.
-4. **Given** the admin selects "Demote to Sub-subspace (L1 → L2)", **When** the demotion form appears, **Then** a searchable picker shows only L1 spaces within the same L0 as valid targets, and the confirmation dialog clearly lists all community members, leads, organizations, and VCs that will be removed (only user admins kept).
-5. **Given** the resolved space is L1 and the same L0 has no other L1 subspaces, **When** the admin opens the L1 → L2 picker, **Then** the picker is empty and the operation cannot proceed, with a message explaining no valid targets exist.
-6. **Given** the admin enters an L0 space URL, **When** it is resolved, **Then** no conversion operations are shown and an informational message explains that L0 spaces cannot be converted.
+1. **Given** the admin is on the Conversions & Transfers page in the Conversions area, **When** they enter an L1 subspace URL, **Then** the system displays the space's current state (name, level, community size, account) and shows a "Promote | Demote" toggle button group defaulting to "Promote", with the promote operation's info alert and action button visible.
+2. **Given** the admin sees the promote operation selected (L1 → L0), **When** they read the info alert, **Then** it summarizes: community preserved, innovation flow reset, child sub-subspaces auto-promoted. The confirmation dialog provides the detailed warning.
+3. **Given** the admin enters an L2 sub-subspace URL, **When** it is resolved, **Then** only "Promote to Subspace (L2 → L1)" is shown (no toggle — single operation), with an info alert confirming it is a lightweight conversion with community preserved.
+4. **Given** the admin switches to "Demote" in the toggle group, **When** the demote form appears, **Then** a warning alert explains community will be removed, a searchable picker labeled "Move under subspace" shows only L1 spaces within the same L0, and the confirmation dialog clearly lists all community members, leads, organizations, and VCs that will be removed (only user admins kept).
+5. **Given** the resolved space is L1 and the same L0 has no other L1 subspaces, **When** the admin selects "Demote", **Then** the warning alert is still shown but the picker is empty with a message explaining no valid targets exist, and the demote operation cannot proceed.
+6. **Given** the admin enters an L0 space URL, **When** it is resolved, **Then** no conversion operations are shown and an `Alert` banner with info severity explains that L0 spaces cannot be converted.
 
 ---
 
 ### User Story 2 — Resource Transfers Between Accounts (Priority: P2)
 
-As a **Platform Administrator**, I want to transfer resources (spaces, innovation hubs, innovation packs, virtual contributors) from one account to another so that I can handle organizational changes like mergers, restructuring, or license migrations without recreating content.
+As a **Platform Administrator**, I want to transfer resources (spaces, custom homepages, template packs, virtual contributors) from one account to another so that I can handle organizational changes like mergers, restructuring, or license migrations without recreating content.
 
-The Transfers area provides dedicated subsections for each resource type. For new transfer operations (Innovation Hub, Innovation Pack, Virtual Contributor), the admin enters the source resource URL, the system resolves it and shows details, then the admin selects the target account from a searchable picker and confirms. The existing Transfer Space subsection is preserved as-is with its current URL-based interaction pattern.
+The Transfers area provides dedicated subsections for each resource type. Each subsection displays a description caption below its title explaining the operation and its impact. For new transfer operations (Custom Homepage, Template Pack, Virtual Contributor), the admin enters the source resource URL, the system resolves it and shows details, then the admin selects the target account from a searchable picker and confirms. The existing Transfer Space subsection is preserved as-is with its current URL-based interaction pattern.
+
+The account search picker shows "Type at least 2 characters to search" on initial open (before any search is executed), and "No accounts found with TransferResourceAccept privilege" only after an actual search returns empty results.
 
 **Why this priority**: Account resource transfers are essential for platform operations but happen less frequently than hierarchy changes. They are simpler operations (only account reference and authorization updated — no community changes) but still require UI to avoid API calls.
 
@@ -53,8 +57,8 @@ The Transfers area provides dedicated subsections for each resource type. For ne
 **Acceptance Scenarios**:
 
 1. **Given** the admin is on the Transfer Space subsection (existing), **When** they enter a space URL and target account URL, **Then** the existing two-column URL-based workflow operates identically to the current implementation.
-2. **Given** the admin is on the Transfer Innovation Hub subsection, **When** they enter a hub URL, **Then** the system resolves it and shows the hub name, current account, and a searchable picker for the target account.
-3. **Given** the admin selects a target account from the picker for an innovation pack transfer, **When** they confirm, **Then** the pack is transferred and a success message is shown.
+2. **Given** the admin is on the Transfer Custom Homepage subsection, **When** they enter a hub URL, **Then** the system resolves it and shows the hub name, current account, a section description ("Move a Custom Homepage to a different account. Only the ownership changes — content remains unchanged."), and a searchable picker for the target account.
+3. **Given** the admin selects a target account from the picker for a template pack transfer, **When** they confirm, **Then** the pack is transferred and a success message is shown.
 4. **Given** the admin enters a virtual contributor URL in the Transfer VC subsection, **When** it is resolved, **Then** the system shows the VC name, current account, and a searchable picker for the target account.
 5. **Given** the admin lacks the required transfer privileges on either the source or target account, **When** they attempt a transfer, **Then** the operation is rejected with a clear authorization error.
 
@@ -64,7 +68,7 @@ The Transfers area provides dedicated subsections for each resource type. For ne
 
 As a **Platform Administrator**, I want to convert a virtual contributor from space-based to knowledge-base-based so that the VC can operate independently from its source space while retaining its knowledge content.
 
-This operation lives in the Conversions area as a dedicated subsection separate from space conversions, since it operates on a different entity type.
+This operation lives in the Conversions area as a dedicated subsection separate from space conversions, since it operates on a different entity type. The section displays a description: "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied."
 
 **Why this priority**: Specialized conversion for a specific administrative need. Less frequent than space hierarchy changes or account transfers, but important for VC lifecycle management.
 
@@ -116,7 +120,8 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 - **FR-001**: System MUST provide a dedicated "Conversions & Transfers" page within the Platform Administration section, accessible only to users with Platform Admin privileges.
 - **FR-002**: The page MUST be organized into two main areas by use case:
   - **Conversions area**: Space hierarchy conversions (single URL input with dynamic operation display based on resolved level) and VC type conversion (dedicated subsection with its own URL input).
-  - **Transfers area**: Dedicated subsections per resource type — Transfer Space (existing, preserved as-is), Transfer Innovation Hub, Transfer Innovation Pack, Transfer Virtual Contributor, and Transfer Callout (existing, preserved as-is).
+  - **Transfers area**: Dedicated subsections per resource type — Transfer Space (existing, preserved as-is), Transfer Custom Homepage, Transfer Template Pack, Transfer Virtual Contributor, and Transfer Post (existing, preserved as-is).
+  - All i18n strings for resource names MUST use `$t()` references to common keys (`common.innovationPack`, `common.customHomepage`, `common.post`) for consistency and maintainability.
 
 #### Entity Resolution & State Display
 
@@ -128,7 +133,15 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
   - **Callout**: name, contribution count, current location (existing display, preserved).
 - **FR-005**: For L1 → L2 demotion, system MUST display the count of community members, leads, organizations, and virtual contributors that will be removed.
 - **FR-006**: For VC type conversion, system MUST display the number of callouts that will be moved from the source space.
-- **FR-025**: For space conversions, when a space URL is resolved, system MUST display only the conversion operations applicable to that space's current level (L0: none with informational message; L1: promote to L0 and demote to L2; L2: promote to L1).
+- **FR-025**: For space conversions, when a space URL is resolved, system MUST display only the conversion operations applicable to that space's current level (L0: none with informational `Alert`; L1: promote to L0 and demote to L2 via `ToggleButtonGroup`; L2: promote to L1).
+
+#### UX Enhancements
+
+- **FR-029**: Every section MUST display a short description (`Caption`) below its title explaining what the operation does and what to expect, derived from the backend analysis (`conversion-transfer-analysis.md`).
+- **FR-030**: For L1 space conversions, the promote and demote operations MUST be presented as mutually exclusive options using a `ToggleButtonGroup` (defaulting to "Promote"), showing only the selected operation's controls at a time.
+- **FR-031**: Each space conversion operation MUST display a contextual `Alert` (with `variant="outlined"`) before the action controls, summarizing the key impact. Promote operations use `severity="info"`; the demote (L1→L2) operation uses `severity="warning"` due to its destructive nature.
+- **FR-032**: The `ConfirmationDialog` component MUST provide a default confirm button label (`t('buttons.confirm')`) when no custom text is specified, preventing empty/invisible confirm buttons.
+- **FR-033**: The account search picker MUST distinguish between "no search performed yet" and "search returned no results", showing "Type at least 2 characters to search" before any search and "No accounts found with TransferResourceAccept privilege" only after an actual search.
 
 #### Target Selection
 
@@ -171,9 +184,9 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 - **Space**: Organizational unit at level 0 (space), 1 (subspace), or 2 (sub-subspace). Hierarchy level determines which conversions are available. Has a community with role assignments, collaboration with callouts, and belongs to an account.
 - **Account**: Hosting entity for top-level spaces and other resources. Target for all resource transfer operations. Identified by its associated organization or user.
 - **Virtual Contributor (VC)**: AI-powered contributor that can be either space-based (ALKEMIO_SPACE) or knowledge-base-based (KNOWLEDGE_BASE). Type conversion moves callouts from source space.
-- **Innovation Hub**: Custom landing page resource owned by an account. Transferable between accounts.
-- **Innovation Pack**: Collection of templates owned by an account. Transferable between accounts.
-- **Callout**: Content container within a callouts set. Holds contributions (posts, links, whiteboards). Transferable between callouts sets with side effects on tagsets and creator attribution.
+- **Custom Homepage** (Innovation Hub): Custom landing page resource owned by an account. Transferable between accounts.
+- **Template Pack** (Innovation Pack): Collection of templates owned by an account. Transferable between accounts.
+- **Post** (Callout): Content container within a callouts set. Holds contributions (posts, links, whiteboards). Transferable between callouts sets with side effects on tagsets and creator attribution.
 
 ## Success Criteria *(mandatory)*
 
@@ -195,6 +208,17 @@ This operation lives in the Transfers area. The existing Transfer Callout subsec
 - Q: For L1→L2 demotion, how should the admin specify the target parent L1 space? → A: Searchable picker showing only valid L1 spaces within the same L0 space.
 - Q: How should the page be organized? → A: Two main areas by use case — Conversions (space hierarchy + VC type) and Transfers (resource ownership + callout). Space conversions use a single URL input with dynamic operation display based on level.
 - Q: How should target entities be selected for new operations? → A: Searchable picker components (reusing existing codebase component) for all new target selections. Existing Transfer Space and Transfer Callout subsections retain their URL-based pattern unchanged.
+
+### Session 2026-03-25 — UX Polish
+
+- Q: How should the promote and demote operations be presented for L1 spaces? → A: Mutually exclusive via `ToggleButtonGroup` — only one operation visible at a time. Defaults to "Promote".
+- Q: Should the L0 "no conversions" message use plain text? → A: No, use `Alert` with `severity="info"` to make it stand out.
+- Q: How should each operation's impact be communicated before the user acts? → A: Contextual `Alert` hints (`variant="outlined"`) before the action controls, derived from `conversion-transfer-analysis.md`. Info severity for safe operations, warning severity for destructive ones.
+- Q: Every section should have a description. → A: Added `Caption` descriptions below every section title, explaining what the section does and what to expect.
+- Q: The demote picker label "Select target parent subspace" is unclear. → A: Changed to "Move under subspace" to reflect the user's intent.
+- Q: The account search picker shows "No accounts found" before any search. → A: Fixed by tracking `called` state — shows "Type at least 2 characters to search" initially.
+- Q: The ConfirmationDialog confirm button is invisible when no text is provided. → A: Added fallback `t('buttons.confirm')`, matching the cancel button's existing fallback pattern.
+- Q: Rename "Innovation Pack" to "Template Pack", "Callout" to "Post", "Innovation Hub" to "Custom Homepage" in the UI. → A: Done via `$t()` references to existing common i18n keys for maintainability.
 
 ## Assumptions
 

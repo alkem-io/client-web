@@ -1,6 +1,6 @@
 # Implementation Plan: Admin UI for Space Conversions & Resource Transfers
 
-**Branch**: `025-admin-transfer-ui` | **Date**: 2026-03-24 | **Spec**: [spec.md](./spec.md)
+**Branch**: `025-admin-transfer-ui` | **Date**: 2026-03-25 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/025-admin-transfer-ui/spec.md`
 
 ## Summary
@@ -19,7 +19,7 @@ Build a unified "Conversions & Transfers" admin page that enables Platform Admin
 **Project Type**: Web (frontend only — no backend changes)
 **Performance Goals**: Any operation completable in <60 seconds (SC-004); mutation loading states prevent double-submission
 **Constraints**: Frontend-only scope; all 9 mutations pre-exist in backend schema; WCAG 2.1 AA for all new interactive elements
-**Scale/Scope**: 6 new section components, 7 new GraphQL documents, ~5 new hooks, ~50 new i18n keys, 1 reorganized admin page
+**Scale/Scope**: 6 new section components, 7 new GraphQL documents, ~5 new hooks, ~80 new i18n keys (including section descriptions and operation hints), 1 reorganized admin page with contextual UX guidance
 
 ## Constitution Check
 
@@ -33,7 +33,7 @@ Build a unified "Conversions & Transfers" admin page that enables Platform Admin
 | II | React 19 Concurrent UX Discipline | PASS | Admin mutations are sub-second one-shot operations (not "long-running" data fetches or transitions that block paint), so `useState` + `try/finally` loading states are sufficient — `useTransition` and `useOptimistic` provide no UX benefit here since there is no optimistic state to show and no concurrent rendering to coordinate. Confirmation dialogs are accessible and keyboard-navigable. |
 | III | GraphQL Contract Fidelity | PASS | All operations use generated hooks from `apollo-hooks.ts`. 7 new `.graphql` documents require `pnpm codegen` in the implementation PR. No raw `useQuery`; no direct GraphQL type exports through UI contracts. |
 | IV | State & Side-Effect Isolation | PASS | State lives in Apollo cache + local component state (URL inputs, dialog open/close). No direct DOM manipulation. Notifications go through `useNotification` adapter. |
-| V | Experience Quality & Safeguards | PASS | All destructive operations (L1→L2, VC conversion, callout transfer) require explicit confirmation dialogs listing consequences. WCAG 2.1 AA: semantic HTML, keyboard navigation, ARIA labels on form inputs. Loading indicators prevent double-submission. |
+| V | Experience Quality & Safeguards | PASS | All destructive operations (L1→L2, VC conversion, callout transfer) require explicit confirmation dialogs listing consequences. Contextual `Alert` hints surface operation impact before action. Section descriptions guide admins. `ToggleButtonGroup` prevents cognitive overload for L1 dual operations. WCAG 2.1 AA: semantic HTML, keyboard navigation, ARIA labels on form inputs. Loading indicators prevent double-submission. |
 
 ### Architecture Standards
 
@@ -126,8 +126,9 @@ src/domain/platformAdmin/management/transfer/
 │   └── TransferCallout.graphql
 │
 └── shared/                                 # NEW — shared utilities
-    ├── AccountSearchPicker.tsx             # Searchable picker for target accounts
-    ├── useAccountSearch.ts                 # Lazy query for account search
+    ├── AccountSearchPicker.tsx             # Searchable picker for target accounts (with hasSearched-aware noOptionsText)
+    ├── useAccountSearch.ts                 # Lazy query for account search (exposes hasSearched via Apollo called state)
+    ├── useAccountSearch.test.ts            # Tests for combined results, privilege filtering
     └── AccountSearch.graphql               # Account search query
 ```
 
@@ -141,7 +142,7 @@ src/domain/platformAdmin/management/transfer/
 | II | React 19 Concurrent UX | PASS | Admin mutations are sub-second one-shot operations — `useState` + `try/finally` is appropriate because there is no optimistic state, no concurrent rendering risk, and no long-running transition to coordinate. `useTransition` would add complexity without UX benefit. |
 | III | GraphQL Contract Fidelity | PASS | 6 new `.graphql` documents defined in `contracts/`. All use generated hooks after `pnpm codegen`. No raw queries. Return types request only `{ id }` to avoid schema mismatches. |
 | IV | State & Side-Effect Isolation | PASS | All state is local (URL inputs, dialog open, loading flags) or Apollo cache. `useNotification` for side effects. No direct DOM manipulation. |
-| V | Experience Quality & Safeguards | PASS | 4 distinct confirmation dialogs with operation-specific consequences. WCAG: form inputs have labels, buttons have descriptive text, dialogs are keyboard-navigable. Empty picker states handled with explanatory messages. |
+| V | Experience Quality & Safeguards | PASS | 4 distinct confirmation dialogs with operation-specific consequences. Contextual `Alert` hints per space conversion operation. Section descriptions below every title. ToggleButtonGroup for mutually exclusive L1 operations. ConfirmationDialog has default confirm label fallback. AccountSearchPicker distinguishes "no search yet" from "no results". WCAG: form inputs have labels, buttons have descriptive text, dialogs are keyboard-navigable. Empty picker states handled with explanatory messages. |
 | SOLID | SRP + DIP | PASS | Each section: 1 component + 1 hook + 1 GraphQL doc. Components depend on hook abstractions, not direct queries. `AccountSearchPicker` extracted as shared component (DRY). |
 
 **GATE RESULT: PASS** — No violations in designed artifacts.
