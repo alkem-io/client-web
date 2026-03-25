@@ -20,6 +20,7 @@ const useVcConversion = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [vcUrl, setVcUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Step 1: Resolve URL
   const { data: resolveData, loading: resolveLoading } = useVcConversionUrlResolveQuery({
@@ -58,7 +59,7 @@ const useVcConversion = () => {
   const [convertMutation, { loading: convertLoading }] = useConvertVcToKnowledgeBaseMutation();
 
   // Error derivation
-  const isLoading = resolveLoading || vcLoading;
+  const isLoading = resolveLoading || vcLoading || (isSpaceBased && spaceLoading);
   const error = isLoading
     ? undefined
     : resolved?.state === UrlResolverResultState.NotFound
@@ -68,6 +69,7 @@ const useVcConversion = () => {
         : undefined;
 
   const handleResolve = (url: string) => {
+    setMutationCompleted(false);
     setVcUrl(toFullUrl(url));
   };
 
@@ -76,13 +78,15 @@ const useVcConversion = () => {
     try {
       await convertMutation({ variables: { virtualContributorID: vc.id } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
-    } catch {
-      notify(t(`${T_PREFIX}.errorMessage`), 'error');
+      setMutationCompleted(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
     }
   };
 
   return {
-    vc,
+    vc: mutationCompleted ? undefined : vc,
     bodyOfKnowledgeType,
     isSpaceBased,
     isAlreadyConverted,

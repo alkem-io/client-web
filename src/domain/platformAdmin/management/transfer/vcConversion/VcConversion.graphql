@@ -26,9 +26,6 @@ query VcConversionLookup($vcId: UUID!) {
           }
         }
       }
-      authorization {
-        myPrivileges
-      }
     }
   }
 }

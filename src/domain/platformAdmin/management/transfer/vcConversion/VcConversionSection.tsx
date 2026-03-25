@@ -44,8 +44,8 @@ const VcConversionSection = () => {
   };
 
   const onConfirmConvert = async () => {
-    setConfirmDialogOpen(false);
     await handleConvert();
+    setConfirmDialogOpen(false);
   };
 
   return (

@@ -2573,6 +2573,7 @@
         "spaceLevel": "Level",
         "accountOwner": "Account Owner",
         "communityMembers": "Community Members",
+        "communityMembersSummary": "{{members}} members, {{leads}} leads, {{orgs}} orgs, {{vcs}} VCs",
         "promoteL1ToL0": {
           "button": "Promote to Space (L1 → L0)",
           "hint": "Community members and leads are preserved. Innovation flow will be reset to platform defaults. Child sub-subspaces are automatically promoted to subspaces.",
@@ -2659,6 +2660,7 @@
         "transferButton": "Transfer Virtual Contributor",
         "confirmTitle": "Transfer Virtual Contributor?",
         "confirmWarning": "This will transfer the virtual contributor to the selected account. Ensure the target account has the necessary privileges.",
+        "confirmButton": "Transfer",
         "successMessage": "Virtual contributor transferred successfully.",
         "errorMessage": "Failed to transfer virtual contributor.",
         "urlNotFound": "URL not found.",
@@ -2704,7 +2706,7 @@
         "confirmWarning1": "Ensure the same Innovation State (e.g., Home) exists in the space you are transferring the $t(common.post) to.",
         "confirmWarning2": "Note that any existing links to this $t(common.post) in activity or notifications may become broken.",
         "confirmWarning3": "If the $t(common.post) contains Virtual Contributions and the particular Virtual Contributor is not part of the target space, the $t(common.post) will be broken.",
-        "confirmWarning4": "The $t(common.post) creator will remain unchanged, even if they are not part of the target community.",
+        "confirmWarning4": "The executing user becomes the new $t(common.post) creator. Non-default tagsets will be deleted and classification values will be reset to the target defaults.",
         "confirmButton": "Transfer"
       },
       "transferSpace": {

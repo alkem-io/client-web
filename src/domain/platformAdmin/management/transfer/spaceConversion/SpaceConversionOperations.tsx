@@ -40,7 +40,6 @@ const SpaceConversionOperations = ({
   }
 
   const handleConfirm = async () => {
-    setConfirmDialog(null);
     switch (confirmDialog) {
       case 'L1toL0':
         await onPromoteL1ToL0();
@@ -54,6 +53,7 @@ const SpaceConversionOperations = ({
         await onPromoteL2ToL1();
         break;
     }
+    setConfirmDialog(null);
   };
 
   const confirmDialogContent = {

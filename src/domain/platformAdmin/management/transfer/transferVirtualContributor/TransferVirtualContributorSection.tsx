@@ -34,10 +34,10 @@ const TransferVirtualContributorSection = () => {
   };
 
   const onConfirmTransfer = async () => {
-    setConfirmDialogOpen(false);
     if (targetAccountId) {
       await handleTransfer(targetAccountId);
     }
+    setConfirmDialogOpen(false);
   };
 
   return (
@@ -93,6 +93,7 @@ const TransferVirtualContributorSection = () => {
         entities={{
           title: t(`${T_PREFIX}.confirmTitle`),
           content: t(`${T_PREFIX}.confirmWarning`),
+          confirmButtonText: t(`${T_PREFIX}.confirmButton`),
         }}
         actions={{
           onConfirm: onConfirmTransfer,

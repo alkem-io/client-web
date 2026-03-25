@@ -84,8 +84,12 @@ const SpaceConversionSection = () => {
             <Gutters row={true} disablePadding={true} alignItems="baseline">
               <BlockSectionTitle>{t(`${T_PREFIX}.communityMembers`)}</BlockSectionTitle>
               <span>
-                {communityCounts.memberUsers} members, {communityCounts.leadUsers} leads,{' '}
-                {communityCounts.memberOrganizations} orgs, {communityCounts.virtualContributors} VCs
+                {t(`${T_PREFIX}.communityMembersSummary`, {
+                  members: communityCounts.memberUsers,
+                  leads: communityCounts.leadUsers,
+                  orgs: communityCounts.memberOrganizations,
+                  vcs: communityCounts.virtualContributors,
+                })}
               </span>
             </Gutters>
           )}

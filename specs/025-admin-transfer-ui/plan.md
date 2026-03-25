@@ -12,7 +12,7 @@ Build a unified "Conversions & Transfers" admin page that enables Platform Admin
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19, Node ≥22.0.0
-**Primary Dependencies**: MUI 6 (UI), Apollo Client 3 (GraphQL), react-i18next (i18n), Formik (forms), Emotion (CSS-in-JS)
+**Primary Dependencies**: MUI 7 (UI), Apollo Client 3 (GraphQL), react-i18next (i18n), Formik (forms), Emotion (CSS-in-JS)
 **Storage**: Apollo Client normalized cache (no local persistence beyond session)
 **Testing**: Vitest with jsdom environment
 **Target Platform**: Web SPA served by Vite (localhost:3001, backend at localhost:3000)

@@ -18,6 +18,7 @@ const useSpaceConversion = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [spaceUrl, setSpaceUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Step 1: Resolve URL
   const { data: resolveData, loading: resolveLoading } = useSpaceConversionUrlResolveQuery({
@@ -83,6 +84,7 @@ const useSpaceConversion = () => {
   const accountOwnerName = space?.account?.host?.profile?.displayName;
 
   const handleResolve = (url: string) => {
+    setMutationCompleted(false);
     setSpaceUrl(toFullUrl(url));
   };
 
@@ -91,8 +93,10 @@ const useSpaceConversion = () => {
     try {
       await promoteL1ToL0({ variables: { spaceL1ID: resolvedSpaceId } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
-    } catch {
-      notify(t(`${T_PREFIX}.errorMessage`), 'error');
+      setMutationCompleted(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
     }
   };
 
@@ -101,8 +105,10 @@ const useSpaceConversion = () => {
     try {
       await demoteL1ToL2({ variables: { spaceL1ID: resolvedSpaceId, parentSpaceL1ID } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
-    } catch {
-      notify(t(`${T_PREFIX}.errorMessage`), 'error');
+      setMutationCompleted(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
     }
   };
 
@@ -111,14 +117,16 @@ const useSpaceConversion = () => {
     try {
       await promoteL2ToL1({ variables: { spaceL2ID: resolvedSpaceId } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
-    } catch {
-      notify(t(`${T_PREFIX}.errorMessage`), 'error');
+      setMutationCompleted(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
     }
   };
 
   return {
-    space,
-    resolvedLevel,
+    space: mutationCompleted ? undefined : space,
+    resolvedLevel: mutationCompleted ? undefined : resolvedLevel,
     accountOwnerName,
     communityCounts,
     siblingSubspaces,

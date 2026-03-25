@@ -114,7 +114,7 @@ All require elevated privileges (PLATFORM_ADMIN or TRANSFER_RESOURCE_OFFER/ACCEP
 
 All 4 mutations follow the same pattern:
 
-```
+```text
 1. Load resource with account relation
 2. Load target account
 3. Validate: TRANSFER_RESOURCE_OFFER on source account + TRANSFER_RESOURCE_ACCEPT on target

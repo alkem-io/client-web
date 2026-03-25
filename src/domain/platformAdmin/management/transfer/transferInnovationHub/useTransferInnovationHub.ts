@@ -58,8 +58,9 @@ const useTransferInnovationHub = () => {
         variables: { innovationHubID: hub.id, targetAccountID: targetAccountId },
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
-    } catch {
-      notify(t(`${T_PREFIX}.errorMessage`), 'error');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
     }
   };
 

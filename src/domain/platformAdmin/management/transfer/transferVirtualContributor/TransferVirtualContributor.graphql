@@ -24,9 +24,6 @@ query VcTransferLookup($vcId: UUID!) {
           }
         }
       }
-      authorization {
-        myPrivileges
-      }
     }
   }
 }
