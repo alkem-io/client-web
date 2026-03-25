@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/023-react-compiler-adoption/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/
 
-**Tests**: No test tasks generated — the existing test suite (19 files, 247+ tests) serves as the regression gate. Each batch validates with `pnpm vitest run`.
+**Tests**: No test tasks generated — the existing test suite (555 passing tests) serves as the regression gate. Each batch validates with `pnpm vitest run`.
 
 **Organization**: Tasks grouped by user story. US1 and US5 (both P1) are foundational — must complete before removal begins. US3 domain removal tasks are individually parallelizable.
 
@@ -200,7 +200,7 @@
 ### Parallel Opportunities
 
 - **Phase 2**: T006, T007, T008, T009, T011, T012, T013 can all run in parallel (different files)
-- **Phase 3**: T019 and T020 (React.memo removals) can run in parallel
+- **Phase 3**: T019 and T020 (React.memo removals) are skipped — TipTap lifecycle requires manual memoization (see Batch 3b notes above)
 - **Phase 4**: ALL domain tasks (T026-T044) can run in parallel — they touch different directories with no cross-dependencies. This is the biggest parallel opportunity (19 independent tasks)
 - **Phase 5**: T048-T051 are sequential (each depends on the previous)
 - **Phase 6**: T052, T053, T054 can run in parallel
