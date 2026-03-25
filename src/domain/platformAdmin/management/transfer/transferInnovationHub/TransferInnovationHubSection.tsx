@@ -29,15 +29,17 @@ const TransferInnovationHubSection = () => {
   });
 
   const onSubmit = ({ url }: { url: string }) => {
+    setConfirmDialogOpen(false);
+    setTargetAccountId(undefined);
     handleResolve(url);
     return Promise.resolve();
   };
 
   const onConfirmTransfer = async () => {
-    setConfirmDialogOpen(false);
     if (targetAccountId) {
       await handleTransfer(targetAccountId);
     }
+    setConfirmDialogOpen(false);
   };
 
   return (

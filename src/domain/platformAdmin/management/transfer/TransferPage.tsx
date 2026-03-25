@@ -58,7 +58,9 @@ const TransferPage = () => {
               width: '100%',
             }}
           >
-            <PageTitle sx={{ color: 'error.main', textAlign: 'center' }}>{t(`${T_PREFIX}.pageTitle`)}</PageTitle>
+            <PageTitle sx={{ color: 'error.main', textAlign: 'center' }}>
+              {t('components.deleteEntity.title')}
+            </PageTitle>
 
             {/* Conversions Area */}
             <PageContentBlock accent={true}>

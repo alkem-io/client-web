@@ -29,6 +29,8 @@ const TransferVirtualContributorSection = () => {
   });
 
   const onSubmit = ({ url }: { url: string }) => {
+    setConfirmDialogOpen(false);
+    setTargetAccountId(undefined);
     handleResolve(url);
     return Promise.resolve();
   };

@@ -92,12 +92,14 @@ src/domain/platformAdmin/management/transfer/
 ├── spaceConversion/                        # NEW — P1
 │   ├── SpaceConversionSection.tsx          # Single URL input, dynamic operations by level
 │   ├── useSpaceConversion.ts              # URL resolution + conversion mutations
+│   ├── useSpaceConversion.test.ts         # Tests for level-based branching and sibling-target filtering
 │   ├── SpaceConversionOperations.tsx       # Renders applicable operations based on level
 │   └── SpaceConversion.graphql             # URL resolve + lookup + 3 conversion mutations
 │
 ├── vcConversion/                           # NEW — P3
 │   ├── VcConversionSection.tsx            # VC URL input + conversion UI
 │   ├── useVcConversion.ts                 # URL resolution + conversion mutation
+│   ├── useVcConversion.test.ts            # Tests for eligibility and source-space/callout branching
 │   └── VcConversion.graphql               # URL resolve + lookup + conversion mutation
 │
 ├── transferSpace/                          # EXISTING (preserved as-is)
