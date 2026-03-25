@@ -190,6 +190,6 @@ No constitution violations to justify. The migration is a simplification — it 
 | Error40XBoundaryInternal | Class error boundary — React requires class components | Compiler skips; no action needed |
 | LinesFitterErrorBoundary | Class error boundary — React requires class components | Compiler skips; no action needed |
 | GlobalErrorContext.tsx | Singleton module-level mutation during render | Keep eslint-disable with reason |
-| InnovationFlowDragNDropEditor.tsx | @hello-pangea/dnd render props; uses `'use no memo'` | Keep directive; reassess if library adds hooks API |
+| InnovationFlowDragNDropEditor.tsx | ~~@hello-pangea/dnd render props~~ — **RESOLVED**: migrated to @dnd-kit/core; no eslint-disable or 'use no memo' directives remain | No action needed |
 | KratosPasskeyIconButton / KratosPasskeyButton | `new Function()` — already isolated leaf components | No action needed; compiler skips dynamic code |
 | MarkdownInput ecosystem (10 files) | TipTap editor lifecycle dependencies cause regressions when memoization removed | Keep React.memo + useMemo/useCallback; reassess after TipTap upgrade |

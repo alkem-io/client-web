@@ -50,14 +50,14 @@ Represents a group of files processed together.
 
 ### Memoization Call Site Lifecycle
 
-```
+```text
 pending → removed     (normal removal)
 pending → exception   (documented compiler limitation)
 ```
 
 ### Compiler Bail-Out Lifecycle
 
-```
+```text
 investigating → fixed                (refactored to be compiler-compatible)
 investigating → permanent-exception  (cannot be fixed, documented)
 ```

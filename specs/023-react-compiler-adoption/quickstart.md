@@ -4,7 +4,7 @@
 
 ## What This Migration Does
 
-Removes all manual `useMemo`, `useCallback`, and `React.memo` calls from the codebase and relies entirely on the React Compiler for automatic optimization. The compiler is already active in both dev and production builds.
+Removes most manual `useMemo`, `useCallback`, and `React.memo` calls from the codebase, except for [documented exceptions](#important-notes) (class error boundaries, GlobalErrorContext, and the MarkdownInput/TipTap ecosystem), and relies on the React Compiler for automatic optimization. The compiler is already active in both dev and production builds.
 
 ## Prerequisites
 
