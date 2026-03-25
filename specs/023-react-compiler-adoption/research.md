@@ -52,7 +52,7 @@
 | File | Fixable? | Approach |
 | ---- | -------- | -------- |
 | GlobalErrorContext.tsx | NO | Permanent exception — intentional singleton mutation of module-level variable during render |
-| InnovationFlowDragNDropEditor.tsx | PARTIAL | @hello-pangea/dnd render props pattern; already uses `'use no memo'` directive; extract render prop content to separate components or keep exception |
+| InnovationFlowDragNDropEditor.tsx | RESOLVED | ~~@hello-pangea/dnd render props~~ — migrated to @dnd-kit/core during bail-out resolution; no eslint-disable or 'use no memo' directives remain, zero compiler errors |
 | useGuestSessionReturn.ts | YES | Move `globalThis.location.href` assignment out of useCallback into proper navigation pattern |
 | CollaborativeExcalidrawWrapper.tsx | VERIFY | Ref assignment (`combinedCollabApiRef.current = collabApi`) in callback — may be fixable by moving to useEffect |
 | useKeepElementScroll.ts | VERIFY | DOM mutation already inside useEffect — may be a compiler false positive; verify the warning still triggers |

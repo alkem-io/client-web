@@ -232,7 +232,7 @@ A human reviewer MUST check the following metrics before and after each migratio
 ### Measurable Outcomes
 
 - **SC-001**: Zero useMemo, useCallback, or React.memo calls remain in the codebase outside of documented exceptions.
-- **SC-002**: Compiler eslint-disable comments are reduced from 6 to only permanently justified exceptions (target: 2-3 — class error boundaries + GlobalErrorContext; InnovationFlowDragNDropEditor uses `'use no memo'` directive instead of eslint-disable), each documented with a reason.
+- **SC-002**: Compiler eslint-disable comments are reduced from 6 to only permanently justified exceptions (class error boundaries + GlobalErrorContext), each documented with a reason. *(Note: InnovationFlowDragNDropEditor was resolved by migrating from @hello-pangea/dnd to @dnd-kit/core — see T010 in tasks.md.)*
 - **SC-003**: All existing tests (247+) pass after each migration phase with no new test failures.
 - **SC-004**: All client-facing performance metrics (FCP, LCP, TTI, TBT, CLS, Speed Index, memory, bundle size) MUST NOT degrade from pre-migration baseline on critical pages (login, dashboard, space views, whiteboard). Use minimum 3 runs per measurement. Any degradation blocks progress and triggers investigation.
 - **SC-005**: Bundle size decreases or remains stable after migration (expected modest reduction from removed dependency array metadata). Measured with both `pnpm build` asset totals and `pnpm analyze` detailed breakdown.

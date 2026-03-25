@@ -122,7 +122,7 @@
 
 - [ ] T040 [P] [US3] Remove all useMemo/useCallback from src/domain/common/ — unwrap to plain expressions/functions, clean imports. NOTE: includes whiteboard components — verify CollaborativeExcalidrawWrapper.tsx exception is preserved. Validate with `pnpm vitest run`
 - [ ] T041 [P] [US3] Remove all useMemo/useCallback from src/domain/space/ — largest domain, unwrap to plain expressions/functions, clean imports, validate with `pnpm vitest run`
-- [ ] T042 [P] [US3] Remove all useMemo/useCallback from src/domain/collaboration/ — unwrap to plain expressions/functions, clean imports. NOTE: preserve eslint-disable in InnovationFlowDragNDropEditor.tsx (permanent exception). Validate with `pnpm vitest run`
+- [ ] T042 [P] [US3] Remove all useMemo/useCallback from src/domain/collaboration/ — unwrap to plain expressions/functions, clean imports. NOTE: InnovationFlowDragNDropEditor.tsx was resolved (T010) — no eslint-disable or 'use no memo' directives remain. Validate with `pnpm vitest run`
 
 ### App Layer (src/main/ and src/dev/)
 
@@ -270,7 +270,7 @@ With multiple developers or Claude Code instances:
 - [P] tasks = different files/directories, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Every removal task follows the same pattern: unwrap useMemo/useCallback → plain expression/function, remove React.memo → plain export, clean unused imports, delete orphaned eslint-disable comments
-- Preserve documented exceptions (GlobalErrorContext.tsx, InnovationFlowDragNDropEditor.tsx, class error boundaries)
+- Preserve documented exceptions (GlobalErrorContext.tsx, class error boundaries, MarkdownInput ecosystem)
 - Commit after each domain or logical batch
 - Performance gate is strict: any measurable Lighthouse decrease blocks progress (per clarification)
 - Stop at any checkpoint to validate independently
