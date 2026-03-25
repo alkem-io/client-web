@@ -1,5 +1,5 @@
 import { Box, Link, styled, Tooltip, useTheme } from '@mui/material';
-import { type FC, useCallback, useMemo, useRef, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
 import Avatar, { type CustomAvatarProps } from '@/core/ui/avatar/Avatar';
@@ -24,70 +24,63 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
   const anchorElement = useRef<HTMLDivElement>(null);
   const [sendMessageToUser] = useSendMessageToUsersMutation();
   const [isContactDialogVisible, setContactDialogVisible] = useState(false);
-  const handleSendMessage = useCallback(
-    async (messageText: string) => {
-      if (!author || !author.id) {
-        return;
-      }
+  const handleSendMessage = async (messageText: string) => {
+    if (!author || !author.id) {
+      return;
+    }
 
-      await sendMessageToUser({
-        variables: {
-          messageData: {
-            message: messageText,
-            receiverIds: [author.id],
-          },
+    await sendMessageToUser({
+      variables: {
+        messageData: {
+          message: messageText,
+          receiverIds: [author.id],
         },
-      });
-    },
-    [sendMessageToUser]
-  );
+      },
+    });
+  };
 
-  const TooltipElement = useMemo(
-    () =>
-      ({ children }) =>
-        author ? (
-          <Tooltip
-            arrow={true}
-            slotProps={{
-              popper: {
-                anchorEl: anchorElement.current,
-                modifiers: [
-                  {
-                    name: 'offset',
-                    options: {
-                      offset: ({ placement }) => (placement === 'top' ? [0, 0] : [0, theme.avatarSizeXs]),
-                    },
-                  },
-                ],
+  const TooltipElement = ({ children }) =>
+    author ? (
+      <Tooltip
+        arrow={true}
+        slotProps={{
+          popper: {
+            anchorEl: anchorElement.current,
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: ({ placement }) => (placement === 'top' ? [0, 0] : [0, theme.avatarSizeXs]),
+                },
               },
-            }}
-            title={
-              <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
-                <UserCard
-                  displayName={author.displayName}
-                  avatarSrc={author.avatarUrl}
-                  tags={author.tags}
-                  city={author.city}
-                  country={author.country}
-                  url={author.url}
-                  onContact={() => setContactDialogVisible(true)}
-                />
-              </GridProvider>
-            }
-            PopperProps={{
-              sx: { '& > .MuiTooltip-tooltip': { background: 'transparent' } },
-            }}
-          >
-            <Box>
-              <Box ref={anchorElement} />
-              {children}
-            </Box>
-          </Tooltip>
-        ) : (
-          children
-        ),
-    [author, setContactDialogVisible]
-  );
+            ],
+          },
+        }}
+        title={
+          <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
+            <UserCard
+              displayName={author.displayName}
+              avatarSrc={author.avatarUrl}
+              tags={author.tags}
+              city={author.city}
+              country={author.country}
+              url={author.url}
+              onContact={() => setContactDialogVisible(true)}
+            />
+          </GridProvider>
+        }
+        PopperProps={{
+          sx: { '& > .MuiTooltip-tooltip': { background: 'transparent' } },
+        }}
+      >
+        <Box>
+          <Box ref={anchorElement} />
+          {children}
+        </Box>
+      </Tooltip>
+    ) : (
+      children
+    );
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Autocomplete, type AutocompleteValue, TextField, type TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
-import { type ReactElement, type SyntheticEvent, useMemo } from 'react';
+import type { ReactElement, SyntheticEvent } from 'react';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
@@ -35,13 +35,13 @@ export const FormikAutocomplete = ({
 
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return helpText;
     }
 
     return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, helpText, name, tErr]);
+  })();
 
   const handleChange = (
     _event: SyntheticEvent,

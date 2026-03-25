@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogContent } from '@mui/material';
 import { Formik } from 'formik';
-import { type ReactNode, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
@@ -58,7 +58,7 @@ const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelet
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
   const [isCanceling, setCanceling] = useState(false);
 
-  const initialValues: LinkDetails = useMemo(() => ({ ...link }), [link]);
+  const initialValues: LinkDetails = { ...link };
 
   // Track uploaded document ID for cleanup on cancel
   const uploadedDocumentId = useRef<string | undefined>(undefined);

@@ -1,5 +1,5 @@
 import { Box, Button, Link, styled, Typography } from '@mui/material';
-import { type FC, useCallback } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -27,7 +27,7 @@ export const ErrorDisplay: FC = () => {
   const { t } = useTranslation();
   const { locations } = useConfig();
   const supportLink = locations?.support;
-  const handleReload = useCallback(() => window.location.reload(), []);
+  const handleReload = () => window.location.reload();
 
   return (
     <FullscreenBox>

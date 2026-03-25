@@ -22,6 +22,7 @@ interface State {
   closestAncestor?: ClosestAncestor; // Show a dialog that will redirect to this URL after countdown
 }
 
+// Permanent React Compiler exception: React requires class components for error boundaries (no hook equivalent).
 class Error40XBoundaryInternal extends React.Component<InternalProps, State> {
   constructor(props: InternalProps) {
     super(props);

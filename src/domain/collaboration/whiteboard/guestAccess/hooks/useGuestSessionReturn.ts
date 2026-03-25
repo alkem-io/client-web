@@ -24,9 +24,7 @@ export const useGuestSessionReturn = (): UseGuestSessionReturnResult => {
   }, [whiteboardUrl, navigate]);
 
   const handleGoToWebsite = useCallback(() => {
-    // Navigate to main Alkemio website - using globalThis.location for external navigation
-    // eslint-disable-next-line react-compiler/react-compiler -- globalThis.location assignment is standard navigation
-    globalThis.location.href = 'https://alkem.io';
+    window.location.assign('https://alkem.io');
   }, []);
 
   const clearSession = useCallback(() => {

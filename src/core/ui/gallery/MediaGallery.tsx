@@ -3,7 +3,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
 import type React from 'react';
-import { Suspense, useMemo, useRef, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '../dialog/DialogHeader';
@@ -59,9 +59,8 @@ const MAX_VISIBLE_THUMBNAILS = 6;
 
 const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   const { t } = useTranslation();
-  const placeholderImage = useMemo(
-    () => createPlaceholderImageDataUri(t('components.callout-creation.framing.mediaGallery.imageNotAvailable')),
-    [t]
+  const placeholderImage = createPlaceholderImageDataUri(
+    t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
   );
   const galleryRef = useRef<ImageGalleryRef>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -123,24 +122,19 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
     return null;
   }
 
-  const galleryItems: GalleryItem[] = useMemo(
-    () =>
-      items.map(item => {
-        const hasValidUrl = Boolean(item.url);
-        const hasValidThumbnail = Boolean(item.thumbnailUrl);
+  const galleryItems: GalleryItem[] = items.map(item => {
+    const hasValidUrl = Boolean(item.url);
+    const hasValidThumbnail = Boolean(item.thumbnailUrl);
 
-        return {
-          original: hasValidUrl ? item.url : placeholderImage,
-          thumbnail: hasValidThumbnail ? item.thumbnailUrl : hasValidUrl ? item.url : placeholderImage,
-          originalAlt:
-            title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
-          thumbnailAlt:
-            title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
-          description: item.description,
-        };
-      }),
-    [items, title, placeholderImage, t]
-  );
+    return {
+      original: hasValidUrl ? item.url : placeholderImage,
+      thumbnail: hasValidThumbnail ? item.thumbnailUrl : hasValidUrl ? item.url : placeholderImage,
+      originalAlt: title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
+      thumbnailAlt:
+        title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
+      description: item.description,
+    };
+  });
 
   const hasMoreThumbnails = items.length > MAX_VISIBLE_THUMBNAILS;
   const visibleThumbnails = items.slice(0, MAX_VISIBLE_THUMBNAILS);
