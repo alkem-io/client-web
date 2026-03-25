@@ -225,7 +225,7 @@ Profiler recordings captured during interactive sessions on the same pages.
 **Key takeaways**:
 
 - vs develop: 37.7% fewer re-renders, 30.7% fewer active fibers, 32.8% less effect time, max commit halved
-- Total render time is 11.5% higher than develop — the branch includes additional features/refactors (spec 022 hooks-first refactoring, dnd-kit migration) that add component complexity
+- Total render time is 11.5% higher than develop — the branch includes the dnd-kit migration which adds component complexity
 - Avg commit duration higher (3.6ms → 6.5ms) — the compiler eliminates trivial re-renders, leaving only "real" ones that do actual work, so the average goes up while total count goes down
 - Top component render count higher than develop (134 vs 83) — likely due to new hook-based containers replacing class-based ones with different render characteristics
 - Max commit duration cut in half (187.6ms → 95.0ms) — major tail-latency improvement

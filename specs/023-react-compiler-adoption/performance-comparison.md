@@ -55,7 +55,7 @@
 | Total Blocking Time | 11 ms | 15 ms | +36.4% |
 | Cumulative Layout Shift | 0 | 0.00001 | 0 |
 
-**Takeaway**: All Lighthouse metrics are within noise margin. Scores are identical (88/79/87). Individual metric variations of +/- 1-2% are normal run-to-run variance.
+**Takeaway**: No material regression. Scores are identical (88/79/87). Percentage differences can be large for small absolute changes (e.g., Total Blocking Time +36.4% equals just +4 ms absolute on an 11 ms baseline); the measured deltas are not material.
 
 ## Runtime Performance
 
@@ -140,7 +140,7 @@
 | Total Resources (Welcome Space) | 111 | 111 |
 | Total Resources (Spaces) | 134 | 134 |
 
-**Takeaway**: Resource loading pattern is identical. Both branches load the same chunks in the same order. Slight duration variations are network noise.
+**Takeaway**: No material regression in resource loading. Both branches load the same chunks in the same order (Home route: 91 vs 92 resources — one additional resource, no impact on FCP). Slight duration variations are network noise.
 
 ## React DevTools Profiler Comparison (Manual, from prior sessions)
 
@@ -181,7 +181,7 @@ These numbers come from interactive React DevTools profiling sessions documented
 ### Key Findings
 
 1. **Zero bundle size cost**: The compiler adds automatic memoization with +0.03% bundle increase (4.6 KB)
-2. **Lighthouse parity**: All three routes score identically (88/79/87). No regressions
+2. **No material Lighthouse regression**: All three routes score identically (88/79/87); individual metric deltas are small in absolute terms
 3. **Render efficiency**: 37.7% fewer re-renders, 30.7% fewer active fibers, max commit duration halved
 4. **Memory neutral**: Identical memory footprint, DOM nodes, event listeners, and layout objects
 5. **Effect cleanup**: 32.8% reduction in total effect execution time

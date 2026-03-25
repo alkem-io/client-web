@@ -45,7 +45,10 @@ const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { 
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
     if (props.withRedirect) {
-      navigate(`/?${params}`);
+      // Full page reload intentional — withRedirect is used on error pages where React router state may be broken
+      // eslint-disable-next-line react-compiler/react-compiler
+      window.location.href = `/?${params}`;
+      return;
     } else {
       navigate(`${pathname}?${params}`);
     }

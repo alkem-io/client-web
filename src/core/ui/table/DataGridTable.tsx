@@ -50,7 +50,6 @@ interface DataGridTableProps<Item extends Identifiable> extends Omit<DataGridPro
   canDelete?: (item: Item) => boolean;
   disableDelete?: (item: Item) => boolean;
   onDelete?: (item: Item) => void;
-  dependencies?: unknown[];
 }
 
 const alwaysTrue = () => true;
@@ -66,7 +65,6 @@ const DataGridTable = <Item extends Identifiable>({
   onDelete,
   canDelete = alwaysTrue,
   disableDelete = alwaysFalse,
-  dependencies = [],
   ...props
 }: DataGridTableProps<Item>) => {
   const { t } = useTranslation();

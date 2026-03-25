@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/023-react-compiler-adoption/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/
 
-**Tests**: No test tasks generated — the existing test suite (19 files, 247+ tests) serves as the regression gate. Each batch validates with `pnpm vitest run`.
+**Tests**: No test tasks generated — the existing test suite (555 passing tests) serves as the regression gate. Each batch validates with `pnpm vitest run`.
 
 **Organization**: Tasks grouped by user story. US1 and US5 (both P1) are foundational — must complete before removal begins. US3 domain removal tasks are individually parallelizable.
 
@@ -19,8 +19,8 @@
 
 **Purpose**: Establish migration baseline and tooling
 
-- [x] T001 Run `npx react-compiler-healthcheck` and record compiler coverage baseline — recorded in docs/react-compiler-migration-baseline.md (2027/2027 components compiled)
-- [x] T002 Generate full memoization inventory — recorded in docs/react-compiler-migration-baseline.md (291 useMemo, 199 useCallback, 2 React.memo)
+- [x] T001 Run `npx react-compiler-healthcheck` and record compiler coverage baseline — recorded in specs/023-react-compiler-adoption/react-compiler-migration-baseline.md (2027/2027 components compiled)
+- [x] T002 Generate full memoization inventory — recorded in specs/023-react-compiler-adoption/react-compiler-migration-baseline.md (291 useMemo, 199 useCallback, 2 React.memo)
 
 ---
 
@@ -32,9 +32,9 @@
 
 ### US5: Performance Baseline
 
-- [x] T003 [US5] Capture baseline Lighthouse benchmarks — recorded in docs/react-compiler-migration-baseline.md and performance-results/pre-migration-baseline-1773836321977.json
-- [x] T004 [US5] Capture baseline bundle size — recorded in docs/react-compiler-migration-baseline.md (14.19 MB JS, 0.16 MB CSS, 324 chunks, 17,225 modules)
-- [x] T005 [US5] Record baseline metrics summary — recorded in docs/react-compiler-migration-baseline.md (all available metrics; Lighthouse deferred pending backend availability)
+- [x] T003 [US5] Capture baseline Lighthouse benchmarks — recorded in specs/023-react-compiler-adoption/react-compiler-migration-baseline.md and performance-results/pre-migration-baseline-1773836321977.json
+- [x] T004 [US5] Capture baseline bundle size — recorded in specs/023-react-compiler-adoption/react-compiler-migration-baseline.md (14.19 MB JS, 0.16 MB CSS, 324 chunks, 17,225 modules)
+- [x] T005 [US5] Record baseline metrics summary — recorded in specs/023-react-compiler-adoption/react-compiler-migration-baseline.md (all available metrics; Lighthouse deferred pending backend availability)
 
 ### US1: Compiler Bail-Out Resolution
 
@@ -50,7 +50,7 @@
 - [x] T015 [US1] Validate bail-out fixes: full ESLint run on src/**/*.ts{,x} — zero compiler errors (only documented permanent exceptions with eslint-disable)
 - [x] T015a [US1] Healthcheck comparison: 2028/2028 components compiled (up from 2027 baseline — +1 from InnovationFlowDragNDropEditor migration to @dnd-kit)
 - [x] T016 [US1] [US5] Tests: 555 passed. Benchmark comparison shows no regressions — LCP improved 0.7%, TBT improved 3.6%, bundle size identical. Report: performance-results/comparison-1773842618515.md
-- [x] T016a [US5] Human review gate: React DevTools Profiler comparison shows 44.6% fewer re-renders, 29.4% less total render time, 61.5% fewer renders on heaviest components. No regressions. Documented in docs/react-compiler-migration-baseline.md
+- [x] T016a [US5] Human review gate: React DevTools Profiler comparison shows 44.6% fewer re-renders, 29.4% less total render time, 61.5% fewer renders on heaviest components. No regressions. Documented in specs/023-react-compiler-adoption/react-compiler-migration-baseline.md
 
 **Checkpoint**: All fixable bail-outs resolved. Permanent exceptions documented. Performance baseline captured. Ready for memoization removal.
 
@@ -200,7 +200,7 @@
 ### Parallel Opportunities
 
 - **Phase 2**: T006, T007, T008, T009, T011, T012, T013 can all run in parallel (different files)
-- **Phase 3**: T019 and T020 (React.memo removals) can run in parallel
+- **Phase 3**: T019 and T020 (React.memo removals) are skipped — TipTap lifecycle requires manual memoization (see Batch 3b notes above)
 - **Phase 4**: ALL domain tasks (T026-T044) can run in parallel — they touch different directories with no cross-dependencies. This is the biggest parallel opportunity (19 independent tasks)
 - **Phase 5**: T048-T051 are sequential (each depends on the previous)
 - **Phase 6**: T052, T053, T054 can run in parallel

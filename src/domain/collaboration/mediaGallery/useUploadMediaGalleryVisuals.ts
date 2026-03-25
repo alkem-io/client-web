@@ -5,7 +5,10 @@ import {
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { promiseAllSettledThrottled } from '@/core/utils/promiseAllSettledThrottled';
 import { getMediaGalleryVisualType } from './mediaGalleryVisualType';
+
+const MAX_CONCURRENT_UPLOADS = 5;
 
 interface MediaGalleryFormVisual {
   id?: string;
@@ -102,81 +105,87 @@ const useUploadMediaGalleryVisuals = () => {
       });
     };
 
-    // Step 2: Process all visuals in parallel: create + upload for new files, or update existing
+    // Step 2: Process visuals with throttled concurrency to avoid overwhelming the server
     const uploadOperations =
-      visuals?.map(async (visual, index) => {
-        // Case 1: New visual with file - create visual on media gallery and upload image
-        if (visual.file && !visual.id) {
-          const visualType = visual.visualType ?? getMediaGalleryVisualType(visual.file, visual.uri);
+      visuals?.map(
+        (visual, index) => () =>
+          (async () => {
+            // Case 1: New visual with file - create visual on media gallery and upload image
+            if (visual.file && !visual.id) {
+              const visualType = visual.visualType ?? getMediaGalleryVisualType(visual.file, visual.uri);
 
-          const { data } = await addVisual({
-            variables: {
-              addData: {
-                mediaGalleryID: mediaGalleryId,
-                visualType,
-                sortOrder: visual.sortOrder ?? index,
-              },
-            },
-          });
+              const { data } = await addVisual({
+                variables: {
+                  addData: {
+                    mediaGalleryID: mediaGalleryId,
+                    visualType,
+                    sortOrder: visual.sortOrder ?? index,
+                  },
+                },
+              });
 
-          const createdVisualId = data?.addVisualToMediaGallery?.id;
-          if (!createdVisualId) {
-            throw new Error('Failed to create visual on media gallery');
-          }
+              const createdVisualId = data?.addVisualToMediaGallery?.id;
+              if (!createdVisualId) {
+                throw new Error('Failed to create visual on media gallery');
+              }
 
-          await uploadVisual({
-            variables: {
-              file: visual.file,
-              uploadData: {
-                visualID: createdVisualId,
-                alternativeText: visual.altText ?? visual.name ?? visual.file.name,
-              },
-            },
-          });
-        }
-        // Case 2: Existing visual with new file - just upload the new image
-        else if (visual.file && visual.id) {
-          await uploadVisual({
-            variables: {
-              file: visual.file,
-              uploadData: {
-                visualID: visual.id,
-                alternativeText: visual.altText ?? visual.name ?? visual.file.name,
-              },
-            },
-          });
-        }
-        // Case 3: Visuals without files (URLs only) are reuploaded - for creating callout templates and applying callout templates
-        else if (reuploadVisuals && visual.id && visual.uri && !visual.file) {
-          await fetchAndCreateVisual(visual, visual.sortOrder ?? index);
-        }
-        // Case 4: Existing visual with changed sortOrder - delete and re-add with new sortOrder.
-        // TODO: Replace with a dedicated updateVisualSortOrder mutation when the server supports it.
-        else if (
-          originalSortOrders &&
-          visual.id &&
-          visual.uri &&
-          !visual.file &&
-          visual.sortOrder !== undefined &&
-          originalSortOrders[visual.id] !== undefined &&
-          visual.sortOrder !== originalSortOrders[visual.id]
-        ) {
-          await deleteVisual({
-            variables: {
-              deleteData: {
-                mediaGalleryID: mediaGalleryId,
-                visualID: visual.id,
-              },
-            },
-          });
-          await fetchAndCreateVisual(visual, visual.sortOrder);
-        }
-      }) ?? [];
+              await uploadVisual({
+                variables: {
+                  file: visual.file,
+                  uploadData: {
+                    visualID: createdVisualId,
+                    alternativeText: visual.altText ?? visual.name ?? visual.file.name,
+                  },
+                },
+              });
+            }
+            // Case 2: Existing visual with new file - just upload the new image
+            else if (visual.file && visual.id) {
+              await uploadVisual({
+                variables: {
+                  file: visual.file,
+                  uploadData: {
+                    visualID: visual.id,
+                    alternativeText: visual.altText ?? visual.name ?? visual.file.name,
+                  },
+                },
+              });
+            }
+            // Case 3: Visuals without files (URLs only) are reuploaded - for creating callout templates and applying callout templates
+            else if (reuploadVisuals && visual.id && visual.uri && !visual.file) {
+              await fetchAndCreateVisual(visual, visual.sortOrder ?? index);
+            }
+            // Case 4: Existing visual with changed sortOrder - delete and re-add with new sortOrder.
+            // TODO: Replace with a dedicated updateVisualSortOrder mutation when the server supports it.
+            else if (
+              originalSortOrders &&
+              visual.id &&
+              visual.uri &&
+              !visual.file &&
+              visual.sortOrder !== undefined &&
+              originalSortOrders[visual.id] !== undefined &&
+              visual.sortOrder !== originalSortOrders[visual.id]
+            ) {
+              await deleteVisual({
+                variables: {
+                  deleteData: {
+                    mediaGalleryID: mediaGalleryId,
+                    visualID: visual.id,
+                  },
+                },
+              });
+              await fetchAndCreateVisual(visual, visual.sortOrder);
+            }
+          })()
+      ) ?? [];
 
-    // Use allSettled so all operations are attempted even if some fail.
+    // Delete operations are lightweight - run them all in parallel first.
+    await Promise.allSettled(deleteOperations);
+
+    // Throttle upload operations to avoid overwhelming the server with concurrent streams.
     // Individual mutation errors are already handled by the global Apollo error handler
     // which shows notifications with proper error codes (numericCode) to the user.
-    await Promise.allSettled([...deleteOperations, ...uploadOperations]);
+    await promiseAllSettledThrottled(uploadOperations, MAX_CONCURRENT_UPLOADS);
 
     // Refetch relevant queries to update the UI regardless of individual failures,
     // so that successfully processed visuals are reflected in the cache.
