@@ -28,6 +28,7 @@ import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { Error40X } from './core/pages/Errors/Error40X';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
+import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
 
@@ -133,32 +134,34 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
-                                    <UserMessagingProvider>
-                                      <NavigationHistoryTracker />
-                                      <ApmUserSetter />
-                                      <ScrollToTop />
-                                      <Suspense fallback={null}>
-                                        <InAppNotificationsDialog />
-                                      </Suspense>
-                                      <InAppNotificationCountSubscriber />
-                                      <Suspense fallback={null}>
-                                        <UserMessagingDialog />
-                                      </Suspense>
-                                      <VersionHandling />
-                                      <OnlineStatusNotification />
-                                      <Error40XBoundary
-                                        errorComponent={errorState => (
-                                          <TopLevelLayout>
-                                            <Error40X {...errorState} />
-                                          </TopLevelLayout>
-                                        )}
-                                      >
-                                        <TopLevelRoutes />
+                                    <PushNotificationProvider>
+                                      <UserMessagingProvider>
+                                        <NavigationHistoryTracker />
+                                        <ApmUserSetter />
+                                        <ScrollToTop />
                                         <Suspense fallback={null}>
-                                          <GlobalErrorDialog />
+                                          <InAppNotificationsDialog />
                                         </Suspense>
-                                      </Error40XBoundary>
-                                    </UserMessagingProvider>
+                                        <InAppNotificationCountSubscriber />
+                                        <Suspense fallback={null}>
+                                          <UserMessagingDialog />
+                                        </Suspense>
+                                        <VersionHandling />
+                                        <OnlineStatusNotification />
+                                        <Error40XBoundary
+                                          errorComponent={errorState => (
+                                            <TopLevelLayout>
+                                              <Error40X {...errorState} />
+                                            </TopLevelLayout>
+                                          )}
+                                        >
+                                          <TopLevelRoutes />
+                                          <Suspense fallback={null}>
+                                            <GlobalErrorDialog />
+                                          </Suspense>
+                                        </Error40XBoundary>
+                                      </UserMessagingProvider>
+                                    </PushNotificationProvider>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
                               </UserProvider>

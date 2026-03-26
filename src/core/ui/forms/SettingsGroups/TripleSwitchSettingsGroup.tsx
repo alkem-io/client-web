@@ -1,5 +1,5 @@
 import { Box, CircularProgress, FormGroup, Switch, type SwitchProps } from '@mui/material';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
@@ -17,26 +17,30 @@ const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean 
     <Switch {...props} />
   );
 
-type DualSwitchSettingsGroupProps<T extends Record<string, NotificationOption>> = {
+type TripleSwitchSettingsGroupProps<T extends Record<string, NotificationOption>> = {
   options: T;
   onChange: (key: keyof T, type: ChannelType, newValue: boolean) => void | Promise<void>;
+  isPushEnabled: boolean;
+  isPushAvailable: boolean;
 };
 
-function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
+function TripleSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
   options,
   onChange,
-}: DualSwitchSettingsGroupProps<T>) {
+  isPushEnabled,
+  isPushAvailable,
+}: TripleSwitchSettingsGroupProps<T>) {
   const { t } = useTranslation();
   const { isEnabled: isInAppNotificationsEnabled } = useInAppNotificationsContext();
   const [itemLoading, setItemLoading] = useState<{ key: keyof T; type: ChannelType } | undefined>();
+  const idPrefix = useId();
 
   const handleChange = async (key: keyof T, type: ChannelType, newValue: boolean) => {
     const option = options[key];
     if (!option) return;
 
-    // Validate the change using the validation service
     if (!NotificationValidationService.isChangeAllowed(option, type, newValue)) {
-      return; // Prevent invalid changes
+      return;
     }
 
     setItemLoading({ key, type });
@@ -49,17 +53,21 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
 
   return (
     <Box>
-      {/* Header row with switch labels */}
       <Box sx={{ display: 'flex', mb: 1, alignItems: 'center' }}>
         {isInAppNotificationsEnabled && (
           <Box sx={{ width: 60, textAlign: 'center' }}>
-            <CaptionSmall>{t('common.inApp')}</CaptionSmall>
+            <CaptionSmall id={`${idPrefix}-header-inapp`}>{t('common.inApp')}</CaptionSmall>
           </Box>
         )}
         <Box sx={{ width: 60, textAlign: 'center' }}>
-          <CaptionSmall>{t('common.email')}</CaptionSmall>
+          <CaptionSmall id={`${idPrefix}-header-email`}>{t('common.email')}</CaptionSmall>
         </Box>
-        <Box sx={{ flex: 1 }}>{/* Empty space for label column header */}</Box>
+        {isPushAvailable && (
+          <Box sx={{ width: 60, textAlign: 'center' }}>
+            <CaptionSmall id={`${idPrefix}-header-push`}>{t('common.push')}</CaptionSmall>
+          </Box>
+        )}
+        <Box sx={{ flex: 1 }} />
       </Box>
 
       <FormGroup>
@@ -67,10 +75,15 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
           const option = options[key];
           const isInAppLoading = itemLoading?.key === key && itemLoading?.type === 'inApp';
           const isEmailLoading = itemLoading?.key === key && itemLoading?.type === 'email';
+          const isPushLoading = itemLoading?.key === key && itemLoading?.type === 'push';
           const isAnyLoading = Boolean(itemLoading);
 
-          // Calculate switch states using the validation service
-          const switchStates = NotificationValidationService.calculateSwitchStates(option);
+          const switchStates = NotificationValidationService.calculateSwitchStates(option, {
+            isPushEnabled,
+            isPushAvailable,
+          });
+
+          const labelId = `${idPrefix}-label-${String(key)}`;
 
           return (
             <Box key={String(key)} sx={{ display: 'flex', alignItems: 'center', py: 0.5 }}>
@@ -86,6 +99,7 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
                       disabled={switchStates.inApp.disabled || isAnyLoading}
                       onChange={(_event, newValue) => handleChange(key, 'inApp', newValue)}
                       size="small"
+                      inputProps={{ 'aria-labelledby': `${idPrefix}-header-inapp ${labelId}` }}
                     />
                   </NotificationSwitchTooltip>
                 </Box>
@@ -101,11 +115,29 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
                     disabled={switchStates.email.disabled || isAnyLoading}
                     onChange={(_event, newValue) => handleChange(key, 'email', newValue)}
                     size="small"
+                    inputProps={{ 'aria-labelledby': `${idPrefix}-header-email ${labelId}` }}
                   />
                 </NotificationSwitchTooltip>
               </Box>
+              {isPushAvailable && (
+                <Box sx={{ width: 60, textAlign: 'center' }}>
+                  <NotificationSwitchTooltip
+                    message={switchStates.push.tooltipMessage}
+                    show={switchStates.push.disabled}
+                  >
+                    <LoadingSwitch
+                      checked={option.pushChecked}
+                      loading={isPushLoading}
+                      disabled={switchStates.push.disabled || isAnyLoading}
+                      onChange={(_event, newValue) => handleChange(key, 'push', newValue)}
+                      size="small"
+                      inputProps={{ 'aria-labelledby': `${idPrefix}-header-push ${labelId}` }}
+                    />
+                  </NotificationSwitchTooltip>
+                </Box>
+              )}
               <Box sx={{ flex: 1, pl: 2 }}>
-                <Caption>{option.label}</Caption>
+                <Caption id={labelId}>{option.label}</Caption>
               </Box>
             </Box>
           );
@@ -115,4 +147,4 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
   );
 }
 
-export default DualSwitchSettingsGroup;
+export default TripleSwitchSettingsGroup;
