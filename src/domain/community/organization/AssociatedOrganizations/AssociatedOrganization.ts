@@ -4,7 +4,6 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 
 export interface AssociatedOrganization {
-  key: string; // to be used as React key
   profile:
     | {
         url: string;
@@ -35,12 +34,10 @@ interface RequestState {
 export const mapToAssociatedOrganization = (
   // TODO: Do not use types from graphql here
   organization: AssociatedOrganizationQuery['lookup']['organization'] | undefined,
-  key: string,
   state?: RequestState
 ): AssociatedOrganization => {
   const profile = organization?.profile;
   return {
-    key,
     profile: profile
       ? {
           // spread the props here to remove the tagline which is rendered automatically in the card

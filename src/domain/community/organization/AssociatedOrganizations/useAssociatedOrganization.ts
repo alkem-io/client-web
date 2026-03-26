@@ -50,7 +50,7 @@ const useAssociatedOrganization = ({
     });
   };
 
-  const associatedOrganization = mapToAssociatedOrganization(data?.lookup.organization, organizationId, {
+  const associatedOrganization = mapToAssociatedOrganization(data?.lookup.organization, {
     loading,
     error,
   });
