@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   type CreateSubspaceMutationOptions,
@@ -88,85 +87,82 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
     ...restMutationOptions,
   });
 
-  const createSubspace = useCallback(
-    async (value: SubspaceCreationInput) => {
-      const includeVisuals =
-        Boolean(value.about.profile.visuals.avatar?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
+  const createSubspace = async (value: SubspaceCreationInput) => {
+    const includeVisuals =
+      Boolean(value.about.profile.visuals.avatar?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
 
-      const { data } = await createSubspaceLazy({
-        variables: {
-          input: {
-            spaceID: value.spaceID,
-            spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
-            about: {
-              why: value.about.why,
-              profileData: {
-                displayName: value.about.profile.displayName,
-                tagline: value.about.profile.tagline,
-                description: value.about.profile.description,
-                tags: value.about.profile.tags,
-              },
-            },
-            collaborationData: {
-              // addTutorialCallouts: value.addTutorialCallouts, // temporarily disabled
-              addCallouts: value.addCallouts, // we always want to add the default callouts
-              calloutsSetData: {},
+    const { data } = await createSubspaceLazy({
+      variables: {
+        input: {
+          spaceID: value.spaceID,
+          spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
+          about: {
+            why: value.about.why,
+            profileData: {
+              displayName: value.about.profile.displayName,
+              tagline: value.about.profile.tagline,
+              description: value.about.profile.description,
+              tags: value.about.profile.tags,
             },
           },
-          includeVisuals,
+          collaborationData: {
+            // addTutorialCallouts: value.addTutorialCallouts, // temporarily disabled
+            addCallouts: value.addCallouts, // we always want to add the default callouts
+            calloutsSetData: {},
+          },
         },
-        optimisticResponse: {
-          createSubspace: {
+        includeVisuals,
+      },
+      optimisticResponse: {
+        createSubspace: {
+          id: '',
+          level: SpaceLevel.L1,
+          visibility: SpaceVisibility.Active,
+          pinned: false,
+          sortOrder: 0,
+          about: {
             id: '',
-            level: SpaceLevel.L1,
-            visibility: SpaceVisibility.Active,
-            pinned: false,
-            sortOrder: 0,
-            about: {
+            why: value.about.why,
+            profile: {
               id: '',
-              why: value.about.why,
-              profile: {
+              displayName: value.about.profile.displayName ?? '',
+              tagline: value.about.profile.tagline,
+              url: '',
+              cardBanner: {
                 id: '',
-                displayName: value.about.profile.displayName ?? '',
-                tagline: value.about.profile.tagline,
-                url: '',
-                cardBanner: {
-                  id: '',
-                  uri: '',
-                  name: VisualType.Card,
-                },
-                avatar: {
-                  id: '',
-                  uri: '',
-                  name: VisualType.Avatar,
-                },
-                tagset: {
-                  id: '-1',
-                  name: TagsetReservedName.Default,
-                  tags: value.about.profile.tags ?? [],
-                  allowedValues: [],
-                  type: TagsetType.Freeform,
-                },
+                uri: '',
+                name: VisualType.Card,
               },
-              isContentPublic: true,
-              membership: {
-                myMembershipStatus: CommunityMembershipStatus.Member,
-                leadUsers: [],
-                leadOrganizations: [],
+              avatar: {
+                id: '',
+                uri: '',
+                name: VisualType.Avatar,
               },
+              tagset: {
+                id: '-1',
+                name: TagsetReservedName.Default,
+                tags: value.about.profile.tags ?? [],
+                allowedValues: [],
+                type: TagsetType.Freeform,
+              },
+            },
+            isContentPublic: true,
+            membership: {
+              myMembershipStatus: CommunityMembershipStatus.Member,
+              leadUsers: [],
+              leadOrganizations: [],
             },
           },
         },
-      });
+      },
+    });
 
-      if (includeVisuals) {
-        await uploadVisuals(data?.createSubspace.about.profile, value.about.profile.visuals);
-      }
+    if (includeVisuals) {
+      await uploadVisuals(data?.createSubspace.about.profile, value.about.profile.visuals);
+    }
 
-      return data?.createSubspace;
-    },
-    [createSubspaceLazy]
-  );
+    return data?.createSubspace;
+  };
 
   return { createSubspace, loading };
 };

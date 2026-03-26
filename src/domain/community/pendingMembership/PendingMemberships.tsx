@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
@@ -93,7 +92,7 @@ export const useInvitationHydrator = (
 
   const userDisplayName = userData?.lookup.user?.profile?.displayName ?? 'This user no longer exists on the platform!';
 
-  const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
+  const hydratedInvitation = (() => {
     if (!invitation) {
       return undefined;
     }
@@ -111,7 +110,7 @@ export const useInvitationHydrator = (
         },
       },
     };
-  }, [invitation, space, userDisplayName]);
+  })();
 
   const communityGuidelines = space?.about.guidelines;
 
@@ -141,7 +140,7 @@ export const useApplicationHydrator = (
 
   const space = spaceData?.lookup.space;
 
-  const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
+  const hydratedApplication = (() => {
     if (!application) {
       return undefined;
     }
@@ -157,7 +156,7 @@ export const useApplicationHydrator = (
         },
       },
     };
-  }, [application, space]);
+  })();
 
   return { application: hydratedApplication };
 };

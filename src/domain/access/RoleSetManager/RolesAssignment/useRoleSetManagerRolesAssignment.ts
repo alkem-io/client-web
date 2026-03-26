@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   useAssignPlatformRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
@@ -75,6 +74,7 @@ const useRoleSetManagerRolesAssignment = ({
       variables: {
         contributorId: userId,
         role,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by caller
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
@@ -86,6 +86,7 @@ const useRoleSetManagerRolesAssignment = ({
       variables: {
         contributorId: userId,
         role,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by caller
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
@@ -101,6 +102,7 @@ const useRoleSetManagerRolesAssignment = ({
       variables: {
         contributorId: organizationId,
         role,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by caller
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
@@ -112,6 +114,7 @@ const useRoleSetManagerRolesAssignment = ({
       variables: {
         contributorId: organizationId,
         role,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by caller
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
@@ -127,6 +130,7 @@ const useRoleSetManagerRolesAssignment = ({
       variables: {
         contributorId: vcId,
         role,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by caller
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
@@ -138,6 +142,7 @@ const useRoleSetManagerRolesAssignment = ({
       variables: {
         contributorId: vcId,
         role,
+        // biome-ignore lint/style/noNonNullAssertion: guarded by caller
         roleSetId: roleSetId!,
       },
       update: cache => refetchQueries(cache),
@@ -154,20 +159,17 @@ const useRoleSetManagerRolesAssignment = ({
     removeRoleFromVirtualContributorLoading;
 
   const notReady = () => Promise.reject('roleSetId is not defined');
-  return useMemo(
-    () => ({
-      assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
-      removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
-      assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
-      removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
-      assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,
-      removeRoleFromOrganization: roleSetId ? removeRoleFromOrganization : notReady,
-      assignRoleToVirtualContributor: roleSetId ? assignRoleToVirtualContributor : notReady,
-      removeRoleFromVirtualContributor: roleSetId ? removeRoleFromVirtualContributor : notReady,
-      loading,
-    }),
-    [roleSetId, loading]
-  );
+  return {
+    assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
+    removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
+    assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
+    removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
+    assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,
+    removeRoleFromOrganization: roleSetId ? removeRoleFromOrganization : notReady,
+    assignRoleToVirtualContributor: roleSetId ? assignRoleToVirtualContributor : notReady,
+    removeRoleFromVirtualContributor: roleSetId ? removeRoleFromVirtualContributor : notReady,
+    loading,
+  };
 };
 
 export default useRoleSetManagerRolesAssignment;

@@ -1,6 +1,6 @@
 import { FieldArray, useField } from 'formik';
 import type React from 'react';
-import { type FC, useMemo } from 'react';
+import type { FC } from 'react';
 import * as yup from 'yup';
 import TagsInput from '@/core/ui/forms/tagsInput/TagsInput';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
@@ -80,13 +80,13 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   const [field, meta, helper] = useField(name);
 
   const isError = Boolean(meta.error) && meta.touched;
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return _helperText;
     }
 
     return meta.error;
-  }, [isError, meta.error, _helperText]);
+  })();
 
   return (
     <TagsInput

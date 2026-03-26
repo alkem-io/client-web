@@ -1,6 +1,5 @@
 import MarkChatUnreadOutlinedIcon from '@mui/icons-material/MarkChatUnreadOutlined';
 import { Button, styled } from '@mui/material';
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption } from '@/core/ui/typography';
 
@@ -30,9 +29,9 @@ interface ChatWidgetNewThreadButtonProps {
 const ChatWidgetNewThreadButton = ({ onClear }: ChatWidgetNewThreadButtonProps) => {
   const { t } = useTranslation();
 
-  const handleClear = useCallback(() => {
+  const handleClear = () => {
     onClear();
-  }, [onClear]);
+  };
 
   return (
     <AnimatedButton variant="contained" onClick={handleClear}>

@@ -1,7 +1,7 @@
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import { Alert, Box, Button, CircularProgress } from '@mui/material';
 import type { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
-import { type FC, useCallback, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getPasskeyTriggerType } from './helpers';
 
@@ -31,7 +31,7 @@ const KratosPasskeyButton: FC<KratosPasskeyButtonProps> = ({ node, isScriptLoade
   // Use helper to get trigger type from either onclickTrigger or deprecated onclick attribute
   const triggerType = getPasskeyTriggerType(node);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = async () => {
     if (!isScriptLoaded) {
       setPasskeyError(t('authentication.passkey.script-loading'));
       return;
@@ -81,7 +81,7 @@ const KratosPasskeyButton: FC<KratosPasskeyButtonProps> = ({ node, isScriptLoade
     } finally {
       setIsProcessing(false);
     }
-  }, [isScriptLoaded, triggerType, attributes.onclick, attributes.onclickTrigger, t]);
+  };
 
   // Note: We don't disable the button while script is loading - clicking will show an error message
   // This makes the script-loading error message reachable for UX feedback

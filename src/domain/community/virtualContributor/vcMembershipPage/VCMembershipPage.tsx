@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -32,7 +31,7 @@ const VCMembershipPage = () => {
     AuthorizationPrivilege.Grant
   );
 
-  const memberships = useMemo(() => {
+  const memberships = (() => {
     if (!data?.rolesVirtualContributor.spaces) {
       return [];
     }
@@ -62,9 +61,9 @@ const VCMembershipPage = () => {
 
       return acc.concat(subspaces);
     }, [] as SpaceHostedItem[]);
-  }, [data]);
+  })();
 
-  const pendingInvitations = useMemo<SpaceHostedItem[] | undefined>(() => {
+  const pendingInvitations = (() => {
     const vcId = data?.lookup.virtualContributor?.id;
     if (!vcId) {
       return [];
@@ -82,7 +81,7 @@ const VCMembershipPage = () => {
         contributorId: vcId,
         contributorType: ActorType.VirtualContributor,
       }));
-  }, [data]);
+  })();
 
   const loading = resolving || loadingVc;
 

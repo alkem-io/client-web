@@ -1,5 +1,5 @@
 import type { ApolloError } from '@apollo/client';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminUsersListQuery,
@@ -68,40 +68,35 @@ const useAdminGlobalUserList = ({
   const pageInfo = data?.platformAdmin.users.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = useCallback(
-    async (itemsNumber = pageSize) => {
-      if (!data) {
-        return;
-      }
+  const fetchMore = async (itemsNumber = pageSize) => {
+    if (!data) {
+      return;
+    }
 
-      await fetchMoreRaw({
-        variables: {
-          first: itemsNumber,
-          after: pageInfo?.endCursor,
-          filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
-        },
-      });
-    },
-    [data, fetchMoreRaw, pageInfo?.endCursor, pageSize, searchTerm]
-  );
+    await fetchMoreRaw({
+      variables: {
+        first: itemsNumber,
+        after: pageInfo?.endCursor,
+        filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
+      },
+    });
+  };
 
   const platformLicensePlans = usePlatformLicensingPlansQuery();
 
-  const userList = useMemo(
-    () =>
-      (data?.platformAdmin.users.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
-        id,
-        accountId: account?.id,
-        value: `${profile?.displayName ?? ''} (${email})`,
-        url: buildSettingsUrl(profile?.url ?? ''),
-        avatar: profile?.visual,
-        activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
-          .filter(({ licenseCredential }) =>
-            account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
-          )
-          .map(({ id }) => id),
-      })),
-    [data]
+  const userList = (data?.platformAdmin.users.users ?? []).map<SearchableTableItem>(
+    ({ id, profile, email, account }) => ({
+      id,
+      accountId: account?.id,
+      value: `${profile?.displayName ?? ''} (${email})`,
+      url: buildSettingsUrl(profile?.url ?? ''),
+      avatar: profile?.visual,
+      activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
+        .filter(({ licenseCredential }) =>
+          account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+        )
+        .map(({ id }) => id),
+    })
   );
 
   const [deleteUser, { loading: deleting }] = useDeleteUserMutation({
@@ -155,17 +150,14 @@ const useAdminGlobalUserList = ({
     });
   };
 
-  const licensePlans = useMemo<ContributorLicensePlan[]>(
-    () =>
-      platformLicensePlans?.data?.platform.licensingFramework.plans
-        .filter(plan => plan.type === LicensingCredentialBasedPlanType.AccountPlan)
-        .map(licensePlan => ({
-          id: licensePlan.id,
-          name: licensePlan.name,
-          sortOrder: licensePlan.sortOrder,
-        })) || [],
-    [platformLicensePlans]
-  );
+  const licensePlans =
+    platformLicensePlans?.data?.platform.licensingFramework.plans
+      .filter(plan => plan.type === LicensingCredentialBasedPlanType.AccountPlan)
+      .map(licensePlan => ({
+        id: licensePlan.id,
+        name: licensePlan.name,
+        sortOrder: licensePlan.sortOrder,
+      })) || [];
 
   return {
     userList,

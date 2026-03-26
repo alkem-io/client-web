@@ -1,5 +1,5 @@
 import { Box, ButtonBase } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -61,10 +61,8 @@ const ActorTypesBlockWide = ({
   const [filter, onFilterChange] = useState<string[]>([]);
 
   // People that can be invited to the community
-  const filterInviteeContributors = useCallback(
-    (contributor: Identifiable) => !(users ?? []).some(user => user.id === contributor.id),
-    [users]
-  );
+  const filterInviteeContributors = (contributor: Identifiable) =>
+    !(users ?? []).some(user => user.id === contributor.id);
 
   const contributorTypeToggleOptions = config.map(configItem => ({
     label: t(configItem.label),

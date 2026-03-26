@@ -1,6 +1,6 @@
 import { Box, type BoxProps } from '@mui/material';
 import type { UiContainer } from '@ory/kratos-client';
-import { createContext, type Dispatch, type FormEvent, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, type Dispatch, type FormEvent, useContext, useState } from 'react';
 import { isSubmittingPasswordFlow } from './helpers';
 
 interface KratosFormProps extends BoxProps<'form'> {
@@ -18,29 +18,23 @@ const KratosFormContext = createContext<KratosFormContextValue | null>(null);
 const KratosForm = ({ ui, children, onSubmit: customOnSubmit, ...formProps }: KratosFormProps) => {
   const [isFormValid, setIsFormValid] = useState(true);
 
-  const handleSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      if (isSubmittingPasswordFlow(e)) {
-        if (!e.currentTarget.checkValidity()) {
-          setIsFormValid(false);
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    if (isSubmittingPasswordFlow(e)) {
+      if (!e.currentTarget.checkValidity()) {
+        setIsFormValid(false);
+        e.preventDefault();
+        e.stopPropagation();
+        return;
       }
+    }
 
-      // If a custom onSubmit handler is provided, use it
-      if (customOnSubmit) {
-        customOnSubmit(e);
-      }
-    },
-    [customOnSubmit]
-  );
+    // If a custom onSubmit handler is provided, use it
+    if (customOnSubmit) {
+      customOnSubmit(e);
+    }
+  };
 
-  const contextValue = useMemo<KratosFormContextValue>(
-    () => ({ isFormValid, setIsFormValid }),
-    [isFormValid, setIsFormValid]
-  );
+  const contextValue: KratosFormContextValue = { isFormValid, setIsFormValid };
 
   return (
     <Box

@@ -1,6 +1,5 @@
 import type { VerificationFlow } from '@ory/kratos-client';
-
-import { type FC, type MouseEventHandler, useMemo } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import Loading from '@/core/ui/loading/Loading';
@@ -35,22 +34,19 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
     }
   };
 
-  const ui = useMemo(() => {
-    return (
-      verificationFlow?.ui &&
-      (() => {
-        const ui = structuredClone(verificationFlow.ui);
-        const continueButton = ui.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
-        if (!continueButton) {
-          return ui;
-        }
-        if (isAnchorNode(continueButton)) {
-          continueButton.attributes.href = verificationFlow.ui.action ?? returnUrl;
-        }
+  const ui =
+    verificationFlow?.ui &&
+    (() => {
+      const ui = structuredClone(verificationFlow.ui);
+      const continueButton = ui.nodes.find(node => isAnchorNode(node) && isVerificationContinueLink(node));
+      if (!continueButton) {
         return ui;
-      })()
-    );
-  }, [verificationFlow, returnUrl]);
+      }
+      if (isAnchorNode(continueButton)) {
+        continueButton.attributes.href = verificationFlow.ui.action ?? returnUrl;
+      }
+      return ui;
+    })();
 
   if (loading) {
     return <Loading text={t('kratos.loading-flow')} />;

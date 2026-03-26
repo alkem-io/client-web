@@ -1,7 +1,7 @@
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useCreateTemplateMutation, useSpaceTemplatesManagerLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, LicenseEntitlementType, SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
@@ -104,10 +104,8 @@ const SpaceAdminCommunityPage = ({
   } = useCommunityAdmin({ roleSetId });
 
   // People that can be invited to the community
-  const filterInviteeContributors = useCallback(
-    (contributor: Identifiable) => !(users ?? []).some(user => user.id === contributor.id),
-    [users]
-  );
+  const filterInviteeContributors = (contributor: Identifiable) =>
+    !(users ?? []).some(user => user.id === contributor.id);
 
   // instead of making the VC filtering logic more complex, we just show all VCs under the account
   // and show an error message if the user is not allowed to add the VC

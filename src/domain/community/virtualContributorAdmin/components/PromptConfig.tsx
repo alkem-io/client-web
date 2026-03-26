@@ -1,6 +1,6 @@
 import { Button, OutlinedInput } from '@mui/material';
 import { Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -50,11 +50,11 @@ export const PromptConfig = ({ vc }: PromptConfigProps) => {
     }
   }, [aiPersona?.id, aiPersona?.prompt?.[0]]);
 
-  const initialValues: FormValueType = useMemo(() => {
+  const initialValues: FormValueType = (() => {
     return {
       prompt: aiPersona?.prompt?.[0] || '',
     };
-  }, [aiPersona?.id, aiPersona?.prompt?.[0]]);
+  })();
 
   const validationSchema = yup.object().shape({
     prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),

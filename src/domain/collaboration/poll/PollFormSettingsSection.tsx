@@ -30,6 +30,9 @@ type PollFormSettingsSectionProps = {
   readOnly?: boolean;
 };
 
+// Temporarily disabled — set to true to re-enable the min/max response fields in the settings dialog
+const SHOW_MIN_MAX_SETTINGS = false;
+
 const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSettingsSectionProps) => {
   const { t } = useTranslation();
   const { setFieldValue, values, getFieldMeta } = useFormikContext<CalloutFormSubmittedValues>();
@@ -164,59 +167,63 @@ const PollFormSettingsSection = ({ fieldPrefix, readOnly = false }: PollFormSett
                 }
                 label={t('poll.create.allowMultipleResponses')}
               />
-              <Tooltip title={t('poll.create.allowMultipleResponsesSettingsTooltip')} arrow={true}>
-                <IconButton
-                  size="small"
-                  onClick={() => setShowMinMaxFields(prev => !prev)}
-                  aria-label={t('poll.create.settings')}
-                  disabled={readOnly}
-                >
-                  <SettingsOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              {SHOW_MIN_MAX_SETTINGS && (
+                <Tooltip title={t('poll.create.allowMultipleResponsesSettingsTooltip')} arrow={true}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setShowMinMaxFields(prev => !prev)}
+                    aria-label={t('poll.create.settings')}
+                    disabled={readOnly}
+                  >
+                    <SettingsOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Box>
-            <Collapse in={showMinMaxFields}>
-              <Box sx={{ pl: 4, display: 'flex', flexDirection: 'column', gap: 1, pb: 1 }}>
-                <FormikInputField
-                  name={`${settingsPath}.minResponses`}
-                  title={t('poll.create.minResponses')}
-                  type="number"
-                  disabled={readOnly}
-                  endAdornment={
-                    <>
-                      <IconButton size="small" onClick={handleMinChoicesLessClick}>
-                        <RemoveCircleOutlineIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" onClick={handleMinChoicesMoreClick}>
-                        <AddCircleOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </>
-                  }
-                />
-                <FormikFormattedInputField
-                  name={`${settingsPath}.maxResponses`}
-                  title={t('poll.create.maxResponses')}
-                  valueFormatter={formatMaxResponses}
-                  valueParser={parseMaxResponses}
-                  disabled={readOnly}
-                  endAdornment={
-                    <>
-                      <Tooltip title={t('poll.create.infiniteResponsesTooltip')} arrow={true}>
-                        <IconButton size="small" onClick={handleSetInfiniteResponses}>
-                          <AllInclusiveIcon fontSize="small" />
+            {SHOW_MIN_MAX_SETTINGS && (
+              <Collapse in={showMinMaxFields}>
+                <Box sx={{ pl: 4, display: 'flex', flexDirection: 'column', gap: 1, pb: 1 }}>
+                  <FormikInputField
+                    name={`${settingsPath}.minResponses`}
+                    title={t('poll.create.minResponses')}
+                    type="number"
+                    disabled={readOnly}
+                    endAdornment={
+                      <>
+                        <IconButton size="small" onClick={handleMinChoicesLessClick}>
+                          <RemoveCircleOutlineIcon fontSize="small" />
                         </IconButton>
-                      </Tooltip>
-                      <IconButton size="small" onClick={handleMaxChoicesLessClick}>
-                        <RemoveCircleOutlineIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" onClick={handleMaxChoicesMoreClick}>
-                        <AddCircleOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </>
-                  }
-                />
-              </Box>
-            </Collapse>
+                        <IconButton size="small" onClick={handleMinChoicesMoreClick}>
+                          <AddCircleOutlineIcon fontSize="small" />
+                        </IconButton>
+                      </>
+                    }
+                  />
+                  <FormikFormattedInputField
+                    name={`${settingsPath}.maxResponses`}
+                    title={t('poll.create.maxResponses')}
+                    valueFormatter={formatMaxResponses}
+                    valueParser={parseMaxResponses}
+                    disabled={readOnly}
+                    endAdornment={
+                      <>
+                        <Tooltip title={t('poll.create.infiniteResponsesTooltip')} arrow={true}>
+                          <IconButton size="small" onClick={handleSetInfiniteResponses}>
+                            <AllInclusiveIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <IconButton size="small" onClick={handleMaxChoicesLessClick}>
+                          <RemoveCircleOutlineIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton size="small" onClick={handleMaxChoicesMoreClick}>
+                          <AddCircleOutlineIcon fontSize="small" />
+                        </IconButton>
+                      </>
+                    }
+                  />
+                </Box>
+              </Collapse>
+            )}
             <FormControlLabel
               control={
                 <Checkbox

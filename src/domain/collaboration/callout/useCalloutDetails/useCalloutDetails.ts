@@ -1,9 +1,8 @@
 import type { ApolloError } from '@apollo/client';
-import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
@@ -49,7 +48,7 @@ const useCalloutDetails = ({
   // Use deep comparison for overrideCalloutSettings to avoid unnecessary rerenders
   const memoizedOverrideCalloutSettings = useDeepCompareMemoize(overrideCalloutSettings);
 
-  const result: CalloutDetailsModelExtended | undefined = useMemo(() => {
+  const result: CalloutDetailsModelExtended | undefined = (() => {
     const calloutDetails = data?.lookup.callout;
 
     // Only use cached data if we don't have fresh data yet
@@ -67,12 +66,13 @@ const useCalloutDetails = ({
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,
-      canBeSavedAsTemplate,
+      // TODO: temporary — disable "Save as template" for polls until poll template support is implemented
+      canBeSavedAsTemplate: canBeSavedAsTemplate && calloutDetails.framing.type !== CalloutFramingType.Poll,
       classificationTagsets: [],
       publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
       ...memoizedOverrideCalloutSettings,
     };
-  }, [data, loading, calloutsSetId, canMoveCallouts, canBeSavedAsTemplate, memoizedOverrideCalloutSettings]);
+  })();
 
   return {
     callout: result,

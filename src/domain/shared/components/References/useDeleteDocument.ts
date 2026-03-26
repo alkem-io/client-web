@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
 
 /**
@@ -12,29 +11,23 @@ const useDeleteDocument = () => {
    * Deletes a single document by its ID.
    * Silently fails if the document doesn't exist or user lacks permission.
    */
-  const deleteDocumentById = useCallback(
-    async (documentId: string) => {
-      if (documentId) {
-        try {
-          await deleteDocumentMutation({ variables: { documentId } });
-        } catch {
-          // Silently fail - document may already be deleted or user may not have permission
-        }
+  const deleteDocumentById = async (documentId: string) => {
+    if (documentId) {
+      try {
+        await deleteDocumentMutation({ variables: { documentId } });
+      } catch {
+        // Silently fail - document may already be deleted or user may not have permission
       }
-    },
-    [deleteDocumentMutation]
-  );
+    }
+  };
 
   /**
    * Deletes multiple documents by their IDs.
    */
-  const deleteDocumentsById = useCallback(
-    async (documentIds: string[]) => {
-      const deletePromises = documentIds.map(id => deleteDocumentById(id));
-      await Promise.all(deletePromises);
-    },
-    [deleteDocumentById]
-  );
+  const deleteDocumentsById = async (documentIds: string[]) => {
+    const deletePromises = documentIds.map(id => deleteDocumentById(id));
+    await Promise.all(deletePromises);
+  };
 
   return {
     deleteDocumentById,

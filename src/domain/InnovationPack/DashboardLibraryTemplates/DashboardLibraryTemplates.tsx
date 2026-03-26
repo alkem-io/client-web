@@ -1,5 +1,5 @@
 import { compact } from 'lodash-es';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import filterFn, { type ValueType } from '@/core/utils/filtering/filterFn';
 import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
@@ -39,7 +39,7 @@ const DashboardLibraryTemplates = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<AnyTemplate>();
 
-  const filteredLibraryTemplates = useMemo(() => {
+  const filteredLibraryTemplates = (() => {
     const templatesWithIds =
       templates?.map(template => ({
         id: template.template.id,
@@ -55,7 +55,7 @@ const DashboardLibraryTemplates = ({
       filter.searchTerms,
       templatesValueGetter
     );
-  }, [templates, filter]);
+  })();
 
   return (
     <>

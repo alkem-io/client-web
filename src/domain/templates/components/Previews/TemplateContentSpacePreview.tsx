@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -29,7 +29,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
 
   const columns = useColumns();
   const { isSmallScreen } = useScreenSize();
-  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
+  const cardColumns = isSmallScreen ? columns / 2 : columns / 4;
 
   useEffect(() => {
     if (
@@ -48,7 +48,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
     }
   }, [selectedState, templateStates]);
 
-  const subspaces = useMemo(() => {
+  const subspaces = (() => {
     if (template?.contentSpace?.subspaces && template.contentSpace.subspaces.length > 0) {
       return (
         <>
@@ -71,7 +71,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
       );
     }
     return null;
-  }, [template?.contentSpace?.subspaces, t, cardColumns]);
+  })();
 
   return (
     <PageContentBlock>

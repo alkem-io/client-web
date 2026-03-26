@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import CardHeader from '@/core/ui/card/CardHeader';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import { gutters } from '@/core/ui/grid/utils';
@@ -13,12 +12,12 @@ interface MemoCardProps extends CalloutContributionCardComponentProps {}
 const MemoCard = ({ contribution, columns, callout, onClick, selected }: MemoCardProps) => {
   const memo = contribution?.memo;
 
-  const linkState = useMemo(() => {
+  const linkState = (() => {
     return {
       [LocationStateKeyCachedCallout]: callout,
       keepScroll: true,
     };
-  }, [callout]);
+  })();
 
   return (
     <ContributeCard to={memo?.profile.url} onClick={onClick} state={linkState} columns={columns}>

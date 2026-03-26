@@ -1,7 +1,7 @@
 import { Box, type BoxProps, CircularProgress, FormHelperText, TextField, type TextFieldProps } from '@mui/material';
 import type { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
-import { type ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import HelpButton from '@/core/ui/button/HelpButton';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
@@ -53,7 +53,7 @@ export const FormikInputField = ({
   const [field, meta, helpers] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return _helperText;
     }
@@ -63,7 +63,7 @@ export const FormikInputField = ({
     }
 
     return tErr(meta.error as TranslationKey, { field: title });
-  }, [isError, meta.error, _helperText, tErr, title]);
+  })();
 
   return (
     <Box width={fullWidth ? '100%' : undefined} {...containerProps}>

@@ -166,28 +166,21 @@ const UserAdminNotificationsPage = () => {
   const notificationPageForCurrentUser = userProfile?.id === currentUserModel?.id;
 
   // Role-based permissions
-  const isPlatformAdmin = useMemo(() => {
+  const isPlatformAdmin = (() => {
     if (isLoadingUserContext || isLoadingUser) return false;
     if (notificationPageForCurrentUser) {
       return userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
     }
-    return true;
-  }, [notificationPageForCurrentUser, userWrapper, isLoadingUserContext, isLoadingUser]);
+    return true; // If viewing another user's page, assume platform admin for now.
+  })();
 
-  const isOrganizationAdmin = useMemo(
-    () => userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ?? false,
-    [userWrapper]
-  );
+  const isOrganizationAdmin =
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ?? false;
 
-  const isSpaceAdmin = useMemo(
-    () => userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceAdmin) ?? false,
-    [userWrapper]
-  );
+  const isSpaceAdmin =
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceAdmin) ?? false;
 
-  const isSpaceLead = useMemo(
-    () => userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceLead) ?? false,
-    [userWrapper]
-  );
+  const isSpaceLead = userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceLead) ?? false;
 
   const userID = userProfile?.id ?? '';
 

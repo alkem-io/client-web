@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.136.2",
+  "version": "0.137.2",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -33,12 +33,8 @@
     "test:coverage": "NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
     "test:upload": "pnpm run test:coverage",
     "test:upload:coverage": "pnpm run test:coverage && cat ./coverage/lcov.info ",
-    "ts:watch": "tsc --noEmit --watch"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "ts:watch": "tsc --noEmit --watch",
+    "prepare": "husky"
   },
   "browserslist": {
     "production": [
@@ -181,7 +177,7 @@
     "chrome-launcher": "^1.2.1",
     "eslint": "^9.2.0",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
-    "husky": "^4.3.7",
+    "husky": "^9.1.7",
     "lighthouse": "^12.2.1",
     "lint-staged": "^13.0.3",
     "playwright": "^1.57.0",

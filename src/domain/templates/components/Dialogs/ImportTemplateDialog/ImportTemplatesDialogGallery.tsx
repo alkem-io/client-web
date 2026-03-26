@@ -1,6 +1,6 @@
 import { times } from 'lodash-es';
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -45,10 +45,8 @@ const ImportTemplatesDialogGallery = ({
     return fieldsToFilter.some(field => matchesFilter(field, filter));
   };
 
-  const filteredTemplates = useMemo(
-    () => (templates.length && filter.length > 0 ? templates?.filter(filterTemplatesCallback) : templates),
-    [templates, filter]
-  );
+  const filteredTemplates =
+    templates.length && filter.length > 0 ? templates?.filter(filterTemplatesCallback) : templates;
 
   const hasTemplates = templates.length > 0;
   const showHeader = hasTemplates || Boolean(children);

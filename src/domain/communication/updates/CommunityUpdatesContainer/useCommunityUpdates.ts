@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
@@ -61,34 +60,28 @@ const useCommunityUpdates = ({ communityId }: UseCommunityUpdatesParams): UseCom
         : [refetchCommunityUpdatesQuery({ communityId })],
   });
 
-  const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
-    async message => {
-      if (!roomID) {
-        throw new Error('RoomId is not defined');
-      }
-      const update = await sendUpdate({
-        variables: { messageData: { message, roomID } },
-      });
-      return update.data?.sendMessageToRoom as Message;
-    },
-    [sendUpdate, roomID]
-  );
+  const onSubmit = async message => {
+    if (!roomID) {
+      throw new Error('RoomId is not defined');
+    }
+    const update = await sendUpdate({
+      variables: { messageData: { message, roomID } },
+    });
+    return update.data?.sendMessageToRoom as Message;
+  };
 
   const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveMessageOnRoomMutation();
 
-  const onRemove = useCallback<CommunityUpdatesActions['onRemove']>(
-    async messageID => {
-      if (!roomID) {
-        throw new Error('RoomId is not defined');
-      }
-      const update = await removeUpdate({
-        variables: { messageData: { messageID, roomID } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ communityId: communityId ?? '' })],
-      });
-      return update.data?.removeMessageOnRoom;
-    },
-    [communityId, roomID, removeUpdate]
-  );
+  const onRemove = async messageID => {
+    if (!roomID) {
+      throw new Error('RoomId is not defined');
+    }
+    const update = await removeUpdate({
+      variables: { messageData: { messageID, roomID } },
+      refetchQueries: [refetchCommunityUpdatesQuery({ communityId: communityId ?? '' })],
+    });
+    return update.data?.removeMessageOnRoom;
+  };
 
   const onLoadMore = () => {
     throw new Error('Not implemented');

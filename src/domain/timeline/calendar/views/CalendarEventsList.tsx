@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { first, groupBy, sortBy } from 'lodash-es';
 import type React from 'react';
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
@@ -67,25 +67,25 @@ const CalendarEventsList = ({
     navigate(url);
   };
 
-  const { futureEvents = [], pastEvents = [] } = useMemo(() => {
+  const { futureEvents = [], pastEvents = [] } = (() => {
     const currentDate = startOfDay();
     return groupBy(events, event => {
       const isPast = dayjs(event.startDate).isBefore(currentDate);
       return isPast ? 'pastEvents' : 'futureEvents';
     }) as Record<'pastEvents' | 'futureEvents', CalendarEventsListProps['events']>;
-  }, [events]);
+  })();
 
-  const sortedEvents = useMemo(() => {
+  const sortedEvents = (() => {
     return sortBy(events, event => dayjs(event.startDate).valueOf());
-  }, [events]);
+  })();
 
-  const sortedFutureEvents = useMemo(() => {
+  const sortedFutureEvents = (() => {
     return sortBy(futureEvents, event => dayjs(event.startDate).valueOf());
-  }, [futureEvents]);
+  })();
 
-  const sortedPastEvents = useMemo(() => {
+  const sortedPastEvents = (() => {
     return sortBy(pastEvents, event => -dayjs(event.startDate));
-  }, [pastEvents]);
+  })();
 
   useEffect(() => {
     if (highlightedDay) {

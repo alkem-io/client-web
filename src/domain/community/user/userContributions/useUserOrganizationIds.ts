@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useUserOrganizationIdsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const useUserOrganizationIds = (userId: string | undefined) => {
@@ -9,9 +8,9 @@ const useUserOrganizationIds = (userId: string | undefined) => {
     skip: !userId,
   });
 
-  return useMemo(() => {
+  return (() => {
     return data?.rolesUser.organizations.map(org => org.id);
-  }, [data]);
+  })();
 };
 
 export default useUserOrganizationIds;

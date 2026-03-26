@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useAccountResourcesInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const useAccountResources = (accountId: string | undefined) => {
@@ -9,13 +8,13 @@ const useAccountResources = (accountId: string | undefined) => {
     skip: !accountId,
   });
 
-  return useMemo(() => {
+  return (() => {
     if (!accountData || !accountData.lookup.account) {
       return undefined;
     }
 
     return accountData.lookup.account;
-  }, [accountData]);
+  })();
 };
 
 export default useAccountResources;

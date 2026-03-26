@@ -1,6 +1,5 @@
 import { LibraryBooksOutlined } from '@mui/icons-material';
 import { Box } from '@mui/material';
-import { useMemo } from 'react';
 import { CalloutContributionType, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import CardMatchedTerms from '@/core/ui/card/CardMatchedTerms';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -48,7 +47,7 @@ const calloutContributionField: Record<CalloutContributionType, keyof CalloutCon
 };
 
 const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
-  const contributionsCount = useMemo(() => {
+  const contributionsCount = (() => {
     return callout.contributions.reduce((count, contribution) => {
       for (const [type, field] of Object.entries(calloutContributionField) as [
         CalloutContributionType,
@@ -60,7 +59,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
       }
       return count;
     }, new Map<CalloutContributionType, number>());
-  }, [callout]);
+  })();
 
   return (
     <Box flexShrink={0} display="flex" gap={1}>

@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import type React from 'react';
-import { type FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { type FC, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
@@ -59,6 +59,7 @@ export interface FormikCommentInputFieldProps extends InputProps {
   threadId?: string;
   title?: string;
   placeholder?: string;
+  mentionsEnabled?: boolean;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
@@ -77,6 +78,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   threadId = '',
   title,
   placeholder,
+  mentionsEnabled = true,
   ..._restProps
 }) => {
   const ref = useRef<HTMLElement>(null);
@@ -91,13 +93,13 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   const { t } = useTranslation();
 
   const isError = Boolean(meta.error);
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return helpText;
     }
 
     return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, helpText, name, tErr]);
+  })();
 
   const inactive = disabled || submitting;
   const submitDisabled = inactive || (maxLength ? field.value?.length > maxLength : false);
@@ -165,14 +167,16 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         anchorElement={emojiButtonRef.current}
         onEmojiClick={emojiClick}
       />
-      <IconButton
-        size="small"
-        onClick={mentionButtonClick}
-        disabled={inactive || readOnly}
-        aria-label={t('messaging.addMention')}
-      >
-        <AlternateEmailIcon fontSize="small" />
-      </IconButton>
+      {mentionsEnabled && (
+        <IconButton
+          size="small"
+          onClick={mentionButtonClick}
+          disabled={inactive || readOnly}
+          aria-label={t('messaging.addMention')}
+        >
+          <AlternateEmailIcon fontSize="small" />
+        </IconButton>
+      )}
     </>
   );
 
@@ -228,6 +232,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               popperAnchor: ref.current,
               'aria-label': title || placeholder || t('messaging.message'),
               placeholder: placeholder,
+              mentionsEnabled,
             }}
             fullWidth={true}
           />

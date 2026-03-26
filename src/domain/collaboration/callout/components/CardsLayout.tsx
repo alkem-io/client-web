@@ -1,7 +1,7 @@
 import { Autorenew } from '@mui/icons-material';
 
 import { Button } from '@mui/material';
-import { cloneElement, type FC, type ReactElement, type ReactNode, useMemo } from 'react';
+import { cloneElement, type FC, type ReactElement, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockGrid, { type PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -38,17 +38,13 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 }: CardsLayoutProps<Item>) => {
   const { t } = useTranslation();
 
-  const depsValueFromObjectDeps = getDepsValueFromObject(deps);
+  const _depsValueFromObjectDeps = getDepsValueFromObject(deps);
 
-  const cards = useMemo(
-    () =>
-      items.map((item, index) => {
-        const card = children(item);
-        const key = item ? item.id : `__loading_${index}`;
-        return cloneElement(card, { key });
-      }),
-    [items, depsValueFromObjectDeps, children]
-  );
+  const cards = items.map((item, index) => {
+    const card = children(item);
+    const key = item ? item.id : `__loading_${index}`;
+    return cloneElement(card, { key });
+  });
 
   if (globalSearch) {
     return (

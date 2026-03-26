@@ -1,5 +1,5 @@
 import { Autocomplete, Chip, CircularProgress, TextField } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { validate as validateUUID } from 'uuid';
 import { useAuthorizationPrivilegesForUserQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -26,7 +26,7 @@ const AuthorizationPrivilegesForUser = ({ authorizationPolicyId }: Authorization
 
   const [userId, setUserId] = useState<string | null>(null);
 
-  const user = useMemo(() => userList.find(user => user.id === userId), [userList, userId]);
+  const user = userList.find(user => user.id === userId);
 
   const { data, loading } = useAuthorizationPrivilegesForUserQuery({
     variables: {

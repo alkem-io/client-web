@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { orderBy } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import type { Message } from '@/core/apollo/generated/graphql-schema';
@@ -77,7 +77,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
   const { messages, authors } = entities;
   const { loadingMessages, removingMessage } = state;
   const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
-  const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
+  const orderedMessages = orderBy(messages, x => x.timestamp, ['desc']);
   const initialValues = {
     'community-update': '',
   };

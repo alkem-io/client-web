@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
@@ -119,7 +118,7 @@ export const collectSubspaceAvatars = (
  */
 export const useSubspaceCardData = (parentSpace?: ParentSpaceData | null) => {
   // Create parent info for subspace cards
-  const parentInfo = useMemo<ParentInfo | undefined>(() => {
+  const parentInfo = (() => {
     if (!parentSpace?.about?.profile) {
       return undefined;
     }
@@ -135,10 +134,10 @@ export const useSubspaceCardData = (parentSpace?: ParentSpaceData | null) => {
           }
         : undefined,
     };
-  }, [parentSpace?.id, parentSpace?.about?.profile]);
+  })();
 
   // Get parent avatar URI for stacking
-  const parentAvatarUri = useMemo<string | undefined>(() => {
+  const parentAvatarUri = (() => {
     if (!parentSpace?.about?.profile) {
       return undefined;
     }
@@ -148,7 +147,7 @@ export const useSubspaceCardData = (parentSpace?: ParentSpaceData | null) => {
       parentSpace.about.profile.cardBanner?.uri ||
       getDefaultSpaceVisualUrl(VisualType.Avatar, parentSpace.id)
     );
-  }, [parentSpace?.id, parentSpace?.about?.profile]);
+  })();
 
   const parentDisplayName = parentSpace?.about?.profile?.displayName;
 

@@ -1,5 +1,4 @@
 import type { ParseKeys } from 'i18next/typescript/t';
-import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -57,28 +56,22 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
     },
     skip: !organizationId || !canReadUsers,
   });
-  const references = useMemo(() => {
+  const references = (() => {
     const result = [...(organization?.profile?.references ?? [])];
     if (organization?.contactEmail)
       result.push({ id: '_email', name: SocialNetworkEnum.email, uri: organization.contactEmail });
     if (organization?.website)
       result.push({ id: '_website', name: SocialNetworkEnum.website, uri: organization.website });
     return result;
-  }, [organization?.profile?.references]);
+  })();
 
-  const keywords = useMemo(
-    () =>
-      organization?.profile?.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())
-        ?.tags || [],
-    [organization]
-  );
+  const keywords =
+    organization?.profile?.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())
+      ?.tags || [];
 
-  const capabilities = useMemo(
-    () =>
-      organization?.profile?.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities.toLowerCase())
-        ?.tags || [],
-    [organization]
-  );
+  const capabilities =
+    organization?.profile?.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities.toLowerCase())
+      ?.tags || [];
 
   const organizationPrivileges = organization?.authorization?.myPrivileges ?? [];
 
@@ -87,7 +80,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
     canReadUsers,
   };
 
-  const associates = useMemo<ContributorCardSquareProps[]>(() => {
+  const associates = (() => {
     return (
       usersWithRoles?.map<ContributorCardSquareProps>(x => ({
         id: x.id,
@@ -105,10 +98,10 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
         contributorType: ActorType.User,
       })) || []
     );
-  }, [usersWithRoles]);
+  })();
 
   // Return all contributions, filter by role in the view if needed
-  const contributions = useMemo(() => {
+  const contributions = (() => {
     const spaceContributions = (orgRolesData?.rolesOrganization?.spaces ?? []).map<SpaceHostedItem>(x => ({
       spaceID: x.id,
       spaceLevel: SpaceLevel.L0,
@@ -131,22 +124,19 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
       ) || [];
 
     return [...spaceContributions, ...subspaceContributions];
-  }, [orgRolesData]);
+  })();
 
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
-  const handleSendMessage = useCallback(
-    async (messageText: string) => {
-      await sendMessageToOrganization({
-        variables: {
-          messageData: {
-            message: messageText,
-            organizationId: organizationId,
-          },
+  const handleSendMessage = async (messageText: string) => {
+    await sendMessageToOrganization({
+      variables: {
+        messageData: {
+          message: messageText,
+          organizationId: organizationId,
         },
-      });
-    },
-    [sendMessageToOrganization, organizationId]
-  );
+      },
+    });
+  };
 
   return {
     organization,

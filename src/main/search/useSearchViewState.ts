@@ -1,5 +1,5 @@
 import { NetworkStatus } from '@apollo/client';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useSearchQuery,
   useSearchScopeDetailsSpaceQuery,
@@ -37,7 +37,12 @@ const concatSearchResults = <T>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
 function toResultType(query?: SearchQuery) {
   const mapResults = (results: unknown[] | undefined) =>
     (results || []).map<SearchResultMetaType>(
-      (item: any) => ({ ...item, score: item.score || 0, terms: item.terms || [] }) as SearchResultMetaType
+      (item: any) =>
+        ({
+          ...item,
+          score: item.score || 0,
+          terms: item.terms || [],
+        }) as SearchResultMetaType
     );
 
   return {
@@ -76,38 +81,35 @@ export const useSearchViewState = (searchRoute: string, spaceFilterConfig: Filte
 
   const spaceNameId = queryParams[SEARCH_SPACE_URL_PARAM]?.[0] ?? undefined;
 
-  const handleTermsChange = useCallback(
-    (newValue: string[]) => {
-      setCanSpaceLoadMore(true);
-      setCanCalloutLoadMore(true);
-      setCanFramingLoadMore(true);
-      setCanContributionLoadMore(true);
-      setContributorCanLoadMore(true);
+  const handleTermsChange = (newValue: string[]) => {
+    setCanSpaceLoadMore(true);
+    setCanCalloutLoadMore(true);
+    setCanFramingLoadMore(true);
+    setCanContributionLoadMore(true);
+    setContributorCanLoadMore(true);
 
-      const params = new URLSearchParams(
-        Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
-      );
+    const params = new URLSearchParams(
+      Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
+    );
 
-      params.delete(SEARCH_TERMS_URL_PARAM);
-      for (const term of newValue) {
-        params.append(SEARCH_TERMS_URL_PARAM, term);
-      }
-      if (newValue.length === 0) {
-        params.append(SEARCH_TERMS_URL_PARAM, '');
-      }
+    params.delete(SEARCH_TERMS_URL_PARAM);
+    for (const term of newValue) {
+      params.append(SEARCH_TERMS_URL_PARAM, term);
+    }
+    if (newValue.length === 0) {
+      params.append(SEARCH_TERMS_URL_PARAM, '');
+    }
 
-      navigate(`${searchRoute}?${params}`);
-    },
-    [searchRoute, queryParams, navigate]
-  );
+    navigate(`${searchRoute}?${params}`);
+  };
 
-  const handleSearchInPlatform = useCallback(() => {
+  const handleSearchInPlatform = () => {
     const params = new URLSearchParams(
       Object.entries(queryParams).flatMap(([key, values]) => values.map(value => [key, value]))
     );
     params.delete(SEARCH_SPACE_URL_PARAM);
     navigate(`${searchRoute}?${params}`);
-  }, [searchRoute, queryParams, navigate]);
+  };
 
   const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
     variables: { spaceNameId: spaceNameId! },
@@ -175,203 +177,190 @@ export const useSearchViewState = (searchRoute: string, spaceFilterConfig: Filte
     skip: !spaceId,
   });
 
-  const fetchNewResults = useCallback(
-    (resultsType: SearchCategory) => {
-      const getFetchFilters = () => {
+  const fetchNewResults = (resultsType: SearchCategory) => {
+    const getFetchFilters = () => {
+      switch (resultsType) {
+        case SearchCategory.Spaces:
+          return [
+            {
+              category: SearchCategory.Spaces,
+              size: SEARCH_RESULTS_COUNT,
+              types: spaceFilter.value,
+              cursor: resultsCursors.spaceCursor,
+            },
+          ];
+        case SearchCategory.CollaborationTools:
+          return [
+            {
+              category: SearchCategory.CollaborationTools,
+              size: SEARCH_RESULTS_COUNT,
+              types: calloutFilter.value,
+              cursor: resultsCursors.calloutCursor,
+            },
+          ];
+        case SearchCategory.Framings:
+          return [
+            {
+              category: SearchCategory.Framings,
+              size: SEARCH_RESULTS_COUNT,
+              types: framingFilter.value,
+              cursor: resultsCursors.framingCursor,
+            },
+          ];
+        case SearchCategory.Contributions:
+          return [
+            {
+              category: SearchCategory.Contributions,
+              size: SEARCH_RESULTS_COUNT,
+              types: contributionFilter.value,
+              cursor: resultsCursors.contributionCursor,
+            },
+          ];
+        case SearchCategory.Contributors:
+          return [
+            {
+              category: SearchCategory.Contributors,
+              size: SEARCH_RESULTS_COUNT,
+              types: contributorFilter.value,
+              cursor: resultsCursors.contributorCursor,
+            },
+          ];
+        default:
+          return [
+            {
+              category: SearchCategory.Spaces,
+              size: SEARCH_RESULTS_COUNT,
+              types: spaceFilter.value,
+              cursor: resultsCursors.spaceCursor,
+            },
+            {
+              category: SearchCategory.CollaborationTools,
+              size: SEARCH_RESULTS_COUNT,
+              types: calloutFilter.value,
+              cursor: resultsCursors.calloutCursor,
+            },
+            {
+              category: SearchCategory.Framings,
+              size: SEARCH_RESULTS_COUNT,
+              types: framingFilter.value,
+              cursor: resultsCursors.framingCursor,
+            },
+            {
+              category: SearchCategory.Contributions,
+              size: SEARCH_RESULTS_COUNT,
+              types: contributionFilter.value,
+              cursor: resultsCursors.contributionCursor,
+            },
+            {
+              category: SearchCategory.Contributors,
+              size: SEARCH_RESULTS_COUNT,
+              types: contributorFilter.value,
+              cursor: resultsCursors.contributorCursor,
+            },
+          ];
+      }
+    };
+
+    fetchMore({
+      variables: {
+        searchData: {
+          tagsetNames,
+          terms: termsFromUrl,
+          filters: getFetchFilters(),
+          searchInSpaceFilter: spaceId,
+        },
+      },
+      updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
         switch (resultsType) {
           case SearchCategory.Spaces:
-            return [
-              {
-                category: SearchCategory.Spaces,
-                size: SEARCH_RESULTS_COUNT,
-                types: spaceFilter.value,
-                cursor: resultsCursors.spaceCursor,
-              },
-            ];
+            setCanSpaceLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
+            break;
           case SearchCategory.CollaborationTools:
-            return [
-              {
-                category: SearchCategory.CollaborationTools,
-                size: SEARCH_RESULTS_COUNT,
-                types: calloutFilter.value,
-                cursor: resultsCursors.calloutCursor,
-              },
-            ];
+            setCanCalloutLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
+            break;
           case SearchCategory.Framings:
-            return [
-              {
-                category: SearchCategory.Framings,
-                size: SEARCH_RESULTS_COUNT,
-                types: framingFilter.value,
-                cursor: resultsCursors.framingCursor,
-              },
-            ];
+            setCanFramingLoadMore(fetchMoreResult?.search?.framingResults?.results?.length > 0);
+            break;
           case SearchCategory.Contributions:
-            return [
-              {
-                category: SearchCategory.Contributions,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributionFilter.value,
-                cursor: resultsCursors.contributionCursor,
-              },
-            ];
+            setCanContributionLoadMore(fetchMoreResult?.search?.contributionResults?.results?.length > 0);
+            break;
           case SearchCategory.Contributors:
-            return [
-              {
-                category: SearchCategory.Contributors,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributorFilter.value,
-                cursor: resultsCursors.contributorCursor,
-              },
-            ];
-          default:
-            return [
-              {
-                category: SearchCategory.Spaces,
-                size: SEARCH_RESULTS_COUNT,
-                types: spaceFilter.value,
-                cursor: resultsCursors.spaceCursor,
-              },
-              {
-                category: SearchCategory.CollaborationTools,
-                size: SEARCH_RESULTS_COUNT,
-                types: calloutFilter.value,
-                cursor: resultsCursors.calloutCursor,
-              },
-              {
-                category: SearchCategory.Framings,
-                size: SEARCH_RESULTS_COUNT,
-                types: framingFilter.value,
-                cursor: resultsCursors.framingCursor,
-              },
-              {
-                category: SearchCategory.Contributions,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributionFilter.value,
-                cursor: resultsCursors.contributionCursor,
-              },
-              {
-                category: SearchCategory.Contributors,
-                size: SEARCH_RESULTS_COUNT,
-                types: contributorFilter.value,
-                cursor: resultsCursors.contributorCursor,
-              },
-            ];
+            setContributorCanLoadMore(fetchMoreResult?.search?.actorResults?.results?.length > 0);
+            break;
         }
-      };
 
-      fetchMore({
-        variables: {
-          searchData: {
-            tagsetNames,
-            terms: termsFromUrl,
-            filters: getFetchFilters(),
-            searchInSpaceFilter: spaceId,
-          },
-        },
-        updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
-          switch (resultsType) {
-            case SearchCategory.Spaces:
-              setCanSpaceLoadMore(fetchMoreResult?.search?.spaceResults?.results?.length > 0);
-              break;
-            case SearchCategory.CollaborationTools:
-              setCanCalloutLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
-              break;
-            case SearchCategory.Framings:
-              setCanFramingLoadMore(fetchMoreResult?.search?.framingResults?.results?.length > 0);
-              break;
-            case SearchCategory.Contributions:
-              setCanContributionLoadMore(fetchMoreResult?.search?.contributionResults?.results?.length > 0);
-              break;
-            case SearchCategory.Contributors:
-              setContributorCanLoadMore(fetchMoreResult?.search?.actorResults?.results?.length > 0);
-              break;
-          }
-
-          switch (resultsType) {
-            case SearchCategory.Spaces:
-              return {
-                search: {
-                  ...prev.search,
-                  spaceResults: {
-                    ...fetchMoreResult.search.spaceResults,
-                    results: concatSearchResults(
-                      prev.search.spaceResults?.results,
-                      fetchMoreResult.search.spaceResults?.results
-                    ),
-                  },
+        switch (resultsType) {
+          case SearchCategory.Spaces:
+            return {
+              search: {
+                ...prev.search,
+                spaceResults: {
+                  ...fetchMoreResult.search.spaceResults,
+                  results: concatSearchResults(
+                    prev.search.spaceResults?.results,
+                    fetchMoreResult.search.spaceResults?.results
+                  ),
                 },
-              };
-            case SearchCategory.CollaborationTools:
-              return {
-                search: {
-                  ...prev.search,
-                  calloutResults: {
-                    ...fetchMoreResult.search.calloutResults,
-                    results: concatSearchResults(
-                      prev.search.calloutResults?.results,
-                      fetchMoreResult.search.calloutResults?.results
-                    ),
-                  },
+              },
+            };
+          case SearchCategory.CollaborationTools:
+            return {
+              search: {
+                ...prev.search,
+                calloutResults: {
+                  ...fetchMoreResult.search.calloutResults,
+                  results: concatSearchResults(
+                    prev.search.calloutResults?.results,
+                    fetchMoreResult.search.calloutResults?.results
+                  ),
                 },
-              };
-            case SearchCategory.Framings:
-              return {
-                search: {
-                  ...prev.search,
-                  framingResults: {
-                    ...fetchMoreResult.search.framingResults,
-                    results: concatSearchResults(
-                      prev.search.framingResults?.results,
-                      fetchMoreResult.search.framingResults?.results
-                    ),
-                  },
+              },
+            };
+          case SearchCategory.Framings:
+            return {
+              search: {
+                ...prev.search,
+                framingResults: {
+                  ...fetchMoreResult.search.framingResults,
+                  results: concatSearchResults(
+                    prev.search.framingResults?.results,
+                    fetchMoreResult.search.framingResults?.results
+                  ),
                 },
-              };
-            case SearchCategory.Contributions:
-              return {
-                search: {
-                  ...prev.search,
-                  contributionResults: {
-                    ...fetchMoreResult.search.contributionResults,
-                    results: concatSearchResults(
-                      prev.search.contributionResults?.results,
-                      fetchMoreResult.search.contributionResults?.results
-                    ),
-                  },
+              },
+            };
+          case SearchCategory.Contributions:
+            return {
+              search: {
+                ...prev.search,
+                contributionResults: {
+                  ...fetchMoreResult.search.contributionResults,
+                  results: concatSearchResults(
+                    prev.search.contributionResults?.results,
+                    fetchMoreResult.search.contributionResults?.results
+                  ),
                 },
-              };
-            case SearchCategory.Contributors:
-              return {
-                search: {
-                  ...prev.search,
-                  actorResults: {
-                    ...fetchMoreResult.search.actorResults,
-                    results: concatSearchResults(
-                      prev.search.actorResults?.results,
-                      fetchMoreResult.search.actorResults?.results
-                    ),
-                  },
+              },
+            };
+          case SearchCategory.Contributors:
+            return {
+              search: {
+                ...prev.search,
+                actorResults: {
+                  ...fetchMoreResult.search.actorResults,
+                  results: concatSearchResults(
+                    prev.search.actorResults?.results,
+                    fetchMoreResult.search.actorResults?.results
+                  ),
                 },
-              };
-            default:
-              return prev;
-          }
-        },
-      });
-    },
-    [
-      spaceId,
-      termsFromUrl,
-      resultsCursors,
-      spaceFilter.value,
-      calloutFilter.value,
-      framingFilter.value,
-      contributionFilter.value,
-      contributorFilter.value,
-      fetchMore,
-    ]
-  );
+              },
+            };
+          default:
+            return prev;
+        }
+      },
+    });
+  };
 
   useEffect(() => {
     if (hasNoTermsLength) {

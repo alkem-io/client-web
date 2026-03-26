@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useMemoDetailsQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { MemoModelFull } from '../model/MemoModelFull';
 
@@ -20,12 +19,12 @@ const useMemoManager = ({ id }: useMemoManagerProps): useMemoManagerProvided => 
 
   const [fetchMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
 
-  const refreshMarkdown = useCallback(async () => {
+  const refreshMarkdown = async () => {
     if (id) {
       await fetchMarkdown({ variables: { id: id } });
       return;
     }
-  }, [fetchMarkdown, id]);
+  };
 
   const memo: MemoModelFull | undefined = data?.lookup.memo;
 

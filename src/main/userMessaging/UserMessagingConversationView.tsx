@@ -12,7 +12,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -238,12 +238,12 @@ export const UserMessagingConversationView = ({
   };
 
   // Track whether the user is scrolled near the bottom of the message list
-  const handleScroll = useCallback(() => {
+  const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
     const threshold = 150;
     isNearBottomRef.current = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
-  }, []);
+  };
 
   const handleSendMessage = async (message: string) => {
     // Always scroll to bottom after sending own message
@@ -486,6 +486,7 @@ export const UserMessagingConversationView = ({
           onPostComment={handleSendMessage}
           placeholder={t('components.userMessaging.typeMessage' as const)}
           disabled={isSending}
+          mentionsEnabled={false}
         />
       </Box>
     </Box>

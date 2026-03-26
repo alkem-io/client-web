@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
@@ -22,15 +21,12 @@ const MyResources = () => {
     skip: !accountId,
   });
 
-  const { innovationHubs, spaces, virtualContributors, innovationPacks } = useMemo(
-    () => ({
-      innovationHubs: accountData?.lookup.account?.innovationHubs ?? [],
-      spaces: accountData?.lookup.account?.spaces ?? [],
-      virtualContributors: accountData?.lookup.account?.virtualContributors ?? [],
-      innovationPacks: accountData?.lookup.account?.innovationPacks ?? [],
-    }),
-    [accountData]
-  );
+  const { innovationHubs, spaces, virtualContributors, innovationPacks } = {
+    innovationHubs: accountData?.lookup.account?.innovationHubs ?? [],
+    spaces: accountData?.lookup.account?.spaces ?? [],
+    virtualContributors: accountData?.lookup.account?.virtualContributors ?? [],
+    innovationPacks: accountData?.lookup.account?.innovationPacks ?? [],
+  };
 
   if (
     loadingAccount ||
