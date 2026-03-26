@@ -89,7 +89,7 @@ const TransferCalloutSection = () => {
                       placeholder={t(`${T_PREFIX}.calloutUrlPlaceholder`)}
                       fullWidth={true}
                     />
-                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
+                    <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
@@ -143,7 +143,7 @@ const TransferCalloutSection = () => {
                       placeholder={t(`${T_PREFIX}.targetSpaceUrlPlaceholder`)}
                       fullWidth={true}
                     />
-                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
+                    <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}

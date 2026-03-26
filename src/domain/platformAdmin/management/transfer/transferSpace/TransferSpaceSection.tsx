@@ -92,7 +92,7 @@ const TransferSpaceSection = () => {
                       placeholder={t(`${T_PREFIX}.spaceUrlPlaceholder`)}
                       fullWidth={true}
                     />
-                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
+                    <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
@@ -137,7 +137,7 @@ const TransferSpaceSection = () => {
                       placeholder={t(`${T_PREFIX}.targetAccountUrlPlaceholder`)}
                       fullWidth={true}
                     />
-                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
+                    <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
