@@ -68,28 +68,25 @@ self.addEventListener('message', event => {
 self.addEventListener('push', event => {
   if (!event.data) return;
 
-  const payload = event.data.json();
+  let payload;
+  try {
+    payload = event.data.json();
+  } catch {
+    console.error('[SW] Failed to parse push payload');
+    return;
+  }
+
   const { title, body, url, eventType } = payload;
 
-  const showNotification = async () => {
-    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-    const hasFocusedClient = clients.some(client => client.focused);
-
-    if (hasFocusedClient) {
-      // App is in foreground — skip push notification (in-app notifications handle it)
-      return;
-    }
-
-    return self.registration.showNotification(title, {
+  event.waitUntil(
+    self.registration.showNotification(title, {
       body,
       icon: '/android-chrome-192x192.png',
       badge: '/android-chrome-192x192.png',
       data: { url },
-      tag: eventType,
-    });
-  };
-
-  event.waitUntil(showNotification());
+      tag: `${eventType}-${Date.now()}`,
+    })
+  );
 });
 
 self.addEventListener('notificationclick', event => {

@@ -52,7 +52,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
         // Browser subscription exists — verify it's registered on the server
         const { data } = await fetchSubscriptions();
         const serverSubscriptions = data?.myPushSubscriptions ?? [];
-        const cachedId = sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+        const cachedId = localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
         const matchingServer = cachedId ? serverSubscriptions.find(sub => sub.id === cachedId) : undefined;
 
         if (!matchingServer) {
@@ -70,7 +70,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
           });
           const newId = result.data?.subscribeToPushNotifications?.id;
           if (newId) {
-            sessionStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, newId);
+            localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, newId);
           }
         }
       } catch {
@@ -106,7 +106,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
           .then(result => {
             const newId = result.data?.subscribeToPushNotifications?.id;
             if (newId) {
-              sessionStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, newId);
+              localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, newId);
             }
           })
           .catch(() => {

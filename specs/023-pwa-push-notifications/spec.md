@@ -109,7 +109,7 @@ As a user on an unsupported browser (no Push API) or when the server has push di
 - What happens when a user is in an incognito/private browsing window? Push subscription may not persist; the feature should either hide push UI or inform the user that push requires a regular browsing session.
 - What happens on iOS Safari when the app is not added to the Home Screen? Push notifications require PWA mode on iOS; the UI should inform the user of this requirement when detected.
 - What happens when the user's subscription expires while they are offline? On next app load, the silent refresh mechanism should detect the expired subscription and re-register.
-- What happens when multiple tabs are open? Only one notification should be shown per event (the service worker is shared across tabs and handles deduplication).
+- What happens when multiple tabs are open? The service worker is shared across tabs and shows one push notification per event. Push notifications are always shown regardless of tab focus state, since focus-based suppression is unreliable (multi-monitor, side-by-side windows, user stepped away) and risks silently dropping notifications.
 - What happens when the user logs out? The current device's push subscription is removed from both the browser and server. Subscriptions on other devices are unaffected.
 
 ## Requirements *(mandatory)*
@@ -119,7 +119,7 @@ As a user on an unsupported browser (no Push API) or when the server has push di
 - **FR-001**: System MUST allow authenticated users to subscribe to push notifications from the notification settings page.
 - **FR-002**: System MUST request browser notification permission only when the user explicitly opts in (never on page load or login).
 - **FR-003**: System MUST register the push subscription with the server after successful browser permission grant.
-- **FR-004**: System MUST display push notifications with a title, body, and the application icon when a platform event is received and the app is backgrounded or closed. When the app is in the foreground, the service worker MUST NOT show a push notification (the existing in-app notification system handles foreground events).
+- **FR-004**: System MUST display push notifications with a title, body, and the application icon when a platform event is received, regardless of whether the app is in the foreground, backgrounded, or closed. Each notification MUST use a unique tag to prevent the browser from silently replacing earlier notifications of the same event type.
 - **FR-005**: System MUST navigate to the relevant content page when a user clicks on a push notification.
 - **FR-006**: System MUST provide per-category push notification toggles alongside existing email and in-app toggles in the notification settings.
 - **FR-007**: System MUST disable per-category push toggles when the master push toggle is off.
@@ -145,7 +145,7 @@ As a user on an unsupported browser (no Push API) or when the server has push di
 ### Session 2026-03-16
 
 - Q: How does the client obtain the VAPID public key and interact with the server for push subscription management? → A: Discover and use existing server GraphQL operations (queries for VAPID key, mutations for subscribe/unsubscribe).
-- Q: Should push notifications display when the app is in the foreground? → A: No. Push notifications appear only when backgrounded or closed; foreground uses existing in-app notifications.
+- Q: Should push notifications display when the app is in the foreground? → A: Yes. Push notifications always display regardless of foreground state. Focus-based suppression was removed because `client.focused` is unreliable (fails on multi-monitor setups, side-by-side windows, and when the user steps away from a focused tab). A redundant notification (seeing both in-app + push) is preferable to a missed notification.
 - Q: How should the service worker handle push events? → A: Extend the existing service worker file with push event handlers (single SW file).
 - Q: What is the acceptable bundle size impact? → A: No strict limit; acceptable if under 20 KB gzipped added to main bundle.
 - Q: How should devices be identified/labeled in the subscription management UI? → A: Auto-detect from User-Agent: show browser name + OS (e.g., "Chrome on macOS").

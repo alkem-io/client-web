@@ -43,7 +43,7 @@ export function usePushNotifications(): PushNotificationState {
   );
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentSubscriptionId, setCurrentSubscriptionId] = useState<string | null>(
-    sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)
+    localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)
   );
   const [loading, setLoading] = useState(false);
   const [requiresPWAMode] = useState(detectIOSNonPWA);
@@ -116,7 +116,7 @@ export function usePushNotifications(): PushNotificationState {
 
       const serverSubscriptionId = result.data?.subscribeToPushNotifications?.id;
       if (serverSubscriptionId) {
-        sessionStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, serverSubscriptionId);
+        localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, serverSubscriptionId);
         setCurrentSubscriptionId(serverSubscriptionId);
       }
       setIsSubscribed(true);
@@ -138,7 +138,7 @@ export function usePushNotifications(): PushNotificationState {
   const unsubscribe = useCallback(async () => {
     setLoading(true);
     try {
-      const subscriptionId = currentSubscriptionId ?? sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+      const subscriptionId = currentSubscriptionId ?? localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
 
       // If no cached ID, we can't safely identify which server record belongs to this device
       // (the server doesn't expose the push endpoint for matching).
@@ -159,7 +159,7 @@ export function usePushNotifications(): PushNotificationState {
         await subscription.unsubscribe();
       }
 
-      sessionStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+      localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
       setCurrentSubscriptionId(null);
       setIsSubscribed(false);
     } finally {

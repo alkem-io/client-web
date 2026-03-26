@@ -37,7 +37,7 @@ export const PushSubscriptionsList = () => {
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   const subscriptions = data?.myPushSubscriptions ?? [];
-  const currentSubscriptionId = sessionStorage.getItem('alkemio_push_subscription_id');
+  const currentSubscriptionId = localStorage.getItem('alkemio_push_subscription_id');
 
   if (loading) return null;
 

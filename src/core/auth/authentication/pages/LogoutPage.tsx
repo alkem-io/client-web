@@ -12,7 +12,7 @@ async function cleanupPushSubscription(
   unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0]
 ) {
   try {
-    const subscriptionId = sessionStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
+    const subscriptionId = localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
 
     if (subscriptionId) {
       await unsubscribeMutation({
@@ -29,7 +29,7 @@ async function cleanupPushSubscription(
     }
   } finally {
     // Always clear the cached ID, even if cleanup partially fails
-    sessionStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+    localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
   }
 }
 
