@@ -53,7 +53,7 @@ export const ExploreSpacesView = ({
 
   const enableShowAll = isCollapsed && (spacesLength > itemsLimit || hasMore);
 
-  const loader = useLazyLoading(Box, { fetchMore, loading, hasMore });
+  const loader = useLazyLoading(ref => <Box ref={ref} />, { fetchMore, loading, hasMore });
 
   const visibleSpaces = isCollapsed ? spaces?.slice(0, itemsLimit) : spaces;
 

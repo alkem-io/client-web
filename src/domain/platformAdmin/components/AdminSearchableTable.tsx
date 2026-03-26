@@ -107,20 +107,21 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
       }
     : fetchMore || (async () => {});
 
-  const Loader = ({ ref }) => (
-    <>
-      <LoadingListItem ref={ref} />
-      {times(pageSize - 1, i => (
-        <LoadingListItem key={`__loading_${i}`} />
-      ))}
-    </>
+  const loader = useLazyLoading(
+    ref => (
+      <>
+        <LoadingListItem ref={ref} />
+        {times(pageSize - 1, i => (
+          <LoadingListItem key={`__loading_${i}`} />
+        ))}
+      </>
+    ),
+    {
+      hasMore: internalHasMore,
+      loading,
+      fetchMore: internalFetchMore,
+    }
   );
-
-  const loader = useLazyLoading(Loader, {
-    hasMore: internalHasMore,
-    loading,
-    fetchMore: internalFetchMore,
-  });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

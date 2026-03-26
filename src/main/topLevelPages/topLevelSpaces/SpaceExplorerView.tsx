@@ -100,7 +100,7 @@ export const SpaceExplorerView = ({
 
   const enableShowAll = isCollapsed && spaces && (spaces.length > ITEMS_LIMIT || hasMore);
 
-  const loader = useLazyLoading(Box, { fetchMore, loading, hasMore });
+  const loader = useLazyLoading(ref => <Box ref={ref} />, { fetchMore, loading, hasMore });
 
   const _shouldDisplayPrivacyInfo = membershipFilter !== SpacesExplorerMembershipFilter.Member;
 

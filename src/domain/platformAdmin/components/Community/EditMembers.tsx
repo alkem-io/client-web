@@ -161,9 +161,7 @@ export const AvailableMembers = <Member extends Identifiable>({
 
   const columnsCount = React.Children.count(renderHeader()) + 1;
 
-  const Loader = ({ ref }) => <TableRowLoading ref={ref} colSpan={columnsCount} />;
-
-  const loader = useLazyLoading(Loader, {
+  const loader = useLazyLoading(ref => <TableRowLoading ref={ref} colSpan={columnsCount} />, {
     hasMore,
     updating,
     loading,

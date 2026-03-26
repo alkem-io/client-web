@@ -127,7 +127,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
     });
   };
 
-  const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });
+  const loader = useLazyLoading(ref => <Loader ref={ref} />, { hasMore, loading, fetchMore });
 
   const roleOptions = (() => {
     const options: RoleOption[] = SELECTABLE_ROLES.map(role => ({
