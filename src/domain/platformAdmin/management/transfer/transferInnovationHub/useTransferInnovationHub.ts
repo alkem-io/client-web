@@ -1,0 +1,83 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  useInnovationHubTransferLookupQuery,
+  useInnovationHubTransferUrlResolveQuery,
+  useTransferInnovationHubToAccountMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import { UrlResolverResultState, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import toFullUrl from '../toFullUrl';
+
+const T_PREFIX = 'pages.admin.transferHub';
+
+const useTransferInnovationHub = () => {
+  const { t } = useTranslation();
+  const notify = useNotification();
+  const [hubUrl, setHubUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
+
+  // Step 1: Resolve URL
+  const { data: resolveData, loading: resolveLoading } = useInnovationHubTransferUrlResolveQuery({
+    variables: { url: hubUrl },
+    skip: !hubUrl,
+  });
+
+  const resolved = resolveData?.urlResolver;
+  const resolvedHubId = resolved?.innovationHubId;
+
+  // Step 2: Fetch hub details
+  const { data: hubData, loading: hubLoading } = useInnovationHubTransferLookupQuery({
+    variables: { hubId: resolvedHubId! },
+    skip: !resolvedHubId,
+  });
+
+  const hub = hubData?.lookup.innovationHub;
+  const currentAccountName = hub?.account?.host?.profile?.displayName;
+
+  // Mutation
+  const [transferMutation, { loading: transferLoading }] = useTransferInnovationHubToAccountMutation();
+
+  // Error derivation
+  const isLoading = resolveLoading || hubLoading;
+  const error = isLoading
+    ? undefined
+    : resolved?.state === UrlResolverResultState.NotFound
+      ? (`${T_PREFIX}.urlNotFound` as const)
+      : resolved?.state === UrlResolverResultState.Forbidden
+        ? (`${T_PREFIX}.urlForbidden` as const)
+        : resolved && resolved.type !== UrlType.InnovationHub
+          ? (`${T_PREFIX}.urlNotHub` as const)
+          : undefined;
+
+  const handleResolve = (url: string) => {
+    setMutationCompleted(false);
+    setHubUrl(toFullUrl(url));
+  };
+
+  const handleTransfer = async (targetAccountId: string) => {
+    if (!hub?.id) return;
+    try {
+      await transferMutation({
+        variables: { innovationHubID: hub.id, targetAccountID: targetAccountId },
+      });
+      notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
+    }
+  };
+
+  return {
+    hub: mutationCompleted ? undefined : hub,
+    currentAccountName,
+    loading: isLoading,
+    transferLoading,
+    error,
+    handleResolve,
+    handleTransfer,
+  };
+};
+
+export default useTransferInnovationHub;

@@ -66,7 +66,7 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
             disabled={state?.isLoading}
             onClick={actions.onConfirm}
           >
-            {confirmButtonText}
+            {confirmButtonText || t('buttons.confirm')}
           </Button>
         )}
       </Actions>

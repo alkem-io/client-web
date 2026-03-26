@@ -6217,6 +6217,7 @@ export type Poll = {
 /** The type of event that occurred on a poll. */
 export enum PollEventType {
   PollOptionsChanged = 'POLL_OPTIONS_CHANGED',
+  PollStatusChanged = 'POLL_STATUS_CHANGED',
   PollVoteUpdated = 'POLL_VOTE_UPDATED',
 }
 
@@ -22340,21 +22341,25 @@ export type UserSettingsQuery = {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationPollVoteCastOnPollIVotedOn: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationPollModifiedOnPollIVotedOn: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
                 collaborationPollVoteAffectedByOptionChange: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
+                  push: boolean;
                 };
               };
               user: {
@@ -24618,6 +24623,182 @@ export type PlatformRoleSetQuery = {
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
 };
 
+export type AccountSearchUsersQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AccountSearchUsersQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    users: {
+      __typename?: 'PaginatedUsers';
+      users: Array<{
+        __typename?: 'User';
+        id: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
+          | undefined;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+      }>;
+      pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean };
+    };
+  };
+};
+
+export type AccountSearchOrganizationsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type AccountSearchOrganizationsQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    organizations: {
+      __typename?: 'PaginatedOrganization';
+      organization: Array<{
+        __typename?: 'Organization';
+        id: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
+          | undefined;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+      }>;
+      pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean };
+    };
+  };
+};
+
+export type SpaceConversionUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type SpaceConversionUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    space?:
+      | { __typename?: 'UrlResolverQueryResultSpace'; id: string; level: SpaceLevel; levelZeroSpaceID: string }
+      | undefined;
+  };
+};
+
+export type SpaceConversionLookupQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceConversionLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }
+              | undefined;
+          };
+          community: {
+            __typename?: 'Community';
+            roleSet: {
+              __typename?: 'RoleSet';
+              memberUsers: Array<{ __typename?: 'User'; id: string }>;
+              leadUsers: Array<{ __typename?: 'User'; id: string }>;
+              memberOrganizations: Array<{ __typename?: 'Organization'; id: string }>;
+              leadOrganizations: Array<{ __typename?: 'Organization'; id: string }>;
+              virtualContributorsInRole: Array<{ __typename?: 'VirtualContributor'; id: string }>;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceConversionSiblingSubspacesQueryVariables = Exact<{
+  levelZeroSpaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceConversionSiblingSubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subspaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type ConvertSpaceL1ToL0MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertSpaceL1ToL0Mutation = {
+  __typename?: 'Mutation';
+  convertSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+};
+
+export type ConvertSpaceL1ToL2MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  parentSpaceL1ID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertSpaceL1ToL2Mutation = {
+  __typename?: 'Mutation';
+  convertSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
+};
+
+export type ConvertSpaceL2ToL1MutationVariables = Exact<{
+  spaceL2ID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertSpaceL2ToL1Mutation = {
+  __typename?: 'Mutation';
+  convertSpaceL2ToSpaceL1: { __typename?: 'Space'; id: string };
+};
+
 export type CalloutUrlResolveQueryVariables = Exact<{
   url: Scalars['String']['input'];
 }>;
@@ -24753,6 +24934,112 @@ export type TransferCalloutMutation = {
   transferCallout: { __typename?: 'Callout'; id: string; nameID: string };
 };
 
+export type InnovationHubTransferUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type InnovationHubTransferUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    innovationHubId?: string | undefined;
+  };
+};
+
+export type InnovationHubTransferLookupQueryVariables = Exact<{
+  hubId: Scalars['UUID']['input'];
+}>;
+
+export type InnovationHubTransferLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationHub?:
+      | {
+          __typename?: 'InnovationHub';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }
+              | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type TransferInnovationHubToAccountMutationVariables = Exact<{
+  innovationHubID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID']['input'];
+}>;
+
+export type TransferInnovationHubToAccountMutation = {
+  __typename?: 'Mutation';
+  transferInnovationHubToAccount: { __typename?: 'InnovationHub'; id: string };
+};
+
+export type InnovationPackTransferUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type InnovationPackTransferUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    innovationPack?: { __typename?: 'UrlResolverQueryResultInnovationPack'; id: string } | undefined;
+  };
+};
+
+export type InnovationPackTransferLookupQueryVariables = Exact<{
+  packId: Scalars['UUID']['input'];
+}>;
+
+export type InnovationPackTransferLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationPack?:
+      | {
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type TransferInnovationPackToAccountMutationVariables = Exact<{
+  innovationPackID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID']['input'];
+}>;
+
+export type TransferInnovationPackToAccountMutation = {
+  __typename?: 'Mutation';
+  transferInnovationPackToAccount: { __typename?: 'InnovationPack'; id: string };
+};
+
 export type SpaceTransferUrlResolveQueryVariables = Exact<{
   url: Scalars['String']['input'];
 }>;
@@ -24873,6 +25160,148 @@ export type TransferSpaceToAccountMutationVariables = Exact<{
 export type TransferSpaceToAccountMutation = {
   __typename?: 'Mutation';
   transferSpaceToAccount: { __typename?: 'Space'; id: string };
+};
+
+export type VcTransferUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type VcTransferUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    virtualContributor?: { __typename?: 'UrlResolverQueryResultVirtualContributor'; id: string } | undefined;
+  };
+};
+
+export type VcTransferLookupQueryVariables = Exact<{
+  vcId: Scalars['UUID']['input'];
+}>;
+
+export type VcTransferLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    virtualContributor?:
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                host?:
+                  | {
+                      __typename?: 'Actor';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type TransferVirtualContributorToAccountMutationVariables = Exact<{
+  virtualContributorID: Scalars['UUID']['input'];
+  targetAccountID: Scalars['UUID']['input'];
+}>;
+
+export type TransferVirtualContributorToAccountMutation = {
+  __typename?: 'Mutation';
+  transferVirtualContributorToAccount: { __typename?: 'InnovationPack'; id: string };
+};
+
+export type VcConversionUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type VcConversionUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    virtualContributor?: { __typename?: 'UrlResolverQueryResultVirtualContributor'; id: string } | undefined;
+  };
+};
+
+export type VcConversionLookupQueryVariables = Exact<{
+  vcId: Scalars['UUID']['input'];
+}>;
+
+export type VcConversionLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    virtualContributor?:
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+          bodyOfKnowledgeID?: string | undefined;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                host?:
+                  | {
+                      __typename?: 'Actor';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type VcConversionSourceSpaceCalloutsQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type VcConversionSourceSpaceCalloutsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            calloutsSet: {
+              __typename?: 'CalloutsSet';
+              id: string;
+              callouts: Array<{ __typename?: 'Callout'; id: string }>;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type ConvertVcToKnowledgeBaseMutationVariables = Exact<{
+  virtualContributorID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertVcToKnowledgeBaseMutation = {
+  __typename?: 'Mutation';
+  convertVirtualContributorToUseKnowledgeBase: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{

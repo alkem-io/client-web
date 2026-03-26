@@ -12,6 +12,7 @@ import toFullUrl from '../toFullUrl';
 const useTransferCallout = () => {
   const [calloutUrl, setCalloutUrl] = useState('');
   const [spaceUrl, setSpaceUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Resolve callout URL
   const { data: calloutResolveData, loading: calloutResolveLoading } = useCalloutUrlResolveQuery({
@@ -76,10 +77,12 @@ const useTransferCallout = () => {
           : undefined;
 
   const handleCalloutSubmit = (url: string) => {
+    setMutationCompleted(false);
     setCalloutUrl(toFullUrl(url));
   };
 
   const handleSpaceSubmit = (url: string) => {
+    setMutationCompleted(false);
     setSpaceUrl(toFullUrl(url));
   };
 
@@ -91,11 +94,12 @@ const useTransferCallout = () => {
     if (!result.data?.transferCallout?.id) {
       throw new Error('Transfer failed');
     }
+    setMutationCompleted(true);
   };
 
   return {
-    callout,
-    space,
+    callout: mutationCompleted ? undefined : callout,
+    space: mutationCompleted ? undefined : space,
     calloutsSetId,
     hasTransferOffer,
     hasTransferAccept,

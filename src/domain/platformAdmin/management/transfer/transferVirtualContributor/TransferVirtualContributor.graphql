@@ -1,0 +1,43 @@
+query VcTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    virtualContributor {
+      id
+    }
+  }
+}
+
+query VcTransferLookup($vcId: UUID!) {
+  lookup {
+    virtualContributor(ID: $vcId) {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation TransferVirtualContributorToAccount($virtualContributorID: UUID!, $targetAccountID: UUID!) {
+  transferVirtualContributorToAccount(
+    transferData: {
+      virtualContributorID: $virtualContributorID
+      targetAccountID: $targetAccountID
+    }
+  ) {
+    id
+  }
+}
