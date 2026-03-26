@@ -1,6 +1,5 @@
 import { Button, Tooltip } from '@mui/material';
 import { groupBy } from 'lodash-es';
-import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AiPersonaEngine,
@@ -60,37 +59,34 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
   const hasKnowledgeBase = bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase;
   const isAssistant = engine === AiPersonaEngine.OpenaiAssistant;
 
-  const links = useMemo(() => {
+  const links = (() => {
     return groupBy(references, reference =>
       isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
     );
-  }, [references]);
+  })();
 
-  const onClickHandleKnowledgeBase = useCallback(() => {
+  const onClickHandleKnowledgeBase = () => {
     if (virtualContributor) {
       navigate(`${virtualContributor.profile.url}/${KNOWLEDGE_BASE_PATH}`);
     }
-  }, [navigate, virtualContributor]);
+  };
 
   const defaultProfile = { displayName: t('components.card.privacy.private', { entity: 'space' }), url: '' };
 
-  const renderBokVisitButton = useCallback(
-    () =>
-      hasReadAccess ? (
-        <Button color="primary" variant="outlined" sx={bokVisitButtonStyles} onClick={onClickHandleKnowledgeBase}>
-          {t('buttons.visit')}
-        </Button>
-      ) : (
-        <Tooltip title={t('components.profile.fields.bodyOfKnowledge.privateBokTooltip')} placement="bottom-start">
-          <Gutters disableGap={true} disablePadding={true}>
-            <Button disabled={true} color="primary" variant="outlined" sx={bokVisitButtonStyles}>
-              {t('buttons.visit')}
-            </Button>
-          </Gutters>
-        </Tooltip>
-      ),
-    [hasReadAccess, t, onClickHandleKnowledgeBase]
-  );
+  const renderBokVisitButton = () =>
+    hasReadAccess ? (
+      <Button color="primary" variant="outlined" sx={bokVisitButtonStyles} onClick={onClickHandleKnowledgeBase}>
+        {t('buttons.visit')}
+      </Button>
+    ) : (
+      <Tooltip title={t('components.profile.fields.bodyOfKnowledge.privateBokTooltip')} placement="bottom-start">
+        <Gutters disableGap={true} disablePadding={true}>
+          <Button disabled={true} color="primary" variant="outlined" sx={bokVisitButtonStyles}>
+            {t('buttons.visit')}
+          </Button>
+        </Gutters>
+      </Tooltip>
+    );
 
   return (
     <PageContent>

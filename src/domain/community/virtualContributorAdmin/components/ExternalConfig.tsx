@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -54,14 +54,11 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
 
   const [updateAiPersona, { loading: updateLoading }] = useUpdateAiPersonaMutation();
 
-  const initialValues: FormValueType = useMemo(
-    () => ({
-      apiKey: '',
-      model: aiPersona?.externalConfig?.model || OpenAiModel.O1,
-      assistantId: aiPersona?.externalConfig?.assistantId || '',
-    }),
-    [aiPersona?.id]
-  );
+  const initialValues: FormValueType = {
+    apiKey: '',
+    model: aiPersona?.externalConfig?.model || OpenAiModel.O1,
+    assistantId: aiPersona?.externalConfig?.assistantId || '',
+  };
 
   const validationSchema = yup.object().shape({
     apiKey: textLengthValidator(),

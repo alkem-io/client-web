@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   ActorType,
   AuthorizationPrivilege,
@@ -115,18 +114,14 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
 
-  const communityUsers = useMemo(
-    () =>
-      users.map<CommunityMemberUserFragmentWithRoles>(user => ({
-        ...user,
-        isMember: user.roles.includes(RoleName.Member),
-        isLead: user.roles.includes(RoleName.Lead),
-        isAdmin: user.roles.includes(RoleName.Admin),
-      })),
-    [users]
-  );
+  const communityUsers = users.map<CommunityMemberUserFragmentWithRoles>(user => ({
+    ...user,
+    isMember: user.roles.includes(RoleName.Member),
+    isLead: user.roles.includes(RoleName.Lead),
+    isAdmin: user.roles.includes(RoleName.Admin),
+  }));
 
-  const communityOrganizations = useMemo(() => {
+  const communityOrganizations = (() => {
     const result = organizations.map<CommunityMemberOrganizationFragmentWithRoles>(organization => ({
       ...organization,
       isMember: organization.roles.includes(RoleName.Member),
@@ -134,7 +129,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     }));
 
     return result;
-  }, [organizations]);
+  })();
 
   // Available new members:
   const {

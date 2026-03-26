@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { usePlatformRoleAvailableUsersQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse } from './common';
@@ -39,25 +38,22 @@ const useRoleSetAvailableUsersOnPlatform = ({
   const pageInfo = data?.usersPaginated.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = useCallback(
-    async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
-      if (!data) {
-        return;
-      }
+  const fetchMore = async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
+    if (!data) {
+      return;
+    }
 
-      await fetchMoreRaw({
-        variables: {
-          first: itemsNumber,
-          after: pageInfo?.endCursor,
-          filter: { displayName: filter },
-        },
-      });
-    },
-    [data, fetchMoreRaw, pageInfo?.endCursor, filter, AVAILABLE_USERS_PAGE_SIZE]
-  );
+    await fetchMoreRaw({
+      variables: {
+        first: itemsNumber,
+        after: pageInfo?.endCursor,
+        filter: { displayName: filter },
+      },
+    });
+  };
 
   const firstPage = data?.usersPaginated;
-  const users = useMemo(() => {
+  const users = (() => {
     if (!firstPage?.users) {
       return [];
     }
@@ -65,7 +61,7 @@ const useRoleSetAvailableUsersOnPlatform = ({
       return firstPage.users;
     }
     return firstPage.users.filter(user => !usersAlreadyInRole?.find(current => current.id === user.id));
-  }, [firstPage, loading, usersAlreadyInRole, filter, skip]);
+  })();
 
   return {
     users,

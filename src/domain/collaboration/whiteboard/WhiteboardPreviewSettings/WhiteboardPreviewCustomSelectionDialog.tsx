@@ -1,6 +1,6 @@
 import { Check, Close, Replay } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, Divider, Slider } from '@mui/material';
-import { type PointerEvent, useCallback, useEffect, useRef, useState, type WheelEvent } from 'react';
+import { type PointerEvent, useEffect, useRef, useState, type WheelEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { type Crop } from 'react-image-crop';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -80,25 +80,22 @@ const WhiteboardPreviewCustomSelectionDialog = ({
     setImgPan({ x: 0, y: 0 });
   };
 
-  const onLoad = useCallback(
-    (img: HTMLImageElement) => {
-      imgRef.current = img;
-      setReady(true);
-      setImgScale(MIN_SCALE);
-      setImgPan({ x: 0, y: 0 });
-      const currentCropConfig = translateCropConfig({
-        cropConfig,
-        img,
-        inverse: true,
-      });
-      if (validateCropConfig(currentCropConfig, aspectRatio, img)) {
-        onCropChange(currentCropConfig!);
-      } else {
-        resetCrop(); // If no valid crop config, reset to default:
-      }
-    },
-    [aspectRatio, setCrop, cropConfig]
-  );
+  const onLoad = (img: HTMLImageElement) => {
+    imgRef.current = img;
+    setReady(true);
+    setImgScale(MIN_SCALE);
+    setImgPan({ x: 0, y: 0 });
+    const currentCropConfig = translateCropConfig({
+      cropConfig,
+      img,
+      inverse: true,
+    });
+    if (validateCropConfig(currentCropConfig, aspectRatio, img)) {
+      onCropChange(currentCropConfig!);
+    } else {
+      resetCrop(); // If no valid crop config, reset to default:
+    }
+  };
 
   const handleConfirmCrop = () => {
     const cropConfig = ensurePresence(crop);
@@ -117,28 +114,25 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   const [imageObjectUrl, setImageObjectUrl] = useState<string>();
 
   // Zoom and Pan handlers
-  const handleWheel = useCallback(
-    (event: WheelEvent<HTMLDivElement>) => {
-      if (!ready) {
-        return;
+  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (!ready) {
+      return;
+    }
+    const deltaDirection = event.deltaY < 0 ? 1 : -1;
+    setImgScale(previousScale => {
+      const nextScale = Number((previousScale + deltaDirection * SCALE_STEP).toFixed(2));
+      if (nextScale < MIN_SCALE) {
+        setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, MIN_SCALE));
+        return MIN_SCALE;
       }
-      const deltaDirection = event.deltaY < 0 ? 1 : -1;
-      setImgScale(previousScale => {
-        const nextScale = Number((previousScale + deltaDirection * SCALE_STEP).toFixed(2));
-        if (nextScale < MIN_SCALE) {
-          setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, MIN_SCALE));
-          return MIN_SCALE;
-        }
-        if (nextScale > MAX_SCALE) {
-          setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, MAX_SCALE));
-          return MAX_SCALE;
-        }
-        setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, nextScale));
-        return nextScale;
-      });
-    },
-    [ready]
-  );
+      if (nextScale > MAX_SCALE) {
+        setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, MAX_SCALE));
+        return MAX_SCALE;
+      }
+      setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, nextScale));
+      return nextScale;
+    });
+  };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.target !== imgRef.current || !ready) {

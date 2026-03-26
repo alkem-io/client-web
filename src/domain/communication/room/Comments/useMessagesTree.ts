@@ -1,11 +1,10 @@
 import { groupBy, sortBy } from 'lodash-es';
-import { useMemo } from 'react';
 import type { Identifiable } from '@/core/utils/Identifiable';
 
 const ROOT_THREAD = Symbol('root');
 
 const useMessagesTree = <Message extends IdentifiableReply>(messages: Message[] | undefined) =>
-  useMemo(() => buildMessagesTree(messages), [messages]);
+  buildMessagesTree(messages);
 
 export interface IdentifiableReply extends Identifiable {
   threadID?: string;

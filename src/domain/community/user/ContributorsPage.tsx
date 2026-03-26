@@ -4,7 +4,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { InputAdornment, OutlinedInput } from '@mui/material';
 import { debounce } from 'lodash-es';
-import { type ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useContributorsPageOrganizationsQuery,
@@ -89,25 +89,22 @@ const ContributorsPage = () => {
   const usersPageInfo = usersData?.usersPaginated.pageInfo;
   const usersHasMore = usersPageInfo?.hasNextPage ?? false;
 
-  const usersFetchMore = useCallback(
-    async (itemsNumber = pageSize) => {
-      if (!usersData) {
-        return;
-      }
+  const usersFetchMore = async (itemsNumber = pageSize) => {
+    if (!usersData) {
+      return;
+    }
 
-      await usersFetchMoreRaw({
-        variables: {
-          first: itemsNumber,
-          after: usersPageInfo?.endCursor,
-          withTags: true,
-          filter: { firstName: searchTermsDebounced, lastName: searchTermsDebounced, email: searchTermsDebounced },
-        },
-      });
-    },
-    [usersData, usersFetchMoreRaw, usersPageInfo?.endCursor, pageSize, searchTermsDebounced]
-  );
+    await usersFetchMoreRaw({
+      variables: {
+        first: itemsNumber,
+        after: usersPageInfo?.endCursor,
+        withTags: true,
+        filter: { firstName: searchTermsDebounced, lastName: searchTermsDebounced, email: searchTermsDebounced },
+      },
+    });
+  };
 
-  const randomizedUsers = useMemo(() => {
+  const randomizedUsers = (() => {
     // if the length changed, shuffle only the new portion of the array
     // to avoid re-rendering the entire list
     const users = usersData?.usersPaginated.users;
@@ -119,7 +116,7 @@ const ContributorsPage = () => {
     const randomizedNewUsers = arrayShuffle(users.slice(-pageSize));
 
     return [...users.slice(0, users.length - pageSize), ...randomizedNewUsers];
-  }, [usersData?.usersPaginated.users?.length, pageSize]);
+  })();
 
   const users: PaginatedResult<UserContributorFragment> = {
     items: randomizedUsers,
@@ -156,36 +153,26 @@ const ContributorsPage = () => {
   const organizationsPageInfo = organizationsData?.organizationsPaginated.pageInfo;
   const organizationsHasMore = organizationsPageInfo?.hasNextPage ?? false;
 
-  const organizationsFetchMore = useCallback(
-    async (itemsNumber = pageSize) => {
-      if (!organizationsData) {
-        return;
-      }
+  const organizationsFetchMore = async (itemsNumber = pageSize) => {
+    if (!organizationsData) {
+      return;
+    }
 
-      await organizationsFetchMoreRaw({
-        variables: {
-          first: itemsNumber,
-          after: organizationsPageInfo?.endCursor,
-          status: OrganizationVerificationEnum.VerifiedManualAttestation,
-          filter: {
-            contactEmail: searchTermsDebounced,
-            displayName: searchTermsDebounced,
-            domain: searchTermsDebounced,
-            nameID: searchTermsDebounced,
-            website: searchTermsDebounced,
-          },
+    await organizationsFetchMoreRaw({
+      variables: {
+        first: itemsNumber,
+        after: organizationsPageInfo?.endCursor,
+        status: OrganizationVerificationEnum.VerifiedManualAttestation,
+        filter: {
+          contactEmail: searchTermsDebounced,
+          displayName: searchTermsDebounced,
+          domain: searchTermsDebounced,
+          nameID: searchTermsDebounced,
+          website: searchTermsDebounced,
         },
-      });
-    },
-    [
-      organizationsData,
-      organizationsFetchMoreRaw,
-      organizationsPageInfo?.endCursor,
-      pageSize,
-      searchTermsDebounced,
-      OrganizationVerificationEnum.VerifiedManualAttestation,
-    ]
-  );
+      },
+    });
+  };
 
   const organizations: PaginatedResult<OrganizationContributorFragment> = {
     items: organizationsData?.organizationsPaginated.organization,

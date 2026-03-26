@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
@@ -43,29 +42,22 @@ export const OrganizationPageView = ({
   const { permissions, references, organization, capabilities, keywords, associates, contributions } =
     organizationProvided;
 
-  const tagsets = useMemo(
-    () => [
-      { name: t('components.profile.fields.keywords.title'), tags: keywords },
-      { name: t('components.profile.fields.capabilities.title'), tags: capabilities },
-    ],
-    [keywords, capabilities, t]
-  );
+  const tagsets = [
+    { name: t('components.profile.fields.keywords.title'), tags: keywords },
+    { name: t('components.profile.fields.capabilities.title'), tags: capabilities },
+  ];
 
-  const entity = useMemo(
-    () =>
-      ({
-        avatar: organization?.profile?.avatar?.uri,
-        displayName: organization?.profile?.displayName || '',
-        settingsTooltip: t('pages.organization.settings.tooltip'),
-        settingsUrl: buildSettingsUrl(organization?.profile?.url ?? ''),
-        bio: organization?.profile?.description,
-        verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-        tagsets,
-        references,
-        location: organization?.profile?.location,
-      }) as OrganizationProfileViewEntity,
-    [organization, tagsets, references, t]
-  );
+  const entity = {
+    avatar: organization?.profile?.avatar?.uri,
+    displayName: organization?.profile?.displayName || '',
+    settingsTooltip: t('pages.organization.settings.tooltip'),
+    settingsUrl: buildSettingsUrl(organization?.profile?.url ?? ''),
+    bio: organization?.profile?.description,
+    verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
+    tagsets,
+    references,
+    location: organization?.profile?.location,
+  } as OrganizationProfileViewEntity;
 
   const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [RoleType.Lead]);
 

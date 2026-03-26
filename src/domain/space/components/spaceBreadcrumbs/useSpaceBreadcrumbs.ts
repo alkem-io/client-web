@@ -1,5 +1,4 @@
 import { compact } from 'lodash-es';
-import { useMemo } from 'react';
 import { useSpaceBreadcrumbsQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceHierarchyPath } from '@/main/routing/urlResolver/UrlResolverProvider';
@@ -34,7 +33,7 @@ export const useSpaceBreadcrumbs = ({ spaceHierarchyPath = [], loading = false }
 
   const pathSpaces = compact([data?.lookup.space, data?.lookup.subspaceL1, data?.lookup.subspaceL2]);
 
-  const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
+  const breadcrumbs = (() => {
     if (isLoadingBreadcrumbs) {
       return [];
     }
@@ -50,7 +49,7 @@ export const useSpaceBreadcrumbs = ({ spaceHierarchyPath = [], loading = false }
         avatar: profile?.avatar,
       };
     });
-  }, [isLoadingBreadcrumbs, currentSpaceIndex, data]);
+  })();
 
   return {
     loading: isLoadingBreadcrumbs,

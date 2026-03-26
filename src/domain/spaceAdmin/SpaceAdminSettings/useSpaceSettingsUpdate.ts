@@ -1,4 +1,4 @@
-import { useCallback, useOptimistic, useTransition } from 'react';
+import { useOptimistic, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
@@ -69,109 +69,106 @@ export const useSpaceSettingsUpdate = ({ spaceId, currentSettings, hostId }: Use
 
   const [isPending, startTransition] = useTransition();
 
-  const updateSettings = useCallback(
-    async (params: SpaceSettingsUpdateParams) => {
-      const {
-        privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
-        membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
-        allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
-          defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
-        allowEventsFromSubspaces = currentSettings?.collaboration?.allowEventsFromSubspaces ??
-          defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
-        allowMembersToCreateSubspaces = currentSettings?.collaboration?.allowMembersToCreateSubspaces ??
-          defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
-        allowMembersToCreateCallouts = currentSettings?.collaboration?.allowMembersToCreateCallouts ??
-          defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
-        allowMembersToVideoCall = currentSettings?.collaboration?.allowMembersToVideoCall ??
-          defaultSpaceSettings.collaboration.allowMembersToVideoCall,
-        inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
-          defaultSpaceSettings.collaboration.inheritMembershipRights,
-        allowGuestContributions = currentSettings?.collaboration?.allowGuestContributions ??
-          defaultSpaceSettings.collaboration.allowGuestContributions,
-        hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
-          defaultSpaceSettings.membership.hostOrganizationTrusted,
-        collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
-        layoutSettings = currentSettings.layout ?? defaultSpaceSettings.layout,
-        showNotification = true,
-        allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
-          defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
-      } = params;
+  const updateSettings = async (params: SpaceSettingsUpdateParams) => {
+    const {
+      privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
+      membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
+      allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
+        defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
+      allowEventsFromSubspaces = currentSettings?.collaboration?.allowEventsFromSubspaces ??
+        defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
+      allowMembersToCreateSubspaces = currentSettings?.collaboration?.allowMembersToCreateSubspaces ??
+        defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
+      allowMembersToCreateCallouts = currentSettings?.collaboration?.allowMembersToCreateCallouts ??
+        defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
+      allowMembersToVideoCall = currentSettings?.collaboration?.allowMembersToVideoCall ??
+        defaultSpaceSettings.collaboration.allowMembersToVideoCall,
+      inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
+        defaultSpaceSettings.collaboration.inheritMembershipRights,
+      allowGuestContributions = currentSettings?.collaboration?.allowGuestContributions ??
+        defaultSpaceSettings.collaboration.allowGuestContributions,
+      hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
+        defaultSpaceSettings.membership.hostOrganizationTrusted,
+      collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
+      layoutSettings = currentSettings.layout ?? defaultSpaceSettings.layout,
+      showNotification = true,
+      allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
+        defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
+    } = params;
 
-      // Prepare trusted organizations
-      const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
-      if (hostOrganizationTrusted && hostId) {
-        if (!trustedOrganizations.includes(hostId)) {
-          trustedOrganizations.push(hostId);
-        }
-      } else {
-        trustedOrganizations.splice(0, trustedOrganizations.length);
+    // Prepare trusted organizations
+    const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
+    if (hostOrganizationTrusted && hostId) {
+      if (!trustedOrganizations.includes(hostId)) {
+        trustedOrganizations.push(hostId);
       }
+    } else {
+      trustedOrganizations.splice(0, trustedOrganizations.length);
+    }
 
-      // Prepare settings variable
-      const settingsVariable = {
-        privacy: {
-          mode: privacyMode,
-          allowPlatformSupportAsAdmin,
-        },
-        membership: {
-          policy: membershipPolicy,
-          trustedOrganizations,
-          allowSubspaceAdminsToInviteMembers,
-        },
-        collaboration: {
-          ...currentSettings.collaboration,
-          ...collaborationSettings,
-          allowEventsFromSubspaces,
-          allowMembersToCreateSubspaces,
-          allowMembersToCreateCallouts,
-          allowMembersToVideoCall,
-          inheritMembershipRights,
-          allowGuestContributions,
-        } as SpaceSettingsCollaboration,
-        layout: {
-          calloutDescriptionDisplayMode:
-            layoutSettings?.calloutDescriptionDisplayMode ??
-            currentSettings.layout?.calloutDescriptionDisplayMode ??
-            defaultSpaceSettings.layout.calloutDescriptionDisplayMode,
-        },
-      };
+    // Prepare settings variable
+    const settingsVariable = {
+      privacy: {
+        mode: privacyMode,
+        allowPlatformSupportAsAdmin,
+      },
+      membership: {
+        policy: membershipPolicy,
+        trustedOrganizations,
+        allowSubspaceAdminsToInviteMembers,
+      },
+      collaboration: {
+        ...currentSettings.collaboration,
+        ...collaborationSettings,
+        allowEventsFromSubspaces,
+        allowMembersToCreateSubspaces,
+        allowMembersToCreateCallouts,
+        allowMembersToVideoCall,
+        inheritMembershipRights,
+        allowGuestContributions,
+      } as SpaceSettingsCollaboration,
+      layout: {
+        calloutDescriptionDisplayMode:
+          layoutSettings?.calloutDescriptionDisplayMode ??
+          currentSettings.layout?.calloutDescriptionDisplayMode ??
+          defaultSpaceSettings.layout.calloutDescriptionDisplayMode,
+      },
+    };
 
-      // Create the optimistic state update action
-      const updateAction = async () => {
-        setOptimisticSettings({
-          privacy: settingsVariable.privacy,
-          membership: settingsVariable.membership,
-          collaboration: settingsVariable.collaboration,
-          layout: settingsVariable.layout,
-        });
-
-        await updateSpaceSettings({
-          variables: {
-            settingsData: {
-              spaceID: spaceId,
-              settings: settingsVariable,
-            },
-          },
-        });
-
-        if (showNotification) {
-          notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
-        }
-      };
-
-      return new Promise<void>((resolve, reject) => {
-        startTransition(async () => {
-          try {
-            await updateAction();
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        });
+    // Create the optimistic state update action
+    const updateAction = async () => {
+      setOptimisticSettings({
+        privacy: settingsVariable.privacy,
+        membership: settingsVariable.membership,
+        collaboration: settingsVariable.collaboration,
+        layout: settingsVariable.layout,
       });
-    },
-    [currentSettings, hostId, spaceId, setOptimisticSettings, startTransition, updateSpaceSettings, notify, t]
-  );
+
+      await updateSpaceSettings({
+        variables: {
+          settingsData: {
+            spaceID: spaceId,
+            settings: settingsVariable,
+          },
+        },
+      });
+
+      if (showNotification) {
+        notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
+      }
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      startTransition(async () => {
+        try {
+          await updateAction();
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  };
 
   return {
     optimisticSettings,

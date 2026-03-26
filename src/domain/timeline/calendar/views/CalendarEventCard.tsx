@@ -1,5 +1,4 @@
 import type React from 'react';
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardDescription from '@/core/ui/card/CardDescription';
 import CardDetails from '@/core/ui/card/CardDetails';
@@ -35,7 +34,7 @@ const CalendarEventCard = ({
 }: CalendarEventCardProps & {
   ref?: React.Ref<HTMLDivElement>;
 }) => {
-  const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
+  const handleClick = () => event && onClick(event);
   const { t } = useTranslation();
 
   return (

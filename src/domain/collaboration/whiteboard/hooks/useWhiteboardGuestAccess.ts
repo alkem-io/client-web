@@ -1,5 +1,5 @@
 import type { ApolloError } from '@apollo/client';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   trackGuestAccessToggleAttempt,
   trackGuestAccessToggleFailure,
@@ -49,72 +49,69 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
   const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation();
   const handleApolloError = useApolloErrorHandler();
 
-  const resolvedGuestShareUrl = useMemo(() => {
+  const resolvedGuestShareUrl = (() => {
     if (guestShareUrl) {
       return guestShareUrl;
     }
     return buildGuestShareUrl(whiteboard?.id ?? whiteboard?.nameID ?? undefined);
-  }, [guestShareUrl, whiteboard?.id, whiteboard?.nameID]);
+  })();
 
-  const canToggle = useMemo(() => {
+  const canToggle = (() => {
     return Boolean(whiteboard?.authorization?.myPrivileges?.includes(PUBLIC_SHARE_PRIVILEGE) ?? false);
-  }, [whiteboard?.authorization?.myPrivileges]);
+  })();
 
   const enabled = Boolean(whiteboard?.guestContributionsAllowed);
 
-  const guestLink = useMemo(() => buildGuestLink(resolvedGuestShareUrl, enabled), [resolvedGuestShareUrl, enabled]);
+  const guestLink = buildGuestLink(resolvedGuestShareUrl, enabled);
 
-  const onToggle = useCallback(
-    async (nextState: boolean) => {
-      if (!whiteboard?.id || !canToggle) {
-        return;
-      }
+  const onToggle = async (nextState: boolean) => {
+    if (!whiteboard?.id || !canToggle) {
+      return;
+    }
 
-      setHasError(false);
-      trackGuestAccessToggleAttempt({ whiteboardId: whiteboard.id, nextState });
+    setHasError(false);
+    trackGuestAccessToggleAttempt({ whiteboardId: whiteboard.id, nextState });
 
-      try {
-        const { data } = await updateGuestAccess({
-          variables: {
-            input: {
-              whiteboardId: whiteboard.id,
-              guestAccessEnabled: nextState,
-            },
+    try {
+      const { data } = await updateGuestAccess({
+        variables: {
+          input: {
+            whiteboardId: whiteboard.id,
+            guestAccessEnabled: nextState,
           },
-        });
+        },
+      });
 
-        const result = data?.updateWhiteboardGuestAccess;
-        const updatedWhiteboard = result?.whiteboard;
-        if (!result?.success || !updatedWhiteboard) {
-          setHasError(true);
-          if (whiteboard.id) {
-            trackGuestAccessToggleFailure({
-              whiteboardId: whiteboard.id,
-              nextState,
-              reason: 'Guest access mutation failed.',
-            });
-          }
-          return;
-        }
-
-        trackGuestAccessToggleSuccess({ whiteboardId: whiteboard.id, nextState });
-      } catch (error) {
-        handleApolloError(error as ApolloError);
+      const result = data?.updateWhiteboardGuestAccess;
+      const updatedWhiteboard = result?.whiteboard;
+      if (!result?.success || !updatedWhiteboard) {
         setHasError(true);
         if (whiteboard.id) {
           trackGuestAccessToggleFailure({
             whiteboardId: whiteboard.id,
             nextState,
-            reason: error instanceof Error ? error.message : undefined,
+            reason: 'Guest access mutation failed.',
           });
         }
-        throw error;
+        return;
       }
-    },
-    [whiteboard, canToggle, updateGuestAccess, handleApolloError]
-  );
 
-  const resetError = useCallback(() => setHasError(false), []);
+      trackGuestAccessToggleSuccess({ whiteboardId: whiteboard.id, nextState });
+    } catch (error) {
+      handleApolloError(error as ApolloError);
+      setHasError(true);
+      if (whiteboard.id) {
+        trackGuestAccessToggleFailure({
+          whiteboardId: whiteboard.id,
+          nextState,
+          reason: error instanceof Error ? error.message : undefined,
+        });
+      }
+      throw error;
+    }
+  };
+
+  const resetError = () => setHasError(false);
 
   return {
     enabled,

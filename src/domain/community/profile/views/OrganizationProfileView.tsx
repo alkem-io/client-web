@@ -1,6 +1,5 @@
 import { Box, styled } from '@mui/material';
 import { groupBy, isEmpty } from 'lodash-es';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -52,12 +51,8 @@ const OTHER_LINK_GROUP = 'other';
 export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps) => {
   const { t } = useTranslation();
 
-  const links = useMemo(
-    () =>
-      groupBy(entity.references, reference =>
-        isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
-      ),
-    [entity.references]
+  const links = groupBy(entity.references, reference =>
+    isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
   );
 
   const socialLinks = links[SOCIAL_LINK_GROUP]?.map(s => ({

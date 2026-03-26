@@ -1,7 +1,7 @@
 import { GridLegacy, MenuItem, TextField } from '@mui/material';
 import { orderBy } from 'lodash-es';
 import type React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface sortItem<T> {
@@ -30,7 +30,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
     if (defaultSort) setSortBy(defaultSort);
   }, [sort]);
 
-  const filteredData = useMemo(() => {
+  const filteredData = (() => {
     const filtered = data.filter(item => {
       if (!filterBy) return true;
       for (const key in item) {
@@ -51,7 +51,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
       return orderBy(filtered, sortBy.key, sortBy.order);
     }
     return filtered;
-  }, [data, filterBy, sortBy, limitKeys]);
+  })();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

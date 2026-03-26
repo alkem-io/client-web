@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash-es';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   UserConversationsDocument,
@@ -113,9 +113,9 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
   };
 
   // Only display name and avatar are considered "unsaved"
-  const hasUnsavedChanges = useMemo(() => {
+  const hasUnsavedChanges = (() => {
     return editedDisplayName.trim() !== (props.displayName ?? '') || avatarUrl !== (props.avatarUrl ?? '');
-  }, [editedDisplayName, props.displayName, avatarUrl, props.avatarUrl]);
+  })();
 
   const { data: contributors = [], loading: loadingContributors } = useContributors({
     filter,
@@ -123,22 +123,20 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     pageSize: 20,
   });
 
-  const filteredContributors = useMemo(() => {
+  const filteredContributors = (() => {
     const memberIds = new Set(currentMembers.map(m => m.id));
     return contributors.filter(user => user.id !== currentUser?.id && !memberIds.has(user.id));
-  }, [contributors, currentUser?.id, currentMembers]);
+  })();
 
-  const debouncedSetFilter = useMemo(
-    () =>
-      debounce((val: string) => {
-        setFilter(val ? { email: val, displayName: val } : undefined);
-      }, 300),
-    []
-  );
+  const debouncedSetFilter = useRef(
+    debounce((val: string) => {
+      setFilter(val ? { email: val, displayName: val } : undefined);
+    }, 300)
+  ).current;
 
   useEffect(() => {
     return () => debouncedSetFilter.cancel();
-  }, [debouncedSetFilter]);
+  }, []);
 
   const handleInputChange = (_event: React.SyntheticEvent, value: string) => {
     setInputValue(value);
@@ -236,13 +234,13 @@ export const GroupChatManagementDialog = (props: GroupChatManagementDialogProps)
     });
   };
 
-  const resetLocalState = useCallback(() => {
+  const resetLocalState = () => {
     setEditedDisplayName(props.displayName ?? '');
     setAvatarUrl(props.avatarUrl ?? '');
     setInputValue('');
     setFilter(undefined);
     setIsAddMembersOpen(false);
-  }, [props.displayName, props.avatarUrl]);
+  };
 
   const handleRequestClose = () => {
     if (hasUnsavedChanges) {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus, SpaceLevel, SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
@@ -59,18 +59,15 @@ const SpaceSubspacesPage = () => {
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
+  const handleContactLead = (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    sendMessage(leadType, {
+      id: leadId,
+      displayName: leadDisplayName,
+      avatarUri: leadAvatarUri,
+    });
+  };
 
-  const { level, childLevel } = useMemo(() => {
+  const { level, childLevel } = (() => {
     let childLevel = SpaceLevel.L1;
 
     if (space?.level === SpaceLevel.L1) {
@@ -81,7 +78,7 @@ const SpaceSubspacesPage = () => {
       level: space?.level ?? SpaceLevel.L0,
       childLevel,
     };
-  }, [space?.level]);
+  })();
 
   return (
     <>

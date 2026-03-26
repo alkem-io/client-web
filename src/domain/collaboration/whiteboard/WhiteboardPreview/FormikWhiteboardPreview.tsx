@@ -3,7 +3,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { Box, type BoxProps, IconButton, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
 import { isEqual } from 'lodash-es';
-import { type MouseEventHandler, type ReactNode, useImperativeHandle, useMemo, useState } from 'react';
+import { type MouseEventHandler, type ReactNode, useImperativeHandle, useState } from 'react';
 import { type VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import EditButton from '@/core/ui/actions/EditButton';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -102,7 +102,7 @@ const FormikWhiteboardPreview = ({
 
   const [deleteContentConfirmDialogOpen, setDeleteContentConfirmDialogOpen] = useState(false);
 
-  const whiteboardFromTemplate = useMemo(() => {
+  const whiteboardFromTemplate = (() => {
     return {
       id: '__template',
       nameID: '__template',
@@ -116,7 +116,7 @@ const FormikWhiteboardPreview = ({
       content: field.value,
       previewSettings: previewSettingsField.value ?? DefaultWhiteboardPreviewSettings,
     };
-  }, [field.value, previewSettingsField.value]);
+  })();
 
   const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 

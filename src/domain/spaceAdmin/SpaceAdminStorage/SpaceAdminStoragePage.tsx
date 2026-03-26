@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import type { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import { times } from 'lodash-es';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, type DocumentDataFragment } from '@/core/apollo/generated/graphql-schema';
@@ -100,57 +100,54 @@ const SpaceAdminStoragePage: FC<SpaceAdminStoragePageProps> = ({ useL0Layout, sp
     setDeletingDocument(undefined);
   };
 
-  const columns = useMemo<GridColDef[]>(
-    () => [
-      {
-        field: 'displayName',
-        headerName: t('pages.admin.generic.sections.storage.grid.displayName'),
-        minWidth: 400,
-        renderCell: ({ row }: RenderParams) => (
-          <>
-            <TitleIndent row={row} />
-            <ExpandButton row={row} onClick={() => (row.collapsed ? openBranch(row.id) : closeBranch(row.id))} />
-            <FileTypeIcon row={row} />
-            <Link href={row.url} target="_blank">
-              {row.displayName}
-            </Link>
-          </>
-        ),
-        sortable: false,
-        filterable: false,
-        flex: 1,
-      },
-      {
-        field: 'size',
-        headerName: t('pages.admin.generic.sections.storage.grid.size'),
-        type: 'number',
-        width: 120,
-        sortable: false,
-        filterable: false,
-        renderCell: ({ row }: RenderParams) => <>{formatFileSize(row.size)}</>,
-      },
-      {
-        field: 'uploadedBy',
-        headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
-        minWidth: 150,
-        renderCell: ({ row }: RenderParams) =>
-          row.uploadedBy ? <RouterLink to={row.uploadedBy.url}>{row.uploadedBy.displayName}</RouterLink> : undefined,
-        valueGetter: (_, row: GetterParams) => row?.uploadedBy?.displayName,
-        sortable: false,
-        filterable: false,
-      },
-      {
-        field: 'uploadedDate',
-        headerName: t('pages.admin.generic.sections.storage.grid.uploadedAt'),
-        type: 'date',
-        minWidth: 200,
-        renderCell: ({ row }: RenderParams) => (row.uploadedAt ? formatDateTime(row.uploadedAt) : undefined),
-        sortable: false,
-        filterable: false,
-      },
-    ],
-    []
-  );
+  const columns: GridColDef[] = [
+    {
+      field: 'displayName',
+      headerName: t('pages.admin.generic.sections.storage.grid.displayName'),
+      minWidth: 400,
+      renderCell: ({ row }: RenderParams) => (
+        <>
+          <TitleIndent row={row} />
+          <ExpandButton row={row} onClick={() => (row.collapsed ? openBranch(row.id) : closeBranch(row.id))} />
+          <FileTypeIcon row={row} />
+          <Link href={row.url} target="_blank">
+            {row.displayName}
+          </Link>
+        </>
+      ),
+      sortable: false,
+      filterable: false,
+      flex: 1,
+    },
+    {
+      field: 'size',
+      headerName: t('pages.admin.generic.sections.storage.grid.size'),
+      type: 'number',
+      width: 120,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: RenderParams) => <>{formatFileSize(row.size)}</>,
+    },
+    {
+      field: 'uploadedBy',
+      headerName: t('pages.admin.generic.sections.storage.grid.uploadedBy'),
+      minWidth: 150,
+      renderCell: ({ row }: RenderParams) =>
+        row.uploadedBy ? <RouterLink to={row.uploadedBy.url}>{row.uploadedBy.displayName}</RouterLink> : undefined,
+      valueGetter: (_, row: GetterParams) => row?.uploadedBy?.displayName,
+      sortable: false,
+      filterable: false,
+    },
+    {
+      field: 'uploadedDate',
+      headerName: t('pages.admin.generic.sections.storage.grid.uploadedAt'),
+      type: 'date',
+      minWidth: 200,
+      renderCell: ({ row }: RenderParams) => (row.uploadedAt ? formatDateTime(row.uploadedAt) : undefined),
+      sortable: false,
+      filterable: false,
+    },
+  ];
 
   return (
     <LayoutSwitcher currentTab={SettingsSection.Storage} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>

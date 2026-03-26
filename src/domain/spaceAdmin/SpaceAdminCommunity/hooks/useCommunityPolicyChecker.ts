@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 type RolePolicy = {
   minimum: number;
   maximum: number;
@@ -10,11 +8,11 @@ type RoleDefinition = {
 };
 
 const useCommunityPolicyChecker = (
-  memberRoleDefinition: RoleDefinition | undefined,
+  _memberRoleDefinition: RoleDefinition | undefined,
   leadRoleDefinition: RoleDefinition | undefined,
   entities: { isLead: boolean }[] | undefined
 ) =>
-  useMemo(() => {
+  (() => {
     const leadsCount = (entities ?? []).filter(entity => entity.isLead).length;
 
     const canAddLeadUser = () => {
@@ -55,6 +53,6 @@ const useCommunityPolicyChecker = (
       canAddLeadOrganization: canAddLeadOrganization(),
       canRemoveLeadOrganization: canRemoveLeadOrganization(),
     };
-  }, [memberRoleDefinition, leadRoleDefinition, entities]);
+  })();
 
 export default useCommunityPolicyChecker;

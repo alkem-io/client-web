@@ -1,5 +1,4 @@
 import { Box, Link, SnackbarContent, useTheme } from '@mui/material';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import NotificationView from '@/core/ui/notifications/NotificationView';
@@ -27,7 +26,7 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
     />
   );
 
-  const message = useMemo(() => {
+  const message = (() => {
     if (visibility === SpaceVisibility.Archived) {
       return tLinks(
         'pages.generic.archivedNotice.archivedSpace',
@@ -66,7 +65,7 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
     }
 
     return null;
-  }, [visibility, spaceLevel, tLinks, origin]);
+  })();
 
   if (!visibility || visibility === SpaceVisibility.Active) return null;
   if (!message || !spaceLevel) return null;

@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash-es';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   useDeleteSpaceMutation,
@@ -105,13 +105,13 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const templateSetPrivileges = templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  const currentSettings = useMemo(() => {
+  const currentSettings = (() => {
     const settings = settingsData?.lookup.space?.settings;
     return {
       ...settings,
       hostOrganizationTrusted: (!!hostId && settings?.membership.trustedOrganizations.includes(hostId)) ?? false,
     };
-  }, [settingsData, hostId]);
+  })();
 
   const { optimisticSettings, updateSettings } = useSpaceSettingsUpdate({
     spaceId,

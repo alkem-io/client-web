@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import {
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
@@ -51,127 +50,119 @@ const useWhiteboardActions = () => {
   const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
-  const handleCreateWhiteboard = useCallback(
-    async (calloutId: string, whiteboard: CreateWhiteboardInput, previewImages?: WhiteboardPreviewImage[]) => {
-      if (!calloutId) {
-        throw new Error('[whiteboard:onCreate]: Missing contextID');
-      }
+  const handleCreateWhiteboard = async (
+    calloutId: string,
+    whiteboard: CreateWhiteboardInput,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => {
+    if (!calloutId) {
+      throw new Error('[whiteboard:onCreate]: Missing contextID');
+    }
 
-      const result = await createWhiteboard({
-        update(cache, { data }) {
-          cache.modify({
-            id: cache.identify({
-              id: calloutId,
-              __typename: 'Callout',
-            }),
-            fields: {
-              whiteboards(existingWhiteboards = []) {
-                if (data) {
-                  const newWhiteboard = cache.writeFragment({
-                    data: data?.createContributionOnCallout.whiteboard,
-                    fragment: WhiteboardDetailsFragmentDoc,
-                    fragmentName: 'WhiteboardDetails',
-                  });
-                  return [...existingWhiteboards, newWhiteboard];
-                }
-                return existingWhiteboards;
-              },
+    const result = await createWhiteboard({
+      update(cache, { data }) {
+        cache.modify({
+          id: cache.identify({
+            id: calloutId,
+            __typename: 'Callout',
+          }),
+          fields: {
+            whiteboards(existingWhiteboards = []) {
+              if (data) {
+                const newWhiteboard = cache.writeFragment({
+                  data: data?.createContributionOnCallout.whiteboard,
+                  fragment: WhiteboardDetailsFragmentDoc,
+                  fragmentName: 'WhiteboardDetails',
+                });
+                return [...existingWhiteboards, newWhiteboard];
+              }
+              return existingWhiteboards;
             },
-          });
-        },
-        variables: {
-          calloutId,
-          whiteboard,
-        },
-      });
+          },
+        });
+      },
+      variables: {
+        calloutId,
+        whiteboard,
+      },
+    });
 
-      uploadVisuals(
-        previewImages,
-        {
-          cardVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.visual?.id,
-          previewVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.preview?.id,
-        },
-        result.data?.createContributionOnCallout.whiteboard?.nameID
-      );
-      return {
-        success: !result.errors || result.errors.length === 0,
-        errors: result.errors?.map(({ message }) => message),
-      };
-    },
-    [createWhiteboard]
-  );
+    uploadVisuals(
+      previewImages,
+      {
+        cardVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.visual?.id,
+        previewVisualId: result.data?.createContributionOnCallout.whiteboard?.profile.preview?.id,
+      },
+      result.data?.createContributionOnCallout.whiteboard?.nameID
+    );
+    return {
+      success: !result.errors || result.errors.length === 0,
+      errors: result.errors?.map(({ message }) => message),
+    };
+  };
 
   const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
 
-  const handleDeleteWhiteboard = useCallback(
-    async (whiteboard: Identifiable) => {
-      if (!whiteboard.id) {
-        throw new Error('[whiteboard:onDelete]: Missing whiteboard ID');
-      }
+  const handleDeleteWhiteboard = async (whiteboard: Identifiable) => {
+    if (!whiteboard.id) {
+      throw new Error('[whiteboard:onDelete]: Missing whiteboard ID');
+    }
 
-      await deleteWhiteboard({
-        update: (cache, { data }) => {
-          const output = data?.deleteWhiteboard;
-          if (output) {
-            evictFromCache(cache, String(output.id), 'Whiteboard');
-          }
+    await deleteWhiteboard({
+      update: (cache, { data }) => {
+        const output = data?.deleteWhiteboard;
+        if (output) {
+          evictFromCache(cache, String(output.id), 'Whiteboard');
+        }
+      },
+      variables: {
+        input: {
+          ID: whiteboard.id,
         },
-        variables: {
-          input: {
-            ID: whiteboard.id,
-          },
-        },
-      });
-    },
-    [deleteWhiteboard]
-  );
+      },
+    });
+  };
 
-  const handleUploadWhiteboardVisuals = useCallback(
-    async (whiteboard: WhiteboardWithPreviewVisuals, previewImages?: WhiteboardPreviewImage[]) => {
-      if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
-        uploadVisuals(
-          previewImages,
-          { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
-          whiteboard.nameID
-        );
-      }
-      return {
-        success: true,
-        errors: undefined,
-      };
-    },
-    []
-  );
+  const handleUploadWhiteboardVisuals = async (
+    whiteboard: WhiteboardWithPreviewVisuals,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => {
+    if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
+      uploadVisuals(
+        previewImages,
+        { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
+        whiteboard.nameID
+      );
+    }
+    return {
+      success: true,
+      errors: undefined,
+    };
+  };
 
   const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
-  const handleChangeDisplayName = useCallback(
-    async (whiteboardId: string | undefined, displayName: string) => {
-      if (!whiteboardId) {
-        return;
-      }
-      await updateWhiteboard({
-        variables: {
-          input: {
-            ID: whiteboardId,
-            profile: {
-              displayName,
-            },
+  const handleChangeDisplayName = async (whiteboardId: string | undefined, displayName: string) => {
+    if (!whiteboardId) {
+      return;
+    }
+    await updateWhiteboard({
+      variables: {
+        input: {
+          ID: whiteboardId,
+          profile: {
+            displayName,
           },
         },
-      });
-    },
-    [updateWhiteboard]
-  );
+      },
+    });
+  };
 
-  const actions = useMemo<IWhiteboardActions>(
-    () => ({
-      onCreate: handleCreateWhiteboard,
-      onDelete: handleDeleteWhiteboard,
-      onUpdate: handleUploadWhiteboardVisuals,
-      onChangeDisplayName: handleChangeDisplayName,
-    }),
-    [handleUploadWhiteboardVisuals]
-  );
+  const actions = {
+    onCreate: handleCreateWhiteboard,
+    onDelete: handleDeleteWhiteboard,
+    onUpdate: handleUploadWhiteboardVisuals,
+    onChangeDisplayName: handleChangeDisplayName,
+  };
 
   const state: WhiteboardActionsContainerState = {
     creatingWhiteboard,

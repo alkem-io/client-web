@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
@@ -29,7 +28,7 @@ export interface UseContributionProvided {
 }
 
 const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionParams): UseContributionProvided => {
-  const { spaceID, spaceLevel, contributorType, contributorId } = entities;
+  const { spaceID, contributorType, contributorId } = entities;
   const { userModel: currentUser } = useCurrentUserContext();
   const userId = currentUser?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
@@ -41,7 +40,7 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
   const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveRoleFromUserMutation();
   const [vcLeaveCommunity, { loading: vcIsLeavingCommunity }] = useRemoveRoleFromVirtualContributorMutation();
 
-  const details = useMemo<ContributionDetails | undefined>(() => {
+  const details = (() => {
     if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
       return {
@@ -52,9 +51,9 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
         visibility: space.visibility,
       };
     }
-  }, [spaceData, spaceLevel]);
+  })();
 
-  const handleLeaveCommunity = useCallback(async () => {
+  const handleLeaveCommunity = async () => {
     switch (contributorType) {
       case ActorType.User: {
         if (details?.roleSetId && userId) {
@@ -85,7 +84,7 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
         throw new Error('Invalid contributor type');
       }
     }
-  }, [userId, contributorId, contributorType, details?.roleSetId, userLeaveCommunity, vcLeaveCommunity]);
+  };
 
   return {
     details,

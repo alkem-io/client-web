@@ -20,7 +20,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { FieldArray, useFormikContext } from 'formik';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -302,14 +302,11 @@ const CalloutFramingMediaGalleryField = () => {
     }
   };
 
-  const containerSx = useMemo(
-    () => ({
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: gutters(),
-    }),
-    []
-  );
+  const containerSx = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: gutters(),
+  };
 
   const handleDragEnd =
     (arrayHelpers: { move: (from: number, to: number) => void }, itemIds: string[]) => (event: DragEndEvent) => {

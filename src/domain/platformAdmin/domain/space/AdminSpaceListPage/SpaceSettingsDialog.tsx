@@ -1,6 +1,6 @@
 import { Button, CircularProgress } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
@@ -14,7 +14,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import type { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
@@ -52,28 +51,24 @@ const SpaceSettingsDialog = ({ open, onClose, space }: SpaceSettingsDialogProps)
     }
   );
 
-  const visibilitySelectOptions = useMemo<readonly FormikSelectValue[]>(
-    () =>
-      [
-        {
-          id: SpaceVisibility.Active,
-          name: t(`common.enums.space-visibility.${SpaceVisibility.Active}` as const) as string,
-        },
-        {
-          id: SpaceVisibility.Archived,
-          name: t(`common.enums.space-visibility.${SpaceVisibility.Archived}` as const) as string,
-        },
-        {
-          id: SpaceVisibility.Demo,
-          name: t(`common.enums.space-visibility.${SpaceVisibility.Demo}` as const) as string,
-        },
-        {
-          id: SpaceVisibility.Inactive,
-          name: t(`common.enums.space-visibility.${SpaceVisibility.Inactive}` as const) as string,
-        },
-      ] as const,
-    [t]
-  );
+  const visibilitySelectOptions = [
+    {
+      id: SpaceVisibility.Active,
+      name: t(`common.enums.space-visibility.${SpaceVisibility.Active}` as const) as string,
+    },
+    {
+      id: SpaceVisibility.Archived,
+      name: t(`common.enums.space-visibility.${SpaceVisibility.Archived}` as const) as string,
+    },
+    {
+      id: SpaceVisibility.Demo,
+      name: t(`common.enums.space-visibility.${SpaceVisibility.Demo}` as const) as string,
+    },
+    {
+      id: SpaceVisibility.Inactive,
+      name: t(`common.enums.space-visibility.${SpaceVisibility.Inactive}` as const) as string,
+    },
+  ] as const;
 
   const validationSchema = yup.object().shape({
     nameId: nameSegmentSchema.fields?.nameID || textLengthValidator({ required: true }),

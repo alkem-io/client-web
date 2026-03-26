@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import type {
   AuthorizationPrivilege,
   DiscussionCardFragment,
@@ -35,27 +34,25 @@ type DiscussionMapper = {
 export const useDiscussionMapper = (allAuthorsIds: string[]): DiscussionMapper => {
   const { authors, getAuthor, loading: loadingAuthors } = useAuthorsDetails(allAuthorsIds);
 
-  return useMemo(
-    () => ({
-      discussionMapper: (discussion: DiscussionCardFragment) => ({
-        id: discussion.id,
-        url: discussion.profile.url,
-        title: discussion.profile.displayName,
-        category: discussion.category,
-        myPrivileges: discussion.authorization?.myPrivileges,
-        author: discussion.createdBy ? getAuthor(discussion.createdBy) : undefined,
-        authors: authors ?? [],
-        description: discussion.profile.description,
-        createdAt: discussion.timestamp ? new Date(discussion.timestamp) : undefined,
-        comments: {
-          id: discussion.comments.id,
-          messagesCount: discussion.comments.messagesCount,
-          messages: [],
-          myPrivileges: discussion.comments.authorization?.myPrivileges,
-        },
-      }),
-      loading: loadingAuthors,
+  return {
+    discussionMapper: (discussion: DiscussionCardFragment) => ({
+      id: discussion.id,
+      url: discussion.profile.url,
+      title: discussion.profile.displayName,
+      category: discussion.category,
+      myPrivileges: discussion.authorization?.myPrivileges,
+      author: discussion.createdBy ? getAuthor(discussion.createdBy) : undefined,
+      authors: authors ?? [],
+      description: discussion.profile.description,
+      createdAt: discussion.timestamp ? new Date(discussion.timestamp) : undefined,
+      comments: {
+        id: discussion.comments.id,
+        messagesCount: discussion.comments.messagesCount,
+        messages: [],
+        myPrivileges: discussion.comments.authorization?.myPrivileges,
+      },
     }),
-    [allAuthorsIds, authors, getAuthor, loadingAuthors]
-  );
+
+    loading: loadingAuthors,
+  };
 };

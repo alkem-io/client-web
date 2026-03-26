@@ -1,7 +1,7 @@
 import { DashboardOutlined, SchoolOutlined, Tab } from '@mui/icons-material';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import type { TFunction } from 'i18next';
-import { type ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -40,18 +40,18 @@ type useSpaceTabsProvided = {
 };
 
 const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: boolean }): useSpaceTabsProvided => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { permissions } = useSpace();
 
-  const { data: spaceTabsData, loading: spaceTabsLoading } = useSpaceTabsQuery({
+  const { data: spaceTabsData } = useSpaceTabsQuery({
     variables: {
       spaceId: spaceId!,
     },
     skip: !spaceId || skip,
   });
 
-  const { tabs, defaultTabIndex } = useMemo(() => {
+  const { tabs, defaultTabIndex } = (() => {
     const result: TabDefinition[] = [];
     const innovationFlowStates = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.states ?? [];
     const innovationFlowTabs = innovationFlowStates.map(state => ({
@@ -107,7 +107,7 @@ const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: b
       tabs: result,
       defaultTabIndex: currentStateIndex,
     };
-  }, [i18n.language, spaceId, spaceTabsData, spaceTabsLoading]);
+  })();
 
   return {
     tabs,

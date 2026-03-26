@@ -1,5 +1,5 @@
 import { DialogContent, ListItemButton, type ListItemButtonProps, type ListItemButtonTypeMap } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -39,15 +39,12 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
   ) => <ListItemButton component={RouterLink} {...props} />;
 
   const [filter, setFilter] = useState<string>('');
-  const filteredVCs = useMemo(
-    () =>
-      (virtualContributors.length > 0 && filter.length > 0
-        ? virtualContributors.filter((virtualContributor: VirtualContributorProps) =>
-            (virtualContributor.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase())
-          )
-        : virtualContributors) ?? [],
-    [virtualContributors, filter]
-  );
+  const filteredVCs =
+    (virtualContributors.length > 0 && filter.length > 0
+      ? virtualContributors.filter((virtualContributor: VirtualContributorProps) =>
+          (virtualContributor.profile?.displayName ?? '').toLowerCase().includes(filter.toLowerCase())
+        )
+      : virtualContributors) ?? [];
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="virtual-contributors-dialog">

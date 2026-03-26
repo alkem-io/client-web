@@ -1,5 +1,5 @@
 import { CardHeader, Skeleton } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   CalloutContributionType,
   CalloutFramingType,
@@ -109,9 +109,9 @@ const CalloutView = ({
     setCommentsCollapsed(true);
   }, [contributionId]);
 
-  const toggleCommentsCollapse = useCallback(() => {
+  const toggleCommentsCollapse = () => {
     setCommentsCollapsed(prev => !prev);
-  }, []);
+  };
 
   const calloutSettings = useCalloutSettings({
     callout,

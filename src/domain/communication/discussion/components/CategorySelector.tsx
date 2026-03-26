@@ -9,7 +9,7 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { type ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
 import type { DiscussionCategoryExt } from '../constants/DiscusionCategories';
 
 export interface CategoryConfig {
@@ -49,42 +49,38 @@ const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) =
 }));
 
 export const CategorySelector = ({ categories, value, showLabels = true, onSelect }: CategorySelectorProps) => {
-  const items = useMemo(
-    () =>
-      categories.map(({ id, title, icon }) => (
-        <StyledListItemButton
-          key={title}
-          selected={value === id}
-          disableGutters={!showLabels}
-          onClick={() => onSelect?.(id)}
+  const items = categories.map(({ id, title, icon }) => (
+    <StyledListItemButton
+      key={title}
+      selected={value === id}
+      disableGutters={!showLabels}
+      onClick={() => onSelect?.(id)}
+    >
+      {icon && (
+        <ListItemIcon
+          sx={{
+            justifyContent: !showLabels ? 'center' : 'flex-start',
+            color: value === id ? 'neutralLight.main' : undefined,
+          }}
         >
-          {icon && (
-            <ListItemIcon
-              sx={{
-                justifyContent: !showLabels ? 'center' : 'flex-start',
-                color: value === id ? 'neutralLight.main' : undefined,
-              }}
-            >
-              {icon}
-            </ListItemIcon>
-          )}
-          {showLabels && (
-            <ListItemText>
-              <Box
-                component={Typography}
-                noWrap={true}
-                fontWeight="bold"
-                display="flex"
-                sx={{ textTransform: 'uppercase', justifyContent: !icon ? 'center' : 'flex-start' }}
-              >
-                {title}
-              </Box>
-            </ListItemText>
-          )}
-        </StyledListItemButton>
-      )),
-    [showLabels, categories, value, onSelect]
-  );
+          {icon}
+        </ListItemIcon>
+      )}
+      {showLabels && (
+        <ListItemText>
+          <Box
+            component={Typography}
+            noWrap={true}
+            fontWeight="bold"
+            display="flex"
+            sx={{ textTransform: 'uppercase', justifyContent: !icon ? 'center' : 'flex-start' }}
+          >
+            {title}
+          </Box>
+        </ListItemText>
+      )}
+    </StyledListItemButton>
+  ));
 
   return <List disablePadding={true}>{items}</List>;
 };

@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   CalloutFramingType,
   type CreateCalloutMutation,
@@ -59,45 +58,42 @@ export const useCalloutCreationWithPreviewImages = (
     return { callout };
   };
 
-  const handleCreateCallout = useCallback(
-    async (callout: CalloutCreationTypeWithPreviewImages) => {
-      // Remove the previewImages from the form data if it's present, to handle it separately
-      const { callout: cleanCallout, previewImages } = separatePreviewImages(callout);
+  const handleCreateCallout = async (callout: CalloutCreationTypeWithPreviewImages) => {
+    // Remove the previewImages from the form data if it's present, to handle it separately
+    const { callout: cleanCallout, previewImages } = separatePreviewImages(callout);
 
-      const result = await parentHook.handleCreateCallout(cleanCallout);
+    const result = await parentHook.handleCreateCallout(cleanCallout);
 
-      // The PreviewImages (like the ones generated for SingleWhiteboard callouts
-      // are sent from here to the server after the callout creation
-      if (result && previewImages) {
-        const whiteboard =
-          callout.framing.type === CalloutFramingType.Whiteboard ? result?.framing.whiteboard : undefined;
-        if (whiteboard?.profile) {
-          await uploadVisuals(
-            previewImages,
-            {
-              cardVisualId: whiteboard.profile.visual?.id,
-              previewVisualId: whiteboard.profile.preview?.id,
-            },
-            result.nameID // to name the files uploaded as whiteboard visuals
-          );
-        }
-        const memo = callout.framing.type === CalloutFramingType.Memo ? result?.framing.memo : undefined;
-        if (memo?.profile?.preview?.id) {
-          await uploadVisuals(
-            previewImages,
-            {
-              // TODO:MEMO cardVisualId: memo.profile.visual?.id,
-              previewVisualId: memo.profile.preview.id,
-            },
-            result.nameID // to name the files uploaded as memo visuals
-          );
-        }
+    // The PreviewImages (like the ones generated for SingleWhiteboard callouts
+    // are sent from here to the server after the callout creation
+    if (result && previewImages) {
+      const whiteboard =
+        callout.framing.type === CalloutFramingType.Whiteboard ? result?.framing.whiteboard : undefined;
+      if (whiteboard?.profile) {
+        await uploadVisuals(
+          previewImages,
+          {
+            cardVisualId: whiteboard.profile.visual?.id,
+            previewVisualId: whiteboard.profile.preview?.id,
+          },
+          result.nameID // to name the files uploaded as whiteboard visuals
+        );
       }
+      const memo = callout.framing.type === CalloutFramingType.Memo ? result?.framing.memo : undefined;
+      if (memo?.profile?.preview?.id) {
+        await uploadVisuals(
+          previewImages,
+          {
+            // TODO:MEMO cardVisualId: memo.profile.visual?.id,
+            previewVisualId: memo.profile.preview.id,
+          },
+          result.nameID // to name the files uploaded as memo visuals
+        );
+      }
+    }
 
-      return result;
-    },
-    [parentHook, uploadVisuals]
-  );
+    return result;
+  };
 
   return {
     ...parentHook,

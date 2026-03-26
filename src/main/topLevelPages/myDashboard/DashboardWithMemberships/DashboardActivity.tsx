@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -19,28 +18,22 @@ const DashboardActivity = () => {
 
   const blockColumns = isSmallScreen ? columns : columns / 2;
 
-  const renderSpaceActivityBlock = useCallback(
-    () => (
-      <PageContentColumn key="space-activity" columns={blockColumns}>
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
-          <LatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
-        </PageContentBlock>
-      </PageContentColumn>
-    ),
-    [blockColumns, flatSpacesWithMemberships, t]
+  const renderSpaceActivityBlock = () => (
+    <PageContentColumn key="space-activity" columns={blockColumns}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
+        <LatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
+      </PageContentBlock>
+    </PageContentColumn>
   );
 
-  const renderMyActivityBlock = useCallback(
-    () => (
-      <PageContentColumn key="my-activity" columns={blockColumns}>
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
-          <MyLatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
-        </PageContentBlock>
-      </PageContentColumn>
-    ),
-    [blockColumns, flatSpacesWithMemberships, t]
+  const renderMyActivityBlock = () => (
+    <PageContentColumn key="my-activity" columns={blockColumns}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
+        <MyLatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
+      </PageContentBlock>
+    </PageContentColumn>
   );
 
   return (

@@ -1,4 +1,4 @@
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { usePlatformAdminVirtualContributorsListQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import {
@@ -19,33 +19,30 @@ const VirtualContributorsPage: FC = () => {
   const { data, loading } = usePlatformAdminVirtualContributorsListQuery();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const columns: AdminTableColumn<VirtualContributorTableItem>[] = useMemo(
-    () => [
-      {
-        header: 'Listed in Store',
-        flex: 1,
-        minWidth: '140px',
-        render: (item: VirtualContributorTableItem) => <ListedInStoreColumn listedInStore={item.listedInStore} />,
-      },
-      {
-        header: 'Search Visibility',
-        flex: 1,
-        minWidth: '140px',
-        render: (item: VirtualContributorTableItem) => (
-          <SearchVisibilityColumn searchVisibility={item.searchVisibility} />
-        ),
-      },
-      {
-        header: 'Account Owner',
-        flex: 1,
-        minWidth: '150px',
-        render: (item: VirtualContributorTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
-      },
-    ],
-    []
-  );
+  const columns: AdminTableColumn<VirtualContributorTableItem>[] = [
+    {
+      header: 'Listed in Store',
+      flex: 1,
+      minWidth: '140px',
+      render: (item: VirtualContributorTableItem) => <ListedInStoreColumn listedInStore={item.listedInStore} />,
+    },
+    {
+      header: 'Search Visibility',
+      flex: 1,
+      minWidth: '140px',
+      render: (item: VirtualContributorTableItem) => (
+        <SearchVisibilityColumn searchVisibility={item.searchVisibility} />
+      ),
+    },
+    {
+      header: 'Account Owner',
+      flex: 1,
+      minWidth: '150px',
+      render: (item: VirtualContributorTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
+    },
+  ];
 
-  const allVirtualContributors = useMemo(() => {
+  const allVirtualContributors = (() => {
     const vcs = data?.platformAdmin.virtualContributors ?? [];
 
     return vcs
@@ -62,7 +59,7 @@ const VirtualContributorsPage: FC = () => {
         } as VirtualContributorTableItem;
       })
       .filter(vc => !searchTerm || vc.value.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [data, searchTerm]);
+  })();
 
   if (loading) return <Loading text={'Loading virtual contributors'} />;
 

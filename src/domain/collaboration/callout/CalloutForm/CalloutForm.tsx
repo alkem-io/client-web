@@ -1,7 +1,6 @@
 import { Box } from '@mui/material';
 import { Formik, type FormikConfig } from 'formik';
 import { cloneDeep } from 'lodash-es';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalloutContributionType, PollStatus } from '@/core/apollo/generated/graphql-schema';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
@@ -57,7 +56,7 @@ const CalloutForm = ({
 
   const { isSmallScreen } = useScreenSize();
 
-  const initialValues: CalloutFormSubmittedValues = useMemo(() => {
+  const initialValues: CalloutFormSubmittedValues = (() => {
     if (callout) {
       return callout;
     } else {
@@ -71,7 +70,7 @@ const CalloutForm = ({
 
       return emptyCallout;
     }
-  }, [callout, calloutRestrictions?.disableComments, calloutRestrictions?.disableCommentsToContributions]);
+  })();
 
   return (
     <Formik

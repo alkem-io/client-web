@@ -1,5 +1,4 @@
 import { keyBy, sortBy } from 'lodash-es';
-import { useMemo } from 'react';
 import type { Message } from '../models/Message';
 
 interface DeletedMessage extends Omit<Message, 'message'> {
@@ -16,7 +15,7 @@ const useRestoredMessages = (
   messages: Message[] | undefined,
   sortOrder: 'asc' | 'desc' = 'desc'
 ): MaybeDeletedMessage[] | undefined => {
-  return useMemo(() => {
+  return (() => {
     if (!messages) {
       return undefined;
     }
@@ -55,7 +54,7 @@ const useRestoredMessages = (
       message => message.createdAt
     );
     return sortOrder === 'desc' ? sorted.reverse() : sorted;
-  }, [messages, sortOrder]);
+  })();
 };
 
 export default useRestoredMessages;

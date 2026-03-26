@@ -1,5 +1,5 @@
 import { Settings } from '@mui/icons-material';
-import { type PropsWithChildren, useMemo } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
@@ -35,12 +35,12 @@ const InnovationPackProfileLayout = ({
   loading,
   ...props
 }: PropsWithChildren<InnovationPackProfileLayoutProps>) => {
-  const profile = useMemo(() => {
+  const profile = (() => {
     return {
       ...innovationPack?.profile,
       tagline: innovationPack?.provider?.profile?.displayName,
     } as ProfilePageBannerProps['profile'];
-  }, [innovationPack]);
+  })();
 
   const { t } = useTranslation();
 

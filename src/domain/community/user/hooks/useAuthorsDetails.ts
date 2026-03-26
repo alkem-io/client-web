@@ -1,5 +1,4 @@
 import { uniq } from 'lodash-es';
-import { useCallback, useMemo } from 'react';
 import { useUsersModelFullQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
@@ -14,30 +13,23 @@ export const useAuthorsDetails = (authorIds: string[]) => {
     skip: uniqIds.length === 0 || !isAuthenticated,
   });
 
-  const authors = useMemo(
-    () =>
-      authorData?.users.map<AuthorModel>(author => {
-        return {
-          id: author.id,
-          displayName: author.profile?.displayName ?? '',
-          firstName: author.firstName,
-          lastName: author.lastName,
-          avatarUrl: author.profile?.avatar?.uri ?? '',
-          url: author.profile?.url ?? '',
-          tags: author.profile?.tagsets?.flatMap(x => x.tags),
-          city: author.profile?.location?.city,
-          country: COUNTRIES_BY_CODE[author.profile?.location?.country || ''],
-        };
-      }),
-    [authorData]
-  );
+  const authors = authorData?.users.map<AuthorModel>(author => {
+    return {
+      id: author.id,
+      displayName: author.profile?.displayName ?? '',
+      firstName: author.firstName,
+      lastName: author.lastName,
+      avatarUrl: author.profile?.avatar?.uri ?? '',
+      url: author.profile?.url ?? '',
+      tags: author.profile?.tagsets?.flatMap(x => x.tags),
+      city: author.profile?.location?.city,
+      country: COUNTRIES_BY_CODE[author.profile?.location?.country || ''],
+    };
+  });
 
-  const getAuthor = useCallback(
-    (id?: string) => (typeof id === 'undefined' ? undefined : authors?.find(a => a.id === id)),
-    [authors]
-  );
+  const getAuthor = (id?: string) => (typeof id === 'undefined' ? undefined : authors?.find(a => a.id === id));
 
-  const getAuthors = useCallback((ids: string[]) => authors?.filter(a => ids.includes(a.id)), [authors]);
+  const getAuthors = (ids: string[]) => authors?.filter(a => ids.includes(a.id));
 
   return {
     authors,

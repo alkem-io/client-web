@@ -17,7 +17,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { sortBy, without } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInnovationHubAvailableSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
@@ -82,7 +82,7 @@ const SortableSpaceRow = ({ space, onRemove }: { space: Space; onRemove: (id: st
 const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesFieldProps) => {
   const { t } = useTranslation();
 
-  const itemIds = useMemo(() => spaces?.map(({ id }) => id) ?? [], [spaces]);
+  const itemIds = spaces?.map(({ id }) => id) ?? [];
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
