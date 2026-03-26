@@ -1,4 +1,4 @@
-# src/restyle — Alkemio UI Layer
+# src/crd — Alkemio UI Layer
 
 This folder contains the application's UI components, built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It is the replacement for the MUI-based `src/core/ui/` layer.
 
@@ -6,7 +6,7 @@ This folder contains the application's UI components, built with **shadcn/ui + T
 
 ### 1. NO Material UI
 
-**Zero tolerance.** Nothing in `src/restyle/` may import from:
+**Zero tolerance.** Nothing in `src/crd/` may import from:
 - `@mui/material`
 - `@mui/icons-material`
 - `@mui/system`
@@ -52,8 +52,8 @@ type PostCardProps = {
 ### 4. Styling Is Only Tailwind + Design Tokens
 
 - Use Tailwind utility classes for all styling
-- Use `cn()` from `@/restyle/lib/utils` for class composition
-- Use CSS variables from `@/restyle/styles/theme.css` for theming
+- Use `cn()` from `@/crd/lib/utils` for class composition
+- Use CSS variables from `@/crd/styles/theme.css` for theming
 - **No `sx` prop**, no `styled()`, no `useTheme()`, no inline `style` objects (except for truly dynamic values like user-provided colors or calculated positions)
 - Icons come from `lucide-react`, never `@mui/icons-material`
 
@@ -63,11 +63,11 @@ Following the project convention: **no `index.ts` barrel files**. Always import 
 
 ```typescript
 // GOOD
-import { Button } from '@/restyle/primitives/button';
-import { PostCard } from '@/restyle/components/space/PostCard';
+import { Button } from '@/crd/primitives/button';
+import { PostCard } from '@/crd/components/space/PostCard';
 
 // BAD
-import { Button } from '@/restyle/primitives';
+import { Button } from '@/crd/primitives';
 ```
 
 ---
@@ -75,7 +75,7 @@ import { Button } from '@/restyle/primitives';
 ## Folder Structure
 
 ```
-src/restyle/
+src/crd/
 ├── primitives/          # shadcn/ui atoms — smallest building blocks
 ├── components/          # Composites — reusable combinations of primitives
 ├── forms/               # Form-specific components (inputs with labels, field groups)
@@ -106,7 +106,7 @@ Standard shadcn/ui components. These are the atoms — the smallest UI building 
 Composites — reusable UI components built from primitives. These know about Alkemio's visual patterns but NOT about its data model.
 
 **Rules:**
-- Import only from `@/restyle/primitives/`, `@/restyle/lib/`, `@/restyle/hooks/`, and `lucide-react`
+- Import only from `@/crd/primitives/`, `@/crd/lib/`, `@/crd/hooks/`, and `lucide-react`
 - Props are plain TypeScript types with descriptive names
 - May use `useTranslation('ds')` for built-in UI text (design system i18n namespace)
 - Organize by feature area in subdirectories: `space/`, `dashboard/`, `community/`, `user/`, `common/`
@@ -140,7 +140,7 @@ Page-level layout shells. These define the spatial arrangement of content areas 
 Design tokens and Tailwind configuration.
 
 - `theme.css` — CSS custom properties (colors, typography, spacing, elevation)
-- `restyle.css` — Tailwind entry point with `@source` directives
+- `crd.css` — Tailwind entry point with `@source` directives
 - Tokens are the same as the prototype's `styles/theme.css`
 
 ### lib/
@@ -156,18 +156,18 @@ UI-only React hooks.
 
 - `useMediaQuery.ts` — responsive breakpoint detection (no MUI dependency)
 - `useScreenSize.ts` — convenience hook for common breakpoints
-- Never fetch data, never access context providers from outside restyle
+- Never fetch data, never access context providers from outside crd
 
 ---
 
 ## How Consumers Use These Components
 
-Components in `src/restyle/` are consumed by container components in `src/domain/` and `src/main/`. The container handles data, the restyle component handles rendering:
+Components in `src/crd/` are consumed by container components in `src/domain/` and `src/main/`. The container handles data, the crd restyled component handles rendering:
 
 ```typescript
 // src/domain/collaboration/callout/CalloutFeedContainer.tsx (CONTAINER — in domain)
 import { useCalloutsSet } from '@/domain/collaboration/calloutsSet/useCalloutsSet';
-import { PostCard } from '@/restyle/components/space/PostCard';
+import { PostCard } from '@/crd/components/space/PostCard';
 
 export function CalloutFeedContainer({ calloutsSetId }) {
   const { callouts } = useCalloutsSet({ calloutsSetId });
@@ -183,7 +183,7 @@ export function CalloutFeedContainer({ calloutsSetId }) {
 }
 ```
 
-The mapping from GraphQL types to component props happens in the container, never inside the restyle component.
+The mapping from GraphQL types to component props happens in the container, never inside the crd component.
 
 ---
 
@@ -191,7 +191,7 @@ The mapping from GraphQL types to component props happens in the container, neve
 
 The prototype at `/prototype/src/` is the design reference. When porting:
 
-1. **Primitives** — copy from `prototype/src/app/components/ui/` and update imports to use `@/restyle/lib/utils`
+1. **Primitives** — copy from `prototype/src/app/components/ui/` and update imports to use `@/crd/lib/utils`
 2. **Components** — copy from `prototype/src/app/components/space/` etc., remove any mock data, extract props interfaces
 3. **Styles** — the prototype's `styles/theme.css` is the source of truth for design tokens
 4. **Always check** that the ported component has zero forbidden imports before committing
@@ -200,14 +200,14 @@ The prototype at `/prototype/src/` is the design reference. When porting:
 
 ## i18n
 
-Components that display standard UI text ("Cancel", "Save", "Search", "No results") use the `'ds'` namespace:
+Components that display standard UI text ("Cancel", "Save", "Search", "No results") use the `'crd'` namespace:
 
 ```typescript
-const { t } = useTranslation('ds');
+const { t } = useTranslation('crd');
 <Button>{t('buttons.cancel')}</Button>
 ```
 
-Business domain text ("Space Dashboard", "Innovation Flow") comes from the container via props — never use the default translation namespace inside restyle.
+Business domain text ("Space Dashboard", "Innovation Flow") comes from the container via props — never use the default translation namespace inside crd.
 
 ---
 
