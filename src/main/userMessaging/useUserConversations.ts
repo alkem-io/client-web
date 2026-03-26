@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { type ActorType, RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -43,29 +42,6 @@ export const useUserConversations = () => {
     skip,
     fetchPolicy: 'cache-and-network',
   });
-
-  useEffect(() => {
-    // biome-ignore lint/suspicious/noConsole: debug logging
-    console.log('[FullConvQuery] Skip conditions:', { isEnabled, isOpen, skip });
-  }, [isEnabled, isOpen, skip]);
-
-  useEffect(() => {
-    if (skip) return;
-    // biome-ignore lint/suspicious/noConsole: debug logging
-    console.log('[FullConvQuery] Query state:', { loading, hasError: !!error, hasData: !!data });
-    if (data?.me?.conversations?.conversations) {
-      const convs = data.me.conversations.conversations;
-      // biome-ignore lint/suspicious/noConsole: debug logging
-      console.log(
-        '[FullConvQuery] Raw data:',
-        convs.map(c => ({
-          id: c.id.slice(0, 8),
-          roomId: c.room?.id?.slice(0, 8),
-          unreadCount: c.room?.unreadCount,
-        }))
-      );
-    }
-  }, [data, loading, error, skip]);
 
   const conversations = (() => {
     if (!data?.me?.conversations?.conversations) {
