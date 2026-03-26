@@ -272,7 +272,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
             calloutId: calloutsSet?.calloutId,
             contributionId: calloutsSet?.contributionId,
             postId: calloutsSet?.postId,
-            whiteboardId: calloutsSet?.whiteboardId, // No whiteboards yet on VCKBs, so TypeScript is complaining
+            whiteboardId: (calloutsSet as { whiteboardId?: string } | undefined)?.whiteboardId,
           })
         ),
 

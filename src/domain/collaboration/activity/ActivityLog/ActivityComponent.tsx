@@ -134,5 +134,5 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.UpdateSent:
       return <ActivityUpdateSentView {...activity} {...rest} />;
   }
-  throw new Error(`Unable to choose a view for activity type: ${activity.type}`);
+  throw new Error(`Unable to choose a view for activity type: ${(activity as { type: string }).type}`);
 };
