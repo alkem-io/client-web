@@ -14742,10 +14742,12 @@ export const AccountSearchUsersDocument = gql`
         account {
           id
           authorization {
+            id
             myPrivileges
           }
         }
         profile {
+          id
           displayName
         }
       }
@@ -14802,10 +14804,12 @@ export const AccountSearchOrganizationsDocument = gql`
         account {
           id
           authorization {
+            id
             myPrivileges
           }
         }
         profile {
+          id
           displayName
         }
       }
@@ -14909,7 +14913,9 @@ export const SpaceConversionLookupDocument = gql`
       id
       level
       about {
+        id
         profile {
+          id
           displayName
           url
         }
@@ -14917,7 +14923,9 @@ export const SpaceConversionLookupDocument = gql`
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
@@ -14990,7 +14998,9 @@ export const SpaceConversionSiblingSubspacesDocument = gql`
         id
         level
         about {
+          id
           profile {
+            id
             displayName
           }
         }
@@ -15463,18 +15473,22 @@ export const InnovationHubTransferLookupDocument = gql`
     innovationHub(ID: $hubId) {
       id
       profile {
+        id
         displayName
         url
       }
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }
@@ -15606,15 +15620,19 @@ export const InnovationPackTransferLookupDocument = gql`
     innovationPack(ID: $packId) {
       id
       profile {
+        id
         displayName
         url
       }
       provider {
+        id
         profile {
+          id
           displayName
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }
@@ -16045,19 +16063,19 @@ export const VcTransferLookupDocument = gql`
     virtualContributor(ID: $vcId) {
       id
       profile {
+        id
         displayName
         url
       }
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
-      }
-      authorization {
-        myPrivileges
       }
     }
   }
@@ -16188,6 +16206,7 @@ export const VcConversionLookupDocument = gql`
     virtualContributor(ID: $vcId) {
       id
       profile {
+        id
         displayName
         url
       }
@@ -16196,13 +16215,12 @@ export const VcConversionLookupDocument = gql`
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
-      }
-      authorization {
-        myPrivileges
       }
     }
   }
@@ -16250,12 +16268,16 @@ export const VcConversionSourceSpaceCalloutsDocument = gql`
     space(ID: $spaceId) {
       id
       about {
+        id
         profile {
+          id
           displayName
         }
       }
       collaboration {
+        id
         calloutsSet {
+          id
           callouts {
             id
           }

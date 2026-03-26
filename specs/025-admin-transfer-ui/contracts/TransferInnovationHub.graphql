@@ -16,7 +16,9 @@ query InnovationHubTransferLookup($hubId: UUID!) {
     innovationHub(ID: $hubId) {
       id
       about {
+        id
         profile {
+          id
           displayName
           url
         }
@@ -24,19 +26,15 @@ query InnovationHubTransferLookup($hubId: UUID!) {
       account {
         id
         host {
-          ... on Organization {
-            profile {
-              displayName
-            }
-          }
-          ... on User {
-            profile {
-              displayName
-            }
+          id
+          profile {
+            id
+            displayName
           }
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }

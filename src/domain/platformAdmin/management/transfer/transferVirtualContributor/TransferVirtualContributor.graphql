@@ -13,13 +13,16 @@ query VcTransferLookup($vcId: UUID!) {
     virtualContributor(ID: $vcId) {
       id
       profile {
+        id
         displayName
         url
       }
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }

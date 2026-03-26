@@ -11,18 +11,22 @@ query InnovationHubTransferLookup($hubId: UUID!) {
     innovationHub(ID: $hubId) {
       id
       profile {
+        id
         displayName
         url
       }
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }

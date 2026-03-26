@@ -13,15 +13,19 @@ query InnovationPackTransferLookup($packId: UUID!) {
     innovationPack(ID: $packId) {
       id
       profile {
+        id
         displayName
         url
       }
       provider {
+        id
         profile {
+          id
           displayName
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }

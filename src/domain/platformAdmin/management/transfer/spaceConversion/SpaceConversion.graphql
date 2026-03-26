@@ -16,7 +16,9 @@ query SpaceConversionLookup($spaceId: UUID!) {
       id
       level
       about {
+        id
         profile {
+          id
           displayName
           url
         }
@@ -24,7 +26,9 @@ query SpaceConversionLookup($spaceId: UUID!) {
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
@@ -60,7 +64,9 @@ query SpaceConversionSiblingSubspaces($levelZeroSpaceId: UUID!) {
         id
         level
         about {
+          id
           profile {
+            id
             displayName
           }
         }

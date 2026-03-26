@@ -18,31 +18,30 @@ query VcConversionLookup($vcId: UUID!) {
     virtualContributor(ID: $vcId) {
       id
       about {
+        id
         profile {
+          id
           displayName
           url
         }
       }
       aiPersona {
+        id
         bodyOfKnowledgeType
         bodyOfKnowledgeID
       }
       account {
         id
         host {
-          ... on Organization {
-            profile {
-              displayName
-            }
-          }
-          ... on User {
-            profile {
-              displayName
-            }
+          id
+          profile {
+            id
+            displayName
           }
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }
@@ -55,12 +54,16 @@ query VcConversionSourceSpaceCallouts($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
+        id
         profile {
+          id
           displayName
         }
       }
       collaboration {
+        id
         calloutsSet {
+          id
           callouts {
             id
           }

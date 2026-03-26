@@ -18,7 +18,9 @@ query InnovationPackTransferLookup($packId: UUID!) {
     innovationPack(ID: $packId) {
       id
       about {
+        id
         profile {
+          id
           displayName
           url
         }
@@ -26,19 +28,15 @@ query InnovationPackTransferLookup($packId: UUID!) {
       account {
         id
         host {
-          ... on Organization {
-            profile {
-              displayName
-            }
-          }
-          ... on User {
-            profile {
-              displayName
-            }
+          id
+          profile {
+            id
+            displayName
           }
         }
       }
       authorization {
+        id
         myPrivileges
       }
     }

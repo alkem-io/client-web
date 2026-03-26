@@ -16,6 +16,7 @@ query AccountSearchUsers($first: Int!, $filter: UserFilterInput) {
           }
         }
         profile {
+          id
           displayName
         }
       }
@@ -34,10 +35,12 @@ query AccountSearchOrganizations($first: Int!, $filter: OrganizationFilterInput)
         account {
           id
           authorization {
+            id
             myPrivileges
           }
         }
         profile {
+          id
           displayName
         }
       }

@@ -13,6 +13,7 @@ query VcConversionLookup($vcId: UUID!) {
     virtualContributor(ID: $vcId) {
       id
       profile {
+        id
         displayName
         url
       }
@@ -21,7 +22,9 @@ query VcConversionLookup($vcId: UUID!) {
       account {
         id
         host {
+          id
           profile {
+            id
             displayName
           }
         }
@@ -35,12 +38,16 @@ query VcConversionSourceSpaceCallouts($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       about {
+        id
         profile {
+          id
           displayName
         }
       }
       collaboration {
+        id
         calloutsSet {
+          id
           callouts {
             id
           }

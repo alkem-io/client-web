@@ -4666,6 +4666,8 @@ export type Mutation = {
   setDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
   setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
+  /** Subscribe the current user's device to push notifications. If the subscription endpoint already exists, it is updated. If the user has reached the maximum number of subscriptions (10), the oldest subscription is automatically replaced. */
+  subscribeToPushNotifications: PushSubscription;
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4676,6 +4678,8 @@ export type Mutation = {
   transferSpaceToAccount: Space;
   /** Transfer the specified Virtual Contributor to another Account. */
   transferVirtualContributorToAccount: InnovationPack;
+  /** Remove a push notification subscription for the current user. */
+  unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
   /** Update the baseline License Plan on the specified Account. */
@@ -5312,6 +5316,10 @@ export type MutationSetPlatformWellKnownVirtualContributorArgs = {
   mappingData: SetPlatformWellKnownVirtualContributorInput;
 };
 
+export type MutationSubscribeToPushNotificationsArgs = {
+  subscriptionData: SubscribeToPushNotificationsInput;
+};
+
 export type MutationTransferCalloutArgs = {
   transferData: TransferCalloutInput;
 };
@@ -5330,6 +5338,10 @@ export type MutationTransferSpaceToAccountArgs = {
 
 export type MutationTransferVirtualContributorToAccountArgs = {
   transferData: TransferAccountVirtualContributorInput;
+};
+
+export type MutationUnsubscribeFromPushNotificationsArgs = {
+  subscriptionData: UnsubscribeFromPushNotificationsInput;
 };
 
 export type MutationUpdateApplicationFormOnRoleSetArgs = {
@@ -5682,6 +5694,8 @@ export type NotificationRecipientResult = {
   emailRecipients: Array<User>;
   /** The in-app recipients for the notification. */
   inAppRecipients: Array<User>;
+  /** The push recipients for the notification. */
+  pushRecipients: Array<User>;
   /** The user that triggered the event. */
   triggeredBy?: Maybe<User>;
 };
@@ -5706,6 +5720,8 @@ export type NotificationSettingInput = {
   email?: InputMaybe<Scalars['Boolean']['input']>;
   /** Enable in-app notifications for this setting */
   inApp?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Enable push notifications for this setting */
+  push?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export enum OpenAiModel {
@@ -6528,6 +6544,27 @@ export type PruneInAppNotificationAdminResult = {
   removedCountOutsideRetentionPeriod: Scalars['Int']['output'];
 };
 
+/** Represents a user's push notification subscription for a specific device/browser. */
+export type PushSubscription = {
+  __typename?: 'PushSubscription';
+  /** When this subscription was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** Unique identifier for this subscription. */
+  id: Scalars['UUID']['output'];
+  /** Last time a notification was successfully delivered to this subscription. */
+  lastActiveDate?: Maybe<Scalars['DateTime']['output']>;
+  /** Current status of the subscription. */
+  status: PushSubscriptionStatus;
+  /** Browser/device user agent string for display purposes. */
+  userAgent?: Maybe<Scalars['String']['output']>;
+};
+
+/** Status of a push notification subscription. */
+export enum PushSubscriptionStatus {
+  Active = 'ACTIVE',
+  Expired = 'EXPIRED',
+}
+
 export type Query = {
   __typename?: 'Query';
   /** The Accounts on this platform; If accessed through an Innovation Hub will return ONLY the Accounts defined in it. */
@@ -6556,6 +6593,8 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
+  /** Returns the current user's active push notification subscriptions. Requires authentication. */
+  myPushSubscriptions: Array<PushSubscription>;
   /** The notificationRecipients for the provided event on the given entity. */
   notificationRecipients: NotificationRecipientResult;
   /** A particular Organization */
@@ -6596,6 +6635,8 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+  /** Returns the VAPID public key needed by clients to subscribe to push notifications. Returns null if push notifications are not enabled on this server. */
+  vapidPublicKey?: Maybe<Scalars['String']['output']>;
   /** A particular VirtualContributor */
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform; only accessible to platform admins */
@@ -7901,6 +7942,17 @@ export type StorageConfig = {
   file: FileStorageConfig;
 };
 
+export type SubscribeToPushNotificationsInput = {
+  /** The auth key from PushSubscription.getKey('auth'), Base64URL-encoded */
+  auth: Scalars['String']['input'];
+  /** The push service endpoint URL from PushSubscription.endpoint */
+  endpoint: Scalars['String']['input'];
+  /** The p256dh key from PushSubscription.getKey('p256dh'), Base64URL-encoded */
+  p256dh: Scalars['String']['input'];
+  /** Optional browser/device user agent for display in subscription management UI */
+  userAgent?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   activityCreated: ActivityCreatedSubscriptionResult;
@@ -8243,6 +8295,11 @@ export type TransferCalloutInput = {
   calloutID: Scalars['UUID']['input'];
   /** The target CalloutsSet to which the Callout will be transferred. */
   targetCalloutsSetID: Scalars['UUID']['input'];
+};
+
+export type UnsubscribeFromPushNotificationsInput = {
+  /** The ID of the push subscription to remove. */
+  subscriptionID: Scalars['UUID']['input'];
 };
 
 export type UpdateAiPersonaInput = {
@@ -9327,6 +9384,8 @@ export type UserSettingsNotificationChannels = {
   email: Scalars['Boolean']['output'];
   /** Receive notifications by inApp. */
   inApp: Scalars['Boolean']['output'];
+  /** Receive push notifications. */
+  push: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsNotificationOrganization = {
@@ -24369,11 +24428,11 @@ export type AccountSearchUsersQuery = {
               __typename?: 'Account';
               id: string;
               authorization?:
-                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
             }
           | undefined;
-        profile?: { __typename?: 'Profile'; displayName: string } | undefined;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
       }>;
       pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean };
     };
@@ -24399,11 +24458,11 @@ export type AccountSearchOrganizationsQuery = {
               __typename?: 'Account';
               id: string;
               authorization?:
-                | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
             }
           | undefined;
-        profile?: { __typename?: 'Profile'; displayName: string } | undefined;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
       }>;
       pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean };
     };
@@ -24439,12 +24498,20 @@ export type SpaceConversionLookupQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
-          about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; displayName: string; url: string } };
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
           account: {
             __typename?: 'Account';
             id: string;
             host?:
-              | { __typename?: 'Actor'; profile?: { __typename?: 'Profile'; displayName: string } | undefined }
+              | {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }
               | undefined;
           };
           community: {
@@ -24479,7 +24546,11 @@ export type SpaceConversionSiblingSubspacesQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
-            about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; displayName: string } };
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
           }>;
         }
       | undefined;
@@ -24675,16 +24746,20 @@ export type InnovationHubTransferLookupQuery = {
       | {
           __typename?: 'InnovationHub';
           id: string;
-          profile: { __typename?: 'Profile'; displayName: string; url: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           account: {
             __typename?: 'Account';
             id: string;
             host?:
-              | { __typename?: 'Actor'; profile?: { __typename?: 'Profile'; displayName: string } | undefined }
+              | {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }
               | undefined;
           };
           authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
         }
       | undefined;
@@ -24727,10 +24802,14 @@ export type InnovationPackTransferLookupQuery = {
       | {
           __typename?: 'InnovationPack';
           id: string;
-          profile: { __typename?: 'Profile'; displayName: string; url: string };
-          provider: { __typename?: 'Actor'; profile?: { __typename?: 'Profile'; displayName: string } | undefined };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          };
           authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
         }
       | undefined;
@@ -24895,18 +24974,19 @@ export type VcTransferLookupQuery = {
       | {
           __typename?: 'VirtualContributor';
           id: string;
-          profile?: { __typename?: 'Profile'; displayName: string; url: string } | undefined;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
           account?:
             | {
                 __typename?: 'Account';
                 id: string;
                 host?:
-                  | { __typename?: 'Actor'; profile?: { __typename?: 'Profile'; displayName: string } | undefined }
+                  | {
+                      __typename?: 'Actor';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    }
                   | undefined;
               }
-            | undefined;
-          authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
         }
       | undefined;
@@ -24951,18 +25031,19 @@ export type VcConversionLookupQuery = {
           id: string;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
           bodyOfKnowledgeID?: string | undefined;
-          profile?: { __typename?: 'Profile'; displayName: string; url: string } | undefined;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
           account?:
             | {
                 __typename?: 'Account';
                 id: string;
                 host?:
-                  | { __typename?: 'Actor'; profile?: { __typename?: 'Profile'; displayName: string } | undefined }
+                  | {
+                      __typename?: 'Actor';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    }
                   | undefined;
               }
-            | undefined;
-          authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
         }
       | undefined;
@@ -24981,10 +25062,19 @@ export type VcConversionSourceSpaceCalloutsQuery = {
       | {
           __typename?: 'Space';
           id: string;
-          about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; displayName: string } };
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
           collaboration: {
             __typename?: 'Collaboration';
-            calloutsSet: { __typename?: 'CalloutsSet'; callouts: Array<{ __typename?: 'Callout'; id: string }> };
+            id: string;
+            calloutsSet: {
+              __typename?: 'CalloutsSet';
+              id: string;
+              callouts: Array<{ __typename?: 'Callout'; id: string }>;
+            };
           };
         }
       | undefined;
