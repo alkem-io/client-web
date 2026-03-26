@@ -108,7 +108,7 @@ Composites — reusable UI components built from primitives. These know about Al
 **Rules:**
 - Import only from `@/crd/primitives/`, `@/crd/lib/`, `@/crd/hooks/`, and `lucide-react`
 - Props are plain TypeScript types with descriptive names
-- May use `useTranslation('ds')` for built-in UI text (design system i18n namespace)
+- May use `useTranslation('crd')` for built-in UI text (CRD i18n namespace)
 - Organize by feature area in subdirectories: `space/`, `dashboard/`, `community/`, `user/`, `common/`
 
 **Examples:** `space/PostCard.tsx`, `space/SpaceCard.tsx`, `space/SpaceHeader.tsx`, `common/MessageCounter.tsx`, `common/CardImage.tsx`

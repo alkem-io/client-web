@@ -300,7 +300,11 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 Consumers in `src/domain/` and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
 
 ## Recent Changes
+- 039-crd-spaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
 - Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
-- CI lint workflow split into parallel jobs: typecheck, biome, eslint-compiler
+
+## Active Technologies
+- TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged) (039-crd-spaces-page)
+- N/A (GraphQL data layer unchanged; localStorage for rendering mode toggle) (039-crd-spaces-page)
