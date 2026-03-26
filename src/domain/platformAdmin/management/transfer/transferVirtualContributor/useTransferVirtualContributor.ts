@@ -15,6 +15,7 @@ const useTransferVirtualContributor = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [vcUrl, setVcUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Step 1: Resolve URL
   const { data: resolveData, loading: resolveLoading } = useVcTransferUrlResolveQuery({
@@ -50,6 +51,7 @@ const useTransferVirtualContributor = () => {
           : undefined;
 
   const handleResolve = (url: string) => {
+    setMutationCompleted(false);
     setVcUrl(toFullUrl(url));
   };
 
@@ -60,6 +62,7 @@ const useTransferVirtualContributor = () => {
         variables: { virtualContributorID: vc.id, targetAccountID: targetAccountId },
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
       notify(message, 'error');
@@ -67,7 +70,7 @@ const useTransferVirtualContributor = () => {
   };
 
   return {
-    vc,
+    vc: mutationCompleted ? undefined : vc,
     currentAccountName,
     loading: isLoading,
     transferLoading,

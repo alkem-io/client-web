@@ -15,6 +15,7 @@ const useTransferInnovationHub = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [hubUrl, setHubUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Step 1: Resolve URL
   const { data: resolveData, loading: resolveLoading } = useInnovationHubTransferUrlResolveQuery({
@@ -50,6 +51,7 @@ const useTransferInnovationHub = () => {
           : undefined;
 
   const handleResolve = (url: string) => {
+    setMutationCompleted(false);
     setHubUrl(toFullUrl(url));
   };
 
@@ -60,6 +62,7 @@ const useTransferInnovationHub = () => {
         variables: { innovationHubID: hub.id, targetAccountID: targetAccountId },
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
       notify(message, 'error');
@@ -67,7 +70,7 @@ const useTransferInnovationHub = () => {
   };
 
   return {
-    hub,
+    hub: mutationCompleted ? undefined : hub,
     currentAccountName,
     loading: isLoading,
     transferLoading,

@@ -15,6 +15,7 @@ const useTransferInnovationPack = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [packUrl, setPackUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Step 1: Resolve URL
   const { data: resolveData, loading: resolveLoading } = useInnovationPackTransferUrlResolveQuery({
@@ -50,6 +51,7 @@ const useTransferInnovationPack = () => {
           : undefined;
 
   const handleResolve = (url: string) => {
+    setMutationCompleted(false);
     setPackUrl(toFullUrl(url));
   };
 
@@ -60,6 +62,7 @@ const useTransferInnovationPack = () => {
         variables: { innovationPackID: pack.id, targetAccountID: targetAccountId },
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
       notify(message, 'error');
@@ -67,7 +70,7 @@ const useTransferInnovationPack = () => {
   };
 
   return {
-    pack,
+    pack: mutationCompleted ? undefined : pack,
     currentAccountName,
     loading: isLoading,
     transferLoading,
