@@ -43,7 +43,7 @@ const CalloutsView = ({
 }: CalloutsViewProps) => {
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
-  const sortedCallouts = callouts?.sort((a, b) => a.sortOrder - b.sortOrder);
+  const sortedCallouts = callouts?.toSorted((a, b) => a.sortOrder - b.sortOrder);
 
   const sortEvents: CalloutSortEvents | undefined = onSortOrderUpdate && {
     onMoveToTop: movedCalloutId => {

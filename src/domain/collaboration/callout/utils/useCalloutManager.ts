@@ -32,7 +32,7 @@ export const useCalloutManager = (): useCalloutEditProvided => {
       },
       optimisticResponse: () => {
         const calloutFragment = apolloClient.readFragment({
-          id: `Callout:${callout}`,
+          id: `Callout:${callout.id}`,
           fragment: CalloutFragmentDoc,
           fragmentName: 'Callout',
         });
