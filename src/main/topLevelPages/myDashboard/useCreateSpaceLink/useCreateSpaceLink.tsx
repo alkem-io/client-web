@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -10,7 +9,7 @@ export const useCreateSpaceLink = () => {
 
   const STATIC_PAGE_LINK = t('pages.home.sections.startingSpace.url');
 
-  const link = useMemo(() => {
+  const link = (() => {
     if (loading) {
       return STATIC_PAGE_LINK;
     }
@@ -26,7 +25,7 @@ export const useCreateSpaceLink = () => {
     }
 
     return STATIC_PAGE_LINK;
-  }, [accountPrivileges, accountEntitlements, loading, t]);
+  })();
 
   return { loading, link };
 };

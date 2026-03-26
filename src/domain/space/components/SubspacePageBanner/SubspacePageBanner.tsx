@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
@@ -18,7 +17,7 @@ const SubspacePageBanner = () => {
     returnPartialData: true,
   });
 
-  const bannerVisual = useMemo(() => {
+  const bannerVisual = (() => {
     const spaceBanner = data?.lookup.level0Space?.about?.profile.banner;
     if (data?.lookup.level0Space?.about?.profile.banner?.uri) {
       return spaceBanner;
@@ -27,7 +26,7 @@ const SubspacePageBanner = () => {
       ...spaceBanner,
       uri: getDefaultSpaceVisualUrl(VisualType.Banner, levelZeroSpaceId),
     };
-  }, [data?.lookup.level0Space?.about?.profile.banner?.id, levelZeroSpaceId]);
+  })();
 
   if (spaceLevel === SpaceLevel.L0) {
     return null;

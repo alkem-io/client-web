@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import filterFn, { type ValueType } from '@/core/utils/filtering/filterFn';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -24,10 +24,7 @@ const DashboardInnovationPacks = ({
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const filteredInnovationPacks = useMemo(
-    () => filterFn(innovationPacks ?? [], filter, innovationPackValueGetter),
-    [innovationPacks, filter]
-  );
+  const filteredInnovationPacks = filterFn(innovationPacks ?? [], filter, innovationPackValueGetter);
 
   return (
     <>

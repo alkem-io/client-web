@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -59,10 +59,7 @@ const useCalloutSettings = ({
     setVisibilityDialogOpen(true);
     setSettingsAnchorEl(null);
   };
-  const visDialogTitle = useMemo(
-    () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
-    [callout.draft, t]
-  );
+  const visDialogTitle = `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`;
   const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
     await onVisibilityChange?.(callout, visibility, sendNotification);
     setVisibilityDialogOpen(false);

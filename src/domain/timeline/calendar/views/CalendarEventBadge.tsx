@@ -1,6 +1,5 @@
 import { Box, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
 import RoundedBadge, { type RoundedBadgeProps } from '@/core/ui/icon/RoundedBadge';
 import ToggleableTooltip from '@/core/ui/tooltip/ToggleableTooltip';
 import { Caption } from '@/core/ui/typography';
@@ -20,10 +19,10 @@ const CalendarEventBadge = ({
   tooltipDisabled = false,
   ...badgeProps
 }: CalendarEventBadgeProps) => {
-  const isPast = useMemo(() => {
+  const isPast = (() => {
     const currentDate = startOfDay();
     return dayjs(startDate).isBefore(currentDate);
-  }, [startDate]);
+  })();
   const theme = useTheme();
 
   const dates = formatBadgeDate({ startDate, durationMinutes, durationDays });

@@ -2,7 +2,7 @@ import type { DragEndEvent } from '@dnd-kit/core';
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Box, Button, FormControl, OutlinedInput } from '@mui/material';
-import { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import { Caption } from '@/core/ui/typography';
@@ -49,17 +49,13 @@ const SubspacesSortableList: FC<SubspacesSortableListProps> = ({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const filteredSubspaces = useMemo(
-    () =>
-      orderedSubspaces.filter(item =>
-        filterBy ? item.profile.displayName.toLowerCase().includes(filterBy.toLowerCase()) : true
-      ),
-    [filterBy, orderedSubspaces]
+  const filteredSubspaces = orderedSubspaces.filter(item =>
+    filterBy ? item.profile.displayName.toLowerCase().includes(filterBy.toLowerCase()) : true
   );
 
-  const slicedSubspaces = useMemo(() => filteredSubspaces.slice(0, limit), [filteredSubspaces, limit]);
+  const slicedSubspaces = filteredSubspaces.slice(0, limit);
 
-  const itemIds = useMemo(() => slicedSubspaces.map(s => s.id), [slicedSubspaces]);
+  const itemIds = slicedSubspaces.map(s => s.id);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;

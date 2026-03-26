@@ -1,6 +1,5 @@
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHomeSpaceLookupQuery, useRecentSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import GridItem from '@/core/ui/grid/GridItem';
@@ -35,10 +34,10 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
   const homeSpace = homeSpaceData?.lookup.space;
 
   // Filter out homeSpace from recent spaces to avoid duplication and limit to visibleSpaces - 1
-  const remainingSpaces = useMemo(() => {
+  const remainingSpaces = (() => {
     const spaces = data?.me.mySpaces ?? [];
     return spaces.filter(s => s.space.id !== homeSpaceId).slice(0, visibleSpaces - 1);
-  }, [data?.me.mySpaces, homeSpaceId, visibleSpaces]);
+  })();
 
   // Show component if we have data (either homeSpace, placeholder, or recent spaces)
   if (!data) {

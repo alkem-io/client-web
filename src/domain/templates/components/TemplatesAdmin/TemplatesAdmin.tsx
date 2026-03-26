@@ -1,6 +1,6 @@
 import { Button, type ButtonProps } from '@mui/material';
 import { compact } from 'lodash-es';
-import { type PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { type PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAllTemplatesInTemplatesSetQuery,
@@ -106,7 +106,7 @@ const TemplatesAdmin = ({
   const { calloutTemplates, spaceTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
     data?.lookup.templatesSet ?? {};
 
-  const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
+  const selectedTemplate = (() => {
     if (!templateId) return undefined;
     return [
       ...(postTemplates ?? []),
@@ -115,7 +115,7 @@ const TemplatesAdmin = ({
       ...(calloutTemplates ?? []),
       ...(spaceTemplates ?? []),
     ].find(template => template.id === templateId);
-  }, [templateId, data?.lookup.templatesSet]);
+  })();
 
   // Update Template
   const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
@@ -321,18 +321,15 @@ const TemplatesAdmin = ({
   };
 
   // Actions (buttons for gallery)
-  const GalleryActions = useCallback(
-    ({ templateType }: { templateType: TemplateType }) => (
-      <>
-        {canImportTemplates(templateType) ? (
-          <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
-        ) : null}
-        {canCreateTemplates(templateType) ? (
-          <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
-        ) : null}
-      </>
-    ),
-    [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
+  const GalleryActions = ({ templateType }: { templateType: TemplateType }) => (
+    <>
+      {canImportTemplates(templateType) ? (
+        <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
+      ) : null}
+      {canCreateTemplates(templateType) ? (
+        <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
+      ) : null}
+    </>
   );
   const buildTemplateLink = (template: AnyTemplate) => {
     if (template.profile.url) {

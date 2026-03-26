@@ -1,6 +1,6 @@
 import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -58,12 +58,9 @@ const ProfilePageBanner = ({
   const closeMessageDialog = () => setIsMessageDialogOpen(false);
   const openMessageDialog = () => setIsMessageDialogOpen(true);
 
-  const tags = useMemo(
-    () => profile?.tagset?.tags ?? profile?.tagsets?.flatMap(({ tags }) => tags || []),
-    [profile?.tagsets]
-  );
+  const tags = profile?.tagset?.tags ?? profile?.tagsets?.flatMap(({ tags }) => tags || []);
 
-  const messageReceivers = useMemo(() => {
+  const messageReceivers = (() => {
     if (!entityId) {
       return;
     }
@@ -77,7 +74,7 @@ const ProfilePageBanner = ({
         country: profile?.location?.country,
       },
     ];
-  }, [entityId, profile]);
+  })();
 
   const pageBannerWatermark = !isLargeScreen ? null : <PageBannerWatermark />;
 

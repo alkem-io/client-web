@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useAccountPlanAvailabilityQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -24,14 +23,14 @@ export const usePlanAvailability = ({ skip, accountId }: Props): Provided => {
     skip: skip || !accountId,
   });
 
-  const { privileges, entitlements } = useMemo(() => {
+  const { privileges, entitlements } = (() => {
     const account = accountData?.lookup?.account;
 
     return {
       privileges: account?.authorization?.myPrivileges ?? [],
       entitlements: account?.license.availableEntitlements ?? [],
     };
-  }, [accountData]);
+  })();
 
   const isPlanAvailable = (plan: { name: string }) => {
     if (!accountData || loadingAccountData) {

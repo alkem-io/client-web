@@ -1,7 +1,7 @@
 import { DeleteOutline, SettingsOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, IconButton, Link } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   AuthorizationPrivilege,
@@ -187,14 +187,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const isEntitledToCreateInnovationHub = myAccountEntitlements.includes(LicenseEntitlementType.AccountInnovationHub);
   const isEntitledToCreateVC = myAccountEntitlements.includes(LicenseEntitlementType.AccountVirtualContributor);
 
-  const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
-    () => ({
-      virtualContributors: account?.virtualContributors ?? [],
-      innovationPacks: account?.innovationPacks ?? [],
-      innovationHubs: account?.innovationHubs ?? [],
-    }),
-    [account]
-  );
+  const { virtualContributors, innovationPacks, innovationHubs } = {
+    virtualContributors: account?.virtualContributors ?? [],
+    innovationPacks: account?.innovationPacks ?? [],
+    innovationHubs: account?.innovationHubs ?? [],
+  };
 
   const privileges = account?.authorization?.myPrivileges ?? [];
 

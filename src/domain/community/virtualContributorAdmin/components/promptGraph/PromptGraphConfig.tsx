@@ -1,6 +1,6 @@
 import { Alert, Switch } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAiPersonaQuery,
@@ -48,7 +48,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   const [updatePlatformSettings, { loading: updatingPlatformSettings }] =
     useUpdateVirtualContributorPlatformSettingsMutation();
 
-  const initialValues: FormValueType = useMemo(() => {
+  const initialValues: FormValueType = (() => {
     // Use a deep copy of the promptGraph from aiPersona so we don't mutate the original
     const promptGraph = aiPersona?.promptGraph || { nodes: [], edges: [] };
     const promptGraphCopy = JSON.parse(JSON.stringify(promptGraph));
@@ -70,7 +70,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
       nodes: nodesData,
       state: promptGraphCopy.state || { properties: [] },
     };
-  }, [aiPersona]);
+  })();
 
   const handleSubmit = (values: FormValueType) => {
     if (!aiPersona) return;

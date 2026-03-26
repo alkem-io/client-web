@@ -7,21 +7,22 @@ import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import { InAppNotificationItem } from './InAppNotificationItem';
 import { useInAppNotifications } from './useInAppNotifications';
 
-const Loader = ({ ref }) => (
-  <Box ref={ref} display="flex" justifyContent="center" padding={2}>
-    <Loading />
-  </Box>
-);
-
 export const InAppNotificationsList = () => {
   const { t } = useTranslation();
   const { notificationsInApp, isLoading, fetchMore, hasMore } = useInAppNotifications();
 
-  const loader = useLazyLoading(Loader, {
-    fetchMore,
-    loading: isLoading,
-    hasMore,
-  });
+  const loader = useLazyLoading(
+    ref => (
+      <Box ref={ref} display="flex" justifyContent="center" padding={2}>
+        <Loading />
+      </Box>
+    ),
+    {
+      fetchMore,
+      loading: isLoading,
+      hasMore,
+    }
+  );
 
   if (notificationsInApp.length === 0) {
     if (isLoading) {

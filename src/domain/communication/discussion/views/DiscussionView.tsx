@@ -1,6 +1,6 @@
 import type { FetchResult } from '@apollo/client';
 import { Box, GridLegacy, Typography } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -46,21 +46,18 @@ export const DiscussionView = ({
   const canAddReaction = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessageReaction) ?? false;
 
   // construct the discussion info as a comment with ID of the discussion for easier update/delete
-  const initialComment: Message = useMemo(
-    () => ({
-      id,
-      author,
-      createdAt: createdAt!,
-      message: description!,
-      reactions: [],
-    }),
-    [id, author, createdAt, description]
-  );
+  const initialComment: Message = {
+    id,
+    author,
+    createdAt: createdAt!,
+    message: description!,
+    reactions: [],
+  };
 
   const commentReactionsMutations = useCommentReactionsMutations(discussion.comments.id);
 
   const [collapsed, setCollapsed] = useState(true);
-  const toggleCollapse = useCallback(() => setCollapsed(prev => !prev), []);
+  const toggleCollapse = () => setCollapsed(prev => !prev);
 
   return (
     <GridLegacy container={true} spacing={2} alignItems="stretch" wrap="nowrap">

@@ -1,4 +1,4 @@
-import React, { type FC, type PropsWithChildren, useMemo } from 'react';
+import React, { type FC, type PropsWithChildren } from 'react';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
@@ -9,6 +9,7 @@ interface SubspacePermissions {
   canCreate: boolean;
   canCreateSubspace: boolean;
   canRead: boolean;
+  contextPrivileges: AuthorizationPrivilege[];
 }
 
 interface SubspaceContextProps {
@@ -65,6 +66,7 @@ const defaultValue: SubspaceContextProps = {
     canCreate: false,
     canCreateSubspace: false,
     canRead: false,
+    contextPrivileges: [],
   },
 };
 
@@ -83,23 +85,17 @@ const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
 
   const subspaceData = data?.lookup.space;
 
-  const myPrivileges = useMemo(
-    () => subspaceData?.authorization?.myPrivileges ?? [],
-    [subspaceData?.authorization?.myPrivileges]
-  );
+  const myPrivileges = subspaceData?.authorization?.myPrivileges ?? [];
 
-  const permissions = useMemo<SubspacePermissions>(
-    () => ({
-      canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
-      canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
-      canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
-      contextPrivileges: subspaceData?.about.authorization?.myPrivileges ?? [],
-    }),
-    [myPrivileges, subspaceData]
-  );
+  const permissions: SubspacePermissions = {
+    canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+    canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
+    canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
+    canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
+    contextPrivileges: subspaceData?.about.authorization?.myPrivileges ?? [],
+  };
 
-  const subspace = useMemo(() => {
+  const subspace = (() => {
     const about: SpaceAboutFullModel = {
       id: subspaceData?.about.id ?? '',
       profile: {
@@ -138,7 +134,7 @@ const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
       level: subspaceData?.level ?? SpaceLevel.L1,
       about,
     };
-  }, [subspaceData]);
+  })();
 
   let state = {
     subspace,

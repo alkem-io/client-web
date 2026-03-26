@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useExploreAllSpacesQuery,
@@ -105,7 +104,7 @@ const useExploreSpaces = ({ searchTerms, selectedFilter }: UseExploreSpacesParam
   const fetchMore = () => Promise.resolve();
   const hasMore = false;
 
-  const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
+  const flattenedSpaces = (() => {
     if (shouldSearch && rawSearchResults?.search?.spaceResults) {
       return rawSearchResults.search.spaceResults?.results
         .filter(
@@ -119,7 +118,7 @@ const useExploreSpaces = ({ searchTerms, selectedFilter }: UseExploreSpacesParam
     }
 
     return spacesData?.exploreSpaces;
-  }, [spacesData, selectedFilter, rawSearchResults]);
+  })();
 
   return {
     spaces: flattenedSpaces,

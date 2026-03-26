@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   type InnovationHubHomeInnovationHubFragment,
@@ -15,7 +14,7 @@ export interface InnovationHubAttrs {
 }
 
 const useInnovationHubAttrs = (innovationHub: InnovationHubHomeInnovationHubFragment | undefined) =>
-  useMemo<InnovationHubAttrs | undefined>(() => {
+  (() => {
     if (!innovationHub) {
       return undefined;
     }
@@ -35,6 +34,6 @@ const useInnovationHubAttrs = (innovationHub: InnovationHubHomeInnovationHubFrag
       banner,
       settingsUrl: canEdit ? buildSettingsUrl(`/hub/${nameID}`) : undefined,
     };
-  }, [innovationHub]);
+  })();
 
 export default useInnovationHubAttrs;

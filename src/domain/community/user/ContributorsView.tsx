@@ -124,13 +124,13 @@ const ContributorsView = ({
 }: ContributorsViewProps) => {
   const { t } = useTranslation();
 
-  const usersLoader = useLazyLoading(Box, {
+  const usersLoader = useLazyLoading(ref => <Box ref={ref} />, {
     hasMore: users?.hasMore || false,
     loading: users?.loading || false,
     fetchMore: () => (users?.fetchMore ? users?.fetchMore() : Promise.resolve()),
   });
 
-  const orgsLoader = useLazyLoading(Box, {
+  const orgsLoader = useLazyLoading(ref => <Box ref={ref} />, {
     hasMore: orgs?.hasMore || false,
     loading: orgs?.loading || false,
     fetchMore: () => (orgs?.fetchMore ? orgs?.fetchMore() : Promise.resolve()),

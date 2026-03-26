@@ -1,6 +1,5 @@
 import { GridLegacy, styled } from '@mui/material';
 import { groupBy } from 'lodash-es';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -34,11 +33,11 @@ export const UserProfileView = ({ userModel }: UserProfileViewProps) => {
     userModel.profile?.tagsets?.find(t => t.name.toLowerCase() === TagsetReservedName.Skills.toLowerCase())?.tags ?? [];
   const references = userModel.profile?.references;
   const bio = userModel.profile?.description;
-  const links = useMemo(() => {
+  const links = (() => {
     return groupBy(references, reference =>
       isSocialNetworkSupported(reference.name) ? SOCIAL_LINK_GROUP : OTHER_LINK_GROUP
     );
-  }, [references]);
+  })();
 
   const socialLinks = links[SOCIAL_LINK_GROUP].map(s => ({
     type: s.name as SocialNetworkEnum,

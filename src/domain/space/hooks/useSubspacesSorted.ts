@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
 
@@ -16,7 +15,7 @@ const useSubspacesSorted = <T extends SubspaceWithSortData>(
   subspaces: T[] | undefined,
   sortMode: SpaceSortMode | undefined
 ): T[] => {
-  return useMemo(() => {
+  return (() => {
     if (!subspaces) {
       return [];
     }
@@ -32,7 +31,7 @@ const useSubspacesSorted = <T extends SubspaceWithSortData>(
       .sort((a, b) => a.about.profile.displayName.localeCompare(b.about.profile.displayName));
 
     return [...pinned, ...unpinned];
-  }, [subspaces, sortMode]);
+  })();
 };
 
 export default useSubspacesSorted;

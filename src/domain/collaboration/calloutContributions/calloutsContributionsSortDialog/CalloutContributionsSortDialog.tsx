@@ -76,6 +76,8 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     skip: !open || !callout.id,
   });
 
+  // Keep useMemo: derived data used to sync into local state via useEffect([data]).
+  // Local state is needed because drag-and-drop reorders items independently of server data.
   const queryItems = useMemo(() => {
     return sortBy(
       data?.lookup.callout?.contributions
@@ -105,7 +107,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
 
   useEffect(() => {
     setItems(queryItems);
-  }, [queryItems]);
+  }, [data]);
 
   const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
   const handleSortContributions = async (contributions: CalloutContributionsSortItem[]) => {
@@ -123,7 +125,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const itemIds = useMemo(() => items?.map(item => item.id) ?? [], [items]);
+  const itemIds = items?.map(item => item.id) ?? [];
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;

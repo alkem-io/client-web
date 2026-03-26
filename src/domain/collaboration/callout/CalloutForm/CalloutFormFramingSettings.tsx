@@ -4,7 +4,7 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import { Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import { Suspense, useMemo } from 'react';
+import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutFramingType,
@@ -216,7 +216,7 @@ const CalloutFormFramingSettings = ({
     />
   );
 
-  const editButton = useMemo(() => {
+  const editButton = (() => {
     if (!calloutRestrictions?.onlyRealTimeWhiteboardFraming) {
       return undefined; // Use the FormikWhiteboardPreview's default edit button
     } else {
@@ -229,7 +229,7 @@ const CalloutFormFramingSettings = ({
         </Tooltip>
       );
     }
-  }, [calloutRestrictions?.onlyRealTimeWhiteboardFraming]);
+  })();
 
   const showMemoContent = !edit || template; // Editable memo content if not in edit mode or if in template mode
 

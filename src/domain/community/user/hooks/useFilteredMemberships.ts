@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import type { RoleType } from '../constants/RoleType';
 
@@ -6,7 +5,7 @@ const hasRole = (contribution: SpaceHostedItem, roles: RoleType[]) =>
   roles.some(role => contribution.roles?.includes(role));
 
 const useFilteredMemberships = (contributions: SpaceHostedItem[], leadRoles: RoleType[]) => {
-  return useMemo(() => {
+  return (() => {
     const filteredMemberships: SpaceHostedItem[] = [];
     const remainingMemberships: SpaceHostedItem[] = [];
 
@@ -19,7 +18,7 @@ const useFilteredMemberships = (contributions: SpaceHostedItem[], leadRoles: Rol
     });
 
     return [filteredMemberships, remainingMemberships];
-  }, [contributions]);
+  })();
 };
 
 export default useFilteredMemberships;

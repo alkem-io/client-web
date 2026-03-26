@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActorType,
@@ -130,7 +129,7 @@ const useRoleSetManager = ({
     skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
   });
 
-  const data = useMemo(() => {
+  const data = (() => {
     const roleSet = roleSetData?.lookup.roleSet;
 
     const usersById: Record<string, RoleSetMemberUserFragmentWithRoles> = {};
@@ -213,7 +212,7 @@ const useRoleSetManager = ({
       virtualContributorsByRole,
       rolesDefinitions: fetchRoleDefinitions ? rolesDefinitions : undefined,
     };
-  }, [roleSetData?.lookup.roleSet]);
+  })();
 
   // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
   const onMutationCall =

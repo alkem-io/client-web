@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchMyResourcesQuery,
@@ -90,7 +90,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
 
-  const uploadAvatar = useCallback(async (avatar: VisualUploadModel | undefined, visualID: string | undefined) => {
+  const uploadAvatar = async (avatar: VisualUploadModel | undefined, visualID: string | undefined) => {
     if (avatar?.file && visualID) {
       await uploadVisual({
         variables: {
@@ -102,7 +102,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         },
       });
     }
-  }, []);
+  };
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -134,7 +134,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     return space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   };
 
-  const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
+  const { myAccountId, allAccountSpaces, availableSpaces } = (() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
     const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
 
@@ -143,12 +143,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       allAccountSpaces: accountSpaces,
       availableSpaces: accountSpaces.filter(hasReadPrivilege),
     };
-  }, [data, userModel, targetAccount]);
+  })();
 
   const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
   // For all the available spaces get their subspaces (and their subspaces)
   // then filter them as well and
-  const getSelectableSpaces = useCallback(async () => {
+  const getSelectableSpaces = async () => {
     setAvailableExistingSpacesLoading(true);
     const result: SelectableSpace[] = [];
 
@@ -168,7 +168,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
     setAvailableExistingSpacesLoading(false);
     setAvailableExistingSpaces(result);
-  }, [allSpaceSubspaces, availableSpaces]);
+  };
 
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount', 'AccountInformation', 'LatestContributionsSpacesFlat'],
@@ -533,7 +533,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     }
   };
 
-  const VirtualContributorWizard = useCallback(() => {
+  const VirtualContributorWizard = () => {
     if (!myAccountId) {
       return null;
     }
@@ -608,15 +608,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [
-    dialogOpen,
-    step,
-    myAccountId,
-    loading,
-    availableExistingSpacesLoading,
-    getSelectableSpaces,
-    availableExistingSpaces,
-  ]);
+  };
 
   return {
     startWizard,

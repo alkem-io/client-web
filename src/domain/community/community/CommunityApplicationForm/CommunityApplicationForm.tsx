@@ -2,7 +2,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { Formik } from 'formik';
 import { max, pullAt, slice, sortBy } from 'lodash-es';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
@@ -56,13 +55,10 @@ const CommunityApplicationForm = ({ roleSetId, disabled }: CommunityApplicationF
     skip: !roleSetId,
   });
 
-  const data = useMemo(
-    () => ({
-      description: rawData?.lookup?.roleSet?.applicationForm?.description,
-      questions: sortBy(rawData?.lookup?.roleSet?.applicationForm?.questions, q => q.sortOrder),
-    }),
-    [roleSetId, rawData]
-  );
+  const data = {
+    description: rawData?.lookup?.roleSet?.applicationForm?.description,
+    questions: sortBy(rawData?.lookup?.roleSet?.applicationForm?.questions, q => q.sortOrder),
+  };
 
   const [updateQuestions, { loading: submittingQuestions }] = useUpdateApplicationFormOnRoleSetMutation();
 
