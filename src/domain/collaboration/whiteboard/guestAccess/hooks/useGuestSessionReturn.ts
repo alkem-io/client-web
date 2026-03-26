@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clearGuestWhiteboardUrl, getGuestName, getGuestWhiteboardUrl } from '../utils/sessionStorage';
 
@@ -17,19 +16,19 @@ export const useGuestSessionReturn = (): UseGuestSessionReturnResult => {
   const whiteboardUrl = getGuestWhiteboardUrl();
   const shouldShowNotification = Boolean(guestName && whiteboardUrl);
 
-  const handleBackToWhiteboard = useCallback(() => {
+  const handleBackToWhiteboard = () => {
     if (whiteboardUrl) {
       navigate(whiteboardUrl);
     }
-  }, [whiteboardUrl, navigate]);
+  };
 
-  const handleGoToWebsite = useCallback(() => {
+  const handleGoToWebsite = () => {
     window.location.assign('https://alkem.io');
-  }, []);
+  };
 
-  const clearSession = useCallback(() => {
+  const clearSession = () => {
     clearGuestWhiteboardUrl();
-  }, []);
+  };
 
   return {
     shouldShowNotification,

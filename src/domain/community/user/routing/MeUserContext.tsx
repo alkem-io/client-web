@@ -1,4 +1,4 @@
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 
 type MeUserContextValue = {
   userId: string;
@@ -11,7 +11,9 @@ type MeUserProviderProps = PropsWithChildren<{
 }>;
 
 const MeUserProvider = ({ userId, children }: MeUserProviderProps) => {
-  const value = useMemo(() => ({ userId }), [userId]);
+  const value = {
+    userId,
+  };
 
   return <MeUserContext value={value}>{children}</MeUserContext>;
 };

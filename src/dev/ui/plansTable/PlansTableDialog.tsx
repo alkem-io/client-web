@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, type Theme } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -46,20 +46,16 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
 
   const planTranslations = getPlanTranslations(t);
 
-  const plansData = useMemo(
-    () =>
-      (
-        data?.platform.licensingFramework.plans
-          .filter(plan => plan.enabled)
-          .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
-          .sort((a, b) => a.sortOrder - b.sortOrder) ?? []
-      ).map(plan => ({
-        ...plan,
-        displayName: planTranslations[plan.name]?.displayName,
-        available: isPlanAvailable(plan),
-      })),
-    [data, planTranslations, isPlanAvailable]
-  );
+  const plansData = (
+    data?.platform.licensingFramework.plans
+      .filter(plan => plan.enabled)
+      .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
+      .sort((a, b) => a.sortOrder - b.sortOrder) ?? []
+  ).map(plan => ({
+    ...plan,
+    displayName: planTranslations[plan.name]?.displayName,
+    available: isPlanAvailable(plan),
+  }));
 
   const [freeTrialDialogOpen, setFreeTrialDialogOpen] = useState<boolean>(false);
   const [getStartedDialogOpen, setGetStartedDialogOpen] = useState<boolean>(false);

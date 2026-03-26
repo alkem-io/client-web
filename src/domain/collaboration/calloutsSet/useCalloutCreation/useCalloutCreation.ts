@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   CalloutAllowedActors,
@@ -114,33 +114,30 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
     refetchQueries: ['CalloutsSetTags'],
   });
 
-  const handleCreateCallout = useCallback(
-    async (callout: CalloutCreationType) => {
-      if (!calloutsSetId) {
-        return;
-      }
+  const handleCreateCallout = async (callout: CalloutCreationType) => {
+    if (!calloutsSetId) {
+      return;
+    }
 
-      setIsCreating(true);
+    setIsCreating(true);
 
-      const calloutData: CreateCalloutOnCalloutsSetInput = {
-        calloutsSetID: calloutsSetId,
-        ...callout,
-      };
+    const calloutData: CreateCalloutOnCalloutsSetInput = {
+      calloutsSetID: calloutsSetId,
+      ...callout,
+    };
 
-      try {
-        const result = await createCallout({
-          variables: {
-            calloutData,
-          },
-        });
+    try {
+      const result = await createCallout({
+        variables: {
+          calloutData,
+        },
+      });
 
-        return result.data?.createCalloutOnCalloutsSet;
-      } finally {
-        setIsCreating(false);
-      }
-    },
-    [calloutsSetId, createCallout]
-  );
+      return result.data?.createCalloutOnCalloutsSet;
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   return {
     handleCreateCallout,

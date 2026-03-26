@@ -346,6 +346,7 @@
     "forum": "Forum",
     "email": "Email",
     "inApp": "In-app",
+    "push": "Push",
     "state": "Phase",
     "states": "Phases",
     "post": "post",
@@ -4057,6 +4058,23 @@
         "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor).",
         "settings": {
           "spaceCommunityInvitation": "Receive a $t(common.notification) when a VC I manage is invited to join a $t(common.community)"
+        }
+      },
+      "push": {
+        "masterToggle": "Push Notifications",
+        "masterToggleDescription": "Enable browser push $t(common.notifications) on this device",
+        "columnHeader": "Push",
+        "permissionDenied": "Push $t(common.notifications) are blocked by your browser. To re-enable, go to your browser settings and allow $t(common.notifications) for this site.",
+        "requiresPWA": "Push $t(common.notifications) on iOS require adding Alkemio to your Home Screen first.",
+        "subscribeError": "Failed to enable push $t(common.notifications). Please try again.",
+        "unsubscribeError": "Failed to disable push $t(common.notifications). Please try again.",
+        "deviceManagement": {
+          "title": "Subscribed Devices",
+          "currentDevice": "This device",
+          "removeDevice": "Remove",
+          "removeConfirmation": "Remove this device from push $t(common.notifications)?",
+          "emptyState": "No active push subscriptions.",
+          "unknownDevice": "Unknown device"
         }
       },
       "tooltips": {

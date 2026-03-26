@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useHomeRedirectDataQuery, useHomeSpaceLookupQuery } from '@/core/apollo/generated/apollo-hooks';
 
 type HomeRedirectResult = {
@@ -25,7 +24,7 @@ export const useHomeRedirect = (isAuthenticated: boolean): HomeRedirectResult =>
 
   const loading = loadingRedirectData || (needsHomeSpaceLookup && loadingHomeSpace);
 
-  const redirectUrl = useMemo(() => {
+  const redirectUrl = (() => {
     if (!data) return null;
 
     // Priority 1: Single L0 membership - redirect to that space
@@ -41,7 +40,7 @@ export const useHomeRedirect = (isAuthenticated: boolean): HomeRedirectResult =>
 
     // No redirect needed
     return null;
-  }, [data, l0Memberships, homeSpaceId, autoRedirect, homeSpaceData]);
+  })();
 
   return { loading, redirectUrl };
 };

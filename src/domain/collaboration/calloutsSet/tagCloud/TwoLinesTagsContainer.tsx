@@ -1,6 +1,6 @@
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Chip, type ChipProps, Link, Tooltip } from '@mui/material';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
@@ -55,7 +55,7 @@ const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTa
   const measurementRef = useRef<HTMLDivElement | null>(null);
   const { ref: resizeRef, width } = useResizeObserver();
 
-  const tagsKey = useMemo(() => tags.join('|'), [tags]);
+  const tagsKey = tags.join('|');
 
   useEffect(() => {
     setCollapsedCount(tags.length);

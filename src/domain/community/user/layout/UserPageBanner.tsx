@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -11,29 +10,26 @@ const UserPageBanner = () => {
   const { userId, loading: routeLoading, getProfileUrl } = useUserRouteContext();
   const { userModel: user, loading } = useUserProvider(userId);
 
-  const isCurrentUser = useMemo(() => user?.id === currentUser?.id, [user, currentUser]);
+  const isCurrentUser = user?.id === currentUser?.id;
 
   const profile = user?.profile;
 
   const [sendMessageToUser] = useSendMessageToUsersMutation();
 
-  const handleSendMessage = useCallback(
-    async (messageText: string) => {
-      if (!userId) {
-        throw new Error('User not loaded.');
-      }
+  const handleSendMessage = async (messageText: string) => {
+    if (!userId) {
+      throw new Error('User not loaded.');
+    }
 
-      await sendMessageToUser({
-        variables: {
-          messageData: {
-            message: messageText,
-            receiverIds: [userId],
-          },
+    await sendMessageToUser({
+      variables: {
+        messageData: {
+          message: messageText,
+          receiverIds: [userId],
         },
-      });
-    },
-    [sendMessageToUser, userId]
-  );
+      },
+    });
+  };
 
   return (
     <ProfilePageBanner

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityCreatedDocument,
   useActivityLogOnCollaborationQuery,
@@ -78,14 +78,12 @@ const useActivityOnCollaboration = (
   const [fetchActorDetails] = useActorDetailsLazyQuery();
   const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
 
-  const memberJoinedContributorIds = useMemo(() => {
+  useEffect(() => {
     const entries = activityLogData?.activityLogOnCollaboration ?? [];
-    return [
+    const memberJoinedContributorIds = [
       ...new Set(entries.filter((e): e is typeof e & { actor: { id: string } } => 'actor' in e).map(e => e.actor.id)),
     ];
-  }, [activityLogData]);
 
-  useEffect(() => {
     if (memberJoinedContributorIds.length === 0) {
       return;
     }
@@ -103,7 +101,7 @@ const useActivityOnCollaboration = (
       setActorDetailsMap(newMap);
     };
     fetchAll();
-  }, [memberJoinedContributorIds, fetchActorDetails]);
+  }, [activityLogData, fetchActorDetails]);
 
   // Extract type-specific fields from actor details to enrich contributors
   const getExtraContributorFields = (actorDetail: ActorDetail | undefined): Record<string, unknown> => {
@@ -117,7 +115,7 @@ const useActivityOnCollaboration = (
     return {};
   };
 
-  const activities = useMemo<ActivityLogResultType[] | undefined>(() => {
+  const activities = (() => {
     if (!activityLogData) {
       return undefined;
     }
@@ -131,7 +129,7 @@ const useActivityOnCollaboration = (
       }
       return entry as ActivityLogResultType;
     });
-  }, [activityLogData, actorDetailsMap]);
+  })();
 
   const fetchMoreActivities = (limit: number) => {
     refetch({

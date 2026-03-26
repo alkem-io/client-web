@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
@@ -35,7 +34,7 @@ const useAssociatedOrganization = ({
   const roleSetId = data?.lookup.organization?.roleSet.id;
 
   const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] = useRemoveRoleFromUserMutation();
-  const handleRemoveSelfFromOrganization = useCallback(async () => {
+  const handleRemoveSelfFromOrganization = async () => {
     if (!userId || !roleSetId) {
       throw new Error('Data not yet loaded');
     }
@@ -49,9 +48,9 @@ const useAssociatedOrganization = ({
       refetchQueries: [refetchUserOrganizationIdsQuery({ userId })],
       awaitRefetchQueries: true,
     });
-  }, [organizationId, userId, roleSetId, disassociateSelfFromOrganization]);
+  };
 
-  const associatedOrganization = mapToAssociatedOrganization(data?.lookup.organization, organizationId, {
+  const associatedOrganization = mapToAssociatedOrganization(data?.lookup.organization, {
     loading,
     error,
   });

@@ -1,5 +1,4 @@
 import { DialogContent } from '@mui/material';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCommunityAvailableVCsQuery,
@@ -72,7 +71,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
     skip: !roleSetId || !open,
   });
 
-  const availableVCs = useMemo(() => {
+  const availableVCs = (() => {
     return (
       vcData?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.map(vc => ({
         id: vc.id,
@@ -84,7 +83,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
         },
       })) ?? []
     );
-  }, [vcData?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy]);
+  })();
 
   const virtualContributors: VirtualContributorProps[] =
     availableVCs.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];

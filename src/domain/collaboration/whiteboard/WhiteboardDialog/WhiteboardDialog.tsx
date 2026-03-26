@@ -3,7 +3,7 @@ import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/exc
 import { DialogContent } from '@mui/material';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
@@ -211,7 +211,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     };
   };
 
-  const onClose = useCallback(async () => {
+  const onClose = async () => {
     if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
       const whiteboardState = await getWhiteboardState();
       const prepareWhiteboardResult = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
@@ -227,31 +227,20 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     // After editing the whiteboard in real time mode, we need to evict the cache in case we have a cached version, on CalloutForm for example.
     evictFromCache(whiteboard?.id, 'Whiteboard');
     actions.onCancel();
-  }, [
-    editModeEnabled,
-    collabApiRef,
-    whiteboard,
-    getWhiteboardState,
-    prepareWhiteboardForUpdate,
-    actions,
-    evictFromCache,
-  ]);
+  };
 
-  const handleImportTemplate = useCallback(
-    async (template: WhiteboardTemplateContent) => {
-      if (excalidrawAPI) {
-        try {
-          await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
-        } catch (err) {
-          notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-          logError(new Error(`Error importing whiteboard template: '${err}'`), {
-            category: TagCategoryValues.WHITEBOARD,
-          });
-        }
+  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
+    if (excalidrawAPI) {
+      try {
+        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+      } catch (err) {
+        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+        logError(new Error(`Error importing whiteboard template: '${err}'`), {
+          category: TagCategoryValues.WHITEBOARD,
+        });
       }
-    },
-    [excalidrawAPI, notify, t]
-  );
+    }
+  };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
@@ -264,6 +253,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const formikRef = useRef<FormikProps<WhiteboardFormSchema>>(null);
 
+  // Keep useMemo: passed as Formik initialValues prop. Effect resets form on [whiteboard?.id] change.
   const initialValues = useMemo(
     () => ({
       profile: {
@@ -278,7 +268,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     formikRef.current?.resetForm({
       values: initialValues,
     });
-  }, [initialValues]);
+  }, [whiteboard?.id]);
 
   if (state?.loadingWhiteboardValue) {
     return <Loading text="Loading whiteboard..." />;

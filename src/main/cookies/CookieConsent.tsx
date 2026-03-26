@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import CookieSettings from './CookieSettings';
@@ -8,7 +8,7 @@ import GeneralConsent from './GeneralConsent';
 const CookieConsent = ({ ref }) => {
   const [cookieOptionsOpen, setCookieOptionsOpen] = useState(false);
 
-  const handleOpenSettings = useCallback(() => setCookieOptionsOpen(true), [setCookieOptionsOpen]);
+  const handleOpenSettings = () => setCookieOptionsOpen(true);
 
   const containerRef = useCombinedRefs(null, ref);
 

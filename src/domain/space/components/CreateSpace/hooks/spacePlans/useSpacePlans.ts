@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import { usePlanAvailability } from '@/domain/space/components/CreateSpace/hooks/spacePlans/usePlanAvailability';
@@ -25,20 +24,16 @@ export const useSpacePlans = ({ skip, accountId }: Props): Provided => {
   const { data, loading: plansLoading } = usePlansTableQuery({ skip });
   const { isPlanAvailable, loading } = usePlanAvailability({ skip, accountId });
 
-  const availablePlans = useMemo(
-    () =>
-      (
-        data?.platform.licensingFramework.plans
-          .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
-          .filter(plan => plan.enabled)
-          .filter(plan => isPlanAvailable(plan))
-          .sort((a, b) => a.sortOrder - b.sortOrder) ?? []
-      ).map(plan => ({
-        id: plan.id,
-        name: plan.name,
-      })),
-    [data, isPlanAvailable]
-  );
+  const availablePlans = (
+    data?.platform.licensingFramework.plans
+      .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
+      .filter(plan => plan.enabled)
+      .filter(plan => isPlanAvailable(plan))
+      .sort((a, b) => a.sortOrder - b.sortOrder) ?? []
+  ).map(plan => ({
+    id: plan.id,
+    name: plan.name,
+  }));
 
   return {
     availablePlans,

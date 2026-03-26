@@ -1,6 +1,5 @@
 import { Box, Button } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { TagsetReservedName, type UpdateVirtualContributorInput } from '@/core/apollo/generated/graphql-schema';
@@ -83,20 +82,18 @@ export const VirtualContributorForm = ({
 
   const { displayName: subSpaceName } = bokProfile ?? {};
 
-  const initialValues: VirtualContributorFormValues = useMemo(
-    () => ({
-      profile: {
-        displayName: displayName,
-        description: description ?? '',
-        tagline: tagline,
-        tagsets: tagsets,
-        references: vcReferences ?? [],
-      },
-      hostDisplayName: account?.host?.profile.displayName ?? '',
-      subSpaceName: subSpaceName ?? '',
-    }),
-    [displayName, description, tagline, tagsets, account, subSpaceName, vcReferences]
-  );
+  const initialValues: VirtualContributorFormValues = {
+    profile: {
+      displayName: displayName,
+      description: description ?? '',
+      tagline: tagline,
+      tagsets: tagsets,
+      references: vcReferences ?? [],
+    },
+
+    hostDisplayName: account?.host?.profile.displayName ?? '',
+    subSpaceName: subSpaceName ?? '',
+  };
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({

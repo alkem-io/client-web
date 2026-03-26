@@ -43,7 +43,6 @@ const UserMessagingDialog = () => {
   // Sync unread count to context: use full query count when dialog is open, lightweight count otherwise
   useEffect(() => {
     const chosen = isOpen ? totalUnreadCount : initialUnreadCount;
-    console.log('[BadgeSync]', { isOpen, totalUnreadCount, initialUnreadCount, chosen });
     setTotalUnreadCount(chosen);
   }, [isOpen, totalUnreadCount, initialUnreadCount, setTotalUnreadCount]);
 

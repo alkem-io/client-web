@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { useInviteUsersDialogQuery, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, RoleName, type UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
@@ -77,7 +76,7 @@ export const useContributors = ({
   const pageInfo = paginatedData?.usersPaginated.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = useCallback(async () => {
+  const fetchMore = async () => {
     if (!paginatedData) {
       return;
     }
@@ -89,21 +88,17 @@ export const useContributors = ({
         filter,
       },
     });
-  }, [paginatedData, fetchMoreRaw, pageInfo?.endCursor, pageSize, filter]);
+  };
 
-  const roleSetData = useMemo(
-    () =>
-      (usersByRole[RoleName.Member] ?? []).map(user => ({
-        ...user,
-        profile: user.profile
-          ? {
-              ...user.profile,
-              visual: user.profile.avatar, // to match the expected shape
-            }
-          : undefined,
-      })),
-    [usersByRole]
-  );
+  const roleSetData = (usersByRole[RoleName.Member] ?? []).map(user => ({
+    ...user,
+    profile: user.profile
+      ? {
+          ...user.profile,
+          visual: user.profile.avatar, // to match the expected shape
+        }
+      : undefined,
+  }));
 
   if (onlyUsersInRole && parentSpaceId) {
     return { data: roleSetData, loading: loadingUsersByRoleSet || loadingRoleSet, hasMore: false, fetchMore: () => {} };

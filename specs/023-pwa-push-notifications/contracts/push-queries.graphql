@@ -1,0 +1,21 @@
+# Push Notification Queries
+# These documents will be created as .graphql files in src/main/pushNotifications/graphql/
+# and processed by codegen to generate typed Apollo hooks.
+
+# Query: Get VAPID public key
+# Returns null if push notifications are disabled server-side
+query VapidPublicKey {
+  vapidPublicKey
+}
+
+# Query: Get current user's active push subscriptions
+# Used for device management UI and subscription validation
+query MyPushSubscriptions {
+  myPushSubscriptions {
+    id
+    createdDate
+    status
+    userAgent
+    lastActiveDate
+  }
+}

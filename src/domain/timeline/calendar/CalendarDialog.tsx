@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import dayjs from 'dayjs';
-import { type FC, useMemo, useRef, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { type CalendarEventDetailsFragment, TagsetType } from '@/core/apollo/generated/graphql-schema';
@@ -87,13 +87,10 @@ const CalendarDialogInner: FC<{
   const params = useQueryParams();
   const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
   const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
-  const highlightedDay = useMemo(
-    () =>
-      highlightedDayParam && dayjs(highlightedDayParam).isValid()
-        ? dayjs(highlightedDayParam).startOf('day').toDate()
-        : null,
-    [highlightedDayParam]
-  );
+  const highlightedDay =
+    highlightedDayParam && dayjs(highlightedDayParam).isValid()
+      ? dayjs(highlightedDayParam).startOf('day').toDate()
+      : null;
   const isSubspace = Boolean(parentSpaceId);
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
@@ -122,25 +119,24 @@ const CalendarDialogInner: FC<{
     return navigate('/');
   };
 
-  const emptyCalendarEvent: Partial<CalendarEventDetailData> = useMemo(
-    () => ({
-      startDate: dateRounded(),
-      durationMinutes: 30,
-      profile: {
-        id: '',
-        url: '',
-        displayName: '',
-        description: t('calendar.defaultEventDescription'),
-        references: [],
-        tagset: { id: '', name: '', tags: [], allowedValues: [], type: TagsetType.Freeform },
-      },
-      multipleDays: false,
-      durationDays: 0,
-      wholeDay: false,
-      type: undefined,
-    }),
-    [t]
-  );
+  const emptyCalendarEvent: Partial<CalendarEventDetailData> = {
+    startDate: dateRounded(),
+    durationMinutes: 30,
+
+    profile: {
+      id: '',
+      url: '',
+      displayName: '',
+      description: t('calendar.defaultEventDescription'),
+      references: [],
+      tagset: { id: '', name: '', tags: [], allowedValues: [], type: TagsetType.Freeform },
+    },
+
+    multipleDays: false,
+    durationDays: 0,
+    wholeDay: false,
+    type: undefined,
+  };
 
   // Deleting an event:
   if (deletingEvent) {

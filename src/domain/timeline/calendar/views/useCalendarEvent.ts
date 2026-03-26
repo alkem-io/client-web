@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { useCalendarEventDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
@@ -101,29 +100,22 @@ const useCalendarEvent = ({ eventId }: useCalendarEventProps): useCalendarEventP
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 
-  const _messages = useMemo(() => event?.comments?.messages ?? [], [event?.comments?.messages]);
-  const messages = useMemo<Message[]>(
-    () =>
-      _messages?.map(x => ({
-        id: x.id,
-        message: x.message,
-        author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
-        createdAt: new Date(x.timestamp),
-        reactions: x.reactions,
-        threadID: x.threadID,
-      })),
-    [_messages]
-  );
+  const _messages = event?.comments?.messages ?? [];
+  const messages = _messages?.map(x => ({
+    id: x.id,
+    message: x.message,
+    author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
+    createdAt: new Date(x.timestamp),
+    reactions: x.reactions,
+    threadID: x.threadID,
+  }));
 
-  const vcInteractions = useMemo(() => event?.comments?.vcInteractions ?? [], [event?.comments?.vcInteractions]);
+  const vcInteractions = event?.comments?.vcInteractions ?? [];
 
   const commentsPrivileges = event?.comments?.authorization?.myPrivileges ?? [];
 
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteComment = useCallback(
-    authorId => canDeleteComments || (isAuthenticated && authorId === userModel?.id),
-    [userModel, isAuthenticated, canDeleteComments]
-  );
+  const canDeleteComment = authorId => canDeleteComments || (isAuthenticated && authorId === userModel?.id);
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);

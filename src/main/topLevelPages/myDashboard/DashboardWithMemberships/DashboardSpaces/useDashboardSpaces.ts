@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useDashboardWithMembershipsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 
@@ -14,7 +14,7 @@ export const useDashboardSpaces = () => {
   const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
 
   // Reorder memberships so homeSpace is first
-  const orderedMemberships = useMemo(() => {
+  const orderedMemberships = (() => {
     const memberships = data?.me.spaceMembershipsHierarchical ?? [];
     if (!homeSpaceId) return memberships;
 
@@ -25,7 +25,7 @@ export const useDashboardSpaces = () => {
     const [homeSpace] = reordered.splice(homeSpaceIndex, 1);
     reordered.unshift(homeSpace);
     return reordered;
-  }, [data?.me.spaceMembershipsHierarchical, homeSpaceId]);
+  })();
 
   const handleDialogOpen = (idx: number, displayName: string) => () => {
     setSelectedSpaceIdx(idx);
@@ -35,16 +35,13 @@ export const useDashboardSpaces = () => {
 
   const handleDialogClose = () => setIsDialogOpen(false);
 
-  const fetchSpaces = useCallback(
-    (limit: number = LIMIT) => {
-      fetchDashboardWithMemberships({ variables: { limit } });
-    },
-    [fetchDashboardWithMemberships]
-  );
+  const fetchSpaces = (limit: number = LIMIT) => {
+    fetchDashboardWithMemberships({ variables: { limit } });
+  };
 
-  const refetchSpaces = useCallback(() => {
+  const refetchSpaces = () => {
     refetch({ limit: LIMIT });
-  }, [refetch]);
+  };
 
   return {
     data,

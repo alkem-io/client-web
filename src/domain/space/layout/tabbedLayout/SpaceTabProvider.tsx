@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, type SpaceTabQuery, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
@@ -54,7 +54,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
 
   const dataToUse = spaceTabData || lastSpaceTabDataRef.current;
 
-  const memoizedData = useMemo(() => {
+  const memoizedData = (() => {
     const space = dataToUse?.lookup.space;
 
     const myPrivileges = space?.authorization?.myPrivileges;
@@ -93,7 +93,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
       classificationTagsets,
       canEditInnovationFlow,
     };
-  }, [dataToUse, tabPosition]);
+  })();
 
   return {
     urlInfo,

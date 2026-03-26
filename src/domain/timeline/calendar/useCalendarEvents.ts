@@ -1,5 +1,4 @@
 import type { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { useCallback, useMemo } from 'react';
 import {
   refetchCalendarEventImportUrlsQuery,
   refetchSpaceCalendarEventsQuery,
@@ -93,123 +92,114 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
 
   const [deleteCalendarEvent] = useDeleteCalendarEventMutation();
 
-  const refetchQueriesList: MutationBaseOptions['refetchQueries'] = useMemo(() => {
+  const refetchQueriesList: MutationBaseOptions['refetchQueries'] = (() => {
     const list = [refetchSpaceCalendarEventsQuery({ spaceId: spaceId ?? '' })];
     if (parentSpaceId) {
       list.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId }));
     }
     return list;
-  }, [spaceId, parentSpaceId]);
+  })();
 
-  const createEvent = useCallback(
-    (event: CalendarEventFormData) => {
-      const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
-      const parsedStartDate = startDate ? new Date(startDate) : new Date();
-      let durationMinutes = rest.durationMinutes;
-      let durationDays = 0;
-      let multipleDays = false;
+  const createEvent = (event: CalendarEventFormData) => {
+    const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
+    const parsedStartDate = startDate ? new Date(startDate) : new Date();
+    let durationMinutes = rest.durationMinutes;
+    let durationDays = 0;
+    let multipleDays = false;
 
-      if (!isSameDay(startDate, endDate)) {
-        const parsedEndDate = endDate ? new Date(endDate) : new Date();
-        durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
-        durationDays = Math.floor(durationMinutes / (24 * 60));
-        multipleDays = durationDays > 0;
-      }
+    if (!isSameDay(startDate, endDate)) {
+      const parsedEndDate = endDate ? new Date(endDate) : new Date();
+      durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
+      durationDays = Math.floor(durationMinutes / (24 * 60));
+      multipleDays = durationDays > 0;
+    }
 
-      if (!calendarId) {
-        return Promise.reject(new Error('Calendar is not loaded yet'));
-      }
+    if (!calendarId) {
+      return Promise.reject(new Error('Calendar is not loaded yet'));
+    }
 
-      return createCalendarEvent({
-        variables: {
-          eventData: {
-            calendarID: calendarId,
-            startDate: parsedStartDate,
-            tags: tags,
-            ...rest,
-            durationMinutes,
-            durationDays,
-            multipleDays,
-            wholeDay,
-            profileData: mapProfileModelToCreateProfileInput({
-              description,
-              displayName,
-              location: {
-                id: '',
-                city: location?.city,
-              },
-            }),
-          },
+    return createCalendarEvent({
+      variables: {
+        eventData: {
+          calendarID: calendarId,
+          startDate: parsedStartDate,
+          tags: tags,
+          ...rest,
+          durationMinutes,
+          durationDays,
+          multipleDays,
+          wholeDay,
+          profileData: mapProfileModelToCreateProfileInput({
+            description,
+            displayName,
+            location: {
+              id: '',
+              city: location?.city,
+            },
+          }),
         },
-        refetchQueries: refetchQueriesList,
-        awaitRefetchQueries: true,
-      }).then(result => result.data?.createEventOnCalendar?.profile.url);
-    },
-    [createCalendarEvent, calendarId]
-  );
+      },
+      refetchQueries: refetchQueriesList,
+      awaitRefetchQueries: true,
+    }).then(result => result.data?.createEventOnCalendar?.profile.url);
+  };
 
-  const updateEvent = useCallback(
-    (eventId: string, event: CalendarEventFormData, tagset: TagsetModel) => {
-      const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
-      const parsedStartDate = startDate ? new Date(startDate) : new Date();
+  const updateEvent = (eventId: string, event: CalendarEventFormData, tagset: TagsetModel) => {
+    const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
+    const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
-      // todo:b reuse
-      let durationMinutes = rest.durationMinutes;
-      let durationDays = 0;
-      let multipleDays = false;
+    // todo:b reuse
+    let durationMinutes = rest.durationMinutes;
+    let durationDays = 0;
+    let multipleDays = false;
 
-      if (!isSameDay(startDate, endDate)) {
-        const parsedEndDate = endDate ? new Date(endDate) : new Date();
-        durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
-        durationDays = Math.floor(durationMinutes / (24 * 60));
-        multipleDays = durationDays > 0;
-      }
+    if (!isSameDay(startDate, endDate)) {
+      const parsedEndDate = endDate ? new Date(endDate) : new Date();
+      durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
+      durationDays = Math.floor(durationMinutes / (24 * 60));
+      multipleDays = durationDays > 0;
+    }
 
-      const updatedTagset = { ...tagset };
-      updatedTagset.tags = [...tags];
+    const updatedTagset = { ...tagset };
+    updatedTagset.tags = [...tags];
 
-      return updateCalendarEvent({
-        variables: {
-          eventData: {
-            ID: eventId,
-            startDate: parsedStartDate,
-            ...rest,
-            durationMinutes,
-            durationDays,
-            multipleDays,
-            wholeDay,
-            profileData: mapProfileModelToUpdateProfileInput({
-              displayName: displayName,
-              description: description,
-              tagsets: [updatedTagset],
-              location: {
-                id: location?.id ?? '',
-                city: location?.city,
-              },
-            }),
-          },
+    return updateCalendarEvent({
+      variables: {
+        eventData: {
+          ID: eventId,
+          startDate: parsedStartDate,
+          ...rest,
+          durationMinutes,
+          durationDays,
+          multipleDays,
+          wholeDay,
+          profileData: mapProfileModelToUpdateProfileInput({
+            displayName: displayName,
+            description: description,
+            tagsets: [updatedTagset],
+            location: {
+              id: location?.id ?? '',
+              city: location?.city,
+            },
+          }),
         },
-        refetchQueries: [...refetchQueriesList, refetchCalendarEventImportUrlsQuery({ eventId })],
-        awaitRefetchQueries: true,
-      }).then(result => result.data?.updateCalendarEvent?.profile.url);
-    },
-    [updateCalendarEvent]
-  );
+      },
+      refetchQueries: [...refetchQueriesList, refetchCalendarEventImportUrlsQuery({ eventId })],
+      awaitRefetchQueries: true,
+    }).then(result => result.data?.updateCalendarEvent?.profile.url);
+  };
 
-  const deleteEvent = useCallback(
-    async (eventId: string) => {
-      await deleteCalendarEvent({
-        variables: {
-          deleteData: {
-            ID: eventId,
-          },
+  const deleteEvent = async (eventId: string) => {
+    await deleteCalendarEvent({
+      variables: {
+        deleteData: {
+          ID: eventId,
         },
-        refetchQueries: refetchQueriesList,
-        awaitRefetchQueries: true,
-      });
-    },
-    [deleteCalendarEvent]
-  );
+      },
+      refetchQueries: refetchQueriesList,
+      awaitRefetchQueries: true,
+    });
+  };
 
   return {
     entities: { events, privileges },

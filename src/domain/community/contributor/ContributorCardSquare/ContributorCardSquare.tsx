@@ -1,5 +1,5 @@
 import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useSendMessageToOrganizationMutation,
@@ -44,68 +44,61 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
 
   const messageReceivers = [{ id, displayName, avatarUri: avatar, city: tooltip?.city, country: tooltip?.country }];
 
-  const handleSendMessage = useCallback(
-    async (messageText: string) => {
-      if (!id) {
-        throw new Error('User not loaded.');
-      }
+  const handleSendMessage = async (messageText: string) => {
+    if (!id) {
+      throw new Error('User not loaded.');
+    }
 
-      if (contributorType === ActorType.User) {
-        await sendMessageToUser({
-          variables: {
-            messageData: {
-              message: messageText,
-              receiverIds: [id],
-            },
+    if (contributorType === ActorType.User) {
+      await sendMessageToUser({
+        variables: {
+          messageData: {
+            message: messageText,
+            receiverIds: [id],
           },
-        });
-      }
-      if (contributorType === ActorType.Organization) {
-        await sendMessageToOrganization({
-          variables: {
-            messageData: {
-              message: messageText,
-              organizationId: id,
-            },
+        },
+      });
+    }
+    if (contributorType === ActorType.Organization) {
+      await sendMessageToOrganization({
+        variables: {
+          messageData: {
+            message: messageText,
+            organizationId: id,
           },
-        });
-      }
-    },
-    [sendMessageToUser, id]
-  );
+        },
+      });
+    }
+  };
 
-  const TooltipElement = useMemo(
-    () =>
-      ({ children }) =>
-        tooltip ? (
-          <Tooltip
-            arrow={true}
-            title={
-              <GridProvider columns={3}>
-                <Box width={gutters(15)}>
-                  <UserCard
-                    displayName={displayName}
-                    avatarSrc={avatar}
-                    avatarAltText={avatarAltText}
-                    tags={tooltip?.tags ?? []}
-                    roleName={roleName ?? tooltip?.roleName}
-                    city={tooltip?.city}
-                    country={tooltip?.country}
-                    isContactable={isContactable}
-                    onContact={() => setIsMessageUserDialogOpen(true)}
-                  />
-                </Box>
-              </GridProvider>
-            }
-            componentsProps={{ tooltip: { sx: { bgcolor: 'transparent' } } }}
-          >
-            <Box>{children}</Box>
-          </Tooltip>
-        ) : (
-          children
-        ),
-    [displayName, avatar, tooltip, isContactable]
-  );
+  const TooltipElement = ({ children }) =>
+    tooltip ? (
+      <Tooltip
+        arrow={true}
+        title={
+          <GridProvider columns={3}>
+            <Box width={gutters(15)}>
+              <UserCard
+                displayName={displayName}
+                avatarSrc={avatar}
+                avatarAltText={avatarAltText}
+                tags={tooltip?.tags ?? []}
+                roleName={roleName ?? tooltip?.roleName}
+                city={tooltip?.city}
+                country={tooltip?.country}
+                isContactable={isContactable}
+                onContact={() => setIsMessageUserDialogOpen(true)}
+              />
+            </Box>
+          </GridProvider>
+        }
+        componentsProps={{ tooltip: { sx: { bgcolor: 'transparent' } } }}
+      >
+        <Box>{children}</Box>
+      </Tooltip>
+    ) : (
+      children
+    );
 
   return (
     <>

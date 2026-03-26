@@ -1,6 +1,6 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Alert, Box, CircularProgress, IconButton, Switch, TextField, Typography } from '@mui/material';
-import { type ChangeEvent, type FC, type MouseEvent, useCallback, useId } from 'react';
+import { type ChangeEvent, type FC, type MouseEvent, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -23,17 +23,14 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
   const notify = useNotification();
   const guestAccessLabelId = useId();
 
-  const handleToggleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      if (!guestAccess.canToggle || guestAccess.isUpdating) {
-        return;
-      }
-      void Promise.resolve(guestAccess.onToggle(event.target.checked)).catch(() => undefined);
-    },
-    [guestAccess]
-  );
+  const handleToggleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!guestAccess.canToggle || guestAccess.isUpdating) {
+      return;
+    }
+    void Promise.resolve(guestAccess.onToggle(event.target.checked)).catch(() => undefined);
+  };
 
-  const handleCopyGuestLink = useCallback(async () => {
+  const handleCopyGuestLink = async () => {
     if (!guestAccess?.guestLink) {
       return;
     }
@@ -47,7 +44,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
     } catch {
       notify(t('share-dialog.guest-access.errors.UNKNOWN'), 'error');
     }
-  }, [guestAccess?.guestLink, notify, t]);
+  };
 
   const handleClick = (event: MouseEvent<HTMLInputElement>) => {
     event.currentTarget.select();

@@ -3,7 +3,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Box, Button, DialogContent, IconButton, styled, Tooltip } from '@mui/material';
 import type React from 'react';
-import { Suspense, useRef, useState } from 'react';
+import { Suspense, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '../dialog/DialogHeader';
@@ -63,6 +63,7 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
     t('components.callout-creation.framing.mediaGallery.imageNotAvailable')
   );
   const galleryRef = useRef<ImageGalleryRef>(null);
+  const currentSlideRef = useRef<number>(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
   const [fullscreen, setFullscreen] = useState<boolean>(false);
@@ -92,24 +93,41 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   };
 
   const handleDownload = async () => {
-    if (selectedIndex === undefined) {
+    const index = currentSlideRef.current;
+    const item = items[index];
+    if (!item?.url) {
       return;
-    }
-    const item = items[selectedIndex];
-    if (!item.url) {
-      return; // Can't download placeholder images
     }
     const response = await fetch(item.url);
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = item.title || `image-${selectedIndex + 1}`;
+    link.download = item.title || `image-${index + 1}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
   };
+
+  const galleryItems: GalleryItem[] = useMemo(
+    () =>
+      items.map(item => {
+        const hasValidUrl = Boolean(item.url);
+        const hasValidThumbnail = Boolean(item.thumbnailUrl);
+
+        return {
+          original: hasValidUrl ? item.url : placeholderImage,
+          thumbnail: hasValidThumbnail ? item.thumbnailUrl : hasValidUrl ? item.url : placeholderImage,
+          originalAlt:
+            title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
+          thumbnailAlt:
+            title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
+          description: item.description,
+        };
+      }),
+    [items, placeholderImage, title, t]
+  );
 
   const handleDialogEntered = () => {
     if (selectedIndex === undefined) {
@@ -121,20 +139,6 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
   if (!items || items.length === 0) {
     return null;
   }
-
-  const galleryItems: GalleryItem[] = items.map(item => {
-    const hasValidUrl = Boolean(item.url);
-    const hasValidThumbnail = Boolean(item.thumbnailUrl);
-
-    return {
-      original: hasValidUrl ? item.url : placeholderImage,
-      thumbnail: hasValidThumbnail ? item.thumbnailUrl : hasValidUrl ? item.url : placeholderImage,
-      originalAlt: title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
-      thumbnailAlt:
-        title || item.alt || item.title || t('components.callout-creation.framing.mediaGallery.galleryItem'),
-      description: item.description,
-    };
-  });
 
   const hasMoreThumbnails = items.length > MAX_VISIBLE_THUMBNAILS;
   const visibleThumbnails = items.slice(0, MAX_VISIBLE_THUMBNAILS);
@@ -231,7 +235,9 @@ const MediaGallery = ({ title, items, actions }: MediaGalleryProps) => {
               ref={galleryRef}
               items={galleryItems}
               showPlayButton={false}
-              onSlide={currentIndex => setSelectedIndex(currentIndex)}
+              onSlide={currentIndex => {
+                currentSlideRef.current = currentIndex;
+              }}
               showFullscreenButton={fullscreen}
               onScreenChange={fullscreen => setFullscreen(fullscreen)}
               disableThumbnailScroll={true}

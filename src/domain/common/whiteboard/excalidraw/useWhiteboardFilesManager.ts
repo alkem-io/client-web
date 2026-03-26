@@ -389,6 +389,8 @@ const useWhiteboardFilesManager = ({
     downloader.clearAllFailures();
   };
 
+  // Keep useMemo: consumers use this return value in useEffect deps (e.g. ExcalidrawWrapper).
+  // Note: uploadingFile is intentionally excluded — including it caused an infinite re-render loop.
   return useMemo<WhiteboardFilesManager>(
     () => ({
       addNewFile,

@@ -1,5 +1,5 @@
 import type { ApolloCache } from '@apollo/client';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   useInAppNotificationsQuery,
   useInAppNotificationsUnreadCountQuery,
@@ -44,7 +44,7 @@ export const useInAppNotifications = () => {
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
   // Get the notification types based on the selected filter
-  const notificationTypes = useMemo(() => getNotificationTypesForFilter(selectedFilter), [selectedFilter]);
+  const notificationTypes = getNotificationTypesForFilter(selectedFilter);
 
   const { data, loading, error, fetchMore, refetch } = useInAppNotificationsQuery({
     variables: {
@@ -73,7 +73,7 @@ export const useInAppNotifications = () => {
   });
 
   // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
-  const notificationsInApp = useMemo(() => {
+  const notificationsInApp = (() => {
     const notifications: InAppNotificationModel[] = [];
 
     for (const notificationData of data?.me?.notifications?.inAppNotifications ?? []) {
@@ -93,20 +93,20 @@ export const useInAppNotifications = () => {
     }
 
     return notifications;
-  }, [data?.me?.notifications?.inAppNotifications]);
+  })();
 
   // Calculate total unread count from the dedicated query
-  const unreadCount = useMemo(() => {
+  const unreadCount = (() => {
     return unreadCountData?.me?.notificationsUnreadCount ?? 0;
-  }, [unreadCountData?.me?.notificationsUnreadCount]);
+  })();
 
   // Check if there are more notifications to load
-  const hasMore = useMemo(() => {
+  const hasMore = (() => {
     return data?.me?.notifications?.pageInfo?.hasNextPage ?? false;
-  }, [data?.me?.notifications?.pageInfo?.hasNextPage]);
+  })();
 
   // Function to fetch more notifications
-  const fetchMoreNotifications = useCallback(async () => {
+  const fetchMoreNotifications = async () => {
     if (!hasMore || loading) {
       return;
     }
@@ -137,28 +137,25 @@ export const useInAppNotifications = () => {
         },
       });
     } catch (_error) {}
-  }, [fetchMore, hasMore, loading, data?.me?.notifications?.pageInfo?.endCursor, notificationTypes]);
+  };
 
-  const updateNotificationState = useCallback(
-    async (id: string, status: NotificationEventInAppState) => {
-      try {
-        await updateState({
-          variables: {
-            ID: id,
-            state: status,
-          },
-          update: (cache, result) => {
-            if (result?.data?.updateNotificationState === status) {
-              updateNotificationsCache(cache, [id], status);
-            }
-          },
-        });
-      } catch (_error) {}
-    },
-    [updateState]
-  );
+  const updateNotificationState = async (id: string, status: NotificationEventInAppState) => {
+    try {
+      await updateState({
+        variables: {
+          ID: id,
+          state: status,
+        },
+        update: (cache, result) => {
+          if (result?.data?.updateNotificationState === status) {
+            updateNotificationsCache(cache, [id], status);
+          }
+        },
+      });
+    } catch (_error) {}
+  };
 
-  const markNotificationsAsRead = useCallback(async () => {
+  const markNotificationsAsRead = async () => {
     try {
       await markAsRead({
         variables: {
@@ -172,7 +169,7 @@ export const useInAppNotifications = () => {
         },
       });
     } catch (_error) {}
-  }, [markAsRead, notificationTypes, refetch]);
+  };
 
   return {
     notificationsInApp,

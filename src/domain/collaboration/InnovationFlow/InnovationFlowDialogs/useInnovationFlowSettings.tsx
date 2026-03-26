@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   refetchInnovationFlowSettingsQuery,
   useCreateStateOnInnovationFlowMutation,
@@ -88,29 +87,26 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   const innovationFlow = collaboration?.innovationFlow;
 
   // Collaboration
-  const callouts = useMemo(
-    () =>
-      collaboration?.calloutsSet.callouts
-        ?.map<GroupedCallout>(callout => ({
-          id: callout.id,
-          profile: {
-            displayName: callout.framing?.profile.displayName,
+  const callouts =
+    collaboration?.calloutsSet.callouts
+      ?.map<GroupedCallout>(callout => ({
+        id: callout.id,
+        profile: {
+          displayName: callout.framing?.profile.displayName,
+        },
+        framing: {
+          type: callout.framing?.type,
+        },
+        settings: {
+          contribution: {
+            allowedTypes: callout.settings?.contribution?.allowedTypes,
           },
-          framing: {
-            type: callout.framing?.type,
-          },
-          settings: {
-            contribution: {
-              allowedTypes: callout.settings?.contribution?.allowedTypes,
-            },
-          },
-          activity: callout.activity,
-          sortOrder: callout.sortOrder,
-          flowState: mapFlowState(callout.classification?.flowState),
-        }))
-        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
-    [collaboration?.calloutsSet.callouts]
-  );
+        },
+        activity: callout.activity,
+        sortOrder: callout.sortOrder,
+        flowState: mapFlowState(callout.classification?.flowState),
+      }))
+      .sort((a, b) => a.sortOrder - b.sortOrder) ?? [];
 
   const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowCurrentStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],

@@ -1,6 +1,6 @@
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Chip, IconButton } from '@mui/material';
-import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminSpacesListQuery,
@@ -39,48 +39,45 @@ export const SpaceList: FC = () => {
     setDisplayedItemsCount(INITIAL_PAGE_SIZE);
   }, [searchTerm]);
 
-  const columns: AdminTableColumn<SpaceTableItem>[] = useMemo(
-    () => [
-      {
-        header: 'Visibility',
-        flex: 1,
-        minWidth: '120px',
-        render: (item: SpaceTableItem) => (
+  const columns: AdminTableColumn<SpaceTableItem>[] = [
+    {
+      header: 'Visibility',
+      flex: 1,
+      minWidth: '120px',
+      render: (item: SpaceTableItem) => (
+        <Chip
+          label={item.visibility}
+          size="small"
+          color={item.visibility === SpaceVisibility.Active ? 'success' : 'default'}
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      header: 'Privacy Mode',
+      flex: 1,
+      minWidth: '120px',
+      render: (item: SpaceTableItem) =>
+        item.privacyMode ? (
           <Chip
-            label={item.visibility}
+            label={item.privacyMode}
             size="small"
-            color={item.visibility === SpaceVisibility.Active ? 'success' : 'default'}
+            color={item.privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
             variant="outlined"
           />
+        ) : (
+          ''
         ),
-      },
-      {
-        header: 'Privacy Mode',
-        flex: 1,
-        minWidth: '120px',
-        render: (item: SpaceTableItem) =>
-          item.privacyMode ? (
-            <Chip
-              label={item.privacyMode}
-              size="small"
-              color={item.privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
-              variant="outlined"
-            />
-          ) : (
-            ''
-          ),
-      },
-      {
-        header: 'Account Owner',
-        flex: 1,
-        minWidth: '150px',
-        render: (item: SpaceTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
-      },
-    ],
-    []
-  );
+    },
+    {
+      header: 'Account Owner',
+      flex: 1,
+      minWidth: '150px',
+      render: (item: SpaceTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
+    },
+  ];
 
-  const allSpaces = useMemo(() => {
+  const allSpaces = (() => {
     const spaces = spacesData?.platformAdmin.spaces ?? [];
 
     return spaces
@@ -109,22 +106,22 @@ export const SpaceList: FC = () => {
         } as SpaceTableItem;
       })
       .filter(space => !searchTerm || space.value.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [spacesData, searchTerm]);
+  })();
 
   // Paginated spaces for display
-  const spaceList = useMemo(() => {
+  const spaceList = (() => {
     return allSpaces.slice(0, displayedItemsCount);
-  }, [allSpaces, displayedItemsCount]);
+  })();
 
   const hasMore = displayedItemsCount < allSpaces.length;
 
   // Use useCallback WITHOUT isFetchingMore in dependencies to prevent recreation
-  const fetchMore = useCallback(async () => {
+  const fetchMore = async () => {
     setDisplayedItemsCount(prev => {
       const next = prev + PAGE_SIZE;
       return Math.min(next, allSpaces.length);
     });
-  }, [allSpaces.length]);
+  };
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchPlatformAdminSpacesListQuery()],

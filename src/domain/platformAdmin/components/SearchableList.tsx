@@ -1,6 +1,6 @@
 import { Button, FormControl, InputLabel, OutlinedInput } from '@mui/material';
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { Visual } from '@/domain/common/visual/Visual';
@@ -50,13 +50,11 @@ export const SearchableList = <
     setFilterBy(value);
   };
 
-  const filteredData = useMemo(
-    () =>
-      data.filter(item => (filterBy ? item.profile?.displayName.toLowerCase().includes(filterBy.toLowerCase()) : true)),
-    [filterBy, data]
+  const filteredData = data.filter(item =>
+    filterBy ? item.profile?.displayName.toLowerCase().includes(filterBy.toLowerCase()) : true
   );
 
-  const slicedData = useMemo(() => filteredData.slice(0, limit), [filteredData, limit]);
+  const slicedData = filteredData.slice(0, limit);
 
   return (
     <>

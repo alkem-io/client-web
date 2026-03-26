@@ -1,4 +1,4 @@
-import { createContext, type PropsWithChildren, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useEffect } from 'react';
 import {
   refetchCurrentUserLightQuery,
   useCreateUserNewRegistrationMutation,
@@ -32,7 +32,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
     error: userProviderError,
   } = useCurrentUserLightQuery({ skip: !isAuthenticated });
 
-  const user = useMemo(() => meData?.me?.user, [meData?.me?.user]);
+  const user = meData?.me?.user;
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
     usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
@@ -61,49 +61,32 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
 
   const loading = loadingAuthentication || loadingCreateUser || loadingMe || isLoadingPlatformLevelAuthorization;
 
-  const platformPrivilegeWrapper = useMemo(() => {
+  const platformPrivilegeWrapper = (() => {
     if (!meData?.me) {
       return undefined;
     }
     const myPrivileges = platformLevelAuthorizationData?.platform.authorization?.myPrivileges;
 
     return toPlatformPrivilegeWrapper(myPrivileges);
-  }, [user, meData, platformLevelAuthorizationData]);
+  })();
 
-  const platformRoles = useMemo(
-    () => platformLevelAuthorizationData?.platform.roleSet.myRoles ?? [],
-    [platformLevelAuthorizationData]
-  );
-  const accountId = useMemo(() => user?.account?.id, [user]);
-  const accountPrivileges = useMemo(() => user?.account?.authorization?.myPrivileges ?? [], [user]);
-  const accountEntitlements = useMemo(() => user?.account?.license?.availableEntitlements ?? [], [user]);
+  const platformRoles = platformLevelAuthorizationData?.platform.roleSet.myRoles ?? [];
+  const accountId = user?.account?.id;
+  const accountPrivileges = user?.account?.authorization?.myPrivileges ?? [];
+  const accountEntitlements = user?.account?.license?.availableEntitlements ?? [];
 
-  const providedValue = useMemo<CurrentUserModel>(
-    () => ({
-      platformPrivilegeWrapper,
-      userModel: user,
-      accountId,
-      loading,
-      loadingMe: loadingAuthentication || loadingMe,
-      verified,
-      isAuthenticated,
-      platformRoles,
-      accountPrivileges,
-      accountEntitlements,
-    }),
-    [
-      loadingMe,
-      platformPrivilegeWrapper,
-      loading,
-      loadingAuthentication,
-      verified,
-      isAuthenticated,
-      accountId,
-      platformRoles,
-      accountPrivileges,
-      accountEntitlements,
-    ]
-  );
+  const providedValue = {
+    platformPrivilegeWrapper,
+    userModel: user,
+    accountId,
+    loading,
+    loadingMe: loadingAuthentication || loadingMe,
+    verified,
+    isAuthenticated,
+    platformRoles,
+    accountPrivileges,
+    accountEntitlements,
+  };
 
   const criticalError = error ?? userProviderError;
 

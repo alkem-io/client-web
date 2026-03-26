@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { uniq } from 'lodash-es';
 import type React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
 import filterFn, { getAllValues, type MatchInformation, type ValueType } from '@/core/utils/filtering/filterFn';
@@ -30,21 +30,14 @@ const SpaceFilter = <T extends Identifiable>({
   const [terms, setTerms] = useState<string[]>([]);
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
-  const allValues = useMemo(
-    () =>
-      tagsGetter
-        ? getAllValues(data, tagsGetter)
-            .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
-            .sort((a, b) => b.count - a.count)
-            .map(element => element.term)
-        : undefined,
-    [data, tagsGetter]
-  );
+  const allValues = tagsGetter
+    ? getAllValues(data, tagsGetter)
+        .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
+        .sort((a, b) => b.count - a.count)
+        .map(element => element.term)
+    : undefined;
 
-  const filteredData = useMemo(
-    () => filterFn(data, terms.slice(0, MAX_TERMS_SEARCH), valueGetter),
-    [data, terms, valueGetter]
-  );
+  const filteredData = filterFn(data, terms.slice(0, MAX_TERMS_SEARCH), valueGetter);
 
   const deselectTerm = (term: string, index: number) => {
     setTerms(currentTerms => currentTerms.filter(t => t !== term));
@@ -60,16 +53,13 @@ const SpaceFilter = <T extends Identifiable>({
     setTerms(currentTerms => uniq([...currentTerms, term]));
   };
 
-  const onTermClick = useCallback(
-    (term: string, index: number) => {
-      if (selectedIndexes.includes(index)) {
-        deselectTerm(term, index);
-      } else {
-        selectTerm(term, index);
-      }
-    },
-    [selectedIndexes, deselectTerm, selectTerm]
-  );
+  const onTermClick = (term: string, index: number) => {
+    if (selectedIndexes.includes(index)) {
+      deselectTerm(term, index);
+    } else {
+      selectTerm(term, index);
+    }
+  };
 
   if (!data.length) {
     return <>{children([])}</>;
