@@ -277,6 +277,28 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
+## src/restyle — New UI Layer (shadcn/ui + Tailwind)
+
+`src/restyle/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/restyle/CLAUDE.md`. The critical rules:
+
+**Hard restrictions — every file in `src/restyle/`:**
+- **NO MUI** — zero imports from `@mui/*` or `@emotion/*`
+- **NO business logic** — no imports from `@/core/apollo`, `@apollo/client`, `@/domain/*`, `@/core/auth/*`, `@/core/state/*`, `react-router-dom`, or `formik`
+- **NO GraphQL types** — props must be plain TypeScript, never generated types
+- **Styling is Tailwind only** — use `cn()` from `@/restyle/lib/utils`, icons from `lucide-react`
+- **State is visual only** — `useState` for open/close, expanded, active tab. Nothing else.
+
+**Structure:**
+- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `prototype/src/app/components/ui/`
+- `components/` — composites of primitives (PostCard, SpaceCard), organized by feature area
+- `forms/` — form UI (inputs with labels/validation display), no form state libraries
+- `layouts/` — page shells (PageLayout, TwoColumnLayout, ContentBlock)
+- `styles/` — CSS tokens (`theme.css` from prototype) + Tailwind entry (`restyle.css`)
+- `lib/` — `cn()` utility
+- `hooks/` — UI-only hooks (`useMediaQuery`)
+
+Consumers in `src/domain/` and `src/main/` map GraphQL data to restyle component props. The data mapping never happens inside restyle.
+
 ## Recent Changes
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
