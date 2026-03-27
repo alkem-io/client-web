@@ -94,7 +94,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 }}
               >
                 <UserCheck style={{ width: 10, height: 10 }} />
-                <span>{t('crd.spaces.member')}</span>
+                <span>{t('spaces.member')}</span>
               </div>
             </div>
           )}

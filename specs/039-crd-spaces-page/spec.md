@@ -40,13 +40,13 @@ The data layer (step 3) remains untouched. The **entire page shell** (steps 1-2,
 ### CRD Full-Page Architecture
 
 When a route is migrated to CRD, the entire page renders in the CRD design system:
-1. **Route**: `TopLevelRoutes.tsx` → `/spaces` → `CrdLayout` wrapper → `SpaceExplorerPage`
+1. **Route**: `TopLevelRoutes.tsx` → `/spaces` → `CrdLayoutWrapper` → `SpaceExplorerPageDep`
 2. **Layout**: `CrdLayout` renders CRD Header + `<main>` + CRD Footer (all Tailwind, no MUI)
-3. **Page**: `SpaceExplorerPage` calls `useSpaceExplorer()` hook and renders `SpaceExplorerCrdView`
-4. **View**: `SpaceExplorerCrdView` → maps data → renders CRD `SpaceExplorer` component
+3. **Page**: `SpaceExplorerPageDep` (in `src/new-ui/topLevelPages/spaces/`) calls `useSpaceExplorer()` hook and renders `SpaceExplorerCrdView`
+4. **View**: `SpaceExplorerCrdView` (in `src/new-ui/topLevelPages/spaces/SpaceExplorerPage.tsx`) maps data → renders CRD `SpaceExplorer` component
 5. **Card**: CRD `SpaceCard` → renders individual space card (Tailwind, Radix UI)
 
-MUI routes continue using `TopLevelLayout` unchanged. The split happens at the route level in `TopLevelRoutes.tsx`.
+Page-level integration files live in `src/new-ui/topLevelPages/spaces/` — the dedicated integration layer for CRD-migrated pages. MUI routes continue using `TopLevelLayout` unchanged. The split happens at the route level in `TopLevelRoutes.tsx`.
 
 ---
 
@@ -185,10 +185,10 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 
 #### Architecture
 - **FR-011**: CRD components in `src/crd/` MUST have zero imports from `@mui/*`, `@emotion/*`, `@/core/apollo`, `@apollo/client`, `@/domain/*`, `@/core/auth/*`, `@/core/state/*`, `react-router-dom`, or `formik`
-- **FR-012**: A data mapper function MUST bridge between the GraphQL `SpaceWithParent` type and the CRD SpaceCard props interface
+- **FR-012**: A data mapper function in `src/new-ui/topLevelPages/spaces/spaceCardDataMapper.ts` MUST bridge between the GraphQL `SpaceWithParent` type and the CRD SpaceCard props interface
 - **FR-013**: Required shadcn/ui primitives (Button, Input, Badge, Avatar, Select, DropdownMenu, Skeleton) MUST be ported from the prototype to `src/crd/primitives/`
 - **FR-014**: CRD composite components MUST be organized under `src/crd/components/space/` and layout components under `src/crd/layouts/`
-- **FR-015**: The route-level split between CRD and MUI MUST happen in `TopLevelRoutes.tsx` — CRD routes are wrapped in a `CrdLayout` wrapper, MUI routes continue using `TopLevelLayout` unchanged
+- **FR-015**: The route-level split between CRD and MUI MUST happen in `TopLevelRoutes.tsx` — CRD routes are wrapped in `CrdLayoutWrapper`, MUI routes continue using `TopLevelLayout` unchanged. CRD page components live in `src/new-ui/topLevelPages/` and MUST NOT import from `@mui/*`
 
 #### Standalone Preview App
 - **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization

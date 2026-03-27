@@ -2,6 +2,8 @@
 
 This folder contains the application's UI components, built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It is the replacement for the MUI-based `src/core/ui/` layer.
 
+> **Planned rename**: `src/crd/` will be renamed to `src/design-system/` in a future phase. The `@/crd/` path alias will change to `@/design-system/`. All internal documentation and imports will be updated at that time. Until then, use `@/crd/` for all references.
+
 ## Golden Rules
 
 ### 1. NO Material UI
@@ -183,7 +185,22 @@ UI-only React hooks.
 
 ## How Consumers Use These Components
 
-Components in `src/crd/` are consumed by container components in `src/domain/` and `src/main/`. The container handles data, the crd restyled component handles rendering:
+Components in `src/crd/` are consumed by integration layers in `src/new-ui/`, `src/domain/`, or `src/main/`. The consumer handles data fetching and mapping; the crd component handles rendering.
+
+**Primary pattern — CRD page integration via `src/new-ui/`:**
+
+```typescript
+// src/new-ui/topLevelPages/spaces/SpaceExplorerPage.tsx (INTEGRATION — in new-ui)
+import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
+import { mapSpacesToCardDataList } from './spaceCardDataMapper';
+
+export const SpaceExplorerCrdView = ({ spaces, loading, ... }: SpaceExplorerViewProps) => {
+  const cardData = mapSpacesToCardDataList(spaces, authenticated);
+  return <SpaceExplorer spaces={cardData} loading={loading} ... />;
+};
+```
+
+**Alternative — domain-level container:**
 
 ```typescript
 // src/domain/collaboration/callout/CalloutFeedContainer.tsx (CONTAINER — in domain)
@@ -204,7 +221,7 @@ export function CalloutFeedContainer({ calloutsSetId }) {
 }
 ```
 
-The mapping from GraphQL types to component props happens in the container, never inside the crd component.
+The mapping from GraphQL types to component props happens in the consumer, never inside the crd component.
 
 ---
 

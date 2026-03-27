@@ -73,8 +73,14 @@ pnpm serve:dev
 - **`src/main`**: App-specific code
   - `routing/`: Top-level routes (`TopLevelRoutes`)
   - `admin/`: Platform admin pages
-  - `ui/`: App-specific layouts (footer, navigation)
+  - `ui/`: App-specific layouts (footer, navigation, `CrdLayoutWrapper`)
   - `constants/`: Environment helpers and constants
+
+- **`src/new-ui`**: Page-level integration for CRD-migrated pages
+  - Contains page components, data mappers, hooks, and GraphQL queries for pages using the CRD design system
+  - Imports from `@/crd/`, `@/domain/`, `@/core/` — **MUST NOT import from `@mui/*` or `@emotion/*`**
+  - Organized as `topLevelPages/<pageName>/` mirroring `src/main/topLevelPages/` structure
+  - The "glue" layer: wires CRD presentational components to business logic and data
 
 ### Key Files
 
@@ -124,6 +130,7 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Reusable UI components go under `src/core/ui`
 - App-specific layouts go under `src/main/ui`
 - Admin pages go under `src/main/admin`
+- CRD page integration goes under `src/new-ui/topLevelPages/<pageName>/`
 
 ## GraphQL Workflow
 
@@ -286,7 +293,7 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 ## prototype/ — Read-Only Reference (DO NOT MODIFY)
 
-The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. See `prototype/CLAUDE.md` for full details.
+The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
@@ -309,7 +316,18 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 - `lib/` — `cn()` utility
 - `hooks/` — UI-only hooks (`useMediaQuery`)
 
-Consumers in `src/domain/` and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
+Consumers in `src/new-ui/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
+
+## CSS Isolation Strategy
+
+Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
+
+**Isolation mechanisms:**
+- `.crd-root` class scopes Tailwind preflight/resets to CRD pages only — MUI pages outside `.crd-root` are unaffected
+- MUI `ThemeProvider` wraps the entire app (including CRD routes) but is unused by CRD components — they never call `useTheme()` or import MUI
+- `src/new-ui/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
+
+**The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
 
 ## Recent Changes
 - 039-crd-spaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)

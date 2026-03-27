@@ -25,12 +25,12 @@ Migrate the `/spaces` page from MUI to shadcn/ui + Tailwind CSS as the first pro
 
 | Principle | Status | Notes |
 | --- | --- | --- |
-| I. Domain-Driven Frontend Boundaries | PASS | CRD components are purely presentational; business logic stays in `src/domain/` hooks. Data mapper lives in `src/main/topLevelPages/` alongside the page. |
+| I. Domain-Driven Frontend Boundaries | PASS | CRD components are purely presentational; business logic stays in `src/domain/` hooks. Data mapper lives in `src/new-ui/topLevelPages/spaces/` alongside the page. |
 | II. React 19 Concurrent UX Discipline | PASS | CRD components are pure and concurrency-safe. Suspense boundary already wraps the route. Loading states use skeleton components. |
 | III. GraphQL Contract Fidelity | PASS | No GraphQL changes. Existing generated hooks reused as-is. CRD components never import GraphQL types. |
 | IV. State & Side-Effect Isolation | PASS | No new state mechanism needed — route wiring is a code-level decision. CRD components are side-effect free. |
 | V. Experience Quality & Safeguards | PASS | Prototype follows accessible patterns (Radix UI has built-in a11y). Keyboard navigation verified per Radix component. Responsive grid tested at all breakpoints. |
-| Arch #1: Feature directories map to domain contexts | PASS | CRD composites in `src/crd/components/space/`, primitives in `src/crd/primitives/`. CRD view wrapper in `src/main/topLevelPages/topLevelSpaces/`. |
+| Arch #1: Feature directories map to domain contexts | PASS | CRD composites in `src/crd/components/space/`, primitives in `src/crd/primitives/`. CRD view wrapper in `src/new-ui/topLevelPages/spaces/`. |
 | Arch #2: Styling standardizes on MUI theming | **JUSTIFIED VIOLATION** | CRD introduces Tailwind as a parallel styling system. See Complexity Tracking. |
 | Arch #3: i18n via react-i18next | PASS | All CRD user-visible text uses `t()`. Design system text uses `'crd'` namespace. |
 | Arch #4: Build artifacts deterministic | PASS | Tailwind plugin addition is documented. No chunking changes expected. |
@@ -102,22 +102,24 @@ src/
 │       └── pages/
 │           └── SpacesPage.tsx       # /spaces page with mock data + client-side interactions
 │
+├── new-ui/                           # Page-level integration layer (CRD pages)
+│   └── topLevelPages/
+│       └── spaces/
+│           ├── SpaceExplorerPage.tsx         # CRD view wrapper — maps data → CRD SpaceExplorer
+│           ├── SpaceExplorerPageDep.tsx      # Page entry point (lazy-loaded by TopLevelRoutes)
+│           ├── SpaceExplorerQueries.graphql  # GraphQL queries for the spaces page
+│           ├── spaceCardDataMapper.ts        # GraphQL → SpaceCardData mapper
+│           └── useSpaceExplorer.ts           # Data hook
+│
 ├── main/
 │   ├── routing/
 │   │   └── TopLevelRoutes.tsx        # MODIFIED: wrap CRD routes in CrdLayoutWrapper
-│   ├── ui/
-│   │   └── layout/
-│   │       └── CrdLayoutWrapper.tsx  # NEW: connects CrdLayout to app data (auth, user, navigation)
-│   └── topLevelPages/
-│       └── topLevelSpaces/
-│           ├── SpaceExplorerPage.tsx         # MODIFIED: no longer wraps in TopLevelPageLayout
-│           ├── SpaceExplorerView.tsx         # KEPT: existing MUI view (no longer imported by page)
-│           ├── SpaceExplorerCrdView.tsx      # NEW: CRD view wrapper — maps data → CRD SpaceExplorer
-│           ├── spaceCardDataMapper.ts        # NEW: GraphQL → SpaceCardData mapper
-│           └── useSpaceExplorer.ts           # UNCHANGED: data hook
+│   └── ui/
+│       └── layout/
+│           └── CrdLayoutWrapper.tsx  # Connects CrdLayout to app data (auth, user, navigation)
 ```
 
-**Structure Decision**: CRD routes get a completely separate visual shell. The layout split happens at the route level in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper` (which connects the presentational `CrdLayout` to app data like auth state and user info), while MUI routes continue using `TopLevelLayout`. The `CrdLayout`, `Header`, and `Footer` are presentational components in `src/crd/layouts/` — they receive all data as props. The `CrdLayoutWrapper` in `src/main/ui/layout/` is the smart container that provides user info, auth state, and navigation callbacks.
+**Structure Decision**: CRD routes get a completely separate visual shell. The layout split happens at the route level in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper` (which connects the presentational `CrdLayout` to app data like auth state and user info), while MUI routes continue using `TopLevelLayout`. Page-level integration (data hooks, CRD views, data mappers) lives in `src/new-ui/topLevelPages/<pageName>/` — the dedicated integration layer for CRD-migrated pages. The `CrdLayout`, `Header`, and `Footer` are presentational components in `src/crd/layouts/` — they receive all data as props. The `CrdLayoutWrapper` in `src/main/ui/layout/` is the app-level smart container that provides user info, auth state, and navigation callbacks. Files in `src/new-ui/` MUST NOT import from `@mui/*`.
 
 ## Complexity Tracking
 
@@ -145,7 +147,7 @@ Migration is a code-level decision. No runtime toggle, no feature flags, no URL 
 
 ### D4: Data Mapper in Page Directory
 
-The `spaceCardDataMapper.ts` lives in `src/main/topLevelPages/topLevelSpaces/` because it is specific to this page's data shape (`SpaceWithParent` → `SpaceCardData`). If future pages need similar mapping, common utilities can be extracted to `src/domain/space/mappers/`.
+The `spaceCardDataMapper.ts` lives in `src/new-ui/topLevelPages/spaces/` because it is specific to this page's data shape (`SpaceWithParent` → `SpaceCardData`). `src/new-ui/` is the dedicated integration layer for CRD-migrated pages, keeping them separate from the MUI page containers that remain in `src/main/topLevelPages/`. If future pages need similar mapping, common utilities can be extracted to `src/domain/space/mappers/`.
 
 ### D5: `memberCount` Omitted from Initial CRD Card
 
@@ -192,3 +194,11 @@ The CRD SpaceExplorer uses the prototype's filter bar pattern instead of the MUI
 ### D11: Default Banner Images via `getDefaultSpaceVisualUrl`
 
 When a space has no custom `cardBanner`, the data mapper falls back to `getDefaultSpaceVisualUrl(VisualType.Card, space.id)` — the same deterministic default banner images used by the MUI SpaceCard. This ensures visual parity between MUI and CRD versions.
+
+### D12: CSS Loaded Globally, Scoped via `.crd-root`
+
+Tailwind CSS is imported in `src/index.tsx` and applies to all pages. True CSS code-splitting is not feasible with Vite + Tailwind v4 (CSS is bundled at build time regardless of import location). The `.crd-root` class scopes Tailwind preflight to CRD pages only. MUI's `ThemeProvider` wraps the full app but is unused by CRD components — they never call `useTheme()`. Moving ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. This is the simplest working approach.
+
+### D13: `src/new-ui/` as the Page Integration Layer
+
+CRD-migrated page components live in `src/new-ui/topLevelPages/<pageName>/` rather than modifying existing files in `src/main/topLevelPages/`. This keeps MUI and CRD page implementations cleanly separated — the original MUI pages in `src/main/topLevelPages/` remain untouched and can be removed once migration is complete. The `src/new-ui/` layer may import from `@/crd/`, `@/domain/`, and `@/core/`, but MUST NOT import from `@mui/*`. The `CrdLayoutWrapper` remains in `src/main/ui/layout/` because it is an app-level concern, not page-specific.

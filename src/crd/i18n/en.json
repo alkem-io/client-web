@@ -51,6 +51,7 @@
     "private": "Private",
     "public": "Public",
     "leads": "Leads",
-    "in": "in"
+    "in": "in",
+    "member": "Member"
   }
 }
