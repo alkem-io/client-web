@@ -1,7 +1,40 @@
+import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { Identifiable } from '@/core/utils/Identifiable';
 import type { SpacesFilterValue } from '@/crd/components/space/SpaceExplorer';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
-import { type SpaceExplorerViewProps, SpacesExplorerMembershipFilter } from './SpaceExplorerView';
+import type { Visual } from '@/domain/common/visual/Visual';
+import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { mapSpacesToCardDataList } from './spaceCardDataMapper';
+
+export enum SpacesExplorerMembershipFilter {
+  All = 'all',
+  Member = 'member',
+  Public = 'public',
+}
+
+export type SpaceWithParent = Space & WithParent<ParentSpace>;
+
+interface ParentSpace extends Identifiable {
+  level: SpaceLevel;
+  about: {
+    profile: {
+      displayName: string;
+      avatar?: Visual;
+      cardBanner?: Visual;
+      url: string;
+    };
+  };
+}
+
+type WithParent<ParentInfo extends {}> = {
+  parent?: ParentInfo & WithParent<ParentInfo>;
+};
+
+interface Space extends Identifiable {
+  level: SpaceLevel;
+  about: SpaceAboutLightModel;
+  matchedTerms?: string[];
+}
 
 const mapFilter = (filter: SpacesExplorerMembershipFilter): SpacesFilterValue => {
   switch (filter) {
@@ -28,6 +61,19 @@ const mapFilterBack = (filter: SpacesFilterValue): SpacesExplorerMembershipFilte
       return SpacesExplorerMembershipFilter.All;
   }
 };
+
+export interface SpaceExplorerViewProps {
+  spaces: SpaceWithParent[] | undefined;
+  setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
+  membershipFilter: SpacesExplorerMembershipFilter;
+  searchTerms: string[];
+  onMembershipFilterChange?: (filter: SpacesExplorerMembershipFilter) => void;
+  loading: boolean;
+  hasMore: boolean | undefined;
+  fetchMore: () => Promise<void>;
+  authenticated: boolean;
+  loadingSearchResults?: boolean | null;
+}
 
 export const SpaceExplorerCrdView = ({
   spaces,

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/core/routing/usePageTitle';
-import { SpaceExplorerCrdView } from './SpaceExplorerCrdView';
+import { SpaceExplorerCrdView } from './SpaceExplorerPage';
 import useSpaceExplorer from './useSpaceExplorer';
 
 const SpaceExplorerPage = () => {

@@ -17,7 +17,9 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { TypedSearchResult } from '@/main/search/SearchView';
-import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, type SpaceWithParent } from './SpaceExplorerView';
+import { SpacesExplorerMembershipFilter, type SpaceWithParent } from './SpaceExplorerPage';
+
+export const ITEMS_LIMIT = 10;
 
 export interface SpacesExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;

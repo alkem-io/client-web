@@ -2,7 +2,7 @@ import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
 import type { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import type { SpaceWithParent } from './SpaceExplorerView';
+import type { SpaceWithParent } from './SpaceExplorerPage';
 
 const AVATAR_COLORS = [
   '#2563eb', // blue
