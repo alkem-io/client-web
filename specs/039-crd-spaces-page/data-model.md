@@ -44,14 +44,21 @@ The plain TypeScript type consumed by the CRD SpaceCard component. Lives in `src
 ## Relationships
 
 ```
-SpaceExplorerPage
-  ├── useSpaceExplorer()        → SpaceWithParent[]  (GraphQL, unchanged)
+TopLevelRoutes.tsx
+  ├── [MUI routes] → TopLevelLayout (MUI header/nav/footer)
   │
-  └── SpaceExplorerCrdView      → mapSpaceToCardData() → SpaceCardData[]
-                                → CRD SpaceCard         (new, src/crd/)
+  └── [CRD routes] → CrdLayoutWrapper (src/main/, smart container)
+                      └── CrdLayout (src/crd/layouts/, presentational)
+                          ├── Header (CRD, Tailwind)
+                          ├── <main>
+                          │   └── SpaceExplorerPage
+                          │       ├── useSpaceExplorer()        → SpaceWithParent[]  (GraphQL, unchanged)
+                          │       └── SpaceExplorerCrdView      → mapSpaceToCardData() → SpaceCardData[]
+                          │                                     → CRD SpaceExplorer / SpaceCard
+                          └── Footer (CRD, Tailwind)
 ```
 
-No runtime toggle — `SpaceExplorerPage` directly imports and renders the CRD view. The old MUI `SpaceExplorerView` is kept in the codebase but no longer imported.
+The route-level split happens in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper`, which renders the full CRD page shell. MUI routes continue using `TopLevelLayout`. The old MUI `SpaceExplorerView` is kept in the codebase but no longer imported.
 
 ## Derived Field Computation
 

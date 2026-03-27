@@ -211,6 +211,42 @@ Business domain text ("Space Dashboard", "Innovation Flow") comes from the conta
 
 ---
 
+## Standalone Preview App (`src/crd/app/`)
+
+The `app/` subdirectory is a **standalone Vite application** that renders CRD components with mock data. It is designed for designers to preview and iterate on CRD components without running the full Alkemio backend.
+
+### Running
+
+```bash
+pnpm crd:dev    # Dev server on http://localhost:5200
+pnpm crd:build  # Production build
+```
+
+### Architecture
+
+- `app/main.tsx` — entry point: initializes i18next with CRD translations, renders `CrdApp`
+- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth
+- `app/pages/` — mock pages (e.g., `SpacesPage.tsx` with hardcoded space data)
+- `app/data/` — mock data sets (reused from the prototype)
+- `app/vite.config.ts` — standalone Vite config (port 5200, path alias `@/crd` → `src/crd/`)
+
+### Rules for `app/`
+
+- `app/` is the **only** directory in `src/crd/` that may use `react-router-dom` (for standalone routing)
+- `app/` may import from anywhere in `src/crd/` (components, layouts, primitives, forms, styles)
+- `app/` MUST NOT be imported by any file outside `app/` — it is a standalone entry point
+- Mock data in `app/data/` uses the same types as CRD components (`SpaceCardData`, etc.)
+
+### i18n Separation
+
+CRD translations live in `src/crd/i18n/translations.ts` as a plain TypeScript object. This is the single source of truth for CRD UI text.
+
+- **Main app**: The root `translation.en.json` embeds these strings under the `crd` key
+- **Standalone app**: `app/main.tsx` initializes i18next directly from this object
+- CRD components use `useTranslation()` with `crd.*` prefixed keys — works in both contexts
+
+---
+
 ## Checklist for Every New Component
 
 - [ ] No MUI imports

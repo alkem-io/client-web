@@ -2,18 +2,20 @@
 
 **Branch**: `039-crd-spaces-page` | **Date**: 2026-03-26
 
-## R1: Route Wiring Strategy (No Runtime Toggle)
+## R1: Route Wiring Strategy — Full Page Shell per Route (No Runtime Toggle)
 
-**Decision**: Direct route wiring — `SpaceExplorerPage.tsx` imports the CRD view instead of the MUI view. No runtime toggle mechanism.
+**Decision**: Route-level layout split — CRD routes are wrapped in `CrdLayoutWrapper` in `TopLevelRoutes.tsx`, which renders the full CRD page shell (Header + content + Footer). MUI routes continue using `TopLevelLayout`. No runtime toggle mechanism.
 
-**Rationale** (updated per spec clarification):
-- Migration is a code-level decision per route, not a runtime switch
-- `SpaceExplorerPage.tsx` simply swaps the view import: `SpaceExplorerCrdView` replaces `SpaceExplorerView`
-- The data hook (`useSpaceExplorer`) and layout wrapper (`TopLevelPageLayout`) remain unchanged
-- No new Context provider, no localStorage, no URL params needed
-- Future page migrations follow the same pattern: swap the view import in the page component
+**Rationale** (updated per spec clarification session 2):
+- When a route is migrated to CRD, the **entire page** renders in CRD — header, content, footer
+- No hybrid approach (CRD content inside MUI shell) — this was explicitly rejected by the user
+- The split happens at the route level: `TopLevelRoutes.tsx` wraps CRD routes in `<Route element={<CrdLayoutWrapper />}>`
+- `CrdLayoutWrapper` is a smart container in `src/main/ui/layout/` that reads auth/user data and passes it to the presentational `CrdLayout`
+- `CrdLayout` in `src/crd/layouts/` renders Header + children + Footer, all in Tailwind
+- Future page migrations: move the route under the `CrdLayoutWrapper` route group and swap the view component
+- `SpaceExplorerPage` no longer wraps in `TopLevelPageLayout` — the CRD shell provides the page chrome
 
-**Original research** (superseded): Initially researched React Context + `usePersistedState` for a runtime toggle. This was rejected during spec clarification — the user specified that routes are simply wired to CRD or MUI at the code level, with no runtime switching.
+**Original research** (superseded): Initially researched swapping only the inner view component while keeping `TopLevelPageLayout` (MUI shell). This was rejected — the user wants a completely new visual experience per CRD route.
 
 ## R2: Tailwind CSS / Build Infrastructure Status
 

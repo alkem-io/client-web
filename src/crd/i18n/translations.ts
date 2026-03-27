@@ -1,0 +1,65 @@
+/**
+ * CRD translation strings — single source of truth.
+ *
+ * Used by:
+ * - Main app: embedded under the `crd` key in translation.en.json
+ * - Standalone preview app: loaded directly into i18next in app/main.tsx
+ *
+ * CRD components reference these via `t('crd.header.search')`, etc.
+ */
+export const crdTranslations = {
+  header: {
+    menu: 'Menu',
+    home: 'Home',
+    search: 'Search',
+    messages: 'Messages',
+    notifications: 'Notifications',
+    spaces: 'Spaces',
+    myAccount: 'My Account',
+    dashboard: 'My Dashboard',
+    profile: 'My Profile',
+    settings: 'Settings',
+    logout: 'Log out',
+    login: 'Log in',
+  },
+  footer: {
+    copyright: '© 2026 Alkemio B.V.',
+    terms: 'Terms',
+    privacy: 'Privacy',
+    security: 'Security',
+    support: 'Support',
+    about: 'About',
+  },
+  spaces: {
+    title: 'Explore Spaces',
+    subtitle: 'Discover spaces to collaborate and innovate',
+    searchPlaceholder: 'Search spaces...',
+    sortBy: 'Sort by',
+    sortRecent: 'Most Recent',
+    sortAlpha: 'Alphabetical',
+    sortActive: 'Most Active',
+    filters: 'Filters',
+    filterMembership: 'Membership',
+    filterAll: 'All',
+    filterMember: 'My Spaces',
+    filterPublic: 'Public',
+    filterPrivacy: 'Privacy',
+    filterPublicOnly: 'Public only',
+    filterPrivateOnly: 'Private only',
+    filterType: 'Type',
+    filterAllTypes: 'All types',
+    filterSpacesOnly: 'Spaces only',
+    filterSubspacesOnly: 'Subspaces only',
+    clearFilters: 'Clear all filters',
+    showing: 'Showing',
+    of: 'of',
+    spacesLabel: 'spaces',
+    loadMore: 'Load More',
+    emptyTitle: 'No spaces found',
+    emptyMessage: "Try adjusting your search or filters to find what you're looking for.",
+    private: 'Private',
+    public: 'Public',
+    leads: 'Leads',
+    in: 'in',
+  },
+} as const;

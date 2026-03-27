@@ -13,6 +13,7 @@ import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import { CrdLayoutWrapper } from '../ui/layout/CrdLayoutWrapper';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
 import App from '../ui/layout/topLevelWrappers/App';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
@@ -102,18 +103,25 @@ export const TopLevelRoutes = () => {
             </Suspense>
           }
         />
+        {/* CRD routes — wrapped in CrdLayoutWrapper (full shadcn/ui page shell) */}
         <Route
-          path={`/${TopLevelRoutePath.Spaces}`}
           element={
             <NonIdentity>
+              <CrdLayoutWrapper />
+            </NonIdentity>
+          }
+        >
+          <Route
+            path={`/${TopLevelRoutePath.Spaces}`}
+            element={
               <WithApmTransaction path={`/${TopLevelRoutePath.Spaces}`}>
                 <Suspense fallback={<Loading />}>
                   <SpaceExplorerPage />
                 </Suspense>
               </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
+            }
+          />
+        </Route>
         <Route
           path={`/${TopLevelRoutePath.Contributors}`}
           element={
