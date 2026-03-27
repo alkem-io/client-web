@@ -1,4 +1,4 @@
-import { Globe, Lock } from 'lucide-react';
+import { Globe, Lock, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -26,6 +26,7 @@ export type SpaceCardData = {
   initials: string;
   avatarColor: string;
   isPrivate: boolean;
+  isMember?: boolean;
   tags: string[];
   leads: SpaceLead[];
   href: string;
@@ -98,15 +99,31 @@ export function SpaceCard({ space, onClick, className }: SpaceCardProps) {
             />
           </div>
 
+          {/* Member badge */}
+          {space.isMember && (
+            <div className="absolute top-3 left-4" style={{ zIndex: 3 }}>
+              <div
+                className="flex items-center gap-1 px-2 py-1 rounded-full"
+                style={{
+                  background: 'white',
+                  color: '#1d384a',
+                  fontSize: '10px',
+                  fontWeight: 600,
+                }}
+              >
+                <UserCheck style={{ width: 10, height: 10 }} />
+                <span>{t('crd.spaces.member')}</span>
+              </div>
+            </div>
+          )}
+
           {/* Privacy badge */}
           <div className="absolute top-3 right-3" style={{ zIndex: 3 }}>
             <div
-              className="flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm"
+              className="flex items-center gap-1 px-2 py-1 rounded-full"
               style={{
-                background: space.isPrivate
-                  ? 'color-mix(in srgb, var(--foreground) 50%, transparent)'
-                  : 'color-mix(in srgb, var(--background) 85%, transparent)',
-                color: space.isPrivate ? 'var(--primary-foreground)' : 'var(--foreground)',
+                background: space.isPrivate ? '#1d384a' : 'white',
+                color: space.isPrivate ? 'white' : '#1d384a',
                 fontSize: '10px',
                 fontWeight: 600,
               }}
@@ -246,7 +263,10 @@ export function SpaceCard({ space, onClick, className }: SpaceCardProps) {
                 </Badge>
               ))}
               {space.tags.length > 3 && (
-                <Badge variant="outline" className="text-[10px] font-medium px-2 py-0 rounded-full text-muted-foreground">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] font-medium px-2 py-0 rounded-full text-muted-foreground"
+                >
                   +{space.tags.length - 3}
                 </Badge>
               )}

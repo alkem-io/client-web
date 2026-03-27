@@ -9,16 +9,13 @@ const LEAD_AVATARS = {
     'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
   james:
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
-  anna:
-    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
+  anna: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
   robert:
     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
   maria:
     'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
-  tom:
-    'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
-  nina:
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
+  tom: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
+  nina: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
   lucas:
     'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80',
 };
@@ -35,6 +32,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     initials: 'GE',
     avatarColor: '#2563eb',
     isPrivate: false,
+    isMember: true,
     tags: ['Innovation', 'Technology', 'Prototyping'],
     leads: [
       { name: 'Sarah Chen', avatarUrl: LEAD_AVATARS.sarah, type: 'person' },
@@ -106,9 +104,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     avatarColor: '#ea580c',
     isPrivate: true,
     tags: ['Education', 'Learning', 'EdTech'],
-    leads: [
-      { name: 'Maria Jansen', avatarUrl: LEAD_AVATARS.maria, type: 'person' },
-    ],
+    leads: [{ name: 'Maria Jansen', avatarUrl: LEAD_AVATARS.maria, type: 'person' }],
     href: '/spaces/education-transformation',
   },
   {
@@ -121,6 +117,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     initials: 'HI',
     avatarColor: '#dc2626',
     isPrivate: true,
+    isMember: true,
     tags: ['Health', 'MedTech', 'Research'],
     leads: [
       { name: 'Tom Bakker', avatarUrl: LEAD_AVATARS.tom, type: 'person' },
@@ -140,9 +137,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     avatarColor: '#4f46e5',
     isPrivate: false,
     tags: ['Data', 'Analytics', 'Impact'],
-    leads: [
-      { name: 'Lucas de Boer', avatarUrl: LEAD_AVATARS.lucas, type: 'person' },
-    ],
+    leads: [{ name: 'Lucas de Boer', avatarUrl: LEAD_AVATARS.lucas, type: 'person' }],
     href: '/spaces/data-driven-impact',
   },
   {
@@ -155,6 +150,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     initials: 'SE',
     avatarColor: '#c026d3',
     isPrivate: false,
+    isMember: true,
     tags: ['Social Impact', 'Startups', 'Mentoring'],
     leads: [
       { name: 'Emily Davis', avatarUrl: LEAD_AVATARS.emily, type: 'person' },
@@ -168,8 +164,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
   {
     id: 's9',
     name: 'Circular Economy Collective',
-    description:
-      'Designing products, services, and systems that eliminate waste and keep resources in circulation.',
+    description: 'Designing products, services, and systems that eliminate waste and keep resources in circulation.',
     bannerImageUrl:
       'https://images.unsplash.com/photo-1666804830091-56ba0e22becf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaXJjdWxhciUyMGVjb25vbXklMjByZWN5Y2xpbmd8ZW58MXx8fHwxNzcwNzI3MDEwfDA&ixlib=rb-4.1.0&q=80&w=1080',
     initials: 'CE',
@@ -204,13 +199,13 @@ export const MOCK_SPACES: SpaceCardData[] = [
   {
     id: 's11',
     name: 'Renewable Energy Transition',
-    description:
-      'Developing strategies for municipal energy transition to 100% renewables by 2030.',
+    description: 'Developing strategies for municipal energy transition to 100% renewables by 2030.',
     bannerImageUrl:
       'https://images.unsplash.com/photo-1716311778185-93ce152413e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aW5kJTIwdHVyYmluZXMlMjByZW5ld2FibGUlMjBwb3dlcnxlbnwxfHx8fDE3NzA3MjcwMTR8MA&ixlib=rb-4.1.0&q=80&w=1080',
     initials: 'RE',
     avatarColor: '#22c55e',
     isPrivate: false,
+    isMember: true,
     tags: ['Wind', 'Solar', 'Transition'],
     leads: [
       { name: 'Emily Davis', avatarUrl: LEAD_AVATARS.emily, type: 'person' },
@@ -258,9 +253,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     avatarColor: '#ef4444',
     isPrivate: true,
     tags: ['Telemedicine', 'Wellness', 'Digital'],
-    leads: [
-      { name: 'Nina van Dijk', avatarUrl: LEAD_AVATARS.nina, type: 'person' },
-    ],
+    leads: [{ name: 'Nina van Dijk', avatarUrl: LEAD_AVATARS.nina, type: 'person' }],
     href: '/spaces/health-innovation/digital-health-tools',
     parent: {
       name: 'Health Innovation Alliance',
@@ -295,8 +288,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
   {
     id: 's15',
     name: 'Design Thinking Practice',
-    description:
-      'Sharing frameworks, case studies, and tools for human-centered design in complex systems.',
+    description: 'Sharing frameworks, case studies, and tools for human-centered design in complex systems.',
     bannerImageUrl:
       'https://images.unsplash.com/photo-1760446410593-0710fb22cafc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ24lMjB0aGlua2luZyUyMGNyZWF0aXZlJTIwcHJvdG90eXBpbmd8ZW58MXx8fHwxNzcwNzI3MDEwfDA&ixlib=rb-4.1.0&q=80&w=1080',
     initials: 'DT',
@@ -326,9 +318,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     avatarColor: '#0369a1',
     isPrivate: false,
     tags: ['Ocean', 'Marine', 'Biodiversity'],
-    leads: [
-      { name: 'Lucas de Boer', avatarUrl: LEAD_AVATARS.lucas, type: 'person' },
-    ],
+    leads: [{ name: 'Lucas de Boer', avatarUrl: LEAD_AVATARS.lucas, type: 'person' }],
     href: '/spaces/ocean-research',
   },
   {
@@ -358,8 +348,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
   {
     id: 's18',
     name: 'Climate Action Network',
-    description:
-      'Coordinating climate adaptation and mitigation strategies across sectors, regions, and communities.',
+    description: 'Coordinating climate adaptation and mitigation strategies across sectors, regions, and communities.',
     bannerImageUrl:
       'https://images.unsplash.com/photo-1617419792679-31a4e9c22097?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGltYXRlJTIwYWN0aW9uJTIwZW52aXJvbm1lbnQlMjBncmVlbnxlbnwxfHx8fDE3NzA3MjcwMTN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     initials: 'CA',
@@ -416,17 +405,14 @@ export const MOCK_SPACES: SpaceCardData[] = [
   {
     id: 's21',
     name: 'Coworking & Spaces Network',
-    description:
-      'Connecting coworking space operators and remote workers to share best practices and build community.',
+    description: 'Connecting coworking space operators and remote workers to share best practices and build community.',
     bannerImageUrl:
       'https://images.unsplash.com/photo-1626187777040-ffb7cb2c5450?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3dvcmtpbmclMjBtb2Rlcm4lMjBvZmZpY2UlMjBzcGFjZXxlbnwxfHx8fDE3NzA3MjcwMTN8MA&ixlib=rb-4.1.0&q=80&w=1080',
     initials: 'CN',
     avatarColor: '#d97706',
     isPrivate: false,
     tags: ['Coworking', 'Remote', 'Community'],
-    leads: [
-      { name: 'Maria Jansen', avatarUrl: LEAD_AVATARS.maria, type: 'person' },
-    ],
+    leads: [{ name: 'Maria Jansen', avatarUrl: LEAD_AVATARS.maria, type: 'person' }],
     href: '/spaces/coworking-network',
   },
   {
@@ -463,9 +449,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     avatarColor: '#b45309',
     isPrivate: false,
     tags: ['Heritage', 'Digital', 'Culture'],
-    leads: [
-      { name: 'Nina van Dijk', avatarUrl: LEAD_AVATARS.nina, type: 'person' },
-    ],
+    leads: [{ name: 'Nina van Dijk', avatarUrl: LEAD_AVATARS.nina, type: 'person' }],
     href: '/spaces/cultural-heritage-digital',
   },
   {
