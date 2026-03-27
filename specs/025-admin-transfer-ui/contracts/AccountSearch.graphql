@@ -1,0 +1,52 @@
+# Account Search — shared query for target account picker
+# Used by: AccountSearchPicker component (shared across Hub/Pack/VC transfers)
+#
+# Searches both users and organizations by display name filter,
+# returning their account IDs for use as transfer targets.
+
+query AccountSearchUsers($first: Int!, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, filter: $filter) {
+      users {
+        id
+        account {
+          id
+          authorization {
+            myPrivileges
+          }
+        }
+        profile {
+          id
+          displayName
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}
+
+query AccountSearchOrganizations($first: Int!, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, filter: $filter) {
+      organization {
+        id
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+        profile {
+          id
+          displayName
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}

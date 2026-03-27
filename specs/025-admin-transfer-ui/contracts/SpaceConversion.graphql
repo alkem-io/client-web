@@ -1,0 +1,106 @@
+# Space Conversion — URL resolution, lookup, and 3 conversion mutations
+# Used by: SpaceConversionSection + useSpaceConversion hook
+
+# Step 1: Resolve space URL to get ID, level, and L0 ancestor
+query SpaceConversionUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+    }
+  }
+}
+
+# Step 2: Fetch space details for state display + community counts for L1→L2 warning
+query SpaceConversionLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      community {
+        roleSet {
+          # Counts needed for L1→L2 destructive warning (FR-005, FR-008)
+          memberUsers: usersInRole(role: MEMBER) {
+            id
+          }
+          leadUsers: usersInRole(role: LEAD) {
+            id
+          }
+          memberOrganizations: organizationsInRole(role: MEMBER) {
+            id
+          }
+          leadOrganizations: organizationsInRole(role: LEAD) {
+            id
+          }
+          virtualContributorsInRole(role: MEMBER) {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+# Step 3: Fetch sibling L1 spaces for L1→L2 demotion target picker
+query SpaceConversionSiblingSubspaces($levelZeroSpaceId: UUID!) {
+  lookup {
+    space(ID: $levelZeroSpaceId) {
+      id
+      subspaces {
+        id
+        level
+        about {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+
+# Mutation: Promote L1 → L0
+mutation ConvertSpaceL1ToL0($spaceL1ID: UUID!) {
+  convertSpaceL1ToSpaceL0(convertData: { spaceL1ID: $spaceL1ID }) {
+    id
+  }
+}
+
+# Mutation: Demote L1 → L2 (requires target parent L1)
+mutation ConvertSpaceL1ToL2($spaceL1ID: UUID!, $parentSpaceL1ID: UUID!) {
+  convertSpaceL1ToSpaceL2(
+    convertData: { spaceL1ID: $spaceL1ID, parentSpaceL1ID: $parentSpaceL1ID }
+  ) {
+    id
+  }
+}
+
+# Mutation: Promote L2 → L1
+mutation ConvertSpaceL2ToL1($spaceL2ID: UUID!) {
+  convertSpaceL2ToSpaceL1(convertData: { spaceL2ID: $spaceL2ID }) {
+    id
+  }
+}

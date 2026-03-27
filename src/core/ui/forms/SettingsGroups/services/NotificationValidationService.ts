@@ -1,4 +1,5 @@
 import {
+  type ChannelType,
   type NotificationOption,
   type NotificationSwitchStates,
   type NotificationValidationRule,
@@ -7,14 +8,18 @@ import {
 
 export class NotificationValidationService {
   /**
-   * Calculates the state (disabled/enabled + tooltip) for both switches based on validation rules
+   * Calculates the state (disabled/enabled + tooltip) for all three switches based on validation rules
    */
-  static calculateSwitchStates(option: NotificationOption): NotificationSwitchStates {
+  static calculateSwitchStates(
+    option: NotificationOption,
+    options?: { isPushEnabled?: boolean; isPushAvailable?: boolean }
+  ): NotificationSwitchStates {
     const rules = option.validationRules || [];
 
     return {
       inApp: NotificationValidationService.calculateSwitchState(option, 'inApp', rules),
       email: NotificationValidationService.calculateSwitchState(option, 'email', rules),
+      push: NotificationValidationService.calculatePushSwitchState(option, rules, options),
     };
   }
 
@@ -46,15 +51,52 @@ export class NotificationValidationService {
       }
     }
 
-    // Check for require-at-least-one rule
+    // Check for require-at-least-one rule (considers all three channels)
     const requireAtLeastOneRule = rules.find(rule => rule.type === NotificationValidationType.REQUIRE_AT_LEAST_ONE);
     if (requireAtLeastOneRule) {
-      const isThisTheOnlyEnabledSwitch =
-        switchType === 'inApp'
-          ? option.inAppChecked && !option.emailChecked
-          : option.emailChecked && !option.inAppChecked;
+      const enabledCount = (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
 
-      if (isThisTheOnlyEnabledSwitch) {
+      const isThisChecked = switchType === 'inApp' ? option.inAppChecked : option.emailChecked;
+
+      if (isThisChecked && enabledCount <= 1) {
+        return {
+          disabled: true,
+          tooltipMessage: requireAtLeastOneRule.message,
+        };
+      }
+    }
+
+    return { disabled: false };
+  }
+
+  /**
+   * Calculates the state for the push switch
+   */
+  private static calculatePushSwitchState(
+    option: NotificationOption,
+    rules: NotificationValidationRule[],
+    options?: { isPushEnabled?: boolean; isPushAvailable?: boolean }
+  ): { disabled: boolean; tooltipMessage?: string } {
+    // Push is disabled when not available or master toggle is off
+    if (options?.isPushAvailable === false || options?.isPushEnabled === false) {
+      return { disabled: true };
+    }
+
+    // Check for locked notification rule
+    const lockedRule = rules.find(rule => rule.type === NotificationValidationType.LOCKED);
+    if (lockedRule) {
+      return {
+        disabled: true,
+        tooltipMessage: lockedRule.message,
+      };
+    }
+
+    // Check for require-at-least-one rule (considers all three channels)
+    const requireAtLeastOneRule = rules.find(rule => rule.type === NotificationValidationType.REQUIRE_AT_LEAST_ONE);
+    if (requireAtLeastOneRule) {
+      const enabledCount = (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
+
+      if (option.pushChecked && enabledCount <= 1) {
         return {
           disabled: true,
           tooltipMessage: requireAtLeastOneRule.message,
@@ -68,7 +110,7 @@ export class NotificationValidationService {
   /**
    * Validates if a change is allowed before sending to server
    */
-  static isChangeAllowed(option: NotificationOption, switchType: 'inApp' | 'email', newValue: boolean): boolean {
+  static isChangeAllowed(option: NotificationOption, switchType: ChannelType, newValue: boolean): boolean {
     const rules = option.validationRules || [];
 
     // Disallow any change when fully LOCKED
@@ -85,12 +127,17 @@ export class NotificationValidationService {
     if (!newValue) {
       const requireAtLeastOneRule = rules.find(rule => rule.type === NotificationValidationType.REQUIRE_AT_LEAST_ONE);
       if (requireAtLeastOneRule) {
-        const wouldBeTheLastEnabled =
-          switchType === 'inApp'
-            ? option.inAppChecked && !option.emailChecked
-            : option.emailChecked && !option.inAppChecked;
+        const enabledCount =
+          (option.inAppChecked ? 1 : 0) + (option.emailChecked ? 1 : 0) + (option.pushChecked ? 1 : 0);
 
-        if (wouldBeTheLastEnabled) {
+        const isThisChecked =
+          switchType === 'inApp'
+            ? option.inAppChecked
+            : switchType === 'email'
+              ? option.emailChecked
+              : option.pushChecked;
+
+        if (isThisChecked && enabledCount <= 1) {
           return false;
         }
       }

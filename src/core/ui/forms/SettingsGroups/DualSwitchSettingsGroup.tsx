@@ -5,7 +5,7 @@ import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { NotificationSwitchTooltip } from './components/NotificationSwitchTooltip';
 import { NotificationValidationService } from './services/NotificationValidationService';
-import type { NotificationOption } from './types/NotificationTypes';
+import type { ChannelType, NotificationOption } from './types/NotificationTypes';
 
 const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean }) =>
   loading ? (
@@ -19,7 +19,7 @@ const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean 
 
 type DualSwitchSettingsGroupProps<T extends Record<string, NotificationOption>> = {
   options: T;
-  onChange: (key: keyof T, type: 'inApp' | 'email', newValue: boolean) => void | Promise<void>;
+  onChange: (key: keyof T, type: ChannelType, newValue: boolean) => void | Promise<void>;
 };
 
 function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
@@ -28,9 +28,9 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
 }: DualSwitchSettingsGroupProps<T>) {
   const { t } = useTranslation();
   const { isEnabled: isInAppNotificationsEnabled } = useInAppNotificationsContext();
-  const [itemLoading, setItemLoading] = useState<{ key: keyof T; type: 'inApp' | 'email' } | undefined>();
+  const [itemLoading, setItemLoading] = useState<{ key: keyof T; type: ChannelType } | undefined>();
 
-  const handleChange = async (key: keyof T, type: 'inApp' | 'email', newValue: boolean) => {
+  const handleChange = async (key: keyof T, type: ChannelType, newValue: boolean) => {
     const option = options[key];
     if (!option) return;
 
