@@ -78,7 +78,7 @@ export const VersionHandling = () => {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
       <SnackbarContent
-        message={messageKeys.map((messageKey, i) => <Box key={i}>{t(messageKey)}</Box>)}
+        message={messageKeys.map(messageKey => <Box key={messageKey}>{t(messageKey)}</Box>)}
         sx={{
           backgroundColor: 'highlight.dark',
           color: 'white',

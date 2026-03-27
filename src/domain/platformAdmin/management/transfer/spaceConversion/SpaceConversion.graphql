@@ -1,0 +1,96 @@
+query SpaceConversionUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+    }
+  }
+}
+
+query SpaceConversionLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      community {
+        roleSet {
+          memberUsers: usersInRole(role: MEMBER) {
+            id
+          }
+          leadUsers: usersInRole(role: LEAD) {
+            id
+          }
+          memberOrganizations: organizationsInRole(role: MEMBER) {
+            id
+          }
+          leadOrganizations: organizationsInRole(role: LEAD) {
+            id
+          }
+          virtualContributorsInRole(role: MEMBER) {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+query SpaceConversionSiblingSubspaces($levelZeroSpaceId: UUID!) {
+  lookup {
+    space(ID: $levelZeroSpaceId) {
+      id
+      subspaces {
+        id
+        level
+        about {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation ConvertSpaceL1ToL0($spaceL1ID: UUID!) {
+  convertSpaceL1ToSpaceL0(convertData: { spaceL1ID: $spaceL1ID }) {
+    id
+  }
+}
+
+mutation ConvertSpaceL1ToL2($spaceL1ID: UUID!, $parentSpaceL1ID: UUID!) {
+  convertSpaceL1ToSpaceL2(
+    convertData: { spaceL1ID: $spaceL1ID, parentSpaceL1ID: $parentSpaceL1ID }
+  ) {
+    id
+  }
+}
+
+mutation ConvertSpaceL2ToL1($spaceL2ID: UUID!) {
+  convertSpaceL2ToSpaceL1(convertData: { spaceL2ID: $spaceL2ID }) {
+    id
+  }
+}

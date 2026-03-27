@@ -19478,6 +19478,621 @@ export type PlatformRoleSetQueryResult = Apollo.QueryResult<
 export function refetchPlatformRoleSetQuery(variables?: SchemaTypes.PlatformRoleSetQueryVariables) {
   return { query: PlatformRoleSetDocument, variables: variables };
 }
+export const AccountSearchUsersDocument = gql`
+    query AccountSearchUsers($first: Int!, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, filter: $filter) {
+      users {
+        id
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+        profile {
+          id
+          displayName
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountSearchUsersQuery__
+ *
+ * To run a query within a React component, call `useAccountSearchUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountSearchUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountSearchUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useAccountSearchUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountSearchUsersQuery,
+    SchemaTypes.AccountSearchUsersQueryVariables
+  > &
+    ({ variables: SchemaTypes.AccountSearchUsersQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountSearchUsersQuery, SchemaTypes.AccountSearchUsersQueryVariables>(
+    AccountSearchUsersDocument,
+    options
+  );
+}
+export function useAccountSearchUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountSearchUsersQuery,
+    SchemaTypes.AccountSearchUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountSearchUsersQuery, SchemaTypes.AccountSearchUsersQueryVariables>(
+    AccountSearchUsersDocument,
+    options
+  );
+}
+export function useAccountSearchUsersSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.AccountSearchUsersQuery, SchemaTypes.AccountSearchUsersQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.AccountSearchUsersQuery, SchemaTypes.AccountSearchUsersQueryVariables>(
+    AccountSearchUsersDocument,
+    options
+  );
+}
+export type AccountSearchUsersQueryHookResult = ReturnType<typeof useAccountSearchUsersQuery>;
+export type AccountSearchUsersLazyQueryHookResult = ReturnType<typeof useAccountSearchUsersLazyQuery>;
+export type AccountSearchUsersSuspenseQueryHookResult = ReturnType<typeof useAccountSearchUsersSuspenseQuery>;
+export type AccountSearchUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountSearchUsersQuery,
+  SchemaTypes.AccountSearchUsersQueryVariables
+>;
+export function refetchAccountSearchUsersQuery(variables: SchemaTypes.AccountSearchUsersQueryVariables) {
+  return { query: AccountSearchUsersDocument, variables: variables };
+}
+export const AccountSearchOrganizationsDocument = gql`
+    query AccountSearchOrganizations($first: Int!, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, filter: $filter) {
+      organization {
+        id
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+        profile {
+          id
+          displayName
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountSearchOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useAccountSearchOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountSearchOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountSearchOrganizationsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useAccountSearchOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountSearchOrganizationsQuery,
+    SchemaTypes.AccountSearchOrganizationsQueryVariables
+  > &
+    ({ variables: SchemaTypes.AccountSearchOrganizationsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AccountSearchOrganizationsQuery,
+    SchemaTypes.AccountSearchOrganizationsQueryVariables
+  >(AccountSearchOrganizationsDocument, options);
+}
+export function useAccountSearchOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountSearchOrganizationsQuery,
+    SchemaTypes.AccountSearchOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AccountSearchOrganizationsQuery,
+    SchemaTypes.AccountSearchOrganizationsQueryVariables
+  >(AccountSearchOrganizationsDocument, options);
+}
+export function useAccountSearchOrganizationsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.AccountSearchOrganizationsQuery,
+        SchemaTypes.AccountSearchOrganizationsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.AccountSearchOrganizationsQuery,
+    SchemaTypes.AccountSearchOrganizationsQueryVariables
+  >(AccountSearchOrganizationsDocument, options);
+}
+export type AccountSearchOrganizationsQueryHookResult = ReturnType<typeof useAccountSearchOrganizationsQuery>;
+export type AccountSearchOrganizationsLazyQueryHookResult = ReturnType<typeof useAccountSearchOrganizationsLazyQuery>;
+export type AccountSearchOrganizationsSuspenseQueryHookResult = ReturnType<
+  typeof useAccountSearchOrganizationsSuspenseQuery
+>;
+export type AccountSearchOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountSearchOrganizationsQuery,
+  SchemaTypes.AccountSearchOrganizationsQueryVariables
+>;
+export function refetchAccountSearchOrganizationsQuery(
+  variables: SchemaTypes.AccountSearchOrganizationsQueryVariables
+) {
+  return { query: AccountSearchOrganizationsDocument, variables: variables };
+}
+export const SpaceConversionUrlResolveDocument = gql`
+    query SpaceConversionUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpaceConversionUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useSpaceConversionUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceConversionUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceConversionUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useSpaceConversionUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceConversionUrlResolveQuery,
+    SchemaTypes.SpaceConversionUrlResolveQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceConversionUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceConversionUrlResolveQuery,
+    SchemaTypes.SpaceConversionUrlResolveQueryVariables
+  >(SpaceConversionUrlResolveDocument, options);
+}
+export function useSpaceConversionUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceConversionUrlResolveQuery,
+    SchemaTypes.SpaceConversionUrlResolveQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceConversionUrlResolveQuery,
+    SchemaTypes.SpaceConversionUrlResolveQueryVariables
+  >(SpaceConversionUrlResolveDocument, options);
+}
+export function useSpaceConversionUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceConversionUrlResolveQuery,
+        SchemaTypes.SpaceConversionUrlResolveQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceConversionUrlResolveQuery,
+    SchemaTypes.SpaceConversionUrlResolveQueryVariables
+  >(SpaceConversionUrlResolveDocument, options);
+}
+export type SpaceConversionUrlResolveQueryHookResult = ReturnType<typeof useSpaceConversionUrlResolveQuery>;
+export type SpaceConversionUrlResolveLazyQueryHookResult = ReturnType<typeof useSpaceConversionUrlResolveLazyQuery>;
+export type SpaceConversionUrlResolveSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceConversionUrlResolveSuspenseQuery
+>;
+export type SpaceConversionUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceConversionUrlResolveQuery,
+  SchemaTypes.SpaceConversionUrlResolveQueryVariables
+>;
+export function refetchSpaceConversionUrlResolveQuery(variables: SchemaTypes.SpaceConversionUrlResolveQueryVariables) {
+  return { query: SpaceConversionUrlResolveDocument, variables: variables };
+}
+export const SpaceConversionLookupDocument = gql`
+    query SpaceConversionLookup($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      community {
+        roleSet {
+          memberUsers: usersInRole(role: MEMBER) {
+            id
+          }
+          leadUsers: usersInRole(role: LEAD) {
+            id
+          }
+          memberOrganizations: organizationsInRole(role: MEMBER) {
+            id
+          }
+          leadOrganizations: organizationsInRole(role: LEAD) {
+            id
+          }
+          virtualContributorsInRole(role: MEMBER) {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpaceConversionLookupQuery__
+ *
+ * To run a query within a React component, call `useSpaceConversionLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceConversionLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceConversionLookupQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceConversionLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceConversionLookupQuery,
+    SchemaTypes.SpaceConversionLookupQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceConversionLookupQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceConversionLookupQuery, SchemaTypes.SpaceConversionLookupQueryVariables>(
+    SpaceConversionLookupDocument,
+    options
+  );
+}
+export function useSpaceConversionLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceConversionLookupQuery,
+    SchemaTypes.SpaceConversionLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceConversionLookupQuery, SchemaTypes.SpaceConversionLookupQueryVariables>(
+    SpaceConversionLookupDocument,
+    options
+  );
+}
+export function useSpaceConversionLookupSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceConversionLookupQuery,
+        SchemaTypes.SpaceConversionLookupQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceConversionLookupQuery,
+    SchemaTypes.SpaceConversionLookupQueryVariables
+  >(SpaceConversionLookupDocument, options);
+}
+export type SpaceConversionLookupQueryHookResult = ReturnType<typeof useSpaceConversionLookupQuery>;
+export type SpaceConversionLookupLazyQueryHookResult = ReturnType<typeof useSpaceConversionLookupLazyQuery>;
+export type SpaceConversionLookupSuspenseQueryHookResult = ReturnType<typeof useSpaceConversionLookupSuspenseQuery>;
+export type SpaceConversionLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceConversionLookupQuery,
+  SchemaTypes.SpaceConversionLookupQueryVariables
+>;
+export function refetchSpaceConversionLookupQuery(variables: SchemaTypes.SpaceConversionLookupQueryVariables) {
+  return { query: SpaceConversionLookupDocument, variables: variables };
+}
+export const SpaceConversionSiblingSubspacesDocument = gql`
+    query SpaceConversionSiblingSubspaces($levelZeroSpaceId: UUID!) {
+  lookup {
+    space(ID: $levelZeroSpaceId) {
+      id
+      subspaces {
+        id
+        level
+        about {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpaceConversionSiblingSubspacesQuery__
+ *
+ * To run a query within a React component, call `useSpaceConversionSiblingSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceConversionSiblingSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceConversionSiblingSubspacesQuery({
+ *   variables: {
+ *      levelZeroSpaceId: // value for 'levelZeroSpaceId'
+ *   },
+ * });
+ */
+export function useSpaceConversionSiblingSubspacesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+    SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+    SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+  >(SpaceConversionSiblingSubspacesDocument, options);
+}
+export function useSpaceConversionSiblingSubspacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+    SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+    SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+  >(SpaceConversionSiblingSubspacesDocument, options);
+}
+export function useSpaceConversionSiblingSubspacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+        SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+    SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+  >(SpaceConversionSiblingSubspacesDocument, options);
+}
+export type SpaceConversionSiblingSubspacesQueryHookResult = ReturnType<typeof useSpaceConversionSiblingSubspacesQuery>;
+export type SpaceConversionSiblingSubspacesLazyQueryHookResult = ReturnType<
+  typeof useSpaceConversionSiblingSubspacesLazyQuery
+>;
+export type SpaceConversionSiblingSubspacesSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceConversionSiblingSubspacesSuspenseQuery
+>;
+export type SpaceConversionSiblingSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceConversionSiblingSubspacesQuery,
+  SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+>;
+export function refetchSpaceConversionSiblingSubspacesQuery(
+  variables: SchemaTypes.SpaceConversionSiblingSubspacesQueryVariables
+) {
+  return { query: SpaceConversionSiblingSubspacesDocument, variables: variables };
+}
+export const ConvertSpaceL1ToL0Document = gql`
+    mutation ConvertSpaceL1ToL0($spaceL1ID: UUID!) {
+  convertSpaceL1ToSpaceL0(convertData: {spaceL1ID: $spaceL1ID}) {
+    id
+  }
+}
+    `;
+export type ConvertSpaceL1ToL0MutationFn = Apollo.MutationFunction<
+  SchemaTypes.ConvertSpaceL1ToL0Mutation,
+  SchemaTypes.ConvertSpaceL1ToL0MutationVariables
+>;
+
+/**
+ * __useConvertSpaceL1ToL0Mutation__
+ *
+ * To run a mutation, you first call `useConvertSpaceL1ToL0Mutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConvertSpaceL1ToL0Mutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [convertSpaceL1ToL0Mutation, { data, loading, error }] = useConvertSpaceL1ToL0Mutation({
+ *   variables: {
+ *      spaceL1ID: // value for 'spaceL1ID'
+ *   },
+ * });
+ */
+export function useConvertSpaceL1ToL0Mutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ConvertSpaceL1ToL0Mutation,
+    SchemaTypes.ConvertSpaceL1ToL0MutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ConvertSpaceL1ToL0Mutation, SchemaTypes.ConvertSpaceL1ToL0MutationVariables>(
+    ConvertSpaceL1ToL0Document,
+    options
+  );
+}
+export type ConvertSpaceL1ToL0MutationHookResult = ReturnType<typeof useConvertSpaceL1ToL0Mutation>;
+export type ConvertSpaceL1ToL0MutationResult = Apollo.MutationResult<SchemaTypes.ConvertSpaceL1ToL0Mutation>;
+export type ConvertSpaceL1ToL0MutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ConvertSpaceL1ToL0Mutation,
+  SchemaTypes.ConvertSpaceL1ToL0MutationVariables
+>;
+export const ConvertSpaceL1ToL2Document = gql`
+    mutation ConvertSpaceL1ToL2($spaceL1ID: UUID!, $parentSpaceL1ID: UUID!) {
+  convertSpaceL1ToSpaceL2(
+    convertData: {spaceL1ID: $spaceL1ID, parentSpaceL1ID: $parentSpaceL1ID}
+  ) {
+    id
+  }
+}
+    `;
+export type ConvertSpaceL1ToL2MutationFn = Apollo.MutationFunction<
+  SchemaTypes.ConvertSpaceL1ToL2Mutation,
+  SchemaTypes.ConvertSpaceL1ToL2MutationVariables
+>;
+
+/**
+ * __useConvertSpaceL1ToL2Mutation__
+ *
+ * To run a mutation, you first call `useConvertSpaceL1ToL2Mutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConvertSpaceL1ToL2Mutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [convertSpaceL1ToL2Mutation, { data, loading, error }] = useConvertSpaceL1ToL2Mutation({
+ *   variables: {
+ *      spaceL1ID: // value for 'spaceL1ID'
+ *      parentSpaceL1ID: // value for 'parentSpaceL1ID'
+ *   },
+ * });
+ */
+export function useConvertSpaceL1ToL2Mutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ConvertSpaceL1ToL2Mutation,
+    SchemaTypes.ConvertSpaceL1ToL2MutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ConvertSpaceL1ToL2Mutation, SchemaTypes.ConvertSpaceL1ToL2MutationVariables>(
+    ConvertSpaceL1ToL2Document,
+    options
+  );
+}
+export type ConvertSpaceL1ToL2MutationHookResult = ReturnType<typeof useConvertSpaceL1ToL2Mutation>;
+export type ConvertSpaceL1ToL2MutationResult = Apollo.MutationResult<SchemaTypes.ConvertSpaceL1ToL2Mutation>;
+export type ConvertSpaceL1ToL2MutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ConvertSpaceL1ToL2Mutation,
+  SchemaTypes.ConvertSpaceL1ToL2MutationVariables
+>;
+export const ConvertSpaceL2ToL1Document = gql`
+    mutation ConvertSpaceL2ToL1($spaceL2ID: UUID!) {
+  convertSpaceL2ToSpaceL1(convertData: {spaceL2ID: $spaceL2ID}) {
+    id
+  }
+}
+    `;
+export type ConvertSpaceL2ToL1MutationFn = Apollo.MutationFunction<
+  SchemaTypes.ConvertSpaceL2ToL1Mutation,
+  SchemaTypes.ConvertSpaceL2ToL1MutationVariables
+>;
+
+/**
+ * __useConvertSpaceL2ToL1Mutation__
+ *
+ * To run a mutation, you first call `useConvertSpaceL2ToL1Mutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConvertSpaceL2ToL1Mutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [convertSpaceL2ToL1Mutation, { data, loading, error }] = useConvertSpaceL2ToL1Mutation({
+ *   variables: {
+ *      spaceL2ID: // value for 'spaceL2ID'
+ *   },
+ * });
+ */
+export function useConvertSpaceL2ToL1Mutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ConvertSpaceL2ToL1Mutation,
+    SchemaTypes.ConvertSpaceL2ToL1MutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ConvertSpaceL2ToL1Mutation, SchemaTypes.ConvertSpaceL2ToL1MutationVariables>(
+    ConvertSpaceL2ToL1Document,
+    options
+  );
+}
+export type ConvertSpaceL2ToL1MutationHookResult = ReturnType<typeof useConvertSpaceL2ToL1Mutation>;
+export type ConvertSpaceL2ToL1MutationResult = Apollo.MutationResult<SchemaTypes.ConvertSpaceL2ToL1Mutation>;
+export type ConvertSpaceL2ToL1MutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ConvertSpaceL2ToL1Mutation,
+  SchemaTypes.ConvertSpaceL2ToL1MutationVariables
+>;
 export const CalloutUrlResolveDocument = gql`
     query CalloutUrlResolve($url: String!) {
   urlResolver(url: $url) {
@@ -19865,6 +20480,473 @@ export type TransferCalloutMutationResult = Apollo.MutationResult<SchemaTypes.Tr
 export type TransferCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.TransferCalloutMutation,
   SchemaTypes.TransferCalloutMutationVariables
+>;
+export const InnovationHubTransferUrlResolveDocument = gql`
+    query InnovationHubTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    innovationHubId
+  }
+}
+    `;
+
+/**
+ * __useInnovationHubTransferUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubTransferUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubTransferUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubTransferUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useInnovationHubTransferUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubTransferUrlResolveQuery,
+    SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+  > &
+    ({ variables: SchemaTypes.InnovationHubTransferUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationHubTransferUrlResolveQuery,
+    SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+  >(InnovationHubTransferUrlResolveDocument, options);
+}
+export function useInnovationHubTransferUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubTransferUrlResolveQuery,
+    SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubTransferUrlResolveQuery,
+    SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+  >(InnovationHubTransferUrlResolveDocument, options);
+}
+export function useInnovationHubTransferUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InnovationHubTransferUrlResolveQuery,
+        SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InnovationHubTransferUrlResolveQuery,
+    SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+  >(InnovationHubTransferUrlResolveDocument, options);
+}
+export type InnovationHubTransferUrlResolveQueryHookResult = ReturnType<typeof useInnovationHubTransferUrlResolveQuery>;
+export type InnovationHubTransferUrlResolveLazyQueryHookResult = ReturnType<
+  typeof useInnovationHubTransferUrlResolveLazyQuery
+>;
+export type InnovationHubTransferUrlResolveSuspenseQueryHookResult = ReturnType<
+  typeof useInnovationHubTransferUrlResolveSuspenseQuery
+>;
+export type InnovationHubTransferUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubTransferUrlResolveQuery,
+  SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+>;
+export function refetchInnovationHubTransferUrlResolveQuery(
+  variables: SchemaTypes.InnovationHubTransferUrlResolveQueryVariables
+) {
+  return { query: InnovationHubTransferUrlResolveDocument, variables: variables };
+}
+export const InnovationHubTransferLookupDocument = gql`
+    query InnovationHubTransferLookup($hubId: UUID!) {
+  lookup {
+    innovationHub(ID: $hubId) {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useInnovationHubTransferLookupQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubTransferLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubTransferLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubTransferLookupQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useInnovationHubTransferLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubTransferLookupQuery,
+    SchemaTypes.InnovationHubTransferLookupQueryVariables
+  > &
+    ({ variables: SchemaTypes.InnovationHubTransferLookupQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationHubTransferLookupQuery,
+    SchemaTypes.InnovationHubTransferLookupQueryVariables
+  >(InnovationHubTransferLookupDocument, options);
+}
+export function useInnovationHubTransferLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubTransferLookupQuery,
+    SchemaTypes.InnovationHubTransferLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubTransferLookupQuery,
+    SchemaTypes.InnovationHubTransferLookupQueryVariables
+  >(InnovationHubTransferLookupDocument, options);
+}
+export function useInnovationHubTransferLookupSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InnovationHubTransferLookupQuery,
+        SchemaTypes.InnovationHubTransferLookupQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InnovationHubTransferLookupQuery,
+    SchemaTypes.InnovationHubTransferLookupQueryVariables
+  >(InnovationHubTransferLookupDocument, options);
+}
+export type InnovationHubTransferLookupQueryHookResult = ReturnType<typeof useInnovationHubTransferLookupQuery>;
+export type InnovationHubTransferLookupLazyQueryHookResult = ReturnType<typeof useInnovationHubTransferLookupLazyQuery>;
+export type InnovationHubTransferLookupSuspenseQueryHookResult = ReturnType<
+  typeof useInnovationHubTransferLookupSuspenseQuery
+>;
+export type InnovationHubTransferLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubTransferLookupQuery,
+  SchemaTypes.InnovationHubTransferLookupQueryVariables
+>;
+export function refetchInnovationHubTransferLookupQuery(
+  variables: SchemaTypes.InnovationHubTransferLookupQueryVariables
+) {
+  return { query: InnovationHubTransferLookupDocument, variables: variables };
+}
+export const TransferInnovationHubToAccountDocument = gql`
+    mutation TransferInnovationHubToAccount($innovationHubID: UUID!, $targetAccountID: UUID!) {
+  transferInnovationHubToAccount(
+    transferData: {innovationHubID: $innovationHubID, targetAccountID: $targetAccountID}
+  ) {
+    id
+  }
+}
+    `;
+export type TransferInnovationHubToAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.TransferInnovationHubToAccountMutation,
+  SchemaTypes.TransferInnovationHubToAccountMutationVariables
+>;
+
+/**
+ * __useTransferInnovationHubToAccountMutation__
+ *
+ * To run a mutation, you first call `useTransferInnovationHubToAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTransferInnovationHubToAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [transferInnovationHubToAccountMutation, { data, loading, error }] = useTransferInnovationHubToAccountMutation({
+ *   variables: {
+ *      innovationHubID: // value for 'innovationHubID'
+ *      targetAccountID: // value for 'targetAccountID'
+ *   },
+ * });
+ */
+export function useTransferInnovationHubToAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.TransferInnovationHubToAccountMutation,
+    SchemaTypes.TransferInnovationHubToAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.TransferInnovationHubToAccountMutation,
+    SchemaTypes.TransferInnovationHubToAccountMutationVariables
+  >(TransferInnovationHubToAccountDocument, options);
+}
+export type TransferInnovationHubToAccountMutationHookResult = ReturnType<
+  typeof useTransferInnovationHubToAccountMutation
+>;
+export type TransferInnovationHubToAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.TransferInnovationHubToAccountMutation>;
+export type TransferInnovationHubToAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.TransferInnovationHubToAccountMutation,
+  SchemaTypes.TransferInnovationHubToAccountMutationVariables
+>;
+export const InnovationPackTransferUrlResolveDocument = gql`
+    query InnovationPackTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    innovationPack {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useInnovationPackTransferUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackTransferUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackTransferUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackTransferUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useInnovationPackTransferUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackTransferUrlResolveQuery,
+    SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+  > &
+    ({ variables: SchemaTypes.InnovationPackTransferUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackTransferUrlResolveQuery,
+    SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+  >(InnovationPackTransferUrlResolveDocument, options);
+}
+export function useInnovationPackTransferUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackTransferUrlResolveQuery,
+    SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackTransferUrlResolveQuery,
+    SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+  >(InnovationPackTransferUrlResolveDocument, options);
+}
+export function useInnovationPackTransferUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InnovationPackTransferUrlResolveQuery,
+        SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InnovationPackTransferUrlResolveQuery,
+    SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+  >(InnovationPackTransferUrlResolveDocument, options);
+}
+export type InnovationPackTransferUrlResolveQueryHookResult = ReturnType<
+  typeof useInnovationPackTransferUrlResolveQuery
+>;
+export type InnovationPackTransferUrlResolveLazyQueryHookResult = ReturnType<
+  typeof useInnovationPackTransferUrlResolveLazyQuery
+>;
+export type InnovationPackTransferUrlResolveSuspenseQueryHookResult = ReturnType<
+  typeof useInnovationPackTransferUrlResolveSuspenseQuery
+>;
+export type InnovationPackTransferUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackTransferUrlResolveQuery,
+  SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+>;
+export function refetchInnovationPackTransferUrlResolveQuery(
+  variables: SchemaTypes.InnovationPackTransferUrlResolveQueryVariables
+) {
+  return { query: InnovationPackTransferUrlResolveDocument, variables: variables };
+}
+export const InnovationPackTransferLookupDocument = gql`
+    query InnovationPackTransferLookup($packId: UUID!) {
+  lookup {
+    innovationPack(ID: $packId) {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      provider {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useInnovationPackTransferLookupQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackTransferLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackTransferLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackTransferLookupQuery({
+ *   variables: {
+ *      packId: // value for 'packId'
+ *   },
+ * });
+ */
+export function useInnovationPackTransferLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackTransferLookupQuery,
+    SchemaTypes.InnovationPackTransferLookupQueryVariables
+  > &
+    ({ variables: SchemaTypes.InnovationPackTransferLookupQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackTransferLookupQuery,
+    SchemaTypes.InnovationPackTransferLookupQueryVariables
+  >(InnovationPackTransferLookupDocument, options);
+}
+export function useInnovationPackTransferLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackTransferLookupQuery,
+    SchemaTypes.InnovationPackTransferLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackTransferLookupQuery,
+    SchemaTypes.InnovationPackTransferLookupQueryVariables
+  >(InnovationPackTransferLookupDocument, options);
+}
+export function useInnovationPackTransferLookupSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InnovationPackTransferLookupQuery,
+        SchemaTypes.InnovationPackTransferLookupQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InnovationPackTransferLookupQuery,
+    SchemaTypes.InnovationPackTransferLookupQueryVariables
+  >(InnovationPackTransferLookupDocument, options);
+}
+export type InnovationPackTransferLookupQueryHookResult = ReturnType<typeof useInnovationPackTransferLookupQuery>;
+export type InnovationPackTransferLookupLazyQueryHookResult = ReturnType<
+  typeof useInnovationPackTransferLookupLazyQuery
+>;
+export type InnovationPackTransferLookupSuspenseQueryHookResult = ReturnType<
+  typeof useInnovationPackTransferLookupSuspenseQuery
+>;
+export type InnovationPackTransferLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackTransferLookupQuery,
+  SchemaTypes.InnovationPackTransferLookupQueryVariables
+>;
+export function refetchInnovationPackTransferLookupQuery(
+  variables: SchemaTypes.InnovationPackTransferLookupQueryVariables
+) {
+  return { query: InnovationPackTransferLookupDocument, variables: variables };
+}
+export const TransferInnovationPackToAccountDocument = gql`
+    mutation TransferInnovationPackToAccount($innovationPackID: UUID!, $targetAccountID: UUID!) {
+  transferInnovationPackToAccount(
+    transferData: {innovationPackID: $innovationPackID, targetAccountID: $targetAccountID}
+  ) {
+    id
+  }
+}
+    `;
+export type TransferInnovationPackToAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.TransferInnovationPackToAccountMutation,
+  SchemaTypes.TransferInnovationPackToAccountMutationVariables
+>;
+
+/**
+ * __useTransferInnovationPackToAccountMutation__
+ *
+ * To run a mutation, you first call `useTransferInnovationPackToAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTransferInnovationPackToAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [transferInnovationPackToAccountMutation, { data, loading, error }] = useTransferInnovationPackToAccountMutation({
+ *   variables: {
+ *      innovationPackID: // value for 'innovationPackID'
+ *      targetAccountID: // value for 'targetAccountID'
+ *   },
+ * });
+ */
+export function useTransferInnovationPackToAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.TransferInnovationPackToAccountMutation,
+    SchemaTypes.TransferInnovationPackToAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.TransferInnovationPackToAccountMutation,
+    SchemaTypes.TransferInnovationPackToAccountMutationVariables
+  >(TransferInnovationPackToAccountDocument, options);
+}
+export type TransferInnovationPackToAccountMutationHookResult = ReturnType<
+  typeof useTransferInnovationPackToAccountMutation
+>;
+export type TransferInnovationPackToAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.TransferInnovationPackToAccountMutation>;
+export type TransferInnovationPackToAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.TransferInnovationPackToAccountMutation,
+  SchemaTypes.TransferInnovationPackToAccountMutationVariables
 >;
 export const SpaceTransferUrlResolveDocument = gql`
     query SpaceTransferUrlResolve($url: String!) {
@@ -20327,6 +21409,533 @@ export type TransferSpaceToAccountMutationResult = Apollo.MutationResult<SchemaT
 export type TransferSpaceToAccountMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.TransferSpaceToAccountMutation,
   SchemaTypes.TransferSpaceToAccountMutationVariables
+>;
+export const VcTransferUrlResolveDocument = gql`
+    query VcTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    virtualContributor {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useVcTransferUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useVcTransferUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVcTransferUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVcTransferUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useVcTransferUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VcTransferUrlResolveQuery,
+    SchemaTypes.VcTransferUrlResolveQueryVariables
+  > &
+    ({ variables: SchemaTypes.VcTransferUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VcTransferUrlResolveQuery, SchemaTypes.VcTransferUrlResolveQueryVariables>(
+    VcTransferUrlResolveDocument,
+    options
+  );
+}
+export function useVcTransferUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VcTransferUrlResolveQuery,
+    SchemaTypes.VcTransferUrlResolveQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VcTransferUrlResolveQuery, SchemaTypes.VcTransferUrlResolveQueryVariables>(
+    VcTransferUrlResolveDocument,
+    options
+  );
+}
+export function useVcTransferUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VcTransferUrlResolveQuery,
+        SchemaTypes.VcTransferUrlResolveQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.VcTransferUrlResolveQuery, SchemaTypes.VcTransferUrlResolveQueryVariables>(
+    VcTransferUrlResolveDocument,
+    options
+  );
+}
+export type VcTransferUrlResolveQueryHookResult = ReturnType<typeof useVcTransferUrlResolveQuery>;
+export type VcTransferUrlResolveLazyQueryHookResult = ReturnType<typeof useVcTransferUrlResolveLazyQuery>;
+export type VcTransferUrlResolveSuspenseQueryHookResult = ReturnType<typeof useVcTransferUrlResolveSuspenseQuery>;
+export type VcTransferUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.VcTransferUrlResolveQuery,
+  SchemaTypes.VcTransferUrlResolveQueryVariables
+>;
+export function refetchVcTransferUrlResolveQuery(variables: SchemaTypes.VcTransferUrlResolveQueryVariables) {
+  return { query: VcTransferUrlResolveDocument, variables: variables };
+}
+export const VcTransferLookupDocument = gql`
+    query VcTransferLookup($vcId: UUID!) {
+  lookup {
+    virtualContributor(ID: $vcId) {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useVcTransferLookupQuery__
+ *
+ * To run a query within a React component, call `useVcTransferLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVcTransferLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVcTransferLookupQuery({
+ *   variables: {
+ *      vcId: // value for 'vcId'
+ *   },
+ * });
+ */
+export function useVcTransferLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.VcTransferLookupQuery, SchemaTypes.VcTransferLookupQueryVariables> &
+    ({ variables: SchemaTypes.VcTransferLookupQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VcTransferLookupQuery, SchemaTypes.VcTransferLookupQueryVariables>(
+    VcTransferLookupDocument,
+    options
+  );
+}
+export function useVcTransferLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VcTransferLookupQuery,
+    SchemaTypes.VcTransferLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VcTransferLookupQuery, SchemaTypes.VcTransferLookupQueryVariables>(
+    VcTransferLookupDocument,
+    options
+  );
+}
+export function useVcTransferLookupSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.VcTransferLookupQuery, SchemaTypes.VcTransferLookupQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.VcTransferLookupQuery, SchemaTypes.VcTransferLookupQueryVariables>(
+    VcTransferLookupDocument,
+    options
+  );
+}
+export type VcTransferLookupQueryHookResult = ReturnType<typeof useVcTransferLookupQuery>;
+export type VcTransferLookupLazyQueryHookResult = ReturnType<typeof useVcTransferLookupLazyQuery>;
+export type VcTransferLookupSuspenseQueryHookResult = ReturnType<typeof useVcTransferLookupSuspenseQuery>;
+export type VcTransferLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.VcTransferLookupQuery,
+  SchemaTypes.VcTransferLookupQueryVariables
+>;
+export function refetchVcTransferLookupQuery(variables: SchemaTypes.VcTransferLookupQueryVariables) {
+  return { query: VcTransferLookupDocument, variables: variables };
+}
+export const TransferVirtualContributorToAccountDocument = gql`
+    mutation TransferVirtualContributorToAccount($virtualContributorID: UUID!, $targetAccountID: UUID!) {
+  transferVirtualContributorToAccount(
+    transferData: {virtualContributorID: $virtualContributorID, targetAccountID: $targetAccountID}
+  ) {
+    id
+  }
+}
+    `;
+export type TransferVirtualContributorToAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.TransferVirtualContributorToAccountMutation,
+  SchemaTypes.TransferVirtualContributorToAccountMutationVariables
+>;
+
+/**
+ * __useTransferVirtualContributorToAccountMutation__
+ *
+ * To run a mutation, you first call `useTransferVirtualContributorToAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTransferVirtualContributorToAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [transferVirtualContributorToAccountMutation, { data, loading, error }] = useTransferVirtualContributorToAccountMutation({
+ *   variables: {
+ *      virtualContributorID: // value for 'virtualContributorID'
+ *      targetAccountID: // value for 'targetAccountID'
+ *   },
+ * });
+ */
+export function useTransferVirtualContributorToAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.TransferVirtualContributorToAccountMutation,
+    SchemaTypes.TransferVirtualContributorToAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.TransferVirtualContributorToAccountMutation,
+    SchemaTypes.TransferVirtualContributorToAccountMutationVariables
+  >(TransferVirtualContributorToAccountDocument, options);
+}
+export type TransferVirtualContributorToAccountMutationHookResult = ReturnType<
+  typeof useTransferVirtualContributorToAccountMutation
+>;
+export type TransferVirtualContributorToAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.TransferVirtualContributorToAccountMutation>;
+export type TransferVirtualContributorToAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.TransferVirtualContributorToAccountMutation,
+  SchemaTypes.TransferVirtualContributorToAccountMutationVariables
+>;
+export const VcConversionUrlResolveDocument = gql`
+    query VcConversionUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    virtualContributor {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useVcConversionUrlResolveQuery__
+ *
+ * To run a query within a React component, call `useVcConversionUrlResolveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVcConversionUrlResolveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVcConversionUrlResolveQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useVcConversionUrlResolveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VcConversionUrlResolveQuery,
+    SchemaTypes.VcConversionUrlResolveQueryVariables
+  > &
+    ({ variables: SchemaTypes.VcConversionUrlResolveQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VcConversionUrlResolveQuery, SchemaTypes.VcConversionUrlResolveQueryVariables>(
+    VcConversionUrlResolveDocument,
+    options
+  );
+}
+export function useVcConversionUrlResolveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VcConversionUrlResolveQuery,
+    SchemaTypes.VcConversionUrlResolveQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VcConversionUrlResolveQuery, SchemaTypes.VcConversionUrlResolveQueryVariables>(
+    VcConversionUrlResolveDocument,
+    options
+  );
+}
+export function useVcConversionUrlResolveSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VcConversionUrlResolveQuery,
+        SchemaTypes.VcConversionUrlResolveQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.VcConversionUrlResolveQuery,
+    SchemaTypes.VcConversionUrlResolveQueryVariables
+  >(VcConversionUrlResolveDocument, options);
+}
+export type VcConversionUrlResolveQueryHookResult = ReturnType<typeof useVcConversionUrlResolveQuery>;
+export type VcConversionUrlResolveLazyQueryHookResult = ReturnType<typeof useVcConversionUrlResolveLazyQuery>;
+export type VcConversionUrlResolveSuspenseQueryHookResult = ReturnType<typeof useVcConversionUrlResolveSuspenseQuery>;
+export type VcConversionUrlResolveQueryResult = Apollo.QueryResult<
+  SchemaTypes.VcConversionUrlResolveQuery,
+  SchemaTypes.VcConversionUrlResolveQueryVariables
+>;
+export function refetchVcConversionUrlResolveQuery(variables: SchemaTypes.VcConversionUrlResolveQueryVariables) {
+  return { query: VcConversionUrlResolveDocument, variables: variables };
+}
+export const VcConversionLookupDocument = gql`
+    query VcConversionLookup($vcId: UUID!) {
+  lookup {
+    virtualContributor(ID: $vcId) {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      bodyOfKnowledgeType
+      bodyOfKnowledgeID
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useVcConversionLookupQuery__
+ *
+ * To run a query within a React component, call `useVcConversionLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVcConversionLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVcConversionLookupQuery({
+ *   variables: {
+ *      vcId: // value for 'vcId'
+ *   },
+ * });
+ */
+export function useVcConversionLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VcConversionLookupQuery,
+    SchemaTypes.VcConversionLookupQueryVariables
+  > &
+    ({ variables: SchemaTypes.VcConversionLookupQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VcConversionLookupQuery, SchemaTypes.VcConversionLookupQueryVariables>(
+    VcConversionLookupDocument,
+    options
+  );
+}
+export function useVcConversionLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VcConversionLookupQuery,
+    SchemaTypes.VcConversionLookupQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VcConversionLookupQuery, SchemaTypes.VcConversionLookupQueryVariables>(
+    VcConversionLookupDocument,
+    options
+  );
+}
+export function useVcConversionLookupSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.VcConversionLookupQuery, SchemaTypes.VcConversionLookupQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.VcConversionLookupQuery, SchemaTypes.VcConversionLookupQueryVariables>(
+    VcConversionLookupDocument,
+    options
+  );
+}
+export type VcConversionLookupQueryHookResult = ReturnType<typeof useVcConversionLookupQuery>;
+export type VcConversionLookupLazyQueryHookResult = ReturnType<typeof useVcConversionLookupLazyQuery>;
+export type VcConversionLookupSuspenseQueryHookResult = ReturnType<typeof useVcConversionLookupSuspenseQuery>;
+export type VcConversionLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.VcConversionLookupQuery,
+  SchemaTypes.VcConversionLookupQueryVariables
+>;
+export function refetchVcConversionLookupQuery(variables: SchemaTypes.VcConversionLookupQueryVariables) {
+  return { query: VcConversionLookupDocument, variables: variables };
+}
+export const VcConversionSourceSpaceCalloutsDocument = gql`
+    query VcConversionSourceSpaceCallouts($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      collaboration {
+        id
+        calloutsSet {
+          id
+          callouts {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useVcConversionSourceSpaceCalloutsQuery__
+ *
+ * To run a query within a React component, call `useVcConversionSourceSpaceCalloutsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVcConversionSourceSpaceCalloutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVcConversionSourceSpaceCalloutsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useVcConversionSourceSpaceCalloutsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+    SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+  > &
+    ({ variables: SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+    SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+  >(VcConversionSourceSpaceCalloutsDocument, options);
+}
+export function useVcConversionSourceSpaceCalloutsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+    SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+    SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+  >(VcConversionSourceSpaceCalloutsDocument, options);
+}
+export function useVcConversionSourceSpaceCalloutsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+        SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+    SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+  >(VcConversionSourceSpaceCalloutsDocument, options);
+}
+export type VcConversionSourceSpaceCalloutsQueryHookResult = ReturnType<typeof useVcConversionSourceSpaceCalloutsQuery>;
+export type VcConversionSourceSpaceCalloutsLazyQueryHookResult = ReturnType<
+  typeof useVcConversionSourceSpaceCalloutsLazyQuery
+>;
+export type VcConversionSourceSpaceCalloutsSuspenseQueryHookResult = ReturnType<
+  typeof useVcConversionSourceSpaceCalloutsSuspenseQuery
+>;
+export type VcConversionSourceSpaceCalloutsQueryResult = Apollo.QueryResult<
+  SchemaTypes.VcConversionSourceSpaceCalloutsQuery,
+  SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+>;
+export function refetchVcConversionSourceSpaceCalloutsQuery(
+  variables: SchemaTypes.VcConversionSourceSpaceCalloutsQueryVariables
+) {
+  return { query: VcConversionSourceSpaceCalloutsDocument, variables: variables };
+}
+export const ConvertVcToKnowledgeBaseDocument = gql`
+    mutation ConvertVcToKnowledgeBase($virtualContributorID: UUID!) {
+  convertVirtualContributorToUseKnowledgeBase(
+    conversionData: {virtualContributorID: $virtualContributorID}
+  ) {
+    id
+  }
+}
+    `;
+export type ConvertVcToKnowledgeBaseMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ConvertVcToKnowledgeBaseMutation,
+  SchemaTypes.ConvertVcToKnowledgeBaseMutationVariables
+>;
+
+/**
+ * __useConvertVcToKnowledgeBaseMutation__
+ *
+ * To run a mutation, you first call `useConvertVcToKnowledgeBaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConvertVcToKnowledgeBaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [convertVcToKnowledgeBaseMutation, { data, loading, error }] = useConvertVcToKnowledgeBaseMutation({
+ *   variables: {
+ *      virtualContributorID: // value for 'virtualContributorID'
+ *   },
+ * });
+ */
+export function useConvertVcToKnowledgeBaseMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ConvertVcToKnowledgeBaseMutation,
+    SchemaTypes.ConvertVcToKnowledgeBaseMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ConvertVcToKnowledgeBaseMutation,
+    SchemaTypes.ConvertVcToKnowledgeBaseMutationVariables
+  >(ConvertVcToKnowledgeBaseDocument, options);
+}
+export type ConvertVcToKnowledgeBaseMutationHookResult = ReturnType<typeof useConvertVcToKnowledgeBaseMutation>;
+export type ConvertVcToKnowledgeBaseMutationResult =
+  Apollo.MutationResult<SchemaTypes.ConvertVcToKnowledgeBaseMutation>;
+export type ConvertVcToKnowledgeBaseMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ConvertVcToKnowledgeBaseMutation,
+  SchemaTypes.ConvertVcToKnowledgeBaseMutationVariables
 >;
 export const ShareLinkWithUserDocument = gql`
     mutation shareLinkWithUser($messageData: CommunicationSendMessageToUsersInput!) {

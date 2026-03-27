@@ -1,0 +1,56 @@
+# Virtual Contributor Transfer — URL resolution, lookup, and transfer mutation
+# Used by: TransferVirtualContributorSection + useTransferVirtualContributor hook
+
+# Step 1: Resolve VC URL to get ID (same resolver shape as VcConversion)
+query VcTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    virtualContributor {
+      id
+    }
+  }
+}
+
+# Step 2: Fetch VC details for state display
+query VcTransferLookup($vcId: UUID!) {
+  lookup {
+    virtualContributor(ID: $vcId) {
+      id
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
+# Mutation: Transfer VC to another account
+mutation TransferVirtualContributorToAccount($virtualContributorID: UUID!, $targetAccountID: UUID!) {
+  transferVirtualContributorToAccount(
+    transferData: {
+      virtualContributorID: $virtualContributorID
+      targetAccountID: $targetAccountID
+    }
+  ) {
+    id
+  }
+}
