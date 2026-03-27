@@ -189,6 +189,16 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - **FR-014**: CRD composite components MUST be organized under `src/crd/components/space/` and layout components under `src/crd/layouts/`
 - **FR-015**: The route-level split between CRD and MUI MUST happen in `TopLevelRoutes.tsx` — CRD routes are wrapped in `CrdLayoutWrapper`, MUI routes continue using `TopLevelLayout` unchanged. CRD page components live in `src/new-ui/topLevelPages/` and MUST NOT import from `@mui/*`
 
+#### Accessibility (WCAG 2.1 AA)
+- **FR-019**: All interactive elements (buttons, links, form inputs) MUST have visible focus indicators — `focus-visible:ring-2` or equivalent. The `outline-none` class MUST NOT be used without a replacement focus indicator
+- **FR-020**: Icon-only buttons MUST have `aria-label` (not just `title`) for screen reader support. Decorative icons adjacent to text MUST have `aria-hidden="true"`
+- **FR-021**: The card grid MUST use `role="list"` and `role="listitem"` for proper screen reader navigation. Each card MUST use `<article>` semantics
+- **FR-022**: Loading states MUST be announced to assistive technology via `role="status"` with an `aria-label`
+- **FR-023**: Interactive elements inside cards (e.g., parent link) MUST use semantic `<button>` elements, not clickable `<span>` elements, ensuring keyboard operability
+- **FR-024**: The header navigation icons MUST be wrapped in a `<nav>` landmark with `aria-label`. Footer links MUST be in a `<nav>` landmark
+- **FR-025**: Form inputs (TagsInput search) MUST have an `aria-label` that persists regardless of placeholder visibility
+- **FR-026**: Filter chip dismiss actions MUST use `<button>` elements with screen reader text indicating the dismiss action
+
 #### Standalone Preview App
 - **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization
 - **FR-017**: CRD translations MUST live in a dedicated JSON file (`src/crd/i18n/en.json`) loaded as the `'crd'` i18next namespace. Both the main app and the standalone app load the same JSON file — the main app registers it as an additional namespace, the standalone app uses it as its default namespace

@@ -40,32 +40,50 @@ export function Footer({ className }: { className?: string }) {
         </div>
 
         {/* Links + centered logo */}
-        <div className="flex items-center gap-6 text-sm text-muted-foreground">
-          <a href="#" className="hover:text-foreground transition-colors">
+        <nav aria-label="Footer" className="flex items-center gap-6 text-sm text-muted-foreground">
+          <a
+            href="/terms"
+            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
             {t('footer.terms')}
           </a>
-          <a href="#" className="hover:text-foreground transition-colors">
+          <a
+            href="/privacy"
+            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
             {t('footer.privacy')}
           </a>
-          <a href="#" className="hover:text-foreground transition-colors">
+          <a
+            href="/security"
+            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
             {t('footer.security')}
           </a>
 
-          <AlkemioLogo className="w-5 h-5 opacity-40" />
+          <AlkemioLogo aria-hidden="true" className="w-5 h-5 opacity-40" />
 
-          <a href="#" className="hover:text-foreground transition-colors">
+          <a
+            href="/support"
+            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
             {t('footer.support')}
           </a>
-          <a href="#" className="hover:text-foreground transition-colors">
+          <a
+            href="/about"
+            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
             {t('footer.about')}
           </a>
-        </div>
+        </nav>
 
         {/* Language selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>
-            <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-accent transition-colors text-sm text-muted-foreground">
-              <Globe className="w-3.5 h-3.5" />
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-accent transition-colors text-sm text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Globe aria-hidden="true" className="w-3.5 h-3.5" />
               <span>{currentLabel}</span>
             </button>
           </DropdownMenuTrigger>
@@ -80,7 +98,9 @@ export function Footer({ className }: { className?: string }) {
                 )}
               >
                 <span className="text-sm">{lang.label}</span>
-                {currentLanguage.startsWith(lang.code) && <Check className="w-4 h-4 shrink-0 text-primary" />}
+                {currentLanguage.startsWith(lang.code) && (
+                  <Check aria-hidden="true" className="w-4 h-4 shrink-0 text-primary" />
+                )}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

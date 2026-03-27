@@ -23,7 +23,7 @@ export function StackedAvatars({ primary, secondary, className }: StackedAvatars
           style={{ background: secondary.avatarColor }}
         >
           {secondary.avatarUrl ? (
-            <img src={secondary.avatarUrl} alt={secondary.name} className="w-full h-full object-cover" />
+            <img src={secondary.avatarUrl} alt={secondary.name ?? ''} className="w-full h-full object-cover" />
           ) : (
             <span className="text-[9px] font-bold text-primary-foreground">{secondary.initials}</span>
           )}
@@ -34,7 +34,7 @@ export function StackedAvatars({ primary, secondary, className }: StackedAvatars
           style={{ background: primary.avatarColor }}
         >
           {primary.avatarUrl ? (
-            <img src={primary.avatarUrl} alt={primary.name} className="w-full h-full object-cover" />
+            <img src={primary.avatarUrl} alt={primary.name ?? ''} className="w-full h-full object-cover" />
           ) : (
             <span className="text-[10px] font-bold text-primary-foreground">{primary.initials}</span>
           )}
@@ -52,7 +52,7 @@ export function StackedAvatars({ primary, secondary, className }: StackedAvatars
       style={{ background: primary.avatarColor }}
     >
       {primary.avatarUrl ? (
-        <img src={primary.avatarUrl} alt={primary.name} className="w-full h-full object-cover" />
+        <img src={primary.avatarUrl} alt={primary.name ?? ''} className="w-full h-full object-cover" />
       ) : (
         <span className="text-xs font-bold text-primary-foreground">{primary.initials}</span>
       )}

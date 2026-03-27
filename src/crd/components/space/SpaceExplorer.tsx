@@ -3,9 +3,9 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceCardData, SpaceCardParent } from '@/crd/components/space/SpaceCard';
 import { SpaceCard, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
+import { TagsInput } from '@/crd/forms/tags-input';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
-import { TagsInput } from '@/crd/forms/tags-input';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -14,13 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/crd/primitives/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
 export type SpacesFilterValue = 'all' | 'member' | 'public';
 
@@ -133,6 +127,7 @@ export function SpaceExplorer({
         {/* Sort dropdown */}
         <Select value={sortBy} onValueChange={v => setSortBy(v as SortOption)}>
           <SelectTrigger
+            aria-label={t('spaces.sortBy')}
             className="gap-2"
             style={{
               width: 'auto',
@@ -190,7 +185,13 @@ export function SpaceExplorer({
           <DropdownMenuContent align="end" style={{ minWidth: 200 }}>
             {/* Membership section (server-side) */}
             <DropdownMenuLabel
-              style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted-foreground)' }}
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--muted-foreground)',
+              }}
             >
               {t('spaces.filterMembership')}
             </DropdownMenuLabel>
@@ -219,14 +220,17 @@ export function SpaceExplorer({
 
             {/* Privacy section (client-side) */}
             <DropdownMenuLabel
-              style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted-foreground)' }}
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--muted-foreground)',
+              }}
             >
               {t('spaces.filterPrivacy')}
             </DropdownMenuLabel>
-            <DropdownMenuCheckboxItem
-              checked={privacyFilter === 'all'}
-              onCheckedChange={() => setPrivacyFilter('all')}
-            >
+            <DropdownMenuCheckboxItem checked={privacyFilter === 'all'} onCheckedChange={() => setPrivacyFilter('all')}>
               {t('spaces.filterAll')}
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
@@ -246,20 +250,20 @@ export function SpaceExplorer({
 
             {/* Type section (client-side) */}
             <DropdownMenuLabel
-              style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted-foreground)' }}
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--muted-foreground)',
+              }}
             >
               {t('spaces.filterType')}
             </DropdownMenuLabel>
-            <DropdownMenuCheckboxItem
-              checked={typeFilter === 'all'}
-              onCheckedChange={() => setTypeFilter('all')}
-            >
+            <DropdownMenuCheckboxItem checked={typeFilter === 'all'} onCheckedChange={() => setTypeFilter('all')}>
               {t('spaces.filterAllTypes')}
             </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={typeFilter === 'spaces'}
-              onCheckedChange={() => setTypeFilter('spaces')}
-            >
+            <DropdownMenuCheckboxItem checked={typeFilter === 'spaces'} onCheckedChange={() => setTypeFilter('spaces')}>
               {t('spaces.filterSpacesOnly')}
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
@@ -294,26 +298,28 @@ export function SpaceExplorer({
       {activeFilterCount > 0 && (
         <div className="flex flex-wrap items-center gap-2 mb-4">
           {privacyFilter !== 'all' && (
-            <Badge
-              variant="secondary"
-              className="gap-1 cursor-pointer"
-              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '999px' }}
+            <button
+              type="button"
               onClick={() => setPrivacyFilter('all')}
+              className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              style={{ fontSize: '11px', padding: '4px 10px' }}
             >
               {privacyFilter === 'public' ? t('spaces.filterPublicOnly') : t('spaces.filterPrivateOnly')}
-              <X className="size-2.5" />
-            </Badge>
+              <X aria-hidden="true" className="size-2.5" />
+              <span className="sr-only">, remove filter</span>
+            </button>
           )}
           {typeFilter !== 'all' && (
-            <Badge
-              variant="secondary"
-              className="gap-1 cursor-pointer"
-              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '999px' }}
+            <button
+              type="button"
               onClick={() => setTypeFilter('all')}
+              className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              style={{ fontSize: '11px', padding: '4px 10px' }}
             >
               {typeFilter === 'spaces' ? t('spaces.filterSpacesOnly') : t('spaces.filterSubspacesOnly')}
-              <X className="size-2.5" />
-            </Badge>
+              <X aria-hidden="true" className="size-2.5" />
+              <span className="sr-only">, remove filter</span>
+            </button>
           )}
         </div>
       )}
@@ -324,8 +330,7 @@ export function SpaceExplorer({
           <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
             {t('spaces.showing')}{' '}
             <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>{displayedSpaces.length}</span>{' '}
-            {t('spaces.of')}{' '}
-            <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>{spaces.length}</span>{' '}
+            {t('spaces.of')} <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>{spaces.length}</span>{' '}
             {t('spaces.spacesLabel')}
           </p>
         </div>
@@ -333,24 +338,35 @@ export function SpaceExplorer({
 
       {/* Loading search indicator */}
       {loadingSearchResults && (
-        <div className="flex items-center justify-center py-8">
+        <output className="flex items-center justify-center py-8" aria-label={t('spaces.loading')}>
           <div className="animate-spin rounded-full size-6 border-2 border-border border-t-transparent" />
-        </div>
+        </output>
       )}
 
       {/* Cards grid */}
       {showSkeletons ? (
-        <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+        <output
+          className="grid gap-6"
+          aria-label={t('spaces.loading')}
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}
+        >
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
             <SpaceCardSkeleton key={i} />
           ))}
-        </div>
+        </output>
       ) : displayedSpaces.length > 0 ? (
-        <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+        <ul
+          className="grid gap-6 list-none p-0 m-0"
+          aria-label={t('spaces.spacesLabel')}
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}
+        >
           {displayedSpaces.map(space => (
-            <SpaceCard key={space.id} space={space} onParentClick={onParentClick} />
+            <li key={space.id}>
+              <SpaceCard space={space} onParentClick={onParentClick} />
+            </li>
           ))}
-        </div>
+        </ul>
       ) : null}
 
       {/* Empty state */}
@@ -364,7 +380,7 @@ export function SpaceExplorer({
             background: 'var(--muted)',
           }}
         >
-          <FolderOpen className="size-10 text-muted-foreground opacity-50 mb-3" />
+          <FolderOpen aria-hidden="true" className="size-10 text-muted-foreground opacity-50 mb-3" />
           <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--foreground)' }}>
             {t('spaces.emptyTitle')}
           </h3>
@@ -383,7 +399,13 @@ export function SpaceExplorer({
       {/* Load More */}
       {hasMore && displayedSpaces.length > 0 && !loading && (
         <div className="flex justify-center mt-8">
-          <Button variant="outline" onClick={handleLoadMore} disabled={loadingMore} className="gap-2">
+          <Button
+            variant="outline"
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            aria-busy={loadingMore}
+            className="gap-2"
+          >
             {loadingMore ? (
               <div className="animate-spin rounded-full size-4 border-2 border-current border-t-transparent" />
             ) : (

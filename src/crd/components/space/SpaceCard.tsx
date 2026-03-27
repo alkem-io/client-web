@@ -58,8 +58,15 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
   };
 
   return (
-    <a href={space.href} onClick={handleClick} className={cn('group block h-full outline-none', className)}>
-      <div className="h-full flex flex-col rounded-xl bg-card border border-border shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30 transition-all duration-300">
+    <a
+      href={space.href}
+      onClick={handleClick}
+      className={cn(
+        'group block h-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl',
+        className
+      )}
+    >
+      <article className="h-full flex flex-col rounded-xl bg-card border border-border shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30 transition-all duration-300">
         {/* Banner Image */}
         <div className="relative z-0">
           <div className="overflow-hidden rounded-t-xl aspect-video">
@@ -84,7 +91,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Member badge */}
           {space.isMember && (
             <div className="absolute top-3 left-4" style={{ zIndex: 3 }}>
-              <div
+              <output
                 className="flex items-center gap-1 px-2 py-1 rounded-full"
                 style={{
                   background: 'white',
@@ -93,9 +100,9 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                   fontWeight: 600,
                 }}
               >
-                <UserCheck style={{ width: 10, height: 10 }} />
+                <UserCheck aria-hidden="true" style={{ width: 10, height: 10 }} />
                 <span>{t('spaces.member')}</span>
-              </div>
+              </output>
             </div>
           )}
 
@@ -107,7 +114,11 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 space.isPrivate ? 'bg-foreground/50 text-primary-foreground' : 'bg-background/85 text-foreground'
               )}
             >
-              {space.isPrivate ? <Lock className="size-2.5" /> : <Globe className="size-2.5" />}
+              {space.isPrivate ? (
+                <Lock aria-hidden="true" className="size-2.5" />
+              ) : (
+                <Globe aria-hidden="true" className="size-2.5" />
+              )}
               <span>{space.isPrivate ? t('spaces.private') : t('spaces.public')}</span>
             </div>
           </div>
@@ -141,16 +152,17 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {space.parent && (
             <p className="truncate text-[11px] text-muted-foreground mt-0.5">
               {t('spaces.in')}:{' '}
-              <span
-                className="text-muted-foreground hover:underline cursor-pointer"
+              <button
+                type="button"
+                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px]"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();
-                  onParentClick?.(space.parent!);
+                  if (space.parent) onParentClick?.(space.parent);
                 }}
               >
                 {space.parent.name}
-              </span>
+              </button>
             </p>
           )}
 
@@ -185,9 +197,13 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 {t('spaces.leads')}
               </span>
               <div className="flex -space-x-2">
-                {visibleLeads.map((lead, i) => (
-                  <Avatar key={i} className="size-[26px] border-2 border-card" title={`${lead.name} (${lead.type})`}>
-                    <AvatarImage src={lead.avatarUrl} alt={lead.name} />
+                {visibleLeads.map(lead => (
+                  <Avatar
+                    key={lead.name}
+                    className="size-[26px] border-2 border-card"
+                    aria-label={`${lead.name} (${lead.type})`}
+                  >
+                    <AvatarImage src={lead.avatarUrl} alt="" />
                     <AvatarFallback
                       className={cn(
                         'text-[9px] font-semibold',
@@ -201,15 +217,16 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                   </Avatar>
                 ))}
                 {overflowCount > 0 && (
-                  <div className="flex items-center justify-center size-[26px] border-2 border-card rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
-                    +{overflowCount}
-                  </div>
+                  <span className="flex items-center justify-center size-[26px] border-2 border-card rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
+                    <span aria-hidden="true">+{overflowCount}</span>
+                    <span className="sr-only">{overflowCount} more leads</span>
+                  </span>
                 )}
               </div>
             </div>
           </div>
         )}
-      </div>
+      </article>
     </a>
   );
 }

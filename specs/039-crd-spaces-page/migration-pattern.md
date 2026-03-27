@@ -27,6 +27,7 @@ Create presentational components in `src/crd/components/<domain>/`. Rules:
 - Use `useTranslation('crd')` for UI text (keys are prefixless: `t('spaces.title')`)
 - Use `<a href>` for navigation (no `react-router-dom`)
 - Icons from `lucide-react` only
+- WCAG 2.1 AA: icon-only buttons need `aria-label`, decorative icons need `aria-hidden="true"`, interactive elements need visible `focus-visible:ring` indicators, clickable elements must be `<a>` or `<button>` (not clickable `<span>`/`<div>`), lists use `role="list"`/`role="listitem"`, loading states use `role="status"` with `aria-label`
 
 ### 3. Create Data Mapper
 

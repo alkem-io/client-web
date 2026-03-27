@@ -306,6 +306,13 @@ CRD translations live in `src/crd/i18n/en.json` as a proper i18next JSON resourc
 - [ ] No barrel exports — explicit file paths only
 - [ ] Event handlers (`on*`) are props, not internal logic
 - [ ] State is visual only (open/close, hover, expanded)
+- [ ] Icon-only buttons have `aria-label` (not just `title`)
+- [ ] Decorative icons have `aria-hidden="true"`
+- [ ] Interactive elements are `<a>` or `<button>`, never clickable `<span>`/`<div>`
+- [ ] All interactive elements have visible `focus-visible:ring` indicators
+- [ ] Lists use `role="list"` and `role="listitem"`
+- [ ] Loading states use `role="status"` with `aria-label`
+- [ ] Form inputs have `aria-label` that persists regardless of placeholder state
 
 ---
 

@@ -51,6 +51,7 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
       {/* Left: Logo + mobile menu */}
       <div className="flex items-center gap-4">
         <button
+          type="button"
           onClick={onMenuClick}
           className="md:hidden p-2 -ml-2 hover:bg-accent rounded-md"
           aria-label={t('header.menu')}
@@ -64,20 +65,20 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
       </div>
 
       {/* Right: icon row */}
-      <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground" title={t('header.search')}>
-          <Search className="w-5 h-5" />
+      <nav aria-label={t('header.menu')} className="flex items-center gap-1">
+        <Button variant="ghost" size="icon" className="text-muted-foreground" aria-label={t('header.search')}>
+          <Search aria-hidden="true" className="w-5 h-5" />
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
           className="relative text-muted-foreground"
-          title={t('header.messages')}
+          aria-label={t('header.messages')}
           asChild={true}
         >
           <a href={navigationHrefs.messages}>
-            <MessageSquare className="w-5 h-5" />
+            <MessageSquare aria-hidden="true" className="w-5 h-5" />
           </a>
         </Button>
 
@@ -85,11 +86,11 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
           variant="ghost"
           size="icon"
           className="relative text-muted-foreground"
-          title={t('header.notifications')}
+          aria-label={t('header.notifications')}
           asChild={true}
         >
           <a href={navigationHrefs.notifications}>
-            <Bell className="w-5 h-5" />
+            <Bell aria-hidden="true" className="w-5 h-5" />
           </a>
         </Button>
 
@@ -97,11 +98,11 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
           variant="ghost"
           size="icon"
           className="text-muted-foreground"
-          title={t('header.spaces')}
+          aria-label={t('header.spaces')}
           asChild={true}
         >
           <a href={navigationHrefs.spaces}>
-            <LayoutGrid className="w-5 h-5" />
+            <LayoutGrid aria-hidden="true" className="w-5 h-5" />
           </a>
         </Button>
 
@@ -109,7 +110,7 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
 
         {authenticated && user ? (
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none">
+            <DropdownMenuTrigger className="outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full">
               <div className="relative p-1.5 rounded-full hover:bg-accent/50 transition-colors cursor-pointer">
                 <Avatar className="h-8 w-8" style={{ border: '1px solid var(--border)' }}>
                   <AvatarImage src={user.avatarUrl} alt={user.name} />
@@ -161,7 +162,7 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
             <a href="/login">{t('header.login')}</a>
           </Button>
         )}
-      </div>
+      </nav>
     </header>
   );
 }

@@ -1,5 +1,5 @@
-import { type KeyboardEvent, useRef } from 'react';
 import { X } from 'lucide-react';
+import { type KeyboardEvent, useRef } from 'react';
 import { cn } from '@/crd/lib/utils';
 
 type TagsInputProps = {
@@ -37,11 +37,10 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
   };
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: click delegates focus to the inner input
+    // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard users interact with the inner input directly
     <div
-      className={cn(
-        'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text',
-        className
-      )}
+      className={cn('flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text', className)}
       style={{
         border: '1px solid var(--border)',
         background: 'var(--background)',
@@ -82,6 +81,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
         }}
         onKeyDown={handleKeyDown}
         placeholder={value.length === 0 ? placeholder : ''}
+        aria-label={placeholder}
         className="flex-1 min-w-[120px] border-0 bg-transparent text-sm outline-none"
         style={{ color: 'var(--foreground)' }}
       />

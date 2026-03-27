@@ -10,10 +10,23 @@ const SVG_PATHS = {
     'M41.6 28.6C45.5764 28.6 48.8 25.3764 48.8 21.4C48.8 17.4235 45.5764 14.2 41.6 14.2C37.6235 14.2 34.4 17.4235 34.4 21.4C34.4 25.3764 37.6235 28.6 41.6 28.6Z',
 };
 
-export function AlkemioLogo({ className }: { className?: string }) {
+export function AlkemioLogo({
+  className,
+  'aria-hidden': ariaHidden,
+}: {
+  className?: string;
+  'aria-hidden'?: boolean | 'true';
+}) {
   return (
-    <div className={cn('relative', className)} data-name="alkemio-logo">
-      <svg className="block size-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 63.7 61.1">
+    <div className={cn('relative', className)} data-name="alkemio-logo" aria-hidden={ariaHidden}>
+      <svg
+        className="block size-full"
+        fill="none"
+        preserveAspectRatio="xMidYMid meet"
+        viewBox="0 0 63.7 61.1"
+        role="img"
+        aria-label="Alkemio"
+      >
         <g clipPath="url(#alkemio-clip)">
           <path d={SVG_PATHS.background} fill="#09BCD4" />
           <path d={SVG_PATHS.shape1} fill="white" />
