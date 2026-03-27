@@ -31,7 +31,26 @@ This folder is **purely presentational**. Components here render UI and manage s
 
 **Allowed state:** `useState` for visual toggles only (e.g., `isOpen`, `isExpanded`, `activeTab`). If a component needs data from the server, permissions, or routing, that logic belongs in a container component in `src/domain/` or `src/main/`, not here.
 
-### 3. Props Are Plain TypeScript
+### 3. Event Handlers Are Props, Not Internal Logic
+
+CRD components must **never implement behavior** in event handlers. All `onClick`, `onSubmit`, `onChange`, and other `on*` handlers must be received as props from the consumer — the component itself must not decide what happens when a user interacts.
+
+**Allowed:** receiving `href` for links, rendering `<a>` tags with an `href` prop, and calling a prop callback.
+
+**Forbidden:** navigating programmatically (`window.location.href = ...`), calling APIs, dispatching actions, or any logic beyond calling the prop callback.
+
+```typescript
+// GOOD — handler is a prop, consumer decides what happens
+type SpaceCardProps = {
+  href: string;
+  onParentClick?: () => void;  // consumer navigates, tracks analytics, etc.
+};
+
+// BAD — component decides navigation behavior
+onClick={() => { window.location.href = space.parent!.href; }}
+```
+
+### 4. Props Are Plain TypeScript
 
 Component props must be plain types — never GraphQL generated types, never MUI types.
 
@@ -49,7 +68,7 @@ type PostCardProps = {
 };
 ```
 
-### 4. Styling Is Only Tailwind + Design Tokens
+### 5. Styling Is Only Tailwind + Design Tokens
 
 - Use Tailwind utility classes for all styling
 - Use `cn()` from `@/crd/lib/utils` for class composition
@@ -57,7 +76,7 @@ type PostCardProps = {
 - **No `sx` prop**, no `styled()`, no `useTheme()`, no inline `style` objects (except for truly dynamic values like user-provided colors or calculated positions)
 - Icons come from `lucide-react`, never `@mui/icons-material`
 
-### 5. No Barrel Exports
+### 6. No Barrel Exports
 
 Following the project convention: **no `index.ts` barrel files**. Always import from explicit file paths.
 
@@ -256,4 +275,5 @@ CRD translations live in `src/crd/i18n/translations.ts` as a plain TypeScript ob
 - [ ] Icons from lucide-react only
 - [ ] Accepts className for composition
 - [ ] No barrel exports — explicit file paths only
+- [ ] Event handlers (`on*`) are props, not internal logic
 - [ ] State is visual only (open/close, hover, expanded)

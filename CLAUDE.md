@@ -277,6 +277,10 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
+## prototype/ — Read-Only Reference (DO NOT MODIFY)
+
+The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. See `prototype/CLAUDE.md` for full details.
+
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
 `src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
@@ -286,6 +290,7 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 - **NO business logic** — no imports from `@/core/apollo`, `@apollo/client`, `@/domain/*`, `@/core/auth/*`, `@/core/state/*`, `react-router-dom`, or `formik`
 - **NO GraphQL types** — props must be plain TypeScript, never generated types
 - **Styling is Tailwind only** — use `cn()` from `@/crd/lib/utils`, icons from `lucide-react`
+- **Event handlers are props** — all `on*` handlers must be received as props; components never implement navigation, API calls, or any behavior internally. Links with `href` are fine; programmatic `window.location` or similar is not.
 - **State is visual only** — `useState` for open/close, expanded, active tab. Nothing else.
 
 **Structure:**
