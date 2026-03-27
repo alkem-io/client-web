@@ -64,8 +64,7 @@ src/crd/components/space/
 └── SpaceExplorer.tsx      # CRD page-level composite
 
 src/new-ui/topLevelPages/spaces/
-├── SpaceExplorerPageDep.tsx    # Page entry point (lazy-loaded by TopLevelRoutes)
-├── SpaceExplorerPage.tsx       # CRD view — maps GraphQL data → CRD component props
+├── SpaceExplorerPage.tsx       # Page entry — hook + data mapping + CRD SpaceExplorer
 ├── spaceCardDataMapper.ts      # Pure mapper functions
 ├── SpaceExplorerQueries.graphql # GraphQL queries
 └── useSpaceExplorer.ts         # Data hook

@@ -15,17 +15,18 @@ import {
   type SpaceExplorerSearchSpaceFragment,
   type SpaceExplorerSubspacesQuery,
 } from '@/core/apollo/generated/graphql-schema';
+import type { SpacesFilterValue } from '@/crd/components/space/SpaceExplorer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { TypedSearchResult } from '@/main/search/SearchView';
-import { SpacesExplorerMembershipFilter, type SpaceWithParent } from './SpaceExplorerPage';
+import type { SpaceWithParent } from './SpaceExplorerPage';
 
 export const ITEMS_LIMIT = 10;
 
 export interface SpacesExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;
   searchTerms: string[];
-  membershipFilter: SpacesExplorerMembershipFilter;
-  onMembershipFilterChange: Dispatch<SpacesExplorerMembershipFilter>;
+  membershipFilter: SpacesFilterValue;
+  onMembershipFilterChange: Dispatch<SpacesFilterValue>;
   fetchMore: () => Promise<void>;
   loading: boolean;
   hasMore: boolean | undefined;
@@ -38,13 +39,13 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const { userModel, isAuthenticated, loading: loadingUser } = useCurrentUserContext();
 
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
-  const [membershipFilter, setMembershipFilter] = useState(SpacesExplorerMembershipFilter.All);
+  const [membershipFilter, setMembershipFilter] = useState<SpacesFilterValue>('all');
 
   const shouldSearch = searchTerms.length > 0;
 
   // PRIVATE: Spaces if the user is logged in
   const { data: spaceMembershipsData, loading: loadingUserData } = useMySpacesExplorerPageQuery({
-    skip: !userModel?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
+    skip: !userModel?.id || shouldSearch || membershipFilter !== 'member',
   });
 
   const mySpaceIds = spaceMembershipsData?.me.spaceMembershipsFlat.map(space => space.id);
@@ -74,10 +75,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     skip: !shouldSearch,
   });
 
-  const usesPagination =
-    (membershipFilter === SpacesExplorerMembershipFilter.All ||
-      membershipFilter === SpacesExplorerMembershipFilter.Public) &&
-    !shouldSearch;
+  const usesPagination = (membershipFilter === 'all' || membershipFilter === 'public') && !shouldSearch;
 
   // Call the query hook directly instead of passing it to usePaginatedQuery
   const {
@@ -113,10 +111,10 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
 
   const fetchedSpaces = (() => {
     switch (membershipFilter) {
-      case SpacesExplorerMembershipFilter.All:
-      case SpacesExplorerMembershipFilter.Public:
+      case 'all':
+      case 'public':
         return spacesData?.spacesPaginated.spaces;
-      case SpacesExplorerMembershipFilter.Member:
+      case 'member':
         return spacesExplorerData?.spaces;
     }
   })();
@@ -194,7 +192,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   })();
 
   const filteredSpaces = (() => {
-    if (membershipFilter === SpacesExplorerMembershipFilter.Member) {
+    if (membershipFilter === 'member') {
       if (!shouldSearch) {
         // already filtered by the query
         return flattenedSpaces;
@@ -203,7 +201,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
         space => space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member
       );
     }
-    if (membershipFilter === SpacesExplorerMembershipFilter.Public) {
+    if (membershipFilter === 'public') {
       return flattenedSpaces?.filter(space => space.about.isContentPublic);
     }
     return flattenedSpaces;

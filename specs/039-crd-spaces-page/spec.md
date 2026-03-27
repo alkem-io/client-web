@@ -40,10 +40,9 @@ The data layer (step 3) remains untouched. The **entire page shell** (steps 1-2,
 ### CRD Full-Page Architecture
 
 When a route is migrated to CRD, the entire page renders in the CRD design system:
-1. **Route**: `TopLevelRoutes.tsx` → `/spaces` → `CrdLayoutWrapper` → `SpaceExplorerPageDep`
+1. **Route**: `TopLevelRoutes.tsx` → `/spaces` → `CrdLayoutWrapper` → `SpaceExplorerPage`
 2. **Layout**: `CrdLayout` renders CRD Header + `<main>` + CRD Footer (all Tailwind, no MUI)
-3. **Page**: `SpaceExplorerPageDep` (in `src/new-ui/topLevelPages/spaces/`) calls `useSpaceExplorer()` hook and renders `SpaceExplorerCrdView`
-4. **View**: `SpaceExplorerCrdView` (in `src/new-ui/topLevelPages/spaces/SpaceExplorerPage.tsx`) maps data → renders CRD `SpaceExplorer` component
+3. **Page**: `SpaceExplorerPage` (in `src/new-ui/topLevelPages/spaces/`) calls `useSpaceExplorer()` hook, maps data via `mapSpacesToCardDataList`, and renders CRD `SpaceExplorer` component
 5. **Card**: CRD `SpaceCard` → renders individual space card (Tailwind, Radix UI)
 
 Page-level integration files live in `src/new-ui/topLevelPages/spaces/` — the dedicated integration layer for CRD-migrated pages. MUI routes continue using `TopLevelLayout` unchanged. The split happens at the route level in `TopLevelRoutes.tsx`.
