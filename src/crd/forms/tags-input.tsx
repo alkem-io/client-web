@@ -69,7 +69,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
             className="hover:opacity-70"
             aria-label={`Remove ${tag}`}
           >
-            <X style={{ width: 12, height: 12 }} />
+            <X className="size-3" />
           </button>
         </span>
       ))}

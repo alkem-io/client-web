@@ -136,10 +136,17 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
-- Never hardcode text or pass string literals as fallback to `t()`—add missing keys to `src/core/i18n/en/translation.en.json`
+- Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
 - The project uses Crowdin for translations
-- Only edit `translation.en.json`; all other locale files are generated automatically via Crowdin and must never be edited manually
+- Only edit English translation files; all other locale files are generated automatically via Crowdin and must never be edited manually
 - If you need to change a non-English translation file, do it from Crowdin, not in the codebase
+
+### Namespaces
+
+- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`
+- **`crd`**: CRD UI layer strings in `src/crd/i18n/en.json`. Used exclusively by `src/crd/` components via `useTranslation('crd')`. Keys are prefixless: `t('spaces.title')`, not `t('crd.spaces.title')`
+
+When adding strings for CRD components, add them to `src/crd/i18n/en.json`. For everything else, use `src/core/i18n/en/translation.en.json`.
 
 ## Environment Variables
 

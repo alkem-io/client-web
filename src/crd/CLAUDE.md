@@ -221,12 +221,22 @@ The prototype at `/prototype/src/` is the design reference. When porting:
 
 ## i18n
 
-Components that display standard UI text ("Cancel", "Save", "Search", "No results") use the `'crd'` namespace:
+CRD has its own i18next namespace (`'crd'`) with translations in `src/crd/i18n/en.json`. This JSON file is the single source of truth for all CRD UI text.
+
+**How it works:**
+- **Main app** (`src/core/i18n/config.ts`): imports `en.json` and registers it as the `'crd'` namespace alongside the default `'translation'` namespace
+- **Standalone app** (`src/crd/app/main.tsx`): imports the same `en.json` and uses `'crd'` as its default namespace
+- **CRD components**: always call `useTranslation('crd')` and reference keys without prefix: `t('spaces.title')`, `t('header.search')`
 
 ```typescript
 const { t } = useTranslation('crd');
 <Button>{t('buttons.cancel')}</Button>
 ```
+
+**Adding new translations:**
+1. Add the key to `src/crd/i18n/en.json`
+2. Use it in the component via `useTranslation('crd')` + `t('section.key')`
+3. No need to touch `translation.en.json` — the CRD namespace is independent
 
 Business domain text ("Space Dashboard", "Innovation Flow") comes from the container via props — never use the default translation namespace inside crd.
 
@@ -260,11 +270,11 @@ pnpm crd:build  # Production build
 
 ### i18n Separation
 
-CRD translations live in `src/crd/i18n/translations.ts` as a plain TypeScript object. This is the single source of truth for CRD UI text.
+CRD translations live in `src/crd/i18n/en.json` as a proper i18next JSON resource file. This is the single source of truth for CRD UI text.
 
-- **Main app**: The root `translation.en.json` embeds these strings under the `crd` key
-- **Standalone app**: `app/main.tsx` initializes i18next directly from this object
-- CRD components use `useTranslation()` with `crd.*` prefixed keys — works in both contexts
+- **Main app**: `src/core/i18n/config.ts` imports `en.json` and registers it as the `'crd'` namespace
+- **Standalone app**: `app/main.tsx` imports the same `en.json` as the `'crd'` namespace (set as default)
+- CRD components use `useTranslation('crd')` and reference keys without prefix: `t('spaces.title')`, `t('header.search')`
 
 ---
 

@@ -192,7 +192,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 
 #### Standalone Preview App
 - **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization
-- **FR-017**: CRD translations MUST be extractable into a standalone TypeScript object (`src/crd/i18n/translations.ts`) so both the main app and the standalone app can use the same translation strings
+- **FR-017**: CRD translations MUST live in a dedicated JSON file (`src/crd/i18n/en.json`) loaded as the `'crd'` i18next namespace. Both the main app and the standalone app load the same JSON file — the main app registers it as an additional namespace, the standalone app uses it as its default namespace
 - **FR-018**: The standalone app MUST reuse the exact same CRD components (`src/crd/components/`, `src/crd/layouts/`, `src/crd/primitives/`, `src/crd/forms/`) — no duplication of component code
 
 ### Key Entities

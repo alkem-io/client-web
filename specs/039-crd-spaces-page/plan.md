@@ -86,7 +86,7 @@ src/
 │   ├── hooks/
 │   │   └── useMediaQuery.ts          # Already exists
 │   ├── i18n/
-│   │   └── translations.ts          # NEW: CRD translation strings (shared by main app + standalone)
+│   │   └── en.json                  # NEW: CRD translation strings as i18next 'crd' namespace (shared by main app + standalone)
 │   ├── lib/
 │   │   └── utils.ts                  # cn() — already exists
 │   ├── styles/

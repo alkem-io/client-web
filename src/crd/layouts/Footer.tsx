@@ -20,7 +20,7 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 export function Footer({ className }: { className?: string }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation('crd');
   const currentLanguage = i18n.language;
 
   const currentLabel = SUPPORTED_LANGUAGES.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
@@ -36,28 +36,28 @@ export function Footer({ className }: { className?: string }) {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         {/* Copyright */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{t('crd.footer.copyright')}</span>
+          <span>{t('footer.copyright')}</span>
         </div>
 
         {/* Links + centered logo */}
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
           <a href="#" className="hover:text-foreground transition-colors">
-            {t('crd.footer.terms')}
+            {t('footer.terms')}
           </a>
           <a href="#" className="hover:text-foreground transition-colors">
-            {t('crd.footer.privacy')}
+            {t('footer.privacy')}
           </a>
           <a href="#" className="hover:text-foreground transition-colors">
-            {t('crd.footer.security')}
+            {t('footer.security')}
           </a>
 
           <AlkemioLogo className="w-5 h-5 opacity-40" />
 
           <a href="#" className="hover:text-foreground transition-colors">
-            {t('crd.footer.support')}
+            {t('footer.support')}
           </a>
           <a href="#" className="hover:text-foreground transition-colors">
-            {t('crd.footer.about')}
+            {t('footer.about')}
           </a>
         </div>
 

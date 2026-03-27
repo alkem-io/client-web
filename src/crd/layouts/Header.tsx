@@ -39,7 +39,7 @@ type HeaderProps = {
 };
 
 export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuClick, className }: HeaderProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('crd');
 
   return (
     <header
@@ -53,19 +53,19 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
         <button
           onClick={onMenuClick}
           className="md:hidden p-2 -ml-2 hover:bg-accent rounded-md"
-          aria-label={t('crd.header.menu')}
+          aria-label={t('header.menu')}
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('crd.header.home')}>
+        <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
           <AlkemioLogo className="w-8 h-8" />
         </a>
       </div>
 
       {/* Right: icon row */}
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground" title={t('crd.header.search')}>
+        <Button variant="ghost" size="icon" className="text-muted-foreground" title={t('header.search')}>
           <Search className="w-5 h-5" />
         </Button>
 
@@ -73,7 +73,7 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
           variant="ghost"
           size="icon"
           className="relative text-muted-foreground"
-          title={t('crd.header.messages')}
+          title={t('header.messages')}
           asChild={true}
         >
           <a href={navigationHrefs.messages}>
@@ -85,7 +85,7 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
           variant="ghost"
           size="icon"
           className="relative text-muted-foreground"
-          title={t('crd.header.notifications')}
+          title={t('header.notifications')}
           asChild={true}
         >
           <a href={navigationHrefs.notifications}>
@@ -97,7 +97,7 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
           variant="ghost"
           size="icon"
           className="text-muted-foreground"
-          title={t('crd.header.spaces')}
+          title={t('header.spaces')}
           asChild={true}
         >
           <a href={navigationHrefs.spaces}>
@@ -129,36 +129,36 @@ export function Header({ user, authenticated, navigationHrefs, onLogout, onMenuC
                 className="uppercase tracking-wider text-muted-foreground"
                 style={{ fontSize: '11px' }}
               >
-                {t('crd.header.myAccount')}
+                {t('header.myAccount')}
               </DropdownMenuLabel>
               <DropdownMenuItem asChild={true}>
                 <a href={navigationHrefs.home} className="cursor-pointer">
                   <Home className="mr-2 h-4 w-4" />
-                  <span>{t('crd.header.dashboard')}</span>
+                  <span>{t('header.dashboard')}</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild={true}>
                 <a href={navigationHrefs.profile} className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
-                  <span>{t('crd.header.profile')}</span>
+                  <span>{t('header.profile')}</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild={true}>
                 <a href={navigationHrefs.settings} className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
-                  <span>{t('crd.header.settings')}</span>
+                  <span>{t('header.settings')}</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={onLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>{t('crd.header.logout')}</span>
+                <span>{t('header.logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
           <Button variant="ghost" size="sm" asChild={true}>
-            <a href="/login">{t('crd.header.login')}</a>
+            <a href="/login">{t('header.login')}</a>
           </Button>
         )}
       </div>

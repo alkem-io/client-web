@@ -5,6 +5,8 @@ import { initReactI18next } from 'react-i18next';
 import { env } from '@/main/env';
 // Eagerly import default English translation to bundle it with main chunk
 import translationEN from './en/translation.en.json';
+// CRD namespace — separate translation file for the new UI layer
+import crdEN from '@/crd/i18n/en.json';
 
 export const defaultNS = 'translation';
 
@@ -49,6 +51,7 @@ const loadTranslation = async (lng: string) => {
 const translationCache = new Map<string, Record<string, unknown>>();
 // Pre-populate cache with eagerly loaded English translation
 translationCache.set(`${defaultLang}-${defaultNS}`, translationEN);
+translationCache.set(`${defaultLang}-crd`, crdEN);
 
 // Custom backend for lazy loading
 const lazyBackend = {
@@ -83,7 +86,7 @@ i18n
   .init({
     fallbackLng: defaultLang,
     supportedLngs,
-    ns: [defaultNS],
+    ns: [defaultNS, 'crd'],
     defaultNS,
     preload: [defaultLang], // English is preloaded
     // Required when mixing bundled resources with a backend for other languages
@@ -92,6 +95,7 @@ i18n
     resources: {
       en: {
         translation: translationEN,
+        crd: crdEN,
       },
     },
     interpolation: {

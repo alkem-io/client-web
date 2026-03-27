@@ -178,7 +178,7 @@
 
 **Independent Test**: Run `pnpm crd:dev`, navigate to `http://localhost:5200/spaces`. The spaces page renders with the CRD layout and mock data. No backend required.
 
-- [x] T052 Extract CRD translations into `src/crd/i18n/translations.ts` — a plain TypeScript object with all `crd.*` keys (header, footer, spaces). The main app's `translation.en.json` continues to embed these under the `crd` key. The standalone app initializes i18next from this object directly
+- [x] T052 Extract CRD translations into `src/crd/i18n/en.json` — a proper i18next JSON resource loaded as the `'crd'` namespace. The main app's `src/core/i18n/config.ts` imports it as an additional namespace. The standalone app imports the same file as its default namespace. Components use `useTranslation('crd')` with prefixless keys: `t('spaces.title')`
 - [x] T053 Create standalone app entry at `src/crd/app/main.tsx` — imports CRD styles, initializes i18next with CRD translations, renders `<CrdApp />` into the DOM
 - [x] T054 Create `src/crd/app/CrdApp.tsx` — root component with i18n provider and `react-router-dom` `BrowserRouter`. Renders `CrdLayout` with mock user data and `<Routes>`
 - [x] T055 Create mock data at `src/crd/app/data/spaces.ts` — reuse space data from `prototype/src/app/pages/BrowseSpacesPage.tsx`, adapting it to `SpaceCardData` type (drop `slug`/`memberCount`, add `href`/`bannerImageUrl`/`avatarColor`)

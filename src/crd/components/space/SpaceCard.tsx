@@ -45,7 +45,7 @@ export type SpaceCardProps = {
 const MAX_VISIBLE_LEADS = 4;
 
 export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('crd');
 
   const visibleLeads = space.leads.slice(0, MAX_VISIBLE_LEADS);
   const overflowCount = space.leads.length - MAX_VISIBLE_LEADS;
@@ -108,7 +108,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
               )}
             >
               {space.isPrivate ? <Lock className="size-2.5" /> : <Globe className="size-2.5" />}
-              <span>{space.isPrivate ? t('crd.spaces.private') : t('crd.spaces.public')}</span>
+              <span>{space.isPrivate ? t('spaces.private') : t('spaces.public')}</span>
             </div>
           </div>
 
@@ -140,7 +140,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Parent indicator for subspaces */}
           {space.parent && (
             <p className="truncate text-[11px] text-muted-foreground mt-0.5">
-              {t('crd.spaces.in')}:{' '}
+              {t('spaces.in')}:{' '}
               <span
                 className="text-muted-foreground hover:underline cursor-pointer"
                 onClick={e => {
@@ -182,7 +182,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           <div className="flex items-center mt-3 px-4 py-3 border-t border-border">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.04em]">
-                {t('crd.spaces.leads')}
+                {t('spaces.leads')}
               </span>
               <div className="flex -space-x-2">
                 {visibleLeads.map((lead, i) => (
