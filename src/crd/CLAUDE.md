@@ -73,7 +73,7 @@ type PostCardProps = {
 - Use Tailwind utility classes for all styling
 - Use `cn()` from `@/crd/lib/utils` for class composition
 - Use CSS variables from `@/crd/styles/theme.css` for theming
-- **No `sx` prop**, no `styled()`, no `useTheme()`, no inline `style` objects (except for truly dynamic values like user-provided colors or calculated positions)
+- **No `sx` prop**, no `styled()`, no `useTheme()`, no inline `style` objects (except for truly dynamic values: user-provided colors, complex CSS functions like `color-mix()`, or gradients with specific stops that have no clean Tailwind equivalent)
 - Icons come from `lucide-react`, never `@mui/icons-material`
 
 ### 6. No Barrel Exports
@@ -125,12 +125,14 @@ Standard shadcn/ui components. These are the atoms — the smallest UI building 
 Composites — reusable UI components built from primitives. These know about Alkemio's visual patterns but NOT about its data model.
 
 **Rules:**
-- Import only from `@/crd/primitives/`, `@/crd/lib/`, `@/crd/hooks/`, and `lucide-react`
+- Import only from `@/crd/primitives/`, `@/crd/components/` (peer composites), `@/crd/lib/`, `@/crd/hooks/`, `@/crd/forms/`, and `lucide-react`
 - Props are plain TypeScript types with descriptive names
 - May use `useTranslation('crd')` for built-in UI text (CRD i18n namespace)
 - Organize by feature area in subdirectories: `space/`, `dashboard/`, `community/`, `user/`, `common/`
 
-**Examples:** `space/PostCard.tsx`, `space/SpaceCard.tsx`, `space/SpaceHeader.tsx`, `common/MessageCounter.tsx`, `common/CardImage.tsx`
+**Examples:** `space/SpaceCard.tsx`, `space/SpaceExplorer.tsx`, `common/AlkemioLogo.tsx`, `common/StackedAvatars.tsx`
+
+**Inventory:** see `components/index.md` for a brief description of each component.
 
 ### forms/
 
@@ -277,3 +279,58 @@ CRD translations live in `src/crd/i18n/translations.ts` as a plain TypeScript ob
 - [ ] No barrel exports — explicit file paths only
 - [ ] Event handlers (`on*`) are props, not internal logic
 - [ ] State is visual only (open/close, hover, expanded)
+
+---
+
+## Patterns & Conventions
+
+### Tailwind Conversion Reference
+
+When porting from the prototype or replacing inline `style` objects, use this mapping (based on `@theme inline` in `theme.css`):
+
+| Inline style | Tailwind class |
+|---|---|
+| `background: 'var(--card)'` | `bg-card` |
+| `color: 'var(--muted-foreground)'` | `text-muted-foreground` |
+| `border: '1px solid var(--border)'` | `border border-border` |
+| `borderTop: '1px solid var(--border)'` | `border-t border-border` |
+| `fontSize: 'var(--text-sm)'` | `text-sm` |
+| `fontWeight: 600` | `font-semibold` |
+| `zIndex: 10` | `z-10` |
+| `aspectRatio: '16 / 9'` | `aspect-video` |
+| `padding: '24px 16px 0'` | `px-4 pt-6` |
+| `borderRadius: 'var(--radius)'` | `rounded-lg` |
+| `background: 'linear-gradient(135deg, var(--muted), var(--accent))'` | `bg-gradient-to-br from-muted to-accent` |
+| Conditional bg based on `isPrivate` at 50% opacity | `bg-foreground/50` (Tailwind opacity modifier) |
+
+**Keep as `style`** only when:
+- The value is user-provided at runtime (e.g. `avatarColor`)
+- The CSS function has no Tailwind equivalent (e.g. `color-mix()` with gradient stops)
+- Hover effects that use `onMouseEnter`/`onMouseLeave` should be replaced with Tailwind `hover:` modifiers
+
+### Nested Interactive Elements Inside Cards
+
+When a card wraps in `<a href={...}>` but contains sub-elements that should navigate elsewhere (e.g. a parent link inside a space card), use `stopPropagation` + a callback prop:
+
+```typescript
+// The card is an <a> link — clicking anywhere navigates to the space
+<a href={space.href} onClick={handleClick} className="group block">
+  {/* Sub-element calls its own callback, stops the card click */}
+  <span
+    className="hover:underline cursor-pointer"
+    onClick={e => {
+      e.preventDefault();
+      e.stopPropagation();
+      onParentClick?.(space.parent!);
+    }}
+  >
+    {space.parent.name}
+  </span>
+</a>
+```
+
+Never use `window.location.href` or `useNavigate` inside a CRD component — the callback prop lets the consumer decide.
+
+### Component Extraction
+
+When a component exceeds ~150 lines or contains a self-contained visual pattern used in multiple contexts, extract it to `components/common/`. Example: `StackedAvatars` was extracted from `SpaceCard` because the parent-child avatar overlay is reusable across entity types.

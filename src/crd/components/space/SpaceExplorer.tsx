@@ -1,7 +1,7 @@
 import { ArrowUpDown, ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
+import type { SpaceCardData, SpaceCardParent } from '@/crd/components/space/SpaceCard';
 import { SpaceCard, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -39,6 +39,7 @@ export type SpaceExplorerProps = {
   onSearchTermsChange: (terms: string[]) => void;
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
   onLoadMore: () => Promise<void>;
+  onParentClick?: (parent: SpaceCardParent) => void;
 };
 
 const SKELETON_COUNT = 6;
@@ -54,6 +55,7 @@ export function SpaceExplorer({
   onSearchTermsChange,
   onMembershipFilterChange,
   onLoadMore,
+  onParentClick,
 }: SpaceExplorerProps) {
   const { t } = useTranslation();
   const [loadingMore, setLoadingMore] = useState(false);
@@ -349,7 +351,7 @@ export function SpaceExplorer({
       ) : displayedSpaces.length > 0 ? (
         <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
           {displayedSpaces.map(space => (
-            <SpaceCard key={space.id} space={space} />
+            <SpaceCard key={space.id} space={space} onParentClick={onParentClick} />
           ))}
         </div>
       ) : null}

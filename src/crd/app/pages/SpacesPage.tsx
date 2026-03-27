@@ -46,6 +46,9 @@ export function SpacesPage() {
       }}
       onMembershipFilterChange={setMembershipFilter}
       onLoadMore={handleLoadMore}
+      onParentClick={parent => {
+        window.location.href = parent.href;
+      }}
     />
   );
 }
