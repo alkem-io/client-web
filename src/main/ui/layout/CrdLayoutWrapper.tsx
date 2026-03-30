@@ -1,4 +1,4 @@
-import { Component, type ErrorInfo, type ReactNode, Suspense, useMemo, useState } from 'react';
+import { Component, type ErrorInfo, type ReactNode, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -56,13 +56,11 @@ function CrdLayoutConnector() {
 
   const isAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
-  const languages = useMemo(
-    () =>
-      supportedLngs.filter(lng => lng !== 'inContextTool').map(lng => ({ code: lng, label: t(`languages.${lng}`) })),
-    [t]
-  );
+  const languages = supportedLngs
+    .filter(lng => lng !== 'inContextTool')
+    .map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
 
-  const role = useMemo(() => {
+  const role = (() => {
     for (const platformRole of platformRoles) {
       switch (platformRole) {
         case RoleName.GlobalAdmin:
@@ -78,7 +76,7 @@ function CrdLayoutConnector() {
       }
     }
     return undefined;
-  }, [platformRoles, t]);
+  })();
 
   const user = userModel?.profile
     ? {
@@ -89,18 +87,11 @@ function CrdLayoutConnector() {
       }
     : undefined;
 
-  const navigationHrefs = useMemo(
-    () => ({ ...STATIC_NAVIGATION_HREFS, login: buildLoginUrl(pathname, search) }),
-    [pathname, search]
-  );
+  const navigationHrefs = { ...STATIC_NAVIGATION_HREFS, login: buildLoginUrl(pathname, search) };
 
-  const footerLinks = useMemo(
-    () =>
-      locations
-        ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
-        : undefined,
-    [locations]
-  );
+  const footerLinks = locations
+    ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
+    : undefined;
 
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);

@@ -120,9 +120,7 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ### State & Hooks
 
 - `useState` pairs: `const [value, setValue] = useState()`
-- Use `useMemo` when creating objects/arrays passed as props
-- Use `useCallback` only for functions passed as props to children
-- **Important**: React Compiler is enabled, which provides automatic memoization. Avoid excessive manual `useMemo`/`useCallback` usage.
+- **Do NOT use `useMemo`, `useCallback`, or `React.memo`** — React Compiler is enabled and handles memoization automatically. Manual memoization adds noise without benefit. Write plain expressions and let the compiler optimize.
 
 ### Component Organization
 
@@ -186,7 +184,7 @@ The project uses React 19 with the React Compiler (babel-plugin-react-compiler) 
 
 **React Compiler benefits:**
 
-- Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
+- Automatic memoization — do NOT add manual `useMemo`/`useCallback`/`React.memo`. The compiler handles it.
 - Cleaner code with less boilerplate
 
 For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
