@@ -23,15 +23,18 @@ export function Footer({ languages, currentLanguage, onLanguageChange, className
   const currentLabel = languages.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
 
   return (
-    <footer className={cn('py-8 px-6 mt-auto border-t border-border bg-card', className)}>
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <footer className={cn('py-8 px-4 sm:px-6 mt-auto border-t border-border bg-card', className)}>
+      <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         {/* Copyright */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>{t('footer.copyright')}</span>
         </div>
 
         {/* Links + centered logo */}
-        <nav aria-label="Footer" className="flex items-center gap-6 text-sm text-muted-foreground">
+        <nav
+          aria-label="Footer"
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 text-sm text-muted-foreground"
+        >
           <a
             href="/terms"
             className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
@@ -51,7 +54,7 @@ export function Footer({ languages, currentLanguage, onLanguageChange, className
             {t('footer.security')}
           </a>
 
-          <AlkemioLogo aria-hidden="true" className="w-5 h-5 opacity-40" />
+          <AlkemioLogo aria-hidden="true" className="w-5 h-5 opacity-40 hidden sm:block" />
 
           <a
             href="/support"

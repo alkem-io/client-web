@@ -105,7 +105,7 @@ export function SpaceExplorer({
   const showSkeletons = loading && spaces.length === 0;
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-6 py-8">
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-8">
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{t('spaces.title')}</h1>
