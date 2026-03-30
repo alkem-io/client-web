@@ -1,6 +1,7 @@
 import { Check, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
+import type { CrdLanguageOption } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import {
   DropdownMenu,
@@ -9,30 +10,20 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 
-const SUPPORTED_LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'es', label: 'Espanol' },
-  { code: 'bg', label: 'Български' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'fr', label: 'Francais' },
-  { code: 'nl', label: 'Nederlands' },
-  { code: 'uk', label: 'Українська' },
-];
+type FooterProps = {
+  languages: CrdLanguageOption[];
+  currentLanguage: string;
+  onLanguageChange: (code: string) => void;
+  className?: string;
+};
 
-export function Footer({ className }: { className?: string }) {
-  const { t, i18n } = useTranslation('crd');
-  const currentLanguage = i18n.language;
+export function Footer({ languages, currentLanguage, onLanguageChange, className }: FooterProps) {
+  const { t } = useTranslation('crd');
 
-  const currentLabel = SUPPORTED_LANGUAGES.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
+  const currentLabel = languages.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
 
   return (
-    <footer
-      className={cn('py-8 px-6 mt-auto', className)}
-      style={{
-        borderTop: '1px solid var(--border)',
-        background: 'var(--card)',
-      }}
-    >
+    <footer className={cn('py-8 px-6 mt-auto border-t border-border bg-card', className)}>
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         {/* Copyright */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -88,10 +79,10 @@ export function Footer({ className }: { className?: string }) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            {SUPPORTED_LANGUAGES.map(lang => (
+            {languages.map(lang => (
               <DropdownMenuItem
                 key={lang.code}
-                onClick={() => i18n.changeLanguage(lang.code)}
+                onClick={() => onLanguageChange(lang.code)}
                 className={cn(
                   'flex items-center justify-between cursor-pointer',
                   currentLanguage.startsWith(lang.code) && 'bg-accent'

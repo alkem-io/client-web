@@ -1,8 +1,12 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
+import { supportedLngs } from '@/core/i18n/config';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 function getInitials(displayName: string): string {
   const words = displayName.trim().split(/\s+/);
@@ -19,10 +23,20 @@ const NAVIGATION_HREFS = {
   notifications: `/${TopLevelRoutePath.Home}`,
   profile: `/${TopLevelRoutePath.Profile}`,
   settings: `/${TopLevelRoutePath.Profile}`,
+  login: '/login',
 };
 
 function CrdLayoutConnector() {
   const { isAuthenticated, userModel } = useCurrentUserContext();
+  const { t, i18n } = useTranslation();
+  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
+
+  const languages = useMemo(
+    () =>
+      supportedLngs.filter(lng => lng !== 'inContextTool').map(lng => ({ code: lng, label: t(`languages.${lng}`) })),
+    [t]
+  );
 
   const user = userModel?.profile
     ? {
@@ -37,7 +51,17 @@ function CrdLayoutConnector() {
   };
 
   return (
-    <CrdLayout user={user} authenticated={isAuthenticated} navigationHrefs={NAVIGATION_HREFS} onLogout={handleLogout}>
+    <CrdLayout
+      user={user}
+      authenticated={isAuthenticated}
+      navigationHrefs={NAVIGATION_HREFS}
+      languages={languages}
+      currentLanguage={i18n.language}
+      onLanguageChange={code => i18n.changeLanguage(code)}
+      onLogout={handleLogout}
+      onMessagesClick={() => setMessagingOpen(true)}
+      onNotificationsClick={() => setNotificationsOpen(true)}
+    >
       <Outlet />
     </CrdLayout>
   );

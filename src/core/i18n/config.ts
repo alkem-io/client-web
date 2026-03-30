@@ -2,11 +2,11 @@ import i18n from 'i18next';
 import 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+// CRD namespace — separate translation file for the new UI layer
+import crdEN from '@/crd/i18n/components.en.json';
 import { env } from '@/main/env';
 // Eagerly import default English translation to bundle it with main chunk
 import translationEN from './en/translation.en.json';
-// CRD namespace — separate translation file for the new UI layer
-import crdEN from '@/crd/i18n/en.json';
 
 export const defaultNS = 'translation';
 
@@ -47,6 +47,28 @@ const loadTranslation = async (lng: string) => {
   }
 };
 
+// Lazy loading function for CRD component translations
+const loadCrdTranslation = async (lng: string) => {
+  try {
+    switch (lng) {
+      case 'es':
+        return (await import('@/crd/i18n/components.es.json')).default;
+      case 'nl':
+        return (await import('@/crd/i18n/components.nl.json')).default;
+      case 'bg':
+        return (await import('@/crd/i18n/components.bg.json')).default;
+      case 'de':
+        return (await import('@/crd/i18n/components.de.json')).default;
+      case 'fr':
+        return (await import('@/crd/i18n/components.fr.json')).default;
+      default:
+        return crdEN;
+    }
+  } catch (_error) {
+    return crdEN;
+  }
+};
+
 // Cache for loaded translations
 const translationCache = new Map<string, Record<string, unknown>>();
 // Pre-populate cache with eagerly loaded English translation
@@ -70,7 +92,7 @@ const lazyBackend = {
     }
 
     try {
-      const translation = await loadTranslation(language);
+      const translation = namespace === 'crd' ? await loadCrdTranslation(language) : await loadTranslation(language);
       translationCache.set(cacheKey, translation);
       callback(null, translation);
     } catch (error) {

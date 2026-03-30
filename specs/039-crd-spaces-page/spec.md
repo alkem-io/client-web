@@ -2,7 +2,7 @@
 
 **Feature Branch**: `039-crd-spaces-page`
 **Created**: 2026-03-26
-**Status**: Draft
+**Status**: Implemented
 **Input**: Migrate the /spaces page from MUI to shadcn/ui as the first PoC for the CRD (Client Re-Design) migration strategy.
 
 ## Context
@@ -63,7 +63,7 @@ A user navigates to `/spaces` and sees an **entirely new page** — CRD header, 
 
 1. **Given** `/spaces` is a CRD route, **When** the user navigates to `/spaces`, **Then** the page renders with the CRD Header (sticky, logo, nav icons) and CRD Footer (links, language selector) — no MUI `TopLevelLayout` visible
 2. **Given** the CRD layout renders, **When** inspecting the DOM, **Then** the entire page is wrapped in `.crd-root` and uses only Tailwind styling
-3. **Given** the CRD header renders, **When** the user sees the navigation icons, **Then** the header shows: Alkemio logo (links home), search icon, messages icon, notifications bell, spaces grid icon, and profile avatar with dropdown. Interactive functionality (search overlay, real notifications, real messages) is deferred — icons link to existing MUI pages or show placeholder dropdowns
+3. **Given** the CRD header renders, **When** the user sees the navigation icons, **Then** the header shows: Alkemio logo (links home), search icon, messages button, notifications button, spaces grid icon, and profile avatar with dropdown. Messages and Notifications buttons directly open the existing MUI dialogs (rendered in `root.tsx`) via context providers. Search overlay and real unread counts are deferred
 4. **Given** the CRD footer renders, **When** the user sees the footer, **Then** it shows: copyright, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector
 
 ---
@@ -171,8 +171,8 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 #### Layout & Shell
 - **FR-001**: CRD routes MUST render with a fully CRD page shell — CRD Header, CRD content area, CRD Footer. No MUI `TopLevelLayout` or `TopLevelPageLayout` wraps CRD routes
 - **FR-002**: The CRD layout shell (`CrdLayout`) MUST be a presentational component in `src/crd/layouts/` — it receives navigation props (links, user info, callbacks) and renders them. No data fetching or routing logic inside `src/crd/`
-- **FR-003**: The CRD Header MUST render: Alkemio logo (home link), search icon, messages icon, notifications bell, spaces grid icon, profile avatar with dropdown menu. For this PoC, interactive features (search overlay, real notifications) are deferred — icons render as links to existing pages or show visual-only dropdowns
-- **FR-004**: The CRD Footer MUST render: copyright text, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector dropdown
+- **FR-003**: The CRD Header MUST render: Alkemio logo (home link), search icon, messages button, notifications button, spaces grid icon, profile avatar with dropdown menu. Messages and Notifications buttons accept optional callback props (`onMessagesClick`, `onNotificationsClick`); when provided, they directly open the existing MUI dialogs via context providers (`useUserMessagingContext`, `useInAppNotificationsContext`), which are available on all routes including CRD pages. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links. Search overlay and real unread counts are deferred
+- **FR-004**: The CRD Footer MUST render: copyright text, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector dropdown. The Footer receives `languages`, `currentLanguage`, and `onLanguageChange` as props — it does not access `i18n` directly. Languages are derived from `supportedLngs` in the main app
 - **FR-005**: CRD and MUI layouts MUST coexist — navigating from a CRD route to an MUI route (and vice versa) MUST work seamlessly with no style leakage, layout conflicts, or console errors
 
 #### Content (Spaces Page)
@@ -201,7 +201,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 
 #### Standalone Preview App
 - **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization
-- **FR-017**: CRD translations MUST live in a dedicated JSON file (`src/crd/i18n/en.json`) loaded as the `'crd'` i18next namespace. Both the main app and the standalone app load the same JSON file — the main app registers it as an additional namespace, the standalone app uses it as its default namespace
+- **FR-017**: CRD translations MUST live in per-language JSON files (`src/crd/i18n/components.<lang>.json`) loaded as the `'crd'` i18next namespace. English is eagerly loaded; other languages are lazy-loaded when the user switches. Both the main app and the standalone app load the same files — the main app registers them as an additional namespace, the standalone app uses them as its default namespace. Language switching updates both the main `'translation'` and `'crd'` namespaces simultaneously
 - **FR-018**: The standalone app MUST reuse the exact same CRD components (`src/crd/components/`, `src/crd/layouts/`, `src/crd/primitives/`, `src/crd/forms/`) — no duplication of component code
 
 ### Key Entities
@@ -236,7 +236,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - Q: What level of visual fidelity to the prototype is required? → A: Same layout structure and design language — minor spacing/shadow differences acceptable. Pixel-perfection is not required.
 - Q: Member count is in the prototype but not in the current GraphQL fragment. Include it? → A: Drop it. General rule: if a prototype feature requires data layer changes, omit it from the CRD card. Add in a follow-up.
 - Q: Should only the inner content area be CRD, or the entire page including header/footer? → A: **The entire page.** When a route is CRD, the complete page shell (header, content, footer) renders in CRD. No MUI layout wraps CRD routes. This is a full visual replacement per route.
-- Q: Should the CRD Header be fully functional (real search, notifications, messages) for the PoC? → A: Visual port with placeholder interactions. Header icons link to existing MUI pages. Real search overlay, notification feed, and message counts are deferred to follow-up tasks.
+- Q: Should the CRD Header be fully functional (real search, notifications, messages) for the PoC? → A: Messages and Notifications buttons directly open the existing MUI dialogs via context providers (`useUserMessagingContext`, `useInAppNotificationsContext`). These providers wrap all routes in `root.tsx`, so the dialogs work on CRD pages without navigation. Real search overlay and unread counts are deferred to follow-up tasks.
 
 ---
 
@@ -248,4 +248,4 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - Tailwind CSS v4 and the necessary build configuration have been set up as Phase 1 of this spec (T001-T005, completed)
 - The `src/crd/` folder already exists with its CLAUDE.md conventions established
 - This PoC does not need to handle subspace-specific card variants (stacked parent avatars) in the first iteration — basic parent info display is sufficient
-- The i18n namespace for CRD design system text is `'crd'`; domain-specific text comes via props from the container
+- The i18n namespace for CRD design system text is `'crd'` with per-language files (`components.<lang>.json`); domain-specific text comes via props from the container. Language labels for the footer selector come from the main `'translation'` namespace (`languages.*` keys) via the consumer

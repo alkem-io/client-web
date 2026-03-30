@@ -24,10 +24,12 @@ If the page uses shadcn/ui primitives not yet in `src/crd/primitives/`, port the
 Create presentational components in `src/crd/components/<domain>/`. Rules:
 - Zero MUI imports
 - Props are plain TypeScript (no GraphQL types)
-- Use `useTranslation('crd')` for UI text (keys are prefixless: `t('spaces.title')`)
-- Use `<a href>` for navigation (no `react-router-dom`)
+- Use `useTranslation('crd')` for **design-system** text only (UI labels like "Filters", "Load More"). Business-domain text must be passed as props.
+- All `on*` event handlers must be received as props — components never implement behavior (navigation, API calls, state changes) internally
+- Use `<a href>` for navigation links (no `react-router-dom`, no `window.location.href`)
 - Icons from `lucide-react` only
-- WCAG 2.1 AA: icon-only buttons need `aria-label`, decorative icons need `aria-hidden="true"`, interactive elements need visible `focus-visible:ring` indicators, clickable elements must be `<a>` or `<button>` (not clickable `<span>`/`<div>`), lists use `role="list"`/`role="listitem"`, loading states use `role="status"` with `aria-label`
+- Styling via Tailwind classes + `cn()` only — no inline `style` props except for truly dynamic values (user-provided colors, `color-mix()` with no Tailwind equivalent)
+- WCAG 2.1 AA: icon-only buttons need `aria-label`, decorative icons need `aria-hidden="true"`, interactive elements need visible `focus-visible:ring` indicators, clickable elements must be `<a>` or `<button>` (not clickable `<span>`/`<div>`), lists use `role="list"`/`role="listitem"`, loading states use `role="status"` with `aria-label`, all user-visible text must use `t()` (no hardcoded strings in JSX)
 
 ### 3. Create Data Mapper
 
@@ -55,7 +57,7 @@ In `TopLevelRoutes.tsx`, move the route under the `<Route element={<CrdLayoutWra
 
 ### 7. Add i18n Keys
 
-Add translation keys to `src/crd/i18n/en.json` (the `crd` namespace). CRD components use `useTranslation('crd')` — keys are prefixless: `t('spaces.title')`, not `t('crd.spaces.title')`.
+Add translation keys to all `src/crd/i18n/components.<lang>.json` files (the `crd` namespace). English keys go in `components.en.json`; add translations for `es`, `nl`, `bg`, `de`, `fr`. CRD components use `useTranslation('crd')` — keys are prefixless: `t('spaces.title')`, not `t('crd.spaces.title')`.
 
 ## File Layout Example
 

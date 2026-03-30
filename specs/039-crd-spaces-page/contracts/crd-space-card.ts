@@ -31,6 +31,7 @@ export type SpaceCardData = {
   initials: string;
   avatarColor: string;
   isPrivate: boolean;
+  isMember?: boolean;
   tags: string[];
   leads: SpaceLead[];
   href: string;
@@ -40,6 +41,8 @@ export type SpaceCardData = {
 
 export type SpaceCardProps = {
   space: SpaceCardData;
+  onClick?: (space: SpaceCardData) => void;
+  onParentClick?: (parent: SpaceCardParent) => void;
   className?: string;
 };
 
@@ -58,4 +61,5 @@ export type SpaceExplorerProps = {
   onSearchTermsChange: (terms: string[]) => void;
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
   onLoadMore: () => Promise<void>;
+  onParentClick?: (parent: SpaceCardParent) => void;
 };

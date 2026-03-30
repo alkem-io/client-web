@@ -15,12 +15,29 @@ const NAVIGATION_HREFS = {
   notifications: '/notifications',
   profile: '/profile',
   settings: '/settings',
+  login: '/login',
 };
+
+const MOCK_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'nl', label: 'Nederlands' },
+  { code: 'es', label: 'Español' },
+  { code: 'bg', label: 'Български' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'fr', label: 'Français' },
+];
 
 export function CrdApp() {
   return (
     <BrowserRouter>
-      <CrdLayout user={MOCK_USER} authenticated={true} navigationHrefs={NAVIGATION_HREFS}>
+      <CrdLayout
+        user={MOCK_USER}
+        authenticated={true}
+        navigationHrefs={NAVIGATION_HREFS}
+        languages={MOCK_LANGUAGES}
+        currentLanguage="en"
+        onLanguageChange={code => console.log('Language changed to', code)}
+      >
         <Routes>
           <Route path="/spaces" element={<SpacesPage />} />
           <Route path="*" element={<Navigate to="/spaces" replace={true} />} />

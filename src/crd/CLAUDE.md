@@ -1,8 +1,19 @@
-# src/crd — Alkemio UI Layer
+# src/crd — Alkemio Design System
 
-This folder contains the application's UI components, built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It is the replacement for the MUI-based `src/core/ui/` layer.
+This folder is a **client-agnostic, reusable design system** built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It replaces the MUI-based `src/core/ui/` layer.
 
 > **Planned rename**: `src/crd/` will be renamed to `src/design-system/` in a future phase. The `@/crd/` path alias will change to `@/design-system/`. All internal documentation and imports will be updated at that time. Until then, use `@/crd/` for all references.
+
+## Design Philosophy
+
+This is a **design system, not an app layer**. Every component must be reusable by any consumer — whether the Alkemio main app, the standalone preview app, or a hypothetical different client. This means:
+
+- **No knowledge of the host application** — components don't know about GraphQL, routing, auth, or any application-level concern
+- **All data flows in via props** — the component never fetches, mutates, or derives data
+- **All behavior flows in via callbacks** — the component never decides what happens on user interaction; it calls a prop callback and the consumer decides
+- **All user-visible text is either from the `'crd'` i18n namespace (for design-system labels like "Filters", "Load More") or passed as props (for business-domain text)**
+
+---
 
 ## Golden Rules
 
@@ -39,7 +50,7 @@ CRD components must **never implement behavior** in event handlers. All `onClick
 
 **Allowed:** receiving `href` for links, rendering `<a>` tags with an `href` prop, and calling a prop callback.
 
-**Forbidden:** navigating programmatically (`window.location.href = ...`), calling APIs, dispatching actions, or any logic beyond calling the prop callback.
+**Forbidden:** navigating programmatically (`window.location.href = ...`), calling APIs, dispatching actions, changing application-level state (e.g. `i18n.changeLanguage()`), or any logic beyond calling the prop callback.
 
 ```typescript
 // GOOD — handler is a prop, consumer decides what happens
@@ -48,9 +59,21 @@ type SpaceCardProps = {
   onParentClick?: () => void;  // consumer navigates, tracks analytics, etc.
 };
 
+// GOOD — language change is a callback, consumer wires i18n
+type FooterProps = {
+  languages: { code: string; label: string }[];
+  currentLanguage: string;
+  onLanguageChange: (code: string) => void;
+};
+
 // BAD — component decides navigation behavior
 onClick={() => { window.location.href = space.parent!.href; }}
+
+// BAD — component manipulates application-level state
+onClick={() => { i18n.changeLanguage(lang.code); }}
 ```
+
+**Litmus test:** Could this component work in a completely different application with different routing, different state management, and different i18n? If the answer is no, behavior is leaking in.
 
 ### 4. Props Are Plain TypeScript
 
@@ -75,8 +98,23 @@ type PostCardProps = {
 - Use Tailwind utility classes for all styling
 - Use `cn()` from `@/crd/lib/utils` for class composition
 - Use CSS variables from `@/crd/styles/theme.css` for theming
-- **No `sx` prop**, no `styled()`, no `useTheme()`, no inline `style` objects (except for truly dynamic values: user-provided colors, complex CSS functions like `color-mix()`, or gradients with specific stops that have no clean Tailwind equivalent)
+- **No `sx` prop**, no `styled()`, no `useTheme()`, no inline `style` objects (except for truly dynamic values — see below)
 - Icons come from `lucide-react`, never `@mui/icons-material`
+
+**When inline `style` is acceptable:**
+- User-provided runtime values (e.g. `avatarColor` from data)
+- Complex CSS functions with no Tailwind equivalent (e.g. `color-mix()` with gradient stops)
+
+**When inline `style` is NOT acceptable (use Tailwind instead):**
+- `style={{ color: 'var(--foreground)' }}` → `text-foreground`
+- `style={{ background: 'var(--card)' }}` → `bg-card`
+- `style={{ border: '1px solid var(--border)' }}` → `border border-border`
+- `style={{ fontSize: '11px' }}` → `text-[11px]`
+- `style={{ fontWeight: 600 }}` → `font-semibold`
+- `style={{ zIndex: 3 }}` → `z-[3]`
+- `style={{ width: 10, height: 10 }}` → `size-2.5`
+
+See the [Tailwind Conversion Reference](#tailwind-conversion-reference) for the full mapping.
 
 ### 6. No Barrel Exports
 
@@ -93,6 +131,39 @@ import { Button } from '@/crd/primitives';
 
 ---
 
+## Accessibility (WCAG 2.1 AA)
+
+Accessibility is a **hard requirement**, not a nice-to-have. Every component must meet WCAG 2.1 AA criteria. These rules are enforced in code review.
+
+### Interactive Elements
+- Clickable elements must be `<a>` or `<button>` — never clickable `<span>`, `<div>`, or other non-interactive elements
+- Icon-only buttons must have `aria-label` (not just `title`)
+- All interactive elements must have visible `focus-visible:ring` indicators for keyboard navigation
+- Buttons that toggle state should use `aria-pressed` or `aria-expanded` as appropriate
+
+### Icons & Decorative Content
+- Decorative icons must have `aria-hidden="true"`
+- Meaningful icons (not next to visible text) need `aria-label` on the parent button/link
+
+### Text & Labels
+- All user-visible strings must use `t()` from the `'crd'` i18n namespace — no hardcoded text in JSX
+- Screen-reader-only text uses the `sr-only` class and must also use `t()`, not hardcoded strings
+- Form inputs must have a persistent `aria-label` or visible `<label>` that does not disappear when the input has a value
+
+### Lists & Collections
+- Lists use `role="list"` on the container and render items as `<li>` elements
+- Grid layouts showing collections should use `<ul>` / `<li>` semantic structure
+
+### Loading & Dynamic States
+- Loading states use `<output>` or `role="status"` with `aria-label` describing what is loading
+- Busy buttons use `aria-busy={true}` and `disabled` while processing
+
+### Color & Contrast
+- Text must meet 4.5:1 contrast ratio against its background (3:1 for large text)
+- Information must not be conveyed by color alone — use icons, text, or patterns as additional indicators
+
+---
+
 ## Folder Structure
 
 ```
@@ -100,9 +171,10 @@ src/crd/
 ├── primitives/          # shadcn/ui atoms — smallest building blocks
 ├── components/          # Composites — reusable combinations of primitives
 ├── forms/               # Form-specific components (inputs with labels, field groups)
-├── layouts/             # Page-level layout components
+├── layouts/             # Page-level layout components + shared types
 ├── styles/              # CSS tokens, theme, Tailwind entry point
 ├── lib/                 # Utilities (cn, etc.)
+├── i18n/                # Translation strings (en.json — 'crd' namespace)
 └── hooks/               # UI-only hooks (useMediaQuery, etc.)
 ```
 
@@ -129,7 +201,8 @@ Composites — reusable UI components built from primitives. These know about Al
 **Rules:**
 - Import only from `@/crd/primitives/`, `@/crd/components/` (peer composites), `@/crd/lib/`, `@/crd/hooks/`, `@/crd/forms/`, and `lucide-react`
 - Props are plain TypeScript types with descriptive names
-- May use `useTranslation('crd')` for built-in UI text (CRD i18n namespace)
+- May use `useTranslation('crd')` for design-system UI text (labels like "Filters", "Load More", "Private", "Public")
+- Must NOT use `useTranslation('crd')` to access or manipulate `i18n` directly (e.g. `i18n.changeLanguage()`, `i18n.language`) — these are application-level concerns that must be passed as props
 - Organize by feature area in subdirectories: `space/`, `dashboard/`, `community/`, `user/`, `common/`
 
 **Examples:** `space/SpaceCard.tsx`, `space/SpaceExplorer.tsx`, `common/AlkemioLogo.tsx`, `common/StackedAvatars.tsx`
@@ -149,14 +222,20 @@ Form UI components — inputs, selectors, field groups. These render form contro
 
 ### layouts/
 
-Page-level layout shells. These define the spatial arrangement of content areas (sidebar + main, two-column, full-width) without knowing what content goes in them.
+Page-level layout shells and shared types. These define the spatial arrangement of content areas (sidebar + main, two-column, full-width) without knowing what content goes in them.
 
 **Rules:**
 - Accept `children`, named slots (`sidebar`, `header`, `footer`), or render props
+- Layout-specific behavior (language selector, navigation callbacks) must be received as props from the consumer
+- Shared types (`CrdUserInfo`, `CrdNavigationHrefs`, `CrdLanguageOption`) live in `layouts/types.ts`
 - Responsive behavior via Tailwind breakpoints
 - No data fetching, no business logic
 
-**Examples:** `PageLayout.tsx`, `TwoColumnLayout.tsx`, `ContentBlock.tsx`, `DialogLayout.tsx`
+**Key files:**
+- `types.ts` — shared type definitions for layout components
+- `CrdLayout.tsx` — full-page shell (header + main + footer)
+- `Header.tsx` — site header with navigation, accepts callback props for messages/notifications/search
+- `Footer.tsx` — site footer with links and language selector, accepts languages and `onLanguageChange` as props
 
 ### styles/
 
@@ -185,7 +264,7 @@ UI-only React hooks.
 
 ## How Consumers Use These Components
 
-Components in `src/crd/` are consumed by integration layers in `src/new-ui/`, `src/domain/`, or `src/main/`. The consumer handles data fetching and mapping; the crd component handles rendering.
+Components in `src/crd/` are consumed by integration layers in `src/new-ui/`, `src/domain/`, or `src/main/`. The consumer handles data fetching, mapping, and wiring behavior; the crd component handles rendering.
 
 **Primary pattern — CRD page integration via `src/new-ui/`:**
 
@@ -198,6 +277,30 @@ export const SpaceExplorerCrdView = ({ spaces, loading, ... }: SpaceExplorerView
   const cardData = mapSpacesToCardDataList(spaces, authenticated);
   return <SpaceExplorer spaces={cardData} loading={loading} ... />;
 };
+```
+
+**Layout wiring pattern — CrdLayoutWrapper:**
+
+```typescript
+// src/main/ui/layout/CrdLayoutWrapper.tsx (APP LAYER — in main)
+// Languages are derived from supportedLngs + main translation labels — not hardcoded
+const languages = supportedLngs
+  .filter(lng => lng !== 'inContextTool')
+  .map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
+
+<CrdLayout
+  user={user}
+  authenticated={isAuthenticated}
+  navigationHrefs={NAVIGATION_HREFS}
+  languages={languages}
+  currentLanguage={i18n.language}
+  onLanguageChange={code => i18n.changeLanguage(code)}  // switches BOTH namespaces
+  onLogout={handleLogout}
+  onMessagesClick={() => setMessagingOpen(true)}       // opens MUI dialog directly
+  onNotificationsClick={() => setNotificationsOpen(true)} // opens MUI dialog directly
+>
+  <Outlet />
+</CrdLayout>
 ```
 
 **Alternative — domain-level container:**
@@ -233,29 +336,55 @@ The prototype at `/prototype/src/` is the design reference. When porting:
 2. **Components** — copy from `prototype/src/app/components/space/` etc., remove any mock data, extract props interfaces
 3. **Styles** — the prototype's `styles/theme.css` is the source of truth for design tokens
 4. **Always check** that the ported component has zero forbidden imports before committing
+5. **Convert inline styles to Tailwind** — the prototype uses inline styles in many places; convert them using the [Tailwind Conversion Reference](#tailwind-conversion-reference)
 
 ---
 
 ## i18n
 
-CRD has its own i18next namespace (`'crd'`) with translations in `src/crd/i18n/en.json`. This JSON file is the single source of truth for all CRD UI text.
+CRD has its own i18next namespace (`'crd'`) with per-language translation files in `src/crd/i18n/`.
+
+**File naming:** `components.<lang>.json` — e.g. `components.en.json`, `components.es.json`, `components.bg.json`
+
+**Supported languages:** `en`, `nl`, `es`, `bg`, `de`, `fr` — must match `supportedLngs` in `src/core/i18n/config.ts`
 
 **How it works:**
-- **Main app** (`src/core/i18n/config.ts`): imports `en.json` and registers it as the `'crd'` namespace alongside the default `'translation'` namespace
-- **Standalone app** (`src/crd/app/main.tsx`): imports the same `en.json` and uses `'crd'` as its default namespace
+- **Main app** (`src/core/i18n/config.ts`): eagerly imports `components.en.json` as the `'crd'` namespace. Other languages are lazy-loaded via `loadCrdTranslation()` when the user switches language.
+- **Standalone app** (`src/crd/app/main.tsx`): imports `components.en.json` and uses `'crd'` as its default namespace
 - **CRD components**: always call `useTranslation('crd')` and reference keys without prefix: `t('spaces.title')`, `t('header.search')`
+- **Language switching**: When the user changes language via `i18n.changeLanguage()`, both the main `'translation'` namespace and the `'crd'` namespace are loaded for the new language. The lazy backend in `config.ts` handles this automatically.
 
 ```typescript
 const { t } = useTranslation('crd');
 <Button>{t('buttons.cancel')}</Button>
 ```
 
-**Adding new translations:**
-1. Add the key to `src/crd/i18n/en.json`
-2. Use it in the component via `useTranslation('crd')` + `t('section.key')`
-3. No need to touch `translation.en.json` — the CRD namespace is independent
+**What belongs in the CRD namespace:**
+- Design-system labels: "Filters", "Load More", "Search", "Private", "Public", "Beta"
+- Accessibility text: sr-only labels, aria-labels for icon buttons
+- Layout text: footer links ("Terms", "Privacy"), header menu items ("Dashboard", "Profile")
 
-Business domain text ("Space Dashboard", "Innovation Flow") comes from the container via props — never use the default translation namespace inside crd.
+**What does NOT belong in the CRD namespace (pass as props instead):**
+- Business-domain text: space names, user names, entity descriptions
+- Application configuration: supported languages, navigation URLs
+- Language labels (these come from the main `'translation'` namespace via `t('languages.en')` in the consumer)
+
+**Adding new translations:**
+1. Add the key to `src/crd/i18n/components.en.json`
+2. Add the translated key to all other `components.<lang>.json` files
+3. Use it in the component via `useTranslation('crd')` + `t('section.key')`
+4. No need to touch `translation.en.json` — the CRD namespace is independent
+
+**Adding a new language:**
+1. Add the language code to `supportedLngs` in `src/core/i18n/config.ts`
+2. Create `src/crd/i18n/components.<lang>.json` with translated strings
+3. Add a `case` to `loadCrdTranslation()` in `config.ts`
+4. The language will automatically appear in the footer selector (derived from `supportedLngs`)
+
+**Critical rules:**
+- Never access `i18n` directly (e.g. `i18n.language`, `i18n.changeLanguage()`) — these are application-level APIs. Read language state from props, call language-change callbacks via props.
+- Never import from the default `'translation'` namespace inside CRD components.
+- All user-visible strings in JSX must use `t()` — including sr-only text, badge labels, and other seemingly minor text.
 
 ---
 
@@ -273,7 +402,7 @@ pnpm crd:build  # Production build
 ### Architecture
 
 - `app/main.tsx` — entry point: initializes i18next with CRD translations, renders `CrdApp`
-- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth
+- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth/language props (languages are hardcoded here since the standalone app doesn't have the main translation namespace)
 - `app/pages/` — mock pages (e.g., `SpacesPage.tsx` with hardcoded space data)
 - `app/data/` — mock data sets (reused from the prototype)
 - `app/vite.config.ts` — standalone Vite config (port 5200, path alias `@/crd` → `src/crd/`)
@@ -284,35 +413,46 @@ pnpm crd:build  # Production build
 - `app/` may import from anywhere in `src/crd/` (components, layouts, primitives, forms, styles)
 - `app/` MUST NOT be imported by any file outside `app/` — it is a standalone entry point
 - Mock data in `app/data/` uses the same types as CRD components (`SpaceCardData`, etc.)
+- `app/` is also where callbacks like `onParentClick` can use `window.location.href` — this is the consumer layer, not the design system
 
 ### i18n Separation
 
-CRD translations live in `src/crd/i18n/en.json` as a proper i18next JSON resource file. This is the single source of truth for CRD UI text.
+CRD translations live in `src/crd/i18n/components.<lang>.json` files. English (`components.en.json`) is the source of truth.
 
-- **Main app**: `src/core/i18n/config.ts` imports `en.json` and registers it as the `'crd'` namespace
-- **Standalone app**: `app/main.tsx` imports the same `en.json` as the `'crd'` namespace (set as default)
+- **Main app**: `src/core/i18n/config.ts` eagerly imports `components.en.json` and lazy-loads other languages via `loadCrdTranslation()`
+- **Standalone app**: `app/main.tsx` imports `components.en.json` as the `'crd'` namespace (set as default)
 - CRD components use `useTranslation('crd')` and reference keys without prefix: `t('spaces.title')`, `t('header.search')`
 
 ---
 
 ## Checklist for Every New Component
 
-- [ ] No MUI imports
+### Independence
+- [ ] No MUI imports (`@mui/*`, `@emotion/*`)
 - [ ] No domain/apollo/auth/routing imports
 - [ ] Props are plain TypeScript (no GraphQL types)
-- [ ] Styling is only Tailwind classes + cn()
-- [ ] Icons from lucide-react only
-- [ ] Accepts className for composition
 - [ ] No barrel exports — explicit file paths only
 - [ ] Event handlers (`on*`) are props, not internal logic
+- [ ] No direct `i18n` API access — language state/changes come via props
 - [ ] State is visual only (open/close, hover, expanded)
+- [ ] Component works in both main app and standalone preview app
+
+### Styling
+- [ ] Styling uses only Tailwind classes + `cn()`
+- [ ] No inline `style` props for values that have Tailwind equivalents
+- [ ] Icons from `lucide-react` only
+- [ ] Accepts `className` for composition
+
+### Accessibility (WCAG 2.1 AA)
 - [ ] Icon-only buttons have `aria-label` (not just `title`)
 - [ ] Decorative icons have `aria-hidden="true"`
 - [ ] Interactive elements are `<a>` or `<button>`, never clickable `<span>`/`<div>`
 - [ ] All interactive elements have visible `focus-visible:ring` indicators
-- [ ] Lists use `role="list"` and `role="listitem"`
-- [ ] Loading states use `role="status"` with `aria-label`
+- [ ] Lists use `<ul>` / `<li>` with proper semantic structure
+- [ ] Loading states use `<output>` or `role="status"` with `aria-label`
 - [ ] Form inputs have `aria-label` that persists regardless of placeholder state
+- [ ] All user-visible strings use `t()` — no hardcoded text in JSX (including sr-only text)
+- [ ] Busy buttons use `aria-busy` and `disabled`
 
 ---
 
@@ -325,16 +465,32 @@ When porting from the prototype or replacing inline `style` objects, use this ma
 | Inline style | Tailwind class |
 |---|---|
 | `background: 'var(--card)'` | `bg-card` |
+| `background: 'var(--border)'` | `bg-border` |
+| `background: 'white'` | `bg-white` |
+| `color: 'var(--foreground)'` | `text-foreground` |
 | `color: 'var(--muted-foreground)'` | `text-muted-foreground` |
+| `color: 'var(--destructive)'` | `text-destructive` |
+| `color: 'var(--primary)'` | `text-primary` |
 | `border: '1px solid var(--border)'` | `border border-border` |
 | `borderTop: '1px solid var(--border)'` | `border-t border-border` |
 | `fontSize: 'var(--text-sm)'` | `text-sm` |
+| `fontSize: '9px'` | `text-[9px]` |
+| `fontSize: '10px'` | `text-[10px]` |
+| `fontSize: '11px'` | `text-[11px]` |
 | `fontWeight: 600` | `font-semibold` |
-| `zIndex: 10` | `z-10` |
+| `fontWeight: 700` | `font-bold` |
+| `zIndex: 3` | `z-[3]` |
+| `width: 10, height: 10` | `size-2.5` |
 | `aspectRatio: '16 / 9'` | `aspect-video` |
 | `padding: '24px 16px 0'` | `px-4 pt-6` |
+| `padding: '4px 8px'` | `px-2 py-1` |
 | `borderRadius: 'var(--radius)'` | `rounded-lg` |
+| `minWidth: 200` | `min-w-[200px]` |
+| `maxWidth: 360` | `max-w-[360px]` |
+| `height: 32` | `h-8` |
+| `height: 40` | `h-10` |
 | `background: 'linear-gradient(135deg, var(--muted), var(--accent))'` | `bg-gradient-to-br from-muted to-accent` |
+| `gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))'` | `grid-cols-[repeat(auto-fill,minmax(280px,1fr))]` |
 | Conditional bg based on `isPrivate` at 50% opacity | `bg-foreground/50` (Tailwind opacity modifier) |
 
 **Keep as `style`** only when:
@@ -350,16 +506,17 @@ When a card wraps in `<a href={...}>` but contains sub-elements that should navi
 // The card is an <a> link — clicking anywhere navigates to the space
 <a href={space.href} onClick={handleClick} className="group block">
   {/* Sub-element calls its own callback, stops the card click */}
-  <span
+  <button
+    type="button"
     className="hover:underline cursor-pointer"
     onClick={e => {
       e.preventDefault();
       e.stopPropagation();
-      onParentClick?.(space.parent!);
+      onParentClick?.(space.parent);
     }}
   >
     {space.parent.name}
-  </span>
+  </button>
 </a>
 ```
 
@@ -368,3 +525,10 @@ Never use `window.location.href` or `useNavigate` inside a CRD component — the
 ### Component Extraction
 
 When a component exceeds ~150 lines or contains a self-contained visual pattern used in multiple contexts, extract it to `components/common/`. Example: `StackedAvatars` was extracted from `SpaceCard` because the parent-child avatar overlay is reusable across entity types.
+
+### Shared Layout Types
+
+Layout-related types are defined once in `src/crd/layouts/types.ts` and imported by all layout components. When adding new layout props:
+1. Add the type to `types.ts`
+2. Import it in the layout component
+3. Update the contracts in `specs/039-crd-spaces-page/contracts/crd-layout.ts` to match

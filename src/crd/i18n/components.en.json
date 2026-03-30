@@ -11,7 +11,8 @@
     "profile": "My Profile",
     "settings": "Settings",
     "logout": "Log out",
-    "login": "Log in"
+    "login": "Log in",
+    "beta": "Beta"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",
@@ -53,6 +54,8 @@
     "leads": "Leads",
     "in": "in",
     "member": "Member",
-    "loading": "Loading spaces"
+    "loading": "Loading spaces",
+    "moreLeads": "{{count}} more leads",
+    "removeFilter": "remove filter"
   }
 }

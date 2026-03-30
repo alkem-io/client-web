@@ -90,17 +90,9 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
 
           {/* Member badge */}
           {space.isMember && (
-            <div className="absolute top-3 left-4" style={{ zIndex: 3 }}>
-              <output
-                className="flex items-center gap-1 px-2 py-1 rounded-full"
-                style={{
-                  background: 'white',
-                  color: '#1d384a',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                }}
-              >
-                <UserCheck aria-hidden="true" style={{ width: 10, height: 10 }} />
+            <div className="absolute top-3 left-4 z-[3]">
+              <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-[#1d384a] text-[10px] font-semibold">
+                <UserCheck aria-hidden="true" className="size-2.5" />
                 <span>{t('spaces.member')}</span>
               </output>
             </div>
@@ -219,7 +211,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 {overflowCount > 0 && (
                   <span className="flex items-center justify-center size-[26px] border-2 border-card rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
                     <span aria-hidden="true">+{overflowCount}</span>
-                    <span className="sr-only">{overflowCount} more leads</span>
+                    <span className="sr-only">{t('spaces.moreLeads', { count: overflowCount })}</span>
                   </span>
                 )}
               </div>

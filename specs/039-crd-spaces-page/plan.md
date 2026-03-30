@@ -78,6 +78,7 @@ src/
 │   │       ├── SpaceCard.tsx         # CRD SpaceCard composite
 │   │       └── SpaceExplorer.tsx     # CRD page-level composite (search + grid + filters)
 │   ├── layouts/                      # CRD page shells
+│   │   ├── types.ts                 # NEW: shared types (CrdUserInfo, CrdNavigationHrefs, CrdLanguageOption)
 │   │   ├── CrdLayout.tsx            # NEW: full-page CRD shell (header + main + footer)
 │   │   ├── Header.tsx               # NEW: CRD header (logo, nav icons, profile dropdown)
 │   │   └── Footer.tsx               # NEW: CRD footer (links, logo, language selector)
@@ -115,7 +116,7 @@ src/
 │   │   └── TopLevelRoutes.tsx        # MODIFIED: wrap CRD routes in CrdLayoutWrapper
 │   └── ui/
 │       └── layout/
-│           └── CrdLayoutWrapper.tsx  # Connects CrdLayout to app data (auth, user, navigation)
+│           └── CrdLayoutWrapper.tsx  # Connects CrdLayout to app data (auth, user, navigation, language, dialogs)
 ```
 
 **Structure Decision**: CRD routes get a completely separate visual shell. The layout split happens at the route level in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper` (which connects the presentational `CrdLayout` to app data like auth state and user info), while MUI routes continue using `TopLevelLayout`. Page-level integration (data hooks, CRD views, data mappers) lives in `src/new-ui/topLevelPages/<pageName>/` — the dedicated integration layer for CRD-migrated pages. The `CrdLayout`, `Header`, and `Footer` are presentational components in `src/crd/layouts/` — they receive all data as props. The `CrdLayoutWrapper` in `src/main/ui/layout/` is the app-level smart container that provides user info, auth state, and navigation callbacks. Files in `src/new-ui/` MUST NOT import from `@mui/*`.
@@ -160,24 +161,35 @@ The prototype constructs routes from slugs (`/space/${slug}`). Production uses f
 
 Tailwind's base resets (preflight) are scoped to `.crd-root` in `src/crd/styles/crd.css`. The `CrdLayout` wraps the entire page in `.crd-root`. MUI components outside `.crd-root` are unaffected.
 
-### D8: CRD Header — Visual Port with Placeholder Interactions
+### D8: CRD Header — Navigation via Callbacks
 
-The CRD Header is a visual port of the prototype's Header. For this PoC:
-- Navigation icons (search, messages, notifications, spaces) render as links to existing MUI pages
-- Profile dropdown renders with visual-only menu items (links to existing profile/settings MUI pages)
-- Search overlay, real notification feed, and unread message counts are deferred
-- The Header accepts all data via props: `user` (name, avatar), `onSearch`, `onLogout`, navigation `href`s
+The CRD Header is a visual port of the prototype's Header. Navigation icons accept optional callback props that take priority over `<a href>` fallbacks:
+- **Messages** and **Notifications** buttons: `onMessagesClick` / `onNotificationsClick` callbacks directly open the existing MUI dialogs (`UserMessagingDialog`, `InAppNotificationsDialog`) via their context providers (`useUserMessagingContext`, `useInAppNotificationsContext`), which are available on all routes including CRD pages since they're rendered in `root.tsx`.
+- **Search**: `onSearchClick` callback (deferred — search overlay not yet implemented)
+- **Spaces**: always an `<a>` link to the spaces page
+- **Profile dropdown**: links to existing MUI pages (`/home`, `/profile`)
+- **Login**: uses `navigationHrefs.login` instead of a hardcoded `/login` path
+- When callbacks are not provided (e.g. in the standalone preview app), buttons fall back to `<a href>` links from `navigationHrefs`
+- Real notification feed and unread message counts are deferred
 
 ### D9: CRD Layout Props Pattern
 
 The `CrdLayout` component in `src/crd/layouts/` is purely presentational and receives all dynamic data via props:
 - `user?: { name: string; avatarUrl?: string; initials: string }` — for the profile avatar
 - `authenticated: boolean` — controls whether profile dropdown shows login vs user menu
-- `navigationHrefs: { home, spaces, messages, notifications, profile, settings }` — all navigation targets
+- `navigationHrefs: { home, spaces, messages, notifications, profile, settings, login }` — all navigation targets
+- `languages: { code: string; label: string }[]` — available languages for footer selector
+- `currentLanguage: string` — active language code
+- `onLanguageChange: (code: string) => void` — language switch callback
 - `onLogout?: () => void` — logout callback
+- `onMessagesClick?: () => void` — messages button callback (falls back to `<a>` link if not provided)
+- `onNotificationsClick?: () => void` — notifications button callback (falls back to `<a>` link if not provided)
+- `onSearchClick?: () => void` — search button callback
 - `children: ReactNode` — page content
 
-The `CrdLayoutWrapper` in `src/main/ui/layout/` reads auth state, user profile, and constructs these props.
+Shared types (`CrdUserInfo`, `CrdNavigationHrefs`, `CrdLanguageOption`) are defined once in `src/crd/layouts/types.ts` and imported by both `Header.tsx` and `CrdLayout.tsx`.
+
+The `CrdLayoutWrapper` in `src/main/ui/layout/` reads auth state, user profile, i18n language, and constructs these props. It wires Messages/Notifications callbacks directly to the existing dialog context providers (`useUserMessagingContext`, `useInAppNotificationsContext`).
 
 ### D10: Prototype-Matching Filter Bar (Sort + Filters Dropdowns)
 
