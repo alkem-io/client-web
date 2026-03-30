@@ -148,10 +148,12 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 
 ### Namespaces
 
-- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`
-- **`crd`**: CRD UI layer strings in `src/crd/i18n/en.json`. Used exclusively by `src/crd/` components via `useTranslation('crd')`. Keys are prefixless: `t('spaces.title')`, not `t('crd.spaces.title')`
+- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`.
+- **`crd-layout`**: Layout UI strings (header/footer) in `src/crd/i18n/layout/`. Eagerly loaded for English. Used by `src/crd/layouts/` via `useTranslation('crd-layout')`.
+- **`crd-exploreSpaces`**: Space explorer UI strings in `src/crd/i18n/exploreSpaces/`. Lazy-loaded on demand. Used by `src/crd/components/space/` via `useTranslation('crd-exploreSpaces')`.
+- **`crd-<feature>`**: Future feature namespaces follow the same pattern: `src/crd/i18n/<feature>/<feature>.<lang>.json`, lazy-loaded, used via `useTranslation('crd-<feature>')`.
 
-When adding strings for CRD components, add them to `src/crd/i18n/en.json`. For everything else, use `src/core/i18n/en/translation.en.json`.
+When adding strings for CRD components (including page titles), add them to the appropriate `src/crd/i18n/<feature>/<feature>.en.json`. CRD translations are managed manually (AI-assisted), not via Crowdin.
 
 ## Environment Variables
 
@@ -328,11 +330,11 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 **The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
 
 ## Recent Changes
-- 039-crd-spaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
+- 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
 - Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
 
 ## Active Technologies
-- TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged) (039-crd-spaces-page)
-- N/A (GraphQL data layer unchanged; localStorage for rendering mode toggle) (039-crd-spaces-page)
+- TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged) (039-crd-exploreSpaces-page)
+- N/A (GraphQL data layer unchanged; localStorage for rendering mode toggle) (039-crd-exploreSpaces-page)

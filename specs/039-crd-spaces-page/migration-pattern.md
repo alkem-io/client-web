@@ -24,7 +24,7 @@ If the page uses shadcn/ui primitives not yet in `src/crd/primitives/`, port the
 Create presentational components in `src/crd/components/<domain>/`. Rules:
 - Zero MUI imports
 - Props are plain TypeScript (no GraphQL types)
-- Use `useTranslation('crd')` for **design-system** text only (UI labels like "Filters", "Load More"). Business-domain text must be passed as props.
+- Use `useTranslation('crd-<feature>')` for **design-system** text only (UI labels like "Filters", "Load More"). Page-level text (titles, subtitles) and business-domain text must be passed as props.
 - All `on*` event handlers must be received as props — components never implement behavior (navigation, API calls, state changes) internally
 - Use `<a href>` for navigation links (no `react-router-dom`, no `window.location.href`)
 - Icons from `lucide-react` only
@@ -77,7 +77,15 @@ const MyPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/<page>/M
 
 ### 7. Add i18n Keys
 
-Add translation keys to all `src/crd/i18n/components.<lang>.json` files (the `crd` namespace). English keys go in `components.en.json`; add translations for `es`, `nl`, `bg`, `de`, `fr`. CRD components use `useTranslation('crd')` — keys are prefixless: `t('spaces.title')`, not `t('crd.spaces.title')`.
+CRD uses per-feature i18n namespaces. Each feature has its own set of translation files in `src/crd/i18n/`:
+
+1. **If your feature has an existing namespace** (e.g., `crd-spaces`): add keys to `src/crd/i18n/spaces.en.json` and all other language files (`es`, `nl`, `bg`, `de`, `fr`). Components use `useTranslation('crd-spaces')` with prefixless keys: `t('spaces.filters')`.
+
+2. **If this is a new feature**: create `src/crd/i18n/<feature>.en.json` (+ other language files), add a `'crd-<feature>'` entry to `crdNamespaceImports` in `src/core/i18n/config.ts`, and use `useTranslation('crd-<feature>')` in your components.
+
+3. **Page-level text** (titles, subtitles): add to `src/core/i18n/en/translation.en.json` and pass as props from the `crdPages` container.
+
+CRD translations are managed manually with AI-assisted translations — not via Crowdin.
 
 ## File Layout Example
 

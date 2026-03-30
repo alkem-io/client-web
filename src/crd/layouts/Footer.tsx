@@ -29,7 +29,7 @@ export function Footer({
   onSupportClick,
   className,
 }: FooterProps) {
-  const { t } = useTranslation('crd');
+  const { t } = useTranslation('crd-layout');
 
   const currentLabel = languages.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
 

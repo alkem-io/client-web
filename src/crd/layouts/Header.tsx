@@ -70,7 +70,7 @@ export function Header({
   onLanguageChange,
   className,
 }: HeaderProps) {
-  const { t } = useTranslation('crd');
+  const { t } = useTranslation('crd-layout');
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 

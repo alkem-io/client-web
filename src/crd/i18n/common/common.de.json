@@ -1,0 +1,19 @@
+{
+  "space": "Raum",
+  "spaces": "Räume",
+  "subspace": "Unterraum",
+  "ok": "OK",
+  "cancel": "Abbrechen",
+  "save": "Speichern",
+  "delete": "Löschen",
+  "edit": "Bearbeiten",
+  "close": "Schließen",
+  "loading": "Laden",
+  "error": "Fehler",
+  "noResults": "Keine Ergebnisse gefunden",
+  "private": "Privat",
+  "public": "Öffentlich",
+  "member": "Mitglied",
+  "leads": "Leiter",
+  "loadMore": "Mehr laden"
+}

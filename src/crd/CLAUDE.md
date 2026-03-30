@@ -174,7 +174,7 @@ src/crd/
 ├── layouts/             # Page-level layout components + shared types
 ├── styles/              # CSS tokens, theme, Tailwind entry point
 ├── lib/                 # Utilities (cn, etc.)
-├── i18n/                # Translation strings (en.json — 'crd' namespace)
+├── i18n/                # Per-feature translation directories (layout/, exploreSpaces/, etc.)
 └── hooks/               # UI-only hooks (useMediaQuery, etc.)
 ```
 
@@ -201,8 +201,9 @@ Composites — reusable UI components built from primitives. These know about Al
 **Rules:**
 - Import only from `@/crd/primitives/`, `@/crd/components/` (peer composites), `@/crd/lib/`, `@/crd/hooks/`, `@/crd/forms/`, and `lucide-react`
 - Props are plain TypeScript types with descriptive names
-- May use `useTranslation('crd')` for design-system UI text (labels like "Filters", "Load More", "Private", "Public")
-- Must NOT use `useTranslation('crd')` to access or manipulate `i18n` directly (e.g. `i18n.changeLanguage()`, `i18n.language`) — these are application-level concerns that must be passed as props
+- May use `useTranslation('crd-<feature>')` for design-system UI text (labels like "Filters", "Load More", "Private", "Public"). Each feature area has its own namespace (e.g., `'crd-layout'`, `'crd-exploreSpaces'`)
+- Must NOT use `useTranslation` to access or manipulate `i18n` directly (e.g. `i18n.changeLanguage()`, `i18n.language`) — these are application-level concerns that must be passed as props
+- Page-level text (titles, subtitles) lives in the feature's CRD namespace alongside its design-system labels
 - Organize by feature area in subdirectories: `space/`, `dashboard/`, `community/`, `user/`, `common/`
 
 **Examples:** `space/SpaceCard.tsx`, `space/SpaceExplorer.tsx`, `common/AlkemioLogo.tsx`, `common/StackedAvatars.tsx`
@@ -342,49 +343,82 @@ The prototype at `/prototype/src/` is the design reference. When porting:
 
 ## i18n
 
-CRD has its own i18next namespace (`'crd'`) with per-language translation files in `src/crd/i18n/`.
+CRD uses **per-feature i18next namespaces** with atomic translation files in `src/crd/i18n/`. Each feature area gets its own namespace, enabling lazy loading per page/feature.
 
-**File naming:** `components.<lang>.json` — e.g. `components.en.json`, `components.es.json`, `components.bg.json`
+### Namespace Structure
+
+| Namespace | File pattern | Contents | Loading |
+|-----------|-------------|----------|---------|
+| `crd-layout` | `layout.<lang>.json` | `header.*` + `footer.*` keys | **Eager** (EN), lazy (other langs) |
+| `crd-exploreSpaces` | `exploreSpaces.<lang>.json` | `spaces.*` keys | **Lazy** (all langs) |
+| `crd-<feature>` | `<feature>.<lang>.json` | Feature-specific keys | **Lazy** (all langs) |
 
 **Supported languages:** `en`, `nl`, `es`, `bg`, `de`, `fr` — must match `supportedLngs` in `src/core/i18n/config.ts`
 
-**How it works:**
-- **Main app** (`src/core/i18n/config.ts`): eagerly imports `components.en.json` as the `'crd'` namespace. Other languages are lazy-loaded via `loadCrdTranslation()` when the user switches language.
-- **Standalone app** (`src/crd/app/main.tsx`): imports `components.en.json` and uses `'crd'` as its default namespace
-- **CRD components**: always call `useTranslation('crd')` and reference keys without prefix: `t('spaces.title')`, `t('header.search')`
-- **Language switching**: When the user changes language via `i18n.changeLanguage()`, both the main `'translation'` namespace and the `'crd'` namespace are loaded for the new language. The lazy backend in `config.ts` handles this automatically.
+### How it works
+
+- **Main app** (`src/core/i18n/config.ts`): eagerly imports `layout.en.json` as the `'crd-layout'` namespace. Feature namespaces (e.g., `'crd-exploreSpaces'`) are lazy-loaded on demand when a component calls `useTranslation('crd-exploreSpaces')`. Non-English languages are always lazy-loaded via the `crdNamespaceImports` registry.
+- **Standalone app** (`src/crd/app/main.tsx`): eagerly imports all namespace files (dev tool, no lazy loading needed)
+- **CRD components**: call `useTranslation('crd-<feature>')` for their specific namespace. Keys are prefixless within the namespace: `t('spaces.filters')`, `t('header.search')`
+- **Language switching**: When the user changes language via `i18n.changeLanguage()`, all loaded namespaces are fetched for the new language. The lazy backend handles this automatically.
 
 ```typescript
-const { t } = useTranslation('crd');
-<Button>{t('buttons.cancel')}</Button>
+// Layout components
+const { t } = useTranslation('crd-layout');
+<nav>{t('header.search')}</nav>
+
+// Feature components
+const { t } = useTranslation('crd-exploreSpaces');
+<Button>{t('spaces.loadMore')}</Button>
 ```
 
-**What belongs in the CRD namespace:**
+### Translation Boundary: What Goes Where
+
+| Category | Example | Where it lives | How it reaches the component |
+|----------|---------|----------------|------------------------------|
+| **Design-system labels** | "Filters", "Load More", "Search...", "Private" | `src/crd/i18n/` (`crd-*` namespaces) | `useTranslation('crd-exploreSpaces')` inside CRD component |
+| **Page-level text** | "Explore Spaces", page subtitles | `src/crd/i18n/` (`crd-*` namespaces) | `useTranslation('crd-exploreSpaces')` inside CRD component |
+| **Business data** | Space names, user names | GraphQL | Passed as **props** from `crdPages` container |
+
+**What belongs in CRD namespaces:**
 - Design-system labels: "Filters", "Load More", "Search", "Private", "Public", "Beta"
 - Accessibility text: sr-only labels, aria-labels for icon buttons
 - Layout text: footer links ("Terms", "Privacy"), header menu items ("Dashboard", "Profile")
 
-**What does NOT belong in the CRD namespace (pass as props instead):**
+**What does NOT belong (pass as props instead):**
 - Business-domain text: space names, user names, entity descriptions
 - Application configuration: supported languages, navigation URLs
-- Language labels (these come from the main `'translation'` namespace via `t('languages.en')` in the consumer)
 
-**Adding new translations:**
-1. Add the key to `src/crd/i18n/components.en.json`
-2. Add the translated key to all other `components.<lang>.json` files
-3. Use it in the component via `useTranslation('crd')` + `t('section.key')`
-4. No need to touch `translation.en.json` — the CRD namespace is independent
+### Adding translations to an existing feature
 
-**Adding a new language:**
+1. Add the key to `src/crd/i18n/<feature>/<feature>.en.json`
+2. Add the translated key to all other `<feature>.<lang>.json` files
+3. Use it in the component via `useTranslation('crd-<feature>')` + `t('section.key')`
+
+### Adding a new feature namespace
+
+1. Create `src/crd/i18n/<feature>/<feature>.en.json` (+ translated files for all other languages in the same directory)
+2. Add a `'crd-<feature>'` entry to `crdNamespaceImports` in `src/core/i18n/config.ts`
+3. Components use `useTranslation('crd-<feature>')`
+4. No need to add to the `ns` array in `i18n.init()` — i18next loads namespaces on demand
+
+### Adding a new language
+
 1. Add the language code to `supportedLngs` in `src/core/i18n/config.ts`
-2. Create `src/crd/i18n/components.<lang>.json` with translated strings
-3. Add a `case` to `loadCrdTranslation()` in `config.ts`
+2. Create `<feature>.<lang>.json` files in each `src/crd/i18n/<feature>/` directory
+3. Add the language to each feature entry in `crdNamespaceImports`
 4. The language will automatically appear in the footer selector (derived from `supportedLngs`)
 
-**Critical rules:**
+### Translation management
+
+CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Only the main `translation` namespace uses Crowdin.
+
+### Critical rules
+
 - Never access `i18n` directly (e.g. `i18n.language`, `i18n.changeLanguage()`) — these are application-level APIs. Read language state from props, call language-change callbacks via props.
 - Never import from the default `'translation'` namespace inside CRD components.
 - All user-visible strings in JSX must use `t()` — including sr-only text, badge labels, and other seemingly minor text.
+- Page-level text (titles, subtitles) lives in the feature's CRD namespace alongside its design-system labels.
 
 ---
 
@@ -417,11 +451,11 @@ pnpm crd:build  # Production build
 
 ### i18n Separation
 
-CRD translations live in `src/crd/i18n/components.<lang>.json` files. English (`components.en.json`) is the source of truth.
+CRD translations live in per-feature directories in `src/crd/i18n/` (e.g., `layout/layout.<lang>.json`, `exploreSpaces/exploreSpaces.<lang>.json`).
 
-- **Main app**: `src/core/i18n/config.ts` eagerly imports `components.en.json` and lazy-loads other languages via `loadCrdTranslation()`
-- **Standalone app**: `app/main.tsx` imports `components.en.json` as the `'crd'` namespace (set as default)
-- CRD components use `useTranslation('crd')` and reference keys without prefix: `t('spaces.title')`, `t('header.search')`
+- **Main app**: `src/core/i18n/config.ts` eagerly imports `layout.en.json` as the `'crd-layout'` namespace. Feature namespaces are lazy-loaded via the `crdNamespaceImports` registry.
+- **Standalone app**: `app/main.tsx` eagerly imports all namespace files (no lazy loading needed for dev tool)
+- Layout components use `useTranslation('crd-layout')`, feature components use `useTranslation('crd-<feature>')`
 
 ---
 
@@ -531,4 +565,4 @@ When a component exceeds ~150 lines or contains a self-contained visual pattern 
 Layout-related types are defined once in `src/crd/layouts/types.ts` and imported by all layout components. When adding new layout props:
 1. Add the type to `types.ts`
 2. Import it in the layout component
-3. Update the contracts in `specs/039-crd-spaces-page/contracts/crd-layout.ts` to match
+3. Update the contracts in `specs/039-crd-exploreSpaces-page/contracts/crd-layout.ts` to match

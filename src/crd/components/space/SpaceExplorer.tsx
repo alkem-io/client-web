@@ -54,7 +54,7 @@ export function SpaceExplorer({
   onLoadMore,
   onParentClick,
 }: SpaceExplorerProps) {
-  const { t } = useTranslation('crd');
+  const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
   const [loadingMore, setLoadingMore] = useState(false);
 
   // Client-side filters & sorting
@@ -336,7 +336,7 @@ export function SpaceExplorer({
             ) : (
               <ChevronDown className="size-4" />
             )}
-            {t('spaces.loadMore')}
+            {t('crd-common:loadMore')}
           </Button>
         </div>
       )}

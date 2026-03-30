@@ -1,31 +1,4 @@
 {
-  "header": {
-    "menu": "Menu",
-    "home": "Accueil",
-    "search": "Rechercher",
-    "messages": "Messages",
-    "notifications": "Notifications",
-    "spaces": "Espaces",
-    "myAccount": "Mon compte",
-    "dashboard": "Mon tableau de bord",
-    "profile": "Mon profil",
-    "settings": "Paramètres",
-    "logout": "Déconnexion",
-    "login": "Connexion",
-    "beta": "Bêta",
-    "pendingMemberships": "Adhésions en attente",
-    "administration": "Administration",
-    "changeLanguage": "Changer de langue",
-    "getHelp": "Obtenir de l'aide"
-  },
-  "footer": {
-    "copyright": "© 2026 Alkemio B.V.",
-    "terms": "Conditions",
-    "privacy": "Confidentialité",
-    "security": "Sécurité",
-    "support": "Assistance",
-    "about": "À propos"
-  },
   "spaces": {
     "title": "Explorer les espaces",
     "subtitle": "Découvrez des espaces pour collaborer et innover",
@@ -50,14 +23,9 @@
     "showing": "Affichage de",
     "of": "sur",
     "spacesLabel": "espaces",
-    "loadMore": "Charger plus",
     "emptyTitle": "Aucun espace trouvé",
     "emptyMessage": "Essayez d'ajuster votre recherche ou vos filtres pour trouver ce que vous cherchez.",
-    "private": "Privé",
-    "public": "Public",
-    "leads": "Responsables",
     "in": "dans",
-    "member": "Membre",
     "loading": "Chargement des espaces",
     "moreLeads": "{{count}} responsables de plus",
     "removeFilter": "supprimer le filtre"

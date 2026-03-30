@@ -1,0 +1,29 @@
+{
+  "header": {
+    "menu": "Menü",
+    "home": "Startseite",
+    "search": "Suchen",
+    "messages": "Nachrichten",
+    "notifications": "Benachrichtigungen",
+    "spaces": "Räume",
+    "myAccount": "Mein Konto",
+    "dashboard": "Mein Dashboard",
+    "profile": "Mein Profil",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "beta": "Beta",
+    "pendingMemberships": "Ausstehende Mitgliedschaften",
+    "administration": "Verwaltung",
+    "changeLanguage": "Sprache ändern",
+    "getHelp": "Hilfe erhalten"
+  },
+  "footer": {
+    "copyright": "© 2026 Alkemio B.V.",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutz",
+    "security": "Sicherheit",
+    "support": "Support",
+    "about": "Über uns"
+  }
+}

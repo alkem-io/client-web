@@ -1,31 +1,4 @@
 {
-  "header": {
-    "menu": "Menu",
-    "home": "Home",
-    "search": "Zoeken",
-    "messages": "Berichten",
-    "notifications": "Meldingen",
-    "spaces": "Ruimtes",
-    "myAccount": "Mijn account",
-    "dashboard": "Mijn dashboard",
-    "profile": "Mijn profiel",
-    "settings": "Instellingen",
-    "logout": "Uitloggen",
-    "login": "Inloggen",
-    "beta": "Bèta",
-    "pendingMemberships": "Openstaande lidmaatschappen",
-    "administration": "Administratie",
-    "changeLanguage": "Taal wijzigen",
-    "getHelp": "Hulp krijgen"
-  },
-  "footer": {
-    "copyright": "© 2026 Alkemio B.V.",
-    "terms": "Voorwaarden",
-    "privacy": "Privacy",
-    "security": "Beveiliging",
-    "support": "Ondersteuning",
-    "about": "Over ons"
-  },
   "spaces": {
     "title": "Ruimtes verkennen",
     "subtitle": "Ontdek ruimtes om samen te werken en te innoveren",
@@ -50,14 +23,9 @@
     "showing": "Toont",
     "of": "van",
     "spacesLabel": "ruimtes",
-    "loadMore": "Meer laden",
     "emptyTitle": "Geen ruimtes gevonden",
     "emptyMessage": "Probeer je zoekopdracht of filters aan te passen om te vinden wat je zoekt.",
-    "private": "Privé",
-    "public": "Openbaar",
-    "leads": "Leiders",
     "in": "in",
-    "member": "Lid",
     "loading": "Ruimtes laden",
     "moreLeads": "{{count}} meer leiders",
     "removeFilter": "filter verwijderen"

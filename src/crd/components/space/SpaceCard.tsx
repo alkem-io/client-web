@@ -45,7 +45,7 @@ export type SpaceCardProps = {
 const MAX_VISIBLE_LEADS = 4;
 
 export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCardProps) {
-  const { t } = useTranslation('crd');
+  const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
 
   const visibleLeads = space.leads.slice(0, MAX_VISIBLE_LEADS);
   const overflowCount = space.leads.length - MAX_VISIBLE_LEADS;
@@ -93,7 +93,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
             <div className="absolute top-3 left-4 z-[3]">
               <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-[#1d384a] text-[10px] font-semibold">
                 <UserCheck aria-hidden="true" className="size-2.5" />
-                <span>{t('spaces.member')}</span>
+                <span>{t('crd-common:member')}</span>
               </output>
             </div>
           )}
@@ -111,7 +111,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
               ) : (
                 <Globe aria-hidden="true" className="size-2.5" />
               )}
-              <span>{space.isPrivate ? t('spaces.private') : t('spaces.public')}</span>
+              <span>{space.isPrivate ? t('crd-common:private') : t('crd-common:public')}</span>
             </div>
           </div>
 
@@ -186,7 +186,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           <div className="flex items-center mt-3 px-4 py-3 border-t border-border">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.04em]">
-                {t('spaces.leads')}
+                {t('crd-common:leads')}
               </span>
               <div className="flex -space-x-2">
                 {visibleLeads.map(lead => (

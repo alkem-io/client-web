@@ -215,7 +215,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 
 #### Standalone Preview App
 - **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization
-- **FR-017**: CRD translations MUST live in per-language JSON files (`src/crd/i18n/components.<lang>.json`) loaded as the `'crd'` i18next namespace. English is eagerly loaded; other languages are lazy-loaded when the user switches. Both the main app and the standalone app load the same files — the main app registers them as an additional namespace, the standalone app uses them as its default namespace. Language switching updates both the main `'translation'` and `'crd'` namespaces simultaneously
+- **FR-017**: CRD translations MUST live in per-feature JSON files in `src/crd/i18n/` (e.g., `layout.<lang>.json`, `spaces.<lang>.json`), each loaded as a separate i18next namespace (`'crd-layout'`, `'crd-spaces'`). Layout English is eagerly loaded; feature namespaces are lazy-loaded on demand. Non-English languages are always lazy-loaded. Page-level text (titles, subtitles) lives in the main `translation` namespace and is passed as props from `crdPages` containers. CRD translations are managed manually with AI-assisted translations, not via Crowdin
 - **FR-018**: The standalone app MUST reuse the exact same CRD components (`src/crd/components/`, `src/crd/layouts/`, `src/crd/primitives/`, `src/crd/forms/`) — no duplication of component code
 
 ### Key Entities
@@ -262,4 +262,4 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - Tailwind CSS v4 and the necessary build configuration have been set up as Phase 1 of this spec (T001-T005, completed)
 - The `src/crd/` folder already exists with its CLAUDE.md conventions established
 - This PoC does not need to handle subspace-specific card variants (stacked parent avatars) in the first iteration — basic parent info display is sufficient
-- The i18n namespace for CRD design system text is `'crd'` with per-language files (`components.<lang>.json`); domain-specific text comes via props from the container. Language labels for the footer selector come from the main `'translation'` namespace (`languages.*` keys) via the consumer
+- CRD uses per-feature i18n namespaces (`'crd-layout'`, `'crd-spaces'`) with atomic translation files in `src/crd/i18n/`. Layout is eagerly loaded; feature namespaces are lazy-loaded per page. Page-level text (titles, subtitles) and domain-specific text come via props from the container. Language labels for the footer selector come from the main `'translation'` namespace (`languages.*` keys) via the consumer

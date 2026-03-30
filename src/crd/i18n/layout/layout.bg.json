@@ -1,0 +1,29 @@
+{
+  "header": {
+    "menu": "Меню",
+    "home": "Начало",
+    "search": "Търсене",
+    "messages": "Съобщения",
+    "notifications": "Известия",
+    "spaces": "Пространства",
+    "myAccount": "Моят акаунт",
+    "dashboard": "Моето табло",
+    "profile": "Моят профил",
+    "settings": "Настройки",
+    "logout": "Изход",
+    "login": "Вход",
+    "beta": "Бета",
+    "pendingMemberships": "Чакащи членства",
+    "administration": "Администрация",
+    "changeLanguage": "Смяна на езика",
+    "getHelp": "Помощ"
+  },
+  "footer": {
+    "copyright": "© 2026 Alkemio B.V.",
+    "terms": "Условия",
+    "privacy": "Поверителност",
+    "security": "Сигурност",
+    "support": "Поддръжка",
+    "about": "За нас"
+  }
+}
