@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
-import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import type { CrdFooterLinks, CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 
 type CrdLayoutProps = {
   user?: CrdUserInfo;
@@ -18,6 +18,7 @@ type CrdLayoutProps = {
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
+  footerLinks?: CrdFooterLinks;
   children: ReactNode;
 };
 
@@ -36,6 +37,7 @@ export function CrdLayout({
   onSearchClick,
   onPendingMembershipsClick,
   onHelpClick,
+  footerLinks,
   children,
 }: CrdLayoutProps) {
   return (
@@ -57,7 +59,13 @@ export function CrdLayout({
         onHelpClick={onHelpClick}
       />
       <main className="flex-1 flex flex-col">{children}</main>
-      <Footer languages={languages} currentLanguage={currentLanguage} onLanguageChange={onLanguageChange} />
+      <Footer
+        links={footerLinks}
+        languages={languages}
+        currentLanguage={currentLanguage}
+        onLanguageChange={onLanguageChange}
+        onSupportClick={onHelpClick}
+      />
     </div>
   );
 }

@@ -16,6 +16,13 @@ export type CrdNavigationHrefs = {
   login: string;
 };
 
+export type CrdFooterLinks = {
+  terms?: string;
+  privacy?: string;
+  security?: string;
+  about?: string;
+};
+
 export type CrdLanguageOption = {
   code: string;
   label: string;

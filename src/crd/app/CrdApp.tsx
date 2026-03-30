@@ -43,6 +43,7 @@ export function CrdApp() {
         onLanguageChange={code => console.log('Language changed to', code)}
         onPendingMembershipsClick={() => console.log('Pending memberships clicked')}
         onHelpClick={() => console.log('Help clicked')}
+        footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about' }}
       >
         <Routes>
           <Route path="/spaces" element={<SpacesPage />} />

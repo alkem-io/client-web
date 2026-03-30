@@ -12,6 +12,7 @@ import {
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
@@ -48,6 +49,7 @@ function CrdLayoutConnector() {
   const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
+  const { locations } = useConfig();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
@@ -92,6 +94,14 @@ function CrdLayoutConnector() {
     [pathname, search]
   );
 
+  const footerLinks = useMemo(
+    () =>
+      locations
+        ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
+        : undefined,
+    [locations]
+  );
+
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);
   };
@@ -116,6 +126,7 @@ function CrdLayoutConnector() {
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
+        footerLinks={footerLinks}
       >
         <Outlet />
       </CrdLayout>

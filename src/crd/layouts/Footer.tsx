@@ -1,7 +1,7 @@
 import { Check, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
-import type { CrdLanguageOption } from '@/crd/layouts/types';
+import type { CrdFooterLinks, CrdLanguageOption } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import {
   DropdownMenu,
@@ -11,13 +11,24 @@ import {
 } from '@/crd/primitives/dropdown-menu';
 
 type FooterProps = {
+  links?: CrdFooterLinks;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   onLanguageChange: (code: string) => void;
+  onSupportClick?: () => void;
   className?: string;
 };
 
-export function Footer({ languages, currentLanguage, onLanguageChange, className }: FooterProps) {
+const linkClassName = 'hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm';
+
+export function Footer({
+  links,
+  languages,
+  currentLanguage,
+  onLanguageChange,
+  onSupportClick,
+  className,
+}: FooterProps) {
   const { t } = useTranslation('crd');
 
   const currentLabel = languages.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
@@ -35,39 +46,41 @@ export function Footer({ languages, currentLanguage, onLanguageChange, className
           aria-label="Footer"
           className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 text-sm text-muted-foreground"
         >
-          <a
-            href="/terms"
-            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          >
-            {t('footer.terms')}
-          </a>
-          <a
-            href="/privacy"
-            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          >
-            {t('footer.privacy')}
-          </a>
-          <a
-            href="/security"
-            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          >
-            {t('footer.security')}
-          </a>
+          {links?.terms && (
+            <a href={links.terms} className={linkClassName}>
+              {t('footer.terms')}
+            </a>
+          )}
+          {links?.privacy && (
+            <a href={links.privacy} className={linkClassName}>
+              {t('footer.privacy')}
+            </a>
+          )}
+          {links?.security && (
+            <a href={links.security} className={linkClassName}>
+              {t('footer.security')}
+            </a>
+          )}
 
           <AlkemioLogo aria-hidden="true" className="w-5 h-5 opacity-40 hidden sm:block" />
 
-          <a
-            href="/support"
-            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          >
-            {t('footer.support')}
-          </a>
-          <a
-            href="/about"
-            className="hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-          >
-            {t('footer.about')}
-          </a>
+          {onSupportClick ? (
+            <button
+              type="button"
+              onClick={onSupportClick}
+              className={cn(
+                linkClassName,
+                'cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-sm'
+              )}
+            >
+              {t('footer.support')}
+            </button>
+          ) : null}
+          {links?.about && (
+            <a href={links.about} className={linkClassName}>
+              {t('footer.about')}
+            </a>
+          )}
         </nav>
 
         {/* Language selector */}
