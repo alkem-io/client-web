@@ -1,4 +1,4 @@
-import { Component, type ErrorInfo, type ReactNode, Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -133,42 +133,6 @@ function CrdLayoutConnector() {
   );
 }
 
-// Error boundary to catch CRD rendering errors gracefully
-class CrdErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('CRD layout error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h2>Something went wrong loading this page.</h2>
-          <p>
-            <a href="/" style={{ color: '#09BCD4' }}>
-              Return home
-            </a>
-          </p>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
 export function CrdLayoutWrapper() {
-  return (
-    <CrdErrorBoundary>
-      <CrdLayoutConnector />
-    </CrdErrorBoundary>
-  );
+  return <CrdLayoutConnector />;
 }

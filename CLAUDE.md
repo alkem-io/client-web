@@ -76,7 +76,7 @@ pnpm serve:dev
   - `ui/`: App-specific layouts (footer, navigation, `CrdLayoutWrapper`)
   - `constants/`: Environment helpers and constants
 
-- **`src/new-ui`**: Page-level integration for CRD-migrated pages
+- **`src/main/crdPages`**: Page-level integration for CRD-migrated pages
   - Contains page components, data mappers, hooks, and GraphQL queries for pages using the CRD design system
   - Imports from `@/crd/`, `@/domain/`, `@/core/` — **MUST NOT import from `@mui/*` or `@emotion/*`**
   - Organized as `topLevelPages/<pageName>/` mirroring `src/main/topLevelPages/` structure
@@ -128,7 +128,7 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Reusable UI components go under `src/core/ui`
 - App-specific layouts go under `src/main/ui`
 - Admin pages go under `src/main/admin`
-- CRD page integration goes under `src/new-ui/topLevelPages/<pageName>/`
+- CRD page integration goes under `src/main/crdPages/<pageName>/`
 
 ## GraphQL Workflow
 
@@ -314,7 +314,7 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 - `lib/` — `cn()` utility
 - `hooks/` — UI-only hooks (`useMediaQuery`)
 
-Consumers in `src/new-ui/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
+Consumers in `src/main/crdPages/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
 
 ## CSS Isolation Strategy
 
@@ -323,7 +323,7 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 **Isolation mechanisms:**
 - `.crd-root` class scopes Tailwind preflight/resets to CRD pages only — MUI pages outside `.crd-root` are unaffected
 - MUI `ThemeProvider` wraps the entire app (including CRD routes) but is unused by CRD components — they never call `useTheme()` or import MUI
-- `src/new-ui/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
+- `src/main/crdPages/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
 
 **The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
 

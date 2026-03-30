@@ -264,12 +264,12 @@ UI-only React hooks.
 
 ## How Consumers Use These Components
 
-Components in `src/crd/` are consumed by integration layers in `src/new-ui/`, `src/domain/`, or `src/main/`. The consumer handles data fetching, mapping, and wiring behavior; the crd component handles rendering.
+Components in `src/crd/` are consumed by integration layers in `src/main/crdPages/`, `src/domain/`, or `src/main/`. The consumer handles data fetching, mapping, and wiring behavior; the crd component handles rendering.
 
-**Primary pattern — CRD page integration via `src/new-ui/`:**
+**Primary pattern — CRD page integration via `src/main/crdPages/`:**
 
 ```typescript
-// src/new-ui/topLevelPages/spaces/SpaceExplorerPage.tsx (INTEGRATION — in new-ui)
+// src/main/crdPages/spaces/SpaceExplorerPage.tsx (INTEGRATION — in crdPages)
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import { mapSpacesToCardDataList } from './spaceCardDataMapper';
 

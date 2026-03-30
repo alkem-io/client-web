@@ -11,7 +11,7 @@ TopLevelRoutes.tsx
                                           └── <Outlet /> → Page component
 ```
 
-Page-level integration for CRD-migrated pages lives in `src/new-ui/topLevelPages/<pageName>/`. This is separate from `src/main/topLevelPages/` which retains the original MUI page implementations. Files in `src/new-ui/` MUST NOT import from `@mui/*` or `@emotion/*`.
+Page-level integration for CRD-migrated pages lives in `src/main/crdPages/<pageName>/`. This is separate from `src/main/topLevelPages/` which retains the original MUI page implementations. Files in `src/main/crdPages/` MUST NOT import from `@mui/*` or `@emotion/*`.
 
 ## Steps to Migrate a Page
 
@@ -33,18 +33,18 @@ Create presentational components in `src/crd/components/<domain>/`. Rules:
 
 ### 3. Create Data Mapper
 
-Create `src/new-ui/topLevelPages/<page>/dataMapper.ts` that maps GraphQL types to CRD component props. This is the **only file** where GraphQL types meet CRD view types.
+Create `src/main/crdPages/<page>/dataMapper.ts` that maps GraphQL types to CRD component props. This is the **only file** where GraphQL types meet CRD view types.
 
 ### 4. Create CRD View Wrapper
 
-Create `src/new-ui/topLevelPages/<page>/PageCrdView.tsx` that:
+Create `src/main/crdPages/<page>/PageCrdView.tsx` that:
 - Imports the CRD component from `src/crd/`
 - Calls the data mapper to transform props
 - Maps filter enums between MUI and CRD types
 
 ### 5. Create the Page Component
 
-Create a new page component in `src/new-ui/topLevelPages/<page>/PageDep.tsx` that:
+Create a new page component in `src/main/crdPages/<page>/PageDep.tsx` that:
 - Calls the existing data hook (can be copied from the MUI page or imported)
 - Renders the CRD view wrapper
 - Does NOT wrap in `TopLevelPageLayout` — the CRD layout shell (header/footer) is provided by `CrdLayoutWrapper` at the route level
@@ -56,7 +56,7 @@ The original MUI page in `src/main/topLevelPages/` stays untouched — it can be
 In `TopLevelRoutes.tsx`, move the route under the `<Route element={<CrdLayoutWrapper />}>` group. Lazy-load the new page using `lazyWithGlobalErrorHandler()`:
 
 ```typescript
-const MyPage = lazyWithGlobalErrorHandler(() => import('@/new-ui/topLevelPages/<page>/MyPage'));
+const MyPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/<page>/MyPage'));
 
 // Under CrdLayoutWrapper route group:
 <Route path="/<page>" element={
@@ -86,7 +86,7 @@ src/crd/components/space/
 ├── SpaceCard.tsx          # CRD presentational component
 └── SpaceExplorer.tsx      # CRD page-level composite
 
-src/new-ui/topLevelPages/spaces/
+src/main/crdPages/spaces/
 ├── SpaceExplorerPage.tsx       # Page entry — hook + data mapping + CRD SpaceExplorer
 ├── spaceCardDataMapper.ts      # Pure mapper functions
 ├── SpaceExplorerQueries.graphql # GraphQL queries

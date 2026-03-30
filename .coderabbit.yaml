@@ -16,6 +16,8 @@ reviews:
     - "!**/public/**"        # Exclude public assets
     - "!**/node_modules/**"  # Exclude dependencies
     - "!**/dist/**"          # Exclude build files
+    - "!prototype/**"        # Read-only design reference — never modified
+    - "!src/crd/app/**"      # Standalone CRD preview app with mock data
   path_instructions:
     - path: "**/*"
       instructions: |

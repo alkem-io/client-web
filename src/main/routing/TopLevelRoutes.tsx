@@ -24,7 +24,7 @@ const HomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/H
 const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
-const SpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/new-ui/topLevelPages/spaces/SpaceExplorerPage'));
+const SpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
 const InnovationLibraryPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
 );
