@@ -1,4 +1,5 @@
 import { onError } from '@apollo/client/link/error';
+import { useMemo, useRef } from 'react';
 import { useApm } from '@/core/analytics/apm/context';
 import { error as sentryError, TagCategoryValues } from '@/core/logging/sentry/log';
 
@@ -16,25 +17,36 @@ const getErrorMessage = (error: Error) => {
  */
 export const useErrorLoggerLink = (errorLogging = false) => {
   const apm = useApm();
+  const apmRef = useRef(apm);
+  apmRef.current = apm;
 
-  return onError(({ graphQLErrors, networkError }) => {
-    if (!errorLogging) {
-      return;
-    }
+  const errorLoggingRef = useRef(errorLogging);
+  errorLoggingRef.current = errorLogging;
 
-    const errors: Error[] = [];
-    if (graphQLErrors) {
-      errors.push(...(graphQLErrors as Error[]));
-    }
+  // onError() is an external library call the React Compiler cannot auto-memoize.
+  // Use the "latest ref" pattern: create the link once, always call the latest values.
+  return useMemo(
+    () =>
+      onError(({ graphQLErrors, networkError }) => {
+        if (!errorLoggingRef.current) {
+          return;
+        }
 
-    if (networkError) {
-      networkError.message = `[Network error]: ${networkError.message}`;
-      errors.push(networkError);
-    }
+        const errors: Error[] = [];
+        if (graphQLErrors) {
+          errors.push(...(graphQLErrors as Error[]));
+        }
 
-    errors.forEach(e => {
-      sentryError(e, { category: TagCategoryValues.SERVER, code: getErrorCode(e), label: getErrorMessage(e) });
-      apm?.captureError(e);
-    });
-  });
+        if (networkError) {
+          networkError.message = `[Network error]: ${networkError.message}`;
+          errors.push(networkError);
+        }
+
+        errors.forEach(e => {
+          sentryError(e, { category: TagCategoryValues.SERVER, code: getErrorCode(e), label: getErrorMessage(e) });
+          apmRef.current?.captureError(e);
+        });
+      }),
+    []
+  );
 };
