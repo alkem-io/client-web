@@ -1,6 +1,6 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Button, DialogContent } from '@mui/material';
-import { type MouseEventHandler, type PropsWithChildren, type ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { type MouseEventHandler, type PropsWithChildren, type ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
@@ -55,21 +55,18 @@ const PreviewContributorDialog = ({
 
   const references = profile?.references ?? [];
 
-  const links = useMemo(() => {
+  const links = (() => {
     return references.filter(reference => !isSocialNetworkSupported(reference.name));
-  }, [references]);
+  })();
 
-  const navigateToProfile: MouseEventHandler = useCallback(
-    e => {
-      if (profile?.url) {
-        e?.preventDefault();
-        // the navigation is handled here as with the router
-        // it's throwing errors due to rerenders
-        window.location.href = profile.url;
-      }
-    },
-    [profile?.url]
-  );
+  const navigateToProfile: MouseEventHandler = e => {
+    if (profile?.url) {
+      e?.preventDefault();
+      // the navigation is handled here as with the router
+      // it's throwing errors due to rerenders
+      window.location.href = profile.url;
+    }
+  };
 
   useEffect(() => {
     if (open && contributor?.id) {

@@ -41,6 +41,8 @@ const CreateEditTemplateDialogBase = ({
   const { t } = useTranslation();
   const [actionsPortalContainer, setActionsPortalContainer] = useState<HTMLElement | null>(null);
 
+  // Keep useCallback: ref callback that calls setState. Without stable reference, React
+  // re-invokes with null then node on every render → setActionsPortalContainer oscillates → infinite loop.
   const handleActionsPortalRef = useCallback((node: HTMLDivElement | null) => {
     setActionsPortalContainer(node);
   }, []);

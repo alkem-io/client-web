@@ -75,6 +75,7 @@ const TransferCalloutSection = () => {
   return (
     <PageContentBlock>
       <BlockTitle>{t(`${T_PREFIX}.sectionTitle`)}</BlockTitle>
+      <Caption>{t(`${T_PREFIX}.sectionDescription`)}</Caption>
       <Gutters row={true} disablePadding={true}>
         <PageContentColumn columns={6}>
           <PageContentBlockSeamless disablePadding={true}>
@@ -88,7 +89,7 @@ const TransferCalloutSection = () => {
                       placeholder={t(`${T_PREFIX}.calloutUrlPlaceholder`)}
                       fullWidth={true}
                     />
-                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
+                    <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
@@ -103,19 +104,19 @@ const TransferCalloutSection = () => {
           {callout && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.calloutInfo`)}</BlockTitle>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{callout.framing.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.description`)}</BlockSectionTitle>
                 <span>{callout.framing.profile.description}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.createdBy`)}</BlockSectionTitle>
                 <span>{callout.createdBy?.profile?.displayName ?? t(`${T_PREFIX}.unknown`)}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.contributions`)}</BlockSectionTitle>
                 <span>
                   {t(`${T_PREFIX}.contributionsSummary`, {
@@ -142,7 +143,7 @@ const TransferCalloutSection = () => {
                       placeholder={t(`${T_PREFIX}.targetSpaceUrlPlaceholder`)}
                       fullWidth={true}
                     />
-                    <FormikSubmitButtonPure formik={formik}>{t(`${T_PREFIX}.lookup`)}</FormikSubmitButtonPure>
+                    <FormikSubmitButtonPure formik={formik}>{t('common.search')}</FormikSubmitButtonPure>
                   </Gutters>
                 </Form>
               )}
@@ -157,16 +158,16 @@ const TransferCalloutSection = () => {
           {space && (
             <PageContentBlock>
               <BlockTitle>{t(`${T_PREFIX}.targetSpaceInfo`)}</BlockTitle>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t('common.name')}</BlockSectionTitle>
                 <span>{space.about.profile.displayName}</span>
               </Gutters>
-              <Gutters disablePadding={true}>
+              <Gutters row={true} disablePadding={true} alignItems="baseline">
                 <BlockSectionTitle>{t(`${T_PREFIX}.level`)}</BlockSectionTitle>
                 <span>{space.level}</span>
               </Gutters>
               {calloutsSetId && (
-                <Gutters disablePadding={true}>
+                <Gutters row={true} disablePadding={true} alignItems="baseline">
                   <BlockSectionTitle>{t(`${T_PREFIX}.calloutsSetId`)}</BlockSectionTitle>
                   <span>{calloutsSetId}</span>
                 </Gutters>

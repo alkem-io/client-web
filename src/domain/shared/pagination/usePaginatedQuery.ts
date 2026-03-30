@@ -1,6 +1,5 @@
 import type { ApolloError } from '@apollo/client';
 import type { LazyQueryHookOptions, QueryHookOptions, QueryResult, QueryTuple } from '@apollo/client/react/types/types';
-import { useCallback } from 'react';
 import type { PageInfo } from '@/core/apollo/generated/graphql-schema';
 
 export interface PaginationVariables {
@@ -109,26 +108,23 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
 
   const hasMore = data && getPageInfo(data)?.hasNextPage;
 
-  const fetchMore = useCallback(
-    async (itemsNumber = pageSize) => {
-      if (!data) {
-        return;
-      }
+  const fetchMore = async (itemsNumber = pageSize) => {
+    if (!data) {
+      return;
+    }
 
-      await fetchMoreRaw({
-        variables: {
-          ...options.variables,
-          first: itemsNumber,
-          after: getPageInfo(data)?.endCursor,
-        },
-      });
-    },
-    [data, fetchMoreRaw, getPageInfo, pageSize]
-  );
+    await fetchMoreRaw({
+      variables: {
+        ...options.variables,
+        first: itemsNumber,
+        after: getPageInfo(data)?.endCursor,
+      },
+    });
+  };
 
-  const loadQuery = useCallback(async () => {
+  const loadQuery = async () => {
     await loadQueryRaw();
-  }, [loadQueryRaw]);
+  };
 
   return {
     data,

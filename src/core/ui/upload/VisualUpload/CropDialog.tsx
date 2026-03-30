@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogContent, type DialogProps, FormHelperText, Link } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { type Crop } from 'react-image-crop';
 import * as yup from 'yup';
@@ -70,34 +70,31 @@ export const CropDialog = ({ file, onSave, config, hideAltText, ...rest }: CropD
     setCrop(crop);
   };
 
-  const onLoad = useCallback(
-    (img: HTMLImageElement) => {
-      imgRef.current = img;
+  const onLoad = (img: HTMLImageElement) => {
+    imgRef.current = img;
 
-      const aspect = aspectRatio;
-      // calculate in ration
-      const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
-      const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
+    const aspect = aspectRatio;
+    // calculate in ration
+    const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
+    const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
 
-      // calculate in pixels
-      const width = img.width * widthRatio;
-      const height = img.height * heightRatio;
+    // calculate in pixels
+    const width = img.width * widthRatio;
+    const height = img.height * heightRatio;
 
-      const y = ((1 - heightRatio) / 2) * img.height;
-      const x = ((1 - widthRatio) / 2) * img.width;
+    const y = ((1 - heightRatio) / 2) * img.height;
+    const x = ((1 - widthRatio) / 2) * img.width;
 
-      setCrop({
-        unit: 'px',
-        width,
-        height,
-        x,
-        y,
-      });
+    setCrop({
+      unit: 'px',
+      width,
+      height,
+      x,
+      y,
+    });
 
-      return false; // Return false if you set crop state in here.
-    },
-    [aspectRatio]
-  );
+    return false; // Return false if you set crop state in here.
+  };
 
   useEffect(() => {
     const reader = new FileReader();
@@ -111,80 +108,74 @@ export const CropDialog = ({ file, onSave, config, hideAltText, ...rest }: CropD
     return () => reader.removeEventListener('load', loadFile);
   }, [file]);
 
-  const getCroppedImg = useCallback(
-    (image: HTMLImageElement, crop: Crop, fileName: string) => {
-      const canvas = document.createElement('canvas');
-      const pixelRatio = window.devicePixelRatio;
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-      const ctx = canvas.getContext('2d');
+  const getCroppedImg = (image: HTMLImageElement, crop: Crop, fileName: string) => {
+    const canvas = document.createElement('canvas');
+    const pixelRatio = window.devicePixelRatio;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    const ctx = canvas.getContext('2d');
 
-      if (!ctx) throw new Error('Can not create canvas context');
+    if (!ctx) throw new Error('Can not create canvas context');
 
-      canvas.width = crop.width * pixelRatio * scaleX;
-      canvas.height = crop.height * pixelRatio * scaleY;
+    canvas.width = crop.width * pixelRatio * scaleX;
+    canvas.height = crop.height * pixelRatio * scaleY;
 
-      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      ctx.imageSmoothingQuality = 'high';
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
 
-      ctx.drawImage(
-        image,
-        crop.x * scaleX,
-        crop.y * scaleY,
-        crop.width * scaleX,
-        crop.height * scaleY,
-        0,
-        0,
-        crop.width * scaleX,
-        crop.height * scaleY
-      );
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width * scaleX,
+      crop.height * scaleY
+    );
 
-      return new Promise<File>((resolve, reject) => {
-        canvas.toBlob(
-          blob => {
-            if (blob) {
-              try {
-                // Workaround for an issue importing react-image-file-resizer using VITE
-                // @ts-expect-error https://github.com/onurzorluer/react-image-file-resizer/issues/68
-                const resizer: typeof Resizer = Resizer.default ?? Resizer;
-                resizer.imageFileResizer(
-                  blob,
-                  maxWidth,
-                  maxHeight,
-                  'JPEG',
-                  100,
-                  0,
-                  uri => {
-                    resolve(new File([uri as Blob], fileName, { type: 'image/jpeg' }));
-                  },
-                  'blob',
-                  minWidth,
-                  minHeight
-                );
-              } catch (err) {
-                reject(err);
-              }
+    return new Promise<File>((resolve, reject) => {
+      canvas.toBlob(
+        blob => {
+          if (blob) {
+            try {
+              // Workaround for an issue importing react-image-file-resizer using VITE
+              // @ts-expect-error https://github.com/onurzorluer/react-image-file-resizer/issues/68
+              const resizer: typeof Resizer = Resizer.default ?? Resizer;
+              resizer.imageFileResizer(
+                blob,
+                maxWidth,
+                maxHeight,
+                'JPEG',
+                100,
+                0,
+                uri => {
+                  resolve(new File([uri as Blob], fileName, { type: 'image/jpeg' }));
+                },
+                'blob',
+                minWidth,
+                minHeight
+              );
+            } catch (err) {
+              reject(err);
             }
-          },
-          'image/jpeg',
-          1
-        );
-      });
-    },
-    [maxHeight, maxWidth, minHeight, minWidth]
-  );
+          }
+        },
+        'image/jpeg',
+        1
+      );
+    });
+  };
 
-  const handleClose = useCallback(() => rest.onClose?.({}, 'escapeKeyDown'), [rest]);
+  const handleClose = () => rest.onClose?.({}, 'escapeKeyDown');
 
-  const handleSave = useCallback(
-    async (values: CropDialogFormValues) => {
-      if (!imgRef.current || !crop) return;
-      const newImage = await getCroppedImg(imgRef.current, crop, 'newFile.jpg');
-      if (onSave) await onSave({ file: newImage, altText: values.altText });
-      handleClose();
-    },
-    [crop, getCroppedImg, onSave, handleClose]
-  );
+  const handleSave = async (values: CropDialogFormValues) => {
+    if (!imgRef.current || !crop) return;
+    const newImage = await getCroppedImg(imgRef.current, crop, 'newFile.jpg');
+    if (onSave) await onSave({ file: newImage, altText: values.altText });
+    handleClose();
+  };
 
   return (
     <Dialog

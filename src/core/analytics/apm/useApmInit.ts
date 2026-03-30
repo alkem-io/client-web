@@ -1,5 +1,4 @@
 import { init as initApm, type UserObject } from '@elastic/apm-rum';
-import { useCallback, useMemo } from 'react';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -48,7 +47,7 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
   // prevent console errors in dev mode
   const isInitAllowed = import.meta.env.MODE === 'production';
 
-  return useCallback(() => {
+  return () => {
     if (!endpoint || !environment || !isInitAllowed) {
       return undefined;
     }
@@ -67,74 +66,68 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
     apmInit.setCustomContext(customContext);
 
     return apmInit;
-  }, [endpoint, rumEnabled, environment, userObject, customContext]);
+  };
 };
 
 const useGetOrSetApmCookie = (): string | undefined => {
   // TODO Refactor to store data in localStorage, remove react-cookie npm
   const [cookies, setCookie] = useCookies([APM_CLIENT_TRACK_COOKIE, ALKEMIO_COOKIE_NAME]);
 
-  return useMemo(() => {
-    const cookieId = cookies[APM_CLIENT_TRACK_COOKIE];
+  const cookieId = cookies[APM_CLIENT_TRACK_COOKIE];
 
-    if (cookieId) {
-      return cookieId;
-    }
-    const acceptedCookies: string = cookies[ALKEMIO_COOKIE_NAME];
-    if (!acceptedCookies || !acceptedCookies.includes(AlkemioCookieTypes.analysis)) {
-      return undefined;
-    }
+  if (cookieId) {
+    return cookieId;
+  }
+  const acceptedCookies: string = cookies[ALKEMIO_COOKIE_NAME];
+  if (!acceptedCookies || !acceptedCookies.includes(AlkemioCookieTypes.analysis)) {
+    return undefined;
+  }
 
-    const userApmId = `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`;
-    setCookie(APM_CLIENT_TRACK_COOKIE, userApmId, {
-      expires: new Date(APM_CLIENT_TRACK_COOKIE_EXPIRY),
-      path: '/',
-      sameSite: 'strict',
-    });
+  const userApmId = `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`;
+  setCookie(APM_CLIENT_TRACK_COOKIE, userApmId, {
+    expires: new Date(APM_CLIENT_TRACK_COOKIE_EXPIRY),
+    path: '/',
+    sameSite: 'strict',
+  });
 
-    return userApmId;
-  }, [cookies, setCookie]);
+  return userApmId;
 };
 
 const useUserObject = (user: Identifiable | undefined) => {
   const cookieId = useGetOrSetApmCookie() ?? APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED;
 
-  return useMemo<UserObject>(() => {
-    if (user) {
-      return { id: user.id };
-    }
+  if (user) {
+    return { id: user.id } satisfies UserObject;
+  }
 
-    return { id: cookieId };
-  }, [user?.id, cookieId]);
+  return { id: cookieId } satisfies UserObject;
 };
 const useCustomContext = (user: CurrentUserModel | undefined) => {
   const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
 
-  return useMemo<ApmCustomContext>(() => {
-    const context: ApmCustomContext = {};
+  const context: ApmCustomContext = {};
 
-    if (!userGeoLoading) {
-      context.location = {
-        lat: userGeoData?.latitude ?? 0,
-        lon: userGeoData?.longitude ?? 0,
-      };
-    }
+  if (!userGeoLoading) {
+    context.location = {
+      lat: userGeoData?.latitude ?? 0,
+      lon: userGeoData?.longitude ?? 0,
+    };
+  }
 
-    if (userGeoError) {
-      logError(userGeoError);
-    }
+  if (userGeoError) {
+    logError(userGeoError);
+  }
 
-    if (user) {
-      context.authenticated = user.isAuthenticated;
-      context.domain = user.userModel?.email.split('@')?.[1];
-    }
+  if (user) {
+    context.authenticated = user.isAuthenticated;
+    context.domain = user.userModel?.email.split('@')?.[1];
+  }
 
-    context.screen = getScreenInfo();
-    context.window = getWindowSize();
-    context.language = getLanguage();
+  context.screen = getScreenInfo();
+  context.window = getWindowSize();
+  context.language = getLanguage();
 
-    return context;
-  }, [userGeoData, userGeoLoading, userGeoError, user, getWindowSize, getScreenInfo]);
+  return context;
 };
 
 const getWindowSize = () => {

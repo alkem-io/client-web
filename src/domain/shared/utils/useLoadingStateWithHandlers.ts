@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import useLoadingState, { type Callback, type Provided } from './useLoadingState';
 
 interface Handlers {
@@ -11,18 +10,15 @@ const useLoadingStateWithHandlers = <Args extends unknown[], Result>(
 ): Provided<Args, Result | undefined> => {
   const [callback, ...rest] = useLoadingState(originalCallback);
 
-  const callbackWithHandlers = useCallback(
-    async (...args: Args) => {
-      try {
-        return await callback(...args);
-      } catch (error) {
-        if (error instanceof Error) {
-          onError?.(error);
-        }
+  const callbackWithHandlers = async (...args: Args) => {
+    try {
+      return await callback(...args);
+    } catch (error) {
+      if (error instanceof Error) {
+        onError?.(error);
       }
-    },
-    [callback, onError]
-  );
+    }
+  };
 
   return [callbackWithHandlers, ...rest];
 };

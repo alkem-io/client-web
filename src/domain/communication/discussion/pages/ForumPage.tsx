@@ -1,6 +1,5 @@
 import { ForumOutlined } from '@mui/icons-material';
 import { compact } from 'lodash-es';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ForumDiscussionUpdatedDocument, usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -93,29 +92,26 @@ export const ForumPage = ({
 
   const { discussionMapper } = useDiscussionMapper(compact(data?.platform.forum.discussions?.map(d => d.createdBy)));
 
-  const discussions = useMemo(() => {
+  const discussions = (() => {
     return (
       data?.platform.forum.discussions
         ?.filter(d => categorySelected === ALL_CATEGORIES || d.category === categorySelected)
         .map<Discussion>(discussionMapper) ?? []
     );
-  }, [data, discussionMapper, categorySelected]);
+  })();
 
-  const categories = useMemo(
-    () => [
-      {
-        id: ALL_CATEGORIES,
-        title: t('common.show-all'),
-        icon: <DiscussionIcon category={ALL_CATEGORIES} />,
-      },
-      ...(validCategories?.map(id => ({
-        id: id,
-        title: t(`common.enums.discussion-category.${id}` as const),
-        icon: <DiscussionIcon category={id} />,
-      })) ?? []),
-    ],
-    [validCategories, t]
-  );
+  const categories = [
+    {
+      id: ALL_CATEGORIES,
+      title: t('common.show-all'),
+      icon: <DiscussionIcon category={ALL_CATEGORIES} />,
+    },
+    ...(validCategories?.map(id => ({
+      id: id,
+      title: t(`common.enums.discussion-category.${id}` as const),
+      icon: <DiscussionIcon category={id} />,
+    })) ?? []),
+  ];
 
   const { isLargeScreen } = useScreenSize();
   const loading = loadingDiscussions || loadingUser;

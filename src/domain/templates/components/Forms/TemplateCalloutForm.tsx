@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import CalloutForm from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
 import { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm.validation.schema';
@@ -31,71 +30,63 @@ const validator = {
 const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFormProps) => {
   const createMode = !template.id;
 
-  const initialValues = useMemo<TemplateCalloutFormSubmittedValues>(
-    () => ({
-      profile: mapTemplateProfileToUpdateProfileInput(template.profile),
-      callout: {
-        framing: {
-          profile: {
-            id: template.callout?.framing?.profile?.id ?? '',
-            displayName: template.callout?.framing?.profile?.displayName ?? '',
-            description: template.callout?.framing?.profile?.description ?? '',
-            references: template.callout?.framing?.profile?.references ?? [],
-            tagsets: template.callout?.framing.profile.tagsets ?? [EmptyTagset],
-          },
-          type: template.callout?.framing?.type ?? CalloutFramingType.None,
-          whiteboard: template.callout?.framing?.whiteboard
-            ? {
-                profile: {
-                  displayName: template.callout.framing.whiteboard.profile.displayName,
-                },
-                previewImages: [], // This is not going to work for now :(
-                content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
-                previewSettings:
-                  template.callout.framing.whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
-              }
-            : undefined,
-          memo: template.callout?.framing?.memo
-            ? {
-                profile: {
-                  displayName: template.callout.framing.memo.profile.displayName,
-                },
-                markdown: template.callout.framing.memo.markdown,
-              }
-            : undefined,
-          link: template.callout?.framing?.link
-            ? {
-                id: template.callout.framing.link.id ?? '',
-                uri: template.callout.framing.link.uri,
-                profile: {
-                  displayName: template.callout.framing.link.profile.displayName,
-                },
-              }
-            : undefined,
-          mediaGallery: template.callout?.framing?.mediaGallery
-            ? {
-                id: template.callout.framing.mediaGallery.id ?? '',
-                visuals: template.callout.framing.mediaGallery.visuals ?? [],
-              }
-            : undefined,
+  const initialValues = {
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
+
+    callout: {
+      framing: {
+        profile: {
+          id: template.callout?.framing?.profile?.id ?? '',
+          displayName: template.callout?.framing?.profile?.displayName ?? '',
+          description: template.callout?.framing?.profile?.description ?? '',
+          references: template.callout?.framing?.profile?.references ?? [],
+          tagsets: template.callout?.framing.profile.tagsets ?? [EmptyTagset],
         },
-        contributionDefaults: {
-          defaultDisplayName: template.callout?.contributionDefaults?.defaultDisplayName ?? '',
-          postDescription: template.callout?.contributionDefaults?.postDescription ?? '',
-          whiteboardContent: template.callout?.contributionDefaults?.whiteboardContent ?? '',
-        },
-        settings: mapCalloutSettingsModelToCalloutSettingsFormValues(
-          template.callout?.settings ?? DefaultCalloutSettings
-        ),
+        type: template.callout?.framing?.type ?? CalloutFramingType.None,
+        whiteboard: template.callout?.framing?.whiteboard
+          ? {
+              profile: {
+                displayName: template.callout.framing.whiteboard.profile.displayName,
+              },
+              previewImages: [], // This is not going to work for now :(
+              content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
+              previewSettings: template.callout.framing.whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
+            }
+          : undefined,
+        memo: template.callout?.framing?.memo
+          ? {
+              profile: {
+                displayName: template.callout.framing.memo.profile.displayName,
+              },
+              markdown: template.callout.framing.memo.markdown,
+            }
+          : undefined,
+        link: template.callout?.framing?.link
+          ? {
+              id: template.callout.framing.link.id ?? '',
+              uri: template.callout.framing.link.uri,
+              profile: {
+                displayName: template.callout.framing.link.profile.displayName,
+              },
+            }
+          : undefined,
+        mediaGallery: template.callout?.framing?.mediaGallery
+          ? {
+              id: template.callout.framing.mediaGallery.id ?? '',
+              visuals: template.callout.framing.mediaGallery.visuals ?? [],
+            }
+          : undefined,
       },
-    }),
-    [
-      template,
-      mapTemplateProfileToUpdateProfileInput,
-      DefaultCalloutSettings,
-      mapCalloutSettingsModelToCalloutSettingsFormValues,
-    ]
-  );
+      contributionDefaults: {
+        defaultDisplayName: template.callout?.contributionDefaults?.defaultDisplayName ?? '',
+        postDescription: template.callout?.contributionDefaults?.postDescription ?? '',
+        whiteboardContent: template.callout?.contributionDefaults?.whiteboardContent ?? '',
+      },
+      settings: mapCalloutSettingsModelToCalloutSettingsFormValues(
+        template.callout?.settings ?? DefaultCalloutSettings
+      ),
+    },
+  };
 
   return (
     <TemplateFormBase

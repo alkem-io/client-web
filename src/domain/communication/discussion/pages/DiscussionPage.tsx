@@ -1,7 +1,7 @@
 import { ForumOutlined } from '@mui/icons-material';
 import { Skeleton } from '@mui/material';
 import { compact } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformDiscussionQuery,
@@ -24,7 +24,6 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
-import type { Discussion } from '../models/Discussion';
 import DiscussionView from '../views/DiscussionView';
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 
@@ -48,37 +47,33 @@ export const DiscussionPage = ({ discussionId, loading }: { discussionId: string
     compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.comments.messages?.map(c => c.sender?.id))])
   );
 
-  const discussion = useMemo<Discussion | undefined>(
-    () =>
-      rawDiscussion
-        ? {
-            id: rawDiscussion.id,
-            url: rawDiscussion.profile.url,
-            title: rawDiscussion.profile.displayName,
-            description: rawDiscussion.profile.description,
-            category: rawDiscussion.category,
-            myPrivileges: rawDiscussion.authorization?.myPrivileges,
-            author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
-            authors: authors.authors ?? [],
-            createdAt: rawDiscussion.timestamp ? new Date(rawDiscussion.timestamp) : undefined,
-            comments: {
-              id: rawDiscussion.comments.id,
-              messages:
-                rawDiscussion.comments.messages?.map<Message>(m => ({
-                  id: m.id,
-                  message: m.message,
-                  author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
-                  createdAt: new Date(m.timestamp),
-                  threadID: m.threadID,
-                  reactions: m.reactions,
-                })) ?? [],
-              messagesCount: rawDiscussion.comments.messagesCount,
-              myPrivileges: rawDiscussion.comments.authorization?.myPrivileges,
-            },
-          }
-        : undefined,
-    [rawDiscussion, authors]
-  );
+  const discussion = rawDiscussion
+    ? {
+        id: rawDiscussion.id,
+        url: rawDiscussion.profile.url,
+        title: rawDiscussion.profile.displayName,
+        description: rawDiscussion.profile.description,
+        category: rawDiscussion.category,
+        myPrivileges: rawDiscussion.authorization?.myPrivileges,
+        author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
+        authors: authors.authors ?? [],
+        createdAt: rawDiscussion.timestamp ? new Date(rawDiscussion.timestamp) : undefined,
+        comments: {
+          id: rawDiscussion.comments.id,
+          messages:
+            rawDiscussion.comments.messages?.map<Message>(m => ({
+              id: m.id,
+              message: m.message,
+              author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
+              createdAt: new Date(m.timestamp),
+              threadID: m.threadID,
+              reactions: m.reactions,
+            })) ?? [],
+          messagesCount: rawDiscussion.comments.messagesCount,
+          myPrivileges: rawDiscussion.comments.authorization?.myPrivileges,
+        },
+      }
+    : undefined;
 
   const { postMessage, postReply } = usePostMessageMutations({
     roomId: discussion?.comments.id,

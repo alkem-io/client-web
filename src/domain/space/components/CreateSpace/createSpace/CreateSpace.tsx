@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { info, TagCategoryValues } from '@/core/logging/sentry/log';
 import useNavigate from '@/core/routing/useNavigate';
@@ -56,50 +55,47 @@ export const CreateSpace = ({ open = false, onClose, accountId, onSpaceCreated }
     skip: !open || !destinationAccountId,
   });
 
-  const handleCreate = useCallback(
-    async (value: SpaceFormValues) => {
-      const accountId = ensurePresence(destinationAccountId, 'Account ID');
-      const licensePlanId = ensurePresence(availablePlans[0]?.id, '', t('createSpace.license.noPlansError'));
+  const handleCreate = async (value: SpaceFormValues) => {
+    const accountId = ensurePresence(destinationAccountId, 'Account ID');
+    const licensePlanId = ensurePresence(availablePlans[0]?.id, '', t('createSpace.license.noPlansError'));
 
-      const result = await createSpace({
-        accountId,
-        nameId: value.nameId!, // ensured by form validation
-        licensePlanId,
-        about: {
-          profile: {
-            displayName: value.displayName,
-            tagline: value.tagline,
-            description: value.description,
-            visuals: value.visuals,
-            tags: value.tags,
-          },
-          why: value.why,
+    const result = await createSpace({
+      accountId,
+      nameId: value.nameId!, // ensured by form validation
+      licensePlanId,
+      about: {
+        profile: {
+          displayName: value.displayName,
+          tagline: value.tagline,
+          description: value.description,
+          visuals: value.visuals,
+          tags: value.tags,
         },
-        addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
-        spaceTemplateId: value.spaceTemplateId,
-      });
+        why: value.why,
+      },
+      addTutorialCallouts: value.addTutorialCallouts,
+      addCallouts: value.addCallouts,
+      spaceTemplateId: value.spaceTemplateId,
+    });
 
-      const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
-      const spaceId = ensurePresence(result?.id, 'Space ID');
+    const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
+    const spaceId = ensurePresence(result?.id, 'Space ID');
 
-      onClose?.();
+    onClose?.();
 
-      addSpaceWelcomeCache(spaceId);
+    addSpaceWelcomeCache(spaceId);
 
-      // Log Created new Space to sentry
-      info(`Space Created SpaceId:${spaceId}`, {
-        category: TagCategoryValues.SPACE_CREATION,
-        label: 'Space Created',
-      });
-      if (onSpaceCreated && result) {
-        onSpaceCreated(result);
-      } else {
-        navigate(spaceUrl);
-      }
-    },
-    [navigate, createSpace, destinationAccountId, onSpaceCreated, onClose, availablePlans]
-  );
+    // Log Created new Space to sentry
+    info(`Space Created SpaceId:${spaceId}`, {
+      category: TagCategoryValues.SPACE_CREATION,
+      label: 'Space Created',
+    });
+    if (onSpaceCreated && result) {
+      onSpaceCreated(result);
+    } else {
+      navigate(spaceUrl);
+    }
+  };
 
   if (!destinationAccountId) {
     // If no account we cannot create a space anywhere, so just return null

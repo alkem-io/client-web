@@ -2,7 +2,6 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Box, type BoxProps, MenuItem, Select, type SelectProps, styled } from '@mui/material';
 import dayjs, { type Dayjs } from 'dayjs';
 import { times } from 'lodash-es';
-import { useMemo } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 
 export interface AlkemioTimePickerProps
@@ -36,18 +35,14 @@ const AlkemioTimePicker = ({
     date && onChange?.(dayjs(date).toDate());
   };
 
-  const djsDate = useMemo(() => dayjs(value).startOf('day'), [value]);
+  const djsDate = dayjs(value).startOf('day');
 
-  const timeSlots = useMemo(
-    () =>
-      times(24).flatMap(h => [
-        djsDate.set('hour', h).set('minute', 0),
-        djsDate.set('hour', h).set('minute', 15),
-        djsDate.set('hour', h).set('minute', 30),
-        djsDate.set('hour', h).set('minute', 45),
-      ]),
-    [djsDate]
-  );
+  const timeSlots = times(24).flatMap(h => [
+    djsDate.set('hour', h).set('minute', 0),
+    djsDate.set('hour', h).set('minute', 15),
+    djsDate.set('hour', h).set('minute', 30),
+    djsDate.set('hour', h).set('minute', 45),
+  ]);
 
   return (
     <Styles {...containerProps}>

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
@@ -47,10 +46,10 @@ export const UserAdminProfilePage = () => {
     },
   });
 
-  const editMode = useMemo(() => {
+  const editMode = (() => {
     if (data?.lookup.user?.id === currentUser?.id) return EditMode.edit;
     return EditMode.readOnly;
-  }, [data, currentUser]);
+  })();
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 

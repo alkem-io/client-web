@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
 import AutomaticOverflowGradient from '../overflow/AutomaticOverflowGradient';
@@ -44,14 +44,11 @@ const ExpandableMarkdown = ({
   const isCollapsed = state === 'detecting' || state === 'collapsed';
   const maxHeight = isCollapsed ? gutters(maxHeightGutters) : undefined;
 
-  const handleOverflowChange = useCallback(
-    (isOverflowing: boolean) => {
-      if (state === 'detecting') {
-        setState(isOverflowing ? (defaultCollapsed ? 'collapsed' : 'expanded') : 'no-overflow');
-      }
-    },
-    [state, defaultCollapsed]
-  );
+  const handleOverflowChange = (isOverflowing: boolean) => {
+    if (state === 'detecting') {
+      setState(isOverflowing ? (defaultCollapsed ? 'collapsed' : 'expanded') : 'no-overflow');
+    }
+  };
 
   return (
     <>

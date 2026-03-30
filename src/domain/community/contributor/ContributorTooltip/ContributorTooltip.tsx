@@ -1,5 +1,5 @@
 import { Tooltip, type TooltipProps } from '@mui/material';
-import { type ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import { useContributorTooltipLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
@@ -42,7 +42,7 @@ const ContributorTooltip = ({
     }
   };
 
-  const tooltipContent: ReactNode = useMemo(() => {
+  const tooltipContent: ReactNode = (() => {
     if (override) {
       return <>{override}</>;
     }
@@ -87,7 +87,7 @@ const ContributorTooltip = ({
         </GridProvider>
       </RootThemeProvider>
     );
-  }, [data, loading, override, contributorType, onContact]);
+  })();
 
   return (
     <Tooltip

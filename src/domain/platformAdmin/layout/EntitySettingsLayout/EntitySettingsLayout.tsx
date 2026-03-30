@@ -1,4 +1,4 @@
-import { type FC, type PropsWithChildren, type ReactNode, useCallback } from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import EntitySettingsTabs, { type TabDefinition } from './EntitySettingsTabs';
@@ -25,7 +25,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const getTabLabel = useCallback((section: SettingsSection) => t(`common.${section}` as const), [t]);
+  const getTabLabel = (section: SettingsSection) => t(`common.${section}` as const);
 
   return (
     <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>

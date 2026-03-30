@@ -9,7 +9,7 @@ import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
-import { type PropsWithChildren, type Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -114,28 +114,25 @@ const CollaborativeExcalidrawWrapper = ({
    * Validate file before adding to whiteboard.
    * Rejects invalid files with a user-visible notification.
    */
-  const handleGenerateIdForFile = useCallback(
-    async (file: File): Promise<string> => {
-      const validation = filesManager.validateFile(file);
-      if (!validation.ok) {
-        const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
-        const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
-        const message: string =
-          validation.reason === 'unsupportedMimeType'
-            ? t('callout.whiteboard.images.unsupportedType', params)
-            : t('callout.whiteboard.images.tooLarge', params);
-        notify(message, 'error');
-        throw new Error(message);
-      }
-      return filesManager.addNewFile(file);
-    },
-    [filesManager, t, notify]
-  );
+  const handleGenerateIdForFile = async (file: File): Promise<string> => {
+    const validation = filesManager.validateFile(file);
+    if (!validation.ok) {
+      const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
+      const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
+      const message: string =
+        validation.reason === 'unsupportedMimeType'
+          ? t('callout.whiteboard.images.unsupportedType', params)
+          : t('callout.whiteboard.images.tooLarge', params);
+      notify(message, 'error');
+      throw new Error(message);
+    }
+    return filesManager.addNewFile(file);
+  };
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
   const { userModel } = useCurrentUserContext();
-  const username = useMemo(() => {
+  const username = (() => {
     if (userModel?.profile?.displayName) {
       return userModel.profile.displayName;
     }
@@ -145,10 +142,12 @@ const CollaborativeExcalidrawWrapper = ({
     return guestSuffix ? `${guestName} ${guestSuffix}` : guestName;
     // getGuestName() is intentionally omitted from dependencies - guest names are set once per session
     // and don't change dynamically. Including it would cause unnecessary re-renders without benefit.
-  }, [t, userModel?.profile?.displayName]);
+  })();
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
+  // Keep useMemo: wraps debounce(). Without stable reference, debounce is recreated every render,
+  // resetting the timer and breaking the scroll-listener cleanup in useEffect.
   const debouncedRefresh = useMemo(
     () =>
       debounce(async () => {
@@ -166,21 +165,18 @@ const CollaborativeExcalidrawWrapper = ({
     };
   }, [debouncedRefresh]);
 
-  const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
-    () => ({
-      canvasActions: {
-        loadScene: FILE_IMPORT_ENABLED,
-        export: {
-          saveFileToDisk: SAVE_FILE_TO_DISK,
-        },
+  const UIOptions: ExcalidrawProps['UIOptions'] = {
+    canvasActions: {
+      loadScene: FILE_IMPORT_ENABLED,
+      export: {
+        saveFileToDisk: SAVE_FILE_TO_DISK,
       },
-    }),
-    []
-  );
+    },
+  };
 
   const { UIOptions: externalUIOptions, ...restOptions } = options;
 
-  const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
+  const mergedUIOptions = merge(UIOptions, externalUIOptions);
 
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason, isReadOnly }] = useCollab({
     username,
@@ -199,10 +195,6 @@ const CollaborativeExcalidrawWrapper = ({
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Online: ${isOnline}`,
       });
     },
-    onInitialize: collabApi => {
-      // eslint-disable-next-line react-compiler/react-compiler
-      combinedCollabApiRef.current = collabApi;
-    },
     onSceneInitChange: (initialized: boolean) => {
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
@@ -211,21 +203,20 @@ const CollaborativeExcalidrawWrapper = ({
     onIncomingCountdownTimer: excalidrawApi?.dispatchIncomingCountdownTimer,
   });
 
+  useEffect(() => {
+    // eslint-disable-next-line react-compiler/react-compiler -- ref mutation from useCombinedRefs; compiler cannot infer mutability
+    combinedCollabApiRef.current = collabApi;
+  }, [collabApi]);
+
   // Handler for broadcasting emoji reactions to collaborators
-  const handleRequestBroadcastEmojiReaction = useCallback(
-    (emoji: string, x: number, y: number) => {
-      return collabApi?.broadcastEmojiReaction?.(emoji, x, y);
-    },
-    [collabApi]
-  );
+  const handleRequestBroadcastEmojiReaction = (emoji: string, x: number, y: number) => {
+    return collabApi?.broadcastEmojiReaction?.(emoji, x, y);
+  };
 
   // Handler for broadcasting Countdown Timer to collaborators
-  const handleRequestBroadcastCountdownTimer = useCallback(
-    (remainingSeconds: number, startedBy: string, active: boolean) => {
-      return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
-    },
-    [collabApi]
-  );
+  const handleRequestBroadcastCountdownTimer = (remainingSeconds: number, startedBy: string, active: boolean) => {
+    return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
+  };
 
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     if (isReadOnly) {
@@ -267,13 +258,10 @@ const CollaborativeExcalidrawWrapper = ({
     }
   }, [excalidrawApi, whiteboard?.id, collaborationStartTime]);
 
-  const handleInitializeApi = useCallback(
-    (excalidrawApi: ExcalidrawImperativeAPI) => {
-      setExcalidrawApi(excalidrawApi);
-      actions.onInitApi?.(excalidrawApi);
-    },
-    [actions.onInitApi]
-  );
+  const handleInitializeApi = (excalidrawApi: ExcalidrawImperativeAPI) => {
+    setExcalidrawApi(excalidrawApi);
+    actions.onInitApi?.(excalidrawApi);
+  };
 
   const children = (
     <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>

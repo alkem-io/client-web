@@ -1,5 +1,5 @@
 import { Box, type SelectChangeEvent } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLatestContributionsGroupedQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -64,7 +64,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
     },
   });
 
-  const activities = useMemo(() => {
+  const activities = (() => {
     // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
     const updatedWhiteboards: Record<string, true> = {};
     const filteredActivities = data?.activityFeedGrouped.filter(activity => {
@@ -78,9 +78,9 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
     });
 
     return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
-  }, [data?.activityFeedGrouped]);
+  })();
 
-  const spaceOptions = useMemo<SpaceOption[]>(() => {
+  const spaceOptions = (() => {
     const spaces: SpaceOption[] =
       spaceMemberships?.map(space => ({
         value: space.id,
@@ -93,7 +93,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
     });
 
     return spaces;
-  }, [spaceMemberships, t]);
+  })();
 
   const renderActivities = () => {
     if (hasActivity) {

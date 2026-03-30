@@ -1,6 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
@@ -45,7 +45,7 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
   const handleSelectedCalloutChange = (calloutId: string) => (_event, isExpanded: boolean) =>
     setSelectedCallout(isExpanded ? calloutId : false);
 
-  const visibleCallouts = useMemo(() => {
+  const visibleCallouts = (() => {
     return callouts
       ?.filter(
         callout =>
@@ -54,7 +54,7 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
           callout.classification?.flowState?.tags.includes(selectedState)
       )
       .sort((a, b) => a.sortOrder - b.sortOrder);
-  }, [callouts, selectedState]);
+  })();
 
   return (
     <>

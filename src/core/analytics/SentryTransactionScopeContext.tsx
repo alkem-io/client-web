@@ -1,5 +1,5 @@
 import { isEqual, last } from 'lodash-es';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { setTransactionScope, setUserScope, type TransactionScope } from '@/core/logging/sentry/scope';
 import type { UserModel } from '@/domain/community/user/models/UserModel';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -42,7 +42,7 @@ export const SentryTransactionScopeContextProvider = ({ children }: PropsWithChi
     }
   };
 
-  const api = useMemo<TransactionScopeStack>(() => ({ push, pop }), []);
+  const api: TransactionScopeStack = { push, pop };
 
   return <TransactionScopeContext value={api}>{children}</TransactionScopeContext>;
 };

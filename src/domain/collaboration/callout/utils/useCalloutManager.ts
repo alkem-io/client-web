@@ -1,5 +1,4 @@
 import { useApolloClient } from '@apollo/client';
-import { useCallback } from 'react';
 import {
   CalloutFragmentDoc,
   useDeleteCalloutMutation,
@@ -22,43 +21,41 @@ export const useCalloutManager = (): useCalloutEditProvided => {
 
   const apolloClient = useApolloClient();
 
-  const handleVisibilityChange = useCallback(
-    async (callout: Identifiable, visibility: CalloutVisibility, sendNotification: boolean) => {
-      await updateCalloutVisibility({
-        variables: {
-          calloutData: { calloutID: callout.id, visibility, sendNotification },
-        },
-        optimisticResponse: () => {
-          const calloutFragment = apolloClient.readFragment({
-            id: `Callout:${callout}`,
-            fragment: CalloutFragmentDoc,
-            fragmentName: 'Callout',
-          });
+  const handleVisibilityChange = async (
+    callout: Identifiable,
+    visibility: CalloutVisibility,
+    sendNotification: boolean
+  ) => {
+    await updateCalloutVisibility({
+      variables: {
+        calloutData: { calloutID: callout.id, visibility, sendNotification },
+      },
+      optimisticResponse: () => {
+        const calloutFragment = apolloClient.readFragment({
+          id: `Callout:${callout.id}`,
+          fragment: CalloutFragmentDoc,
+          fragmentName: 'Callout',
+        });
 
-          return {
-            updateCalloutVisibility: {
-              ...calloutFragment,
-              visibility,
-            },
-          };
-        },
-      });
-    },
-    [updateCalloutVisibility]
-  );
+        return {
+          updateCalloutVisibility: {
+            ...calloutFragment,
+            visibility,
+          },
+        };
+      },
+    });
+  };
 
   const [deleteCallout] = useDeleteCalloutMutation({
     refetchQueries: ['CalloutsOnCalloutsSetUsingClassification'],
   });
 
-  const handleDeleteCallout = useCallback(
-    async (callout: Identifiable) => {
-      await deleteCallout({
-        variables: { calloutId: callout.id },
-      });
-    },
-    [deleteCallout]
-  );
+  const handleDeleteCallout = async (callout: Identifiable) => {
+    await deleteCallout({
+      variables: { calloutId: callout.id },
+    });
+  };
 
   return {
     changeCalloutVisibility: handleVisibilityChange,

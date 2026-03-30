@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { WithId } from '@/core/utils/WithId';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
@@ -81,18 +80,17 @@ const useCommunityMembersAsCardProps = (
     memberOrganizationsLimit = membersLimit,
   } = options;
 
-  const memberUsers: ContributorCardSquareProps[] | undefined = useMemo(
-    () => applyLimit(community?.memberUsers, memberUsersLimit)?.map(mapUserToContributorCardProps),
-    [community?.memberUsers, memberUsersLimit]
-  );
+  const memberUsers: ContributorCardSquareProps[] | undefined = applyLimit(
+    community?.memberUsers,
+    memberUsersLimit
+  )?.map(mapUserToContributorCardProps);
 
   const memberUsersCount = options.memberUsersCount ?? community?.memberUsers?.length;
 
-  const memberOrganizations: ContributorCardSquareProps[] | undefined = useMemo(
-    () =>
-      applyLimit(community?.memberOrganizations, memberOrganizationsLimit)?.map(mapOrganizationToContributorCardProps),
-    [community?.memberOrganizations, memberOrganizationsLimit]
-  );
+  const memberOrganizations: ContributorCardSquareProps[] | undefined = applyLimit(
+    community?.memberOrganizations,
+    memberOrganizationsLimit
+  )?.map(mapOrganizationToContributorCardProps);
 
   const memberOrganizationsCount = options.memberOrganizationsCount ?? community?.memberOrganizations?.length;
 

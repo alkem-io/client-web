@@ -84,7 +84,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
 
   useEffect(() => {
     setReturnUrl(returnUrl);
-  }, [returnUrl, setReturnUrl]);
+  }, [returnUrl]);
 
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {

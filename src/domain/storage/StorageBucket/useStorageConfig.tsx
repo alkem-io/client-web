@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   useAccountStorageConfigQuery,
   useCalloutPostStorageConfigQuery,
@@ -211,20 +210,17 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     accountContributorStorageConfigData?.lookup.account?.storageAggregator.directStorageBucket ??
     platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
 
-  return useMemo(
-    () => ({
-      storageConfig: storageConfig
-        ? {
-            storageBucketId: storageConfig.id,
-            allowedMimeTypes: storageConfig.allowedMimeTypes,
-            maxFileSize: storageConfig.maxFileSize,
-            canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
-            temporaryLocation: false, // Here should be false by default. Change it to true only on the components that need it.
-          }
-        : undefined,
-    }),
-    [storageConfig]
-  );
+  return {
+    storageConfig: storageConfig
+      ? {
+          storageBucketId: storageConfig.id,
+          allowedMimeTypes: storageConfig.allowedMimeTypes,
+          maxFileSize: storageConfig.maxFileSize,
+          canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
+          temporaryLocation: false, // Here should be false by default. Change it to true only on the components that need it.
+        }
+      : undefined,
+  };
 };
 
 export default useStorageConfig;

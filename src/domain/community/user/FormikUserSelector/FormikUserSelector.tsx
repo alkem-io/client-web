@@ -3,7 +3,7 @@ import { FormHelperText, type SxProps, TextField, type Theme } from '@mui/materi
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { without } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
@@ -65,7 +65,7 @@ export const FormikUserSelector = ({
   const [inputValue, setInputValue] = useState('');
 
   // Filter out users that are already selected, and myself
-  const listedUsers = useMemo(() => {
+  const listedUsers = (() => {
     if (!inputValue) {
       return [];
     }
@@ -77,7 +77,7 @@ export const FormikUserSelector = ({
           .filter(user => user.id !== currentUser?.id)
       )
     );
-  }, [currentUser?.id, data?.usersPaginated.users, field.value, inputValue, hydrateUsers, sortUsers]);
+  })();
 
   const { isSmallScreen } = useScreenSize();
 

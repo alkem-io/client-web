@@ -1,6 +1,6 @@
 import { Box, FormControlLabel, Switch } from '@mui/material';
 import type { FormikHelpers } from 'formik';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
@@ -54,14 +54,11 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   const [spaceId, setSpaceId] = useState<string>(template.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
   const loadSpaceContentComponentRef = useRef<SpaceContentFromSpaceUrlFormRef | null>(null);
 
-  const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
-    () => ({
-      profile: mapTemplateProfileToUpdateProfileInput(template.profile),
-      spaceId: template.spaceId ?? '',
-      recursive: true,
-    }),
-    [template]
-  );
+  const initialValues: TemplateSpaceFormSubmittedValues = {
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
+    spaceId: template.spaceId ?? '',
+    recursive: true,
+  };
 
   // Load the innovationFlow and callouts from the selected space to update/create the template
   const {

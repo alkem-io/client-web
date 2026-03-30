@@ -109,7 +109,7 @@ Benefits:
 - Cleaner code with less boilerplate
 - Works seamlessly with React 19
 
-For more details, see [docs/react-compiler.md](docs/react-compiler.md).
+For more details, see [specs/023-react-compiler-adoption/react-compiler.md](specs/023-react-compiler-adoption/react-compiler.md).
 
 ### Bundle Analysis
 

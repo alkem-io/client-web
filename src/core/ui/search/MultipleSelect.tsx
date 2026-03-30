@@ -8,7 +8,6 @@ import {
   type ChangeEventHandler,
   type KeyboardEventHandler,
   type PropsWithChildren,
-  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -144,24 +143,21 @@ const MultipleSelect = ({
     setShrink(false);
   };
 
-  const handleSearch = useCallback(
-    (textInput?: string) => {
-      if (!textInput || textInput.trim().length === 0) {
-        return;
-      }
+  const handleSearch = (textInput?: string) => {
+    if (!textInput || textInput.trim().length === 0) {
+      return;
+    }
 
-      if (onSearchClick) {
-        const terms = [...value];
-        if (textInput && textInput.trim().length > 0) {
-          terms.push(textInput.trim());
-        }
-        onSearchClick(terms);
+    if (onSearchClick) {
+      const terms = [...value];
+      if (textInput && textInput.trim().length > 0) {
+        terms.push(textInput.trim());
       }
+      onSearchClick(terms);
+    }
 
-      return handleSelect(textInput);
-    },
-    [value, handleSelect, onSearchClick]
-  );
+    return handleSelect(textInput);
+  };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = event => {
     if (textInput.length < minLength) {

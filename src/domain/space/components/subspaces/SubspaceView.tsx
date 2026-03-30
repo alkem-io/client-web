@@ -2,7 +2,7 @@ import type { ApolloError } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, IconButton } from '@mui/material';
-import { cloneElement, type ReactElement, type ReactNode, useMemo, useState } from 'react';
+import { cloneElement, type ReactElement, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type SpaceLevel, SpaceSortMode, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -71,24 +71,18 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
   const { permissions } = useSpace();
   const { t } = useTranslation();
   const { tabDescription } = useSpaceTabProvider({ tabPosition: 2 });
-  const filteredItems = useMemo(
-    () =>
-      childEntities
-        .map(entity => ({
-          id: entity.id,
-          title: entity.about.profile.displayName,
-          icon: childEntitiesIcon,
-          uri: entity.about.profile.url,
-          cardBanner: entity.about.profile?.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
-          isPrivate: !entity.about.isContentPublic,
-          pinned:
-            sortMode !== SpaceSortMode.Custom && 'pinned' in entity
-              ? (entity as { pinned?: boolean }).pinned
-              : undefined,
-        }))
-        .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
-    [childEntities, filter, childEntitiesIcon]
-  );
+  const filteredItems = childEntities
+    .map(entity => ({
+      id: entity.id,
+      title: entity.about.profile.displayName,
+      icon: childEntitiesIcon,
+      uri: entity.about.profile.url,
+      cardBanner: entity.about.profile?.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
+      isPrivate: !entity.about.isContentPublic,
+      pinned:
+        sortMode !== SpaceSortMode.Custom && 'pinned' in entity ? (entity as { pinned?: boolean }).pinned : undefined,
+    }))
+    .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase()));
 
   return (
     <PageContent>

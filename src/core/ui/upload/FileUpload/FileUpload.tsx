@@ -2,7 +2,6 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import { useMemo } from 'react';
 import {
   useUploadFileMutation,
   useUploadFileOnLinkMutation,
@@ -86,12 +85,10 @@ const FileUploadButton = ({
 
   const allowedMimeTypes = storageConfig.allowedMimeTypes;
 
-  const allowedExtensions = useMemo(() => {
-    return allowedMimeTypes
-      .map(mimeType => mimeTypeToExtensionMap[mimeType])
-      .filter(Boolean)
-      .join(',');
-  }, [allowedMimeTypes]);
+  const allowedExtensions = allowedMimeTypes
+    .map(mimeType => mimeTypeToExtensionMap[mimeType])
+    .filter(Boolean)
+    .join(',');
 
   const [uploadFileOnReference, { loading: loadingOnReference }] = useUploadFileOnReferenceMutation({
     onCompleted: data => {

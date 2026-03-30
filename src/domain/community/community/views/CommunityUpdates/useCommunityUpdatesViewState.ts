@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Message } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -11,13 +11,13 @@ export const useCommunityUpdatesViewState = (messages: Message[], authors: Autho
   const [stubMessageId, setStubMessageId] = useState<string | null>(null);
   const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
 
-  const memberMap = useMemo(() => {
+  const memberMap = (() => {
     const map: Record<string, AuthorModel> = {};
     for (const m of authors) {
       map[m.id] = m;
     }
     return map;
-  }, [authors]);
+  })();
 
   useEffect(() => {
     setStubMessageId(id => (messages.find(m => m.id === id) ? null : id));

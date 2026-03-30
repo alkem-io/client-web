@@ -1,6 +1,6 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Box, MenuItem, Select, type SelectChangeEvent, type SelectProps, type TypographyProps } from '@mui/material';
-import { type ComponentType, type ReactNode, useMemo } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import type { SearchScope } from '@/main/ui/platformSearch/PlatformSearch';
@@ -36,7 +36,7 @@ const SeamlessSelect = <Option extends string | number>({
   onOpen,
   sx = {},
 }: SeamlessSelectProps<Option>) => {
-  const selectedOption = useMemo(() => options.find(option => option.value === value), [value, options]);
+  const selectedOption = options.find(option => option.value === value);
 
   return (
     <Select

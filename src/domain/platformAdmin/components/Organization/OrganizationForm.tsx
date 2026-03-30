@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { type FC, useCallback, useMemo } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
@@ -80,27 +80,21 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
   const { nameID, contactEmail, domain, legalEntityName, website, profile } = currentOrganization;
 
   const verificationStatus = currentOrganization.verification?.status || OrganizationVerificationEnum.NotVerified;
-  const getUpdatedTagsets = useCallback(
-    (updatedTagsets: TagsetModel[]) => {
-      const result: UpdateTagsetModel[] = [];
-      updatedTagsets.forEach(updatedTagset => {
-        const originalTagset = profile.tagsets?.find(value => value.name === updatedTagset.name);
-        if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
-      });
+  const _getUpdatedTagsets = (updatedTagsets: TagsetModel[]) => {
+    const result: UpdateTagsetModel[] = [];
+    updatedTagsets.forEach(updatedTagset => {
+      const originalTagset = profile.tagsets?.find(value => value.name === updatedTagset.name);
+      if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
+    });
 
-      return result;
-    },
-    [profile.tagsets]
-  );
+    return result;
+  };
 
-  const { blueSkyRef, githubRef, linkedinRef } = useMemo(
-    () => ({
-      blueSkyRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
-      githubRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
-      linkedinRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
-    }),
-    [profile.references]
-  );
+  const { blueSkyRef, githubRef, linkedinRef } = {
+    blueSkyRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.bsky),
+    githubRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+    linkedinRef: profile.references?.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+  };
 
   const initialValues: OrganizationFormValues = {
     profile: {
@@ -146,41 +140,38 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = useCallback(
-    async (orgData: OrganizationFormValues) => {
-      const { profile, ...otherData } = orgData;
+  const handleSubmit = async (orgData: OrganizationFormValues) => {
+    const { profile, ...otherData } = orgData;
 
-      if (isCreateMode) {
-        const organization: CreateOrganizationInput = {
-          ...otherData,
-          profileData: mapProfileModelToCreateProfileInput(profile),
-        };
+    if (isCreateMode) {
+      const organization: CreateOrganizationInput = {
+        ...otherData,
+        profileData: mapProfileModelToCreateProfileInput(profile),
+      };
 
-        onSave && (await onSave(organization));
-      }
+      onSave && (await onSave(organization));
+    }
 
-      if (isEditMode) {
-        const profileData = {
-          ...profile,
-          references: [
-            ...(profile.references ?? []),
-            { ...linkedinRef, uri: orgData.linkedin } as ReferenceModel,
-            { ...blueSkyRef, uri: orgData.bsky } as ReferenceModel,
-            { ...githubRef, uri: orgData.github } as ReferenceModel,
-          ],
-        };
+    if (isEditMode) {
+      const profileData = {
+        ...profile,
+        references: [
+          ...(profile.references ?? []),
+          { ...linkedinRef, uri: orgData.linkedin } as ReferenceModel,
+          { ...blueSkyRef, uri: orgData.bsky } as ReferenceModel,
+          { ...githubRef, uri: orgData.github } as ReferenceModel,
+        ],
+      };
 
-        const organization: UpdateOrganizationInput = {
-          ID: currentOrganization.id,
-          ...otherData,
-          profileData: mapProfileModelToUpdateProfileInput(profileData),
-        };
+      const organization: UpdateOrganizationInput = {
+        ID: currentOrganization.id,
+        ...otherData,
+        profileData: mapProfileModelToUpdateProfileInput(profileData),
+      };
 
-        onSave && (await onSave(organization));
-      }
-    },
-    [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets, linkedinRef, blueSkyRef, githubRef]
-  );
+      onSave && (await onSave(organization));
+    }
+  };
 
   const handleBack = () => {
     if (onBack) {

@@ -1,6 +1,6 @@
 import { Button, DialogContent } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useApplicationDialogQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -56,23 +56,19 @@ const ApplicationDialog = ({
   const communityGuidelines = spaceAbout?.guidelines.profile;
   const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation();
 
-  const initialValues: Record<string, string> = useMemo(
-    () => questions.reduce((acc, val) => ({ ...acc, [val.question]: '' }), {} as Record<string, string>),
-    [questions]
+  const initialValues: Record<string, string> = questions.reduce(
+    (acc, val) => ({ ...acc, [val.question]: '' }),
+    {} as Record<string, string>
   );
 
-  const validationSchema: yup.ObjectSchema<Record<string, string>> = useMemo(
-    () =>
-      questions.reduce(
-        (acc, val) =>
-          acc.shape({
-            [val.question]: val.required
-              ? textLengthValidator({ maxLength: val.maxLength, required: true })
-              : textLengthValidator({ maxLength: val.maxLength }),
-          }),
-        yup.object()
-      ),
-    [questions, t]
+  const validationSchema: yup.ObjectSchema<Record<string, string>> = questions.reduce(
+    (acc, val) =>
+      acc.shape({
+        [val.question]: val.required
+          ? textLengthValidator({ maxLength: val.maxLength, required: true })
+          : textLengthValidator({ maxLength: val.maxLength }),
+      }),
+    yup.object()
   );
 
   const onStatusChange = (isValid: boolean) => setIsValid(isValid);

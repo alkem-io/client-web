@@ -1,0 +1,6 @@
+mutation UnsubscribeFromPushNotifications($subscriptionData: UnsubscribeFromPushNotificationsInput!) {
+  unsubscribeFromPushNotifications(subscriptionData: $subscriptionData) {
+    id
+    status
+  }
+}

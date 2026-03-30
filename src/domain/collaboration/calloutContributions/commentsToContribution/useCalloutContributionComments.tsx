@@ -1,5 +1,4 @@
 import type { FetchResult } from '@apollo/client';
-import { useCallback, useMemo } from 'react';
 import {
   useCalloutContributionCommentsQuery,
   useRemoveMessageOnRoomMutation,
@@ -69,25 +68,18 @@ const useCalloutContributionComments = ({
   const room = data?.lookup.contribution?.post?.comments; // || data?.lookup.contribution?.whiteboard?.comments || data?.lookup.contribution?.link?.comments || data?.lookup.contribution?.memo?.comments;
 
   const commentsId = room?.id;
-  const messages = useMemo(
-    () =>
-      (room?.messages ?? []).map(message => ({
-        id: message.id,
-        threadID: message.threadID,
-        message: message.message,
-        author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
-        createdAt: new Date(message.timestamp),
-        reactions: message.reactions,
-      })),
-    [room?.messages]
-  );
+  const messages = (room?.messages ?? []).map(message => ({
+    id: message.id,
+    threadID: message.threadID,
+    message: message.message,
+    author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
+    createdAt: new Date(message.timestamp),
+    reactions: message.reactions,
+  }));
 
   const commentsPrivileges = room?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteMessage = useCallback(
-    authorId => canDeleteMessages || (isAuthenticated && authorId === userModel?.id),
-    [userModel, isAuthenticated, canDeleteMessages]
-  );
+  const canDeleteMessage = authorId => canDeleteMessages || (isAuthenticated && authorId === userModel?.id);
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const commentsEnabled = callout?.settings.contribution.commentsEnabled ?? false;

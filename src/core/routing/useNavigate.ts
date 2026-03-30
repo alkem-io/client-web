@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   type NavigateOptions as ReactRouterNavigateOptions,
   useNavigate as reactRouterUseNavigate,
@@ -26,18 +25,15 @@ const normalizeTo = (to: To) => {
 const useNavigate = () => {
   const navigate = reactRouterUseNavigate();
 
-  return useCallback(
-    (to: To | number, options?: NavigationOptions) => {
-      if (typeof to === 'number') {
-        return navigate(to);
-      }
+  return (to: To | number, options?: NavigationOptions) => {
+    if (typeof to === 'number') {
+      return navigate(to);
+    }
 
-      const normalizedTo = options?.strict ? to : normalizeTo(to);
+    const normalizedTo = options?.strict ? to : normalizeTo(to);
 
-      return navigate(normalizedTo, options);
-    },
-    [navigate]
-  );
+    return navigate(normalizedTo, options);
+  };
 };
 
 export default useNavigate;

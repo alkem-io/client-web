@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Skeleton, Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useSpaceDefaultTemplatesQuery,
@@ -65,7 +65,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
 
   const [getTemplateContent] = useTemplateContentLazyQuery();
 
-  const defaultTemplateName = useMemo(() => {
+  const defaultTemplateName = (() => {
     const defaultTemplateType =
       level === SpaceLevel.L0 ? TemplateDefaultType.PlatformSpace : TemplateDefaultType.SpaceSubspace;
     const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
@@ -73,11 +73,11 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
     )?.template?.profile.displayName;
 
     return defaultSpaceTemplate ?? t(`context.${level}.template.defaultTemplate`);
-  }, [defaultSpaceTemplatesData, t, level]);
+  })();
 
-  const templateName = useMemo(() => {
+  const templateName = (() => {
     return templateData?.lookup.template?.profile.displayName ?? defaultTemplateName;
-  }, [templateData, defaultTemplateName, t]);
+  })();
 
   // Fetch template content with space data and populate the form
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {

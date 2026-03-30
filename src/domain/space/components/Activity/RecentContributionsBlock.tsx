@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
@@ -52,19 +52,16 @@ const RecentContributionsBlock = ({
 
   const showActivities = activities || activitiesLoading;
 
-  const modeOptions = useMemo(
-    () => [
-      {
-        label: t('components.dashboardRecentContributions.modes.recentActivity'),
-        value: Mode.RecentActivity,
-      },
-      {
-        label: t('components.dashboardRecentContributions.modes.topCallouts'),
-        value: Mode.TopCallouts,
-      },
-    ],
-    [t]
-  );
+  const modeOptions = [
+    {
+      label: t('components.dashboardRecentContributions.modes.recentActivity'),
+      value: Mode.RecentActivity,
+    },
+    {
+      label: t('components.dashboardRecentContributions.modes.topCallouts'),
+      value: Mode.TopCallouts,
+    },
+  ];
 
   // the current implementaion uses initial activities with limit of RECENT_ACTIVITIES_LIMIT_INITIAL
   // and one refetch to show the first RECENT_ACTIVITIES_LIMIT_EXPANDED

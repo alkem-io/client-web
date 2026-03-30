@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
 import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { type ConversationMessage, mapMessageReactions, mapMessageSender } from './models';
+import { mapMessageReactions, mapMessageSender } from './models';
 
 export type { ConversationMessage } from './models';
 
@@ -11,7 +10,7 @@ export const useConversationMessages = (conversationId: string | null) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const messages = useMemo<ConversationMessage[]>(() => {
+  const messages = (() => {
     const roomMessages = data?.lookup?.conversation?.room?.messages;
     if (!roomMessages) {
       return [];
@@ -26,7 +25,7 @@ export const useConversationMessages = (conversationId: string | null) => {
         reactions: mapMessageReactions(msg.reactions),
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
-  }, [data?.lookup?.conversation?.room?.messages]);
+  })();
 
   const roomId = data?.lookup?.conversation?.room?.id ?? null;
 

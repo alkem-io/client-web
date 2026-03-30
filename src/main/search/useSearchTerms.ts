@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { useLocation } from 'react-router-dom';
 import { SEARCH_TERMS_URL_PARAM } from './constants';
 import { MAX_TERMS_SEARCH } from './SearchView';
@@ -7,7 +5,7 @@ import { MAX_TERMS_SEARCH } from './SearchView';
 export const useSearchTerms = () => {
   const { search } = useLocation();
 
-  return useMemo(() => {
+  return (() => {
     const params = new URLSearchParams(search);
     const terms = params.getAll(SEARCH_TERMS_URL_PARAM).filter(Boolean);
 
@@ -16,5 +14,5 @@ export const useSearchTerms = () => {
     }
 
     return terms;
-  }, [search]);
+  })();
 };

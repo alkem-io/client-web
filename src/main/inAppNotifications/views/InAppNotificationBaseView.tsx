@@ -10,7 +10,6 @@ import {
   type ListItemButtonTypeMap,
   Typography,
 } from '@mui/material';
-import { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { NotificationEventInAppState, VisualType } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -62,7 +61,7 @@ export const InAppNotificationBaseView = ({
   const { setIsOpen } = useInAppNotificationsContext();
   const { isMediumSmallScreen: isMobile } = useScreenSize();
 
-  const onNotificationClick = useCallback(() => {
+  const onNotificationClick = () => {
     if (state === NotificationEventInAppState.Unread) {
       updateNotificationState(id, NotificationEventInAppState.Read);
     }
@@ -72,9 +71,9 @@ export const InAppNotificationBaseView = ({
         window.location.href = url;
       }
     }
-  }, [id, url, state, forceReload]);
+  };
 
-  const getReadAction = useCallback(() => {
+  const getReadAction = () => {
     switch (state) {
       case NotificationEventInAppState.Unread:
         return (
@@ -99,41 +98,35 @@ export const InAppNotificationBaseView = ({
       default:
         return null;
     }
-  }, [id, state, updateNotificationState]);
+  };
 
-  const renderActions = useCallback(
-    () => [
-      getReadAction(),
-      <MenuItemWithIcon
-        key={`${id}-delete`}
-        iconComponent={DeleteOutline}
-        onClick={() => updateNotificationState(id, NotificationEventInAppState.Archived)}
-      >
-        {t('components.inAppNotifications.action.delete')}
-      </MenuItemWithIcon>,
-    ],
-    [getReadAction, id, updateNotificationState, t]
-  );
+  const renderActions = () => [
+    getReadAction(),
+    <MenuItemWithIcon
+      key={`${id}-delete`}
+      iconComponent={DeleteOutline}
+      onClick={() => updateNotificationState(id, NotificationEventInAppState.Archived)}
+    >
+      {t('components.inAppNotifications.action.delete')}
+    </MenuItemWithIcon>,
+  ];
 
-  const renderFormattedTranslation = useCallback(
-    (key: string) => {
-      return (
-        <Trans
-          i18nKey={key as any}
-          values={values}
-          components={{
-            b: <strong />,
-            br: <br />,
-            pre: <pre />,
-            i: <em />,
-          }}
-        />
-      );
-    },
-    [values]
-  );
+  const renderFormattedTranslation = (key: string) => {
+    return (
+      <Trans
+        i18nKey={key as any}
+        values={values}
+        components={{
+          b: <strong />,
+          br: <br />,
+          pre: <pre />,
+          i: <em />,
+        }}
+      />
+    );
+  };
 
-  const renderComments = useCallback(() => {
+  const renderComments = () => {
     if (values.comment) {
       return (
         <WrapperMarkdown
@@ -158,7 +151,7 @@ export const InAppNotificationBaseView = ({
     }
 
     return null;
-  }, [values, isMobile]);
+  };
 
   const isUnread = state === NotificationEventInAppState.Unread;
 

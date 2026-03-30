@@ -1,5 +1,5 @@
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -44,9 +44,9 @@ const PostCreationDialog = ({
     onClose();
   };
 
-  const onCloseClick = useCallback(() => {
+  const onCloseClick = () => {
     setCloseConfirmDialogOpen(true);
-  }, []);
+  };
 
   const handleCreate = async () => {
     await onCreate({

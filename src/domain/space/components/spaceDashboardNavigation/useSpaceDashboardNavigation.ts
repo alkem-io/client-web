@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import {
   useSpaceDashboardNavigationSubspacesQuery,
   useSpacePrivilegesQuery,
@@ -85,7 +84,7 @@ const useSpaceDashboardNavigation = ({
 
   const loading = subSpacesQueryLoading;
 
-  const dashboardNavigation = useMemo<DashboardNavigationItem | undefined>(() => {
+  const dashboardNavigation = (() => {
     if (!space) {
       return undefined;
     }
@@ -113,11 +112,11 @@ const useSpaceDashboardNavigation = ({
         pinned: isAlphabetical && subspace.pinned,
       })),
     };
-  }, [subSpacesQueryData]);
+  })();
 
-  const refetch = useCallback(() => {
+  const refetch = () => {
     refetchSubSpaces();
-  }, [refetchSubSpaces]);
+  };
 
   return {
     dashboardNavigation,

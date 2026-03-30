@@ -1,4 +1,4 @@
-import { type ComponentType, type DOMAttributes, useCallback, useState } from 'react';
+import { type ComponentType, type DOMAttributes, useState } from 'react';
 
 export const INITIAL_ELEVATION = 1;
 export const FINAL_ELEVATION = 8;
@@ -30,11 +30,8 @@ const withElevationOnHover =
 
     const [elevation, setElevation] = useState(initialElevation);
 
-    const setFinalElevation = useCallback(
-      () => setElevation(elevationDisabled ? initialElevation : finalElevation),
-      [elevationDisabled, initialElevation, finalElevation]
-    );
-    const setInitialElevation = useCallback(() => setElevation(initialElevation), [initialElevation]);
+    const setFinalElevation = () => setElevation(elevationDisabled ? initialElevation : finalElevation);
+    const setInitialElevation = () => setElevation(initialElevation);
 
     if (componentProps['$$typeof']) {
       delete componentProps['$$typeof'];

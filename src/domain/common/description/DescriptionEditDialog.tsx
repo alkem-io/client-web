@@ -1,6 +1,5 @@
 import { Button, DialogContent } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -24,12 +23,9 @@ type DescriptionEditDialogProps = {
 export const DescriptionEditDialog = ({ description, onUpdate, onClose }: DescriptionEditDialogProps) => {
   const { t } = useTranslation();
 
-  const initialValues: KnowledgeBaseProfileType = useMemo(
-    () => ({
-      description: description ?? '',
-    }),
-    [description]
-  );
+  const initialValues: KnowledgeBaseProfileType = {
+    description: description ?? '',
+  };
 
   const [onSave, loading] = useLoadingState(async (values: KnowledgeBaseProfileType) => onUpdate(values));
 

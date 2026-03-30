@@ -9,7 +9,7 @@ import {
   Select,
   type SelectChangeEvent,
 } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   useUpdateUserSettingsMutation,
@@ -52,7 +52,7 @@ const UserAdminMembershipPage = () => {
   const currentAutoRedirect = settingsData?.lookup.user?.settings?.homeSpace?.autoRedirect ?? false;
 
   // Get L0 spaces for the dropdown
-  const l0Spaces = useMemo(() => {
+  const l0Spaces = (() => {
     if (!data?.rolesUser.spaces) {
       return [];
     }
@@ -60,9 +60,9 @@ const UserAdminMembershipPage = () => {
       id: space.id,
       displayName: space.displayName,
     }));
-  }, [data]);
+  })();
 
-  const memberships = useMemo(() => {
+  const memberships = (() => {
     if (!data?.rolesUser.spaces) {
       return [];
     }
@@ -88,11 +88,11 @@ const UserAdminMembershipPage = () => {
 
       return acc.concat(subspaces);
     }, [] as SpaceHostedItem[]);
-  }, [data]);
+  })();
 
   // TODO: I think this is wrong, we are seeing the memberships of certain user, not ours.
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery();
-  const applications = useMemo<SpaceHostedItem[] | undefined>(() => {
+  const applications = (() => {
     if (!pendingMembershipsData || !userId) {
       return undefined;
     } else {
@@ -104,7 +104,7 @@ const UserAdminMembershipPage = () => {
         contributorType: ActorType.User,
       }));
     }
-  }, [userId, pendingMembershipsData]);
+  })();
 
   const handleHomeSpaceChange = async (event: SelectChangeEvent<string>) => {
     // Use null to explicitly clear the field in GraphQL (empty string from Select means "clear")
