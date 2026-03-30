@@ -74,7 +74,7 @@
     "@mui/types": "^7.4.6",
     "@mui/x-data-grid": "7.28.3",
     "@mui/x-date-pickers": "^8.3.0",
-    "@ory/kratos-client": "^26.2.0",
+    "@ory/kratos-client": "26.2.0",
     "@sentry/react": "^9.39.0",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",

@@ -55,6 +55,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
       } else if (response.status === 400 && response.data?.ui) {
         // Kratos v26.2.0+: OIDC account linking failures return HTTP 400
         // with the flow object containing error messages in the response body.
+        setError(undefined);
         setFlow(response.data as ReturnFlowType[Name]);
       } else {
         const error = new Error((err as { message: string }).message);

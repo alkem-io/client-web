@@ -25,7 +25,7 @@ This document describes the entity and type changes relevant to the client-web m
 
 **Validation**: No validation rules — this is a display-only node type.
 
-**Rendering**: Should be explicitly handled via an `isUiNodeDivisionAttributes` type guard in `helpers.ts` and rendered as a container `<div>` in `KratosUI.tsx`. Fallthrough to the `rest` group is acceptable as a safety net but explicit handling is preferred for type safety.
+**Rendering**: Should be explicitly handled via an `isDivisionNode` type guard in `helpers.ts` and rendered as a container `<div>` in `KratosUI.tsx`. Fallthrough to the `rest` group is acceptable as a safety net but explicit handling is preferred for type safety.
 
 ### 2. Identity — New External ID
 

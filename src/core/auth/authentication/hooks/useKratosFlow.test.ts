@@ -77,6 +77,7 @@ describe('useKratosFlow', () => {
   });
 
   it('handles 410 Gone by redirecting', async () => {
+    const originalLocation = window.location;
     const replaceMock = vi.fn();
     Object.defineProperty(window, 'location', {
       value: { replace: replaceMock },
@@ -95,6 +96,11 @@ describe('useKratosFlow', () => {
 
     await waitFor(() => {
       expect(replaceMock).toHaveBeenCalledWith('/self-service/registration/browser');
+    });
+
+    Object.defineProperty(window, 'location', {
+      value: originalLocation,
+      writable: true,
     });
   });
 

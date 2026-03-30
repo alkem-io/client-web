@@ -44,7 +44,7 @@ Content-Type: application/x-www-form-urlencoded
 | `id` | `1010016` |
 | `type` | `error` |
 | `text` | "You tried to sign in with {provider}, but that email is already used by another account." |
-| `context.provider` | Provider name (e.g., "microsoft", "github") |
+| `context.provider` | Provider name (e.g., "Microsoft", "GitHub") |
 
 ## 2. OIDC Registration Validation — Node Group Reassignment
 
