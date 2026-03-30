@@ -1,6 +1,6 @@
 import { ApolloClient, from, InMemoryCache, type NormalizedCacheObject } from '@apollo/client';
 import { once } from 'lodash-es';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { env } from '@/main/env';
 import { typePolicies } from '../config/typePolicies';
 import {
@@ -40,17 +40,21 @@ export const useGraphQLClient = (
   const errorHandlerLink = useErrorHandlerLink();
   const errorLoggerLink = useErrorLoggerLink(enableErrorLogging);
 
-  return new ApolloClient({
-    link: from([
-      omitTypenameLink,
-      consoleLink(enableQueryDebug),
-      guestHeaderLink,
-      errorLoggerLink,
-      errorHandlerLink,
-      retryLink,
-      redirectLink,
-      httpLink(graphQLEndpoint, enableWebSockets),
-    ]),
-    cache,
-  });
+  return useMemo(
+    () =>
+      new ApolloClient({
+        link: from([
+          omitTypenameLink,
+          consoleLink(enableQueryDebug),
+          guestHeaderLink,
+          errorLoggerLink,
+          errorHandlerLink,
+          retryLink,
+          redirectLink,
+          httpLink(graphQLEndpoint, enableWebSockets),
+        ]),
+        cache,
+      }),
+    [graphQLEndpoint, enableWebSockets, errorHandlerLink, errorLoggerLink, cache]
+  );
 };
