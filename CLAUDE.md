@@ -278,7 +278,11 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
 ## Recent Changes
+- 040-ory-stack-migration: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + `@ory/kratos-client` ^26.2.0 (upgrade from ^1.3.8), axios, Apollo Client, MUI, react-i18next
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
 - Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
-- CI lint workflow split into parallel jobs: typecheck, biome, eslint-compiler
+
+## Active Technologies
+- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + `@ory/kratos-client` ^26.2.0 (upgrade from ^1.3.8), axios, Apollo Client, MUI, react-i18next (040-ory-stack-migration)
+- N/A (authentication state managed via Ory Kratos sessions/cookies) (040-ory-stack-migration)

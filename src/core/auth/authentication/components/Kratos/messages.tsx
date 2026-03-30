@@ -21,6 +21,8 @@ const messages: Record<string, string> = {
   '4000006': 'invalid-credentials',
   '4000002': 'claim-missing',
   '1040009': 'pick-password',
+  '1010016': 'oidc-account-linking-conflict',
+  '4010011': 'account-disabled',
 };
 
 export const useKratosT = () => {
