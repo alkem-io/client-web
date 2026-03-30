@@ -6,6 +6,7 @@ const MOCK_USER = {
   name: 'Alex Rivera',
   avatarUrl: undefined,
   initials: 'AR',
+  role: 'Beta Tester',
 };
 
 const NAVIGATION_HREFS = {
@@ -14,7 +15,8 @@ const NAVIGATION_HREFS = {
   messages: '/messages',
   notifications: '/notifications',
   profile: '/profile',
-  settings: '/settings',
+  account: '/profile/settings/account',
+  admin: '/admin',
   login: '/login',
 };
 
@@ -34,9 +36,13 @@ export function CrdApp() {
         user={MOCK_USER}
         authenticated={true}
         navigationHrefs={NAVIGATION_HREFS}
+        isAdmin={true}
+        pendingInvitationsCount={3}
         languages={MOCK_LANGUAGES}
         currentLanguage="en"
         onLanguageChange={code => console.log('Language changed to', code)}
+        onPendingMembershipsClick={() => console.log('Pending memberships clicked')}
+        onHelpClick={() => console.log('Help clicked')}
       >
         <Routes>
           <Route path="/spaces" element={<SpacesPage />} />

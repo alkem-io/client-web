@@ -1,7 +1,22 @@
-import { Bell, Home, LayoutGrid, LogOut, Menu, MessageSquare, Search, Settings, User } from 'lucide-react';
+import {
+  Bell,
+  Check,
+  CircleEllipsis,
+  Globe,
+  HelpCircle,
+  Home,
+  LayoutGrid,
+  LogOut,
+  Menu,
+  MessageSquare,
+  Search,
+  Settings,
+  Shield,
+  User,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
-import type { CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -12,6 +27,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 
@@ -19,11 +37,18 @@ type HeaderProps = {
   user?: CrdUserInfo;
   authenticated: boolean;
   navigationHrefs: CrdNavigationHrefs;
+  isAdmin?: boolean;
+  pendingInvitationsCount?: number;
+  languages?: CrdLanguageOption[];
+  currentLanguage?: string;
   onLogout?: () => void;
   onMenuClick?: () => void;
   onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
+  onPendingMembershipsClick?: () => void;
+  onHelpClick?: () => void;
+  onLanguageChange?: (code: string) => void;
   className?: string;
 };
 
@@ -31,14 +56,23 @@ export function Header({
   user,
   authenticated,
   navigationHrefs,
+  isAdmin,
+  pendingInvitationsCount,
+  languages,
+  currentLanguage,
   onLogout,
   onMenuClick,
   onMessagesClick,
   onNotificationsClick,
   onSearchClick,
+  onPendingMembershipsClick,
+  onHelpClick,
+  onLanguageChange,
   className,
 }: HeaderProps) {
   const { t } = useTranslation('crd');
+
+  const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
   return (
     <header
@@ -159,31 +193,103 @@ export function Header({
                 </Badge>
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuLabel className="uppercase tracking-wider text-muted-foreground text-[11px]">
-                {t('header.myAccount')}
+            <DropdownMenuContent align="end" className="w-56">
+              {/* User identity */}
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold">{user.name}</span>
+                  {user.role && (
+                    <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{user.role}</span>
+                  )}
+                </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+
+              {/* Navigation items */}
               <DropdownMenuItem asChild={true}>
                 <a href={navigationHrefs.home} className="cursor-pointer">
-                  <Home className="mr-2 h-4 w-4" />
+                  <Home aria-hidden="true" className="mr-2 h-4 w-4" />
                   <span>{t('header.dashboard')}</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild={true}>
                 <a href={navigationHrefs.profile} className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
+                  <User aria-hidden="true" className="mr-2 h-4 w-4" />
                   <span>{t('header.profile')}</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem asChild={true}>
-                <a href={navigationHrefs.settings} className="cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>{t('header.settings')}</span>
+                <a href={navigationHrefs.account} className="cursor-pointer">
+                  <Settings aria-hidden="true" className="mr-2 h-4 w-4" />
+                  <span>{t('header.myAccount')}</span>
                 </a>
               </DropdownMenuItem>
+
+              {/* Pending memberships */}
+              {onPendingMembershipsClick && (
+                <DropdownMenuItem onClick={onPendingMembershipsClick} className="cursor-pointer">
+                  <CircleEllipsis aria-hidden="true" className="mr-2 h-4 w-4" />
+                  <span>{t('header.pendingMemberships')}</span>
+                  {typeof pendingInvitationsCount === 'number' && pendingInvitationsCount > 0 && (
+                    <Badge className="ml-auto text-[10px] px-1.5 h-[18px] bg-primary text-primary-foreground rounded-full">
+                      {pendingInvitationsCount}
+                    </Badge>
+                  )}
+                </DropdownMenuItem>
+              )}
+
               <DropdownMenuSeparator />
+
+              {/* Admin */}
+              {isAdmin && (
+                <DropdownMenuItem asChild={true}>
+                  <a href={navigationHrefs.admin} className="cursor-pointer">
+                    <Shield aria-hidden="true" className="mr-2 h-4 w-4" />
+                    <span>{t('header.administration')}</span>
+                  </a>
+                </DropdownMenuItem>
+              )}
+
+              {/* Language sub-menu */}
+              {languages && languages.length > 0 && onLanguageChange && (
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    <Globe aria-hidden="true" className="mr-2 h-4 w-4" />
+                    <span>{t('header.changeLanguage')}</span>
+                    {currentLanguageLabel && (
+                      <span className="ml-auto text-xs text-muted-foreground">{currentLanguageLabel}</span>
+                    )}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    {languages.map(lang => (
+                      <DropdownMenuItem
+                        key={lang.code}
+                        onClick={() => onLanguageChange(lang.code)}
+                        className={cn('cursor-pointer', currentLanguage?.startsWith(lang.code) && 'bg-accent')}
+                      >
+                        <span className="text-sm">{lang.label}</span>
+                        {currentLanguage?.startsWith(lang.code) && (
+                          <Check aria-hidden="true" className="ml-auto h-4 w-4 shrink-0 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              )}
+
+              {/* Help */}
+              {onHelpClick && (
+                <DropdownMenuItem onClick={onHelpClick} className="cursor-pointer">
+                  <HelpCircle aria-hidden="true" className="mr-2 h-4 w-4" />
+                  <span>{t('header.getHelp')}</span>
+                </DropdownMenuItem>
+              )}
+
+              {(isAdmin || onHelpClick || (languages && languages.length > 0)) && <DropdownMenuSeparator />}
+
+              {/* Logout */}
               <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={onLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
+                <LogOut aria-hidden="true" className="mr-2 h-4 w-4" />
                 <span>{t('header.logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

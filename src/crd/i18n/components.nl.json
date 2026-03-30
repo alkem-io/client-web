@@ -12,7 +12,11 @@
     "settings": "Instellingen",
     "logout": "Uitloggen",
     "login": "Inloggen",
-    "beta": "Bèta"
+    "beta": "Bèta",
+    "pendingMemberships": "Openstaande lidmaatschappen",
+    "administration": "Administratie",
+    "changeLanguage": "Taal wijzigen",
+    "getHelp": "Hulp krijgen"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

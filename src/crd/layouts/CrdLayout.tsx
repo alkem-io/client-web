@@ -7,6 +7,8 @@ type CrdLayoutProps = {
   user?: CrdUserInfo;
   authenticated: boolean;
   navigationHrefs: CrdNavigationHrefs;
+  isAdmin?: boolean;
+  pendingInvitationsCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   onLanguageChange: (code: string) => void;
@@ -14,6 +16,8 @@ type CrdLayoutProps = {
   onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
+  onPendingMembershipsClick?: () => void;
+  onHelpClick?: () => void;
   children: ReactNode;
 };
 
@@ -21,6 +25,8 @@ export function CrdLayout({
   user,
   authenticated,
   navigationHrefs,
+  isAdmin,
+  pendingInvitationsCount,
   languages,
   currentLanguage,
   onLanguageChange,
@@ -28,6 +34,8 @@ export function CrdLayout({
   onMessagesClick,
   onNotificationsClick,
   onSearchClick,
+  onPendingMembershipsClick,
+  onHelpClick,
   children,
 }: CrdLayoutProps) {
   return (
@@ -36,10 +44,17 @@ export function CrdLayout({
         user={user}
         authenticated={authenticated}
         navigationHrefs={navigationHrefs}
+        isAdmin={isAdmin}
+        pendingInvitationsCount={pendingInvitationsCount}
+        languages={languages}
+        currentLanguage={currentLanguage}
+        onLanguageChange={onLanguageChange}
         onLogout={onLogout}
         onMessagesClick={onMessagesClick}
         onNotificationsClick={onNotificationsClick}
         onSearchClick={onSearchClick}
+        onPendingMembershipsClick={onPendingMembershipsClick}
+        onHelpClick={onHelpClick}
       />
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer languages={languages} currentLanguage={currentLanguage} onLanguageChange={onLanguageChange} />

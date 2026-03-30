@@ -51,9 +51,29 @@ Create a new page component in `src/new-ui/topLevelPages/<page>/PageDep.tsx` tha
 
 The original MUI page in `src/main/topLevelPages/` stays untouched — it can be removed once the migration is complete.
 
-### 6. Wire the Route
+### 6. Wire the Route (with Lazy Loading)
 
-In `TopLevelRoutes.tsx`, move the route under the `<Route element={<CrdLayoutWrapper />}>` group. Lazy-load the new page from `@/new-ui/topLevelPages/<page>/PageDep`.
+In `TopLevelRoutes.tsx`, move the route under the `<Route element={<CrdLayoutWrapper />}>` group. Lazy-load the new page using `lazyWithGlobalErrorHandler()`:
+
+```typescript
+const MyPage = lazyWithGlobalErrorHandler(() => import('@/new-ui/topLevelPages/<page>/MyPage'));
+
+// Under CrdLayoutWrapper route group:
+<Route path="/<page>" element={
+  <WithApmTransaction path="/<page>">
+    <Suspense fallback={<Loading />}>
+      <MyPage />
+    </Suspense>
+  </WithApmTransaction>
+} />
+```
+
+**Lazy loading rules:**
+- Page components: always lazy-loaded via `lazyWithGlobalErrorHandler()` + `<Suspense fallback={<Loading />}>`
+- Dialogs triggered from CRD: lazy-loaded with `<Suspense fallback={null}>` (e.g., `HelpDialog`)
+- `CrdLayoutWrapper` itself: eager (must be available to render the page shell immediately)
+- Existing MUI dialogs (Messages, Notifications): already lazy-loaded in `root.tsx`, reuse via context providers — never duplicate
+- CRD primitives: bundled with the page chunk (small, no separate vendor chunk needed)
 
 ### 7. Add i18n Keys
 

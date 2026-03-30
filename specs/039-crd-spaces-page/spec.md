@@ -63,7 +63,7 @@ A user navigates to `/spaces` and sees an **entirely new page** — CRD header, 
 
 1. **Given** `/spaces` is a CRD route, **When** the user navigates to `/spaces`, **Then** the page renders with the CRD Header (sticky, logo, nav icons) and CRD Footer (links, language selector) — no MUI `TopLevelLayout` visible
 2. **Given** the CRD layout renders, **When** inspecting the DOM, **Then** the entire page is wrapped in `.crd-root` and uses only Tailwind styling
-3. **Given** the CRD header renders, **When** the user sees the navigation icons, **Then** the header shows: Alkemio logo (links home), search icon, messages button, notifications button, spaces grid icon, and profile avatar with dropdown. Messages and Notifications buttons directly open the existing MUI dialogs (rendered in `root.tsx`) via context providers. Search overlay and real unread counts are deferred
+3. **Given** the CRD header renders, **When** the user sees the navigation icons, **Then** the header shows: Alkemio logo (links home), search icon, messages button, notifications button, spaces grid icon, and profile avatar with dropdown. The dropdown shows: user name with role badge, Dashboard, Profile, My Account, Pending Memberships (with invitation count badge), Administration (only for admins), Language sub-menu, Get Help, and Log out. Messages and Notifications buttons directly open the existing MUI dialogs (rendered in `root.tsx`) via context providers. Search overlay and real unread counts are deferred
 4. **Given** the CRD footer renders, **When** the user sees the footer, **Then** it shows: copyright, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector
 
 ---
@@ -116,6 +116,8 @@ The CRD spaces page adapts to different screen sizes, displaying the card grid r
 2. **Given** a tablet viewport (768-1200px), **When** spaces load, **Then** the grid displays 2-3 cards per row
 3. **Given** a mobile viewport (<768px), **When** spaces load, **Then** cards stack in a single column
 4. **Given** any viewport size, **When** a card is displayed, **Then** the banner image, name, and tagline are fully visible without horizontal overflow
+5. **Given** a very narrow mobile viewport (320px), **When** the page renders, **Then** no horizontal scrollbar appears — `overflow-x: hidden` on `.crd-root` and responsive `px-4` padding ensure all content fits within viewport
+6. **Given** a mobile viewport (<640px), **When** the footer renders, **Then** footer nav links wrap to multiple lines gracefully, and the decorative Alkemio logo is hidden to save horizontal space
 
 ---
 
@@ -171,7 +173,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 #### Layout & Shell
 - **FR-001**: CRD routes MUST render with a fully CRD page shell — CRD Header, CRD content area, CRD Footer. No MUI `TopLevelLayout` or `TopLevelPageLayout` wraps CRD routes
 - **FR-002**: The CRD layout shell (`CrdLayout`) MUST be a presentational component in `src/crd/layouts/` — it receives navigation props (links, user info, callbacks) and renders them. No data fetching or routing logic inside `src/crd/`
-- **FR-003**: The CRD Header MUST render: Alkemio logo (home link), search icon, messages button, notifications button, spaces grid icon, profile avatar with dropdown menu. Messages and Notifications buttons accept optional callback props (`onMessagesClick`, `onNotificationsClick`); when provided, they directly open the existing MUI dialogs via context providers (`useUserMessagingContext`, `useInAppNotificationsContext`), which are available on all routes including CRD pages. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links. Search overlay and real unread counts are deferred
+- **FR-003**: The CRD Header MUST render: Alkemio logo (home link), search icon, messages button, notifications button, spaces grid icon, profile avatar with dropdown menu. The profile dropdown menu MUST mirror the MUI `PlatformNavigationUserMenu` items: user name + role badge, Dashboard, Profile, My Account, Pending Memberships (with count badge), Administration (conditional on platform admin privilege), Language sub-menu (with active language indicator), Get Help, and Log out. All menu items use navigation hrefs from `CrdNavigationHrefs` (which reuse `ROUTE_HOME`, `ROUTE_USER_ME`, `buildUserAccountUrl()`, `TopLevelRoutePath` from the main routing system) — routes are never hardcoded in CRD components. Messages and Notifications buttons accept optional callback props (`onMessagesClick`, `onNotificationsClick`); when provided, they directly open the existing MUI dialogs via context providers. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links. Search overlay and real unread counts are deferred
 - **FR-004**: The CRD Footer MUST render: copyright text, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector dropdown. The Footer receives `languages`, `currentLanguage`, and `onLanguageChange` as props — it does not access `i18n` directly. Languages are derived from `supportedLngs` in the main app
 - **FR-005**: CRD and MUI layouts MUST coexist — navigating from a CRD route to an MUI route (and vice versa) MUST work seamlessly with no style leakage, layout conflicts, or console errors
 
@@ -198,6 +200,18 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - **FR-024**: The header navigation icons MUST be wrapped in a `<nav>` landmark with `aria-label`. Footer links MUST be in a `<nav>` landmark
 - **FR-025**: Form inputs (TagsInput search) MUST have an `aria-label` that persists regardless of placeholder visibility
 - **FR-026**: Filter chip dismiss actions MUST use `<button>` elements with screen reader text indicating the dismiss action
+
+#### Mobile Responsiveness
+- **FR-027**: The CRD layout MUST use responsive padding: `px-4` on mobile (< 640px), `px-6` on tablet and above — applied consistently across Header, Footer, and SpaceExplorer container
+- **FR-028**: The Footer nav links MUST wrap gracefully on mobile using `flex-wrap` with responsive gap spacing. The decorative Alkemio logo in the footer nav MUST be hidden on small screens (`hidden sm:block`)
+- **FR-029**: The `.crd-root` wrapper MUST include `overflow-x: hidden` as a safety net to prevent horizontal scrolling from any child exceeding viewport width
+- **FR-030**: Footer and SpaceExplorer MUST use the same `max-w-[1600px]` container width for visual alignment on large screens
+
+#### Performance & Lazy Loading
+- **FR-031**: CRD page components (e.g., `SpaceExplorerPage`) MUST be lazy-loaded via `lazyWithGlobalErrorHandler()` in `TopLevelRoutes.tsx`, wrapped in `<Suspense fallback={<Loading />}>`
+- **FR-032**: Dialogs triggered from the CRD layout (HelpDialog, PendingMembershipsDialog) MUST be lazy-loaded via `lazyWithGlobalErrorHandler()` with `<Suspense fallback={null}>` — they are only loaded when the user opens them
+- **FR-033**: The `CrdLayoutWrapper` itself is eagerly loaded (it must be available immediately to wrap nested routes), but all dialogs and heavy dependencies it triggers MUST be lazy-loaded
+- **FR-034**: Existing MUI dialogs (Messages, Notifications) rendered in `root.tsx` are already lazy-loaded and reused via context providers — CRD pages MUST NOT duplicate these dialogs
 
 #### Standalone Preview App
 - **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization

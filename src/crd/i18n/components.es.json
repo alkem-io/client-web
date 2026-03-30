@@ -12,7 +12,11 @@
     "settings": "Configuración",
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
-    "beta": "Beta"
+    "beta": "Beta",
+    "pendingMemberships": "Membresías pendientes",
+    "administration": "Administración",
+    "changeLanguage": "Cambiar idioma",
+    "getHelp": "Obtener ayuda"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

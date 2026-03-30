@@ -17,7 +17,7 @@ Migrate the `/spaces` page from MUI to shadcn/ui + Tailwind CSS as the first pro
 **Project Type**: Web application (frontend only — no backend changes)
 **Performance Goals**: CRD page LCP equal to or better than MUI version
 **Constraints**: Zero MUI imports in `src/crd/`; both styling systems must coexist without conflicts; MUI pages must not regress visually or functionally
-**Scale/Scope**: 1 page (/spaces), ~7 primitives to port, 3 layout components (CrdLayout, Header, Footer), 1 composite component (SpaceCard), 1 page-level composite (SpaceExplorer), 1 data mapper, 1 route-level layout split, 1 SVG logo component
+**Scale/Scope**: 1 page (/spaces), ~7 primitives to port, 3 layout components (CrdLayout, Header w/ full user menu, Footer w/ responsive wrapping), 1 composite component (SpaceCard), 1 page-level composite (SpaceExplorer), 1 data mapper, 1 route-level layout split, 1 SVG logo component, lazy-loaded HelpDialog
 
 ## Constitution Check
 
@@ -78,10 +78,10 @@ src/
 │   │       ├── SpaceCard.tsx         # CRD SpaceCard composite
 │   │       └── SpaceExplorer.tsx     # CRD page-level composite (search + grid + filters)
 │   ├── layouts/                      # CRD page shells
-│   │   ├── types.ts                 # NEW: shared types (CrdUserInfo, CrdNavigationHrefs, CrdLanguageOption)
-│   │   ├── CrdLayout.tsx            # NEW: full-page CRD shell (header + main + footer)
-│   │   ├── Header.tsx               # NEW: CRD header (logo, nav icons, profile dropdown)
-│   │   └── Footer.tsx               # NEW: CRD footer (links, logo, language selector)
+│   │   ├── types.ts                 # NEW: shared types (CrdUserInfo w/ role, CrdNavigationHrefs w/ account+admin, CrdLanguageOption)
+│   │   ├── CrdLayout.tsx            # NEW: full-page CRD shell (header + main + footer), passes all props through
+│   │   ├── Header.tsx               # NEW: CRD header (logo, nav icons, full user menu mirroring MUI PlatformNavigationUserMenu)
+│   │   └── Footer.tsx               # NEW: CRD footer (links, logo, language selector, responsive wrapping)
 │   ├── forms/                        # Form UI components
 │   │   └── tags-input.tsx           # NEW: Reusable tag-based input (type + Enter = tag chip)
 │   ├── hooks/
@@ -116,7 +116,7 @@ src/
 │   │   └── TopLevelRoutes.tsx        # MODIFIED: wrap CRD routes in CrdLayoutWrapper
 │   └── ui/
 │       └── layout/
-│           └── CrdLayoutWrapper.tsx  # Connects CrdLayout to app data (auth, user, navigation, language, dialogs)
+│           └── CrdLayoutWrapper.tsx  # Connects CrdLayout to app data (auth, user, roles, navigation, pending memberships, lazy HelpDialog)
 ```
 
 **Structure Decision**: CRD routes get a completely separate visual shell. The layout split happens at the route level in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper` (which connects the presentational `CrdLayout` to app data like auth state and user info), while MUI routes continue using `TopLevelLayout`. Page-level integration (data hooks, CRD views, data mappers) lives in `src/new-ui/topLevelPages/<pageName>/` — the dedicated integration layer for CRD-migrated pages. The `CrdLayout`, `Header`, and `Footer` are presentational components in `src/crd/layouts/` — they receive all data as props. The `CrdLayoutWrapper` in `src/main/ui/layout/` is the app-level smart container that provides user info, auth state, and navigation callbacks. Files in `src/new-ui/` MUST NOT import from `@mui/*`.
@@ -161,35 +161,56 @@ The prototype constructs routes from slugs (`/space/${slug}`). Production uses f
 
 Tailwind's base resets (preflight) are scoped to `.crd-root` in `src/crd/styles/crd.css`. The `CrdLayout` wraps the entire page in `.crd-root`. MUI components outside `.crd-root` are unaffected.
 
-### D8: CRD Header — Navigation via Callbacks
+### D8: CRD Header — Full User Menu via Callbacks
 
-The CRD Header is a visual port of the prototype's Header. Navigation icons accept optional callback props that take priority over `<a href>` fallbacks:
-- **Messages** and **Notifications** buttons: `onMessagesClick` / `onNotificationsClick` callbacks directly open the existing MUI dialogs (`UserMessagingDialog`, `InAppNotificationsDialog`) via their context providers (`useUserMessagingContext`, `useInAppNotificationsContext`), which are available on all routes including CRD pages since they're rendered in `root.tsx`.
-- **Search**: `onSearchClick` callback (deferred — search overlay not yet implemented)
-- **Spaces**: always an `<a>` link to the spaces page
-- **Profile dropdown**: links to existing MUI pages (`/home`, `/profile`)
-- **Login**: uses `navigationHrefs.login` instead of a hardcoded `/login` path
-- When callbacks are not provided (e.g. in the standalone preview app), buttons fall back to `<a href>` links from `navigationHrefs`
-- Real notification feed and unread message counts are deferred
+The CRD Header mirrors the MUI `PlatformNavigationUserMenu` while staying purely presentational. The profile dropdown renders the same menu items as the MUI version:
+
+**Menu items (authenticated):**
+1. **User identity** — name + role badge (role resolved from `platformRoles` in CrdLayoutWrapper)
+2. **Dashboard** → `navigationHrefs.home` (wired to `ROUTE_HOME`)
+3. **Profile** → `navigationHrefs.profile` (wired to `ROUTE_USER_ME`)
+4. **My Account** → `navigationHrefs.account` (wired to `buildUserAccountUrl(ROUTE_USER_ME)`)
+5. **Pending Memberships** → `onPendingMembershipsClick` callback (opens MUI `PendingMembershipsDialog` via context). Shows invitation count badge.
+6. **Administration** → `navigationHrefs.admin` (wired to `/admin`). Only shown when `isAdmin` prop is true (resolved from `AuthorizationPrivilege.PlatformAdmin`).
+7. **Language sub-menu** ��� reuses `languages`/`currentLanguage`/`onLanguageChange` props (same as Footer). Shows checkmark on active language.
+8. **Get Help** → `onHelpClick` callback (opens lazy-loaded `HelpDialog` in CrdLayoutWrapper)
+9. **Log out** → `onLogout` callback (destructive style)
+
+**Route reuse:** All navigation hrefs in `CrdLayoutWrapper` use existing route constants (`ROUTE_HOME`, `ROUTE_USER_ME`, `TopLevelRoutePath`, `buildUserAccountUrl`) — no paths are hardcoded. This ensures CRD navigation stays in sync with the routing system.
+
+**Icon bar** (left to right): Search, Messages, Notifications, Spaces — each accepts an optional callback that takes priority over `<a href>` fallbacks. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links from `navigationHrefs`.
+
+Real notification feed and unread message counts are deferred.
 
 ### D9: CRD Layout Props Pattern
 
 The `CrdLayout` component in `src/crd/layouts/` is purely presentational and receives all dynamic data via props:
-- `user?: { name: string; avatarUrl?: string; initials: string }` — for the profile avatar
+- `user?: { name: string; avatarUrl?: string; initials: string; role?: string }` — for the profile avatar and role display
 - `authenticated: boolean` — controls whether profile dropdown shows login vs user menu
-- `navigationHrefs: { home, spaces, messages, notifications, profile, settings, login }` — all navigation targets
-- `languages: { code: string; label: string }[]` — available languages for footer selector
+- `navigationHrefs: { home, spaces, messages, notifications, profile, account, admin, login }` — all navigation targets
+- `isAdmin?: boolean` — controls Administration menu item visibility
+- `pendingInvitationsCount?: number` — shown as badge on Pending Memberships item
+- `languages: { code: string; label: string }[]` — available languages for footer and header language sub-menu
 - `currentLanguage: string` — active language code
-- `onLanguageChange: (code: string) => void` — language switch callback
+- `onLanguageChange: (code: string) => void` — language switch callback (wired to both header and footer)
 - `onLogout?: () => void` — logout callback
 - `onMessagesClick?: () => void` — messages button callback (falls back to `<a>` link if not provided)
 - `onNotificationsClick?: () => void` — notifications button callback (falls back to `<a>` link if not provided)
 - `onSearchClick?: () => void` — search button callback
+- `onPendingMembershipsClick?: () => void` — opens pending memberships dialog
+- `onHelpClick?: () => void` — opens help dialog
 - `children: ReactNode` — page content
 
-Shared types (`CrdUserInfo`, `CrdNavigationHrefs`, `CrdLanguageOption`) are defined once in `src/crd/layouts/types.ts` and imported by both `Header.tsx` and `CrdLayout.tsx`.
+Shared types (`CrdUserInfo`, `CrdNavigationHrefs`, `CrdLanguageOption`) are defined once in `src/crd/layouts/types.ts` and imported by Header, Footer, and CrdLayout.
 
-The `CrdLayoutWrapper` in `src/main/ui/layout/` reads auth state, user profile, i18n language, and constructs these props. It wires Messages/Notifications callbacks directly to the existing dialog context providers (`useUserMessagingContext`, `useInAppNotificationsContext`).
+The `CrdLayoutWrapper` in `src/main/ui/layout/`:
+- Reads auth state, user profile, platform roles, platform privileges from `useCurrentUserContext()`
+- Reads pending invitation count from `usePendingInvitationsCount()`
+- Wires Messages/Notifications callbacks to existing dialog context providers
+- Wires Pending Memberships callback to `usePendingMembershipsDialog()` context
+- Lazy-loads `HelpDialog` via `lazyWithGlobalErrorHandler()`
+- Resolves navigation hrefs from `ROUTE_HOME`, `ROUTE_USER_ME`, `buildUserAccountUrl()`, `TopLevelRoutePath`
+- Resolves platform role display name from `platformRoles` (same logic as MUI `PlatformNavigationUserMenu`)
 
 ### D10: Prototype-Matching Filter Bar (Sort + Filters Dropdowns)
 
@@ -210,6 +231,41 @@ When a space has no custom `cardBanner`, the data mapper falls back to `getDefau
 
 Tailwind CSS is imported in `src/index.tsx` and applies to all pages. True CSS code-splitting is not feasible with Vite + Tailwind v4 (CSS is bundled at build time regardless of import location). The `.crd-root` class scopes Tailwind preflight to CRD pages only. MUI's `ThemeProvider` wraps the full app but is unused by CRD components — they never call `useTheme()`. Moving ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. This is the simplest working approach.
 
-### D13: `src/new-ui/` as the Page Integration Layer
+### D13: Mobile-First Responsive Layout
+
+The CRD layout uses responsive padding and overflow protection to ensure mobile compatibility:
+
+- **Responsive padding**: `px-4 sm:px-6` on Header, Footer, and SpaceExplorer container — 16px on mobile (< 640px), 24px on tablet+. Critical because the grid's `minmax(280px, 1fr)` needs at least 280px available width; on a 320px screen, `px-6` (48px total) leaves only 272px, causing overflow.
+- **Footer wrapping**: Footer nav uses `flex-wrap` with `gap-x-4 gap-y-2 sm:gap-x-6` and `justify-center` so links flow to additional lines on narrow screens. The decorative Alkemio logo is hidden on mobile (`hidden sm:block`).
+- **Overflow safety net**: `.crd-root` has `overflow-x: hidden` in `crd.css` to prevent any child from creating a horizontal scrollbar.
+- **Width alignment**: Footer and SpaceExplorer both use `max-w-[1600px]` for visual consistency on large screens.
+- **Grid**: CSS Grid with `repeat(auto-fill, minmax(280px, 1fr))` handles responsive column counts without explicit breakpoints.
+
+### D14: Lazy Loading & Performance Strategy
+
+The CRD system follows the project's established lazy loading patterns to minimize initial bundle impact:
+
+**Eager (loaded with the route):**
+- `CrdLayoutWrapper` — must be available immediately to wrap nested routes
+- `CrdLayout`, `Header`, `Footer` — the page shell renders before content loads
+- CRD primitives (Button, Avatar, Badge, etc.) — small, tree-shaken, no separate chunk needed
+- CRD CSS (`crd.css`) — imported globally in `index.tsx`, scoped via `.crd-root`
+
+**Lazy (loaded on demand):**
+- **Page components** (e.g., `SpaceExplorerPage`) — lazy-loaded via `lazyWithGlobalErrorHandler()` in `TopLevelRoutes.tsx`, wrapped in `<Suspense fallback={<Loading />}>`. Each page creates its own chunk.
+- **HelpDialog** — lazy-loaded in `CrdLayoutWrapper` via `lazyWithGlobalErrorHandler()`, only loaded when user clicks "Get Help"
+- **PendingMembershipsDialog** — already lazy-loaded at the root level, triggered via context provider
+- **Messages/Notifications dialogs** — already lazy-loaded in `root.tsx`, reused via context providers
+
+**Bundle chunking** (from `vite.config.mjs` `manualChunks`):
+- CRD components are NOT in a separate vendor chunk — Radix UI deps are small compared to MUI and don't warrant a dedicated chunk
+- MUI is already split into `vendor-mui-core`, `vendor-mui-icons`, `vendor-mui-extended`
+- Route-level code splitting handles the rest — each lazy route creates its own chunk
+
+**Why `CrdLayoutWrapper` is eager**: It renders the page shell (Header + Footer) immediately when navigating to a CRD route. Lazy-loading it would show a blank page or loading spinner before the shell appears, degrading perceived performance. The wrapper itself is lightweight — heavy dependencies (HelpDialog, pending memberships query) are lazy-loaded internally.
+
+### D15: `src/new-ui/` as the Page Integration Layer
+
+> *Renumbered from D13 due to insertion of D13 (Mobile) and D14 (Lazy Loading).*
 
 CRD-migrated page components live in `src/new-ui/topLevelPages/<pageName>/` rather than modifying existing files in `src/main/topLevelPages/`. This keeps MUI and CRD page implementations cleanly separated — the original MUI pages in `src/main/topLevelPages/` remain untouched and can be removed once migration is complete. The `src/new-ui/` layer may import from `@/crd/`, `@/domain/`, and `@/core/`, but MUST NOT import from `@mui/*`. The `CrdLayoutWrapper` remains in `src/main/ui/layout/` because it is an app-level concern, not page-specific.

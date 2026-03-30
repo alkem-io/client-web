@@ -12,7 +12,11 @@
     "settings": "Настройки",
     "logout": "Изход",
     "login": "Вход",
-    "beta": "Бета"
+    "beta": "Бета",
+    "pendingMemberships": "Чакащи членства",
+    "administration": "Администрация",
+    "changeLanguage": "Смяна на езика",
+    "getHelp": "Помощ"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

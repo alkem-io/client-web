@@ -253,6 +253,42 @@
 7. Phases 5-7 (parallel): Coexistence validation, responsiveness, loading/empty states
 8. Phase 8: Final verification
 
+### Milestone 4: Header Menu, Mobile & Performance (Phase 11)
+
+9. Phase 11: Header menu parity, mobile responsive fixes, lazy loading strategy
+
+---
+
+## Phase 11: Header Menu Parity, Mobile Responsiveness & Lazy Loading
+
+**Purpose**: Bring the CRD header user menu to parity with the MUI `PlatformNavigationUserMenu`, fix mobile layout overflow issues, and ensure lazy loading best practices.
+
+### Header Menu Parity
+
+- [x] T062 Expand `CrdNavigationHrefs` in `src/crd/layouts/types.ts`: replace `settings` with `account` and `admin` hrefs
+- [x] T063 Expand `CrdUserInfo` in `src/crd/layouts/types.ts`: add `role?: string` for platform role display
+- [x] T064 Update `src/crd/layouts/Header.tsx`: add full user menu matching MUI — user name/role badge, Dashboard, Profile, My Account, Pending Memberships (with count badge), Administration (conditional), Language sub-menu, Get Help, Log out
+- [x] T065 Update `src/crd/layouts/CrdLayout.tsx`: pass new props (`isAdmin`, `pendingInvitationsCount`, `languages`, `currentLanguage`, `onLanguageChange`, `onPendingMembershipsClick`, `onHelpClick`) through to Header
+- [x] T066 Update `src/main/ui/layout/CrdLayoutWrapper.tsx`: wire route constants (`ROUTE_HOME`, `ROUTE_USER_ME`, `buildUserAccountUrl`, `TopLevelRoutePath`), admin detection (`platformPrivilegeWrapper`), role resolution (`platformRoles`), pending invitations (`usePendingInvitationsCount`), pending memberships dialog (`usePendingMembershipsDialog`), lazy-loaded `HelpDialog`
+- [x] T067 Add i18n keys (`pendingMemberships`, `administration`, `changeLanguage`, `getHelp`) to all 6 `components.<lang>.json` files
+- [x] T068 Update `src/crd/app/CrdApp.tsx`: add mock props for new header features (isAdmin, pendingInvitationsCount, role, onPendingMembershipsClick, onHelpClick)
+
+### Mobile Responsiveness
+
+- [x] T069 Fix footer nav overflow: add `flex-wrap`, `justify-center`, responsive gap (`gap-x-4 gap-y-2 sm:gap-x-6`), hide decorative logo on mobile (`hidden sm:block`) in `src/crd/layouts/Footer.tsx`
+- [x] T070 Add `overflow-x: hidden` to `.crd-root` in `src/crd/styles/crd.css` as overflow safety net
+- [x] T071 Change `px-6` to `px-4 sm:px-6` in Header, Footer, and SpaceExplorer for mobile-appropriate padding
+- [x] T072 Align Footer `max-w` to `max-w-[1600px]` matching SpaceExplorer container width
+
+### Lazy Loading
+
+- [x] T073 Verify `SpaceExplorerPage` is lazy-loaded via `lazyWithGlobalErrorHandler()` in TopLevelRoutes.tsx (already in place)
+- [x] T074 Verify `HelpDialog` in CrdLayoutWrapper is lazy-loaded via `lazyWithGlobalErrorHandler()` with `<Suspense fallback={null}>` (implemented in T066)
+- [x] T075 Verify existing MUI dialogs (Messages, Notifications, PendingMemberships) are reused via context providers — no duplication in CRD
+- [x] T076 Update spec contracts (`specs/039-crd-spaces-page/contracts/crd-layout.ts`) to reflect expanded types
+
+**Checkpoint**: All CRD header items match MUI menu. No horizontal overflow on mobile. Lazy loading verified.
+
 ---
 
 ## Notes

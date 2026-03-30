@@ -2,6 +2,7 @@ export type CrdUserInfo = {
   name: string;
   avatarUrl?: string;
   initials: string;
+  role?: string;
 };
 
 export type CrdNavigationHrefs = {
@@ -10,7 +11,8 @@ export type CrdNavigationHrefs = {
   messages: string;
   notifications: string;
   profile: string;
-  settings: string;
+  account: string;
+  admin: string;
   login: string;
 };
 
