@@ -1,3 +1,4 @@
+import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { SpacesPage } from './pages/SpacesPage';
@@ -20,6 +21,13 @@ const NAVIGATION_HREFS = {
   login: '/login',
 };
 
+const MOCK_PLATFORM_NAVIGATION_ITEMS = [
+  { icon: <Lightbulb className="h-4 w-4" />, label: 'Innovation Library', href: '/innovation-library' },
+  { icon: <MessageCircle className="h-4 w-4" />, label: 'Forum', href: '/forum' },
+  { icon: <Compass className="h-4 w-4" />, label: 'Explore Spaces', href: '/spaces' },
+  { icon: <BookOpen className="h-4 w-4" />, label: 'Documentation', href: '/docs' },
+];
+
 const MOCK_LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'nl', label: 'Nederlands' },
@@ -38,6 +46,7 @@ export function CrdApp() {
         navigationHrefs={NAVIGATION_HREFS}
         isAdmin={true}
         pendingInvitationsCount={3}
+        platformNavigationItems={MOCK_PLATFORM_NAVIGATION_ITEMS}
         languages={MOCK_LANGUAGES}
         currentLanguage="en"
         onLanguageChange={code => console.log('Language changed to', code)}

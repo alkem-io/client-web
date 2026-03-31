@@ -1,3 +1,4 @@
+import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -93,6 +94,29 @@ function CrdLayoutConnector() {
     ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
     : undefined;
 
+  const platformNavigationItems = [
+    {
+      icon: <Lightbulb className="h-4 w-4" />,
+      label: t('pages.innovationLibrary.fullName'),
+      href: `/${TopLevelRoutePath.InnovationLibrary}`,
+    },
+    {
+      icon: <MessageCircle className="h-4 w-4" />,
+      label: t('pages.forum.fullName'),
+      href: `/${TopLevelRoutePath.Forum}`,
+    },
+    {
+      icon: <Compass className="h-4 w-4" />,
+      label: t('pages.exploreSpaces.fullName'),
+      href: `/${TopLevelRoutePath.Spaces}`,
+    },
+    {
+      icon: <BookOpen className="h-4 w-4" />,
+      label: t('pages.documentation.title'),
+      href: `/${TopLevelRoutePath.Docs}`,
+    },
+  ];
+
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);
   };
@@ -109,6 +133,8 @@ function CrdLayoutConnector() {
         navigationHrefs={navigationHrefs}
         isAdmin={isAdmin}
         pendingInvitationsCount={pendingInvitationsCount}
+        platformNavigationItems={platformNavigationItems}
+        currentPath={pathname}
         languages={languages}
         currentLanguage={i18n.language}
         onLanguageChange={code => i18n.changeLanguage(code)}

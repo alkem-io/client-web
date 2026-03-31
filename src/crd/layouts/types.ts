@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export type CrdUserInfo = {
   name: string;
   avatarUrl?: string;
@@ -26,4 +28,10 @@ export type CrdFooterLinks = {
 export type CrdLanguageOption = {
   code: string;
   label: string;
+};
+
+export type CrdPlatformNavigationItem = {
+  icon: ReactNode;
+  label: string;
+  href: string;
 };

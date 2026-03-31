@@ -19,7 +19,17 @@ Page-level integration for CRD-migrated pages lives in `src/main/crdPages/<pageN
 
 If the page uses shadcn/ui primitives not yet in `src/crd/primitives/`, port them from `prototype/src/app/components/ui/`. Update `cn()` import to `@/crd/lib/utils`.
 
-### 2. Build CRD Components
+### 2. Reuse Existing CRD Components
+
+Before building anything new, check what already exists in `src/crd/`:
+
+- **Primitives** (`primitives/`): Button, Badge, Avatar, Input, Select, DropdownMenu, Skeleton — use these as building blocks
+- **Composites** (`components/`): Search across all feature directories, not just the one you're migrating. A component built for one feature may serve another (e.g., `StackedAvatars` was built for space cards but is usable anywhere)
+- **Layout building blocks** (`layouts/components/`): UserMenu, PlatformNavigationMenu — already extracted and shared
+
+**Promoting to `common/`**: If a component currently lives under a feature-specific directory (e.g., `components/space/SomeWidget.tsx`) and your migration needs it too, **move it to `components/common/`** and update all existing imports. Don't create a second version. This applies to any reusable visual pattern: avatar groups, tag lists, card skeletons, filter bars, empty states, etc.
+
+### 3. Build New CRD Components
 
 Create presentational components in `src/crd/components/<domain>/`. Rules:
 - Zero MUI imports
@@ -31,18 +41,18 @@ Create presentational components in `src/crd/components/<domain>/`. Rules:
 - Styling via Tailwind classes + `cn()` only — no inline `style` props except for truly dynamic values (user-provided colors, `color-mix()` with no Tailwind equivalent)
 - WCAG 2.1 AA: icon-only buttons need `aria-label`, decorative icons need `aria-hidden="true"`, interactive elements need visible `focus-visible:ring` indicators, clickable elements must be `<a>` or `<button>` (not clickable `<span>`/`<div>`), lists use `role="list"`/`role="listitem"`, loading states use `role="status"` with `aria-label`, all user-visible text must use `t()` (no hardcoded strings in JSX)
 
-### 3. Create Data Mapper
+### 4. Create Data Mapper
 
 Create `src/main/crdPages/<page>/dataMapper.ts` that maps GraphQL types to CRD component props. This is the **only file** where GraphQL types meet CRD view types.
 
-### 4. Create CRD View Wrapper
+### 5. Create CRD View Wrapper
 
 Create `src/main/crdPages/<page>/PageCrdView.tsx` that:
 - Imports the CRD component from `src/crd/`
 - Calls the data mapper to transform props
 - Maps filter enums between MUI and CRD types
 
-### 5. Create the Page Component
+### 6. Create the Page Component
 
 Create a new page component in `src/main/crdPages/<page>/PageDep.tsx` that:
 - Calls the existing data hook (can be copied from the MUI page or imported)
@@ -51,7 +61,7 @@ Create a new page component in `src/main/crdPages/<page>/PageDep.tsx` that:
 
 The original MUI page in `src/main/topLevelPages/` stays untouched — it can be removed once the migration is complete.
 
-### 6. Wire the Route (with Lazy Loading)
+### 7. Wire the Route (with Lazy Loading)
 
 In `TopLevelRoutes.tsx`, move the route under the `<Route element={<CrdLayoutWrapper />}>` group. Lazy-load the new page using `lazyWithGlobalErrorHandler()`:
 
@@ -75,7 +85,7 @@ const MyPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/<page>/M
 - Existing MUI dialogs (Messages, Notifications): already lazy-loaded in `root.tsx`, reuse via context providers — never duplicate
 - CRD primitives: bundled with the page chunk (small, no separate vendor chunk needed)
 
-### 7. Add i18n Keys
+### 8. Add i18n Keys
 
 CRD uses per-feature i18n namespaces. Each feature has its own set of translation files in `src/crd/i18n/`:
 

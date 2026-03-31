@@ -17,7 +17,7 @@ Migrate the `/spaces` page from MUI to shadcn/ui + Tailwind CSS as the first pro
 **Project Type**: Web application (frontend only — no backend changes)
 **Performance Goals**: CRD page LCP equal to or better than MUI version
 **Constraints**: Zero MUI imports in `src/crd/`; both styling systems must coexist without conflicts; MUI pages must not regress visually or functionally
-**Scale/Scope**: 1 page (/spaces), ~7 primitives to port, 3 layout components (CrdLayout, Header w/ full user menu, Footer w/ responsive wrapping), 1 composite component (SpaceCard), 1 page-level composite (SpaceExplorer), 1 data mapper, 1 route-level layout split, 1 SVG logo component, lazy-loaded HelpDialog
+**Scale/Scope**: 1 page (/spaces), ~7 primitives to port, 3 layout components (CrdLayout, Header, Footer w/ responsive wrapping), 2 layout building blocks (UserMenu, PlatformNavigationMenu), 1 composite component (SpaceCard), 1 page-level composite (SpaceExplorer), 1 data mapper, 1 route-level layout split, 1 SVG logo component, lazy-loaded HelpDialog
 
 ## Constitution Check
 
@@ -78,10 +78,13 @@ src/
 │   │       ├── SpaceCard.tsx         # CRD SpaceCard composite
 │   │       └── SpaceExplorer.tsx     # CRD page-level composite (search + grid + filters)
 │   ├── layouts/                      # CRD page shells
-│   │   ├── types.ts                 # NEW: shared types (CrdUserInfo w/ role, CrdNavigationHrefs w/ account+admin, CrdLanguageOption)
+│   │   ├── types.ts                 # NEW: shared types (CrdUserInfo, CrdNavigationHrefs, CrdLanguageOption, CrdPlatformNavigationItem)
 │   │   ├── CrdLayout.tsx            # NEW: full-page CRD shell (header + main + footer), passes all props through
-│   │   ├── Header.tsx               # NEW: CRD header (logo, nav icons, full user menu mirroring MUI PlatformNavigationUserMenu)
-│   │   └── Footer.tsx               # NEW: CRD footer (links, logo, language selector, responsive wrapping)
+│   │   ├── Header.tsx               # NEW: CRD header (logo, nav icons, composes UserMenu + PlatformNavigationMenu)
+│   │   ├── Footer.tsx               # NEW: CRD footer (links, logo, language selector, responsive wrapping)
+│   │   └── components/              # Layout building blocks (extracted from Header/Footer)
+│   │       ├── UserMenu.tsx         # Profile dropdown menu (extracted from Header)
+│   │       └── PlatformNavigationMenu.tsx  # Platform nav dropdown (Innovation Library, Forum, Spaces, Docs)
 │   ├── forms/                        # Form UI components
 │   │   └── tags-input.tsx           # NEW: Reusable tag-based input (type + Enter = tag chip)
 │   ├── hooks/
@@ -176,7 +179,7 @@ The CRD Header mirrors the MUI `PlatformNavigationUserMenu` while staying purely
 
 **Route reuse:** All navigation hrefs in `CrdLayoutWrapper` use existing route constants (`ROUTE_HOME`, `ROUTE_USER_ME`, `TopLevelRoutePath`, `buildUserAccountUrl`) — no paths are hardcoded. This ensures CRD navigation stays in sync with the routing system.
 
-**Icon bar** (left to right): Search, Messages, Notifications, Spaces — each accepts an optional callback that takes priority over `<a href>` fallbacks. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links from `navigationHrefs`.
+**Icon bar** (left to right): Search, Messages, Notifications, PlatformNavigation — each accepts an optional callback that takes priority over `<a href>` fallbacks. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links from `navigationHrefs`. The PlatformNavigation icon opens a dropdown menu with platform-level navigation items (see D16).
 
 Real notification feed and unread message counts are deferred.
 
@@ -265,3 +268,21 @@ The CRD system follows the project's established lazy loading patterns to minimi
 ### D15: `src/main/crdPages/` as the Page Integration Layer
 
 CRD-migrated page components live in `src/main/crdPages/<pageName>/` rather than modifying existing files in `src/main/topLevelPages/`. This keeps MUI and CRD page implementations cleanly separated — the original MUI pages in `src/main/topLevelPages/` remain untouched and can be removed once migration is complete. `src/main/crdPages/` may import from `@/crd/`, `@/domain/`, and `@/core/`, but MUST NOT import from `@mui/*`. The `CrdLayoutWrapper` remains in `src/main/ui/layout/` because it is an app-level concern, not page-specific.
+
+### D16: PlatformNavigation Menu & Layout Building Blocks
+
+The CRD Header's `LayoutGrid` icon currently links directly to `/spaces`. In the MUI layout, the equivalent icon (`PlatformNavigationMenuButton`) opens a popup menu with 4 platform-level navigation items: Innovation Library, Forum, Spaces, and Documentation (defined in `src/main/ui/platformNavigation/platformNavigationMenu/menuItems.ts`).
+
+**CRD implementation:**
+- The PlatformNavigation menu is a `DropdownMenu` (Radix UI) rendered in a new `PlatformNavigationMenu` component at `src/crd/layouts/components/PlatformNavigationMenu.tsx`
+- Menu items are received as props (`items: CrdPlatformNavigationItem[]`) — each item has an `icon` (React node), `label` (string), and `href` (string). The component never hardcodes routes
+- The `CrdPlatformNavigationItem` type is defined in `src/crd/layouts/types.ts`
+- `CrdLayoutWrapper` builds the items list from the same routes as the MUI version (`TopLevelRoutePath`) and passes them through `CrdLayout` → `Header` → `PlatformNavigationMenu`
+- Icons use lucide-react equivalents of the MUI icons used in `menuItems.ts`
+
+**Layout building blocks pattern:**
+As part of this work, the existing user profile dropdown (~120 lines) is extracted from `Header.tsx` into `src/crd/layouts/components/UserMenu.tsx`. This establishes the `layouts/components/` directory for sub-components of layout shells — building blocks that are structural parts of the page shell, not independently reusable feature-area composites. The extraction keeps `Header.tsx` focused on the icon bar layout and makes each menu independently readable.
+
+**Standalone app:** `CrdApp.tsx` provides mock platform navigation items so the menu works in the preview app without a backend.
+
+**i18n:** Menu item labels are passed as translated strings from the consumer (via `CrdLayoutWrapper` using the main `translation` namespace). The PlatformNavigationMenu component itself does not call `useTranslation` for item labels — they arrive as props. Any structural UI text (e.g., a menu heading) uses the `crd-layout` namespace.

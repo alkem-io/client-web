@@ -172,6 +172,7 @@ src/crd/
 ├── components/          # Composites — reusable combinations of primitives
 ├── forms/               # Form-specific components (inputs with labels, field groups)
 ├── layouts/             # Page-level layout components + shared types
+│   └── components/      # Layout building blocks (sub-components of Header, Footer, etc.)
 ├── styles/              # CSS tokens, theme, Tailwind entry point
 ├── lib/                 # Utilities (cn, etc.)
 ├── i18n/                # Per-feature translation directories (layout/, exploreSpaces/, etc.)
@@ -235,8 +236,21 @@ Page-level layout shells and shared types. These define the spatial arrangement 
 **Key files:**
 - `types.ts` — shared type definitions for layout components
 - `CrdLayout.tsx` — full-page shell (header + main + footer)
-- `Header.tsx` — site header with navigation, accepts callback props for messages/notifications/search
+- `Header.tsx` — site header with navigation, composes building blocks from `layouts/components/`
 - `Footer.tsx` — site footer with links and language selector, accepts languages and `onLanguageChange` as props
+
+### layouts/components/
+
+Building blocks for layout components — sub-components extracted from `Header.tsx`, `Footer.tsx`, etc. These are not independently reusable across feature areas; they are structural parts of the page shell. They follow the same rules as `layouts/` (no business logic, props-only, Tailwind styling).
+
+**Rules:**
+- Same golden rules as all CRD components (no MUI, no business logic, plain TS props, Tailwind-only)
+- Import only from `@/crd/primitives/`, `@/crd/layouts/types`, `@/crd/lib/`, and `lucide-react`
+- Extracted when a self-contained section of a layout component exceeds ~100 lines or is logically independent (e.g., a dropdown menu)
+
+**Key files:**
+- `UserMenu.tsx` — profile dropdown menu (extracted from Header)
+- `PlatformNavigationMenu.tsx` — platform navigation dropdown (Innovation Library, Forum, Spaces, Docs)
 
 ### styles/
 
@@ -559,6 +573,8 @@ Never use `window.location.href` or `useNavigate` inside a CRD component — the
 ### Component Extraction
 
 When a component exceeds ~150 lines or contains a self-contained visual pattern used in multiple contexts, extract it to `components/common/`. Example: `StackedAvatars` was extracted from `SpaceCard` because the parent-child avatar overlay is reusable across entity types.
+
+For layout components (Header, Footer), extract building blocks to `layouts/components/` instead. These are structural parts of the page shell, not reusable feature-area composites. Example: `UserMenu` and `PlatformNavigationMenu` are extracted from `Header` because each is a self-contained dropdown menu with its own props interface.
 
 ### Shared Layout Types
 

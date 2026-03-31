@@ -1,7 +1,13 @@
 import type { ReactNode } from 'react';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
-import type { CrdFooterLinks, CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import type {
+  CrdFooterLinks,
+  CrdLanguageOption,
+  CrdNavigationHrefs,
+  CrdPlatformNavigationItem,
+  CrdUserInfo,
+} from '@/crd/layouts/types';
 
 type CrdLayoutProps = {
   user?: CrdUserInfo;
@@ -9,6 +15,8 @@ type CrdLayoutProps = {
   navigationHrefs: CrdNavigationHrefs;
   isAdmin?: boolean;
   pendingInvitationsCount?: number;
+  platformNavigationItems?: CrdPlatformNavigationItem[];
+  currentPath?: string;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   onLanguageChange: (code: string) => void;
@@ -28,6 +36,8 @@ export function CrdLayout({
   navigationHrefs,
   isAdmin,
   pendingInvitationsCount,
+  platformNavigationItems,
+  currentPath,
   languages,
   currentLanguage,
   onLanguageChange,
@@ -48,6 +58,8 @@ export function CrdLayout({
         navigationHrefs={navigationHrefs}
         isAdmin={isAdmin}
         pendingInvitationsCount={pendingInvitationsCount}
+        platformNavigationItems={platformNavigationItems}
+        currentPath={currentPath}
         languages={languages}
         currentLanguage={currentLanguage}
         onLanguageChange={onLanguageChange}

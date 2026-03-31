@@ -205,6 +205,7 @@
 - **US4 (Phase 6)**: Depends on US2 (SpaceExplorer must exist) — can run in parallel with US3
 - **US5 (Phase 7)**: Depends on US2 (SpaceExplorer must exist) — can run in parallel with US3 and US4
 - **Polish (Phase 8)**: Depends on all user stories being complete (T039-T045)
+- **PlatformNavigation (Phase 12)**: Depends on Phase 11 (Header must exist with user menu). T077 and T080 can run in parallel. T078 (UserMenu extraction) must complete before T081 (PlatformNavigationMenu integration into Header). T082-T083 depend on T081. T084-T085 can run in parallel with T082-T083
 
 ### Within User Story 1 (Phase 3)
 
@@ -288,6 +289,48 @@
 - [x] T076 Update spec contracts (`specs/039-crd-spaces-page/contracts/crd-layout.ts`) to reflect expanded types
 
 **Checkpoint**: All CRD header items match MUI menu. No horizontal overflow on mobile. Lazy loading verified.
+
+---
+
+## Phase 12: PlatformNavigation Menu & Layout Building Blocks
+
+**Purpose**: Add the PlatformNavigation dropdown menu to the CRD Header (mirroring the MUI `StandalonePlatformNavigationMenu`) and extract Header sub-components into `src/crd/layouts/components/`.
+
+**Reference**: MUI source at `src/main/ui/platformNavigation/PlatformNavigationMenuButton.tsx` + `platformNavigationMenu/menuItems.ts` + `StandalonePlatformNavigationMenu.tsx`. Design decision D16 in plan.md.
+
+### Types & Props
+
+- [x] T077 [P] [US1] Add `CrdPlatformNavigationItem` type to `src/crd/layouts/types.ts` — `{ icon: ReactNode; label: string; href: string }`. This is the prop type for each menu entry in the PlatformNavigation dropdown
+
+### Extract UserMenu
+
+- [x] T078 [US1] Extract user profile dropdown from `src/crd/layouts/Header.tsx` (lines ~180-296) into `src/crd/layouts/components/UserMenu.tsx` — move the `DropdownMenu` block and its props into a standalone component. Header imports and renders `<UserMenu />`. No behavior change, purely structural extraction
+- [x] T079 [US1] Verify Header renders identically after UserMenu extraction — authenticated and unauthenticated states both work, all menu items functional
+
+### PlatformNavigation Menu Component
+
+- [x] T080 [P] [US1] Create `src/crd/layouts/components/PlatformNavigationMenu.tsx` — a `DropdownMenu` triggered by the `LayoutGrid` icon button. Receives `items: CrdPlatformNavigationItem[]` as props. Each item renders as a `DropdownMenuItem` with icon + label wrapped in an `<a href>`. Uses `useTranslation('crd-layout')` only for structural UI text (e.g., menu aria-label), not for item labels (those arrive as translated props)
+- [x] T081 [US1] Replace the direct `<a href={navigationHrefs.spaces}>` LayoutGrid button in `src/crd/layouts/Header.tsx` with `<PlatformNavigationMenu items={platformNavigationItems} />`. Add `platformNavigationItems?: CrdPlatformNavigationItem[]` prop to `HeaderProps`
+
+### Wire Through Layout
+
+- [x] T082 [US1] Add `platformNavigationItems?: CrdPlatformNavigationItem[]` prop to `CrdLayout` in `src/crd/layouts/CrdLayout.tsx` — pass it through to `Header`
+- [x] T083 [US1] Build the platform navigation items list in `src/main/ui/layout/CrdLayoutWrapper.tsx` — use `TopLevelRoutePath` for routes and `t()` from the main `translation` namespace for labels (same keys as MUI `menuItems.ts`: `pages.innovationLibrary.fullName`, `pages.forum.fullName`, `pages.exploreSpaces.fullName`, `pages.documentation.title`). Map MUI icons to lucide-react equivalents. Pass the items array through `CrdLayout` to `Header`
+
+### i18n
+
+- [x] T084 [P] [US1] Add `header.platformNavigation` key to all 6 `src/crd/i18n/layout/layout.<lang>.json` files — for the menu trigger button's `aria-label`. Item labels come from the main `translation` namespace via props, so no new keys needed for those
+
+### Standalone App
+
+- [x] T085 [US6] Update `src/crd/app/CrdApp.tsx` — provide mock `platformNavigationItems` array with 4 items (Innovation Library, Forum, Spaces, Docs) using lucide-react icons and mock hrefs, so the menu works in the standalone preview app
+
+### Verification
+
+- [x] T086 Run `pnpm lint` and `pnpm vitest run` — verify no regressions after all Phase 12 changes (588 tests passing, lint clean on changed files)
+- [ ] T087 Verify the PlatformNavigation menu opens on click, shows 4 items with icons, and each item navigates to the correct route. Verify the UserMenu still works after extraction. Test in both authenticated and unauthenticated states
+
+**Checkpoint**: PlatformNavigation dropdown menu shows 4 platform navigation items. UserMenu extracted into its own component. Header is cleaner and composed from building blocks in `layouts/components/`. Standalone app shows mock menu items.
 
 ---
 
