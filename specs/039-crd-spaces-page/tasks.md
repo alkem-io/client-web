@@ -206,6 +206,7 @@
 - **US5 (Phase 7)**: Depends on US2 (SpaceExplorer must exist) — can run in parallel with US3 and US4
 - **Polish (Phase 8)**: Depends on all user stories being complete (T039-T045)
 - **PlatformNavigation (Phase 12)**: Depends on Phase 11 (Header must exist with user menu). T077 and T080 can run in parallel. T078 (UserMenu extraction) must complete before T081 (PlatformNavigationMenu integration into Header). T082-T083 depend on T081. T084-T085 can run in parallel with T082-T083
+- **Notifications Panel (Phase 13)**: Depends on Phase 12 (Header with layout building blocks pattern). T088 (dialog primitive), T089 (types), T093 (i18n) can run in parallel. T090 (NotificationItem) depends on T089. T091 (NotificationsPanel) depends on T088 + T090 + T093. T092 (unread badge) can run in parallel with T090-T091. T094 (data mapper) depends on T089. T095 (CrdLayoutWrapper wiring) depends on T091 + T092 + T094. T096 (standalone app) depends on T091
 
 ### Within User Story 1 (Phase 3)
 
@@ -334,6 +335,68 @@
 
 ---
 
+## Phase 13: CRD Notifications Panel
+
+**Purpose**: Replace the MUI `InAppNotificationsDialog` with a CRD notifications panel for CRD routes. Add unread badge to the bell icon. The data layer (`useInAppNotifications`, GraphQL queries/subscriptions, context provider) remains untouched.
+
+**Reference**: MUI source at `src/main/inAppNotifications/InAppNotificationsDialog.tsx`, `InAppNotificationsList.tsx`, `InAppNotificationBaseView.tsx`, `InAppNotificationsFilterChips.tsx`. Prototype reference at `prototype/src/app/components/layout/Header.tsx` (notifications dropdown). Design decision D17 in plan.md.
+
+### Primitives
+
+- [x] T088 [P] [US1] Port `dialog` primitive from `prototype/src/app/components/ui/dialog.tsx` to `src/crd/primitives/dialog.tsx` — Radix `@radix-ui/react-dialog` wrapper (Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose). Update imports to use `@/crd/lib/utils`. Install `@radix-ui/react-dialog` if not already present
+
+### Types
+
+- [x] T089 [P] [US1] Add notification types to `src/crd/layouts/types.ts`:
+  - `CrdNotificationItemData` — `{ id: string; title: string; description: string; avatarUrl?: string; avatarFallback: string; timestamp: string; isUnread: boolean; href?: string; typeBadgeIcon?: ReactNode }`
+  - `CrdNotificationFilter` — `{ key: string; label: string }`
+
+### CRD Components
+
+- [x] T090 [US1] Create `src/crd/layouts/components/NotificationItem.tsx` — generic notification item built from CRD primitives (Avatar, Badge). Renders: avatar with initials fallback + optional type badge overlay, title (bold if unread) with unread dot indicator, description (1-2 line clamp), relative timestamp. Accepts `onRead`, `onUnread`, `onArchive` callback props for the actions menu. Accepts `onClick` for navigation. All text via props, no i18n inside this component
+- [x] T091 [US1] Create `src/crd/layouts/components/NotificationsPanel.tsx` — full dialog using CRD `Dialog` primitive. Contains:
+  - Header: title (`t('header.notifications')`), "Mark all as read" button, optional settings link
+  - Filter chips: row of `Button` variants (ghost/secondary toggle), receives `filters: CrdNotificationFilter[]`, `selectedFilter: string`, `onFilterChange` as props
+  - Scrollable notification list: maps `items: CrdNotificationItemData[]` to `NotificationItem` components, uses `max-h-[60vh] overflow-y-auto`
+  - Load more: "Load more" button or infinite scroll trigger at bottom, receives `hasMore` + `onLoadMore` props
+  - Empty state: icon + message when `items` is empty and not loading
+  - Loading state: skeleton items when `loading` is true
+  Uses `useTranslation('crd-notifications')` for structural UI text (title, mark all read, empty state message, filter labels)
+
+### Unread Badge on Bell Icon
+
+- [x] T092 [US1] Add `unreadCount?: number` prop to `Header` and `CrdLayout` in `src/crd/layouts/Header.tsx` and `src/crd/layouts/CrdLayout.tsx`. When `unreadCount > 0`, render a small badge on the bell icon (red dot or count number). Follow the prototype pattern: `absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background`
+
+### i18n
+
+- [x] T093 [P] [US1] Create `src/crd/i18n/notifications/` directory with `notifications.en.json` (+ bg, de, es, fr, nl). Add keys: `notifications.title`, `notifications.markAllRead`, `notifications.settings`, `notifications.emptyTitle`, `notifications.emptyMessage`, `notifications.loadMore`, `notifications.actions.read`, `notifications.actions.unread`, `notifications.actions.archive`, `notifications.timeAgo` (relative time format). Register `'crd-notifications'` namespace in `crdNamespaceImports` in `src/core/i18n/config.ts`
+
+### Integration (CrdLayoutWrapper)
+
+- [x] T094 [US1] Create notification data mapper in `src/main/ui/layout/notificationDataMapper.ts` — function `mapNotificationToItemData(notification: InAppNotificationModel, t: TFunction): CrdNotificationItemData` that extracts title/description by calling `t()` with the notification type's i18n key (`components.inAppNotifications.type.${notification.type}.subject` / `.description`) and payload values (built from the notification's payload fields: `triggeredBy`, `space`, `callout`, etc.). Resolves avatar URL from `triggeredBy.profile.visual.uri`, builds initials fallback from `triggeredBy.profile.displayName`, formats timestamp with `formatTimeElapsed(notification.triggeredAt)`. The i18n key pattern is consistent across all 40+ types — no type-specific branching needed, just the type enum value as the key segment. This replaces the 40+ type-specific view components with a single mapping function
+- [x] T095 [US1] Update `src/main/ui/layout/CrdLayoutWrapper.tsx`:
+  - Import and lazy-load `NotificationsPanel` via `lazyWithGlobalErrorHandler()`
+  - Use `useInAppNotifications()` to get `notificationsInApp`, `unreadCount`, `isLoading`, `fetchMore`, `hasMore`, `updateNotificationState`, `markNotificationsAsRead`
+  - Use `useInAppNotificationsContext()` to get `isOpen`, `setIsOpen`, `selectedFilter`, `setSelectedFilter`
+  - Map `notificationsInApp` to `CrdNotificationItemData[]` via the data mapper
+  - Build filter chips from `NotificationFilterType` enum with translated labels
+  - Pass `unreadCount` through `CrdLayout` → `Header` for the badge
+  - Render `<NotificationsPanel>` conditionally when `isOpen`, with `<Suspense fallback={null}>`
+  - Wire all callbacks: `onClose`, `onMarkAllRead`, `onFilterChange`, `onNotificationClick` (mark read + close + navigate), `onRead`, `onUnread`, `onArchive`, `onLoadMore`
+
+### Standalone App
+
+- [x] T096 [US6] Update `src/crd/app/CrdApp.tsx` — add mock notification data and render `NotificationsPanel` with mock items. Add `unreadCount` to the mock CrdLayout props
+
+### Verification
+
+- [x] T097 Run `pnpm biome check --write` on changed files and `pnpm vitest run` — verify no regressions (588 tests passing, lint clean)
+- [ ] T098 Verify: bell icon shows unread badge, clicking opens CRD notifications dialog with filters, items render with avatar/title/description/timestamp, infinite scroll loads more, mark-all-read works, individual item actions (read/unread/archive) work, empty state shows when no notifications match filter
+
+**Checkpoint**: CRD notifications panel fully replaces the MUI dialog for CRD routes. Bell icon shows unread count. Notification items are generic (single component for all 40+ types). Data layer untouched.
+
+---
+
 ## Notes
 
 - [P] tasks = different files, no dependencies
@@ -344,4 +407,4 @@
 - CrdLayoutWrapper in `src/main/ui/layout/` is the smart container that connects the CRD shell to app data
 - Prototype features requiring data layer changes (e.g., member count) are omitted per spec clarification
 - All CRD components must pass the checklist in `src/crd/CLAUDE.md`
-- CRD Header interactive features (search overlay, real notifications, real messages) are deferred — icons link to existing pages
+- CRD Header interactive features: notifications panel migrated in Phase 13; search overlay and real messages remain deferred

@@ -1,0 +1,22 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "settings": "Settings",
+    "emptyTitle": "No notifications",
+    "emptyMessage": "You're all caught up! New notifications will appear here.",
+    "loadMore": "Load more",
+    "loading": "Loading notifications",
+    "actions": {
+      "read": "Mark as read",
+      "unread": "Mark as unread",
+      "archive": "Archive"
+    },
+    "filters": {
+      "all": "All",
+      "messagesAndReplies": "Messages & Replies",
+      "space": "Space",
+      "platform": "Platform"
+    }
+  }
+}

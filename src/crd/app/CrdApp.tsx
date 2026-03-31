@@ -47,6 +47,7 @@ export function CrdApp() {
         isAdmin={true}
         pendingInvitationsCount={3}
         platformNavigationItems={MOCK_PLATFORM_NAVIGATION_ITEMS}
+        unreadNotificationsCount={5}
         languages={MOCK_LANGUAGES}
         currentLanguage="en"
         onLanguageChange={code => console.log('Language changed to', code)}

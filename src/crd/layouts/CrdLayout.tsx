@@ -17,6 +17,7 @@ type CrdLayoutProps = {
   pendingInvitationsCount?: number;
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
+  unreadNotificationsCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   onLanguageChange: (code: string) => void;
@@ -38,6 +39,7 @@ export function CrdLayout({
   pendingInvitationsCount,
   platformNavigationItems,
   currentPath,
+  unreadNotificationsCount,
   languages,
   currentLanguage,
   onLanguageChange,
@@ -60,6 +62,7 @@ export function CrdLayout({
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
+        unreadNotificationsCount={unreadNotificationsCount}
         languages={languages}
         currentLanguage={currentLanguage}
         onLanguageChange={onLanguageChange}

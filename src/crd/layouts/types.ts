@@ -35,3 +35,20 @@ export type CrdPlatformNavigationItem = {
   label: string;
   href: string;
 };
+
+export type CrdNotificationItemData = {
+  id: string;
+  title: string;
+  description: string;
+  avatarUrl?: string;
+  avatarFallback: string;
+  timestamp: string;
+  isUnread: boolean;
+  href?: string;
+  typeBadgeIcon?: ReactNode;
+};
+
+export type CrdNotificationFilter = {
+  key: string;
+  label: string;
+};
