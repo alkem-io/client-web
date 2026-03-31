@@ -900,7 +900,7 @@ const TemplatesAndPages = () => (
     </ComponentBlock>
 
     <ComponentBlock title="Implemented Page Links" description="Direct access to live pages.">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
          {[
             { name: "Home Dashboard", path: "/", icon: Home, desc: "Main landing" },
             { name: "Template Library", path: "/templates", icon: Layout, desc: "Catalog view" },

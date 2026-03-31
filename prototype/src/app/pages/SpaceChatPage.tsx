@@ -19,15 +19,15 @@ export function SpaceChatPage() {
       <SpaceHeader spaceSlug={slug} />
 
       <div className="flex-1 min-h-0 flex flex-col">
-        <div className="container mx-auto px-4 md:px-6 pt-6 pb-4 flex-1 flex flex-col min-h-0">
-          <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
+        <div className="w-full px-6 md:px-8 pt-6 pb-4 flex-1 flex flex-col min-h-0">
+          <div className="grid grid-cols-12 gap-6 flex-1 min-h-0">
             {/* Sidebar — hidden on mobile, visible on lg+ */}
-            <div className="hidden lg:block shrink-0">
+            <div className="hidden lg:block lg:col-start-2 col-span-2">
               <SpaceSidebar spaceSlug={slug} />
             </div>
 
             {/* Main content area */}
-            <div className="flex-1 w-full min-w-0 flex flex-col min-h-0">
+            <div className="col-span-12 lg:col-span-8 flex flex-col min-h-0">
               {/* Tab navigation */}
               <div className="shrink-0 pb-2 mb-0">
                 <SpaceNavigationTabs spaceSlug={slug} />

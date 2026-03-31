@@ -48,10 +48,11 @@ export default function AdminPage() {
   const activeSection = section || "overview";
 
   return (
-    <div className="flex min-h-[calc(100vh-128px)]" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="min-h-[calc(100vh-128px)] px-6 md:px-8" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="grid grid-cols-12 gap-6 h-full">
       {/* Sidebar */}
       <aside
-        className="hidden md:flex flex-col w-56 shrink-0 py-6 px-3"
+        className="hidden md:flex flex-col lg:col-start-2 col-span-2 py-6 px-3"
         style={{
           borderRight: "1px solid var(--border)",
           background: "var(--card)",
@@ -94,8 +95,8 @@ export default function AdminPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 md:p-8 overflow-y-auto">
-        <div className="max-w-5xl mx-auto">
+      <div className="col-span-12 lg:col-span-8 py-8 overflow-y-auto">
+        <div>
           {activeSection === "overview" ? (
             <>
               <div className="mb-8">
@@ -312,6 +313,7 @@ export default function AdminPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

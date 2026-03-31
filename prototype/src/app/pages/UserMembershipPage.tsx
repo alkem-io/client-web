@@ -110,7 +110,9 @@ export default function UserMembershipPage() {
     <div className="min-h-screen bg-background pb-12">
       {/* Header / Navigation Area */}
       <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
+        <div className="px-6 md:px-8 pt-8 pb-0">
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Memberships</h1>
@@ -135,10 +137,14 @@ export default function UserMembershipPage() {
               </Link>
             ))}
           </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-8 py-8 space-y-8">
+      <div className="px-6 md:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-8">
         
         {/* Controls */}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
@@ -279,6 +285,8 @@ export default function UserMembershipPage() {
              </Button>
           </div>
         )}
+        </div>
+        </div>
       </div>
     </div>
   );

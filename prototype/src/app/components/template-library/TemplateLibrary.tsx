@@ -339,7 +339,9 @@ export function TemplateLibrary() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header & Sticky Search */}
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="px-6 md:px-8 py-4">
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Template Library</h1>
@@ -358,13 +360,14 @@ export function TemplateLibrary() {
               />
             </div>
           </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-8">
-        
-        {/* Main Content Area */}
-        <div className="flex-1 min-w-0 space-y-12">
+      <main className="flex-1 w-full px-6 md:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10 space-y-12">
           
           {/* Template Packs Section */}
           {(filteredPacks.length > 0) && (
@@ -379,7 +382,7 @@ export function TemplateLibrary() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {currentPacks.map(pack => (
                   <PackCard 
                     key={pack.id} 
@@ -467,6 +470,7 @@ export function TemplateLibrary() {
             )}
           </section>
 
+          </div>
         </div>
       </main>
     </div>

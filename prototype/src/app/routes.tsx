@@ -24,8 +24,6 @@ import DesignSystemPage from "./pages/DesignSystemPage";
 import EcosystemAnalyticsPage from "./pages/analytics/EcosystemAnalyticsPage";
 import BrowseSpacesPage from "./pages/BrowseSpacesPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import NotificationsPage from "./pages/NotificationsPage";
-import MessagesPage from "./pages/MessagesPage";
 import AdminPage from "./pages/AdminPage";
 import OnboardingPage from "./pages/OnboardingPage";
 
@@ -54,12 +52,6 @@ export const router = createBrowserRouter([
           { path: "templates/:templateId", Component: TemplateDetailPage },
           { path: "templates/packs/:packSlug", Component: TemplatePackDetailPage },
           { path: "templates/packs/:packSlug/:templateId", Component: TemplateDetailPage },
-
-          /* Notifications (full page) */
-          { path: "notifications", Component: NotificationsPage },
-
-          /* Messages (full-page inbox) */
-          { path: "messages", Component: MessagesPage },
 
           /* Platform Admin */
           { path: "admin", Component: AdminPage },

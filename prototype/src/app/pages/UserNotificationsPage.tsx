@@ -138,7 +138,9 @@ export default function UserNotificationsPage() {
     <div className="min-h-screen bg-background pb-12">
       {/* Header / Navigation Area */}
       <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
+        <div className="px-6 md:px-8 pt-8 pb-0">
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Notifications</h1>
@@ -163,10 +165,14 @@ export default function UserNotificationsPage() {
               </Link>
             ))}
           </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-8 py-8">
+      <div className="px-6 md:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
         <div className="space-y-8">
           
           <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-lg text-sm text-muted-foreground border">
@@ -233,6 +239,8 @@ export default function UserNotificationsPage() {
             </div>
           ))}
 
+        </div>
+        </div>
         </div>
       </div>
     </div>

@@ -20,7 +20,9 @@ export default function UserGenericSettingsPage({ title = "Settings" }: { title?
     <div className="min-h-screen bg-background pb-12">
       {/* Sticky Header / Navigation Area */}
       <div className="sticky top-16 z-20 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="container mx-auto px-4 md:px-8 pt-8 pb-0">
+        <div className="px-6 md:px-8 pt-8 pb-0">
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
@@ -48,13 +50,19 @@ export default function UserGenericSettingsPage({ title = "Settings" }: { title?
               );
             })}
           </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-8 py-8">
+      <div className="px-6 md:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-start-2 lg:col-span-10">
         <div className="flex flex-col items-center justify-center min-h-[400px] border border-dashed rounded-xl bg-muted/5">
             <h2 className="text-2xl font-semibold mb-2">{title}</h2>
             <p className="text-muted-foreground">This section is currently under development.</p>
+        </div>
+          </div>
         </div>
       </div>
     </div>

@@ -146,12 +146,15 @@ export default function NotificationsPage() {
 
   return (
     <div
-      className="w-full max-w-4xl mx-auto"
+      className="w-full px-6 md:px-8"
       style={{
-        padding: "32px 24px 64px",
+        paddingTop: 32,
+        paddingBottom: 64,
         fontFamily: "'Inter', sans-serif",
       }}
     >
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-start-2 lg:col-span-10">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
@@ -366,6 +369,8 @@ export default function NotificationsPage() {
             </p>
           </div>
         )}
+      </div>
+        </div>
       </div>
     </div>
   );

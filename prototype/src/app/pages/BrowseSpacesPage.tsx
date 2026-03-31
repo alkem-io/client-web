@@ -651,9 +651,11 @@ export default function BrowseSpacesPage() {
 
   return (
     <div
-      className="flex flex-col w-full max-w-[1600px] mx-auto"
-      style={{ padding: "0 24px 48px", fontFamily: "'Inter', sans-serif" }}
+      className="flex flex-col w-full px-6 md:px-8"
+      style={{ paddingBottom: 48, fontFamily: "'Inter', sans-serif" }}
     >
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-start-2 lg:col-span-10">
       {/* ─── Page Header ───────────────────────────────────────────────── */}
       <div style={{ padding: "32px 0 24px" }}>
         <h1
@@ -1050,6 +1052,8 @@ export default function BrowseSpacesPage() {
           </Button>
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 }
