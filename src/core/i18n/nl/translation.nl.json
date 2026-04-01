@@ -104,8 +104,8 @@
     "adminsOnly": "Aangezien er geen evenementen zijn, is dit blok alleen zichtbaar voor $t(common.admins) en $t(common.leads)"
   },
   "buttons": {
-    "accept": "Accept",
-    "add": "Add",
+    "accept": "Accepteer",
+    "add": "Toevoegen",
     "leave": "Verlaat",
     "learn-more": "Meer leren",
     "load-more": "Laad meer",
@@ -283,7 +283,7 @@
     "avatar": "Profielfoto",
     "avatar-of": "Avatar van {{user}}",
     "authorizationPolicies": "Autorisatie beleid",
-    "transfer": "Transfer",
+    "transfer": "Conversies & Transfers",
     "beta": "Bèta",
     "inspiration": "Inspiratie",
     "name": "Naam",
@@ -346,6 +346,7 @@
     "forum": "Forum",
     "email": "E-mail",
     "inApp": "In-app",
+    "push": "Pushmelding",
     "state": "Staat",
     "states": "Fasen",
     "post": "post",
@@ -385,8 +386,8 @@
     "role": "Rol",
     "agreement": "Overeenkomst",
     "agreements": "Overeenkomsten",
-    "Poll": "Poll",
-    "poll": "poll",
+    "Poll": "Peiling",
+    "poll": "peiling",
     "templates": "Templates",
     "noneTemplates": "Geen templates",
     "templateTypes": "Template types",
@@ -877,7 +878,7 @@
         },
         "poll": {
           "title": "$t(common.Poll)",
-          "tooltip": "Create a $t(common.poll) for community voting"
+          "tooltip": "Maak een $t(common.poll) voor stemmen binnen de community"
         }
       },
       "contributionSettings": {
@@ -1245,9 +1246,9 @@
       "duplicateEmail": "E-mailadres is al ingevoerd",
       "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn",
       "acceptedTerms": "Je moet de algemene voorwaarden accepteren",
-      "pollMinResponsesWithinOptions": "Minimum choices needed to vote must be less than or equal to the number of options.",
-      "pollMaxResponsesWithinOptions": "Maximum choices allowed per vote must be less than or equal to the number of options.",
-      "pollMinResponsesWithinMaxResponses": "Minimum choices needed to vote must be less than or equal to maximum choices allowed per vote."
+      "pollMinResponsesWithinOptions": "Minimaal aantal keuzes die nodig zijn om te stemmen moeten minder dan of gelijk zijn aan het aantal opties.",
+      "pollMaxResponsesWithinOptions": "Maximaal aantal keuzes per stem moet kleiner of gelijk zijn aan het aantal opties.",
+      "pollMinResponsesWithinMaxResponses": "Minimale keuzes die nodig zijn om te stemmen moeten lager zijn dan of gelijk zijn aan de maximum toegestane per stemming."
     }
   },
   "templateDialog": {
@@ -2273,20 +2274,20 @@
           "description": "{{triggeredByName}} heeft een $t(common.comment) achtergelaten op de {{eventTitle}} in de {{spaceName}} kalender"
         },
         "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL": {
-          "subject": "{{triggeredByName}} voted on your $t(common.poll) \"{{calloutName}}\" in {{spaceName}}",
+          "subject": "{{triggeredByName}} heeft gestemd op je $t(common.poll) \"{{calloutName}}\" in {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_POLL_I_VOTED_ON": {
-          "subject": "{{triggeredByName}} also voted on \"{{calloutName}}\" in {{spaceName}}",
+          "subject": "{{triggeredByName}} heeft ook gestemd op \"{{calloutName}}\" in {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
-          "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified",
-          "description": "{{triggeredByName}} modified a $t(common.poll) you voted on"
+          "subject": "De $t(common.poll) \"{{calloutName}}\" in {{spaceName}} is gewijzigd",
+          "description": "{{triggeredByName}} heeft een $t(common.poll) gewijzigd waarop je hebt gestemd"
         },
         "SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE": {
-          "subject": "Your vote on \"{{calloutName}}\" in {{spaceName}} was affected by a change",
-          "description": "{{triggeredByName}} changed an option on a $t(common.poll) you voted on, and your vote was removed"
+          "subject": "Je stem op \"{{calloutName}}\" in {{spaceName}} werd beïnvloed door een wijziging",
+          "description": "{{triggeredByName}} heeft een optie gewijzigd op $t(common.poll) waarop je hebt gestemd, en je stem is verwijderd"
         }
       },
       "emptyInbox": "Geen openstaande $t(common.notifications)",
@@ -2307,34 +2308,34 @@
       "noMessages": "Geen berichten",
       "selectConversation": "Selecteer een gesprek om een bericht te sturen",
       "typeMessage": "Typ een bericht",
-      "newMessage": "Start a conversation",
+      "newMessage": "Start een gesprek",
       "selectUser": "Aan",
       "noUsersFound": "Geen gebruikers gevonden",
       "startTyping": "Begin met typen om gebruikers te zoeken",
-      "searchUsers": "Find user(s)",
+      "searchUsers": "Zoek gebruiker(s)",
       "searchConversations": "Zoek...",
-      "createChat": "New Chat",
-      "startGroupChat": "Start group chat",
-      "groupChatName": "Group name",
-      "groupChatNameRequired": "Group name is required",
-      "selectMembers": "Add members",
-      "selectMembersHint": "Search and add members to the group",
-      "createGroupChat": "Start group convo",
-      "editProfilePicture": "Edit profile picture",
-      "addMembers": "Add members",
-      "groupMembers": "Members",
-      "remove": "Remove",
-      "manageGroup": "Manage group",
-      "leaveGroup": "Leave group",
-      "leaveGroupConfirmTitle": "Leave group chat?",
-      "leaveGroupConfirmMessage": "You will lose access to this group chat and won’t be able to read or send messages.",
-      "noMembersSelected": "Add at least one member",
-      "membersCount_one": "{{count}} member",
-      "membersCount_other": "{{count}} members",
-      "saveGroup": "Save Group",
-      "discardChangesTitle": "Unsaved changes",
-      "discardChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
-      "discardChanges": "Discard"
+      "createChat": "Nieuwe Chat",
+      "startGroupChat": "Groepsgesprek starten",
+      "groupChatName": "Groepsnaam",
+      "groupChatNameRequired": "Groepsnaam is vereist",
+      "selectMembers": "Leden toevoegen",
+      "selectMembersHint": "Zoek en voeg leden toe aan de groep",
+      "createGroupChat": "Groepsgesprek starten",
+      "editProfilePicture": "Profielfoto bewerken",
+      "addMembers": "Leden toevoegen",
+      "groupMembers": "Leden",
+      "remove": "Verwijderen",
+      "manageGroup": "Groep beheren",
+      "leaveGroup": "Groep verlaten",
+      "leaveGroupConfirmTitle": "Groepsgesprek verlaten?",
+      "leaveGroupConfirmMessage": "Je verliest de toegang tot deze groepschat en kan geen berichten meer lezen of verzenden.",
+      "noMembersSelected": "Voeg ten minste één lid toe",
+      "membersCount_one": "{{count}} lid",
+      "membersCount_other": "{{count}} leden",
+      "saveGroup": "Groep opslaan",
+      "discardChangesTitle": "Niet opgeslagen wijzigingen",
+      "discardChangesMessage": "Er zijn niet opgeslagen wijzigingen. \nWeet je zeker dat je deze ongedaan wilt maken?",
+      "discardChanges": "Verwijder"
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Je $t(common.space) is klaar!",
@@ -2379,92 +2380,92 @@
   },
   "poll": {
     "vote": {
-      "minRequired": "Select at least {{min}} option(s)",
-      "maxReached": "Maximum {{max}} selections allowed"
+      "minRequired": "Selecteer ten minste {{min}} optie(s)",
+      "maxReached": "Maximaal {{max}} selecties toegestaan"
     },
     "status": {
-      "submitting": "Submitting your vote...",
-      "preparingVote": "Preparing vote...",
-      "addingOption": "Adding option...",
-      "voted": "Voted.",
-      "removeMyVote": "Remove my vote",
-      "open": "Poll is open",
-      "closed": "Poll closed"
+      "submitting": "Uw stem indienen...",
+      "preparingVote": "Stem voorbereiden...",
+      "addingOption": "Voeg optie toe...",
+      "voted": "Gestemd.",
+      "removeMyVote": "Verwijder mijn stem",
+      "open": "Peiling is open",
+      "closed": "Peiling gesloten"
     },
     "results": {
-      "noVotes": "No votes yet",
-      "totalVotes_zero": "{{count}} votes",
-      "totalVotes_one": "{{count}} vote",
-      "totalVotes_other": "{{count}} votes",
-      "voters": "Voters",
-      "anonymousPoll": "This is an anonymous poll",
-      "votersMore_one": "{{count}} more voter",
-      "votersMore_other": "{{count}} more voters"
+      "noVotes": "Nog geen stemmen",
+      "totalVotes_zero": "{{count}} stemmen",
+      "totalVotes_one": "{{count}} stem",
+      "totalVotes_other": "{{count}} stemmen",
+      "voters": "Stemmers",
+      "anonymousPoll": "Deze poll is anoniem",
+      "votersMore_one": "{{count}} meer stemmer",
+      "votersMore_other": "{{count}} meer stemmers"
     },
     "options": {
-      "add": "Add Option",
-      "remove": "Remove Option",
-      "edit": "Edit Option",
-      "reorder": "Reorder Options",
-      "minRequired": "At least 2 options are required",
-      "confirmEdit": "Editing this option will delete all votes for it. Continue?",
-      "confirmRemove": "Removing this option will delete all votes for it. Continue?"
+      "add": "Voeg optie toe",
+      "remove": "Optie Verwijderen",
+      "edit": "Wijzigen",
+      "reorder": "Opties herschikken",
+      "minRequired": "Minimaal 2 opties zijn vereist",
+      "confirmEdit": "Door deze optie te bewerken worden alle stemmen ervoor verwijderd. Doorgaan?",
+      "confirmRemove": "Het verwijderen van deze optie zal alle stemmen ervoor verwijderen. Doorgaan?"
     },
     "create": {
-      "title": "$t(common.Poll) Title",
-      "options": "Options",
+      "title": "$t(common.Poll) Titel",
+      "options": "Opties",
       "settings": "$t(common.settings)",
       "settingsDialogTitle": "$t(common.Poll) $t(common.settings)",
-      "minResponses": "Minimum choices needed to vote",
-      "maxResponses": "Maximum choices allowed per vote",
-      "votingOptions": "Voting options",
-      "displayOptions": "Display options",
-      "allowMultipleResponses": "Allow multiple responses per user",
-      "allowMultipleResponsesSettingsTooltip": "Configure the maximum and minimum number of choices a user can select when voting",
-      "infiniteResponses": "Any",
-      "infiniteResponsesTooltip": "Allow unlimited responses",
-      "allowUserOptions": "Allow users to add new options",
-      "onlyShowResultsAfterVoted": "Only show results after a user has voted",
-      "showVoterAvatars": "Show avatars of voters in the results",
-      "fixErrorsBeforeClosingTooltip": "There are validation errors in the settings, please fix them before closing the dialog",
+      "minResponses": "Minimale keuzes die nodig zijn om te stemmen",
+      "maxResponses": "Maximaal aantal keuzes toegestaan per stem",
+      "votingOptions": "Stemopties",
+      "displayOptions": "Weergaveopties",
+      "allowMultipleResponses": "Meerdere reacties per gebruiker toestaan",
+      "allowMultipleResponsesSettingsTooltip": "Configureer het maximum en minimum aantal keuzes die een gebruiker kan selecteren wanneer hij stemt",
+      "infiniteResponses": "Elke",
+      "infiniteResponsesTooltip": "Onbeperkte reacties toestaan",
+      "allowUserOptions": "Gebruikers toestaan nieuwe opties toe te voegen",
+      "onlyShowResultsAfterVoted": "Alleen resultaten tonen nadat een gebruiker heeft gestemd",
+      "showVoterAvatars": "Toon avatars van kiezers in de resultaten (anoniem indien niet geselecteerd)",
+      "fixErrorsBeforeClosingTooltip": "Er zijn validatiefouten in de instellingen, los deze op voordat u het dialoogvenster sluit",
       "closeConfirm": {
-        "title": "Close settings dialog",
-        "message": "There are validation errors in the settings, if you close the dialog you will not be able to save the $t(common.callout). Are you sure you want to close it?"
+        "title": "Sluit instellingenvenster",
+        "message": "Er zitten validatiefouten in de instellingen. Als je het venster sluit, kun je de $t(common.callout) niet opslaan. Weet je zeker dat je het wilt sluiten?"
       }
     },
     "manage": {
-      "editPoll": "Edit $t(common.poll)",
-      "done": "Done",
-      "closePoll": "Close poll",
-      "reopenPoll": "Reopen poll",
+      "editPoll": "Bewerk $t(common.poll)",
+      "done": "Gereed",
+      "closePoll": "Sluit peiling",
+      "reopenPoll": "Heropen peiling",
       "closePollConfirm": {
-        "title": "Close poll",
-        "content": "Are you sure you want to close this poll? Users will no longer be able to vote."
+        "title": "Sluit peiling",
+        "content": "Weet je zeker dat je deze peiling wilt sluiten? Gebruikers kunnen niet meer stemmen."
       },
       "reopenPollConfirm": {
-        "title": "Reopen poll",
-        "content": "Are you sure you want to reopen this poll? Users will be able to vote again."
+        "title": "Heropen peiling",
+        "content": "Weet je zeker dat je deze peiling wilt heropenen? Gebruikers kunnen dan opnieuw stemmen."
       },
-      "closePollSuccess": "Poll closed successfully",
-      "reopenPollSuccess": "Poll reopened successfully",
-      "statusChangeFailed": "Failed to update poll status. Please try again."
+      "closePollSuccess": "Peiling succesvol gesloten",
+      "reopenPollSuccess": "Peiling succesvol heropend",
+      "statusChangeFailed": "Bijwerken van peiling status mislukt. Probeer opnieuw."
     },
     "error": {
-      "voteFailed": "Failed to submit your vote. Please try again.",
-      "staleOption": "This $t(common.poll) has been updated. Please refresh and try again.",
-      "networkError": "Network error. Please check your connection and try again.",
-      "optionActionFailed": "Failed to update $t(common.poll) options. Please try again."
+      "voteFailed": "Uw stem kon niet worden ingediend. Probeer het opnieuw.",
+      "staleOption": "Deze $t(common.poll) is bijgewerkt. Ververs en probeer het opnieuw.",
+      "networkError": "Netwerkfout. Controleer je verbinding en probeer het opnieuw.",
+      "optionActionFailed": "Bijwerken van $t(common.poll) opties mislukt. Probeer het opnieuw."
     },
     "subscription": {
-      "voteRevoked": "Your vote was affected by a $t(common.poll) change. Please vote again."
+      "voteRevoked": "Je stem werd beïnvloed door een verandering in de $t(common.poll). Gelieve opnieuw te stemmen."
     },
     "customOption": {
-      "placeholder": "Add a custom response..."
+      "placeholder": "Voeg een aangepast antwoord toe..."
     },
     "removeVoteConfirm": {
-      "title": "Remove your vote",
-      "content": "Are you sure you want to remove your vote from this $t(common.poll)?",
-      "confirm": "Remove vote"
+      "title": "Verwijder je stem",
+      "content": "Weet je zeker dat je jouw stem wilt verwijderen uit deze $t(common.poll)?",
+      "confirm": "Verwijder stem"
     }
   },
   "pages": {
@@ -2556,14 +2557,137 @@
       }
     },
     "admin": {
+      "conversionsAndTransfers": {
+        "pageTitle": "Conversies & Transfers",
+        "conversionsArea": "Conversies",
+        "transfersArea": "Transfers"
+      },
+      "spaceConversion": {
+        "sectionTitle": "Space Hiërarchie Conversie",
+        "sectionDescription": "Wijzig het hiërarchieniveau van een space. Gebruik een space-URL om te zien welke bewerkingen beschikbaar zijn.",
+        "urlPlaceholder": "Plak space URL of pad",
+        "urlRequired": "URL is vereist",
+        "noConversions": "L0 (top-level) spaces kunnen niet worden omgezet naar een ander hiërarchieniveau.",
+        "promote": "Promoveren",
+        "demote": "Degraderen",
+        "spaceName": "Naam",
+        "spaceLevel": "Level",
+        "accountOwner": "Account eigenaar",
+        "communityMembers": "Community leden",
+        "communityMembersSummary": "{{members}} leden, {{leads}} leads, {{orgs}} organisaties, {{vcs}} VC’s",
+        "promoteL1ToL0": {
+          "button": "Promoveer naar Space (L1 → L0)",
+          "hint": "Community leden en leads blijven behouden. De innovation flow wordt teruggezet naar de standaardinstellingen van het platform. Onderliggende sub-subspaces worden automatisch gepromoveerd tot subspaces.",
+          "confirmTitle": "Subspace promoveren tot Space?",
+          "confirmWarning": "Dit zal de subspace promoveren tot een top-level space. De innovation flow wordt teruggezet naar de standaardinstellingen. Adminrollen worden gereset."
+        },
+        "demoteL1ToL2": {
+          "button": "Degradeer naar Sub-subspace (L1 → L2)",
+          "hint": "Alle communityleden, leads, organisaties en virtuele bijdragers worden verwijderd. Alleen gebruikersadmins blijven behouden. Dit is de meest ingrijpende conversie.",
+          "confirmTitle": "Subspace degraderen naar Sub-subspace?",
+          "confirmWarning": "Dit zal de subspace degraderen onder de geselecteerde parent. Alle communityleden (gebruikers, organisaties en virtuele bijdragers) worden VERWIJDERD. Adminrollen worden gereset. Deze actie kan niet eenvoudig ongedaan worden gemaakt.",
+          "noTargets": "Er zijn geen andere subspaces binnen deze space die als parent kunnen dienen.",
+          "targetLabel": "Verplaats onder subspace"
+        },
+        "promoteL2ToL1": {
+          "button": "Promoveer naar Subpace (L2 → L1)",
+          "hint": "Lichtgewicht conversie. Alle communityleden en leads blijven behouden. Adminrollen worden gereset.",
+          "confirmTitle": "Sub-subspace promoveren naar Subspace?",
+          "confirmWarning": "Dit zal de sub-subspace promoveren tot een subspace. Adminrollen worden gereset."
+        },
+        "successMessage": "Space conversie succesvol voltooid.",
+        "errorMessage": "Omzetten van de space is mislukt.",
+        "urlNotFound": "URL niet gevonden.",
+        "urlForbidden": "Toegang geweigerd. Je hebt geen toestemming om deze resource te bekijken.",
+        "urlNotSpace": "URL leidt niet naar een space."
+      },
+      "vcConversion": {
+        "sectionTitle": "Virtual Contributor Type conversie",
+        "sectionDescription": "Zet een space-gebaseerde virtual contributor om naar het gebruik van een knowledge base. Callouts worden verplaatst vanuit de bronspace — niet gekopieerd.",
+        "urlPlaceholder": "Plak virtual contributor URL of pad",
+        "urlRequired": "URL is vereist",
+        "vcName": "Naam",
+        "vcType": "Type Kennis",
+        "sourceSpace": "Source Space",
+        "calloutCount": "Te migreren Callouts",
+        "alreadyConverted": "Deze virtual contributor is al gebaseerd op een knowledge base. Er is geen conversie nodig.",
+        "convertButton": "Converteren naar Knowledge Base",
+        "confirmTitle": "Virtual Contributor converteren?",
+        "confirmWarning": "Dit zal de virtual contributor omzetten van space-gebaseerd naar knowledge-base-gebaseerd. Callouts worden VERPLAATST vanuit de bronspace (niet gekopieerd). Deze actie kan niet ongedaan worden gemaakt.",
+        "successMessage": "Virtual Contributor conversie succesvol voltooid.",
+        "errorMessage": "Omzetten van Virtual Contributor mislukt.",
+        "urlNotFound": "URL niet gevonden.",
+        "urlForbidden": "Toegang geweigerd. Je hebt geen toestemming om deze resource te bekijken.",
+        "urlNotVc": "URL verwijst niet naar een Virtual Contributor."
+      },
+      "transferHub": {
+        "sectionTitle": "Transfer $t(common.customHomepage)",
+        "sectionDescription": "Verplaats een $t(common.customHomepage) naar een ander account. Alleen het eigenaarschap verandert — de content blijft ongewijzigd.",
+        "urlPlaceholder": "Plak $t(common.customHomepage) URL of pad",
+        "urlRequired": "URL is vereist",
+        "hubName": "Naam",
+        "currentAccount": "Huidig Account",
+        "targetAccountLabel": "Selecteer target account",
+        "transferButton": "Transfer $t(common.customHomepage)",
+        "confirmTitle": "Transfer $t(common.customHomepage)?",
+        "confirmWarning": "Dit zal de $t(common.customHomepage) overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
+        "successMessage": "$t(common.customHomepage) is succesvol overgedragen.",
+        "errorMessage": "Transfer naar $t(common.customHomepage) mislukt.",
+        "urlNotFound": "URL niet gevonden.",
+        "urlForbidden": "Toegang geweigerd. Je hebt geen toestemming om deze resource te bekijken.",
+        "urlNotHub": "De URL verwijst niet naar een $t(common.customHomepage)."
+      },
+      "transferPack": {
+        "sectionTitle": "Transfer $t(common.innovationPack)",
+        "sectionDescription": "Verplaats een $t(common.innovationPack) naar een ander account. Alleen het eigenaarschap verandert — templates blijven ongewijzigd.",
+        "urlPlaceholder": "Plak $t(common.innovationPack) URL of pad",
+        "urlRequired": "URL is vereist",
+        "packName": "Naam",
+        "currentAccount": "Huidig Account",
+        "targetAccountLabel": "Selecteer target account",
+        "transferButton": "Transfer $t(common.innovationPack)",
+        "confirmTitle": "Transfer $t(common.innovationPack)?",
+        "confirmWarning": "Dit zal de $t(common.innovationPack) overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
+        "successMessage": "$t(common.innovationPack) is succesvol overgedragen.",
+        "errorMessage": "Transfer naar $t(common.innovationPack) mislukt.",
+        "urlNotFound": "URL niet gevonden.",
+        "urlForbidden": "Toegang geweigerd. Je hebt geen toestemming om deze resource te bekijken.",
+        "urlNotPack": "De URL verwijst niet naar een $t(common.innovationPack)."
+      },
+      "transferVc": {
+        "sectionTitle": "Transfer Virtual Contributor",
+        "sectionDescription": "Verplaats een virtual contributor naar een ander account. Alleen het eigenaarschap verandert — de configuratie blijft ongewijzigd.",
+        "urlPlaceholder": "Plak virtual contributor URL of pad",
+        "urlRequired": "URL is vereist",
+        "vcName": "Naam",
+        "currentAccount": "Huidig Account",
+        "targetAccountLabel": "Selecteer target account",
+        "transferButton": "Transfer Virtual Contributor",
+        "confirmTitle": "Transfer Virtual Contributor?",
+        "confirmWarning": "Dit zal de virtual contributor overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
+        "confirmButton": "Transfer",
+        "successMessage": "Virtual contributor succesvol overgedragen.",
+        "errorMessage": "Transfer van Virtual Contributor mislukt.",
+        "urlNotFound": "URL niet gevonden.",
+        "urlForbidden": "Toegang geweigerd. Je hebt geen toestemming om deze resource te bekijken.",
+        "urlNotVc": "URL verwijst niet naar een virtual contributor."
+      },
+      "accountSearch": {
+        "searchPlaceholder": "Zoek op naam...",
+        "typeToSearch": "Typ ten minste 2 tekens om te zoeken.",
+        "noResults": "Geen accounts gevonden met TransferResourceAccept privilege.",
+        "typeUser": "Gebruiker",
+        "typeOrganization": "Organisatie"
+      },
       "transferCallout": {
-        "sectionTitle": "Transfer Callout",
-        "calloutUrl": "Callout URL",
-        "calloutUrlPlaceholder": "Plak de callout URL of pad",
+        "sectionTitle": "Transfer $t(common.post)",
+        "sectionDescription": "Verplaats een $t(common.post) naar een andere space. Bijdragen worden behouden, maar de maker zal veranderen naar jou en niet-standaard tagsets worden verwijderd.",
+        "calloutUrl": "$t(common.post) URL",
+        "calloutUrlPlaceholder": "Plak $t(common.post) URL of pad",
         "targetSpaceUrl": "Target Space URL",
         "targetSpaceUrlPlaceholder": "Plak space URL of pad",
         "lookup": "Opzoeken",
-        "calloutInfo": "Callout Info",
+        "calloutInfo": "$t(common.post) Info",
         "targetSpaceInfo": "Target Space Info",
         "description": "Beschrijving",
         "createdBy": "Gemaakt door",
@@ -2571,28 +2695,29 @@
         "contributionsSummary": "{{posts}} posts, {{whiteboards}} whiteboards, {{links}} links, {{memos}} memos",
         "level": "Level",
         "calloutsSetId": "CalloutsSet ID",
-        "transferButton": "Transfer Callout",
+        "transferButton": "Transfer $t(common.post)",
         "transferring": "Overdragen...",
         "urlNotFound": "URL niet gevonden",
-        "urlNotCallout": "URL wordt niet opgelost naar een callout",
+        "urlNotCallout": "De URL verwijst niet naar een $t(common.post)",
         "urlNotSpace": "URL leidt niet naar een space",
         "missingTransferOffer": "Ontbrekende TransferResourceOffer privilege bij source calloutsSet",
         "missingTransferAccept": "Ontbrekende TransferResourceAccepteer privilege op doel-calloutsSet",
         "successTitle": "Overdracht voltooid",
-        "successMessage": "Callout \"{{calloutName}}\" is overgebracht naar \"{{spaceName}}\".",
-        "transferFailed": "Overzetten van callout mislukt",
+        "successMessage": "$t(common.post) \"{{calloutName}}\" is overgeplaatst naar \"{{spaceName}}\".",
+        "transferFailed": "Transfer naar $t(common.post) mislukt",
         "close": "Sluit",
         "unknown": "Onbekend",
         "urlRequired": "URL is vereist.",
         "confirmTitle": "Weet je het zeker?",
-        "confirmWarning1": "Zorg ervoor dat dezelfde Innovation State (bijv. Home) bestaat in de space waarnaar je de callout overzet.",
-        "confirmWarning2": "Houd er rekening mee dat bestaande links naar deze callout in activiteiten of notificaties mogelijk niet meer werken.",
-        "confirmWarning3": "Als de callout Virtual Contributions bevat en de specifieke Virtual Contributor niet deel uitmaakt van de target space, zal de callout doorbroken worden.",
-        "confirmWarning4": "De callout maker blijft onveranderd, zelfs als ze geen deel uitmaken van de target community.",
+        "confirmWarning1": "Zorg ervoor dat dezelfde Innovation State (bijv. Home) bestaat in de space waarnaar je de $t(common.post) overzet.",
+        "confirmWarning2": "Houd er rekening mee dat bestaande links naar deze $t(common.post) in activiteit of meldingen mogelijk niet meer werken.",
+        "confirmWarning3": "Als de $t(common.post) Virtual Contributions bevat en de betreffende Virtual Contributor geen onderdeel is van de doelspace, zal de $t(common.post) niet meer werken.",
+        "confirmWarning4": "De uitvoerende gebruiker wordt de nieuwe maker van de $t(common.post). Niet-standaard tagsets worden verwijderd en classificatiewaarden worden teruggezet naar de standaardinstellingen van de target space.",
         "confirmButton": "Transfer"
       },
       "transferSpace": {
         "sectionTitle": "Transfer Space",
+        "sectionDescription": "Verplaats een L0 space naar een ander account. Communityleden, content en structuur blijven ongewijzigd — alleen het eigenaarschap van het account wordt aangepast.",
         "spaceUrl": "Space URL",
         "spaceUrlPlaceholder": "Plak L0 space URL of pad",
         "targetAccountUrl": "Target Account eigenaar URL",
@@ -2635,10 +2760,10 @@
             "description": "Hier kan je de opmaak aanpassen voor deze {{entity}}.",
             "innovationFlowEditor": "$t(common.space) tabs",
             "calloutDisplayMode": {
-              "title": "$t(common.Post) description display",
-              "expanded": "Expanded",
-              "collapsed": "Collapsed",
-              "description": "Collapse $t(common.post) descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
+              "title": "$t(common.Post) beschrijving weergave",
+              "expanded": "Uitgeklapt",
+              "collapsed": "Ingeklapt",
+              "description": "Klap $t(common.post) beschrijvingen standaard in. Wanneer dit is ingeschakeld, tonen beschrijvingen een “Lees meer” link in plaats van de volledige tekst."
             }
           },
           "context": {
@@ -2749,7 +2874,7 @@
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "Licentie is met succes bijgewerkt",
             "deletedSuccessfully": "{{entity}} succesvol verwijderd",
-            "deleteFailed": "Failed to delete {{entity}}"
+            "deleteFailed": "Verwijderen van {{entity}} mislukt"
           },
           "settings": {
             "description": "Hier kun je de zichtbaarheidsinstellingen van je {{entity}} aanpassen."
@@ -3210,7 +3335,16 @@
             "title": "...of zoek je $t(common.community) hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovatie",
+            "Energie",
+            "Inclusief",
+            "3D",
+            "Community",
+            "Transitie",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -3427,10 +3561,10 @@
         "title": "Updates van de $t(common.leads) ({{count}})",
         "no-data": "Geen updates beschikbaar",
         "copy": {
-          "noContent": "No content to copy",
-          "success": "Post copied to clipboard",
-          "failed": "Failed to copy content",
-          "unsupported": "Clipboard not supported"
+          "noContent": "Geen inhoud om te kopiëren",
+          "success": "Post gekopieerd naar klembord",
+          "failed": "Kopiëren van inhoud mislukt",
+          "unsupported": "Klembord niet ondersteund"
         }
       }
     },
@@ -3866,13 +4000,13 @@
           "communicationUpdateSent": "Ontvang een $t(common.notification) wanneer een nieuwe update is gedeeld met de $t(common.community) waar ik $t(common.member) van ben",
           "collaborationCalloutPublished": "Ontvang een $t(common.notification) wanneer een $t(common.callout) is gepubliceerd in een $t(common.community) waar ik $t(common.member) van ben",
           "collaborationCalloutContributionCreated": "Ontvang een $t(common.notification) wanneer een nieuwe bijdrage ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is gemaakt in een $t(common.community) waar ik $t(common.member) van ben",
-          "collaborationCalloutComment": "Receive a $t(common.notification) when a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutComment": "Ontvang een $t(common.notification) wanneer een $t(common.comment) is geplaatst op een $t(common.callout) in een $t(common.community) waar ik $t(common.member) van ben",
           "collaborationCalloutPostContributionComment": "Ontvang een $t(common.notification) wanneer een nieuwe $t(common.comment) is toegevoegd aan een $t(common.callout) in een $t(common.community) waar ik $t(common.member) van ben",
           "communityCalendarEvents": "Ontvang kalender $t(common.notificaties) voor een $t(common.community) waar ik $t(common.member) van ben",
-          "collaborationPollVoteCastOnOwnPoll": "Someone votes on a $t(common.poll) I created",
-          "collaborationPollVoteCastOnPollIVotedOn": "Someone votes on a $t(common.poll) I also voted on",
-          "collaborationPollModifiedOnPollIVotedOn": "A $t(common.poll) I voted on is modified",
-          "collaborationPollVoteAffectedByOptionChange": "My vote is affected by a $t(common.poll) option change"
+          "collaborationPollVoteCastOnOwnPoll": "Iemand stemt op een $t(common.poll) die ik heb aangemaakt",
+          "collaborationPollVoteCastOnPollIVotedOn": "Iemand stemt op een $t(common.poll) waar ik ook op gestemd heb",
+          "collaborationPollModifiedOnPollIVotedOn": "Een $t(common.poll) waarop ik heb gestemd is gewijzigd",
+          "collaborationPollVoteAffectedByOptionChange": "Mijn stem wordt beïnvloed door een wijziging in een $t(common.poll)"
         }
       },
       "spaceAdmin": {
@@ -3935,6 +4069,23 @@
           "spaceCommunityInvitation": "Ontvang een $t(common.notification) wanneer een VC die ik beheer wordt uitgenodigd om deel te nemen aan een $t(common.community)"
         }
       },
+      "push": {
+        "masterToggle": "Pushmeldingen",
+        "masterToggleDescription": "Schakel browser pushmeldingen voor $t(common.notifications) in op dit apparaat",
+        "columnHeader": "Pushmelding",
+        "permissionDenied": "Push $t(common.notifications) worden geblokkeerd door je browser. Ga naar je browserinstellingen en sta $t(common.notifications) voor deze site toe om ze opnieuw in te schakelen.",
+        "requiresPWA": "Push $t(common.notifications) op iOS vereisen dat je Alkemio eerst aan je beginscherm toevoegt.",
+        "subscribeError": "Het inschakelen van push $t(common.notifications) is mislukt. Probeer het opnieuw.",
+        "unsubscribeError": "Het uitschakelen van push $t(common.notifications) is mislukt. Probeer het opnieuw.",
+        "deviceManagement": {
+          "title": "Geregistreerde apparaten",
+          "currentDevice": "Dit apparaat",
+          "removeDevice": "Verwijderen",
+          "removeConfirmation": "Dit apparaat verwijderen uit push $t(common.notifications)?",
+          "emptyState": "Geen actieve push abonnementen.",
+          "unknownDevice": "Onbekend apparaat"
+        }
+      },
       "tooltips": {
         "spaceCommunityInvitationReceived": "Deze $t(common.notifications) zijn vereist en kunnen niet worden uitgeschakeld.",
         "messageReceived": "Deze $t(common.notifications) zijn vereist en kunnen niet worden uitgeschakeld.",
@@ -3994,7 +4145,9 @@
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
-      "pick-password": "Kies een wachtwoord voor je $t(common.account)"
+      "pick-password": "Kies een wachtwoord voor je $t(common.account)",
+      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "account-disabled": "This account is disabled."
     },
     "fields": {
       "ID": "ID",
@@ -4191,27 +4344,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -4298,7 +4466,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": ["Tot 10 $t(common.members)", "Diverse tools, waaronder standaard $t(common.whiteboards)"],
+        "features": [
+          "Tot 10 $t(common.members)",
+          "Diverse tools, waaronder standaard $t(common.whiteboards)"
+        ],
         "disclaimer": "Gratis $t(common.spaces) zijn beperkt tot 1 $t(common.space) per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis $t(common.space) hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },
