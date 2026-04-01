@@ -40,21 +40,18 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
     // biome-ignore lint/a11y/noStaticElementInteractions: click delegates focus to the inner input
     // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard users interact with the inner input directly
     <div
-      className={cn('flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text', className)}
-      style={{
-        border: '1px solid var(--border)',
-        background: 'var(--background)',
-      }}
+      className={cn(
+        'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text border border-border bg-background',
+        className
+      )}
       onClick={() => inputRef.current?.focus()}
     >
       {icon}
       {value.map(tag => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border border-primary text-primary"
           style={{
-            border: '1px solid var(--primary)',
-            color: 'var(--primary)',
             background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
           }}
         >
@@ -82,8 +79,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
         onKeyDown={handleKeyDown}
         placeholder={value.length === 0 ? placeholder : ''}
         aria-label={placeholder}
-        className="flex-1 min-w-[120px] border-0 bg-transparent text-sm outline-none"
-        style={{ color: 'var(--foreground)' }}
+        className="flex-1 min-w-[120px] border-0 bg-transparent text-sm outline-none text-foreground"
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { SpacesFilterValue } from '@/crd/components/space/SpaceExplorer';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import { MOCK_SPACES } from '../data/spaces';
@@ -10,19 +10,13 @@ export function SpacesPage() {
   const [membershipFilter, setMembershipFilter] = useState<SpacesFilterValue>('all');
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
 
-  const filteredSpaces = useMemo(() => {
-    let result = [...MOCK_SPACES];
-
-    // Search
-    if (searchTerms.length > 0) {
-      result = result.filter(space => {
-        const text = `${space.name} ${space.description} ${space.tags.join(' ')}`.toLowerCase();
-        return searchTerms.every(term => text.includes(term));
-      });
-    }
-
-    return result;
-  }, [searchTerms]);
+  let filteredSpaces = [...MOCK_SPACES];
+  if (searchTerms.length > 0) {
+    filteredSpaces = filteredSpaces.filter(space => {
+      const text = `${space.name} ${space.description} ${space.tags.join(' ')}`.toLowerCase();
+      return searchTerms.every(term => text.includes(term));
+    });
+  }
 
   const displayedSpaces = filteredSpaces.slice(0, visibleCount);
   const hasMore = visibleCount < filteredSpaces.length;

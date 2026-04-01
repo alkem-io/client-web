@@ -52,6 +52,7 @@ const loadTranslation = async (lng: string) => {
 // English layout is eagerly loaded; all other CRD namespaces are lazy-loaded.
 const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default: Record<string, unknown> }>>> = {
   'crd-layout': {
+    en: () => import('@/crd/i18n/layout/layout.en.json'),
     es: () => import('@/crd/i18n/layout/layout.es.json'),
     nl: () => import('@/crd/i18n/layout/layout.nl.json'),
     bg: () => import('@/crd/i18n/layout/layout.bg.json'),

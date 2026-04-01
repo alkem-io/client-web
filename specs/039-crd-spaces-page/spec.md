@@ -187,7 +187,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - **FR-006**: The CRD `/spaces` page MUST reuse the existing data layer (`useSpaceExplorer` hook, GraphQL queries) without modification
 - **FR-007**: The CRD SpaceCard component MUST render: banner image (with fallback), space name, tagline/description, tags, lead avatars, and privacy badge. Prototype features requiring data layer changes (e.g., member count) are omitted and deferred to follow-up
 - **FR-008**: The CRD SpaceCard MUST accept plain TypeScript props (no GraphQL generated types) per the CRD golden rules
-- **FR-009**: The CRD spaces page MUST support tag-based search, membership filtering (All, Member, Public), and lazy loading / "Load More" pagination — same behavior as the MUI version
+- **FR-009**: The CRD spaces page MUST support tag-based search, membership filtering (All, Member, Public), and lazy loading / "Load More" pagination — same behavior as the MUI version. Sorting is **deferred** — the GraphQL API lacks server-side `orderBy` support, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be added when backend support is available (see Session 2026-03-31 clarifications)
 - **FR-010**: All user-visible text in CRD components MUST use `react-i18next` for translation — no hardcoded strings
 
 #### Architecture
@@ -220,6 +220,8 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - **FR-034**: Existing MUI dialogs (Messages) rendered in `root.tsx` are already lazy-loaded and reused via context providers — CRD pages MUST NOT duplicate these dialogs. The Notifications dialog is replaced by a CRD-native `NotificationsPanel` (see FR-036) rendered in `CrdLayoutWrapper`
 
 #### Notifications Panel
+> **Scope note:** FR-035 through FR-039 are **implemented in this phase**. The CRD presentational components (`NotificationsPanel`, `NotificationItem`) live in `src/crd/components/notifications/`. The integration wiring in `CrdLayoutWrapper` connects them to the existing `useInAppNotifications` hook and notification state management — no new data layer was needed. The 40+ type-specific notification view components remain in `src/main/inAppNotifications/views/` and are not migrated to CRD; they map their data to the generic `CrdNotificationItemData` props.
+
 - **FR-035**: The CRD Header bell icon MUST show an unread notification count badge when `unreadCount > 0` — matching the MUI `PlatformNotificationsButton` behavior. The count is provided as a prop from `CrdLayoutWrapper`
 - **FR-036**: Clicking the bell icon MUST open a CRD notifications dialog (`src/crd/layouts/components/NotificationsPanel.tsx`) that replaces the MUI `InAppNotificationsDialog`. The dialog is a full modal (not a dropdown) following the prototype's visual language but matching the MUI version's functionality
 - **FR-037**: The notifications dialog MUST show: a header with title and "Mark all as read" button, filter chips (All, Messages & Replies, Space, Platform), a scrollable notification list with infinite scroll pagination (10 items per page), and empty state when no notifications match
