@@ -255,23 +255,22 @@ export default function SubspacePage() {
       />
 
       {/* ── Main Content Area ── */}
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-8 flex gap-8 relative items-start">
-        {/* Left Sidebar (collapsible) */}
-        <div
-          className={`shrink-0 transition-all duration-300 ${
-            isSidebarCollapsed ? "w-12" : "w-80"
-          } hidden md:block sticky top-24 self-start`}
-        >
-          <SubspaceSidebar
-            isCollapsed={isSidebarCollapsed}
-            onToggleCollapse={() =>
-              setIsSidebarCollapsed(!isSidebarCollapsed)
-            }
-          />
-        </div>
+      <main className="flex-1 w-full px-6 md:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6 items-start">
+          {/* Left Sidebar — col 2-3 (2 columns, 1 col margin left) */}
+          <div
+            className="lg:col-start-2 col-span-2 hidden lg:block sticky top-24 self-start"
+          >
+            <SubspaceSidebar
+              isCollapsed={isSidebarCollapsed}
+              onToggleCollapse={() =>
+                setIsSidebarCollapsed(!isSidebarCollapsed)
+              }
+            />
+          </div>
 
-        {/* Right Content: Channels + Feed */}
-        <div className="flex-1 min-w-0">
+          {/* Right Content: Channels + Feed — 8 columns */}
+          <div className="col-span-12 lg:col-span-8 min-w-0">
           {/* Sticky channel tabs bar */}
           <div
             className="sticky top-16 z-10 pt-4 pb-3 mb-4 -mx-4 px-4 md:mx-0 md:px-0"
@@ -304,7 +303,7 @@ export default function SubspacePage() {
           </div>
 
           {/* Feed */}
-          <div className="max-w-3xl space-y-6">
+          <div className="space-y-6">
             {filteredPosts.length > 0 ? (
               filteredPosts.map((post) => (
                 <PostCard
@@ -347,6 +346,7 @@ export default function SubspacePage() {
                 </Button>
               </div>
             )}
+          </div>
           </div>
         </div>
       </main>

@@ -1,16 +1,8 @@
 import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import { Badge } from "@/app/components/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from "@/app/components/ui/breadcrumb";
-import { Settings, Share2, Video, FileText, ShieldCheck, ChevronRight, Home } from "lucide-react";
+import { Settings, Share2, Video, FileText } from "lucide-react";
 import { Link } from "react-router";
-import AlkemioSymbolSquare from "@/imports/AlkemioSymbolSquare";
 
 interface SpaceHeaderProps {
   spaceSlug: string;
@@ -38,51 +30,13 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
 
         {/* Breadcrumb + Actions overlay — top of banner */}
         <div
-          className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between"
+          className="absolute top-0 left-0 right-0 z-10 px-6 md:px-8"
           style={{
             paddingTop: 32,
-            paddingLeft: "max(24px, calc((100% - 1536px) / 2 + 24px))",
-            paddingRight: "max(24px, calc((100% - 1536px) / 2 + 24px))",
           }}
         >
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to="/"
-                    className="flex items-center gap-1.5 transition-colors hover:opacity-100"
-                    style={{
-                      fontSize: 14,
-                      color: "white",
-                      lineHeight: "20px",
-                    }}
-                  >
-                    <Home className="w-3.5 h-3.5" />
-                    Home
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-
-              <BreadcrumbSeparator>
-                <ChevronRight className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
-              </BreadcrumbSeparator>
-
-              <BreadcrumbItem>
-                <span
-                  style={{
-                    fontSize: 14,
-                    color: "white",
-                    fontWeight: 500,
-                    lineHeight: "20px",
-                  }}
-                >
-                  {spaceName}
-                </span>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-end">
           {/* Action icons */}
           <div className="flex items-center gap-2">
             <Button
@@ -120,18 +74,20 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
               </Button>
             </Link>
           </div>
+            </div>
+          </div>
         </div>
 
-        {/* Content Container — aligned to same 1536px grid as breadcrumb */}
+        {/* Content Container — title & members aligned to grid */}
         <div
-          className="relative h-full flex flex-col justify-end mx-auto w-full"
+          className="relative h-full flex flex-col justify-end w-full px-6 md:px-8"
           style={{
-            maxWidth: 1536,
-            paddingLeft: 24,
-            paddingRight: 24,
             paddingBottom: 24,
           }}
-        >          {/* Bottom: Title & Members */}
+        >
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-start-2 lg:col-span-10">
+          {/* Bottom: Title & Members */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="max-w-3xl" style={{ color: "var(--primary-foreground)" }}>
               <h1
@@ -200,6 +156,8 @@ export function SpaceHeader({ spaceSlug, spaceName = "Green Energy Space" }: Spa
                   +24
                 </div>
               </div>
+            </div>
+          </div>
             </div>
           </div>
         </div>

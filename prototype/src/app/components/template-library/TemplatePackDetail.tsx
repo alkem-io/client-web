@@ -286,7 +286,8 @@ export function TemplatePackDetail() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="grid grid-cols-12 gap-6 px-6 md:px-8 py-4">
+         <div className="col-span-12 lg:col-start-2 lg:col-span-10">
            {/* Breadcrumb / Back */}
            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
               <Link to="/templates" className="hover:text-foreground hover:underline transition-colors flex items-center gap-1">
@@ -339,10 +340,12 @@ export function TemplatePackDetail() {
                   </Button>
               </div>
            </div>
+         </div>
         </div>
       </div>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 grid grid-cols-12 gap-6 px-6 md:px-8 py-8">
+       <div className="col-span-12 lg:col-start-2 lg:col-span-10">
          <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
             <Accordion type="multiple" defaultValue={["space", "subspace", "collab", "whiteboard", "guidelines"]}>
                 {SECTIONS.map(section => {
@@ -384,6 +387,7 @@ export function TemplatePackDetail() {
                  ))}
              </div>
          </div>
+       </div>
       </main>
 
       {/* Apply Dialog */}

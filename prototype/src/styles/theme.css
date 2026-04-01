@@ -2,6 +2,12 @@
 
 :root {
   --font-size: 16px;
+
+  /* ─── Grid System ─── */
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+  --grid-margin-mobile: 24px;
+  --grid-margin-desktop: 32px;
   
   /* Typography Variables */
   --text-4xl: 48px;
@@ -261,6 +267,47 @@
 
 html {
   font-size: var(--font-size);
+
+  /* Overlay scrollbar — sits on top of content, never pushes layout */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Chromium: true overlay scrollbar (renders on top of content) */
+@supports (overflow-y: overlay) {
+  html {
+    overflow-y: overlay;
+  }
+}
+
+/* Webkit (Chrome/Safari/Edge) custom scrollbar styling */
+html::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Prevent Radix scroll-lock from shifting layout.
+   Radix adds inline overflow:hidden + margin-right on <body> when
+   dropdowns/dialogs open. Since we use overlay scrollbars the
+   compensating margin is wrong and causes a visible shift. */
+body[data-scroll-locked] {
+  overflow: auto !important;
+  margin-right: 0px !important;
+  padding-right: 0px !important;
 }
 
 @keyframes edgeFlow {

@@ -1,5 +1,5 @@
-import { ArrowUpDown, ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceCardData, SpaceCardParent } from '@/crd/components/space/SpaceCard';
 import { SpaceCard, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
@@ -15,11 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
 export type SpacesFilterValue = 'all' | 'member' | 'public';
 
-type SortOption = 'recent' | 'alpha' | 'active';
 type TypeFilter = 'all' | 'spaces' | 'subspaces';
 type PrivacyFilter = 'all' | 'public' | 'private';
 
@@ -57,8 +55,7 @@ export function SpaceExplorer({
   const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // Client-side filters & sorting
-  const [sortBy, setSortBy] = useState<SortOption>('recent');
+  // Client-side filters
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [privacyFilter, setPrivacyFilter] = useState<PrivacyFilter>('all');
 
@@ -71,33 +68,24 @@ export function SpaceExplorer({
     }
   };
 
-  // Client-side filtering + sorting
-  const displayedSpaces = useMemo(() => {
-    let result = [...spaces];
+  // Client-side filtering
+  const displayedSpaces = (() => {
+    let result = spaces;
 
-    // Privacy filter
     if (privacyFilter === 'public') result = result.filter(s => !s.isPrivate);
     if (privacyFilter === 'private') result = result.filter(s => s.isPrivate);
 
-    // Type filter
     if (typeFilter === 'spaces') result = result.filter(s => !s.parent);
     if (typeFilter === 'subspaces') result = result.filter(s => !!s.parent);
 
-    // Sort
-    if (sortBy === 'alpha') {
-      result.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    // 'recent' and 'active' keep server order (we don't have activity data)
-
     return result;
-  }, [spaces, privacyFilter, typeFilter, sortBy]);
+  })();
 
   const activeFilterCount = (privacyFilter !== 'all' ? 1 : 0) + (typeFilter !== 'all' ? 1 : 0);
 
   const clearFilters = () => {
     setPrivacyFilter('all');
     setTypeFilter('all');
-    setSortBy('recent');
     onMembershipFilterChange?.('all');
   };
 
@@ -122,22 +110,6 @@ export function SpaceExplorer({
           className="flex-1"
           icon={<Search className="shrink-0 size-4 text-muted-foreground" />}
         />
-
-        {/* Sort dropdown */}
-        <Select value={sortBy} onValueChange={v => setSortBy(v as SortOption)}>
-          <SelectTrigger
-            aria-label={t('spaces.sortBy')}
-            className="w-auto min-w-40 h-10 gap-2 text-sm bg-background border border-border rounded-lg"
-          >
-            <ArrowUpDown className="size-3.5 text-muted-foreground" />
-            <SelectValue placeholder={t('spaces.sortBy')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">{t('spaces.sortRecent')}</SelectItem>
-            <SelectItem value="alpha">{t('spaces.sortAlpha')}</SelectItem>
-            <SelectItem value="active">{t('spaces.sortActive')}</SelectItem>
-          </SelectContent>
-        </Select>
 
         {/* Filters dropdown */}
         <DropdownMenu>

@@ -271,6 +271,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - Q: Container type — dropdown, modal dialog, or slide-out panel? → A: Full modal dialog (same as the current MUI implementation)
 - Q: Should we create type-specific notification view components in CRD (40+ types) or a single generic item? → A: A single generic CRD notification item component. The type-specific views remain in `src/main/inAppNotifications/views/` and map their data to generic CRD item props
 - Q: Should the unread badge counter be added to the bell icon as part of this migration? → A: Yes
+- Q: The CRD SpaceExplorer has sorting options (Recent, Alphabetical, Active) but "Recent" and "Active" just keep server order since `spacesPaginated` has no `orderBy` parameter. Keep them? → A: **Hide sorting entirely.** The GraphQL API doesn't support server-side sorting, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be implemented when backend support is added. Client-side privacy and type filters remain.
 
 ---
 
