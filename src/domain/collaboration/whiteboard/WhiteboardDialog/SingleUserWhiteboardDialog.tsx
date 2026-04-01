@@ -230,6 +230,10 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
               display: 'flex',
               flexDirection: 'column',
               height: options.fullscreen ? '100vh' : '85vh',
+              ...(!options.fullscreen && {
+                maxWidth: 'calc(100vw - 32px)',
+                margin: '16px',
+              }),
             },
           },
         }}
