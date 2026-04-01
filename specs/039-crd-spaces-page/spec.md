@@ -254,6 +254,10 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 - Q: Should only the inner content area be CRD, or the entire page including header/footer? → A: **The entire page.** When a route is CRD, the complete page shell (header, content, footer) renders in CRD. No MUI layout wraps CRD routes. This is a full visual replacement per route.
 - Q: Should the CRD Header be fully functional (real search, notifications, messages) for the PoC? → A: Messages and Notifications buttons directly open the existing MUI dialogs via context providers (`useUserMessagingContext`, `useInAppNotificationsContext`). These providers wrap all routes in `root.tsx`, so the dialogs work on CRD pages without navigation. Real search overlay and unread counts are deferred to follow-up tasks.
 
+### Session 2026-03-31
+
+- Q: The CRD SpaceExplorer has sorting options (Recent, Alphabetical, Active) but "Recent" and "Active" just keep server order since `spacesPaginated` has no `orderBy` parameter. Keep them? → A: **Hide sorting entirely.** The GraphQL API doesn't support server-side sorting, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be implemented when backend support is added. Client-side privacy and type filters remain.
+
 ---
 
 ## Assumptions

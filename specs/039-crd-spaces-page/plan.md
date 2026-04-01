@@ -213,10 +213,10 @@ The `CrdLayoutWrapper` in `src/main/ui/layout/`:
 - Resolves navigation hrefs from `ROUTE_HOME`, `ROUTE_USER_ME`, `buildUserAccountUrl()`, `TopLevelRoutePath`
 - Resolves platform role display name from `platformRoles` (same logic as MUI `PlatformNavigationUserMenu`)
 
-### D10: Prototype-Matching Filter Bar (Sort + Filters Dropdowns)
+### D10: Prototype-Matching Filter Bar (Filters Dropdown)
 
 The CRD SpaceExplorer uses the prototype's filter bar pattern instead of the MUI's flat buttons:
-- **Sort dropdown** (Select): Most Recent, Alphabetical, Most Active — client-side sorting
+- **Sort dropdown**: Deferred — the `spacesPaginated` GraphQL query has no `orderBy` parameter, and client-side sorting with cursor-based pagination is misleading (only sorts loaded items, not the full dataset). Will be implemented when backend support is added.
 - **Filters dropdown** (DropdownMenu) with 3 sections:
   - **Membership** (server-side): All, My Spaces, Public — maps to existing `onMembershipFilterChange` which drives the GraphQL query
   - **Privacy** (client-side): All, Public only, Private only — filters by `isPrivate`
