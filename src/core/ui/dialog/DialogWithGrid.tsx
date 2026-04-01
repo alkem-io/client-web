@@ -10,6 +10,7 @@ interface DialogContainerProps extends PaperProps {
   centeredVertically?: boolean;
   onClose?: MouseEventHandler;
   fullScreen?: boolean;
+  containerMaxWidth?: number | false;
 }
 
 export const DialogFooter = ({ children }: { children?: ReactNode }) => <>{children}</>;
@@ -20,6 +21,7 @@ const DialogContainer = ({
   onClose,
   children,
   fullScreen,
+  containerMaxWidth,
   ...paperProps
 }: DialogContainerProps) => {
   const handleContainerClick: MouseEventHandler = event => {
@@ -32,7 +34,9 @@ const DialogContainer = ({
 
   return (
     <GridContainer
-      maxWidth={fullScreen ? undefined : MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+      maxWidth={
+        fullScreen || containerMaxWidth === false ? undefined : (containerMaxWidth ?? MAX_CONTENT_WIDTH_WITH_GUTTER_PX)
+      }
       marginX="auto"
       flexGrow={1}
       justifyContent="center"
@@ -57,6 +61,7 @@ export interface DialogWithGridProps extends MuiDialogProps {
   columns?: GridItemProps['columns'];
   fullHeight?: boolean;
   centeredVertically?: boolean;
+  containerMaxWidth?: number | false;
 
   /**
    * If true, forces fullScreen mode.
@@ -72,6 +77,7 @@ const DialogWithGrid = ({
   centeredVertically = true,
   onClose,
   fullScreen,
+  containerMaxWidth,
   ...dialogProps
 }: DialogWithGridProps) => {
   const { sx } = dialogProps;
@@ -87,6 +93,7 @@ const DialogWithGrid = ({
           columns,
           centeredVertically,
           fullScreen: isFullScreen,
+          containerMaxWidth,
         } as PaperProps,
       }}
       onClose={onClose}

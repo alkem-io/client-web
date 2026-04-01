@@ -352,5 +352,5 @@ Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing 
 - Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
 
 ## Active Technologies
-- TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged) (039-crd-exploreSpaces-page)
+- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (039-crd-exploreSpaces-page)
 - N/A (GraphQL data layer unchanged; localStorage for rendering mode toggle) (039-crd-exploreSpaces-page)
