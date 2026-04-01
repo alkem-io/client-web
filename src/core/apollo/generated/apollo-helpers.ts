@@ -2751,6 +2751,8 @@ export type MutationKeySpecifier = (
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
   | 'moveContributionToCallout'
+  | 'moveSpaceL1ToSpaceL0'
+  | 'moveSpaceL1ToSpaceL2'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -2959,6 +2961,8 @@ export type MutationFieldPolicy = {
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
