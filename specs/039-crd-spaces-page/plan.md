@@ -17,7 +17,7 @@ Migrate the `/spaces` page from MUI to shadcn/ui + Tailwind CSS as the first pro
 **Project Type**: Web application (frontend only — no backend changes)
 **Performance Goals**: CRD page LCP equal to or better than MUI version
 **Constraints**: Zero MUI imports in `src/crd/`; both styling systems must coexist without conflicts; MUI pages must not regress visually or functionally
-**Scale/Scope**: 1 page (/spaces), ~7 primitives to port, 3 layout components (CrdLayout, Header, Footer w/ responsive wrapping), 2 layout building blocks (UserMenu, PlatformNavigationMenu), 1 composite component (SpaceCard), 1 page-level composite (SpaceExplorer), 1 data mapper, 1 route-level layout split, 1 SVG logo component, lazy-loaded HelpDialog
+**Scale/Scope**: 1 page (/spaces), ~8 primitives to port (incl. Dialog), 3 layout components (CrdLayout, Header, Footer w/ responsive wrapping), 4 layout building blocks (UserMenu, PlatformNavigationMenu, NotificationsPanel, NotificationItem), 1 composite component (SpaceCard), 1 page-level composite (SpaceExplorer), 2 data mappers (spaces, notifications), 1 route-level layout split, 1 SVG logo component, lazy-loaded HelpDialog + NotificationsPanel
 
 ## Constitution Check
 
@@ -84,7 +84,9 @@ src/
 │   │   ├── Footer.tsx               # NEW: CRD footer (links, logo, language selector, responsive wrapping)
 │   │   └── components/              # Layout building blocks (extracted from Header/Footer)
 │   │       ├── UserMenu.tsx         # Profile dropdown menu (extracted from Header)
-│   │       └── PlatformNavigationMenu.tsx  # Platform nav dropdown (Innovation Library, Forum, Spaces, Docs)
+│   │       ├── PlatformNavigationMenu.tsx  # Platform nav dropdown (Innovation Library, Forum, Spaces, Docs)
+│   │       ├── NotificationsPanel.tsx      # Notifications dialog (header, filters, list, empty state)
+│   │       └── NotificationItem.tsx        # Generic notification item (avatar, title, description, timestamp, actions)
 │   ├── forms/                        # Form UI components
 │   │   └── tags-input.tsx           # NEW: Reusable tag-based input (type + Enter = tag chip)
 │   ├── hooks/
@@ -286,3 +288,25 @@ As part of this work, the existing user profile dropdown (~120 lines) is extract
 **Standalone app:** `CrdApp.tsx` provides mock platform navigation items so the menu works in the preview app without a backend.
 
 **i18n:** Menu item labels are passed as translated strings from the consumer (via `CrdLayoutWrapper` using the main `translation` namespace). The PlatformNavigationMenu component itself does not call `useTranslation` for item labels — they arrive as props. Any structural UI text (e.g., a menu heading) uses the `crd-layout` namespace.
+
+### D17: CRD Notifications Panel — Generic Item + Dialog Pattern
+
+The MUI `InAppNotificationsDialog` is a full modal with 40+ type-specific notification view components, filter chips, infinite scroll, and state transitions. The CRD migration replaces the **presentational shell** while keeping the **data layer and type-specific logic** untouched.
+
+**Architecture split:**
+
+- **CRD layer** (`src/crd/layouts/components/NotificationsPanel.tsx`): A presentational dialog component that renders a generic notification list. Receives all data and callbacks as props. Contains:
+  - `NotificationsPanel` — dialog with header (title, mark-all-read, settings link), filter chips, scrollable list, empty state
+  - `NotificationItem` — generic item: avatar, title, description, timestamp, unread dot, actions menu. Works for all 40+ notification types via a flat props interface
+- **Integration layer** (`src/main/ui/layout/CrdLayoutWrapper.tsx`): Renders `NotificationsPanel` conditionally when `isOpen` is true. Maps `InAppNotificationModel[]` from the existing `useInAppNotifications()` hook to `NotificationItemData[]` (plain CRD props). The 40+ type-specific views in `src/main/inAppNotifications/views/` are NOT migrated — instead, a data mapper extracts `{ title, description, avatarUrl, timestamp, isUnread, href }` from each `InAppNotificationModel` for the generic CRD item.
+- **Data layer** (unchanged): `useInAppNotifications()` hook, `InAppNotificationsContext`, GraphQL queries/subscriptions/mutations, notification type filters — all stay in `src/main/inAppNotifications/`
+
+**Why a generic item instead of 40+ CRD views:** The type-specific views only differ in which i18n key and which payload fields they extract. A single mapper function can resolve each notification type to `{ title, description }` by calling `t()` with the appropriate key and values. This eliminates 40+ tiny CRD components that would each be ~10 lines of prop extraction.
+
+**Dialog vs dropdown:** The MUI version uses a full modal dialog, and the developer confirmed this approach. The CRD version uses a Radix `Dialog` primitive (to be ported from prototype if not yet available) rather than a `DropdownMenu`, since the notification list needs scrolling, filters, and a header bar.
+
+**Unread badge:** The bell icon in `Header.tsx` gains an `unreadCount?: number` prop. When > 0, a small badge dot or count is shown on the bell icon, matching the MUI `BadgeCounter` behavior.
+
+**Filter chips:** The 4 filter categories (All, Messages & Replies, Space, Platform) are rendered as CRD `Button` variants (ghost/secondary toggle). The selected filter maps to `NotificationEvent[]` types in the existing `notificationFilters.ts` — this mapping stays in the integration layer.
+
+**Rendering location:** The `NotificationsPanel` is rendered in `CrdLayoutWrapper` (like `HelpDialog` and `PendingMembershipsDialog`), lazy-loaded via `lazyWithGlobalErrorHandler()`. It replaces the MUI `InAppNotificationsDialog` for CRD routes. The MUI dialog in `root.tsx` continues to serve MUI routes.

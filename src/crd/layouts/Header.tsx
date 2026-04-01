@@ -20,6 +20,7 @@ type HeaderProps = {
   pendingInvitationsCount?: number;
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
+  unreadNotificationsCount?: number;
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
   onLogout?: () => void;
@@ -41,6 +42,7 @@ export function Header({
   pendingInvitationsCount,
   platformNavigationItems,
   currentPath,
+  unreadNotificationsCount,
   languages,
   currentLanguage,
   onLogout,
@@ -129,6 +131,9 @@ export function Header({
             onClick={onNotificationsClick}
           >
             <Bell aria-hidden="true" className="w-5 h-5" />
+            {typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+            )}
           </Button>
         ) : (
           <Button
@@ -140,6 +145,9 @@ export function Header({
           >
             <a href={navigationHrefs.notifications}>
               <Bell aria-hidden="true" className="w-5 h-5" />
+              {typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+              )}
             </a>
           </Button>
         )}

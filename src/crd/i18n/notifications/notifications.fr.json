@@ -1,0 +1,22 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "settings": "Paramètres",
+    "emptyTitle": "Aucune notification",
+    "emptyMessage": "Vous êtes à jour ! Les nouvelles notifications apparaîtront ici.",
+    "loadMore": "Charger plus",
+    "loading": "Chargement des notifications",
+    "actions": {
+      "read": "Marquer comme lu",
+      "unread": "Marquer comme non lu",
+      "archive": "Archiver"
+    },
+    "filters": {
+      "all": "Tous",
+      "messagesAndReplies": "Messages et réponses",
+      "space": "Espace",
+      "platform": "Plateforme"
+    }
+  }
+}

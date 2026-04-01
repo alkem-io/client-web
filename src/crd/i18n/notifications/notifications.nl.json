@@ -1,0 +1,22 @@
+{
+  "notifications": {
+    "title": "Meldingen",
+    "markAllRead": "Alles als gelezen markeren",
+    "settings": "Instellingen",
+    "emptyTitle": "Geen meldingen",
+    "emptyMessage": "Je bent helemaal bij! Nieuwe meldingen verschijnen hier.",
+    "loadMore": "Meer laden",
+    "loading": "Meldingen laden",
+    "actions": {
+      "read": "Markeer als gelezen",
+      "unread": "Markeer als ongelezen",
+      "archive": "Archiveren"
+    },
+    "filters": {
+      "all": "Alle",
+      "messagesAndReplies": "Berichten & antwoorden",
+      "space": "Ruimte",
+      "platform": "Platform"
+    }
+  }
+}

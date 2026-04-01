@@ -74,6 +74,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/exploreSpaces/exploreSpaces.de.json'),
     fr: () => import('@/crd/i18n/exploreSpaces/exploreSpaces.fr.json'),
   },
+  'crd-notifications': {
+    en: () => import('@/crd/i18n/notifications/notifications.en.json'),
+    es: () => import('@/crd/i18n/notifications/notifications.es.json'),
+    nl: () => import('@/crd/i18n/notifications/notifications.nl.json'),
+    bg: () => import('@/crd/i18n/notifications/notifications.bg.json'),
+    de: () => import('@/crd/i18n/notifications/notifications.de.json'),
+    fr: () => import('@/crd/i18n/notifications/notifications.fr.json'),
+  },
 };
 
 // Cache for loaded translations

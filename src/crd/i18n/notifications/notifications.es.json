@@ -1,0 +1,22 @@
+{
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todo como leído",
+    "settings": "Configuración",
+    "emptyTitle": "Sin notificaciones",
+    "emptyMessage": "¡Estás al día! Las nuevas notificaciones aparecerán aquí.",
+    "loadMore": "Cargar más",
+    "loading": "Cargando notificaciones",
+    "actions": {
+      "read": "Marcar como leído",
+      "unread": "Marcar como no leído",
+      "archive": "Archivar"
+    },
+    "filters": {
+      "all": "Todos",
+      "messagesAndReplies": "Mensajes y respuestas",
+      "space": "Espacio",
+      "platform": "Plataforma"
+    }
+  }
+}
