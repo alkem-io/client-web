@@ -235,7 +235,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 
 - **SpaceCardData**: The CRD view model for a space card — plain TypeScript type with fields: id, name, description, bannerImageUrl, initials, avatarColor, isPrivate, tags, leads, href, optional parent info
 - **SpaceLead**: A lead person or organization displayed on the card — name, avatarUrl, type ('person' or 'org')
-- **Route Migration State**: A code-level decision per route — each route is assigned to either the CRD layout group (`CrdLayoutWrapper`) or the MUI layout group (`TopLevelLayout`) in `TopLevelRoutes.tsx`. No runtime configuration needed
+- **Route Migration State**: Each route is assigned to either the CRD layout group (`CrdLayoutWrapper`) or the MUI layout group (`TopLevelLayout`) in `TopLevelRoutes.tsx`. During migration, CRD routes are gated behind a localStorage toggle (`alkemio-crd-enabled`) so deployed environments default to MUI. Toggle logic in `src/main/crdPages/useCrdEnabled.ts`
 
 ---
 
@@ -259,7 +259,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 ### Session 2026-03-26
 
 - Q: Should the MUI/CRD toggle be global (all pages at once) or per-route? → A: Per-route — each migrated URL is independently switchable between MUI and CRD. Starting with `/spaces`, more routes will follow.
-- Q: How does a user activate the MUI/CRD toggle? → A: No runtime toggle. Routes are simply wired to CRD or MUI at the code level. When a route is migrated, it uses the new design — no URL param, no UI toggle, no localStorage switch.
+- Q: How does a user activate the MUI/CRD toggle? → A: A localStorage runtime toggle (`alkemio-crd-enabled`). Default is OFF — deployed environments render the old MUI page. Developers and QA can opt in via `localStorage.setItem('alkemio-crd-enabled', 'true')` + page refresh. Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`, conditional routing in `TopLevelRoutes.tsx`. When migration is complete and validated, the toggle and old MUI pages are removed.
 - Q: What level of visual fidelity to the prototype is required? → A: Same layout structure and design language — minor spacing/shadow differences acceptable. Pixel-perfection is not required.
 - Q: Member count is in the prototype but not in the current GraphQL fragment. Include it? → A: Drop it. General rule: if a prototype feature requires data layer changes, omit it from the CRD card. Add in a follow-up.
 - Q: Should only the inner content area be CRD, or the entire page including header/footer? → A: **The entire page.** When a route is CRD, the complete page shell (header, content, footer) renders in CRD. No MUI layout wraps CRD routes. This is a full visual replacement per route.
@@ -278,7 +278,7 @@ A designer runs `pnpm crd:dev` and sees a standalone web application at `http://
 ## Assumptions
 
 - The existing `useSpaceExplorer` hook and GraphQL queries provide all data needed for the CRD SpaceCard — no new queries are required
-- No runtime toggle mechanism is needed — migrated routes simply use CRD views at the code level
+- A localStorage runtime toggle (`alkemio-crd-enabled`, default OFF) gates CRD routes so deployed environments show the old MUI pages. Old MUI page files are kept alongside CRD alternatives in the codebase
 - The prototype's `SpaceCard` and `BrowseSpacesPage` are the definitive design reference for the CRD version
 - Tailwind CSS v4 and the necessary build configuration have been set up as Phase 1 of this spec (T001-T005, completed)
 - The `src/crd/` folder already exists with its CLAUDE.md conventions established
