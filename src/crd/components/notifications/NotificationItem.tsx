@@ -25,9 +25,8 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
   return (
     <div
       className={cn(
-        'flex gap-3 p-4 transition-colors border-b border-border',
-        notification.isUnread ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-muted/50',
-        onClick && 'cursor-pointer'
+        'group flex gap-3 p-4 transition-colors border-b border-border',
+        notification.isUnread ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-muted/50'
       )}
     >
       <button
@@ -72,7 +71,7 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7 text-muted-foreground opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:opacity-100"
-                aria-label={t('notifications.actions.read')}
+                aria-label={t('notifications.actions.menu')}
                 onClick={e => e.stopPropagation()}
               >
                 <MoreHorizontal className="h-4 w-4" />

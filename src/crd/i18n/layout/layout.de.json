@@ -5,6 +5,7 @@
     "search": "Suchen",
     "messages": "Nachrichten",
     "notifications": "Benachrichtigungen",
+    "unreadNotifications": "{{count}} ungelesene Benachrichtigungen",
     "spaces": "Räume",
     "platformNavigation": "Plattform-Navigation",
     "myAccount": "Mein Konto",

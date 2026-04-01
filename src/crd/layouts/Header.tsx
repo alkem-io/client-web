@@ -132,7 +132,10 @@ export function Header({
           >
             <Bell aria-hidden="true" className="w-5 h-5" />
             {typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+              <>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                <span className="sr-only">{t('header.unreadNotifications', { count: unreadNotificationsCount })}</span>
+              </>
             )}
           </Button>
         ) : (
@@ -146,7 +149,12 @@ export function Header({
             <a href={navigationHrefs.notifications}>
               <Bell aria-hidden="true" className="w-5 h-5" />
               {typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                <>
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                  <span className="sr-only">
+                    {t('header.unreadNotifications', { count: unreadNotificationsCount })}
+                  </span>
+                </>
               )}
             </a>
           </Button>

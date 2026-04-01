@@ -20,7 +20,7 @@ import { NotificationFilterType } from '@/main/inAppNotifications/notificationFi
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { buildLoginUrl, buildNotificationSettingsUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
-import { mapNotificationsToItemDataList } from '@/main/ui/layout/notificationDataMapper';
+import { getInitials, mapNotificationsToItemDataList } from '@/main/ui/layout/notificationDataMapper';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
@@ -28,17 +28,9 @@ const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
 );
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
 const NotificationsPanel = lazyWithGlobalErrorHandler(async () => {
-  const m = await import('@/crd/layouts/components/NotificationsPanel');
+  const m = await import('@/crd/components/notifications/NotificationsPanel');
   return { default: m.NotificationsPanel };
 });
-
-function getInitials(displayName: string): string {
-  const words = displayName.trim().split(/\s+/);
-  if (words.length >= 2) {
-    return (words[0][0] + words[1][0]).toUpperCase();
-  }
-  return (words[0]?.[0] ?? '').toUpperCase();
-}
 
 const STATIC_NAVIGATION_HREFS = {
   home: ROUTE_HOME,

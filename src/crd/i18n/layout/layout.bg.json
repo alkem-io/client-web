@@ -5,6 +5,7 @@
     "search": "Търсене",
     "messages": "Съобщения",
     "notifications": "Известия",
+    "unreadNotifications": "{{count}} непрочетени известия",
     "spaces": "Пространства",
     "platformNavigation": "Навигация на платформата",
     "myAccount": "Моят акаунт",

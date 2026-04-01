@@ -5,6 +5,7 @@
     "search": "Search",
     "messages": "Messages",
     "notifications": "Notifications",
+    "unreadNotifications": "{{count}} unread notifications",
     "spaces": "Spaces",
     "platformNavigation": "Platform navigation",
     "myAccount": "My Account",

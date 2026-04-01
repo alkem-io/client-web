@@ -4,7 +4,7 @@ import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 
-function getInitials(displayName: string): string {
+export function getInitials(displayName: string): string {
   const words = displayName.trim().split(/\s+/);
   if (words.length >= 2) {
     return (words[0][0] + words[1][0]).toUpperCase();

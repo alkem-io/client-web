@@ -1,6 +1,6 @@
 import { BellOff, MailOpen, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { NotificationItem } from '@/crd/layouts/components/NotificationItem';
+import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
 import type { CrdNotificationFilter, CrdNotificationItemData } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -62,7 +62,10 @@ export function NotificationsPanel({
 
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-md md:max-w-lg p-0 gap-0 overflow-hidden">
+      <DialogContent
+        className="sm:max-w-md md:max-w-lg p-0 gap-0 overflow-hidden"
+        closeLabel={t('notifications.close')}
+      >
         {/* Header */}
         <div className="flex items-center justify-between pl-4 pr-10 pt-[10px] pb-3 border-b border-border bg-muted/30">
           <DialogTitle className="text-sm font-semibold">{t('notifications.title')}</DialogTitle>
@@ -116,22 +119,21 @@ export function NotificationsPanel({
 
           {!showSkeletons &&
             items.map(item => (
-              <div key={item.id} className="group">
-                <NotificationItem
-                  notification={item}
-                  onClick={onNotificationClick}
-                  onRead={onRead}
-                  onUnread={onUnread}
-                  onArchive={onArchive}
-                />
-              </div>
+              <NotificationItem
+                key={item.id}
+                notification={item}
+                onClick={onNotificationClick}
+                onRead={onRead}
+                onUnread={onUnread}
+                onArchive={onArchive}
+              />
             ))}
 
           {/* Empty state */}
           {showEmpty && (
             <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
               <BellOff aria-hidden="true" className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
-              <h3 className="text-base font-semibold mb-1 text-foreground">{t('notifications.emptyTitle')}</h3>
+              <p className="text-base font-semibold mb-1 text-foreground">{t('notifications.emptyTitle')}</p>
               <p className="text-sm text-muted-foreground max-w-[280px] leading-normal">
                 {t('notifications.emptyMessage')}
               </p>

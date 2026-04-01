@@ -5,6 +5,7 @@
     "search": "Zoeken",
     "messages": "Berichten",
     "notifications": "Meldingen",
+    "unreadNotifications": "{{count}} ongelezen meldingen",
     "spaces": "Ruimtes",
     "platformNavigation": "Platformnavigatie",
     "myAccount": "Mijn account",

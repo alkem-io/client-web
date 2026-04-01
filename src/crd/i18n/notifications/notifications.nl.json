@@ -3,20 +3,16 @@
     "title": "Meldingen",
     "markAllRead": "Alles als gelezen markeren",
     "settings": "Instellingen",
+    "close": "Sluiten",
     "emptyTitle": "Geen meldingen",
     "emptyMessage": "Je bent helemaal bij! Nieuwe meldingen verschijnen hier.",
     "loadMore": "Meer laden",
     "loading": "Meldingen laden",
     "actions": {
+      "menu": "Acties",
       "read": "Markeer als gelezen",
       "unread": "Markeer als ongelezen",
       "archive": "Archiveren"
-    },
-    "filters": {
-      "all": "Alle",
-      "messagesAndReplies": "Berichten & antwoorden",
-      "space": "Ruimte",
-      "platform": "Platform"
     }
   }
 }
