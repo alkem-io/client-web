@@ -5,13 +5,13 @@
 
 ## Summary
 
-Migrate the `/spaces` page from MUI to shadcn/ui + Tailwind CSS as the first proof-of-concept for the CRD (Client Re-Design) migration. The approach is a **parallel design system** with a **route-level layout split** — CRD routes in `TopLevelRoutes.tsx` are wrapped in `CrdLayoutWrapper`, which renders a fully CRD page shell (Header + content + Footer). MUI routes continue using `TopLevelLayout` unchanged. Inside the CRD shell, a data mapper bridges GraphQL responses to CRD component props. No runtime toggle — migrated routes simply render CRD. The data layer (`useSpaceExplorer` hook, GraphQL queries) remains completely untouched.
+Migrate the `/spaces` page from MUI to shadcn/ui + Tailwind CSS as the first proof-of-concept for the CRD (Client Re-Design) migration. The approach is a **parallel design system** with a **route-level layout split** — CRD routes in `TopLevelRoutes.tsx` are wrapped in `CrdLayoutWrapper`, which renders a fully CRD page shell (Header + content + Footer). MUI routes continue using `TopLevelLayout` unchanged. Inside the CRD shell, a data mapper bridges GraphQL responses to CRD component props. A **localStorage toggle** (`alkemio-crd-enabled`, default OFF) gates CRD routes so the branch can be merged to develop without affecting end users — developers and QA opt in locally. The data layer (`useSpaceExplorer` hook, GraphQL queries) remains completely untouched.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19, Node >= 22.0.0
 **Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
-**Storage**: N/A (GraphQL data layer unchanged)
+**Storage**: localStorage (`alkemio-crd-enabled`) for CRD feature toggle; GraphQL data layer unchanged
 **Testing**: Vitest with jsdom (`pnpm vitest run`)
 **Target Platform**: Web SPA (Vite dev server on localhost:3001)
 **Project Type**: Web application (frontend only — no backend changes)
@@ -108,13 +108,20 @@ src/
 │
 ├── main/
 │   ├── crdPages/                     # CRD page integrations (wires CRD components to data)
+│   │   ├── useCrdEnabled.ts                 # NEW: localStorage toggle hook (default OFF)
 │   │   └── spaces/
 │   │       ├── SpaceExplorerPage.tsx         # Page entry — hook + data mapping + CRD SpaceExplorer
 │   │       ├── SpaceExplorerQueries.graphql  # GraphQL queries for the spaces page
 │   │       ├── spaceCardDataMapper.ts        # GraphQL → SpaceCardData mapper
 │   │       └── useSpaceExplorer.ts           # Data hook
+│   ├── topLevelPages/
+│   │   └── topLevelSpaces/                  # RESTORED: Old MUI page (rendered when toggle is OFF)
+│   │       ├── SpaceExplorerPage.tsx
+│   │       ├── SpaceExplorerView.tsx
+│   │       ├── useSpaceExplorer.ts
+│   │       └── useSpaceExplorerViewState.ts
 │   ├── routing/
-│   │   └── TopLevelRoutes.tsx        # MODIFIED: wrap CRD routes in CrdLayoutWrapper
+│   │   └── TopLevelRoutes.tsx        # MODIFIED: conditional CRD/MUI routing based on useCrdEnabled()
 │   └── ui/
 │       └── layout/
 │           └── CrdLayoutWrapper.tsx  # Connects CrdLayout to app data (auth, user, roles, navigation, pending memberships, lazy HelpDialog)
@@ -142,9 +149,19 @@ When a route is migrated to CRD, the **entire page** renders in CRD — header, 
 - The `CrdLayoutWrapper` in `src/main/ui/layout/` is the smart container that connects CrdLayout to app data (auth, user info, navigation)
 - Future page migrations add their route under the `CrdLayoutWrapper` in `TopLevelRoutes.tsx`
 
-### D3: Direct Route Wiring (No Runtime Toggle)
+### D3: localStorage Feature Toggle (Safe Merge Strategy)
 
-Migration is a code-level decision. No runtime toggle, no feature flags, no URL params. The old MUI view files are kept in the codebase but no longer imported. Future page migrations follow the same pattern: move the route under `CrdLayoutWrapper` and swap the view component.
+During migration, CRD routes are gated behind a localStorage toggle so the branch can be merged to develop without affecting end users. The toggle defaults to OFF — deployed environments render the old MUI page. Developers and QA opt in via `localStorage.setItem('alkemio-crd-enabled', 'true')` + page refresh.
+
+**Implementation:**
+- `src/main/crdPages/useCrdEnabled.ts` — reads `alkemio-crd-enabled` from localStorage (default `false`)
+- `TopLevelRoutes.tsx` — conditionally routes `/spaces` to either `CrdSpaceExplorerPage` (with `CrdLayoutWrapper`) or `MuiSpaceExplorerPage` (with `TopLevelLayout`)
+- Old MUI page files are restored at `src/main/topLevelPages/topLevelSpaces/` alongside the CRD alternatives in `src/main/crdPages/spaces/`
+- Both versions are lazy-loaded — the unused chunk is never fetched, so there is no bundle penalty
+
+**Why localStorage over env var:** No Docker/CI config changes needed. QA can test on staging without a redeploy. No dev server restart to toggle. Easiest to remove when migration is complete.
+
+**Removal:** When all pages are migrated and validated, delete `useCrdEnabled.ts`, remove conditional routing, delete old MUI page files. CRD routes become the only routes.
 
 ### D4: Data Mapper in Page Directory
 
@@ -267,7 +284,7 @@ The CRD system follows the project's established lazy loading patterns to minimi
 
 ### D15: `src/main/crdPages/` as the Page Integration Layer
 
-CRD-migrated page components live in `src/main/crdPages/<pageName>/` rather than modifying existing files in `src/main/topLevelPages/`. This keeps MUI and CRD page implementations cleanly separated — the original MUI pages in `src/main/topLevelPages/` remain untouched and can be removed once migration is complete. `src/main/crdPages/` may import from `@/crd/`, `@/domain/`, and `@/core/`, but MUST NOT import from `@mui/*`. The `CrdLayoutWrapper` remains in `src/main/ui/layout/` because it is an app-level concern, not page-specific.
+CRD-migrated page components live in `src/main/crdPages/<pageName>/` rather than modifying existing files in `src/main/topLevelPages/`. This keeps MUI and CRD page implementations cleanly separated — the original MUI pages in `src/main/topLevelPages/` remain in the codebase and are rendered by default (toggle OFF). They can be removed once migration is complete and the toggle is deleted. `src/main/crdPages/` may import from `@/crd/`, `@/domain/`, and `@/core/`, but MUST NOT import from `@mui/*`. The `CrdLayoutWrapper` remains in `src/main/ui/layout/` because it is an app-level concern, not page-specific.
 
 ### D16: PlatformNavigation Menu & Layout Building Blocks
 

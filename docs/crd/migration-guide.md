@@ -12,10 +12,34 @@ The prototype in `prototype/` (generated from Figma Make) is the design referenc
 TopLevelRoutes.tsx
   ├── MUI routes  → TopLevelLayout (existing MUI header/footer)
   └── CRD routes  → CrdLayoutWrapper → CrdLayout (CRD header/footer)
-                                         └── <Outlet /> → Your page
+       (gated by       └── <Outlet /> → Your page
+        localStorage
+        toggle)
 ```
 
 CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched.
+
+During migration, CRD routes are gated behind a **localStorage toggle** (`alkemio-crd-enabled`, default OFF). Deployed environments always render the old MUI pages. Developers and QA opt in locally.
+
+## Feature Toggle
+
+The toggle lives in `src/main/crdPages/useCrdEnabled.ts` and is used in `TopLevelRoutes.tsx` to conditionally render CRD or MUI pages.
+
+**Enable CRD pages** (browser console):
+```js
+localStorage.setItem('alkemio-crd-enabled', 'true');
+location.reload();
+```
+
+**Disable CRD pages** (back to MUI):
+```js
+localStorage.removeItem('alkemio-crd-enabled');
+location.reload();
+```
+
+Both page versions are lazy-loaded — the unused chunk is never fetched, so there is no bundle penalty.
+
+When migration is complete and all CRD pages are validated, remove the toggle: delete `useCrdEnabled.ts`, remove conditional routing in `TopLevelRoutes.tsx`, delete old MUI page files from `src/main/topLevelPages/`.
 
 ## The Three Layers
 
@@ -106,18 +130,44 @@ const MyPage = () => {
 
 The data hook can be imported from the existing MUI page or copied — the GraphQL layer is shared.
 
-### Step 5: Wire the Route
+### Step 5: Wire the Route (with Feature Toggle)
 
-In `TopLevelRoutes.tsx`, add a lazy-loaded route under the CRD layout:
+In `TopLevelRoutes.tsx`, add both lazy imports and a conditional route based on the toggle:
 
 ```typescript
-const MyPageCrd = lazyWithGlobalErrorHandler(
+// CRD (new) version
+const CrdMyPage = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/myPage/MyPage')
 );
-
-// Inside routes, under CrdLayoutWrapper:
-<Route path="my-page" element={<MyPageCrd />} />
+// MUI (old) version — stays until migration is validated
+const MuiMyPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/topLevelPages/myPage/MyPage')
+);
 ```
+
+Then in the JSX, add a conditional block (the `crdEnabled` value comes from `useCrdEnabled()` already called in the component):
+
+```tsx
+{crdEnabled ? (
+  <Route element={<NonIdentity><CrdLayoutWrapper /></NonIdentity>}>
+    <Route path="/my-page" element={
+      <WithApmTransaction path="/my-page">
+        <Suspense fallback={<Loading />}><CrdMyPage /></Suspense>
+      </WithApmTransaction>
+    } />
+  </Route>
+) : (
+  <Route path="/my-page" element={
+    <NonIdentity>
+      <WithApmTransaction path="/my-page">
+        <Suspense fallback={<Loading />}><MuiMyPage /></Suspense>
+      </WithApmTransaction>
+    </NonIdentity>
+  } />
+)}
+```
+
+The old MUI page files stay in `src/main/topLevelPages/` and are the default. The CRD version only renders when the toggle is on.
 
 ### Step 6: Add Translations
 
@@ -148,7 +198,11 @@ Run `pnpm crd:dev` to see CRD components with mock data on `localhost:5200`. No 
 
 ### Don't Over-Migrate
 
-Only migrate what's asked. The existing MUI page continues to work — CRD is an alternative route, not a replacement that needs to happen all at once.
+Only migrate what's asked. The existing MUI page continues to work and is the default (toggle OFF). CRD is an alternative gated behind the toggle, not a replacement that needs to happen all at once.
+
+### Old MUI Files Stay in the Codebase
+
+When migrating a page, **do not delete** the old MUI page files from `src/main/topLevelPages/`. They remain as the default rendering path until the toggle is removed. Both versions coexist — lazy loading ensures only the active version's chunk is fetched.
 
 ## File Layout Example
 
@@ -163,8 +217,16 @@ src/crd/i18n/
 └── exploreSpaces/             # Space explorer translations
     └── exploreSpaces.en.json (+ .es, .nl, .bg, .de, .fr)
 
-src/main/crdPages/spaces/
-├── SpaceExplorerPage.tsx      # Page component (calls hook, renders CRD)
-├── spaceCardDataMapper.ts     # GraphQL → CRD prop mapping
-└── useSpaceExplorer.ts        # Data hook (GraphQL queries)
+src/main/crdPages/
+├── useCrdEnabled.ts           # Feature toggle hook (localStorage, default OFF)
+└── spaces/
+    ├── SpaceExplorerPage.tsx      # CRD page component (calls hook, renders CRD)
+    ├── spaceCardDataMapper.ts     # GraphQL → CRD prop mapping
+    └── useSpaceExplorer.ts        # Data hook (GraphQL queries)
+
+src/main/topLevelPages/topLevelSpaces/   # Old MUI page (rendered when toggle is OFF)
+├── SpaceExplorerPage.tsx
+├── SpaceExplorerView.tsx
+├── useSpaceExplorer.ts
+└── useSpaceExplorerViewState.ts
 ```

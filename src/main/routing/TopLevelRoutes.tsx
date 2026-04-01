@@ -13,6 +13,7 @@ import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import { useCrdEnabled } from '../crdPages/useCrdEnabled';
 import { CrdLayoutWrapper } from '../ui/layout/CrdLayoutWrapper';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
 import App from '../ui/layout/topLevelWrappers/App';
@@ -24,7 +25,10 @@ const HomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/H
 const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
-const SpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
+const CrdSpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
+const MuiSpaceExplorerPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
+);
 const InnovationLibraryPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
 );
@@ -47,6 +51,7 @@ const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/rout
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
+  const crdEnabled = useCrdEnabled();
 
   return (
     <Routes>
@@ -101,25 +106,40 @@ export const TopLevelRoutes = () => {
             </Suspense>
           }
         />
-        {/* CRD routes — wrapped in CrdLayoutWrapper (full shadcn/ui page shell) */}
-        <Route
-          element={
-            <NonIdentity>
-              <CrdLayoutWrapper />
-            </NonIdentity>
-          }
-        >
+        {/* Spaces page — toggleable between CRD (new) and MUI (old) via localStorage */}
+        {crdEnabled ? (
+          <Route
+            element={
+              <NonIdentity>
+                <CrdLayoutWrapper />
+              </NonIdentity>
+            }
+          >
+            <Route
+              path={`/${TopLevelRoutePath.Spaces}`}
+              element={
+                <WithApmTransaction path={`/${TopLevelRoutePath.Spaces}`}>
+                  <Suspense fallback={<Loading />}>
+                    <CrdSpaceExplorerPage />
+                  </Suspense>
+                </WithApmTransaction>
+              }
+            />
+          </Route>
+        ) : (
           <Route
             path={`/${TopLevelRoutePath.Spaces}`}
             element={
-              <WithApmTransaction path={`/${TopLevelRoutePath.Spaces}`}>
-                <Suspense fallback={<Loading />}>
-                  <SpaceExplorerPage />
-                </Suspense>
-              </WithApmTransaction>
+              <NonIdentity>
+                <WithApmTransaction path={`/${TopLevelRoutePath.Spaces}`}>
+                  <Suspense fallback={<Loading />}>
+                    <MuiSpaceExplorerPage />
+                  </Suspense>
+                </WithApmTransaction>
+              </NonIdentity>
             }
           />
-        </Route>
+        )}
         <Route
           path={`/${TopLevelRoutePath.Contributors}`}
           element={
