@@ -6,6 +6,7 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import AdminInnovationHubsRoutes from '@/domain/platformAdmin/domain/innovationHubs/InnovationHubsAdminRoutes';
 import AdminInnovationPacksRoutes from '@/domain/platformAdmin/domain/innovationPacks/AdminInnovationPackRoutes';
+import AdminLayoutPage from '@/domain/platformAdmin/domain/layout/AdminLayoutPage';
 import TransferPage from '@/domain/platformAdmin/management/transfer/TransferPage';
 import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
 import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
@@ -36,6 +37,7 @@ const PlatformAdminRoute = () => {
           <Route path="innovation-hubs/*" element={<AdminInnovationHubsRoutes />} />
           <Route path="virtual-contributors/*" element={<VirtualContributorsRoutes />} />
           <Route path="transfer/*" element={<TransferPage />} />
+          <Route path="layout" element={<AdminLayoutPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </NonPlatformAdminRedirect>

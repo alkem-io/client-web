@@ -103,7 +103,8 @@
       "!**/coverage/",
       "!**/public/env-config.js",
       "!**/public/meta.json",
-      "!**/*.min.js"
+      "!**/*.min.js",
+      "!**/prototype/**"
     ]
   },
   "overrides": [

@@ -30,5 +30,5 @@
     "noEmit": true
   },
   "include": ["src", "@types", "vite.config.mjs", "eslint.config.mjs", "specs"],
-  "exclude": ["node_modules", "src/**/*.test_.ts"]
+  "exclude": ["node_modules", "src/**/*.test_.ts", "src/crd/app/vite.config.ts"]
 }
