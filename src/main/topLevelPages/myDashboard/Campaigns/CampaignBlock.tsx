@@ -6,7 +6,7 @@ import CampaignBlockCreateVC from './CampaignBlockCreateVC';
 
 const CampaignBlock = () => {
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
-  const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
+  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
   // Do not remove: Inside the blocks startWizard() is being called with a ClickEvent and that messes up with the param that startWizard expects
   const handleStartWizard = () => startWizard();
 
@@ -24,7 +24,7 @@ const CampaignBlock = () => {
   return (
     <PageContentBlock>
       <CampaignBlockCreateVC startWizard={handleStartWizard} />
-      <VirtualContributorWizard />
+      {virtualContributorWizard}
     </PageContentBlock>
   );
 };

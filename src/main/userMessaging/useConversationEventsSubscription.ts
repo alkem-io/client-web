@@ -1,4 +1,5 @@
 import { gql, useApolloClient } from '@apollo/client';
+import { useRef } from 'react';
 import {
   ConversationDetailsDocument,
   ConversationMessagesDocument,
@@ -92,8 +93,16 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
   const client = useApolloClient();
   const currentUserId = userModel?.id;
 
+  // Use refs for values read inside the onData callback to avoid stale closures
+  // when the React Compiler memoizes the subscription options.
+  const selectedRoomIdRef = useRef(selectedRoomId);
+  selectedRoomIdRef.current = selectedRoomId;
+
+  const selectedConversationIdRef = useRef(selectedConversationId);
+  selectedConversationIdRef.current = selectedConversationId;
+
   const clearSelectionIfActive: SelectionClearer = (conversationId: string) => {
-    if (selectedConversationId === conversationId) {
+    if (selectedConversationIdRef.current === conversationId) {
       setSelectedConversationId(null);
       setSelectedRoomId(null);
     }
@@ -436,7 +445,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
     if (!roomCacheId) return;
 
     // Check if currently viewing this conversation
-    const isViewing = event.roomId === selectedRoomId;
+    const isViewing = event.roomId === selectedRoomIdRef.current;
 
     // Check if message is from current user (don't increment unread for own messages)
     const sender = event.message.sender;
