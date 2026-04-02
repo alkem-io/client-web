@@ -72,7 +72,7 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
           variables: {
             spaceL1ID: resolvedSpaceId,
             targetSpaceL0ID: targetL0Id,
-            autoInvite: autoInvite || undefined,
+            autoInvite,
             invitationMessage: autoInvite ? invitationMessage || undefined : undefined,
           },
         });
@@ -81,7 +81,7 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
           variables: {
             spaceL1ID: resolvedSpaceId,
             targetSpaceL1ID: targetL1Id,
-            autoInvite: autoInvite || undefined,
+            autoInvite,
             invitationMessage: autoInvite ? invitationMessage || undefined : undefined,
           },
         });
