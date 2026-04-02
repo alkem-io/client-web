@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { Identifiable } from '@/core/utils/Identifiable';
@@ -34,6 +35,7 @@ interface Space extends Identifiable {
 
 const SpaceExplorerPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   usePageTitle(t('pages.titles.spaces'));
 
   const {
@@ -59,10 +61,11 @@ const SpaceExplorerPage = () => {
       searchTerms={searchTerms}
       membershipFilter={membershipFilter}
       authenticated={authenticated}
-      loadingSearchResults={loadingSearchResults ?? undefined}
+      loadingSearchResults={loadingSearchResults}
       onSearchTermsChange={terms => setSearchTerms(terms)}
       onMembershipFilterChange={onMembershipFilterChange}
       onLoadMore={fetchMore}
+      onParentClick={parent => navigate(parent.href)}
     />
   );
 };

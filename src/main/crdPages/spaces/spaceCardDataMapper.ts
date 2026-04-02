@@ -1,6 +1,5 @@
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
-import type { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import type { SpaceWithParent } from './SpaceExplorerPage';
 
@@ -42,17 +41,10 @@ export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolea
   const { profile, isContentPublic, membership } = about;
   const displayName = profile.displayName;
 
-  // TypeScript doesn't know that membership has leadUsers/leadOrganizations
-  // but the actual GraphQL fragment SpaceExplorerSpace includes them
-  const membershipWithLeads = membership as typeof membership & {
-    leadUsers?: Lead[];
-    leadOrganizations?: LeadOrganization[];
-  };
-
   const leads: SpaceLead[] = [];
   if (authenticated) {
-    const leadUsers = membershipWithLeads?.leadUsers ?? [];
-    const leadOrgs = membershipWithLeads?.leadOrganizations ?? [];
+    const leadUsers = membership?.leadUsers ?? [];
+    const leadOrgs = membership?.leadOrganizations ?? [];
 
     for (const user of leadUsers) {
       leads.push({

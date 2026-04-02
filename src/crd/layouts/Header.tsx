@@ -12,6 +12,45 @@ import type {
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
+type HeaderIconButtonProps = {
+  onClick?: () => void;
+  href?: string;
+  ariaLabel: string;
+  icon: React.ReactNode;
+  badge?: React.ReactNode;
+};
+
+function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconButtonProps) {
+  if (onClick) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="relative text-muted-foreground"
+        aria-label={ariaLabel}
+        onClick={onClick}
+      >
+        {icon}
+        {badge}
+      </Button>
+    );
+  }
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="relative text-muted-foreground"
+      aria-label={ariaLabel}
+      asChild={true}
+    >
+      <a href={href}>
+        {icon}
+        {badge}
+      </a>
+    </Button>
+  );
+}
+
 type HeaderProps = {
   user?: CrdUserInfo;
   authenticated: boolean;
@@ -82,83 +121,33 @@ export function Header({
 
       {/* Right: icon row */}
       <nav aria-label={t('header.menu')} className="flex items-center gap-1">
-        {onSearchClick ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground"
-            aria-label={t('header.search')}
-            onClick={onSearchClick}
-          >
-            <Search aria-hidden="true" className="w-5 h-5" />
-          </Button>
-        ) : (
-          <Button variant="ghost" size="icon" className="text-muted-foreground" aria-label={t('header.search')}>
-            <Search aria-hidden="true" className="w-5 h-5" />
-          </Button>
-        )}
+        <HeaderIconButton
+          onClick={onSearchClick}
+          ariaLabel={t('header.search')}
+          icon={<Search aria-hidden="true" className="w-5 h-5" />}
+        />
 
-        {onMessagesClick ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative text-muted-foreground"
-            aria-label={t('header.messages')}
-            onClick={onMessagesClick}
-          >
-            <MessageSquare aria-hidden="true" className="w-5 h-5" />
-          </Button>
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative text-muted-foreground"
-            aria-label={t('header.messages')}
-            asChild={true}
-          >
-            <a href={navigationHrefs.messages}>
-              <MessageSquare aria-hidden="true" className="w-5 h-5" />
-            </a>
-          </Button>
-        )}
+        <HeaderIconButton
+          onClick={onMessagesClick}
+          href={navigationHrefs.messages}
+          ariaLabel={t('header.messages')}
+          icon={<MessageSquare aria-hidden="true" className="w-5 h-5" />}
+        />
 
-        {onNotificationsClick ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative text-muted-foreground"
-            aria-label={t('header.notifications')}
-            onClick={onNotificationsClick}
-          >
-            <Bell aria-hidden="true" className="w-5 h-5" />
-            {typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 && (
+        <HeaderIconButton
+          onClick={onNotificationsClick}
+          href={navigationHrefs.notifications}
+          ariaLabel={t('header.notifications')}
+          icon={<Bell aria-hidden="true" className="w-5 h-5" />}
+          badge={
+            typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 ? (
               <>
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
                 <span className="sr-only">{t('header.unreadNotifications', { count: unreadNotificationsCount })}</span>
               </>
-            )}
-          </Button>
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative text-muted-foreground"
-            aria-label={t('header.notifications')}
-            asChild={true}
-          >
-            <a href={navigationHrefs.notifications}>
-              <Bell aria-hidden="true" className="w-5 h-5" />
-              {typeof unreadNotificationsCount === 'number' && unreadNotificationsCount > 0 && (
-                <>
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
-                  <span className="sr-only">
-                    {t('header.unreadNotifications', { count: unreadNotificationsCount })}
-                  </span>
-                </>
-              )}
-            </a>
-          </Button>
-        )}
+            ) : undefined
+          }
+        />
 
         {platformNavigationItems && platformNavigationItems.length > 0 ? (
           <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />

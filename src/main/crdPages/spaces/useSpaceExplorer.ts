@@ -15,10 +15,11 @@ import {
   type SpaceExplorerSearchSpaceFragment,
   type SpaceExplorerSubspacesQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import type { SpacesFilterValue } from '@/crd/components/space/SpaceExplorer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { TypedSearchResult } from '@/main/search/SearchView';
 import type { SpaceWithParent } from './SpaceExplorerPage';
+
+export type SpacesFilterValue = 'all' | 'member' | 'public';
 
 export const ITEMS_LIMIT = 10;
 
@@ -32,7 +33,7 @@ export interface SpacesExplorerContainerEntities {
   hasMore: boolean | undefined;
   authenticated: boolean;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
-  loadingSearchResults: boolean | null;
+  loadingSearchResults: boolean;
 }
 
 const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
@@ -158,7 +159,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
 
   const flattenedSpaces = (() => {
     if (shouldSearch) {
-      return rawSearchResults?.search?.spaceResults?.results.map(result => {
+      return rawSearchResults?.search?.spaceResults?.results.flatMap(result => {
         const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
 
         if (entry.type === SearchResultType.Space || entry.type === SearchResultType.Subspace) {
@@ -169,7 +170,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
           };
         }
 
-        return null as never;
+        return [];
       });
     }
 
@@ -217,7 +218,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     loading,
     hasMore,
     setSearchTerms,
-    loadingSearchResults,
+    loadingSearchResults: loadingSearchResults ?? false,
   };
 };
 

@@ -1,10 +1,7 @@
-import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { AuthorizationPrivilege, NotificationEventInAppState, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
-import { supportedLngs } from '@/core/i18n/config';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import {
@@ -12,15 +9,10 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
-import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
-import { NotificationFilterType } from '@/main/inAppNotifications/notificationFilters';
-import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
-import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import { buildLoginUrl, buildNotificationSettingsUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
-import { getInitials, mapNotificationsToItemDataList } from '@/main/ui/layout/notificationDataMapper';
+import type { NotificationFilterType } from '@/main/inAppNotifications/notificationFilters';
+import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
+import { useCrdNotifications } from '@/main/ui/layout/useCrdNotifications';
+import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
@@ -32,130 +24,39 @@ const NotificationsPanel = lazyWithGlobalErrorHandler(async () => {
   return { default: m.NotificationsPanel };
 });
 
-const STATIC_NAVIGATION_HREFS = {
-  home: ROUTE_HOME,
-  spaces: `/${TopLevelRoutePath.Spaces}`,
-  messages: ROUTE_HOME,
-  notifications: ROUTE_HOME,
-  profile: ROUTE_USER_ME,
-  account: buildUserAccountUrl(ROUTE_USER_ME),
-  admin: `/${TopLevelRoutePath.Admin}`,
-};
-
 function CrdLayoutConnector() {
-  const { isAuthenticated, userModel, platformPrivilegeWrapper, platformRoles } = useCurrentUserContext();
-  const { t, i18n } = useTranslation();
-  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
-  const { selectedFilter: notificationFilter, setSelectedFilter: setNotificationFilter } =
-    useInAppNotificationsContext();
-  const [isNotificationsOpen, setNotificationsOpen] = useState(false);
+  const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
   const {
-    notificationsInApp,
-    unreadCount: notificationsUnreadCount,
-    isLoading: isLoadingNotifications,
-    updateNotificationState,
+    navigationHrefs,
+    footerLinks,
+    languages,
+    currentLanguage,
+    currentPath,
+    handleLanguageChange,
+    platformNavigationItems,
+  } = useCrdNavigation();
+  const {
+    isNotificationsOpen,
+    setNotificationsOpen,
+    notificationsUnreadCount,
+    notificationItems,
+    notificationFilters,
+    notificationFilter,
+    setNotificationFilter,
+    isLoadingNotifications,
+    hasMoreNotifications,
+    notificationSettingsHref,
+    handleNotificationClick,
     markNotificationsAsRead,
-    fetchMore: fetchMoreNotifications,
-    hasMore: hasMoreNotifications,
-  } = useInAppNotifications();
+    fetchMoreNotifications,
+    updateNotificationState,
+  } = useCrdNotifications(userModel?.profile?.url);
+
+  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
-  const { locations } = useConfig();
-  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const navigate = useNavigate();
-  const { pathname, search } = useLocation();
-
-  const isAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
-
-  const languages = supportedLngs
-    .filter(lng => lng !== 'inContextTool')
-    .map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
-
-  const role = (() => {
-    for (const platformRole of platformRoles) {
-      switch (platformRole) {
-        case RoleName.GlobalAdmin:
-          return t('common.roles.GLOBAL_ADMIN');
-        case RoleName.GlobalSupport:
-          return t('common.roles.GLOBAL_SUPPORT');
-        case RoleName.GlobalLicenseManager:
-          return t('common.roles.GLOBAL_LICENSE_MANAGER');
-        case RoleName.PlatformBetaTester:
-          return t('common.roles.PLATFORM_BETA_TESTER');
-        case RoleName.PlatformVcCampaign:
-          return t('common.roles.PLATFORM_VC_CAMPAIGN');
-      }
-    }
-    return undefined;
-  })();
-
-  const user = userModel?.profile
-    ? {
-        name: userModel.profile.displayName,
-        avatarUrl: userModel.profile.avatar?.uri,
-        initials: getInitials(userModel.profile.displayName),
-        role,
-      }
-    : undefined;
-
-  const navigationHrefs = { ...STATIC_NAVIGATION_HREFS, login: buildLoginUrl(pathname, search) };
-
-  const footerLinks = locations
-    ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
-    : undefined;
-
-  const platformNavigationItems = [
-    {
-      icon: <Lightbulb className="h-4 w-4" />,
-      label: t('pages.innovationLibrary.fullName'),
-      href: `/${TopLevelRoutePath.InnovationLibrary}`,
-    },
-    {
-      icon: <MessageCircle className="h-4 w-4" />,
-      label: t('pages.forum.fullName'),
-      href: `/${TopLevelRoutePath.Forum}`,
-    },
-    {
-      icon: <Compass className="h-4 w-4" />,
-      label: t('pages.exploreSpaces.fullName'),
-      href: `/${TopLevelRoutePath.Spaces}`,
-    },
-    {
-      icon: <BookOpen className="h-4 w-4" />,
-      label: t('pages.documentation.title'),
-      href: `/${TopLevelRoutePath.Docs}`,
-    },
-  ];
-
-  const notificationItems = mapNotificationsToItemDataList(
-    notificationsInApp ?? [],
-    t,
-    NotificationEventInAppState.Unread
-  );
-
-  const notificationFilters = [
-    { key: NotificationFilterType.All, label: t('components.inAppNotifications.filters.all') },
-    {
-      key: NotificationFilterType.MessagesAndReplies,
-      label: t('components.inAppNotifications.filters.messagesAndReplies'),
-    },
-    { key: NotificationFilterType.Space, label: t('components.inAppNotifications.filters.space') },
-    { key: NotificationFilterType.Platform, label: t('components.inAppNotifications.filters.platform') },
-  ];
-
-  const notificationSettingsHref = userModel?.profile?.url
-    ? buildNotificationSettingsUrl(userModel.profile.url)
-    : undefined;
-
-  const handleNotificationClick = (notification: { id: string; isUnread: boolean; href?: string }) => {
-    if (notification.isUnread) {
-      updateNotificationState(notification.id, NotificationEventInAppState.Read);
-    }
-    setNotificationsOpen(false);
-    if (notification.href) {
-      navigate(notification.href);
-    }
-  };
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
   const handleLogout = () => {
     navigate(IdentityRoutes.Logout);
@@ -174,11 +75,11 @@ function CrdLayoutConnector() {
         isAdmin={isAdmin}
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
-        currentPath={pathname}
+        currentPath={currentPath}
         unreadNotificationsCount={notificationsUnreadCount}
         languages={languages}
-        currentLanguage={i18n.language}
-        onLanguageChange={code => i18n.changeLanguage(code)}
+        currentLanguage={currentLanguage}
+        onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
         onMessagesClick={() => setMessagingOpen(true)}
         onNotificationsClick={() => setNotificationsOpen(true)}
