@@ -2737,6 +2737,7 @@ export type MutationKeySpecifier = (
   | 'deleteVirtualContributor'
   | 'deleteVisualFromMediaGallery'
   | 'deleteWhiteboard'
+  | 'enablePushSubscription'
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
@@ -2945,6 +2946,7 @@ export type MutationFieldPolicy = {
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVisualFromMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  enablePushSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
