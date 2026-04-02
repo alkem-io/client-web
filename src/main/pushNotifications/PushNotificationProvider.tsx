@@ -8,6 +8,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { type PushNotificationState, usePushNotifications } from '@/main/pushNotifications/usePushNotifications';
 
 const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
+const PUSH_USER_DISABLED_KEY = 'alkemio_push_user_disabled';
 
 const defaultState: PushNotificationState = {
   isSupported: false,
@@ -36,6 +37,8 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     if (!pushState.isSupported || !pushState.isServerEnabled) return;
     if (Notification.permission !== 'granted') return;
+    // User explicitly disabled push — don't auto-resubscribe
+    if (localStorage.getItem(PUSH_USER_DISABLED_KEY)) return;
 
     const silentRefresh = async () => {
       try {
@@ -91,6 +94,8 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
       }
 
       if (event.data?.type === 'PUSH_SUBSCRIPTION_CHANGED' && event.data.subscription) {
+        // User explicitly disabled push — don't re-register
+        if (localStorage.getItem(PUSH_USER_DISABLED_KEY)) return;
         // Re-register the new subscription with server
         const sub = event.data.subscription;
         subscribeMutation({

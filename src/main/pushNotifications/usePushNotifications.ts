@@ -7,6 +7,7 @@ import {
 import { urlBase64ToUint8Array } from '@/main/pushNotifications/urlBase64ToUint8Array';
 
 const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
+const PUSH_USER_DISABLED_KEY = 'alkemio_push_user_disabled';
 
 export type PushNotificationState = {
   isSupported: boolean;
@@ -119,6 +120,7 @@ export function usePushNotifications(): PushNotificationState {
         localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, serverSubscriptionId);
         setCurrentSubscriptionId(serverSubscriptionId);
       }
+      localStorage.removeItem(PUSH_USER_DISABLED_KEY);
       setIsSubscribed(true);
     } catch (error) {
       // FR-014: Rollback browser subscription on server error
@@ -160,6 +162,7 @@ export function usePushNotifications(): PushNotificationState {
       }
 
       localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+      localStorage.setItem(PUSH_USER_DISABLED_KEY, 'true');
       setCurrentSubscriptionId(null);
       setIsSubscribed(false);
     } finally {

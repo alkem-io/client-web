@@ -7,6 +7,7 @@ import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUr
 import Loading from '@/core/ui/loading/Loading';
 
 const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
+const PUSH_USER_DISABLED_KEY = 'alkemio_push_user_disabled';
 
 async function cleanupPushSubscription(
   unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0]
@@ -28,8 +29,9 @@ async function cleanupPushSubscription(
       }
     }
   } finally {
-    // Always clear the cached ID, even if cleanup partially fails
+    // Always clear cached state, even if cleanup partially fails
     localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+    localStorage.removeItem(PUSH_USER_DISABLED_KEY);
   }
 }
 
