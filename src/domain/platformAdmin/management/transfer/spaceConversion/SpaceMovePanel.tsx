@@ -1,4 +1,13 @@
-import { Alert, Button, Checkbox, FormControlLabel, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
+} from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -181,17 +190,29 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
           </>
         )}
 
-        <FormControlLabel
-          control={
-            <Checkbox checked={autoInvite} onChange={e => setAutoInvite(e.target.checked)} disabled={mutationLoading} />
-          }
-          label={t(`${T_PREFIX}.autoInvite.label`)}
-        />
+        <Tooltip title={t(`${T_PREFIX}.autoInvite.tooltip`)} placement="top-start">
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={autoInvite}
+                onChange={e => {
+                  setAutoInvite(e.target.checked);
+                  if (e.target.checked) {
+                    setInvitationMessage(t(`${T_PREFIX}.autoInvite.messagePlaceholder`));
+                  } else {
+                    setInvitationMessage('');
+                  }
+                }}
+                disabled={mutationLoading}
+              />
+            }
+            label={t(`${T_PREFIX}.autoInvite.label`)}
+          />
+        </Tooltip>
         {autoInvite && (
           <TextField
             value={invitationMessage}
             onChange={e => setInvitationMessage(e.target.value)}
-            placeholder={t(`${T_PREFIX}.autoInvite.messagePlaceholder`)}
             multiline={true}
             rows={2}
             fullWidth={true}

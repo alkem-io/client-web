@@ -2597,14 +2597,14 @@
         },
         "move": "Move",
         "moveL1ToL0": {
-          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organizations, and virtual contributors will be removed. Existing URLs will break.",
+          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organizations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
           "targetLabel": "Target Space",
           "button": "Move Space (L1 → L1 cross-Space)",
           "confirmTitle": "Move Subspace to another Space?",
           "confirmWarning": "This will move the subspace and all its content to the target Space. All community roles will be cleared. Innovation flow states may be remapped. Existing URLs will no longer work. This action cannot be easily undone."
         },
         "moveL1ToL2": {
-          "hint": "Move this subspace under a subspace in a different Space. It will be demoted to Level 2. ALL community roles will be cleared, including admins. Existing URLs will break.",
+          "hint": "Move this subspace under a subspace in a different Space. It will be demoted to Level 2. ALL community roles will be cleared, including admins. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
           "targetL0Label": "Target Space",
           "targetL1Label": "Target Subspace",
           "button": "Move & Demote (L1 → L2 cross-Space)",
@@ -2620,6 +2620,7 @@
         },
         "autoInvite": {
           "label": "Send invitations to community members who are already in the destination space",
+          "tooltip": "After the move, all community roles are cleared. This option sends an invitation to members who already belong to the destination space, so they can rejoin the moved subspace without having to find it themselves.",
           "messagePlaceholder": "Your space has been moved. You are invited to rejoin the community."
         },
         "moveSuccess": "Space moved successfully.",
