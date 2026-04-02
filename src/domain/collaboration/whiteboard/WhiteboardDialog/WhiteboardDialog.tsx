@@ -321,6 +321,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 maxWidth={false}
                 fullWidth={true}
                 fullScreen={options.fullscreen}
+                containerMaxWidth={false}
                 onClose={onClose}
               >
                 <DialogHeader
