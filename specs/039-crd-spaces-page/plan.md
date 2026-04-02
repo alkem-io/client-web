@@ -223,14 +223,16 @@ The `CrdLayout` component in `src/crd/layouts/` is purely presentational and rec
 
 Shared types (`CrdUserInfo`, `CrdNavigationHrefs`, `CrdLanguageOption`) are defined once in `src/crd/layouts/types.ts` and imported by Header, Footer, and CrdLayout.
 
-The `CrdLayoutWrapper` in `src/main/ui/layout/`:
-- Reads auth state, user profile, platform roles, platform privileges from `useCurrentUserContext()`
+The `CrdLayoutWrapper` in `src/main/ui/layout/` composes three extracted hooks to keep the component focused:
+- `useCrdUser()` — reads auth state, user profile, platform roles/privileges from `useCurrentUserContext()`, resolves role display name
+- `useCrdNavigation()` — resolves navigation hrefs, footer links, platform nav items, language options from config/i18n
+- The bell icon click sets `InAppNotificationsContext.setIsOpen(true)` — notifications are handled globally (see D17)
 - Reads pending invitation count from `usePendingInvitationsCount()`
-- Wires Messages/Notifications callbacks to existing dialog context providers
+- Wires Messages callback to `useUserMessagingContext()`
 - Wires Pending Memberships callback to `usePendingMembershipsDialog()` context
 - Lazy-loads `HelpDialog` via `lazyWithGlobalErrorHandler()`
-- Resolves navigation hrefs from `ROUTE_HOME`, `ROUTE_USER_ME`, `buildUserAccountUrl()`, `TopLevelRoutePath`
-- Resolves platform role display name from `platformRoles` (same logic as MUI `PlatformNavigationUserMenu`)
+
+The `Header` component uses a `HeaderIconButton` helper to reduce duplication across the icon bar (Search, Messages, Notifications) — each icon conditionally renders as a callback button or an `<a href>` fallback.
 
 ### D10: Prototype-Matching Filter Bar (Filters Dropdown)
 
@@ -275,7 +277,8 @@ The CRD system follows the project's established lazy loading patterns to minimi
 - **Page components** (e.g., `SpaceExplorerPage`) — lazy-loaded via `lazyWithGlobalErrorHandler()` in `TopLevelRoutes.tsx`, wrapped in `<Suspense fallback={<Loading />}>`. Each page creates its own chunk.
 - **HelpDialog** — lazy-loaded in `CrdLayoutWrapper` via `lazyWithGlobalErrorHandler()`, only loaded when user clicks "Get Help"
 - **PendingMembershipsDialog** — already lazy-loaded at the root level, triggered via context provider
-- **Messages/Notifications dialogs** — already lazy-loaded in `root.tsx`, reused via context providers
+- **Messages dialog** — already lazy-loaded in `root.tsx`, reused via context provider
+- **Notifications dialog** — lazy-loaded in `root.tsx` via `NotificationsGate`, which renders either `CrdNotificationsPanelConnector` or `InAppNotificationsDialog` based on the CRD toggle (see D17)
 
 **Bundle chunking** (from `vite.config.mjs` `manualChunks`):
 - CRD components are NOT in a separate vendor chunk — Radix UI deps are small compared to MUI and don't warrant a dedicated chunk
@@ -306,24 +309,35 @@ As part of this work, the existing user profile dropdown (~120 lines) is extract
 
 **i18n:** Menu item labels are passed as translated strings from the consumer (via `CrdLayoutWrapper` using the main `translation` namespace). The PlatformNavigationMenu component itself does not call `useTranslation` for item labels — they arrive as props. Any structural UI text (e.g., a menu heading) uses the `crd-layout` namespace.
 
-### D17: CRD Notifications Panel — Generic Item + Dialog Pattern
+### D17: CRD Notifications Panel — Global Dialog with Generic Items
 
 The MUI `InAppNotificationsDialog` is a full modal with 40+ type-specific notification view components, filter chips, infinite scroll, and state transitions. The CRD migration replaces the **presentational shell** while keeping the **data layer and type-specific logic** untouched.
 
 **Architecture split:**
 
-- **CRD layer** (`src/crd/layouts/components/NotificationsPanel.tsx`): A presentational dialog component that renders a generic notification list. Receives all data and callbacks as props. Contains:
-  - `NotificationsPanel` — dialog with header (title, mark-all-read, settings link), filter chips, scrollable list, empty state
-  - `NotificationItem` — generic item: avatar, title, description, timestamp, unread dot, actions menu. Works for all 40+ notification types via a flat props interface
-- **Integration layer** (`src/main/ui/layout/CrdLayoutWrapper.tsx`): Renders `NotificationsPanel` conditionally when `isOpen` is true. Maps `InAppNotificationModel[]` from the existing `useInAppNotifications()` hook to `NotificationItemData[]` (plain CRD props). The 40+ type-specific views in `src/main/inAppNotifications/views/` are NOT migrated — instead, a data mapper extracts `{ title, description, avatarUrl, timestamp, isUnread, href }` from each `InAppNotificationModel` for the generic CRD item.
-- **Data layer** (unchanged): `useInAppNotifications()` hook, `InAppNotificationsContext`, GraphQL queries/subscriptions/mutations, notification type filters — all stay in `src/main/inAppNotifications/`
+- **CRD layer** (`src/crd/components/notifications/`): Presentational dialog components that render a generic notification list. Receive all data and callbacks as props:
+  - `NotificationsPanel` — dialog with header (title, mark-all-read, settings link), filter chips, scrollable list, empty state. Full-screen on mobile, bounded dialog on desktop (`sm:max-w-xl`).
+  - `NotificationItem` — generic item: avatar, title, description, comment (italic, separate from translated description), timestamp + actions menu (right column). Works for all 40+ notification types via a flat props interface.
+- **Global integration** (`src/main/ui/layout/CrdNotificationsPanelConnector.tsx`): Rendered in `root.tsx` via `NotificationsGate`, which conditionally renders either the CRD connector or the MUI dialog based on `useCrdEnabled()`. This ensures notifications work on **all pages** regardless of which layout wraps them — not just CRD routes.
+  - `useCrdNotifications()` hook encapsulates all notification wiring: maps `InAppNotificationModel[]` to `CrdNotificationItemData[]`, builds filter UI, handles click/state transitions.
+  - `notificationDataMapper.ts` resolves each notification type's i18n template with **all 34 interpolation values** (including pre-translated values like `spaceLevel` and `category`), plus a separate `comment` field for the raw message body.
+  - Uses `@/core/routing/useNavigate` for click navigation (handles absolute URL normalization automatically).
+- **Data layer** (unchanged): `useInAppNotifications()` hook, `InAppNotificationsContext`, GraphQL queries/subscriptions/mutations, notification type filters — all stay in `src/main/inAppNotifications/`.
 
-**Why a generic item instead of 40+ CRD views:** The type-specific views only differ in which i18n key and which payload fields they extract. A single mapper function can resolve each notification type to `{ title, description }` by calling `t()` with the appropriate key and values. This eliminates 40+ tiny CRD components that would each be ~10 lines of prop extraction.
+**Why a generic item instead of 40+ CRD views:** The type-specific views only differ in which i18n key and which payload fields they extract. A single mapper function can resolve each notification type to `{ title, description, comment }` by calling `t()` with the appropriate key and values. This eliminates 40+ tiny CRD components that would each be ~10 lines of prop extraction.
 
-**Dialog vs dropdown:** The MUI version uses a full modal dialog, and the developer confirmed this approach. The CRD version uses a Radix `Dialog` primitive (to be ported from prototype if not yet available) rather than a `DropdownMenu`, since the notification list needs scrolling, filters, and a header bar.
+**Why global rendering in `root.tsx`:** Notifications are a global concern — users expect to open notifications from any page. Rendering the dialog inside `CrdLayoutWrapper` would only work on CRD routes; MUI-layout pages would have no notification dialog when CRD is enabled. The `NotificationsGate` pattern solves this:
+```
+root.tsx → NotificationsGate
+  ├── CRD enabled  → CrdNotificationsPanelConnector (lazy)
+  └── CRD disabled → InAppNotificationsDialog (lazy, MUI)
+```
+Both read `isOpen` from `InAppNotificationsContext`. The bell icon click (from either CRD Header or MUI AppBar) sets `context.setIsOpen(true)` and the correct dialog opens. Only one is ever loaded — no bundle overhead.
 
-**Unread badge:** The bell icon in `Header.tsx` gains an `unreadCount?: number` prop. When > 0, a small badge dot or count is shown on the bell icon, matching the MUI `BadgeCounter` behavior.
+**Dialog layout:** The CRD version uses a Radix `Dialog` primitive. Full-screen on mobile (`h-[100dvh]`, no border radius), bounded on desktop (`sm:max-w-xl`, `sm:max-h-[60vh]` for the list). Notification items show the timestamp and three-dots action menu in a right-aligned column.
+
+**Unread badge:** The bell icon in `Header.tsx` gains an `unreadCount?: number` prop. When > 0, a small badge dot is shown on the bell icon, matching the MUI `BadgeCounter` behavior.
 
 **Filter chips:** The 4 filter categories (All, Messages & Replies, Space, Platform) are rendered as CRD `Button` variants (ghost/secondary toggle). The selected filter maps to `NotificationEvent[]` types in the existing `notificationFilters.ts` — this mapping stays in the integration layer.
 
-**Rendering location:** The `NotificationsPanel` is rendered in `CrdLayoutWrapper` (like `HelpDialog` and `PendingMembershipsDialog`), lazy-loaded via `lazyWithGlobalErrorHandler()`. It replaces the MUI `InAppNotificationsDialog` for CRD routes. The MUI dialog in `root.tsx` continues to serve MUI routes.
+**i18n strategy:** Notification type strings (34 subject/description templates) and filter labels remain in the main `translation` namespace (`components.inAppNotifications` in `translation.en.json`). They are shared between the MUI `InAppNotificationsDialog` and the CRD `NotificationsPanel` — duplicating would create drift risk, and moving would break the MUI dialog. The `crd-notifications` namespace (`src/crd/i18n/notifications/`) contains only CRD dialog chrome (title, actions, empty state). Once the MUI dialog is removed, the type strings should be moved to the `crd-notifications` namespace. This is tracked by a `_migration_note` in a TODO in `notificationDataMapper.ts`.

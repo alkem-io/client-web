@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import type { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';

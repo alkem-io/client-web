@@ -40,6 +40,7 @@ export type CrdNotificationItemData = {
   id: string;
   title: string;
   description: string;
+  comment?: string;
   avatarUrl?: string;
   avatarFallback: string;
   timestamp: string;

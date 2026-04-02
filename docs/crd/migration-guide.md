@@ -9,29 +9,38 @@ The prototype in `prototype/` (generated from Figma Make) is the design referenc
 ## Architecture at a Glance
 
 ```
-TopLevelRoutes.tsx
-  ├── MUI routes  → TopLevelLayout (existing MUI header/footer)
-  └── CRD routes  → CrdLayoutWrapper → CrdLayout (CRD header/footer)
-       (gated by       └── <Outlet /> → Your page
-        localStorage
-        toggle)
+root.tsx
+  ├── NotificationsGate (global)
+  │   ├── CRD enabled  → CrdNotificationsPanelConnector (shadcn dialog)
+  │   └── CRD disabled → InAppNotificationsDialog (MUI dialog)
+  │
+  └── TopLevelRoutes.tsx
+      ├── MUI routes  → TopLevelLayout (existing MUI header/footer)
+      └── CRD routes  → CrdLayoutWrapper → CrdLayout (CRD header/footer)
+           (gated by       └── <Outlet /> → Your page
+            localStorage
+            toggle)
 ```
 
-CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched.
+CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched. Global dialogs (notifications) are handled at `root.tsx` level and work on all pages regardless of layout.
 
-During migration, CRD routes are gated behind a **localStorage toggle** (`alkemio-crd-enabled`, default OFF). Deployed environments always render the old MUI pages. Developers and QA opt in locally.
+During migration, CRD routes are gated behind a **localStorage toggle** (`alkemio-crd-enabled`, default OFF). Deployed environments always render the old MUI pages. Developers and QA opt in via the **Admin UI** (Administration → Platform Settings → Design System) or the browser console.
 
 ## Feature Toggle
 
 The toggle lives in `src/main/crdPages/useCrdEnabled.ts` and is used in `TopLevelRoutes.tsx` to conditionally render CRD or MUI pages.
 
-**Enable CRD pages** (browser console):
+**Enable CRD pages via Admin UI:**
+Navigate to **Administration → Platform Settings** (the layout settings page). Under the "Design System" section, select **CRD (New Design)** and the page reloads with the new design. This sets `localStorage('alkemio-crd-enabled', 'true')` under the hood.
+
+**Enable via browser console** (alternative):
 ```js
 localStorage.setItem('alkemio-crd-enabled', 'true');
 location.reload();
 ```
 
 **Disable CRD pages** (back to MUI):
+Use the Admin UI toggle, or via console:
 ```js
 localStorage.removeItem('alkemio-crd-enabled');
 location.reload();
@@ -39,7 +48,7 @@ location.reload();
 
 Both page versions are lazy-loaded — the unused chunk is never fetched, so there is no bundle penalty.
 
-When migration is complete and all CRD pages are validated, remove the toggle: delete `useCrdEnabled.ts`, remove conditional routing in `TopLevelRoutes.tsx`, delete old MUI page files from `src/main/topLevelPages/`.
+When migration is complete and all CRD pages are validated, remove the toggle: delete `useCrdEnabled.ts`, remove conditional routing in `TopLevelRoutes.tsx`, remove `NotificationsGate` from `root.tsx`, delete old MUI page files from `src/main/topLevelPages/`.
 
 ## The Three Layers
 
@@ -184,9 +193,11 @@ See [translations.md](./translations.md) for the full guide. Short version:
 
 Tailwind is loaded globally but scoped via `.crd-root` — MUI pages outside this scope are unaffected. CRD pages must never import MUI, ensuring no MUI CSS is loaded for CRD routes.
 
-### Existing MUI Dialogs
+### Global Dialogs (Messages, Notifications)
 
-Some app-wide features (Messages, Notifications) are MUI dialogs rendered in `root.tsx`. CRD pages trigger them via callback props (`onMessagesClick`, `onNotificationsClick`) — the CRD component doesn't know they're MUI under the hood.
+**Messages**: The MUI Messages dialog is rendered in `root.tsx` and shared across all routes. CRD pages trigger it via `onMessagesClick` callback prop.
+
+**Notifications**: Handled globally in `root.tsx` via `NotificationsGate`, which renders either the CRD `NotificationsPanel` or the MUI `InAppNotificationsDialog` based on the CRD toggle. Both are lazy-loaded — only one is ever fetched. The bell icon click (from either CRD Header or MUI AppBar) sets `InAppNotificationsContext.setIsOpen(true)` and the correct dialog opens on any page. The CRD component doesn't know about the toggle — it just calls a callback prop.
 
 ### Data Hooks Are Shared
 

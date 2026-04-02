@@ -82,7 +82,8 @@ const MyPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/<page>/M
 - Page components: always lazy-loaded via `lazyWithGlobalErrorHandler()` + `<Suspense fallback={<Loading />}>`
 - Dialogs triggered from CRD: lazy-loaded with `<Suspense fallback={null}>` (e.g., `HelpDialog`)
 - `CrdLayoutWrapper` itself: eager (must be available to render the page shell immediately)
-- Existing MUI dialogs (Messages, Notifications): already lazy-loaded in `root.tsx`, reuse via context providers — never duplicate
+- Existing MUI dialogs (Messages): already lazy-loaded in `root.tsx`, reuse via context providers — never duplicate
+- **Notifications**: handled globally in `root.tsx` via `NotificationsGate` — renders either the CRD `NotificationsPanel` or MUI `InAppNotificationsDialog` based on `useCrdEnabled()`. Both are lazy-loaded. The bell icon click sets `InAppNotificationsContext.setIsOpen(true)` and the correct dialog opens on any page.
 - CRD primitives: bundled with the page chunk (small, no separate vendor chunk needed)
 
 ### 8. Add i18n Keys
