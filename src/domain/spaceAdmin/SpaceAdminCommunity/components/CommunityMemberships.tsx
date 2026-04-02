@@ -4,7 +4,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Link } from '@mui/material';
 import type { GridColDef, GridInitialState, GridRenderCellParams } from '@mui/x-data-grid';
 import type { TFunction } from 'i18next';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -190,16 +190,11 @@ const CommunityMemberships = ({
   const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = useState<MembershipTableItem>();
 
-  const tableItems = useMemo<MembershipTableItem[]>(
-    () => [
-      ...applications.map(application => CreatePendingMembershipForApplication(application)),
-      ...invitations.map(invitation => CreatePendingMembershipForInvitation(invitation)),
-      ...platformInvitations.map(platformInvitation =>
-        CreatePendingMembershipForPlatformInvitation(platformInvitation)
-      ),
-    ],
-    [applications, invitations, platformInvitations]
-  );
+  const tableItems = [
+    ...applications.map(application => CreatePendingMembershipForApplication(application)),
+    ...invitations.map(invitation => CreatePendingMembershipForInvitation(invitation)),
+    ...platformInvitations.map(platformInvitation => CreatePendingMembershipForPlatformInvitation(platformInvitation)),
+  ];
 
   const columnDefinitions: GridColDef[] = [
     {
@@ -253,7 +248,7 @@ const CommunityMemberships = ({
     },
   ];
 
-  const visibleTableItems = useMemo(() => tableItems.filter(item => item.state !== 'archived'), [tableItems]);
+  const visibleTableItems = tableItems.filter(item => item.state !== 'archived');
 
   const [handleDeleteItem, isDeletingItem] = useLoadingState(async (item: GetterParams) => {
     if (item?.type === MembershipType.Application) {

@@ -1,6 +1,6 @@
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
-import { type ChangeEvent, useCallback } from 'react';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -38,10 +38,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
 
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
-  const openMembershipsDialog = useCallback(
-    () => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList }),
-    [setOpenDialog]
-  );
+  const openMembershipsDialog = () => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
 
   useMyDashboardDialogs({
     paramValue: DIALOG_PARAM_VALUES.INVITATIONS,

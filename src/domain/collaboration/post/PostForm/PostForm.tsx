@@ -1,5 +1,4 @@
 import { Formik, type FormikConfig } from 'formik';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import type { Post } from '@/core/apollo/generated/graphql-schema';
@@ -66,7 +65,7 @@ const PostForm = ({
 }: PostFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: FormValue = useMemo(() => {
+  const initialValues: FormValue = (() => {
     const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: post?.tags ?? post?.profileData?.tags ?? [] }];
     return {
       name: post?.profileData?.displayName ?? defaultDisplayName ?? '',
@@ -74,7 +73,7 @@ const PostForm = ({
       tagsets,
       references: post?.references ?? [],
     };
-  }, [post]);
+  })();
 
   const validationSchema = yup.object().shape({
     name: displayNameValidator({ required: true }),

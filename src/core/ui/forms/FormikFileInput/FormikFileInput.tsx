@@ -1,5 +1,4 @@
 import { useField } from 'formik';
-import { useMemo } from 'react';
 import FileUploadButton, {
   type FileUploadEntityType,
   type UploadedDocument,
@@ -33,10 +32,7 @@ const FormikFileInput = ({
 
   const storageConfig = useStorageConfigContext();
 
-  const updatedStorageConfig = useMemo(
-    () => (storageConfig ? { ...storageConfig, temporaryLocation } : null),
-    [storageConfig, temporaryLocation]
-  );
+  const updatedStorageConfig = storageConfig ? { ...storageConfig, temporaryLocation } : null;
 
   const checkProtocol = () => {
     helpers.setTouched(true);

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   useOrganizationSettingsQuery,
@@ -31,12 +30,12 @@ export const OrganizationAdminSettingsView = () => {
 
   const [updateOrganizationSettings] = useUpdateOrganizationSettingsMutation();
 
-  const currentSettings = useMemo(() => {
+  const currentSettings = (() => {
     const settings = data?.lookup.organization?.settings;
     return {
       ...settings,
     };
-  }, [data, organizationId]);
+  })();
 
   if (loading) {
     return <Loading />;

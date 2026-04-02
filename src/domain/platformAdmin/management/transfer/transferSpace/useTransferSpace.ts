@@ -13,6 +13,7 @@ import toFullUrl from '../toFullUrl';
 const useTransferSpace = () => {
   const [spaceUrl, setSpaceUrl] = useState('');
   const [accountOwnerUrl, setAccountOwnerUrl] = useState('');
+  const [mutationCompleted, setMutationCompleted] = useState(false);
 
   // Resolve space URL
   const { data: spaceResolveData, loading: spaceResolveLoading } = useSpaceTransferUrlResolveQuery({
@@ -108,10 +109,12 @@ const useTransferSpace = () => {
         : undefined;
 
   const handleSpaceSubmit = (url: string) => {
+    setMutationCompleted(false);
     setSpaceUrl(toFullUrl(url));
   };
 
   const handleAccountOwnerSubmit = (url: string) => {
+    setMutationCompleted(false);
     setAccountOwnerUrl(toFullUrl(url));
   };
 
@@ -123,13 +126,14 @@ const useTransferSpace = () => {
     if (!result.data?.transferSpaceToAccount?.id) {
       throw new Error('Transfer failed');
     }
+    setMutationCompleted(true);
   };
 
   const isL0Space = resolvedSpaceLevel === SpaceLevel.L0;
 
   return {
-    space,
-    accountOwner,
+    space: mutationCompleted ? undefined : space,
+    accountOwner: mutationCompleted ? undefined : accountOwner,
     isL0Space,
     hasSpaceTransferOffer,
     hasAccountTransferAccept,

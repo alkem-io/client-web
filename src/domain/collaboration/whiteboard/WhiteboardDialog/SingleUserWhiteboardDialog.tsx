@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import type React from 'react';
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -206,14 +206,14 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
       }>
     >(null);
 
-  const initialValues = useMemo(() => {
+  const initialValues = (() => {
     return {
       profile: {
         displayName: whiteboard.profile?.displayName ?? '',
       },
       previewSettings: whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
     };
-  }, [whiteboard]);
+  })();
 
   return (
     <>
@@ -230,6 +230,10 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
               display: 'flex',
               flexDirection: 'column',
               height: options.fullscreen ? '100vh' : '85vh',
+              ...(!options.fullscreen && {
+                maxWidth: 'calc(100vw - 32px)',
+                margin: '16px',
+              }),
             },
           },
         }}

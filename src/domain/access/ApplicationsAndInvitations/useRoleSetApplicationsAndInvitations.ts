@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   refetchUserPendingMembershipsQuery,
   useActorDetailsLazyQuery,
@@ -64,6 +64,7 @@ const useRoleSetApplicationsAndInvitations = ({
     loading,
     refetch: refetchCommunityApplicationsInvitations,
   } = useCommunityApplicationsInvitationsQuery({
+    // biome-ignore lint/style/noNonNullAssertion: guarded by skip
     variables: { roleSetId: roleSetId! },
     skip: !roleSetId,
   });
@@ -79,13 +80,11 @@ const useRoleSetApplicationsAndInvitations = ({
   type ActorDetail = NonNullable<ActorDetailsQuery['actor']>;
   const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
 
-  const contributorIds = useMemo(() => {
+  useEffect(() => {
     const appIds = data?.lookup.roleSet?.applications.map(app => app.actor.id) ?? [];
     const invIds = data?.lookup.roleSet?.invitations.map(inv => inv.actor.id) ?? [];
-    return [...new Set([...appIds, ...invIds])];
-  }, [data]);
+    const contributorIds = [...new Set([...appIds, ...invIds])];
 
-  useEffect(() => {
     if (contributorIds.length === 0) {
       return;
     }
@@ -102,7 +101,7 @@ const useRoleSetApplicationsAndInvitations = ({
       setActorDetailsMap(newMap);
     };
     fetchAll();
-  }, [contributorIds, fetchActorDetails]);
+  }, [data, fetchActorDetails]);
 
   const getActorEmail = (actorDetail: ActorDetail | undefined): string | undefined => {
     if (!actorDetail) return undefined;
@@ -112,7 +111,7 @@ const useRoleSetApplicationsAndInvitations = ({
     return undefined;
   };
 
-  const { applications, invitations, platformInvitations } = useMemo(() => {
+  const { applications, invitations, platformInvitations } = (() => {
     return {
       applications:
         data?.lookup.roleSet?.applications.map(app => ({
@@ -138,7 +137,7 @@ const useRoleSetApplicationsAndInvitations = ({
         })) ?? [],
       platformInvitations: data?.lookup.roleSet?.platformInvitations ?? [],
     };
-  }, [data, actorDetailsMap]);
+  })();
 
   const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation();
   const handleApplyForEntryRoleOnRoleSet = (

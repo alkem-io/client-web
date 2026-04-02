@@ -1,6 +1,5 @@
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import { Box, styled } from '@mui/material';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardImage from '@/core/ui/card/CardImage';
@@ -50,12 +49,12 @@ const WhiteboardCard = ({ contribution, columns, callout, onClick, selected }: W
   const { t } = useTranslation();
   const whiteboard = contribution?.whiteboard;
 
-  const linkState = useMemo(() => {
+  const linkState = (() => {
     return {
       [LocationStateKeyCachedCallout]: callout,
       keepScroll: true,
     };
-  }, [callout]);
+  })();
 
   return (
     <ContributeCard to={whiteboard?.profile.url} onClick={onClick} state={linkState} columns={columns}>

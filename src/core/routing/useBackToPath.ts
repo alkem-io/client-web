@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { normalizeLink } from '../utils/links';
 import { getPreviousSafePath } from './NavigationHistory';
@@ -15,7 +14,7 @@ const useBackToPath = () => {
   const navigate = useNavigate();
   const canGoBack = useCanGoBack();
 
-  return useCallback((parentPagePath: string) => {
+  return (parentPagePath: string) => {
     parentPagePath = normalizeLink(parentPagePath);
     if (!canGoBack) {
       navigate(parentPagePath);
@@ -28,13 +27,13 @@ const useBackToPath = () => {
     };
     window.addEventListener('popstate', handlePopState);
     navigate(-1);
-  }, []);
+  };
 };
 
 export const useBackToStaticPath = (parentPagePath: string) => {
   const backToPath = useBackToPath();
 
-  return useCallback(() => backToPath(parentPagePath), [parentPagePath]);
+  return () => backToPath(parentPagePath);
 };
 
 /**
@@ -55,7 +54,7 @@ export const useBackWithDefaultUrl = (parentPagePath: string = ROUTE_HOME, steps
   const normalizedDefaultPath = normalizeLink(parentPagePath ?? ROUTE_HOME);
   const navigate = useNavigate();
 
-  return useCallback(() => {
+  return () => {
     // Get the previous path from the global navigation history tracker
     const previousPath = getPreviousSafePath(steps);
 
@@ -67,7 +66,7 @@ export const useBackWithDefaultUrl = (parentPagePath: string = ROUTE_HOME, steps
 
     // Otherwise, use the default path
     navigate(normalizedDefaultPath);
-  }, [normalizedDefaultPath, navigate, steps]);
+  };
 };
 
 export default useBackToPath;

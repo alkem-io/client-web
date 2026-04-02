@@ -1,6 +1,6 @@
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { Box, Button, Checkbox, DialogActions, DialogContent, FormControlLabel, Tooltip } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutContributionType,
@@ -65,7 +65,7 @@ const CreateCalloutDialog = ({
   const notify = useNotification();
 
   const [isValid, setIsValid] = useState(false);
-  const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
+  const handleStatusChange = (isValid: boolean) => setIsValid(isValid);
 
   const {
     templateSelected,

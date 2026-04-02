@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -44,13 +44,9 @@ const RoleSetVirtualContributorsBlockWide = ({
 
   const compactViewItemsLimit = compactView ? columns * COMPACT_VIEW_ROWS : undefined;
 
-  const visibleVCs = useMemo(
-    () =>
-      (virtualContributors ?? [])
-        .filter(matchesNameFilter(searchTerm))
-        .slice(0, compactView ? compactViewItemsLimit : undefined),
-    [virtualContributors, searchTerm, compactViewItemsLimit]
-  );
+  const visibleVCs = (virtualContributors ?? [])
+    .filter(matchesNameFilter(searchTerm))
+    .slice(0, compactView ? compactViewItemsLimit : undefined);
 
   return (
     <PageContentBlock>

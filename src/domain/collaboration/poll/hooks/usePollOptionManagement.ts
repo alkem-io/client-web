@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   useAddPollOptionMutation,
   useRemovePollOptionMutation,
@@ -16,37 +15,25 @@ export const usePollOptionManagement = ({ pollId }: UsePollOptionManagementParam
   const [removePollOptionMutation, { loading: removeLoading }] = useRemovePollOptionMutation();
   const [reorderPollOptionsMutation, { loading: reorderLoading }] = useReorderPollOptionsMutation();
 
-  const addOption = useCallback(
-    (text: string) =>
-      addPollOptionMutation({
-        variables: { optionData: { pollID: pollId, text } },
-      }),
-    [pollId, addPollOptionMutation]
-  );
+  const addOption = (text: string) =>
+    addPollOptionMutation({
+      variables: { optionData: { pollID: pollId, text } },
+    });
 
-  const updateOption = useCallback(
-    (optionID: string, text: string) =>
-      updatePollOptionMutation({
-        variables: { optionData: { pollID: pollId, optionID, text } },
-      }),
-    [pollId, updatePollOptionMutation]
-  );
+  const updateOption = (optionID: string, text: string) =>
+    updatePollOptionMutation({
+      variables: { optionData: { pollID: pollId, optionID, text } },
+    });
 
-  const removeOption = useCallback(
-    (optionID: string) =>
-      removePollOptionMutation({
-        variables: { optionData: { pollID: pollId, optionID } },
-      }),
-    [pollId, removePollOptionMutation]
-  );
+  const removeOption = (optionID: string) =>
+    removePollOptionMutation({
+      variables: { optionData: { pollID: pollId, optionID } },
+    });
 
-  const reorderOptions = useCallback(
-    (optionIDs: string[]) =>
-      reorderPollOptionsMutation({
-        variables: { optionData: { pollID: pollId, optionIDs } },
-      }),
-    [pollId, reorderPollOptionsMutation]
-  );
+  const reorderOptions = (optionIDs: string[]) =>
+    reorderPollOptionsMutation({
+      variables: { optionData: { pollID: pollId, optionIDs } },
+    });
 
   return {
     addOption,

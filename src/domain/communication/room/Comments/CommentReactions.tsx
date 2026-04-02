@@ -1,14 +1,14 @@
 import { AddReactionOutlined } from '@mui/icons-material';
 import { Box, IconButton, Popover } from '@mui/material';
 import { compact, groupBy, sortBy } from 'lodash-es';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption, CardText } from '@/core/ui/typography/components';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import ReactionView, { type ReactionViewProps, type ReactionViewReaction } from './ReactionView';
+import ReactionView, { type ReactionViewProps } from './ReactionView';
 import useReactionsOverflow from './useReactionsOverflow';
 
 interface CommentReactionsReaction extends Identifiable {
@@ -38,7 +38,7 @@ const CommentReactions = ({
   const userId = userModel?.id;
   const { t } = useTranslation();
 
-  const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {
+  const reactionsWithCount = (() => {
     // Group reactions by emoji
     const grouped = groupBy(reactions, r => r.emoji);
 
@@ -63,7 +63,7 @@ const CommentReactions = ({
 
     // Sort by first timestamp (chronological order of first reaction per emoji)
     return sortBy(reactionGroups, g => g.firstTimestamp);
-  }, [reactions, userId, t]);
+  })();
 
   const {
     visibleReactions,

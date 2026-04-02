@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminOrganizationsListQuery,
@@ -18,7 +18,6 @@ import {
 } from '@/domain/community/organization/model/OrganizationVerification';
 import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import type { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 
 const PAGE_SIZE = 10;
 
@@ -41,22 +40,19 @@ export const usePlatformAdminOrganizationsList = () => {
   const pageInfo = data?.platformAdmin.organizations.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = useCallback(
-    async (itemsNumber = PAGE_SIZE) => {
-      if (!data) {
-        return;
-      }
+  const fetchMore = async (itemsNumber = PAGE_SIZE) => {
+    if (!data) {
+      return;
+    }
 
-      await fetchMoreRaw({
-        variables: {
-          first: itemsNumber,
-          after: pageInfo?.endCursor,
-          filter: { displayName: searchTerm },
-        },
-      });
-    },
-    [data, fetchMoreRaw, pageInfo?.endCursor, searchTerm]
-  );
+    await fetchMoreRaw({
+      variables: {
+        first: itemsNumber,
+        after: pageInfo?.endCursor,
+        filter: { displayName: searchTerm },
+      },
+    });
+  };
 
   const { t } = useTranslation();
   const notify = useNotification();
@@ -156,35 +152,29 @@ export const usePlatformAdminOrganizationsList = () => {
     });
   };
 
-  const organizations = useMemo<SearchableListItem[]>(
-    () =>
-      data?.platformAdmin.organizations?.organization.map(org => ({
-        id: org.id,
-        accountId: org.account?.id,
-        value: org.profile?.displayName ?? '',
-        url: buildSettingsUrl(org.profile?.url ?? ''),
-        verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
-        avatar: org.profile?.visual,
-        activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
-          .filter(({ licenseCredential }) =>
-            org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
-          )
-          .map(({ id }) => id),
-      })) || [],
-    [data]
-  );
+  const organizations =
+    data?.platformAdmin.organizations?.organization.map(org => ({
+      id: org.id,
+      accountId: org.account?.id,
+      value: org.profile?.displayName ?? '',
+      url: buildSettingsUrl(org.profile?.url ?? ''),
+      verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
+      avatar: org.profile?.visual,
+      activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
+        .filter(({ licenseCredential }) =>
+          org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+        )
+        .map(({ id }) => id),
+    })) || [];
 
-  const licensePlans = useMemo<ContributorLicensePlan[]>(
-    () =>
-      platformLicensePlans.data?.platform.licensingFramework.plans
-        .filter(plan => plan.type === LicensingCredentialBasedPlanType.AccountPlan)
-        .map(licensePlan => ({
-          id: licensePlan.id,
-          name: licensePlan.name,
-          sortOrder: licensePlan.sortOrder,
-        })) || [],
-    [data]
-  );
+  const licensePlans =
+    platformLicensePlans.data?.platform.licensingFramework.plans
+      .filter(plan => plan.type === LicensingCredentialBasedPlanType.AccountPlan)
+      .map(licensePlan => ({
+        id: licensePlan.id,
+        name: licensePlan.name,
+        sortOrder: licensePlan.sortOrder,
+      })) || [];
 
   return {
     organizations,

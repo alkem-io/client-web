@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import type { MetricType } from '../MetricType';
@@ -21,18 +21,15 @@ export interface MetricsItemSpec {
 const useMetricsItems = (metrics: Metric[] | undefined, specs: MetricsItemSpec[] | undefined) => {
   const { t } = useTranslation();
 
-  const metricsItems = useMemo(
-    () =>
-      specs?.map(({ label, type, color }) => {
-        return {
-          type,
-          color,
-          name: t(label),
-          count: getMetricCount(metrics, type),
-        } as MetricItem;
-      }) ?? [],
-    [metrics, specs, t]
-  );
+  const metricsItems =
+    specs?.map(({ label, type, color }) => {
+      return {
+        type,
+        color,
+        name: t(label),
+        count: getMetricCount(metrics, type),
+      } as MetricItem;
+    }) ?? [];
 
   return metricsItems;
 };

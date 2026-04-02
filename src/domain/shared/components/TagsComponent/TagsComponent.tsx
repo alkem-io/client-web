@@ -4,7 +4,7 @@ import Chip, { type ChipProps } from '@mui/material/Chip';
 import Skeleton from '@mui/material/Skeleton';
 import type { Theme } from '@mui/material/styles';
 import { times } from 'lodash-es';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CardText } from '@/core/ui/typography';
 import LinesFitter from '../LinesFitter/LinesFitter';
@@ -55,20 +55,17 @@ const TagsComponent = ({
 
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
 
-  const renderTag = useCallback(
-    (item: string, i: number) => (
-      <Tooltip key={i} title={item} arrow={true} placement="bottom">
-        <Chip
-          label={item}
-          color={color}
-          size={size}
-          variant={selectedIndexes.includes(i) ? selectedVariant : variant}
-          sx={{ maxWidth: '100%' }}
-          onClick={onClickTag ? () => onClickTag(item, i) : undefined}
-        />
-      </Tooltip>
-    ),
-    [color, size, variant, selectedIndexes, selectedVariant]
+  const renderTag = (item: string, i: number) => (
+    <Tooltip key={i} title={item} arrow={true} placement="bottom">
+      <Chip
+        label={item}
+        color={color}
+        size={size}
+        variant={selectedIndexes.includes(i) ? selectedVariant : variant}
+        sx={{ maxWidth: '100%' }}
+        onClick={onClickTag ? () => onClickTag(item, i) : undefined}
+      />
+    </Tooltip>
   );
 
   const [tooltipOpen, setTooltipOpen] = useState(false);

@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash-es';
-import { type Ref, useMemo, useState } from 'react';
+import { type Ref, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useCalloutContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -24,7 +24,7 @@ interface useCalloutContributionsProps {
     | undefined;
   pageSize?: number;
   contributionType: CalloutContributionType;
-  onCalloutUpdate?: () => Promise<unknown> | void;
+  onCalloutUpdate?: () => Promise<unknown> | undefined;
   skip?: boolean;
 }
 
@@ -106,21 +106,21 @@ const useCalloutContributions = ({
   });
 
   // Use previousData while loading to avoid losing already shown items when the expanded query fires
-  const effectiveData = useMemo(() => {
+  const effectiveData = (() => {
     if (loading) {
       return previousData ?? data;
     }
     return data;
-  }, [loading, data, previousData]);
+  })();
 
-  const items = useMemo(() => {
+  const items = (() => {
     const sortedContributions = sortBy(effectiveData?.lookup.callout?.contributions ?? [], 'sortOrder');
     if (returnAllResults) {
       return sortedContributions;
     } else {
       return sortedContributions.slice(0, pageSize);
     }
-  }, [effectiveData, returnAllResults, pageSize]);
+  })();
 
   const totalContributionsCount =
     (() => {

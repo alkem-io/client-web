@@ -1,0 +1,83 @@
+# VC Type Conversion — URL resolution, lookup, and conversion mutation
+# Used by: VcConversionSection + useVcConversion hook
+
+# Step 1: Resolve VC URL to get ID
+query VcConversionUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    virtualContributor {
+      id
+    }
+  }
+}
+
+# Step 2: Fetch VC details for state display + conversion eligibility
+query VcConversionLookup($vcId: UUID!) {
+  lookup {
+    virtualContributor(ID: $vcId) {
+      id
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      aiPersona {
+        id
+        bodyOfKnowledgeType
+        bodyOfKnowledgeID
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
+# Step 3: Fetch callout count from source space (for FR-006 display)
+query VcConversionSourceSpaceCallouts($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      about {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      collaboration {
+        id
+        calloutsSet {
+          id
+          callouts {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+# Mutation: Convert VC from space-based to knowledge-base-based
+mutation ConvertVcToKnowledgeBase($virtualContributorID: UUID!) {
+  convertVirtualContributorToUseKnowledgeBase(
+    conversionData: { virtualContributorID: $virtualContributorID }
+  ) {
+    id
+  }
+}

@@ -1,5 +1,5 @@
 import { GridLegacy, Link } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -28,10 +28,7 @@ export const AssociatesView = ({
   const toggleShowAll = () => setShowAll(prevValue => !prevValue);
   const usersCount = associates.length - count;
 
-  const associatesToShow = useMemo(
-    () => (showAll ? associates : associates.slice(0, count)),
-    [associates, count, showAll]
-  );
+  const associatesToShow = showAll ? associates : associates.slice(0, count);
 
   return (
     <PageContentBlock>

@@ -1,0 +1,53 @@
+# Innovation Pack Transfer — URL resolution, lookup, and transfer mutation
+# Used by: TransferInnovationPackSection + useTransferInnovationPack hook
+
+# Step 1: Resolve pack URL to get ID
+query InnovationPackTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    innovationPack {
+      id
+    }
+  }
+}
+
+# Step 2: Fetch pack details for state display
+query InnovationPackTransferLookup($packId: UUID!) {
+  lookup {
+    innovationPack(ID: $packId) {
+      id
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
+# Mutation: Transfer pack to another account
+mutation TransferInnovationPackToAccount($innovationPackID: UUID!, $targetAccountID: UUID!) {
+  transferInnovationPackToAccount(
+    transferData: { innovationPackID: $innovationPackID, targetAccountID: $targetAccountID }
+  ) {
+    id
+  }
+}

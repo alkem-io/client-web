@@ -1,6 +1,6 @@
 import { Close } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import CardActions from '@/core/ui/card/CardActions';
@@ -40,16 +40,13 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
+  const handleContactLead = (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    sendMessage(leadType, {
+      id: leadId,
+      displayName: leadDisplayName,
+      avatarUri: leadAvatarUri,
+    });
+  };
 
   if (loading || !details) {
     return null;

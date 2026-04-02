@@ -1,6 +1,5 @@
 import { Button, Skeleton } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useSpaceContentTemplatesOnSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -62,14 +61,10 @@ const SelectDefaultSpaceTemplateDialog = ({
     spaceTemplateSelectedId: textLengthValidator({ required: true }),
   });
 
-  const spaceTemplates = useMemo(
-    () =>
-      data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(template => ({
-        id: template.id,
-        name: template.profile.displayName,
-      })),
-    [data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates]
-  );
+  const spaceTemplates = data?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(template => ({
+    id: template.id,
+    name: template.profile.displayName,
+  }));
 
   return (
     <DialogWithGrid open={open} onClose={onClose} aria-labelledby="select-default-space-template-dialog">

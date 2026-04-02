@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Formik } from 'formik';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -43,7 +43,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading, titleId }: 
     subspaceId: '',
   };
 
-  const listItems = useMemo(() => {
+  const listItems = (() => {
     const result: SelectableKnowledgeSpace[] = [];
     const addSelectableSpace = (space: SelectableSpace, parentSpaces: SelectableSpace[] = []) => {
       const name = `${space.about.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`;
@@ -80,7 +80,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading, titleId }: 
     });
 
     return result;
-  }, [spaces]);
+  })();
 
   const validationSchema = yup.object().shape({
     subspaceId: textLengthValidator({ required: true }),

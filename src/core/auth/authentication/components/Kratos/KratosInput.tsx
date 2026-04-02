@@ -3,7 +3,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { InputAdornment, type OutlinedInputProps, TextField, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import type { UiNodeInputAttributes } from '@ory/kratos-client';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KRATOS_TRAIT_NAME_FIRST_NAME, KRATOS_TRAIT_NAME_LAST_NAME } from './constants';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
@@ -23,11 +23,11 @@ export const KratosInput: FC<KratosInputProps> = ({
   onValueChange,
 }) => {
   const { t } = useTranslation();
-  const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
+  const attributes = node.attributes as UiNodeInputAttributes;
   const [value, setValue] = useState(getNodeValue(node));
   const [touched, setTouched] = useState(false);
   const [inputType, setInputType] = useState(attributes.type);
-  const isPassword = useMemo(() => attributes.type === 'password', [attributes]);
+  const isPassword = attributes.type === 'password';
 
   const invalid = isInvalidNode(node) || (touched && !value);
   const name = getNodeName(node);

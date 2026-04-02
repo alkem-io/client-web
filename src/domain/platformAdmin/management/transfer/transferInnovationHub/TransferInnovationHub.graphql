@@ -1,0 +1,42 @@
+query InnovationHubTransferUrlResolve($url: String!) {
+  urlResolver(url: $url) {
+    state
+    type
+    innovationHubId
+  }
+}
+
+query InnovationHubTransferLookup($hubId: UUID!) {
+  lookup {
+    innovationHub(ID: $hubId) {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
+mutation TransferInnovationHubToAccount($innovationHubID: UUID!, $targetAccountID: UUID!) {
+  transferInnovationHubToAccount(
+    transferData: { innovationHubID: $innovationHubID, targetAccountID: $targetAccountID }
+  ) {
+    id
+  }
+}

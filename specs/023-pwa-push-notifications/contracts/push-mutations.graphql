@@ -1,0 +1,25 @@
+# Push Notification Mutations
+# These documents will be created as .graphql files in src/main/pushNotifications/graphql/
+# and processed by codegen to generate typed Apollo hooks.
+
+# Mutation: Register a device for push notifications
+# Called after successful Notification.requestPermission() and PushManager.subscribe()
+# Upserts by endpoint — safe to call on silent refresh
+mutation SubscribeToPushNotifications($subscriptionData: SubscribeToPushNotificationsInput!) {
+  subscribeToPushNotifications(subscriptionData: $subscriptionData) {
+    id
+    createdDate
+    status
+    userAgent
+    lastActiveDate
+  }
+}
+
+# Mutation: Remove a push subscription
+# Called when user disables push (master toggle off) or removes a device
+mutation UnsubscribeFromPushNotifications($subscriptionData: UnsubscribeFromPushNotificationsInput!) {
+  unsubscribeFromPushNotifications(subscriptionData: $subscriptionData) {
+    id
+    status
+  }
+}

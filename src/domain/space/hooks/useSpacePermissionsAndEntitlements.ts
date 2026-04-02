@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSpacePermissionsAndEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import type { SpacePermissions } from '../context/SpaceContext';
@@ -22,25 +21,24 @@ const useSpacePermissionsAndEntitlements = (): useSpacePermissionsAndEntitlement
     skip: !space?.id,
   });
 
-  const result: useSpacePermissionsAndEntitlementsProvided = useMemo(
-    () => ({
-      permissions: {
-        ...permissions,
-        canSaveAsTemplate:
-          permissionsData?.lookup.space?.templatesManager?.authorization?.myPrivileges?.includes(
-            AuthorizationPrivilege.Update
-          ) ?? permissions.canCreateTemplates,
-      },
-      entitlements: {
-        entitledToSaveAsTemplate:
-          permissionsData?.lookup.space?.collaboration.license.availableEntitlements?.includes(
-            LicenseEntitlementType.SpaceFlagSaveAsTemplate
-          ) ?? false,
-      },
-      loading: loading || loadingEntitlements,
-    }),
-    [space.id, permissionsData, permissions, loading, loadingEntitlements]
-  );
+  const result: useSpacePermissionsAndEntitlementsProvided = {
+    permissions: {
+      ...permissions,
+      canSaveAsTemplate:
+        permissionsData?.lookup.space?.templatesManager?.authorization?.myPrivileges?.includes(
+          AuthorizationPrivilege.Update
+        ) ?? permissions.canCreateTemplates,
+    },
+
+    entitlements: {
+      entitledToSaveAsTemplate:
+        permissionsData?.lookup.space?.collaboration.license.availableEntitlements?.includes(
+          LicenseEntitlementType.SpaceFlagSaveAsTemplate
+        ) ?? false,
+    },
+
+    loading: loading || loadingEntitlements,
+  };
 
   return result;
 };

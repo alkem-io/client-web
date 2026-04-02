@@ -1,6 +1,6 @@
 import { Box, type BoxProps, styled, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
-import { type FC, useMemo } from 'react';
+import type { FC } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useTranslation } from 'react-i18next';
@@ -98,7 +98,7 @@ const FullCalendar: FC<FullCalendarProps & { ref?: React.Ref<HTMLDivElement> }> 
 }) => {
   const nextBlock = useNextBlockAnchor();
 
-  const highlightedDates = useMemo(() => {
+  const highlightedDates = (() => {
     // The objects look like:
     //  { "yyyy-mm-dd": [...events on this date], "yyyy-mm-dd": [...events], ...}
     const startDates: { [key: string]: FullCalendarProps['events'] } = {};
@@ -130,7 +130,7 @@ const FullCalendar: FC<FullCalendarProps & { ref?: React.Ref<HTMLDivElement> }> 
       end: endDates,
       all: allDates,
     };
-  }, [events]);
+  })();
 
   const isHighlighted = (date: Date) => {
     return Boolean(highlightedDates.all[dayjs(date).format(INTERNAL_DATE_FORMAT)]);

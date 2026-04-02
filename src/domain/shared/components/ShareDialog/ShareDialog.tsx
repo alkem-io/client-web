@@ -1,5 +1,5 @@
 import { Box, Button, type ButtonProps, DialogContent, Skeleton, TextField } from '@mui/material';
-import { type FC, type PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { type FC, type PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -65,12 +65,12 @@ export const ShareComponent: FC<ShareComponentProps> = ({
 }) => {
   const { t } = useTranslation();
   const [activeHandler, setActiveHandler] = useState<string>();
-  const fullUrl = useMemo(() => buildFullUrl(url), [url]);
+  const fullUrl = buildFullUrl(url);
 
-  const handleDialogClose = useCallback(() => {
+  const handleDialogClose = () => {
     setActiveHandler(undefined);
     onClose?.();
-  }, [onClose]);
+  };
 
   const handleClick = e => {
     e.target.select();

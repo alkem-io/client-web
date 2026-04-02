@@ -1,5 +1,5 @@
 import type { ApmBase } from '@elastic/apm-rum';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApmInit } from '@/core/analytics/apm/useApmInit';
 import { AUTH_PAGE_PREFIXES } from '@/core/auth/authentication/constants/authentication.constants';
@@ -30,7 +30,7 @@ export const ApmProvider = ({ children }: PropsWithChildren) => {
     }
   }, [initFn, isAuthPage]);
 
-  const value = useMemo(() => ({ apm, setUser }), [apm]);
+  const value = { apm, setUser };
 
   return <ApmContext value={value}>{children}</ApmContext>;
 };

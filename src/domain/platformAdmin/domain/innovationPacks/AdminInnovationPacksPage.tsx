@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminInnovationPacksQuery,
@@ -41,31 +41,28 @@ const AdminInnovationPacksPage = () => {
     setDisplayedItemsCount(INITIAL_PAGE_SIZE);
   }, [searchTerm]);
 
-  const columns: AdminTableColumn<InnovationPackTableItem>[] = useMemo(
-    () => [
-      {
-        header: 'Listed in Store',
-        flex: 1,
-        minWidth: '140px',
-        render: (item: InnovationPackTableItem) => <ListedInStoreColumn listedInStore={item.listedInStore} />,
-      },
-      {
-        header: 'Search Visibility',
-        flex: 1,
-        minWidth: '140px',
-        render: (item: InnovationPackTableItem) => <SearchVisibilityColumn searchVisibility={item.searchVisibility} />,
-      },
-      {
-        header: 'Account Owner',
-        flex: 1,
-        minWidth: '150px',
-        render: (item: InnovationPackTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
-      },
-    ],
-    []
-  );
+  const columns: AdminTableColumn<InnovationPackTableItem>[] = [
+    {
+      header: 'Listed in Store',
+      flex: 1,
+      minWidth: '140px',
+      render: (item: InnovationPackTableItem) => <ListedInStoreColumn listedInStore={item.listedInStore} />,
+    },
+    {
+      header: 'Search Visibility',
+      flex: 1,
+      minWidth: '140px',
+      render: (item: InnovationPackTableItem) => <SearchVisibilityColumn searchVisibility={item.searchVisibility} />,
+    },
+    {
+      header: 'Account Owner',
+      flex: 1,
+      minWidth: '150px',
+      render: (item: InnovationPackTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
+    },
+  ];
 
-  const allInnovationPacks = useMemo(() => {
+  const allInnovationPacks = (() => {
     const packs = data?.platformAdmin.innovationPacks ?? [];
 
     return packs
@@ -82,21 +79,21 @@ const AdminInnovationPacksPage = () => {
         } as InnovationPackTableItem;
       })
       .filter(pack => !searchTerm || pack.value.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [data, searchTerm]);
+  })();
 
   // Paginated packs for display
-  const innovationPacksList = useMemo(() => {
+  const innovationPacksList = (() => {
     return allInnovationPacks.slice(0, displayedItemsCount);
-  }, [allInnovationPacks, displayedItemsCount]);
+  })();
 
   const hasMore = displayedItemsCount < allInnovationPacks.length;
 
-  const fetchMore = useCallback(async () => {
+  const fetchMore = async () => {
     setDisplayedItemsCount(prev => {
       const next = prev + PAGE_SIZE;
       return Math.min(next, allInnovationPacks.length);
     });
-  }, [allInnovationPacks.length]);
+  };
 
   const handleDelete = async (item: InnovationPackTableItem) => {
     await deleteInnovationPack({

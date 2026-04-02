@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { useCallback, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import {
   PollDetailsFragmentDoc,
   useCastPollVoteMutation,
@@ -21,93 +21,90 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation();
   const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation();
 
-  const castVote = useCallback(
-    (selectedOptionIds: string[]) => {
-      const newTotalVotes = (poll.totalVotes ?? 0) + (poll.myVote ? 0 : 1);
-      const now = new Date();
-      setVoteRemoved(false);
+  const castVote = (selectedOptionIds: string[]) => {
+    const newTotalVotes = (poll.totalVotes ?? 0) + (poll.myVote ? 0 : 1);
+    const now = new Date();
+    setVoteRemoved(false);
 
-      return castPollVoteMutation({
-        variables: {
-          voteData: {
-            pollID: pollId,
-            selectedOptionIDs: selectedOptionIds,
-          },
+    return castPollVoteMutation({
+      variables: {
+        voteData: {
+          pollID: pollId,
+          selectedOptionIDs: selectedOptionIds,
         },
-        optimisticResponse: {
-          castPollVote: {
-            __typename: 'Poll',
-            id: poll.id,
-            createdDate: now,
-            updatedDate: now,
-            title: poll.title,
-            status: poll.status,
-            settings: {
-              __typename: 'PollSettings',
-              ...poll.settings,
-            },
-            totalVotes: newTotalVotes,
-            canSeeDetailedResults: poll.canSeeDetailedResults,
-            options: poll.options.map(option => {
-              const wasSelected = poll.myVote?.selectedOptions.some(o => o.id === option.id) ?? false;
-              const isNowSelected = selectedOptionIds.includes(option.id);
-              let voteCountDelta = 0;
-              if (isNowSelected && !wasSelected) voteCountDelta = 1;
-              if (!isNowSelected && wasSelected) voteCountDelta = -1;
+      },
+      optimisticResponse: {
+        castPollVote: {
+          __typename: 'Poll',
+          id: poll.id,
+          createdDate: now,
+          updatedDate: now,
+          title: poll.title,
+          status: poll.status,
+          settings: {
+            __typename: 'PollSettings',
+            ...poll.settings,
+          },
+          totalVotes: newTotalVotes,
+          canSeeDetailedResults: poll.canSeeDetailedResults,
+          options: poll.options.map(option => {
+            const wasSelected = poll.myVote?.selectedOptions.some(o => o.id === option.id) ?? false;
+            const isNowSelected = selectedOptionIds.includes(option.id);
+            let voteCountDelta = 0;
+            if (isNowSelected && !wasSelected) voteCountDelta = 1;
+            if (!isNowSelected && wasSelected) voteCountDelta = -1;
 
-              const newVoteCount = option.voteCount != null ? option.voteCount + voteCountDelta : undefined;
+            const newVoteCount = option.voteCount != null ? option.voteCount + voteCountDelta : undefined;
 
-              return {
-                __typename: 'PollOption' as const,
-                id: option.id,
-                createdDate: now,
-                updatedDate: now,
-                text: option.text,
-                sortOrder: option.sortOrder,
-                voteCount: newVoteCount,
-                votePercentage:
-                  newVoteCount != null && newTotalVotes > 0
-                    ? Math.round((newVoteCount / newTotalVotes) * 100)
-                    : option.votePercentage,
-                voters: option.voters?.map(v => ({
-                  __typename: 'User' as const,
-                  id: v.id,
-                  profile: v.profile
-                    ? {
-                        __typename: 'Profile' as const,
-                        id: v.profile.id,
-                        displayName: v.profile.displayName,
-                        visual: v.profile.visual
-                          ? {
-                              __typename: 'Visual' as const,
-                              id: v.profile.visual.id,
-                              uri: v.profile.visual.uri,
-                            }
-                          : undefined,
-                      }
-                    : undefined,
-                })),
-              };
-            }),
-            myVote: {
-              __typename: 'PollVote',
-              id: poll.myVote?.id ?? 'optimistic-vote',
+            return {
+              __typename: 'PollOption' as const,
+              id: option.id,
               createdDate: now,
               updatedDate: now,
-              createdBy: '',
-              selectedOptions: selectedOptionIds.map(id => ({
-                __typename: 'PollOption' as const,
-                id,
+              text: option.text,
+              sortOrder: option.sortOrder,
+              voteCount: newVoteCount,
+              votePercentage:
+                newVoteCount != null && newTotalVotes > 0
+                  ? Math.round((newVoteCount / newTotalVotes) * 100)
+                  : option.votePercentage,
+              voters: option.voters?.map(v => ({
+                __typename: 'User' as const,
+                id: v.id,
+                profile: v.profile
+                  ? {
+                      __typename: 'Profile' as const,
+                      id: v.profile.id,
+                      displayName: v.profile.displayName,
+                      visual: v.profile.visual
+                        ? {
+                            __typename: 'Visual' as const,
+                            id: v.profile.visual.id,
+                            uri: v.profile.visual.uri,
+                          }
+                        : undefined,
+                    }
+                  : undefined,
               })),
-            },
+            };
+          }),
+          myVote: {
+            __typename: 'PollVote',
+            id: poll.myVote?.id ?? 'optimistic-vote',
+            createdDate: now,
+            updatedDate: now,
+            createdBy: '',
+            selectedOptions: selectedOptionIds.map(id => ({
+              __typename: 'PollOption' as const,
+              id,
+            })),
           },
         },
-      });
-    },
-    [pollId, poll, castPollVoteMutation]
-  );
+      },
+    });
+  };
 
-  const removeVote = useCallback(() => {
+  const removeVote = () => {
     setVoteRemoved(true);
 
     startTransition(async () => {
@@ -180,7 +177,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
         },
       });
     });
-  }, [pollId, poll, removePollVoteMutation, startTransition, apolloClient]);
+  };
 
   return {
     castVote,

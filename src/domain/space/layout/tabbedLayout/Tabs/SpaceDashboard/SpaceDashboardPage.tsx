@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -44,10 +43,8 @@ const SpaceDashboardPage = () => {
   });
 
   const spaceData = spacePageData?.lookup.space;
-  const backToDashboard = useCallback(
-    () => navigate(buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1), { replace: true }),
-    [spaceData?.about.profile.url]
-  );
+  const backToDashboard = () =>
+    navigate(buildSpaceSectionUrl(spaceData?.about.profile.url ?? '', 1), { replace: true });
 
   const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
 

@@ -1,5 +1,4 @@
 import { useField } from 'formik';
-import { useMemo } from 'react';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import type { FormikInputProps } from '../FormikInputProps';
@@ -14,12 +13,12 @@ const FormikTimePicker = ({ name, ...datePickerProps }: FormikTimePickerProps) =
 
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(() => {
+  const helperText = (() => {
     if (!isError) {
       return;
     }
     return tErr(meta.error as TranslationKey, { field: datePickerProps.label as string });
-  }, [isError, meta.error, tErr, datePickerProps.label]);
+  })();
 
   return (
     <AlkemioTimePicker

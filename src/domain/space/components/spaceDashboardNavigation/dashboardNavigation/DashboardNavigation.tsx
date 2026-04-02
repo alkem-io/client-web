@@ -58,6 +58,8 @@ const DashboardNavigation = ({
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
 
+  // Keep useMemo: ids is in useLayoutEffect deps (line ~161). Without stable reference,
+  // new array every render → effect fires → setViewportSnap → re-render → infinite loop.
   const ids = useMemo(
     () => (dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : []),
     [dashboardNavigationRoot]
@@ -170,7 +172,8 @@ const DashboardNavigation = ({
 
   const onRefsUpdated = useRef(debounce(() => adjustViewportFnRef.current())).current;
 
-  // Has to maintain stable id over renders, otherwise we get a loop because React always invokes a new functional ref
+  // Keep useCallback: passed as ref={itemRef} to DashboardNavigationItemView. Without stable
+  // reference, React re-invokes the ref on every render → onRefsUpdated → setViewportSnap → infinite loop.
   const itemRef = useCallback((element: DashboardNavigationItemViewApi | null) => {
     if (element && itemRefs[element.id] !== element) {
       itemRefs[element.id] = element;

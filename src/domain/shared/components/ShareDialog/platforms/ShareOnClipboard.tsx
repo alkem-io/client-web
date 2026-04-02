@@ -1,6 +1,6 @@
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { type FC, useCallback, useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { Text } from '@/core/ui/typography';
@@ -9,9 +9,9 @@ import { ShareButton, type ShareOnPlatformButtonProps, type ShareOnPlatformHandl
 export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     setShareHandler('clipboard');
-  }, [setShareHandler]);
+  };
 
   return (
     <ShareButton startIcon={<ContentCopyIcon />} color="primary" variant="outlined" onClick={handleClick} {...props}>

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
-import { type ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
 import * as yup from 'yup';
 import { CalendarEventType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader, { type DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
@@ -51,8 +51,8 @@ const CalendarEventForm = ({
 
   const dateNow = new Date();
 
-  const initialStartDate = useMemo(() => (event?.startDate ? new Date(event.startDate) : dateNow), [event]);
-  const initialEndDate = useMemo(() => {
+  const initialStartDate = event?.startDate ? new Date(event.startDate) : dateNow;
+  const initialEndDate = (() => {
     if (!event?.startDate) {
       return dateNow;
     }
@@ -62,9 +62,9 @@ const CalendarEventForm = ({
     }
 
     return dateNow;
-  }, [event]);
+  })();
 
-  const initialValues = useMemo<Partial<CalendarEventFormData>>(() => {
+  const initialValues = (() => {
     const startDate = initialStartDate;
     const endDate = initialEndDate;
 
@@ -83,7 +83,7 @@ const CalendarEventForm = ({
       location: event?.profile?.location,
       visibleOnParentCalendar: event?.visibleOnParentCalendar ?? false,
     };
-  }, [event, initialStartDate]);
+  })();
 
   // the following validation applies ensuring that the event is either:
   // 1. wholeDay;

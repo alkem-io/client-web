@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useMemo, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import AddContentButton from '@/core/ui/content/AddContentButton';
@@ -27,16 +27,13 @@ const CalloutsGroupView = ({
 }: CalloutsGroupProps) => {
   const { t } = useTranslation();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
-  const handleOpenDialog = useCallback(() => setIsCalloutCreationDialogOpen(true), []);
-  const handleCloseDialog = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
+  const handleOpenDialog = () => setIsCalloutCreationDialogOpen(true);
+  const handleCloseDialog = () => setIsCalloutCreationDialogOpen(false);
 
-  const createButton = useMemo(
-    () => (
-      <AddContentButton onClick={handleOpenDialog} title={t('callout.create.createButtonTooltip')}>
-        {t('callout.create.createButton')}
-      </AddContentButton>
-    ),
-    [t, handleOpenDialog]
+  const createButton = (
+    <AddContentButton onClick={handleOpenDialog} title={t('callout.create.createButtonTooltip')}>
+      {t('callout.create.createButton')}
+    </AddContentButton>
   );
 
   return (

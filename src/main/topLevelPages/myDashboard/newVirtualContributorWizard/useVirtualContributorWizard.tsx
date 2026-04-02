@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchMyResourcesQuery,
@@ -90,7 +90,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
 
-  const uploadAvatar = useCallback(async (avatar: VisualUploadModel | undefined, visualID: string | undefined) => {
+  const uploadAvatar = async (avatar: VisualUploadModel | undefined, visualID: string | undefined) => {
     if (avatar?.file && visualID) {
       await uploadVisual({
         variables: {
@@ -102,7 +102,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         },
       });
     }
-  }, []);
+  };
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -134,7 +134,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     return space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   };
 
-  const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
+  const { myAccountId, allAccountSpaces, availableSpaces } = (() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
     const accountSpaces: SelectableSpace[] = account?.spaces ?? [];
 
@@ -143,12 +143,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       allAccountSpaces: accountSpaces,
       availableSpaces: accountSpaces.filter(hasReadPrivilege),
     };
-  }, [data, userModel, targetAccount]);
+  })();
 
   const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
   // For all the available spaces get their subspaces (and their subspaces)
   // then filter them as well and
-  const getSelectableSpaces = useCallback(async () => {
+  const getSelectableSpaces = async () => {
     setAvailableExistingSpacesLoading(true);
     const result: SelectableSpace[] = [];
 
@@ -168,7 +168,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
     setAvailableExistingSpacesLoading(false);
     setAvailableExistingSpaces(result);
-  }, [allSpaceSubspaces, availableSpaces]);
+  };
 
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount', 'AccountInformation', 'LatestContributionsSpacesFlat'],
@@ -533,94 +533,80 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     }
   };
 
-  const VirtualContributorWizard = useCallback(() => {
-    if (!myAccountId) {
-      return null;
-    }
-
-    return (
-      <DialogWithGrid
-        open={dialogOpen}
-        columns={6}
-        aria-labelledby="virtual-contributor-wizard"
-        onClose={handleCloseWizard}
-      >
-        <StorageConfigContextProvider accountId={myAccountId} locationType="account">
-          {step === 'initial' && (
-            <CreateNewVirtualContributor
-              titleId="virtual-contributor-wizard"
-              onClose={handleCloseWizard}
-              loading={loading}
-              onCreateKnowledge={handleCreateKnowledge}
-              onUseExistingKnowledge={values => {
-                getSelectableSpaces();
-                onStepSelection('existingKnowledge', values);
-              }}
-              onUseExternal={values => onStepSelection('externalProvider', values)}
-              onChangeAvatar={setAvatar}
-            />
-          )}
-          {step === steps.loadingStep && (
-            <LoadingState titleId="virtual-contributor-wizard" onClose={handleCloseWizard} />
-          )}
-          {step === steps.addKnowledge && virtualContributorInput && (
-            <AddContent
-              titleId="virtual-contributor-wizard"
-              onClose={handleCloseWizard}
-              onCreateVC={onCreateVcWithKnowledge}
-            />
-          )}
-          {step === steps.chooseCommunity && (
-            <ChooseCommunity
-              titleId="virtual-contributor-wizard"
-              onClose={handleCloseChooseCommunity}
-              vcName={virtualContributorInput?.name}
-              spaces={availableSpaces}
-              onSubmit={onChooseCommunity}
-              loading={loading}
-            />
-          )}
-          {step === steps.tryVcInfo && (
-            <TryVcInfo
-              titleId="virtual-contributor-wizard"
-              vcName={virtualContributorInput?.name ?? ''}
-              url={createdVc?.profile?.url}
-              onClose={handleCloseWizard}
-            />
-          )}
-          {step === steps.existingKnowledge && (
-            <ExistingSpace
-              titleId="virtual-contributor-wizard"
-              onClose={handleCloseWizard}
-              onBack={() => setStep(steps.initial)}
-              spaces={availableExistingSpaces}
-              onSubmit={handleCreateVCWithExistingKnowledge}
-              loading={loading || availableExistingSpacesLoading}
-            />
-          )}
-          {step === steps.externalProvider && (
-            <CreateExternalAIDialog
-              titleId="virtual-contributor-wizard"
-              onCreateExternal={handleCreateExternal}
-              onClose={handleCloseWizard}
-            />
-          )}
-        </StorageConfigContextProvider>
-      </DialogWithGrid>
-    );
-  }, [
-    dialogOpen,
-    step,
-    myAccountId,
-    loading,
-    availableExistingSpacesLoading,
-    getSelectableSpaces,
-    availableExistingSpaces,
-  ]);
+  const virtualContributorWizard = myAccountId ? (
+    <DialogWithGrid
+      open={dialogOpen}
+      columns={6}
+      aria-labelledby="virtual-contributor-wizard"
+      onClose={handleCloseWizard}
+    >
+      <StorageConfigContextProvider accountId={myAccountId} locationType="account">
+        {step === 'initial' && (
+          <CreateNewVirtualContributor
+            titleId="virtual-contributor-wizard"
+            onClose={handleCloseWizard}
+            loading={loading}
+            onCreateKnowledge={handleCreateKnowledge}
+            onUseExistingKnowledge={values => {
+              getSelectableSpaces();
+              onStepSelection('existingKnowledge', values);
+            }}
+            onUseExternal={values => onStepSelection('externalProvider', values)}
+            onChangeAvatar={setAvatar}
+          />
+        )}
+        {step === steps.loadingStep && (
+          <LoadingState titleId="virtual-contributor-wizard" onClose={handleCloseWizard} />
+        )}
+        {step === steps.addKnowledge && virtualContributorInput && (
+          <AddContent
+            titleId="virtual-contributor-wizard"
+            onClose={handleCloseWizard}
+            onCreateVC={onCreateVcWithKnowledge}
+          />
+        )}
+        {step === steps.chooseCommunity && (
+          <ChooseCommunity
+            titleId="virtual-contributor-wizard"
+            onClose={handleCloseChooseCommunity}
+            vcName={virtualContributorInput?.name}
+            spaces={availableSpaces}
+            onSubmit={onChooseCommunity}
+            loading={loading}
+          />
+        )}
+        {step === steps.tryVcInfo && (
+          <TryVcInfo
+            titleId="virtual-contributor-wizard"
+            vcName={virtualContributorInput?.name ?? ''}
+            url={createdVc?.profile?.url}
+            onClose={handleCloseWizard}
+          />
+        )}
+        {step === steps.existingKnowledge && (
+          <ExistingSpace
+            titleId="virtual-contributor-wizard"
+            onClose={handleCloseWizard}
+            onBack={() => setStep(steps.initial)}
+            spaces={availableExistingSpaces}
+            onSubmit={handleCreateVCWithExistingKnowledge}
+            loading={loading || availableExistingSpacesLoading}
+          />
+        )}
+        {step === steps.externalProvider && (
+          <CreateExternalAIDialog
+            titleId="virtual-contributor-wizard"
+            onCreateExternal={handleCreateExternal}
+            onClose={handleCloseWizard}
+          />
+        )}
+      </StorageConfigContextProvider>
+    </DialogWithGrid>
+  ) : null;
 
   return {
     startWizard,
-    VirtualContributorWizard,
+    virtualContributorWizard,
   };
 };
 

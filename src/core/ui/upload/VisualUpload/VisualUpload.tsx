@@ -1,5 +1,5 @@
 import { Avatar, Box, type BoxProps, Skeleton } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -42,22 +42,19 @@ const VisualUpload = ({ visual, height = DEFAULT_SIZE }: VisualUploadProps) => {
   const [dialogOpened, setDialogOpened] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
 
-  const handleVisualUpload = useCallback(
-    async (data: VisualUploadModel) => {
-      if (visual && data.file) {
-        uploadVisual({
-          variables: {
-            file: data.file,
-            uploadData: {
-              visualID: visual.id,
-              alternativeText: data.altText,
-            },
+  const handleVisualUpload = async (data: VisualUploadModel) => {
+    if (visual && data.file) {
+      uploadVisual({
+        variables: {
+          file: data.file,
+          uploadData: {
+            visualID: visual.id,
+            alternativeText: data.altText,
           },
-        });
-      }
-    },
-    [visual, uploadVisual]
-  );
+        },
+      });
+    }
+  };
 
   function onFileSelected(file: File) {
     setSelectedFile(file);

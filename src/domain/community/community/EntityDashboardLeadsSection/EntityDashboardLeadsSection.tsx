@@ -1,5 +1,5 @@
 import type { SvgIconProps } from '@mui/material';
-import { type PropsWithChildren, type ReactElement, useMemo } from 'react';
+import type { PropsWithChildren, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import ContributorCardHorizontal, {
@@ -9,7 +9,6 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import AssociatedOrganizationsView from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { ContributorViewModel } from '../utils/ContributorViewModel';
 import DashboardLeads from './DashboardLeads';
 
@@ -40,32 +39,26 @@ const EntityDashboardLeadsSection = ({
 }: PropsWithChildren<EntityDashboardLeadsProps>) => {
   const { t } = useTranslation();
 
-  const { userModel } = useCurrentUserContext();
-
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const leadOrganizationsMapped = useMemo(
-    () =>
-      leadOrganizations?.map(org => ({
+  const leadOrganizationsMapped = leadOrganizations?.map(org => ({
+    id: org.id,
+    profile: org.profile,
+    seamless: true,
+    onContact: () => {
+      sendMessage(getMessageType(ProfileType.Organization), {
         id: org.id,
-        profile: org.profile,
-        seamless: true,
-        onContact: () => {
-          sendMessage(getMessageType(ProfileType.Organization), {
-            id: org.id,
-            avatarUri: org.profile?.avatar?.uri,
-            displayName: org.profile?.displayName,
-            city: org.profile?.location?.city,
-            country: org.profile?.location?.country,
-          });
-        },
-      })),
-    [leadOrganizations, userModel]
-  );
+        avatarUri: org.profile?.avatar?.uri,
+        displayName: org.profile?.displayName,
+        city: org.profile?.location?.city,
+        country: org.profile?.location?.country,
+      });
+    },
+  }));
 
-  const leadUsersMapped = useMemo(() => {
+  const leadUsersMapped = (() => {
     return leadUsers?.map(user => ({
       id: user.id,
       profile: user.profile,
@@ -80,7 +73,7 @@ const EntityDashboardLeadsSection = ({
         });
       },
     }));
-  }, [leadUsers]);
+  })();
 
   const leadUsersSectionVisible = !!leadUsersMapped && leadUsersMapped.length > 0;
   const leadOrganizationsSectionVisible = !!leadOrganizationsMapped && leadOrganizationsMapped.length > 0;

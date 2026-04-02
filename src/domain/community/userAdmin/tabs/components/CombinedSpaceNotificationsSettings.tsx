@@ -1,8 +1,9 @@
 import { Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
+import TripleSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/TripleSwitchSettingsGroup';
 import {
+  type ChannelType,
   type NotificationOption,
   NotificationValidationType,
 } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
@@ -15,9 +16,11 @@ import type {
 interface CombinedSpaceNotificationsSettingsProps {
   currentSpaceSettings: SpaceNotificationSettings | undefined;
   currentSpaceAdminSettings: SpaceAdminNotificationSettings | undefined;
-  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
-  onUpdateSpaceAdminSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
+  onUpdateSettings: (property: string, type: ChannelType, value: boolean) => Promise<void>;
+  onUpdateSpaceAdminSettings: (property: string, type: ChannelType, value: boolean) => Promise<void>;
   showSpaceAdminSettings: boolean;
+  isPushEnabled: boolean;
+  isPushAvailable: boolean;
 }
 
 export const CombinedSpaceNotificationsSettings = ({
@@ -26,77 +29,87 @@ export const CombinedSpaceNotificationsSettings = ({
   onUpdateSettings,
   onUpdateSpaceAdminSettings,
   showSpaceAdminSettings,
+  isPushEnabled,
+  isPushAvailable,
 }: CombinedSpaceNotificationsSettingsProps) => {
   const { t } = useTranslation();
 
-  // Build options object with consistent typing
   const buildOptions = (): Record<string, NotificationOption> => {
     const options: Record<string, NotificationOption> = {
-      // Regular space notifications
       collaborationCalloutPublished: {
         inAppChecked: currentSpaceSettings?.collaborationCalloutPublished?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationCalloutPublished?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationCalloutPublished?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationCalloutPublished'),
       },
       collaborationCalloutPostContributionComment: {
         inAppChecked: currentSpaceSettings?.collaborationCalloutPostContributionComment?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationCalloutPostContributionComment?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationCalloutPostContributionComment?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationCalloutPostContributionComment'),
       },
       collaborationCalloutContributionCreated: {
         inAppChecked: currentSpaceSettings?.collaborationCalloutContributionCreated?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationCalloutContributionCreated?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationCalloutContributionCreated?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationCalloutContributionCreated'),
       },
       collaborationCalloutComment: {
         inAppChecked: currentSpaceSettings?.collaborationCalloutComment?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationCalloutComment?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationCalloutComment?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationCalloutComment'),
       },
       communicationUpdates: {
         inAppChecked: currentSpaceSettings?.communicationUpdates?.inApp || false,
         emailChecked: currentSpaceSettings?.communicationUpdates?.email || false,
+        pushChecked: currentSpaceSettings?.communicationUpdates?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.communicationUpdateSent'),
       },
       communityCalendarEvents: {
         inAppChecked: currentSpaceSettings?.communityCalendarEvents?.inApp || false,
         emailChecked: currentSpaceSettings?.communityCalendarEvents?.email || false,
+        pushChecked: currentSpaceSettings?.communityCalendarEvents?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.communityCalendarEvents'),
       },
       collaborationPollVoteCastOnOwnPoll: {
         inAppChecked: currentSpaceSettings?.collaborationPollVoteCastOnOwnPoll?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationPollVoteCastOnOwnPoll?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationPollVoteCastOnOwnPoll?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationPollVoteCastOnOwnPoll'),
       },
       collaborationPollVoteCastOnPollIVotedOn: {
         inAppChecked: currentSpaceSettings?.collaborationPollVoteCastOnPollIVotedOn?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationPollVoteCastOnPollIVotedOn?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationPollVoteCastOnPollIVotedOn?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationPollVoteCastOnPollIVotedOn'),
       },
       collaborationPollModifiedOnPollIVotedOn: {
         inAppChecked: currentSpaceSettings?.collaborationPollModifiedOnPollIVotedOn?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationPollModifiedOnPollIVotedOn?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationPollModifiedOnPollIVotedOn?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationPollModifiedOnPollIVotedOn'),
       },
       collaborationPollVoteAffectedByOptionChange: {
         inAppChecked: currentSpaceSettings?.collaborationPollVoteAffectedByOptionChange?.inApp || false,
         emailChecked: currentSpaceSettings?.collaborationPollVoteAffectedByOptionChange?.email || false,
+        pushChecked: currentSpaceSettings?.collaborationPollVoteAffectedByOptionChange?.push || false,
         label: t('pages.userNotificationsSettings.space.settings.collaborationPollVoteAffectedByOptionChange'),
       },
     };
 
-    // Add space admin notifications if user has admin privileges
     if (showSpaceAdminSettings) {
-      // Add a separator item for visual distinction
       options.adminSeparator = {
         inAppChecked: false,
         emailChecked: false,
+        pushChecked: false,
         label: '',
       };
 
       options.communityApplicationReceived = {
         inAppChecked: currentSpaceAdminSettings?.communityApplicationReceived?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.communityApplicationReceived?.email || false,
+        pushChecked: currentSpaceAdminSettings?.communityApplicationReceived?.push || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityApplicationReceived'),
         validationRules: [
           {
@@ -109,6 +122,7 @@ export const CombinedSpaceNotificationsSettings = ({
       options.communityNewMember = {
         inAppChecked: currentSpaceAdminSettings?.communityNewMember?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.communityNewMember?.email || false,
+        pushChecked: currentSpaceAdminSettings?.communityNewMember?.push || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityNewMember'),
         validationRules: [
           {
@@ -121,12 +135,14 @@ export const CombinedSpaceNotificationsSettings = ({
       options.spaceAdminCollaborationCalloutContributionCreated = {
         inAppChecked: currentSpaceAdminSettings?.collaborationCalloutContributionCreated?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.collaborationCalloutContributionCreated?.email || false,
+        pushChecked: currentSpaceAdminSettings?.collaborationCalloutContributionCreated?.push || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.collaborationCalloutContributionCreated'),
       };
 
       options.communicationMessageReceived = {
         inAppChecked: currentSpaceAdminSettings?.communicationMessageReceived?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.communicationMessageReceived?.email || false,
+        pushChecked: currentSpaceAdminSettings?.communicationMessageReceived?.push || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communicationMessageReceived'),
         validationRules: [
           {
@@ -142,13 +158,11 @@ export const CombinedSpaceNotificationsSettings = ({
 
   const allOptions = buildOptions();
 
-  // Create wrapper functions to match DualSwitchSettingsGroup's expected signature
-  const handleSpaceSettingsChange = (key: string | number, type: 'inApp' | 'email', newValue: boolean) => {
+  const handleSpaceSettingsChange = (key: string | number, type: ChannelType, newValue: boolean) => {
     return onUpdateSettings(String(key), type, newValue);
   };
 
-  const handleSpaceAdminSettingsChange = (key: string | number, type: 'inApp' | 'email', newValue: boolean) => {
-    // Handle the prefixed key mapping for space admin settings
+  const handleSpaceAdminSettingsChange = (key: string | number, type: ChannelType, newValue: boolean) => {
     const keyStr = String(key);
     const originalKey =
       keyStr === 'spaceAdminCollaborationCalloutContributionCreated'
@@ -162,8 +176,7 @@ export const CombinedSpaceNotificationsSettings = ({
       <BlockTitle>{t('pages.userNotificationsSettings.space.title')}</BlockTitle>
       <Caption>{t('pages.userNotificationsSettings.space.subtitle')}</Caption>
 
-      {/* Regular space settings */}
-      <DualSwitchSettingsGroup
+      <TripleSwitchSettingsGroup
         options={Object.fromEntries(
           Object.entries(allOptions).filter(
             ([key]) =>
@@ -177,14 +190,15 @@ export const CombinedSpaceNotificationsSettings = ({
           )
         )}
         onChange={handleSpaceSettingsChange}
+        isPushEnabled={isPushEnabled}
+        isPushAvailable={isPushAvailable}
       />
 
-      {/* Divider and space admin settings */}
       {showSpaceAdminSettings && (
         <>
           <Divider />
           <Caption>{t('pages.userNotificationsSettings.spaceAdmin.subtitle')}</Caption>
-          <DualSwitchSettingsGroup
+          <TripleSwitchSettingsGroup
             options={Object.fromEntries(
               Object.entries(allOptions).filter(([key]) =>
                 [
@@ -196,6 +210,8 @@ export const CombinedSpaceNotificationsSettings = ({
               )
             )}
             onChange={handleSpaceAdminSettingsChange}
+            isPushEnabled={isPushEnabled}
+            isPushAvailable={isPushAvailable}
           />
         </>
       )}

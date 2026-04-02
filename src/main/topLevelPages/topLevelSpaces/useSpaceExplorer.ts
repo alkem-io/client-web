@@ -1,5 +1,5 @@
 import { uniqBy } from 'lodash-es';
-import { type Dispatch, useCallback, useEffect, useMemo, useState } from 'react';
+import { type Dispatch, useEffect, useState } from 'react';
 import {
   useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
@@ -92,7 +92,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
   const spacePageInfo = spacesData?.spacesPaginated.pageInfo;
   const hasMoreSpaces = spacePageInfo?.hasNextPage ?? false;
 
-  const fetchMoreSpaces = useCallback(async () => {
+  const fetchMoreSpaces = async () => {
     if (!spacesData) {
       return;
     }
@@ -103,13 +103,13 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
         after: spacePageInfo?.endCursor,
       },
     });
-  }, [spacesData, fetchMoreSpacesRaw, spacePageInfo?.endCursor, ITEMS_LIMIT]);
+  };
 
   const fetchMore = usesPagination ? fetchMoreSpaces : () => Promise.resolve();
 
   const hasMore = usesPagination ? hasMoreSpaces : false;
 
-  const fetchedSpaces = useMemo(() => {
+  const fetchedSpaces = (() => {
     switch (membershipFilter) {
       case SpacesExplorerMembershipFilter.All:
       case SpacesExplorerMembershipFilter.Public:
@@ -117,16 +117,12 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
       case SpacesExplorerMembershipFilter.Member:
         return spacesExplorerData?.spaces;
     }
-  }, [spacesExplorerData, spacesData, membershipFilter]);
+  })();
 
   // Spaces which allow this user read their subspaces:
-  const readableSpacesIds = useMemo(
-    () =>
-      fetchedSpaces
-        ?.filter(space => space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read))
-        .map(space => space.id),
-    [fetchedSpaces]
-  );
+  const readableSpacesIds = fetchedSpaces
+    ?.filter(space => space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read))
+    .map(space => space.id);
 
   const [fetchSubspaces, { loading: loadingSubspaces }] = useSpaceExplorerSubspacesLazyQuery();
   const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<SpaceExplorerSubspacesQuery['spaces']>(
@@ -160,7 +156,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     loadingUser ||
     loadingSubspaces;
 
-  const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
+  const flattenedSpaces = (() => {
     if (shouldSearch) {
       return rawSearchResults?.search?.spaceResults?.results.map(result => {
         const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
@@ -193,9 +189,9 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
         })),
       ];
     });
-  }, [spacesExplorerData, spacesData, membershipFilter, rawSearchResults, fetchedSpacesWithSubspaces]);
+  })();
 
-  const filteredSpaces = useMemo(() => {
+  const filteredSpaces = (() => {
     if (membershipFilter === SpacesExplorerMembershipFilter.Member) {
       if (!shouldSearch) {
         // already filtered by the query
@@ -209,7 +205,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
       return flattenedSpaces?.filter(space => space.about.isContentPublic);
     }
     return flattenedSpaces;
-  }, [flattenedSpaces, membershipFilter, shouldSearch]);
+  })();
 
   return {
     spaces: filteredSpaces,

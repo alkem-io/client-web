@@ -1,6 +1,5 @@
 import { SettingsOutlined } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -41,16 +40,13 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
+  const handleContactLead = (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    sendMessage(leadType, {
+      id: leadId,
+      displayName: leadDisplayName,
+      avatarUri: leadAvatarUri,
+    });
+  };
 
   return (
     <TopLevelLayout

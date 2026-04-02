@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import { type FC, useMemo } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import ReferenceSegment, { type ReferenceSegmentProps } from './ReferenceSegment';
@@ -18,14 +18,10 @@ export const FormikReferenceSegment: FC<FormikReferenceSegmentProps> = ({ fieldN
 
   const [{ value: references = [] }] = useField<Reference[]>(fieldName);
 
-  const referencesWithId = useMemo(
-    () =>
-      references.map(ref => ({
-        ...ref,
-        id: ref.id ?? '',
-      })),
-    [references]
-  );
+  const referencesWithId = references.map(ref => ({
+    ...ref,
+    id: ref.id ?? '',
+  }));
 
   const handleAdd = pushFn => {
     const newRef = {

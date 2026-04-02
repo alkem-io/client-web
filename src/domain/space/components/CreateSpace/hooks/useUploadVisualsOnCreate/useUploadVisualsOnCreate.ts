@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import { error as logError } from '@/core/logging/sentry/log';
@@ -24,7 +23,7 @@ interface UseUploadVisualsOnCreateProvided {
   uploadVisuals: (
     createResult: ProfileWithVisuals | undefined,
     data: VisualsForm | undefined
-  ) => Promise<unknown> | void;
+  ) => Promise<unknown> | undefined;
 }
 
 interface UseUploadVisualsOnCreateProps {
@@ -46,39 +45,36 @@ const useUploadVisualsOnCreate = ({
   const notify = useNotification();
   const [uploadVisual] = useUploadVisualMutation();
 
-  const uploadVisuals = useCallback(
-    (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
-      try {
-        const uploadPromises: Promise<unknown>[] = [];
-        for (const visualType of VisualTypes) {
-          if (data?.[visualType]?.file && createResult?.[visualType]?.id) {
-            uploadPromises.push(
-              uploadVisual({
-                variables: {
-                  file: data[visualType].file,
-                  uploadData: {
-                    visualID: createResult[visualType].id,
-                    alternativeText: data[visualType].altText,
-                  },
+  const uploadVisuals = (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
+    try {
+      const uploadPromises: Promise<unknown>[] = [];
+      for (const visualType of VisualTypes) {
+        if (data?.[visualType]?.file && createResult?.[visualType]?.id) {
+          uploadPromises.push(
+            uploadVisual({
+              variables: {
+                file: data[visualType].file,
+                uploadData: {
+                  visualID: createResult[visualType].id,
+                  alternativeText: data[visualType].altText,
                 },
-              })
-            );
-          }
-        }
-
-        return Promise.all(uploadPromises);
-      } catch (error) {
-        // Space/Subspace is created anyway, just the images failed. Log the error and continue
-        notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');
-        if (error instanceof Error) {
-          logError(error);
-        } else {
-          logError(`Error uploading visuals for space: ${error}`, { label: 'TempStorage' });
+              },
+            })
+          );
         }
       }
-    },
-    [uploadVisual, notify, t, entityName]
-  );
+
+      return Promise.all(uploadPromises);
+    } catch (error) {
+      // Space/Subspace is created anyway, just the images failed. Log the error and continue
+      notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');
+      if (error instanceof Error) {
+        logError(error);
+      } else {
+        logError(`Error uploading visuals for space: ${error}`, { label: 'TempStorage' });
+      }
+    }
+  };
 
   return { uploadVisuals };
 };

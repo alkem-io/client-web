@@ -11,9 +11,12 @@ export interface NotificationValidationRule {
   message: string;
 }
 
+export type ChannelType = 'inApp' | 'email' | 'push';
+
 export interface NotificationOption {
   inAppChecked: boolean;
   emailChecked: boolean;
+  pushChecked: boolean;
   label: ReactNode;
 
   // Validation rules
@@ -28,4 +31,5 @@ export interface SwitchState {
 export interface NotificationSwitchStates {
   inApp: SwitchState;
   email: SwitchState;
+  push: SwitchState;
 }
