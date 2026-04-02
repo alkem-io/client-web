@@ -5,10 +5,8 @@ import {
   useSubscribeToPushNotificationsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
 import { type PushNotificationState, usePushNotifications } from '@/main/pushNotifications/usePushNotifications';
-
-const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
-const PUSH_USER_DISABLED_KEY = 'alkemio_push_user_disabled';
 
 const defaultState: PushNotificationState = {
   isSupported: false,

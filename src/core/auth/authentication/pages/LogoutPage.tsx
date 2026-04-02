@@ -5,9 +5,7 @@ import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/gener
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import Loading from '@/core/ui/loading/Loading';
-
-const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
-const PUSH_USER_DISABLED_KEY = 'alkemio_push_user_disabled';
+import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
 
 async function cleanupPushSubscription(
   unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0]

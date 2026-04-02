@@ -4,10 +4,8 @@ import {
   useUnsubscribeFromPushNotificationsMutation,
   useVapidPublicKeyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
 import { urlBase64ToUint8Array } from '@/main/pushNotifications/urlBase64ToUint8Array';
-
-const PUSH_SUBSCRIPTION_ID_KEY = 'alkemio_push_subscription_id';
-const PUSH_USER_DISABLED_KEY = 'alkemio_push_user_disabled';
 
 export type PushNotificationState = {
   isSupported: boolean;
