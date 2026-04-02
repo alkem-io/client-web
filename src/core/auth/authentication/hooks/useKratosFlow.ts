@@ -46,11 +46,17 @@ const useKratosFlow = <Name extends FlowTypeName>(
   const [loading, setLoading] = useState(false);
 
   const handleFlowError = (err: unknown) => {
-    const response = (err as { response?: { status: number; data: { error: { details: { redirect_to: string } } } } })
-      ?.response;
+    const response = (
+      err as { response?: { status: number; data: FlowTypes & { error?: { details: { redirect_to: string } } } } }
+    )?.response;
     if (response) {
       if (response.status === 410) {
-        window.location.replace(response.data.error.details.redirect_to);
+        window.location.replace(response.data.error!.details.redirect_to);
+      } else if (response.status === 400 && response.data?.ui) {
+        // Kratos v26.2.0+: OIDC account linking failures return HTTP 400
+        // with the flow object containing error messages in the response body.
+        setError(undefined);
+        setFlow(response.data as ReturnFlowType[Name]);
       } else {
         const error = new Error((err as { message: string }).message);
         setError(error);

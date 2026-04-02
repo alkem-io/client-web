@@ -14,6 +14,7 @@ import { KRATOS_REMOVED_FIELDS_DEFAULT, type KratosRemovedFieldAttributes } from
 import {
   guessVariant,
   isAnchorNode,
+  isDivisionNode,
   isHiddenInput,
   isInputNode,
   isPasskeyAutocompleteInit,
@@ -197,6 +198,11 @@ export const KratosUI: FC<KratosUIProps> = ({
     // Handle text nodes (used for displaying existing credentials)
     if (isTextNode(node)) {
       return <KratosText key={key} node={node} />;
+    }
+
+    // Handle div nodes (new in Kratos v26.2.0 — layout containers)
+    if (isDivisionNode(node)) {
+      return <Box key={key} id={node.attributes.id} className={node.attributes.class} />;
     }
 
     if (!isInputNode(node)) {

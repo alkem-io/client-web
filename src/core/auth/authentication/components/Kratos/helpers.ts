@@ -2,6 +2,7 @@ import type {
   UiNode,
   UiNodeAnchorAttributes,
   UiNodeAttributes,
+  UiNodeDivisionAttributes,
   UiNodeInputAttributes,
   UiNodeScriptAttributes,
   UiNodeTextAttributes,
@@ -99,6 +100,9 @@ export const isScriptNode = (node: UiNode): node is UiNode & { attributes: UiNod
 
 export const isTextNode = (node: UiNode): node is UiNode & { attributes: UiNodeTextAttributes } =>
   node.attributes.node_type === 'text';
+
+export const isDivisionNode = (node: UiNode): node is UiNode & { attributes: UiNodeDivisionAttributes } =>
+  node.attributes.node_type === 'div';
 
 const PASSKEY_TRIGGERS = [
   'oryPasskeyLogin',
