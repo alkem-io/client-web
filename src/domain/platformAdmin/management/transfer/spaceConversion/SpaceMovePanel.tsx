@@ -75,6 +75,7 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
   const canExecuteL2 = Boolean(targetL0Id && targetL1Id && !hasChildren);
 
   const handleConfirm = async () => {
+    let didExecute = false;
     try {
       if (moveType === 'toL0' && targetL0Id) {
         await moveL1ToL0({
@@ -85,6 +86,7 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
             invitationMessage: autoInvite ? invitationMessage || undefined : undefined,
           },
         });
+        didExecute = true;
       } else if (moveType === 'toL2' && targetL1Id) {
         await moveL1ToL2({
           variables: {
@@ -94,8 +96,13 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
             invitationMessage: autoInvite ? invitationMessage || undefined : undefined,
           },
         });
+        didExecute = true;
       }
-      notify(t(`${T_PREFIX}.moveSuccess`), 'success');
+      if (didExecute) {
+        notify(t(`${T_PREFIX}.moveSuccess`), 'success');
+      } else {
+        notify(t(`${T_PREFIX}.moveError`), 'error');
+      }
     } catch {
       notify(t(`${T_PREFIX}.moveError`), 'error');
     }
@@ -211,6 +218,7 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
         </Tooltip>
         {autoInvite && (
           <TextField
+            label={t(`${T_PREFIX}.autoInvite.messagePlaceholder`)}
             value={invitationMessage}
             onChange={e => setInvitationMessage(e.target.value)}
             multiline={true}
