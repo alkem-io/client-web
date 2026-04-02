@@ -1,5 +1,14 @@
+/**
+ * Maps InAppNotificationModel → CrdNotificationItemData for the CRD NotificationsPanel.
+ *
+ * Translation keys: notification type strings (subject/description templates) live in the
+ * main 'translation' namespace at `components.inAppNotifications.type.<TYPE>` in
+ * src/core/i18n/en/translation.en.json. They are shared with the MUI InAppNotificationsDialog.
+ * TODO: Move to 'crd-notifications' namespace once the MUI dialog is removed.
+ */
 import type { TFunction } from 'i18next';
-import type { NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import type { ForumDiscussionCategory, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import { kebabToConstantCase } from '@/core/utils/string';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
@@ -15,8 +24,14 @@ export function getInitials(displayName: string): string {
 /**
  * Builds the interpolation values for notification i18n keys.
  * Each notification type uses a subset of these values in its translation template.
+ *
+ * Values must match the placeholders in src/core/i18n/en/translation.en.json
+ * under `components.inAppNotifications.type.<TYPE>.{subject,description}`.
  */
-function buildTranslationValues(notification: InAppNotificationModel): Record<string, string | undefined> {
+function buildTranslationValues(
+  notification: InAppNotificationModel,
+  t: TFunction
+): Record<string, string | undefined> {
   const { payload, triggeredBy } = notification;
 
   return {
@@ -32,49 +47,56 @@ function buildTranslationValues(notification: InAppNotificationModel): Record<st
       payload.spaceCommunicationMessage ??
       payload.organizationMessage,
     discussionName: payload.discussion?.displayName,
-    calendarEventName: payload.calendarEvent?.profile?.displayName,
     role: payload.role,
     userEmail: payload.userEmail,
     userDisplayName: payload.userDisplayName,
+    // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER — the new member is the actor
+    memberName: payload.actor?.profile?.displayName,
+    // parentName: used by USER_COMMENT_REPLY — the parent message/thread name
+    parentName: payload.messageDetails?.parent?.displayName,
+    // receiverName: used by USER_MESSAGE_SENDER — the person who received the DM
+    receiverName: payload.user?.profile?.displayName ?? payload.actor?.profile?.displayName,
+    // contributorName: used by VC invitation notifications — the virtual contributor
+    contributorName: payload.actor?.profile?.displayName,
+    // contributionName: used by SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT
+    contributionName: payload.messageDetails?.parent?.displayName,
+    // message: used by ORGANIZATION_ADMIN_MENTIONED description
+    message:
+      payload.comment ??
+      payload.messageDetails?.message ??
+      payload.userMessage ??
+      payload.spaceCommunicationMessage ??
+      payload.organizationMessage,
+    // spaceLevel: pre-translated via t() — used by SPACE_COLLABORATION_CALLOUT_PUBLISHED
+    spaceLevel: payload.space?.level ? t(`common.space-level.${payload.space.level}`) : undefined,
+    // calendarEvent fields
+    eventTitle: payload.calendarEvent?.profile?.displayName,
+    type: payload.calendarEvent?.type,
+    // category: pre-translated — used by PLATFORM_FORUM_DISCUSSION_CREATED
+    category: payload.discussion?.category
+      ? t(
+          `common.enums.discussion-category.${kebabToConstantCase(payload.discussion.category) as ForumDiscussionCategory}`
+        )
+      : undefined,
   };
 }
 
 /**
  * Resolves the URL that clicking a notification should navigate to.
+ * Returns a pathname (not an absolute URL) for React Router compatibility.
  */
 function resolveNotificationUrl(notification: InAppNotificationModel): string | undefined {
   const { payload } = notification;
 
-  // Message details have a parent URL (the room/thread)
-  if (payload.messageDetails?.parent?.url) {
-    return payload.messageDetails.parent.url;
-  }
-  // Callout URL
-  if (payload.callout?.framing?.profile?.url) {
-    return payload.callout.framing.profile.url;
-  }
-  // Space URL
-  if (payload.space?.about?.profile?.url) {
-    return payload.space.about.profile.url;
-  }
-  // Discussion URL
-  if (payload.discussion?.url) {
-    return payload.discussion.url;
-  }
-  // Calendar event URL
-  if (payload.calendarEvent?.profile?.url) {
-    return payload.calendarEvent.profile.url;
-  }
-  // User/actor profile URL
-  if (payload.user?.profile?.url) {
-    return payload.user.profile.url;
-  }
-  // Organization URL
-  if (payload.organization?.profile?.url) {
-    return payload.organization.profile.url;
-  }
-
-  return undefined;
+  return (
+    payload.messageDetails?.parent?.url ??
+    payload.callout?.framing?.profile?.url ??
+    payload.space?.about?.profile?.url ??
+    payload.discussion?.url ??
+    payload.calendarEvent?.profile?.url ??
+    payload.user?.profile?.url ??
+    payload.organization?.profile?.url
+  );
 }
 
 export function mapNotificationToItemData(
@@ -82,13 +104,25 @@ export function mapNotificationToItemData(
   t: TFunction,
   unreadState: NotificationEventInAppState
 ): CrdNotificationItemData {
-  const values = buildTranslationValues(notification);
+  const values = buildTranslationValues(notification, t);
   const typeKey = `components.inAppNotifications.type.${notification.type}`;
+
+  // Keys are built dynamically so we need to bypass i18next's strict return type
+  const translate = (key: string) => t(key, '', values as Record<string, string>) as string;
+
+  const { payload } = notification;
+  const comment =
+    payload.comment ??
+    payload.messageDetails?.message ??
+    payload.userMessage ??
+    payload.spaceCommunicationMessage ??
+    payload.organizationMessage;
 
   return {
     id: notification.id,
-    title: t(`${typeKey}.subject` as unknown as TemplateStringsArray, values as Record<string, string>),
-    description: t(`${typeKey}.description` as unknown as TemplateStringsArray, values as Record<string, string>),
+    title: translate(`${typeKey}.subject`),
+    description: translate(`${typeKey}.description`),
+    comment,
     avatarUrl: notification.triggeredBy.profile.visual?.uri,
     avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),

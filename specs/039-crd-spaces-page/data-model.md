@@ -41,24 +41,45 @@ The plain TypeScript type consumed by the CRD SpaceCard component. Lives in `src
 | `avatarUrl` | `string` | yes | `profile.avatar?.uri ?? ''` |
 | `type` | `'person' \| 'org'` | yes | Determined by source list (leadUsers vs leadOrganizations) |
 
+### CrdNotificationItemData (CRD View Model)
+
+The plain TypeScript type consumed by the CRD NotificationItem component. Lives in `src/crd/layouts/types.ts`.
+
+| Field | Type | Required | Source |
+| --- | --- | --- | --- |
+| `id` | `string` | yes | `notification.id` |
+| `title` | `string` | yes | Translated via `t('components.inAppNotifications.type.{TYPE}.subject', values)` |
+| `description` | `string` | yes | Translated via `t('components.inAppNotifications.type.{TYPE}.description', values)` |
+| `comment` | `string \| undefined` | no | Raw message body from `payload.comment`, `messageDetails.message`, `userMessage`, etc. |
+| `avatarUrl` | `string \| undefined` | no | `notification.triggeredBy.profile.visual?.uri` |
+| `avatarFallback` | `string` | yes | Initials from `triggeredBy.profile.displayName` |
+| `timestamp` | `string` | yes | `formatTimeElapsed(notification.triggeredAt, t)` |
+| `isUnread` | `boolean` | yes | `notification.state === NotificationEventInAppState.Unread` |
+| `href` | `string \| undefined` | no | Resolved from payload URLs (messageDetails, callout, space, discussion, etc.) |
+
 ## Relationships
 
 ```
-TopLevelRoutes.tsx
-  ├── [MUI routes] → TopLevelLayout (MUI header/nav/footer)
+root.tsx (global providers)
+  ├── NotificationsGate
+  │   ├── CRD enabled  → CrdNotificationsPanelConnector (lazy) → useCrdNotifications()
+  │   └── CRD disabled → InAppNotificationsDialog (lazy, MUI)
   │
-  └── [CRD routes] → CrdLayoutWrapper (src/main/, smart container)
-                      └── CrdLayout (src/crd/layouts/, presentational)
-                          ├── Header (CRD, Tailwind)
-                          ├── <main>
-                          │   └── SpaceExplorerPage
-                          │       ├── useSpaceExplorer()        → SpaceWithParent[]  (GraphQL, unchanged)
-                          │       └── SpaceExplorerCrdView      → mapSpaceToCardData() → SpaceCardData[]
-                          │                                     → CRD SpaceExplorer / SpaceCard
-                          └── Footer (CRD, Tailwind)
+  └── TopLevelRoutes.tsx
+      ├── [MUI routes] → TopLevelLayout (MUI header/nav/footer)
+      │
+      └── [CRD routes] → CrdLayoutWrapper (composes useCrdUser, useCrdNavigation)
+                          └── CrdLayout (src/crd/layouts/, presentational)
+                              ├── Header (CRD, with HeaderIconButton helper)
+                              ├── <main>
+                              │   └── SpaceExplorerPage
+                              │       ├── useSpaceExplorer()        → SpaceWithParent[]  (GraphQL, unchanged)
+                              │       └── mapSpacesToCardDataList() → SpaceCardData[]
+                              │                                     → CRD SpaceExplorer / SpaceCard
+                              └── Footer (CRD, Tailwind)
 ```
 
-The route-level split happens in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper`, which renders the full CRD page shell. MUI routes continue using `TopLevelLayout`. The old MUI `SpaceExplorerView` is kept in the codebase but no longer imported.
+The route-level split happens in `TopLevelRoutes.tsx`: CRD routes are wrapped in `CrdLayoutWrapper`, which renders the full CRD page shell. MUI routes continue using `TopLevelLayout`. Notifications are handled globally in `root.tsx` via `NotificationsGate` — works on all pages regardless of layout. The old MUI `SpaceExplorerView` is kept in the codebase but no longer imported.
 
 ## Derived Field Computation
 

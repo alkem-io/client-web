@@ -63,7 +63,7 @@ export function NotificationsPanel({
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
       <DialogContent
-        className="sm:max-w-md md:max-w-lg p-0 gap-0 overflow-hidden"
+        className="max-w-none h-[100dvh] sm:h-auto sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col"
         closeLabel={t('notifications.close')}
       >
         {/* Header */}
@@ -91,7 +91,7 @@ export function NotificationsPanel({
 
         {/* Filter chips */}
         {filters.length > 0 && (
-          <div className="flex gap-1 px-4 py-2 border-b border-border overflow-x-auto">
+          <div className="flex gap-1 px-4 py-1.5 border-b border-border overflow-x-auto">
             {filters.map(filter => (
               <Button
                 key={filter.key}
@@ -107,7 +107,7 @@ export function NotificationsPanel({
         )}
 
         {/* Notification list */}
-        <div className="max-h-[60vh] overflow-y-auto">
+        <div className="flex-1 overflow-y-auto sm:max-h-[60vh]">
           {showSkeletons && (
             <output aria-label={t('notifications.loading')}>
               {Array.from({ length: 5 }).map((_, i) => (

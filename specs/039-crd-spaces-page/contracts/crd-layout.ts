@@ -78,6 +78,27 @@ export type CrdFooterProps = {
   className?: string;
 };
 
+// --- Notification item data (used by NotificationsPanel) ---
+
+export type CrdNotificationItemData = {
+  id: string;
+  title: string;
+  description: string;
+  /** Raw message/comment body, rendered separately from the translated description. */
+  comment?: string;
+  avatarUrl?: string;
+  avatarFallback: string;
+  timestamp: string;
+  isUnread: boolean;
+  href?: string;
+  typeBadgeIcon?: React.ReactNode;
+};
+
+export type CrdNotificationFilter = {
+  key: string;
+  label: string;
+};
+
 // --- CrdLayout (full-page shell) ---
 
 export type CrdLayoutProps = {

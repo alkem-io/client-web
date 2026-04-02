@@ -57,14 +57,18 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
             )}
             <span className={cn(notification.isUnread && 'font-semibold')}>{notification.title}</span>
           </p>
-          <p className="text-sm text-muted-foreground line-clamp-2">{notification.description}</p>
-          <p className="text-xs text-muted-foreground">{notification.timestamp}</p>
+          {notification.description && (
+            <p className="text-sm text-muted-foreground line-clamp-2">{notification.description}</p>
+          )}
+          {notification.comment && (
+            <p className="text-sm text-muted-foreground line-clamp-2 italic">{notification.comment}</p>
+          )}
         </div>
       </button>
 
-      {/* Actions menu */}
-      {(onRead || onUnread || onArchive) && (
-        <div className="shrink-0 self-center">
+      {/* Right column: actions + timestamp */}
+      <div className="shrink-0 flex flex-col items-center gap-1 self-start pt-0.5">
+        {(onRead || onUnread || onArchive) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild={true}>
               <Button
@@ -98,8 +102,9 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      )}
+        )}
+        <span className="text-[11px] text-muted-foreground whitespace-nowrap">{notification.timestamp}</span>
+      </div>
     </div>
   );
 }
