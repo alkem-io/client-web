@@ -153,7 +153,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const navigate = useNavigate();
   const { locations } = useConfig();
   const supportLink = locations?.support;
-  const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
+  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
   const [createInnovationPackDialogOpen, setCreateInnovationPackDialogOpen] = useState(false);
@@ -416,7 +416,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 />
               )}
             </Actions>
-            <VirtualContributorWizard />
+            {virtualContributorWizard}
           </Gutters>
         </PageContentBlock>
         <PageContentBlock halfWidth={true}>
