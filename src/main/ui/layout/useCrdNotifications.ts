@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { NotificationFilterType } from '@/main/inAppNotifications/notificationFilters';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
@@ -11,9 +10,12 @@ import { mapNotificationsToItemDataList } from '@/main/ui/layout/notificationDat
 export function useCrdNotifications(userProfileUrl?: string) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { selectedFilter: notificationFilter, setSelectedFilter: setNotificationFilter } =
-    useInAppNotificationsContext();
-  const [isNotificationsOpen, setNotificationsOpen] = useState(false);
+  const {
+    isOpen: isNotificationsOpen,
+    setIsOpen: setNotificationsOpen,
+    selectedFilter: notificationFilter,
+    setSelectedFilter: setNotificationFilter,
+  } = useInAppNotificationsContext();
   const {
     notificationsInApp,
     unreadCount: notificationsUnreadCount,

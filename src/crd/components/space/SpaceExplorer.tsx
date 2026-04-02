@@ -244,11 +244,6 @@ export function SpaceExplorer({
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-muted-foreground">
             {t('spaces.showing')} <span className="font-semibold text-foreground">{displayedSpaces.length}</span>{' '}
-            {activeFilterCount === 0 && (
-              <>
-                {t('spaces.of')} <span className="font-semibold text-foreground">{spaces.length}</span>{' '}
-              </>
-            )}
             {t('spaces.spacesLabel')}
           </p>
         </div>
