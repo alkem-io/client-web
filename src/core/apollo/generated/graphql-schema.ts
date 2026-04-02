@@ -4596,6 +4596,8 @@ export type Mutation = {
   deleteVisualFromMediaGallery: Visual;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
+  /** Re-enable a previously disabled push notification subscription for the current user. */
+  enablePushSubscription: PushSubscription;
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
   /** Trigger an event on the Invitation. */
@@ -4704,7 +4706,7 @@ export type Mutation = {
   transferSpaceToAccount: Space;
   /** Transfer the specified Virtual Contributor to another Account. */
   transferVirtualContributorToAccount: InnovationPack;
-  /** Remove a push notification subscription for the current user. */
+  /** Disable a push notification subscription for the current user. The subscription is retained but will not receive notifications until re-enabled. */
   unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
@@ -5160,6 +5162,10 @@ export type MutationDeleteVisualFromMediaGalleryArgs = {
 
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
+};
+
+export type MutationEnablePushSubscriptionArgs = {
+  subscriptionData: UnsubscribeFromPushNotificationsInput;
 };
 
 export type MutationEventOnApplicationArgs = {
@@ -6596,6 +6602,7 @@ export type PushSubscription = {
 /** Status of a push notification subscription. */
 export enum PushSubscriptionStatus {
   Active = 'ACTIVE',
+  Disabled = 'DISABLED',
   Expired = 'EXPIRED',
 }
 
@@ -6627,7 +6634,7 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
-  /** Returns the current user's active push notification subscriptions. Requires authentication. */
+  /** Returns the current user's push notification subscriptions (active and disabled). Requires authentication. */
   myPushSubscriptions: Array<PushSubscription>;
   /** The notificationRecipients for the provided event on the given entity. */
   notificationRecipients: NotificationRecipientResult;

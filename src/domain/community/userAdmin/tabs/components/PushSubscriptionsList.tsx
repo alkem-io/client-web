@@ -5,6 +5,7 @@ import {
   useMyPushSubscriptionsQuery,
   useUnsubscribeFromPushNotificationsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { PushSubscriptionStatus } from '@/core/apollo/generated/graphql-schema';
 import { Caption } from '@/core/ui/typography/components';
 
 function parseUserAgent(userAgent: string | null | undefined): string {
@@ -36,7 +37,7 @@ export const PushSubscriptionsList = () => {
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
-  const subscriptions = data?.myPushSubscriptions ?? [];
+  const subscriptions = (data?.myPushSubscriptions ?? []).filter(sub => sub.status !== PushSubscriptionStatus.Disabled);
   const currentSubscriptionId = localStorage.getItem('alkemio_push_subscription_id');
 
   if (loading) return null;
