@@ -8,6 +8,7 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFieldLazy';
 import { Caption, CardText } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import TemplateActionButton from '../Buttons/TemplateActionButton';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -18,6 +19,9 @@ interface PostTemplatesSelectorProps {
 
 export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [, , helpers] = useField<string>(name);
 
@@ -43,6 +47,7 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
           </Button>
           <ImportTemplatesDialog
             templateType={TemplateType.Post}
+            accountId={accountId}
             actionButton={() => <TemplateActionButton />}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}

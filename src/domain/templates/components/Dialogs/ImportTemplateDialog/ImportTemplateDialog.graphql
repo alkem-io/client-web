@@ -38,6 +38,69 @@ query ImportTemplateDialog(
   }
 }
 
+query ImportTemplateDialogAccountTemplates(
+  $accountId: UUID!
+  $includeSpace: Boolean = false
+  $includeCallout: Boolean = false
+) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      innovationPacks {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            url
+          }
+        }
+        templatesSet {
+          id
+          templates {
+            ...TemplateProfileInfo
+            callout @include(if: $includeCallout) {
+              id
+            }
+            contentSpace @include(if: $includeSpace) {
+              id
+              about {
+                id
+                profile {
+                  id
+                  cardBanner: visual(type: CARD) {
+                    id
+                    uri
+                  }
+                }
+              }
+              collaboration {
+                id
+                innovationFlow {
+                  id
+                  states {
+                    displayName
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 query ImportTemplateDialogPlatformTemplates(
   $templateTypes: [TemplateType!]
   $includeSpace: Boolean = false

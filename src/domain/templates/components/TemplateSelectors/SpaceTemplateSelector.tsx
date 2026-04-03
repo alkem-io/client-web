@@ -13,6 +13,7 @@ import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { type EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import type { SpaceTemplate } from '../../models/SpaceTemplate';
@@ -45,6 +46,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   ...rest
 }) => {
   const { t } = useTranslation();
+  const { accountId } = useCurrentUserContext();
   const { spaceId } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);
@@ -165,6 +167,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
         </Button>
         <ImportTemplatesDialog
           templateType={TemplateType.Space}
+          accountId={accountId}
           actionButton={template => {
             if (isTemplateSelectable && !isTemplateSelectable(template as SpaceTemplate)) {
               return (

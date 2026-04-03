@@ -75,6 +75,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, ro
           importTemplateOptions={{
             enablePlatformTemplates: true,
             disableSpaceTemplates: true,
+            accountId: space.accountId,
           }}
         />
       )}

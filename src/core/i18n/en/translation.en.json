@@ -1306,6 +1306,7 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
+    "accountTemplates": "Account templates",
     "platformTemplates": "Platform $t(common.templates)",
     "loadPlatformTemplates": "Or click here to browse through all platform $t(common.templates)",
     "platformUseDisabled": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.template) section of the $t(common.space) Settings.",
