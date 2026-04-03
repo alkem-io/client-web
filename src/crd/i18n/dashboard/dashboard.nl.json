@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "invitations": "Uitnodigingen",
+    "tipsAndTricks": "Tips & Trucs",
+    "myAccount": "Mijn Account",
+    "createSpace": "Maak mijn eigen Space",
+    "activityView": "Activiteitsweergave",
+    "mySpaces": "Mijn Spaces",
+    "virtualContributors": "Virtuele Bijdragers",
+    "innovationHubs": "Innovatie Hubs",
+    "innovationPacks": "Innovatie Pakketten",
+    "openMenu": "Menu openen"
+  },
+  "recentSpaces": {
+    "title": "Recente Spaces",
+    "exploreAll": "Bekijk al je Spaces",
+    "homeSpacePlaceholder": {
+      "title": "Stel je Home Space in",
+      "subtitle": "Pin je favoriete space aan het dashboard"
+    }
+  },
+  "activity": {
+    "spacesTitle": "Laatste activiteit in mijn Spaces",
+    "personalTitle": "Mijn laatste activiteit",
+    "filter": {
+      "space": {
+        "label": "Space",
+        "all": "Alle Spaces"
+      },
+      "role": {
+        "label": "Mijn rol",
+        "all": "Alle rollen"
+      }
+    },
+    "showMore": "Meer tonen",
+    "noActivity": "Geen recente activiteit"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Tips & Trucs",
+    "myActivity": "Mijn laatste activiteit",
+    "mySpaceActivity": "Laatste activiteit in mijn Spaces",
+    "memberships": "Mijn Lidmaatschappen",
+    "findMore": "Meer ontdekken",
+    "seeMoreSpaces": "Meer spaces bekijken",
+    "createSpace": "Space Aanmaken",
+    "expandNode": "{{name}} uitvouwen",
+    "collapseNode": "{{name}} invouwen"
+  },
+  "invitations": {
+    "title": "Openstaande Uitnodigingen",
+    "accept": "Accepteren",
+    "decline": "Weigeren",
+    "noInvitations": "Geen openstaande uitnodigingen"
+  },
+  "campaign": {
+    "title": "Maak je Virtuele Bijdrager",
+    "description": "Begin met je eigen AI-aangedreven bijdrager",
+    "cta": "Virtuele Bijdrager Aanmaken"
+  },
+  "releaseNotes": {
+    "dismiss": "Sluiten",
+    "readMore": "Lees meer"
+  },
+  "spaces": {
+    "loadMore": "Meer Laden",
+    "seeMoreSubspaces": "Meer subspaces bekijken"
+  },
+  "unauthenticated": {
+    "signUp": "Registreren"
+  },
+  "withoutMemberships": {
+    "createSpace": "Maak je eigen Space",
+    "createSpaceDescription": "Begin met samenwerken door je eerste space te maken"
+  }
+}

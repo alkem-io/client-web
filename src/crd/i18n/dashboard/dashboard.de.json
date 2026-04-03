@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "invitations": "Einladungen",
+    "tipsAndTricks": "Tipps & Tricks",
+    "myAccount": "Mein Konto",
+    "createSpace": "Eigenen Space erstellen",
+    "activityView": "Aktivitätsansicht",
+    "mySpaces": "Meine Spaces",
+    "virtualContributors": "Virtuelle Mitwirkende",
+    "innovationHubs": "Innovationszentren",
+    "innovationPacks": "Innovationspakete",
+    "openMenu": "Menü öffnen"
+  },
+  "recentSpaces": {
+    "title": "Letzte Spaces",
+    "exploreAll": "Alle deine Spaces erkunden",
+    "homeSpacePlaceholder": {
+      "title": "Home Space festlegen",
+      "subtitle": "Hefte deinen Lieblings-Space an das Dashboard"
+    }
+  },
+  "activity": {
+    "spacesTitle": "Letzte Aktivität in meinen Spaces",
+    "personalTitle": "Meine letzte Aktivität",
+    "filter": {
+      "space": {
+        "label": "Space",
+        "all": "Alle Spaces"
+      },
+      "role": {
+        "label": "Meine Rolle",
+        "all": "Alle Rollen"
+      }
+    },
+    "showMore": "Mehr anzeigen",
+    "noActivity": "Keine aktuelle Aktivität"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Tipps & Tricks",
+    "myActivity": "Meine letzte Aktivität",
+    "mySpaceActivity": "Letzte Aktivität in meinen Spaces",
+    "memberships": "Meine Mitgliedschaften",
+    "findMore": "Mehr entdecken",
+    "seeMoreSpaces": "Mehr Spaces anzeigen",
+    "createSpace": "Space erstellen",
+    "expandNode": "{{name}} aufklappen",
+    "collapseNode": "{{name}} zuklappen"
+  },
+  "invitations": {
+    "title": "Ausstehende Einladungen",
+    "accept": "Annehmen",
+    "decline": "Ablehnen",
+    "noInvitations": "Keine ausstehenden Einladungen"
+  },
+  "campaign": {
+    "title": "Erstelle deinen virtuellen Mitwirkenden",
+    "description": "Starte mit deinem eigenen KI-gestützten Mitwirkenden",
+    "cta": "Virtuellen Mitwirkenden erstellen"
+  },
+  "releaseNotes": {
+    "dismiss": "Schließen",
+    "readMore": "Mehr lesen"
+  },
+  "spaces": {
+    "loadMore": "Mehr laden",
+    "seeMoreSubspaces": "Mehr Unterräume anzeigen"
+  },
+  "unauthenticated": {
+    "signUp": "Registrieren"
+  },
+  "withoutMemberships": {
+    "createSpace": "Erstelle deinen eigenen Space",
+    "createSpaceDescription": "Beginne die Zusammenarbeit, indem du deinen ersten Space erstellst"
+  }
+}

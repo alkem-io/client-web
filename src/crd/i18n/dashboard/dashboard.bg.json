@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "invitations": "Покани",
+    "tipsAndTricks": "Съвети и трикове",
+    "myAccount": "Моят акаунт",
+    "createSpace": "Създай собствено пространство",
+    "activityView": "Изглед на активност",
+    "mySpaces": "Моите пространства",
+    "virtualContributors": "Виртуални сътрудници",
+    "innovationHubs": "Иновационни хъбове",
+    "innovationPacks": "Иновационни пакети",
+    "openMenu": "Отвори менюто"
+  },
+  "recentSpaces": {
+    "title": "Скорошни пространства",
+    "exploreAll": "Разгледай всички свои пространства",
+    "homeSpacePlaceholder": {
+      "title": "Задай начално пространство",
+      "subtitle": "Закачи любимото си пространство на таблото"
+    }
+  },
+  "activity": {
+    "spacesTitle": "Последна активност в моите пространства",
+    "personalTitle": "Моята последна активност",
+    "filter": {
+      "space": {
+        "label": "Пространство",
+        "all": "Всички пространства"
+      },
+      "role": {
+        "label": "Моята роля",
+        "all": "Всички роли"
+      }
+    },
+    "showMore": "Покажи повече",
+    "noActivity": "Няма скорошна активност"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Съвети и трикове",
+    "myActivity": "Моята последна активност",
+    "mySpaceActivity": "Последна активност в моите пространства",
+    "memberships": "Моите членства",
+    "findMore": "Открий повече",
+    "seeMoreSpaces": "Виж повече пространства",
+    "createSpace": "Създай пространство",
+    "expandNode": "Разгъни {{name}}",
+    "collapseNode": "Свий {{name}}"
+  },
+  "invitations": {
+    "title": "Чакащи покани",
+    "accept": "Приеми",
+    "decline": "Откажи",
+    "noInvitations": "Няма чакащи покани"
+  },
+  "campaign": {
+    "title": "Създай свой виртуален сътрудник",
+    "description": "Започни с твой собствен AI сътрудник",
+    "cta": "Създай виртуален сътрудник"
+  },
+  "releaseNotes": {
+    "dismiss": "Затвори",
+    "readMore": "Прочети повече"
+  },
+  "spaces": {
+    "loadMore": "Зареди повече",
+    "seeMoreSubspaces": "Виж повече подпространства"
+  },
+  "unauthenticated": {
+    "signUp": "Регистрация"
+  },
+  "withoutMemberships": {
+    "createSpace": "Създай собствено пространство",
+    "createSpaceDescription": "Започни да си сътрудничиш, като създадеш първото си пространство"
+  }
+}

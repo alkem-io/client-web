@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "invitations": "Invitaciones",
+    "tipsAndTricks": "Consejos y Trucos",
+    "myAccount": "Mi Cuenta",
+    "createSpace": "Crear mi propio Espacio",
+    "activityView": "Vista de Actividad",
+    "mySpaces": "Mis Espacios",
+    "virtualContributors": "Colaboradores Virtuales",
+    "innovationHubs": "Centros de Innovación",
+    "innovationPacks": "Paquetes de Innovación",
+    "openMenu": "Abrir menú"
+  },
+  "recentSpaces": {
+    "title": "Espacios Recientes",
+    "exploreAll": "Explorar todos tus Espacios",
+    "homeSpacePlaceholder": {
+      "title": "Establece tu Espacio Principal",
+      "subtitle": "Fija tu espacio favorito en el panel"
+    }
+  },
+  "activity": {
+    "spacesTitle": "Última actividad en mis Espacios",
+    "personalTitle": "Mi última actividad",
+    "filter": {
+      "space": {
+        "label": "Espacio",
+        "all": "Todos los Espacios"
+      },
+      "role": {
+        "label": "Mi rol",
+        "all": "Todos los roles"
+      }
+    },
+    "showMore": "Mostrar más",
+    "noActivity": "Sin actividad reciente"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Consejos y Trucos",
+    "myActivity": "Mi última actividad",
+    "mySpaceActivity": "Última actividad en mis Espacios",
+    "memberships": "Mis Membresías",
+    "findMore": "Descubrir más",
+    "seeMoreSpaces": "Ver más espacios",
+    "createSpace": "Crear Espacio",
+    "expandNode": "Expandir {{name}}",
+    "collapseNode": "Contraer {{name}}"
+  },
+  "invitations": {
+    "title": "Invitaciones Pendientes",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "noInvitations": "Sin invitaciones pendientes"
+  },
+  "campaign": {
+    "title": "Crea tu Colaborador Virtual",
+    "description": "Comienza con tu propio colaborador impulsado por IA",
+    "cta": "Crear Colaborador Virtual"
+  },
+  "releaseNotes": {
+    "dismiss": "Cerrar",
+    "readMore": "Leer más"
+  },
+  "spaces": {
+    "loadMore": "Cargar Más",
+    "seeMoreSubspaces": "Ver más subespacios"
+  },
+  "unauthenticated": {
+    "signUp": "Registrarse"
+  },
+  "withoutMemberships": {
+    "createSpace": "Crea tu propio Espacio",
+    "createSpaceDescription": "Comienza a colaborar creando tu primer espacio"
+  }
+}

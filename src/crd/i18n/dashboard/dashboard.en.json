@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "invitations": "Invitations",
+    "tipsAndTricks": "Tips & Tricks",
+    "myAccount": "My Account",
+    "createSpace": "Create my own Space",
+    "activityView": "Activity View",
+    "mySpaces": "My Spaces",
+    "virtualContributors": "Virtual Contributors",
+    "innovationHubs": "Innovation Hubs",
+    "innovationPacks": "Innovation Packs",
+    "openMenu": "Open menu"
+  },
+  "recentSpaces": {
+    "title": "Recent Spaces",
+    "exploreAll": "Explore all your Spaces",
+    "homeSpacePlaceholder": {
+      "title": "Set your Home Space",
+      "subtitle": "Pin your favorite space to the dashboard"
+    }
+  },
+  "activity": {
+    "spacesTitle": "Latest Activity in my Spaces",
+    "personalTitle": "My Latest Activity",
+    "filter": {
+      "space": {
+        "label": "Space",
+        "all": "All Spaces"
+      },
+      "role": {
+        "label": "My role",
+        "all": "All roles"
+      }
+    },
+    "showMore": "Show more",
+    "noActivity": "No recent activity"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Tips & Tricks",
+    "myActivity": "My Latest Activity",
+    "mySpaceActivity": "Latest Activity in my Spaces",
+    "memberships": "My Memberships",
+    "findMore": "Find more",
+    "seeMoreSpaces": "See more spaces",
+    "createSpace": "Create Space",
+    "expandNode": "Expand {{name}}",
+    "collapseNode": "Collapse {{name}}"
+  },
+  "invitations": {
+    "title": "Pending Invitations",
+    "accept": "Accept",
+    "decline": "Decline",
+    "noInvitations": "No pending invitations"
+  },
+  "campaign": {
+    "title": "Create your Virtual Contributor",
+    "description": "Get started with your own AI-powered contributor",
+    "cta": "Create Virtual Contributor"
+  },
+  "releaseNotes": {
+    "dismiss": "Dismiss",
+    "readMore": "Read more"
+  },
+  "spaces": {
+    "loadMore": "Load More",
+    "seeMoreSubspaces": "See more subspaces"
+  },
+  "unauthenticated": {
+    "signUp": "Sign Up"
+  },
+  "withoutMemberships": {
+    "createSpace": "Create your own Space",
+    "createSpaceDescription": "Start collaborating by creating your first space"
+  }
+}

@@ -83,6 +83,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/notifications/notifications.de.json'),
     fr: () => import('@/crd/i18n/notifications/notifications.fr.json'),
   },
+  'crd-dashboard': {
+    en: () => import('@/crd/i18n/dashboard/dashboard.en.json'),
+    es: () => import('@/crd/i18n/dashboard/dashboard.es.json'),
+    nl: () => import('@/crd/i18n/dashboard/dashboard.nl.json'),
+    bg: () => import('@/crd/i18n/dashboard/dashboard.bg.json'),
+    de: () => import('@/crd/i18n/dashboard/dashboard.de.json'),
+    fr: () => import('@/crd/i18n/dashboard/dashboard.fr.json'),
+  },
 };
 
 // Cache for loaded translations

@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "invitations": "Invitations",
+    "tipsAndTricks": "Astuces et Conseils",
+    "myAccount": "Mon Compte",
+    "createSpace": "Créer mon propre Espace",
+    "activityView": "Vue d'activité",
+    "mySpaces": "Mes Espaces",
+    "virtualContributors": "Contributeurs Virtuels",
+    "innovationHubs": "Centres d'Innovation",
+    "innovationPacks": "Packs d'Innovation",
+    "openMenu": "Ouvrir le menu"
+  },
+  "recentSpaces": {
+    "title": "Espaces Récents",
+    "exploreAll": "Explorer tous vos Espaces",
+    "homeSpacePlaceholder": {
+      "title": "Définir votre Espace d'Accueil",
+      "subtitle": "Épinglez votre espace favori sur le tableau de bord"
+    }
+  },
+  "activity": {
+    "spacesTitle": "Dernière activité dans mes Espaces",
+    "personalTitle": "Ma dernière activité",
+    "filter": {
+      "space": {
+        "label": "Espace",
+        "all": "Tous les Espaces"
+      },
+      "role": {
+        "label": "Mon rôle",
+        "all": "Tous les rôles"
+      }
+    },
+    "showMore": "Afficher plus",
+    "noActivity": "Aucune activité récente"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Astuces et Conseils",
+    "myActivity": "Ma dernière activité",
+    "mySpaceActivity": "Dernière activité dans mes Espaces",
+    "memberships": "Mes Adhésions",
+    "findMore": "Découvrir plus",
+    "seeMoreSpaces": "Voir plus d'espaces",
+    "createSpace": "Créer un Espace",
+    "expandNode": "Développer {{name}}",
+    "collapseNode": "Réduire {{name}}"
+  },
+  "invitations": {
+    "title": "Invitations en Attente",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "noInvitations": "Aucune invitation en attente"
+  },
+  "campaign": {
+    "title": "Créez votre Contributeur Virtuel",
+    "description": "Commencez avec votre propre contributeur alimenté par l'IA",
+    "cta": "Créer un Contributeur Virtuel"
+  },
+  "releaseNotes": {
+    "dismiss": "Fermer",
+    "readMore": "En savoir plus"
+  },
+  "spaces": {
+    "loadMore": "Charger Plus",
+    "seeMoreSubspaces": "Voir plus de sous-espaces"
+  },
+  "unauthenticated": {
+    "signUp": "S'inscrire"
+  },
+  "withoutMemberships": {
+    "createSpace": "Créez votre propre Espace",
+    "createSpaceDescription": "Commencez à collaborer en créant votre premier espace"
+  }
+}
