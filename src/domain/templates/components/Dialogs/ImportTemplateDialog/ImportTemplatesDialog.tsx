@@ -243,7 +243,12 @@ const ImportTemplatesDialog = ({
               templates={templates}
               onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
-            />
+            >
+              <BlockTitle>
+                {loadingTemplates && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
+                {t('templateLibrary.spaceTemplatesSection')}
+              </BlockTitle>
+            </ImportTemplatesDialogGallery>
           )}
           {accountId && (loadingAccountTemplates || (accountTemplates && accountTemplates.length > 0)) && (
             <ImportTemplatesDialogGallery

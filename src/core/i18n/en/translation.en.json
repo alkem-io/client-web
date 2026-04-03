@@ -1306,6 +1306,7 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
+    "spaceTemplatesSection": "Space $t(common.templates)",
     "accountTemplates": "Account templates",
     "platformTemplates": "Platform $t(common.templates)",
     "loadPlatformTemplates": "Or click here to browse through all platform $t(common.templates)",
