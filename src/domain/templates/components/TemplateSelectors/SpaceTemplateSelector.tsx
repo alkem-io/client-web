@@ -13,7 +13,6 @@ import Gutters, { type GuttersProps } from '@/core/ui/grid/Gutters';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { type EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import type { SpaceTemplate } from '../../models/SpaceTemplate';
@@ -31,6 +30,10 @@ interface SpaceTemplateSelectorProps extends GuttersProps {
    */
   level?: SpaceLevel;
   /**
+   * The account ID where the resource will be hosted. Used to fetch account-specific templates.
+   */
+  accountId?: string;
+  /**
    * Callback to tell the parent component to update the visuals taking the ones coming in the template
    */
   onTemplateVisualsLoaded?: (visualUrls: EntityVisualUrls) => void;
@@ -41,12 +44,12 @@ interface SpaceTemplateSelectorProps extends GuttersProps {
 export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   name,
   level = SpaceLevel.L0,
+  accountId,
   onTemplateVisualsLoaded,
   isTemplateSelectable,
   ...rest
 }) => {
   const { t } = useTranslation();
-  const { accountId } = useCurrentUserContext();
   const { spaceId } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);

@@ -4,6 +4,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
+import { useSpace } from '@/domain/space/context/useSpace';
 import SpaceL1Icon2 from '../../../icons/SpaceL1Icon2';
 import { SpaceCreationDialog } from '../common/SpaceCreationDialog';
 import type { SpaceFormValues } from '../common/SpaceCreationDialog.models';
@@ -28,6 +29,7 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId, onSubspac
   const { t } = useTranslation();
   const navigate = useNavigate();
   const ensurePresence = useEnsurePresence();
+  const { space } = useSpace();
 
   const { createSubspace } = useSubspaceCreation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId! })],
@@ -71,6 +73,7 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId, onSubspac
       onClose={onClose}
       onCreate={handleCreate}
       formComponent={CreateSubspaceForm}
+      accountId={space.accountId}
     />
   );
 };
