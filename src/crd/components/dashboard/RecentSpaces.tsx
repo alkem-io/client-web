@@ -11,6 +11,7 @@ type RecentSpacesProps = {
   hasHomeSpace: boolean;
   homeSpaceSettingsHref?: string;
   onExploreAllClick?: () => void;
+  onPinClick?: () => void;
   className?: string;
 };
 
@@ -20,6 +21,7 @@ export function RecentSpaces({
   hasHomeSpace,
   homeSpaceSettingsHref,
   onExploreAllClick,
+  onPinClick,
   className,
 }: RecentSpacesProps) {
   const { t } = useTranslation('crd-dashboard');
@@ -46,7 +48,7 @@ export function RecentSpaces({
           <>
             {!hasHomeSpace && homeSpaceSettingsHref && <HomeSpacePlaceholder settingsHref={homeSpaceSettingsHref} />}
             {spaces.map(space => (
-              <CompactSpaceCard key={space.id} {...space} />
+              <CompactSpaceCard key={space.id} {...space} onPinClick={space.isHomeSpace ? onPinClick : undefined} />
             ))}
           </>
         )}

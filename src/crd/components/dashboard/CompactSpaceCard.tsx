@@ -13,6 +13,7 @@ export type CompactSpaceCardData = {
 };
 
 type CompactSpaceCardProps = CompactSpaceCardData & {
+  onPinClick?: () => void;
   className?: string;
 };
 
@@ -23,6 +24,7 @@ export function CompactSpaceCard({
   isPrivate,
   isHomeSpace,
   initials,
+  onPinClick,
   className,
 }: CompactSpaceCardProps) {
   return (
@@ -55,9 +57,19 @@ export function CompactSpaceCard({
           </div>
         )}
         {isHomeSpace && (
-          <span className="absolute top-2.5 left-2.5" aria-hidden="true">
-            <Pin size={14} className="text-white drop-shadow" />
-          </span>
+          <button
+            type="button"
+            className="absolute top-2 left-2 rounded-full p-1.5 transition-colors hover:bg-white/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            style={{ background: 'color-mix(in srgb, var(--foreground) 50%, transparent)' }}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              onPinClick?.();
+            }}
+            aria-label="Home space settings"
+          >
+            <Pin size={12} className="text-primary-foreground" />
+          </button>
         )}
       </div>
       <div className="flex items-center gap-3 p-4">

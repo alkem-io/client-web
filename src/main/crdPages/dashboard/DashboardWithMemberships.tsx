@@ -8,6 +8,7 @@ import {
   useRecentSpacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActivityEventType, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
@@ -44,6 +45,7 @@ export default function DashboardWithMemberships({
 }: DashboardWithMembershipsProps) {
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
+  const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
 
   // Activity view toggle — persisted in localStorage
@@ -171,6 +173,7 @@ export default function DashboardWithMemberships({
           hasHomeSpace={!!homeSpaceId}
           homeSpaceSettingsHref={membershipSettingsUrl}
           onExploreAllClick={dialogState.openMemberships}
+          onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
         />
 
         {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
