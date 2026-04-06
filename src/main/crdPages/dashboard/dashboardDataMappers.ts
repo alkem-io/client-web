@@ -60,10 +60,10 @@ export type MembershipTreeNodeData = {
 
 export type InvitationCardData = {
   id: string;
+  spaceId: string;
   spaceName: string;
   spaceHref: string;
-  senderName: string;
-  senderAvatarUrl?: string;
+  spaceAvatarUrl?: string;
   role: string;
 };
 
@@ -269,10 +269,12 @@ export const mapMembershipsToTree = (memberships: MembershipEntry[]): Membership
 type InvitationEntry = {
   id: string;
   spacePendingMembershipInfo: {
+    id: string;
     about: {
       profile: {
         displayName: string;
         url: string;
+        avatar?: { uri: string };
       };
     };
   };
@@ -282,10 +284,10 @@ type InvitationEntry = {
 export const mapInvitationsToCards = (invitations: InvitationEntry[]): InvitationCardData[] => {
   return invitations.map(invitation => ({
     id: invitation.id,
+    spaceId: invitation.spacePendingMembershipInfo.id,
     spaceName: invitation.spacePendingMembershipInfo.about.profile.displayName,
     spaceHref: invitation.spacePendingMembershipInfo.about.profile.url,
-    senderName: '',
-    senderAvatarUrl: undefined,
+    spaceAvatarUrl: invitation.spacePendingMembershipInfo.about.profile.avatar?.uri,
     role: invitation.contributorType ?? '',
   }));
 };
