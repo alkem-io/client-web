@@ -109,12 +109,16 @@ export default function DashboardWithMemberships({
   const spaceActivitySpaceIds = spaceActivityFilter === 'all' ? flatSpaces.map(m => m.space.id) : [spaceActivityFilter];
   const personalSpaceIds = personalSpaceFilter === 'all' ? flatSpaces.map(m => m.space.id) : [personalSpaceFilter];
 
+  const isActivityDialogOpen =
+    dialogState.openDialog === 'my-activity' || dialogState.openDialog === 'my-space-activity';
+  const needsActivityData = activityEnabled || isActivityDialogOpen;
+
   const { data: spaceActivityData, loading: spaceActivityLoading } = useLatestContributionsQuery({
     variables: {
       first: ACTIVITY_LIMIT,
       filter: { spaceIds: spaceActivitySpaceIds, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
     },
-    skip: !activityEnabled || flatSpaces.length === 0,
+    skip: !needsActivityData || flatSpaces.length === 0,
   });
 
   const { data: personalActivityData, loading: personalActivityLoading } = useLatestContributionsQuery({
@@ -122,7 +126,7 @@ export default function DashboardWithMemberships({
       first: ACTIVITY_LIMIT,
       filter: { spaceIds: personalSpaceIds, myActivity: true, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
     },
-    skip: !activityEnabled || flatSpaces.length === 0,
+    skip: !needsActivityData || flatSpaces.length === 0,
   });
 
   const spaceActivityItems = mapActivityToFeedItems(

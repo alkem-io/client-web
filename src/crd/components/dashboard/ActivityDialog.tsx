@@ -11,12 +11,12 @@ type ActivityDialogProps = {
 export function ActivityDialog({ open, onClose, title, children }: ActivityDialogProps) {
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-2xl max-h-[80vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">{children}</div>
       </DialogContent>
     </Dialog>
   );

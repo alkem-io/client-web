@@ -57,18 +57,18 @@ export function ActivityFeed({
   return (
     <div
       className={cn(
-        'flex flex-col',
+        'flex flex-col overflow-hidden',
         !embedded && 'h-full rounded-lg border border-border bg-card p-6 shadow-sm',
         className
       )}
     >
       {title && (
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between shrink-0">
           <h3 className="text-base font-bold">{title}</h3>
         </div>
       )}
 
-      <div className="mb-6 flex gap-2 flex-wrap">
+      <div className="mb-6 flex gap-2 flex-wrap shrink-0">
         <div>
           <label htmlFor={`space-filter-${variant}`} className="sr-only">
             {t('activity.filter.space.label')}
@@ -116,30 +116,33 @@ export function ActivityFeed({
         )}
       </div>
 
-      {loading ? (
-        <div aria-busy="true" className="space-y-6">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex gap-4">
-              <Skeleton className="size-10 shrink-0 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/3" />
+      <div className="flex-1 min-w-0">
+        {loading ? (
+          <div aria-busy="true" className="space-y-6">
+            {Array.from({ length: 5 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+              <div key={i} className="flex gap-4">
+                <Skeleton className="size-10 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/3" />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : visibleItems.length === 0 ? (
-        <output className="block py-8 text-center text-sm text-muted-foreground">{t('activity.noActivity')}</output>
-      ) : (
-        <div className="space-y-6">
-          {visibleItems.map(item => (
-            <ActivityItem key={item.id} {...item} />
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : visibleItems.length === 0 ? (
+          <output className="block py-8 text-center text-sm text-muted-foreground">{t('activity.noActivity')}</output>
+        ) : (
+          <div className="space-y-6 overflow-hidden">
+            {visibleItems.map(item => (
+              <ActivityItem key={item.id} {...item} />
+            ))}
+          </div>
+        )}
+      </div>
 
       {(onShowMore || hasMore) && visibleItems.length > 0 && (
-        <div className="mt-6 border-t border-border pt-4">
+        <div className="mt-auto border-t border-border pt-4 shrink-0">
           <button
             type="button"
             onClick={onShowMore}
