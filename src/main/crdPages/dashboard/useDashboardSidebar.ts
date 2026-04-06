@@ -1,24 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { SidebarMenuItemData, SidebarResourceSection } from '@/crd/components/dashboard/DashboardSidebar';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserAccountUrl } from '@/main/routing/urlBuilders';
 import { useCreateSpaceLink } from '@/main/topLevelPages/myDashboard/useCreateSpaceLink/useCreateSpaceLink';
-import { mapResourcesToSidebarItems, type SidebarResourceData } from './dashboardDataMappers';
-
-export type SidebarMenuItemData = {
-  id: string;
-  label: string;
-  iconName: string;
-  href?: string;
-  onClick?: () => void;
-  badgeCount?: number;
-};
-
-export type SidebarResourceSection = {
-  title: string;
-  items: SidebarResourceData[];
-};
+import { mapResourcesToSidebarItems } from './dashboardDataMappers';
 
 type UseDashboardSidebarOptions = {
   onInvitationsClick: () => void;

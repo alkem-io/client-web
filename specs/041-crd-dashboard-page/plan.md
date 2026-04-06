@@ -152,9 +152,9 @@ A single `ActivityFeed` CRD component handles both "Latest Activity in my Spaces
 
 Instead of separate `SidebarSpaceItem` and `SidebarVCItem` components, a single `SidebarResourceItem` handles all 4 resource types (spaces, VCs, innovation hubs, innovation packs). Each item has an avatar (image or initials), a name, and an `href`. The sidebar groups them under section headers. This follows ISP — the component interface is minimal and shared.
 
-### D6: DashboardSpaces View — No Prototype Reference
+### D6: Spaces View — RecentSpaces Only (Revised)
 
-The prototype only shows the activity view. For the `activityEnabled=false` "spaces view", the CRD implementation creates `DashboardSpaces.tsx` (a CRD component that renders a list of `SpaceHierarchyCard` components) and `SpaceHierarchyCard.tsx` (a card with parent space banner + name + subspace chips/links). The visual design follows the CRD card patterns established in `SpaceCard.tsx` but with a hierarchical layout. The integration layer uses `useDashboardWithMembershipsLazyQuery` (existing hook) and maps via `dashboardDataMappers.ts`.
+The original plan called for a full `DashboardSpaces` hierarchical view when the activity toggle is OFF. During implementation, this was simplified: the "spaces view" now shows only the `RecentSpaces` row (same as activity view). The activity toggle controls whether the two-column activity feeds are shown below the recent spaces. When OFF, the dashboard is clean — just recent spaces and sidebar. The `DashboardSpaces` and `SpaceHierarchyCard` components were built but are not rendered inline; they remain available for future use. Activity dialogs (My Activity, Space Activity) are accessible from the sidebar menu when the toggle is OFF.
 
 ### D7: Dialog Components — Reuse ActivityFeed Inside Dialogs
 
@@ -175,9 +175,9 @@ PendingMembershipsDialog, DirectMessageDialog, and VirtualContributorWizard are 
 
 The `?dialog=invitations` URL parameter is handled in `useDashboardDialogs.ts` (integration layer). On mount, it reads the URL param and triggers the appropriate dialog callback. This follows the existing pattern in `useMyDashboardDialogs()` in the MUI version.
 
-### D11: Responsive Sidebar — Collapsible on Mobile
+### D11: Responsive Sidebar — Left Drawer on Mobile (Revised)
 
-On mobile (`< md` breakpoint), the sidebar collapses to a hamburger-triggered sheet/drawer using the existing CRD `Dialog` primitive in sheet mode. On desktop (`>= md`), the sidebar is a fixed left column (~240px). The `DashboardLayout` CRD component handles this via Tailwind responsive classes and a `useState` for mobile toggle. The `useMediaQuery` hook from `src/crd/hooks/` detects the breakpoint.
+On mobile (`< md` breakpoint), the sidebar is hidden via CSS (`hidden md:block`) and a hamburger button renders instead. Clicking it opens a custom left-side drawer (not a Radix Dialog) with CSS `translate-x` animation, backdrop overlay, focus trap, Escape-to-close, and body scroll lock. On desktop (`>= md`), the sidebar is a fixed left column (~240px). Both mobile and desktop navs are always in the DOM — CSS controls visibility, avoiding hydration mismatches between JS and CSS breakpoints.
 
 ## Implementation Phases
 

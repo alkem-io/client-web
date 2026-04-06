@@ -148,9 +148,9 @@ The CRD dashboard adapts to different screen sizes. On mobile/small screens, the
 - **FR-006**: Dashboard MUST display a sidebar with navigation menu items: Invitations (with pending count badge), Tips & Tricks, My Account, Create Space, and Activity View toggle
 - **FR-007**: The sidebar MUST display the user's resources in four sections: My Spaces, Virtual Contributors, Innovation Hubs, and Innovation Packs, each with avatar and name linking to the resource page
 - **FR-008**: The "with memberships" view MUST display two-column activity feeds: "Latest Activity in my Spaces" (filterable by Space and Role) and "My Latest Activity" (filterable by Space), each with "Show more" links opening full-feed dialogs
-- **FR-009**: The "with memberships" view MUST support an Activity View toggle: when ON, show two-column activity feeds; when OFF, show hierarchical DashboardSpaces cards with parent spaces and subspaces
+- **FR-009**: The "with memberships" view MUST support an Activity View toggle (persisted in localStorage): when ON, show RecentSpaces row plus two-column activity feeds below; when OFF, show only RecentSpaces row (clean view). Activity dialogs are accessible from the sidebar menu when the toggle is OFF
 - **FR-010**: The "without memberships" view MUST display an InvitationsBlock with accept/decline actions for pending space invitations
-- **FR-011**: The "without memberships" view MUST display an ExploreSpaces section (reusing the existing CRD SpaceExplorer component) and a "Create your own Space" CTA
+- **FR-011**: The "without memberships" view MUST display an ExploreSpaces section (reusing the existing CRD SpaceExplorer component with responsive grid matching the dashboard layout) and pending invitations (only when invitations exist)
 - **FR-012**: Dashboard MUST support four page-level dialogs: TipsAndTricksDialog, MyActivityDialog, MySpaceActivityDialog, and MyMembershipsDialog
 - **FR-013**: The unauthenticated view MUST display the CRD SpaceExplorer for public spaces and a Sign Up button
 - **FR-014**: Dashboard MUST display a dismissible ReleaseNotesBanner when a latest release discussion exists and has not been dismissed

@@ -91,7 +91,7 @@ export default function DashboardWithoutMemberships({
             onAccept={id => {
               const invitation = invitations.find(inv => inv.id === id);
               if (invitation?.spaceHref) {
-                window.location.href = invitation.spaceHref;
+                navigate(invitation.spaceHref);
               }
             }}
             onDecline={noop}

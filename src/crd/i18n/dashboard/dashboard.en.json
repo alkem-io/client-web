@@ -18,7 +18,9 @@
     "homeSpacePlaceholder": {
       "title": "Set your Home Space",
       "subtitle": "Pin your favorite space to the dashboard"
-    }
+    },
+    "homeSpaceSettings": "Home space settings",
+    "private": "Private"
   },
   "activity": {
     "spacesTitle": "Latest Activity in my Spaces",
@@ -30,7 +32,10 @@
       },
       "role": {
         "label": "My role",
-        "all": "All roles"
+        "all": "All roles",
+        "member": "Member",
+        "lead": "Lead",
+        "admin": "Admin"
       }
     },
     "showMore": "Show more",

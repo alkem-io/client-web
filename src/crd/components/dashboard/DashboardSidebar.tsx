@@ -4,8 +4,22 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Switch } from '@/crd/primitives/switch';
-import type { SidebarMenuItemData, SidebarResourceSection } from '@/main/crdPages/dashboard/useDashboardSidebar';
+import type { SidebarResourceData } from './SidebarResourceItem';
 import { SidebarResourceItem } from './SidebarResourceItem';
+
+export type SidebarMenuItemData = {
+  id: string;
+  label: string;
+  iconName: string;
+  href?: string;
+  onClick?: () => void;
+  badgeCount?: number;
+};
+
+export type SidebarResourceSection = {
+  title: string;
+  items: SidebarResourceData[];
+};
 
 const iconMap: Record<string, LucideIcon> = {
   Mail,

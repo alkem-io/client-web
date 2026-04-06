@@ -18,7 +18,9 @@
     "homeSpacePlaceholder": {
       "title": "Establece tu Espacio Principal",
       "subtitle": "Fija tu espacio favorito en el panel"
-    }
+    },
+    "homeSpaceSettings": "Configuración del espacio de inicio",
+    "private": "Privado"
   },
   "activity": {
     "spacesTitle": "Última actividad en mis Espacios",
@@ -30,7 +32,10 @@
       },
       "role": {
         "label": "Mi rol",
-        "all": "Todos los roles"
+        "all": "Todos los roles",
+        "member": "Miembro",
+        "lead": "Líder",
+        "admin": "Administrador"
       }
     },
     "showMore": "Mostrar más",

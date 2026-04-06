@@ -18,7 +18,9 @@
     "homeSpacePlaceholder": {
       "title": "Home Space festlegen",
       "subtitle": "Hefte deinen Lieblings-Space an das Dashboard"
-    }
+    },
+    "homeSpaceSettings": "Einstellungen des Home-Space",
+    "private": "Privat"
   },
   "activity": {
     "spacesTitle": "Letzte Aktivität in meinen Spaces",
@@ -30,7 +32,10 @@
       },
       "role": {
         "label": "Meine Rolle",
-        "all": "Alle Rollen"
+        "all": "Alle Rollen",
+        "member": "Mitglied",
+        "lead": "Leiter",
+        "admin": "Administrator"
       }
     },
     "showMore": "Mehr anzeigen",

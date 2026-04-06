@@ -18,7 +18,9 @@
     "homeSpacePlaceholder": {
       "title": "Stel je Home Space in",
       "subtitle": "Pin je favoriete space aan het dashboard"
-    }
+    },
+    "homeSpaceSettings": "Instellingen thuisruimte",
+    "private": "Privé"
   },
   "activity": {
     "spacesTitle": "Laatste activiteit in mijn Spaces",
@@ -30,7 +32,10 @@
       },
       "role": {
         "label": "Mijn rol",
-        "all": "Alle rollen"
+        "all": "Alle rollen",
+        "member": "Lid",
+        "lead": "Leider",
+        "admin": "Beheerder"
       }
     },
     "showMore": "Meer tonen",

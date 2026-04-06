@@ -1,4 +1,5 @@
 import { Lock, Pin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -27,6 +28,8 @@ export function CompactSpaceCard({
   onPinClick,
   className,
 }: CompactSpaceCardProps) {
+  const { t } = useTranslation('crd-dashboard');
+
   return (
     <a
       href={href}
@@ -51,7 +54,7 @@ export function CompactSpaceCard({
             role="img"
             className="absolute top-2.5 right-2.5 flex items-center rounded-full p-1.5"
             style={{ background: 'color-mix(in srgb, var(--foreground) 50%, transparent)' }}
-            aria-label="Private"
+            aria-label={t('recentSpaces.private')}
           >
             <Lock size={12} className="text-primary-foreground" aria-hidden="true" />
           </div>
@@ -66,7 +69,7 @@ export function CompactSpaceCard({
               e.stopPropagation();
               onPinClick?.();
             }}
-            aria-label="Home space settings"
+            aria-label={t('recentSpaces.homeSpaceSettings')}
           >
             <Pin size={12} className="text-primary-foreground" />
           </button>

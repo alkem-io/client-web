@@ -101,9 +101,9 @@ export default function DashboardWithMemberships({
 
   const roleFilterOptions = [
     { value: 'all', label: t('activity.filter.role.all') },
-    { value: 'member', label: 'Member' },
-    { value: 'lead', label: 'Lead' },
-    { value: 'admin', label: 'Admin' },
+    { value: 'member', label: t('activity.filter.role.member') },
+    { value: 'lead', label: t('activity.filter.role.lead') },
+    { value: 'admin', label: t('activity.filter.role.admin') },
   ];
 
   const spaceActivitySpaceIds = spaceActivityFilter === 'all' ? flatSpaces.map(m => m.space.id) : [spaceActivityFilter];

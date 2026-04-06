@@ -106,7 +106,7 @@ export function SpaceHierarchyCard({
                     role="img"
                     className="absolute top-2 right-2 flex items-center rounded-full p-1"
                     style={{ background: 'color-mix(in srgb, var(--foreground) 50%, transparent)' }}
-                    aria-label="Private"
+                    aria-label={t('recentSpaces.private')}
                   >
                     <Lock size={10} className="text-primary-foreground" aria-hidden="true" />
                   </div>

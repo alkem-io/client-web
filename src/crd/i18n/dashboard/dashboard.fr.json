@@ -18,7 +18,9 @@
     "homeSpacePlaceholder": {
       "title": "Définir votre Espace d'Accueil",
       "subtitle": "Épinglez votre espace favori sur le tableau de bord"
-    }
+    },
+    "homeSpaceSettings": "Paramètres de l'espace d'accueil",
+    "private": "Privé"
   },
   "activity": {
     "spacesTitle": "Dernière activité dans mes Espaces",
@@ -30,7 +32,10 @@
       },
       "role": {
         "label": "Mon rôle",
-        "all": "Tous les rôles"
+        "all": "Tous les rôles",
+        "member": "Membre",
+        "lead": "Responsable",
+        "admin": "Administrateur"
       }
     },
     "showMore": "Afficher plus",

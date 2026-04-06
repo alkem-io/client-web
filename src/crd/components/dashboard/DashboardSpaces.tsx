@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
-import type { SpaceHierarchyCardData } from '@/main/crdPages/dashboard/dashboardDataMappers';
+import type { SpaceHierarchyCardData } from './SpaceHierarchyCard';
 import { SpaceHierarchyCard } from './SpaceHierarchyCard';
 
 type DashboardSpacesProps = {
