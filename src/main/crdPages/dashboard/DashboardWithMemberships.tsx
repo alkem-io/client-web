@@ -7,7 +7,12 @@ import {
   useMyMembershipsQuery,
   useRecentSpacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActivityEventType, LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import {
+  ActivityEventType,
+  type ActivityFeedRoles,
+  LicenseEntitlementType,
+  RoleName,
+} from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
@@ -117,7 +122,11 @@ export default function DashboardWithMemberships({
   const { data: spaceActivityData, loading: spaceActivityLoading } = useLatestContributionsQuery({
     variables: {
       first: ACTIVITY_LIMIT,
-      filter: { spaceIds: spaceActivitySpaceIds, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
+      filter: {
+        spaceIds: spaceActivitySpaceIds,
+        roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
+        excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+      },
     },
     skip: !needsActivityData || flatSpaces.length === 0,
   });
@@ -195,6 +204,7 @@ export default function DashboardWithMemberships({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ActivityFeed
               variant="spaces"
+              feedId="inline-spaces"
               title={t('activity.spacesTitle')}
               items={spaceActivityItems}
               loading={spaceActivityLoading}
@@ -209,6 +219,7 @@ export default function DashboardWithMemberships({
             />
             <ActivityFeed
               variant="personal"
+              feedId="inline-personal"
               title={t('activity.personalTitle')}
               items={personalActivityItems}
               loading={personalActivityLoading}
@@ -238,6 +249,7 @@ export default function DashboardWithMemberships({
       >
         <ActivityFeed
           variant="personal"
+          feedId="dialog-personal"
           title=""
           items={personalActivityItems}
           loading={personalActivityLoading}
@@ -255,6 +267,7 @@ export default function DashboardWithMemberships({
       >
         <ActivityFeed
           variant="spaces"
+          feedId="dialog-spaces"
           title=""
           items={spaceActivityItems}
           loading={spaceActivityLoading}

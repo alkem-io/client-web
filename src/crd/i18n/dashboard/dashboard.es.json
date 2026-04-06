@@ -10,7 +10,8 @@
     "innovationHubs": "Centros de Innovación",
     "innovationPacks": "Paquetes de Innovación",
     "openMenu": "Abrir menú",
-    "closeMenu": "Cerrar menú"
+    "closeMenu": "Cerrar menú",
+    "pendingCount": "{{count}} pendiente(s)"
   },
   "recentSpaces": {
     "title": "Espacios Recientes",

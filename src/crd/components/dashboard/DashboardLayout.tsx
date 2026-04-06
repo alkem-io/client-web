@@ -135,7 +135,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
             )}
           >
             <div className="flex items-center justify-end p-2 sticky top-0 bg-background z-10">
-              <Button variant="ghost" size="sm" onClick={closeDrawer} aria-label={t('sidebar.closeMenu', 'Close menu')}>
+              <Button variant="ghost" size="sm" onClick={closeDrawer} aria-label={t('sidebar.closeMenu')}>
                 <X className="h-5 w-5" aria-hidden="true" />
               </Button>
             </div>

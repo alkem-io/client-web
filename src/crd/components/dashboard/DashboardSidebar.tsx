@@ -72,7 +72,11 @@ export function DashboardSidebar({
                 key={item.id}
                 href={item.href}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                aria-label={item.badgeCount ? `${item.label}, ${item.badgeCount} pending` : undefined}
+                aria-label={
+                  item.badgeCount
+                    ? `${item.label}, ${t('sidebar.pendingCount', { count: item.badgeCount })}`
+                    : undefined
+                }
               >
                 {content}
               </a>
@@ -85,7 +89,9 @@ export function DashboardSidebar({
               type="button"
               onClick={item.onClick}
               className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none w-full text-left"
-              aria-label={item.badgeCount ? `${item.label}, ${item.badgeCount} pending` : undefined}
+              aria-label={
+                item.badgeCount ? `${item.label}, ${t('sidebar.pendingCount', { count: item.badgeCount })}` : undefined
+              }
             >
               {content}
             </button>

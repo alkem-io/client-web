@@ -10,7 +10,8 @@
     "innovationHubs": "Innovatie Hubs",
     "innovationPacks": "Innovatie Pakketten",
     "openMenu": "Menu openen",
-    "closeMenu": "Menu sluiten"
+    "closeMenu": "Menu sluiten",
+    "pendingCount": "{{count}} openstaand"
   },
   "recentSpaces": {
     "title": "Recente Spaces",

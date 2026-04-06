@@ -43,12 +43,12 @@ export default function DashboardUnauthenticated() {
       />
 
       <div className="flex justify-center px-4 pb-8">
-        <a href={AUTH_SIGN_UP_PATH}>
-          <Button size="lg" className="gap-2">
+        <Button size="lg" className="gap-2" asChild={true}>
+          <a href={AUTH_SIGN_UP_PATH}>
             <UserPlus className="h-5 w-5" aria-hidden="true" />
             {t('unauthenticated.signUp')}
-          </Button>
-        </a>
+          </a>
+        </Button>
       </div>
     </>
   );

@@ -30,6 +30,8 @@ type ActivityFeedProps = {
   maxItems?: number;
   /** When true, renders without card border/shadow (for use inside dialogs). */
   embedded?: boolean;
+  /** Unique ID prefix for filter controls. Prevents duplicate IDs when multiple feeds render simultaneously. */
+  feedId?: string;
   className?: string;
 };
 
@@ -47,9 +49,11 @@ export function ActivityFeed({
   onShowMore,
   maxItems,
   embedded,
+  feedId,
   className,
 }: ActivityFeedProps) {
   const { t } = useTranslation('crd-dashboard');
+  const idPrefix = feedId ?? variant;
 
   const visibleItems = maxItems && maxItems > 0 ? items.slice(0, maxItems) : items;
   const hasMore = maxItems && maxItems > 0 && items.length > maxItems;
@@ -70,12 +74,12 @@ export function ActivityFeed({
 
       <div className="mb-6 flex gap-2 flex-wrap shrink-0">
         <div>
-          <label htmlFor={`space-filter-${variant}`} className="sr-only">
+          <label htmlFor={`${idPrefix}-space-filter`} className="sr-only">
             {t('activity.filter.space.label')}
           </label>
           <Select value={spaceFilter} onValueChange={onSpaceFilterChange}>
             <SelectTrigger
-              id={`space-filter-${variant}`}
+              id={`${idPrefix}-space-filter`}
               aria-label={t('activity.filter.space.label')}
               className="h-8 w-auto min-w-[140px] text-sm"
             >
@@ -93,12 +97,12 @@ export function ActivityFeed({
 
         {variant === 'spaces' && roleFilterOptions && onRoleFilterChange && roleFilter !== undefined && (
           <div>
-            <label htmlFor="role-filter" className="sr-only">
+            <label htmlFor={`${idPrefix}-role-filter`} className="sr-only">
               {t('activity.filter.role.label')}
             </label>
             <Select value={roleFilter} onValueChange={onRoleFilterChange}>
               <SelectTrigger
-                id="role-filter"
+                id={`${idPrefix}-role-filter`}
                 aria-label={t('activity.filter.role.label')}
                 className="h-8 w-auto min-w-[130px] text-sm"
               >

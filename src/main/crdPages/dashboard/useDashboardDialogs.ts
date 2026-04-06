@@ -17,7 +17,8 @@ export function useDashboardDialogs({ onPendingMembershipsClick }: UseDashboardD
   useEffect(() => {
     const dialogParam = searchParams.get(DIALOG_PARAM_KEY);
     if (dialogParam === INVITATIONS_PARAM_VALUE) {
-      setSearchParams({});
+      searchParams.delete(DIALOG_PARAM_KEY);
+      setSearchParams(searchParams);
       onPendingMembershipsClick?.();
     }
   }, [searchParams]);

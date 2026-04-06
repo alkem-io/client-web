@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LicenseEntitlementType, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
@@ -5,6 +6,7 @@ import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
+import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -34,6 +36,7 @@ export default function DashboardWithoutMemberships({
   dialogState,
   onPendingMembershipsClick,
 }: DashboardWithoutMembershipsProps) {
+  const { t } = useTranslation('crd-dashboard');
   const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
 
@@ -118,6 +121,26 @@ export default function DashboardWithoutMemberships({
         />
       </DashboardLayout>
       {virtualContributorWizard}
+
+      <TipsAndTricksDialog
+        open={dialogState.openDialog === 'tips-and-tricks'}
+        onClose={dialogState.closeDialog}
+        tips={(() => {
+          const raw = t('tips.items', { returnObjects: true });
+          const arr: Array<{ title: string; description: string; imageUrl?: string; url?: string }> = Array.isArray(raw)
+            ? raw
+            : [];
+          return arr.map((item, i) => ({
+            id: String(i),
+            title: item.title,
+            description: item.description,
+            imageUrl: item.imageUrl,
+            href: item.url,
+          }));
+        })()}
+        findMoreHref={t('dialogs.findMoreUrl')}
+        findMoreLabel={t('dialogs.findMore')}
+      />
     </>
   );
 }

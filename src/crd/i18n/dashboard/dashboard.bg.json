@@ -10,7 +10,8 @@
     "innovationHubs": "Иновационни хъбове",
     "innovationPacks": "Иновационни пакети",
     "openMenu": "Отвори менюто",
-    "closeMenu": "Затвори менюто"
+    "closeMenu": "Затвори менюто",
+    "pendingCount": "{{count}} чакащи"
   },
   "recentSpaces": {
     "title": "Скорошни пространства",
