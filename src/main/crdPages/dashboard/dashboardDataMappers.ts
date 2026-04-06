@@ -244,6 +244,7 @@ type MembershipEntry = {
         displayName: string;
         url: string;
         avatar?: { uri: string };
+        cardBanner?: { uri: string };
       };
     };
     community?: {
@@ -264,7 +265,7 @@ export const mapMembershipsToTree = (memberships: MembershipEntry[]): Membership
       id: space.id,
       name: profile.displayName,
       href: profile.url,
-      avatarUrl: profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, space.id),
+      avatarUrl: profile.cardBanner?.uri || profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Card, space.id),
       initials: getInitials(profile.displayName),
       avatarColor: undefined,
       roles: space.community?.roleSet?.myRoles ?? [],

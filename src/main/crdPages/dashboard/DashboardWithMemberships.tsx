@@ -44,7 +44,6 @@ export default function DashboardWithMemberships({
   onPendingMembershipsClick,
 }: DashboardWithMembershipsProps) {
   const { t } = useTranslation('crd-dashboard');
-  const { t: tMain } = useTranslation();
   const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
 
@@ -147,12 +146,19 @@ export default function DashboardWithMemberships({
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
   const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
 
-  // Tips
-  const tipsKeys = ['explore', 'connect', 'contribute'] as const;
-  const tips = tipsKeys.map((key, index) => ({
-    id: String(index + 1),
-    title: String(tMain(`pages.home.sections.tipsAndTricks.${key}.title` as never)),
-    description: String(tMain(`pages.home.sections.tipsAndTricks.${key}.description` as never)),
+  // Tips — from crd-dashboard namespace
+  const tipsRaw = t('tips.items', { returnObjects: true });
+  const tipsArray: Array<{ title: string; description: string; imageUrl?: string; url?: string }> = Array.isArray(
+    tipsRaw
+  )
+    ? tipsRaw
+    : [];
+  const tips = tipsArray.map((item, index) => ({
+    id: String(index),
+    title: item.title,
+    description: item.description,
+    imageUrl: item.imageUrl,
+    href: item.url,
   }));
 
   return (
@@ -214,7 +220,8 @@ export default function DashboardWithMemberships({
         open={dialogState.openDialog === 'tips-and-tricks'}
         onClose={dialogState.closeDialog}
         tips={tips}
-        forumHref="/forum"
+        findMoreHref={t('dialogs.findMoreUrl')}
+        findMoreLabel={t('dialogs.findMore')}
       />
 
       <ActivityDialog
