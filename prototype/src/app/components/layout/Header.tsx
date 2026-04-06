@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import {
   Search,
   MessageSquare,
   Bell,
+  Menu,
   User,
   Settings,
   LogOut,
@@ -82,6 +83,12 @@ export function Header({
         <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between">
       {/* ─── Left: Logo + mobile menu ─── */}
       <div className="flex items-center gap-4">
+        <button
+          onClick={onMenuClick}
+          className="md:hidden p-2 -ml-2 hover:bg-accent rounded-md"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
 
         {/* Alkemio logo — always visible as breadcrumb Home anchor */}
         <Link to="/" className="flex items-center shrink-0" aria-label="Home">
