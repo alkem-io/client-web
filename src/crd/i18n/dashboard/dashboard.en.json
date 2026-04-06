@@ -9,7 +9,8 @@
     "virtualContributors": "Virtual Contributors",
     "innovationHubs": "Innovation Hubs",
     "innovationPacks": "Innovation Packs",
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "recentSpaces": {
     "title": "Recent Spaces",

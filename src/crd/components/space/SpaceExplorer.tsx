@@ -33,6 +33,8 @@ export type SpaceExplorerProps = {
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
   onLoadMore: () => Promise<void>;
   onParentClick?: (parent: SpaceCardParent) => void;
+  /** Override the card grid column classes. Default: auto-fill responsive grid. */
+  gridClassName?: string;
   className?: string;
 };
 
@@ -52,10 +54,13 @@ export function SpaceExplorer({
   onMembershipFilterChange,
   onLoadMore,
   onParentClick,
+  gridClassName,
   className,
 }: SpaceExplorerProps) {
   const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  const gridCols = gridClassName ?? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]';
 
   // Client-side filters
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
@@ -260,17 +265,14 @@ export function SpaceExplorer({
 
       {/* Cards grid */}
       {showSkeletons ? (
-        <output className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" aria-label={t('spaces.loading')}>
+        <output className={cn('grid gap-6', gridCols)} aria-label={t('spaces.loading')}>
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
             <SpaceCardSkeleton key={i} />
           ))}
         </output>
       ) : displayedSpaces.length > 0 ? (
-        <ul
-          className="grid gap-6 list-none p-0 m-0 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]"
-          aria-label={t('spaces.spacesLabel')}
-        >
+        <ul className={cn('grid gap-6 list-none p-0 m-0', gridCols)} aria-label={t('spaces.spacesLabel')}>
           {displayedSpaces.map(space => (
             <li key={space.id}>
               <SpaceCard space={space} onParentClick={onParentClick} />

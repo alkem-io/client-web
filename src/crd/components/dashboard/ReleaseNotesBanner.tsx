@@ -15,7 +15,7 @@ export function ReleaseNotesBanner({ title, content, href, onDismiss, className 
   const { t } = useTranslation('crd-dashboard');
 
   return (
-    <aside className={cn('rounded-lg border border-border bg-card p-4 relative', className)}>
+    <aside aria-label={title} className={cn('rounded-lg border border-border bg-card p-4 relative', className)}>
       <Button
         variant="ghost"
         size="icon"
@@ -28,7 +28,10 @@ export function ReleaseNotesBanner({ title, content, href, onDismiss, className 
       <h3 className="font-semibold pr-8">{title}</h3>
       <p className="text-sm text-muted-foreground mt-1">{content}</p>
       {href && (
-        <a href={href} className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1">
+        <a
+          href={href}
+          className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+        >
           {t('releaseNotes.readMore')}
           <ArrowRight size={14} aria-hidden="true" />
         </a>

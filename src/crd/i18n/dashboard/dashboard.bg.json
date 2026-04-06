@@ -9,7 +9,8 @@
     "virtualContributors": "Виртуални сътрудници",
     "innovationHubs": "Иновационни хъбове",
     "innovationPacks": "Иновационни пакети",
-    "openMenu": "Отвори менюто"
+    "openMenu": "Отвори менюто",
+    "closeMenu": "Затвори менюто"
   },
   "recentSpaces": {
     "title": "Скорошни пространства",

@@ -25,7 +25,10 @@ export function SidebarResourceItem({
   return (
     <a
       href={href}
-      className={cn('flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent', className)}
+      className={cn(
+        'flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+        className
+      )}
     >
       <Avatar className="size-6">
         {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}

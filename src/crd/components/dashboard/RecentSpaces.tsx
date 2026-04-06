@@ -32,7 +32,7 @@ export function RecentSpaces({
           <button
             type="button"
             onClick={onExploreAllClick}
-            className="flex items-center gap-1 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
+            className="flex items-center gap-1 text-sm font-medium text-primary hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           >
             {t('recentSpaces.exploreAll')} <ArrowRight className="size-4" />
           </button>

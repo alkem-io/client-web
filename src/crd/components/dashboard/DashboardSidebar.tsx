@@ -17,16 +17,18 @@ const iconMap: Record<string, LucideIcon> = {
 type DashboardSidebarProps = {
   menuItems: SidebarMenuItemData[];
   resourceSections: SidebarResourceSection[];
-  activityEnabled: boolean;
-  onActivityToggle: (enabled: boolean) => void;
+  activityEnabled?: boolean;
+  onActivityToggle?: (enabled: boolean) => void;
+  showActivityToggle?: boolean;
   className?: string;
 };
 
 export function DashboardSidebar({
   menuItems,
   resourceSections,
-  activityEnabled,
+  activityEnabled = false,
   onActivityToggle,
+  showActivityToggle = true,
   className,
 }: DashboardSidebarProps) {
   const { t } = useTranslation('crd-dashboard');
@@ -53,7 +55,7 @@ export function DashboardSidebar({
               <a
                 key={item.id}
                 href={item.href}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors"
+                className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 aria-label={item.badgeCount ? `${item.label}, ${item.badgeCount} pending` : undefined}
               >
                 {content}
@@ -66,7 +68,7 @@ export function DashboardSidebar({
               key={item.id}
               type="button"
               onClick={item.onClick}
-              className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors w-full text-left"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none w-full text-left"
               aria-label={item.badgeCount ? `${item.label}, ${item.badgeCount} pending` : undefined}
             >
               {content}
@@ -75,20 +77,26 @@ export function DashboardSidebar({
         })}
       </div>
 
-      <div className="flex items-center gap-2 px-2">
-        <Switch id="activity-view-toggle" checked={activityEnabled} onCheckedChange={onActivityToggle} />
-        <label htmlFor="activity-view-toggle" className="text-sm cursor-pointer">
-          {t('sidebar.activityView')}
-        </label>
-      </div>
+      {showActivityToggle && onActivityToggle && (
+        <div className="flex items-center gap-2 px-2">
+          <Switch id="activity-view-toggle" checked={activityEnabled} onCheckedChange={onActivityToggle} />
+          <label htmlFor="activity-view-toggle" className="text-sm cursor-pointer">
+            {t('sidebar.activityView')}
+          </label>
+        </div>
+      )}
 
       {resourceSections.map(section => (
-        <div key={section.title} className="space-y-1">
+        <section key={section.title} aria-label={section.title} className="space-y-1">
           <h4 className="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{section.title}</h4>
-          {section.items.map(item => (
-            <SidebarResourceItem key={item.id} {...item} />
-          ))}
-        </div>
+          <ul className="space-y-0.5">
+            {section.items.map(item => (
+              <li key={item.id}>
+                <SidebarResourceItem {...item} />
+              </li>
+            ))}
+          </ul>
+        </section>
       ))}
     </div>
   );

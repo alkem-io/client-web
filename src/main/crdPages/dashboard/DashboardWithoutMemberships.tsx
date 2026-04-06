@@ -79,8 +79,7 @@ export default function DashboardWithoutMemberships({
           <DashboardSidebar
             menuItems={sidebarData.menuItems}
             resourceSections={sidebarData.resourceSections}
-            activityEnabled={false}
-            onActivityToggle={noop}
+            showActivityToggle={false}
           />
         }
       >
@@ -112,6 +111,7 @@ export default function DashboardWithoutMemberships({
           onSearchTermsChange={terms => setSearchTerms(terms)}
           onMembershipFilterChange={onMembershipFilterChange}
           onParentClick={parent => navigate(parent.href)}
+          gridClassName="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           className="max-w-none mx-0 px-0 sm:px-0 py-0"
         />
       </DashboardLayout>

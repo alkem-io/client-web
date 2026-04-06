@@ -35,7 +35,7 @@ export function SpaceHierarchyCard({
 
   return (
     <div className={cn('rounded-lg border border-border bg-card overflow-hidden', className)}>
-      <a href={href} className="block">
+      <a href={href} className="block focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
         <div className="relative aspect-[3/1] overflow-hidden">
           {bannerUrl ? (
             <img src={bannerUrl} alt="" className="size-full object-cover" aria-hidden="true" />
@@ -50,7 +50,10 @@ export function SpaceHierarchyCard({
         </div>
       </a>
       <div className="p-4">
-        <a href={href} className="font-semibold text-lg hover:underline">
+        <a
+          href={href}
+          className="font-semibold text-lg hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+        >
           {name}
         </a>
         {tagline && <p className="text-sm text-muted-foreground mt-1">{tagline}</p>}
@@ -60,7 +63,7 @@ export function SpaceHierarchyCard({
               <a
                 key={subspace.id}
                 href={subspace.href}
-                className="text-xs px-2 py-1 rounded-full bg-muted hover:bg-accent transition-colors"
+                className="text-xs px-2 py-1 rounded-full bg-muted hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
               >
                 {subspace.name}
               </a>
@@ -69,7 +72,7 @@ export function SpaceHierarchyCard({
               <button
                 type="button"
                 onClick={onSeeMoreSubspaces}
-                className="text-xs text-primary hover:underline cursor-pointer"
+                className="text-xs text-primary hover:underline cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
               >
                 {t('spaces.seeMoreSubspaces')}
               </button>

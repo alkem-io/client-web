@@ -74,7 +74,11 @@ export function ActivityFeed({
             {t('activity.filter.space.label')}
           </label>
           <Select value={spaceFilter} onValueChange={onSpaceFilterChange}>
-            <SelectTrigger id={`space-filter-${variant}`} className="h-8 w-auto min-w-[140px] text-sm">
+            <SelectTrigger
+              id={`space-filter-${variant}`}
+              aria-label={t('activity.filter.space.label')}
+              className="h-8 w-auto min-w-[140px] text-sm"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -93,7 +97,11 @@ export function ActivityFeed({
               {t('activity.filter.role.label')}
             </label>
             <Select value={roleFilter} onValueChange={onRoleFilterChange}>
-              <SelectTrigger id="role-filter" className="h-8 w-auto min-w-[130px] text-sm">
+              <SelectTrigger
+                id="role-filter"
+                aria-label={t('activity.filter.role.label')}
+                className="h-8 w-auto min-w-[130px] text-sm"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -135,7 +143,7 @@ export function ActivityFeed({
           <button
             type="button"
             onClick={onShowMore}
-            className="w-full py-2 text-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            className="w-full py-2 text-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           >
             {t('activity.showMore')}
           </button>
