@@ -33,6 +33,7 @@ export type SpaceExplorerProps = {
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
   onLoadMore: () => Promise<void>;
   onParentClick?: (parent: SpaceCardParent) => void;
+  className?: string;
 };
 
 const SKELETON_COUNT = 6;
@@ -51,6 +52,7 @@ export function SpaceExplorer({
   onMembershipFilterChange,
   onLoadMore,
   onParentClick,
+  className,
 }: SpaceExplorerProps) {
   const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -93,7 +95,7 @@ export function SpaceExplorer({
   const showSkeletons = loading && spaces.length === 0;
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-8">
+    <div className={cn('w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-8', className)}>
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{t('spaces.title')}</h1>

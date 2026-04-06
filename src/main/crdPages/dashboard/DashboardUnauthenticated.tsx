@@ -21,12 +21,13 @@ export default function DashboardUnauthenticated() {
     membershipFilter,
     onMembershipFilterChange,
     authenticated,
+    loadingSearchResults,
   } = useSpaceExplorer();
 
   const cardData = mapSpacesToCardDataList(spaces, authenticated);
 
   return (
-    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <>
       <SpaceExplorer
         spaces={cardData}
         loading={loading}
@@ -34,13 +35,14 @@ export default function DashboardUnauthenticated() {
         searchTerms={searchTerms}
         membershipFilter={membershipFilter}
         authenticated={authenticated}
+        loadingSearchResults={loadingSearchResults}
         onLoadMore={fetchMore}
-        onSearchTermsChange={setSearchTerms}
+        onSearchTermsChange={terms => setSearchTerms(terms)}
         onMembershipFilterChange={onMembershipFilterChange}
         onParentClick={parent => navigate(parent.href)}
       />
 
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center px-4 pb-8">
         <a href={AUTH_SIGN_UP_PATH}>
           <Button size="lg" className="gap-2">
             <UserPlus className="h-5 w-5" aria-hidden="true" />
@@ -48,6 +50,6 @@ export default function DashboardUnauthenticated() {
           </Button>
         </a>
       </div>
-    </div>
+    </>
   );
 }

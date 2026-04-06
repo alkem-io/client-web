@@ -1,16 +1,16 @@
-import { Rocket } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
-import { Button } from '@/crd/primitives/button';
+import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
+import useSpaceExplorer from '@/main/crdPages/spaces/useSpaceExplorer';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
-import { useCreateSpaceLink } from '@/main/topLevelPages/myDashboard/useCreateSpaceLink/useCreateSpaceLink';
 import { mapInvitationsToCards } from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
@@ -33,7 +33,7 @@ export default function DashboardWithoutMemberships({
   dialogState,
   onPendingMembershipsClick,
 }: DashboardWithoutMembershipsProps) {
-  const { t } = useTranslation('crd-dashboard');
+  const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
 
   const sidebarData = useDashboardSidebar({
@@ -41,6 +41,7 @@ export default function DashboardWithoutMemberships({
     onTipsAndTricksClick: dialogState.openTipsAndTricks,
   });
 
+  // Invitations
   const { count: pendingCount } = usePendingInvitationsCount();
   const { data: invitationsData, loading: invitationsLoading } = usePendingInvitationsQuery({
     skip: pendingCount === 0,
@@ -48,9 +49,24 @@ export default function DashboardWithoutMemberships({
   const invitations = mapInvitationsToCards(
     (invitationsData?.me.communityInvitations ?? []) as Parameters<typeof mapInvitationsToCards>[0]
   );
+  const hasInvitations = pendingCount > 0;
 
-  const { link: createSpaceLink } = useCreateSpaceLink();
+  // Explore spaces
+  const {
+    spaces,
+    searchTerms,
+    setSearchTerms,
+    loading: spacesLoading,
+    hasMore,
+    fetchMore,
+    membershipFilter,
+    onMembershipFilterChange,
+    authenticated,
+    loadingSearchResults,
+  } = useSpaceExplorer();
+  const cardData = mapSpacesToCardDataList(spaces, authenticated);
 
+  // Campaign
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
@@ -68,37 +84,36 @@ export default function DashboardWithoutMemberships({
           />
         }
       >
+        {hasInvitations && (
+          <InvitationsBlock
+            invitations={invitations}
+            loading={invitationsLoading}
+            onAccept={id => {
+              const invitation = invitations.find(inv => inv.id === id);
+              if (invitation?.spaceHref) {
+                window.location.href = invitation.spaceHref;
+              }
+            }}
+            onDecline={noop}
+          />
+        )}
+
         {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
 
-        <InvitationsBlock
-          invitations={invitations}
-          loading={invitationsLoading}
-          onAccept={id => {
-            const invitation = invitations.find(inv => inv.id === id);
-            if (invitation?.spaceHref) {
-              window.location.href = invitation.spaceHref;
-            }
-          }}
-          onDecline={noop}
+        <SpaceExplorer
+          spaces={cardData}
+          loading={spacesLoading}
+          hasMore={hasMore}
+          searchTerms={searchTerms}
+          membershipFilter={membershipFilter}
+          authenticated={authenticated}
+          loadingSearchResults={loadingSearchResults}
+          onLoadMore={fetchMore}
+          onSearchTermsChange={terms => setSearchTerms(terms)}
+          onMembershipFilterChange={onMembershipFilterChange}
+          onParentClick={parent => navigate(parent.href)}
+          className="max-w-none mx-0 px-0 sm:px-0 py-0"
         />
-
-        <section className="space-y-3">
-          <h3 className="text-lg font-semibold">{t('withoutMemberships.createSpace')}</h3>
-          <p className="text-sm text-muted-foreground">{t('withoutMemberships.createSpaceDescription')}</p>
-          <Button asChild={true}>
-            <a href={createSpaceLink}>
-              <Rocket className="h-4 w-4" aria-hidden="true" />
-              {t('withoutMemberships.createSpace')}
-            </a>
-          </Button>
-        </section>
-
-        <section className="space-y-3">
-          <h3 className="text-lg font-semibold">{t('dialogs.findMore')}</h3>
-          <Button variant="outline" asChild={true}>
-            <a href="/spaces">{t('dialogs.seeMoreSpaces')}</a>
-          </Button>
-        </section>
       </DashboardLayout>
       {virtualContributorWizard}
     </>
