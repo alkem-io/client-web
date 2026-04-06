@@ -5,6 +5,7 @@ export type CompactSpaceCardData = {
   bannerUrl?: string;
   isPrivate: boolean;
   isHomeSpace: boolean;
+  initials: string;
 };
 
 export type ActivityItemData = {
@@ -100,11 +101,13 @@ export const mapRecentSpacesToCompactCards = (
     bannerUrl: space.about.profile.cardBanner?.uri,
     isPrivate: !space.about.isContentPublic,
     isHomeSpace: space.id === homeSpaceId,
+    initials: getInitials(space.about.profile.displayName),
   }));
 };
 
 type ActivityEntry = {
   id: string;
+  type?: string;
   triggeredBy?: {
     profile?: {
       displayName?: string;
@@ -114,7 +117,48 @@ type ActivityEntry = {
   description?: string;
   spaceDisplayName?: string;
   createdDate?: string | Date;
+  // Type-specific fields for URL extraction
+  post?: { profile: { url: string; displayName: string } };
+  callout?: { framing: { profile: { url: string; displayName: string } } };
+  whiteboard?: { profile: { url: string; displayName: string } };
+  subspace?: { about: { profile: { url: string; displayName: string } } };
+  calendarEvent?: { profile: { url: string; displayName: string } };
+  actor?: { profile: { url: string; displayName: string } };
+  link?: { profile: { url: string; displayName: string } };
+  memo?: { profile: { url: string; displayName: string } };
 };
+
+function extractActivityUrl(activity: ActivityEntry): string | undefined {
+  // Post-related activities link to the post
+  if (activity.post?.profile?.url) return activity.post.profile.url;
+  // Whiteboard activities link to the whiteboard
+  if (activity.whiteboard?.profile?.url) return activity.whiteboard.profile.url;
+  // Subspace created links to the subspace
+  if (activity.subspace?.about?.profile?.url) return activity.subspace.about.profile.url;
+  // Calendar event links to the event
+  if (activity.calendarEvent?.profile?.url) return activity.calendarEvent.profile.url;
+  // Member joined links to the actor
+  if (activity.actor?.profile?.url) return activity.actor.profile.url;
+  // Link created links to the link
+  if (activity.link?.profile?.url) return activity.link.profile.url;
+  // Memo created links to the memo
+  if (activity.memo?.profile?.url) return activity.memo.profile.url;
+  // Callout published links to the callout
+  if (activity.callout?.framing?.profile?.url) return activity.callout.framing.profile.url;
+  return undefined;
+}
+
+function extractActivityTargetName(activity: ActivityEntry): string {
+  if (activity.post?.profile?.displayName) return activity.post.profile.displayName;
+  if (activity.whiteboard?.profile?.displayName) return activity.whiteboard.profile.displayName;
+  if (activity.subspace?.about?.profile?.displayName) return activity.subspace.about.profile.displayName;
+  if (activity.calendarEvent?.profile?.displayName) return activity.calendarEvent.profile.displayName;
+  if (activity.actor?.profile?.displayName) return activity.actor.profile.displayName;
+  if (activity.link?.profile?.displayName) return activity.link.profile.displayName;
+  if (activity.memo?.profile?.displayName) return activity.memo.profile.displayName;
+  if (activity.callout?.framing?.profile?.displayName) return activity.callout.framing.profile.displayName;
+  return activity.spaceDisplayName ?? '';
+}
 
 export const mapActivityToFeedItems = (activities: ActivityEntry[]): ActivityItemData[] => {
   return activities.map(activity => {
@@ -126,8 +170,8 @@ export const mapActivityToFeedItems = (activities: ActivityEntry[]): ActivityIte
       avatarInitials: displayName ? getInitials(displayName) : '?',
       userName: displayName,
       actionText: activity.description ?? '',
-      targetName: activity.spaceDisplayName ?? '',
-      targetHref: undefined,
+      targetName: extractActivityTargetName(activity),
+      targetHref: extractActivityUrl(activity),
       timestamp:
         activity.createdDate instanceof Date ? activity.createdDate.toISOString() : (activity.createdDate ?? ''),
     };

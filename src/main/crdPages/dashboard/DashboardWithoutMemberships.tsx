@@ -6,11 +6,9 @@ import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
-import { ReleaseNotesBanner } from '@/crd/components/dashboard/ReleaseNotesBanner';
 import { Button } from '@/crd/primitives/button';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import useReleaseNotes from '@/domain/platform/metadata/useReleaseNotes';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import { useCreateSpaceLink } from '@/main/topLevelPages/myDashboard/useCreateSpaceLink/useCreateSpaceLink';
 import { mapInvitationsToCards } from './dashboardDataMappers';
@@ -36,16 +34,13 @@ export default function DashboardWithoutMemberships({
   onPendingMembershipsClick,
 }: DashboardWithoutMembershipsProps) {
   const { t } = useTranslation('crd-dashboard');
-  const { t: tMain } = useTranslation();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
 
-  // Sidebar
   const sidebarData = useDashboardSidebar({
     onInvitationsClick: onPendingMembershipsClick,
     onTipsAndTricksClick: dialogState.openTipsAndTricks,
   });
 
-  // Invitations
   const { count: pendingCount } = usePendingInvitationsCount();
   const { data: invitationsData, loading: invitationsLoading } = usePendingInvitationsQuery({
     skip: pendingCount === 0,
@@ -54,14 +49,8 @@ export default function DashboardWithoutMemberships({
     (invitationsData?.me.communityInvitations ?? []) as Parameters<typeof mapInvitationsToCards>[0]
   );
 
-  // Create space CTA
   const { link: createSpaceLink } = useCreateSpaceLink();
 
-  // Release notes
-  const releaseNotesUrl = tMain('releaseNotes.url');
-  const { open: showReleaseNotes, onClose: dismissReleaseNotes } = useReleaseNotes(releaseNotesUrl);
-
-  // Campaign visibility
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
@@ -79,15 +68,6 @@ export default function DashboardWithoutMemberships({
           />
         }
       >
-        {showReleaseNotes && (
-          <ReleaseNotesBanner
-            title={tMain('releaseNotes.title')}
-            content=""
-            href={releaseNotesUrl}
-            onDismiss={dismissReleaseNotes}
-          />
-        )}
-
         {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
 
         <InvitationsBlock

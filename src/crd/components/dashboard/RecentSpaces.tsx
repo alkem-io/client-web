@@ -1,6 +1,7 @@
+import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import type { CompactSpaceCardData } from '@/main/crdPages/dashboard/dashboardDataMappers';
+import type { CompactSpaceCardData } from './CompactSpaceCard';
 import { CompactSpaceCard, CompactSpaceCardSkeleton } from './CompactSpaceCard';
 import { HomeSpacePlaceholder } from './HomeSpacePlaceholder';
 
@@ -24,8 +25,21 @@ export function RecentSpaces({
   const { t } = useTranslation('crd-dashboard');
 
   return (
-    <section className={cn('space-y-3', className)}>
-      <div className="flex gap-4 overflow-x-auto pb-2">
+    <section className={cn('space-y-4', className)}>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold">{t('recentSpaces.title')}</h2>
+        {onExploreAllClick && (
+          <button
+            type="button"
+            onClick={onExploreAllClick}
+            className="flex items-center gap-1 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
+          >
+            {t('recentSpaces.exploreAll')} <ArrowRight className="size-4" />
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => <CompactSpaceCardSkeleton key={i} />)
         ) : (
@@ -37,13 +51,6 @@ export function RecentSpaces({
           </>
         )}
       </div>
-      {onExploreAllClick && (
-        <div className="text-center">
-          <button type="button" onClick={onExploreAllClick} className="text-sm text-primary hover:underline">
-            {t('recentSpaces.exploreAll')}
-          </button>
-        </div>
-      )}
     </section>
   );
 }

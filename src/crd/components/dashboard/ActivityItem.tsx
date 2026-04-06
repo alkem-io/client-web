@@ -21,32 +21,16 @@ function formatRelativeTime(isoString: string): string {
   const then = new Date(isoString).getTime();
   const diffSeconds = Math.floor((now - then) / 1000);
 
-  if (diffSeconds < 60) {
-    return 'just now';
-  }
-
+  if (diffSeconds < 60) return 'just now';
   const diffMinutes = Math.floor(diffSeconds / 60);
-  if (diffMinutes < 60) {
-    return `${diffMinutes}m ago`;
-  }
-
+  if (diffMinutes < 60) return `${diffMinutes}m ago`;
   const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) {
-    return `${diffHours}h ago`;
-  }
-
+  if (diffHours < 24) return `${diffHours}h ago`;
   const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 30) {
-    return `${diffDays}d ago`;
-  }
-
+  if (diffDays < 30) return `${diffDays}d ago`;
   const diffMonths = Math.floor(diffDays / 30);
-  if (diffMonths < 12) {
-    return `${diffMonths}mo ago`;
-  }
-
-  const diffYears = Math.floor(diffMonths / 12);
-  return `${diffYears}y ago`;
+  if (diffMonths < 12) return `${diffMonths}mo ago`;
+  return `${Math.floor(diffMonths / 12)}y ago`;
 }
 
 export function ActivityItem({
@@ -61,32 +45,45 @@ export function ActivityItem({
 }: ActivityItemProps) {
   const relativeTime = formatRelativeTime(timestamp);
 
-  return (
-    <article
-      aria-label={`${userName} ${actionText} ${targetName} ${relativeTime}`}
-      className={cn('flex items-start gap-3 border-b border-border py-2', className)}
-    >
-      <Avatar className="size-8">
-        {avatarUrl && <AvatarImage src={avatarUrl} alt={userName} />}
-        <AvatarFallback className="text-xs">{avatarInitials}</AvatarFallback>
-      </Avatar>
-
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <div className="text-sm">
-          <span className="font-medium">{userName}</span> <span className="text-muted-foreground">{actionText}</span>{' '}
-          {targetHref ? (
-            <a href={targetHref} className="text-primary hover:underline">
-              {targetName}
-            </a>
-          ) : (
-            <span>{targetName}</span>
-          )}
+  const content = (
+    <>
+      <div className="shrink-0">
+        <Avatar className="size-10 border border-border">
+          {avatarUrl && <AvatarImage src={avatarUrl} alt={userName} />}
+          <AvatarFallback className="text-xs">{avatarInitials}</AvatarFallback>
+        </Avatar>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm leading-relaxed line-clamp-2">
+          <span className="font-semibold">{userName}</span> <span className="text-muted-foreground">{actionText}</span>{' '}
+          <span className="font-medium text-primary">{targetName}</span>
+        </p>
+        <div className="flex items-center gap-2 mt-1">
+          <time dateTime={timestamp} className="text-xs text-muted-foreground">
+            {relativeTime}
+          </time>
         </div>
       </div>
+    </>
+  );
 
-      <time dateTime={timestamp} className="shrink-0 text-sm text-muted-foreground">
-        {relativeTime}
-      </time>
+  const sharedClassName = cn('flex gap-4 rounded-md p-2 -mx-2 transition-colors hover:bg-accent/50', className);
+
+  if (targetHref) {
+    return (
+      <a
+        href={targetHref}
+        className={cn(sharedClassName, 'no-underline text-inherit')}
+        aria-label={`${userName} ${actionText} ${targetName} ${relativeTime}`}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <article aria-label={`${userName} ${actionText} ${targetName} ${relativeTime}`} className={sharedClassName}>
+      {content}
     </article>
   );
 }

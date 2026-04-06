@@ -1,5 +1,4 @@
 import { Lock, Pin } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -10,46 +9,67 @@ export type CompactSpaceCardData = {
   bannerUrl?: string;
   isPrivate: boolean;
   isHomeSpace: boolean;
+  initials?: string;
 };
 
 type CompactSpaceCardProps = CompactSpaceCardData & {
   className?: string;
 };
 
-export function CompactSpaceCard({ name, href, bannerUrl, isPrivate, isHomeSpace, className }: CompactSpaceCardProps) {
-  const { t } = useTranslation('crd-dashboard');
-
+export function CompactSpaceCard({
+  name,
+  href,
+  bannerUrl,
+  isPrivate,
+  isHomeSpace,
+  initials,
+  className,
+}: CompactSpaceCardProps) {
   return (
     <a
       href={href}
       className={cn(
-        'block min-w-[180px] rounded-lg border border-border bg-card hover:shadow-md transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+        'group block overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         className
       )}
     >
-      <div className="relative aspect-video rounded-t-lg overflow-hidden">
+      <div className="relative aspect-video overflow-hidden">
         {bannerUrl ? (
-          <img src={bannerUrl} alt="" className="size-full object-cover" aria-hidden="true" />
+          <img
+            src={bannerUrl}
+            alt=""
+            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            aria-hidden="true"
+          />
         ) : (
           <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
         )}
         {isPrivate && (
-          <span
+          <div
             role="img"
-            className="absolute top-1.5 right-1.5 flex items-center rounded-full bg-foreground/70 px-1.5 py-0.5"
-            aria-label={t('recentSpaces.private', 'Private')}
+            className="absolute top-2.5 right-2.5 flex items-center rounded-full p-1.5"
+            style={{ background: 'color-mix(in srgb, var(--foreground) 50%, transparent)' }}
+            aria-label="Private"
           >
-            <Lock size={14} className="text-white" aria-hidden="true" />
-          </span>
+            <Lock size={12} className="text-primary-foreground" aria-hidden="true" />
+          </div>
         )}
         {isHomeSpace && (
-          <span className="absolute top-1.5 left-1.5" aria-hidden="true">
+          <span className="absolute top-2.5 left-2.5" aria-hidden="true">
             <Pin size={14} className="text-white drop-shadow" />
           </span>
         )}
       </div>
-      <div className="p-3">
-        <p className="truncate text-sm font-medium">{name}</p>
+      <div className="flex items-center gap-3 p-4">
+        {initials && (
+          <div
+            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground"
+            aria-hidden="true"
+          >
+            {initials}
+          </div>
+        )}
+        <p className="min-w-0 truncate text-sm font-semibold">{name}</p>
       </div>
     </a>
   );
@@ -57,14 +77,12 @@ export function CompactSpaceCard({ name, href, bannerUrl, isPrivate, isHomeSpace
 
 export function CompactSpaceCardSkeleton({ className }: { className?: string }) {
   return (
-    <output
-      className={cn('block min-w-[180px] rounded-lg border border-border bg-card', className)}
-      aria-label="Loading space"
-    >
-      <Skeleton className="aspect-video rounded-t-lg rounded-b-none" />
-      <div className="p-3">
+    <div className={cn('overflow-hidden rounded-lg border border-border bg-card', className)} aria-hidden="true">
+      <Skeleton className="aspect-video w-full rounded-b-none" />
+      <div className="flex items-center gap-3 p-4">
+        <Skeleton className="size-10 shrink-0 rounded-lg" />
         <Skeleton className="h-4 w-3/4" />
       </div>
-    </output>
+    </div>
   );
 }

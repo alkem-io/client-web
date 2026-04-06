@@ -42,7 +42,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
           </Dialog>
         </>
       )}
-      <main className="min-w-0">{children}</main>
+      <main className="min-w-0 space-y-6">{children}</main>
     </div>
   );
 }

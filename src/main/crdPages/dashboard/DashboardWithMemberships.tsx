@@ -16,11 +16,9 @@ import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { DashboardSpaces } from '@/crd/components/dashboard/DashboardSpaces';
 import { MembershipsTreeDialog } from '@/crd/components/dashboard/MembershipsTreeDialog';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
-import { ReleaseNotesBanner } from '@/crd/components/dashboard/ReleaseNotesBanner';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
-import useReleaseNotes from '@/domain/platform/metadata/useReleaseNotes';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import {
   mapActivityToFeedItems,
@@ -61,7 +59,7 @@ export default function DashboardWithMemberships({
     variables: { limit: 5 },
   });
   const { data: homeSpaceData } = useHomeSpaceLookupQuery({
-    variables: { spaceId: homeSpaceId! },
+    variables: { spaceId: homeSpaceId ?? '' },
     skip: !homeSpaceId,
   });
 
@@ -151,10 +149,6 @@ export default function DashboardWithMemberships({
     homeSpaceId
   );
 
-  // Release notes
-  const releaseNotesUrl = tMain('releaseNotes.url');
-  const { open: showReleaseNotes, onClose: dismissReleaseNotes } = useReleaseNotes(releaseNotesUrl);
-
   // Campaign visibility
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
@@ -196,15 +190,6 @@ export default function DashboardWithMemberships({
           />
         )}
 
-        {showReleaseNotes && (
-          <ReleaseNotesBanner
-            title={tMain('releaseNotes.title')}
-            content=""
-            href={releaseNotesUrl}
-            onDismiss={dismissReleaseNotes}
-          />
-        )}
-
         {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
 
         {activityEnabled ? (
@@ -221,6 +206,7 @@ export default function DashboardWithMemberships({
               roleFilterOptions={roleFilterOptions}
               onRoleFilterChange={setRoleFilter}
               onShowMore={dialogState.openMySpaceActivity}
+              maxItems={7}
             />
             <ActivityFeed
               variant="personal"
@@ -231,6 +217,7 @@ export default function DashboardWithMemberships({
               spaceFilterOptions={spaceFilterOptions}
               onSpaceFilterChange={setPersonalSpaceFilter}
               onShowMore={dialogState.openMyActivity}
+              maxItems={7}
             />
           </div>
         ) : (
@@ -259,6 +246,7 @@ export default function DashboardWithMemberships({
           spaceFilter={personalSpaceFilter}
           spaceFilterOptions={spaceFilterOptions}
           onSpaceFilterChange={setPersonalSpaceFilter}
+          embedded={true}
         />
       </ActivityDialog>
 
@@ -278,6 +266,7 @@ export default function DashboardWithMemberships({
           roleFilter={roleFilter}
           roleFilterOptions={roleFilterOptions}
           onRoleFilterChange={setRoleFilter}
+          embedded={true}
         />
       </ActivityDialog>
 
