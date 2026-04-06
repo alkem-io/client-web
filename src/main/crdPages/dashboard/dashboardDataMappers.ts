@@ -1,4 +1,6 @@
+import type { TFunction } from 'i18next';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 export type CompactSpaceCardData = {
@@ -20,6 +22,7 @@ export type ActivityItemData = {
   targetName: string;
   targetHref?: string;
   timestamp: string;
+  rawDate?: string;
 };
 
 export type ActivityFilterOption = {
@@ -167,9 +170,11 @@ function extractActivityTargetName(activity: ActivityEntry): string {
   return activity.spaceDisplayName ?? '';
 }
 
-export const mapActivityToFeedItems = (activities: ActivityEntry[]): ActivityItemData[] => {
+export const mapActivityToFeedItems = (activities: ActivityEntry[], t: TFunction): ActivityItemData[] => {
   return activities.map(activity => {
     const displayName = activity.triggeredBy?.profile?.displayName ?? '';
+    const rawDate =
+      activity.createdDate instanceof Date ? activity.createdDate.toISOString() : (activity.createdDate ?? '');
 
     return {
       id: activity.id,
@@ -179,8 +184,8 @@ export const mapActivityToFeedItems = (activities: ActivityEntry[]): ActivityIte
       actionText: activity.description ?? '',
       targetName: extractActivityTargetName(activity),
       targetHref: extractActivityUrl(activity),
-      timestamp:
-        activity.createdDate instanceof Date ? activity.createdDate.toISOString() : (activity.createdDate ?? ''),
+      timestamp: activity.createdDate ? formatTimeElapsed(activity.createdDate, t) : '',
+      rawDate,
     };
   });
 };

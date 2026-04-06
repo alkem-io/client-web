@@ -44,6 +44,7 @@ export default function DashboardWithMemberships({
   onPendingMembershipsClick,
 }: DashboardWithMembershipsProps) {
   const { t } = useTranslation('crd-dashboard');
+  const { t: tMain } = useTranslation();
   const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
 
@@ -130,10 +131,12 @@ export default function DashboardWithMemberships({
   });
 
   const spaceActivityItems = mapActivityToFeedItems(
-    (spaceActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0]
+    (spaceActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0],
+    tMain
   );
   const personalActivityItems = mapActivityToFeedItems(
-    (personalActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0]
+    (personalActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0],
+    tMain
   );
 
   // Memberships tree dialog

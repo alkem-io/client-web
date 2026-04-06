@@ -9,29 +9,15 @@ export type ActivityItemData = {
   actionText: string;
   targetName: string;
   targetHref?: string;
+  /** Pre-formatted display string, e.g. "2h ago". Formatted by the integration layer. */
   timestamp: string;
+  /** ISO date string for the `<time>` element's `dateTime` attribute. */
+  rawDate?: string;
 };
 
 type ActivityItemProps = ActivityItemData & {
   className?: string;
 };
-
-function formatRelativeTime(isoString: string): string {
-  const now = Date.now();
-  const then = new Date(isoString).getTime();
-  const diffSeconds = Math.floor((now - then) / 1000);
-
-  if (diffSeconds < 60) return 'just now';
-  const diffMinutes = Math.floor(diffSeconds / 60);
-  if (diffMinutes < 60) return `${diffMinutes}m ago`;
-  const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 30) return `${diffDays}d ago`;
-  const diffMonths = Math.floor(diffDays / 30);
-  if (diffMonths < 12) return `${diffMonths}mo ago`;
-  return `${Math.floor(diffMonths / 12)}y ago`;
-}
 
 export function ActivityItem({
   avatarUrl,
@@ -41,10 +27,9 @@ export function ActivityItem({
   targetName,
   targetHref,
   timestamp,
+  rawDate,
   className,
 }: ActivityItemProps) {
-  const relativeTime = formatRelativeTime(timestamp);
-
   const content = (
     <>
       <div className="shrink-0">
@@ -59,8 +44,8 @@ export function ActivityItem({
           <span className="font-medium text-primary">{targetName}</span>
         </p>
         <div className="flex items-center gap-2 mt-1">
-          <time dateTime={timestamp} className="text-xs text-muted-foreground">
-            {relativeTime}
+          <time dateTime={rawDate} className="text-xs text-muted-foreground">
+            {timestamp}
           </time>
         </div>
       </div>
@@ -74,7 +59,7 @@ export function ActivityItem({
       <a
         href={targetHref}
         className={cn(sharedClassName, 'no-underline text-inherit')}
-        aria-label={`${userName} ${actionText} ${targetName} ${relativeTime}`}
+        aria-label={`${userName} ${actionText} ${targetName} ${timestamp}`}
       >
         {content}
       </a>
@@ -82,7 +67,7 @@ export function ActivityItem({
   }
 
   return (
-    <article aria-label={`${userName} ${actionText} ${targetName} ${relativeTime}`} className={sharedClassName}>
+    <article aria-label={`${userName} ${actionText} ${targetName} ${timestamp}`} className={sharedClassName}>
       {content}
     </article>
   );
