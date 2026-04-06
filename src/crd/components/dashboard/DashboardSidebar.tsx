@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Lightbulb, Mail, Rocket, Tag } from 'lucide-react';
+import { History, Lightbulb, Mail, PenLine, Rocket, Tag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -9,6 +9,8 @@ import { SidebarResourceItem } from './SidebarResourceItem';
 
 const iconMap: Record<string, LucideIcon> = {
   Mail,
+  PenLine,
+  History,
   Lightbulb,
   Tag,
   Rocket,

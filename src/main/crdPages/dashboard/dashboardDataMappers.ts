@@ -1,3 +1,6 @@
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+
 export type CompactSpaceCardData = {
   id: string;
   name: string;
@@ -33,6 +36,14 @@ export type SidebarResourceData = {
   avatarColor?: string;
 };
 
+export type SubspaceCardData = {
+  id: string;
+  name: string;
+  href: string;
+  bannerUrl?: string;
+  isPrivate: boolean;
+};
+
 export type SpaceHierarchyCardData = {
   id: string;
   name: string;
@@ -40,11 +51,7 @@ export type SpaceHierarchyCardData = {
   tagline?: string;
   bannerUrl?: string;
   isHomeSpace: boolean;
-  subspaces: Array<{
-    id: string;
-    name: string;
-    href: string;
-  }>;
+  subspaces: SubspaceCardData[];
 };
 
 export type MembershipTreeNodeData = {
@@ -98,7 +105,7 @@ export const mapRecentSpacesToCompactCards = (
     id: space.id,
     name: space.about.profile.displayName,
     href: space.about.profile.url,
-    bannerUrl: space.about.profile.cardBanner?.uri,
+    bannerUrl: space.about.profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, space.id),
     isPrivate: !space.about.isContentPublic,
     isHomeSpace: space.id === homeSpaceId,
     initials: getInitials(space.about.profile.displayName),
@@ -257,7 +264,7 @@ export const mapMembershipsToTree = (memberships: MembershipEntry[]): Membership
       id: space.id,
       name: profile.displayName,
       href: profile.url,
-      avatarUrl: profile.avatar?.uri,
+      avatarUrl: profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, space.id),
       initials: getInitials(profile.displayName),
       avatarColor: undefined,
       roles: space.community?.roleSet?.myRoles ?? [],
@@ -300,6 +307,7 @@ type DashboardSpaceMembership = {
         displayName: string;
         url: string;
         tagline?: string;
+        cardBanner?: { uri: string };
         spaceBanner?: { uri: string };
       };
     };
@@ -311,7 +319,9 @@ type DashboardSpaceMembership = {
         profile: {
           displayName: string;
           url: string;
+          cardBanner?: { uri: string };
         };
+        isContentPublic?: boolean;
       };
     };
   }>;
@@ -330,12 +340,15 @@ export const mapDashboardSpaces = (
       name: profile.displayName,
       href: profile.url,
       tagline: profile.tagline,
-      bannerUrl: profile.spaceBanner?.uri,
+      bannerUrl: profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, space.id),
       isHomeSpace: space.id === homeSpaceId,
       subspaces: (membership.childMemberships ?? []).map(child => ({
         id: child.space.id,
         name: child.space.about.profile.displayName,
         href: child.space.about.profile.url,
+        bannerUrl:
+          child.space.about.profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, child.space.id),
+        isPrivate: !child.space.about.isContentPublic,
       })),
     };
   });

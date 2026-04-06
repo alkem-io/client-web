@@ -23,9 +23,16 @@ export type SidebarResourceSection = {
 type UseDashboardSidebarOptions = {
   onInvitationsClick: () => void;
   onTipsAndTricksClick: () => void;
+  onMyActivityClick?: () => void;
+  onMySpaceActivityClick?: () => void;
 };
 
-export function useDashboardSidebar({ onInvitationsClick, onTipsAndTricksClick }: UseDashboardSidebarOptions) {
+export function useDashboardSidebar({
+  onInvitationsClick,
+  onTipsAndTricksClick,
+  onMyActivityClick,
+  onMySpaceActivityClick,
+}: UseDashboardSidebarOptions) {
   const { t } = useTranslation('crd-dashboard');
   const { userModel, accountId } = useCurrentUserContext();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
@@ -44,6 +51,26 @@ export function useDashboardSidebar({ onInvitationsClick, onTipsAndTricksClick }
       onClick: onInvitationsClick,
       badgeCount: pendingInvitationsCount,
     },
+    ...(onMyActivityClick
+      ? [
+          {
+            id: 'my-activity',
+            label: t('dialogs.myActivity'),
+            iconName: 'PenLine',
+            onClick: onMyActivityClick,
+          },
+        ]
+      : []),
+    ...(onMySpaceActivityClick
+      ? [
+          {
+            id: 'my-space-activity',
+            label: t('dialogs.mySpaceActivity'),
+            iconName: 'History',
+            onClick: onMySpaceActivityClick,
+          },
+        ]
+      : []),
     {
       id: 'tips-and-tricks',
       label: t('sidebar.tipsAndTricks'),

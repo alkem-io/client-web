@@ -13,19 +13,13 @@ import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
-import { DashboardSpaces } from '@/crd/components/dashboard/DashboardSpaces';
 import { MembershipsTreeDialog } from '@/crd/components/dashboard/MembershipsTreeDialog';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
-import {
-  mapActivityToFeedItems,
-  mapDashboardSpaces,
-  mapMembershipsToTree,
-  mapRecentSpacesToCompactCards,
-} from './dashboardDataMappers';
+import { mapActivityToFeedItems, mapMembershipsToTree, mapRecentSpacesToCompactCards } from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -51,7 +45,16 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
-  const [activityEnabled, setActivityEnabled] = useState(true);
+
+  // Activity view toggle — persisted in localStorage
+  const [activityEnabled, setActivityEnabledState] = useState(() => {
+    const cached = localStorage.getItem('dashboardView');
+    return cached !== 'SPACES';
+  });
+  const setActivityEnabled = (enabled: boolean) => {
+    localStorage.setItem('dashboardView', enabled ? 'ACTIVITY' : 'SPACES');
+    setActivityEnabledState(enabled);
+  };
 
   // Recent spaces
   const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
@@ -75,13 +78,14 @@ export default function DashboardWithMemberships({
   const sidebarData = useDashboardSidebar({
     onInvitationsClick: onPendingMembershipsClick,
     onTipsAndTricksClick: dialogState.openTipsAndTricks,
+    onMyActivityClick: activityEnabled ? undefined : dialogState.openMyActivity,
+    onMySpaceActivityClick: activityEnabled ? undefined : dialogState.openMySpaceActivity,
   });
 
-  // Space memberships for activity feed filters
+  // Activity feed data
   const { data: spacesData } = useLatestContributionsSpacesFlatQuery();
   const flatSpaces = spacesData?.me.spaceMembershipsFlat ?? [];
 
-  // Space filter state
   const [spaceActivityFilter, setSpaceActivityFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
   const [personalSpaceFilter, setPersonalSpaceFilter] = useState('all');
@@ -101,16 +105,21 @@ export default function DashboardWithMemberships({
     { value: 'admin', label: 'Admin' },
   ];
 
-  // Activity feeds data
   const spaceActivitySpaceIds = spaceActivityFilter === 'all' ? flatSpaces.map(m => m.space.id) : [spaceActivityFilter];
+  const personalSpaceIds = personalSpaceFilter === 'all' ? flatSpaces.map(m => m.space.id) : [personalSpaceFilter];
 
   const { data: spaceActivityData, loading: spaceActivityLoading } = useLatestContributionsQuery({
     variables: {
       first: ACTIVITY_LIMIT,
-      filter: {
-        spaceIds: spaceActivitySpaceIds,
-        excludeTypes: EXCLUDED_ACTIVITY_TYPES,
-      },
+      filter: { spaceIds: spaceActivitySpaceIds, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
+    },
+    skip: !activityEnabled || flatSpaces.length === 0,
+  });
+
+  const { data: personalActivityData, loading: personalActivityLoading } = useLatestContributionsQuery({
+    variables: {
+      first: ACTIVITY_LIMIT,
+      filter: { spaceIds: personalSpaceIds, myActivity: true, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
     },
     skip: !activityEnabled || flatSpaces.length === 0,
   });
@@ -118,49 +127,25 @@ export default function DashboardWithMemberships({
   const spaceActivityItems = mapActivityToFeedItems(
     (spaceActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0]
   );
-
-  // Personal activity — reuse the same query pattern
-  const personalSpaceIds = personalSpaceFilter === 'all' ? flatSpaces.map(m => m.space.id) : [personalSpaceFilter];
-
-  const { data: personalActivityData, loading: personalActivityLoading } = useLatestContributionsQuery({
-    variables: {
-      first: ACTIVITY_LIMIT,
-      filter: {
-        spaceIds: personalSpaceIds,
-        myActivity: true,
-        excludeTypes: EXCLUDED_ACTIVITY_TYPES,
-      },
-    },
-    skip: !activityEnabled || flatSpaces.length === 0,
-  });
-
   const personalActivityItems = mapActivityToFeedItems(
     (personalActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0]
   );
 
-  // Dashboard spaces (when activity is disabled)
-  // useDashboardWithMembershipsLazyQuery is complex - for now use MyMemberships query
-  const { data: myMembershipsData, loading: myMembershipsLoading } = useMyMembershipsQuery({
-    skip: activityEnabled,
+  // Memberships tree dialog
+  const { data: myMembershipsData } = useMyMembershipsQuery({
+    skip: dialogState.openDialog !== 'memberships',
   });
-
-  const dashboardSpaces = mapDashboardSpaces(
-    (myMembershipsData?.me?.spaceMembershipsHierarchical ?? []) as Parameters<typeof mapDashboardSpaces>[0],
-    homeSpaceId
+  const membershipsTreeData = mapMembershipsToTree(
+    (myMembershipsData?.me?.spaceMembershipsHierarchical ?? []) as Parameters<typeof mapMembershipsToTree>[0]
   );
 
-  // Campaign visibility
+  // Campaign
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
   const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
 
-  // Memberships tree for dialog (lazy — only fetched when memberships dialog is open or spaces view is shown)
-  const membershipsTreeData = mapMembershipsToTree(
-    (myMembershipsData?.me?.spaceMembershipsHierarchical ?? []) as Parameters<typeof mapMembershipsToTree>[0]
-  );
-
-  // Tips items — sourced from the existing MUI tips & tricks component's i18n keys
+  // Tips
   const tipsKeys = ['explore', 'connect', 'contribute'] as const;
   const tips = tipsKeys.map((key, index) => ({
     id: String(index + 1),
@@ -180,19 +165,17 @@ export default function DashboardWithMemberships({
           />
         }
       >
-        {activityEnabled && (
-          <RecentSpaces
-            spaces={recentSpaces}
-            loading={recentSpacesLoading}
-            hasHomeSpace={!!homeSpaceId}
-            homeSpaceSettingsHref={membershipSettingsUrl}
-            onExploreAllClick={dialogState.openMemberships}
-          />
-        )}
+        <RecentSpaces
+          spaces={recentSpaces}
+          loading={recentSpacesLoading}
+          hasHomeSpace={!!homeSpaceId}
+          homeSpaceSettingsHref={membershipSettingsUrl}
+          onExploreAllClick={dialogState.openMemberships}
+        />
 
         {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
 
-        {activityEnabled ? (
+        {activityEnabled && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ActivityFeed
               variant="spaces"
@@ -220,8 +203,6 @@ export default function DashboardWithMemberships({
               maxItems={7}
             />
           </div>
-        ) : (
-          <DashboardSpaces spaces={dashboardSpaces} loading={myMembershipsLoading} />
         )}
       </DashboardLayout>
       {virtualContributorWizard}
