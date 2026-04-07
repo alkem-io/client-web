@@ -23,7 +23,7 @@ pnpm start
 # Production build
 pnpm build
 
-# Type checking + linting
+# Type checking + linting (TypeScript + Biome + ESLint)
 pnpm lint
 
 # Run tests (non-interactive)
@@ -172,7 +172,7 @@ pnpm test                          # Watch mode
 pnpm test:coverage                 # With coverage (Istanbul provider)
 ```
 
-Execution typically completes in ~1.2s with 19 files / 247 tests passing.
+Execution typically completes in ~9s with 57 files / 595 tests passing.
 
 ## React 19 & React Compiler
 
@@ -213,8 +213,8 @@ Results available at `build/stats.html`. See `docs/bundle-analysis.md` for detai
 
 Husky runs lint-staged on commit:
 
-- Formats code with Prettier
-- Runs ESLint with auto-fix
+- Formats and lints code with Biome (check + format)
+- Runs ESLint (retained for `react-compiler` rule)
 - Run `pnpm lint` before committing to catch issues early
 
 ## Debugging & Root Cause Analysis
@@ -346,11 +346,10 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 041-account-templates-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + Apollo Client, MUI (existing dialog), react-i18next, lodash-es
+- 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 - 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
 
 ## Active Technologies
-- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + Apollo Client, MUI (existing dialog), react-i18next, lodash-es (041-account-templates-dialog)
-- Apollo Client cache (GraphQL responses) (041-account-templates-dialog)
+- localStorage (`alkemio-crd-enabled`) for CRD feature toggle (existing); GraphQL data layer unchanged (041-crd-dashboard-page)

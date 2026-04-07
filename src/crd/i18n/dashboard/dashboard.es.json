@@ -1,0 +1,117 @@
+{
+  "sidebar": {
+    "invitations": "Invitaciones",
+    "tipsAndTricks": "Consejos y Trucos",
+    "myAccount": "Mi Cuenta",
+    "createSpace": "Crear mi propio Espacio",
+    "activityView": "Vista de Actividad",
+    "mySpaces": "Mis Espacios",
+    "virtualContributors": "Colaboradores Virtuales",
+    "innovationHubs": "Centros de Innovación",
+    "innovationPacks": "Paquetes de Innovación",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "pendingCount": "{{count}} pendiente(s)"
+  },
+  "recentSpaces": {
+    "title": "Espacios Recientes",
+    "exploreAll": "Explorar todos tus Espacios",
+    "homeSpacePlaceholder": {
+      "title": "Establece tu Espacio Principal",
+      "subtitle": "Fija tu espacio favorito en el panel"
+    },
+    "homeSpaceSettings": "Configuración del espacio de inicio",
+    "private": "Privado"
+  },
+  "activity": {
+    "spacesTitle": "Última actividad en mis Espacios",
+    "personalTitle": "Mi última actividad",
+    "filter": {
+      "space": {
+        "label": "Espacio",
+        "all": "Todos los Espacios"
+      },
+      "role": {
+        "label": "Mi rol",
+        "all": "Todos los roles",
+        "member": "Miembro",
+        "lead": "Líder",
+        "admin": "Administrador"
+      }
+    },
+    "showMore": "Mostrar más",
+    "noActivity": "Sin actividad reciente"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Consejos y Trucos",
+    "myActivity": "Mi última actividad",
+    "mySpaceActivity": "Última actividad en mis Espacios",
+    "memberships": "Mis Membresías",
+    "findMore": "Descubrir más consejos y trucos",
+    "findMoreUrl": "https://welcome.alkem.io/blog/",
+    "seeMoreSpaces": "Ver más espacios",
+    "createSpace": "Crear Espacio",
+    "expandNode": "Expandir {{name}}",
+    "collapseNode": "Contraer {{name}}"
+  },
+  "tips": {
+    "items": [
+      {
+        "title": "Únete al Espacio Welcome@Alkemio",
+        "description": "Para encontrar ejemplos, mejores prácticas, consejos y trucos",
+        "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+        "url": "https://alkem.io/welcome-space/dashboard"
+      },
+      {
+        "title": "Consulta la documentación",
+        "description": "Para encontrar respuestas a tus preguntas más urgentes",
+        "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+        "url": "https://alkem.io/docs"
+      },
+      {
+        "title": "Lee más sobre la estructura de Espacios de Alkemio",
+        "description": "Para ayudarte a comenzar sin problemas en la plataforma",
+        "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+        "url": "https://alkem.io/docs/structure/space"
+      },
+      {
+        "title": "Crea un nuevo Espacio",
+        "description": "Para reunir colaboradores en torno a tu visión de cambio",
+        "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+        "url": "https://welcome.alkem.io/want-to-own-space/"
+      },
+      {
+        "title": "Impulsado por IA Generativa",
+        "description": "Presentamos el Chat de Orientación Automatizada de Alkemio",
+        "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+        "url": "https://welcome.alkem.io/blog/2024-01-chatbot/"
+      }
+    ]
+  },
+  "invitations": {
+    "title": "Invitaciones Pendientes",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "noInvitations": "Sin invitaciones pendientes"
+  },
+  "campaign": {
+    "title": "Crea tu Colaborador Virtual",
+    "description": "Comienza con tu propio colaborador impulsado por IA",
+    "cta": "Crear Colaborador Virtual"
+  },
+  "releaseNotes": {
+    "dismiss": "Cerrar",
+    "readMore": "Leer más"
+  },
+  "spaces": {
+    "loadMore": "Cargar Más",
+    "seeMoreSubspaces": "Ver más subespacios"
+  },
+  "unauthenticated": {
+    "signUp": "Registrarse"
+  },
+  "withoutMemberships": {
+    "createSpace": "Crea tu propio Espacio",
+    "createSpaceDescription": "Comienza a colaborar creando tu primer espacio"
+  }
+}
