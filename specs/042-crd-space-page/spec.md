@@ -11,7 +11,7 @@ A Space is the primary organizational unit in Alkemio. Each Space L0 page is a r
 
 - A **banner** displaying the space visual, title, and tagline
 - A **dynamic tab navigation** whose tab names and count are configurable per space (driven by a feature historically called "Innovation Flow" -- each flow state maps positionally to a tab, providing its display name and description)
-- **Four default tabs** (Dashboard, Community, Subspaces, Knowledge Base) plus optional custom tabs beyond those four
+- **Four default tabs** (Dashboard, Community, Subspaces, Knowledge Base) plus optional custom tabs beyond those four. Currently, the first three tabs (Dashboard, Community, Subspaces) have hardcoded content tied to their positional index. In a future iteration, which sections appear on which tabs should be controlled by a layout setting, making the tab-to-content mapping fully configurable rather than position-driven.
 - A **two-column layout** within each tab (sidebar + main content area) on desktop, collapsing to single column on mobile
 - An **About page** (separate route) showing full space details for public/non-member users
 
@@ -337,7 +337,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 7. The About page is a full-page CRD view, not an overlay dialog (the SpaceAboutDialog triggered from Dashboard remains MUI)
 8. No new backend APIs or GraphQL schema changes are needed -- all data is already available via existing queries
 9. The `?tab=N` URL parameter scheme is preserved exactly (1-based indexing, same parameter name)
-10. Tab positions are stable: position 0=Dashboard, 1=Community, 2=Subspaces, 3=Knowledge Base, 4+=Custom
+10. Tab positions are stable for this spec: position 0=Dashboard, 1=Community, 2=Subspaces, 3=Knowledge Base, 4+=Custom. However, the architecture MUST NOT hard-wire content to positional indices in a way that would prevent a future layout setting from controlling which sections appear on which tabs. Tab content components should be decoupled from their position so they can be re-assigned via configuration in a future iteration.
 
 ## Success Criteria
 
