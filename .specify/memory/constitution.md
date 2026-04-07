@@ -81,8 +81,9 @@ safeguards ensure sustainable delivery.
    surface owns routing composition, layout shells, and entry points for feature toggles; it MUST
    remain thin, delegating domain logic back into `src/domain` or `src/core`. New directories require
    alignment with this taxonomy.
-2. Styling standardizes on MUI theming. Any addition to the design system must pass through
-   `src/core/ui` with tokens documented in the theme.
+2. Styling is transitioning from MUI theming (`src/core/ui`) to a new design system based on
+   shadcn/ui + Tailwind CSS (`src/crd/`). New pages MUST use the CRD design system; existing MUI
+   pages remain until migrated. See `src/crd/CLAUDE.md` for CRD conventions.
 3. Internationalization uses `react-i18next`. All user-visible strings MUST be declared via the
    localization pipeline; hard-coded copy is forbidden. Only the English source file
    (`src/core/i18n/en/translation.en.json`) MAY be edited directly. All other locale files are
