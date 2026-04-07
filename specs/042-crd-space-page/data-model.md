@@ -1,0 +1,271 @@
+# Data Model: CRD Space L0 Page
+
+**Branch**: `042-crd-space-page` | **Date**: 2026-04-07
+
+These are the CRD component prop types — plain TypeScript, never GraphQL generated types. Data mappers in the integration layer transform GraphQL responses into these shapes.
+
+## Page Shell
+
+### SpaceBannerData
+```typescript
+type SpaceBannerData = {
+  title: string;
+  tagline?: string;
+  bannerUrl?: string;         // Falls back to default space visual
+  isHomeSpace: boolean;
+  homeSpaceSettingsHref?: string;
+};
+```
+
+### SpaceTabDefinition
+```typescript
+type SpaceTabDefinition = {
+  index: number;              // 0-based position
+  label: string;              // From Innovation Flow displayName or translated default
+  description?: string;       // From Innovation Flow state description
+  icon: ReactNode;            // lucide-react icon
+  isCustom: boolean;          // true for positions >= 4
+};
+```
+
+### SpaceVisibilityData
+```typescript
+type SpaceVisibilityStatus = 'active' | 'archived' | 'demo' | 'inactive';
+
+type SpaceVisibilityData = {
+  status: SpaceVisibilityStatus;
+  contactHref?: string;       // For archived notice
+};
+```
+
+### SpaceTabActionConfig
+```typescript
+type SpaceTabActionConfig = {
+  showActivity: boolean;
+  showVideoCall: boolean;
+  showShare: boolean;
+  showSettings: boolean;
+  shareUrl: string;
+  settingsHref?: string;
+};
+```
+
+## Dashboard Tab
+
+### SpaceWelcomeData
+```typescript
+type SpaceWelcomeData = {
+  description: string;        // Tab description (Innovation Flow state)
+  leads: SpaceLeadData[];     // Up to 2 users + 2 orgs
+  editHref?: string;          // Admin edit link
+};
+
+type SpaceLeadData = {
+  name: string;
+  avatarUrl?: string;
+  type: 'person' | 'organization';
+  location?: string;          // "City, Country"
+  href: string;
+};
+```
+
+### SpaceDashboardNavItem
+```typescript
+type SpaceDashboardNavItem = {
+  name: string;
+  href: string;
+  level: number;              // Nesting depth
+};
+```
+
+### CalendarEventData
+```typescript
+type CalendarEventData = {
+  id: string;
+  title: string;
+  startDate: string;          // ISO date
+  durationDays?: number;
+  durationMinutes?: number;
+  isWholeDay: boolean;
+};
+```
+
+## Community Tab
+
+### SpaceMemberData
+```typescript
+type SpaceMemberData = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  type: 'user' | 'organization';
+  location?: string;
+  tagline?: string;
+  tags: string[];
+  href: string;
+};
+```
+
+### VirtualContributorData
+```typescript
+type VirtualContributorData = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  href: string;
+};
+```
+
+## Subspaces Tab
+
+### SubspaceCardData
+```typescript
+type SubspaceCardData = {
+  id: string;
+  name: string;
+  tagline?: string;
+  bannerUrl?: string;
+  tags: string[];
+  isPrivate: boolean;
+  isMember: boolean;
+  isPinned: boolean;
+  leads: SpaceLeadData[];
+  href: string;
+};
+```
+
+## Callout System
+
+### CalloutBlockData
+```typescript
+type CalloutBlockData = {
+  id: string;
+  title: string;
+  description?: string;       // HTML (pre-rendered from markdown)
+  tags: string[];
+  references: CalloutReference[];
+  framingType: 'none' | 'memo' | 'whiteboard' | 'link' | 'media' | 'poll';
+  framing: CalloutFramingData;
+  visibility: 'draft' | 'published';
+  sortOrder: number;
+  author?: { name: string; avatarUrl?: string };
+  publishedDate?: string;
+  contributionCount: number;
+  allowedContributionTypes: ContributionType[];
+  commentsEnabled: boolean;
+  // Permissions
+  editable: boolean;
+  movable: boolean;
+  canSaveAsTemplate: boolean;
+};
+
+type CalloutReference = {
+  name: string;
+  uri: string;
+  description?: string;
+};
+
+type ContributionType = 'post' | 'memo' | 'whiteboard' | 'link';
+```
+
+### CalloutFramingData (union)
+```typescript
+type CalloutFramingData =
+  | { type: 'none' }
+  | { type: 'memo'; htmlContent: string; onExpand?: () => void }
+  | { type: 'whiteboard'; previewUrl?: string; onOpen: () => void }
+  | { type: 'link'; url: string; displayName: string; isExternal: boolean }
+  | { type: 'media'; images: MediaImage[]; canEdit: boolean; onAddImage?: () => void }
+  | { type: 'poll'; question: string; options: PollOption[]; canVote: boolean; onVote: (optionId: string) => void };
+
+type MediaImage = {
+  id: string;
+  url: string;
+  altText?: string;
+  sortOrder: number;
+};
+
+type PollOption = {
+  id: string;
+  text: string;
+  voteCount: number;
+  percentage: number;
+  isSelected: boolean;        // Current user's vote
+};
+```
+
+### ContributionCardData
+```typescript
+type ContributionCardData = {
+  id: string;
+  type: ContributionType;
+  title: string;
+  author?: { name: string; avatarUrl?: string };
+  createdDate?: string;
+  href?: string;
+  // Type-specific
+  description?: string;       // Posts/memos
+  commentCount?: number;      // Posts
+  tags?: string[];
+  previewUrl?: string;        // Whiteboards
+  htmlContent?: string;       // Memos (preview)
+  linkUrl?: string;           // Links
+  linkDescription?: string;   // Links
+};
+```
+
+### CalloutFormValues (integration layer — NOT in src/crd/)
+```typescript
+// These types live in the integration layer, not in CRD components.
+// CRD form components receive individual field values via props.
+
+type CalloutFormFieldProps = {
+  title: { value: string; onChange: (v: string) => void; error?: string };
+  description: { value: string; onChange: (v: string) => void; error?: string };
+  tags: { value: string[]; onChange: (v: string[]) => void };
+  framingType: { value: string; onChange: (v: string) => void; disabled: boolean };
+  visibility: { value: 'draft' | 'published'; onChange: (v: string) => void };
+  // ... per-field binding pattern
+};
+```
+
+### CommentData
+```typescript
+type CommentData = {
+  id: string;
+  author: { name: string; avatarUrl?: string };
+  content: string;
+  timestamp: string;          // ISO date
+  parentId?: string;          // For threaded replies
+};
+```
+
+### TemplateCardData
+```typescript
+type TemplateCardData = {
+  id: string;
+  name: string;
+  description?: string;
+  framingType: string;
+};
+```
+
+## About Page
+
+### SpaceAboutData
+```typescript
+type SpaceAboutData = {
+  name: string;
+  tagline?: string;
+  description?: string;       // HTML
+  location?: string;
+  metrics: { name: string; value: string }[];
+  who?: string;               // HTML (markdown)
+  why?: string;               // HTML (markdown)
+  provider?: SpaceLeadData;
+  leadUsers: SpaceLeadData[];
+  leadOrganizations: SpaceLeadData[];
+  guidelines?: string;        // HTML
+  references: CalloutReference[];
+};
+```
