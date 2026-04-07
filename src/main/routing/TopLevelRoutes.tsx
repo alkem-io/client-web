@@ -26,6 +26,7 @@ const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/pub
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const CrdSpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
+const CrdDashboardPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/dashboard/DashboardPage'));
 const MuiSpaceExplorerPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
 );
@@ -78,18 +79,40 @@ export const TopLevelRoutes = () => {
         />
         {IdentityRoute()}
         {devRoute()}
-        <Route
-          path={TopLevelRoutePath.Home}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={TopLevelRoutePath.Home}>
-                <Suspense fallback={<Loading />}>
-                  <HomePage />
-                </Suspense>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
+        {/* Dashboard page — toggleable between CRD (new) and MUI (old) via localStorage */}
+        {crdEnabled ? (
+          <Route
+            element={
+              <NonIdentity>
+                <CrdLayoutWrapper />
+              </NonIdentity>
+            }
+          >
+            <Route
+              path={TopLevelRoutePath.Home}
+              element={
+                <WithApmTransaction path={TopLevelRoutePath.Home}>
+                  <Suspense fallback={<Loading />}>
+                    <CrdDashboardPage />
+                  </Suspense>
+                </WithApmTransaction>
+              }
+            />
+          </Route>
+        ) : (
+          <Route
+            path={TopLevelRoutePath.Home}
+            element={
+              <NonIdentity>
+                <WithApmTransaction path={TopLevelRoutePath.Home}>
+                  <Suspense fallback={<Loading />}>
+                    <HomePage />
+                  </Suspense>
+                </WithApmTransaction>
+              </NonIdentity>
+            }
+          />
+        )}
         <Route
           path={`${TopLevelRoutePath.Docs}/*`}
           element={

@@ -1,4 +1,4 @@
-import { Bell, LayoutGrid, Menu, MessageSquare, Search } from 'lucide-react';
+import { Bell, LayoutGrid, MessageSquare, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
@@ -105,15 +105,6 @@ export function Header({
     >
       {/* Left: Logo + mobile menu */}
       <div className="flex items-center gap-4">
-        <button
-          type="button"
-          onClick={onMenuClick}
-          className="md:hidden p-2 -ml-2 hover:bg-accent rounded-md"
-          aria-label={t('header.menu')}
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-
         <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
           <AlkemioLogo className="w-8 h-8" />
         </a>

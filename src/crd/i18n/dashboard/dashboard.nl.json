@@ -1,0 +1,117 @@
+{
+  "sidebar": {
+    "invitations": "Uitnodigingen",
+    "tipsAndTricks": "Tips & Trucs",
+    "myAccount": "Mijn Account",
+    "createSpace": "Maak mijn eigen Space",
+    "activityView": "Activiteitsweergave",
+    "mySpaces": "Mijn Spaces",
+    "virtualContributors": "Virtuele Bijdragers",
+    "innovationHubs": "Innovatie Hubs",
+    "innovationPacks": "Innovatie Pakketten",
+    "openMenu": "Menu openen",
+    "closeMenu": "Menu sluiten",
+    "pendingCount": "{{count}} openstaand"
+  },
+  "recentSpaces": {
+    "title": "Recente Spaces",
+    "exploreAll": "Bekijk al je Spaces",
+    "homeSpacePlaceholder": {
+      "title": "Stel je Home Space in",
+      "subtitle": "Pin je favoriete space aan het dashboard"
+    },
+    "homeSpaceSettings": "Instellingen thuisruimte",
+    "private": "Privé"
+  },
+  "activity": {
+    "spacesTitle": "Laatste activiteit in mijn Spaces",
+    "personalTitle": "Mijn laatste activiteit",
+    "filter": {
+      "space": {
+        "label": "Space",
+        "all": "Alle Spaces"
+      },
+      "role": {
+        "label": "Mijn rol",
+        "all": "Alle rollen",
+        "member": "Lid",
+        "lead": "Leider",
+        "admin": "Beheerder"
+      }
+    },
+    "showMore": "Meer tonen",
+    "noActivity": "Geen recente activiteit"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Tips & Trucs",
+    "myActivity": "Mijn laatste activiteit",
+    "mySpaceActivity": "Laatste activiteit in mijn Spaces",
+    "memberships": "Mijn Lidmaatschappen",
+    "findMore": "Meer tips & trucs ontdekken",
+    "findMoreUrl": "https://welcome.alkem.io/blog/",
+    "seeMoreSpaces": "Meer spaces bekijken",
+    "createSpace": "Space Aanmaken",
+    "expandNode": "{{name}} uitvouwen",
+    "collapseNode": "{{name}} invouwen"
+  },
+  "tips": {
+    "items": [
+      {
+        "title": "Word lid van de Welcome@Alkemio Space",
+        "description": "Voor voorbeelden, best practices, tips en trucs",
+        "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+        "url": "https://alkem.io/welcome-space/dashboard"
+      },
+      {
+        "title": "Bekijk de documentatie",
+        "description": "Voor antwoorden op je meest dringende vragen",
+        "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+        "url": "https://alkem.io/docs"
+      },
+      {
+        "title": "Lees meer over de Space-structuur van Alkemio",
+        "description": "Om je vlot op weg te helpen op het platform",
+        "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+        "url": "https://alkem.io/docs/structure/space"
+      },
+      {
+        "title": "Start een nieuwe Space",
+        "description": "Om bijdragers te verzamelen voor jouw beoogde verandering",
+        "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+        "url": "https://welcome.alkem.io/want-to-own-space/"
+      },
+      {
+        "title": "Aangedreven door Generatieve AI",
+        "description": "Maak kennis met Alkemio's Geautomatiseerde Begeleiding Chat",
+        "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+        "url": "https://welcome.alkem.io/blog/2024-01-chatbot/"
+      }
+    ]
+  },
+  "invitations": {
+    "title": "Openstaande Uitnodigingen",
+    "accept": "Accepteren",
+    "decline": "Weigeren",
+    "noInvitations": "Geen openstaande uitnodigingen"
+  },
+  "campaign": {
+    "title": "Maak je Virtuele Bijdrager",
+    "description": "Begin met je eigen AI-aangedreven bijdrager",
+    "cta": "Virtuele Bijdrager Aanmaken"
+  },
+  "releaseNotes": {
+    "dismiss": "Sluiten",
+    "readMore": "Lees meer"
+  },
+  "spaces": {
+    "loadMore": "Meer Laden",
+    "seeMoreSubspaces": "Meer subspaces bekijken"
+  },
+  "unauthenticated": {
+    "signUp": "Registreren"
+  },
+  "withoutMemberships": {
+    "createSpace": "Maak je eigen Space",
+    "createSpaceDescription": "Begin met samenwerken door je eerste space te maken"
+  }
+}
