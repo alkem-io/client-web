@@ -128,14 +128,14 @@ type ActivityEntry = {
   spaceDisplayName?: string;
   createdDate?: string | Date;
   // Type-specific fields for URL extraction
-  post?: { profile: { url: string; displayName: string } };
-  callout?: { framing: { profile: { url: string; displayName: string } } };
-  whiteboard?: { profile: { url: string; displayName: string } };
-  subspace?: { about: { profile: { url: string; displayName: string } } };
-  calendarEvent?: { profile: { url: string; displayName: string } };
-  actor?: { profile: { url: string; displayName: string } };
-  link?: { profile: { url: string; displayName: string } };
-  memo?: { profile: { url: string; displayName: string } };
+  post?: { profile: { url?: string; displayName: string } };
+  callout?: { framing: { profile: { url?: string; displayName: string } } };
+  whiteboard?: { profile: { url?: string; displayName: string } };
+  subspace?: { about: { profile: { url?: string; displayName: string } } };
+  calendarEvent?: { profile: { url?: string; displayName: string } };
+  actor?: { profile?: { url?: string; displayName: string } };
+  link?: { profile: { url?: string; displayName: string } };
+  memo?: { profile: { url?: string; displayName: string } };
 };
 
 function extractActivityUrl(activity: ActivityEntry): string | undefined {
@@ -232,12 +232,15 @@ export const mapResourcesToSidebarItems = (resources: {
   spaces: (resources.spaces ?? []).map(s => mapProfileToSidebarItem(s.id, s.about.profile)),
   virtualContributors: (resources.virtualContributors ?? [])
     .filter(vc => vc.profile)
+    // biome-ignore lint/style/noNonNullAssertion: Filtered before
     .map(vc => mapProfileToSidebarItem(vc.id, vc.profile!)),
   innovationHubs: (resources.innovationHubs ?? [])
     .filter(hub => hub.profile)
+    // biome-ignore lint/style/noNonNullAssertion: Filtered before
     .map(hub => mapProfileToSidebarItem(hub.id, hub.profile!)),
   innovationPacks: (resources.innovationPacks ?? [])
     .filter(pack => pack.profile)
+    // biome-ignore lint/style/noNonNullAssertion: Filtered before
     .map(pack => mapProfileToSidebarItem(pack.id, pack.profile!)),
 });
 
