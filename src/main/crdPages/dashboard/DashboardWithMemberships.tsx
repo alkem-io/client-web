@@ -139,14 +139,8 @@ export default function DashboardWithMemberships({
     skip: !needsActivityData || flatSpaces.length === 0,
   });
 
-  const spaceActivityItems = mapActivityToFeedItems(
-    (spaceActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0],
-    tMain
-  );
-  const personalActivityItems = mapActivityToFeedItems(
-    (personalActivityData?.activityFeed?.activityFeed ?? []) as unknown as Parameters<typeof mapActivityToFeedItems>[0],
-    tMain
-  );
+  const spaceActivityItems = mapActivityToFeedItems(spaceActivityData?.activityFeed?.activityFeed ?? [], tMain);
+  const personalActivityItems = mapActivityToFeedItems(personalActivityData?.activityFeed?.activityFeed ?? [], tMain);
 
   // Memberships tree dialog
   const { data: myMembershipsData } = useMyMembershipsQuery({

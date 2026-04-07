@@ -23,7 +23,7 @@ pnpm start
 # Production build
 pnpm build
 
-# Type checking + linting
+# Type checking + linting (TypeScript + Biome + ESLint)
 pnpm lint
 
 # Run tests (non-interactive)
@@ -172,7 +172,7 @@ pnpm test                          # Watch mode
 pnpm test:coverage                 # With coverage (Istanbul provider)
 ```
 
-Execution typically completes in ~1.2s with 19 files / 247 tests passing.
+Execution typically completes in ~9s with 57 files / 595 tests passing.
 
 ## React 19 & React Compiler
 
@@ -213,8 +213,8 @@ Results available at `build/stats.html`. See `docs/bundle-analysis.md` for detai
 
 Husky runs lint-staged on commit:
 
-- Formats code with Prettier
-- Runs ESLint with auto-fix
+- Formats and lints code with Biome (check + format)
+- Runs ESLint (retained for `react-compiler` rule)
 - Run `pnpm lint` before committing to catch issues early
 
 ## Debugging & Root Cause Analysis
