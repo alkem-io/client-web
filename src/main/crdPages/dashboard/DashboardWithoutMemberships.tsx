@@ -8,6 +8,7 @@ import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
+import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
@@ -30,8 +31,6 @@ type DashboardWithoutMembershipsProps = {
   onPendingMembershipsClick: () => void;
 };
 
-const noop = () => {};
-
 export default function DashboardWithoutMemberships({
   dialogState,
   onPendingMembershipsClick,
@@ -39,6 +38,10 @@ export default function DashboardWithoutMemberships({
   const { t } = useTranslation('crd-dashboard');
   const navigate = useNavigate();
   const { platformRoles, accountEntitlements } = useCurrentUserContext();
+
+  const { acceptInvitation, rejectInvitation } = useInvitationActions({
+    onAccept: spaceUrl => navigate(spaceUrl),
+  });
 
   const sidebarData = useDashboardSidebar({
     onInvitationsClick: onPendingMembershipsClick,
@@ -93,11 +96,11 @@ export default function DashboardWithoutMemberships({
             loading={invitationsLoading}
             onAccept={id => {
               const invitation = invitations.find(inv => inv.id === id);
-              if (invitation?.spaceHref) {
-                navigate(invitation.spaceHref);
+              if (invitation) {
+                acceptInvitation(id, invitation.spaceHref);
               }
             }}
-            onDecline={noop}
+            onDecline={id => rejectInvitation(id)}
             getDefaultAvatarUrl={spaceId => getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)}
           />
         )}

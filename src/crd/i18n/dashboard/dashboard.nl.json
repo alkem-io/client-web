@@ -47,11 +47,46 @@
     "myActivity": "Mijn laatste activiteit",
     "mySpaceActivity": "Laatste activiteit in mijn Spaces",
     "memberships": "Mijn Lidmaatschappen",
-    "findMore": "Meer ontdekken",
+    "findMore": "Meer tips & trucs ontdekken",
+    "findMoreUrl": "https://welcome.alkem.io/blog/",
     "seeMoreSpaces": "Meer spaces bekijken",
     "createSpace": "Space Aanmaken",
     "expandNode": "{{name}} uitvouwen",
     "collapseNode": "{{name}} invouwen"
+  },
+  "tips": {
+    "items": [
+      {
+        "title": "Word lid van de Welcome@Alkemio Space",
+        "description": "Voor voorbeelden, best practices, tips en trucs",
+        "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+        "url": "https://alkem.io/welcome-space/dashboard"
+      },
+      {
+        "title": "Bekijk de documentatie",
+        "description": "Voor antwoorden op je meest dringende vragen",
+        "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+        "url": "https://alkem.io/docs"
+      },
+      {
+        "title": "Lees meer over de Space-structuur van Alkemio",
+        "description": "Om je vlot op weg te helpen op het platform",
+        "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+        "url": "https://alkem.io/docs/structure/space"
+      },
+      {
+        "title": "Start een nieuwe Space",
+        "description": "Om bijdragers te verzamelen voor jouw beoogde verandering",
+        "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+        "url": "https://welcome.alkem.io/want-to-own-space/"
+      },
+      {
+        "title": "Aangedreven door Generatieve AI",
+        "description": "Maak kennis met Alkemio's Geautomatiseerde Begeleiding Chat",
+        "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+        "url": "https://welcome.alkem.io/blog/2024-01-chatbot/"
+      }
+    ]
   },
   "invitations": {
     "title": "Openstaande Uitnodigingen",

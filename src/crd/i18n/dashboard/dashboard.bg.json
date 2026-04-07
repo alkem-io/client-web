@@ -47,11 +47,46 @@
     "myActivity": "Моята последна активност",
     "mySpaceActivity": "Последна активност в моите пространства",
     "memberships": "Моите членства",
-    "findMore": "Открий повече",
+    "findMore": "Открий повече съвети и трикове",
+    "findMoreUrl": "https://welcome.alkem.io/blog/",
     "seeMoreSpaces": "Виж повече пространства",
     "createSpace": "Създай пространство",
     "expandNode": "Разгъни {{name}}",
     "collapseNode": "Свий {{name}}"
+  },
+  "tips": {
+    "items": [
+      {
+        "title": "Присъединете се към пространството Welcome@Alkemio",
+        "description": "За примери, добри практики, съвети и трикове",
+        "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+        "url": "https://alkem.io/welcome-space/dashboard"
+      },
+      {
+        "title": "Разгледайте документацията",
+        "description": "За отговори на най-неотложните ви въпроси",
+        "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+        "url": "https://alkem.io/docs"
+      },
+      {
+        "title": "Прочетете повече за структурата на пространствата в Alkemio",
+        "description": "За да започнете гладко работа с платформата",
+        "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+        "url": "https://alkem.io/docs/structure/space"
+      },
+      {
+        "title": "Създайте ново пространство",
+        "description": "За да съберете сътрудници за вашата визия за промяна",
+        "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+        "url": "https://welcome.alkem.io/want-to-own-space/"
+      },
+      {
+        "title": "Задвижвано от генеративен ИИ",
+        "description": "Представяме автоматизирания чат за насоки на Alkemio",
+        "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+        "url": "https://welcome.alkem.io/blog/2024-01-chatbot/"
+      }
+    ]
   },
   "invitations": {
     "title": "Чакащи покани",

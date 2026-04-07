@@ -47,11 +47,46 @@
     "myActivity": "Meine letzte Aktivität",
     "mySpaceActivity": "Letzte Aktivität in meinen Spaces",
     "memberships": "Meine Mitgliedschaften",
-    "findMore": "Mehr entdecken",
+    "findMore": "Mehr Tipps & Tricks entdecken",
+    "findMoreUrl": "https://welcome.alkem.io/blog/",
     "seeMoreSpaces": "Mehr Spaces anzeigen",
     "createSpace": "Space erstellen",
     "expandNode": "{{name}} aufklappen",
     "collapseNode": "{{name}} zuklappen"
+  },
+  "tips": {
+    "items": [
+      {
+        "title": "Tritt dem Welcome@Alkemio Space bei",
+        "description": "Für Beispiele, Best Practices, Tipps und Tricks",
+        "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+        "url": "https://alkem.io/welcome-space/dashboard"
+      },
+      {
+        "title": "Schau dir die Dokumentation an",
+        "description": "Für Antworten auf deine dringendsten Fragen",
+        "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+        "url": "https://alkem.io/docs"
+      },
+      {
+        "title": "Erfahre mehr über die Space-Struktur von Alkemio",
+        "description": "Um dir einen reibungslosen Start auf der Plattform zu ermöglichen",
+        "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+        "url": "https://alkem.io/docs/structure/space"
+      },
+      {
+        "title": "Starte einen neuen Space",
+        "description": "Um Mitwirkende für deine angestrebte Veränderung zu sammeln",
+        "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+        "url": "https://welcome.alkem.io/want-to-own-space/"
+      },
+      {
+        "title": "Angetrieben von Generativer KI",
+        "description": "Einführung von Alkemios automatisiertem Beratungs-Chat",
+        "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+        "url": "https://welcome.alkem.io/blog/2024-01-chatbot/"
+      }
+    ]
   },
   "invitations": {
     "title": "Ausstehende Einladungen",
