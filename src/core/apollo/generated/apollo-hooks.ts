@@ -26572,7 +26572,7 @@ export const ImportTemplateDialogAccountTemplatesDocument = gql`
   lookup {
     account(ID: $accountId) {
       id
-      innovationPacks {
+      innovationPacks(searchVisibility: [ACCOUNT, PUBLIC]) {
         id
         profile {
           id
