@@ -53,112 +53,107 @@ specs/042-crd-space-page/
     └── requirements.md  # Spec quality checklist
 ```
 
+### Prototype Visual Reference
+
+CRD components use `prototype/src/app/components/space/` as the **visual design reference** — matching the look, layout, spacing, and styling patterns. The code architecture follows CRD conventions (plain TS props, no business logic, Tailwind styling). Key prototype files:
+
+| Prototype File | Purpose |
+|---|---|
+| `SpaceShell.tsx` | 12-col grid layout: 1-col margin, 2-col sidebar, 8-col content, 1-col margin |
+| `SpaceHeader.tsx` | 320px hero banner with gradient, member avatars, action icons |
+| `SpaceNavigationTabs.tsx` | Text-only horizontal scroll tabs, border-bottom active indicator |
+| `SpaceSidebar.tsx` | Variant-based sidebar (home/community/subspaces/knowledge) with sub-sections |
+| `PostCard.tsx` | Card with author+role header, 4 content types (text/whiteboard/collection/call-for-whiteboards) |
+| `SpaceFeed.tsx` | Vertical list of PostCards + "Add Post" button |
+| `SpaceMembers.tsx` | Search + role filters + paginated UserCard/OrgCard grid |
+| `SpaceSubspacesList.tsx` | Status filters + SpaceCard grid + "Create Subspace" |
+| `AddPostModal.tsx` | Rich post composition with attachments and settings |
+
+**Design Decisions from prototype review:**
+- **D-proto-1**: 12-col grid layout (prototype grid) instead of flex sidebar+content
+- **D-proto-2**: Desktop tabs are text-only links inside the content column (no icons), matching prototype
+- **D-proto-3**: Mobile tabs use spec bottom bar with overflow drawer (not prototype's simple scroll — better mobile UX)
+- **D-proto-4**: Callouts with text/memo framing render as PostCard (prototype style); whiteboard/poll/media use custom callout components (hybrid approach)
+- **D-proto-5**: Sidebar is a single variant-based component with extracted sub-components, matching prototype architecture
+
 ### Source Code (repository root)
 
 ```text
 src/crd/
+├── layouts/
+│   └── SpaceShell.tsx               # 12-col grid layout (sidebar + tabs + content)
 ├── components/
 │   ├── space/
-│   │   ├── SpaceBanner.tsx              # Banner with visual, title, tagline
-│   │   ├── SpaceTabs.tsx                # Dynamic tab navigation (Innovation Flow states)
-│   │   ├── SpaceTabLayout.tsx           # Sidebar + content area two-column layout
-│   │   ├── SpaceVisibilityNotice.tsx    # Archived/Demo/Inactive notice bar
-│   │   ├── SpaceWelcomeBlock.tsx        # Dashboard sidebar: description + leads
-│   │   ├── SpaceDashboardNav.tsx        # Dashboard sidebar: related spaces links
-│   │   ├── SpaceCalendarSection.tsx     # Dashboard sidebar: upcoming events
-│   │   ├── SpaceLeadsSection.tsx        # Lead users/orgs (sidebar block)
-│   │   ├── SpaceMemberCard.tsx          # Wide-format member/org card
-│   │   ├── SpaceMemberGrid.tsx          # Community: member/org card grid
-│   │   ├── SpaceGuidelinesBlock.tsx     # Community guidelines sidebar block
-│   │   ├── SpaceSubspaceList.tsx        # Subspaces sidebar: searchable link list
-│   │   └── SpaceAboutView.tsx           # About page content layout
+│   │   ├── SpaceHeader.tsx          # 320px hero banner (gradient, avatars, actions)
+│   │   ├── SpaceNavigationTabs.tsx  # Desktop: text tabs with scroll. Mobile: bottom bar + drawer
+│   │   ├── SpaceSidebar.tsx         # Variant-based sidebar (home/community/subspaces/knowledge)
+│   │   ├── SpaceVisibilityNotice.tsx # Archived/Demo/Inactive notice bar
+│   │   ├── PostCard.tsx             # Callout card (author header, type badge, content preview)
+│   │   ├── SpaceFeed.tsx            # Vertical PostCard list + "Add Post" button
+│   │   ├── SpaceMembers.tsx         # Search + role filters + paginated member grid
+│   │   ├── SpaceSubspacesList.tsx   # Status filters + SpaceCard grid + "Create Subspace"
+│   │   ├── SpaceAboutView.tsx       # About page content layout
+│   │   └── sidebar/                 # Sidebar sub-components (extracted from SpaceSidebar)
+│   │       ├── InfoBlock.tsx        # Primary-colored description + "Read more"
+│   │       ├── SubspacesSection.tsx  # Avatar + name list + "Show all"
+│   │       ├── EventsSection.tsx    # Collapsible events + "Show calendar"
+│   │       ├── LeadBlock.tsx        # Lead user card (avatar, name, location, bio)
+│   │       ├── VirtualContributorsSection.tsx # AI contributor list
+│   │       ├── CommunityGuidelinesSection.tsx # Bulleted guidelines
+│   │       └── KnowledgeIndexSection.tsx      # Scrollable post index
 │   ├── callout/
-│   │   ├── CalloutBlock.tsx             # Main callout container (title, desc, framing, contributions)
-│   │   ├── CalloutList.tsx              # Scrollable group of callout blocks
-│   │   ├── CalloutHeader.tsx            # Title + settings trigger + author
-│   │   ├── CalloutSidebarList.tsx       # Sidebar searchable callout list
-│   │   ├── CalloutTagCloud.tsx          # Tag cloud filter with selectable chips
-│   │   ├── CalloutContextMenu.tsx       # Settings dropdown (edit, publish, delete, move, share)
-│   │   ├── CalloutDraftBadge.tsx        # Draft indicator
-│   │   ├── CalloutFramingMemo.tsx       # Rendered markdown with expand
-│   │   ├── CalloutFramingWhiteboard.tsx # Preview thumbnail + open button
-│   │   ├── CalloutFramingLink.tsx       # CTA button with URL
-│   │   ├── CalloutFramingMedia.tsx      # Image grid
-│   │   ├── CalloutFramingPoll.tsx       # Poll questions, options, voting UI
-│   │   ├── CalloutComments.tsx          # Threaded comment list + add form
-│   │   └── CalloutCommentItem.tsx       # Single comment: avatar, name, timestamp, content
-│   ├── contribution/
-│   │   ├── ContributionGrid.tsx         # Expandable card grid (5 cols, 2 rows collapsed)
-│   │   ├── ContributionPostCard.tsx     # Post: title, author, date, comment count
-│   │   ├── ContributionWhiteboardCard.tsx # Whiteboard: preview thumbnail + title
-│   │   ├── ContributionMemoCard.tsx     # Memo: markdown preview + title
-│   │   ├── ContributionLinkList.tsx     # Link contributions list
-│   │   ├── ContributionPreview.tsx      # Inline preview with navigation
-│   │   └── ContributionCreateButton.tsx # Type-specific create trigger
+│   │   ├── CalloutWhiteboardPreview.tsx  # Whiteboard framing: img + "Open" button
+│   │   ├── CalloutPoll.tsx               # Poll framing: votable options
+│   │   ├── CalloutMediaGallery.tsx       # Media framing: image grid
+│   │   ├── CalloutLinkAction.tsx         # Link framing: CTA button
+│   │   ├── CalloutSidebarList.tsx        # Sidebar searchable callout list
+│   │   ├── CalloutTagCloud.tsx           # Tag cloud filter
+│   │   ├── CalloutContextMenu.tsx        # Settings dropdown
+│   │   ├── CalloutComments.tsx           # Threaded comment list
+│   │   └── CalloutCommentItem.tsx        # Single comment
 │   └── common/
-│       ├── ExpandableDescription.tsx    # Truncated text with expand/collapse
-│       ├── MarkdownContent.tsx          # Read-only rendered markdown
-│       └── ContentBlock.tsx             # Generic sidebar/content block with accent
+│       ├── ExpandableDescription.tsx
+│       ├── MarkdownContent.tsx
+│       └── ContentBlock.tsx
 ├── forms/
-│   ├── callout/
-│   │   ├── CalloutFormLayout.tsx        # Form shell (title, desc, tags, refs, actions)
-│   │   ├── CalloutFramingSelector.tsx   # 6-option type selector with icons
-│   │   ├── CalloutContributionSettings.tsx # Allowed types, comments toggle
-│   │   ├── CalloutVisibilitySelector.tsx # Draft/Published toggle
-│   │   ├── PollOptionsEditor.tsx        # Poll question + 2-10 option fields
-│   │   └── LinkFramingFields.tsx        # URL + display name inputs
-│   └── contribution/
-│       └── ContributionFormLayout.tsx   # Post/Memo/Whiteboard/Link creation form shell
+│   └── callout/
+│       ├── AddPostModal.tsx         # Rich post composition (matches prototype AddPostModal)
+│       └── (other form components as needed)
 ├── i18n/
 │   └── space/
-│       ├── space.en.json               # English translations
-│       ├── space.bg.json
-│       ├── space.de.json
-│       ├── space.es.json
-│       ├── space.fr.json
-│       └── space.nl.json
+│       └── (6 language files)
 └── hooks/
     └── (existing useMediaQuery, useScreenSize)
 
 src/main/crdPages/
 ├── space/
 │   ├── routing/
-│   │   └── CrdSpaceRoutes.tsx           # Route tree (mirrors SpaceRoutes, CRD layout)
+│   │   └── CrdSpaceRoutes.tsx
 │   ├── layout/
-│   │   └── CrdSpacePageLayout.tsx       # Page shell integration (banner + tabs + outlet)
+│   │   └── CrdSpacePageLayout.tsx    # Wires SpaceShell + SpaceHeader + SpaceNavigationTabs
 │   ├── tabs/
-│   │   ├── CrdSpaceDashboardPage.tsx    # Dashboard tab integration
-│   │   ├── CrdSpaceCommunityPage.tsx    # Community tab integration
-│   │   ├── CrdSpaceSubspacesPage.tsx    # Subspaces tab integration
-│   │   ├── CrdSpaceCustomTabPage.tsx    # Custom tab integration (Knowledge Base+)
-│   │   └── CrdSpaceTabbedPages.tsx      # Tab router (sectionIndex → page)
+│   │   ├── CrdSpaceDashboardPage.tsx # SpaceSidebar(home) + SpaceFeed
+│   │   ├── CrdSpaceCommunityPage.tsx # SpaceSidebar(community) + SpaceMembers + SpaceFeed
+│   │   ├── CrdSpaceSubspacesPage.tsx # SpaceSidebar(subspaces) + SpaceSubspacesList + SpaceFeed
+│   │   ├── CrdSpaceCustomTabPage.tsx # SpaceSidebar(knowledge) + SpaceFeed
+│   │   └── CrdSpaceTabbedPages.tsx
 │   ├── about/
-│   │   └── CrdSpaceAboutPage.tsx        # About route integration
+│   │   └── CrdSpaceAboutPage.tsx
 │   ├── callout/
-│   │   ├── CalloutBlockConnector.tsx    # Maps callout GraphQL data → CRD CalloutBlock props
-│   │   ├── CalloutListConnector.tsx     # Maps CalloutsSet → CRD CalloutList, handles lazy loading
-│   │   ├── CalloutFormConnector.tsx     # Wraps CRD form UI with Formik + GraphQL mutations
-│   │   ├── CalloutEditConnector.tsx     # Edit form with data pre-fill
-│   │   ├── CalloutManagementConnector.tsx # Context menu actions → GraphQL mutations
-│   │   ├── ContributionGridConnector.tsx # Maps contributions → CRD ContributionGrid
-│   │   ├── ContributionCreateConnector.tsx # Wraps creation forms with mutations
-│   │   ├── CalloutCommentsConnector.tsx # Maps comments data + mutation wiring
-│   │   ├── TemplateImportConnector.tsx  # Wraps MUI ImportTemplatesDialog trigger
-│   │   └── FramingEditorConnector.tsx   # Wraps Tiptap/whiteboard editors in form context
+│   │   ├── CalloutListConnector.tsx  # Maps callouts → PostCard (text/memo) or custom (wb/poll/media)
+│   │   └── (other connectors as needed)
 │   ├── dataMappers/
-│   │   ├── spacePageDataMapper.ts       # Space → SpacePageData (banner, tabs)
-│   │   ├── calloutDataMapper.ts         # Callout GraphQL → CalloutData (CRD props)
-│   │   ├── contributionDataMapper.ts    # Contributions → ContributionData
-│   │   ├── communityDataMapper.ts       # Members/leads → CRD card props
-│   │   └── subspaceCardDataMapper.ts    # Subspaces → SubspaceCardData
+│   │   ├── spacePageDataMapper.ts
+│   │   ├── calloutDataMapper.ts
+│   │   ├── communityDataMapper.ts
+│   │   └── subspaceCardDataMapper.ts
 │   └── hooks/
-│       ├── useCrdSpaceTabs.ts           # Innovation Flow states → tab definitions
-│       ├── useCrdSpaceDashboard.ts      # Dashboard data orchestration
-│       ├── useCrdSpaceCommunity.ts      # Community data orchestration
-│       ├── useCrdCalloutList.ts         # Callout fetching, filtering, lazy loading
-│       └── useCrdCalloutForm.ts         # Form state management (Formik bridge)
-├── spaces/                              # (existing from 039)
-└── useCrdEnabled.ts                     # (existing from 039)
+│       ├── useCrdSpaceTabs.ts
+│       ├── useCrdSpaceDashboard.ts
+│       ├── useCrdSpaceCommunity.ts
+│       └── useCrdCalloutList.ts
+├── spaces/                           # (existing from 039)
+└── useCrdEnabled.ts                  # (existing from 039)
 ```
 
 **Structure Decision**: Follows the established three-layer architecture from 039/041:
@@ -193,7 +188,7 @@ All 5 framing types (Memo, Whiteboard, Link, Media Gallery, Poll) have CRD prese
 WhiteboardDialog (+ entire collaboration stack: Collab, Portal, file management, preview generation, guest sessions), MemoDialog (+ Tiptap editor), Activity dialog, Video Call dialog, Share dialog, Direct Message dialog, Application flow — all remain MUI. They render as portals outside `.crd-root`, so no CSS isolation issue. CRD components trigger them via `onOpen*` callback props; the integration layer manages dialog state and renders the MUI dialog.
 
 ### D7: Form state management in integration layer
-Callout creation/editing forms use Formik for state management (validation, dirty tracking, field-level errors). Formik is NOT imported in `src/crd/`. CRD form components (`CalloutFormLayout`, `CalloutFramingSelector`, etc.) are pure UI: inputs, selectors, radio groups. The integration layer (`CalloutFormConnector`) wraps them in Formik context, passes `value`/`onChange`/`error` props, and handles submission via GraphQL mutations.
+Callout creation/editing forms use Formik for state management (validation, dirty tracking, field-level errors). Formik is NOT imported in `src/crd/`. CRD form components (`AddPostModal`, `CalloutFramingSelector`, etc.) are pure UI: inputs, selectors, radio groups. The integration layer (`CalloutFormConnector`) wraps them in Formik context, passes `value`/`onChange`/`error` props, and handles submission via GraphQL mutations.
 
 ### D8: Tiptap wrapped by integration layer
 For read-only markdown display (callout descriptions, memo previews): CRD `MarkdownContent` component renders sanitized HTML — no Tiptap needed. For editing (callout creation forms): `FramingEditorConnector` in the integration layer renders the existing Tiptap-based markdown editor component, passing content up via Formik field binding. The Tiptap component itself is unchanged.

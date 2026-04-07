@@ -17,12 +17,12 @@
 
 **Purpose**: i18n namespace, shared CRD utility components, and translation files
 
-- [ ] T001 Create i18n translation file `src/crd/i18n/space/space.en.json` with keys for banner, tabs (dashboard, community, subspaces, knowledgeBase), callout labels (draft, expand, collapse, create, edit, delete, publish, unpublish, share, move, settings, template, sort), contribution labels, comment labels, about page labels, visibility notices, mobile actions, and accessibility labels
-- [ ] T002 [P] Create translation files for remaining languages: `src/crd/i18n/space/space.bg.json`, `src/crd/i18n/space/space.de.json`, `src/crd/i18n/space/space.es.json`, `src/crd/i18n/space/space.fr.json`, `src/crd/i18n/space/space.nl.json`
-- [ ] T003 Register `crd-space` namespace in `src/core/i18n/config.ts` under `crdNamespaceImports` with lazy imports for all 6 languages; add type declaration in `@types/i18next.d.ts`
-- [ ] T004 [P] Create `src/crd/components/common/MarkdownContent.tsx` — renders sanitized HTML string as formatted content, accepts `className` prop, uses Tailwind prose classes
-- [ ] T005 [P] Create `src/crd/components/common/ExpandableDescription.tsx` — truncated text with expand/collapse toggle, accepts `description: string`, `maxLines?: number`, `editHref?: string`, `canEdit?: boolean`, `onEdit?: () => void`
-- [ ] T006 [P] Create `src/crd/components/common/ContentBlock.tsx` — generic sidebar/content block with optional accent border, title slot, and children; used by multiple tab pages
+- [x] T001 Create i18n translation file `src/crd/i18n/space/space.en.json` with keys for banner, tabs (dashboard, community, subspaces, knowledgeBase), callout labels (draft, expand, collapse, create, edit, delete, publish, unpublish, share, move, settings, template, sort), contribution labels, comment labels, about page labels, visibility notices, mobile actions, and accessibility labels
+- [x] T002 [P] Create translation files for remaining languages: `src/crd/i18n/space/space.bg.json`, `src/crd/i18n/space/space.de.json`, `src/crd/i18n/space/space.es.json`, `src/crd/i18n/space/space.fr.json`, `src/crd/i18n/space/space.nl.json`
+- [x] T003 Register `crd-space` namespace in `src/core/i18n/config.ts` under `crdNamespaceImports` with lazy imports for all 6 languages; add type declaration in `@types/i18next.d.ts`
+- [x] T004 [P] Create `src/crd/components/common/MarkdownContent.tsx` — renders sanitized HTML string as formatted content, accepts `className` prop, uses Tailwind prose classes
+- [x] T005 [P] Create `src/crd/components/common/ExpandableDescription.tsx` — truncated text with expand/collapse toggle, accepts `description: string`, `maxLines?: number`, `editHref?: string`, `canEdit?: boolean`, `onEdit?: () => void`
+- [x] T006 [P] Create `src/crd/components/common/ContentBlock.tsx` — generic sidebar/content block with optional accent border, title slot, and children; used by multiple tab pages
 
 ---
 
@@ -32,107 +32,127 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 Create `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` — maps SpaceContext data (from `useSpace()`) to `SpaceBannerData`, `SpaceVisibilityData`, and `SpaceTabActionConfig` types defined in data-model.md
-- [ ] T008 Create `src/main/crdPages/space/hooks/useCrdSpaceTabs.ts` — wraps existing `useSpaceTabs()` from `src/domain/space/layout/tabbedLayout/layout/useSpaceTabs.tsx`, maps output to `SpaceTabDefinition[]` (data-model.md), replaces MUI icons with lucide-react equivalents
-- [ ] T009 Create `src/crd/layouts/SpacePageShell.tsx` — CRD page shell component accepting `banner: SpaceBannerData`, `tabs: SpaceTabDefinition[]`, `tabActions: SpaceTabActionConfig`, `visibility: SpaceVisibilityData`, `breadcrumbs: { label: string; href?: string }[]`, `activeTabIndex: number`, `onTabChange: (index: number) => void`, `onAction: (action: string) => void`, plus `children` for Outlet content; renders breadcrumbs bar (space hierarchy path) + banner + tabs + content area inside `.crd-root` (FR-008)
-- [ ] T010 Create `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` — integration layer connecting SpacePageShell to app data via `useSpace()`, `useCrdSpaceTabs()`, `spacePageDataMapper`; maps `spaceHierarchyPath` from URL resolver to breadcrumb props; manages MUI dialog state (Activity, VideoCall, Share) via callbacks; renders `<Outlet />` for tab content
-- [ ] T011 Create `src/main/crdPages/space/routing/CrdSpaceRoutes.tsx` — mirrors `src/domain/space/routing/SpaceRoutes.tsx` structure: wraps routes in `SpaceContextProvider` (reused unchanged), uses `CrdSpacePageLayout` as layout element, defines routes for `/about`, `/` (index), `/collaboration/:calloutNameId`, `/settings/*`, `/challenges/:subspaceNameId/*`, legacy redirects
-- [ ] T012 Create `src/main/crdPages/space/tabs/CrdSpaceTabbedPages.tsx` — tab content router matching `sectionIndex` to tab page components (Dashboard at 0, Community at 1, Subspaces at 2, Custom at 3+); use a section-type mapping (not hardcoded positional switch) per plan D4 for future layout setting readiness
-- [ ] T013 Update `src/main/routing/TopLevelRoutes.tsx` — add CRD route toggle for `:spaceNameId/*`: when `crdEnabled`, wrap in `CrdLayoutWrapper` + `UrlResolverProvider` and route to `CrdSpaceRoutes`; when disabled, keep existing `SpaceRoutes`. Follow the same pattern as the `/spaces` CRD toggle (lines 132-165)
+- [x] T007 Create `src/main/crdPages/space/dataMappers/spacePageDataMapper.ts` — maps SpaceContext data (from `useSpace()`) to `SpaceBannerData`, `SpaceVisibilityData`, and `SpaceTabActionConfig` types defined in data-model.md
+- [x] T008 Create `src/main/crdPages/space/hooks/useCrdSpaceTabs.ts` — wraps existing `useSpaceTabs()` from `src/domain/space/layout/tabbedLayout/layout/useSpaceTabs.tsx`, maps output to `SpaceTabDefinition[]` (data-model.md), replaces MUI icons with lucide-react equivalents
+- [x] T009 Create `src/crd/layouts/SpacePageShell.tsx` — CRD page shell component accepting `banner: SpaceBannerData`, `tabs: SpaceTabDefinition[]`, `tabActions: SpaceTabActionConfig`, `visibility: SpaceVisibilityData`, `breadcrumbs: { label: string; href?: string }[]`, `activeTabIndex: number`, `onTabChange: (index: number) => void`, `onAction: (action: string) => void`, plus `children` for Outlet content; renders breadcrumbs bar (space hierarchy path) + banner + tabs + content area inside `.crd-root` (FR-008)
+- [x] T010 Create `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` — integration layer connecting SpacePageShell to app data via `useSpace()`, `useCrdSpaceTabs()`, `spacePageDataMapper`; maps `spaceHierarchyPath` from URL resolver to breadcrumb props; manages MUI dialog state (Activity, VideoCall, Share) via callbacks; renders `<Outlet />` for tab content
+- [x] T011 Create `src/main/crdPages/space/routing/CrdSpaceRoutes.tsx` — mirrors `src/domain/space/routing/SpaceRoutes.tsx` structure: wraps routes in `SpaceContextProvider` (reused unchanged), uses `CrdSpacePageLayout` as layout element, defines routes for `/about`, `/` (index), `/collaboration/:calloutNameId`, `/settings/*`, `/challenges/:subspaceNameId/*`, legacy redirects
+- [x] T012 Create `src/main/crdPages/space/tabs/CrdSpaceTabbedPages.tsx` — tab content router matching `sectionIndex` to tab page components (Dashboard at 0, Community at 1, Subspaces at 2, Custom at 3+); use a section-type mapping (not hardcoded positional switch) per plan D4 for future layout setting readiness
+- [x] T013 Update `src/main/routing/TopLevelRoutes.tsx` — add CRD route toggle for `:spaceNameId/*`: when `crdEnabled`, wrap in `CrdLayoutWrapper` + `UrlResolverProvider` and route to `CrdSpaceRoutes`; when disabled, keep existing `SpaceRoutes`. Follow the same pattern as the `/spaces` CRD toggle (lines 132-165)
 
 **Checkpoint**: Route toggle works — navigating to any Space URL with CRD enabled loads CrdSpacePageLayout (may show empty content area). MUI Space page still works with CRD disabled.
 
 ---
 
-## Phase 3: US1 — Full CRD Space Page Shell (Priority: P0)
+## Phase 3: Cleanup — Delete Non-Prototype-Aligned Components
 
-**Goal**: CRD banner, dynamic tab navigation, and visibility notice render correctly for any Space L0 page
+**Purpose**: Remove CRD components built without prototype reference. Integration layer and data mappers are kept.
 
-**Independent Test**: Enable CRD toggle, navigate to any Space. Banner shows title/tagline/visual, tabs show Innovation Flow names (or defaults), clicking tabs changes URL and content area, visibility notice appears for non-Active spaces.
+**Context**: Components in Phases 3–6 (old) were built from scratch and don't match the prototype's visual design. The prototype at `prototype/src/app/components/space/` is the visual reference for all CRD space components.
 
-- [ ] T014 [P] [US1] Create `src/crd/components/space/SpaceBanner.tsx` — displays banner image (blurred sides or default visual), space title, tagline, and optional HomeSpace pin indicator; accepts `SpaceBannerData` props; responsive (full-width image with max-width constraint)
-- [ ] T015 [P] [US1] Create `src/crd/components/space/SpaceVisibilityNotice.tsx` — notice bar for Archived/Demo/Inactive spaces with translated message and optional contact link; accepts `SpaceVisibilityData` props; renders as a colored banner below the header
-- [ ] T016 [P] [US1] Create `src/crd/components/space/SpaceTabs.tsx` — dynamic tab navigation component accepting `tabs: SpaceTabDefinition[]`, `activeIndex`, `onTabChange`, `actions: SpaceTabActionConfig`, `onAction`; renders horizontal tabs on desktop (above content) with action buttons (Activity, VideoCall, Share, Settings icons); renders fixed bottom bar on mobile with overflow "More" drawer (Radix Sheet); keyboard accessible with `aria-selected`
-- [ ] T017 [P] [US1] Create `src/crd/components/space/SpaceTabLayout.tsx` — two-column layout: sidebar (narrow, sticky on desktop, hidden on mobile) + main content area (wide); accepts `sidebar: ReactNode`, `children: ReactNode`; responsive via Tailwind breakpoints
-- [ ] T018 [US1] Wire CrdSpacePageLayout to render SpaceBanner, SpaceVisibilityNotice, SpaceTabs, and SpaceTabLayout with data from `useSpace()` and `useCrdSpaceTabs()`; verify tabs display Innovation Flow state displayNames or translated defaults per FR-003/FR-004/FR-005; verify URL updates on tab click per FR-010
-
-**Checkpoint**: Full CRD page shell visible for any Space L0. Tabs navigate, banner shows, no MUI layout elements. Console error-free when navigating CRD ↔ MUI.
+- [ ] T100 Delete old CRD space components that don't match prototype: `src/crd/components/space/SpaceBanner.tsx`, `SpaceVisibilityNotice.tsx`, `SpaceTabs.tsx`, `SpaceTabLayout.tsx`, `SpaceLeadsSection.tsx`, `SpaceWelcomeBlock.tsx`, `SpaceDashboardNav.tsx`, `SpaceCalendarSection.tsx`, `SpaceUpdatesSection.tsx`, `SpaceSubspaceList.tsx`
+- [ ] T101 Delete old CRD callout components: `src/crd/components/callout/CalloutDraftBadge.tsx`, `CalloutHeader.tsx`, `CalloutBlock.tsx`, `CalloutList.tsx`, `CalloutFramingMemo.tsx`, `CalloutFramingWhiteboard.tsx`, `CalloutFramingLink.tsx`, `CalloutFramingMedia.tsx`, `CalloutFramingPoll.tsx`
+- [ ] T102 Delete old CRD layout: `src/crd/layouts/SpacePageShell.tsx`
 
 ---
 
-## Phase 4: US2 — Dashboard Tab (Priority: P1)
+## Phase 4: Primitives — Port Missing shadcn/ui Components
 
-**Goal**: Dashboard tab shows welcome block with leads, about trigger, navigation, calendar, updates, and callout content area
+**Purpose**: Ensure all shadcn primitives needed by prototype-style components are available
 
-**Independent Test**: Navigate to a Space, Dashboard tab shows sidebar sections and main content area. Non-members see Join/Apply button.
-
-- [ ] T019 [P] [US2] Create `src/crd/components/space/SpaceLeadsSection.tsx` — displays lead users and organizations as horizontal cards with avatar, name, location, and type indicator; accepts `leads: SpaceLeadData[]`; max 2 users + 2 orgs; reused in Community tab
-- [ ] T020 [P] [US2] Create `src/crd/components/space/SpaceWelcomeBlock.tsx` — sidebar block with expandable tab description and embedded SpaceLeadsSection; accepts `description: string`, `leads: SpaceLeadData[]`, `aboutLabel: string`, `onAboutClick: () => void`
-- [ ] T021 [P] [US2] Create `src/crd/components/space/SpaceDashboardNav.tsx` — sidebar block showing related space links as a nested list; accepts `items: SpaceDashboardNavItem[]`
-- [ ] T022 [P] [US2] Create `src/crd/components/space/SpaceCalendarSection.tsx` — sidebar block showing up to 3 upcoming events with title and date; accepts `events: CalendarEventData[]`, `onViewAll?: () => void`
-- [ ] T090 [P] [US2] Create `src/crd/components/space/SpaceUpdatesSection.tsx` — sidebar block showing community updates summary with a "View all" action; accepts `communityId: string` (passed as prop, not fetched internally), `shareUrl?: string`, `onViewAll?: () => void` (FR-016)
-- [ ] T023 [US2] Create `src/main/crdPages/space/hooks/useCrdSpaceDashboard.ts` — composes `useSpaceTabProvider({ tabPosition: 0 })`, `useSpacePageQuery`, `useApplicationButton()`, `useSpaceDashboardNavigationChallengesQuery()`; returns mapped data for all sidebar sections (including communityId for updates) + application button state
-- [ ] T024 [US2] Create `src/main/crdPages/space/tabs/CrdSpaceDashboardPage.tsx` — integration page using `useCrdSpaceDashboard()`; renders SpaceTabLayout with sidebar (WelcomeBlock, DashboardNav, CalendarSection, SpaceUpdatesSection) and main content area (placeholder for callouts, added in US4); triggers MUI AboutDialog, ApplicationButton, and CommunityUpdatesDialog via callbacks; conditionally shows calendar/updates based on read-users access
-
-**Checkpoint**: Dashboard tab renders with all sidebar sections populated from real data. About button triggers dialog. Non-members see join button.
+- [ ] T103 [P] Port `card.tsx` primitive (Card, CardHeader, CardContent, CardFooter) from `prototype/src/app/components/ui/card.tsx` to `src/crd/primitives/card.tsx` — update imports to use `@/crd/lib/utils`
+- [ ] T104 [P] Port `separator.tsx` primitive from prototype to `src/crd/primitives/separator.tsx`
+- [ ] T105 [P] Verify `avatar.tsx`, `badge.tsx`, `button.tsx` primitives exist and match prototype versions; port any missing sub-components
 
 ---
 
-## Phase 5: US3 — Subspaces Tab (Priority: P1)
+## Phase 5: Shell Components — Prototype-Guided (US1)
 
-**Goal**: Subspaces tab shows searchable sidebar list and filterable card grid of child spaces
+**Goal**: CRD page shell visually matches prototype's SpaceShell + SpaceHeader + SpaceNavigationTabs
 
-**Independent Test**: Navigate to a Space with subspaces, select Subspaces tab. Cards show with correct data, filtering works, create button appears for admins.
+**Visual reference**: `prototype/src/app/components/space/SpaceShell.tsx`, `SpaceHeader.tsx`, `SpaceNavigationTabs.tsx`
 
-- [ ] T025 [P] [US3] Create `src/crd/components/space/SpaceSubspaceList.tsx` — sidebar component with search field (visible when >3 items) and list of subspace links; accepts `items: { name: string; href: string }[]`; search filters by name
-- [ ] T026 [P] [US3] Create `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts` — maps `SpaceSubspaceCardsQuery` results to `SubspaceCardData[]` (data-model.md); extracts banner URL (or default), tags, privacy status, membership, pin indicator, lead users/orgs
-- [ ] T027 [US3] Create `src/main/crdPages/space/tabs/CrdSpaceSubspacesPage.tsx` — integration page using `useSpaceTabProvider({ tabPosition: 2 })` and `useSpaceSubspaceCardsQuery()`; renders SpaceTabLayout with sidebar (tab description + SpaceSubspaceList + create trigger) and main content area (SpaceCard grid from 039 with tag filtering); triggers MUI CreateSubspace dialog and DirectMessage dialog via callbacks
+- [ ] T106 Create `src/crd/layouts/SpaceShell.tsx` — 12-col grid layout matching prototype: `grid-cols-12 gap-6`, sidebar at `lg:col-start-2 lg:col-span-2` (hidden on mobile), content at `col-span-12 lg:col-span-8`; accepts `header: ReactNode`, `sidebar: ReactNode`, `tabs: ReactNode`, `breadcrumbs?: ReactNode` (FR-008: rendered above header, aligned to grid), `children: ReactNode`; no business logic, no routing
+- [ ] T107 Create `src/crd/components/space/SpaceHeader.tsx` — 320px hero banner matching prototype visual: background-image with gradient overlay (`linear-gradient(to top, rgba(29,56,74,0.4), rgba(102,102,102,0.08))`), title + tagline at bottom-left with optional Home Space pin indicator (FR-011: `isHomeSpace` prop renders Home icon next to title), member avatar stack at bottom-right, action icon buttons (Documents, Video, Share, Settings) at top-right; accepts `title`, `tagline?`, `bannerUrl?`, `isHomeSpace?: boolean`, `memberAvatars: { url?: string; initials: string }[]`, `memberCount: number`, `actions: SpaceHeaderActions`, `onMemberClick?`; uses 12-col inner grid for alignment; converts prototype inline styles to Tailwind where possible
+- [ ] T108 Create `src/crd/components/space/SpaceNavigationTabs.tsx` — Desktop: text-only horizontal scroll tabs matching prototype (no icons, `border-b-2` active indicator, `text-sm font-medium`), scroll-into-view on active tab; Mobile (`isSmallScreen`): fixed bottom bar with tab buttons + "More" overflow drawer using Sheet primitive; accepts `tabs: { label: string; index: number }[]`, `activeIndex: number`, `onTabChange: (index: number) => void`, `mobileActions?: { label: string; icon: ReactNode; onClick: () => void }[]`
+- [ ] T109 Create `src/crd/components/space/SpaceVisibilityNotice.tsx` — simple alert bar for Archived/Demo/Inactive spaces (not in prototype, but required by spec); colored banner below header; accepts `status: 'active' | 'archived' | 'demo' | 'inactive'`, `contactHref?`
+- [ ] T110 Update `src/main/crdPages/space/layout/CrdSpacePageLayout.tsx` — wire SpaceShell + SpaceHeader + SpaceNavigationTabs + SpaceVisibilityNotice with data from `useSpace()`, `useCrdSpaceTabs()`, `spacePageDataMapper`; map `spaceHierarchyPath` from URL resolver to breadcrumb nav passed to SpaceShell (FR-008); render `<Outlet />` as children; pass sidebar variant based on current tab index
 
-**Checkpoint**: Subspaces tab renders with real subspace data. Cards show banner, name, tags, privacy, membership. Search filters sidebar list. Create button triggers dialog for admins.
-
----
-
-## Phase 6: US4 — Callout Content Blocks (Priority: P1)
-
-**Goal**: Callouts render in CRD with all 5 framing types, lazy loading, expand/collapse, and draft badges
-
-**Independent Test**: Navigate to any tab with callouts. All framing types render correctly. Scrolling loads more. Draft callouts show badge for admins.
-
-- [ ] T028 [P] [US4] Create `src/crd/components/callout/CalloutHeader.tsx` — callout title, type icon (lucide-react), author name + avatar, publication date, and settings trigger button (icon-only with aria-label); accepts `title`, `author`, `publishedDate`, `framingType`, `onSettingsClick`, `draft: boolean`; shows CalloutDraftBadge when draft
-- [ ] T029 [P] [US4] Create `src/crd/components/callout/CalloutFramingMemo.tsx` — renders markdown content via MarkdownContent component with expand/collapse for long content; accepts `htmlContent: string`, `onExpand?: () => void`
-- [ ] T030 [P] [US4] Create `src/crd/components/callout/CalloutFramingWhiteboard.tsx` — preview thumbnail image with fallback icon placeholder and "Open" button; accepts `previewUrl?: string`, `onOpen: () => void`; clicking triggers onOpen callback (integration layer opens MUI WhiteboardDialog as portal)
-- [ ] T031 [P] [US4] Create `src/crd/components/callout/CalloutFramingLink.tsx` — CTA button with link display name; validates URL for http/https; external links render with `target="_blank" rel="noopener noreferrer"`; internal links use `href`; disabled state for invalid URLs; accepts `url`, `displayName`, `isExternal`
-- [ ] T032 [P] [US4] Create `src/crd/components/callout/CalloutFramingMedia.tsx` — image grid layout with sortable images; shows upload placeholder for editors when empty; accepts `images: MediaImage[]`, `canEdit: boolean`, `onAddImage?: () => void`
-- [ ] T033 [P] [US4] Create `src/crd/components/callout/CalloutFramingPoll.tsx` — poll question with votable options, vote counts, percentages, and user's current selection; accepts `question`, `options: PollOption[]`, `canVote`, `onVote: (optionId: string) => void`
-- [ ] T034 [US4] Create `src/crd/components/callout/CalloutBlock.tsx` — main callout container composing CalloutHeader + framing component (switch on type) + tags + references + slots for contributions and comments; accepts `CalloutBlockData` props + `contributionsSlot?: ReactNode`, `commentsSlot?: ReactNode`; supports expand/collapse for long descriptions
-- [ ] T035 [US4] Create `src/crd/components/callout/CalloutList.tsx` — renders a list of CalloutBlock components with optional "Add Callout" button at top or bottom; accepts `children: ReactNode` (rendered blocks), `canCreate`, `onCreateClick`, `loading`; shows skeleton loaders during loading
-- [ ] T036 [US4] Create `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — maps `CalloutDetailsModelExtended` (from `useCalloutsSet`) to `CalloutBlockData` (data-model.md); extracts framing content per type, author info, tags, references, visibility, permissions (editable, movable, canSaveAsTemplate)
-- [ ] T037 [US4] Create `src/main/crdPages/space/hooks/useCrdCalloutList.ts` — wraps `useCalloutsSet()` with `classificationTagsets` from `useSpaceTabProvider()`; handles lazy loading via IntersectionObserver pattern; returns mapped `CalloutBlockData[]` via `calloutDataMapper`
-- [ ] T038 [US4] Create `src/main/crdPages/space/callout/CalloutListConnector.tsx` — renders CalloutList with CalloutBlock instances; wires `onSettingsClick` to open context menu; wires whiteboard `onOpen` to open MUI WhiteboardDialog (portal); wires memo `onExpand` to open MUI MemoDialog (portal); wires poll `onVote` to mutation
-- [ ] T039 [US4] Integrate CalloutListConnector into CrdSpaceDashboardPage (replacing placeholder from T024) and CrdSpaceSubspacesPage (alongside card grid from T027)
-
-**Checkpoint**: All 5 callout framing types render correctly on Dashboard and Subspaces tabs. Whiteboards open MUI dialog on click. Memos expand. Links navigate. Draft badges show for admins. Lazy loading works.
+**Checkpoint**: CRD page shell renders with 12-col grid, 320px hero banner, text tabs, sidebar area. Matches prototype layout. Tab clicks update URL. Toggle off returns to MUI.
 
 ---
 
-## Phase 7: US5 — Community Tab (Priority: P2)
+## Phase 6: Sidebar — Prototype-Guided Variant Component
+
+**Goal**: Single variant-based sidebar matching prototype's SpaceSidebar with all sub-sections
+
+**Visual reference**: `prototype/src/app/components/space/SpaceSidebar.tsx`
+
+- [ ] T111 [P] Create `src/crd/components/space/sidebar/InfoBlock.tsx` — primary-colored description block with "Read more" button; matches prototype InfoBlock (bg-primary, primary-foreground text, rounded-lg padding); accepts `description: string`, `onReadMore?: () => void`
+- [ ] T112 [P] Create `src/crd/components/space/sidebar/SubspacesSection.tsx` — avatar + name list with "Show all" link and settings icon; matches prototype SubspacesSection; accepts `subspaces: { name: string; initials: string; color: string; href: string }[]`, `showAll?: boolean`, `showAllHref?: string`, `onSettings?: () => void`
+- [ ] T113 [P] Create `src/crd/components/space/sidebar/EventsSection.tsx` — collapsible events list with "Show calendar" link and add button; matches prototype EventsSection; accepts `events: { title: string; date: string }[]`, `onShowCalendar?: () => void`, `onAddEvent?: () => void`
+- [ ] T114 [P] Create `src/crd/components/space/sidebar/LeadBlock.tsx` — lead user card with avatar, name, location (MapPin icon), bio; matches prototype LeadBlock; accepts `name: string`, `avatarUrl?`, `initials: string`, `location?`, `bio?`
+- [ ] T115 [P] Create `src/crd/components/space/sidebar/VirtualContributorsSection.tsx` — AI contributor list with Bot icon header, avatar + name + description per item; matches prototype; accepts `contributors: { name: string; description: string; avatarUrl?: string; initials: string }[]`
+- [ ] T116 [P] Create `src/crd/components/space/sidebar/CommunityGuidelinesSection.tsx` — bulleted guidelines with ShieldCheck icons and BookOpen header; matches prototype; accepts `guidelines: string[]`
+- [ ] T117 [P] Create `src/crd/components/space/sidebar/KnowledgeIndexSection.tsx` — scrollable post index with FolderOpen header, FileText icons per entry; matches prototype; accepts `entries: { id: string; title: string; type: 'text' | 'collection' }[]`, `onEntryClick?: (id: string) => void`
+- [ ] T118 Create `src/crd/components/space/SpaceSidebar.tsx` — variant-based sidebar composing sub-components: `variant='home'` shows InfoBlock + "About" button + SubspacesSection + EventsSection; `variant='community'` shows InfoBlock + LeadBlock + Contact/Invite buttons + VirtualContributorsSection + CommunityGuidelinesSection; `variant='subspaces'` shows InfoBlock + SubspacesSection(showAll); `variant='knowledge'` shows InfoBlock + "About" button + KnowledgeIndexSection + EventsSection; accepts variant + all sub-component props via typed prop groups
+
+**Checkpoint**: Sidebar renders correctly for each variant. Visual style matches prototype (primary InfoBlock, uppercase section headers at 11px, hover states, avatar sizing).
+
+---
+
+## Phase 7: Content Components — Prototype-Guided (US2, US3, US4)
+
+**Goal**: Feed, member, and subspace list components visually match prototype
+
+**Visual reference**: `prototype/.../PostCard.tsx`, `SpaceFeed.tsx`, `SpaceMembers.tsx`, `SpaceSubspacesList.tsx`
+
+- [ ] T119 Create `src/crd/components/space/PostCard.tsx` — Card matching prototype PostCard visual: author avatar + name + role badge + timestamp header, title (text-lg font-bold), snippet (text-sm line-clamp-3), type-specific content preview area (text → nothing extra, whiteboard → image with "Open Whiteboard" overlay, collection → 2x2 item grid, call-for-whiteboards → thumbnail grid with +N overlay), comments footer with MessageSquare icon; accepts `PostCardData` props with `type: 'text' | 'whiteboard' | 'collection' | 'call-for-whiteboards'`, `onClick?`, `onSettingsClick?`, `onExpandClick?`; uses Card/CardHeader/CardContent/CardFooter primitives
+- [ ] T120 Create `src/crd/components/space/SpaceFeed.tsx` — vertical list of PostCard components matching prototype SpaceFeed: title header + "Add Post" button + space-y-6 card list + "Show More" button; accepts `title: string`, `posts: PostCardData[]`, `canCreate?`, `onCreateClick?`, `loading?`, `onShowMore?`, `hasMore?`; skeleton loading state; reusable across all tab pages
+- [ ] T121 Create `src/crd/components/space/SpaceMembers.tsx` — search + role filter + paginated member grid matching prototype SpaceMembers: search input, filter pill buttons (All/Host/Admin/Lead/Member/Organization), responsive grid (1/2/3 cols), UserCard (avatar + name + role badge + bio + join date) and OrgCard (avatar + name + type badge + description + member count) sub-components, pagination controls (prev/next); accepts `members: MemberCardData[]`, `filters: string[]`, `pageSize?: number`
+- [ ] T122 Create `src/crd/components/space/SpaceSubspacesList.tsx` — status filter + SpaceCard grid matching prototype: header with title + "Create Subspace" button, filter buttons (All/Active/Archived), responsive grid (1/2/3 cols) using existing SpaceCard from 039, empty state with dashed border; accepts `subspaces: SubspaceCardData[]`, `canCreate?`, `onCreateClick?`
+
+### Callout-specific components (not PostCard style — per hybrid decision):
+
+- [ ] T123 [P] Create `src/crd/components/callout/CalloutWhiteboardPreview.tsx` — whiteboard framing: preview image + "Open Whiteboard" button; accepts `previewUrl?`, `onOpen: () => void`
+- [ ] T124 [P] Create `src/crd/components/callout/CalloutPoll.tsx` — poll framing: question text + votable option buttons with progress bars, vote counts, percentages; accepts `question`, `options: PollOption[]`, `canVote`, `onVote`
+- [ ] T125 [P] Create `src/crd/components/callout/CalloutMediaGallery.tsx` — media framing: image grid with aspect-square thumbnails + upload placeholder for editors; accepts `images: MediaImage[]`, `canEdit`, `onAddImage?`
+- [ ] T126 [P] Create `src/crd/components/callout/CalloutLinkAction.tsx` — link framing: CTA button with URL validation; accepts `url`, `displayName`, `isExternal`
+
+**Checkpoint**: PostCard matches prototype visually (Card shadow, author header, type badges). SpaceFeed renders post list. SpaceMembers has search+filters+pagination. SpaceSubspacesList has filter pills + grid.
+
+---
+
+## Phase 8: Integration Layer Updates
+
+**Purpose**: Wire new prototype-guided CRD components into the existing integration layer
+
+- [ ] T127 Update `src/main/crdPages/space/tabs/CrdSpaceDashboardPage.tsx` — render SpaceSidebar(variant="home") in sidebar slot and SpaceFeed in content area; map useCrdSpaceDashboard data to new component props; wire About button, calendar, events, subspaces sidebar data
+- [ ] T128 Update `src/main/crdPages/space/tabs/CrdSpaceSubspacesPage.tsx` — render SpaceSidebar(variant="subspaces") + SpaceSubspacesList + SpaceFeed; map subspace query data to SpaceSubspacesList props
+- [ ] T129 Update `src/main/crdPages/space/callout/CalloutListConnector.tsx` — map callouts to PostCard format for text/memo types; render CalloutWhiteboardPreview/CalloutPoll/CalloutMediaGallery/CalloutLinkAction for non-text types; render via SpaceFeed component
+- [ ] T130 Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add mapping from CalloutFramingType to PostCard `type` field; map callout data to `PostCardData` shape for text/memo framing types
+
+**Checkpoint**: Dashboard and Subspaces tabs render with prototype-styled components. Callouts display as PostCards (text/memo) or custom components (whiteboard/poll/media/link). Type-check passes.
+
+---
+
+## Phase 9: US5 — Community Tab (Priority: P2)
 
 **Goal**: Community tab shows leads, members, guidelines, invite, and virtual contributors
 
-**Independent Test**: Navigate to Community tab. Leads shown in sidebar. Members displayed as wide cards. Contact Leads triggers dialog. Invite visible for admins.
+**Independent Test**: Navigate to Community tab. SpaceSidebar(community) shows lead, contact/invite buttons, VCs, guidelines. SpaceMembers shows search+filters+paginated grid. CommunityFeed shows community posts.
 
-- [ ] T040 [P] [US5] Create `src/crd/components/space/SpaceMemberCard.tsx` — wide horizontal card with avatar, name, location, tagline, and tags; accepts `SpaceMemberData` props; used for both user and organization members
-- [ ] T041 [P] [US5] Create `src/crd/components/space/SpaceMemberGrid.tsx` — grid of SpaceMemberCard components; accepts `members: SpaceMemberData[]`, `showUsers: boolean` (hides user cards for unauthenticated); responsive layout
-- [ ] T042 [P] [US5] Create `src/crd/components/space/SpaceGuidelinesBlock.tsx` — sidebar block displaying community guidelines text with optional link; accepts `content?: string`, `href?: string`
-- [ ] T043 [US5] Create `src/main/crdPages/space/dataMappers/communityDataMapper.ts` — maps `useRoleSetManager()` output to `SpaceMemberData[]` for members and `SpaceLeadData[]` for leads; maps `VirtualContributor` data to `VirtualContributorData[]`
+**Note**: SpaceMembers (T121), SpaceSidebar community variant (T118), and sidebar sub-components LeadBlock (T114), VirtualContributorsSection (T115), CommunityGuidelinesSection (T116) are built in Phases 6-7. This phase wires them to data.
+
+- [ ] T043 [US5] Create `src/main/crdPages/space/dataMappers/communityDataMapper.ts` — maps `useRoleSetManager()` output to `MemberCardData[]` for SpaceMembers and lead data for SpaceSidebar; maps `VirtualContributor` data to sidebar VC props
 - [ ] T044 [US5] Create `src/main/crdPages/space/hooks/useCrdSpaceCommunity.ts` — composes `useSpaceTabProvider()`, `useRoleSetManager()`, `useSendMessageToCommunityLeads()`, `useSpace()` (entitlements); returns leads, members, VCs, guidelines, invite permission, contact callback
-- [ ] T045 [US5] Create `src/main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` — integration page rendering SpaceTabLayout with sidebar (tab description, SpaceLeadsSection, Contact Leads button, invite trigger, VCs section, SpaceGuidelinesBlock) and main content area (SpaceMemberGrid + CalloutListConnector); triggers MUI DirectMessage and InviteContributors dialogs via callbacks
+- [ ] T045 [US5] Create `src/main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` — integration page rendering SpaceShell with SpaceSidebar(variant="community") and main content area (SpaceMembers + SpaceFeed as community feed); wires sidebar data (lead, VCs, guidelines) via communityDataMapper; triggers MUI DirectMessage and InviteContributors dialogs via callbacks
 
 **Checkpoint**: Community tab renders with real data. Leads, members, guidelines all correct. Contact/Invite trigger MUI dialogs.
 
 ---
 
-## Phase 8: US6 — Custom Tabs / Knowledge Base (Priority: P2)
+## Phase 10: US6 — Custom Tabs / Knowledge Base (Priority: P2)
 
 **Goal**: Custom tabs show searchable callout sidebar, tag cloud filtering, and flow-state-classified callouts
 
@@ -140,13 +160,13 @@
 
 - [ ] T046 [P] [US6] Create `src/crd/components/callout/CalloutSidebarList.tsx` — sidebar list of callout titles with search field; accepts `items: { id: string; title: string; type: string }[]`; search filters by title; shows type icon per item
 - [ ] T047 [P] [US6] Create `src/crd/components/callout/CalloutTagCloud.tsx` — tag filtering component with selectable chips, selected tags with deselect action, results count, and clear-all link; accepts `tags: { name: string; count: number }[]`, `selectedTags: string[]`, `resultsCount: number`, `onSelectTag`, `onDeselectTag`, `onClear`
-- [ ] T048 [US6] Create `src/main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx` — integration page accepting `sectionIndex: number`; uses `useSpaceTabProvider({ tabPosition: sectionIndex })` and `useCrdCalloutList()` with `tagsFilter` state; renders SpaceTabLayout with sidebar (tab description + create trigger + CalloutSidebarList) and main content area (CalloutTagCloud + CalloutListConnector); each tab shows only callouts classified under its Innovation Flow state
+- [ ] T048 [US6] Create `src/main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx` — integration page accepting `sectionIndex: number`; uses `useSpaceTabProvider({ tabPosition: sectionIndex })` and `useCrdCalloutList()` with `tagsFilter` state; renders SpaceShell with SpaceSidebar(variant="knowledge") containing tab description + create trigger + CalloutSidebarList, and main content area with CalloutTagCloud + CalloutListConnector (via SpaceFeed); each tab shows only callouts classified under its Innovation Flow state
 
 **Checkpoint**: Knowledge Base and any custom tabs render correctly. Tag cloud filters callouts. Each tab shows only its flow state's callouts.
 
 ---
 
-## Phase 9: US7+US8 — Callout Creation, Editing & Management (Priority: P2)
+## Phase 11: US7+US8 — Callout Creation, Editing & Management (Priority: P2)
 
 **Goal**: Authorized users can create, edit, publish/unpublish, delete, reorder, and manage callouts via forms and context menu
 
@@ -157,20 +177,20 @@
 - [ ] T051 [P] [US7] Create `src/crd/forms/callout/PollOptionsEditor.tsx` — poll title field + 2-10 option inputs with add/remove; min/max response settings; accepts typed props for each field + validation errors
 - [ ] T052 [P] [US7] Create `src/crd/forms/callout/CalloutContributionSettings.tsx` — allowed contribution type selector (None/Post/Memo/Whiteboard/Link) and comments toggle; accepts `allowedType`, `commentsEnabled`, `onChange` callbacks
 - [ ] T053 [P] [US7] Create `src/crd/forms/callout/CalloutVisibilitySelector.tsx` — Draft/Published toggle with notification checkbox (enabled only when form valid); accepts `visibility`, `sendNotification`, `onChange`, `isValid`
-- [ ] T054 [US7] Create `src/crd/forms/callout/CalloutFormLayout.tsx` — form shell composing all form sections: title (required), description (markdown, length-limited), tags, references, CalloutFramingSelector, type-specific editor slot, CalloutContributionSettings, CalloutVisibilitySelector, "Find Template" button, action buttons (Save Draft / Post); accepts per-field value/onChange/error props + `framingEditorSlot: ReactNode` + `onSubmit`, `onSaveDraft`, `onFindTemplate` callbacks
+- [ ] T054 [US7] Create `src/crd/forms/callout/AddPostModal.tsx` — post composition modal matching prototype visual (`AddPostModal.tsx`): title input, markdown editor slot, attachment buttons (Whiteboard/Memo/CTA/Image), collapsible settings (tags, comments toggle, collection type selector), "Save Draft" + "Post" footer buttons; accepts per-field value/onChange/error props + `framingEditorSlot: ReactNode` + `onSubmit`, `onSaveDraft`, `onFindTemplate` callbacks; uses Dialog primitive for modal shell
 - [ ] T055 [US7] Create `src/main/crdPages/space/hooks/useCrdCalloutForm.ts` — manages Formik context for callout creation/editing; maps form values to `CreateCalloutEntityInput` / `UpdateCalloutEntityInput` GraphQL mutations; handles media gallery upload, poll option diffing, and whiteboard visual upload; provides `isValid`, `isDirty`, `onSubmit`, `onSaveDraft`
-- [ ] T056 [US7] Create `src/main/crdPages/space/callout/CalloutFormConnector.tsx` — renders CRD CalloutFormLayout inside Formik context from `useCrdCalloutForm`; binds each CRD form field to Formik fields; renders `FramingEditorConnector` as the type-specific editor slot
+- [ ] T056 [US7] Create `src/main/crdPages/space/callout/CalloutFormConnector.tsx` — renders CRD AddPostModal inside Formik context from `useCrdCalloutForm`; binds each CRD form field to Formik fields; renders `FramingEditorConnector` as the type-specific editor slot
 - [ ] T057 [US7] Create `src/main/crdPages/space/callout/FramingEditorConnector.tsx` — renders the appropriate editor for the selected framing type: existing Tiptap markdown editor (Memo), existing FormikWhiteboardPreview (Whiteboard), CRD LinkFramingFields (Link), existing media gallery uploader (MediaGallery), CRD PollOptionsEditor (Poll); wraps third-party editors with Formik field bindings
 - [ ] T058 [US7] Create `src/main/crdPages/space/callout/CalloutEditConnector.tsx` — loads existing callout data via `useCalloutContentQuery`, pre-fills CalloutFormConnector with current values, locks framing type and contribution type selectors (read-only)
 - [ ] T059 [P] [US8] Create `src/crd/components/callout/CalloutContextMenu.tsx` — Radix DropdownMenu with items: Edit, Publish/Unpublish, Delete, Sort Contributions, Save as Template, Move (sub-menu: Up/Down/Top/Bottom with disabled states at boundaries), Share; each item gated by permission props (`editable`, `movable`, `canSaveAsTemplate`); keyboard navigable with screen reader announcements
 - [ ] T060 [US8] Create `src/main/crdPages/space/callout/CalloutManagementConnector.tsx` — handles context menu actions: Edit → opens CalloutEditConnector in dialog; Publish/Unpublish → `useUpdateCalloutVisibilityMutation` with notification toggle; Delete → confirmation dialog + `useDeleteCalloutMutation`; Sort → opens MUI CalloutContributionsSortDialog; Move → `useUpdateCalloutsSortOrderMutation`; Share → opens MUI ShareDialog; Save as Template → opens MUI CreateTemplateDialog
-- [ ] T061 [US8] Wire CalloutContextMenu into CalloutBlock via CalloutListConnector — when settings icon clicked, render CalloutContextMenu with permission-gated items; wire each action to CalloutManagementConnector
+- [ ] T061 [US8] Wire CalloutContextMenu into PostCard via CalloutListConnector (T129) — when settings icon clicked on a PostCard, render CalloutContextMenu with permission-gated items; for callout-specific components (whiteboard/poll/media/link), add settings trigger with same menu; wire each action to CalloutManagementConnector
 
 **Checkpoint**: Full callout lifecycle works: create (all types), edit, publish/unpublish, delete, reorder, share. Form validation works. Permission gating correct.
 
 ---
 
-## Phase 10: US9 — Tab Action Buttons (Priority: P2)
+## Phase 12: US9 — Tab Action Buttons (Priority: P2)
 
 **Goal**: Activity, Video Call, Share, and Settings action buttons in tab navigation trigger correct dialogs/navigation
 
@@ -182,7 +202,7 @@
 
 ---
 
-## Phase 11: US10 — Callout Contributions (Priority: P2)
+## Phase 13: US10 — Callout Contributions (Priority: P2)
 
 **Goal**: Contribution cards (Post, Whiteboard, Memo, Link) display in expandable grids within callout blocks
 
@@ -199,26 +219,26 @@
 - [ ] T071 [US10] Create `src/main/crdPages/space/dataMappers/contributionDataMapper.ts` — maps `AnyContribution` (from callout query) to `ContributionCardData[]` (data-model.md); extracts type-specific fields (comment count for posts, preview URL for whiteboards, markdown for memos)
 - [ ] T072 [US10] Create `src/main/crdPages/space/callout/ContributionGridConnector.tsx` — renders ContributionGrid with mapped contribution data per type; wires card clicks to open contribution preview or navigate to detail page; manages expanded/collapsed state
 - [ ] T073 [US10] Create `src/main/crdPages/space/callout/ContributionCreateConnector.tsx` — renders ContributionCreateButton + ContributionFormLayout in dialog; wires form submission to `useCreatePostOnCalloutMutation` / `useCreateWhiteboardOnCalloutMutation` / `useCreateMemoOnCalloutMutation`; navigates to created contribution on success
-- [ ] T074 [US10] Wire ContributionGridConnector and ContributionCreateConnector into CalloutBlock via the `contributionsSlot` prop — each callout block renders its contributions grid and create button based on `allowedContributionTypes`
+- [ ] T074 [US10] Wire ContributionGridConnector and ContributionCreateConnector into PostCard content preview area and callout-specific components — for PostCard (text/memo callouts): render contributions as the `contentPreview.items` array within the card; for callout-specific components (whiteboard/poll/media): render ContributionGrid below the component in SpaceFeed; each callout renders contributions and create button based on `allowedContributionTypes`
 
 **Checkpoint**: All 4 contribution types render as cards. Grid expands/collapses. Create flow works for each type. Contribution preview shows on click.
 
 ---
 
-## Phase 12: US11 — Callout Templates (Priority: P3)
+## Phase 14: US11 — Callout Templates (Priority: P3)
 
 **Goal**: Users can import templates during callout creation and save existing callouts as templates
 
 **Independent Test**: Create a callout using "Find Template". Save an existing callout as template. Default template auto-loads for configured Innovation Flow states.
 
 - [ ] T075 [US11] Create `src/main/crdPages/space/callout/TemplateImportConnector.tsx` — manages template import flow: "Find Template" click opens existing MUI ImportTemplatesDialog (portal); on template selection, maps template data via `mapCalloutTemplateToCalloutForm()` and updates Formik context; shows overwrite confirmation if form has existing data; handles default template auto-loading from Innovation Flow state's `defaultCalloutTemplate`
-- [ ] T076 [US11] Wire TemplateImportConnector into CalloutFormConnector — connect the "Find Template" button in CalloutFormLayout to TemplateImportConnector; wire "Save as Template" in CalloutManagementConnector to open MUI CreateTemplateDialog with callout data pre-filled
+- [ ] T076 [US11] Wire TemplateImportConnector into CalloutFormConnector — connect the "Find Template" button in AddPostModal to TemplateImportConnector; wire "Save as Template" in CalloutManagementConnector to open MUI CreateTemplateDialog with callout data pre-filled
 
 **Checkpoint**: Template import pre-fills creation form. Save as template works from context menu. Default templates auto-load per tab configuration.
 
 ---
 
-## Phase 13: US12 — Callout Comments & Discussions (Priority: P3)
+## Phase 15: US12 — Callout Comments & Discussions (Priority: P3)
 
 **Goal**: Threaded comments display below callout contributions, with add/reply functionality
 
@@ -227,13 +247,13 @@
 - [ ] T077 [P] [US12] Create `src/crd/components/callout/CalloutCommentItem.tsx` — single comment with author avatar, name, timestamp, and message content; accepts `CommentData` props; indented for replies (via `parentId` presence)
 - [ ] T078 [US12] Create `src/crd/components/callout/CalloutComments.tsx` — threaded comment list composing CalloutCommentItem instances + add-comment form (text input + submit button); accepts `comments: CommentData[]`, `canComment: boolean`, `onAddComment: (text: string) => void`, `onReply: (parentId: string, text: string) => void`
 - [ ] T079 [US12] Create `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx` — maps callout/contribution comments data to `CommentData[]`; wires add/reply to existing comment mutations; determines whether to show callout-level or contribution-level comments based on selected contribution
-- [ ] T080 [US12] Wire CalloutCommentsConnector into CalloutBlock via the `commentsSlot` prop — render comments section below contributions; hide when `commentsEnabled` is false
+- [ ] T080 [US12] Wire CalloutCommentsConnector into PostCard footer area and callout-specific components — for PostCard: render comments as expandable section below the card footer (toggled by comment count click); for callout-specific components: render CalloutComments below the component in SpaceFeed; hide when `commentsEnabled` is false
 
 **Checkpoint**: Comments render threaded. Add/reply works. Comments hidden when disabled per callout settings.
 
 ---
 
-## Phase 14: US13 — About Page (Priority: P3)
+## Phase 16: US13 — About Page (Priority: P3)
 
 **Goal**: The About route renders a full-page CRD view with space details, accessible to non-members
 
@@ -246,21 +266,21 @@
 
 ---
 
-## Phase 15: US14 — Responsive Mobile Experience (Priority: P3)
+## Phase 17: US14 — Responsive Mobile Experience (Priority: P3)
 
 **Goal**: Space page fully functional on mobile: bottom tabs, overflow drawer, single-column layout, adapted callout grids
 
 **Independent Test**: Open Space page on mobile viewport. Bottom tabs appear. "More" drawer has overflow actions. Single-column content readable. Callout grids responsive.
 
-- [ ] T083 [US14] Audit and refine SpaceTabs mobile behavior (from T016) — verify fixed bottom bar renders correctly, "More" drawer opens with Activity/VideoCall/Share/Settings, tabs are reachable, no overlap with floating action buttons; add `aria-label` for drawer toggle
-- [ ] T084 [US14] Audit and refine SpaceTabLayout mobile behavior (from T017) — verify sidebar content is hidden or stacked above main content on mobile; verify callout contribution grids reflow to single column; verify forms adapt to full-width stacked layout
-- [ ] T085 [US14] Audit and refine SpaceBanner mobile behavior (from T014) — verify banner adapts to viewport width without horizontal overflow; verify title/tagline truncate gracefully on narrow screens
+- [ ] T083 [US14] Audit and refine SpaceNavigationTabs mobile behavior (from T108) — verify fixed bottom bar renders correctly, "More" drawer opens with Activity/VideoCall/Share/Settings, tabs are reachable, no overlap with floating action buttons; add `aria-label` for drawer toggle
+- [ ] T084 [US14] Audit and refine SpaceShell mobile behavior (from T106) — verify sidebar content is hidden on mobile and content flows single-column; verify callout contribution grids reflow to single column; verify forms adapt to full-width stacked layout
+- [ ] T085 [US14] Audit and refine SpaceHeader mobile behavior (from T107) — verify 320px banner adapts to viewport width without horizontal overflow; verify title/tagline truncate gracefully on narrow screens; verify member avatars stack cleanly
 
 **Checkpoint**: Full mobile experience functional. No horizontal overflow, all content reachable, bottom navigation works.
 
 ---
 
-## Phase 16: Polish & Cross-Cutting Concerns
+## Phase 18: Polish & Cross-Cutting Concerns
 
 **Purpose**: Documentation, standalone preview app, accessibility audit, and final cleanup
 
@@ -275,90 +295,69 @@
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — can start immediately
-- **Foundational (Phase 2)**: Depends on Setup (T001-T003 for i18n) — BLOCKS all user stories
-- **US1 Page Shell (Phase 3)**: Depends on Foundational (T007-T013)
-- **US2 Dashboard (Phase 4)**: Depends on US1 (page shell must render)
-- **US3 Subspaces (Phase 5)**: Depends on US1; can run in parallel with US2
-- **US4 Callouts (Phase 6)**: Depends on US1; can run in parallel with US2/US3
-- **US5 Community (Phase 7)**: Depends on US4 (needs CalloutListConnector); can run after US4
-- **US6 Custom Tabs (Phase 8)**: Depends on US4 (needs CalloutListConnector)
-- **US7+US8 Forms+Management (Phase 9)**: Depends on US4 (needs callout rendering working)
-- **US9 Tab Actions (Phase 10)**: Depends on US1; low coupling, can be done anytime after Phase 3
-- **US10 Contributions (Phase 11)**: Depends on US4 (needs CalloutBlock with contribution slot)
-- **US11 Templates (Phase 12)**: Depends on US7 (needs callout creation form)
-- **US12 Comments (Phase 13)**: Depends on US4 (needs CalloutBlock with comments slot)
-- **US13 About (Phase 14)**: Depends on US1; independent of other stories
-- **US14 Mobile (Phase 15)**: Depends on US1; refinement of existing responsive work
-- **Polish (Phase 16)**: Depends on all desired stories being complete
+- **Setup (Phase 1)**: ✅ Complete
+- **Foundational (Phase 2)**: ✅ Complete
+- **Cleanup (Phase 3)**: No dependencies — deletes old components
+- **Primitives (Phase 4)**: No dependencies — port shadcn primitives
+- **Shell (Phase 5)**: Depends on Phase 3+4 — builds SpaceShell, SpaceHeader, SpaceNavigationTabs
+- **Sidebar (Phase 6)**: Depends on Phase 4 — builds SpaceSidebar + sub-components
+- **Content (Phase 7)**: Depends on Phase 4 — builds PostCard, SpaceFeed, SpaceMembers, SpaceSubspacesList + callout-specific components
+- **Integration (Phase 8)**: Depends on Phases 5+6+7 — wires CRD components to data
+- **US5 Community (Phase 9)**: Depends on Phase 8 — adds community tab integration
+- **US6 Custom Tabs (Phase 10)**: Depends on Phase 8 — adds knowledge base / custom tabs
+- **US7+US8 Forms (Phase 11)**: Depends on Phase 8 — callout creation/editing
+- **US9 Tab Actions (Phase 12)**: Depends on Phase 5 — action button wiring
+- **US10 Contributions (Phase 13)**: Depends on Phase 8 — contribution cards
+- **US11 Templates (Phase 14)**: Depends on Phase 11 — template import/save
+- **US12 Comments (Phase 15)**: Depends on Phase 8 — comment threading
+- **US13 About (Phase 16)**: Depends on Phase 5 — about page
+- **US14 Mobile (Phase 17)**: Depends on Phase 5 — mobile polish
+- **Polish (Phase 18)**: Depends on all desired phases
 
-### Parallel Opportunities After Foundational
+### Parallel Opportunities
 
 ```
-Foundational complete
-  ├── US1 Page Shell
-  │     ├── US2 Dashboard ──────────────┐
-  │     ├── US3 Subspaces (parallel) ──┤
-  │     ├── US4 Callout Blocks ────────┤── US5, US6 after US4
-  │     ├── US9 Tab Actions ───────────┤── independent
-  │     └── US13 About ────────────────┘── independent
+Phase 3 (cleanup) + Phase 4 (primitives)
+  ├── Phase 5 (shell) ──────── Phase 6 (sidebar) can be parallel
+  │                             Phase 7 (content) can be parallel
   │
-  │     US4 complete → US7+US8 Forms + US10 Contributions + US12 Comments (parallel)
-  │     US7 complete → US11 Templates
-  │     All complete → US14 Mobile + Polish
+  └── Phase 8 (integration) ── depends on 5+6+7
+        ├── Phase 9 (community)
+        ├── Phase 10 (custom tabs)
+        ├── Phase 11 (forms)
+        ├── Phase 12 (tab actions) — independent, just needs Phase 5
+        ├── Phase 13 (contributions)
+        └── Phase 16 (about) — independent
 ```
-
-### Within Each User Story
-
-- CRD components (marked [P]) can be built in parallel
-- Data mappers can be built in parallel with CRD components
-- Hooks depend on data mappers
-- Connectors/pages depend on hooks + CRD components
-- Integration wiring is the final step in each story
 
 ---
 
 ## Implementation Strategy
 
-### MVP First (US1 Only)
+### MVP: Phases 1–8
 
-1. Complete Phase 1: Setup (i18n, shared components)
-2. Complete Phase 2: Foundational (routing, page shell integration)
-3. Complete Phase 3: US1 Page Shell
-4. **STOP and VALIDATE**: CRD banner + tabs render for any Space. Toggle works.
-5. This is the minimum viable CRD Space page — tabs show but content is placeholder
+1. ✅ Phase 1: Setup (i18n, shared components)
+2. ✅ Phase 2: Foundational (routing, data mappers)
+3. Phase 3: Cleanup (delete old components)
+4. Phase 4: Primitives (Card, Separator)
+5. Phase 5: Shell (SpaceShell + SpaceHeader + SpaceNavigationTabs) — **VALIDATE: 12-col grid renders**
+6. Phase 6: Sidebar (SpaceSidebar variant-based)
+7. Phase 7: Content (PostCard + SpaceFeed + SpaceMembers + SpaceSubspacesList + callout-specific)
+8. Phase 8: Integration (wire everything to data) — **VALIDATE: Dashboard + Subspaces tabs work**
 
-### Incremental Delivery
+### Incremental Delivery (Phases 9+)
 
-1. Setup + Foundational → Route toggle works
-2. + US1 → Page shell visible (MVP)
-3. + US2 + US3 → Dashboard and Subspaces tabs functional
-4. + US4 → Callout content renders (major milestone — all tabs have content)
-5. + US5 + US6 → Community and Custom tabs complete
-6. + US7 + US8 → Callout creation/editing/management
-7. + US9 + US10 → Tab actions and contributions
-8. + US11 + US12 + US13 + US14 → Templates, comments, about, mobile polish
-
-### Parallel Team Strategy
-
-With 2-3 developers after Foundational:
-- Dev A: US1 → US4 (page shell → callout blocks) — critical path
-- Dev B: US2 + US3 (dashboard + subspaces) — parallel with US1
-- Dev C: US13 + US9 (about page + tab actions) — independent
-
-After US4 lands:
-- Dev A: US7 + US8 (forms + management)
-- Dev B: US5 + US6 (community + custom tabs)
-- Dev C: US10 + US12 (contributions + comments)
+- + Phase 9 → Community tab
+- + Phase 10 → Knowledge Base / custom tabs
+- + Phase 11 → Callout creation/editing
+- + Phases 12-18 → remaining features and polish
 
 ---
 
 ## Notes
 
+- **Prototype = visual reference** — `prototype/src/app/components/space/` defines the visual design. CRD components match the look but use our own prop types and CRD conventions.
 - [P] tasks = different files, no dependencies on incomplete tasks in same phase
-- [US#] label maps task to spec user story for traceability
-- Each user story should be independently completable and testable
-- Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
 - CRD components MUST pass `src/crd/CLAUDE.md` component checklist
-- All MUI dialogs triggered from CRD render as portals outside `.crd-root` — no CSS isolation concerns
+- All MUI dialogs triggered from CRD render as portals outside `.crd-root`
+- Inline `style` is acceptable for `color-mix()`, `clamp()`, and runtime values only — use Tailwind for everything else
