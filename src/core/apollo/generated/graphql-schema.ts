@@ -6015,6 +6015,8 @@ export type PlatformAdminIdentityQueryResultsIdentitiesArgs = {
 
 export type PlatformAdminQueryResults = {
   __typename?: 'PlatformAdminQueryResults';
+  /** Retrieve all Accounts on the Platform. This is only available to Platform Admins. */
+  accounts: Array<Account>;
   /** Lookup Communication related information. */
   communication: PlatformAdminCommunicationQueryResults;
   /** Lookup Identity related information. */
@@ -6582,8 +6584,6 @@ export enum PushSubscriptionStatus {
 
 export type Query = {
   __typename?: 'Query';
-  /** The Accounts on this platform; If accessed through an Innovation Hub will return ONLY the Accounts defined in it. */
-  accounts: Array<Account>;
   /** Activity events related to the current user. */
   activityFeed: ActivityFeed;
   /** Activity events related to the current user grouped by Activity type and resource. */
