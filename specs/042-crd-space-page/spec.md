@@ -18,6 +18,79 @@ A Space is the primary organizational unit in Alkemio. Each Space L0 page is a r
 
 This is the most complex page migration in the CRD effort, encompassing the page shell, tab system, and the entire callout content system.
 
+### Third-Party Integration Boundaries
+
+Several callout framing types depend on complex third-party systems. The CRD boundary for each is defined precisely here:
+
+**Whiteboard (Excalidraw + real-time collaboration)**
+The whiteboard system is NOT just "Excalidraw in a dialog." It is a full collaborative real-time editing platform:
+- **Collab class** (~577 lines): Scene synchronization, element reconciliation, mode management (read/write based on permissions, inactivity timeout at 60s, room capacity)
+- **Portal class** (~303 lines): WebSocket management with binary-encoded scene updates, volatile channel for ephemeral data (emoji reactions, cursor positions, countdown timers)
+- **File management pipeline**: Images embedded in whiteboards are uploaded to the server, cached, and re-downloaded by collaborators via a dedicated FileUploader/FileDownloader system with retry logic
+- **Preview generation**: Auto/Custom/Fixed modes with canvas-to-PNG export, crop coordinates, and per-visual-type resizing
+- **Guest access**: Session storage persistence, anonymized names for authenticated users, special auth headers on file downloads
+
+**CRD boundary**: The WhiteboardPreview (thumbnail image + buttons) renders **inline** in callout blocks and is a simple presentational component -- rebuild in CRD. The WhiteboardDialog and everything below it (CollaborativeExcalidrawWrapper, Collab, Portal, file management, preview generation, guest session) renders as a **portal dialog** (outside `.crd-root`) -- keep as-is, opened from the integration layer. Whiteboard contribution cards (thumbnail + title) are also simple enough for CRD.
+
+**Memo (Tiptap rich text editor)**
+MemoPreview (rendered markdown display) renders **inline** -- rebuild in CRD as plain HTML rendering. MemoDialog (full editing experience with Tiptap) renders as a **portal dialog** -- keep as-is.
+
+**Rich text descriptions (Tiptap)**
+Callout descriptions and contribution descriptions use Tiptap for editing. Read-only rendering of markdown is CRD (just HTML). The Tiptap editing surface in callout creation/editing forms is wrapped by the integration layer.
+
+**Poll (GraphQL subscriptions)**
+Poll display and voting UI renders **inline** -- rebuild in CRD. Real-time vote updates use existing GraphQL subscriptions unchanged in the data layer.
+
+### Routing Strategy
+
+The current routing structure for Space pages is:
+
+```
+TopLevelRoutes.tsx
+  └── UrlResolverProvider
+        └── :spaceNameId/* → SpaceRoutes (always MUI today)
+
+SpaceRoutes.tsx
+  └── SpaceContextProvider
+        └── SpacePageLayout (MUI shell: banner, tabs, footer)
+              ├── /about → SpaceAboutPage
+              ├── [Protected]
+              │   ├── / (index) → SpaceTabbedPages (Dashboard/Community/Subspaces/Custom by sectionIndex)
+              │   ├── /collaboration/:calloutNameId → SpaceCalloutPage
+              │   ├── /settings/* → SpaceAdminL0Route
+              │   └── /:dialog?/:calendarEventNameId? → SpaceDashboardPage (dialog routes)
+              ├── /challenges/:subspaceNameId/* → SubspaceRoutes (own layout)
+              └── * → LegacyRoutesRedirects
+```
+
+The CRD migration changes this to:
+
+```
+TopLevelRoutes.tsx (when crdEnabled)
+  └── CrdLayoutWrapper          ← NEW: wraps :spaceNameId/* in CRD shell
+        └── UrlResolverProvider
+              └── :spaceNameId/* → CrdSpaceRoutes
+
+CrdSpaceRoutes (replaces SpaceRoutes when crdEnabled)
+  └── SpaceContextProvider (reused, unchanged)
+        └── CrdSpacePageLayout   ← NEW: CRD banner + tabs + footer
+              ├── /about → CrdSpaceAboutPage
+              ├── [Protected]
+              │   ├── / (index) → CrdSpaceTabbedPages (CRD tab content)
+              │   ├── /collaboration/:calloutNameId → SpaceCalloutPage (MUI content inside CRD layout)
+              │   ├── /settings/* → SpaceAdminL0Route (MUI content inside CRD layout)
+              │   └── /:dialog?/:calendarEventNameId? → CrdSpaceDashboardPage (dialog routes)
+              ├── /challenges/:subspaceNameId/* → SubspaceRoutes (own layout, unchanged)
+              └── * → LegacyRoutesRedirects (unchanged)
+```
+
+Key routing decisions:
+- **SpaceContextProvider is reused** -- it provides space data, permissions, and entitlements. No changes needed.
+- **CrdSpacePageLayout replaces SpacePageLayout** -- CRD banner + tabs + Outlet. The layout only shows tabs for L0 (same logic as MUI version).
+- **Settings and Subspace routes render inside CrdSpacePageLayout's Outlet** -- settings pages render their own admin layout below the CRD banner/breadcrumbs. Subspace routes use SubspacePageLayout internally. No conflict because the CRD elements are above (sequential, not nested).
+- **Callout detail route** (`/collaboration/:calloutNameId`) renders inside CrdSpacePageLayout -- the CRD layout shows banner + breadcrumbs (no tabs for this route). The callout content itself is rendered via the integration layer.
+- **Feature toggle** -- TopLevelRoutes conditionally routes to CrdSpaceRoutes (crdEnabled) or SpaceRoutes (!crdEnabled), same pattern as 039 for the /spaces page.
+
 ### Prototype Reference
 
 The prototype does not include a Space detail page. CRD components for this migration will be designed to match the aesthetic of the existing CRD components (from 039-crd-spaces-page) while reflecting the structural needs of the current MUI Space pages.
@@ -54,8 +127,9 @@ The prototype does not include a Space detail page. CRD components for this migr
 
 ### Out of Scope
 
-- **Whiteboard canvas editing**: The full collaborative drawing canvas (Excalidraw) is a third-party integration; only the preview/thumbnail and click-to-open behavior are in scope
-- **Rich text editor internals**: The markdown editor (Tiptap) rendering engine itself; CRD wraps it but does not rebuild it
+- **Whiteboard collaboration system**: The entire real-time collaboration stack remains untouched -- CollaborativeExcalidrawWrapper, Collab class (scene sync, mode management, element reconciliation), Portal class (WebSocket with binary encoding), file management pipeline (FileUploader/FileDownloader/WhiteboardFileCache), preview generation (Auto/Custom/Fixed modes with canvas export), and guest session management. These render inside WhiteboardDialog which portals outside `.crd-root`. Only the inline WhiteboardPreview thumbnail and WhiteboardCard (contribution) are CRD components.
+- **Memo editing dialog**: MemoDialog (Tiptap-based full editing experience) remains MUI, portals outside `.crd-root`. Only the inline MemoPreview (rendered markdown display) is a CRD component.
+- **Rich text editor internals**: The Tiptap editor engine used for callout descriptions and contributions; the integration layer wraps it for creation/editing forms
 - **Subspace pages (L1/L2)**: Different layout, migrated in a future spec
 - **Space admin/settings pages** (`/:spaceNameId/settings/*`): Complex admin forms, separate migration
 - **Template management** (CRUD operations on templates in admin): Part of settings pages
@@ -444,7 +518,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 #### Callout Framing Types
 
 - **FR-053**: Memo framing MUST render markdown content as formatted text; clicking MUST open an expanded view for full reading/editing
-- **FR-054**: Whiteboard framing MUST render a preview thumbnail; clicking MUST open the full whiteboard view (whiteboard canvas interaction remains in the existing whiteboard module)
+- **FR-054**: Whiteboard framing MUST render a CRD preview thumbnail (image + "Open" button); clicking MUST trigger a callback that the integration layer uses to open the existing WhiteboardDialog (MUI, renders as portal outside `.crd-root`). The entire collaboration system (Collab, Portal, file management, preview generation, guest sessions) is invoked by the dialog -- none of it enters `src/crd/`
 - **FR-055**: Link framing MUST render as a call-to-action button with the link display name; the URL MUST be validated for http/https; external links MUST open in a new tab with `noopener, noreferrer`; internal links MUST use client navigation
 - **FR-056**: Media Gallery framing MUST render images in a grid layout; authorized users MUST be able to add images; empty galleries MUST show an upload placeholder for editors
 - **FR-057**: Poll framing MUST render questions with votable options; users with contribute access MUST be able to cast votes; results MUST display with vote counts and percentages
@@ -512,9 +586,13 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-098**: All CRD Space and Callout components in `src/crd/` MUST have zero MUI or Emotion imports
 - **FR-099**: Data mapping from the data layer to CRD component props MUST happen in the integration layer (`src/main/crdPages/space/`)
 - **FR-100**: Existing MUI dialogs (Activity, Video Call, Share, Direct Message, Application, Create Subspace, Calendar, Updates, Welcome, About) MUST be reusable from the integration layer via callbacks
-- **FR-101**: The feature toggle (`alkemio-crd-enabled` in localStorage) MUST gate CRD vs MUI rendering for Space L0 routes
+- **FR-101**: The feature toggle (`alkemio-crd-enabled` in localStorage) MUST gate CRD vs MUI rendering for Space L0 routes by conditionally routing to CrdSpaceRoutes or SpaceRoutes in TopLevelRoutes
 - **FR-102**: CRD and MUI versions of the Space page MUST coexist without CSS conflicts or console errors
-- **FR-103**: The whiteboard canvas (Excalidraw) and rich text editor (Tiptap) MUST be wrapped by CRD-styled containers but their internal rendering is not replaced
+- **FR-116**: The `:spaceNameId/*` route MUST be wrapped in CrdLayoutWrapper when CRD is enabled, following the same pattern as the /spaces route in 039
+- **FR-117**: SpaceContextProvider MUST be reused unchanged inside the CRD route tree -- no duplication of space data fetching
+- **FR-118**: Sub-routes that remain MUI (settings, subspaces) MUST render inside CrdSpacePageLayout's Outlet without visual conflict -- settings renders its own admin layout below the CRD banner, subspaces use their own SubspacePageLayout
+- **FR-119**: The callout detail route (`/collaboration/:calloutNameId`) MUST render inside CrdSpacePageLayout with CRD banner and breadcrumbs but no tab navigation
+- **FR-103**: Whiteboard and Memo dialogs (WhiteboardDialog, MemoDialog) MUST remain as MUI components, opened from the integration layer; they render as portals outside `.crd-root` and have no CSS isolation concerns. Only the inline preview components (WhiteboardPreview thumbnail, MemoPreview rendered markdown, WhiteboardCard contribution card) MUST be CRD components. The Tiptap editor used in callout creation/editing forms MUST be wrapped by the integration layer, not imported into `src/crd/`
 - **FR-104**: The callout form MUST NOT import form state libraries (e.g., Formik) in `src/crd/`; form state management MUST happen in the integration layer
 
 #### Accessibility
@@ -557,8 +635,8 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 6. Tab positions are stable for this spec: position 0=Dashboard, 1=Community, 2=Subspaces, 3=Knowledge Base, 4+=Custom. However, the architecture MUST NOT hard-wire content to positional indices in a way that would prevent a future layout setting from controlling which sections appear on which tabs. Tab content components should be decoupled from their position so they can be re-assigned via configuration in a future iteration.
 7. Subspace cards can reuse or extend the SpaceCard CRD component from 039
 8. The About page is a full-page CRD view, not an overlay dialog (the SpaceAboutDialog triggered from Dashboard remains MUI)
-9. The whiteboard canvas (Excalidraw) is wrapped by a CRD container but its internal rendering and collaborative editing are not rebuilt -- click-to-open opens the existing whiteboard module
-10. The rich text editor (Tiptap) is wrapped by CRD-styled containers; its internal toolbar and editing surface are not rebuilt from scratch
+9. Whiteboard and Memo dialogs remain MUI and render as portals (outside `.crd-root`), so there are no CSS isolation concerns. Only the inline preview thumbnails and contribution cards are CRD components. The entire whiteboard collaboration stack (Collab, Portal, file management, preview generation, guest sessions) is untouched.
+10. The rich text editor (Tiptap) is wrapped by the integration layer for creation/editing forms; its internal toolbar and editing surface are not rebuilt. Read-only markdown rendering in callout blocks and contribution previews is a CRD concern (plain HTML output).
 11. Form state management (currently Formik) is handled in the integration layer, not in `src/crd/` -- CRD form components are pure UI (inputs, selectors, validation display)
 12. The existing MUI dialogs listed in Out of Scope can be triggered via state/callbacks from the CRD integration layer
 13. Drag-and-drop for contribution sorting uses the existing @dnd-kit library wrapped in CRD-styled containers
