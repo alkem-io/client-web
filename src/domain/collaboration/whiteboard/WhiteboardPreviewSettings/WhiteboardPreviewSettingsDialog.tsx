@@ -4,9 +4,11 @@ import { Box } from '@mui/system';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Caption } from '@/core/ui/typography';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import type { CropConfig } from '@/core/utils/images/cropImage';
@@ -65,6 +67,7 @@ const WhiteboardPreviewSettingsDialog = ({
 }: WhiteboardPreviewSettingsDialogProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const notify = useNotification();
   const ensurePresence = useEnsurePresence();
   const [selectedMode, setSelectedMode] = useState<WhiteboardPreviewMode>(whiteboard.previewSettings.mode);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
@@ -74,7 +77,11 @@ const WhiteboardPreviewSettingsDialog = ({
     const excalidrawAPIrequired = ensurePresence(excalidrawAPI);
     setCropDialogOpen(true);
 
-    const { image } = await getWhiteboardPreviewImage(excalidrawAPIrequired);
+    const { image, error } = await getWhiteboardPreviewImage(excalidrawAPIrequired);
+    if (error) {
+      logError(new Error('Error generating whiteboard preview image.'));
+      notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
+    }
     const blob = await toBlobPromise(image).catch(async () => toBlobPromise(await createFallbackWhiteboardPreview()));
     setWhiteboardPreviewImage(blob);
   };
