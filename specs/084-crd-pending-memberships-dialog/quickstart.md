@@ -74,6 +74,21 @@ Create `src/main/crdPages/dashboard/CrdPendingMembershipsDialog.tsx`:
 Modify `src/main/ui/layout/CrdLayoutWrapper.tsx`:
 - Change lazy import from MUI dialog to CRD dialog
 
+## Standalone Preview (pnpm crd:dev)
+
+The Pending Memberships dialogs are wired into the standalone CRD preview app at `src/crd/app/`:
+
+- **CrdApp.tsx**: Manages dialog state, renders both list and detail dialogs at app level. Header "Invitations" click opens the dialog from any page.
+- **DashboardPage.tsx**: Sidebar "Invitations" click wired via `onPendingMembershipsClick` callback prop.
+- **data/dashboard.ts**: Mock data for regular invitations (`MOCK_PENDING_INVITATIONS`), VC invitations (`MOCK_PENDING_VC_INVITATIONS`), applications (`MOCK_PENDING_APPLICATIONS`), and detail view (`MOCK_INVITATION_DETAIL`).
+
+To preview:
+1. Run `pnpm crd:dev` → opens on `localhost:5200`
+2. Click "Invitations" in sidebar or user menu
+3. List dialog shows 3 sections: regular invite, VC invite, application
+4. Click any invitation card → detail dialog opens with space card, description, welcome message
+5. "Back" returns to list, "Accept"/"Decline" close the detail dialog
+
 ## Verification
 
 ```bash
@@ -89,7 +104,7 @@ pnpm start
 
 # Standalone CRD app (verify components with mock data)
 pnpm crd:dev
-# Then check localhost:5200
+# Then check localhost:5200 — click "Invitations" in sidebar or header menu
 ```
 
 ## Key Reference Files
