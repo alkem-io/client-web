@@ -1,0 +1,136 @@
+{
+  "sidebar": {
+    "invitations": "Покани",
+    "tipsAndTricks": "Съвети и трикове",
+    "myAccount": "Моят акаунт",
+    "createSpace": "Създай собствено пространство",
+    "activityView": "Изглед на активност",
+    "mySpaces": "Моите пространства",
+    "virtualContributors": "Виртуални сътрудници",
+    "innovationHubs": "Иновационни хъбове",
+    "innovationPacks": "Иновационни пакети",
+    "openMenu": "Отвори менюто",
+    "closeMenu": "Затвори менюто",
+    "pendingCount": "{{count}} чакащи"
+  },
+  "recentSpaces": {
+    "title": "Скорошни пространства",
+    "exploreAll": "Разгледай всички свои пространства",
+    "homeSpacePlaceholder": {
+      "title": "Задай начално пространство",
+      "subtitle": "Закачи любимото си пространство на таблото"
+    },
+    "homeSpaceSettings": "Настройки на началното пространство",
+    "private": "Частно"
+  },
+  "activity": {
+    "spacesTitle": "Последна активност в моите пространства",
+    "personalTitle": "Моята последна активност",
+    "filter": {
+      "space": {
+        "label": "Пространство",
+        "all": "Всички пространства"
+      },
+      "role": {
+        "label": "Моята роля",
+        "all": "Всички роли",
+        "member": "Член",
+        "lead": "Лидер",
+        "admin": "Администратор"
+      }
+    },
+    "showMore": "Покажи повече",
+    "noActivity": "Няма скорошна активност"
+  },
+  "dialogs": {
+    "tipsAndTricks": "Съвети и трикове",
+    "myActivity": "Моята последна активност",
+    "mySpaceActivity": "Последна активност в моите пространства",
+    "memberships": "Моите членства",
+    "findMore": "Открий повече съвети и трикове",
+    "findMoreUrl": "https://welcome.alkem.io/blog/",
+    "seeMoreSpaces": "Виж повече пространства",
+    "createSpace": "Създай пространство",
+    "expandNode": "Разгъни {{name}}",
+    "collapseNode": "Свий {{name}}"
+  },
+  "tips": {
+    "items": [
+      {
+        "title": "Присъединете се към пространството Welcome@Alkemio",
+        "description": "За примери, добри практики, съвети и трикове",
+        "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+        "url": "https://alkem.io/welcome-space/dashboard"
+      },
+      {
+        "title": "Разгледайте документацията",
+        "description": "За отговори на най-неотложните ви въпроси",
+        "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+        "url": "https://alkem.io/docs"
+      },
+      {
+        "title": "Прочетете повече за структурата на пространствата в Alkemio",
+        "description": "За да започнете гладко работа с платформата",
+        "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+        "url": "https://alkem.io/docs/structure/space"
+      },
+      {
+        "title": "Създайте ново пространство",
+        "description": "За да съберете сътрудници за вашата визия за промяна",
+        "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+        "url": "https://welcome.alkem.io/want-to-own-space/"
+      },
+      {
+        "title": "Задвижвано от генеративен ИИ",
+        "description": "Представяме автоматизирания чат за насоки на Alkemio",
+        "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+        "url": "https://welcome.alkem.io/blog/2024-01-chatbot/"
+      }
+    ]
+  },
+  "invitations": {
+    "title": "Чакащи покани",
+    "accept": "Приеми",
+    "decline": "Откажи",
+    "noInvitations": "Няма чакащи покани"
+  },
+  "campaign": {
+    "title": "Създай свой виртуален сътрудник",
+    "description": "Започни с твой собствен AI сътрудник",
+    "cta": "Създай виртуален сътрудник"
+  },
+  "releaseNotes": {
+    "dismiss": "Затвори",
+    "readMore": "Прочети повече"
+  },
+  "spaces": {
+    "loadMore": "Зареди повече",
+    "seeMoreSubspaces": "Виж повече подпространства"
+  },
+  "unauthenticated": {
+    "signUp": "Регистрация"
+  },
+  "withoutMemberships": {
+    "createSpace": "Създай собствено пространство",
+    "createSpaceDescription": "Започни да си сътрудничиш, като създадеш първото си пространство"
+  },
+  "pendingMemberships": {
+    "title": "Чакащи членства",
+    "empty": "Нямаш отворени покани или заявления.",
+    "loading": "Зареждане на чакащи членства",
+    "close": "Затвори",
+    "closeDialog": "Затвори диалога",
+    "invitationsSection": "Покани",
+    "vcInvitationsSection": "Покани за виртуални сътрудници",
+    "applicationsSection": "Отворени заявления",
+    "detail": {
+      "back": "Обратно към списъка",
+      "reject": "Откажи",
+      "rejectAriaLabel": "Откажи поканата за {{spaceName}}",
+      "accept": "Приеми",
+      "acceptAriaLabel": "Приеми поканата за {{spaceName}}",
+      "join": "Присъедини се",
+      "joinAriaLabel": "Присъедини се към {{spaceName}}"
+    }
+  }
+}

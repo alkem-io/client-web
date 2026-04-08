@@ -1,0 +1,288 @@
+# Feature Specification: CRD Spaces Page Migration
+
+**Feature Branch**: `039-crd-spaces-page`
+**Created**: 2026-03-26
+**Status**: Implemented
+**Input**: Migrate the /spaces page from MUI to shadcn/ui as the first PoC for the CRD (Client Re-Design) migration strategy.
+
+## Context
+
+This is the **proof of concept** for the CRD migration — the systematic replacement of MUI-based UI with shadcn/ui + Tailwind CSS. The `/spaces` page was chosen because it is relatively simple (a filterable grid of cards), has a complete prototype in `prototype/src/app/pages/BrowseSpacesPage.tsx`, and exercises the full migration pipeline: primitives, composites, layout, data mapping, and route wiring.
+
+### Prototype-to-Production Mapping
+
+The prototype (`prototype/`) is auto-generated from Figma Make. Key differences from production:
+- Prototype uses hardcoded mock data; production uses GraphQL via Apollo
+- Prototype has no i18n; production uses `react-i18next`
+- Prototype uses `react-router` `<Link>`; CRD components receive `href`/`onClick` props instead
+- Prototype components live in `prototype/src/app/components/`; production CRD components go to `src/crd/`
+
+| Prototype Component | CRD Target | Purpose |
+| --- | --- | --- |
+| `prototype/src/app/layouts/MainLayout.tsx` | `src/crd/layouts/CrdLayout.tsx` | Full-page CRD shell (header + content + footer) |
+| `prototype/src/app/components/layout/Header.tsx` | `src/crd/layouts/Header.tsx` | CRD header with nav icons, composes UserMenu + PlatformNavigationMenu from `layouts/components/` |
+| `src/main/ui/platformNavigation/PlatformNavigationMenuButton.tsx` | `src/crd/layouts/components/PlatformNavigationMenu.tsx` | Platform navigation dropdown (Innovation Library, Forum, Spaces, Docs) |
+| `prototype/src/app/components/layout/Footer.tsx` | `src/crd/layouts/Footer.tsx` | CRD footer with links and language selector |
+| `prototype/src/app/components/space/SpaceCard.tsx` | `src/crd/components/space/SpaceCard.tsx` | Individual space card |
+| `prototype/src/app/pages/BrowseSpacesPage.tsx` | `src/crd/components/space/SpaceExplorer.tsx` | Spaces listing with search/filter |
+| `prototype/src/app/components/ui/*` | `src/crd/primitives/*` | shadcn/ui atoms (Button, Badge, Avatar, Input, Select, etc.) |
+
+### Current Production Architecture
+
+The existing `/spaces` page follows this data flow:
+1. **Route**: `TopLevelRoutes.tsx` → `/spaces` → `SpaceExplorerPage`
+2. **Page**: `SpaceExplorerPage.tsx` → wraps in `TopLevelPageLayout` (MUI header/banner/footer via `TopLevelLayout`) + calls `useSpaceExplorer()` hook
+3. **Hook**: `useSpaceExplorer.ts` → orchestrates multiple GraphQL queries (all spaces, member spaces, search, subspaces)
+4. **View**: `SpaceExplorerView.tsx` → renders search input, filter buttons, card grid with lazy loading
+5. **Card**: `SpaceCard.tsx` → renders individual space card (MUI Paper, Box, Typography, etc.)
+
+The data layer (step 3) remains untouched. The **entire page shell** (steps 1-2, 4-5) gets a CRD alternative — CRD routes render with a completely new layout (header, footer, content wrapper) instead of the MUI `TopLevelPageLayout`/`TopLevelLayout`.
+
+### CRD Full-Page Architecture
+
+When a route is migrated to CRD, the entire page renders in the CRD design system:
+1. **Route**: `TopLevelRoutes.tsx` → `/spaces` → `CrdLayoutWrapper` → `SpaceExplorerPage`
+2. **Layout**: `CrdLayout` renders CRD Header + `<main>` + CRD Footer (all Tailwind, no MUI)
+3. **Page**: `SpaceExplorerPage` (in `src/main/crdPages/spaces/`) calls `useSpaceExplorer()` hook, maps data via `mapSpacesToCardDataList`, and renders CRD `SpaceExplorer` component
+5. **Card**: CRD `SpaceCard` → renders individual space card (Tailwind, Radix UI)
+
+Page-level integration files live in `src/main/crdPages/spaces/` — the dedicated integration layer for CRD-migrated pages. MUI routes continue using `TopLevelLayout` unchanged. The split happens at the route level in `TopLevelRoutes.tsx`.
+
+---
+
+## User Scenarios & Testing
+
+### User Story 1 — Full CRD Page Shell (Priority: P0)
+
+A user navigates to `/spaces` and sees an **entirely new page** — CRD header, CRD content area, CRD footer. No MUI components are visible anywhere on the page. The header shows the Alkemio logo, navigation icons (search, messages, notifications, spaces, profile), and the footer shows links and a language selector — all matching the prototype's `MainLayout`.
+
+**Why this priority**: The CRD layout shell must exist before any page content can be built. It proves the fundamental architecture: CRD routes get a completely separate visual shell from MUI routes.
+
+**Independent Test**: Navigate to `/spaces`. Verify the entire page (header, content area, footer) renders with the new CRD design. Navigate to any other page — it should still render with the MUI layout.
+
+**Acceptance Scenarios**:
+
+1. **Given** `/spaces` is a CRD route, **When** the user navigates to `/spaces`, **Then** the page renders with the CRD Header (sticky, logo, nav icons) and CRD Footer (links, language selector) — no MUI `TopLevelLayout` visible
+2. **Given** the CRD layout renders, **When** inspecting the DOM, **Then** the entire page is wrapped in `.crd-root` and uses only Tailwind styling
+3. **Given** the CRD header renders, **When** the user sees the navigation icons, **Then** the header shows: Alkemio logo (links home), search icon, messages button, notifications button, PlatformNavigation icon (opens popup menu), and profile avatar with dropdown. The explore popup menu shows navigation items: Innovation Library, Forum, Spaces, and Documentation — matching the MUI `StandalonePlatformNavigationMenu` items. The profile dropdown shows: user name with role badge, Dashboard, Profile, My Account, Pending Memberships (with invitation count badge), Administration (only for admins), Language sub-menu, Get Help, and Log out. Messages and Notifications buttons directly open the existing MUI dialogs (rendered in `root.tsx`) via context providers. Search overlay is deferred. Unread notification count is implemented via FR-035
+4. **Given** the CRD footer renders, **When** the user sees the footer, **Then** it shows: copyright, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector
+
+---
+
+### User Story 2 — Browse Spaces with New Design (Priority: P1)
+
+A user navigates to `/spaces` and sees the spaces listing rendered with the new shadcn/ui design system inside the CRD layout shell. The page shows the same data, same functionality (search, filter, pagination), but with the new visual design from the prototype.
+
+**Why this priority**: This is the core content deliverable — proving that a CRD page can render real data while reusing the existing data layer.
+
+**Independent Test**: Navigate to `/spaces`. Verify all spaces load, cards render with correct data (name, description, banner, tags, leads, privacy badge), and the page matches the prototype's layout structure and design language (minor spacing/shadow differences acceptable; pixel-perfection not required).
+
+**Acceptance Scenarios**:
+
+1. **Given** `/spaces` is wired to CRD, **When** the user navigates to `/spaces`, **Then** the page renders using shadcn/ui components from `src/crd/` with no MUI components visible
+2. **Given** the spaces list loads, **When** cards are displayed, **Then** each card shows: banner image, space name, tagline, tags, lead avatars, and privacy indicator — matching the data from the existing GraphQL queries
+3. **Given** the CRD page is loaded, **When** the user searches by tags, **Then** spaces are filtered using the same search logic as the MUI version
+4. **Given** the CRD page is loaded, **When** the user scrolls or clicks "Load More", **Then** additional spaces load via the existing pagination mechanism
+
+---
+
+### User Story 3 — MUI and CRD Coexistence (Priority: P1)
+
+The `/spaces` page renders with a completely CRD page shell (header, content, footer) while all other (unmigrated) pages continue rendering with the MUI `TopLevelLayout`. Both design systems coexist without conflicts — navigating between migrated and unmigrated pages works seamlessly, switching between entirely different layout shells.
+
+**Why this priority**: Proving that CRD and MUI can coexist at the **layout level** (not just the content level) in the same app without visual or functional regressions is the foundational validation for the entire migration strategy.
+
+**Independent Test**: Navigate between `/spaces` (full CRD page) and any other page (full MUI page). Verify both render correctly with no style leakage, no broken layouts, and no console errors during transitions.
+
+**Acceptance Scenarios**:
+
+1. **Given** `/spaces` uses CRD layout, **When** the user navigates to `/spaces`, **Then** the entire page (header, content, footer) renders using CRD components — no MUI `TopLevelLayout` elements visible
+2. **Given** other pages use MUI layout, **When** the user navigates from `/spaces` to another page, **Then** the MUI page renders with its own header/nav/footer correctly, with no Tailwind style leakage
+3. **Given** both layout systems are loaded, **When** inspecting the DOM, **Then** CRD styles are scoped within `.crd-root` and do not affect MUI components outside it
+4. **Given** the user clicks a navigation link in the CRD header, **When** the link targets an MUI page, **Then** the navigation succeeds and the MUI layout loads correctly
+
+---
+
+### User Story 4 — Responsive Space Cards (Priority: P2)
+
+The CRD spaces page adapts to different screen sizes, displaying the card grid responsively — more columns on wide screens, fewer on narrow screens, with cards that maintain readability at all sizes.
+
+**Why this priority**: The prototype already defines responsive behavior via CSS Grid with `auto-fill` columns. Matching this in production ensures the CRD page is usable across devices.
+
+**Independent Test**: Resize the browser window from mobile to desktop widths. Verify the card grid reflows correctly and cards remain readable at all breakpoints.
+
+**Acceptance Scenarios**:
+
+1. **Given** a desktop viewport (>1200px), **When** spaces load, **Then** the grid displays 3-4 cards per row
+2. **Given** a tablet viewport (768-1200px), **When** spaces load, **Then** the grid displays 2-3 cards per row
+3. **Given** a mobile viewport (<768px), **When** spaces load, **Then** cards stack in a single column
+4. **Given** any viewport size, **When** a card is displayed, **Then** the banner image, name, and tagline are fully visible without horizontal overflow
+5. **Given** a very narrow mobile viewport (320px), **When** the page renders, **Then** no horizontal scrollbar appears — `overflow-x: hidden` on `.crd-root` and responsive `px-4` padding ensure all content fits within viewport
+6. **Given** a mobile viewport (<640px), **When** the footer renders, **Then** footer nav links wrap to multiple lines gracefully, and the decorative Alkemio logo is hidden to save horizontal space
+
+---
+
+### User Story 5 — Loading and Empty States (Priority: P2)
+
+The CRD spaces page shows appropriate skeleton loading states while data is being fetched and a meaningful empty state when no spaces match the current filters.
+
+**Why this priority**: Loading and empty states are essential for perceived performance and usability, preventing confusion when the page appears blank.
+
+**Independent Test**: Throttle the network to observe loading states. Apply filters that return no results to observe the empty state.
+
+**Acceptance Scenarios**:
+
+1. **Given** spaces data is loading, **When** the page renders, **Then** skeleton cards are shown matching the card layout
+2. **Given** a search returns no results, **When** the empty state renders, **Then** a descriptive message and icon are displayed (matching the prototype's empty state)
+3. **Given** the user clears filters, **When** results become available again, **Then** the empty state is replaced with actual cards
+
+---
+
+### User Story 6 — Standalone CRD Preview App for Designers (Priority: P2)
+
+A designer runs `pnpm crd:dev` and sees a standalone web application at `http://localhost:5200` that renders CRD components with mock data — no backend, no full Alkemio app needed. The `/spaces` page shows space cards with realistic mock data (reused from the prototype), the full CRD layout (header, footer), and all interactions (search, filter, sort, pagination) working locally.
+
+**Why this priority**: Designers need to iterate on CRD components without running the full Alkemio stack. Having a standalone preview app with mock data enables rapid design iteration and component validation outside the production codebase. It also validates that CRD components are truly independent of the Alkemio data layer.
+
+**Independent Test**: Run `pnpm crd:dev`. Navigate to `http://localhost:5200/spaces`. Verify the page renders with mock space cards, header, footer, search, filters, and sorting — all functional with no backend.
+
+**Acceptance Scenarios**:
+
+1. **Given** the designer runs `pnpm crd:dev`, **When** the dev server starts, **Then** it serves the CRD standalone app at port 5200 with no errors
+2. **Given** the standalone app is running, **When** navigating to `/spaces`, **Then** the page renders with mock data in the CRD SpaceExplorer with full layout (header + footer)
+3. **Given** the standalone app uses mock data, **When** interacting with search/filter/sort, **Then** all interactions work client-side with the mock data set
+4. **Given** the standalone app is running, **When** the main app is also run (`pnpm start`), **Then** both apps work independently without conflicts
+5. **Given** CRD components are shared, **When** a component is modified in `src/crd/`, **Then** both the standalone app and the main app reflect the change
+
+---
+
+### Edge Cases
+
+- What happens when a space has no banner image? Show a fallback with initials/avatar color, as defined in the prototype's SpaceCard
+- What happens when a space has no leads? Show the card without the leads section
+- What happens when a space has more than 4 leads? Show first 4 with a "+N" overflow indicator
+- What happens when the user is not authenticated? Hide lead avatars and the "Member" filter option, consistent with current behavior
+- What happens when the PlatformNavigation menu is opened on a CRD page that is one of the menu destinations (e.g., `/spaces`)? The menu item for the current page may appear visually distinct (e.g., highlighted) but remains clickable — no special handling required
+- What happens when the user has no notifications? The notifications dialog shows an empty state with a descriptive message
+- What happens when the user has many notifications? The dialog uses infinite scroll pagination (10 items per page), loading more as the user scrolls
+- What happens when a notification has no avatar for the triggering user? Show initials fallback in the Avatar component
+- What happens when the user is not authenticated? The bell icon should not show (notifications require authentication); the `InAppNotificationsProvider` already handles this by checking `userModel.id`
+- What happens when CRD primitives are not yet ported for a sub-component? The migration is incremental — missing primitives must be ported from `prototype/src/app/components/ui/` before use
+- What happens when the CRD version has a rendering error? A React error boundary should catch the error and display a meaningful fallback rather than a blank page
+
+---
+
+## Requirements
+
+### Functional Requirements
+
+#### Layout & Shell
+- **FR-001**: CRD routes MUST render with a fully CRD page shell — CRD Header, CRD content area, CRD Footer. No MUI `TopLevelLayout` or `TopLevelPageLayout` wraps CRD routes
+- **FR-002**: The CRD layout shell (`CrdLayout`) MUST be a presentational component in `src/crd/layouts/` — it receives navigation props (links, user info, callbacks) and renders them. No data fetching or routing logic inside `src/crd/`
+- **FR-003**: The CRD Header MUST render: Alkemio logo (home link), search icon, messages button, notifications button, PlatformNavigation icon (with popup menu), profile avatar with dropdown menu. The PlatformNavigation icon MUST open a popup menu (CRD `DropdownMenu`) listing platform-level navigation destinations: Innovation Library, Forum, Spaces, and Documentation — mirroring the items in the MUI `StandalonePlatformNavigationMenu` / `PLATFORM_NAVIGATION_MENU_ITEMS`. Each item shows an icon and label; clicking an item navigates to its route. The menu items and their hrefs MUST be received as props (via `CrdNavigationHrefs` or a dedicated `platformNavigationItems` prop) — routes are never hardcoded in CRD components. The profile dropdown menu MUST mirror the MUI `PlatformNavigationUserMenu` items: user name + role badge, Dashboard, Profile, My Account, Pending Memberships (with count badge), Administration (conditional on platform admin privilege), Language sub-menu (with active language indicator), Get Help, and Log out. All menu items use navigation hrefs from `CrdNavigationHrefs` (which reuse `ROUTE_HOME`, `ROUTE_USER_ME`, `buildUserAccountUrl()`, `TopLevelRoutePath` from the main routing system) — routes are never hardcoded in CRD components. Messages and Notifications buttons accept optional callback props (`onMessagesClick`, `onNotificationsClick`); when provided, they directly open the existing MUI dialogs via context providers. When callbacks are not provided (standalone app), buttons fall back to `<a href>` links. Search overlay is deferred. Unread notification count is implemented via FR-035
+- **FR-004**: The CRD Footer MUST render: copyright text, Terms/Privacy/Security/Support/About links, Alkemio logo, and language selector dropdown. The Footer receives `languages`, `currentLanguage`, and `onLanguageChange` as props — it does not access `i18n` directly. Languages are derived from `supportedLngs` in the main app
+- **FR-005**: CRD and MUI layouts MUST coexist — navigating from a CRD route to an MUI route (and vice versa) MUST work seamlessly with no style leakage, layout conflicts, or console errors
+
+#### Content (Spaces Page)
+- **FR-006**: The CRD `/spaces` page MUST reuse the existing data layer (`useSpaceExplorer` hook, GraphQL queries) without modification
+- **FR-007**: The CRD SpaceCard component MUST render: banner image (with fallback), space name, tagline/description, tags, lead avatars, and privacy badge. Prototype features requiring data layer changes (e.g., member count) are omitted and deferred to follow-up
+- **FR-008**: The CRD SpaceCard MUST accept plain TypeScript props (no GraphQL generated types) per the CRD golden rules
+- **FR-009**: The CRD spaces page MUST support tag-based search, membership filtering (All, Member, Public), and lazy loading / "Load More" pagination — same behavior as the MUI version. Sorting is **deferred** — the GraphQL API lacks server-side `orderBy` support, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be added when backend support is available (see Session 2026-03-31 clarifications)
+- **FR-010**: All user-visible text in CRD components MUST use `react-i18next` for translation — no hardcoded strings
+
+#### Architecture
+- **FR-011**: CRD components in `src/crd/` MUST have zero imports from `@mui/*`, `@emotion/*`, `@/core/apollo`, `@apollo/client`, `@/domain/*`, `@/core/auth/*`, `@/core/state/*`, `react-router-dom`, or `formik`
+- **FR-012**: A data mapper function in `src/main/crdPages/spaces/spaceCardDataMapper.ts` MUST bridge between the GraphQL `SpaceWithParent` type and the CRD SpaceCard props interface
+- **FR-013**: Required shadcn/ui primitives (Button, Input, Badge, Avatar, Select, DropdownMenu, Skeleton) MUST be ported from the prototype to `src/crd/primitives/`
+- **FR-014**: CRD composite components MUST be organized under `src/crd/components/space/` and layout components under `src/crd/layouts/`
+- **FR-015**: The route-level split between CRD and MUI MUST happen in `TopLevelRoutes.tsx` — CRD routes are wrapped in `CrdLayoutWrapper`, MUI routes continue using `TopLevelLayout` unchanged. CRD page components live in `src/main/crdPages/` and MUST NOT import from `@mui/*`
+
+#### Accessibility (WCAG 2.1 AA)
+- **FR-019**: All interactive elements (buttons, links, form inputs) MUST have visible focus indicators — `focus-visible:ring-2` or equivalent. The `outline-none` class MUST NOT be used without a replacement focus indicator
+- **FR-020**: Icon-only buttons MUST have `aria-label` (not just `title`) for screen reader support. Decorative icons adjacent to text MUST have `aria-hidden="true"`
+- **FR-021**: The card grid MUST use `role="list"` and `role="listitem"` for proper screen reader navigation. Each card MUST use `<article>` semantics
+- **FR-022**: Loading states MUST be announced to assistive technology via `role="status"` with an `aria-label`
+- **FR-023**: Interactive elements inside cards (e.g., parent link) MUST use semantic `<button>` elements, not clickable `<span>` elements, ensuring keyboard operability
+- **FR-024**: The header navigation icons MUST be wrapped in a `<nav>` landmark with `aria-label`. Footer links MUST be in a `<nav>` landmark
+- **FR-025**: Form inputs (TagsInput search) MUST have an `aria-label` that persists regardless of placeholder visibility
+- **FR-026**: Filter chip dismiss actions MUST use `<button>` elements with screen reader text indicating the dismiss action
+
+#### Mobile Responsiveness
+- **FR-027**: The CRD layout MUST use responsive padding: `px-4` on mobile (< 640px), `px-6` on tablet and above — applied consistently across Header, Footer, and SpaceExplorer container
+- **FR-028**: The Footer nav links MUST wrap gracefully on mobile using `flex-wrap` with responsive gap spacing. The decorative Alkemio logo in the footer nav MUST be hidden on small screens (`hidden sm:block`)
+- **FR-029**: The `.crd-root` wrapper MUST include `overflow-x: hidden` as a safety net to prevent horizontal scrolling from any child exceeding viewport width
+- **FR-030**: Footer and SpaceExplorer MUST use the same `max-w-[1600px]` container width for visual alignment on large screens
+
+#### Performance & Lazy Loading
+- **FR-031**: CRD page components (e.g., `SpaceExplorerPage`) MUST be lazy-loaded via `lazyWithGlobalErrorHandler()` in `TopLevelRoutes.tsx`, wrapped in `<Suspense fallback={<Loading />}>`
+- **FR-032**: Dialogs triggered from the CRD layout (HelpDialog, PendingMembershipsDialog) MUST be lazy-loaded via `lazyWithGlobalErrorHandler()` with `<Suspense fallback={null}>` — they are only loaded when the user opens them
+- **FR-033**: The `CrdLayoutWrapper` itself is eagerly loaded (it must be available immediately to wrap nested routes), but all dialogs and heavy dependencies it triggers MUST be lazy-loaded
+- **FR-034**: Existing MUI dialogs (Messages) rendered in `root.tsx` are already lazy-loaded and reused via context providers — CRD pages MUST NOT duplicate these dialogs. The Notifications dialog is replaced by a CRD-native `NotificationsPanel` (see FR-036) rendered in `CrdLayoutWrapper`
+
+#### Notifications Panel
+> **Scope note:** FR-035 through FR-039 are **implemented in this phase**. The CRD presentational components (`NotificationsPanel`, `NotificationItem`) live in `src/crd/components/notifications/`. The integration wiring in `CrdLayoutWrapper` connects them to the existing `useInAppNotifications` hook and notification state management — no new data layer was needed. The 40+ type-specific notification view components remain in `src/main/inAppNotifications/views/` and are not migrated to CRD; they map their data to the generic `CrdNotificationItemData` props.
+
+- **FR-035**: The CRD Header bell icon MUST show an unread notification count badge when `unreadCount > 0` — matching the MUI `PlatformNotificationsButton` behavior. The count is provided as a prop from `CrdLayoutWrapper`
+- **FR-036**: Clicking the bell icon MUST open a CRD notifications dialog (`src/crd/layouts/components/NotificationsPanel.tsx`) that replaces the MUI `InAppNotificationsDialog`. The dialog is a full modal (not a dropdown) following the prototype's visual language but matching the MUI version's functionality
+- **FR-037**: The notifications dialog MUST show: a header with title and "Mark all as read" button, filter chips (All, Messages & Replies, Space, Platform), a scrollable notification list with infinite scroll pagination (10 items per page), and empty state when no notifications match
+- **FR-038**: Each notification item MUST be a generic CRD component that renders: triggering user avatar (with initials fallback), title, description, timestamp (relative), and unread indicator. The component receives all display data as plain props — no type-specific view components in CRD. The 40+ notification type views remain in `src/main/inAppNotifications/` and map their data to the generic CRD item props
+- **FR-039**: The notifications dialog MUST support notification state transitions: clicking an unread notification marks it as read, an actions menu per item allows mark as read/unread and archive. All state mutations are received as callback props from the consumer
+
+#### Standalone Preview App
+- **FR-016**: CRD components MUST be runnable as a standalone application via `pnpm crd:dev` — no Alkemio backend required. The standalone app uses mock data and its own i18n initialization
+- **FR-017**: CRD translations MUST live in per-feature JSON files in `src/crd/i18n/` (e.g., `layout.<lang>.json`, `spaces.<lang>.json`), each loaded as a separate i18next namespace (`'crd-layout'`, `'crd-spaces'`). Layout English is eagerly loaded; feature namespaces are lazy-loaded on demand. Non-English languages are always lazy-loaded. Page-level text (titles, subtitles) lives in the main `translation` namespace and is passed as props from `crdPages` containers. CRD translations are managed manually with AI-assisted translations, not via Crowdin
+- **FR-018**: The standalone app MUST reuse the exact same CRD components (`src/crd/components/`, `src/crd/layouts/`, `src/crd/primitives/`, `src/crd/forms/`) — no duplication of component code
+
+### Key Entities
+
+- **SpaceCardData**: The CRD view model for a space card — plain TypeScript type with fields: id, name, description, bannerImageUrl, initials, avatarColor, isPrivate, tags, leads, href, optional parent info
+- **SpaceLead**: A lead person or organization displayed on the card — name, avatarUrl, type ('person' or 'org')
+- **Route Migration State**: Each route is assigned to either the CRD layout group (`CrdLayoutWrapper`) or the MUI layout group (`TopLevelLayout`) in `TopLevelRoutes.tsx`. During migration, CRD routes are gated behind a localStorage toggle (`alkemio-crd-enabled`) so deployed environments default to MUI. Toggle logic in `src/main/crdPages/useCrdEnabled.ts`
+
+---
+
+## Success Criteria
+
+### Measurable Outcomes
+
+- **SC-001**: The CRD `/spaces` page renders with a **full CRD shell** — CRD Header, content area, CRD Footer — with zero MUI layout components (`TopLevelLayout`, `TopLevelPageLayout`) visible
+- **SC-002**: The CRD `/spaces` page displays the same spaces data as the MUI version — 100% data parity. Visual fidelity matches prototype's layout structure and design language (minor spacing/shadow differences acceptable)
+- **SC-003**: Navigating between CRD pages (`/spaces`) and MUI pages produces no console errors, no style leakage, and no broken layouts — each renders with its own complete layout shell
+- **SC-004**: The CRD page renders correctly across desktop, tablet, and mobile viewports with no layout overflow or broken elements
+- **SC-005**: Zero MUI imports exist in any file under `src/crd/` — verifiable by grep returning no results
+- **SC-006**: All CRD components pass the component checklist defined in `src/crd/CLAUDE.md` (no domain imports, plain TS props, Tailwind-only styling)
+- **SC-007**: The migration pattern established here (CRD layout shell + data mapper + CRD view + route wiring) is documented and reproducible for the next page migration
+- **SC-008**: Page load performance of the CRD version is equal to or better than the MUI version
+
+---
+
+## Clarifications
+
+### Session 2026-03-26
+
+- Q: Should the MUI/CRD toggle be global (all pages at once) or per-route? → A: Per-route — each migrated URL is independently switchable between MUI and CRD. Starting with `/spaces`, more routes will follow.
+- Q: How does a user activate the MUI/CRD toggle? → A: A localStorage runtime toggle (`alkemio-crd-enabled`). Default is OFF — deployed environments render the old MUI page. Developers and QA can opt in via `localStorage.setItem('alkemio-crd-enabled', 'true')` + page refresh. Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`, conditional routing in `TopLevelRoutes.tsx`. When migration is complete and validated, the toggle and old MUI pages are removed.
+- Q: What level of visual fidelity to the prototype is required? → A: Same layout structure and design language — minor spacing/shadow differences acceptable. Pixel-perfection is not required.
+- Q: Member count is in the prototype but not in the current GraphQL fragment. Include it? → A: Drop it. General rule: if a prototype feature requires data layer changes, omit it from the CRD card. Add in a follow-up.
+- Q: Should only the inner content area be CRD, or the entire page including header/footer? → A: **The entire page.** When a route is CRD, the complete page shell (header, content, footer) renders in CRD. No MUI layout wraps CRD routes. This is a full visual replacement per route.
+- Q: Should the CRD Header be fully functional (real search, notifications, messages) for the PoC? → A: Messages and Notifications buttons directly open the existing MUI dialogs via context providers (`useUserMessagingContext`, `useInAppNotificationsContext`). These providers wrap all routes in `root.tsx`, so the dialogs work on CRD pages without navigation. Real search overlay and unread counts are deferred to follow-up tasks.
+
+### Session 2026-03-31
+
+- Q: Should the CRD notifications match the full MUI dialog (filters, infinite scroll, 40+ types, actions) or the simpler prototype dropdown? → A: Match the full MUI dialog functionality
+- Q: Container type — dropdown, modal dialog, or slide-out panel? → A: Full modal dialog (same as the current MUI implementation)
+- Q: Should we create type-specific notification view components in CRD (40+ types) or a single generic item? → A: A single generic CRD notification item component. The type-specific views remain in `src/main/inAppNotifications/views/` and map their data to generic CRD item props
+- Q: Should the unread badge counter be added to the bell icon as part of this migration? → A: Yes
+- Q: The CRD SpaceExplorer has sorting options (Recent, Alphabetical, Active) but "Recent" and "Active" just keep server order since `spacesPaginated` has no `orderBy` parameter. Keep them? → A: **Hide sorting entirely.** The GraphQL API doesn't support server-side sorting, and client-side sorting with pagination is misleading (only sorts loaded items). Sorting will be implemented when backend support is added. Client-side privacy and type filters remain.
+
+---
+
+## Assumptions
+
+- The existing `useSpaceExplorer` hook and GraphQL queries provide all data needed for the CRD SpaceCard — no new queries are required
+- A localStorage runtime toggle (`alkemio-crd-enabled`, default OFF) gates CRD routes so deployed environments show the old MUI pages. Old MUI page files are kept alongside CRD alternatives in the codebase
+- The prototype's `SpaceCard` and `BrowseSpacesPage` are the definitive design reference for the CRD version
+- Tailwind CSS v4 and the necessary build configuration have been set up as Phase 1 of this spec (T001-T005, completed)
+- The `src/crd/` folder already exists with its CLAUDE.md conventions established
+- This PoC does not need to handle subspace-specific card variants (stacked parent avatars) in the first iteration — basic parent info display is sufficient
+- CRD uses per-feature i18n namespaces (`'crd-layout'`, `'crd-spaces'`) with atomic translation files in `src/crd/i18n/`. Layout is eagerly loaded; feature namespaces are lazy-loaded per page. Page-level text (titles, subtitles) and domain-specific text come via props from the container. Language labels for the footer selector come from the main `'translation'` namespace (`languages.*` keys) via the consumer

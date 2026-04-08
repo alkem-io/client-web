@@ -22,6 +22,7 @@ import useCommunityGuidelines, {
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import { useSpace } from '@/domain/space/context/useSpace';
 import CommunityMemberships from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityMemberships';
 import CommunityOrganizations from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityOrganizations';
 import CommunityUsers from '@/domain/spaceAdmin/SpaceAdminCommunity/components/CommunityUsers';
@@ -68,6 +69,9 @@ const SpaceAdminCommunityPage = ({
   routePrefix = '../',
 }: SpaceAdminCommunityPageProps) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
   const [error, setError] = useState(false);
 
   const {
@@ -245,6 +249,7 @@ const SpaceAdminCommunityPage = ({
             <ImportTemplatesDialog
               open={communityGuidelinesTemplatesDialogOpen}
               templateType={TemplateType.CommunityGuidelines}
+              accountId={accountId}
               onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
               onSelectTemplate={async (template: Identifiable) => {
                 await onSelectCommunityGuidelinesTemplate(template);

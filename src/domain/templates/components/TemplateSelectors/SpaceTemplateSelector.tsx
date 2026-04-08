@@ -30,6 +30,10 @@ interface SpaceTemplateSelectorProps extends GuttersProps {
    */
   level?: SpaceLevel;
   /**
+   * The account ID where the resource will be hosted. Used to fetch account-specific templates.
+   */
+  accountId?: string;
+  /**
    * Callback to tell the parent component to update the visuals taking the ones coming in the template
    */
   onTemplateVisualsLoaded?: (visualUrls: EntityVisualUrls) => void;
@@ -40,6 +44,7 @@ interface SpaceTemplateSelectorProps extends GuttersProps {
 export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   name,
   level = SpaceLevel.L0,
+  accountId,
   onTemplateVisualsLoaded,
   isTemplateSelectable,
   ...rest
@@ -165,6 +170,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
         </Button>
         <ImportTemplatesDialog
           templateType={TemplateType.Space}
+          accountId={accountId}
           actionButton={template => {
             if (isTemplateSelectable && !isTemplateSelectable(template as SpaceTemplate)) {
               return (

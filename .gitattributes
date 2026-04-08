@@ -2,3 +2,4 @@
 
 src/graphql/** linguist-generated=true
 src/types/graphql-schema.ts linguist-generated=true
+prototype/** linguist-generated=true

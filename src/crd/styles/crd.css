@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+@import './theme.css';
+
+@source "../primitives/**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../forms/**/*.{ts,tsx}";
+@source "../layouts/**/*.{ts,tsx}";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Base resets scoped to .crd-root
+ *
+ * During migration MUI and Tailwind coexist. The .crd-root wrapper
+ * isolates Tailwind styles so they don't interfere with MUI pages.
+ * Once MUI is fully removed, move these to :root / body and drop the wrapper.
+ */
+
+@layer base {
+  .crd-root {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    color: var(--foreground);
+    background-color: var(--background);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  .crd-root *,
+  .crd-root *::before,
+  .crd-root *::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--border);
+  }
+
+  .crd-root * {
+    @apply border-border outline-ring/50;
+  }
+}

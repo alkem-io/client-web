@@ -1,0 +1,33 @@
+{
+  "spaces": {
+    "title": "Ruimtes verkennen",
+    "subtitle": "Ontdek ruimtes om samen te werken en te innoveren",
+    "searchPlaceholder": "Ruimtes zoeken...",
+    "sortBy": "Sorteren op",
+    "sortRecent": "Meest recent",
+    "sortAlpha": "Alfabetisch",
+    "sortActive": "Meest actief",
+    "filters": "Filters",
+    "filterMembership": "Lidmaatschap",
+    "filterAll": "Alle",
+    "filterMember": "Mijn ruimtes",
+    "filterPublic": "Openbaar",
+    "filterPrivacy": "Privacy",
+    "filterPublicOnly": "Alleen openbaar",
+    "filterPrivateOnly": "Alleen privé",
+    "filterType": "Type",
+    "filterAllTypes": "Alle typen",
+    "filterSpacesOnly": "Alleen ruimtes",
+    "filterSubspacesOnly": "Alleen subruimtes",
+    "clearFilters": "Alle filters wissen",
+    "showing": "Toont",
+    "of": "van",
+    "spacesLabel": "ruimtes",
+    "emptyTitle": "Geen ruimtes gevonden",
+    "emptyMessage": "Probeer je zoekopdracht of filters aan te passen om te vinden wat je zoekt.",
+    "in": "in",
+    "loading": "Ruimtes laden",
+    "moreLeads": "{{count}} meer leiders",
+    "removeFilter": "filter verwijderen"
+  }
+}

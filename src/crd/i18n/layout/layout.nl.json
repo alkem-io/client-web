@@ -1,0 +1,31 @@
+{
+  "header": {
+    "menu": "Menu",
+    "home": "Home",
+    "search": "Zoeken",
+    "messages": "Berichten",
+    "notifications": "Meldingen",
+    "unreadNotifications": "{{count}} ongelezen meldingen",
+    "spaces": "Ruimtes",
+    "platformNavigation": "Platformnavigatie",
+    "myAccount": "Mijn account",
+    "dashboard": "Mijn dashboard",
+    "profile": "Mijn profiel",
+    "settings": "Instellingen",
+    "logout": "Uitloggen",
+    "login": "Inloggen",
+    "beta": "Bèta",
+    "pendingMemberships": "Openstaande lidmaatschappen",
+    "administration": "Administratie",
+    "changeLanguage": "Taal wijzigen",
+    "getHelp": "Hulp krijgen"
+  },
+  "footer": {
+    "copyright": "© 2026 Alkemio B.V.",
+    "terms": "Voorwaarden",
+    "privacy": "Privacy",
+    "security": "Beveiliging",
+    "support": "Ondersteuning",
+    "about": "Over ons"
+  }
+}

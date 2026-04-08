@@ -1,0 +1,19 @@
+{
+  "space": "Ruimte",
+  "spaces": "Ruimtes",
+  "subspace": "Subruimte",
+  "ok": "OK",
+  "cancel": "Annuleren",
+  "save": "Opslaan",
+  "delete": "Verwijderen",
+  "edit": "Bewerken",
+  "close": "Sluiten",
+  "loading": "Laden",
+  "error": "Fout",
+  "noResults": "Geen resultaten gevonden",
+  "private": "Privé",
+  "public": "Openbaar",
+  "member": "Lid",
+  "leads": "Leiders",
+  "loadMore": "Meer laden"
+}
