@@ -9,7 +9,7 @@ type PendingMembershipsListDialogProps = {
   open: boolean;
   onClose: () => void;
   loading?: boolean;
-  isEmpty: boolean;
+  empty: boolean;
   children?: ReactNode;
   className?: string;
 };
@@ -18,7 +18,7 @@ function PendingMembershipsListDialog({
   open,
   onClose,
   loading,
-  isEmpty,
+  empty,
   children,
   className,
 }: PendingMembershipsListDialogProps) {
@@ -48,12 +48,12 @@ function PendingMembershipsListDialog({
               </div>
             </output>
           )}
-          {!loading && isEmpty && (
+          {!loading && empty && (
             <output className="block text-center py-8 text-sm text-muted-foreground">
               {t('pendingMemberships.empty')}
             </output>
           )}
-          {!loading && !isEmpty && <div className="space-y-4">{children}</div>}
+          {!loading && !empty && <div className="space-y-4">{children}</div>}
         </div>
 
         <DialogFooter className="shrink-0 border-t border-border pt-4">

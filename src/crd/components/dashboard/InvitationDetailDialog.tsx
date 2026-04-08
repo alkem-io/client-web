@@ -112,13 +112,15 @@ function InvitationDetailDialog({
                 <p className="text-xs text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
               )}
               {invitation.spaceTags.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-1 mt-1">
+                <ul className="flex flex-wrap justify-center gap-1 mt-1">
                   {invitation.spaceTags.slice(0, 5).map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-[10px]">
-                      {tag}
-                    </Badge>
+                    <li key={tag}>
+                      <Badge variant="secondary" className="text-[10px]">
+                        {tag}
+                      </Badge>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </a>
 
@@ -135,19 +137,14 @@ function InvitationDetailDialog({
           <Button
             variant="outline"
             onClick={onReject}
-            disabled={updating && !rejecting}
+            disabled={updating}
             aria-busy={rejecting}
             aria-label={rejectAriaLabel}
           >
             <X className="size-4 mr-1" aria-hidden="true" />
             {rejectLabel}
           </Button>
-          <Button
-            onClick={onAccept}
-            disabled={updating && !accepting}
-            aria-busy={accepting}
-            aria-label={acceptAriaLabel}
-          >
+          <Button onClick={onAccept} disabled={updating} aria-busy={accepting} aria-label={acceptAriaLabel}>
             <Check className="size-4 mr-1" aria-hidden="true" />
             {acceptLabel}
           </Button>

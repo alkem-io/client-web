@@ -9,7 +9,11 @@ function PendingMembershipsSection({ title, children }: PendingMembershipsSectio
   return (
     <section>
       <h3 className="text-sm font-semibold text-muted-foreground mb-2">{title}</h3>
-      <ul className="space-y-2">{children}</ul>
+      {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+      {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+      <ul role="list" className="space-y-2">
+        {children}
+      </ul>
     </section>
   );
 }

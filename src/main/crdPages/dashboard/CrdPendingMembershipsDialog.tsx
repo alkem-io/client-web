@@ -256,7 +256,7 @@ const CrdPendingMembershipsDialog = () => {
         open={isPendingMembershipsList}
         onClose={closeDialog}
         loading={loading}
-        isEmpty={isEmpty}
+        empty={isEmpty}
       >
         {nonVirtualContributorInvitations?.length ? (
           <PendingMembershipsSection title={t('pendingMemberships.invitationsSection')}>

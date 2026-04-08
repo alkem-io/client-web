@@ -84,11 +84,7 @@ export function CrdApp() {
       </CrdLayout>
 
       {/* Pending Memberships List Dialog */}
-      <PendingMembershipsListDialog
-        open={showPendingDialog}
-        onClose={() => setShowPendingDialog(false)}
-        isEmpty={false}
-      >
+      <PendingMembershipsListDialog open={showPendingDialog} onClose={() => setShowPendingDialog(false)} empty={false}>
         <PendingMembershipsSection title={t('pendingMemberships.invitationsSection')}>
           {MOCK_PENDING_INVITATIONS.map(inv => (
             <li key={inv.id}>

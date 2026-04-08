@@ -149,7 +149,7 @@
 
 ## Parallel Example: Setup Phase
 
-```
+```text
 # All i18n translations can run in parallel:
 T002: dashboard.en.json (English source)
 T003: dashboard.nl.json
@@ -161,7 +161,7 @@ T007: dashboard.fr.json
 
 ## Parallel Example: Foundational Phase
 
-```
+```text
 # All card/section components can run in parallel (different files, no deps):
 T008: PendingInvitationCard.tsx
 T009: PendingApplicationCard.tsx

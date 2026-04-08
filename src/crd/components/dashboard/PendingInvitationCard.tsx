@@ -57,14 +57,17 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
 
 function PendingInvitationCardSkeleton() {
   return (
-    <div className="rounded-lg border border-border bg-card p-4 flex items-center gap-3">
+    <output
+      aria-label="Loading invitation"
+      className="block rounded-lg border border-border bg-card p-4 flex items-center gap-3"
+    >
       <Skeleton className="size-10 rounded-lg shrink-0" />
       <div className="flex-1 space-y-1.5">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-3 w-24" />
       </div>
       <Skeleton className="h-3 w-16 shrink-0" />
-    </div>
+    </output>
   );
 }
 
