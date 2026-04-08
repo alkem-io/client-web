@@ -42,7 +42,7 @@ export function CalloutContributionSettings({
     <div className={cn('space-y-4', className)}>
       {/* Allowed contribution types */}
       <div className="space-y-2">
-        <label className="text-sm font-medium">{t('forms.contributionTypes')}</label>
+        <span className="text-sm font-medium">{t('forms.contributionTypes')}</span>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {CONTRIBUTION_TYPES.map(type => (
             <button
@@ -65,9 +65,11 @@ export function CalloutContributionSettings({
       {/* Comments toggle */}
       <div className="flex items-center justify-between py-2">
         <div className="space-y-0.5">
-          <label className="text-sm font-medium">{t('forms.commentsEnabled')}</label>
+          <label htmlFor="comments-enabled" className="text-sm font-medium">
+            {t('forms.commentsEnabled')}
+          </label>
         </div>
-        <Switch checked={commentsEnabled} onCheckedChange={onCommentsEnabledChange} />
+        <Switch id="comments-enabled" checked={commentsEnabled} onCheckedChange={onCommentsEnabledChange} />
       </div>
     </div>
   );

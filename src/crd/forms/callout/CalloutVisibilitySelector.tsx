@@ -22,7 +22,7 @@ export function CalloutVisibilitySelector({
 
   return (
     <div className={cn('space-y-3', className)}>
-      <label className="text-sm font-medium">{t('forms.visibility')}</label>
+      <span className="text-sm font-medium">{t('forms.visibility')}</span>
       <div className="flex gap-2">
         {(['draft', 'published'] as const).map(vis => (
           <button

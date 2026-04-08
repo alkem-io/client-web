@@ -1,33 +1,6 @@
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
-
-type CalloutLight = {
-  id: string;
-  framing: {
-    profile: {
-      displayName: string;
-      description?: string | null;
-      url?: string;
-    };
-    type: CalloutFramingType;
-    whiteboard?: {
-      profile: {
-        preview?: { uri: string } | null;
-      };
-    } | null;
-  };
-  sortOrder: number;
-  activity?: number;
-  draft: boolean;
-  editable: boolean;
-  movable: boolean;
-  canBeSavedAsTemplate: boolean;
-  publishedDate?: Date;
-  createdBy?: {
-    id: string;
-    profile?: { displayName: string } | null;
-  } | null;
-};
+import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   switch (framingType) {
@@ -38,7 +11,7 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   }
 }
 
-export function mapCalloutToPostCard(callout: CalloutLight): PostCardData {
+export function mapCalloutToPostCard(callout: CalloutModelLightExtended): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
 
   return {
@@ -62,18 +35,27 @@ export function mapCalloutToPostCard(callout: CalloutLight): PostCardData {
   };
 }
 
-export function mapCalloutsToPostCards(callouts: CalloutLight[]): PostCardData[] {
+export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[]): PostCardData[] {
   return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(mapCalloutToPostCard);
 }
 
-function formatRelativeDate(date: Date): string {
+type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
+
+/**
+ * Formats a date relative to now using i18n keys from the 'crd-space' namespace.
+ * Requires a `t` function from useTranslation('crd-space').
+ * Falls back to locale date string for dates older than 30 days.
+ */
+export function formatRelativeDate(date: Date, t?: DateFormatter): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (!t) return date.toLocaleDateString();
+
+  if (days === 0) return t('dates.today');
+  if (days === 1) return t('dates.yesterday');
+  if (days < 7) return t('dates.daysAgo', { count: days });
+  if (days < 30) return t('dates.weeksAgo', { count: Math.floor(days / 7) });
   return date.toLocaleDateString();
 }

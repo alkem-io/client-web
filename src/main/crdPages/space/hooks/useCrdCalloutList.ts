@@ -26,7 +26,7 @@ export function useCrdCalloutList({ tabPosition, tagsFilter, skip }: UseCrdCallo
   });
 
   const posts: PostCardData[] = calloutsSetProvided.callouts
-    ? mapCalloutsToPostCards(calloutsSetProvided.callouts as any)
+    ? mapCalloutsToPostCards(calloutsSetProvided.callouts)
     : [];
 
   return {

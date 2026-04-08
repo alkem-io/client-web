@@ -35,20 +35,17 @@ export function mapSubspaceToCardData(subspace: SubspaceQueryData): SubspaceList
   const profile = subspace.about.profile;
   const membership = subspace.about.membership;
 
-  const leads = [
-    ...(membership?.leadUsers ?? [])
-      .filter(u => u.profile)
-      .map(u => ({
-        name: u.profile?.displayName,
-        avatarUrl: u.profile?.avatar?.uri,
-      })),
-    ...(membership?.leadOrganizations ?? [])
-      .filter(o => o.profile)
-      .map(o => ({
-        name: o.profile?.displayName,
-        avatarUrl: o.profile?.avatar?.uri,
-      })),
-  ];
+  const leads: Array<{ name: string; avatarUrl?: string }> = [];
+  for (const u of membership?.leadUsers ?? []) {
+    if (u.profile) {
+      leads.push({ name: u.profile.displayName, avatarUrl: u.profile.avatar?.uri });
+    }
+  }
+  for (const o of membership?.leadOrganizations ?? []) {
+    if (o.profile) {
+      leads.push({ name: o.profile.displayName, avatarUrl: o.profile.avatar?.uri });
+    }
+  }
 
   return {
     id: subspace.id,

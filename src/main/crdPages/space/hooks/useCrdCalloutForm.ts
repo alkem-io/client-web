@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
+import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 
 type CalloutFormValues = {
   title: string;
@@ -8,14 +11,17 @@ type CalloutFormValues = {
   framingType: CalloutFramingType;
   visibility: 'draft' | 'published';
   commentsEnabled: boolean;
-  allowedContributionTypes: string[];
+  allowedContributionTypes: Array<'post' | 'memo' | 'whiteboard' | 'link'>;
   // Framing-specific
   linkUrl: string;
   linkDisplayName: string;
   pollQuestion: string;
-  pollOptions: string[];
+  pollOptions: PollOptionValue[];
   notifyMembers: boolean;
 };
+
+const createInitialPollOptions = (): PollOptionValue[] =>
+  Array.from({ length: MIN_POLL_OPTIONS }, () => ({ text: '' }));
 
 const initialValues: CalloutFormValues = {
   title: '',
@@ -28,11 +34,12 @@ const initialValues: CalloutFormValues = {
   linkUrl: '',
   linkDisplayName: '',
   pollQuestion: '',
-  pollOptions: ['', ''],
+  pollOptions: createInitialPollOptions(),
   notifyMembers: false,
 };
 
 export function useCrdCalloutForm() {
+  const { t } = useTranslation('crd-space');
   const [values, setValues] = useState<CalloutFormValues>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof CalloutFormValues, string>>>({});
 
@@ -47,20 +54,20 @@ export function useCrdCalloutForm() {
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
     if (!values.title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = t('validation.titleRequired');
     }
     if (values.framingType === CalloutFramingType.Link) {
       if (!values.linkUrl.trim()) {
-        newErrors.linkUrl = 'URL is required';
+        newErrors.linkUrl = t('validation.urlRequired');
       } else if (!values.linkUrl.startsWith('http://') && !values.linkUrl.startsWith('https://')) {
-        newErrors.linkUrl = 'URL must start with http:// or https://';
+        newErrors.linkUrl = t('validation.urlInvalid');
       }
       if (!values.linkDisplayName.trim()) {
-        newErrors.linkDisplayName = 'Display name is required';
+        newErrors.linkDisplayName = t('validation.displayNameRequired');
       }
     }
     if (values.framingType === CalloutFramingType.Poll && !values.pollQuestion.trim()) {
-      newErrors.pollQuestion = 'Question is required';
+      newErrors.pollQuestion = t('validation.questionRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

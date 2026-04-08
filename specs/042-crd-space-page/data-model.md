@@ -214,6 +214,22 @@ type ContributionCardData = {
 };
 ```
 
+### PollOptionValue (form-level — used in CRD form components)
+```typescript
+// Exported from src/crd/forms/callout/PollOptionsEditor.tsx
+// During creation, id is undefined; during editing, it's the server-assigned UUID.
+// This provides stable React keys for editing existing polls.
+
+type PollOptionValue = {
+  id?: string;               // Server UUID when editing; undefined for new options
+  text: string;
+};
+
+// Constants (also exported from PollOptionsEditor):
+// MIN_POLL_OPTIONS = 2
+// MAX_POLL_OPTIONS = 10
+```
+
 ### CalloutFormValues (integration layer — NOT in src/crd/)
 ```typescript
 // These types live in the integration layer, not in CRD components.
@@ -225,6 +241,7 @@ type CalloutFormFieldProps = {
   tags: { value: string[]; onChange: (v: string[]) => void };
   framingType: { value: string; onChange: (v: string) => void; disabled: boolean };
   visibility: { value: 'draft' | 'published'; onChange: (v: string) => void };
+  pollOptions: { value: PollOptionValue[]; onChange: (v: PollOptionValue[]) => void };
   // ... per-field binding pattern
 };
 ```

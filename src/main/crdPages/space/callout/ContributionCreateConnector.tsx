@@ -1,18 +1,14 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ContributionCreateButton } from '@/crd/components/contribution/ContributionCreateButton';
 import { ContributionFormLayout } from '@/crd/forms/contribution/ContributionFormLayout';
 
 type ContributionCreateConnectorProps = {
   allowedTypes: Array<'post' | 'memo' | 'whiteboard' | 'link'>;
-  calloutsSetId?: string;
   onCreated?: () => void;
 };
 
-export function ContributionCreateConnector({
-  allowedTypes,
-  calloutsSetId,
-  onCreated,
-}: ContributionCreateConnectorProps) {
+export function ContributionCreateConnector({ allowedTypes, onCreated }: ContributionCreateConnectorProps) {
   const [activeForm, setActiveForm] = useState<'post' | 'memo' | 'whiteboard' | 'link' | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -40,11 +36,13 @@ export function ContributionCreateConnector({
     resetForm();
   };
 
+  const { t } = useTranslation('crd-space');
+
   const typeLabels: Record<string, string> = {
-    post: 'Post',
-    memo: 'Memo',
-    whiteboard: 'Whiteboard',
-    link: 'Link',
+    post: t('callout.post'),
+    memo: t('callout.memo'),
+    whiteboard: t('callout.whiteboard'),
+    link: t('callout.link'),
   };
 
   return (

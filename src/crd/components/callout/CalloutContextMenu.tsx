@@ -76,42 +76,42 @@ export function CalloutContextMenu({
         {editable && onEdit && (
           <DropdownMenuItem onClick={onEdit}>
             <Pencil className="w-4 h-4 mr-2" aria-hidden="true" />
-            Edit
+            {t('contextMenu.edit')}
           </DropdownMenuItem>
         )}
 
         {editable && isDraft && onPublish && (
           <DropdownMenuItem onClick={onPublish}>
             <Eye className="w-4 h-4 mr-2" aria-hidden="true" />
-            Publish
+            {t('contextMenu.publish')}
           </DropdownMenuItem>
         )}
 
         {editable && !isDraft && onUnpublish && (
           <DropdownMenuItem onClick={onUnpublish}>
             <EyeOff className="w-4 h-4 mr-2" aria-hidden="true" />
-            Unpublish
+            {t('contextMenu.unpublish')}
           </DropdownMenuItem>
         )}
 
         {onShare && (
           <DropdownMenuItem onClick={onShare}>
             <Share2 className="w-4 h-4 mr-2" aria-hidden="true" />
-            Share
+            {t('contextMenu.share')}
           </DropdownMenuItem>
         )}
 
         {editable && onSortContributions && (
           <DropdownMenuItem onClick={onSortContributions}>
             <GripVertical className="w-4 h-4 mr-2" aria-hidden="true" />
-            Sort Contributions
+            {t('contextMenu.sortContributions')}
           </DropdownMenuItem>
         )}
 
         {canSaveAsTemplate && onSaveAsTemplate && (
           <DropdownMenuItem onClick={onSaveAsTemplate}>
             <Bookmark className="w-4 h-4 mr-2" aria-hidden="true" />
-            Save as Template
+            {t('contextMenu.saveAsTemplate')}
           </DropdownMenuItem>
         )}
 
@@ -121,25 +121,25 @@ export function CalloutContextMenu({
             {onMoveTop && (
               <DropdownMenuItem onClick={onMoveTop}>
                 <ArrowUpToLine className="w-4 h-4 mr-2" aria-hidden="true" />
-                Move to Top
+                {t('contextMenu.moveToTop')}
               </DropdownMenuItem>
             )}
             {onMoveUp && (
               <DropdownMenuItem onClick={onMoveUp}>
                 <ArrowUp className="w-4 h-4 mr-2" aria-hidden="true" />
-                Move Up
+                {t('contextMenu.moveUp')}
               </DropdownMenuItem>
             )}
             {onMoveDown && (
               <DropdownMenuItem onClick={onMoveDown}>
                 <ArrowDown className="w-4 h-4 mr-2" aria-hidden="true" />
-                Move Down
+                {t('contextMenu.moveDown')}
               </DropdownMenuItem>
             )}
             {onMoveBottom && (
               <DropdownMenuItem onClick={onMoveBottom}>
                 <ArrowDownToLine className="w-4 h-4 mr-2" aria-hidden="true" />
-                Move to Bottom
+                {t('contextMenu.moveToBottom')}
               </DropdownMenuItem>
             )}
           </>
@@ -150,7 +150,7 @@ export function CalloutContextMenu({
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={onDelete} className="text-destructive focus:text-destructive">
               <Trash2 className="w-4 h-4 mr-2" aria-hidden="true" />
-              Delete
+              {t('contextMenu.delete')}
             </DropdownMenuItem>
           </>
         )}

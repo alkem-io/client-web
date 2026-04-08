@@ -2,8 +2,8 @@ import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { DashboardPage } from './pages/DashboardPage';
-import { SpacesPage } from './pages/SpacesPage';
 import { SpacePage } from './pages/SpacePage';
+import { SpacesPage } from './pages/SpacesPage';
 
 const MOCK_USER = {
   name: 'Alex Rivera',

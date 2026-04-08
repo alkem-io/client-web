@@ -8,6 +8,10 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card
 
 export type PostType = 'text' | 'whiteboard' | 'collection' | 'call-for-whiteboards';
 
+const MAX_COLLECTION_PREVIEW_ITEMS = 4;
+const MAX_WHITEBOARD_PREVIEW_ITEMS = 4;
+const MAX_VISIBLE_WHITEBOARDS_BEFORE_MORE = 3;
+
 export type PostCardData = {
   id: string;
   type: PostType;
@@ -151,7 +155,7 @@ export function PostCard({ post, onClick, onSettingsClick, onExpandClick, classN
         {/* Collection preview */}
         {post.type === 'collection' && post.contentPreview?.items && (
           <div className="grid grid-cols-2 gap-2 mt-2">
-            {post.contentPreview.items.slice(0, 4).map(item => (
+            {post.contentPreview.items.slice(0, MAX_COLLECTION_PREVIEW_ITEMS).map(item => (
               <div key={item.title} className="bg-muted/30 rounded-md p-3 border border-border flex items-center gap-2">
                 <div className="w-8 h-8 bg-background rounded flex items-center justify-center border border-border shrink-0">
                   <FileText className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
@@ -165,11 +169,11 @@ export function PostCard({ post, onClick, onSettingsClick, onExpandClick, classN
         {/* Call-for-whiteboards preview */}
         {post.type === 'call-for-whiteboards' && post.contentPreview?.whiteboards && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-            {post.contentPreview.whiteboards.slice(0, 4).map((wb, idx) => {
+            {post.contentPreview.whiteboards.slice(0, MAX_WHITEBOARD_PREVIEW_ITEMS).map((wb, idx) => {
               const total = post.contentPreview?.whiteboards?.length ?? 0;
-              const remaining = total - 3;
-              const isLast = idx === 3;
-              const showMore = isLast && remaining > 1;
+              const remaining = total - MAX_VISIBLE_WHITEBOARDS_BEFORE_MORE;
+              const isLast = idx === MAX_VISIBLE_WHITEBOARDS_BEFORE_MORE;
+              const showMore = isLast && remaining > 0;
 
               return (
                 <div

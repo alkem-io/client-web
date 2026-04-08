@@ -1,6 +1,6 @@
+import { Link as LinkIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Link as LinkIcon } from 'lucide-react';
 
 type LinkFramingFieldsProps = {
   url: string;
@@ -31,8 +31,11 @@ export function LinkFramingFields({
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">{t('forms.linkUrl')}</label>
+          <label htmlFor="link-framing-url" className="text-xs text-muted-foreground">
+            {t('forms.linkUrl')}
+          </label>
           <input
+            id="link-framing-url"
             type="url"
             value={url}
             onChange={e => onUrlChange(e.target.value)}
@@ -41,14 +44,16 @@ export function LinkFramingFields({
               'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
               urlError ? 'border-destructive' : 'border-border'
             )}
-            aria-label={t('forms.linkUrl')}
             aria-invalid={!!urlError}
           />
           {urlError && <p className="text-xs text-destructive">{urlError}</p>}
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">{t('forms.linkDisplayName')}</label>
+          <label htmlFor="link-framing-display-name" className="text-xs text-muted-foreground">
+            {t('forms.linkDisplayName')}
+          </label>
           <input
+            id="link-framing-display-name"
             type="text"
             value={displayName}
             onChange={e => onDisplayNameChange(e.target.value)}
@@ -57,7 +62,6 @@ export function LinkFramingFields({
               'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
               displayNameError ? 'border-destructive' : 'border-border'
             )}
-            aria-label={t('forms.linkDisplayName')}
             aria-invalid={!!displayNameError}
           />
           {displayNameError && <p className="text-xs text-destructive">{displayNameError}</p>}

@@ -98,6 +98,32 @@
     "share": "Share",
     "settings": "Settings"
   },
+  "contextMenu": {
+    "edit": "Edit",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "share": "Share",
+    "sortContributions": "Sort Contributions",
+    "saveAsTemplate": "Save as Template",
+    "moveToTop": "Move to Top",
+    "moveUp": "Move Up",
+    "moveDown": "Move Down",
+    "moveToBottom": "Move to Bottom",
+    "delete": "Delete"
+  },
+  "dates": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}}d ago",
+    "weeksAgo": "{{count}}w ago"
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "urlRequired": "URL is required",
+    "urlInvalid": "URL must start with http:// or https://",
+    "displayNameRequired": "Display name is required",
+    "questionRequired": "Question is required"
+  },
   "forms": {
     "titleLabel": "Title",
     "titlePlaceholder": "Give your post a title...",

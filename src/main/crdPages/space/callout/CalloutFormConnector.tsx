@@ -66,7 +66,7 @@ export function CalloutFormConnector({ open, onOpenChange, onSubmit, onFindTempl
       settingsSlot={
         <>
           <CalloutContributionSettings
-            allowedTypes={values.allowedContributionTypes as any}
+            allowedTypes={values.allowedContributionTypes}
             onAllowedTypesChange={types => setField('allowedContributionTypes', types)}
             commentsEnabled={values.commentsEnabled}
             onCommentsEnabledChange={v => setField('commentsEnabled', v)}

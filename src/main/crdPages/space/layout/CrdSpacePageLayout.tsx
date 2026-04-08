@@ -1,5 +1,6 @@
 import { History, Settings, Share2 } from 'lucide-react';
 import { Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -17,6 +18,7 @@ import { mapMemberAvatars, mapSpaceVisibility } from '../dataMappers/spacePageDa
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
+  const { t } = useTranslation('crd-space');
   const { spaceId, spaceLevel } = useUrlResolver();
   const { space, visibility, permissions } = useSpace();
   const { isSmallScreen } = useScreenSize();
@@ -68,10 +70,10 @@ export default function CrdSpacePageLayout() {
 
   // Mobile actions for the "More" drawer
   const mobileActions = [
-    { label: 'Activity', icon: <History className="w-4 h-4" />, onClick: () => setActivityDialogOpen(true) },
-    { label: 'Share', icon: <Share2 className="w-4 h-4" />, onClick: () => setShareDialogOpen(true) },
+    { label: t('mobile.activity'), icon: <History className="w-4 h-4" />, onClick: () => setActivityDialogOpen(true) },
+    { label: t('mobile.share'), icon: <Share2 className="w-4 h-4" />, onClick: () => setShareDialogOpen(true) },
     ...(showSettings && settingsHref
-      ? [{ label: 'Settings', icon: <Settings className="w-4 h-4" />, onClick: () => navigate(settingsHref) }]
+      ? [{ label: t('mobile.settings'), icon: <Settings className="w-4 h-4" />, onClick: () => navigate(settingsHref) }]
       : []),
   ];
 

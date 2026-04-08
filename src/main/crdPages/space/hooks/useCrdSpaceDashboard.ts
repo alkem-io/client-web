@@ -28,7 +28,7 @@ export function useCrdSpaceDashboard() {
   });
 
   const posts: PostCardData[] = calloutsSetProvided.callouts
-    ? mapCalloutsToPostCards(calloutsSetProvided.callouts as any)
+    ? mapCalloutsToPostCards(calloutsSetProvided.callouts)
     : [];
 
   return {

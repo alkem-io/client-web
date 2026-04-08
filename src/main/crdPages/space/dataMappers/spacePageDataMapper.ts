@@ -66,10 +66,10 @@ export function mapMemberAvatars(
 ): MemberAvatar[] {
   if (!leadUsers) return [];
   return leadUsers
-    .filter(user => user.profile)
+    .filter((user): user is typeof user & { profile: NonNullable<typeof user.profile> } => !!user.profile)
     .map(user => ({
-      url: user.profile?.avatar?.uri,
-      initials: getInitials(user.profile?.displayName),
+      url: user.profile.avatar?.uri,
+      initials: getInitials(user.profile.displayName),
     }));
 }
 

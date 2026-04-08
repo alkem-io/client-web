@@ -27,11 +27,12 @@ type SpaceMembersProps = {
 };
 
 const DEFAULT_FILTERS: MemberFilter[] = ['all', 'host', 'admin', 'lead', 'member', 'organization'];
+const DEFAULT_PAGE_SIZE = 12;
 
 export function SpaceMembers({
   members,
   filters = DEFAULT_FILTERS,
-  pageSize = 12,
+  pageSize = DEFAULT_PAGE_SIZE,
   onMemberClick,
   className,
 }: SpaceMembersProps) {

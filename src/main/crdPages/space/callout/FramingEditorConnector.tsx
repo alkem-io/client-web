@@ -1,5 +1,6 @@
 import { Presentation, StickyNote } from 'lucide-react';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
+import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { Button } from '@/crd/primitives/button';
 
@@ -16,8 +17,8 @@ type FramingEditorConnectorProps = {
   pollQuestion: string;
   onPollQuestionChange: (value: string) => void;
   pollQuestionError?: string;
-  pollOptions: string[];
-  onPollOptionsChange: (options: string[]) => void;
+  pollOptions: PollOptionValue[];
+  onPollOptionsChange: (options: PollOptionValue[]) => void;
 };
 
 export function FramingEditorConnector({
