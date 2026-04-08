@@ -2,6 +2,7 @@ import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { SpacesPage } from './pages/SpacesPage';
+import { SpacePage } from './pages/SpacePage';
 
 const MOCK_USER = {
   name: 'Alex Rivera',
@@ -57,6 +58,7 @@ export function CrdApp() {
       >
         <Routes>
           <Route path="/spaces" element={<SpacesPage />} />
+          <Route path="/space/:spaceSlug" element={<SpacePage />} />
           <Route path="*" element={<Navigate to="/spaces" replace={true} />} />
         </Routes>
       </CrdLayout>

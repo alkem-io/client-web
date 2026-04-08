@@ -69,6 +69,51 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 | `SpaceSubspacesList.tsx` | Status filters + SpaceCard grid + "Create Subspace" |
 | `AddPostModal.tsx` | Rich post composition with attachments and settings |
 
+### Component Mapping: CRD ← MUI ← Prototype
+
+| New CRD Component | Existing MUI Component | Prototype Reference |
+|---|---|---|
+| **Shell & Layout** | | |
+| `crd/layouts/SpaceShell.tsx` | `domain/space/layout/SpacePageLayout.tsx` | `SpaceShell.tsx` |
+| `crd/components/space/SpaceHeader.tsx` | `domain/space/layout/tabbedLayout/layout/SpacePageBanner.tsx` | `SpaceHeader.tsx` |
+| `crd/components/space/SpaceNavigationTabs.tsx` | `domain/space/layout/tabbedLayout/Tabs/SpaceTabs.tsx` | `SpaceNavigationTabs.tsx` |
+| `crd/components/space/SpaceVisibilityNotice.tsx` | `domain/space/layout/tabbedLayout/layout/SpaceVisibilityNotice.tsx` | *(not in prototype)* |
+| **Sidebar** | | |
+| `crd/components/space/SpaceSidebar.tsx` | *(sidebar sections scattered across tab pages)* | `SpaceSidebar.tsx` |
+| `crd/components/space/sidebar/InfoBlock.tsx` | *(inline in SpaceDashboardView)* | `SpaceSidebar.tsx → InfoBlock` |
+| `crd/components/space/sidebar/SubspacesSection.tsx` | `domain/space/components/spaceDashboardNavigation/` | `SpaceSidebar.tsx → SubspacesSection` |
+| `crd/components/space/sidebar/EventsSection.tsx` | `domain/timeline/calendar/DashboardCalendarSection.tsx` | `SpaceSidebar.tsx → EventsSection` |
+| `crd/components/space/sidebar/LeadBlock.tsx` | `domain/space/layout/tabbedLayout/Tabs/SpaceCommunityPage/` | `SpaceSidebar.tsx → LeadBlock` |
+| `crd/components/space/sidebar/VirtualContributorsSection.tsx` | `domain/community/virtualContributor/` components | `SpaceSidebar.tsx → VirtualContributorsSection` |
+| `crd/components/space/sidebar/CommunityGuidelinesSection.tsx` | `domain/community/guidelines/` components | `SpaceSidebar.tsx → CommunityGuidelinesSection` |
+| `crd/components/space/sidebar/KnowledgeIndexSection.tsx` | *(inline in SpaceCustomTabPage)* | `SpaceSidebar.tsx → KnowledgeIndexSection` |
+| **Content** | | |
+| `crd/components/space/PostCard.tsx` | `domain/collaboration/callout/` CalloutView + CalloutsGroupView | `PostCard.tsx` |
+| `crd/components/space/SpaceFeed.tsx` | `domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView.tsx` | `SpaceFeed.tsx` |
+| `crd/components/space/SpaceMembers.tsx` | `domain/community/` member components + `useRoleSetManager` | `SpaceMembers.tsx` |
+| `crd/components/space/SpaceSubspacesList.tsx` | `domain/space/components/subspaces/SubspaceView.tsx` | `SpaceSubspacesList.tsx` |
+| `crd/components/space/SpaceAboutView.tsx` | `domain/space/about/SpaceAboutPage.tsx` | *(not in prototype — about is spec-only)* |
+| **Callout-specific** (non-PostCard framing) | | |
+| `crd/components/callout/CalloutWhiteboardPreview.tsx` | `domain/collaboration/whiteboard/WhiteboardPreview.tsx` | `PostCard.tsx` (whiteboard type) |
+| `crd/components/callout/CalloutPoll.tsx` | `domain/collaboration/callout/poll/` components | *(not in prototype)* |
+| `crd/components/callout/CalloutMediaGallery.tsx` | `domain/collaboration/callout/media/` components | *(not in prototype)* |
+| `crd/components/callout/CalloutLinkAction.tsx` | `domain/collaboration/callout/link/` components | *(not in prototype)* |
+| `crd/components/callout/CalloutContextMenu.tsx` | `domain/collaboration/callout/edit/` CalloutSettingsMenu | *(not in prototype)* |
+| `crd/components/callout/CalloutComments.tsx` | `domain/communication/discussion/` components | *(not in prototype)* |
+| **Forms** | | |
+| `crd/forms/callout/AddPostModal.tsx` | `domain/collaboration/callout/edit/CalloutEditDialog.tsx` | `AddPostModal.tsx` |
+| `crd/forms/callout/CalloutFramingSelector.tsx` | `domain/collaboration/callout/edit/` type selector | `AddPostModal.tsx` (attachment buttons) |
+| **Contributions** | | |
+| `crd/components/contribution/ContributionGrid.tsx` | `domain/collaboration/callout/contributions/` grid | `PostCard.tsx` (collection/whiteboards type) |
+| `crd/components/contribution/ContributionPostCard.tsx` | `domain/collaboration/post/` card components | `PostCard.tsx` (items in collection) |
+| **Integration Layer** | | |
+| `main/crdPages/space/layout/CrdSpacePageLayout.tsx` | `domain/space/layout/SpacePageLayout.tsx` | — |
+| `main/crdPages/space/routing/CrdSpaceRoutes.tsx` | `domain/space/routing/SpaceRoutes.tsx` | — |
+| `main/crdPages/space/tabs/CrdSpaceDashboardPage.tsx` | `domain/space/.../SpaceDashboardPage.tsx` | `pages/SpaceHome.tsx` |
+| `main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` | `domain/space/.../SpaceCommunityPage.tsx` | `pages/SpaceCommunity.tsx` |
+| `main/crdPages/space/tabs/CrdSpaceSubspacesPage.tsx` | `domain/space/.../SpaceSubspacesPage.tsx` | `pages/SpaceSubspaces.tsx` |
+| `main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx` | `domain/space/.../SpaceCustomTabPage.tsx` | `pages/SpaceKnowledgeBase.tsx` |
+
 **Design Decisions from prototype review:**
 - **D-proto-1**: 12-col grid layout (prototype grid) instead of flex sidebar+content
 - **D-proto-2**: Desktop tabs are text-only links inside the content column (no icons), matching prototype

@@ -100,6 +100,66 @@ The prototype does not include a Space detail page. CRD components for this migr
 - **039-crd-spaces-page**: Migrated the `/spaces` explorer page. Established the CRD component layer, CrdLayout, SpaceCard, i18n infrastructure, feature toggle, and route wiring patterns. This spec builds on all of those.
 - **041-crd-dashboard-page**: Migrated the platform dashboard. Established additional CRD layout patterns.
 
+### Component Mapping Reference
+
+Quick reference mapping new CRD components to their MUI and prototype counterparts.
+
+| New CRD Component | Existing MUI Component | Prototype Reference |
+|---|---|---|
+| **Page Shell & Layout** | | |
+| `crd/layouts/SpaceShell` | `space/layout/SpacePageLayout` | `SpaceShell` |
+| `crd/components/space/SpaceHeader` | `space/layout/tabbedLayout/layout/SpacePageBanner` | `SpaceHeader` |
+| `crd/components/space/SpaceNavigationTabs` | `space/layout/tabbedLayout/Tabs/SpaceTabs` | `SpaceNavigationTabs` |
+| `crd/components/space/SpaceVisibilityNotice` | `space/layout/tabbedLayout/layout/SpaceVisibilityNotice` | — |
+| `main/crdPages/space/routing/CrdSpaceRoutes` | `space/routing/SpaceRoutes` | — |
+| `main/crdPages/space/layout/CrdSpacePageLayout` | `space/layout/tabbedLayout/layout/SpacePageLayout` | — |
+| `main/crdPages/space/tabs/CrdSpaceTabbedPages` | `space/routing/SpaceRoutes` (inline switch) | — |
+| **Tab Pages** | | |
+| `main/crdPages/space/tabs/CrdSpaceDashboardPage` | `space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage` | `SpaceFeed` (page) |
+| `main/crdPages/space/tabs/CrdSpaceCommunityPage` | `space/layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage` | `SpaceMembers` (page) |
+| `main/crdPages/space/tabs/CrdSpaceSubspacesPage` | `space/layout/tabbedLayout/Tabs/SpaceSubspacesPage` | `SpaceSubspacesList` (page) |
+| `main/crdPages/space/tabs/CrdSpaceCustomTabPage` | `space/layout/tabbedLayout/Tabs/SpaceCustomTabPage/SpaceCustomTabPage` | `SpaceKnowledgeFeed` (page) |
+| `main/crdPages/space/about/CrdSpaceAboutPage` | `space/about/SpaceAboutPage` + `SpaceAboutDialog` | — |
+| **Sidebar** | | |
+| `crd/components/space/SpaceSidebar` | `space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView` (inline sidebar) | `SpaceSidebar` |
+| `crd/components/space/sidebar/InfoBlock` | `space/components/SpaceWelcomeBlock` | `SpaceSidebar` (InfoBlock section) |
+| `crd/components/space/sidebar/SubspacesSection` | `space/layout/SubspaceInfoColumn` (subspace list) | `SpaceSidebar` (SubspacesSection) |
+| `crd/components/space/sidebar/EventsSection` | `shared/components/DashboardSections/DashboardCalendarSection` | `SpaceSidebar` (EventsSection) |
+| `crd/components/space/sidebar/LeadBlock` | `space/about/SpaceAboutDialog` (leads section) | `SpaceSidebar` (LeadBlock) |
+| `crd/components/space/sidebar/VirtualContributorsSection` | `community/contributor/RoleSetVirtualContributorsBlockWide` | `SpaceSidebar` (VCs section) |
+| `crd/components/space/sidebar/CommunityGuidelinesSection` | `community/invitations/InvitationDialog` (guidelines section) | `SpaceSidebar` (guidelines section) |
+| `crd/components/space/sidebar/KnowledgeIndexSection` | `collaboration/callout/calloutsList/CalloutsList` | `SpaceSidebar` (KnowledgeIndex) |
+| **Content Components** | | |
+| `crd/components/space/PostCard` | `collaboration/callout/CalloutView/CalloutView` + `CalloutViewLayout` | `PostCard` |
+| `crd/components/space/SpaceFeed` | `collaboration/calloutsSet/CalloutsView/CalloutsView` | `SpaceFeed` |
+| `crd/components/space/SpaceMembers` | `space/components/ContributorsToggleDialog` + `ContributorCardSquare` | `SpaceMembers` |
+| `crd/components/space/SpaceSubspacesList` | `space/layout/tabbedLayout/Tabs/SpaceSubspacesPage` (card grid) | `SpaceSubspacesList` |
+| `crd/components/common/ExpandableDescription` | `space/components/SpaceWelcomeBlock` (truncation) | — |
+| `crd/components/common/MarkdownContent` | Tiptap rendered output | — |
+| **Callout Framing** | | |
+| `crd/components/callout/CalloutWhiteboardPreview` | `collaboration/callout/CalloutFramings/CalloutFramingWhiteboard` | `PostCard` (whiteboard variant) |
+| `crd/components/callout/CalloutPoll` | `collaboration/callout/CalloutFramings/CalloutFramingPoll` | — |
+| `crd/components/callout/CalloutMediaGallery` | `collaboration/callout/CalloutFramings/CalloutFramingMediaGallery` | — |
+| `crd/components/callout/CalloutLinkAction` | `collaboration/callout/CalloutFramings/CalloutFramingLink` | — |
+| `crd/components/callout/CalloutSidebarList` | `collaboration/callout/calloutsList/CalloutsList` | — |
+| `crd/components/callout/CalloutTagCloud` | `shared/components/TagsComponent/TagsComponent` | — |
+| `crd/components/callout/CalloutComments` | `communication/room/Comments/CommentsComponent` | — |
+| **Callout Forms** | | |
+| `crd/forms/callout/AddPostModal` | `collaboration/callout/CalloutDialogs/CreateCalloutDialog` | `AddPostModal` |
+| `crd/forms/callout/CalloutFramingSelector` | `collaboration/callout/CalloutForm/CalloutFormFramingSettings` | — |
+| `crd/forms/callout/PollOptionsEditor` | `collaboration/callout/CalloutFramings/CalloutFramingPoll` (edit mode) | — |
+| `crd/forms/callout/CalloutContributionSettings` | `collaboration/callout/CalloutForm/CalloutFormContributionSettings` | — |
+| `crd/forms/callout/CalloutVisibilitySelector` | `collaboration/callout/visibilityChangeDialog/CalloutVisibilityChangeDialog` | — |
+| **Integration Layer** | | |
+| `main/crdPages/space/callout/CalloutListConnector` | `collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView` | — |
+| `main/crdPages/space/hooks/useCrdSpaceTabs` | `space/layout/tabbedLayout/layout/useSpaceTabs` | — |
+| `main/crdPages/space/hooks/useCrdSpaceDashboard` | `space/layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardPage` (inline) | — |
+| `main/crdPages/space/hooks/useCrdCalloutList` | `collaboration/calloutsSet/useCalloutsSet` (composed) | — |
+| **Primitives** | | |
+| `crd/primitives/card` | MUI `Card` / `Paper` | `ui/card` |
+| `crd/primitives/separator` | MUI `Divider` | `ui/separator` |
+| `crd/primitives/sheet` | MUI `Drawer` | `ui/sheet` |
+
 ## Scope
 
 ### In Scope
