@@ -5,10 +5,12 @@ import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
+import { MembershipsTreeDialog } from '@/crd/components/dashboard/MembershipsTreeDialog';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import {
   MOCK_INVITATIONS,
+  MOCK_MEMBERSHIPS_TREE,
   MOCK_PERSONAL_ACTIVITIES,
   MOCK_RECENT_SPACES,
   MOCK_ROLE_FILTER_OPTIONS,
@@ -36,6 +38,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
   const [roleFilter, setRoleFilter] = useState('all-roles');
   const [personalSpaceFilter, setPersonalSpaceFilter] = useState('all-spaces');
   const [showTipsDialog, setShowTipsDialog] = useState(false);
+  const [showMembershipsDialog, setShowMembershipsDialog] = useState(false);
   const [invitations, setInvitations] = useState(MOCK_INVITATIONS);
   const [activityEnabled, setActivityEnabled] = useState(false);
 
@@ -86,7 +89,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
         <RecentSpaces
           spaces={MOCK_RECENT_SPACES}
           hasHomeSpace={hasHomeSpace}
-          onExploreAllClick={() => (window.location.href = '/spaces')}
+          onExploreAllClick={() => setShowMembershipsDialog(true)}
           onPinClick={() => console.log('Pin clicked')}
         />
 
@@ -137,6 +140,14 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
         tips={tips}
         findMoreHref={t('dialogs.findMoreUrl')}
         findMoreLabel={t('dialogs.findMore')}
+      />
+
+      <MembershipsTreeDialog
+        open={showMembershipsDialog}
+        onClose={() => setShowMembershipsDialog(false)}
+        nodes={MOCK_MEMBERSHIPS_TREE}
+        seeMoreHref="/spaces"
+        createSpaceHref="#"
       />
     </>
   );
