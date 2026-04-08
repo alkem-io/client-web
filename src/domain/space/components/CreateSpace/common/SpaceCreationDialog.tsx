@@ -15,6 +15,7 @@ interface SpaceCreationDialogProps {
   onClose?: () => void;
   onCreate: (value: SpaceFormValues) => Promise<unknown>;
   formComponent: React.ComponentType<SpaceCreationForm>;
+  accountId?: string;
 }
 
 export const SpaceCreationDialog: FC<SpaceCreationDialogProps> = ({
@@ -24,6 +25,7 @@ export const SpaceCreationDialog: FC<SpaceCreationDialogProps> = ({
   onClose,
   onCreate,
   formComponent: FormComponent,
+  accountId,
 }) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
@@ -48,7 +50,12 @@ export const SpaceCreationDialog: FC<SpaceCreationDialogProps> = ({
         {t('space-creation.dialog-title', { entity: entityName })}
       </DialogHeader>
       <DialogContent>
-        <FormComponent isSubmitting={isSubmitting} onChange={handleChange} onValidChanged={setFormIsValid} />
+        <FormComponent
+          isSubmitting={isSubmitting}
+          onChange={handleChange}
+          onValidChanged={setFormIsValid}
+          accountId={accountId}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="text" disabled={isSubmitting} sx={{ alignSelf: 'start' }}>

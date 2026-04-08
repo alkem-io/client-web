@@ -111,6 +111,7 @@ export const CreateSpace = ({ open = false, onClose, accountId, onSpaceCreated }
         onClose={onClose}
         onCreate={handleCreate}
         formComponent={CreateSpaceForm}
+        accountId={destinationAccountId}
       />
     </StorageConfigContextProvider>
   );

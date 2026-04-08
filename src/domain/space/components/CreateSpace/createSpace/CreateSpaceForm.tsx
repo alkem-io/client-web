@@ -58,6 +58,7 @@ export const CreateSpaceForm = ({
   isSubmitting,
   onValidChanged,
   onChange,
+  accountId,
 }: PropsWithChildren<CreateSpaceFormProps>) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
@@ -123,6 +124,7 @@ export const CreateSpaceForm = ({
           <SpaceTemplateSelector
             name={nameOf<CreateSpaceFormValues>('spaceTemplateId')}
             level={SpaceLevel.L0}
+            accountId={accountId}
             disablePadding={true}
             sx={{ paddingBottom: gutters() }}
             onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
