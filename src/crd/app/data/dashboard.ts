@@ -238,6 +238,60 @@ export const MOCK_INVITATIONS = [
   },
 ];
 
+// ─── Pending Memberships Dialog Mock Data ───────────────────────────────────
+
+export const MOCK_PENDING_INVITATIONS = [
+  {
+    id: 'pi-1',
+    spaceName: 'Sustainability Goals 2024',
+    spaceAvatarUrl:
+      'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsYWJvcmF0aW9uJTIwdGVhbXdvcmslMjBpbm5vdmF0aW9uJTIwZGVzaWduJTIwdGhpbmtpbmclMjB3b3Jrc2hvcHxlbnwxfHx8fDE3NjkwODc1ODd8MA&ixlib=rb-4.1.0&q=80&w=150',
+    senderName: 'Sarah Chen',
+    welcomeMessageExcerpt: 'We would love to have you join our sustainability initiative. Your expertise in...',
+    timeElapsed: '2 hours ago',
+  },
+  {
+    id: 'pi-2',
+    spaceName: 'Urban Mobility Lab',
+    spaceAvatarUrl:
+      'https://images.unsplash.com/photo-1735639013995-086e648eaa38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmFpbnN0b3JtaW5nJTIwY3JlYXRpdmUlMjB3b3Jrc2hvcCUyMHRlYW18ZW58MXx8fHwxNzY5MDg3NTg3fDA&ixlib=rb-4.1.0&q=80&w=150',
+    senderName: 'Marc Johnson',
+    welcomeMessageExcerpt: 'Join us to explore innovative urban transport solutions together!',
+    timeElapsed: '1 day ago',
+  },
+];
+
+export const MOCK_PENDING_VC_INVITATIONS = [
+  {
+    id: 'pv-1',
+    spaceName: 'AI Research Collective',
+    senderName: 'Platform Admin',
+    welcomeMessageExcerpt: 'Your virtual contributor "DataBot" has been invited to participate in...',
+    timeElapsed: '3 hours ago',
+  },
+];
+
+export const MOCK_PENDING_APPLICATIONS = [
+  {
+    id: 'pa-app-1',
+    spaceName: 'Q1 Financial Planning',
+    spaceAvatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    tagline: 'Collaborative quarterly financial planning and budgeting',
+    spaceHref: '/space/financial-planning',
+  },
+];
+
+export const MOCK_INVITATION_DETAIL = {
+  spaceName: 'Sustainability Goals 2024',
+  spaceAvatarUrl:
+    'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsYWJvcmF0aW9uJTIwdGVhbXdvcmslMjBpbm5vdmF0aW9uJTIwZGVzaWduJTIwdGhpbmtpbmclMjB3b3Jrc2hvcHxlbnwxfHx8fDE3NjkwODc1ODd8MA&ixlib=rb-4.1.0&q=80&w=300',
+  spaceTagline: 'Working together towards a sustainable future for all communities',
+  spaceTags: ['Sustainability', 'Climate', 'Innovation', 'Community'],
+  spaceHref: '/space/sustainability-goals',
+  senderName: 'Sarah Chen',
+  timeElapsed: '2 hours ago',
+};
+
 export const MOCK_SPACE_FILTER_OPTIONS = [
   { value: 'all-spaces', label: 'Space: All Spaces' },
   { value: 'green-energy', label: 'Green Energy Space' },

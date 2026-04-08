@@ -25,7 +25,11 @@ type TipFromI18n = {
   url?: string;
 };
 
-export function DashboardPage() {
+type DashboardPageProps = {
+  onPendingMembershipsClick?: () => void;
+};
+
+export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps) {
   const { t } = useTranslation('crd-dashboard');
 
   const [spaceFilter, setSpaceFilter] = useState('all-spaces');
@@ -49,7 +53,7 @@ export function DashboardPage() {
       return { ...item, onClick: () => setShowTipsDialog(true) };
     }
     if (item.id === 'inv') {
-      return { ...item, onClick: () => console.log('Invitations clicked'), badgeCount: invitations.length };
+      return { ...item, onClick: () => onPendingMembershipsClick?.(), badgeCount: invitations.length };
     }
     return item;
   });
