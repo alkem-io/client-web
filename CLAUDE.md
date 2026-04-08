@@ -114,9 +114,9 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ### State & Hooks
 
 - `useState` pairs: `const [value, setValue] = useState()`
-- Use `useMemo` when creating objects/arrays passed as props
-- Use `useCallback` only for functions passed as props to children
-- **Important**: React Compiler is enabled, which provides automatic memoization. Avoid excessive manual `useMemo`/`useCallback` usage.
+- **No manual memoization**: `useMemo`, `useCallback`, and `React.memo`/`memo()` are **prohibited**. The React Compiler handles memoization automatically. ESLint `no-restricted-syntax` rules enforce this — any usage triggers a warning (transitioning to error).
+- If a rare exception is genuinely needed (e.g., third-party library lifecycle requirements), add an `eslint-disable-next-line no-restricted-syntax` comment with a reason explaining why the compiler is insufficient.
+- Biome's `useExhaustiveDependencies` is intentionally set to `off` — the React Compiler manages dependency tracking, making manual dependency arrays unnecessary.
 
 ### Component Organization
 
@@ -172,8 +172,9 @@ The project uses React 19 with the React Compiler (babel-plugin-react-compiler) 
 
 **React Compiler benefits:**
 
-- Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
+- Automatic memoization eliminates the need for manual `useMemo`/`useCallback`/`React.memo` — these are prohibited (see State & Hooks above)
 - Cleaner code with less boilerplate
+- Dependency tracking handled by the compiler (`useExhaustiveDependencies` disabled in Biome)
 
 For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
 
@@ -278,9 +279,10 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
 ## Recent Changes
+- 041-react-compiler-lint-rules: Added ESLint `no-restricted-syntax` rules to prohibit useMemo/useCallback/React.memo; updated CLAUDE.md with no-memoization policy
 - 040-ory-stack-migration: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + `@ory/kratos-client` ^26.2.0 (upgrade from ^1.3.8), axios, Apollo Client, MUI, react-i18next
 
-- Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
+- Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained for `react-compiler/react-compiler` and `no-restricted-syntax` (no-memoization) rules
 - Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
 
 ## Active Technologies

@@ -21,6 +21,29 @@ export default [
     },
     rules: {
       'react-compiler/react-compiler': 'error',
+      'no-restricted-syntax': [
+        'warn',
+        {
+          selector: 'CallExpression[callee.name="useMemo"]',
+          message:
+            'useMemo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          selector: 'CallExpression[callee.name="useCallback"]',
+          message:
+            'useCallback is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          selector: 'CallExpression[callee.name="memo"]',
+          message:
+            'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          selector: 'CallExpression[callee.object.name="React"][callee.property.name="memo"]',
+          message:
+            'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+      ],
     },
   },
 ];
