@@ -8,7 +8,8 @@ import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 
 export default function CrdSpaceCommunityPage() {
   const { space } = useSpace();
-  const { posts, canCreateCallout, tabDescription, leadUsers, canInvite, loading } = useCrdSpaceCommunity();
+  const { callouts, calloutsSetId, canCreateCallout, tabDescription, leadUsers, canInvite, loading } =
+    useCrdSpaceCommunity();
 
   // Map lead user for sidebar
   const firstLead = leadUsers[0];
@@ -40,7 +41,12 @@ export default function CrdSpaceCommunityPage() {
       <div className="space-y-8">
         <SpaceMembers members={[]} />
 
-        <CalloutListConnector posts={posts} canCreate={canCreateCallout} loading={loading} />
+        <CalloutListConnector
+          callouts={callouts}
+          calloutsSetId={calloutsSetId}
+          canCreate={canCreateCallout}
+          loading={loading}
+        />
       </div>
     </>
   );

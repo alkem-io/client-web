@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -6,8 +7,10 @@ import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 
 export default function CrdSpaceDashboardPage() {
+  const { t } = useTranslation('crd-space');
   const { space } = useSpace();
-  const { posts, canCreateCallout, tabDescription, dashboardNavigation, loading } = useCrdSpaceDashboard();
+  const { callouts, calloutsSetId, canCreateCallout, tabDescription, dashboardNavigation, loading } =
+    useCrdSpaceDashboard();
 
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
@@ -31,7 +34,13 @@ export default function CrdSpaceDashboardPage() {
           sidebarContainer
         )}
 
-      <CalloutListConnector posts={posts} canCreate={canCreateCallout} loading={loading} />
+      <CalloutListConnector
+        title={t('feed.activity')}
+        callouts={callouts}
+        calloutsSetId={calloutsSetId}
+        canCreate={canCreateCallout}
+        loading={loading}
+      />
     </>
   );
 }

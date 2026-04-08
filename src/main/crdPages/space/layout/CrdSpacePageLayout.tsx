@@ -2,7 +2,7 @@ import { History, Settings, Share2 } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import Loading from '@/core/ui/loading/Loading';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
@@ -11,6 +11,7 @@ import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNot
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -98,7 +99,7 @@ export default function CrdSpacePageLayout() {
           <SpaceHeader
             title={space.about.profile.displayName}
             tagline={space.about.profile.tagline ?? undefined}
-            bannerUrl={space.about.profile.cardBanner?.uri}
+            bannerUrl={space.about.profile.banner?.uri ?? getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
             memberAvatars={memberAvatars}
             memberCount={memberAvatars.length}
             actions={headerActions}

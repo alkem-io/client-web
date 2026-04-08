@@ -1,14 +1,16 @@
 import { StickyNote } from 'lucide-react';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 
 type ContributionMemoCardProps = {
   title: string;
-  htmlContent?: string;
+  /** Raw markdown content for preview */
+  markdownContent?: string;
   onClick?: () => void;
   className?: string;
 };
 
-export function ContributionMemoCard({ title, htmlContent, onClick, className }: ContributionMemoCardProps) {
+export function ContributionMemoCard({ title, markdownContent, onClick, className }: ContributionMemoCardProps) {
   return (
     <button
       type="button"
@@ -22,12 +24,10 @@ export function ContributionMemoCard({ title, htmlContent, onClick, className }:
         <StickyNote className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
         <p className="text-sm font-medium text-foreground truncate">{title}</p>
       </div>
-      {htmlContent && (
-        <div
-          className="text-xs text-muted-foreground line-clamp-3 prose-sm"
-          //!!
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
+      {markdownContent && (
+        <div className="line-clamp-3">
+          <MarkdownContent content={markdownContent} className="text-xs text-muted-foreground" />
+        </div>
       )}
     </button>
   );

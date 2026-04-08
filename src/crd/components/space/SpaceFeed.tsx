@@ -1,14 +1,18 @@
 import { Plus } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { Skeleton } from '@/crd/primitives/skeleton';
 import type { PostCardData } from './PostCard';
 import { PostCard } from './PostCard';
+import { PostCardSkeleton } from './PostCardSkeleton';
 
 type SpaceFeedProps = {
   title?: string;
-  posts: PostCardData[];
+  /** Pre-mapped post data — used when posts are available upfront (e.g. demo app) */
+  posts?: PostCardData[];
+  /** Render slot — used for lazy-loaded callout items managed by the integration layer */
+  children?: ReactNode;
   canCreate?: boolean;
   onCreateClick?: () => void;
   loading?: boolean;
@@ -22,7 +26,8 @@ type SpaceFeedProps = {
 
 export function SpaceFeed({
   title,
-  posts,
+  posts = [],
+  children,
   canCreate,
   onCreateClick,
   loading,
@@ -34,6 +39,8 @@ export function SpaceFeed({
   className,
 }: SpaceFeedProps) {
   const { t } = useTranslation('crd-space');
+
+  const hasContent = children || posts.length > 0;
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.feedRegion')}>
@@ -50,40 +57,31 @@ export function SpaceFeed({
         </div>
       )}
 
-      {/* Loading state */}
-      {loading && posts.length === 0 && (
+      {/* Loading state — only when no content at all */}
+      {loading && !hasContent && (
         <output className="block space-y-6" aria-label={t('feed.loading')}>
           {[1, 2, 3].map(i => (
-            <div key={i} className="rounded-lg border border-border p-6 space-y-3">
-              <div className="flex items-center gap-3">
-                <Skeleton className="w-10 h-10 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-3 w-24" />
-                </div>
-              </div>
-              <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-2/3" />
-            </div>
+            <PostCardSkeleton key={i} />
           ))}
         </output>
       )}
 
-      {/* Posts */}
-      {posts.length === 0 && !loading && (
+      {/* Empty state */}
+      {!hasContent && !loading && (
         <p className="text-sm text-muted-foreground py-8 text-center">{t('feed.noCallouts')}</p>
       )}
 
-      {posts.map(post => (
-        <PostCard
-          key={post.id}
-          post={post}
-          onClick={() => onPostClick?.(post.id)}
-          onSettingsClick={onPostSettingsClick ? () => onPostSettingsClick(post.id) : undefined}
-          onExpandClick={onPostExpandClick ? () => onPostExpandClick(post.id) : undefined}
-        />
-      ))}
+      {/* Content: children (lazy items) or posts (pre-mapped) */}
+      {children ??
+        posts.map(post => (
+          <PostCard
+            key={post.id}
+            post={post}
+            onClick={() => onPostClick?.(post.id)}
+            onSettingsClick={onPostSettingsClick ? () => onPostSettingsClick(post.id) : undefined}
+            onExpandClick={onPostExpandClick ? () => onPostExpandClick(post.id) : undefined}
+          />
+        ))}
 
       {/* Show More */}
       {hasMore && (

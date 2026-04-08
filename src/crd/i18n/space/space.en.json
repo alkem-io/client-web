@@ -33,6 +33,7 @@
   "feed": {
     "addPost": "Add Post",
     "showMore": "Show More",
+    "activity": "Activity",
     "noCallouts": "No content yet",
     "loading": "Loading content..."
   },

@@ -221,6 +221,32 @@
 
 ---
 
+## Phase 16: Callout Lazy Loading (Post-MVP Enhancement)
+
+**Goal**: Callout descriptions and content render correctly by lazy-loading full details per callout as it enters the viewport
+
+**Background**: The list query (`CalloutsOnCalloutsSetUsingClassification`) only fetches `displayName` and `url` per callout — no description, tags, content details, or comments. The MUI app uses `useCalloutInView` (intersection observer, 500ms delay, trigger once) to fetch `CalloutDetailsQuery` per callout on scroll. CRD replicates this pattern.
+
+**Data flow**: `useCalloutsSet` → light `callouts[]` → `CalloutListConnector` → `LazyCalloutItem` per item → `useCalloutInView` (intersection observer) → `mapCalloutDetailsToPostCard` → `PostCard` with full content
+
+- [X] T091 [P] Extract `src/crd/components/space/PostCardSkeleton.tsx` — reusable skeleton card from SpaceFeed's loading state; used by both SpaceFeed (initial load) and LazyCalloutItem (per-item load)
+- [X] T092 [P] Add `children: ReactNode` slot to `src/crd/components/space/SpaceFeed.tsx` — when provided, renders children instead of internal `posts.map()` in the content area; backwards-compatible with `posts` prop for demo app
+- [X] T093 [P] Add `mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended): PostCardData` to `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — maps full detail data including description, whiteboard preview, comments count, author; rename existing mapper to `mapCalloutLightToPostCard`
+- [X] T094 [P] Update 3 hooks to return raw callouts: `useCrdCalloutList.ts`, `useCrdSpaceDashboard.ts`, `useCrdSpaceCommunity.ts` — return `callouts: CalloutModelLightExtended[]` and `calloutsSetId` instead of pre-mapped `posts: PostCardData[]`
+- [X] T095 Create `src/main/crdPages/space/callout/LazyCalloutItem.tsx` — per-callout lazy loading wrapper; uses `useCalloutInView` from domain layer (`@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView`); renders PostCardSkeleton until inView, then maps via `mapCalloutDetailsToPostCard` and renders PostCard
+- [X] T096 Update `src/main/crdPages/space/callout/CalloutListConnector.tsx` — change props from `posts: PostCardData[]` to `callouts: CalloutModelLightExtended[]` + `calloutsSetId`; sort by sortOrder; render LazyCalloutItem per callout inside SpaceFeed children slot
+- [X] T097 Update 4 tab pages (`CrdSpaceDashboardPage`, `CrdSpaceCommunityPage`, `CrdSpaceSubspacesPage`, `CrdSpaceCustomTabPage`) — pass `callouts`/`calloutsSetId` to CalloutListConnector; CustomTabPage derives sidebar items from light callout data instead of mapped posts
+
+**Checkpoint**: Callout descriptions appear after scrolling into view. Skeletons show during load. All 4 tabs work. Type-check passes.
+
+**Reused existing code (no changes needed)**:
+- `useCalloutInView` at `src/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView.ts`
+- `useCalloutDetails` at `src/domain/collaboration/callout/useCalloutDetails/useCalloutDetails.ts`
+- `react-intersection-observer` package (already installed)
+- `CalloutDetailsModelExtended` type from `src/domain/collaboration/callout/models/CalloutDetailsModel.ts`
+
+---
+
 ## Dependencies & Execution Order
 
 ```
@@ -238,6 +264,7 @@ Phase 1 (setup + primitives)
   │
   Phase 8 complete → Phase 11 (templates)
   Phase 5 complete → Phase 12 (comments)
+  Phase 5 complete → Phase 16 (callout lazy loading)
   All desired → Phase 14 (mobile) + Phase 15 (polish)
 ```
 

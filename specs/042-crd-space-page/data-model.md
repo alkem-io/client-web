@@ -136,12 +136,31 @@ type SubspaceCardData = {
 
 ## Callout System
 
+### Data Loading: Light vs Detail
+
+Callout data is loaded in two phases. CRD components receive `PostCardData` which is the same type regardless of source — the integration layer handles the mapping:
+
+| Field | Light query | Detail query |
+|-------|-----------|-------------|
+| `id`, `sortOrder`, `activity` | ✓ | ✓ |
+| `framing.profile.displayName` | ✓ | ✓ |
+| `framing.type` | ✓ | ✓ |
+| `framing.profile.description` | ✗ | ✓ |
+| `framing.profile.tags`, `references` | ✗ | ✓ |
+| Whiteboard/Memo/Link/Media/Poll content | ✗ | ✓ |
+| `comments`, `contributions` | ✗ | ✓ |
+| `createdBy`, `publishedDate` | ✗ | ✓ |
+
+- **Light mapper** (`mapCalloutLightToPostCard`): produces a `PostCardData` with title and type only — `snippet` is `undefined`
+- **Detail mapper** (`mapCalloutDetailsToPostCard`): produces a complete `PostCardData` with description, content previews, author, comment count
+- **Source types**: `CalloutModelLightExtended` (light, from `useCalloutsSet`) and `CalloutDetailsModelExtended` (detail, from `useCalloutDetails`)
+
 ### CalloutBlockData
 ```typescript
 type CalloutBlockData = {
   id: string;
   title: string;
-  description?: string;       // HTML (pre-rendered from markdown)
+  description?: string;       // Raw markdown — rendered via react-markdown in CRD
   tags: string[];
   references: CalloutReference[];
   framingType: 'none' | 'memo' | 'whiteboard' | 'link' | 'media' | 'poll';
@@ -172,7 +191,7 @@ type ContributionType = 'post' | 'memo' | 'whiteboard' | 'link';
 ```typescript
 type CalloutFramingData =
   | { type: 'none' }
-  | { type: 'memo'; htmlContent: string; onExpand?: () => void }
+  | { type: 'memo'; markdownContent: string; onExpand?: () => void }
   | { type: 'whiteboard'; previewUrl?: string; onOpen: () => void }
   | { type: 'link'; url: string; displayName: string; isExternal: boolean }
   | { type: 'media'; images: MediaImage[]; canEdit: boolean; onAddImage?: () => void }
@@ -274,15 +293,15 @@ type TemplateCardData = {
 type SpaceAboutData = {
   name: string;
   tagline?: string;
-  description?: string;       // HTML
+  description?: string;       // Raw markdown
   location?: string;
   metrics: { name: string; value: string }[];
-  who?: string;               // HTML (markdown)
-  why?: string;               // HTML (markdown)
+  who?: string;               // Raw markdown
+  why?: string;               // Raw markdown
   provider?: SpaceLeadData;
   leadUsers: SpaceLeadData[];
   leadOrganizations: SpaceLeadData[];
-  guidelines?: string;        // HTML
+  guidelines?: string;        // Raw markdown
   references: CalloutReference[];
 };
 ```

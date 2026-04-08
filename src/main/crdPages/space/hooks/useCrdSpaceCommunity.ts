@@ -1,8 +1,6 @@
-import type { PostCardData } from '@/crd/components/space/PostCard';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
-import { mapCalloutsToPostCards } from '../dataMappers/calloutDataMapper';
 
 export function useCrdSpaceCommunity() {
   const { space, permissions } = useSpace();
@@ -19,16 +17,12 @@ export function useCrdSpaceCommunity() {
     classificationTagsets,
   });
 
-  const posts: PostCardData[] = calloutsSetProvided.callouts
-    ? mapCalloutsToPostCards(calloutsSetProvided.callouts)
-    : [];
-
-  // Extract lead and guideline data from space context
   const leadUsers = space.about.membership?.leadUsers ?? [];
   const guidelines = space.about.guidelines;
 
   return {
-    posts,
+    callouts: calloutsSetProvided.callouts ?? [],
+    calloutsSetId,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
     tabDescription: tabDescription ?? '',
     leadUsers,

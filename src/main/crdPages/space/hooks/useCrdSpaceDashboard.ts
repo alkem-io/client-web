@@ -1,10 +1,8 @@
-import type { PostCardData } from '@/crd/components/space/PostCard';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { mapCalloutsToPostCards } from '../dataMappers/calloutDataMapper';
 
 export function useCrdSpaceDashboard() {
   const { spaceId } = useUrlResolver();
@@ -27,12 +25,9 @@ export function useCrdSpaceDashboard() {
     spaceId,
   });
 
-  const posts: PostCardData[] = calloutsSetProvided.callouts
-    ? mapCalloutsToPostCards(calloutsSetProvided.callouts)
-    : [];
-
   return {
-    posts,
+    callouts: calloutsSetProvided.callouts ?? [],
+    calloutsSetId,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
     tabDescription: tabDescription ?? '',
     dashboardNavigation,

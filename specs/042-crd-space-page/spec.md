@@ -91,6 +91,30 @@ Key routing decisions:
 - **Callout detail route** (`/collaboration/:calloutNameId`) renders inside CrdSpacePageLayout -- the CRD layout shows banner + breadcrumbs (no tabs for this route). The callout content itself is rendered via the integration layer.
 - **Feature toggle** -- TopLevelRoutes conditionally routes to CrdSpaceRoutes (crdEnabled) or SpaceRoutes (!crdEnabled), same pattern as 039 for the /spaces page.
 
+### Callout Data Loading Strategy
+
+Callouts use a two-phase loading strategy that mirrors the existing MUI implementation:
+
+**Phase 1 — Light list load** (`CalloutsOnCalloutsSetUsingClassification` query):
+- Fetches all callouts for a tab in a single query
+- Returns minimal data: `id`, `displayName`, `url`, `sortOrder`, `activity`, `framingType`, `visibility`, `authorization`
+- Does NOT include: `description`, `tags`, `references`, whiteboard/memo/poll/media content, `comments`, `contributions`, `createdBy`
+- Used to render the callout list structure (titles, sort order, draft badges) and skeleton placeholders
+
+**Phase 2 — Detail load per callout** (`CalloutDetailsQuery`, triggered by viewport intersection):
+- Each callout fetches its full details only when it scrolls into view
+- Uses `useCalloutInView` hook (from `src/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView.ts`) which wraps `react-intersection-observer` with `delay: 500ms` and `triggerOnce: true`
+- Returns complete data: description, all framing content (whiteboard preview, memo, link, media gallery, poll), comments, contributions, author, tags, references
+- Skeleton → full PostCard transition is seamless per-item
+
+**CRD integration pattern:**
+- `CalloutListConnector` receives light callout data and renders a `LazyCalloutItem` per callout
+- `LazyCalloutItem` (integration layer) calls `useCalloutInView`, renders `PostCardSkeleton` while loading, then maps detail data to `PostCardData` via `mapCalloutDetailsToPostCard` and renders `PostCard`
+- `SpaceFeed` (CRD component) accepts a `children` slot for lazy-rendered items, keeping it unaware of the loading mechanism
+- The CRD `PostCard` component is pure — it receives complete props and renders, no loading state awareness needed
+
+This approach avoids fetching detailed content for callouts the user never scrolls to, matching the performance characteristics of the MUI implementation.
+
 ### Prototype Reference
 
 The prototype does not include a Space detail page. CRD components for this migration will be designed to match the aesthetic of the existing CRD components (from 039-crd-spaces-page) while reflecting the structural needs of the current MUI Space pages.

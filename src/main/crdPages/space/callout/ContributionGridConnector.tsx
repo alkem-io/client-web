@@ -30,7 +30,7 @@ export function ContributionGridConnector({ contributions, onContributionClick }
               <ContributionMemoCard
                 key={contribution.id}
                 title={contribution.title}
-                htmlContent={contribution.htmlContent}
+                markdownContent={contribution.htmlContent}
                 onClick={() => onContributionClick?.(contribution.id)}
               />
             );

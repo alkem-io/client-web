@@ -1,5 +1,6 @@
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
@@ -11,8 +12,36 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   }
 }
 
-export function mapCalloutToPostCard(callout: CalloutModelLightExtended): PostCardData {
+/**
+ * Maps a lightweight callout (from the list query) to PostCardData.
+ * Only has title and type — no description, no content previews.
+ */
+export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
+
+  return {
+    id: callout.id,
+    type: postType,
+    title: callout.framing.profile.displayName,
+    snippet: undefined, // Not available in list query
+    isDraft: callout.draft,
+    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate) : undefined,
+    author: callout.createdBy?.profile
+      ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
+      : undefined,
+    commentCount: callout.activity ?? 0,
+    contentPreview: undefined, // Not available in list query
+  };
+}
+
+/**
+ * Maps a fully-loaded callout (from CalloutDetailsQuery) to PostCardData.
+ * Has description, content previews, author details, contribution counts.
+ */
+export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended): PostCardData {
+  const postType = mapFramingTypeToPostType(callout.framing.type);
+
+  const contentPreview = buildContentPreview(callout);
 
   return {
     id: callout.id,
@@ -22,30 +51,30 @@ export function mapCalloutToPostCard(callout: CalloutModelLightExtended): PostCa
     isDraft: callout.draft,
     timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate) : undefined,
     author: callout.createdBy?.profile
-      ? {
-          name: callout.createdBy.profile.displayName,
-          avatarUrl: undefined,
-        }
+      ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
       : undefined,
-    commentCount: callout.activity ?? 0,
-    contentPreview:
-      postType === 'whiteboard' && callout.framing.whiteboard?.profile.preview?.uri
-        ? { imageUrl: callout.framing.whiteboard.profile.preview.uri }
-        : undefined,
+    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    contentPreview,
   };
 }
 
+function buildContentPreview(callout: CalloutDetailsModelExtended): PostCardData['contentPreview'] {
+  switch (callout.framing.type) {
+    case CalloutFramingType.Whiteboard:
+      return callout.framing.whiteboard?.profile.preview?.uri
+        ? { imageUrl: callout.framing.whiteboard.profile.preview.uri }
+        : undefined;
+    default:
+      return undefined;
+  }
+}
+
 export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[]): PostCardData[] {
-  return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(mapCalloutToPostCard);
+  return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(mapCalloutLightToPostCard);
 }
 
 type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
 
-/**
- * Formats a date relative to now using i18n keys from the 'crd-space' namespace.
- * Requires a `t` function from useTranslation('crd-space').
- * Falls back to locale date string for dates older than 30 days.
- */
 export function formatRelativeDate(date: Date, t?: DateFormatter): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();

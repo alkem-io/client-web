@@ -1,16 +1,36 @@
-import type { PostCardData } from '@/crd/components/space/PostCard';
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
+import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import { LazyCalloutItem } from './LazyCalloutItem';
 
 type CalloutListConnectorProps = {
   title?: string;
-  posts: PostCardData[];
+  callouts: CalloutModelLightExtended[];
+  calloutsSetId: string | undefined;
   canCreate?: boolean;
   loading?: boolean;
   onCreateClick?: () => void;
 };
 
-export function CalloutListConnector({ title, posts, canCreate, loading, onCreateClick }: CalloutListConnectorProps) {
+export function CalloutListConnector({
+  title,
+  callouts,
+  calloutsSetId,
+  canCreate,
+  loading,
+  onCreateClick,
+}: CalloutListConnectorProps) {
+  const sorted = [...callouts].sort((a, b) => a.sortOrder - b.sortOrder);
+
   return (
-    <SpaceFeed title={title} posts={posts} canCreate={canCreate} onCreateClick={onCreateClick} loading={loading} />
+    <SpaceFeed
+      title={title}
+      canCreate={canCreate}
+      onCreateClick={onCreateClick}
+      loading={loading && callouts.length === 0}
+    >
+      {sorted.map(callout => (
+        <LazyCalloutItem key={callout.id} calloutId={callout.id} calloutsSetId={calloutsSetId} />
+      ))}
+    </SpaceFeed>
   );
 }

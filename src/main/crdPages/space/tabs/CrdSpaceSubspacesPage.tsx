@@ -13,7 +13,8 @@ export default function CrdSpaceSubspacesPage() {
   const { spaceId } = useUrlResolver();
   const { space, permissions } = useSpace();
   const {
-    posts,
+    callouts,
+    calloutsSetId,
     canCreateCallout,
     tabDescription,
     loading: calloutsLoading,
@@ -55,7 +56,12 @@ export default function CrdSpaceSubspacesPage() {
       <div className="space-y-8">
         <SpaceSubspacesList subspaces={subspaces} canCreate={permissions.canCreateSubspaces} />
 
-        <CalloutListConnector posts={posts} canCreate={canCreateCallout} loading={calloutsLoading} />
+        <CalloutListConnector
+          callouts={callouts}
+          calloutsSetId={calloutsSetId}
+          canCreate={canCreateCallout}
+          loading={calloutsLoading}
+        />
       </div>
     </>
   );
