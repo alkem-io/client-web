@@ -1,10 +1,20 @@
+// Path helpers for default space visuals (copied from public/default-visuals/)
+// 'custom' represents a space whose owner uploaded their own image
+const CUSTOM_AVATAR =
+  'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=150';
+const CUSTOM_CARD =
+  'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080';
+const spaceAvatar = (hex: string) =>
+  hex === 'custom' ? CUSTOM_AVATAR : `/default-visuals/space/avatar/alkemio-default-avatar-${hex}.jpg`;
+const spaceCard = (hex: string) =>
+  hex === 'custom' ? CUSTOM_CARD : `/default-visuals/space/card/alkemio-default-card-${hex}.jpg`;
+
 export const MOCK_RECENT_SPACES = [
   {
     id: 'rs-1',
     name: 'Innovation Lab',
     href: '/space/innovation-lab',
-    bannerUrl:
-      'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsYWJvcmF0aW9uJTIwdGVhbXdvcmslMjBpbm5vdmF0aW9uJTIwZGVzaWduJTIwdGhpbmtpbmclMjB3b3Jrc2hvcHxlbnwxfHx8fDE3NjkwODc1ODd8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    bannerUrl: spaceCard('custom'),
     isPrivate: true,
     isHomeSpace: true,
     initials: 'IL',
@@ -13,8 +23,7 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-2',
     name: 'Design Workshop',
     href: '/space/design-workshop',
-    bannerUrl:
-      'https://images.unsplash.com/photo-1735639013995-086e648eaa38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmFpbnN0b3JtaW5nJTIwY3JlYXRpdmUlMjB3b3Jrc2hvcCUyMHRlYW18ZW58MXx8fHwxNzY5MDg3NTg3fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    bannerUrl: spaceCard('1'),
     isPrivate: false,
     isHomeSpace: false,
     initials: 'DW',
@@ -23,8 +32,7 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-3',
     name: 'Team Sync',
     href: '/space/team-sync',
-    bannerUrl:
-      'https://images.unsplash.com/photo-1768659347532-74d3b1efb0ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ24lMjBtZWV0aW5nJTIwY29sbGFib3JhdGlvbiUyMHRlYW18ZW58MXx8fHwxNzY5MDg3NTg3fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    bannerUrl: spaceCard('2'),
     isPrivate: true,
     isHomeSpace: false,
     initials: 'TS',
@@ -33,8 +41,7 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-4',
     name: 'Future Strategy',
     href: '/space/future-strategy',
-    bannerUrl:
-      'https://images.unsplash.com/photo-1676276376052-dc9c9c0b6917?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbm5vdmF0aW9uJTIwbGFiJTIwdGVhbXdvcmslMjBtb2Rlcm4lMjBvZmZpY2V8ZW58MXx8fHwxNzY5MDg3NTg2fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    bannerUrl: spaceCard('3'),
     isPrivate: false,
     isHomeSpace: false,
     initials: 'FS',
@@ -217,7 +224,7 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-sustainability',
     spaceName: 'Sustainability Goals 2024',
     spaceHref: '/space/sustainability-goals',
-    spaceAvatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
+    spaceAvatarUrl: spaceAvatar('4'),
     role: 'Editor',
   },
   {
@@ -225,7 +232,7 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-urban-mobility',
     spaceName: 'Urban Mobility Lab',
     spaceHref: '/space/urban-mobility',
-    spaceAvatarUrl: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=150',
+    spaceAvatarUrl: spaceAvatar('5'),
     role: 'Viewer',
   },
   {
@@ -233,7 +240,7 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-financial',
     spaceName: 'Q1 Financial Planning',
     spaceHref: '/space/financial-planning',
-    spaceAvatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    spaceAvatarUrl: spaceAvatar('6'),
     role: 'Admin',
   },
 ];
@@ -244,8 +251,7 @@ export const MOCK_PENDING_INVITATIONS = [
   {
     id: 'pi-1',
     spaceName: 'Sustainability Goals 2024',
-    spaceAvatarUrl:
-      'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsYWJvcmF0aW9uJTIwdGVhbXdvcmslMjBpbm5vdmF0aW9uJTIwZGVzaWduJTIwdGhpbmtpbmclMjB3b3Jrc2hvcHxlbnwxfHx8fDE3NjkwODc1ODd8MA&ixlib=rb-4.1.0&q=80&w=150',
+    spaceAvatarUrl: spaceAvatar('4'),
     senderName: 'Sarah Chen',
     welcomeMessageExcerpt: 'We would love to have you join our sustainability initiative. Your expertise in...',
     timeElapsed: '2 hours ago',
@@ -253,8 +259,7 @@ export const MOCK_PENDING_INVITATIONS = [
   {
     id: 'pi-2',
     spaceName: 'Urban Mobility Lab',
-    spaceAvatarUrl:
-      'https://images.unsplash.com/photo-1735639013995-086e648eaa38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmFpbnN0b3JtaW5nJTIwY3JlYXRpdmUlMjB3b3Jrc2hvcCUyMHRlYW18ZW58MXx8fHwxNzY5MDg3NTg3fDA&ixlib=rb-4.1.0&q=80&w=150',
+    spaceAvatarUrl: spaceAvatar('5'),
     senderName: 'Marc Johnson',
     welcomeMessageExcerpt: 'Join us to explore innovative urban transport solutions together!',
     timeElapsed: '1 day ago',
@@ -275,7 +280,7 @@ export const MOCK_PENDING_APPLICATIONS = [
   {
     id: 'pa-app-1',
     spaceName: 'Q1 Financial Planning',
-    spaceAvatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    spaceAvatarUrl: spaceAvatar('6'),
     tagline: 'Collaborative quarterly financial planning and budgeting',
     spaceHref: '/space/financial-planning',
   },
@@ -283,8 +288,7 @@ export const MOCK_PENDING_APPLICATIONS = [
 
 export const MOCK_INVITATION_DETAIL = {
   spaceName: 'Sustainability Goals 2024',
-  spaceAvatarUrl:
-    'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsYWJvcmF0aW9uJTIwdGVhbXdvcmslMjBpbm5vdmF0aW9uJTIwZGVzaWduJTIwdGhpbmtpbmclMjB3b3Jrc2hvcHxlbnwxfHx8fDE3NjkwODc1ODd8MA&ixlib=rb-4.1.0&q=80&w=300',
+  spaceAvatarUrl: spaceAvatar('4'),
   spaceTagline: 'Working together towards a sustainable future for all communities',
   spaceTags: ['Sustainability', 'Climate', 'Innovation', 'Community'],
   spaceHref: '/space/sustainability-goals',
@@ -369,6 +373,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
     id: 'mt-1',
     name: 'Green Energy Space',
     href: '/space/green-energy',
+    avatarUrl: spaceAvatar('0'),
     initials: 'GE',
     roles: ['Lead'],
     children: [
@@ -376,6 +381,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
         id: 'mt-1-1',
         name: 'Renewable Energy Transition',
         href: '/space/green-energy/renewable-transition',
+        avatarUrl: spaceAvatar('a'),
         initials: 'RE',
         roles: ['Member'],
         children: [],
@@ -384,6 +390,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
         id: 'mt-1-2',
         name: 'Solar Panel Innovation',
         href: '/space/green-energy/solar-panels',
+        avatarUrl: spaceAvatar('b'),
         initials: 'SP',
         roles: ['Admin'],
         children: [],
@@ -394,6 +401,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
     id: 'mt-2',
     name: 'Community Garden',
     href: '/space/community-garden',
+    avatarUrl: spaceAvatar('1'),
     initials: 'CG',
     roles: ['Member'],
     children: [
@@ -401,6 +409,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
         id: 'mt-2-1',
         name: 'Urban Farming',
         href: '/space/community-garden/urban-farming',
+        avatarUrl: spaceAvatar('c'),
         initials: 'UF',
         roles: ['Member'],
         children: [],
@@ -411,6 +420,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
     id: 'mt-3',
     name: 'Digital Transformation',
     href: '/space/digital-trans',
+    avatarUrl: spaceAvatar('2'),
     initials: 'DT',
     roles: ['Admin'],
     children: [],
@@ -419,6 +429,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
     id: 'mt-4',
     name: 'Innovation Lab',
     href: '/space/innovation-lab',
+    avatarUrl: spaceAvatar('custom'),
     initials: 'IL',
     roles: ['Lead', 'Member'],
     children: [
@@ -426,8 +437,8 @@ export const MOCK_MEMBERSHIPS_TREE = [
         id: 'mt-4-1',
         name: 'AI Research Collective',
         href: '/space/innovation-lab/ai-research',
+        avatarUrl: spaceAvatar('d'),
         initials: 'AI',
-        avatarColor: 'var(--chart-2)',
         roles: ['Member'],
         children: [],
       },
@@ -435,6 +446,7 @@ export const MOCK_MEMBERSHIPS_TREE = [
         id: 'mt-4-2',
         name: 'Design Thinking Practice',
         href: '/space/innovation-lab/design-thinking',
+        avatarUrl: spaceAvatar('e'),
         initials: 'DT',
         roles: ['Member'],
         children: [],
