@@ -1,6 +1,7 @@
 import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
+import { DashboardPage } from './pages/DashboardPage';
 import { SpacesPage } from './pages/SpacesPage';
 import { SpacePage } from './pages/SpacePage';
 
@@ -57,9 +58,10 @@ export function CrdApp() {
         footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about' }}
       >
         <Routes>
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/spaces" element={<SpacesPage />} />
           <Route path="/space/:spaceSlug" element={<SpacePage />} />
-          <Route path="*" element={<Navigate to="/spaces" replace={true} />} />
+          <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>
     </BrowserRouter>
