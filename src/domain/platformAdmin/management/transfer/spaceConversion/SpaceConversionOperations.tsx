@@ -8,6 +8,7 @@ import type { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete';
 import { FormikAutocomplete } from '@/core/ui/forms/FormikAutocomplete';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption } from '@/core/ui/typography';
+import SpaceMovePanel from './SpaceMovePanel';
 
 const T_PREFIX = 'pages.admin.spaceConversion';
 
@@ -16,6 +17,9 @@ type SpaceConversionOperationsProps = {
   siblingSubspaces: FormikSelectValue[];
   siblingsLoading: boolean;
   mutationLoading: boolean;
+  resolvedSpaceId: string | undefined;
+  levelZeroSpaceId: string | undefined;
+  spaceName: string | undefined;
   onPromoteL1ToL0: () => Promise<void>;
   onDemoteL1ToL2: (parentSpaceL1ID: string) => Promise<void>;
   onPromoteL2ToL1: () => Promise<void>;
@@ -26,6 +30,9 @@ const SpaceConversionOperations = ({
   siblingSubspaces,
   siblingsLoading,
   mutationLoading,
+  resolvedSpaceId,
+  levelZeroSpaceId,
+  spaceName,
   onPromoteL1ToL0,
   onDemoteL1ToL2,
   onPromoteL2ToL1,
@@ -33,7 +40,7 @@ const SpaceConversionOperations = ({
   const { t } = useTranslation();
   const [confirmDialog, setConfirmDialog] = useState<'L1toL0' | 'L1toL2' | 'L2toL1' | null>(null);
   const [selectedParentId, setSelectedParentId] = useState<string | undefined>();
-  const [operation, setOperation] = useState<'promote' | 'demote'>('promote');
+  const [operation, setOperation] = useState<'promote' | 'demote' | 'move'>('promote');
 
   const hasValidParentSelection = Boolean(selectedParentId && siblingSubspaces.some(s => s.id === selectedParentId));
 
@@ -86,6 +93,7 @@ const SpaceConversionOperations = ({
             >
               <ToggleButton value="promote">{t(`${T_PREFIX}.promote`)}</ToggleButton>
               <ToggleButton value="demote">{t(`${T_PREFIX}.demote`)}</ToggleButton>
+              <ToggleButton value="move">{t(`${T_PREFIX}.move`)}</ToggleButton>
             </ToggleButtonGroup>
             {operation === 'promote' && (
               <>
@@ -134,6 +142,13 @@ const SpaceConversionOperations = ({
                   !siblingsLoading && <Caption>{t(`${T_PREFIX}.demoteL1ToL2.noTargets`)}</Caption>
                 )}
               </>
+            )}
+            {operation === 'move' && resolvedSpaceId && levelZeroSpaceId && (
+              <SpaceMovePanel
+                resolvedSpaceId={resolvedSpaceId}
+                levelZeroSpaceId={levelZeroSpaceId}
+                spaceName={spaceName ?? ''}
+              />
             )}
           </>
         )}

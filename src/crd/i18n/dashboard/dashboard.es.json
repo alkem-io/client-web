@@ -113,5 +113,24 @@
   "withoutMemberships": {
     "createSpace": "Crea tu propio Espacio",
     "createSpaceDescription": "Comienza a colaborar creando tu primer espacio"
+  },
+  "pendingMemberships": {
+    "title": "Membresías Pendientes",
+    "empty": "No tienes invitaciones o solicitudes abiertas.",
+    "loading": "Cargando membresías pendientes",
+    "close": "Cerrar",
+    "closeDialog": "Cerrar diálogo",
+    "invitationsSection": "Invitaciones",
+    "vcInvitationsSection": "Invitaciones de Colaboradores Virtuales",
+    "applicationsSection": "Solicitudes Abiertas",
+    "detail": {
+      "back": "Volver a la lista",
+      "reject": "Rechazar",
+      "rejectAriaLabel": "Rechazar invitación a {{spaceName}}",
+      "accept": "Aceptar",
+      "acceptAriaLabel": "Aceptar invitación a {{spaceName}}",
+      "join": "Unirse",
+      "joinAriaLabel": "Unirse a {{spaceName}}"
+    }
   }
 }

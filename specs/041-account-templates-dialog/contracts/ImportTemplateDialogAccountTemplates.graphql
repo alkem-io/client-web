@@ -1,0 +1,68 @@
+# New query to be added to:
+# src/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplateDialog.graphql
+#
+# This query fetches all templates from all innovation packs within an account,
+# producing the same { template, innovationPack } shape as the Platform templates query.
+
+query ImportTemplateDialogAccountTemplates(
+  $accountId: UUID!
+  $includeSpace: Boolean = false
+  $includeCallout: Boolean = false
+) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      innovationPacks(searchVisibility: [ACCOUNT, PUBLIC]) {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            url
+          }
+        }
+        templatesSet {
+          id
+          templates {
+            ...TemplateProfileInfo
+            callout @include(if: $includeCallout) {
+              id
+            }
+            contentSpace @include(if: $includeSpace) {
+              id
+              about {
+                id
+                profile {
+                  id
+                  cardBanner: visual(type: CARD) {
+                    id
+                    uri
+                  }
+                }
+              }
+              collaboration {
+                id
+                innovationFlow {
+                  id
+                  states {
+                    displayName
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

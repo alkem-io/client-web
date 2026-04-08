@@ -15,8 +15,8 @@ import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
-const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/pendingMembership/PendingMembershipsDialog')
+const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/dashboard/CrdPendingMembershipsDialog')
 );
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
 
@@ -73,7 +73,7 @@ function CrdLayoutConnector() {
       </CrdLayout>
       {userModel && (
         <Suspense fallback={null}>
-          <PendingMembershipsDialog />
+          <CrdPendingMembershipsDialog />
         </Suspense>
       )}
       <Suspense fallback={null}>

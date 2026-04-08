@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useSpace } from '@/domain/space/context/useSpace';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import type { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 
@@ -24,6 +25,9 @@ const SetDefaultTemplateDialog = ({
   currentTemplate,
 }: SetDefaultTemplateDialogProps) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
   const notify = useNotification();
   const [loading, setLoading] = useState(false);
 
@@ -64,6 +68,7 @@ const SetDefaultTemplateDialog = ({
       open={open}
       onClose={onClose}
       templateType={TemplateType.Callout}
+      accountId={accountId}
       enablePlatformTemplates={true}
       onSelectTemplate={handleSelectTemplate}
       selectedTemplateId={currentTemplate?.id}

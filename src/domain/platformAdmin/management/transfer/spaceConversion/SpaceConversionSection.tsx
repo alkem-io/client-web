@@ -19,6 +19,8 @@ const SpaceConversionSection = () => {
   const {
     space,
     resolvedLevel,
+    resolvedSpaceId,
+    levelZeroSpaceId,
     accountOwnerName,
     communityCounts,
     siblingSubspaces,
@@ -98,6 +100,9 @@ const SpaceConversionSection = () => {
             siblingSubspaces={siblingSubspaces}
             siblingsLoading={siblingsLoading}
             mutationLoading={mutationLoading}
+            resolvedSpaceId={resolvedSpaceId}
+            levelZeroSpaceId={levelZeroSpaceId}
+            spaceName={space?.about.profile.displayName}
             onPromoteL1ToL0={handlePromoteL1ToL0}
             onDemoteL1ToL2={handleDemoteL1ToL2}
             onPromoteL2ToL1={handlePromoteL2ToL1}
