@@ -4390,6 +4390,28 @@ export type MoveCalloutContributionInput = {
   contributionID: Scalars['UUID']['input'];
 };
 
+export type MoveSpaceL1ToSpaceL0Input = {
+  /** Send invitations to former community members who are also in the target L0 community. */
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Custom invitation message. Used only when autoInvite is true. */
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+  /** The L1 subspace to move to a different L0 space. */
+  spaceL1ID: Scalars['UUID']['input'];
+  /** The target L0 space (must be different from the current parent L0). */
+  targetSpaceL0ID: Scalars['UUID']['input'];
+};
+
+export type MoveSpaceL1ToSpaceL2Input = {
+  /** Send invitations to former community members who are also in the target L0 community. */
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Custom invitation message. Used only when autoInvite is true. */
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+  /** The L1 subspace to move and demote to L2. */
+  spaceL1ID: Scalars['UUID']['input'];
+  /** The target L1 subspace in a different L0 (new parent for the demoted space). */
+  targetSpaceL1ID: Scalars['UUID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
@@ -4612,6 +4634,10 @@ export type Mutation = {
   markNotificationsAsUnread: Scalars['Boolean']['output'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
+  /** Move an L1 subspace to a different L0 space. The subspace remains at level 1       but changes parent. All content moves with it. All community memberships are cleared.       Requires platform admin privileges. */
+  moveSpaceL1ToSpaceL0: Space;
+  /** Move an L1 subspace to become an L2 sub-subspace under a target L1 in a different L0 space.       The space is demoted from level 1 to level 2. All community roles are cleared.       Requires platform admin privileges. */
+  moveSpaceL1ToSpaceL2: Space;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5206,6 +5232,14 @@ export type MutationMarkNotificationsAsUnreadArgs = {
 
 export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
+};
+
+export type MutationMoveSpaceL1ToSpaceL0Args = {
+  moveData: MoveSpaceL1ToSpaceL0Input;
+};
+
+export type MutationMoveSpaceL1ToSpaceL2Args = {
+  moveData: MoveSpaceL1ToSpaceL2Input;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -24812,6 +24846,88 @@ export type ConvertSpaceL2ToL1MutationVariables = Exact<{
 export type ConvertSpaceL2ToL1Mutation = {
   __typename?: 'Mutation';
   convertSpaceL2ToSpaceL1: { __typename?: 'Space'; id: string };
+};
+
+export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+}>;
+
+export type SpaceMoveTargetL0SpacesQuery = {
+  __typename?: 'Query';
+  spacesPaginated: {
+    __typename?: 'PaginatedSpaces';
+    spaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      about: {
+        __typename?: 'SpaceAbout';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      };
+    }>;
+  };
+};
+
+export type SpaceMoveTargetL1SubspacesQueryVariables = Exact<{
+  targetL0SpaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceMoveTargetL1SubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subspaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceMoveSourceSubspacesQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceMoveSourceSubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?: { __typename?: 'Space'; id: string; subspaces: Array<{ __typename?: 'Space'; id: string }> } | undefined;
+  };
+};
+
+export type MoveSpaceL1ToSpaceL0MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  targetSpaceL0ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL1ToSpaceL0Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+};
+
+export type MoveSpaceL1ToSpaceL2MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  targetSpaceL1ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL1ToSpaceL2Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
 };
 
 export type CalloutUrlResolveQueryVariables = Exact<{
