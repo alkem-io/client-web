@@ -1,0 +1,33 @@
+{
+  "spaces": {
+    "title": "Räume erkunden",
+    "subtitle": "Entdecke Räume für Zusammenarbeit und Innovation",
+    "searchPlaceholder": "Räume suchen...",
+    "sortBy": "Sortieren nach",
+    "sortRecent": "Neueste",
+    "sortAlpha": "Alphabetisch",
+    "sortActive": "Aktivste",
+    "filters": "Filter",
+    "filterMembership": "Mitgliedschaft",
+    "filterAll": "Alle",
+    "filterMember": "Meine Räume",
+    "filterPublic": "Öffentlich",
+    "filterPrivacy": "Datenschutz",
+    "filterPublicOnly": "Nur öffentliche",
+    "filterPrivateOnly": "Nur private",
+    "filterType": "Typ",
+    "filterAllTypes": "Alle Typen",
+    "filterSpacesOnly": "Nur Räume",
+    "filterSubspacesOnly": "Nur Unterräume",
+    "clearFilters": "Alle Filter zurücksetzen",
+    "showing": "Zeigt",
+    "of": "von",
+    "spacesLabel": "Räume",
+    "emptyTitle": "Keine Räume gefunden",
+    "emptyMessage": "Versuche, deine Suche oder Filter anzupassen, um zu finden, wonach du suchst.",
+    "in": "in",
+    "loading": "Räume werden geladen",
+    "moreLeads": "{{count}} weitere Leiter",
+    "removeFilter": "Filter entfernen"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "markAllRead": "Alle als gelesen markieren",
+    "settings": "Einstellungen",
+    "close": "Schließen",
+    "emptyTitle": "Keine Benachrichtigungen",
+    "emptyMessage": "Alles erledigt! Neue Benachrichtigungen erscheinen hier.",
+    "loadMore": "Mehr laden",
+    "loading": "Benachrichtigungen werden geladen",
+    "actions": {
+      "menu": "Aktionen",
+      "read": "Als gelesen markieren",
+      "unread": "Als ungelesen markieren",
+      "archive": "Archivieren"
+    }
+  }
+}

@@ -23,7 +23,7 @@ pnpm start
 # Production build
 pnpm build
 
-# Type checking + linting
+# Type checking + linting (TypeScript + Biome + ESLint)
 pnpm lint
 
 # Run tests (non-interactive)
@@ -73,8 +73,14 @@ pnpm serve:dev
 - **`src/main`**: App-specific code
   - `routing/`: Top-level routes (`TopLevelRoutes`)
   - `admin/`: Platform admin pages
-  - `ui/`: App-specific layouts (footer, navigation)
+  - `ui/`: App-specific layouts (footer, navigation, `CrdLayoutWrapper`)
   - `constants/`: Environment helpers and constants
+
+- **`src/main/crdPages`**: Page-level integration for CRD-migrated pages
+  - Contains page components, data mappers, hooks, and GraphQL queries for pages using the CRD design system
+  - Imports from `@/crd/`, `@/domain/`, `@/core/` — **MUST NOT import from `@mui/*` or `@emotion/*`**
+  - Organized as `topLevelPages/<pageName>/` mirroring `src/main/topLevelPages/` structure
+  - The "glue" layer: wires CRD presentational components to business logic and data
 
 ### Key Files
 
@@ -114,9 +120,7 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ### State & Hooks
 
 - `useState` pairs: `const [value, setValue] = useState()`
-- Use `useMemo` when creating objects/arrays passed as props
-- Use `useCallback` only for functions passed as props to children
-- **Important**: React Compiler is enabled, which provides automatic memoization. Avoid excessive manual `useMemo`/`useCallback` usage.
+- **Do NOT use `useMemo`, `useCallback`, or `React.memo`** — React Compiler is enabled and handles memoization automatically. Manual memoization adds noise without benefit. Write plain expressions and let the compiler optimize.
 
 ### Component Organization
 
@@ -124,6 +128,7 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Reusable UI components go under `src/core/ui`
 - App-specific layouts go under `src/main/ui`
 - Admin pages go under `src/main/admin`
+- CRD page integration goes under `src/main/crdPages/<pageName>/`
 
 ## GraphQL Workflow
 
@@ -136,10 +141,19 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
-- Never hardcode text or pass string literals as fallback to `t()`—add missing keys to `src/core/i18n/en/translation.en.json`
+- Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
 - The project uses Crowdin for translations
-- Only edit `translation.en.json`; all other locale files are generated automatically via Crowdin and must never be edited manually
+- Only edit English translation files; all other locale files are generated automatically via Crowdin and must never be edited manually
 - If you need to change a non-English translation file, do it from Crowdin, not in the codebase
+
+### Namespaces
+
+- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`.
+- **`crd-layout`**: Layout UI strings (header/footer) in `src/crd/i18n/layout/`. Eagerly loaded for English. Used by `src/crd/layouts/` via `useTranslation('crd-layout')`.
+- **`crd-exploreSpaces`**: Space explorer UI strings in `src/crd/i18n/exploreSpaces/`. Lazy-loaded on demand. Used by `src/crd/components/space/` via `useTranslation('crd-exploreSpaces')`.
+- **`crd-<feature>`**: Future feature namespaces follow the same pattern: `src/crd/i18n/<feature>/<feature>.<lang>.json`, lazy-loaded, used via `useTranslation('crd-<feature>')`.
+
+When adding strings for CRD components (including page titles), add them to the appropriate `src/crd/i18n/<feature>/<feature>.en.json`. CRD translations are managed manually (AI-assisted), not via Crowdin.
 
 ## Environment Variables
 
@@ -158,7 +172,7 @@ pnpm test                          # Watch mode
 pnpm test:coverage                 # With coverage (Istanbul provider)
 ```
 
-Execution typically completes in ~1.2s with 19 files / 247 tests passing.
+Execution typically completes in ~9s with 57 files / 595 tests passing.
 
 ## React 19 & React Compiler
 
@@ -172,7 +186,7 @@ The project uses React 19 with the React Compiler (babel-plugin-react-compiler) 
 
 **React Compiler benefits:**
 
-- Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
+- Automatic memoization — do NOT add manual `useMemo`/`useCallback`/`React.memo`. The compiler handles it.
 - Cleaner code with less boilerplate
 
 For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
@@ -199,8 +213,8 @@ Results available at `build/stats.html`. See `docs/bundle-analysis.md` for detai
 
 Husky runs lint-staged on commit:
 
-- Formats code with Prettier
-- Runs ESLint with auto-fix
+- Formats and lints code with Biome (check + format)
+- Runs ESLint (retained for `react-compiler` rule)
 - Run `pnpm lint` before committing to catch issues early
 
 ## Debugging & Root Cause Analysis
@@ -277,8 +291,65 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
+## prototype/ — Read-Only Reference (DO NOT MODIFY)
+
+The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
+
+## src/crd — New UI Layer (shadcn/ui + Tailwind)
+
+`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
+
+**Hard restrictions — every file in `src/crd/`:**
+- **NO MUI** — zero imports from `@mui/*` or `@emotion/*`
+- **NO business logic** — no imports from `@/core/apollo`, `@apollo/client`, `@/domain/*`, `@/core/auth/*`, `@/core/state/*`, `react-router-dom`, or `formik`
+- **NO GraphQL types** — props must be plain TypeScript, never generated types
+- **Styling is Tailwind only** — use `cn()` from `@/crd/lib/utils`, icons from `lucide-react`
+- **Event handlers are props** — all `on*` handlers must be received as props; components never implement navigation, API calls, or any behavior internally. Links with `href` are fine; programmatic `window.location` or similar is not.
+- **State is visual only** — `useState` for open/close, expanded, active tab. Nothing else.
+
+**Structure:**
+- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `prototype/src/app/components/ui/`
+- `components/` — composites of primitives (PostCard, SpaceCard), organized by feature area
+- `forms/` — form UI (inputs with labels/validation display), no form state libraries
+- `layouts/` — page shells (PageLayout, TwoColumnLayout, ContentBlock)
+- `styles/` — CSS tokens (`theme.css` from prototype) + Tailwind entry (`crd.css`)
+- `lib/` — `cn()` utility
+- `hooks/` — UI-only hooks (`useMediaQuery`)
+
+Consumers in `src/main/crdPages/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
+
+## CSS Isolation Strategy
+
+Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
+
+**Isolation mechanisms:**
+- `.crd-root` class scopes Tailwind preflight/resets to CRD pages only — MUI pages outside `.crd-root` are unaffected
+- MUI `ThemeProvider` wraps the entire app (including CRD routes) but is unused by CRD components — they never call `useTheme()` or import MUI
+- `src/main/crdPages/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
+
+**The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
+
+## CRD Feature Toggle
+
+The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; developers/QA can opt in to the new CRD pages.
+
+```js
+// Enable:  open browser console and run:
+localStorage.setItem('alkemio-crd-enabled', 'true');
+location.reload();
+
+// Disable:
+localStorage.removeItem('alkemio-crd-enabled');
+location.reload();
+```
+
+Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+
 ## Recent Changes
+- 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
+- 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
 - Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
-- Added SWC (`unplugin-swc`) for Vitest test transforms via standalone `vitest.config.mts`
-- CI lint workflow split into parallel jobs: typecheck, biome, eslint-compiler
+
+## Active Technologies
+- localStorage (`alkemio-crd-enabled`) for CRD feature toggle (existing); GraphQL data layer unchanged (041-crd-dashboard-page)

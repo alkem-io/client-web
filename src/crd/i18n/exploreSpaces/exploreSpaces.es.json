@@ -1,0 +1,33 @@
+{
+  "spaces": {
+    "title": "Explorar espacios",
+    "subtitle": "Descubre espacios para colaborar e innovar",
+    "searchPlaceholder": "Buscar espacios...",
+    "sortBy": "Ordenar por",
+    "sortRecent": "Más recientes",
+    "sortAlpha": "Alfabético",
+    "sortActive": "Más activos",
+    "filters": "Filtros",
+    "filterMembership": "Membresía",
+    "filterAll": "Todos",
+    "filterMember": "Mis espacios",
+    "filterPublic": "Públicos",
+    "filterPrivacy": "Privacidad",
+    "filterPublicOnly": "Solo públicos",
+    "filterPrivateOnly": "Solo privados",
+    "filterType": "Tipo",
+    "filterAllTypes": "Todos los tipos",
+    "filterSpacesOnly": "Solo espacios",
+    "filterSubspacesOnly": "Solo subespacios",
+    "clearFilters": "Borrar todos los filtros",
+    "showing": "Mostrando",
+    "of": "de",
+    "spacesLabel": "espacios",
+    "emptyTitle": "No se encontraron espacios",
+    "emptyMessage": "Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.",
+    "in": "en",
+    "loading": "Cargando espacios",
+    "moreLeads": "{{count}} líderes más",
+    "removeFilter": "eliminar filtro"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "settings": "Settings",
+    "close": "Close",
+    "emptyTitle": "No notifications",
+    "emptyMessage": "You're all caught up! New notifications will appear here.",
+    "loadMore": "Load more",
+    "loading": "Loading notifications",
+    "actions": {
+      "menu": "Actions",
+      "read": "Mark as read",
+      "unread": "Mark as unread",
+      "archive": "Archive"
+    }
+  }
+}

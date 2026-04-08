@@ -1,3 +1,4 @@
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
@@ -16,6 +17,7 @@ export enum AdminSection {
   Authorization = 'authorization',
   AuthorizationPolicies = 'authorizationPolicies',
   Transfer = 'transfer',
+  Layout = 'layout',
 }
 
 export const adminTabs: TabDefinition<AdminSection>[] = [
@@ -63,5 +65,10 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
     section: AdminSection.Transfer,
     route: '/admin/transfer',
     icon: SwapHorizIcon,
+  },
+  {
+    section: AdminSection.Layout,
+    route: '/admin/layout',
+    icon: DashboardOutlinedIcon,
   },
 ];
