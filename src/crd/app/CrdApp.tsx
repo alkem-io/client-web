@@ -7,9 +7,12 @@ import { PendingApplicationCard } from '@/crd/components/dashboard/PendingApplic
 import { PendingInvitationCard } from '@/crd/components/dashboard/PendingInvitationCard';
 import { PendingMembershipsListDialog } from '@/crd/components/dashboard/PendingMembershipsListDialog';
 import { PendingMembershipsSection } from '@/crd/components/dashboard/PendingMembershipsSection';
+import { NotificationsPanel } from '@/crd/components/notifications/NotificationsPanel';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import {
   MOCK_INVITATION_DETAIL,
+  MOCK_NOTIFICATION_FILTERS,
+  MOCK_NOTIFICATION_ITEMS,
   MOCK_PENDING_APPLICATIONS,
   MOCK_PENDING_INVITATIONS,
   MOCK_PENDING_VC_INVITATIONS,
@@ -55,6 +58,8 @@ export function CrdApp() {
   const { t } = useTranslation('crd-dashboard');
   const [showPendingDialog, setShowPendingDialog] = useState(false);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationFilter, setNotificationFilter] = useState('all');
 
   const totalPendingCount =
     MOCK_PENDING_INVITATIONS.length + MOCK_PENDING_VC_INVITATIONS.length + MOCK_PENDING_APPLICATIONS.length;
@@ -72,6 +77,7 @@ export function CrdApp() {
         languages={MOCK_LANGUAGES}
         currentLanguage="en"
         onLanguageChange={code => console.log('Language changed to', code)}
+        onNotificationsClick={() => setShowNotifications(true)}
         onPendingMembershipsClick={() => setShowPendingDialog(true)}
         onHelpClick={() => console.log('Help clicked')}
         footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about' }}
@@ -159,6 +165,24 @@ export function CrdApp() {
         }}
         rejecting={false}
         updating={false}
+      />
+
+      {/* Notifications Panel */}
+      <NotificationsPanel
+        open={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        items={MOCK_NOTIFICATION_ITEMS}
+        filters={MOCK_NOTIFICATION_FILTERS}
+        selectedFilter={notificationFilter}
+        hasMore={true}
+        settingsHref="/profile/settings/notifications"
+        onFilterChange={setNotificationFilter}
+        onMarkAllRead={() => console.log('Mark all read')}
+        onLoadMore={() => console.log('Load more notifications')}
+        onNotificationClick={n => console.log('Notification clicked', n.id)}
+        onRead={id => console.log('Read', id)}
+        onUnread={id => console.log('Unread', id)}
+        onArchive={id => console.log('Archive', id)}
       />
     </BrowserRouter>
   );

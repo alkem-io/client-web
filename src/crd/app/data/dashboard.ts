@@ -292,6 +292,157 @@ export const MOCK_INVITATION_DETAIL = {
   timeElapsed: '2 hours ago',
 };
 
+// ─── Notifications Mock Data ──────────────────────────────────────────────────
+
+export const MOCK_NOTIFICATION_ITEMS = [
+  {
+    id: 'n-1',
+    title: 'Sarah Chen commented on your post in Innovation Lab',
+    description: "Great insights! I think we should explore this direction further in next week's session.",
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=64&h=64',
+    avatarFallback: 'SC',
+    timestamp: '5 min ago',
+    isUnread: true,
+    href: '/space/innovation-lab',
+  },
+  {
+    id: 'n-2',
+    title: 'You were added as Editor to Sustainability Goals 2024',
+    description: 'Sarah Chen invited you to join the space.',
+    avatarUrl: 'https://images.unsplash.com/photo-1623652554515-91c833e3080e?auto=format&fit=crop&w=64&h=64',
+    avatarFallback: 'SG',
+    timestamp: '2 hours ago',
+    isUnread: true,
+    href: '/space/sustainability-goals',
+  },
+  {
+    id: 'n-3',
+    title: 'Mike Ross replied to your comment in Design Review',
+    description: 'I agree with the proposed changes. Let me update the mockups accordingly.',
+    avatarUrl: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=64&h=64',
+    avatarFallback: 'MR',
+    timestamp: '4 hours ago',
+    isUnread: false,
+    href: '/space/design-workshop',
+  },
+  {
+    id: 'n-4',
+    title: 'New challenge posted in Community Hub',
+    description: 'Elena Rodriguez posted "Q2 Community Engagement Plan" — looking for contributors.',
+    avatarUrl: 'https://images.unsplash.com/photo-1649589244330-09ca58e4fa64?auto=format&fit=crop&w=64&h=64',
+    avatarFallback: 'ER',
+    timestamp: 'Yesterday',
+    isUnread: false,
+    href: '/space/community',
+  },
+  {
+    id: 'n-5',
+    title: 'Platform update: New collaboration features',
+    description: "We've launched real-time co-editing for whiteboards. Try it out in any space!",
+    avatarFallback: 'AL',
+    timestamp: '2 days ago',
+    isUnread: false,
+  },
+  {
+    id: 'n-6',
+    title: 'David Kim shared a file in Product Roadmap',
+    description: 'Q2-roadmap-v3.pdf has been uploaded to the shared resources.',
+    avatarUrl: 'https://images.unsplash.com/photo-1672685667592-0392f458f46f?auto=format&fit=crop&w=64&h=64',
+    avatarFallback: 'DK',
+    timestamp: '3 days ago',
+    isUnread: false,
+    href: '/space/product',
+  },
+];
+
+export const MOCK_NOTIFICATION_FILTERS = [
+  { key: 'all', label: 'All' },
+  { key: 'messages', label: 'Messages & Replies' },
+  { key: 'space', label: 'Space' },
+  { key: 'platform', label: 'Platform' },
+];
+
+// ─── Memberships Tree Mock Data ───────────────────────────────────────────────
+
+export const MOCK_MEMBERSHIPS_TREE = [
+  {
+    id: 'mt-1',
+    name: 'Green Energy Space',
+    href: '/space/green-energy',
+    initials: 'GE',
+    roles: ['Lead'],
+    children: [
+      {
+        id: 'mt-1-1',
+        name: 'Renewable Energy Transition',
+        href: '/space/green-energy/renewable-transition',
+        initials: 'RE',
+        roles: ['Member'],
+        children: [],
+      },
+      {
+        id: 'mt-1-2',
+        name: 'Solar Panel Innovation',
+        href: '/space/green-energy/solar-panels',
+        initials: 'SP',
+        roles: ['Admin'],
+        children: [],
+      },
+    ],
+  },
+  {
+    id: 'mt-2',
+    name: 'Community Garden',
+    href: '/space/community-garden',
+    initials: 'CG',
+    roles: ['Member'],
+    children: [
+      {
+        id: 'mt-2-1',
+        name: 'Urban Farming',
+        href: '/space/community-garden/urban-farming',
+        initials: 'UF',
+        roles: ['Member'],
+        children: [],
+      },
+    ],
+  },
+  {
+    id: 'mt-3',
+    name: 'Digital Transformation',
+    href: '/space/digital-trans',
+    initials: 'DT',
+    roles: ['Admin'],
+    children: [],
+  },
+  {
+    id: 'mt-4',
+    name: 'Innovation Lab',
+    href: '/space/innovation-lab',
+    initials: 'IL',
+    roles: ['Lead', 'Member'],
+    children: [
+      {
+        id: 'mt-4-1',
+        name: 'AI Research Collective',
+        href: '/space/innovation-lab/ai-research',
+        initials: 'AI',
+        avatarColor: 'var(--chart-2)',
+        roles: ['Member'],
+        children: [],
+      },
+      {
+        id: 'mt-4-2',
+        name: 'Design Thinking Practice',
+        href: '/space/innovation-lab/design-thinking',
+        initials: 'DT',
+        roles: ['Member'],
+        children: [],
+      },
+    ],
+  },
+];
+
 export const MOCK_SPACE_FILTER_OPTIONS = [
   { value: 'all-spaces', label: 'Space: All Spaces' },
   { value: 'green-energy', label: 'Green Energy Space' },
