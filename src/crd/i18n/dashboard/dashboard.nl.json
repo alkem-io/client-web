@@ -113,5 +113,24 @@
   "withoutMemberships": {
     "createSpace": "Maak je eigen Space",
     "createSpaceDescription": "Begin met samenwerken door je eerste space te maken"
+  },
+  "pendingMemberships": {
+    "title": "Openstaande Lidmaatschappen",
+    "empty": "Je hebt geen openstaande uitnodigingen of aanvragen.",
+    "loading": "Openstaande lidmaatschappen laden",
+    "close": "Sluiten",
+    "closeDialog": "Dialoog sluiten",
+    "invitationsSection": "Uitnodigingen",
+    "vcInvitationsSection": "Virtuele Bijdrager Uitnodigingen",
+    "applicationsSection": "Openstaande Aanvragen",
+    "detail": {
+      "back": "Terug naar lijst",
+      "reject": "Weigeren",
+      "rejectAriaLabel": "Uitnodiging voor {{spaceName}} weigeren",
+      "accept": "Accepteren",
+      "acceptAriaLabel": "Uitnodiging voor {{spaceName}} accepteren",
+      "join": "Toetreden",
+      "joinAriaLabel": "Toetreden tot {{spaceName}}"
+    }
   }
 }
