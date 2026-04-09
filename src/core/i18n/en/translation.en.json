@@ -1306,6 +1306,8 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
+    "spaceTemplatesSection": "Space $t(common.templates)",
+    "accountTemplates": "Account templates",
     "platformTemplates": "Platform $t(common.templates)",
     "loadPlatformTemplates": "Or click here to browse through all platform $t(common.templates)",
     "platformUseDisabled": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.template) section of the $t(common.space) Settings.",
@@ -2595,6 +2597,36 @@
           "confirmTitle": "Promote Sub-subspace to Subspace?",
           "confirmWarning": "This will promote the sub-subspace to a subspace. Admin roles will be reset."
         },
+        "move": "Move",
+        "moveL1ToL0": {
+          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organizations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
+          "targetLabel": "Target Space",
+          "button": "Move Space (L1 → L1 cross-Space)",
+          "confirmTitle": "Move Subspace to another Space?",
+          "confirmWarning": "This will move the subspace and all its content to the target Space. All community roles will be cleared. Innovation flow states may be remapped. Existing URLs will no longer work. This action cannot be easily undone."
+        },
+        "moveL1ToL2": {
+          "hint": "Move this subspace under a subspace in a different Space. It will be demoted to Level 2. ALL community roles will be cleared, including admins. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
+          "targetL0Label": "Target Space",
+          "targetL1Label": "Target Subspace",
+          "button": "Move & Demote (L1 → L2 cross-Space)",
+          "confirmTitle": "Move and demote Subspace?",
+          "confirmWarning": "This will move the subspace under the selected subspace in another Space and demote it to Level 2. ALL community roles will be cleared, including admins. Existing URLs will no longer work. This action cannot be easily undone.",
+          "noL0Targets": "No other Spaces available.",
+          "noL1Targets": "No subspaces available in the selected Space.",
+          "disabledHasChildren": "Cannot demote to L2: this subspace has L2 sub-subspaces (would exceed max depth)."
+        },
+        "moveType": {
+          "toL0": "Move to Space (stays L1)",
+          "toL2": "Move under Subspace (becomes L2)"
+        },
+        "autoInvite": {
+          "label": "Send invitations to community members who are already in the destination space",
+          "tooltip": "After the move, all community roles are cleared. This option sends an invitation to members who already belong to the destination space, so they can rejoin the moved subspace without having to find it themselves.",
+          "messagePlaceholder": "Your space has been moved. You are invited to rejoin the community."
+        },
+        "moveSuccess": "Space moved successfully.",
+        "moveError": "Failed to move space.",
         "successMessage": "Space conversion completed successfully.",
         "errorMessage": "Failed to convert space.",
         "urlNotFound": "URL not found.",

@@ -23,6 +23,7 @@ interface SpaceContextProps {
     nameID: string;
     about: SpaceAboutLightModel;
     level: SpaceLevel;
+    accountId: string;
   };
   permissions: SpacePermissions;
   entitlements: LicenseEntitlementType[];
@@ -51,6 +52,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
       },
     },
     level: SpaceLevel.L0,
+    accountId: '',
   },
   entitlements: [],
   permissions: {
@@ -131,6 +133,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       nameID: spaceNameId,
       about: aboutModel,
       level: SpaceLevel.L0,
+      accountId: spaceData?.account?.id ?? '',
     };
   })();
 

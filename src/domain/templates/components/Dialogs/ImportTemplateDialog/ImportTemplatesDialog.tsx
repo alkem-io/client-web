@@ -4,6 +4,7 @@ import { Box, Button, type ButtonProps, CircularProgress, DialogActions, DialogC
 import { cloneElement, type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  useImportTemplateDialogAccountTemplatesQuery,
   useImportTemplateDialogPlatformTemplatesQuery,
   useImportTemplateDialogQuery,
   useSpaceTemplatesManagerQuery,
@@ -37,6 +38,7 @@ export interface ImportTemplatesOptions {
    * Is forced to true when disableSpaceTemplate is true, or when no spaceId is found in the url
    */
   enablePlatformTemplates?: boolean;
+  accountId?: string;
 }
 
 interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
@@ -56,6 +58,7 @@ const ImportTemplatesDialog = ({
   onClose,
   disableSpaceTemplates = false,
   enablePlatformTemplates = false,
+  accountId,
   onSelectTemplate,
   actionButton,
   templateType,
@@ -119,6 +122,30 @@ const ImportTemplatesDialog = ({
     .filter(template => template.type === templateType)
     .map(template => ({ template, innovationPack: undefined }));
 
+  const { data: accountTemplatesData, loading: loadingAccountTemplates } = useImportTemplateDialogAccountTemplatesQuery(
+    {
+      variables: {
+        accountId: accountId!,
+        includeCallout: templateType === TemplateType.Callout,
+        includeSpace: templateType === TemplateType.Space,
+      },
+      skip: !open || !accountId,
+    }
+  );
+
+  const accountTemplates = accountTemplatesData?.lookup.account?.innovationPacks.flatMap(pack =>
+    (pack.templatesSet?.templates ?? [])
+      .filter(template => template.type === templateType)
+      .map(template => ({
+        template,
+        innovationPack: {
+          id: pack.id,
+          profile: pack.profile,
+          provider: pack.provider,
+        },
+      }))
+  );
+
   const { data: platformTemplatesData, loading: loadingPlatform } = useImportTemplateDialogPlatformTemplatesQuery({
     variables: {
       templateTypes: templateType ? [templateType] : undefined,
@@ -131,7 +158,7 @@ const ImportTemplatesDialog = ({
 
   // Find the selected template to show at the top
   const selectedTemplate = selectedTemplateId
-    ? [...(templates || []), ...(platformTemplates || [])].find(
+    ? [...(templates || []), ...(accountTemplates || []), ...(platformTemplates || [])].find(
         templateItem => templateItem.template.id === selectedTemplateId
       )
     : undefined;
@@ -140,14 +167,18 @@ const ImportTemplatesDialog = ({
     if (!open) {
       return;
     }
-    if (disableSpaceTemplates) {
+    if (disableSpaceTemplates && !accountId) {
       setLoadPlatformTemplates(true);
       return;
     }
-    if (canUseSpaceTemplates && !loadingTemplates && templates?.length === 0) {
+    const spaceEmpty = canUseSpaceTemplates && !loadingTemplates && templates?.length === 0;
+    const accountEmpty = !accountId || (!loadingAccountTemplates && accountTemplates?.length === 0);
+    const noSpaceContext = !canUseSpaceTemplates;
+
+    if ((spaceEmpty || noSpaceContext) && accountEmpty) {
       setLoadPlatformTemplates(true);
     }
-  }, [open, disableSpaceTemplates, loadingTemplates, templates]);
+  }, [open, disableSpaceTemplates, loadingTemplates, templates, loadingAccountTemplates, accountTemplates, accountId]);
 
   return (
     <>
@@ -212,7 +243,24 @@ const ImportTemplatesDialog = ({
               templates={templates}
               onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
-            />
+            >
+              <BlockTitle>
+                {loadingTemplates && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
+                {t('templateLibrary.spaceTemplatesSection')}
+              </BlockTitle>
+            </ImportTemplatesDialogGallery>
+          )}
+          {accountId && (loadingAccountTemplates || (accountTemplates && accountTemplates.length > 0)) && (
+            <ImportTemplatesDialogGallery
+              templates={accountTemplates}
+              onClickTemplate={template => setPreviewTemplate(template)}
+              loading={loadingAccountTemplates}
+            >
+              <BlockTitle marginY={gutters()}>
+                {loadingAccountTemplates && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
+                {t('templateLibrary.accountTemplates')}
+              </BlockTitle>
+            </ImportTemplatesDialogGallery>
           )}
           {canUseSpaceTemplates && enablePlatformTemplates && !loadPlatformTemplates && (
             <Link
