@@ -32,6 +32,10 @@
     },
     "responseTo": "Отговор на: {{title}}",
     "spaceContext": "в: {{spaceName}}",
+    "fallback": {
+      "unknown": "Неизвестен",
+      "organization": "Организация"
+    },
     "a11y": {
       "searchInput": "Поле за търсене",
       "closeSearch": "Затвори търсенето",

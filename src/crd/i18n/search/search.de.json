@@ -32,6 +32,10 @@
     },
     "responseTo": "Antwort auf: {{title}}",
     "spaceContext": "in: {{spaceName}}",
+    "fallback": {
+      "unknown": "Unbekannt",
+      "organization": "Organisation"
+    },
     "a11y": {
       "searchInput": "Sucheingabe",
       "closeSearch": "Suche schließen",

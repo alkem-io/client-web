@@ -32,6 +32,10 @@
     },
     "responseTo": "Réponse à : {{title}}",
     "spaceContext": "dans : {{spaceName}}",
+    "fallback": {
+      "unknown": "Inconnu",
+      "organization": "Organisation"
+    },
     "a11y": {
       "searchInput": "Champ de recherche",
       "closeSearch": "Fermer la recherche",

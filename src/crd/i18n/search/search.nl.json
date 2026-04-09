@@ -32,6 +32,10 @@
     },
     "responseTo": "Reactie op: {{title}}",
     "spaceContext": "in: {{spaceName}}",
+    "fallback": {
+      "unknown": "Onbekend",
+      "organization": "Organisatie"
+    },
     "a11y": {
       "searchInput": "Zoekinvoer",
       "closeSearch": "Zoeken sluiten",

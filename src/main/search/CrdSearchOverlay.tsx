@@ -20,7 +20,14 @@ import { UserResultCard } from '@/crd/components/search/UserResultCard';
 import { SpaceCard } from '@/crd/components/space/SpaceCard';
 import { useSearch } from './SearchContext';
 import type { SearchResultMetaType } from './SearchView';
-import { mapOrgResults, mapPostResults, mapResponseResults, mapSpaceResults, mapUserResults } from './searchDataMapper';
+import {
+  mapOrgResults,
+  mapPostResults,
+  mapResponseResults,
+  mapSpaceResults,
+  mapUserResults,
+  type SearchFallbackLabels,
+} from './searchDataMapper';
 
 const MAX_TAGS = 5;
 const PAGE_SIZE = 4;
@@ -201,11 +208,16 @@ export function CrdSearchOverlay() {
     searchTags.length === 0 ? undefined : data
   );
 
+  const fallbackLabels: SearchFallbackLabels = {
+    unknown: t('search.fallback.unknown'),
+    organization: t('search.fallback.organization'),
+  };
+
   const mappedSpaces = mapSpaceResults(spaceResults ?? []);
-  const mappedPosts = mapPostResults(calloutResults ?? [], framingResults ?? []);
-  const mappedResponses = mapResponseResults(contributionResults ?? []);
+  const mappedPosts = mapPostResults(calloutResults ?? [], framingResults ?? [], fallbackLabels);
+  const mappedResponses = mapResponseResults(contributionResults ?? [], fallbackLabels);
   const mappedUsers = mapUserResults(contributorResults ?? []);
-  const mappedOrgs = mapOrgResults(contributorResults ?? []);
+  const mappedOrgs = mapOrgResults(contributorResults ?? [], fallbackLabels);
 
   // Apply local filters
   const filteredSpaces =

@@ -13,6 +13,11 @@ import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { getAvatarColor, getInitials } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import type { SearchResultMetaType, TypedSearchResult } from './SearchView';
 
+export type SearchFallbackLabels = {
+  unknown: string;
+  organization: string;
+};
+
 type SpaceResult = TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>;
 type CalloutResult = TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>;
 type PostResult = TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>;
@@ -129,8 +134,11 @@ export function mapSpaceResults(results: SearchResultMetaType[]): SpaceCardData[
 
 export function mapPostResults(
   calloutResults: SearchResultMetaType[],
-  framingResults: SearchResultMetaType[]
+  framingResults: SearchResultMetaType[],
+  labels: SearchFallbackLabels
 ): PostResultCardData[] {
+  const unknownLabel = labels.unknown;
+
   const mappedCallouts: PostResultCardData[] = calloutResults
     .filter((r): r is CalloutResult => r.type === SearchResultType.Callout)
     .map(r => ({
@@ -139,7 +147,7 @@ export function mapPostResults(
       snippet: '',
       type: 'post' as PostType,
       bannerUrl: undefined,
-      author: { name: 'Unknown' },
+      author: { name: unknownLabel },
       date: '',
       spaceName: r.space.about.profile.displayName,
 
@@ -160,7 +168,7 @@ export function mapPostResults(
           snippet: r.whiteboard.profile.description ?? '',
           type: 'whiteboard' as PostType,
           bannerUrl: r.whiteboard.profile.preview?.uri,
-          author: { name: r.whiteboard.createdBy?.profile?.displayName ?? 'Unknown' },
+          author: { name: r.whiteboard.createdBy?.profile?.displayName ?? unknownLabel },
           date: formatDate(r.whiteboard.createdDate),
           spaceName: r.space.about.profile.displayName,
 
@@ -175,7 +183,7 @@ export function mapPostResults(
         snippet: truncate(r.memo.markdown ?? r.memo.profile.description ?? ''),
         type: 'memo' as PostType,
         bannerUrl: undefined,
-        author: { name: r.memo.createdBy?.profile?.displayName ?? 'Unknown' },
+        author: { name: r.memo.createdBy?.profile?.displayName ?? unknownLabel },
         date: formatDate(r.memo.createdDate),
         spaceName: r.space.about.profile.displayName,
 
@@ -186,7 +194,12 @@ export function mapPostResults(
   return interlaceArrays(mappedCallouts, mappedFraming);
 }
 
-export function mapResponseResults(contributionResults: SearchResultMetaType[]): ResponseResultCardData[] {
+export function mapResponseResults(
+  contributionResults: SearchResultMetaType[],
+  labels: SearchFallbackLabels
+): ResponseResultCardData[] {
+  const unknownLabel = labels.unknown;
+
   return contributionResults
     .filter(
       (r): r is PostResult | MemoResult | WhiteboardResult =>
@@ -203,7 +216,7 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
           title: r.post.profile.displayName,
           snippet: r.post.profile.description ?? '',
           type: 'post' as PostType,
-          author: { name: r.post.createdBy?.profile?.displayName ?? 'Unknown' },
+          author: { name: r.post.createdBy?.profile?.displayName ?? unknownLabel },
           date: formatDate(r.post.createdDate),
           parentPostTitle,
           spaceName,
@@ -219,7 +232,7 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
           title: r.memo.profile.displayName,
           snippet: truncate(r.memo.markdown ?? r.memo.profile.description ?? ''),
           type: 'memo' as PostType,
-          author: { name: r.memo.createdBy?.profile?.displayName ?? 'Unknown' },
+          author: { name: r.memo.createdBy?.profile?.displayName ?? unknownLabel },
           date: formatDate(r.memo.createdDate),
           parentPostTitle,
           spaceName,
@@ -235,7 +248,7 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
         title: r.whiteboard.profile.displayName,
         snippet: r.whiteboard.profile.description ?? '',
         type: 'whiteboard' as PostType,
-        author: { name: r.whiteboard.createdBy?.profile?.displayName ?? 'Unknown' },
+        author: { name: r.whiteboard.createdBy?.profile?.displayName ?? unknownLabel },
         date: formatDate(r.whiteboard.createdDate),
         parentPostTitle,
         spaceName,
@@ -257,14 +270,14 @@ export function mapUserResults(actorResults: SearchResultMetaType[]): UserResult
     }));
 }
 
-export function mapOrgResults(actorResults: SearchResultMetaType[]): OrgResultCardData[] {
+export function mapOrgResults(actorResults: SearchResultMetaType[], labels: SearchFallbackLabels): OrgResultCardData[] {
   return actorResults
     .filter((r): r is OrgResult => r.type === SearchResultType.Organization)
     .map(r => ({
       id: r.organization.id,
       name: r.organization.profile?.displayName ?? '',
       logoUrl: r.organization.profile?.visual?.uri,
-      type: 'Organization',
+      type: labels.organization,
       tagline: r.organization.profile?.description,
       href: r.organization.profile?.url ?? '',
     }));
