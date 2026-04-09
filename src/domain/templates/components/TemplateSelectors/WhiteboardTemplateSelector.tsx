@@ -9,6 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import TemplateActionButton from '../Buttons/TemplateActionButton';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -19,6 +20,9 @@ interface WhiteboardTemplatesSelectorProps {
 
 export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = ({ name }) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
   const [, , helpers] = useField<string>(name);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const handleResetWhiteboardTemplate = () => {
@@ -50,6 +54,7 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
           </Button>
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
+            accountId={accountId}
             actionButton={() => <TemplateActionButton />}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}

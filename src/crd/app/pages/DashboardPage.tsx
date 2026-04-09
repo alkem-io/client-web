@@ -5,10 +5,12 @@ import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
+import { MembershipsTreeDialog } from '@/crd/components/dashboard/MembershipsTreeDialog';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import {
   MOCK_INVITATIONS,
+  MOCK_MEMBERSHIPS_TREE,
   MOCK_PERSONAL_ACTIVITIES,
   MOCK_RECENT_SPACES,
   MOCK_ROLE_FILTER_OPTIONS,
@@ -25,13 +27,18 @@ type TipFromI18n = {
   url?: string;
 };
 
-export function DashboardPage() {
+type DashboardPageProps = {
+  onPendingMembershipsClick?: () => void;
+};
+
+export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps) {
   const { t } = useTranslation('crd-dashboard');
 
   const [spaceFilter, setSpaceFilter] = useState('all-spaces');
   const [roleFilter, setRoleFilter] = useState('all-roles');
   const [personalSpaceFilter, setPersonalSpaceFilter] = useState('all-spaces');
   const [showTipsDialog, setShowTipsDialog] = useState(false);
+  const [showMembershipsDialog, setShowMembershipsDialog] = useState(false);
   const [invitations, setInvitations] = useState(MOCK_INVITATIONS);
   const [activityEnabled, setActivityEnabled] = useState(false);
 
@@ -49,7 +56,7 @@ export function DashboardPage() {
       return { ...item, onClick: () => setShowTipsDialog(true) };
     }
     if (item.id === 'inv') {
-      return { ...item, onClick: () => console.log('Invitations clicked'), badgeCount: invitations.length };
+      return { ...item, onClick: () => onPendingMembershipsClick?.(), badgeCount: invitations.length };
     }
     return item;
   });
@@ -82,7 +89,7 @@ export function DashboardPage() {
         <RecentSpaces
           spaces={MOCK_RECENT_SPACES}
           hasHomeSpace={hasHomeSpace}
-          onExploreAllClick={() => (window.location.href = '/spaces')}
+          onExploreAllClick={() => setShowMembershipsDialog(true)}
           onPinClick={() => console.log('Pin clicked')}
         />
 
@@ -133,6 +140,14 @@ export function DashboardPage() {
         tips={tips}
         findMoreHref={t('dialogs.findMoreUrl')}
         findMoreLabel={t('dialogs.findMore')}
+      />
+
+      <MembershipsTreeDialog
+        open={showMembershipsDialog}
+        onClose={() => setShowMembershipsDialog(false)}
+        nodes={MOCK_MEMBERSHIPS_TREE}
+        seeMoreHref="/spaces"
+        createSpaceHref="#"
       />
     </>
   );

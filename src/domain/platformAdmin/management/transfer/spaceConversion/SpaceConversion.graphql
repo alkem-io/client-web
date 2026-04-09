@@ -94,3 +94,83 @@ mutation ConvertSpaceL2ToL1($spaceL2ID: UUID!) {
     id
   }
 }
+
+query SpaceMoveTargetL0Spaces($first: Int!) {
+  spacesPaginated(first: $first) {
+    spaces {
+      id
+      about {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+}
+
+query SpaceMoveTargetL1Subspaces($targetL0SpaceId: UUID!) {
+  lookup {
+    space(ID: $targetL0SpaceId) {
+      id
+      subspaces {
+        id
+        about {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+
+query SpaceMoveSourceSubspaces($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      subspaces {
+        id
+      }
+    }
+  }
+}
+
+mutation MoveSpaceL1ToSpaceL0(
+  $spaceL1ID: UUID!
+  $targetSpaceL0ID: UUID!
+  $autoInvite: Boolean
+  $invitationMessage: String
+) {
+  moveSpaceL1ToSpaceL0(
+    moveData: {
+      spaceL1ID: $spaceL1ID
+      targetSpaceL0ID: $targetSpaceL0ID
+      autoInvite: $autoInvite
+      invitationMessage: $invitationMessage
+    }
+  ) {
+    id
+  }
+}
+
+mutation MoveSpaceL1ToSpaceL2(
+  $spaceL1ID: UUID!
+  $targetSpaceL1ID: UUID!
+  $autoInvite: Boolean
+  $invitationMessage: String
+) {
+  moveSpaceL1ToSpaceL2(
+    moveData: {
+      spaceL1ID: $spaceL1ID
+      targetSpaceL1ID: $targetSpaceL1ID
+      autoInvite: $autoInvite
+      invitationMessage: $invitationMessage
+    }
+  ) {
+    id
+  }
+}

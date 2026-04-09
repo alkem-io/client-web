@@ -346,10 +346,9 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 084-crd-pending-memberships-dialog: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 - 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 - 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
-- Replaced ESLint + Prettier with Biome 2.4.6 for linting and formatting; ESLint retained only for `react-compiler/react-compiler` rule
 
 ## Active Technologies
-- localStorage (`alkemio-crd-enabled`) for CRD feature toggle (existing); GraphQL data layer unchanged (041-crd-dashboard-page)

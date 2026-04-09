@@ -6,6 +6,7 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import TemplateActionButton from '../Buttons/TemplateActionButton';
@@ -22,6 +23,9 @@ const WhiteboardDialogTemplatesLibrary = ({
   onImportTemplate,
 }: WhiteboardDialogTemplatesLibraryProps) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const columns = useGlobalGridColumns();
 
@@ -64,6 +68,7 @@ const WhiteboardDialogTemplatesLibrary = ({
           )}
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
+            accountId={accountId}
             actionButton={() => <TemplateActionButton />}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}

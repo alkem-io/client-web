@@ -20,6 +20,7 @@ import {
   mapProfileTagsToCreateTags,
 } from '@/domain/common/profile/ProfileModelUtils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { useSpace } from '@/domain/space/context/useSpace';
 import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import type { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
@@ -57,6 +58,9 @@ const CreateCalloutDialog = ({
   calloutRestrictions,
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
 
   const ensurePresence = useEnsurePresence();
 
@@ -252,6 +256,7 @@ const CreateCalloutDialog = ({
       </DialogWithGrid>
       <ImportTemplatesDialog
         templateType={TemplateType.Callout}
+        accountId={accountId}
         actionButton={() => <TemplateActionButton />}
         open={importDialogOpen}
         onSelectTemplate={handleSelectTemplate}

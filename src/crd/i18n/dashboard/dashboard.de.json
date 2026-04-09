@@ -113,5 +113,24 @@
   "withoutMemberships": {
     "createSpace": "Erstelle deinen eigenen Space",
     "createSpaceDescription": "Beginne die Zusammenarbeit, indem du deinen ersten Space erstellst"
+  },
+  "pendingMemberships": {
+    "title": "Ausstehende Mitgliedschaften",
+    "empty": "Du hast keine offenen Einladungen oder Bewerbungen.",
+    "loading": "Ausstehende Mitgliedschaften werden geladen",
+    "close": "Schließen",
+    "closeDialog": "Dialog schließen",
+    "invitationsSection": "Einladungen",
+    "vcInvitationsSection": "Einladungen für Virtuelle Mitwirkende",
+    "applicationsSection": "Offene Bewerbungen",
+    "detail": {
+      "back": "Zurück zur Liste",
+      "reject": "Ablehnen",
+      "rejectAriaLabel": "Einladung zu {{spaceName}} ablehnen",
+      "accept": "Annehmen",
+      "acceptAriaLabel": "Einladung zu {{spaceName}} annehmen",
+      "join": "Beitreten",
+      "joinAriaLabel": "{{spaceName}} beitreten"
+    }
   }
 }
