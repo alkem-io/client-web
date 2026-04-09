@@ -179,6 +179,33 @@
     "addOption": "Option hinzufügen",
     "removeOption": "Option entfernen"
   },
+  "calloutDialog": {
+    "close": "Dialog schließen",
+    "share": "Teilen",
+    "more": "Weitere Optionen",
+    "discussion": "Diskussion",
+    "reactions": "Reagieren",
+    "contributions": "Beiträge"
+  },
+  "comments": {
+    "title": "Diskussion",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen",
+    "sortNewest": "Neueste zuerst",
+    "sortOldest": "Älteste zuerst",
+    "reply": "Antworten",
+    "delete": "Löschen",
+    "deleted": "Dieser Kommentar wurde gelöscht",
+    "addComment": "Kommentar hinzufügen...",
+    "send": "Senden",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Reaktion hinzufügen",
+      "overflow": "+{{count}} weitere"
+    },
+    "loading": "Kommentare werden geladen...",
+    "empty": "Noch keine Kommentare"
+  },
   "a11y": {
     "spaceBanner": "Bereichsbanner für {{name}}",
     "tabNavigation": "Navigationsreiter des Bereichs",

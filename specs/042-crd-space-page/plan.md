@@ -99,7 +99,15 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 | `crd/components/callout/CalloutMediaGallery.tsx` | `domain/collaboration/callout/media/` components | *(not in prototype)* |
 | `crd/components/callout/CalloutLinkAction.tsx` | `domain/collaboration/callout/link/` components | *(not in prototype)* |
 | `crd/components/callout/CalloutContextMenu.tsx` | `domain/collaboration/callout/edit/` CalloutSettingsMenu | *(not in prototype)* |
-| `crd/components/callout/CalloutComments.tsx` | `domain/communication/discussion/` components | *(not in prototype)* |
+| **Callout detail dialog** | | |
+| `crd/components/callout/CalloutDetailDialog.tsx` | `domain/collaboration/callout/calloutBlock/CalloutBlockView.tsx` (expandable view) | `PostDetailDialog.tsx` — sticky header, scrollable body, sticky input footer |
+| **Comments** (`crd/components/comment/`) | `domain/communication/room/Comments/` | `PostDetailDialog.tsx` (Discussion section), `ResponseDetailDialog.tsx` |
+| `crd/components/comment/CommentThread.tsx` | `CommentsComponent.tsx` + `MessagesThread.tsx` | Discussion section inside `CalloutDetailDialog` |
+| `crd/components/comment/CommentItem.tsx` | `MessageView.tsx` | Single comment row |
+| `crd/components/comment/CommentInput.tsx` | `FormikCommentInputField.tsx` + `CommentInputField.tsx` | Sticky footer inside `CalloutDetailDialog` |
+| `crd/components/comment/CommentReactions.tsx` | `CommentReactions.tsx` + `ReactionView.tsx` | Emoji pills below comments |
+| `crd/components/comment/CollapsibleComments.tsx` | `CollapsibleCommentsThread.tsx` | *(deprecated — collapsible-below-card mode removed)* |
+| `crd/components/comment/CommentEmojiPicker.tsx` | `core/ui/forms/emoji/EmojiSelector.tsx` | Emoji picker popover |
 | **Forms** | | |
 | `crd/forms/callout/AddPostModal.tsx` | `domain/collaboration/callout/edit/CalloutEditDialog.tsx` | `AddPostModal.tsx` |
 | `crd/forms/callout/CalloutFramingSelector.tsx` | `domain/collaboration/callout/edit/` type selector | `AddPostModal.tsx` (attachment buttons) |
@@ -147,15 +155,21 @@ src/crd/
 │   │       ├── CommunityGuidelinesSection.tsx # Bulleted guidelines
 │   │       └── KnowledgeIndexSection.tsx      # Scrollable post index
 │   ├── callout/
+│   │   ├── CalloutDetailDialog.tsx       # Full-screen dialog: sticky header+footer, scrollable body with Discussion
 │   │   ├── CalloutWhiteboardPreview.tsx  # Whiteboard framing: img + "Open" button
 │   │   ├── CalloutPoll.tsx               # Poll framing: votable options
 │   │   ├── CalloutMediaGallery.tsx       # Media framing: image grid
 │   │   ├── CalloutLinkAction.tsx         # Link framing: CTA button
 │   │   ├── CalloutSidebarList.tsx        # Sidebar searchable callout list
 │   │   ├── CalloutTagCloud.tsx           # Tag cloud filter
-│   │   ├── CalloutContextMenu.tsx        # Settings dropdown
-│   │   ├── CalloutComments.tsx           # Threaded comment list
-│   │   └── CalloutCommentItem.tsx        # Single comment
+│   │   └── CalloutContextMenu.tsx        # Settings dropdown
+│   ├── comment/
+│   │   ├── CommentThread.tsx            # Thread list: sort toggle + comment items (no sticky input)
+│   │   ├── CommentItem.tsx              # Single comment: avatar, name, timestamp, content, actions
+│   │   ├── CommentInput.tsx             # Auto-expanding textarea + emoji + send
+│   │   ├── CommentReactions.tsx         # Emoji reaction pills + overflow
+│   │   ├── CollapsibleComments.tsx      # (deprecated — collapsible-below-card mode removed)
+│   │   └── CommentEmojiPicker.tsx       # Popover wrapping emoji-picker-react
 │   └── common/
 │       ├── ExpandableDescription.tsx
 │       ├── MarkdownContent.tsx
@@ -185,7 +199,10 @@ src/main/crdPages/
 │   ├── about/
 │   │   └── CrdSpaceAboutPage.tsx
 │   ├── callout/
+│   ├── callout/
 │   │   ├── CalloutListConnector.tsx  # Maps callouts → PostCard (text/memo) or custom (wb/poll/media)
+│   │   ├── CalloutCommentsConnector.tsx # Maps Room → CommentData[], wires mutations, renders CommentThread
+│   │   ├── CalloutDetailDialogConnector.tsx # Wraps CalloutDetailDialog: passes callout data + comment slots
 │   │   └── (other connectors as needed)
 │   ├── dataMappers/
 │   │   ├── spacePageDataMapper.ts
@@ -264,6 +281,31 @@ Poll questions, options, and voting UI rendered in CRD. Vote submission via `onV
 
 ### D16: Mobile bottom navigation
 CRD `SpaceTabs` component renders as horizontal tabs on desktop (above content) and as a fixed bottom bar on mobile (below content). Overflow actions (Activity, Video Call, Share, Settings) accessible via a "More" button that opens a drawer (Radix Dialog/Sheet). Same UX as current MUI BottomNavigation but CRD-styled.
+
+### D19: Comments live inside `CalloutDetailDialog`, not below the callout card on the feed
+
+Comments and discussions are **not** shown inline below the callout card in the feed. Instead, they are surfaced inside the `CalloutDetailDialog`, which opens when the user clicks the callout title or the "X comments" footer button. This matches the prototype `PostDetailDialog.tsx` layout: the dialog owns the full callout reading experience (title, author, description, reactions bar, contributions, discussion).
+
+**Why this approach**: Rendering comments below each card would clutter the feed and conflict with the callout card's compact design. The prototype never shows comments on the feed — they are always in the detail dialog. This approach also avoids the complexity of a collapsible container competing for space with callout content.
+
+**`CalloutDetailDialog`** (`src/crd/components/callout/CalloutDetailDialog.tsx`): pure CRD presentational, three zones:
+- **Sticky top header**: `DialogTitle` (callout title), subtitle (space path), close/share/more-options buttons
+- **Scrollable body**: `<h1>` title, author row, prose description, optional banner image, reactions+share bar (`border-y`), Contributions section (when applicable), Discussion section (`CommentThread`)
+- **Sticky bottom footer**: `CommentInput` (rendered only when `canComment`)
+
+Prop slots for flexible content injection: `commentsSlot: ReactNode`, `commentInputSlot?: ReactNode`, `contributionsSlot?: ReactNode`. This keeps the dialog presentational while the integration connector controls what is injected.
+
+**CRD layer** (`src/crd/components/comment/`): reusable comment components:
+- `CommentThread` — thread list (sort toggle, comment items, replies). Does NOT own the sticky input — that is injected by the dialog footer.
+- `CommentItem`, `CommentInput`, `CommentReactions`, `CommentEmojiPicker` — unchanged from initial implementation.
+- `CollapsibleComments` — **deprecated** (collapsible-below-card mode is removed; dialog always shows full-height). Kept as dead code until T084a clean-up.
+
+**Integration layer**:
+- `CalloutCommentsConnector` — maps Room → `CommentData[]`, wires mutations and subscriptions, renders `CommentThread`
+- `CalloutDetailDialogConnector` — wraps `CalloutDetailDialog`, passes mapped callout data + `CalloutCommentsConnector` as `commentsSlot` + `CommentInput` (with callbacks from connector) as `commentInputSlot`
+- `LazyCalloutItem` — manages `dialogOpen` state; opens dialog on title click or comments-button click; no longer renders `CalloutCommentsConnector` below the card
+
+**Deferred**: @mentions via `react-mentions` — input reserves toolbar space but doesn't implement it. Will be added in a follow-up.
 
 ### D17: Reuse `SpaceCard` (from 039) for the Subspaces tab grid
 Rather than maintaining a second subspace tile implementation inside `SpaceSubspacesList`, the subspaces grid composes the existing `@/crd/components/space/SpaceCard` component built for the 039 explore-spaces page. This matches Assumption 7 in the spec ("Subspace cards can reuse or extend the SpaceCard CRD component from 039") and gives subspace cards the richer prototype visual treatment (banner image with gradient overlay, privacy badge, stacked parent/child avatars, leads footer) at zero cost. The data mapper (`subspaceCardDataMapper.ts`) maps GraphQL results into `SpaceCardData`, including a deterministic `avatarColor` derived from the subspace id.

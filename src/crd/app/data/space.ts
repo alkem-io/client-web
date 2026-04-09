@@ -1,6 +1,7 @@
 import type { PostCardData } from '@/crd/components/space/PostCard';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import type { MemberCardData } from '@/crd/components/space/SpaceMembers';
+import type { CommentData } from '@/crd/components/comment/types';
 
 // ── Avatars ──────────────────────────────────────────
 
@@ -287,6 +288,71 @@ export const MOCK_SUBSPACES: SpaceCardData[] = [
     isMember: false,
     leads: [{ name: 'Robert Fox', avatarUrl: AVATARS.robert, type: 'person' }],
     href: '/space/green-energy/challenges/digital-twin',
+  },
+];
+
+export const MOCK_COMMENTS: CommentData[] = [
+  {
+    id: 'c1',
+    author: { id: 'u1', name: 'Sarah Chen', avatarUrl: AVATARS.sarah },
+    content: 'Great kickoff. I can help with policy review and timeline planning.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+    reactions: [
+      {
+        emoji: '👍',
+        count: 3,
+        hasReacted: true,
+        senders: [
+          { id: 'u2', name: 'David Miller' },
+          { id: 'u3', name: 'Elena Rodriguez' },
+          { id: 'u1', name: 'Sarah Chen' },
+        ],
+      },
+      {
+        emoji: '🚀',
+        count: 1,
+        hasReacted: false,
+        senders: [{ id: 'u4', name: 'Alex Contributor' }],
+      },
+    ],
+    canDelete: true,
+  },
+  {
+    id: 'c2',
+    author: { id: 'u2', name: 'David Miller', avatarUrl: AVATARS.david },
+    content: 'Agreed. We should prioritize municipal buildings first.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+    parentId: 'c1',
+    reactions: [],
+    canDelete: false,
+  },
+  {
+    id: 'c3',
+    author: { id: 'deleted', name: 'Deleted user' },
+    content: '',
+    timestamp: new Date(Date.now() - 1000 * 60 * 70).toISOString(),
+    reactions: [],
+    isDeleted: true,
+    canDelete: false,
+  },
+  {
+    id: 'c4',
+    author: { id: 'u5', name: 'Maya Ross', avatarUrl: AVATARS.maya },
+    content: 'I can contribute data on current consumption patterns.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    parentId: 'c3',
+    reactions: [
+      {
+        emoji: '👏',
+        count: 2,
+        hasReacted: false,
+        senders: [
+          { id: 'u1', name: 'Sarah Chen' },
+          { id: 'u2', name: 'David Miller' },
+        ],
+      },
+    ],
+    canDelete: false,
   },
 ];
 

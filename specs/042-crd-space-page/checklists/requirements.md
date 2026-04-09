@@ -34,3 +34,4 @@
 - Spec references "composition slots" and "integration layer" in the Architecture section -- these are architectural constraints from the CRD migration guidelines, not implementation details specific to this feature
 - The spec deliberately defers callout rendering migration (CalloutsGroupView, CalloutView) to a future spec due to its cross-cutting complexity -- this is documented in the Scope section
 - Innovation Flow terminology is used because it's a domain concept, not an implementation detail
+- US12 updated 2026-04-09: expanded with detailed acceptance scenarios for display modes (collapsible/full-height), lazy loading, auto-expanding textarea, emoji picker, reactions, and authorization. FR-087–091 expanded to FR-091a–FR-091t. Data model updated with CommentReaction, CommentAuthor, and CommentsContainerData types. @mentions explicitly deferred. References existing `emoji-picker-react` package.

@@ -184,6 +184,16 @@ Quick reference mapping new CRD components to their MUI and prototype counterpar
 | `crd/primitives/separator` | MUI `Divider` | `ui/separator` |
 | `crd/primitives/sheet` | MUI `Drawer` | `ui/sheet` |
 
+## Clarifications
+
+### Session 2026-04-09
+
+- Q: What is the maximum threading depth for comment replies? → A: Flat threading (1 level deep) — replies always target the top-level comment; replying to a reply groups it under the same parent thread.
+- Q: How does the reply input appear when a user clicks Reply? → A: Inline input — a small textarea appears directly below the target comment (already implemented this way in the current app).
+- Q: What is the comment sort order? → A: Configurable — newest first (descending) by default, with a user toggle to switch to oldest first (ascending). Replies within a thread are always chronological (oldest first).
+- Q: Should CRD comments support real-time updates via WebSocket subscriptions? → A: Yes — reuse existing subscription infrastructure; new comments and reactions appear in real time without page refresh.
+- Q: Is the comment input visible when in collapsible mode (clipped at ~250px)? → A: Always visible — input shows at the bottom even when collapsed, within the 250px area.
+
 ## Scope
 
 ### In Scope
@@ -451,19 +461,54 @@ During callout creation, an authorized user can import a template to pre-fill th
 
 ### User Story 12 - Callout Comments & Discussions (Priority: P3)
 
-Below the contributions section of a callout, users see a threaded comment section. Comments appear at the callout level (general discussion) or at the contribution level (when a specific post is selected). Users can add comments and reply to existing ones. Each comment shows the author's avatar, name, timestamp, and message content.
+Below the contributions section of a callout, users see a threaded comment section. Comments appear at the callout level (general discussion) or at the contribution level (when a specific post is selected). Users can add comments and reply to existing ones. Each comment shows the author's avatar, name, timestamp, and message content. Comments support emoji reactions (add/remove) and an emoji picker in the input.
+
+The comments component operates in two display modes: **collapsible mode** (inline within callout cards, limited to ~250px height with expand/collapse toggle when content overflows) and **full-height mode** (takes available vertical space, used in post detail dialogs or dedicated views). Comment data is lazy-loaded — not fetched with the initial callout list query but only when the comment section becomes visible or a contribution is selected.
+
+The comment input is a multiline textarea that starts as a single line, auto-expands as the user types up to 5 visible lines, then scrolls internally. It includes an emoji picker button (opens a popover using the existing `emoji-picker-react` package with native emoji style) and a send button. Enter sends the comment; Ctrl+Enter also sends. Maximum 2000 characters. The input is designed to accommodate @mentions in a future iteration but does not implement them now.
 
 **Why this priority**: Comments enable discussion but are a supplementary feature on top of callout content and contributions.
 
-**Independent Test**: View a callout with comments. Add a comment. Select a post contribution and see its contribution-level comments. Reply to a comment.
+**Independent Test**: View a callout with comments. Add a comment. Select a post contribution and see its contribution-level comments. Reply to a comment. Add an emoji reaction. Expand/collapse the comment section. Verify lazy loading triggers when scrolling a callout into view.
 
 **Acceptance Scenarios**:
 
+#### Display & Threading
 1. **Given** a callout with comments enabled, **When** no contribution is selected, **Then** callout-level comments display below the contributions section
 2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post
-3. **Given** a user has contribute access, **When** viewing the comments section, **Then** an add-comment form is available
-4. **Given** a comment exists, **When** it renders, **Then** it shows author avatar, name, timestamp, and message content
+3. **Given** a comment exists, **When** it renders, **Then** it shows author avatar, name, timestamp, and message content
+4. **Given** a comment has replies, **When** the thread renders, **Then** replies display indented below the parent comment with a "Reply" action on each comment
 5. **Given** comments are disabled for a callout, **When** the callout renders, **Then** no comment section appears
+
+#### Collapsible & Full-Height Modes
+6. **Given** the comment section is in collapsible mode and content exceeds ~250px, **When** it renders, **Then** a "Show more" / expand control appears and content is clipped
+7. **Given** the user clicks "Show more" in collapsible mode, **When** the section expands, **Then** all comments become visible and a "Show less" / collapse control appears
+8. **Given** the comment section is in full-height mode, **When** it renders, **Then** it takes the available vertical space with internal scrolling
+
+#### Lazy Loading
+9. **Given** the callout list loads, **When** comments data is not yet fetched, **Then** comments are NOT included in the initial query response
+10. **Given** a callout scrolls into view (or a contribution is selected), **When** the comment section becomes visible, **Then** comment data is fetched on demand
+
+#### Comment Input
+11. **Given** a user has contribute access, **When** viewing the comments section, **Then** an add-comment textarea is visible at the bottom with the user's avatar
+12. **Given** an empty input textarea, **When** the user starts typing, **Then** the textarea auto-expands line by line up to 5 visible lines, then scrolls internally
+13. **Given** the user types a comment and presses Enter (or Ctrl+Enter), **When** the comment is non-empty, **Then** the comment is submitted and the input clears
+14. **Given** the user has typed more than 2000 characters, **When** the limit is reached, **Then** further input is prevented or a character counter warns the user
+
+#### Emoji Picker
+15. **Given** the comment input toolbar, **When** the user clicks the emoji button, **Then** an emoji picker popover opens (native emoji style)
+16. **Given** the emoji picker is open, **When** the user selects an emoji, **Then** the emoji is inserted at the cursor position in the textarea and the picker closes
+
+#### Reactions
+17. **Given** a comment has emoji reactions, **When** it renders, **Then** reaction pills display below the comment showing emoji + count
+18. **Given** a user clicks a reaction pill they haven't reacted with, **When** the reaction is added, **Then** the count increments and the pill shows as "active" (the user's reaction)
+19. **Given** a user clicks a reaction pill they already reacted with, **When** the reaction is removed, **Then** the count decrements and the pill returns to normal state
+20. **Given** a user hovers over a comment, **When** a reaction add button appears, **Then** clicking it opens an emoji picker to add a new reaction
+
+#### Authorization & Deletion
+21. **Given** a user without contribute access, **When** viewing the comments section, **Then** no add-comment form is shown
+22. **Given** the user authored a comment (or is an admin), **When** viewing that comment, **Then** a delete action is available
+23. **Given** a comment is deleted that had replies, **When** the thread re-renders, **Then** replies remain visible with a placeholder for the deleted parent
 
 ---
 
@@ -523,6 +568,13 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - What happens when a callout creation form has validation errors? Specific field-level errors display; submit buttons remain disabled
 - What happens when importing a template would overwrite existing form data? A confirmation dialog asks the user before overwriting
 - What happens when a callout has >50 contributions? The expandable grid paginates in batches of 10
+- What happens when a callout has zero comments? The comment section shows an empty state with the input form (if authorized) but no comment list
+- What happens when a comment's parent was deleted? A placeholder message appears in place of the deleted parent; replies remain visible and indented below it
+- What happens when the comment section is in collapsible mode and there are only 1-2 short comments? The expand control does NOT appear since content fits within ~250px
+- What happens when the emoji picker opens near the bottom of the viewport? The popover positions itself above the trigger button to remain visible
+- What happens when a user adds a reaction that already has reactions from others? The count increments and the pill updates to show the user has reacted
+- What happens when a comment has more reactions than fit in one row? A "+N" overflow indicator appears; clicking it reveals remaining reactions in a popover
+- What happens when the textarea reaches the 2000-character limit? A character counter warns the user and further input is prevented
 
 ## Requirements
 
@@ -661,11 +713,44 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 
 #### Callout Comments
 
+##### Display & Threading
+- **FR-086a**: Comments MUST be sorted newest first (descending) by default; a toggle control MUST allow users to switch to oldest first (ascending). The selected sort order applies to top-level comments; replies within a thread are always shown in chronological (ascending) order.
 - **FR-087**: Callout-level comments MUST display as a threaded list below the contributions section when no contribution is selected
 - **FR-088**: Contribution-level comments MUST display when a Post contribution is selected; non-Post contributions do not have contribution-level comments
 - **FR-089**: Each comment MUST show author avatar, name, timestamp, and message content
 - **FR-090**: Users with contribute access MUST be able to add comments and reply to existing comments
 - **FR-091**: Comments MUST be hideable when disabled via callout settings (comments toggle)
+- **FR-091a**: Threading is flat (1 level deep): replies MUST display indented below their parent top-level comment; replying to a reply targets the same parent thread. Each comment MUST include a "Reply" action button. Clicking Reply MUST render an inline textarea directly below the target comment (not redirect to the bottom input)
+- **FR-091b**: When a parent comment is deleted, its replies MUST remain visible with a placeholder indicating the deleted parent
+
+##### Display Modes
+- **FR-091c**: The comment component MUST support two display modes: **collapsible** (constrained to ~250px max height with overflow clipping and expand/collapse toggle) and **full-height** (takes available vertical space with internal scrolling)
+- **FR-091d**: In collapsible mode, when content exceeds ~250px, a "Show more" control MUST appear; clicking it expands to show all comments and changes to "Show less". The comment input MUST remain visible at the bottom even when collapsed (within the 250px area); only the comment list is clipped
+- **FR-091e**: In full-height mode, the comment section MUST fill available space with the input pinned at the bottom
+
+##### Lazy Loading & Real-Time
+- **FR-091f**: Comment data MUST NOT be included in the initial callout list query; it MUST be fetched on demand when the comment section becomes visible (scroll into view) or when a contribution is selected
+- **FR-091g**: While comments are loading, a loading indicator MUST be shown in place of the comment list
+- **FR-091g2**: Once loaded, comments MUST receive real-time updates via the existing WebSocket subscription infrastructure (new comments, deleted comments, and reaction changes appear without page refresh)
+
+##### Comment Input
+- **FR-091h**: The comment input MUST be a multiline textarea that starts as a single line and auto-expands as the user types, up to 5 visible lines; beyond 5 lines the textarea MUST scroll internally
+- **FR-091i**: The input MUST include an emoji picker button that opens a popover with native emoji style (using the existing `emoji-picker-react` package); selecting an emoji MUST insert it at the cursor position
+- **FR-091j**: The input MUST include a send button (icon); pressing Enter or Ctrl+Enter MUST submit the comment when non-empty
+- **FR-091k**: The input MUST enforce a maximum of 2000 characters with a visible character counter when approaching the limit
+- **FR-091l**: The input MUST display the current user's avatar to the left of the textarea
+- **FR-091m**: The input layout MUST be designed to accommodate @mention functionality in a future iteration (space for an @ button in the toolbar) without implementing it now
+
+##### Reactions
+- **FR-091n**: Each comment MUST support emoji reactions displayed as pill-shaped badges (emoji + count) below the comment content
+- **FR-091o**: Clicking a reaction pill the user has NOT reacted with MUST add the user's reaction and increment the count; clicking one they HAVE reacted with MUST remove it and decrement the count
+- **FR-091p**: A reaction pill MUST visually distinguish whether the current user has reacted (e.g., outlined/highlighted border)
+- **FR-091q**: Hovering over a comment MUST reveal a "add reaction" button that opens an emoji picker to add a new reaction type
+- **FR-091r**: When reactions overflow the available width, a "+N" indicator MUST appear; clicking it shows the remaining reactions in a popover
+
+##### Authorization
+- **FR-091s**: The add-comment form MUST only be visible to users with contribute access
+- **FR-091t**: A delete action MUST be available on comments authored by the current user or when the user has admin/delete privileges
 
 #### Responsive Design
 
@@ -718,7 +803,8 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **CalloutFramingContent**: Union of type-specific content -- markdown text (Memo), whiteboard preview URL + whiteboard ID (Whiteboard), URL + display name (Link), images array with sort order (Media Gallery), poll title + options + settings + votes (Poll)
 - **ContributionData**: A response within a callout -- id, type (Post/Whiteboard/Memo/Link), title, description, author, creation date, comment count, sort order, tags, and type-specific content (markdown for memos, preview URL for whiteboards, URL for links)
 - **CalloutTemplate**: A reusable callout configuration -- id, name, description, framing type, default content, contribution settings, profile data
-- **CommentData**: A threaded comment -- id, author (name, avatar), message content, timestamp, parent comment id (for replies)
+- **CommentData**: A threaded comment -- id, author (id, name, avatar), message content, timestamp, parent comment id (for replies), deletion status, emoji reactions (emoji, count, whether current user reacted), and delete permission flag
+- **CommentsContainerData**: Container-level props for the reusable comments component -- comments list, contribute access flag, current user (for input avatar), loading state, display mode (collapsible or full-height), and callbacks for add/reply/delete/add-reaction/remove-reaction
 
 ## Assumptions
 

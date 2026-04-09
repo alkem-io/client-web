@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CalloutSidebarList } from '@/crd/components/callout/CalloutSidebarList';
+import { CommentThread } from '@/crd/components/comment/CommentThread';
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
@@ -9,6 +10,7 @@ import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import {
   MOCK_MEMBERS,
+  MOCK_COMMENTS,
   MOCK_ORGANIZATIONS,
   MOCK_POSTS,
   MOCK_SIDEBAR,
@@ -100,14 +102,27 @@ export function SpacePage() {
     >
       {/* Tab content */}
       {activeTab === 0 && (
-        <SpaceFeed
-          title="Activity"
-          posts={MOCK_POSTS}
-          canCreate={true}
-          onCreateClick={() => {}}
-          hasMore={true}
-          onShowMore={() => {}}
-        />
+        <div className="space-y-8">
+          <SpaceFeed
+            title="Activity"
+            posts={MOCK_POSTS}
+            canCreate={true}
+            onCreateClick={() => {}}
+            hasMore={true}
+            onShowMore={() => {}}
+          />
+
+          <CommentThread
+            comments={MOCK_COMMENTS}
+            canComment={true}
+            currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
+            onAddComment={() => {}}
+            onReply={() => {}}
+            onDelete={() => {}}
+            onAddReaction={() => {}}
+            onRemoveReaction={() => {}}
+          />
+        </div>
       )}
 
       {activeTab === 1 && (

@@ -1,4 +1,5 @@
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
@@ -85,4 +86,28 @@ export function formatRelativeDate(date: Date, t: DateFormatter): string {
   if (days < 7) return t('dates.daysAgo', { count: days });
   if (days < 30) return t('dates.weeksAgo', { count: Math.floor(days / 7) });
   return date.toLocaleDateString();
+}
+
+/**
+ * Maps a fully-loaded callout to the shape required by CalloutDetailDialog.
+ */
+export function mapCalloutDetailsToDialogData(
+  callout: CalloutDetailsModelExtended,
+  t: DateFormatter
+): CalloutDetailDialogData {
+  return {
+    id: callout.id,
+    title: callout.framing.profile.displayName,
+    description: callout.framing.profile.description ?? undefined,
+    imageUrl:
+      callout.framing.type === CalloutFramingType.Whiteboard
+        ? (callout.framing.whiteboard?.profile.preview?.uri ?? undefined)
+        : undefined,
+    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
+    author: callout.createdBy?.profile
+      ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
+      : undefined,
+    commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
+    reactionCount: 0,
+  };
 }

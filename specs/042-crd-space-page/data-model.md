@@ -314,13 +314,50 @@ type CalloutFormFieldProps = {
 
 ### CommentData
 ```typescript
+type CommentAuthor = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+};
+
+type CommentReaction = {
+  emoji: string;              // Native emoji character (e.g., "👍")
+  count: number;
+  hasReacted: boolean;        // Whether the current user reacted with this emoji
+};
+
 type CommentData = {
   id: string;
-  author: { name: string; avatarUrl?: string };
+  author: CommentAuthor;
   content: string;
-  timestamp: string;          // ISO date
-  parentId?: string;          // For threaded replies
+  timestamp: string;          // ISO date string
+  parentId?: string;          // For threaded replies — undefined for top-level comments
+  isDeleted?: boolean;        // True for placeholder of deleted parent with remaining replies
+  reactions: CommentReaction[];
+  canDelete: boolean;         // True if current user authored or has admin privilege
 };
+```
+
+### CommentsContainerData
+```typescript
+/** Props shape for the reusable CommentThread component */
+type CommentsContainerData = {
+  comments: CommentData[];
+  canComment: boolean;        // User has contribute access
+  currentUser?: CommentAuthor; // For displaying avatar next to input
+  loading?: boolean;          // Comments are being fetched (lazy load)
+  mode: 'collapsible' | 'full-height';
+  // Callbacks
+  onAddComment: (content: string) => void;
+  onReply: (parentId: string, content: string) => void;
+  onDelete: (commentId: string) => void;
+  onAddReaction: (commentId: string, emoji: string) => void;
+  onRemoveReaction: (commentId: string, emoji: string) => void;
+};
+
+// Sort order is visual-only state managed inside CommentThread
+// (default: 'newest', togglable to 'oldest')
+// Top-level comments sorted by selected order; replies always chronological (oldest first)
 ```
 
 ### TemplateCardData

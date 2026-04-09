@@ -179,6 +179,33 @@
     "addOption": "Добави опция",
     "removeOption": "Премахни опция"
   },
+  "calloutDialog": {
+    "close": "Затвори диалога",
+    "share": "Сподели",
+    "more": "Още опции",
+    "discussion": "Дискусия",
+    "reactions": "Реагирай",
+    "contributions": "Приноси"
+  },
+  "comments": {
+    "title": "Дискусия",
+    "showMore": "Показване на повече",
+    "showLess": "Показване на по-малко",
+    "sortNewest": "Най-ново първо",
+    "sortOldest": "Най-старо първо",
+    "reply": "Отговор",
+    "delete": "Изтриване",
+    "deleted": "Този коментар беше изтрит",
+    "addComment": "Добавете коментар...",
+    "send": "Изпращане",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Добавяне на реакция",
+      "overflow": "+{{count}} още"
+    },
+    "loading": "Зареждане на коментари...",
+    "empty": "Още без коментари"
+  },
   "a11y": {
     "spaceBanner": "Банер на пространството за {{name}}",
     "tabNavigation": "Навигационни табове на пространството",

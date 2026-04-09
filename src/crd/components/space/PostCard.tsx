@@ -35,6 +35,7 @@ export type PostCardData = {
 type PostCardProps = {
   post: PostCardData;
   onClick?: () => void;
+  onCommentsClick?: () => void;
   onSettingsClick?: () => void;
   onExpandClick?: () => void;
   className?: string;
@@ -54,7 +55,7 @@ const typeLabels = {
   'call-for-whiteboards': 'callout.callForWhiteboards',
 } as const;
 
-export function PostCard({ post, onClick, onSettingsClick, onExpandClick, className }: PostCardProps) {
+export function PostCard({ post, onClick, onCommentsClick, onSettingsClick, onExpandClick, className }: PostCardProps) {
   const { t } = useTranslation('crd-space');
   const TypeIcon = typeIcons[post.type];
 
@@ -210,6 +211,10 @@ export function PostCard({ post, onClick, onSettingsClick, onExpandClick, classN
           variant="ghost"
           size="sm"
           className="h-8 gap-2 text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
+          onClick={event => {
+            event.stopPropagation();
+            onCommentsClick?.();
+          }}
         >
           <MessageSquare className="w-4 h-4" aria-hidden="true" />
           <span className="text-xs">

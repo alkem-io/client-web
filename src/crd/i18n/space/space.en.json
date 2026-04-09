@@ -182,6 +182,33 @@
     "addOption": "Add Option",
     "removeOption": "Remove option"
   },
+  "calloutDialog": {
+    "close": "Close dialog",
+    "share": "Share",
+    "more": "More options",
+    "discussion": "Discussion",
+    "reactions": "React",
+    "contributions": "Contributions"
+  },
+  "comments": {
+    "title": "Discussion",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "reply": "Reply",
+    "delete": "Delete",
+    "deleted": "This comment was deleted",
+    "addComment": "Add a comment...",
+    "send": "Send",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Add reaction",
+      "overflow": "+{{count}} more"
+    },
+    "loading": "Loading comments...",
+    "empty": "No comments yet"
+  },
   "a11y": {
     "spaceBanner": "Space banner for {{name}}",
     "tabNavigation": "Space navigation tabs",

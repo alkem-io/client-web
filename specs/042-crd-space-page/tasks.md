@@ -188,36 +188,118 @@
 
 ---
 
-## Phase 12: US12 — Callout Comments (Priority: P3)
+## Phase 12: US12 — Callout Detail Dialog & Discussions (Priority: P3)
 
-- [X] T078 [P] Create `src/crd/components/callout/CalloutCommentItem.tsx` — author avatar, name, timestamp, content; indented for replies
-- [X] T079 Create `src/crd/components/callout/CalloutComments.tsx` — threaded list + add-comment form; accepts `comments`, `canComment`, `onAddComment`, `onReply`
-- [X] T080 Create `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx` — maps comment data + mutations
-- [X] T081 Wire comments into PostCard footer (expandable) and below callout-specific components; hide when `commentsEnabled` is false
+**Goal**: Build the full comments/discussion system surfaced inside a `CalloutDetailDialog` (not below the card on the feed). The dialog opens when the user clicks the callout title or the "X comments" footer button. It displays the full callout content (title, author, description, reactions bar, share button, contributions section when applicable) and a **Discussion** section at the bottom with the `CommentThread` component. The new-comment input is sticky to the bottom of the dialog. CRD presentational components live in `src/crd/components/comment/`; the dialog wrapper lives in `src/crd/components/callout/CalloutDetailDialog.tsx`.
+
+**Visual reference**: `prototype/src/app/components/dialogs/PostDetailDialog.tsx` — sticky top header bar (title + close/share/more icons), scrollable content area (title h1, author avatar+name+timestamp, prose description, optional image, Contributions section, Discussion section), sticky bottom comment input.
+
+**Existing MUI reference**: `src/domain/communication/room/Comments/` — `CommentsComponent.tsx`, `MessagesThread.tsx`, `MessageView.tsx`, `CommentReactions.tsx`, `FormikCommentInputField.tsx`, `CollapsibleCommentsThread.tsx`
+
+**Deferred**: @mentions via `react-mentions` — input reserves toolbar space for a future @ button but does not implement mention functionality in this phase.
+
+### Prerequisites
+
+- [X] T078 [P] Port `src/crd/primitives/popover.tsx` from `prototype/src/app/components/ui/popover.tsx` — Radix Popover primitive (required by CommentEmojiPicker and CommentReactions overflow); update imports to `@/crd/lib/utils`
+
+### i18n
+
+- [X] T078a [P] Extend `src/crd/i18n/space/space.en.json` with `comments` keys: `title`, `showMore`, `showLess`, `sortNewest`, `sortOldest`, `reply`, `delete`, `deleted` (placeholder for deleted parent), `addComment` (placeholder text), `send`, `charCount` (with `{{count}}` / `{{max}}` interpolation), `reactions.add`, `reactions.overflow` (with `{{count}}`), `loading`, `empty` (no comments yet)
+- [ ] T078c [P] Extend `src/crd/i18n/space/space.en.json` with `calloutDialog` keys: `close` (sr-only close button label), `share` (share button label), `more` (more-options button label), `discussion` ("Discussion" section heading), `reactions` ("React" button label), `contributions` ("Contributions" section heading); mirror to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
+- [X] T078b Mirror T078a key changes to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
+
+### CRD presentational layer — comment components
+
+- [X] T079 [P] Create `src/crd/components/comment/CommentEmojiPicker.tsx` — thin wrapper around `emoji-picker-react` (v4.4.7, `EmojiStyle.NATIVE`); renders inside a Radix `Popover` (from `@/crd/primitives/popover`); props: `onSelect: (emoji: string) => void`, `trigger: ReactNode`; positions above trigger when near viewport bottom; `aria-label` on trigger button
+- [X] T080 [P] Create `src/crd/components/comment/CommentReactions.tsx` — horizontal flex of reaction pills (emoji + count); each pill is a `<button>` with `aria-pressed` reflecting `hasReacted`; active pills have highlighted border (primary); "add reaction" button (hover-visible, `Smile` icon) opens `CommentEmojiPicker`; "+N" overflow indicator when reactions exceed container width, clicking opens a Radix Popover listing remaining reactions with sender info; props: `reactions: CommentReaction[]`, `onAdd: (emoji: string) => void`, `onRemove: (emoji: string) => void`
+- [X] T081 [P] Create `src/crd/components/comment/CommentInput.tsx` — user avatar (left) + auto-expanding `<textarea>` (starts 1 line, expands up to 5, then scrolls internally) + toolbar (emoji button via `CommentEmojiPicker`, disabled send button `Send` icon); emoji inserts at cursor position; Enter submits (when non-empty), Ctrl+Enter also submits; max 2000 chars with visible counter when approaching limit; placeholder via `t('comments.addComment')`; toolbar reserves space for future @ button (empty slot); props: `currentUser?: CommentAuthor`, `onSubmit: (content: string) => void`, `disabled?: boolean`, `maxLength?: number` (default 2000)
+- [X] T082 [P] Create `src/crd/components/comment/CommentItem.tsx` — avatar (8x8) + author name (font-medium) + timestamp (text-xs, muted) + content (text-sm) + action row: Reply button + delete button (visible when `canDelete`); `CommentReactions` below content; clicking Reply renders an inline `CommentInput` directly below this comment (local `isReplying` visual state); `isReply` prop controls left indentation (`ml-10`); `isDeleted` renders placeholder text instead of content; props: `comment: CommentData`, `onReply: (parentId: string, content: string) => void`, `onDelete: (commentId: string) => void`, `onAddReaction: (commentId: string, emoji: string) => void`, `onRemoveReaction: (commentId: string, emoji: string) => void`, `currentUser?: CommentAuthor`
+- [X] T083 [P] Create `src/crd/components/comment/CommentThread.tsx` — top-level orchestrator: header with comment count + sort toggle (newest/oldest first, default newest); groups comments into flat threads (top-level + their replies sorted chronologically); renders `CommentItem` per message with replies indented below parent; scrollable comment list area (flex-1 overflow-y-auto); does NOT include its own sticky input — the input is owned by `CalloutDetailDialog` and passed as a prop slot; supports `mode: 'full-height'` only (collapsible mode removed; was only needed in the below-card context which no longer exists); loading state shows spinner; empty state shows `t('comments.empty')`; props: `CommentsContainerData` (from data-model.md) minus `mode`
+- [ ] T083a [P] Update `src/crd/components/comment/CommentThread.tsx` — remove `mode` prop and `CollapsibleComments` wrapper; the component is always rendered inside the dialog's scrollable content area which controls height; the `CommentInput` sticky footer is now rendered outside `CommentThread` by `CalloutDetailDialog` (pass `canComment` + comment callbacks via the dialog instead)
+- [X] T084 [P] Create `src/crd/components/comment/CollapsibleComments.tsx` — ~~wrapper component for `mode='collapsible'`~~ **this component is now unused** (collapsible-below-card mode was removed; the dialog always shows full-height); keep the file but mark it `@deprecated` with a comment until T085 clean-up
+- [ ] T084a [P] Delete `src/crd/components/comment/CollapsibleComments.tsx` (deprecated since T083a removed the collapsible mode); update any remaining imports
+
+### CRD presentational layer — callout detail dialog
+
+- [ ] T085a [P] Create `src/crd/components/callout/CalloutDetailDialog.tsx` — full-screen dialog (matches `PostDetailDialog` layout from prototype) built on `src/crd/primitives/dialog.tsx`:
+  - **Layout**: `flex flex-col h-[95vh] max-w-5xl overflow-hidden` — three zones: sticky header, scrollable body, sticky footer
+  - **Sticky header** (`shrink-0 border-b`): close button (X, `DialogClose`), callout title (`DialogTitle`), breadcrumb subtitle (space name), share icon button, more-options icon button (MoreHorizontal)
+  - **Scrollable body** (`flex-1 overflow-y-auto`):
+    - Title `<h1>` (text-3xl font-bold)
+    - Author row: Avatar + name + timestamp + role
+    - Prose description (MarkdownContent or plain `<p>`)
+    - Optional banner image (when `imageUrl` provided)
+    - Reactions + share bar (`border-y`): emoji reaction stack (3 stacked circles), reaction count text, spacer, "React" button (Smile icon), "Share" button (Share2 icon)
+    - **Contributions section** (when `hasContributions`): `contributionsSlot: ReactNode` prop — rendered by the connector; section heading `t('calloutDialog.contributions')` + badge count
+    - **Discussion section**: `t('calloutDialog.discussion')` heading + comment count badge + `<CommentThread>` (scrolls with page body)
+  - **Sticky footer** (`shrink-0 border-t bg-background`): `CommentInput` rendered only when `canComment`; hidden when `!canComment`
+  - **Props**: `open: boolean`, `onOpenChange: (open: boolean) => void`, `callout: CalloutDetailDialogData`, `commentsSlot: ReactNode`, `commentInputSlot?: ReactNode`, `contributionsSlot?: ReactNode`, `hasContributions?: boolean`, `contributionsCount?: number`
+  - **`CalloutDetailDialogData`** type (pure CRD, no domain imports): `{ id, title, author?: { name, avatarUrl, role? }, description?, imageUrl?, timestamp?, commentCount?, reactionCount? }`
+  - Uses `Dialog`, `DialogContent`, `DialogTitle`, `DialogClose` from `@/crd/primitives/dialog`
+
+### Delete stubs
+
+- [ ] T085 Delete `src/crd/components/callout/CalloutCommentItem.tsx` and `src/crd/components/callout/CalloutComments.tsx` — replaced by `src/crd/components/comment/` components; update any existing imports (search for `CalloutCommentItem` and `CalloutComments` in `src/`)
+
+### Integration layer
+
+- [X] T086 Create `src/main/crdPages/space/dataMappers/commentDataMapper.ts` — `mapRoomToCommentData(room: CommentsMessagesFragment, currentUserId: string): CommentData[]` — maps Room messages to `CommentData[]` with flat threading (parentId from threadID), derives `canDelete` from message author match or admin privilege, maps reactions from `ReactionDetails[]` to `CommentReaction[]` (groups by emoji, checks `createdBy` against currentUserId for `hasReacted`), handles deleted parent placeholders via the existing `useRestoredMessages` pattern
+- [ ] T086a Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add `mapCalloutDetailsToDialogData(callout: CalloutDetailsModelExtended): CalloutDetailDialogData` mapper; extracts title, author, description, imageUrl (whiteboard preview or first media image), timestamp, commentCount, reactionCount
+- [X] T087 Create `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx` — integration connector that:
+  - Accepts `roomId: string`, `calloutId?: string`, `contributionId?: string`, `mode: 'collapsible' | 'full-height'`
+  - **Remove `mode` prop** — now always full-height inside dialog
+  - Lazy-loads comments via `useCalloutContributionCommentsQuery` (for contribution-level) or the callout detail Room data (for callout-level), with skip condition until in-view or dialog open
+  - Maps Room data via `mapRoomToCommentData`
+  - Wires `usePostMessageMutations` for `onAddComment` (sendMessageToRoom) and `onReply` (sendMessageReplyToRoom with threadID)
+  - Wires `useCommentReactionsMutations` for `onAddReaction` (addReactionToMessageInRoom) and `onRemoveReaction` (removeReactionToMessageInRoom)
+  - Subscribes to real-time updates via `useSubscribeOnRoomEvents` (handles Create/Delete mutations for messages and reactions, updates Apollo cache)
+  - Derives `canComment` from Room authorization (`AuthorizationPrivilege.CreateMessage`)
+  - Passes `currentUser` from auth context (name + avatar)
+  - Renders `<CommentThread>` (thread only) + exposes `canComment`, `currentUser`, and comment callbacks so `CalloutDetailDialog` can render the sticky `CommentInput` footer
+- [ ] T087a Create `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` — wraps `CalloutDetailDialog` (CRD) with all integration wiring:
+  - Accepts `calloutId: string`, `calloutsSetId: string | undefined`, `open: boolean`, `onOpenChange`
+  - Reuses the `callout` data already loaded by `LazyCalloutItem` (passed as prop, not re-fetched)
+  - Maps to `CalloutDetailDialogData` via `mapCalloutDetailsToDialogData`
+  - Renders `CalloutCommentsConnector` as `commentsSlot` (always full-height)
+  - Renders `ContributionGridConnector` as `contributionsSlot` when callout has contribution type
+  - Manages sticky `CommentInput` footer by receiving `canComment` + callbacks back from `CalloutCommentsConnector` via render-prop or lifted state pattern
+
+### Wiring
+
+- [ ] T088a Revert / update `LazyCalloutItem.tsx` — **remove** the `CalloutCommentsConnector` rendered below PostCard (that was T088, now superseded); instead add a local `dialogOpen` `useState`; pass `onClick` and footer comments-button click handler both pointing to `() => setDialogOpen(true)`; render `<CalloutDetailDialogConnector>` controlled by `dialogOpen`
+- [ ] T088b Update `PostCard.tsx` — make the "X comments" footer `<Button>` call `onClick` when provided (currently it has no handler); add `onCommentsClick?` prop; the callout feed wires `onCommentsClick` to open the dialog (same as title click)
+- [ ] T089 Wire `CalloutCommentsConnector` into the contribution preview area (`ContributionGridConnector` or equivalent) — when a Post contribution is selected, render contribution-level comments in `mode='full-height'` inside the dialog; pass contribution's Room ID; hide when `commentsEnabled` is false
+
+### Standalone preview
+
+- [X] T090 Add mock comment data to `src/crd/app/data/space.ts` — sample `CommentData[]` with top-level comments, replies, reactions, and a deleted parent placeholder; update SpacePage preview to render `CommentThread` in both collapsible and full-height modes
+- [ ] T090a Update `src/crd/app/pages/SpacePage.tsx` standalone preview — replace direct `CommentThread` render with a `CalloutDetailDialog` open via a "View Callout" button; use mock `CalloutDetailDialogData` from `space.ts`
+
+**Checkpoint**: Clicking a callout title or "X comments" button opens the `CalloutDetailDialog`. The dialog shows the full callout: sticky top header (title + close/share), scrollable body (author, description, reactions bar, Discussion section with CommentThread), sticky bottom CommentInput (when authorized). Comments are NOT visible below the callout card on the feed. Real-time updates, emoji reactions, reply threading, sort toggle, lazy loading all work inside the dialog.
 
 ---
 
 ## Phase 13: US13 — About Page (Priority: P3)
 
-- [X] T082 [P] Create `src/crd/components/space/SpaceAboutView.tsx` — full about page: name, tagline, description, location, metrics, leads, host, Why, Who, guidelines, references; accepts `SpaceAboutData` + `joinAction?: ReactNode`
-- [X] T083 Create `src/main/crdPages/space/about/CrdSpaceAboutPage.tsx` — uses `useSpaceAboutDetailsQuery()`; maps to SpaceAboutView; includes MUI ApplicationButton for non-members; public route (FR-044)
+- [X] T091a [P] Create `src/crd/components/space/SpaceAboutView.tsx` — full about page: name, tagline, description, location, metrics, leads, host, Why, Who, guidelines, references; accepts `SpaceAboutData` + `joinAction?: ReactNode`
+- [X] T091b Create `src/main/crdPages/space/about/CrdSpaceAboutPage.tsx` — uses `useSpaceAboutDetailsQuery()`; maps to SpaceAboutView; includes MUI ApplicationButton for non-members; public route (FR-044)
 
 ---
 
 ## Phase 14: US14 — Responsive Mobile Experience (Priority: P3)
 
-- [X] T084 Audit and refine SpaceNavigationTabs mobile bottom bar (T013) — fixed bar, "More" drawer, no overlap with FABs
-- [X] T085 Audit and refine SpaceShell mobile layout (T011) — sidebar hidden, single-column, grids reflow
-- [X] T086 Audit and refine SpaceHeader mobile banner (T012) — no horizontal overflow, title/tagline truncation
+- [X] T091c Audit and refine SpaceNavigationTabs mobile bottom bar (T013) — fixed bar, "More" drawer, no overlap with FABs
+- [X] T091d Audit and refine SpaceShell mobile layout (T011) — sidebar hidden, single-column, grids reflow
+- [X] T091e Audit and refine SpaceHeader mobile banner (T012) — no horizontal overflow, title/tagline truncation
 
 ---
 
 ## Phase 15: Polish & Cross-Cutting Concerns
 
-- [X] T087 [P] Create standalone preview app page `src/crd/app/pages/SpacePage.tsx` with mock data; add route in CrdApp.tsx
-- [X] T088 [P] Accessibility audit — all CRD Space components pass `src/crd/CLAUDE.md` checklist
-- [X] T089 [P] Verify zero MUI imports in `src/crd/` — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`
-- [X] T090 Update `src/crd/components/index.md` component inventory
+- [X] T091f [P] Create standalone preview app page `src/crd/app/pages/SpacePage.tsx` with mock data; add route in CrdApp.tsx
+- [X] T091g [P] Accessibility audit — all CRD Space components pass `src/crd/CLAUDE.md` checklist
+- [X] T091h [P] Verify zero MUI imports in `src/crd/` — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`
+- [X] T091i Update `src/crd/components/index.md` component inventory
 
 ---
 
@@ -395,7 +477,7 @@ Phase 1 (setup + primitives)
   │                 └── Phase 13 (about) — just needs Phase 2
   │
   Phase 8 complete → Phase 11 (templates)
-  Phase 5 complete → Phase 12 (comments)
+  Phase 5 + Phase 16 complete → Phase 12 (comments — depends on LazyCalloutItem for wiring)
   Phase 5 complete → Phase 16 (callout lazy loading)
   Phase 6 complete → Phase 17 (community + subspaces top-section revision)
   Phase 17 complete → Phase 18 (community sidebar + subspace filter refinement)

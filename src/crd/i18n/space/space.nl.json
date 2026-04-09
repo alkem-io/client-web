@@ -179,6 +179,33 @@
     "addOption": "Optie toevoegen",
     "removeOption": "Optie verwijderen"
   },
+  "calloutDialog": {
+    "close": "Dialoog sluiten",
+    "share": "Delen",
+    "more": "Meer opties",
+    "discussion": "Discussie",
+    "reactions": "Reageren",
+    "contributions": "Bijdragen"
+  },
+  "comments": {
+    "title": "Discussie",
+    "showMore": "Meer tonen",
+    "showLess": "Minder tonen",
+    "sortNewest": "Nieuwste eerst",
+    "sortOldest": "Oudste eerst",
+    "reply": "Antwoorden",
+    "delete": "Verwijderen",
+    "deleted": "Deze opmerking is verwijderd",
+    "addComment": "Voeg een opmerking toe...",
+    "send": "Verzenden",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Reactie toevoegen",
+      "overflow": "+{{count}} meer"
+    },
+    "loading": "Opmerkingen laden...",
+    "empty": "Nog geen opmerkingen"
+  },
   "a11y": {
     "spaceBanner": "Space-banner voor {{name}}",
     "tabNavigation": "Navigatietabbladen van de space",
