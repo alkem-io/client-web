@@ -24,18 +24,18 @@ export function ExpandableDescription({
   const { t } = useTranslation('crd-space');
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const lineClampClass = `line-clamp-${maxLines}`;
+  const lineClampClasses: Record<number, string> = {
+    1: 'line-clamp-1',
+    2: 'line-clamp-2',
+    3: 'line-clamp-3',
+    4: 'line-clamp-4',
+    5: 'line-clamp-5',
+    6: 'line-clamp-6',
+  };
 
   return (
     <div className={cn('relative', className)}>
-      <p
-        className={cn('text-sm text-muted-foreground leading-relaxed', !isExpanded && lineClampClass)}
-        style={
-          !isExpanded
-            ? { WebkitLineClamp: maxLines, display: '-webkit-box', WebkitBoxOrient: 'vertical', overflow: 'hidden' }
-            : undefined
-        }
-      >
+      <p className={cn('text-sm text-muted-foreground leading-relaxed', !isExpanded && lineClampClasses[maxLines])}>
         {description}
       </p>
       <div className="flex items-center gap-2 mt-2">

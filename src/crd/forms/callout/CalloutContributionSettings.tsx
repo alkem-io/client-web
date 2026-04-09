@@ -48,6 +48,7 @@ export function CalloutContributionSettings({
             <button
               key={type}
               type="button"
+              aria-pressed={allowedTypes.includes(type)}
               className={cn(
                 'px-3 py-2 rounded-md border text-xs font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 allowedTypes.includes(type)

@@ -72,7 +72,6 @@ function DesktopTabs({
         ref={scrollRef}
         className="flex items-center gap-6 overflow-x-auto scrollbar-hide overscroll-x-contain"
         role="tablist"
-        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {tabs.map(tab => {
           const active = tab.index === activeIndex;

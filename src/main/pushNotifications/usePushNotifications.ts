@@ -95,7 +95,7 @@ export function usePushNotifications(): PushNotificationState {
 
       browserSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey,
+        applicationServerKey: applicationServerKey as any,
       });
 
       const subscriptionJSON = browserSubscription.toJSON();

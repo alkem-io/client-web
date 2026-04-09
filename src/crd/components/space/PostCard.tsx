@@ -178,7 +178,7 @@ export function PostCard({ post, onClick, onSettingsClick, onExpandClick, classN
               return (
                 <div
                   key={wb.title}
-                  className="group/wb relative rounded-lg overflow-hidden border border-border bg-muted/30 aspect-[4/3] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                  className="group/wb relative rounded-lg overflow-hidden border border-border bg-muted/30 aspect-[4/3]"
                 >
                   <img
                     src={wb.imageUrl}

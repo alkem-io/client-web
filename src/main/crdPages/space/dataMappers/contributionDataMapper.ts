@@ -9,7 +9,7 @@ type ContributionCardData = {
   commentCount?: number;
   tags?: string[];
   previewUrl?: string;
-  htmlContent?: string;
+  markdownContent?: string;
   linkUrl?: string;
   linkDescription?: string;
 };

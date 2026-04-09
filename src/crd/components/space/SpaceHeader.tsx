@@ -57,11 +57,11 @@ export function SpaceHeader({
       >
         {/* Background image */}
         <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-          style={{
-            backgroundImage: bannerUrl ? `url(${bannerUrl})` : undefined,
-            backgroundColor: bannerUrl ? undefined : 'var(--muted)',
-          }}
+          className={cn(
+            'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105',
+            !bannerUrl && 'bg-muted'
+          )}
+          style={bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : undefined}
         />
         {/* Gradient overlay */}
         <div
@@ -110,17 +110,24 @@ export function SpaceHeader({
                   </Button>
                 )}
                 {actions.showSettings && (
-                  <a href={actions.settingsHref}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
-                      onClick={actions.onSettingsClick}
-                      aria-label={t('mobile.settings')}
-                    >
-                      <Settings className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                  </a>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                    onClick={actions.onSettingsClick}
+                    aria-label={t('mobile.settings')}
+                    asChild={!!actions.settingsHref}
+                  >
+                    {actions.settingsHref ? (
+                      <a href={actions.settingsHref}>
+                        <Settings className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    ) : (
+                      <span>
+                        <Settings className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                    )}
+                  </Button>
                 )}
               </div>
             </div>
@@ -165,7 +172,7 @@ export function SpaceHeader({
                         key={avatar.initials}
                         className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
                       >
-                        {avatar.url && <AvatarImage src={avatar.url} />}
+                        {avatar.url && <AvatarImage src={avatar.url} alt={avatar.initials} />}
                         <AvatarFallback
                           style={{
                             background: 'color-mix(in srgb, var(--primary) 20%, transparent)',

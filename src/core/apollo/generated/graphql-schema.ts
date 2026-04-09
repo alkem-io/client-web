@@ -4430,6 +4430,8 @@ export type Mutation = {
   adminCommunicationMigrateOrphanedConversations: CommunicationAdminMigrateRoomsResult;
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean']['output'];
+  /** Synchronize all Alkemio spaces into the Matrix space hierarchy. Idempotent — safe to call multiple times. */
+  adminCommunicationSyncSpaceHierarchy: Scalars['Boolean']['output'];
   /** Allow updating the state flags of a particular rule. */
   adminCommunicationUpdateRoomState: Scalars['Boolean']['output'];
   /** Delete a Kratos identity by ID. */

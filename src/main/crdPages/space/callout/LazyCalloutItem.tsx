@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
@@ -18,16 +19,18 @@ export function LazyCalloutItem({
   onSettingsClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
+  const { t } = useTranslation('crd-space');
+  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
   const { ref, inView, callout, loading } = useCalloutInView({
     calloutId,
     calloutsSetId,
   });
 
   return (
-    <div ref={ref}>
+    <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
         <PostCard
-          post={mapCalloutDetailsToPostCard(callout)}
+          post={mapCalloutDetailsToPostCard(callout, formatDate)}
           onClick={onClick}
           onSettingsClick={onSettingsClick}
           onExpandClick={onExpandClick}

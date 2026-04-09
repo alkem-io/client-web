@@ -13,12 +13,12 @@ type CalloutFramingSelectorProps = {
 };
 
 const framingOptions: Array<{ type: FramingType; icon: ReactNode; labelKey: string }> = [
-  { type: 'none', icon: <FileText className="w-5 h-5" />, labelKey: 'callout.post' },
-  { type: 'whiteboard', icon: <Presentation className="w-5 h-5" />, labelKey: 'callout.whiteboard' },
-  { type: 'memo', icon: <StickyNote className="w-5 h-5" />, labelKey: 'callout.memo' },
-  { type: 'link', icon: <LinkIcon className="w-5 h-5" />, labelKey: 'callout.link' },
-  { type: 'media', icon: <Image className="w-5 h-5" />, labelKey: 'callout.mediaGallery' },
-  { type: 'poll', icon: <BarChart3 className="w-5 h-5" />, labelKey: 'callout.poll' },
+  { type: 'none', icon: <FileText className="w-5 h-5" aria-hidden="true" />, labelKey: 'callout.post' },
+  { type: 'whiteboard', icon: <Presentation className="w-5 h-5" aria-hidden="true" />, labelKey: 'callout.whiteboard' },
+  { type: 'memo', icon: <StickyNote className="w-5 h-5" aria-hidden="true" />, labelKey: 'callout.memo' },
+  { type: 'link', icon: <LinkIcon className="w-5 h-5" aria-hidden="true" />, labelKey: 'callout.link' },
+  { type: 'media', icon: <Image className="w-5 h-5" aria-hidden="true" />, labelKey: 'callout.mediaGallery' },
+  { type: 'poll', icon: <BarChart3 className="w-5 h-5" aria-hidden="true" />, labelKey: 'callout.poll' },
 ];
 
 export function CalloutFramingSelector({ value, onChange, disabled, className }: CalloutFramingSelectorProps) {
@@ -34,7 +34,7 @@ export function CalloutFramingSelector({ value, onChange, disabled, className }:
           <label
             key={option.type}
             className={cn(
-              'flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all cursor-pointer',
+              'flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
               value === option.type
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-background hover:bg-muted border-border text-foreground',

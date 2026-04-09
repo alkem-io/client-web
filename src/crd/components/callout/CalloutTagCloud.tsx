@@ -39,6 +39,7 @@ export function CalloutTagCloud({
             <button
               key={tag.name}
               type="button"
+              aria-pressed={isSelected}
               className={cn(
                 'inline-flex items-center select-none gap-1.5 px-2.5 py-1 text-xs rounded-full border font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 isSelected

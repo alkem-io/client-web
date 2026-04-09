@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
-import { CalloutSidebarList } from '@/crd/components/callout/CalloutSidebarList';
 import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
@@ -73,9 +72,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
               type: item.type === 'whiteboard' ? ('collection' as const) : item.type,
             }))}
             onKnowledgeEntryClick={handleScrollToCallout}
-          >
-            {sidebarItems.length > 0 && <CalloutSidebarList items={sidebarItems} onItemClick={handleScrollToCallout} />}
-          </SpaceSidebar>,
+          />,
           sidebarContainer
         )}
 

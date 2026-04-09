@@ -16,7 +16,7 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
  * Maps a lightweight callout (from the list query) to PostCardData.
  * Only has title and type — no description, no content previews.
  */
-export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended): PostCardData {
+export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: DateFormatter): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
 
   return {
@@ -25,7 +25,7 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended): P
     title: callout.framing.profile.displayName,
     snippet: undefined, // Not available in list query
     isDraft: callout.draft,
-    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate) : undefined,
+    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
     author: callout.createdBy?.profile
       ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
       : undefined,
@@ -38,7 +38,7 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended): P
  * Maps a fully-loaded callout (from CalloutDetailsQuery) to PostCardData.
  * Has description, content previews, author details, contribution counts.
  */
-export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended): PostCardData {
+export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: DateFormatter): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
 
   const contentPreview = buildContentPreview(callout);
@@ -49,7 +49,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     title: callout.framing.profile.displayName,
     snippet: callout.framing.profile.description ?? undefined,
     isDraft: callout.draft,
-    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate) : undefined,
+    timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
     author: callout.createdBy?.profile
       ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
       : undefined,
@@ -69,18 +69,16 @@ function buildContentPreview(callout: CalloutDetailsModelExtended): PostCardData
   }
 }
 
-export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[]): PostCardData[] {
-  return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(mapCalloutLightToPostCard);
+export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t: DateFormatter): PostCardData[] {
+  return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(callout => mapCalloutLightToPostCard(callout, t));
 }
 
-type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
+export type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
 
-export function formatRelativeDate(date: Date, t?: DateFormatter): string {
+export function formatRelativeDate(date: Date, t: DateFormatter): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  if (!t) return date.toLocaleDateString();
 
   if (days === 0) return t('dates.today');
   if (days === 1) return t('dates.yesterday');
