@@ -19,13 +19,17 @@ import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
-import { MembershipsTreeDialog } from '@/crd/components/dashboard/MembershipsTreeDialog';
+import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
-import { mapActivityToFeedItems, mapMembershipsToTree, mapRecentSpacesToCompactCards } from './dashboardDataMappers';
+import {
+  mapActivityToFeedItems,
+  mapMembershipsToPanelItems,
+  mapRecentSpacesToCompactCards,
+} from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -142,12 +146,12 @@ export default function DashboardWithMemberships({
   const spaceActivityItems = mapActivityToFeedItems(spaceActivityData?.activityFeed?.activityFeed ?? [], tMain);
   const personalActivityItems = mapActivityToFeedItems(personalActivityData?.activityFeed?.activityFeed ?? [], tMain);
 
-  // Memberships tree dialog
+  // Memberships panel
   const { data: myMembershipsData } = useMyMembershipsQuery({
     skip: dialogState.openDialog !== 'memberships',
   });
-  const membershipsTreeData = mapMembershipsToTree(
-    (myMembershipsData?.me?.spaceMembershipsHierarchical ?? []) as Parameters<typeof mapMembershipsToTree>[0]
+  const membershipsItems = mapMembershipsToPanelItems(
+    (myMembershipsData?.me?.spaceMembershipsHierarchical ?? []) as Parameters<typeof mapMembershipsToPanelItems>[0]
   );
 
   // Campaign
@@ -275,11 +279,12 @@ export default function DashboardWithMemberships({
         />
       </ActivityDialog>
 
-      <MembershipsTreeDialog
+      <MyMembershipsPanel
         open={dialogState.openDialog === 'memberships'}
         onClose={dialogState.closeDialog}
-        nodes={membershipsTreeData}
-        seeMoreHref="/spaces"
+        items={membershipsItems}
+        onNavigate={navigate}
+        browseAllHref="/spaces"
       />
     </>
   );

@@ -1,5 +1,6 @@
 import type { TFunction } from 'i18next';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
@@ -55,17 +56,6 @@ export type SpaceHierarchyCardData = {
   bannerUrl?: string;
   isHomeSpace: boolean;
   subspaces: SubspaceCardData[];
-};
-
-export type MembershipTreeNodeData = {
-  id: string;
-  name: string;
-  href: string;
-  avatarUrl?: string;
-  initials: string;
-  avatarColor?: string;
-  roles: string[];
-  children: MembershipTreeNodeData[];
 };
 
 export type InvitationCardData = {
@@ -248,8 +238,10 @@ type MembershipEntry = {
   space: {
     id: string;
     about: {
+      isContentPublic?: boolean;
       profile: {
         displayName: string;
+        tagline?: string;
         url: string;
         avatar?: { uri: string };
         cardBanner?: { uri: string };
@@ -264,22 +256,50 @@ type MembershipEntry = {
   childMemberships?: MembershipEntry[];
 };
 
-export const mapMembershipsToTree = (memberships: MembershipEntry[]): MembershipTreeNodeData[] => {
-  return memberships.map(membership => {
-    const { space } = membership;
-    const profile = space.about.profile;
+// Deterministic color palette for avatar fallbacks (matches CRD chart tokens)
+const SPACE_COLORS = ['#4caf50', '#42a5f5', '#ab47bc', '#ec407a', '#ffa726', '#8bc34a'];
 
-    return {
-      id: space.id,
-      name: profile.displayName,
-      href: profile.url,
-      avatarUrl: profile.cardBanner?.uri || profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Card, space.id),
-      initials: getInitials(profile.displayName),
-      avatarColor: undefined,
-      roles: space.community?.roleSet?.myRoles ?? [],
-      children: mapMembershipsToTree(membership.childMemberships ?? []),
-    };
-  });
+const pickColor = (id: string): string => {
+  let sum = 0;
+  for (let i = 0; i < id.length; i++) sum += id.charCodeAt(i);
+  return SPACE_COLORS[sum % SPACE_COLORS.length];
+};
+
+// Normalize raw GraphQL role strings (e.g. `'ADMIN'`, `'LEAD'`, `'MEMBER'` from the
+// `RoleName` enum) down to the subset the panel renders, preserving priority order
+// so the badges read consistently.
+const ROLE_ORDER = ['admin', 'lead', 'member'] as const;
+type PanelRole = (typeof ROLE_ORDER)[number];
+
+const extractPanelRoles = (rawRoles: string[]): PanelRole[] => {
+  const seen = new Set(rawRoles.map(r => r.toLowerCase()));
+  return ROLE_ORDER.filter(r => seen.has(r));
+};
+
+const mapEntryToPanelItem = (entry: MembershipEntry): MembershipItem => {
+  const { space } = entry;
+  const profile = space.about.profile;
+  // Default to public when `isContentPublic` is absent (e.g. before codegen picks up
+  // the new field). Spaces are public by default on the platform.
+  const isPrivate = space.about.isContentPublic === false;
+  const childEntries = entry.childMemberships ?? [];
+
+  return {
+    id: space.id,
+    name: profile.displayName,
+    href: profile.url,
+    tagline: profile.tagline,
+    isPrivate,
+    roles: extractPanelRoles(space.community?.roleSet?.myRoles ?? []),
+    initials: getInitials(profile.displayName),
+    color: pickColor(space.id),
+    image: profile.cardBanner?.uri ?? profile.avatar?.uri,
+    children: childEntries.length > 0 ? childEntries.map(mapEntryToPanelItem) : undefined,
+  };
+};
+
+export const mapMembershipsToPanelItems = (memberships: MembershipEntry[]): MembershipItem[] => {
+  return memberships.map(mapEntryToPanelItem);
 };
 
 type InvitationEntry = {
