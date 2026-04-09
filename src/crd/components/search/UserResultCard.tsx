@@ -1,0 +1,72 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+
+export type UserResultCardData = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  role?: string;
+  email?: string;
+  href: string;
+};
+
+type UserResultCardProps = {
+  user: UserResultCardData;
+  onClick: () => void;
+};
+
+function getInitials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(word => word.charAt(0).toUpperCase())
+    .join('');
+}
+
+export function UserResultCard({ user, onClick }: UserResultCardProps) {
+  const { t: _t } = useTranslation('crd-search');
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      aria-label={user.name}
+      className={cn(
+        'group block w-full rounded-xl border bg-card overflow-hidden',
+        'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'transition-all duration-300 cursor-pointer'
+      )}
+      style={{
+        boxShadow: hovered ? 'var(--elevation-sm)' : 'none',
+        borderColor: hovered ? 'color-mix(in srgb, var(--primary) 30%, var(--border))' : undefined,
+      }}
+    >
+      {/* Content */}
+      <div className="p-5 flex flex-col items-center text-center">
+        {/* Avatar */}
+        <Avatar className="size-14 border-2 border-border mb-3">
+          <AvatarImage src={user.avatarUrl} alt="" />
+          <AvatarFallback className="bg-primary text-primary-foreground text-base font-semibold">
+            {getInitials(user.name)}
+          </AvatarFallback>
+        </Avatar>
+
+        {/* Name */}
+        <h4 className="text-sm font-semibold text-card-foreground group-hover:text-primary transition-colors duration-200">
+          {user.name}
+        </h4>
+
+        {/* Role */}
+        {user.role && <p className="mt-1 text-[12px] text-muted-foreground truncate w-full">{user.role}</p>}
+
+        {/* Email */}
+        {user.email && <p className="mt-0.5 text-[11px] text-muted-foreground truncate w-full">{user.email}</p>}
+      </div>
+    </button>
+  );
+}

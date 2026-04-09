@@ -1,0 +1,47 @@
+{
+  "search": {
+    "placeholder": "Zoeken\u2026",
+    "emptyTitle": "Typ een zoekterm en druk op Enter",
+    "emptyDescription": "Zoek in Spaces, Berichten, Reacties, Gebruikers en Organisaties.",
+    "noResultsTitle": "Geen resultaten gevonden voor {{terms}}",
+    "noResultsSuggestion": "Probeer andere zoekwoorden of verbreed je zoekopdracht.",
+    "searchAllSpaces": "Zoek in alle Spaces",
+    "loading": "Zoeken\u2026",
+    "disclaimer": "Deze resultaten geven mogelijk niet de actuele status van het platform weer. Zoekresultaten worden periodiek bijgewerkt.",
+    "loadMore": "Meer laden",
+    "scopeAll": "Alle Spaces",
+    "categories": {
+      "spaces": "Spaces",
+      "posts": "Berichten",
+      "responses": "Reacties",
+      "users": "Gebruikers",
+      "organizations": "Organisaties"
+    },
+    "filters": {
+      "all": "Alles",
+      "spacesOnly": "Alleen spaces",
+      "subspacesOnly": "Alleen subspaces",
+      "whiteboards": "Whiteboards",
+      "memos": "Memo's",
+      "posts": "Berichten"
+    },
+    "postTypes": {
+      "post": "Bericht",
+      "whiteboard": "Whiteboard",
+      "memo": "Memo"
+    },
+    "responseTo": "Reactie op: {{title}}",
+    "spaceContext": "in: {{spaceName}}",
+    "a11y": {
+      "searchInput": "Zoekinvoer",
+      "closeSearch": "Zoeken sluiten",
+      "removeTag": "Zoekterm verwijderen: {{term}}",
+      "activeTags": "Actieve zoektermen",
+      "resultCategories": "Resultaatcategorieën",
+      "searchResults": "Zoekresultaten",
+      "categoryResults": "{{category}} resultaten",
+      "platformSearch": "Platform zoeken",
+      "filterBy": "Filter {{category}}"
+    }
+  }
+}

@@ -6,6 +6,7 @@ import type crdCommonTranslation from '@/crd/i18n/common/common.en.json';
 import type crdExploreSpacesTranslation from '@/crd/i18n/exploreSpaces/exploreSpaces.en.json';
 import type crdNotificationsTranslation from '@/crd/i18n/notifications/notifications.en.json';
 import type crdDashboardTranslation from '@/crd/i18n/dashboard/dashboard.en.json';
+import type crdSearchTranslation from '@/crd/i18n/search/search.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -17,6 +18,7 @@ declare module 'i18next' {
       'crd-exploreSpaces': typeof crdExploreSpacesTranslation;
       'crd-notifications': typeof crdNotificationsTranslation;
       'crd-dashboard': typeof crdDashboardTranslation;
+      'crd-search': typeof crdSearchTranslation;
     };
   }
 }

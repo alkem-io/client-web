@@ -19,9 +19,9 @@
 
 **Purpose**: i18n namespace and foundational infrastructure
 
-- [ ] T001 [P] Create `src/crd/i18n/search/search.en.json` with all keys: search input placeholder, category labels (spaces, posts, responses, users, organizations), filter options (all, spacesOnly, subspacesOnly, whiteboards, memos, posts), state messages (emptyState, noResults, loading, disclaimer), load more, scope labels, and accessibility labels (searchInput, closeSearch, removeTag, activeTags, resultCategories, searchResults, categoryResults) — see `quickstart.md` i18n structure
-- [ ] T002 [P] Create `src/crd/i18n/search/search.{nl,es,bg,de,fr}.json` — AI-assisted translations of all keys from `search.en.json`
-- [ ] T003 Register `crd-search` namespace in `src/core/i18n/config.ts` under `crdNamespaceImports` — add lazy import entries for all 6 languages following the existing `crd-exploreSpaces` pattern
+- [x] T001 [P] Create `src/crd/i18n/search/search.en.json` with all keys: search input placeholder, category labels (spaces, posts, responses, users, organizations), filter options (all, spacesOnly, subspacesOnly, whiteboards, memos, posts), state messages (emptyState, noResults, loading, disclaimer), load more, scope labels, and accessibility labels (searchInput, closeSearch, removeTag, activeTags, resultCategories, searchResults, categoryResults) — see `quickstart.md` i18n structure
+- [x] T002 [P] Create `src/crd/i18n/search/search.{nl,es,bg,de,fr}.json` — AI-assisted translations of all keys from `search.en.json`
+- [x] T003 Register `crd-search` namespace in `src/core/i18n/config.ts` under `crdNamespaceImports` — add lazy import entries for all 6 languages following the existing `crd-exploreSpaces` pattern
 
 ---
 
@@ -31,8 +31,8 @@
 
 **Warning**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Create `src/main/search/SearchContext.tsx` — React context provider with `isOpen`, `openSearch(initialQuery?, initialScope?)`, `closeSearch()`, `toggleSearch()`, `initialQuery`, `initialScope`, `clearInitialQuery()` per `contracts/search-context.ts`. Export `SearchProvider` component and `useSearch()` hook. Uses `useState` only — no side effects.
-- [ ] T005 Create `src/main/search/searchDataMapper.ts` — mapping functions per `contracts/data-mapper.ts`:
+- [x] T004 Create `src/main/search/SearchContext.tsx` — React context provider with `isOpen`, `openSearch(initialQuery?, initialScope?)`, `closeSearch()`, `toggleSearch()`, `initialQuery`, `initialScope`, `clearInitialQuery()` per `contracts/search-context.ts`. Export `SearchProvider` component and `useSearch()` hook. Uses `useState` only — no side effects.
+- [x] T005 Create `src/main/search/searchDataMapper.ts` — mapping functions per `contracts/data-mapper.ts`:
   - `mapSpaceResults()` — `SearchResultSpaceFragment[]` → `SpaceCardData[]` (reuse existing SpaceCard type)
   - `mapPostResults()` — calloutResults + framingResults (interlaced via existing `interlaceAndFilterArrays` logic) → `PostResultCardData[]`
   - `mapResponseResults()` — contributionResults → `ResponseResultCardData[]`
@@ -52,20 +52,20 @@
 
 ### CRD Result Card Components (US3)
 
-- [ ] T006 [P] [US3] Create `src/crd/components/search/PostResultCard.tsx` — button element with: banner image (16:9 aspect, or muted placeholder with type icon), author row (Avatar 22px + name), title (2-line clamp, group-hover:text-primary), snippet (2-line clamp), meta row (type badge via PostTypeIcon + date), space context ("in: {spaceName}"), hover state (elevation shadow + primary-tinted border). Props: `PostResultCardData` + `onClick`. Uses `useTranslation('crd-search')`. All Tailwind, no MUI.
-- [ ] T007 [P] [US3] Create `src/crd/components/search/ResponseResultCard.tsx` — button element with: author row (Avatar 24px + name + date), title (2-line clamp), snippet (2-line clamp), parent context (MessageSquare icon + "Response to: {parentPostTitle}"), type badge + space name footer. Props: `ResponseResultCardData` + `onClick`. Hover state matching PostResultCard.
-- [ ] T008 [P] [US3] Create `src/crd/components/search/UserResultCard.tsx` — centered button with: Avatar 56px (initials fallback with primary bg), name, role, email (all truncated). Props: `UserResultCardData` + `onClick`. Hover state matching other cards.
-- [ ] T009 [P] [US3] Create `src/crd/components/search/OrgResultCard.tsx` — centered button with: 56px square logo container (Building2 icon fallback), name, type badge (pill), tagline (2-line clamp). Props: `OrgResultCardData` + `onClick`. Hover state matching other cards.
+- [x] T006 [P] [US3] Create `src/crd/components/search/PostResultCard.tsx` — button element with: banner image (16:9 aspect, or muted placeholder with type icon), author row (Avatar 22px + name), title (2-line clamp, group-hover:text-primary), snippet (2-line clamp), meta row (type badge via PostTypeIcon + date), space context ("in: {spaceName}"), hover state (elevation shadow + primary-tinted border). Props: `PostResultCardData` + `onClick`. Uses `useTranslation('crd-search')`. All Tailwind, no MUI.
+- [x] T007 [P] [US3] Create `src/crd/components/search/ResponseResultCard.tsx` — button element with: author row (Avatar 24px + name + date), title (2-line clamp), snippet (2-line clamp), parent context (MessageSquare icon + "Response to: {parentPostTitle}"), type badge + space name footer. Props: `ResponseResultCardData` + `onClick`. Hover state matching PostResultCard.
+- [x] T008 [P] [US3] Create `src/crd/components/search/UserResultCard.tsx` — centered button with: Avatar 56px (initials fallback with primary bg), name, role, email (all truncated). Props: `UserResultCardData` + `onClick`. Hover state matching other cards.
+- [x] T009 [P] [US3] Create `src/crd/components/search/OrgResultCard.tsx` — centered button with: 56px square logo container (Building2 icon fallback), name, type badge (pill), tagline (2-line clamp). Props: `OrgResultCardData` + `onClick`. Hover state matching other cards.
 
 ### CRD Overlay Structure Components (US1 + US2)
 
-- [ ] T010 [US1] Create `src/crd/components/search/SearchTagInput.tsx` — top bar component with: Search icon (20px, muted), text input (bg-transparent, outline-none), scope dropdown (conditional, DropdownMenu from primitives — shows "All Spaces" / current space name with primary pill styling when scoped), close button (X icon, rounded, hover:bg-accent). Below input: tag chips row (`role="list"`, each `role="listitem"` with term text + X remove button with `aria-label`). Props: `SearchTagInputProps` from contracts. Enter key creates tag, max 5, min 2 chars.
-- [ ] T011 [US2] Create `src/crd/components/search/SearchCategorySidebar.tsx` — two layouts:
+- [x] T010 [US1] Create `src/crd/components/search/SearchTagInput.tsx` — top bar component with: Search icon (20px, muted), text input (bg-transparent, outline-none), scope dropdown (conditional, DropdownMenu from primitives — shows "All Spaces" / current space name with primary pill styling when scoped), close button (X icon, rounded, hover:bg-accent). Below input: tag chips row (`role="list"`, each `role="listitem"` with term text + X remove button with `aria-label`). Props: `SearchTagInputProps` from contracts. Enter key creates tag, max 5, min 2 chars.
+- [x] T011 [US2] Create `src/crd/components/search/SearchCategorySidebar.tsx` — two layouts:
   - Desktop (`hidden md:flex`): `<nav aria-label>` column with category buttons (icon + label + count badge), active state (left-2 border-primary, bg-accent, font-semibold), click-to-scroll callback
   - Mobile (`md:hidden`): horizontal scrollable flex row of pill buttons (rounded-full, active = bg-primary text-primary-foreground), each with label + count
   Props: `SearchCategorySidebarProps` from contracts.
-- [ ] T012 [US2] Create `src/crd/components/search/SearchResultSection.tsx` — `<section aria-label="{category} results">` with: header row (category icon + h3 title + count badge + optional DropdownMenu filter), responsive result card grid (`<ul role="list">` with `<li>` items, grid-cols-1 sm:grid-cols-2 lg:grid-cols-4), centered "Load more" Button (variant=outline, size=sm). Props: `SearchCategoryData` + children (rendered cards). Filter dropdown shows options from `filterConfig`, highlights active filter with primary color.
-- [ ] T013 [US1] Create `src/crd/components/search/SearchOverlay.tsx` — top-level overlay using `createPortal(el, document.body)`:
+- [x] T012 [US2] Create `src/crd/components/search/SearchResultSection.tsx` — `<section aria-label="{category} results">` with: header row (category icon + h3 title + count badge + optional DropdownMenu filter), responsive result card grid (`<ul role="list">` with `<li>` items, grid-cols-1 sm:grid-cols-2 lg:grid-cols-4), centered "Load more" Button (variant=outline, size=sm). Props: `SearchCategoryData` + children (rendered cards). Filter dropdown shows options from `filterConfig`, highlights active filter with primary color.
+- [x] T013 [US1] Create `src/crd/components/search/SearchOverlay.tsx` — top-level overlay using `createPortal(el, document.body)`:
   - Backdrop: `fixed inset-0 z-[100]` with `bg-foreground/50 backdrop-blur-sm`, click closes
   - Overlay container: `fixed inset-0 z-[101] grid grid-cols-12`, content in `col-span-12 lg:col-start-2 lg:col-span-10`, bg-background, border, rounded-xl, shadow
   - CSS transition: `transition-all duration-200 ease-out` toggling `opacity-0 scale-[0.97] translate-y-2.5` ↔ `opacity-100 scale-100 translate-y-0`
@@ -83,7 +83,7 @@
 
 ### Integration Component (US1 + US2 + US3)
 
-- [ ] T014 [US1] Create `src/main/search/CrdSearchOverlay.tsx` — integration component that:
+- [x] T014 [US1] Create `src/main/search/CrdSearchOverlay.tsx` — integration component that:
   - Consumes `useSearch()` context for `isOpen`, `closeSearch`, `initialQuery`, `initialScope`
   - Uses existing `useSearchViewState` and `useSearchTerms` for GraphQL data + pagination
   - Calls `searchDataMapper` functions to transform results into CRD prop types
@@ -104,9 +104,9 @@
 
 **Independent Test**: Press Cmd+K on any page → overlay opens. Press Escape → closes. Click backdrop → closes. Click header search → opens.
 
-- [ ] T015 [US4] Wire `SearchContext.Provider` into `src/main/ui/layout/CrdLayoutWrapper.tsx` — wrap existing content with `SearchProvider`. Render `CrdSearchOverlay` inside the provider (lazy-loaded, always mounted when CRD enabled).
-- [ ] T016 [US4] Add Cmd+K / Ctrl+K global keydown listener in `src/main/ui/layout/CrdLayoutWrapper.tsx` — `useEffect` with `keydown` handler: if `(e.metaKey || e.ctrlKey) && e.key === 'k'`, call `e.preventDefault()` + `openSearch()`. Clean up on unmount.
-- [ ] T017 [US4] Wire CRD Header search button to `openSearch()` — pass `onSearchClick` callback prop from `CrdLayoutWrapper` to `CrdLayout` Header, calling `openSearch(query)` instead of URL navigation when CRD enabled.
+- [x] T015 [US4] Wire `SearchContext.Provider` into `src/main/ui/layout/CrdLayoutWrapper.tsx` — wrap existing content with `SearchProvider`. Render `CrdSearchOverlay` inside the provider (lazy-loaded, always mounted when CRD enabled).
+- [x] T016 [US4] Add Cmd+K / Ctrl+K global keydown listener in `src/main/ui/layout/CrdLayoutWrapper.tsx` — `useEffect` with `keydown` handler: if `(e.metaKey || e.ctrlKey) && e.key === 'k'`, call `e.preventDefault()` + `openSearch()`. Clean up on unmount.
+- [x] T017 [US4] Wire CRD Header search button to `openSearch()` — pass `onSearchClick` callback prop from `CrdLayoutWrapper` to `CrdLayout` Header, calling `openSearch(query)` instead of URL navigation when CRD enabled.
 
 **Checkpoint**: Cmd+K opens overlay, all close mechanisms work, header search integrated
 
@@ -118,8 +118,8 @@
 
 **Independent Test**: Search → click Spaces filter → select "Subspaces only" → verify only subspaces shown. Same for Posts and Responses filters.
 
-- [ ] T018 [US5] Add filter configuration constants in `src/main/search/searchDataMapper.ts` — define `SPACES_FILTER_CONFIG`, `POSTS_FILTER_CONFIG`, `RESPONSES_FILTER_CONFIG` with options matching FR-026/FR-027/FR-028. Labels use `t()` from `crd-search` namespace. Attach to categories in `assembleCategories()`.
-- [ ] T019 [US5] Add client-side filter logic in `src/main/search/CrdSearchOverlay.tsx` — maintain `sectionFilters` state (`Record<SearchCategoryId, string>`), apply filters before passing items to categories: Spaces filters by SPACE/SUBSPACE type, Posts filters by WHITEBOARD/MEMO framing type, Responses filters by POST/WHITEBOARD/MEMO contribution type. Pass `onFilterChange` callback to update state.
+- [x] T018 [US5] Add filter configuration constants in `src/main/search/searchDataMapper.ts` — define `SPACES_FILTER_CONFIG`, `POSTS_FILTER_CONFIG`, `RESPONSES_FILTER_CONFIG` with options matching FR-026/FR-027/FR-028. Labels use `t()` from `crd-search` namespace. Attach to categories in `assembleCategories()`.
+- [x] T019 [US5] Add client-side filter logic in `src/main/search/CrdSearchOverlay.tsx` — maintain `sectionFilters` state (`Record<SearchCategoryId, string>`), apply filters before passing items to categories: Spaces filters by SPACE/SUBSPACE type, Posts filters by WHITEBOARD/MEMO framing type, Responses filters by POST/WHITEBOARD/MEMO contribution type. Pass `onFilterChange` callback to update state.
 
 **Checkpoint**: Per-section filters functional for all 3 filterable categories
 
@@ -131,8 +131,8 @@
 
 **Independent Test**: Navigate to a space page → open search → verify scope dropdown visible → select current space → verify scoped results → switch back to "All Spaces".
 
-- [ ] T020 [US6] Add scope detection in `src/main/search/CrdSearchOverlay.tsx` — detect current space from URL pathname (reuse existing `SEARCH_SPACE_URL_PARAM` logic from `useSearchViewState`). Pass `SearchScopeData` to `SearchOverlay` when inside a space (null otherwise). Wire `onScopeChange` to update scope state and re-execute search via `useSearchViewState`.
-- [ ] T021 [US6] Add "Search all Spaces instead" button in no-results state — in `SearchOverlay.tsx`, when `state === 'no-results'` and `scope?.activeScope !== 'all'`, render a Button calling `onSearchAll` prop which changes scope to 'all' and re-searches.
+- [x] T020 [US6] Add scope detection in `src/main/search/CrdSearchOverlay.tsx` — detect current space from URL pathname (reuse existing `SEARCH_SPACE_URL_PARAM` logic from `useSearchViewState`). Pass `SearchScopeData` to `SearchOverlay` when inside a space (null otherwise). Wire `onScopeChange` to update scope state and re-execute search via `useSearchViewState`.
+- [x] T021 [US6] Add "Search all Spaces instead" button in no-results state — in `SearchOverlay.tsx`, when `state === 'no-results'` and `scope?.activeScope !== 'all'`, render a Button calling `onSearchAll` prop which changes scope to 'all' and re-searches.
 
 **Checkpoint**: Scope switching works inside spaces, "Search all Spaces instead" appears when scoped search returns empty
 
@@ -144,7 +144,7 @@
 
 **Independent Test**: Search with a term that returns >4 results in a category → verify "Load more" button → click → 4 more results appear → repeat until all shown.
 
-- [ ] T022 [US7] Add pagination state management in `src/main/search/CrdSearchOverlay.tsx` — maintain `visibleCounts` state (`Record<SearchCategoryId, number>`, initial: 4 per category). On "Load more": increment visible count by 4. If all fetched items are shown and backend has more (`canLoadMore` from `useSearchViewState`), call `fetchMore()` with cursor. Pass `hasMore` and `onLoadMore` to each `SearchCategoryData`.
+- [x] T022 [US7] Add pagination state management in `src/main/search/CrdSearchOverlay.tsx` — maintain `visibleCounts` state (`Record<SearchCategoryId, number>`, initial: 4 per category). On "Load more": increment visible count by 4. If all fetched items are shown and backend has more (`canLoadMore` from `useSearchViewState`), call `fetchMore()` with cursor. Pass `hasMore` and `onLoadMore` to each `SearchCategoryData`.
 
 **Checkpoint**: Load more works for all categories, reveals additional results incrementally
 
@@ -156,7 +156,7 @@
 
 **Independent Test**: Toggle CRD off → trigger search → verify MUI dialog. Toggle CRD on → trigger search → verify CRD overlay. Toggle back off → verify MUI again.
 
-- [ ] T023 [US8] Verify MUI SearchDialog remains unchanged — ensure `src/main/ui/layout/TopLevelLayout.tsx` still renders `SearchDialog` (MUI) as before. The CRD overlay is only rendered inside `CrdLayoutWrapper.tsx` which is only active when CRD is enabled. No changes needed to TopLevelLayout — just verify no regressions.
+- [x] T023 [US8] Verify MUI SearchDialog remains unchanged — ensure `src/main/ui/layout/TopLevelLayout.tsx` still renders `SearchDialog` (MUI) as before. The CRD overlay is only rendered inside `CrdLayoutWrapper.tsx` which is only active when CRD is enabled. No changes needed to TopLevelLayout — just verify no regressions.
 
 **Checkpoint**: Both MUI and CRD search paths work correctly based on toggle state
 
@@ -168,7 +168,7 @@
 
 **Independent Test**: Resize browser → mobile: full-screen overlay, horizontal pill tabs, 1-col grid. Tablet: 2-col grid. Desktop: sidebar + 4-col grid.
 
-- [ ] T024 [US9] Verify responsive Tailwind classes in all CRD search components — review and adjust breakpoints in:
+- [x] T024 [US9] Verify responsive Tailwind classes in all CRD search components — review and adjust breakpoints in:
   - `SearchOverlay.tsx`: `max-md:p-0` for full-screen mobile, `lg:col-start-2 lg:col-span-10` for desktop centering
   - `SearchCategorySidebar.tsx`: `hidden md:flex` for sidebar, `md:hidden` for pill tabs
   - `SearchResultSection.tsx`: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4` for card grids (users/orgs: `md:grid-cols-3 lg:grid-cols-4`)
@@ -182,10 +182,10 @@
 
 **Purpose**: Final verification across all user stories
 
-- [ ] T025 Run `pnpm lint` to verify TypeScript compilation and lint rules pass across all new files
-- [ ] T026 Run `pnpm vitest run` to verify all existing tests still pass
-- [ ] T027 Validate against `specs/043-crd-search-dialog/quickstart.md` testing checklist: verify all 5 categories, all filters, Cmd+K, scope switching, load more, all card types, all close mechanisms, responsive layout, CRD toggle off → MUI unchanged
-- [ ] T028 Accessibility audit: keyboard navigation through all interactive elements (tags, cards, filters, sidebar, close), focus trap in overlay, `role="dialog"` + `aria-modal`, screen reader test with VoiceOver/NVDA, contrast ratios
+- [x] T025 Run `pnpm lint` to verify TypeScript compilation and lint rules pass across all new files
+- [x] T026 Run `pnpm vitest run` to verify all existing tests still pass
+- [x] T027 Validate against `specs/043-crd-search-dialog/quickstart.md` testing checklist: verify all 5 categories, all filters, Cmd+K, scope switching, load more, all card types, all close mechanisms, responsive layout, CRD toggle off → MUI unchanged
+- [x] T028 Accessibility audit: keyboard navigation through all interactive elements (tags, cards, filters, sidebar, close), focus trap in overlay, `role="dialog"` + `aria-modal`, screen reader test with VoiceOver/NVDA, contrast ratios
 
 ---
 

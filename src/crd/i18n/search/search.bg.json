@@ -1,0 +1,47 @@
+{
+  "search": {
+    "placeholder": "Търсене\u2026",
+    "emptyTitle": "Въведете дума за търсене и натиснете Enter",
+    "emptyDescription": "Търсете в Пространства, Публикации, Отговори, Потребители и Организации.",
+    "noResultsTitle": "Няма намерени резултати за {{terms}}",
+    "noResultsSuggestion": "Опитайте с други ключови думи или разширете търсенето.",
+    "searchAllSpaces": "Търсене във всички Пространства",
+    "loading": "Търсене\u2026",
+    "disclaimer": "Тези резултати може да не отразяват текущото състояние на платформата. Резултатите от търсенето се актуализират периодично.",
+    "loadMore": "Зареди още",
+    "scopeAll": "Всички Пространства",
+    "categories": {
+      "spaces": "Пространства",
+      "posts": "Публикации",
+      "responses": "Отговори",
+      "users": "Потребители",
+      "organizations": "Организации"
+    },
+    "filters": {
+      "all": "Всички",
+      "spacesOnly": "Само пространства",
+      "subspacesOnly": "Само подпространства",
+      "whiteboards": "Дъски",
+      "memos": "Бележки",
+      "posts": "Публикации"
+    },
+    "postTypes": {
+      "post": "Публикация",
+      "whiteboard": "Дъска",
+      "memo": "Бележка"
+    },
+    "responseTo": "Отговор на: {{title}}",
+    "spaceContext": "в: {{spaceName}}",
+    "a11y": {
+      "searchInput": "Поле за търсене",
+      "closeSearch": "Затвори търсенето",
+      "removeTag": "Премахни дума за търсене: {{term}}",
+      "activeTags": "Активни думи за търсене",
+      "resultCategories": "Категории резултати",
+      "searchResults": "Резултати от търсене",
+      "categoryResults": "Резултати за {{category}}",
+      "platformSearch": "Търсене в платформата",
+      "filterBy": "Филтрирай {{category}}"
+    }
+  }
+}

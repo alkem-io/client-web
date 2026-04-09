@@ -1,0 +1,47 @@
+{
+  "search": {
+    "placeholder": "Buscar\u2026",
+    "emptyTitle": "Escribe un término de búsqueda y presiona Enter",
+    "emptyDescription": "Busca en Espacios, Publicaciones, Respuestas, Usuarios y Organizaciones.",
+    "noResultsTitle": "No se encontraron resultados para {{terms}}",
+    "noResultsSuggestion": "Prueba con otras palabras clave o amplía tu búsqueda.",
+    "searchAllSpaces": "Buscar en todos los Espacios",
+    "loading": "Buscando\u2026",
+    "disclaimer": "Estos resultados pueden no reflejar el estado actual de la plataforma. Los resultados de búsqueda se actualizan periódicamente.",
+    "loadMore": "Cargar más",
+    "scopeAll": "Todos los Espacios",
+    "categories": {
+      "spaces": "Espacios",
+      "posts": "Publicaciones",
+      "responses": "Respuestas",
+      "users": "Usuarios",
+      "organizations": "Organizaciones"
+    },
+    "filters": {
+      "all": "Todo",
+      "spacesOnly": "Solo espacios",
+      "subspacesOnly": "Solo subespacios",
+      "whiteboards": "Pizarras",
+      "memos": "Notas",
+      "posts": "Publicaciones"
+    },
+    "postTypes": {
+      "post": "Publicación",
+      "whiteboard": "Pizarra",
+      "memo": "Nota"
+    },
+    "responseTo": "Respuesta a: {{title}}",
+    "spaceContext": "en: {{spaceName}}",
+    "a11y": {
+      "searchInput": "Campo de búsqueda",
+      "closeSearch": "Cerrar búsqueda",
+      "removeTag": "Eliminar término de búsqueda: {{term}}",
+      "activeTags": "Términos de búsqueda activos",
+      "resultCategories": "Categorías de resultados",
+      "searchResults": "Resultados de búsqueda",
+      "categoryResults": "Resultados de {{category}}",
+      "platformSearch": "Búsqueda de plataforma",
+      "filterBy": "Filtrar {{category}}"
+    }
+  }
+}
