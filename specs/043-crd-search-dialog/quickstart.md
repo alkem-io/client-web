@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Node >= 22.0.0 + pnpm >= 10.17.1
+- Node >= 24.0.0 + pnpm >= 10.17.1
 - CRD design system already functional (from 039-crd-spaces-page)
 - CRD Layout (Header + Footer) already migrated and working
 - Existing search hooks (`useSearchViewState`, `useSearchTerms`) available
@@ -189,7 +189,7 @@ export function CrdSearchOverlay() {
 
 ## File Checklist
 
-```
+```text
 src/crd/
 ├── components/search/
 │   ├── SearchOverlay.tsx          # [ ]

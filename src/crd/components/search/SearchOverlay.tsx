@@ -197,10 +197,10 @@ export function SearchOverlay({
             )}
 
             {state === 'loading' && (
-              <div className="flex flex-col items-center justify-center p-8 gap-3">
+              <output aria-label={t('search.loading')} className="flex flex-col items-center justify-center p-8 gap-3">
                 <Loader2 aria-hidden="true" className="size-7 text-primary animate-spin" />
                 <p className="text-sm text-muted-foreground">{t('search.loading')}</p>
-              </div>
+              </output>
             )}
 
             {state === 'no-results' && (

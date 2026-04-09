@@ -9,7 +9,7 @@ Migrate the platform search dialog from MUI to shadcn/ui + Tailwind CSS, followi
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x, React 19, Node >= 22.0.0
+**Language/Version**: TypeScript 5.x, React 19, Node >= 24.0.0
 **Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 **Storage**: localStorage (`alkemio-crd-enabled`) for CRD feature toggle (existing); GraphQL data layer unchanged
 **Testing**: Vitest with jsdom (`pnpm vitest run`)

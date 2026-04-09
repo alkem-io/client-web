@@ -32,7 +32,7 @@ export type PostResultCardData = {
   author: { name: string; avatarUrl?: string };
   date: string;
   spaceName: string;
-  spaceUrl: string;
+
   href: string;
 };
 
@@ -45,7 +45,7 @@ export type ResponseResultCardData = {
   date: string;
   parentPostTitle: string;
   spaceName: string;
-  spaceUrl: string;
+
   href: string;
 };
 
@@ -142,7 +142,7 @@ export function mapPostResults(
       author: { name: 'Unknown' },
       date: '',
       spaceName: r.space.about.profile.displayName,
-      spaceUrl: r.space.about.profile.url,
+
       href: r.callout.framing.profile.url,
     }));
 
@@ -163,7 +163,7 @@ export function mapPostResults(
           author: { name: r.whiteboard.createdBy?.profile?.displayName ?? 'Unknown' },
           date: formatDate(r.whiteboard.createdDate),
           spaceName: r.space.about.profile.displayName,
-          spaceUrl: r.space.about.profile.url,
+
           href: r.whiteboard.profile.url,
         };
       }
@@ -178,7 +178,7 @@ export function mapPostResults(
         author: { name: r.memo.createdBy?.profile?.displayName ?? 'Unknown' },
         date: formatDate(r.memo.createdDate),
         spaceName: r.space.about.profile.displayName,
-        spaceUrl: r.space.about.profile.url,
+
         href: r.memo.profile.url,
       };
     });
@@ -194,7 +194,6 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
     )
     .map(result => {
       const spaceName = result.space.about.profile.displayName;
-      const spaceUrl = result.space.about.profile.url;
       const parentPostTitle = result.callout.framing.profile.displayName;
 
       if (result.type === SearchResultType.Post) {
@@ -208,7 +207,7 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
           date: formatDate(r.post.createdDate),
           parentPostTitle,
           spaceName,
-          spaceUrl,
+
           href: r.post.profile.url,
         };
       }
@@ -224,7 +223,7 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
           date: formatDate(r.memo.createdDate),
           parentPostTitle,
           spaceName,
-          spaceUrl,
+
           href: r.memo.profile.url,
         };
       }
@@ -240,7 +239,6 @@ export function mapResponseResults(contributionResults: SearchResultMetaType[]):
         date: formatDate(r.whiteboard.createdDate),
         parentPostTitle,
         spaceName,
-        spaceUrl,
         href: r.whiteboard.profile.url,
       };
     });

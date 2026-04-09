@@ -44,7 +44,7 @@ Search results are displayed in 5 categorized sections (Spaces, Posts, Responses
 4. **Given** the user scrolls through the results pane, **When** they pass category section boundaries, **Then** the sidebar active indicator updates to reflect the currently visible section
 5. **Given** the overlay is viewed on a mobile viewport, **When** results are displayed, **Then** the sidebar is replaced by horizontally scrollable pill tabs at the top of the results area, with the active category highlighted
 6. **Given** search results are displayed, **When** a category has no results, **Then** that category is hidden from both the results area and the sidebar/pill navigation
-7. **Given** results are displayed, **When** a disclaimer banner appears above the results, **Then** it informs the user that "These results may not represent the up to date state of the platform"
+7. **Given** results are displayed, **When** a disclaimer banner appears above the results, **Then** it informs the user that "These results may not represent the up-to-date state of the platform"
 
 ---
 

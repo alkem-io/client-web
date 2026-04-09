@@ -2,11 +2,7 @@ import { Building2, FileText, Globe, MessageSquare, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import {
-  useSearchQuery,
-  useSearchScopeDetailsSpaceQuery,
-  useSpaceUrlResolverQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useSearchQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SearchCategory, type SearchQuery, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { OrgResultCard } from '@/crd/components/search/OrgResultCard';
@@ -19,7 +15,7 @@ import {
   type SearchOverlayState,
 } from '@/crd/components/search/SearchOverlay';
 import type { SearchFilterOption } from '@/crd/components/search/SearchResultSection';
-import type { SearchScopeData } from '@/crd/components/search/SearchTagInput';
+
 import { UserResultCard } from '@/crd/components/search/UserResultCard';
 import { SpaceCard } from '@/crd/components/space/SpaceCard';
 import { useSearch } from './SearchContext';
@@ -96,10 +92,7 @@ export function CrdSearchOverlay() {
   });
   const spaceId = spaceIdData?.lookupByName.space?.id;
 
-  const { data: spaceDetails } = useSearchScopeDetailsSpaceQuery({
-    variables: { spaceId: spaceId ?? '' },
-    skip: !spaceId,
-  });
+  // spaceId is used for scoping the search query — no UI for scope switching
 
   // Direct search query — local state only, no URL navigation
   const {
@@ -571,20 +564,9 @@ export function CrdSearchOverlay() {
     { id: 'organizations', label: t('search.categories.organizations'), icon: Building2, count: mappedOrgs.length },
   ];
 
-  // Scope
-  const spaceName = spaceDetails?.lookup.space?.about.profile.displayName;
-  const scopeData: SearchScopeData | undefined =
-    spaceId && spaceName
-      ? {
-          currentSpaceName: spaceName,
-          activeScope: spaceId ? spaceName : 'all',
-        }
-      : undefined;
-
-  const handleScopeChange = (_scope: 'all' | string) => {
-    // Scope change is a no-op in the overlay: the space filter comes from the current
-    // route pathname, and the overlay should not navigate the user away from their page.
-  };
+  // Scope is determined by the current route pathname. The overlay does not render
+  // a scope dropdown because changing scope would require navigation, which the
+  // overlay should not do. If inside a space, search is automatically scoped.
 
   return (
     <SearchOverlay
@@ -597,8 +579,6 @@ export function CrdSearchOverlay() {
       onTagAdd={handleTagAdd}
       onTagRemove={handleTagRemove}
       maxTags={MAX_TAGS}
-      scope={scopeData}
-      onScopeChange={scopeData ? handleScopeChange : undefined}
       categories={categories}
       allSidebarCategories={allSidebarCategories}
       disclaimer={t('search.disclaimer')}
