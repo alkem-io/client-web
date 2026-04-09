@@ -50,8 +50,9 @@ export function CalloutMediaGallery({ images, canEdit, onAddImage, className }: 
       {images.length === 0 && canEdit && (
         <button
           type="button"
-          className="w-full aspect-video border-2 border-dashed border-border rounded-lg flex items-center justify-center hover:bg-muted/30 transition-colors cursor-pointer"
+          className="w-full aspect-video border-2 border-dashed border-border rounded-lg flex items-center justify-center hover:bg-muted/30 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={onAddImage}
+          aria-label={t('callout.mediaGallery')}
         >
           <ImagePlus className="w-8 h-8 text-muted-foreground/50" aria-hidden="true" />
         </button>

@@ -1,5 +1,5 @@
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
-import Loading from '@/core/ui/loading/Loading';
+import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceAboutView } from '@/crd/components/space/SpaceAboutView';
 import { useSpace } from '@/domain/space/context/useSpace';
 
@@ -11,7 +11,7 @@ export default function CrdSpaceAboutPage() {
     skip: !space.id,
   });
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingSpinner />;
 
   const about = data?.lookup.space?.about;
   if (!about) return null;

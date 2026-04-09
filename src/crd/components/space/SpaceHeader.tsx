@@ -155,7 +155,7 @@ export function SpaceHeader({
                 {/* Member avatars */}
                 <button
                   type="button"
-                  className="flex items-center gap-4 cursor-pointer"
+                  className="flex items-center gap-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   onClick={onMemberClick}
                   aria-label={t('members.title')}
                 >
@@ -163,16 +163,14 @@ export function SpaceHeader({
                     {displayedAvatars.map(avatar => (
                       <Avatar
                         key={avatar.initials}
-                        className="w-10 h-10 transition-transform hover:z-10 hover:scale-110"
-                        style={{ border: '2px solid var(--background)' }}
+                        className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
                       >
                         {avatar.url && <AvatarImage src={avatar.url} />}
                         <AvatarFallback
                           style={{
                             background: 'color-mix(in srgb, var(--primary) 20%, transparent)',
-                            color: 'var(--primary-foreground)',
                           }}
-                          className="text-xs"
+                          className="text-xs text-primary-foreground"
                         >
                           {avatar.initials}
                         </AvatarFallback>
@@ -180,11 +178,9 @@ export function SpaceHeader({
                     ))}
                     {extraCount > 0 && (
                       <div
-                        className="flex items-center justify-center w-10 h-10 rounded-full backdrop-blur-sm text-xs font-medium"
+                        className="flex items-center justify-center w-10 h-10 rounded-full backdrop-blur-sm text-xs font-medium border-2 border-background text-primary-foreground"
                         style={{
                           background: 'color-mix(in srgb, var(--primary-foreground) 20%, transparent)',
-                          border: '2px solid var(--background)',
-                          color: 'var(--primary-foreground)',
                         }}
                       >
                         +{extraCount}

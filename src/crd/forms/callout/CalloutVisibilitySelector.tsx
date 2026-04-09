@@ -29,7 +29,7 @@ export function CalloutVisibilitySelector({
             key={vis}
             type="button"
             className={cn(
-              'px-4 py-2 rounded-md border text-sm font-medium transition-all',
+              'px-4 py-2 rounded-md border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               value === vis
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-background hover:bg-muted border-border'

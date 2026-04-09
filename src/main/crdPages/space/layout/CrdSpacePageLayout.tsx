@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Navigate, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
-import Loading from '@/core/ui/loading/Loading';
+import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -38,19 +38,23 @@ export default function CrdSpacePageLayout() {
 
   // Permission guard: redirect unauthorized users to the About page
   if (resolvingUrl || loadingSpace) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
 
   if (!permissions.canRead) {
-    const aboutUrl = space.about.profile.url ? `${space.about.profile.url}/about` : 'about';
-    return <Navigate to={aboutUrl} replace={true} />;
+    const aboutPath = space.about.profile.url ? `${space.about.profile.url}/about` : 'about';
+    // Avoid infinite redirect when already on the About page
+    if (!window.location.pathname.endsWith('/about')) {
+      return <Navigate to={aboutPath} replace={true} />;
+    }
   }
 
   // Parse section index from URL
   const sectionParam = searchParams.get(TabbedLayoutParams.Section);
   let activeTabIndex = 0;
   if (sectionParam) {
-    activeTabIndex = parseInt(sectionParam, 10) - 1; // URL is 1-indexed
+    const parsed = parseInt(sectionParam, 10);
+    activeTabIndex = Number.isNaN(parsed) ? 0 : parsed - 1; // URL is 1-indexed
   } else if (defaultTabIndex >= 0) {
     activeTabIndex = defaultTabIndex;
   }
@@ -90,7 +94,7 @@ export default function CrdSpacePageLayout() {
   if (!isLevelZero) {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<LoadingSpinner />}>
         <Outlet context={{ activeTabIndex }} />
       </Suspense>
     );
@@ -125,7 +129,7 @@ export default function CrdSpacePageLayout() {
           />
         }
       >
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<LoadingSpinner />}>
           <Outlet context={{ activeTabIndex }} />
         </Suspense>
       </SpaceShell>

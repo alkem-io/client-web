@@ -8,7 +8,7 @@ import { FramingEditorConnector } from './FramingEditorConnector';
 type CalloutFormConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit?: (values: any) => void;
+  onSubmit?: (values: Record<string, unknown>) => void;
   onFindTemplate?: () => void;
 };
 

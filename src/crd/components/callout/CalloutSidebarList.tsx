@@ -60,7 +60,7 @@ export function CalloutSidebarList({ items, onItemClick, className }: CalloutSid
             <button
               key={item.id}
               type="button"
-              className="group flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer"
+              className="group flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               onClick={() => onItemClick?.(item.id)}
             >
               <TypeIcon className="w-3.5 h-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />

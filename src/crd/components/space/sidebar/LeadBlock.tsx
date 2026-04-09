@@ -1,5 +1,6 @@
 import { MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
 type LeadBlockProps = {
@@ -16,7 +17,7 @@ export function LeadBlock({ name, avatarUrl, initials, location, bio, href, clas
   const { t } = useTranslation('crd-space');
 
   const content = (
-    <div className={`bg-card border border-border rounded-lg p-4 ${className ?? ''}`}>
+    <div className={cn('bg-card border border-border rounded-lg p-4', className)}>
       <p className="uppercase tracking-wider text-[11px] font-semibold text-muted-foreground mb-3">
         {t('sidebar.spaceLead')}
       </p>
@@ -26,9 +27,8 @@ export function LeadBlock({ name, avatarUrl, initials, location, bio, href, clas
           <AvatarFallback
             style={{
               background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
-              color: 'var(--primary)',
             }}
-            className="text-[10px] font-bold"
+            className="text-[10px] font-bold text-primary"
           >
             {initials}
           </AvatarFallback>

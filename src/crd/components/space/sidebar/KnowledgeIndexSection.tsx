@@ -1,5 +1,6 @@
 import { FileText, FolderOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
 
 type KnowledgeEntry = {
   id: string;
@@ -29,14 +30,14 @@ export function KnowledgeIndexSection({ entries, onEntryClick, className }: Know
           <button
             key={entry.id}
             type="button"
-            className="group flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer"
+            className="group flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             onClick={() => onEntryClick?.(entry.id)}
           >
             <FileText
-              className="w-3.5 h-3.5 shrink-0"
-              style={{
-                color: entry.type === 'collection' ? 'var(--chart-2)' : 'var(--muted-foreground)',
-              }}
+              className={cn(
+                'w-3.5 h-3.5 shrink-0',
+                entry.type === 'collection' ? 'text-chart-2' : 'text-muted-foreground'
+              )}
               aria-hidden="true"
             />
             <span className="line-clamp-1 text-sm font-medium text-foreground">{entry.title}</span>

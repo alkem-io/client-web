@@ -84,7 +84,7 @@ function DesktopTabs({
               aria-selected={active}
               data-active={active}
               className={cn(
-                'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none text-sm cursor-pointer',
+                'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 active
                   ? 'border-primary text-primary font-semibold'
                   : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
@@ -132,7 +132,7 @@ function MobileTabBar({
                 role="tab"
                 aria-selected={active}
                 className={cn(
-                  'flex flex-col items-center justify-center flex-1 h-full text-xs transition-colors',
+                  'flex flex-col items-center justify-center flex-1 h-full text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   active ? 'text-primary font-semibold' : 'text-muted-foreground'
                 )}
                 onClick={() => onTabChange(tab.index)}
@@ -146,14 +146,14 @@ function MobileTabBar({
               <SheetTrigger asChild={true}>
                 <button
                   type="button"
-                  className="flex flex-col items-center justify-center flex-1 h-full text-xs text-muted-foreground"
+                  className="flex flex-col items-center justify-center flex-1 h-full text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   aria-label={t('mobile.more')}
                 >
                   <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
                   <span>{t('mobile.more')}</span>
                 </button>
               </SheetTrigger>
-              <SheetContent side="bottom" aria-label={t('a11y.moreActionsDrawer')}>
+              <SheetContent side="bottom" aria-label={t('a11y.moreActionsDrawer')} closeLabel={t('a11y.close')}>
                 <SheetHeader>
                   <SheetTitle>{t('mobile.more')}</SheetTitle>
                 </SheetHeader>

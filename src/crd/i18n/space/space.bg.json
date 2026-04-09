@@ -54,7 +54,8 @@
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
     "resultsCount": "{{count}} резултата",
-    "clearFilters": "Изчисти филтрите"
+    "clearFilters": "Изчисти филтрите",
+    "sendComment": "Изпрати коментар"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -170,6 +171,7 @@
     "subspacesGrid": "Решетка с подпространства",
     "visibilityNotice": "Известие за видимост на пространството",
     "mobileTabBar": "Навигация с табове",
-    "moreActionsDrawer": "Допълнителни действия"
+    "moreActionsDrawer": "Допълнителни действия",
+    "close": "Затвори"
   }
 }

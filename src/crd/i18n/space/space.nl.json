@@ -54,7 +54,8 @@
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
     "resultsCount": "{{count}} resultaten",
-    "clearFilters": "Filters wissen"
+    "clearFilters": "Filters wissen",
+    "sendComment": "Reactie verzenden"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -170,6 +171,7 @@
     "subspacesGrid": "Subspace-raster",
     "visibilityNotice": "Zichtbaarheidsmelding van de space",
     "mobileTabBar": "Tabbladnavigatie",
-    "moreActionsDrawer": "Extra acties"
+    "moreActionsDrawer": "Extra acties",
+    "close": "Sluiten"
   }
 }

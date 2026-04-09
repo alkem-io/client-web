@@ -13,7 +13,7 @@ export function ContributionWhiteboardCard({ title, previewUrl, onClick, classNa
     <button
       type="button"
       className={cn(
-        'w-full text-left border border-border rounded-lg overflow-hidden bg-card hover:shadow-sm transition-all cursor-pointer',
+        'w-full text-left border border-border rounded-lg overflow-hidden bg-card hover:shadow-sm transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         className
       )}
       onClick={onClick}

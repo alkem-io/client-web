@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '@/core/ui/loading/Loading';
+import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import SubspaceContextProvider from '@/domain/space/context/SubspaceContext';
@@ -23,7 +23,7 @@ export default function CrdSpaceRoutes() {
           <Route
             path={EntityPageSection.About}
             element={
-              <Suspense fallback={<Loading />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <CrdSpaceAboutPage />
               </Suspense>
             }
@@ -33,7 +33,7 @@ export default function CrdSpaceRoutes() {
           <Route
             index={true}
             element={
-              <Suspense fallback={<Loading />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <CrdSpaceTabbedPages />
               </Suspense>
             }
@@ -42,7 +42,7 @@ export default function CrdSpaceRoutes() {
           <Route
             path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
             element={
-              <Suspense fallback={<Loading />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <SpaceCalloutPage />
               </Suspense>
             }
@@ -51,7 +51,7 @@ export default function CrdSpaceRoutes() {
           <Route
             path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
             element={
-              <Suspense fallback={<Loading />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <SpaceCalloutPage />
               </Suspense>
             }
@@ -60,7 +60,7 @@ export default function CrdSpaceRoutes() {
           <Route
             path={`${EntityPageSection.Settings}/*`}
             element={
-              <Suspense fallback={<Loading />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <SpaceAdminL0Route />
               </Suspense>
             }
@@ -71,7 +71,7 @@ export default function CrdSpaceRoutes() {
             path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
             element={
               <SubspaceContextProvider>
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<LoadingSpinner />}>
                   <SubspaceRoutes />
                 </Suspense>
               </SubspaceContextProvider>

@@ -74,7 +74,13 @@ export function CalloutComments({ comments, canComment, onAddComment, className 
             onKeyDown={e => e.key === 'Enter' && handleSubmit()}
             aria-label={t('forms.descriptionPlaceholder')}
           />
-          <Button size="icon" className="h-9 w-9" onClick={handleSubmit} disabled={!newComment.trim()}>
+          <Button
+            size="icon"
+            className="h-9 w-9"
+            onClick={handleSubmit}
+            disabled={!newComment.trim()}
+            aria-label={t('callout.sendComment')}
+          >
             <Send className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>

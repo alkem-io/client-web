@@ -54,7 +54,8 @@
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
     "resultsCount": "{{count}} resultados",
-    "clearFilters": "Limpiar filtros"
+    "clearFilters": "Limpiar filtros",
+    "sendComment": "Enviar comentario"
   },
   "contribution": {
     "edit": "Editar",
@@ -170,6 +171,7 @@
     "subspacesGrid": "Cuadrícula de subespacios",
     "visibilityNotice": "Aviso de visibilidad del espacio",
     "mobileTabBar": "Navegación por pestañas",
-    "moreActionsDrawer": "Acciones adicionales"
+    "moreActionsDrawer": "Acciones adicionales",
+    "close": "Cerrar"
   }
 }

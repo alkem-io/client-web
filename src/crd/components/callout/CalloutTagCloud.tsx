@@ -1,7 +1,6 @@
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 
 type TagItem = {
@@ -37,16 +36,21 @@ export function CalloutTagCloud({
         {tags.map(tag => {
           const isSelected = selectedTags.includes(tag.name);
           return (
-            <Badge
+            <button
               key={tag.name}
-              variant={isSelected ? 'default' : 'secondary'}
-              className="cursor-pointer select-none gap-1.5 px-2.5 py-1 text-xs"
+              type="button"
+              className={cn(
+                'inline-flex items-center select-none gap-1.5 px-2.5 py-1 text-xs rounded-full border font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                isSelected
+                  ? 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80'
+                  : 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              )}
               onClick={() => (isSelected ? onDeselectTag(tag.name) : onSelectTag(tag.name))}
             >
               {tag.name}
               <span className="opacity-60">({tag.count})</span>
               {isSelected && <X className="w-3 h-3 ml-0.5" aria-hidden="true" />}
-            </Badge>
+            </button>
           );
         })}
       </div>

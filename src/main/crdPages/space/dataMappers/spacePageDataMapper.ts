@@ -1,4 +1,4 @@
-import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 
 type MemberAvatar = {
   url?: string;
@@ -52,10 +52,12 @@ export type CalendarEventData = {
 
 export function mapSpaceVisibility(visibility: SpaceVisibility | undefined): SpaceVisibilityData {
   switch (visibility) {
-    case 'ARCHIVED':
+    case SpaceVisibility.Archived:
       return { status: 'archived' };
-    case 'DEMO':
+    case SpaceVisibility.Demo:
       return { status: 'demo' };
+    case SpaceVisibility.Inactive:
+      return { status: 'inactive' };
     default:
       return { status: 'active' };
   }

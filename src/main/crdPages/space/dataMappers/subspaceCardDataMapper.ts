@@ -1,4 +1,4 @@
-import type { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceListCardData } from '@/crd/components/space/SpaceSubspacesList';
 
 type SubspaceQueryData = {
@@ -54,7 +54,7 @@ export function mapSubspaceToCardData(subspace: SubspaceQueryData): SubspaceList
     bannerUrl: profile.cardBanner?.uri,
     tags: profile.tagset?.tags ?? [],
     isPrivate: !subspace.about.isContentPublic,
-    isMember: membership?.myMembershipStatus === 'MEMBER',
+    isMember: membership?.myMembershipStatus === CommunityMembershipStatus.Member,
     isPinned: subspace.pinned ?? false,
     leads,
     href: profile.url,

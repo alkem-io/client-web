@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 
 export type SubspaceListCardData = {
@@ -139,10 +138,10 @@ export function SpaceSubspacesList({
                 {subspace.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {subspace.tags.slice(0, 3).map(tag => (
-                      <Badge
+                      <button
                         key={tag}
-                        variant="secondary"
-                        className="text-[10px] px-1.5 cursor-pointer"
+                        type="button"
+                        className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 font-semibold transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         onClick={e => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -150,7 +149,7 @@ export function SpaceSubspacesList({
                         }}
                       >
                         {tag}
-                      </Badge>
+                      </button>
                     ))}
                   </div>
                 )}

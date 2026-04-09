@@ -93,7 +93,10 @@ export function AddPostModal({
           <DialogTitle className="text-lg font-semibold tracking-tight">
             {submitLabel ?? t('forms.publish')}
           </DialogTitle>
-          <DialogClose className="rounded-full p-2 hover:bg-muted transition-colors" aria-label="Close">
+          <DialogClose
+            className="rounded-full p-2 hover:bg-muted transition-colors"
+            aria-label={t('contribution.close')}
+          >
             <X className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
           </DialogClose>
         </div>
@@ -133,7 +136,7 @@ export function AddPostModal({
                     type="button"
                     onClick={() => onAttachmentChange(activeAttachment === item.id ? 'none' : item.id)}
                     className={cn(
-                      'flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all',
+                      'flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                       activeAttachment === item.id
                         ? cn(item.color, 'ring-1 ring-offset-1')
                         : 'bg-background border-border text-foreground hover:bg-muted'
@@ -155,7 +158,7 @@ export function AddPostModal({
           <div className="space-y-2">
             <button
               type="button"
-              className="w-full flex items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors"
+              className="w-full flex items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               onClick={() => setSettingsOpen(!settingsOpen)}
               aria-expanded={settingsOpen}
             >

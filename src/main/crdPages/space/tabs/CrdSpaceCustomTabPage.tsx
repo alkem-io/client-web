@@ -35,7 +35,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   });
   const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(tag => ({ name: tag, count: 0 }));
 
-  // Build sidebar list from light callout data
+  // Build sidebar list from light callout data (also used as knowledge entries)
   const sidebarItems = callouts.map(callout => ({
     id: callout.id,
     title: callout.framing.profile.displayName,
@@ -59,13 +59,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  // Knowledge entries for sidebar
-  const knowledgeEntries = callouts.map(callout => ({
-    id: callout.id,
-    title: callout.framing.profile.displayName,
-    type: 'text' as const,
-  }));
-
   const sidebarContainer = document.getElementById('crd-space-sidebar');
 
   return (
@@ -75,7 +68,10 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           <SpaceSidebar
             variant="knowledge"
             description={tabDescription || space.about.profile.description || ''}
-            knowledgeEntries={knowledgeEntries}
+            knowledgeEntries={sidebarItems.map(item => ({
+              ...item,
+              type: item.type === 'whiteboard' ? ('collection' as const) : item.type,
+            }))}
             onKnowledgeEntryClick={handleScrollToCallout}
           >
             {sidebarItems.length > 0 && <CalloutSidebarList items={sidebarItems} onItemClick={handleScrollToCallout} />}

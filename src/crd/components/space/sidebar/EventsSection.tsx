@@ -30,10 +30,9 @@ export function EventsSection({ events, onShowCalendar, onAddEvent, className }:
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 rounded-full"
+            className="h-6 w-6 rounded-full text-primary"
             style={{
               background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
-              color: 'var(--primary)',
             }}
             onClick={onAddEvent}
             aria-label={t('sidebar.events')}
@@ -57,7 +56,7 @@ export function EventsSection({ events, onShowCalendar, onAddEvent, className }:
       {onShowCalendar && (
         <button
           type="button"
-          className="px-3 mt-2 text-sm font-medium text-primary hover:underline cursor-pointer"
+          className="px-3 mt-2 text-sm font-medium text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={onShowCalendar}
         >
           {t('sidebar.showCalendar')}

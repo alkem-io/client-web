@@ -1,5 +1,6 @@
 import { Bot } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
 type VirtualContributorItem = {
@@ -26,7 +27,7 @@ export function VirtualContributorsSection({
   if (contributors.length === 0) return null;
 
   return (
-    <div className={`bg-card border border-border rounded-lg p-4 ${className ?? ''}`}>
+    <div className={cn('bg-card border border-border rounded-lg p-4', className)}>
       <div className="flex items-center gap-1.5 mb-3">
         <Bot className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
         <h3 className="uppercase tracking-wider text-[11px] font-semibold text-muted-foreground">
@@ -38,7 +39,7 @@ export function VirtualContributorsSection({
           <button
             key={vc.name}
             type="button"
-            className="flex items-start gap-3 w-full text-left px-3 py-2.5 rounded-md hover:bg-muted/50 transition-colors cursor-pointer"
+            className="flex items-start gap-3 w-full text-left px-3 py-2.5 rounded-md hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             onClick={() => vc.href && onContributorClick?.(vc.href)}
           >
             <Avatar className="w-8 h-8 shrink-0">

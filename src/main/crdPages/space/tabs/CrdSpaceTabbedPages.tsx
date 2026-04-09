@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '@/core/ui/loading/Loading';
+import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
@@ -22,7 +22,7 @@ export default function CrdSpaceTabbedPages() {
   const totalTabs = tabs.length;
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<LoadingSpinner />}>
       {activeTabIndex === 0 && <CrdSpaceDashboardPage />}
       {activeTabIndex === 1 && <CrdSpaceCommunityPage />}
       {activeTabIndex === 2 && <CrdSpaceSubspacesPage />}

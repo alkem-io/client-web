@@ -49,7 +49,7 @@ export function CalloutContributionSettings({
               key={type}
               type="button"
               className={cn(
-                'px-3 py-2 rounded-md border text-xs font-medium capitalize transition-all',
+                'px-3 py-2 rounded-md border text-xs font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 allowedTypes.includes(type)
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-background hover:bg-muted border-border'
