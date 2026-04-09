@@ -1,22 +1,17 @@
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
-// Path helpers for default space visuals (copied from public/default-visuals/)
-// 'custom' represents a space whose owner uploaded their own image
-const CUSTOM_AVATAR =
-  'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=150';
-const CUSTOM_CARD =
+// One real "user uploaded" banner so the preview can demonstrate what a custom
+// image looks like. Every other mock space leaves its image field undefined and
+// falls back to the deterministic gradient from `pickColorFromId`.
+const CUSTOM_BANNER_URL =
   'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080';
-const spaceAvatar = (hex: string) =>
-  hex === 'custom' ? CUSTOM_AVATAR : `/default-visuals/space/avatar/alkemio-default-avatar-${hex}.jpg`;
-const spaceCard = (hex: string) =>
-  hex === 'custom' ? CUSTOM_CARD : `/default-visuals/space/card/alkemio-default-card-${hex}.jpg`;
 
 export const MOCK_RECENT_SPACES = [
   {
     id: 'rs-1',
     name: 'Innovation Lab',
     href: '/space/innovation-lab',
-    bannerUrl: spaceCard('custom'),
+    bannerUrl: CUSTOM_BANNER_URL,
     isPrivate: true,
     isHomeSpace: true,
     initials: 'IL',
@@ -26,7 +21,6 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-2',
     name: 'Design Workshop',
     href: '/space/design-workshop',
-    bannerUrl: spaceCard('1'),
     isPrivate: false,
     isHomeSpace: false,
     initials: 'DW',
@@ -36,7 +30,6 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-3',
     name: 'Team Sync',
     href: '/space/team-sync',
-    bannerUrl: spaceCard('2'),
     isPrivate: true,
     isHomeSpace: false,
     initials: 'TS',
@@ -46,7 +39,6 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-4',
     name: 'Future Strategy',
     href: '/space/future-strategy',
-    bannerUrl: spaceCard('3'),
     isPrivate: false,
     isHomeSpace: false,
     initials: 'FS',
@@ -230,7 +222,6 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-sustainability',
     spaceName: 'Sustainability Goals 2024',
     spaceHref: '/space/sustainability-goals',
-    spaceAvatarUrl: spaceAvatar('4'),
     role: 'Editor',
     color: pickColorFromId('s-sustainability'),
   },
@@ -239,7 +230,6 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-urban-mobility',
     spaceName: 'Urban Mobility Lab',
     spaceHref: '/space/urban-mobility',
-    spaceAvatarUrl: spaceAvatar('5'),
     role: 'Viewer',
     color: pickColorFromId('s-urban-mobility'),
   },
@@ -248,7 +238,6 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-financial',
     spaceName: 'Q1 Financial Planning',
     spaceHref: '/space/financial-planning',
-    spaceAvatarUrl: spaceAvatar('6'),
     role: 'Admin',
     color: pickColorFromId('s-financial'),
   },
@@ -260,7 +249,6 @@ export const MOCK_PENDING_INVITATIONS = [
   {
     id: 'pi-1',
     spaceName: 'Sustainability Goals 2024',
-    spaceAvatarUrl: spaceAvatar('4'),
     senderName: 'Sarah Chen',
     welcomeMessageExcerpt: 'We would love to have you join our sustainability initiative. Your expertise in...',
     timeElapsed: '2 hours ago',
@@ -269,7 +257,6 @@ export const MOCK_PENDING_INVITATIONS = [
   {
     id: 'pi-2',
     spaceName: 'Urban Mobility Lab',
-    spaceAvatarUrl: spaceAvatar('5'),
     senderName: 'Marc Johnson',
     welcomeMessageExcerpt: 'Join us to explore innovative urban transport solutions together!',
     timeElapsed: '1 day ago',
@@ -292,7 +279,6 @@ export const MOCK_PENDING_APPLICATIONS = [
   {
     id: 'pa-app-1',
     spaceName: 'Q1 Financial Planning',
-    spaceAvatarUrl: spaceAvatar('6'),
     tagline: 'Collaborative quarterly financial planning and budgeting',
     spaceHref: '/space/financial-planning',
     color: pickColorFromId('pa-app-1'),
@@ -301,7 +287,6 @@ export const MOCK_PENDING_APPLICATIONS = [
 
 export const MOCK_INVITATION_DETAIL = {
   spaceName: 'Sustainability Goals 2024',
-  spaceAvatarUrl: spaceAvatar('4'),
   spaceTagline: 'Working together towards a sustainable future for all communities',
   spaceTags: ['Sustainability', 'Climate', 'Innovation', 'Community'],
   spaceHref: '/space/sustainability-goals',
@@ -394,8 +379,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     isPrivate: false,
     roles: ['admin', 'lead'],
     initials: 'GE',
-    color: '#4caf50',
-    image: spaceCard('0'),
+    color: pickColorFromId('mp-1'),
     children: [
       {
         id: 'mp-1-1',
@@ -404,8 +388,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         isPrivate: false,
         roles: ['member'],
         initials: 'RE',
-        color: '#66bb6a',
-        image: spaceAvatar('a'),
+        color: pickColorFromId('mp-1-1'),
         children: [
           {
             id: 'mp-1-1-1',
@@ -414,8 +397,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
             isPrivate: false,
             roles: ['lead'],
             initials: 'WE',
-            color: '#81c784',
-            image: spaceAvatar('f'),
+            color: pickColorFromId('mp-1-1-1'),
           },
           {
             id: 'mp-1-1-2',
@@ -424,8 +406,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
             isPrivate: true,
             roles: ['member'],
             initials: 'HP',
-            color: '#4dd0e1',
-            image: spaceAvatar('0'),
+            color: pickColorFromId('mp-1-1-2'),
           },
         ],
       },
@@ -436,8 +417,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         isPrivate: true,
         roles: ['admin'],
         initials: 'SP',
-        color: '#ffa726',
-        image: spaceAvatar('b'),
+        color: pickColorFromId('mp-1-2'),
       },
     ],
   },
@@ -450,8 +430,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     isPrivate: false,
     roles: ['member'],
     initials: 'CG',
-    color: '#8bc34a',
-    image: spaceCard('1'),
+    color: pickColorFromId('mp-2'),
     children: [
       {
         id: 'mp-2-1',
@@ -460,8 +439,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         isPrivate: false,
         roles: ['member'],
         initials: 'UF',
-        color: '#7cb342',
-        image: spaceAvatar('c'),
+        color: pickColorFromId('mp-2-1'),
       },
     ],
   },
@@ -474,10 +452,10 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     isPrivate: true,
     roles: ['admin'],
     initials: 'DT',
-    color: '#42a5f5',
-    image: spaceCard('2'),
+    color: pickColorFromId('mp-3'),
   },
-  // ── Innovation Lab ──
+  // ── Innovation Lab — kept with a "user-uploaded" custom banner so the preview
+  // can showcase what a real banner image looks like in the panel. ──
   {
     id: 'mp-4',
     name: 'Innovation Lab',
@@ -486,8 +464,8 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     isPrivate: false,
     roles: ['lead'],
     initials: 'IL',
-    color: '#ab47bc',
-    image: spaceCard('custom'),
+    color: pickColorFromId('mp-4'),
+    image: CUSTOM_BANNER_URL,
     children: [
       {
         id: 'mp-4-1',
@@ -496,8 +474,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         isPrivate: true,
         roles: ['member'],
         initials: 'AI',
-        color: '#7e57c2',
-        image: spaceAvatar('d'),
+        color: pickColorFromId('mp-4-1'),
       },
       {
         id: 'mp-4-2',
@@ -506,8 +483,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         isPrivate: false,
         roles: ['member'],
         initials: 'DT',
-        color: '#ec407a',
-        image: spaceAvatar('e'),
+        color: pickColorFromId('mp-4-2'),
       },
     ],
   },

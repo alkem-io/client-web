@@ -1,12 +1,11 @@
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
-// Path helper for default space visuals (copied from public/default-visuals/)
-// 'custom' represents a space whose owner uploaded their own image
-const CUSTOM_CARD =
+// One real "user uploaded" banner so the preview can demonstrate what a custom
+// image looks like. Every other mock space leaves `bannerImageUrl` undefined
+// and falls back to the deterministic gradient from `pickColorFromId`.
+const CUSTOM_BANNER_URL =
   'https://images.unsplash.com/photo-1684907110935-dcb64eba6add?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080';
-const spaceCard = (hex: string) =>
-  hex === 'custom' ? CUSTOM_CARD : `/default-visuals/space/card/alkemio-default-card-${hex}.jpg`;
 
 const LEAD_AVATARS = {
   sarah:
@@ -35,7 +34,7 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Green Energy Space',
     description:
       'A collaborative space for exploring emerging technologies and building innovative prototypes that address real-world challenges.',
-    bannerImageUrl: spaceCard('custom'),
+    bannerImageUrl: CUSTOM_BANNER_URL,
     initials: 'GE',
     avatarColor: pickColorFromId('s1'),
     isPrivate: false,
@@ -53,7 +52,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Sustainable Futures',
     description:
       'Driving the transition to a sustainable economy through renewable energy solutions and circular business models.',
-    bannerImageUrl: spaceCard('1'),
     initials: 'SF',
     avatarColor: pickColorFromId('s2'),
     isPrivate: false,
@@ -69,7 +67,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Community Building Lab',
     description:
       'Developing best practices for community engagement, participatory design, and inclusive collaboration methodologies.',
-    bannerImageUrl: spaceCard('2'),
     initials: 'CB',
     avatarColor: pickColorFromId('s3'),
     isPrivate: false,
@@ -86,7 +83,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Urban Development Network',
     description:
       'Reimagining urban spaces through smart city planning, green infrastructure, and citizen-centered design approaches.',
-    bannerImageUrl: spaceCard('3'),
     initials: 'UD',
     avatarColor: pickColorFromId('s4'),
     isPrivate: false,
@@ -102,7 +98,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Education Transformation',
     description:
       'Rethinking education models for the 21st century with technology-enhanced learning and skills-based curricula.',
-    bannerImageUrl: spaceCard('4'),
     initials: 'ET',
     avatarColor: pickColorFromId('s5'),
     isPrivate: true,
@@ -115,7 +110,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Health Innovation Alliance',
     description:
       'Connecting healthcare professionals, researchers, and technologists to advance digital health and patient care.',
-    bannerImageUrl: spaceCard('5'),
     initials: 'HI',
     avatarColor: pickColorFromId('s6'),
     isPrivate: true,
@@ -133,7 +127,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Data-Driven Impact',
     description:
       'Leveraging data science and analytics to measure, optimize, and scale social and environmental impact programs.',
-    bannerImageUrl: spaceCard('6'),
     initials: 'DD',
     avatarColor: pickColorFromId('s7'),
     isPrivate: false,
@@ -146,7 +139,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Social Entrepreneurship Hub',
     description:
       'Supporting social entrepreneurs with mentoring, funding, and a vibrant network to scale purpose-driven ventures.',
-    bannerImageUrl: spaceCard('7'),
     initials: 'SE',
     avatarColor: pickColorFromId('s8'),
     isPrivate: false,
@@ -165,7 +157,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     id: 's9',
     name: 'Circular Economy Collective',
     description: 'Designing products, services, and systems that eliminate waste and keep resources in circulation.',
-    bannerImageUrl: spaceCard('8'),
     initials: 'CE',
     avatarColor: pickColorFromId('s9'),
     isPrivate: false,
@@ -181,7 +172,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Future Mobility',
     description:
       'Exploring autonomous vehicles, electric transport, and smart infrastructure for the cities of tomorrow.',
-    bannerImageUrl: spaceCard('9'),
     initials: 'FM',
     avatarColor: pickColorFromId('s10'),
     isPrivate: true,
@@ -198,7 +188,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     id: 's11',
     name: 'Renewable Energy Transition',
     description: 'Developing strategies for municipal energy transition to 100% renewables by 2030.',
-    bannerImageUrl: spaceCard('a'),
     initials: 'RE',
     avatarColor: pickColorFromId('s11'),
     isPrivate: false,
@@ -221,7 +210,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Smart Cities Lab',
     description:
       'Applying IoT, AI, and data analytics to create intelligent urban environments that improve quality of life.',
-    bannerImageUrl: spaceCard('b'),
     initials: 'SC',
     avatarColor: pickColorFromId('s12'),
     isPrivate: false,
@@ -243,7 +231,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Digital Health Tools',
     description:
       'Building and evaluating digital tools for remote patient monitoring, telemedicine, and wellness tracking.',
-    bannerImageUrl: spaceCard('c'),
     initials: 'DH',
     avatarColor: pickColorFromId('s13'),
     isPrivate: true,
@@ -262,7 +249,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'AgriTech Innovation',
     description:
       'Advancing sustainable agriculture through precision farming, vertical gardens, and food system redesign.',
-    bannerImageUrl: spaceCard('d'),
     initials: 'AT',
     avatarColor: pickColorFromId('s14'),
     isPrivate: false,
@@ -283,7 +269,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     id: 's15',
     name: 'Design Thinking Practice',
     description: 'Sharing frameworks, case studies, and tools for human-centered design in complex systems.',
-    bannerImageUrl: spaceCard('e'),
     initials: 'DT',
     avatarColor: pickColorFromId('s15'),
     isPrivate: false,
@@ -305,7 +290,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Ocean & Marine Research',
     description:
       'Collaborative research on ocean health, marine biodiversity, and sustainable blue economy initiatives.',
-    bannerImageUrl: spaceCard('f'),
     initials: 'OM',
     avatarColor: pickColorFromId('s16'),
     isPrivate: false,
@@ -318,7 +302,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'AI & Robotics Forum',
     description:
       'Exploring the ethical, practical, and technical dimensions of artificial intelligence and robotics in society.',
-    bannerImageUrl: spaceCard('0'),
     initials: 'AR',
     avatarColor: pickColorFromId('s17'),
     isPrivate: true,
@@ -340,7 +323,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     id: 's18',
     name: 'Climate Action Network',
     description: 'Coordinating climate adaptation and mitigation strategies across sectors, regions, and communities.',
-    bannerImageUrl: spaceCard('1'),
     initials: 'CA',
     avatarColor: pickColorFromId('s18'),
     isPrivate: false,
@@ -357,7 +339,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Startup Incubator',
     description:
       'An intensive program for early-stage ventures with access to mentorship, workspace, and seed funding.',
-    bannerImageUrl: spaceCard('2'),
     initials: 'SI',
     avatarColor: pickColorFromId('s19'),
     isPrivate: true,
@@ -379,7 +360,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Nature & Biodiversity',
     description:
       'Protecting and restoring natural ecosystems through citizen science, conservation tech, and policy advocacy.',
-    bannerImageUrl: spaceCard('3'),
     initials: 'NB',
     avatarColor: pickColorFromId('s20'),
     isPrivate: false,
@@ -394,7 +374,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     id: 's21',
     name: 'Coworking & Spaces Network',
     description: 'Connecting coworking space operators and remote workers to share best practices and build community.',
-    bannerImageUrl: spaceCard('4'),
     initials: 'CN',
     avatarColor: pickColorFromId('s21'),
     isPrivate: false,
@@ -407,7 +386,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Water & Infrastructure',
     description:
       'Developing resilient water management systems and climate-adaptive infrastructure for Dutch water challenges.',
-    bannerImageUrl: spaceCard('5'),
     initials: 'WI',
     avatarColor: pickColorFromId('s22'),
     isPrivate: false,
@@ -429,7 +407,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Cultural Heritage & Digital',
     description:
       'Using digital technologies to preserve, share, and reimagine cultural heritage for future generations.',
-    bannerImageUrl: spaceCard('6'),
     initials: 'CH',
     avatarColor: pickColorFromId('s23'),
     isPrivate: false,
@@ -442,7 +419,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'Cybersecurity & Trust',
     description:
       'Building secure digital infrastructure and fostering trust through responsible data governance practices.',
-    bannerImageUrl: spaceCard('7'),
     initials: 'CT',
     avatarColor: pickColorFromId('s24'),
     isPrivate: true,
@@ -464,7 +440,6 @@ export const MOCK_SPACES: SpaceCardData[] = [
     name: 'EV Charging Network',
     description:
       'Accelerating the rollout of electric vehicle charging infrastructure across the Netherlands and Europe.',
-    bannerImageUrl: spaceCard('8'),
     initials: 'EV',
     avatarColor: pickColorFromId('s25'),
     isPrivate: false,
