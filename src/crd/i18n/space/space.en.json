@@ -75,10 +75,11 @@
     "richTextEditor": "Rich text content editor"
   },
   "members": {
-    "title": "Members",
-    "search": "Search members...",
+    "title": "Community",
+    "subtitle": "{{users}} members and {{organizations}} organizations in this space.",
+    "inviteMember": "Invite Member",
+    "search": "Search members or organizations...",
     "filterAll": "All",
-    "filterHost": "Host",
     "filterAdmin": "Admin",
     "filterLead": "Lead",
     "filterMember": "Member",
@@ -86,16 +87,31 @@
     "noMembers": "No members found",
     "previousPage": "Previous",
     "nextPage": "Next",
-    "pageOf": "Page {{current}} of {{total}}"
+    "pageOf": "Page {{current}} of {{total}}",
+    "empty": {
+      "title": "No results found",
+      "description": "Try adjusting your search or filters.",
+      "clearFilters": "Clear filters"
+    },
+    "role": {
+      "admin": "Admin",
+      "lead": "Lead",
+      "member": "Member",
+      "organization": "Organization"
+    }
   },
   "subspaces": {
     "title": "Subspaces",
+    "subtitle": "Explore focused workstreams and challenges within this space.",
     "createSubspace": "Create Subspace",
     "filterAll": "All",
     "filterActive": "Active",
     "filterArchived": "Archived",
-    "noSubspaces": "No subspaces yet",
-    "noSubspacesDescription": "Create a subspace to organize your work"
+    "empty": {
+      "title": "No subspaces found",
+      "description": "No subspaces match your current filter.",
+      "clearFilters": "Clear filters"
+    }
   },
   "about": {
     "title": "About",

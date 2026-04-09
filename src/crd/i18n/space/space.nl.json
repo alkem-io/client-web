@@ -72,10 +72,11 @@
     "richTextEditor": "Teksteditor met opmaak"
   },
   "members": {
-    "title": "Leden",
-    "search": "Leden zoeken...",
+    "title": "Community",
+    "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
+    "inviteMember": "Lid uitnodigen",
+    "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
-    "filterHost": "Host",
     "filterAdmin": "Beheerder",
     "filterLead": "Leider",
     "filterMember": "Lid",
@@ -83,16 +84,31 @@
     "noMembers": "Geen leden gevonden",
     "previousPage": "Vorige",
     "nextPage": "Volgende",
-    "pageOf": "Pagina {{current}} van {{total}}"
+    "pageOf": "Pagina {{current}} van {{total}}",
+    "empty": {
+      "title": "Geen resultaten gevonden",
+      "description": "Pas je zoekopdracht of filters aan.",
+      "clearFilters": "Filters wissen"
+    },
+    "role": {
+      "admin": "Beheerder",
+      "lead": "Leider",
+      "member": "Lid",
+      "organization": "Organisatie"
+    }
   },
   "subspaces": {
     "title": "Subspaces",
+    "subtitle": "Ontdek gerichte werkstromen en uitdagingen binnen deze space.",
     "createSubspace": "Subspace aanmaken",
     "filterAll": "Alle",
     "filterActive": "Actief",
     "filterArchived": "Gearchiveerd",
-    "noSubspaces": "Nog geen subspaces",
-    "noSubspacesDescription": "Maak een subspace aan om je werk te organiseren"
+    "empty": {
+      "title": "Geen subspaces gevonden",
+      "description": "Geen subspaces komen overeen met je huidige filter.",
+      "clearFilters": "Filters wissen"
+    }
   },
   "about": {
     "title": "Over",

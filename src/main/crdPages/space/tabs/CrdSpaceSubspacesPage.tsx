@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
+import { CreateSubspace } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useSpace } from '@/domain/space/context/useSpace';
+import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -28,9 +31,10 @@ export default function CrdSpaceSubspacesPage() {
     skip: !spaceId,
   });
 
-  const subspaces = subspacesData?.lookup.space?.subspaces
-    ? mapSubspacesToCardDataList(subspacesData.lookup.space.subspaces)
-    : [];
+  const rawSubspaces = subspacesData?.lookup.space?.subspaces;
+  const sortMode = subspacesData?.lookup.space?.settings.sortMode;
+  const sortedSubspaces = useSubspacesSorted(rawSubspaces, sortMode);
+  const subspaces = mapSubspacesToCardDataList(sortedSubspaces, sortMode);
 
   const sidebarSubspaces = subspaces.map(s => ({
     name: s.name,
@@ -38,6 +42,10 @@ export default function CrdSpaceSubspacesPage() {
     color: 'var(--chart-1)',
     href: s.href,
   }));
+
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const canCreate = permissions.canCreateSubspaces;
+  const handleCreateClick = canCreate ? () => setIsCreateDialogOpen(true) : undefined;
 
   const sidebarContainer = document.getElementById('crd-space-sidebar');
 
@@ -54,7 +62,7 @@ export default function CrdSpaceSubspacesPage() {
         )}
 
       <div className="space-y-8">
-        <SpaceSubspacesList subspaces={subspaces} canCreate={permissions.canCreateSubspaces} />
+        <SpaceSubspacesList subspaces={subspaces} canCreate={canCreate} onCreateClick={handleCreateClick} />
 
         <CalloutListConnector
           callouts={callouts}
@@ -63,6 +71,14 @@ export default function CrdSpaceSubspacesPage() {
           loading={calloutsLoading}
         />
       </div>
+
+      {canCreate && (
+        <CreateSubspace
+          open={isCreateDialogOpen}
+          onClose={() => setIsCreateDialogOpen(false)}
+          parentSpaceId={spaceId}
+        />
+      )}
     </>
   );
 }

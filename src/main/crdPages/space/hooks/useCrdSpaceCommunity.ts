@@ -23,20 +23,24 @@ export function useCrdSpaceCommunity() {
 
   const roleSetId = space.about.membership?.roleSetID;
 
+  // Fetch contributors across all relevant roles. The flat `users` /
+  // `organizations` arrays are deduplicated across roles, and each entry
+  // carries its full `roles` list, which the mapper uses to derive
+  // role/roleType for the UI badge.
   const {
-    usersByRole,
-    organizationsByRole,
+    users,
+    organizations,
     loading: roleSetLoading,
   } = useRoleSetManager({
     roleSetId,
-    relevantRoles: [RoleName.Member, RoleName.Lead],
+    relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member],
     contributorTypes: [ActorType.User, ActorType.Organization],
     fetchContributors: true,
   });
 
-  const memberUsers = usersByRole[RoleName.Member] ?? [];
-  const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];
-  const members: MemberCardData[] = mapRoleSetToMemberCards(memberUsers, memberOrganizations);
+  const members: MemberCardData[] = mapRoleSetToMemberCards(users, organizations);
+  const usersCount = users.length;
+  const organizationsCount = organizations.length;
 
   const leadUsers = space.about.membership?.leadUsers ?? [];
   const guidelines = space.about.guidelines;
@@ -49,6 +53,8 @@ export function useCrdSpaceCommunity() {
     leadUsers,
     guidelines,
     members,
+    usersCount,
+    organizationsCount,
     roleSetId,
     communityId: space.about.membership?.communityID,
     canInvite: permissions.canUpdate,

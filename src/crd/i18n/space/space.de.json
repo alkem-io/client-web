@@ -72,10 +72,11 @@
     "richTextEditor": "Rich-Text-Editor"
   },
   "members": {
-    "title": "Mitglieder",
-    "search": "Mitglieder suchen...",
+    "title": "Community",
+    "subtitle": "{{users}} Mitglieder und {{organizations}} Organisationen in diesem Bereich.",
+    "inviteMember": "Mitglied einladen",
+    "search": "Mitglieder oder Organisationen suchen...",
     "filterAll": "Alle",
-    "filterHost": "Gastgeber",
     "filterAdmin": "Administrator",
     "filterLead": "Leiter",
     "filterMember": "Mitglied",
@@ -83,16 +84,31 @@
     "noMembers": "Keine Mitglieder gefunden",
     "previousPage": "Zurück",
     "nextPage": "Weiter",
-    "pageOf": "Seite {{current}} von {{total}}"
+    "pageOf": "Seite {{current}} von {{total}}",
+    "empty": {
+      "title": "Keine Ergebnisse gefunden",
+      "description": "Passen Sie Ihre Suche oder Filter an.",
+      "clearFilters": "Filter zurücksetzen"
+    },
+    "role": {
+      "admin": "Administrator",
+      "lead": "Leiter",
+      "member": "Mitglied",
+      "organization": "Organisation"
+    }
   },
   "subspaces": {
     "title": "Unterbereiche",
+    "subtitle": "Entdecken Sie fokussierte Arbeitsströme und Herausforderungen innerhalb dieses Bereichs.",
     "createSubspace": "Unterbereich erstellen",
     "filterAll": "Alle",
     "filterActive": "Aktiv",
     "filterArchived": "Archiviert",
-    "noSubspaces": "Noch keine Unterbereiche",
-    "noSubspacesDescription": "Erstellen Sie einen Unterbereich, um Ihre Arbeit zu organisieren"
+    "empty": {
+      "title": "Keine Unterbereiche gefunden",
+      "description": "Keine Unterbereiche entsprechen Ihrem aktuellen Filter.",
+      "clearFilters": "Filter zurücksetzen"
+    }
   },
   "about": {
     "title": "Über",

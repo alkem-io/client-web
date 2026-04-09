@@ -1,67 +1,68 @@
-import { FolderOpen, Lock, Pin, Plus } from 'lucide-react';
+import { Folder, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
-
-export type SubspaceListCardData = {
-  id: string;
-  name: string;
-  tagline?: string;
-  bannerUrl?: string;
-  tags: string[];
-  isPrivate: boolean;
-  isMember: boolean;
-  isPinned: boolean;
-  leads: Array<{ name: string; avatarUrl?: string }>;
-  href: string;
-};
+import { SpaceCard, type SpaceCardData } from './SpaceCard';
 
 type SubspaceFilter = 'all' | 'active' | 'archived';
 
 type SpaceSubspacesListProps = {
-  subspaces: SubspaceListCardData[];
+  subspaces: SpaceCardData[];
+  /** Optional title override — defaults to t('subspaces.title'). */
+  title?: string;
+  /** Optional subtitle override — defaults to t('subspaces.subtitle'). */
+  subtitle?: string;
+  /** "Create Subspace" button only renders when both `canCreate` and `onCreateClick` are set. */
   canCreate?: boolean;
   onCreateClick?: () => void;
-  onSubspaceClick?: (href: string) => void;
-  selectedTags?: string[];
-  onTagSelect?: (tag: string) => void;
+  onSubspaceClick?: (space: SpaceCardData) => void;
   className?: string;
 };
 
+const FILTERS: SubspaceFilter[] = ['all', 'active', 'archived'];
+
 export function SpaceSubspacesList({
   subspaces,
+  title,
+  subtitle,
   canCreate,
   onCreateClick,
   onSubspaceClick,
-  selectedTags = [],
-  onTagSelect,
   className,
 }: SpaceSubspacesListProps) {
   const { t } = useTranslation('crd-space');
   const [activeFilter, setActiveFilter] = useState<SubspaceFilter>('all');
 
-  const filters: SubspaceFilter[] = ['all', 'active', 'archived'];
-  const filterKeys: Record<SubspaceFilter, string> = {
-    all: 'subspaces.filterAll',
-    active: 'subspaces.filterActive',
-    archived: 'subspaces.filterArchived',
+  const filterLabels: Record<SubspaceFilter, string> = {
+    all: t('subspaces.filterAll'),
+    active: t('subspaces.filterActive'),
+    archived: t('subspaces.filterArchived'),
   };
 
-  // Filter by selected tags
-  let filtered = subspaces;
-  if (selectedTags.length > 0) {
-    filtered = filtered.filter(s => selectedTags.some(tag => s.tags.includes(tag)));
+  // Apply status filter. Real data currently exposes no archived status, so
+  // the filter is a visual affordance — "active" and "all" show the same set,
+  // "archived" shows empty.
+  let filtered: SpaceCardData[];
+  if (activeFilter === 'archived') {
+    filtered = [];
+  } else {
+    filtered = subspaces;
   }
 
+  const resetFilters = () => setActiveFilter('all');
+  const hasActiveFilter = activeFilter !== 'all';
+
   return (
-    <section className={cn('space-y-4', className)} aria-label={t('a11y.subspacesGrid')}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-foreground">{t('subspaces.title')}</h2>
-        {canCreate && (
-          <Button size="sm" className="gap-2" onClick={onCreateClick}>
+    <section className={cn('space-y-6', className)} aria-label={t('a11y.subspacesGrid')}>
+      {/* Section header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">{title ?? t('subspaces.title')}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{subtitle ?? t('subspaces.subtitle')}</p>
+        </div>
+        {canCreate && onCreateClick && (
+          <Button className="shrink-0 gap-2" onClick={onCreateClick}>
             <Plus className="w-4 h-4" aria-hidden="true" />
             {t('subspaces.createSubspace')}
           </Button>
@@ -69,107 +70,56 @@ export function SpaceSubspacesList({
       </div>
 
       {/* Filter pills */}
-      <div className="flex flex-wrap gap-2">
-        {filters.map(filter => (
-          <Button
-            key={filter}
-            variant={activeFilter === filter ? 'default' : 'outline'}
-            size="sm"
-            className="text-xs"
-            onClick={() => setActiveFilter(filter)}
-          >
-            {t(filterKeys[filter] as 'subspaces.filterAll')}
-          </Button>
-        ))}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        {FILTERS.map(filter => {
+          const isActive = activeFilter === filter;
+          return (
+            <button
+              key={filter}
+              type="button"
+              onClick={() => setActiveFilter(filter)}
+              aria-pressed={isActive}
+              className={cn(
+                'px-3 py-1.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                isActive
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
+              )}
+            >
+              {filterLabels[filter]}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Subspace grid */}
+      {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-border rounded-lg">
-          <FolderOpen className="w-10 h-10 text-muted-foreground mb-3" aria-hidden="true" />
-          <p className="text-sm font-medium text-muted-foreground">{t('subspaces.noSubspaces')}</p>
-          <p className="text-xs text-muted-foreground mt-1">{t('subspaces.noSubspacesDescription')}</p>
-        </div>
+        <EmptyState hasActiveFilter={hasActiveFilter} onClear={resetFilters} />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0">
           {filtered.map(subspace => (
-            <a
-              key={subspace.id}
-              href={subspace.href}
-              onClick={e => {
-                if (onSubspaceClick) {
-                  e.preventDefault();
-                  onSubspaceClick(subspace.href);
-                }
-              }}
-              className="group block border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
-            >
-              {/* Banner */}
-              <div className="h-32 bg-muted relative">
-                {subspace.bannerUrl ? (
-                  <img src={subspace.bannerUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-muted to-accent" />
-                )}
-                <div className="absolute top-2 right-2 flex gap-1">
-                  {subspace.isPrivate && (
-                    <span className="bg-background/80 backdrop-blur-sm rounded p-1">
-                      <Lock className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
-                    </span>
-                  )}
-                  {subspace.isPinned && (
-                    <span className="bg-background/80 backdrop-blur-sm rounded p-1">
-                      <Pin className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-                  {subspace.name}
-                </h3>
-                {subspace.tagline && (
-                  <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{subspace.tagline}</p>
-                )}
-
-                {/* Tags */}
-                {subspace.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {subspace.tags.slice(0, 3).map(tag => (
-                      <button
-                        key={tag}
-                        type="button"
-                        className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground text-[10px] px-1.5 py-0.5 font-semibold transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          onTagSelect?.(tag);
-                        }}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Lead avatars */}
-                {subspace.leads.length > 0 && (
-                  <div className="flex -space-x-1 mt-3">
-                    {subspace.leads.slice(0, 3).map(lead => (
-                      <Avatar key={lead.name} className="w-6 h-6 border border-background">
-                        {lead.avatarUrl && <AvatarImage src={lead.avatarUrl} alt={lead.name} />}
-                        <AvatarFallback className="text-[8px]">{lead.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </a>
+            <li key={subspace.id} className="h-full">
+              <SpaceCard space={subspace} onClick={onSubspaceClick} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </section>
+  );
+}
+
+function EmptyState({ hasActiveFilter, onClear }: { hasActiveFilter: boolean; onClear: () => void }) {
+  const { t } = useTranslation('crd-space');
+  return (
+    <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-border rounded-lg">
+      <Folder className="w-10 h-10 text-muted-foreground opacity-50 mb-3" aria-hidden="true" />
+      <h3 className="text-lg font-medium text-foreground">{t('subspaces.empty.title')}</h3>
+      <p className="text-sm text-muted-foreground mt-1">{t('subspaces.empty.description')}</p>
+      {hasActiveFilter && (
+        <Button variant="link" className="mt-2 text-primary" onClick={onClear}>
+          {t('subspaces.empty.clearFilters')}
+        </Button>
+      )}
+    </div>
   );
 }

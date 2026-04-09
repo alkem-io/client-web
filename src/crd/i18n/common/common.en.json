@@ -15,5 +15,6 @@
   "public": "Public",
   "member": "Member",
   "leads": "Leads",
-  "loadMore": "Load More"
+  "loadMore": "Load More",
+  "pinned": "Pinned"
 }

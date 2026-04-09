@@ -72,10 +72,11 @@
     "richTextEditor": "Éditeur de texte enrichi"
   },
   "members": {
-    "title": "Membres",
-    "search": "Rechercher des membres...",
+    "title": "Communauté",
+    "subtitle": "{{users}} membres et {{organizations}} organisations dans cet espace.",
+    "inviteMember": "Inviter un membre",
+    "search": "Rechercher des membres ou organisations...",
     "filterAll": "Tous",
-    "filterHost": "Hôte",
     "filterAdmin": "Administrateur",
     "filterLead": "Responsable",
     "filterMember": "Membre",
@@ -83,16 +84,31 @@
     "noMembers": "Aucun membre trouvé",
     "previousPage": "Précédent",
     "nextPage": "Suivant",
-    "pageOf": "Page {{current}} sur {{total}}"
+    "pageOf": "Page {{current}} sur {{total}}",
+    "empty": {
+      "title": "Aucun résultat trouvé",
+      "description": "Essayez d'ajuster votre recherche ou vos filtres.",
+      "clearFilters": "Effacer les filtres"
+    },
+    "role": {
+      "admin": "Administrateur",
+      "lead": "Responsable",
+      "member": "Membre",
+      "organization": "Organisation"
+    }
   },
   "subspaces": {
     "title": "Sous-espaces",
+    "subtitle": "Explorez des flux de travail et des défis ciblés au sein de cet espace.",
     "createSubspace": "Créer un sous-espace",
     "filterAll": "Tous",
     "filterActive": "Actifs",
     "filterArchived": "Archivés",
-    "noSubspaces": "Pas encore de sous-espaces",
-    "noSubspacesDescription": "Créez un sous-espace pour organiser votre travail"
+    "empty": {
+      "title": "Aucun sous-espace trouvé",
+      "description": "Aucun sous-espace ne correspond à votre filtre actuel.",
+      "clearFilters": "Effacer les filtres"
+    }
   },
   "about": {
     "title": "À propos",

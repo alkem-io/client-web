@@ -1,4 +1,4 @@
-import { Globe, Lock, UserCheck } from 'lucide-react';
+import { Globe, Lock, Pin, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { StackedAvatars } from '@/crd/components/common/StackedAvatars';
 import { cn } from '@/crd/lib/utils';
@@ -28,6 +28,7 @@ export type SpaceCardData = {
   avatarColor: string;
   isPrivate: boolean;
   isMember?: boolean;
+  isPinned?: boolean;
   tags: string[];
   leads: SpaceLead[];
   href: string;
@@ -98,8 +99,14 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
             </div>
           )}
 
-          {/* Privacy badge */}
-          <div className="absolute top-3 right-3 z-[3]">
+          {/* Privacy + pin badges */}
+          <div className="absolute top-3 right-3 z-[3] flex items-center gap-1">
+            {space.isPinned && (
+              <output className="flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-[10px] font-semibold bg-background/85 text-foreground">
+                <Pin aria-hidden="true" className="size-2.5" />
+                <span className="sr-only">{t('crd-common:pinned')}</span>
+              </output>
+            )}
             <div
               className={cn(
                 'flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-[10px] font-semibold',
