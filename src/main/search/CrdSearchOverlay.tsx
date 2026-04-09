@@ -243,9 +243,13 @@ export function CrdSearchOverlay() {
     mappedUsers.length > 0 ||
     mappedOrgs.length > 0;
 
+  // When tags exist but data hasn't arrived yet (data is undefined/null and not loading),
+  // treat as loading to avoid a flash of "no results" before the query fires.
+  const queryNotStartedYet = !hasNoTags && !data && !isSearching;
+
   let overlayState: SearchOverlayState = 'empty';
   if (!hasNoTags) {
-    if (isSearching) {
+    if (isSearching || queryNotStartedYet) {
       overlayState = 'loading';
     } else if (hasAnyResults) {
       overlayState = 'results';
