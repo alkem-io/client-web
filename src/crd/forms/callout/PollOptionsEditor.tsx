@@ -91,7 +91,7 @@ export function PollOptionsEditor({
                 size="icon"
                 className="h-9 w-9 text-muted-foreground hover:text-destructive"
                 onClick={() => removeOption(index)}
-                aria-label="Remove option"
+                aria-label={t('forms.removeOption')}
               >
                 <Trash2 className="w-4 h-4" aria-hidden="true" />
               </Button>

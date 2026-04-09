@@ -1,4 +1,5 @@
 import { Presentation, StickyNote } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
@@ -35,6 +36,8 @@ export function FramingEditorConnector({
   pollOptions,
   onPollOptionsChange,
 }: FramingEditorConnectorProps) {
+  const { t } = useTranslation('crd-space');
+
   switch (framingType) {
     case 'whiteboard':
       return (
@@ -47,12 +50,12 @@ export function FramingEditorConnector({
               <Presentation className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-medium text-sm">New Whiteboard</p>
-              <p className="text-xs text-muted-foreground">Ready to be created</p>
+              <p className="font-medium text-sm">{t('framing.newWhiteboard')}</p>
+              <p className="text-xs text-muted-foreground">{t('framing.readyToCreate')}</p>
             </div>
           </div>
           <Button variant="outline" size="sm" className="h-8">
-            Configure
+            {t('framing.configure')}
           </Button>
         </div>
       );
@@ -68,8 +71,8 @@ export function FramingEditorConnector({
               <StickyNote className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-medium text-sm">Memo</p>
-              <p className="text-xs text-muted-foreground">Rich text content editor</p>
+              <p className="font-medium text-sm">{t('framing.memo')}</p>
+              <p className="text-xs text-muted-foreground">{t('framing.richTextEditor')}</p>
             </div>
           </div>
           {/* Tiptap editor will be rendered here by the integration layer */}

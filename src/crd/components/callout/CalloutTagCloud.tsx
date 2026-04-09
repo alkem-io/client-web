@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -27,6 +28,7 @@ export function CalloutTagCloud({
   onClear,
   className,
 }: CalloutTagCloudProps) {
+  const { t } = useTranslation('crd-space');
   const hasSelection = selectedTags.length > 0;
 
   return (
@@ -51,9 +53,9 @@ export function CalloutTagCloud({
 
       {hasSelection && (
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">{resultsCount} results</span>
+          <span className="text-muted-foreground">{t('callout.resultsCount', { count: resultsCount })}</span>
           <Button variant="ghost" size="sm" className="text-xs h-7" onClick={onClear}>
-            Clear filters
+            {t('callout.clearFilters')}
           </Button>
         </div>
       )}

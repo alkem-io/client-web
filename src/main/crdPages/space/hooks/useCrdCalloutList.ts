@@ -26,6 +26,7 @@ export function useCrdCalloutList({ tabPosition, tagsFilter, skip }: UseCrdCallo
   return {
     callouts: calloutsSetProvided.callouts ?? [],
     calloutsSetId,
+    classificationTagsets,
     canCreateCallout: calloutsSetProvided.canCreateCallout,
     tabDescription: tabDescription ?? '',
     flowStateForNewCallouts,

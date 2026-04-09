@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import SubspaceContextProvider from '@/domain/space/context/SubspaceContext';
+import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import CrdSpacePageLayout from '../layout/CrdSpacePageLayout';
 
@@ -76,6 +77,32 @@ export default function CrdSpaceRoutes() {
               </SubspaceContextProvider>
             }
           />
+          {/* Legacy route redirects — old bookmarks/links use path-based sections */}
+          <Route
+            path={EntityPageSection.Dashboard}
+            element={<Navigate to={`../?${TabbedLayoutParams.Section}=1`} replace={true} />}
+          />
+          <Route
+            path={EntityPageSection.Community}
+            element={<Navigate to={`../?${TabbedLayoutParams.Section}=2`} replace={true} />}
+          />
+          <Route
+            path={EntityPageSection.Subspaces}
+            element={<Navigate to={`../?${TabbedLayoutParams.Section}=3`} replace={true} />}
+          />
+          <Route
+            path={EntityPageSection.KnowledgeBase}
+            element={<Navigate to={`../?${TabbedLayoutParams.Section}=4`} replace={true} />}
+          />
+          <Route
+            path={EntityPageSection.Custom}
+            element={<Navigate to={`../?${TabbedLayoutParams.Section}=5`} replace={true} />}
+          />
+          <Route
+            path={EntityPageSection.Contribute}
+            element={<Navigate to={`../?${TabbedLayoutParams.Section}=1`} replace={true} />}
+          />
+          <Route path="explore/*" element={<Navigate to={`../?${TabbedLayoutParams.Section}=1`} replace={true} />} />
         </Route>
       </Routes>
     </SpaceContextProvider>

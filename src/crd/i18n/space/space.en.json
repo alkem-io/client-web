@@ -55,7 +55,23 @@
     "moreWhiteboards": "+{{count}} more",
     "vote": "Vote",
     "votes": "{{count}} votes",
-    "totalVotes": "{{count}} total votes"
+    "totalVotes": "{{count}} total votes",
+    "resultsCount": "{{count}} results",
+    "clearFilters": "Clear filters"
+  },
+  "contribution": {
+    "edit": "Edit",
+    "share": "Share",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "framing": {
+    "newWhiteboard": "New Whiteboard",
+    "readyToCreate": "Ready to be created",
+    "configure": "Configure",
+    "memo": "Memo",
+    "richTextEditor": "Rich text content editor"
   },
   "members": {
     "title": "Members",
@@ -145,7 +161,8 @@
     "linkDisplayName": "Display Name",
     "pollQuestion": "Question",
     "pollOption": "Option {{number}}",
-    "addOption": "Add Option"
+    "addOption": "Add Option",
+    "removeOption": "Remove option"
   },
   "a11y": {
     "spaceBanner": "Space banner for {{name}}",
