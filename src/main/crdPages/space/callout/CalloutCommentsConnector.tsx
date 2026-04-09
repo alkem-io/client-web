@@ -9,7 +9,7 @@ type CalloutCommentsConnectorProps = {
  * Fetches comment data for a callout and wires add/reply mutations.
  * Uses existing comment hooks from the domain layer.
  */
-//!!
+
 export function CalloutCommentsConnector({ calloutId: _calloutId, commentsEnabled }: CalloutCommentsConnectorProps) {
   if (!commentsEnabled) return null;
 

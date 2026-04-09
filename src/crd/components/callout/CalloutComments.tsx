@@ -17,7 +17,7 @@ type CalloutCommentsProps = {
   comments: CommentData[];
   canComment: boolean;
   onAddComment: (content: string) => void;
-  onReply?: (parentId: string, content: string) => void; //!!
+  onReply?: (parentId: string, content: string) => void;
   className?: string;
 };
 
