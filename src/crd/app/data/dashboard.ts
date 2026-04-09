@@ -1,3 +1,5 @@
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
 // Path helpers for default space visuals (copied from public/default-visuals/)
 // 'custom' represents a space whose owner uploaded their own image
 const CUSTOM_AVATAR =
@@ -18,6 +20,7 @@ export const MOCK_RECENT_SPACES = [
     isPrivate: true,
     isHomeSpace: true,
     initials: 'IL',
+    color: pickColorFromId('rs-1'),
   },
   {
     id: 'rs-2',
@@ -27,6 +30,7 @@ export const MOCK_RECENT_SPACES = [
     isPrivate: false,
     isHomeSpace: false,
     initials: 'DW',
+    color: pickColorFromId('rs-2'),
   },
   {
     id: 'rs-3',
@@ -36,6 +40,7 @@ export const MOCK_RECENT_SPACES = [
     isPrivate: true,
     isHomeSpace: false,
     initials: 'TS',
+    color: pickColorFromId('rs-3'),
   },
   {
     id: 'rs-4',
@@ -45,6 +50,7 @@ export const MOCK_RECENT_SPACES = [
     isPrivate: false,
     isHomeSpace: false,
     initials: 'FS',
+    color: pickColorFromId('rs-4'),
   },
 ];
 
@@ -226,6 +232,7 @@ export const MOCK_INVITATIONS = [
     spaceHref: '/space/sustainability-goals',
     spaceAvatarUrl: spaceAvatar('4'),
     role: 'Editor',
+    color: pickColorFromId('s-sustainability'),
   },
   {
     id: 'inv-2',
@@ -234,6 +241,7 @@ export const MOCK_INVITATIONS = [
     spaceHref: '/space/urban-mobility',
     spaceAvatarUrl: spaceAvatar('5'),
     role: 'Viewer',
+    color: pickColorFromId('s-urban-mobility'),
   },
   {
     id: 'inv-3',
@@ -242,6 +250,7 @@ export const MOCK_INVITATIONS = [
     spaceHref: '/space/financial-planning',
     spaceAvatarUrl: spaceAvatar('6'),
     role: 'Admin',
+    color: pickColorFromId('s-financial'),
   },
 ];
 
@@ -255,6 +264,7 @@ export const MOCK_PENDING_INVITATIONS = [
     senderName: 'Sarah Chen',
     welcomeMessageExcerpt: 'We would love to have you join our sustainability initiative. Your expertise in...',
     timeElapsed: '2 hours ago',
+    color: pickColorFromId('pi-1'),
   },
   {
     id: 'pi-2',
@@ -263,6 +273,7 @@ export const MOCK_PENDING_INVITATIONS = [
     senderName: 'Marc Johnson',
     welcomeMessageExcerpt: 'Join us to explore innovative urban transport solutions together!',
     timeElapsed: '1 day ago',
+    color: pickColorFromId('pi-2'),
   },
 ];
 
@@ -273,6 +284,7 @@ export const MOCK_PENDING_VC_INVITATIONS = [
     senderName: 'Platform Admin',
     welcomeMessageExcerpt: 'Your virtual contributor "DataBot" has been invited to participate in...',
     timeElapsed: '3 hours ago',
+    color: pickColorFromId('pv-1'),
   },
 ];
 
@@ -283,6 +295,7 @@ export const MOCK_PENDING_APPLICATIONS = [
     spaceAvatarUrl: spaceAvatar('6'),
     tagline: 'Collaborative quarterly financial planning and budgeting',
     spaceHref: '/space/financial-planning',
+    color: pickColorFromId('pa-app-1'),
   },
 ];
 
@@ -294,6 +307,7 @@ export const MOCK_INVITATION_DETAIL = {
   spaceHref: '/space/sustainability-goals',
   senderName: 'Sarah Chen',
   timeElapsed: '2 hours ago',
+  color: pickColorFromId('s-sustainability-detail'),
 };
 
 // ─── Notifications Mock Data ──────────────────────────────────────────────────

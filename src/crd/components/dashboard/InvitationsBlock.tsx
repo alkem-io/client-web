@@ -12,6 +12,9 @@ type InvitationCardData = {
   spaceHref: string;
   spaceAvatarUrl?: string;
   role: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type InvitationsBlockProps = {
@@ -66,7 +69,12 @@ export function InvitationsBlock({
               <li key={invitation.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
                 <Avatar className="size-10 rounded-lg">
                   {avatarSrc ? <AvatarImage src={avatarSrc} alt={invitation.spaceName} /> : null}
-                  <AvatarFallback className="rounded-lg text-xs">{getInitials(invitation.spaceName)}</AvatarFallback>
+                  <AvatarFallback
+                    className={cn('rounded-lg text-xs', invitation.color && 'text-white')}
+                    style={invitation.color ? { backgroundColor: invitation.color } : undefined}
+                  >
+                    {getInitials(invitation.spaceName)}
+                  </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1 min-w-0">

@@ -15,6 +15,9 @@ type InvitationDetailData = {
   spaceHref: string;
   senderName: string;
   timeElapsed: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type InvitationDetailDialogProps = {
@@ -105,7 +108,12 @@ function InvitationDetailDialog({
                     className="rounded-lg object-cover"
                   />
                 ) : null}
-                <AvatarFallback className="rounded-lg text-lg">{getInitials(invitation.spaceName)}</AvatarFallback>
+                <AvatarFallback
+                  className={cn('rounded-lg text-lg', invitation.color && 'text-white')}
+                  style={invitation.color ? { backgroundColor: invitation.color } : undefined}
+                >
+                  {getInitials(invitation.spaceName)}
+                </AvatarFallback>
               </Avatar>
               <p className="text-sm font-semibold leading-tight">{invitation.spaceName}</p>
               {invitation.spaceTagline && (

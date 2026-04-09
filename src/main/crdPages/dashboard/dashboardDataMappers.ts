@@ -1,8 +1,7 @@
 import type { TFunction } from 'i18next';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 export type CompactSpaceCardData = {
   id: string;
@@ -12,6 +11,7 @@ export type CompactSpaceCardData = {
   isPrivate: boolean;
   isHomeSpace: boolean;
   initials: string;
+  color: string;
 };
 
 export type ActivityItemData = {
@@ -65,6 +65,7 @@ export type InvitationCardData = {
   spaceHref: string;
   spaceAvatarUrl?: string;
   role: string;
+  color: string;
 };
 
 // Extracts up to 2 initials from a display name (first letter of first two words).
@@ -98,10 +99,13 @@ export const mapRecentSpacesToCompactCards = (
     id: space.id,
     name: space.about.profile.displayName,
     href: space.about.profile.url,
-    bannerUrl: space.about.profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, space.id),
+    // Leave undefined when the space has no real card banner — the component will
+    // render the deterministic gradient from `color` instead of a stock default.
+    bannerUrl: space.about.profile.cardBanner?.uri || undefined,
     isPrivate: !space.about.isContentPublic,
     isHomeSpace: space.id === homeSpaceId,
     initials: getInitials(space.about.profile.displayName),
+    color: pickColorFromId(space.id),
   }));
 };
 
@@ -205,6 +209,10 @@ type SidebarResources = {
   innovationPacks: SidebarResourceData[];
 };
 
+// Sidebar items use the muted/prototype palette — they're small list rows where
+// per-space rainbow colours feel noisy. Spaces / hubs / packs fall back to the
+// default grey AvatarFallback; virtual contributors get the prototype's chart-2
+// accent so they remain visually distinct from spaces.
 const mapProfileToSidebarItem = (id: string, profile: ProfileShape): SidebarResourceData => ({
   id,
   name: profile.displayName,
@@ -222,8 +230,11 @@ export const mapResourcesToSidebarItems = (resources: {
   spaces: (resources.spaces ?? []).map(s => mapProfileToSidebarItem(s.id, s.about.profile)),
   virtualContributors: (resources.virtualContributors ?? [])
     .filter(vc => vc.profile)
-    // biome-ignore lint/style/noNonNullAssertion: Filtered before
-    .map(vc => mapProfileToSidebarItem(vc.id, vc.profile!)),
+    .map(vc => ({
+      // biome-ignore lint/style/noNonNullAssertion: Filtered before
+      ...mapProfileToSidebarItem(vc.id, vc.profile!),
+      avatarColor: 'var(--chart-2)',
+    })),
   innovationHubs: (resources.innovationHubs ?? [])
     .filter(hub => hub.profile)
     // biome-ignore lint/style/noNonNullAssertion: Filtered before
@@ -256,15 +267,6 @@ type MembershipEntry = {
   childMemberships?: MembershipEntry[];
 };
 
-// Deterministic color palette for avatar fallbacks (matches CRD chart tokens)
-const SPACE_COLORS = ['#4caf50', '#42a5f5', '#ab47bc', '#ec407a', '#ffa726', '#8bc34a'];
-
-const pickColor = (id: string): string => {
-  let sum = 0;
-  for (let i = 0; i < id.length; i++) sum += id.charCodeAt(i);
-  return SPACE_COLORS[sum % SPACE_COLORS.length];
-};
-
 // Normalize raw GraphQL role strings (e.g. `'ADMIN'`, `'LEAD'`, `'MEMBER'` from the
 // `RoleName` enum) down to the subset the panel renders, preserving priority order
 // so the badges read consistently.
@@ -292,7 +294,7 @@ const mapEntryToPanelItem = (entry: MembershipEntry): MembershipItem => {
     isPrivate,
     roles: extractPanelRoles(space.community?.roleSet?.myRoles ?? []),
     initials: getInitials(profile.displayName),
-    color: pickColor(space.id),
+    color: pickColorFromId(space.id),
     image: profile.cardBanner?.uri ?? profile.avatar?.uri,
     children: childEntries.length > 0 ? childEntries.map(mapEntryToPanelItem) : undefined,
   };
@@ -325,6 +327,7 @@ export const mapInvitationsToCards = (invitations: InvitationEntry[]): Invitatio
     spaceHref: invitation.spacePendingMembershipInfo.about.profile.url,
     spaceAvatarUrl: invitation.spacePendingMembershipInfo.about.profile.avatar?.uri,
     role: invitation.contributorType ?? '',
+    color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
   }));
 };
 
@@ -369,15 +372,18 @@ export const mapDashboardSpaces = (
       name: profile.displayName,
       href: profile.url,
       tagline: profile.tagline,
-      bannerUrl: profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, space.id),
+      // Leave undefined when the space has no real card banner — the component will
+      // render the deterministic gradient from `color` instead of a stock default.
+      bannerUrl: profile.cardBanner?.uri || undefined,
       isHomeSpace: space.id === homeSpaceId,
+      color: pickColorFromId(space.id),
       subspaces: (membership.childMemberships ?? []).map(child => ({
         id: child.space.id,
         name: child.space.about.profile.displayName,
         href: child.space.about.profile.url,
-        bannerUrl:
-          child.space.about.profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, child.space.id),
+        bannerUrl: child.space.about.profile.cardBanner?.uri || undefined,
         isPrivate: !child.space.about.isContentPublic,
+        color: pickColorFromId(child.space.id),
       })),
     };
   });

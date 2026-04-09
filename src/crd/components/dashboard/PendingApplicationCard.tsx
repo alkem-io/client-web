@@ -8,6 +8,9 @@ type PendingApplicationCardData = {
   spaceAvatarUrl?: string;
   tagline?: string;
   spaceHref: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type PendingApplicationCardProps = {
@@ -47,7 +50,12 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
             className="rounded-lg object-cover"
           />
         ) : null}
-        <AvatarFallback className="rounded-lg text-xs">{getInitials(application.spaceName)}</AvatarFallback>
+        <AvatarFallback
+          className={cn('rounded-lg text-xs', application.color && 'text-white')}
+          style={application.color ? { backgroundColor: application.color } : undefined}
+        >
+          {getInitials(application.spaceName)}
+        </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">

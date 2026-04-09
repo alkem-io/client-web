@@ -8,6 +8,9 @@ export type SubspaceCardData = {
   href: string;
   bannerUrl?: string;
   isPrivate: boolean;
+  /** Deterministic accent colour, used for the banner gradient when no
+   * `bannerUrl` is provided. */
+  color?: string;
 };
 
 export type SpaceHierarchyCardData = {
@@ -18,6 +21,9 @@ export type SpaceHierarchyCardData = {
   bannerUrl?: string;
   isHomeSpace: boolean;
   subspaces: SubspaceCardData[];
+  /** Deterministic accent colour, used for the banner gradient when no
+   * `bannerUrl` is provided. */
+  color?: string;
 };
 
 type SpaceHierarchyCardProps = SpaceHierarchyCardData & {
@@ -26,11 +32,15 @@ type SpaceHierarchyCardProps = SpaceHierarchyCardData & {
   className?: string;
 };
 
+const gradientStyle = (color?: string): React.CSSProperties | undefined =>
+  color ? { background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` } : undefined;
+
 export function SpaceHierarchyCard({
   name,
   href,
   tagline,
   bannerUrl,
+  color,
   isHomeSpace,
   subspaces,
   onSeeMoreSubspaces,
@@ -59,7 +69,11 @@ export function SpaceHierarchyCard({
                   aria-hidden="true"
                 />
               ) : (
-                <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
+                <div
+                  className={cn('size-full', !color && 'bg-gradient-to-br from-muted to-accent')}
+                  style={gradientStyle(color)}
+                  aria-hidden="true"
+                />
               )}
             </div>
             {isHomeSpace && (
@@ -99,7 +113,11 @@ export function SpaceHierarchyCard({
                     aria-hidden="true"
                   />
                 ) : (
-                  <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
+                  <div
+                    className={cn('size-full', !subspace.color && 'bg-gradient-to-br from-muted to-accent')}
+                    style={gradientStyle(subspace.color)}
+                    aria-hidden="true"
+                  />
                 )}
                 {subspace.isPrivate && (
                   <div

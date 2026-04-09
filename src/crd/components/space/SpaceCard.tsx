@@ -77,7 +77,13 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-muted to-accent" />
+              <div
+                className="w-full h-full"
+                style={{
+                  background: `linear-gradient(135deg, ${space.avatarColor}, color-mix(in srgb, ${space.avatarColor} 70%, black))`,
+                }}
+                aria-hidden="true"
+              />
             )}
             <div
               className="absolute inset-0"

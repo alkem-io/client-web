@@ -11,6 +11,9 @@ export type CompactSpaceCardData = {
   isPrivate: boolean;
   isHomeSpace: boolean;
   initials?: string;
+  /** Deterministic accent colour, used for the initials tile and as the banner
+   * fallback when no `bannerUrl` is provided. */
+  color?: string;
 };
 
 type CompactSpaceCardProps = CompactSpaceCardData & {
@@ -25,10 +28,15 @@ export function CompactSpaceCard({
   isPrivate,
   isHomeSpace,
   initials,
+  color,
   onPinClick,
   className,
 }: CompactSpaceCardProps) {
   const { t } = useTranslation('crd-dashboard');
+
+  const fallbackBannerStyle = color
+    ? { background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` }
+    : undefined;
 
   return (
     <a
@@ -47,7 +55,11 @@ export function CompactSpaceCard({
             aria-hidden="true"
           />
         ) : (
-          <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
+          <div
+            className={cn('size-full', !color && 'bg-gradient-to-br from-muted to-accent')}
+            style={fallbackBannerStyle}
+            aria-hidden="true"
+          />
         )}
         {isPrivate && (
           <div

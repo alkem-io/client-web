@@ -9,6 +9,9 @@ type PendingInvitationCardData = {
   senderName: string;
   welcomeMessageExcerpt?: string;
   timeElapsed: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type PendingInvitationCardProps = {
@@ -39,7 +42,12 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
         {invitation.spaceAvatarUrl ? (
           <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} className="rounded-lg object-cover" />
         ) : null}
-        <AvatarFallback className="rounded-lg text-xs">{getInitials(invitation.spaceName)}</AvatarFallback>
+        <AvatarFallback
+          className={cn('rounded-lg text-xs', invitation.color && 'text-white')}
+          style={invitation.color ? { backgroundColor: invitation.color } : undefined}
+        >
+          {getInitials(invitation.spaceName)}
+        </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
