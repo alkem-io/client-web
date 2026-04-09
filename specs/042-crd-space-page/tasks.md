@@ -247,6 +247,76 @@
 
 ---
 
+## Phase 17: Community + Subspaces Top-Section Revision (Post-MVP Revision)
+
+**Goal**: Bring the top section of the Community and Subspaces tabs to visual parity with the prototype. The initial Phase 4 build shipped minimal versions of `SpaceMembers` and `SpaceSubspacesList`; this phase revises them to match the prototype design (section header with title + descriptive subtitle + primary action button, UserCard vs OrgCard differentiation with role badges, reuse of the existing CRD `SpaceCard` for the subspaces grid, prototype-style empty states) and wires the Invite Contributors and Create Subspace MUI dialogs.
+
+**Visual reference**: `prototype/src/app/pages/SpaceCommunity.tsx`, `SpaceSubspaces.tsx`, `prototype/src/app/components/space/SpaceMembers.tsx`, `SpaceSubspacesList.tsx`
+
+**Scope**: Top section only. The bottom section (callouts feed rendered by `CalloutListConnector`) and the page-level composition between top and bottom (`space-y-N` spacing, any divider, top/bottom ordering) are owned by a separate callouts work item and are untouched here.
+
+### i18n
+
+- [X] T098 [P] Extend `src/crd/i18n/space/space.en.json` `members` keys: update `title` → `"Community"`, update `search` placeholder, add `subtitle` (with `{{users}}` and `{{organizations}}` interpolation), add `inviteMember`, add `empty.{title,description,clearFilters}`, add `role.{admin,lead,member,organization}`; drop unused `filterHost`
+- [X] T099 [P] Extend `src/crd/i18n/space/space.en.json` `subspaces` keys: add `subtitle`, add `empty.{title,description,clearFilters}`; drop unused `noSubspaces` / `noSubspacesDescription` in favour of the new `empty` group
+- [X] T100 [P] Mirror T098 + T099 key changes to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
+- [X] T101 [P] Add `pinned` key to `src/crd/i18n/common/common.en.json` and mirror to `common.{nl,es,bg,de,fr}.json` — used by SpaceCard's new pin indicator
+
+### Data layer
+
+- [X] T102 Extend `MemberCardData` in `src/crd/components/space/SpaceMembers.tsx` with `role?: MemberRoleKey` (`'admin' | 'lead' | 'member' | 'organization'`) and `roleType?: MemberRoleType` (`'admin' | 'moderator' | 'member'`) — drives role badge styling
+- [X] T103 Extend `src/main/crdPages/space/dataMappers/communityDataMapper.ts` `mapRoleSetToMemberCards()` to derive `role` + `roleType` per user from `RoleSetMember.roles[]`: `Admin → 'admin'/'admin'`, `Lead → 'lead'/'moderator'`, default → `'member'/'member'`; organizations get `role: 'organization'` with no roleType
+- [X] T104 Rewrite `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts` to return `SpaceCardData[]` (from `@/crd/components/space/SpaceCard`) instead of the retired `SubspaceListCardData`: map `profile.displayName → name`, `tagline → description`, `cardBanner.uri || default → bannerImageUrl`, derive `initials` via `getInitials`, derive `avatarColor` via a new local `getAvatarColorFromId` helper (mirroring the explore-spaces palette), merge `leadUsers[] + leadOrganizations[] → leads: SpaceLead[]`, map `myMembershipStatus → isMember`. Accept a `sortMode?: SpaceSortMode` parameter and force `isPinned: false` unless `sortMode === SpaceSortMode.Alphabetical` (FR-031)
+- [X] T105 Update `src/main/crdPages/space/hooks/useCrdSpaceCommunity.ts` to fetch the full role set (`relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member]`) and return the deduplicated flat `users` / `organizations` arrays from `useRoleSetManager` (each entry carrying its full `roles[]`), plus `usersCount` + `organizationsCount` for the subtitle
+
+### CRD presentational layer
+
+- [X] T106 Add optional `isPinned?: boolean` to `SpaceCardData` in `src/crd/components/space/SpaceCard.tsx`; render a `Pin` (lucide-react) badge inside an `<output>` next to the existing privacy badge when `isPinned` is true, with an sr-only `crd-common:pinned` label. Backwards-compatible for the explore spaces consumer
+- [X] T107 Revise `src/crd/components/space/SpaceMembers.tsx` to match the prototype's `SpaceMembers`:
+  - Section header: `<h2>` title (default `t('members.title')` = "Community"), subtitle `<p>` (default `t('members.subtitle', { users, organizations })`), optional "Invite Member" button (`UserPlus` icon) that only renders when both `canInvite && onInvite` are provided
+  - New props: `title?`, `subtitle?`, `usersCount?`, `organizationsCount?`, `canInvite?`, `onInvite?`
+  - Drop the `'host'` filter (no matching data); keep `['all', 'admin', 'lead', 'member', 'organization']`
+  - Add `aria-pressed` on filter pills
+  - Differentiate `UserCard` (rounded-full avatar + role badge with color by `roleType`: `admin` → `primary`, `moderator` → `chart-2`, `member` → `muted`) vs `OrganizationCard` (rounded-md avatar + "Organization" badge with `Building2` icon)
+  - Replace the simple "No members found" paragraph with a prototype-style empty state: muted circular User icon, `empty.title`, `empty.description`, and a "Clear filters" link button that resets search + filter + page
+  - Keep all business-logic-free constraints (no `@/domain/`, no `@/core/apollo/`, no router imports)
+- [X] T108 Revise `src/crd/components/space/SpaceSubspacesList.tsx` to use the existing CRD `SpaceCard` in the grid:
+  - Change prop type from `SubspaceListCardData[]` → `SpaceCardData[]`; delete the local `SubspaceListCardData` export (no other consumers in `src/`)
+  - Add section header: `<h2>` title (default `t('subspaces.title')`), subtitle `<p>` (default `t('subspaces.subtitle')`), "Create Subspace" button (already present — gate on `canCreate && onCreateClick`)
+  - Replace the inline subspace tile rendering with `<SpaceCard space={...} onClick={...} />` inside a `<ul>` / `<li>` list
+  - Add `aria-pressed` on filter pills
+  - Replace the empty state with prototype-style (dashed border, Folder icon, `empty.title`, `empty.description`, "Clear filters" link button when a filter is active)
+  - Change the `onSubspaceClick` signature from `(href: string) => void` to `(space: SpaceCardData) => void` to match `SpaceCard`'s `onClick` prop shape
+
+### Integration layer (MUI dialog wiring)
+
+- [X] T109 Update `src/main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx`:
+  - Read the new `usersCount` / `organizationsCount` / `canInvite` from `useCrdSpaceCommunity`
+  - Render the existing MUI `InviteContributorsDialog` from `@/domain/community/inviteContributors/InviteContributorsDialog` (the dialog-only variant, not the `InviteContributorsWizard` button wrapper), controlled by a local `inviteOpen` `useState`
+  - Pass a shared `onInvite` callback to both `<SpaceSidebar>` and `<SpaceMembers>` so the sidebar invite button and the section-header invite button trigger the same dialog
+  - Do NOT change the page's `space-y-8` wrapper, add no divider, and do NOT touch `<CalloutListConnector>` — that's owned by the separate callouts work item
+- [X] T110 Update `src/main/crdPages/space/tabs/CrdSpaceSubspacesPage.tsx`:
+  - Read `sortMode` from `subspacesData?.lookup.space?.settings.sortMode`
+  - Sort the raw subspaces via existing `useSubspacesSorted(rawSubspaces, sortMode)` from `@/domain/space/hooks/useSubspacesSorted` BEFORE mapping
+  - Pass `sortMode` into `mapSubspacesToCardDataList(sorted, sortMode)` so pin indicators only render in alphabetical mode
+  - Render the existing MUI `CreateSubspace` dialog from `@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace` via a local `isCreateDialogOpen` `useState`; pass `onCreateClick={() => setIsCreateDialogOpen(true)}` to `<SpaceSubspacesList>`
+  - Do NOT change the page's `space-y-8` wrapper, add no divider, and do NOT touch `<CalloutListConnector>`
+
+### Standalone preview
+
+- [X] T111 Update `src/crd/app/data/space.ts` `MOCK_SUBSPACES` to conform to `SpaceCardData` (rename `tagline → description`, `bannerUrl → bannerImageUrl`, add `initials` + `avatarColor`, upgrade `leads` to include `type: 'person' | 'org'`); swap import from `SubspaceListCardData` to `SpaceCardData`. Keeps the standalone preview app compiling with the new prop shape
+
+**Checkpoint**: Community tab renders the revised members gallery with counts, Invite Member button, UserCard/OrgCard differentiation, role badges, and a clear empty state. Subspaces tab renders the revised list using `SpaceCard` (banner + privacy + stacked avatars + leads footer), Create Subspace button, and Pin indicator in alphabetical mode. Both MUI dialogs (Invite Contributors + Create Subspace) open from the section-header buttons. The callouts feed below the top section continues to render exactly as before (untouched).
+
+**Out of scope for this phase (follow-ups)**:
+- Sidebar search field for subspaces when count > 3 (FR-028)
+- Real "Archived" subspace filtering (API currently doesn't expose status — filter pill is a visual affordance)
+- Member dropdown menu (View Profile / Message / Remove) — requires additional MUI dialog wiring
+- "Joined {date}" meta on UserCard — `joinDate` not exposed by the role set query
+- Page-level composition (spacing + divider between top and bottom section) — owned by the callouts work item
+
+---
+
 ## Dependencies & Execution Order
 
 ```
@@ -265,6 +335,7 @@ Phase 1 (setup + primitives)
   Phase 8 complete → Phase 11 (templates)
   Phase 5 complete → Phase 12 (comments)
   Phase 5 complete → Phase 16 (callout lazy loading)
+  Phase 6 complete → Phase 17 (community + subspaces top-section revision)
   All desired → Phase 14 (mobile) + Phase 15 (polish)
 ```
 

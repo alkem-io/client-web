@@ -266,21 +266,22 @@ A user views the Dashboard tab (default first tab) of a Space L0 page. The sideb
 
 ### User Story 3 - Subspaces Tab (Priority: P1)
 
-A user views the Subspaces tab to browse child spaces (L1). The sidebar shows the tab description, a create-subspace trigger (if permitted), and a searchable list of subspace links. The main content area shows a filterable grid of subspace cards with banner images, names, tags, privacy indicators, membership status, and lead avatars.
+A user views the Subspaces tab to browse child spaces (L1). The sidebar shows the tab description, a create-subspace trigger (if permitted), and a searchable list of subspace links. The main content area opens with a section header (title, a descriptive subtitle, and a Create Subspace action button for authorized users), a status filter row, and a filterable grid of subspace cards with banner images, names, tags, privacy indicators, membership status, and lead avatars.
 
 **Why this priority**: Subspace browsing is core to space navigation and can reuse/extend the SpaceCard CRD component from 039, making it a high-value, lower-effort migration target.
 
-**Independent Test**: Navigate to a Space with subspaces and select the Subspaces tab. Cards render in a grid with correct data. Filtering by tags works. Create button appears for authorized users.
+**Independent Test**: Navigate to a Space with subspaces and select the Subspaces tab. Section header shows title + subtitle + (for authorized users) Create Subspace button. Cards render in a grid with correct data. Filtering by tags works. The Create Subspace button opens the creation flow.
 
 **Acceptance Scenarios**:
 
-1. **Given** a space has subspaces, **When** the Subspaces tab loads, **Then** a grid of subspace cards displays with banner, name, tagline, tags, privacy indicator, and lead avatars
+1. **Given** a space has subspaces, **When** the Subspaces tab loads, **Then** the main content area shows a section header with the tab title and subtitle copy, followed by a grid of subspace cards displaying banner, name, tagline, tags, privacy indicator, and lead avatars
 2. **Given** more than 3 subspaces exist, **When** the sidebar renders, **Then** a search field appears above the subspace link list for filtering
-3. **Given** a user has create-subspace permission, **When** the tab renders, **Then** a create button is visible and triggers the subspace creation flow (reused MUI dialog)
+3. **Given** a user has create-subspace permission, **When** the tab renders, **Then** a Create Subspace button is visible in the section header and triggers the subspace creation flow (reused MUI dialog)
 4. **Given** subspaces have tag metadata, **When** a user selects a tag filter, **Then** only matching subspace cards are shown
 5. **Given** a subspace is private, **When** its card renders, **Then** a privacy/lock indicator is visible
 6. **Given** a user is a member of a subspace, **When** its card renders, **Then** a membership indicator is shown
 7. **Given** space sort mode is alphabetical and a subspace is pinned, **When** its card renders, **Then** a pin indicator is visible
+8. **Given** a filter returns no subspaces, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
 
 ---
 
@@ -308,21 +309,22 @@ A user views any tab and sees callout content blocks rendered in the CRD design 
 
 ### User Story 5 - Community Tab (Priority: P2)
 
-A user views the Community tab to see space members, leadership, and community resources. The sidebar shows the tab description, lead users and organizations, a "Contact Leads" action, invite functionality (if permitted), virtual contributors (if entitled), and community guidelines. The main content area shows member and organization cards in a wide format, plus CRD-rendered callout blocks.
+A user views the Community tab to see space members, leadership, and community resources. The sidebar shows the tab description, lead users and organizations, a "Contact Leads" action, invite functionality (if permitted), virtual contributors (if entitled), and community guidelines. The main content area opens with a section header (title, a descriptive subtitle showing member and organization counts, and an Invite Member action button for authorized users), a search input and role filter row, a paginated grid of member and organization cards with visually distinct treatments, plus CRD-rendered callout blocks.
 
 **Why this priority**: Community interaction is important but involves more specialized components (member cards, leads sections, invite wizards) that build on the simpler patterns from Dashboard and Subspaces.
 
-**Independent Test**: Navigate to a Space and select the Community tab. Leads, members, and guidelines are displayed. Contact Leads opens a dialog. Invite functionality appears for authorized users.
+**Independent Test**: Navigate to a Space and select the Community tab. Leads, members with counts, and guidelines are displayed. Contact Leads opens a dialog. Invite Member is available in both the sidebar and the section header for authorized users and opens the same flow.
 
 **Acceptance Scenarios**:
 
 1. **Given** a user views the Community tab, **When** the content loads, **Then** the sidebar shows lead users and lead organizations with avatar, name, and location
 2. **Given** a user clicks "Contact Leads", **When** the action triggers, **Then** the direct message dialog opens (reused MUI dialog)
-3. **Given** a user has invite privileges, **When** the tab renders, **Then** an invite contributors action is available
+3. **Given** a user has invite privileges, **When** the tab renders, **Then** an Invite Member action is visible both in the sidebar and in the members section header; clicking either entry point opens the same invite contributors dialog (reused MUI dialog)
 4. **Given** the space has virtual contributor entitlements and VCs assigned, **When** the tab renders, **Then** a Virtual Contributors section appears
-5. **Given** a user is authenticated, **When** the member cards render, **Then** user and organization members are displayed in wide card format with avatar, name, location, and tagline
+5. **Given** a user is authenticated, **When** the member grid renders, **Then** user and organization members are displayed with visually distinct card treatments (circular avatar + role badge for users; square avatar + organization badge for organizations), plus name and tagline
 6. **Given** a user is not authenticated, **When** the member section renders, **Then** individual user cards are hidden (only organizations shown)
 7. **Given** the space has community guidelines configured, **When** the tab renders, **Then** a community guidelines block appears in the sidebar
+8. **Given** a user enters a search query or picks a role filter that returns no matches, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
 
 ---
 
@@ -555,16 +557,20 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-022**: The sidebar MUST show an invite-contributors action when the user has invite privileges
 - **FR-023**: The sidebar MUST show a Virtual Contributors section when the space has the VC entitlement and either has VCs assigned or the user can invite VCs
 - **FR-024**: The sidebar MUST show a Community Guidelines block when guidelines are configured
-- **FR-025**: The main content area MUST display member users and organizations in a wide card format (user cards hidden for unauthenticated visitors)
+- **FR-025**: The main content area MUST open with a members section containing: a section header (title, subtitle showing "{users} members and {organizations} organizations in this space", and an Invite Member action button for users with invite privileges), a search input and role filter pills (All, Admin, Lead, Member, Organization), a paginated responsive grid of member cards differentiating users (circular avatar + color-coded role badge) from organizations (square avatar + Organization badge), and an empty state with a Clear filters action when no results match
+- **FR-025a**: The Invite Member action in the members section header MUST trigger the same invite-contributors dialog as the sidebar action (FR-022); both entry points MUST be gated by the same permission flag
+- **FR-025b**: User cards in the members grid MUST be hidden for unauthenticated visitors (only organization cards shown)
 - **FR-026**: The main content area MUST render callout content blocks in the CRD design system
 
 #### Subspaces Tab
 
 - **FR-027**: The sidebar MUST show the tab description and a create-subspace action (when the user has permission)
 - **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces)
-- **FR-029**: The main content area MUST display subspace cards in a grid layout with: banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars
+- **FR-029**: The main content area MUST open with a subspaces section containing: a section header (title, descriptive subtitle, and a Create Subspace action button for users with permission), a status filter row (All / Active / Archived), and a responsive grid of subspace cards displaying banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars. The grid MUST reuse the existing CRD `SpaceCard` component introduced in 039 (extended with an optional pin indicator — see FR-031)
+- **FR-029a**: The Create Subspace action in the subspaces section header MUST trigger the reused MUI Create Subspace dialog; the button MUST be gated by the `canCreateSubspaces` permission
+- **FR-029b**: The subspaces section MUST show an empty state with a Clear filters action when the current filter yields no results
 - **FR-030**: The subspace card grid MUST support tag-based filtering
-- **FR-031**: Subspace cards MUST show a pin indicator when the space uses alphabetical sorting and the subspace is pinned
+- **FR-031**: Subspace cards MUST show a pin indicator when the space uses alphabetical sorting and the subspace is pinned; in custom sort mode the pin indicator MUST NOT render
 - **FR-032**: The main content area MUST render callout content blocks in the CRD design system
 
 #### Custom Tabs (Knowledge Base and beyond)
@@ -698,8 +704,8 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **SpacePageData**: Core space identity for the page shell -- name, tagline, banner visual (URL), avatar, visibility status (Active/Archived/Demo/Inactive), level (L0), whether it is the user's home space, and the user's membership status
 - **SpaceTab**: A single tab in the navigation -- positional index, display label (from Innovation Flow state or default), description text, whether it is a default tab or custom, and its associated Innovation Flow state identifier
 - **SpaceLead**: A lead user or organization -- name, avatar URL, type (person or organization), location (city/country)
-- **SpaceMember**: A community member -- name, avatar URL, type (user or organization), location, tagline, tags
-- **SubspaceCardData**: Data for a subspace card -- id, name, tagline, banner image URL, tags, privacy status, membership status, pinned status, lead users/organizations, navigation href
+- **SpaceMember**: A community member -- name, avatar URL, type (user or organization), role (Admin / Lead / Member for users, or Organization for organizations), location, tagline, tags. Role drives the member card's badge styling and matches the role filter pills.
+- **SubspaceCardData**: Data for a subspace card -- id, name, description (from tagline), banner image URL, initials + deterministic avatar colour, tags, privacy status, membership status, pinned status (only rendered when the parent space uses alphabetical sorting), lead users/organizations, navigation href. Conforms to the same shape used by the explore-spaces `SpaceCard` component (from 039) so the same presentational component can render both.
 - **SpaceAboutData**: Full space details for the About page -- description, "who" text, "why" text, location, metrics (name-value pairs), provider/host organization, lead users, lead organizations, community guidelines, external references
 - **CalendarEvent**: An event in the space calendar -- title, start date, duration, whether it is a whole-day event
 - **SpaceMetric**: A key-value metric about the space -- name (e.g., "members") and value

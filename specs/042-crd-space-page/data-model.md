@@ -92,19 +92,28 @@ type CalendarEventData = {
 
 ## Community Tab
 
-### SpaceMemberData
+### MemberCardData (exported from `src/crd/components/space/SpaceMembers.tsx`)
 ```typescript
-type SpaceMemberData = {
+type MemberRoleType = 'admin' | 'moderator' | 'member';
+type MemberRoleKey = 'admin' | 'lead' | 'member' | 'organization';
+
+type MemberCardData = {
   id: string;
   name: string;
   avatarUrl?: string;
   type: 'user' | 'organization';
+  /** Users: 'admin' | 'lead' | 'member'. Organizations: 'organization'. */
+  role?: MemberRoleKey;
+  /** Drives the role badge colour — only set for users. */
+  roleType?: MemberRoleType;
   location?: string;
   tagline?: string;
   tags: string[];
   href: string;
 };
 ```
+
+The integration layer derives `role` + `roleType` from the user's full `RoleName[]` with precedence `Admin > Lead > Member`. `SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: admin → primary, moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
 
 ### VirtualContributorData
 ```typescript
@@ -118,21 +127,45 @@ type VirtualContributorData = {
 
 ## Subspaces Tab
 
-### SubspaceCardData
+### SpaceCardData (reused from `src/crd/components/space/SpaceCard.tsx`, originally 039)
+
+The Subspaces tab does not define its own subspace card type — it reuses the `SpaceCardData` shape from the 039 explore-spaces `SpaceCard` component. This matches Assumption 7 in the spec and lets the same presentational component serve both the explore-spaces grid and the subspaces tab grid.
+
 ```typescript
-type SubspaceCardData = {
+type SpaceLead = {
+  name: string;
+  avatarUrl: string;            // '' when no avatar available
+  type: 'person' | 'org';
+};
+
+type SpaceCardParent = {
+  name: string;
+  href: string;
+  avatarUrl?: string;
+  initials: string;
+  avatarColor: string;
+};
+
+type SpaceCardData = {
   id: string;
   name: string;
-  tagline?: string;
-  bannerUrl?: string;
-  tags: string[];
+  description: string;          // For subspaces: derived from tagline
+  bannerImageUrl?: string;
+  initials: string;             // Derived via getInitials(displayName)
+  avatarColor: string;          // Derived deterministically from id (palette)
   isPrivate: boolean;
-  isMember: boolean;
-  isPinned: boolean;
-  leads: SpaceLeadData[];
+  isMember?: boolean;
+  /** Only rendered when the parent space uses alphabetical sorting (FR-031). */
+  isPinned?: boolean;
+  tags: string[];
+  leads: SpaceLead[];
   href: string;
+  matchedTerms?: boolean;       // Used by explore-spaces search; unused for subspaces
+  parent?: SpaceCardParent;     // Unused for top-level subspaces; used for nested cards
 };
 ```
+
+The `subspaceCardDataMapper` in the integration layer takes a `sortMode?: SpaceSortMode` argument and forces `isPinned: false` for any mode other than `SpaceSortMode.Alphabetical`, so the pin indicator only appears when it is semantically meaningful.
 
 ## Callout System
 

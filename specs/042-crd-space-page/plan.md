@@ -265,6 +265,16 @@ Poll questions, options, and voting UI rendered in CRD. Vote submission via `onV
 ### D16: Mobile bottom navigation
 CRD `SpaceTabs` component renders as horizontal tabs on desktop (above content) and as a fixed bottom bar on mobile (below content). Overflow actions (Activity, Video Call, Share, Settings) accessible via a "More" button that opens a drawer (Radix Dialog/Sheet). Same UX as current MUI BottomNavigation but CRD-styled.
 
+### D17: Reuse `SpaceCard` (from 039) for the Subspaces tab grid
+Rather than maintaining a second subspace tile implementation inside `SpaceSubspacesList`, the subspaces grid composes the existing `@/crd/components/space/SpaceCard` component built for the 039 explore-spaces page. This matches Assumption 7 in the spec ("Subspace cards can reuse or extend the SpaceCard CRD component from 039") and gives subspace cards the richer prototype visual treatment (banner image with gradient overlay, privacy badge, stacked parent/child avatars, leads footer) at zero cost. The data mapper (`subspaceCardDataMapper.ts`) maps GraphQL results into `SpaceCardData`, including a deterministic `avatarColor` derived from the subspace id.
+
+Pinning (FR-031) is handled by adding an optional `isPinned?: boolean` to `SpaceCardData` and rendering a `Pin` icon badge next to the privacy badge. The data mapper takes a `sortMode?: SpaceSortMode` argument and forces `isPinned: false` for any mode other than `SpaceSortMode.Alphabetical`, so the indicator only appears when it is semantically meaningful.
+
+### D18: Section-header pattern for top-of-tab gallery sections
+The Community and Subspaces tab top sections (`SpaceMembers`, `SpaceSubspacesList`) share a section-header pattern: `<h2>` title + `<p>` descriptive subtitle + optional primary action button (Invite Member / Create Subspace). Title and subtitle accept optional prop overrides but default to `useTranslation('crd-space')` keys, so a future consumer on a different tab can reuse the component with different copy. The primary action only renders when both the permission flag (`canInvite` / `canCreate`) and its callback (`onInvite` / `onCreateClick`) are provided by the integration layer, keeping the components self-contained and permission-agnostic.
+
+Both MUI dialogs are rendered inside the integration-layer page (`CrdSpaceCommunityPage` / `CrdSpaceSubspacesPage`) — `InviteContributorsDialog` (the dialog-only component, not the button-wrapper `InviteContributorsWizard`) for invites, and `CreateSubspace` for creation — controlled by local `useState`. In the Community tab, the same `onInvite` callback is passed to both the sidebar and the section-header button, so either entry point opens the same dialog.
+
 ## Phased Implementation
 
 | Phase | User Stories | What Ships | Effort |
