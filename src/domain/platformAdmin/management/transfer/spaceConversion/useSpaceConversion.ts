@@ -129,6 +129,8 @@ const useSpaceConversion = () => {
   return {
     space: mutationCompleted ? undefined : space,
     resolvedLevel: mutationCompleted ? undefined : resolvedLevel,
+    resolvedSpaceId: mutationCompleted ? undefined : resolvedSpaceId,
+    levelZeroSpaceId: mutationCompleted ? undefined : levelZeroSpaceId,
     accountOwnerName,
     communityCounts,
     siblingSubspaces,

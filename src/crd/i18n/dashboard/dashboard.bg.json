@@ -113,5 +113,24 @@
   "withoutMemberships": {
     "createSpace": "Създай собствено пространство",
     "createSpaceDescription": "Започни да си сътрудничиш, като създадеш първото си пространство"
+  },
+  "pendingMemberships": {
+    "title": "Чакащи членства",
+    "empty": "Нямаш отворени покани или заявления.",
+    "loading": "Зареждане на чакащи членства",
+    "close": "Затвори",
+    "closeDialog": "Затвори диалога",
+    "invitationsSection": "Покани",
+    "vcInvitationsSection": "Покани за виртуални сътрудници",
+    "applicationsSection": "Отворени заявления",
+    "detail": {
+      "back": "Обратно към списъка",
+      "reject": "Откажи",
+      "rejectAriaLabel": "Откажи поканата за {{spaceName}}",
+      "accept": "Приеми",
+      "acceptAriaLabel": "Приеми поканата за {{spaceName}}",
+      "join": "Присъедини се",
+      "joinAriaLabel": "Присъедини се към {{spaceName}}"
+    }
   }
 }

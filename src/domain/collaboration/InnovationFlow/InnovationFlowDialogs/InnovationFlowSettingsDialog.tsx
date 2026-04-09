@@ -8,6 +8,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { Caption } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { useSpace } from '@/domain/space/context/useSpace';
 import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -27,6 +28,9 @@ const InnovationFlowSettingsDialog = ({
   collaborationId,
 }: InnovationFlowSettingsDialogProps) => {
   const { t } = useTranslation();
+  const {
+    space: { accountId },
+  } = useSpace();
   const { isSmallScreen } = useScreenSize();
 
   const { data, actions, state } = useInnovationFlowSettings({
@@ -120,6 +124,7 @@ const InnovationFlowSettingsDialog = ({
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
         templateType={TemplateType.Space}
+        accountId={accountId}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates={true}

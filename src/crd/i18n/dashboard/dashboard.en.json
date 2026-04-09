@@ -113,5 +113,24 @@
   "withoutMemberships": {
     "createSpace": "Create your own Space",
     "createSpaceDescription": "Start collaborating by creating your first space"
+  },
+  "pendingMemberships": {
+    "title": "Pending Memberships",
+    "empty": "You don't have any open invitations or applications.",
+    "loading": "Loading pending memberships",
+    "close": "Close",
+    "closeDialog": "Close dialog",
+    "invitationsSection": "Invitations",
+    "vcInvitationsSection": "Virtual Contributor Invitations",
+    "applicationsSection": "Open Applications",
+    "detail": {
+      "back": "Back to list",
+      "reject": "Decline",
+      "rejectAriaLabel": "Decline invitation to {{spaceName}}",
+      "accept": "Accept",
+      "acceptAriaLabel": "Accept invitation to {{spaceName}}",
+      "join": "Join",
+      "joinAriaLabel": "Join {{spaceName}}"
+    }
   }
 }
