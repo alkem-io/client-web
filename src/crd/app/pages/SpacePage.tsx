@@ -44,7 +44,7 @@ export function SpacePage() {
       events={[]}
       onShowCalendar={() => {}}
       // Community
-      lead={sidebarVariant === 'community' ? MOCK_SIDEBAR.lead : undefined}
+      leads={sidebarVariant === 'community' ? MOCK_SIDEBAR.leads : undefined}
       onContactLead={sidebarVariant === 'community' ? () => {} : undefined}
       onInvite={sidebarVariant === 'community' ? () => {} : undefined}
       canInvite={sidebarVariant === 'community'}

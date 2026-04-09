@@ -1,11 +1,9 @@
-import { Folder, Plus } from 'lucide-react';
+import { Folder, Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
-
-type SubspaceFilter = 'all' | 'active' | 'archived';
 
 type SpaceSubspacesListProps = {
   subspaces: SpaceCardData[];
@@ -17,10 +15,35 @@ type SpaceSubspacesListProps = {
   canCreate?: boolean;
   onCreateClick?: () => void;
   onSubspaceClick?: (space: SpaceCardData) => void;
+  /**
+   * Initial number of subspace cards rendered before a "Show more" button
+   * appears. Defaults to 6 (a 3-column grid with 2 rows).
+   */
+  initialVisibleCount?: number;
   className?: string;
 };
 
-const FILTERS: SubspaceFilter[] = ['all', 'active', 'archived'];
+const DEFAULT_INITIAL_VISIBLE = 6;
+
+/**
+ * Aggregate tags across every subspace, sort by frequency desc then
+ * alphabetically, and return the unique tag list. Mirrors the MUI
+ * `SpaceFilter` behavior but pure and client-side.
+ */
+function collectTags(subspaces: SpaceCardData[]): string[] {
+  const counts = new Map<string, number>();
+  for (const subspace of subspaces) {
+    for (const tag of subspace.tags) {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].toLocaleLowerCase().localeCompare(b[0].toLocaleLowerCase());
+    })
+    .map(([tag]) => tag);
+}
 
 export function SpaceSubspacesList({
   subspaces,
@@ -29,29 +52,42 @@ export function SpaceSubspacesList({
   canCreate,
   onCreateClick,
   onSubspaceClick,
+  initialVisibleCount = DEFAULT_INITIAL_VISIBLE,
   className,
 }: SpaceSubspacesListProps) {
   const { t } = useTranslation('crd-space');
-  const [activeFilter, setActiveFilter] = useState<SubspaceFilter>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState(false);
 
-  const filterLabels: Record<SubspaceFilter, string> = {
-    all: t('subspaces.filterAll'),
-    active: t('subspaces.filterActive'),
-    archived: t('subspaces.filterArchived'),
-  };
+  const allTags = collectTags(subspaces);
 
-  // Apply status filter. Real data currently exposes no archived status, so
-  // the filter is a visual affordance — "active" and "all" show the same set,
-  // "archived" shows empty.
-  let filtered: SpaceCardData[];
-  if (activeFilter === 'archived') {
-    filtered = [];
-  } else {
-    filtered = subspaces;
+  // Apply search + tag filter.
+  let filtered = subspaces;
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    filtered = filtered.filter(
+      s => s.name.toLowerCase().includes(query) || s.description.toLowerCase().includes(query)
+    );
+  }
+  if (selectedTags.length > 0) {
+    filtered = filtered.filter(s => selectedTags.every(tag => s.tags.includes(tag)));
   }
 
-  const resetFilters = () => setActiveFilter('all');
-  const hasActiveFilter = activeFilter !== 'all';
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
+    setShowAll(false);
+  };
+
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSelectedTags([]);
+    setShowAll(false);
+  };
+
+  const hasActiveFilter = searchQuery.length > 0 || selectedTags.length > 0;
+  const visibleSubspaces = showAll ? filtered : filtered.slice(0, initialVisibleCount);
+  const hiddenCount = filtered.length - visibleSubspaces.length;
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.subspacesGrid')}>
@@ -69,40 +105,69 @@ export function SpaceSubspacesList({
         )}
       </div>
 
-      {/* Filter pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-        {FILTERS.map(filter => {
-          const isActive = activeFilter === filter;
-          return (
-            <button
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-              aria-pressed={isActive}
-              className={cn(
-                'px-3 py-1.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                isActive
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-              )}
-            >
-              {filterLabels[filter]}
-            </button>
-          );
-        })}
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+        <input
+          type="text"
+          placeholder={t('subspaces.search')}
+          value={searchQuery}
+          onChange={e => {
+            setSearchQuery(e.target.value);
+            setShowAll(false);
+          }}
+          aria-label={t('subspaces.search')}
+          className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-sm text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+        />
       </div>
+
+      {/* Tag filter chips — wrap onto multiple rows */}
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {allTags.map(tag => {
+            const isSelected = selectedTags.includes(tag);
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => toggleTag(tag)}
+                aria-pressed={isSelected}
+                className={cn(
+                  'px-3 py-1.5 text-xs font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  isSelected
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
+                )}
+              >
+                {tag}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Grid */}
       {filtered.length === 0 ? (
         <EmptyState hasActiveFilter={hasActiveFilter} onClear={resetFilters} />
       ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0">
-          {filtered.map(subspace => (
-            <li key={subspace.id} className="h-full">
-              <SpaceCard space={subspace} onClick={onSubspaceClick} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0">
+            {visibleSubspaces.map(subspace => (
+              <li key={subspace.id} className="h-full">
+                <SpaceCard space={subspace} onClick={onSubspaceClick} />
+              </li>
+            ))}
+          </ul>
+
+          {/* Show more / show less */}
+          {filtered.length > initialVisibleCount && (
+            <div className="flex justify-center pt-4">
+              <Button variant="outline" onClick={() => setShowAll(prev => !prev)}>
+                {showAll ? t('subspaces.showLess') : t('subspaces.showMore', { count: hiddenCount })}
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

@@ -315,14 +315,27 @@ export const MOCK_SIDEBAR = {
       href: '/space/green-energy/challenges/transportation',
     },
   ],
-  lead: {
-    name: 'Elena Martinez',
-    avatarUrl:
-      'https://images.unsplash.com/photo-1623853589874-864b1dd4d922?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    initials: 'EM',
-    location: 'Amsterdam, NL',
-    bio: 'Community Host. Driving sustainable innovation in urban planning.',
-  },
+  leads: [
+    {
+      id: 'lead-1',
+      name: 'Elena Martinez',
+      avatarUrl:
+        'https://images.unsplash.com/photo-1623853589874-864b1dd4d922?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      initials: 'EM',
+      location: 'Amsterdam, NL',
+      href: '/user/elena-martinez',
+      type: 'person' as const,
+    },
+    {
+      id: 'lead-2',
+      name: 'Green Future Labs',
+      avatarUrl: undefined,
+      initials: 'GF',
+      location: 'Amsterdam, NL',
+      href: '/org/green-future-labs',
+      type: 'org' as const,
+    },
+  ],
   guidelines: [
     'Be respectful and constructive in all discussions.',
     'Share knowledge openly and credit original sources.',

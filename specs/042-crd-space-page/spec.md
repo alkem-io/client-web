@@ -266,22 +266,24 @@ A user views the Dashboard tab (default first tab) of a Space L0 page. The sideb
 
 ### User Story 3 - Subspaces Tab (Priority: P1)
 
-A user views the Subspaces tab to browse child spaces (L1). The sidebar shows the tab description, a create-subspace trigger (if permitted), and a searchable list of subspace links. The main content area opens with a section header (title, a descriptive subtitle, and a Create Subspace action button for authorized users), a status filter row, and a filterable grid of subspace cards with banner images, names, tags, privacy indicators, membership status, and lead avatars.
+A user views the Subspaces tab to browse child spaces (L1). The sidebar shows the tab description, a create-subspace trigger (if permitted), and a searchable list of subspace links. The main content area opens with a section header (title, a descriptive subtitle, and a Create Subspace action button for authorized users), a text search input, a wrapping row of selectable tag chips aggregated from the subspaces' own tags, a grid of subspace cards with banner images, names, tags, privacy indicators, membership status, and lead avatars, and a "Show more" control that keeps the grid compact when a space has many subspaces so the callouts below remain reachable.
 
 **Why this priority**: Subspace browsing is core to space navigation and can reuse/extend the SpaceCard CRD component from 039, making it a high-value, lower-effort migration target.
 
-**Independent Test**: Navigate to a Space with subspaces and select the Subspaces tab. Section header shows title + subtitle + (for authorized users) Create Subspace button. Cards render in a grid with correct data. Filtering by tags works. The Create Subspace button opens the creation flow.
+**Independent Test**: Navigate to a Space with more than 6 subspaces and select the Subspaces tab. Section header, search, tag chips and an initial grid of 6 cards render. Typing in search or picking tags filters the grid live. Clicking "Show more" expands to the full list; the callouts section stays reachable without excessive scrolling.
 
 **Acceptance Scenarios**:
 
-1. **Given** a space has subspaces, **When** the Subspaces tab loads, **Then** the main content area shows a section header with the tab title and subtitle copy, followed by a grid of subspace cards displaying banner, name, tagline, tags, privacy indicator, and lead avatars
+1. **Given** a space has subspaces, **When** the Subspaces tab loads, **Then** the main content area shows a section header with the tab title and subtitle copy, a search input, a wrapping row of tag chips, and a grid of subspace cards displaying banner, name, tagline, tags, privacy indicator, and lead avatars
 2. **Given** more than 3 subspaces exist, **When** the sidebar renders, **Then** a search field appears above the subspace link list for filtering
 3. **Given** a user has create-subspace permission, **When** the tab renders, **Then** a Create Subspace button is visible in the section header and triggers the subspace creation flow (reused MUI dialog)
-4. **Given** subspaces have tag metadata, **When** a user selects a tag filter, **Then** only matching subspace cards are shown
-5. **Given** a subspace is private, **When** its card renders, **Then** a privacy/lock indicator is visible
-6. **Given** a user is a member of a subspace, **When** its card renders, **Then** a membership indicator is shown
-7. **Given** space sort mode is alphabetical and a subspace is pinned, **When** its card renders, **Then** a pin indicator is visible
-8. **Given** a filter returns no subspaces, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
+4. **Given** subspaces have tag metadata, **When** the main content area renders, **Then** every unique tag across the subspaces appears as a selectable chip sorted by frequency (desc) then alphabetically, and clicking a chip narrows the grid to subspaces that carry all currently-selected tags
+5. **Given** a user types in the search input, **When** the query is applied, **Then** the grid filters to subspaces whose name or tagline matches the query; search and tag chips combine (a subspace must satisfy both to appear)
+6. **Given** a subspace is private, **When** its card renders, **Then** a privacy/lock indicator is visible
+7. **Given** a user is a member of a subspace, **When** its card renders, **Then** a membership indicator is shown
+8. **Given** space sort mode is alphabetical and a subspace is pinned, **When** its card renders, **Then** a pin indicator is visible
+9. **Given** a filter returns no subspaces, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
+10. **Given** a space has more than 6 subspaces matching the current filter, **When** the grid renders, **Then** only the first 6 cards are shown followed by a "Show N more" button; clicking it reveals the rest and the button toggles to "Show less" to collapse back
 
 ---
 
@@ -317,14 +319,15 @@ A user views the Community tab to see space members, leadership, and community r
 
 **Acceptance Scenarios**:
 
-1. **Given** a user views the Community tab, **When** the content loads, **Then** the sidebar shows lead users and lead organizations with avatar, name, and location
-2. **Given** a user clicks "Contact Leads", **When** the action triggers, **Then** the direct message dialog opens (reused MUI dialog)
+1. **Given** a user views the Community tab and the space has at least one lead, **When** the content loads, **Then** the sidebar shows a "Space Lead" / "Space Leads" block listing each lead user and lead organization with avatar, name and location; when the space has no leads the block is hidden entirely
+2. **Given** a user clicks "Contact Leads" in the sidebar, **When** the action triggers, **Then** the reused MUI direct-message dialog opens with all lead users pre-populated as message receivers; the Contact Leads button is hidden when no lead users exist
 3. **Given** a user has invite privileges, **When** the tab renders, **Then** an Invite Member action is visible both in the sidebar and in the members section header; clicking either entry point opens the same invite contributors dialog (reused MUI dialog)
-4. **Given** the space has virtual contributor entitlements and VCs assigned, **When** the tab renders, **Then** a Virtual Contributors section appears
+4. **Given** the space has the virtual-contributor entitlement AND at least one assigned VC, **When** the tab renders, **Then** a Virtual Contributors section appears in the sidebar below the leads/contact/invite row; when either condition is missing the section is hidden entirely
 5. **Given** a user is authenticated, **When** the member grid renders, **Then** user and organization members are displayed with visually distinct card treatments (circular avatar + role badge for users; square avatar + organization badge for organizations), plus name and tagline
 6. **Given** a user is not authenticated, **When** the member section renders, **Then** individual user cards are hidden (only organizations shown)
 7. **Given** the space has community guidelines configured, **When** the tab renders, **Then** a community guidelines block appears in the sidebar
 8. **Given** a user enters a search query or picks a role filter that returns no matches, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
+9. **Given** a user holds multiple roles (e.g. Admin AND Lead), **When** the viewer selects the Lead filter, **Then** that user appears in the filtered results (the Admin and Lead filters are overlapping sets, not mutually exclusive); the user's display badge still reflects the highest-precedence role (Admin)
 
 ---
 
@@ -552,24 +555,26 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 #### Community Tab
 
 - **FR-019**: The sidebar MUST display the tab description (with edit capability for authorized users)
-- **FR-020**: The sidebar MUST show lead users and lead organizations with name, avatar, and location
-- **FR-021**: The sidebar MUST include a "Contact Leads" action that triggers a messaging dialog
-- **FR-022**: The sidebar MUST show an invite-contributors action when the user has invite privileges
-- **FR-023**: The sidebar MUST show a Virtual Contributors section when the space has the VC entitlement and either has VCs assigned or the user can invite VCs
+- **FR-020**: The sidebar MUST show lead users and lead organizations in a single "Space Lead" / "Space Leads" block with compact rows (avatar + name + location); when there are zero leads the entire block MUST be hidden, and the singular/plural heading MUST reflect the actual count
+- **FR-021**: The sidebar MUST include a "Contact Leads" action that triggers the reused MUI direct-message dialog with the space's lead users pre-populated as message receivers; the action MUST be hidden when the space has zero lead users or the community id is not available
+- **FR-022**: The sidebar MUST show an invite-contributors action when the user has invite privileges; the same action MUST be available in the members section header and MUST open the same dialog
+- **FR-023**: The sidebar MUST show a Virtual Contributors section ONLY when BOTH conditions are met: (a) the space has the virtual-contributor license entitlement AND (b) at least one visible (non-hidden) VC is assigned to the community. When either condition is false the section MUST be hidden entirely
 - **FR-024**: The sidebar MUST show a Community Guidelines block when guidelines are configured
 - **FR-025**: The main content area MUST open with a members section containing: a section header (title, subtitle showing "{users} members and {organizations} organizations in this space", and an Invite Member action button for users with invite privileges), a search input and role filter pills (All, Admin, Lead, Member, Organization), a paginated responsive grid of member cards differentiating users (circular avatar + color-coded role badge) from organizations (square avatar + Organization badge), and an empty state with a Clear filters action when no results match
 - **FR-025a**: The Invite Member action in the members section header MUST trigger the same invite-contributors dialog as the sidebar action (FR-022); both entry points MUST be gated by the same permission flag
 - **FR-025b**: User cards in the members grid MUST be hidden for unauthenticated visitors (only organization cards shown)
+- **FR-025c**: Role filter pills MUST treat Admin and Lead as overlapping sets: a user who holds both roles MUST appear under both filters. The display badge MUST reflect the highest-precedence role (Admin > Lead > Member), but the filter MUST match against the user's full role list, not the display badge alone
 - **FR-026**: The main content area MUST render callout content blocks in the CRD design system
 
 #### Subspaces Tab
 
 - **FR-027**: The sidebar MUST show the tab description and a create-subspace action (when the user has permission)
 - **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces)
-- **FR-029**: The main content area MUST open with a subspaces section containing: a section header (title, descriptive subtitle, and a Create Subspace action button for users with permission), a status filter row (All / Active / Archived), and a responsive grid of subspace cards displaying banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars. The grid MUST reuse the existing CRD `SpaceCard` component introduced in 039 (extended with an optional pin indicator — see FR-031)
+- **FR-029**: The main content area MUST open with a subspaces section containing, in order: a section header (title, descriptive subtitle, and a Create Subspace action button for users with permission), a text search input, a wrapping row of tag chips aggregated from the subspaces themselves, and a responsive grid of subspace cards displaying banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars. The grid MUST reuse the existing CRD `SpaceCard` component introduced in 039 (extended with an optional pin indicator — see FR-031)
 - **FR-029a**: The Create Subspace action in the subspaces section header MUST trigger the reused MUI Create Subspace dialog; the button MUST be gated by the `canCreateSubspaces` permission
 - **FR-029b**: The subspaces section MUST show an empty state with a Clear filters action when the current filter yields no results
-- **FR-030**: The subspace card grid MUST support tag-based filtering
+- **FR-029c**: The subspaces section MUST limit the initial render to a fixed number of cards (default 6) followed by a "Show N more" button; clicking the button MUST reveal the remainder and toggle to "Show less" to collapse back. The purpose is to keep the callouts rendered below the subspaces section reachable without excessive scrolling when a space has many subspaces
+- **FR-030**: The tag chips row above the grid MUST aggregate every unique tag across the subspaces, sort them by frequency (descending) then alphabetically, and wrap onto multiple rows when they exceed the available width. Selecting multiple chips MUST combine as AND (a subspace must carry every selected tag to appear). Selecting/deselecting chips MUST compose with the text search (both filters apply simultaneously)
 - **FR-031**: Subspace cards MUST show a pin indicator when the space uses alphabetical sorting and the subspace is pinned; in custom sort mode the pin indicator MUST NOT render
 - **FR-032**: The main content area MUST render callout content blocks in the CRD design system
 

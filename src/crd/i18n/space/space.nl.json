@@ -20,7 +20,8 @@
     "noEvents": "Geen aankomende evenementen",
     "showCalendar": "Kalender tonen",
     "spaceLead": "Space-leider",
-    "contactLead": "Leider contacteren",
+    "spaceLeads": "Space-leiders",
+    "contactLead": "Leiders contacteren",
     "invite": "Uitnodigen",
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
@@ -101,12 +102,12 @@
     "title": "Subspaces",
     "subtitle": "Ontdek gerichte werkstromen en uitdagingen binnen deze space.",
     "createSubspace": "Subspace aanmaken",
-    "filterAll": "Alle",
-    "filterActive": "Actief",
-    "filterArchived": "Gearchiveerd",
+    "search": "Subspaces zoeken...",
+    "showMore": "Toon {{count}} meer",
+    "showLess": "Minder tonen",
     "empty": {
       "title": "Geen subspaces gevonden",
-      "description": "Geen subspaces komen overeen met je huidige filter.",
+      "description": "Geen subspaces komen overeen met je huidige zoekopdracht of filter.",
       "clearFilters": "Filters wissen"
     }
   },

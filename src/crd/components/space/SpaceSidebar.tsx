@@ -7,7 +7,7 @@ import { CommunityGuidelinesSection } from './sidebar/CommunityGuidelinesSection
 import { EventsSection } from './sidebar/EventsSection';
 import { InfoBlock } from './sidebar/InfoBlock';
 import { KnowledgeIndexSection } from './sidebar/KnowledgeIndexSection';
-import { LeadBlock } from './sidebar/LeadBlock';
+import { LeadBlock, type LeadItem } from './sidebar/LeadBlock';
 import { SubspacesSection } from './sidebar/SubspacesSection';
 import { VirtualContributorsSection } from './sidebar/VirtualContributorsSection';
 
@@ -16,15 +16,6 @@ type SubspaceItem = {
   initials: string;
   color: string;
   href: string;
-};
-
-type LeadData = {
-  name: string;
-  avatarUrl?: string;
-  initials: string;
-  location?: string;
-  bio?: string;
-  href?: string;
 };
 
 type VirtualContributorItem = {
@@ -61,12 +52,15 @@ type SpaceSidebarProps = {
   knowledgeEntries?: KnowledgeEntry[];
   onKnowledgeEntryClick?: (id: string) => void;
   // Community
-  lead?: LeadData;
+  leads?: LeadItem[];
   onContactLead?: () => void;
   onInvite?: () => void;
   canInvite?: boolean;
+  canContactLeads?: boolean;
   virtualContributors?: VirtualContributorItem[];
   onVirtualContributorClick?: (href: string) => void;
+  /** When false, the entire VC section is hidden even if `virtualContributors` is non-empty. */
+  showVirtualContributors?: boolean;
   guidelines?: string[];
   // Extra
   children?: ReactNode;
@@ -85,12 +79,14 @@ export function SpaceSidebar({
   onAddEvent,
   knowledgeEntries = [],
   onKnowledgeEntryClick,
-  lead,
+  leads = [],
   onContactLead,
   onInvite,
   canInvite,
+  canContactLeads = true,
   virtualContributors = [],
   onVirtualContributorClick,
+  showVirtualContributors = true,
   guidelines = [],
   children,
   className,
@@ -130,24 +126,26 @@ export function SpaceSidebar({
 
       {variant === 'community' && (
         <>
-          {lead && <LeadBlock {...lead} />}
+          {leads.length > 0 && <LeadBlock leads={leads} />}
 
-          <div className="flex gap-2">
-            {onContactLead && (
-              <Button variant="outline" className="flex-1 gap-2 text-sm font-medium" onClick={onContactLead}>
-                <Mail className="w-4 h-4" aria-hidden="true" />
-                {t('sidebar.contactLead')}
-              </Button>
-            )}
-            {canInvite && onInvite && (
-              <Button className="flex-1 gap-2 text-sm font-medium" onClick={onInvite}>
-                <UserPlus className="w-4 h-4" aria-hidden="true" />
-                {t('sidebar.invite')}
-              </Button>
-            )}
-          </div>
+          {(canContactLeads || (canInvite && onInvite)) && (
+            <div className="flex gap-2">
+              {canContactLeads && onContactLead && (
+                <Button variant="outline" className="flex-1 gap-2 text-sm font-medium" onClick={onContactLead}>
+                  <Mail className="w-4 h-4" aria-hidden="true" />
+                  {t('sidebar.contactLead')}
+                </Button>
+              )}
+              {canInvite && onInvite && (
+                <Button className="flex-1 gap-2 text-sm font-medium" onClick={onInvite}>
+                  <UserPlus className="w-4 h-4" aria-hidden="true" />
+                  {t('sidebar.invite')}
+                </Button>
+              )}
+            </div>
+          )}
 
-          {virtualContributors.length > 0 && (
+          {showVirtualContributors && virtualContributors.length > 0 && (
             <VirtualContributorsSection
               contributors={virtualContributors}
               onContributorClick={onVirtualContributorClick}

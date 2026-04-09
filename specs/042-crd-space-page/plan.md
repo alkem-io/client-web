@@ -275,6 +275,29 @@ The Community and Subspaces tab top sections (`SpaceMembers`, `SpaceSubspacesLis
 
 Both MUI dialogs are rendered inside the integration-layer page (`CrdSpaceCommunityPage` / `CrdSpaceSubspacesPage`) — `InviteContributorsDialog` (the dialog-only component, not the button-wrapper `InviteContributorsWizard`) for invites, and `CreateSubspace` for creation — controlled by local `useState`. In the Community tab, the same `onInvite` callback is passed to both the sidebar and the section-header button, so either entry point opens the same dialog.
 
+### D19: Community sidebar — unified Lead block, Contact Leads via MUI portal, entitlement-gated VC section
+The prototype shows a single "SPACE LEAD(S)" card containing every lead rather than one card per lead. `LeadBlock` takes `leads: LeadItem[]`, auto-returns `null` when empty, and chooses the singular or plural heading based on `leads.length`. Each row is compact (avatar + name + location, no bio) so multiple leads stack cleanly in the narrow sidebar column; organizations render with `rounded-md` avatars to mirror the members-grid treatment. The leads list is built in the integration layer from `usersByRole[Lead]` + `organizationsByRole[Lead]` returned by `useRoleSetManager` — that payload carries the richer profile (location, avatar) the sidebar needs, so we do not fall back to `space.about.membership?.leadUsers` (which is a lighter subset).
+
+"Contact Leads" in the sidebar opens the existing MUI `DirectMessageDialog` rendered inline in `CrdSpaceCommunityPage.tsx` and controlled by local `useState`. Message receivers are built from `leadUsers` only (lead organizations are not direct-message targets). Both the dialog and the button are gated on `leadUsers.length > 0 && Boolean(communityId)` — the button is hidden whenever no receivers exist, so the component never opens an unusable dialog. The mutation comes from `useSendMessageToCommunityLeads(communityId)` unchanged.
+
+The Virtual Contributors section requires BOTH an entitlement check (`LicenseEntitlementType.SpaceFlagVirtualContributorAccess` in `useSpace().entitlements`) AND at least one visible VC (hidden-search VCs filtered out). `SpaceSidebar` exposes a `showVirtualContributors?: boolean` prop (default true) so the integration layer can pass the entitlement flag explicitly; the VC sub-component already hides itself when the list is empty. Both conditions must be true for the section to render.
+
+### D20: Subspace filter — search + tag chips + Show More, not status pills
+The earlier iteration shipped a placeholder All/Active/Archived pill row, but neither the API nor the prototype distinguishes archived subspaces — real data always maps to "active", so the filter was non-functional. D20 replaces it with the MUI `SpaceFilter` pattern adapted to CRD:
+
+- **Search input**: matches against `name` + `description`, styled identically to the Community tab's member search (icon prefix, focus ring, full-width).
+- **Tag chips**: a pure `collectTags(subspaces)` helper aggregates every unique tag across the subspace list, sorts by frequency (desc) then alphabetically, and returns the deduplicated list. Each tag renders as a toggleable chip that wraps onto multiple rows when they exceed the container width (`flex flex-wrap gap-2`). Selecting multiple chips composes with AND semantics (the subspace must carry every selected tag) and composes with the text search (both apply simultaneously).
+- **Show More pagination**: the grid renders only `initialVisibleCount` cards (default 6 — a 3-column grid with 2 rows) and appends a centered "Show N more" button when the filtered set exceeds the cap. Clicking toggles to "Show less" to collapse back. This is purely client-side — the underlying `useSpaceSubspaceCardsQuery` still returns the full list — but it keeps the callouts rendered below the subspaces section reachable without the user having to scroll past 20+ subspace cards first.
+
+The earlier `SubspaceFilter` type and hard-coded `FILTERS` constant are deleted. Filter state lives in the component as three `useState` hooks (`searchQuery`, `selectedTags`, `showAll`) that reset together via a single `resetFilters()` helper invoked by the empty-state's Clear filters button.
+
+### D21: Role filters are overlapping sets, not mutually exclusive
+Admin + Lead + Member are not hierarchical labels but orthogonal roles — a single user can hold several. `MemberCardData` therefore carries both:
+- `role: MemberRoleKey` — the single most-elevated role, used for the display badge (precedence Admin > Lead > Member).
+- `roles: MemberRoleKey[]` — the full inclusive list, used by the filter pills.
+
+The `deriveUserRolesList(roles)` helper in `communityDataMapper.ts` walks the role set and pushes every applicable key (admin, lead, member) so an Admin who is also a Lead lands in both buckets. `SpaceMembers`'s filter logic checks `m.roles?.includes(activeFilter)` rather than `m.role === activeFilter`, so selecting "Lead" surfaces every user who holds the Lead role — including admins — while the display badge on the card still reads "Admin" (the higher-precedence role). Organizations always carry `role: 'organization'` and `roles: ['organization']`; they match only the Organization filter.
+
 ## Phased Implementation
 
 | Phase | User Stories | What Ships | Effort |

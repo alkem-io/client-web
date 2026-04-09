@@ -102,8 +102,18 @@ type MemberCardData = {
   name: string;
   avatarUrl?: string;
   type: 'user' | 'organization';
-  /** Users: 'admin' | 'lead' | 'member'. Organizations: 'organization'. */
+  /**
+   * Primary role used for the displayed badge label. Derived from
+   * the user's full role list with precedence Admin > Lead > Member.
+   * For organizations this is always `'organization'`.
+   */
   role?: MemberRoleKey;
+  /**
+   * Full list of roles the member holds. Used by the filter pills
+   * so a user who is both Admin and Lead appears under both filters.
+   * For organizations this is always `['organization']`.
+   */
+  roles?: MemberRoleKey[];
   /** Drives the role badge colour — only set for users. */
   roleType?: MemberRoleType;
   location?: string;
@@ -113,7 +123,11 @@ type MemberCardData = {
 };
 ```
 
-The integration layer derives `role` + `roleType` from the user's full `RoleName[]` with precedence `Admin > Lead > Member`. `SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: admin → primary, moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
+The integration layer derives `role` + `roleType` + `roles` from the user's full `RoleName[]`:
+- `role` + `roleType` follow precedence `Admin > Lead > Member` — they drive the single badge rendered on the card.
+- `roles` is the full inclusive list — filter pills match against it so overlapping sets (e.g. an Admin who is also a Lead) surface under every applicable filter.
+
+`SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: admin → primary, moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
 
 ### VirtualContributorData
 ```typescript

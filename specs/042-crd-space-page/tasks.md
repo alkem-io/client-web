@@ -317,6 +317,68 @@
 
 ---
 
+## Phase 18: Community Sidebar + Subspace Filter Refinement (Post-MVP Revision)
+
+**Goal**: Deliver the Community sidebar behavior end-to-end (leads block, Contact Leads → MUI DirectMessageDialog, entitlement-gated VC section) and replace the placeholder status filter on the Subspaces tab with a real search + tag-chip filter, capped via Show More, matching the MUI `SpaceFilter` behavior.
+
+**Visual reference**: `prototype/src/app/components/space/SpaceSidebar.tsx` (community variant), `prototype/src/app/components/space/SpaceMembers.tsx`; existing MUI `SpaceCommunityPage.tsx` (for DirectMessageDialog + VC wiring) and `SubspaceView.tsx` + `SpaceFilter.tsx` (for tag-filter behavior).
+
+### Data layer
+
+- [X] T112 Extend `useCrdSpaceCommunity` to expose full sidebar data: pull `usersByRole[Lead]` / `organizationsByRole[Lead]` for the leads block (the richer profile payload from `useRoleSetManager` — with location, avatar, url), `virtualContributorsByRole[Member]` filtered for `SearchVisibility.Hidden` for the VC section, and the `hasVcEntitlement` flag derived from `LicenseEntitlementType.SpaceFlagVirtualContributorAccess` on the space entitlements. Add `VirtualContributor` to the `contributorTypes` arg
+- [X] T113 Add `mapRoleSetMemberToSidebarLead(member, type: 'person' | 'org')` and `mapVirtualContributorToSidebar` in `src/main/crdPages/space/dataMappers/communityDataMapper.ts`, returning new exported types `SidebarLeadData` + `SidebarVirtualContributorData`
+- [X] T114 Store the member's full role list on `MemberCardData`: add `roles: MemberRoleKey[]`, derive it in `mapRoleSetToMemberCards` via a new `deriveUserRolesList(roles)` helper that returns every applicable role key (Admin, Lead, Member — inclusive) rather than the single precedence role. Keep the existing `role` / `roleType` fields for the display badge
+
+### CRD presentational layer
+
+- [X] T115 Rewrite `src/crd/components/space/sidebar/LeadBlock.tsx` to accept `leads: LeadItem[]` (with `{ id, name, avatarUrl?, initials, location?, href?, type: 'person' | 'org' }`) and render a single card with `sidebar.spaceLead` (singular) or `sidebar.spaceLeads` (plural) heading plus one compact row per lead. Organizations use `rounded-md` avatars to mirror the members-grid treatment. Returns `null` when the array is empty — callers can render unconditionally
+- [X] T116 Update `src/crd/components/space/SpaceSidebar.tsx` community variant:
+  - Replace `lead?: LeadData` with `leads?: LeadItem[]` (plural)
+  - Add `canContactLeads?: boolean` (default true) — hides the Contact Leads button when false
+  - Add `showVirtualContributors?: boolean` (default true) — hides the VC section when the space lacks the VC entitlement even if VCs are present
+  - Hide the Contact/Invite button row entirely when neither button is renderable
+  - Keep `onContactLead`, `onInvite`, `canInvite` as already exposed
+- [X] T117 Update `src/crd/components/space/SpaceMembers.tsx` filter logic: match the active filter pill against the full `m.roles` list (`roles?.includes(activeFilter)`) instead of `m.role === activeFilter`. Admin + Lead + Member are overlapping sets — a user who holds multiple roles MUST appear under every applicable filter
+- [X] T118 Replace the `All / Active / Archived` status pills in `src/crd/components/space/SpaceSubspacesList.tsx` with:
+  - A text search input (matches against `name` and `description`), styled to match the Community tab's members search
+  - A wrapping row of tag chips aggregated from all subspaces via a pure `collectTags()` helper (sorted by frequency desc then alphabetically)
+  - Selecting multiple tag chips filters with AND semantics (the subspace must carry every selected tag)
+  - Search and tag filters compose: both apply simultaneously
+  - Remove the local `SubspaceFilter` type and the `FILTERS` constant — the component no longer has a hard-coded status dimension
+- [X] T119 Add Show More pagination to `SpaceSubspacesList.tsx`: add `initialVisibleCount?: number` prop (default 6), render only the first N cards, and show a centered "Show {{count}} more" button below the grid when the filtered set exceeds the initial cap. Clicking toggles `showAll` state and swaps the button to "Show less". The button container MUST carry a `pt-4` offset so it doesn't visually collide with the last row of cards
+
+### Integration layer (MUI dialog wiring)
+
+- [X] T120 Update `src/main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx`:
+  - Import `DirectMessageDialog` + `MessageReceiverChipData` from `@/domain/communication/messaging/DirectMessaging/DirectMessageDialog` and `useSendMessageToCommunityLeads` from `@/domain/community/CommunityLeads/useSendMessageToCommunityLeads`
+  - Hold `contactOpen` state; build `messageReceivers` from `leadUsers` (lead organizations are not direct-message targets); compute `canContactLeads = leadUsers.length > 0 && Boolean(communityId)`
+  - Pass `leads = [...leadUsers, ...leadOrganizations]`, `canContactLeads`, `onContactLead`, `virtualContributors`, and `showVirtualContributors={hasVcEntitlement}` into `<SpaceSidebar>`
+  - Render `<DirectMessageDialog>` at the bottom of the page (inside the fragment) gated on `canContactLeads`; wire `onSendMessage={sendMessageToCommunityLeads}`
+  - Keep the existing `InviteContributorsDialog` wiring untouched
+
+### i18n
+
+- [X] T121 [P] Add sidebar + subspace keys to `src/crd/i18n/space/space.en.json` and mirror to `nl`, `es`, `bg`, `de`, `fr`: new `sidebar.spaceLeads` (plural), updated `sidebar.contactLead` → "Contact Leads" (plural), new `subspaces.search`, `subspaces.showMore` (with `{{count}}` interpolation), `subspaces.showLess`. Drop the now-unused `subspaces.filterAll` / `filterActive` / `filterArchived` keys
+
+### Standalone preview
+
+- [X] T122 Update `src/crd/app/data/space.ts` `MOCK_SIDEBAR.lead` → `MOCK_SIDEBAR.leads` (array with two sample leads — one person, one organization — matching the new `LeadItem` shape). Update `src/crd/app/pages/SpacePage.tsx` to pass `leads` instead of `lead` to `<SpaceSidebar>`
+
+### Fixes
+
+- [X] T123 Overlapping role filter fix: selecting the "Lead" filter was previously hiding users whose derived display role was "Admin" even when they also held the Lead role. Resolved by T117 (filter against `roles[]` list instead of the precedence-derived `role`)
+- [X] T124 Show-more button spacing fix: the "Show more" button under the subspace grid was visually glued to the last card row. Added explicit `pt-4` on the button's flex container inside `SpaceSubspacesList.tsx` (Tailwind `space-y-6` on the parent section composes with the extra padding)
+
+**Checkpoint**: Community sidebar shows every lead (users + organizations) under a singular/plural heading, hides when the space has no leads; Contact Leads opens the MUI `DirectMessageDialog` seeded with lead users; VC section is hidden without the entitlement OR without any visible VCs; Subspaces tab opens with a search input, a wrapping tag chip row aggregated from subspace tags, and a 6-card initial grid with a Show more toggle; Admin + Lead filters on the Community tab overlap correctly for users holding both roles.
+
+**Out of scope for this phase (follow-ups)**:
+- Sidebar search field for subspaces when count > 3 (FR-028) — still pending
+- Real "Archived" subspace filtering — the API doesn't expose status; consider dropping the status dimension entirely or surfacing it from the subspace visibility field
+- Host role surfacing in the members filter — the role set doesn't distinguish Host from Admin today
+- Pagination in the subspace grid beyond Show All (e.g. `+N` incremental reveal)
+
+---
+
 ## Dependencies & Execution Order
 
 ```
@@ -336,6 +398,7 @@ Phase 1 (setup + primitives)
   Phase 5 complete → Phase 12 (comments)
   Phase 5 complete → Phase 16 (callout lazy loading)
   Phase 6 complete → Phase 17 (community + subspaces top-section revision)
+  Phase 17 complete → Phase 18 (community sidebar + subspace filter refinement)
   All desired → Phase 14 (mobile) + Phase 15 (polish)
 ```
 

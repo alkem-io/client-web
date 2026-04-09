@@ -20,6 +20,7 @@
     "noEvents": "Keine anstehenden Veranstaltungen",
     "showCalendar": "Kalender anzeigen",
     "spaceLead": "Bereichsleiter",
+    "spaceLeads": "Bereichsleiter",
     "contactLead": "Leiter kontaktieren",
     "invite": "Einladen",
     "virtualContributors": "Virtuelle Mitwirkende",
@@ -101,12 +102,12 @@
     "title": "Unterbereiche",
     "subtitle": "Entdecken Sie fokussierte Arbeitsströme und Herausforderungen innerhalb dieses Bereichs.",
     "createSubspace": "Unterbereich erstellen",
-    "filterAll": "Alle",
-    "filterActive": "Aktiv",
-    "filterArchived": "Archiviert",
+    "search": "Unterbereiche suchen...",
+    "showMore": "{{count}} weitere anzeigen",
+    "showLess": "Weniger anzeigen",
     "empty": {
       "title": "Keine Unterbereiche gefunden",
-      "description": "Keine Unterbereiche entsprechen Ihrem aktuellen Filter.",
+      "description": "Keine Unterbereiche entsprechen Ihrer aktuellen Suche oder Ihrem Filter.",
       "clearFilters": "Filter zurücksetzen"
     }
   },

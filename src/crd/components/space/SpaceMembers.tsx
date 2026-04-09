@@ -14,8 +14,18 @@ export type MemberCardData = {
   name: string;
   avatarUrl?: string;
   type: 'user' | 'organization';
-  /** For users: 'admin' | 'lead' | 'member'. For organizations: 'organization'. */
+  /**
+   * Primary role used for the displayed badge label. Derived via
+   * precedence Admin > Lead > Member. For organizations this is
+   * always `'organization'`.
+   */
   role?: MemberRoleKey;
+  /**
+   * Full list of roles the member holds. Used by the filter pills so a
+   * user who is both Admin and Lead appears under both filters. For
+   * organizations this is always `['organization']`.
+   */
+  roles?: MemberRoleKey[];
   /** Drives the badge colour — only set for users. */
   roleType?: MemberRoleType;
   location?: string;
@@ -97,7 +107,10 @@ export function SpaceMembers({
   if (activeFilter === 'organization') {
     filtered = filtered.filter(m => m.type === 'organization');
   } else if (activeFilter !== 'all') {
-    filtered = filtered.filter(m => m.type === 'user' && m.role === activeFilter);
+    // Admin + Lead are not mutually exclusive — a user who holds both roles
+    // appears under both filters. Match against the full `roles` list, not
+    // just the derived primary `role` used for the display badge.
+    filtered = filtered.filter(m => m.type === 'user' && (m.roles?.includes(activeFilter) ?? m.role === activeFilter));
   }
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));

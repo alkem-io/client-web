@@ -20,7 +20,8 @@
     "noEvents": "Aucun événement à venir",
     "showCalendar": "Afficher le calendrier",
     "spaceLead": "Responsable de l'Espace",
-    "contactLead": "Contacter le responsable",
+    "spaceLeads": "Responsables de l'Espace",
+    "contactLead": "Contacter les responsables",
     "invite": "Inviter",
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
@@ -101,12 +102,12 @@
     "title": "Sous-espaces",
     "subtitle": "Explorez des flux de travail et des défis ciblés au sein de cet espace.",
     "createSubspace": "Créer un sous-espace",
-    "filterAll": "Tous",
-    "filterActive": "Actifs",
-    "filterArchived": "Archivés",
+    "search": "Rechercher des sous-espaces...",
+    "showMore": "Afficher {{count}} de plus",
+    "showLess": "Afficher moins",
     "empty": {
       "title": "Aucun sous-espace trouvé",
-      "description": "Aucun sous-espace ne correspond à votre filtre actuel.",
+      "description": "Aucun sous-espace ne correspond à votre recherche ou filtre actuel.",
       "clearFilters": "Effacer les filtres"
     }
   },

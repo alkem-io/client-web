@@ -23,7 +23,8 @@
     "noEvents": "No upcoming events",
     "showCalendar": "Show calendar",
     "spaceLead": "Space Lead",
-    "contactLead": "Contact Lead",
+    "spaceLeads": "Space Leads",
+    "contactLead": "Contact Leads",
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
@@ -104,12 +105,12 @@
     "title": "Subspaces",
     "subtitle": "Explore focused workstreams and challenges within this space.",
     "createSubspace": "Create Subspace",
-    "filterAll": "All",
-    "filterActive": "Active",
-    "filterArchived": "Archived",
+    "search": "Search subspaces...",
+    "showMore": "Show {{count}} more",
+    "showLess": "Show less",
     "empty": {
       "title": "No subspaces found",
-      "description": "No subspaces match your current filter.",
+      "description": "No subspaces match your current search or filter.",
       "clearFilters": "Clear filters"
     }
   },
