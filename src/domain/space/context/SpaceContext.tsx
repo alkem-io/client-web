@@ -118,6 +118,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
         tagset: spaceData?.about.profile.tagset,
         avatar: spaceData?.about.profile.avatar,
         cardBanner: spaceData?.about.profile.cardBanner,
+        banner: spaceData?.about.profile.banner,
       },
       guidelines: {
         id: spaceData?.about.guidelines?.id ?? '',

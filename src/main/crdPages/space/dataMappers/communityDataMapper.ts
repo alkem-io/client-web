@@ -43,6 +43,43 @@ export function mapLeadToSidebarData(user: UserLike) {
   };
 }
 
+type RoleSetMember = {
+  id: string;
+  profile?: {
+    displayName: string;
+    url: string;
+    avatar?: { uri: string } | null;
+    tagline?: string | null;
+    description?: string | null;
+    location?: { city?: string; country?: string } | null;
+    tagsets?: Array<{ tags: string[] }> | null;
+  };
+};
+
+export function mapRoleSetToMemberCards(users: RoleSetMember[], organizations: RoleSetMember[]): MemberCardData[] {
+  const toCard = (m: RoleSetMember, type: 'user' | 'organization'): MemberCardData | undefined => {
+    if (!m.profile) return undefined;
+    const location = [m.profile.location?.city, m.profile.location?.country].filter(Boolean).join(', ');
+    const tags = m.profile.tagsets?.flatMap(ts => ts.tags) ?? [];
+    return {
+      id: m.id,
+      name: m.profile.displayName,
+      avatarUrl: m.profile.avatar?.uri,
+      type,
+      location: location || undefined,
+      tagline: m.profile.tagline ?? m.profile.description ?? undefined,
+      tags,
+      href: m.profile.url,
+    };
+  };
+
+  const userCards = users.map(u => toCard(u, 'user')).filter((c): c is MemberCardData => c !== undefined);
+  const orgCards = organizations
+    .map(o => toCard(o, 'organization'))
+    .filter((c): c is MemberCardData => c !== undefined);
+  return [...userCards, ...orgCards];
+}
+
 export function mapVirtualContributor(vc: {
   id: string;
   profile: {

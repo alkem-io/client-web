@@ -1,5 +1,6 @@
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/crd/lib/utils';
 
@@ -57,7 +58,7 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         className
       )}
     >
-      <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+      <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>
         {content}
       </Markdown>
     </div>

@@ -1,7 +1,7 @@
 import { History, Settings, Share2 } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import Loading from '@/core/ui/loading/Loading';
@@ -20,10 +20,13 @@ import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation('crd-space');
-  const { spaceId, spaceLevel } = useUrlResolver();
-  const { space, visibility, permissions } = useSpace();
+  const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
+  const { space, visibility, permissions, loading: loadingSpace } = useSpace();
   const { isSmallScreen } = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [_shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
 
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
@@ -32,6 +35,16 @@ export default function CrdSpacePageLayout() {
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
+
+  // Permission guard: redirect unauthorized users to the About page
+  if (resolvingUrl || loadingSpace) {
+    return <Loading />;
+  }
+
+  if (!permissions.canRead) {
+    const aboutUrl = space.about.profile.url ? `${space.about.profile.url}/about` : 'about';
+    return <Navigate to={aboutUrl} replace={true} />;
+  }
 
   // Parse section index from URL
   const sectionParam = searchParams.get(TabbedLayoutParams.Section);
@@ -50,10 +63,6 @@ export default function CrdSpacePageLayout() {
 
   const visibilityData = mapSpaceVisibility(visibility);
   const memberAvatars = mapMemberAvatars(space.about.membership?.leadUsers);
-
-  const navigate = useNavigate();
-  const [_shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
 
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
