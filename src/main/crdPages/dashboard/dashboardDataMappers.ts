@@ -1,7 +1,9 @@
 import type { TFunction } from 'i18next';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 export type CompactSpaceCardData = {
   id: string;
@@ -102,7 +104,7 @@ export const mapRecentSpacesToCompactCards = (
     // Leave undefined when the space has no real card banner — the component will
     // render the deterministic gradient from `color` instead of a stock default.
     bannerUrl: space.about.profile.cardBanner?.uri || undefined,
-    isPrivate: !space.about.isContentPublic,
+    isPrivate: space.about.isContentPublic === false,
     isHomeSpace: space.id === homeSpaceId,
     initials: getInitials(space.about.profile.displayName),
     color: pickColorFromId(space.id),
@@ -278,13 +280,19 @@ const extractPanelRoles = (rawRoles: string[]): PanelRole[] => {
   return ROLE_ORDER.filter(r => seen.has(r));
 };
 
-const mapEntryToPanelItem = (entry: MembershipEntry): MembershipItem => {
+const mapEntryToPanelItem = (entry: MembershipEntry, depth = 0): MembershipItem => {
   const { space } = entry;
   const profile = space.about.profile;
   // Default to public when `isContentPublic` is absent (e.g. before codegen picks up
   // the new field). Spaces are public by default on the platform.
   const isPrivate = space.about.isContentPublic === false;
   const childEntries = entry.childMemberships ?? [];
+
+  // Root spaces (L0) show a banner thumbnail → prefer cardBanner, default to card visual.
+  // Child spaces (L1/L2) show an avatar → prefer avatar URI, default to avatar visual.
+  const isRoot = depth === 0;
+  const realImage = isRoot ? profile.cardBanner?.uri || undefined : profile.avatar?.uri || undefined;
+  const image = realImage ?? getDefaultSpaceVisualUrl(isRoot ? VisualType.Card : VisualType.Avatar, space.id);
 
   return {
     id: space.id,
@@ -295,8 +303,8 @@ const mapEntryToPanelItem = (entry: MembershipEntry): MembershipItem => {
     roles: extractPanelRoles(space.community?.roleSet?.myRoles ?? []),
     initials: getInitials(profile.displayName),
     color: pickColorFromId(space.id),
-    image: profile.cardBanner?.uri ?? profile.avatar?.uri,
-    children: childEntries.length > 0 ? childEntries.map(mapEntryToPanelItem) : undefined,
+    image,
+    children: childEntries.length > 0 ? childEntries.map(c => mapEntryToPanelItem(c, depth + 1)) : undefined,
   };
 };
 

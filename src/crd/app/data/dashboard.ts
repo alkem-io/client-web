@@ -1,8 +1,6 @@
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
-// One real "user uploaded" banner so the preview can demonstrate what a custom
-// image looks like. Every other mock space leaves its image field undefined and
-// falls back to the deterministic gradient from `pickColorFromId`.
+// Banner images for recent spaces — all 4 have real images, matching the prototype.
 const CUSTOM_BANNER_URL =
   'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080';
 
@@ -21,6 +19,8 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-2',
     name: 'Design Workshop',
     href: '/space/design-workshop',
+    bannerUrl:
+      'https://images.unsplash.com/photo-1735639013995-086e648eaa38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     isPrivate: false,
     isHomeSpace: false,
     initials: 'DW',
@@ -30,6 +30,8 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-3',
     name: 'Team Sync',
     href: '/space/team-sync',
+    bannerUrl:
+      'https://images.unsplash.com/photo-1768659347532-74d3b1efb0ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     isPrivate: true,
     isHomeSpace: false,
     initials: 'TS',
@@ -39,6 +41,8 @@ export const MOCK_RECENT_SPACES = [
     id: 'rs-4',
     name: 'Future Strategy',
     href: '/space/future-strategy',
+    bannerUrl:
+      'https://images.unsplash.com/photo-1676276376052-dc9c9c0b6917?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     isPrivate: false,
     isHomeSpace: false,
     initials: 'FS',
@@ -369,6 +373,13 @@ export const MOCK_NOTIFICATION_FILTERS = [
 
 import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
 
+// Subspace avatar images — small crop from the prototype's placeholder pool.
+const SUBSPACE_AVATARS = [
+  'https://images.unsplash.com/photo-1706720095318-e3538cae10bf?w=100&h=100&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1762939079730-23708c0dd337?w=100&h=100&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1765438869297-6fa4b627906a?w=100&h=100&fit=crop&q=80',
+] as const;
+
 export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
   // ── Green Energy Space ──
   {
@@ -380,6 +391,8 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     roles: ['admin', 'lead'],
     initials: 'GE',
     color: pickColorFromId('mp-1'),
+    image:
+      'https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     children: [
       {
         id: 'mp-1-1',
@@ -389,6 +402,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         roles: ['member'],
         initials: 'RE',
         color: pickColorFromId('mp-1-1'),
+        image: SUBSPACE_AVATARS[0],
         children: [
           {
             id: 'mp-1-1-1',
@@ -398,6 +412,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
             roles: ['lead'],
             initials: 'WE',
             color: pickColorFromId('mp-1-1-1'),
+            image: SUBSPACE_AVATARS[1],
           },
           {
             id: 'mp-1-1-2',
@@ -407,6 +422,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
             roles: ['member'],
             initials: 'HP',
             color: pickColorFromId('mp-1-1-2'),
+            // No image — tests initials fallback with color
           },
         ],
       },
@@ -418,6 +434,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         roles: ['admin'],
         initials: 'SP',
         color: pickColorFromId('mp-1-2'),
+        image: SUBSPACE_AVATARS[0],
       },
     ],
   },
@@ -431,6 +448,8 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     roles: ['member'],
     initials: 'CG',
     color: pickColorFromId('mp-2'),
+    image:
+      'https://images.unsplash.com/photo-1768776179834-93e6cafc6d97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     children: [
       {
         id: 'mp-2-1',
@@ -440,10 +459,11 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         roles: ['member'],
         initials: 'UF',
         color: pickColorFromId('mp-2-1'),
+        image: SUBSPACE_AVATARS[1],
       },
     ],
   },
-  // ── Digital Transformation (no subspaces) ──
+  // ── Digital Transformation (no subspaces, no image — tests gradient fallback) ──
   {
     id: 'mp-3',
     name: 'Digital Transformation',
@@ -454,8 +474,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
     initials: 'DT',
     color: pickColorFromId('mp-3'),
   },
-  // ── Innovation Lab — kept with a "user-uploaded" custom banner so the preview
-  // can showcase what a real banner image looks like in the panel. ──
+  // ── Innovation Lab ──
   {
     id: 'mp-4',
     name: 'Innovation Lab',
@@ -475,6 +494,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         roles: ['member'],
         initials: 'AI',
         color: pickColorFromId('mp-4-1'),
+        image: SUBSPACE_AVATARS[2],
       },
       {
         id: 'mp-4-2',
@@ -484,6 +504,7 @@ export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
         roles: ['member'],
         initials: 'DT',
         color: pickColorFromId('mp-4-2'),
+        // No image — tests initials fallback with color
       },
     ],
   },

@@ -150,9 +150,7 @@ export default function DashboardWithMemberships({
   const { data: myMembershipsData } = useMyMembershipsQuery({
     skip: dialogState.openDialog !== 'memberships',
   });
-  const membershipsItems = mapMembershipsToPanelItems(
-    (myMembershipsData?.me?.spaceMembershipsHierarchical ?? []) as Parameters<typeof mapMembershipsToPanelItems>[0]
-  );
+  const membershipsItems = mapMembershipsToPanelItems(myMembershipsData?.me?.spaceMembershipsHierarchical ?? []);
 
   // Campaign
   const showCampaign =

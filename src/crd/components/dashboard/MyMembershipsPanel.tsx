@@ -1,3 +1,4 @@
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import type { TFunction } from 'i18next';
 import { ChevronRight, Globe, Layers, Lock, Search, SearchX, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
@@ -6,6 +7,14 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogDescription,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+} from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { Separator } from '@/crd/primitives/separator';
@@ -156,9 +165,7 @@ function NodeAvatar({ item }: { item: MembershipItem }) {
   return (
     <Avatar className="w-8 h-8 shrink-0 rounded-md">
       {item.image ? <AvatarImage src={item.image} alt="" className="rounded-md" /> : null}
-      <AvatarFallback className="rounded-md text-[10px] text-white" style={{ backgroundColor: item.color }}>
-        {item.initials}
-      </AvatarFallback>
+      <AvatarFallback className="rounded-md text-[10px]">{item.initials}</AvatarFallback>
     </Avatar>
   );
 }
@@ -322,28 +329,6 @@ export function MyMembershipsPanel({
     }
   }, [open, items]);
 
-  // Close on Escape key
-  useEffect(() => {
-    if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, onClose]);
-
-  // Prevent body scroll when open
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }
-  }, [open]);
-
-  if (!open) return null;
-
   const filteredTree = filterTree(items, search, roleFilter, visibilityFilter);
   const filteredCount = countTreeItems(filteredTree);
 
@@ -373,150 +358,154 @@ export function MyMembershipsPanel({
   };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-[100]"
-        style={{
-          backgroundColor: 'color-mix(in srgb, var(--foreground) 50%, transparent)',
-          backdropFilter: 'blur(2px)',
-        }}
-        onClick={onClose}
-        aria-hidden="true"
-      />
+    <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
+      <DialogPortal>
+        <DialogOverlay
+          style={{
+            backgroundColor: 'color-mix(in srgb, var(--foreground) 50%, transparent)',
+            backdropFilter: 'blur(2px)',
+          }}
+          className="fixed inset-0 z-[100]"
+        />
 
-      {/* Overlay grid */}
-      <div className="fixed inset-0 z-[101] grid grid-cols-12 gap-6 px-6 md:px-8 py-[5vh] max-md:p-0 pointer-events-none">
-        {/* Content panel */}
-        <div
-          className={cn(
-            'col-span-12 lg:col-start-2 lg:col-span-10',
-            'max-md:col-start-1 max-md:col-span-12',
-            'pointer-events-auto flex flex-col overflow-hidden',
-            'bg-background border border-border rounded-xl'
-          )}
-          style={{ boxShadow: 'var(--elevation-sm)' }}
-          role="dialog"
-          aria-modal="true"
-          aria-label={t('myMembershipsPanel.title')}
-        >
-          {/* Header */}
-          <div className="flex items-start justify-between px-6 pt-6 pb-4">
-            <div>
-              <h2 className="text-xl font-semibold">{t('myMembershipsPanel.title')}</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {loading ? '\u00A0' : t('myMembershipsPanel.subtitle', { count: filteredCount })}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-sm opacity-70 hover:opacity-100 transition-opacity focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none p-1"
-              aria-label={t('myMembershipsPanel.close')}
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+        {/* Overlay grid */}
+        <div className="fixed inset-0 z-[101] grid grid-cols-12 gap-6 px-6 md:px-8 py-[5vh] max-md:p-0 pointer-events-none">
+          {/* Content panel */}
+          <DialogPrimitive.Content
+            className={cn(
+              'col-span-12 lg:col-start-2 lg:col-span-10',
+              'max-md:col-start-1 max-md:col-span-12',
+              'pointer-events-auto flex flex-col overflow-hidden',
+              'bg-background border border-border rounded-xl',
+              'focus:outline-none'
+            )}
+            style={{ boxShadow: 'var(--elevation-sm)' }}
+            aria-describedby="memberships-panel-subtitle"
+          >
+            <DialogTitle className="sr-only">{t('myMembershipsPanel.title')}</DialogTitle>
+            <DialogDescription id="memberships-panel-subtitle" className="sr-only">
+              {loading ? undefined : t('myMembershipsPanel.subtitle', { count: filteredCount })}
+            </DialogDescription>
 
-          {/* Search + Filter row */}
-          <div className="flex items-center gap-3 px-6 pb-4 border-b border-border">
-            {/* Search input */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-              <Input
-                value={search}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                placeholder={t('myMembershipsPanel.searchPlaceholder')}
-                aria-label={t('myMembershipsPanel.searchPlaceholder')}
-                className="pl-9 pr-8"
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={t('myMembershipsPanel.clearSearch')}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
+            {/* Header */}
+            <div className="flex items-start justify-between px-6 pt-6 pb-4">
+              <div>
+                <p className="text-xl font-semibold" aria-hidden="true">
+                  {t('myMembershipsPanel.title')}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {loading ? '\u00A0' : t('myMembershipsPanel.subtitle', { count: filteredCount })}
+                </p>
+              </div>
+              <DialogClose
+                className="rounded-sm opacity-70 hover:opacity-100 transition-opacity focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none p-1"
+                aria-label={t('myMembershipsPanel.close')}
+                aria-hidden="true"
+              >
+                <X className="w-5 h-5" />
+              </DialogClose>
             </div>
 
-            {/* Role filter */}
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-[130px] shrink-0">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="z-[200]">
-                <SelectItem value="all">{t('myMembershipsPanel.filter.role.all')}</SelectItem>
-                <SelectItem value="admin">{t('myMembershipsPanel.role.admin')}</SelectItem>
-                <SelectItem value="lead">{t('myMembershipsPanel.role.lead')}</SelectItem>
-                <SelectItem value="member">{t('myMembershipsPanel.role.member')}</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Visibility filter */}
-            <Select value={visibilityFilter} onValueChange={setVisibilityFilter}>
-              <SelectTrigger className="w-[120px] shrink-0">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="z-[200]">
-                <SelectItem value="all">{t('myMembershipsPanel.filter.visibility.all')}</SelectItem>
-                <SelectItem value="public">{t('myMembershipsPanel.filter.visibility.public')}</SelectItem>
-                <SelectItem value="private">{t('myMembershipsPanel.filter.visibility.private')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Scrollable list body */}
-          <div className="flex-1 overflow-y-auto">
-            {loading ? (
-              <LoadingSkeleton label={t('myMembershipsPanel.loading')} />
-            ) : items.length === 0 ? (
-              <EmptyState
-                icon={<Layers className="w-10 h-10" />}
-                message={t('myMembershipsPanel.empty.noSpaces')}
-                action={
-                  <Button variant="outline" onClick={() => handleNavigate(browseAllHref)}>
-                    {t('myMembershipsPanel.empty.browseAll')}
-                  </Button>
-                }
-              />
-            ) : filteredTree.length === 0 && hasFilters ? (
-              <EmptyState
-                icon={<SearchX className="w-10 h-10" />}
-                message={t('myMembershipsPanel.empty.noMatches')}
-                action={
+            {/* Search + Filter row */}
+            <div className="flex items-center gap-3 px-6 pb-4 border-b border-border">
+              {/* Search input */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                <Input
+                  value={search}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                  placeholder={t('myMembershipsPanel.searchPlaceholder')}
+                  aria-label={t('myMembershipsPanel.searchPlaceholder')}
+                  className="pl-9 pr-8"
+                />
+                {search && (
                   <button
                     type="button"
-                    onClick={clearFilters}
-                    className="text-sm text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                    onClick={() => setSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    aria-label={t('myMembershipsPanel.clearSearch')}
                   >
-                    {t('myMembershipsPanel.empty.clearFilters')}
+                    <X className="w-4 h-4" />
                   </button>
-                }
-              />
-            ) : (
-              <div>
-                {filteredTree.map((rootItem, index) => (
-                  <div key={rootItem.id}>
-                    <TreeNode
-                      item={rootItem}
-                      depth={0}
-                      expandedIds={expandedIds}
-                      onToggle={handleToggle}
-                      onNavigate={handleNavigate}
-                      t={t}
-                    />
-                    {index < filteredTree.length - 1 && <Separator />}
-                  </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
+
+              {/* Role filter */}
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-[130px] shrink-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="z-[200]">
+                  <SelectItem value="all">{t('myMembershipsPanel.filter.role.all')}</SelectItem>
+                  <SelectItem value="admin">{t('myMembershipsPanel.role.admin')}</SelectItem>
+                  <SelectItem value="lead">{t('myMembershipsPanel.role.lead')}</SelectItem>
+                  <SelectItem value="member">{t('myMembershipsPanel.role.member')}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Visibility filter */}
+              <Select value={visibilityFilter} onValueChange={setVisibilityFilter}>
+                <SelectTrigger className="w-[120px] shrink-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="z-[200]">
+                  <SelectItem value="all">{t('myMembershipsPanel.filter.visibility.all')}</SelectItem>
+                  <SelectItem value="public">{t('myMembershipsPanel.filter.visibility.public')}</SelectItem>
+                  <SelectItem value="private">{t('myMembershipsPanel.filter.visibility.private')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Scrollable list body */}
+            <div className="flex-1 overflow-y-auto">
+              {loading ? (
+                <LoadingSkeleton label={t('myMembershipsPanel.loading')} />
+              ) : items.length === 0 ? (
+                <EmptyState
+                  icon={<Layers className="w-10 h-10" />}
+                  message={t('myMembershipsPanel.empty.noSpaces')}
+                  action={
+                    <Button variant="outline" onClick={() => handleNavigate(browseAllHref)}>
+                      {t('myMembershipsPanel.empty.browseAll')}
+                    </Button>
+                  }
+                />
+              ) : filteredTree.length === 0 && hasFilters ? (
+                <EmptyState
+                  icon={<SearchX className="w-10 h-10" />}
+                  message={t('myMembershipsPanel.empty.noMatches')}
+                  action={
+                    <button
+                      type="button"
+                      onClick={clearFilters}
+                      className="text-sm text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                    >
+                      {t('myMembershipsPanel.empty.clearFilters')}
+                    </button>
+                  }
+                />
+              ) : (
+                <div>
+                  {filteredTree.map((rootItem, index) => (
+                    <div key={rootItem.id}>
+                      <TreeNode
+                        item={rootItem}
+                        depth={0}
+                        expandedIds={expandedIds}
+                        onToggle={handleToggle}
+                        onNavigate={handleNavigate}
+                        t={t}
+                      />
+                      {index < filteredTree.length - 1 && <Separator />}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </DialogPrimitive.Content>
         </div>
-      </div>
-    </>
+      </DialogPortal>
+    </Dialog>
   );
 }
 
