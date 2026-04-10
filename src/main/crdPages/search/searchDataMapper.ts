@@ -10,8 +10,9 @@ import {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
-import { getAvatarColor, getInitials } from '@/main/crdPages/spaces/spaceCardDataMapper';
-import type { SearchResultMetaType, TypedSearchResult } from './SearchView';
+import { getInitials } from '@/crd/lib/getInitials';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import type { SearchResultMetaType, TypedSearchResult } from '../../search/searchTypes';
 
 export type SearchFallbackLabels = {
   unknown: string;
@@ -111,7 +112,7 @@ export function mapSpaceResults(results: SearchResultMetaType[]): SpaceCardData[
             href: parentSpace.about.profile.url,
             avatarUrl: parentSpace.about.profile.avatar?.uri,
             initials: getInitials(parentSpace.about.profile.displayName),
-            avatarColor: getAvatarColor(parentSpace.id),
+            avatarColor: pickColorFromId(parentSpace.id),
           }
         : undefined;
 
@@ -121,7 +122,7 @@ export function mapSpaceResults(results: SearchResultMetaType[]): SpaceCardData[
         description: space.about.profile.tagline ?? '',
         bannerImageUrl: cardVisual?.uri,
         initials: getInitials(name),
-        avatarColor: getAvatarColor(space.id),
+        avatarColor: pickColorFromId(space.id),
         isPrivate: !space.about.isContentPublic,
         tags: space.about.profile.tagset?.tags ?? [],
         leads: [],
@@ -260,25 +261,29 @@ export function mapResponseResults(
 export function mapUserResults(actorResults: SearchResultMetaType[]): UserResultCardData[] {
   return actorResults
     .filter((r): r is UserResult => r.type === SearchResultType.User)
+    .filter(r => !!r.user.profile?.url) // Filter out users without profile url
     .map(r => ({
       id: r.user.id,
       name: r.user.profile?.displayName ?? '',
       avatarUrl: r.user.profile?.visual?.uri,
       role: r.user.profile?.tagsets?.[0]?.tags[0],
       email: undefined,
-      href: r.user.profile?.url ?? '',
+      // biome-ignore lint/style/noNonNullAssertion: Filtered users without profile url
+      href: r.user.profile?.url!,
     }));
 }
 
 export function mapOrgResults(actorResults: SearchResultMetaType[], labels: SearchFallbackLabels): OrgResultCardData[] {
   return actorResults
     .filter((r): r is OrgResult => r.type === SearchResultType.Organization)
+    .filter(r => !!r.organization.profile?.url) // Filter out orgs without profile url
     .map(r => ({
       id: r.organization.id,
       name: r.organization.profile?.displayName ?? '',
       logoUrl: r.organization.profile?.visual?.uri,
       type: labels.organization,
       tagline: r.organization.profile?.description,
-      href: r.organization.profile?.url ?? '',
+      // biome-ignore lint/style/noNonNullAssertion: Filtered orgs without profile url
+      href: r.organization.profile?.url!,
     }));
 }

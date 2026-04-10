@@ -125,6 +125,7 @@
   },
   "invitations": {
     "title": "Pending Invitations",
+    "loading": "Loading invitations",
     "accept": "Accept",
     "decline": "Decline",
     "noInvitations": "No pending invitations"
@@ -154,6 +155,7 @@
     "empty": "You don't have any open invitations or applications.",
     "loading": "Loading pending memberships",
     "loadingInvitation": "Loading invitation",
+    "loadingApplication": "Loading application",
     "close": "Close",
     "closeDialog": "Close dialog",
     "invitationsSection": "Invitations",

@@ -45,7 +45,9 @@
       "searchResults": "Резултати от търсене",
       "categoryResults": "Резултати за {{category}}",
       "platformSearch": "Търсене в платформата",
-      "filterBy": "Филтрирай {{category}}"
+      "filterBy": "Филтрирай {{category}}",
+      "resultsFound": "{{count}} намерени резултата",
+      "noResultsFound": "Няма намерени резултати"
     }
   }
 }

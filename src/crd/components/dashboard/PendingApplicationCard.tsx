@@ -67,14 +67,18 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
 }
 
 function PendingApplicationCardSkeleton() {
+  const { t } = useTranslation('crd-dashboard');
   return (
-    <div className="rounded-lg border border-border bg-card p-4 flex items-center gap-3">
+    <output
+      aria-label={t('pendingMemberships.loadingApplication')}
+      className="rounded-lg border border-border bg-card p-4 flex items-center gap-3"
+    >
       <Skeleton className="size-10 rounded-lg shrink-0" />
       <div className="flex-1 space-y-1.5">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-3 w-48" />
       </div>
-    </div>
+    </output>
   );
 }
 

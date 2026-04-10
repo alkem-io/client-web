@@ -45,7 +45,9 @@
       "searchResults": "Zoekresultaten",
       "categoryResults": "{{category}} resultaten",
       "platformSearch": "Platform zoeken",
-      "filterBy": "Filter {{category}}"
+      "filterBy": "Filter {{category}}",
+      "resultsFound": "{{count}} resultaten gevonden",
+      "noResultsFound": "Geen resultaten gevonden"
     }
   }
 }

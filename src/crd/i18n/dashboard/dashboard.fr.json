@@ -125,6 +125,7 @@
   },
   "invitations": {
     "title": "Invitations en Attente",
+    "loading": "Chargement des invitations",
     "accept": "Accepter",
     "decline": "Refuser",
     "noInvitations": "Aucune invitation en attente"
@@ -154,6 +155,7 @@
     "empty": "Vous n'avez aucune invitation ou candidature en cours.",
     "loading": "Chargement des adhésions en attente",
     "loadingInvitation": "Chargement de l'invitation",
+    "loadingApplication": "Chargement de la candidature",
     "close": "Fermer",
     "closeDialog": "Fermer le dialogue",
     "invitationsSection": "Invitations",

@@ -26,7 +26,7 @@ import CardParentSpaceSegment from '@/domain/space/components/cards/components/C
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import type { TypedSearchResult } from '../SearchView';
+import type { TypedSearchResult } from '@/main/search/searchTypes';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -259,6 +259,7 @@ export const useHydrateCard = (): UseHydrateCardProvided => {
 
   const { data: rolesData } = useUserRolesSearchCardsQuery({
     variables: {
+      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
       userId: userId!,
     },
     skip: !userId,

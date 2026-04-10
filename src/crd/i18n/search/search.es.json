@@ -45,7 +45,9 @@
       "searchResults": "Resultados de búsqueda",
       "categoryResults": "Resultados de {{category}}",
       "platformSearch": "Búsqueda de plataforma",
-      "filterBy": "Filtrar {{category}}"
+      "filterBy": "Filtrar {{category}}",
+      "resultsFound": "{{count}} resultados encontrados",
+      "noResultsFound": "No se encontraron resultados"
     }
   }
 }

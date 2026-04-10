@@ -68,6 +68,18 @@ export function SearchOverlay({
   const [activeCategoryId, setActiveCategoryId] = useState<SearchCategoryId | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const resultsRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+
+  // Capture the element that had focus before the dialog opened, restore on close
+  useEffect(() => {
+    if (isOpen) {
+      previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    } else if (previouslyFocusedRef.current) {
+      previouslyFocusedRef.current.focus();
+      previouslyFocusedRef.current = null;
+    }
+  }, [isOpen]);
 
   // Animate in on mount
   useEffect(() => {
@@ -89,13 +101,35 @@ export function SearchOverlay({
     }
   }, [state, categories, activeCategoryId]);
 
-  // Escape key handler
+  // Escape key + focus trap
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        const focusable = dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -104,6 +138,16 @@ export function SearchOverlay({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
+
+  const totalResults = categories.reduce((sum, c) => sum + c.count, 0);
+  const statusMessage =
+    state === 'loading'
+      ? t('search.loading')
+      : state === 'no-results'
+        ? t('search.a11y.noResultsFound')
+        : state === 'results'
+          ? t('search.a11y.resultsFound', { count: totalResults })
+          : '';
 
   const sidebarCategories: SidebarCategory[] =
     allSidebarCategories ??
@@ -157,6 +201,7 @@ export function SearchOverlay({
       <div className="fixed inset-0 z-[101] grid grid-cols-12 gap-6 px-6 md:px-8 py-[5vh] max-md:p-0 pointer-events-none">
         {/* Content panel */}
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={t('search.a11y.platformSearch')}
@@ -181,6 +226,11 @@ export function SearchOverlay({
             onScopeChange={onScopeChange}
             onClose={onClose}
           />
+
+          {/* Screen-reader status announcement */}
+          <div aria-live="polite" aria-atomic="true" className="sr-only">
+            {statusMessage}
+          </div>
 
           {/* Body */}
           <div className="flex-1 min-h-0 overflow-hidden">

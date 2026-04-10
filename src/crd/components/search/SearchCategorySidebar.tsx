@@ -75,7 +75,10 @@ export function SearchCategorySidebar({ categories, activeCategoryId, onCategory
       </nav>
 
       {/* Mobile horizontal tabs */}
-      <div className="md:hidden shrink-0 flex overflow-x-auto gap-1 px-4 py-2 border-b border-border">
+      <nav
+        aria-label={t('search.a11y.resultCategories')}
+        className="md:hidden shrink-0 flex overflow-x-auto gap-1 px-4 py-2 border-b border-border"
+      >
         {categories.map(category => {
           const isActive = category.id === activeCategoryId;
           const isDisabled = category.count === 0;
@@ -113,7 +116,7 @@ export function SearchCategorySidebar({ categories, activeCategoryId, onCategory
             </button>
           );
         })}
-      </div>
+      </nav>
     </>
   );
 }

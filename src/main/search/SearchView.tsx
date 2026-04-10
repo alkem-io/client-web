@@ -1,18 +1,7 @@
 import { Box, CircularProgress, Link } from '@mui/material';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SearchCategory,
-  type SearchResult,
-  type SearchResultCalloutFragment,
-  type SearchResultMemoFragment,
-  type SearchResultOrganizationFragment,
-  type SearchResultPostFragment,
-  type SearchResultSpaceFragment,
-  SearchResultType,
-  type SearchResultUserFragment,
-  type SearchResultWhiteboardFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { SearchCategory, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -37,19 +26,6 @@ import SearchResultsCalloutAndFramingCard from './searchResults/SearchResultsCal
 import SearchCategoriesMenu from './ui/SearchCategoriesMenu';
 import { useSearchViewState } from './useSearchViewState';
 
-export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
-  ResultFragment & { type: Type };
-
-export type SearchResultMetaType =
-  | TypedSearchResult<SearchResultType.User, SearchResultUserFragment>
-  | TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
-  | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
-  | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Subspace, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>
-  | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
-  | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
-
 interface SearchViewProps {
   searchRoute: string;
   spaceFilterConfig: FilterConfig;
@@ -57,7 +33,6 @@ interface SearchViewProps {
 }
 
 const SEARCH_RESULTS_COUNT = 4;
-export const MAX_TERMS_SEARCH = 5;
 
 const interlaceAndFilterArrays = <T extends { type: SearchResultType }>(
   a: T[] = [],

@@ -40,11 +40,11 @@ export function InvitationsBlock({
 
   if (loading) {
     return (
-      <section className={cn('space-y-3', className)}>
+      <output aria-label={t('invitations.loading')} className={cn('space-y-3 block', className)}>
         <Skeleton className="h-6 w-40" />
         <Skeleton className="h-20 w-full" />
         <Skeleton className="h-20 w-full" />
-      </section>
+      </output>
     );
   }
 

@@ -1,6 +1,4 @@
 import { Building2 } from 'lucide-react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
 export type OrgResultCardData = {
@@ -18,25 +16,17 @@ type OrgResultCardProps = {
 };
 
 export function OrgResultCard({ org, onClick }: OrgResultCardProps) {
-  const { t: _t } = useTranslation('crd-search');
-  const [hovered, setHovered] = useState(false);
-
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       aria-label={org.name}
       className={cn(
         'group block w-full rounded-xl border bg-card overflow-hidden',
         'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30',
         'transition-all duration-300 cursor-pointer'
       )}
-      style={{
-        boxShadow: hovered ? 'var(--elevation-sm)' : 'none',
-        borderColor: hovered ? 'color-mix(in srgb, var(--primary) 30%, var(--border))' : undefined,
-      }}
     >
       {/* Content */}
       <div className="p-5 flex flex-col items-center text-center">

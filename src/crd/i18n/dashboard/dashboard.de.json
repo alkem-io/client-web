@@ -125,6 +125,7 @@
   },
   "invitations": {
     "title": "Ausstehende Einladungen",
+    "loading": "Einladungen werden geladen",
     "accept": "Annehmen",
     "decline": "Ablehnen",
     "noInvitations": "Keine ausstehenden Einladungen"
@@ -154,6 +155,7 @@
     "empty": "Du hast keine offenen Einladungen oder Bewerbungen.",
     "loading": "Ausstehende Mitgliedschaften werden geladen",
     "loadingInvitation": "Einladung wird geladen",
+    "loadingApplication": "Bewerbung wird geladen",
     "close": "Schließen",
     "closeDialog": "Dialog schließen",
     "invitationsSection": "Einladungen",

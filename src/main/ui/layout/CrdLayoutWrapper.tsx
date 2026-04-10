@@ -20,7 +20,7 @@ const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/dashboard/CrdPendingMembershipsDialog')
 );
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
-const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/search/CrdSearchOverlay'));
+const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
 
 function CrdLayoutConnector() {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();

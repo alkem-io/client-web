@@ -1,5 +1,4 @@
 import { FileText, MessageSquare, Presentation, StickyNote } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PostType } from '@/crd/components/search/PostResultCard';
 import { cn } from '@/crd/lib/utils';
@@ -35,24 +34,18 @@ function PostTypeIcon({ type }: { type: PostType }) {
 
 export function ResponseResultCard({ response, onClick }: ResponseResultCardProps) {
   const { t } = useTranslation('crd-search');
-  const [hovered, setHovered] = useState(false);
 
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       aria-label={response.title}
       className={cn(
         'group block w-full text-left rounded-xl border bg-card overflow-hidden',
         'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30',
         'transition-all duration-300 cursor-pointer'
       )}
-      style={{
-        boxShadow: hovered ? 'var(--elevation-sm)' : 'none',
-        borderColor: hovered ? 'color-mix(in srgb, var(--primary) 30%, var(--border))' : undefined,
-      }}
     >
       {/* Content */}
       <div className="p-4 flex flex-col gap-2.5">

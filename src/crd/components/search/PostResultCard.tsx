@@ -1,5 +1,4 @@
 import { FileText, Presentation, StickyNote } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -36,24 +35,18 @@ function PostTypeIcon({ type }: { type: PostType }) {
 
 export function PostResultCard({ post, onClick }: PostResultCardProps) {
   const { t } = useTranslation('crd-search');
-  const [hovered, setHovered] = useState(false);
 
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       aria-label={post.title}
       className={cn(
         'group block w-full text-left rounded-xl border bg-card overflow-hidden',
         'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30',
         'transition-all duration-300 cursor-pointer'
       )}
-      style={{
-        boxShadow: hovered ? 'var(--elevation-sm)' : 'none',
-        borderColor: hovered ? 'color-mix(in srgb, var(--primary) 30%, var(--border))' : undefined,
-      }}
     >
       {/* Banner */}
       <div className="overflow-hidden aspect-video">

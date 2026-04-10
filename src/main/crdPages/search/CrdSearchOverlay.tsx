@@ -18,8 +18,8 @@ import type { SearchFilterOption } from '@/crd/components/search/SearchResultSec
 
 import { UserResultCard } from '@/crd/components/search/UserResultCard';
 import { SpaceCard } from '@/crd/components/space/SpaceCard';
-import { useSearch } from './SearchContext';
-import type { SearchResultMetaType } from './SearchView';
+import { useSearch } from '../../search/SearchContext';
+import type { SearchResultMetaType } from '../../search/searchTypes';
 import {
   mapOrgResults,
   mapPostResults,
