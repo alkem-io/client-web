@@ -1,6 +1,7 @@
 import { Globe, Lock, Pin, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { StackedAvatars } from '@/crd/components/common/StackedAvatars';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -78,7 +79,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-muted to-accent" />
+              <div className="w-full h-full" style={backgroundGradient(space.avatarColor)} aria-hidden="true" />
             )}
             <div
               className="absolute inset-0"
@@ -92,10 +93,10 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Member badge */}
           {space.isMember && (
             <div className="absolute top-3 left-4 z-[3]">
-              <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-[#1d384a] text-[10px] font-semibold">
+              <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-primary text-[10px] font-semibold">
                 <UserCheck aria-hidden="true" className="size-2.5" />
                 <span>{t('crd-common:member')}</span>
-              </span>
+              </output>
             </div>
           )}
 
@@ -153,7 +154,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
               {t('spaces.in')}:{' '}
               <button
                 type="button"
-                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px]"
+                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -200,7 +201,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                   <Avatar
                     key={lead.name}
                     className="size-[26px] border-2 border-card"
-                    aria-label={`${lead.name} (${lead.type})`}
+                    aria-label={`${lead.name} (${t(`crd-common:leadType.${lead.type}`)})`}
                   >
                     <AvatarImage src={lead.avatarUrl} alt="" />
                     <AvatarFallback

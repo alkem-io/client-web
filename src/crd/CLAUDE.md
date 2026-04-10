@@ -582,3 +582,64 @@ Layout-related types are defined once in `src/crd/layouts/types.ts` and imported
 1. Add the type to `types.ts`
 2. Import it in the layout component
 3. Update the contracts in `specs/039-crd-exploreSpaces-page/contracts/crd-layout.ts` to match
+
+### Deterministic Accent Colors (`pickColorFromId`)
+
+When a space (or any space-like entity) has no avatar or card banner image, the design system does **not** fall back to a generic muted gradient or a stock placeholder. Instead, every space gets a stable accent colour derived from its id, so the same entity is always recognisable by its colour across every component on the page.
+
+The single source of truth lives in `@/crd/lib/pickColorFromId.ts`:
+
+```typescript
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+const color = pickColorFromId(space.id); // → '#42a5f5' (one of 6 palette colours)
+```
+
+The function hashes the id's char codes and indexes into a 6-colour palette. It is **deterministic** — the same id always returns the same colour, in production data, mock data, and across reloads.
+
+#### Where the colour is applied
+
+The colour is used in two visual treatments, and **only** as a fallback when the corresponding image is missing:
+
+| Treatment | Trigger | Visual |
+|---|---|---|
+| **Avatar fallback** | `avatarUrl` is missing | `<AvatarFallback style={{ backgroundColor: color }} className="text-white">` |
+| **Banner / cardBanner fallback** | `bannerUrl` / `cardBanner` is missing | `<div style={{ background: \`linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))\` }}>` |
+
+The components that participate in these treatments today:
+
+- **Banners / cardBanners (gradient)**: `CompactSpaceCard` (recent spaces banner area), `SpaceCard` (explore spaces banner), `SpaceHierarchyCard` (parent + subspace banners), `MyMembershipsPanel` `BannerThumbnail`.
+- **Avatar fallbacks (solid colour)**: `MyMembershipsPanel` `NodeAvatar`, `InvitationsBlock` avatar, `PendingInvitationCard`, `PendingApplicationCard`, `InvitationDetailDialog`, `SpaceCard`'s `StackedAvatars`.
+
+#### Where the colour is NOT applied
+
+The accent colour is intentionally absent from a few spots — too many coloured tiles per row makes the layout feel noisy. These keep the muted prototype treatment:
+
+- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) — default grey `AvatarFallback`. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
+- **`CompactSpaceCard`'s initials tile** (the small rectangle next to the space name in the card body, *not* the banner) — `bg-primary text-primary-foreground`.
+
+The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles use the prototype's muted/primary treatment.**
+
+#### Data flow
+
+1. The data mapper in `src/main/crdPages/<page>/` calls `pickColorFromId(entity.id)` and attaches the result to a `color` (or `avatarColor`) field on the CRD component's prop type.
+2. The CRD component receives the field as a plain string prop. It applies the colour **only** when the corresponding image (`bannerUrl`, `avatarUrl`, etc.) is `undefined` — a real image always wins.
+3. CRD components **never** call `pickColorFromId` themselves. Determining the colour is mapping logic; the component is purely visual.
+
+#### Adding it to a new mapper
+
+```typescript
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
+export const mapMyEntityToCardData = (entity: GraphQLEntity): MyCardData => ({
+  id: entity.id,
+  name: entity.profile.displayName,
+  href: entity.profile.url,
+  avatarUrl: entity.profile.avatar?.uri,
+  // No `getDefaultSpaceVisualUrl` fallback — leave undefined so the component
+  // renders the deterministic gradient from `color`.
+  bannerUrl: entity.profile.cardBanner?.uri || undefined,
+  color: pickColorFromId(entity.id),
+});
+```
+
+> **Naming note:** Some prop types use `color`, others use `avatarColor` for historical reasons (`SpaceCardData.avatarColor`, `SidebarResourceData.avatarColor`). When adding a new component, prefer `color` for the field name. Both are populated from the same `pickColorFromId` helper.

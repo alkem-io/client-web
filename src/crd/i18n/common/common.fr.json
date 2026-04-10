@@ -16,5 +16,9 @@
   "member": "Membre",
   "leads": "Responsables",
   "loadMore": "Charger plus",
-  "pinned": "Épinglé"
+  "pinned": "Épinglé",
+  "leadType": {
+    "person": "Personne",
+    "org": "Organisation"
+  }
 }

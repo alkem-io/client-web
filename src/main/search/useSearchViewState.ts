@@ -18,7 +18,7 @@ import {
   type FilterDefinition,
   framingFilterConfig,
 } from './Filter';
-import type { SearchResultMetaType } from './SearchView';
+import type { SearchResultMetaType } from './searchTypes';
 import { useSearchTerms } from './useSearchTerms';
 
 type ResultsCursors = {
@@ -35,15 +35,19 @@ const tagsetNames = ['skills', 'keywords'];
 const concatSearchResults = <T>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
 
 function toResultType(query?: SearchQuery) {
-  const mapResults = (results: unknown[] | undefined) =>
-    (results || []).map<SearchResultMetaType>(
-      (item: any) =>
-        ({
-          ...item,
-          score: item.score || 0,
-          terms: item.terms || [],
-        }) as SearchResultMetaType
-    );
+  type SearchQueryResults =
+    | SearchQuery['search']['actorResults']['results']
+    | SearchQuery['search']['spaceResults']['results']
+    | SearchQuery['search']['calloutResults']['results']
+    | SearchQuery['search']['framingResults']['results']
+    | SearchQuery['search']['contributionResults']['results'];
+
+  const mapResults = (results: SearchQueryResults | undefined) =>
+    (results || []).map<SearchResultMetaType>(item => ({
+      ...item,
+      score: item.score || 0,
+      terms: item.terms || [],
+    }));
 
   return {
     spaceResults: mapResults(query?.search.spaceResults?.results),
@@ -112,6 +116,7 @@ export const useSearchViewState = (searchRoute: string, spaceFilterConfig: Filte
   };
 
   const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceNameId: spaceNameId! },
     skip: !spaceNameId,
   });
@@ -173,6 +178,7 @@ export const useSearchViewState = (searchRoute: string, spaceFilterConfig: Filte
   );
 
   const { data: spaceDetails, loading: spaceDetailsLoading } = useSearchScopeDetailsSpaceQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });

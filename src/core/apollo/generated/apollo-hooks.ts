@@ -4098,6 +4098,7 @@ export const SpaceMembershipFragmentDoc = gql`
   }
   about {
     ...SpaceAboutCardBanner
+    isContentPublic
     membership {
       myMembershipStatus
     }

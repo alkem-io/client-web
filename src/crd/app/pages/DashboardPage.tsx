@@ -5,12 +5,12 @@ import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
-import { MembershipsTreeDialog } from '@/crd/components/dashboard/MembershipsTreeDialog';
+import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import {
   MOCK_INVITATIONS,
-  MOCK_MEMBERSHIPS_TREE,
+  MOCK_MEMBERSHIPS_PANEL,
   MOCK_PERSONAL_ACTIVITIES,
   MOCK_RECENT_SPACES,
   MOCK_ROLE_FILTER_OPTIONS,
@@ -62,11 +62,13 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
   });
 
   const handleAcceptInvitation = (id: string) => {
+    // biome-ignore lint/suspicious/noConsole: preview app mock handler
     console.log('Accepted invitation', id);
     setInvitations(prev => prev.filter(inv => inv.id !== id));
   };
 
   const handleDeclineInvitation = (id: string) => {
+    // biome-ignore lint/suspicious/noConsole: preview app mock handler
     console.log('Declined invitation', id);
     setInvitations(prev => prev.filter(inv => inv.id !== id));
   };
@@ -90,6 +92,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
           spaces={MOCK_RECENT_SPACES}
           hasHomeSpace={hasHomeSpace}
           onExploreAllClick={() => setShowMembershipsDialog(true)}
+          // biome-ignore lint/suspicious/noConsole: preview app mock handler
           onPinClick={() => console.log('Pin clicked')}
         />
 
@@ -105,6 +108,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
             roleFilterOptions={MOCK_ROLE_FILTER_OPTIONS}
             onRoleFilterChange={setRoleFilter}
             maxItems={5}
+            // biome-ignore lint/suspicious/noConsole: preview app mock handler
             onShowMore={() => console.log('Show more space activity')}
             feedId="spaces"
             className="lg:col-span-5"
@@ -117,6 +121,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
             spaceFilterOptions={MOCK_SPACE_FILTER_OPTIONS}
             onSpaceFilterChange={setPersonalSpaceFilter}
             maxItems={5}
+            // biome-ignore lint/suspicious/noConsole: preview app mock handler
             onShowMore={() => console.log('Show more personal activity')}
             feedId="personal"
             className="lg:col-span-4"
@@ -131,6 +136,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
           />
         )}
 
+        {/* biome-ignore lint/suspicious/noConsole: preview app mock handler */}
         <CampaignBanner onAction={() => console.log('Create virtual contributor clicked')} />
       </DashboardLayout>
 
@@ -142,12 +148,16 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
         findMoreLabel={t('dialogs.findMore')}
       />
 
-      <MembershipsTreeDialog
+      <MyMembershipsPanel
         open={showMembershipsDialog}
         onClose={() => setShowMembershipsDialog(false)}
-        nodes={MOCK_MEMBERSHIPS_TREE}
-        seeMoreHref="/spaces"
-        createSpaceHref="#"
+        items={MOCK_MEMBERSHIPS_PANEL}
+        onNavigate={href => {
+          setShowMembershipsDialog(false);
+          // biome-ignore lint/suspicious/noConsole: preview app mock handler
+          console.log('Navigate to', href);
+        }}
+        browseAllHref="/spaces"
       />
     </>
   );

@@ -1,5 +1,5 @@
 import CalloutCard, { type CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
-import type { SearchResultMetaType } from '../SearchView';
+import type { SearchResultMetaType } from '../searchTypes';
 import SearchResultPostChooser from './SearchResultPostChooser';
 import SearchResultsCalloutCardFooter, {
   type SearchResultsCalloutCardFooterProps,

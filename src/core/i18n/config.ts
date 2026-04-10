@@ -99,6 +99,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/space/space.de.json'),
     fr: () => import('@/crd/i18n/space/space.fr.json'),
   },
+  'crd-search': {
+    en: () => import('@/crd/i18n/search/search.en.json'),
+    es: () => import('@/crd/i18n/search/search.es.json'),
+    nl: () => import('@/crd/i18n/search/search.nl.json'),
+    bg: () => import('@/crd/i18n/search/search.bg.json'),
+    de: () => import('@/crd/i18n/search/search.de.json'),
+    fr: () => import('@/crd/i18n/search/search.fr.json'),
+  },
 };
 
 // Cache for loaded translations

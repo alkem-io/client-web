@@ -16,5 +16,9 @@
   "member": "Member",
   "leads": "Leads",
   "loadMore": "Load More",
-  "pinned": "Pinned"
+  "pinned": "Pinned",
+  "leadType": {
+    "person": "Person",
+    "org": "Organization"
+  }
 }

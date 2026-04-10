@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { SEARCH_TERMS_URL_PARAM } from './constants';
-import { MAX_TERMS_SEARCH } from './SearchView';
+import { MAX_TERMS_SEARCH } from './searchTypes';
 
 export const useSearchTerms = () => {
   const { search } = useLocation();

@@ -1,50 +1,53 @@
-// Path helpers for default space visuals (copied from public/default-visuals/)
-// 'custom' represents a space whose owner uploaded their own image
-const CUSTOM_AVATAR =
-  'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=150';
-const CUSTOM_CARD =
+import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
+// Banner images for recent spaces — all 4 have real images, matching the prototype.
+const CUSTOM_BANNER_URL =
   'https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080';
-const spaceAvatar = (hex: string) =>
-  hex === 'custom' ? CUSTOM_AVATAR : `/default-visuals/space/avatar/alkemio-default-avatar-${hex}.jpg`;
-const spaceCard = (hex: string) =>
-  hex === 'custom' ? CUSTOM_CARD : `/default-visuals/space/card/alkemio-default-card-${hex}.jpg`;
 
 export const MOCK_RECENT_SPACES = [
   {
     id: 'rs-1',
     name: 'Innovation Lab',
     href: '/space/innovation-lab',
-    bannerUrl: spaceCard('custom'),
+    bannerUrl: CUSTOM_BANNER_URL,
     isPrivate: true,
     isHomeSpace: true,
     initials: 'IL',
+    color: pickColorFromId('rs-1'),
   },
   {
     id: 'rs-2',
     name: 'Design Workshop',
     href: '/space/design-workshop',
-    bannerUrl: spaceCard('1'),
+    bannerUrl:
+      'https://images.unsplash.com/photo-1735639013995-086e648eaa38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     isPrivate: false,
     isHomeSpace: false,
     initials: 'DW',
+    color: pickColorFromId('rs-2'),
   },
   {
     id: 'rs-3',
     name: 'Team Sync',
     href: '/space/team-sync',
-    bannerUrl: spaceCard('2'),
+    bannerUrl:
+      'https://images.unsplash.com/photo-1768659347532-74d3b1efb0ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     isPrivate: true,
     isHomeSpace: false,
     initials: 'TS',
+    color: pickColorFromId('rs-3'),
   },
   {
     id: 'rs-4',
     name: 'Future Strategy',
     href: '/space/future-strategy',
-    bannerUrl: spaceCard('3'),
+    bannerUrl:
+      'https://images.unsplash.com/photo-1676276376052-dc9c9c0b6917?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     isPrivate: false,
     isHomeSpace: false,
     initials: 'FS',
+    color: pickColorFromId('rs-4'),
   },
 ];
 
@@ -224,24 +227,24 @@ export const MOCK_INVITATIONS = [
     spaceId: 's-sustainability',
     spaceName: 'Sustainability Goals 2024',
     spaceHref: '/space/sustainability-goals',
-    spaceAvatarUrl: spaceAvatar('4'),
     role: 'Editor',
+    color: pickColorFromId('s-sustainability'),
   },
   {
     id: 'inv-2',
     spaceId: 's-urban-mobility',
     spaceName: 'Urban Mobility Lab',
     spaceHref: '/space/urban-mobility',
-    spaceAvatarUrl: spaceAvatar('5'),
     role: 'Viewer',
+    color: pickColorFromId('s-urban-mobility'),
   },
   {
     id: 'inv-3',
     spaceId: 's-financial',
     spaceName: 'Q1 Financial Planning',
     spaceHref: '/space/financial-planning',
-    spaceAvatarUrl: spaceAvatar('6'),
     role: 'Admin',
+    color: pickColorFromId('s-financial'),
   },
 ];
 
@@ -251,18 +254,18 @@ export const MOCK_PENDING_INVITATIONS = [
   {
     id: 'pi-1',
     spaceName: 'Sustainability Goals 2024',
-    spaceAvatarUrl: spaceAvatar('4'),
     senderName: 'Sarah Chen',
     welcomeMessageExcerpt: 'We would love to have you join our sustainability initiative. Your expertise in...',
     timeElapsed: '2 hours ago',
+    color: pickColorFromId('pi-1'),
   },
   {
     id: 'pi-2',
     spaceName: 'Urban Mobility Lab',
-    spaceAvatarUrl: spaceAvatar('5'),
     senderName: 'Marc Johnson',
     welcomeMessageExcerpt: 'Join us to explore innovative urban transport solutions together!',
     timeElapsed: '1 day ago',
+    color: pickColorFromId('pi-2'),
   },
 ];
 
@@ -273,6 +276,7 @@ export const MOCK_PENDING_VC_INVITATIONS = [
     senderName: 'Platform Admin',
     welcomeMessageExcerpt: 'Your virtual contributor "DataBot" has been invited to participate in...',
     timeElapsed: '3 hours ago',
+    color: pickColorFromId('pv-1'),
   },
 ];
 
@@ -280,20 +284,20 @@ export const MOCK_PENDING_APPLICATIONS = [
   {
     id: 'pa-app-1',
     spaceName: 'Q1 Financial Planning',
-    spaceAvatarUrl: spaceAvatar('6'),
     tagline: 'Collaborative quarterly financial planning and budgeting',
     spaceHref: '/space/financial-planning',
+    color: pickColorFromId('pa-app-1'),
   },
 ];
 
 export const MOCK_INVITATION_DETAIL = {
   spaceName: 'Sustainability Goals 2024',
-  spaceAvatarUrl: spaceAvatar('4'),
   spaceTagline: 'Working together towards a sustainable future for all communities',
   spaceTags: ['Sustainability', 'Climate', 'Innovation', 'Community'],
   spaceHref: '/space/sustainability-goals',
   senderName: 'Sarah Chen',
   timeElapsed: '2 hours ago',
+  color: pickColorFromId('s-sustainability-detail'),
 };
 
 // ─── Notifications Mock Data ──────────────────────────────────────────────────
@@ -366,90 +370,140 @@ export const MOCK_NOTIFICATION_FILTERS = [
   { key: 'platform', label: 'Platform' },
 ];
 
-// ─── Memberships Tree Mock Data ───────────────────────────────────────────────
+// ─── Memberships Panel Mock Data ──────────────────────────────────────────────
 
-export const MOCK_MEMBERSHIPS_TREE = [
+// Subspace avatar images — small crop from the prototype's placeholder pool.
+const SUBSPACE_AVATARS = [
+  'https://images.unsplash.com/photo-1706720095318-e3538cae10bf?w=100&h=100&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1762939079730-23708c0dd337?w=100&h=100&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1765438869297-6fa4b627906a?w=100&h=100&fit=crop&q=80',
+] as const;
+
+export const MOCK_MEMBERSHIPS_PANEL: MembershipItem[] = [
+  // ── Green Energy Space ──
   {
-    id: 'mt-1',
+    id: 'mp-1',
     name: 'Green Energy Space',
     href: '/space/green-energy',
-    avatarUrl: spaceAvatar('0'),
+    tagline: 'Accelerating the transition to clean, renewable energy sources',
+    isPrivate: false,
+    roles: ['admin', 'lead'],
     initials: 'GE',
-    roles: ['Lead'],
+    color: pickColorFromId('mp-1'),
+    image:
+      'https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     children: [
       {
-        id: 'mt-1-1',
+        id: 'mp-1-1',
         name: 'Renewable Energy Transition',
         href: '/space/green-energy/renewable-transition',
-        avatarUrl: spaceAvatar('a'),
+        isPrivate: false,
+        roles: ['member'],
         initials: 'RE',
-        roles: ['Member'],
-        children: [],
+        color: pickColorFromId('mp-1-1'),
+        image: SUBSPACE_AVATARS[0],
+        children: [
+          {
+            id: 'mp-1-1-1',
+            name: 'Wind Energy Task Force',
+            href: '/space/green-energy/renewable-transition/wind-energy',
+            isPrivate: false,
+            roles: ['lead'],
+            initials: 'WE',
+            color: pickColorFromId('mp-1-1-1'),
+            image: SUBSPACE_AVATARS[1],
+          },
+          {
+            id: 'mp-1-1-2',
+            name: 'Hydro Power Research',
+            href: '/space/green-energy/renewable-transition/hydro-power',
+            isPrivate: true,
+            roles: ['member'],
+            initials: 'HP',
+            color: pickColorFromId('mp-1-1-2'),
+            // No image — tests initials fallback with color
+          },
+        ],
       },
       {
-        id: 'mt-1-2',
+        id: 'mp-1-2',
         name: 'Solar Panel Innovation',
         href: '/space/green-energy/solar-panels',
-        avatarUrl: spaceAvatar('b'),
+        isPrivate: true,
+        roles: ['admin'],
         initials: 'SP',
-        roles: ['Admin'],
-        children: [],
+        color: pickColorFromId('mp-1-2'),
+        image: SUBSPACE_AVATARS[0],
       },
     ],
   },
+  // ── Community Garden ──
   {
-    id: 'mt-2',
+    id: 'mp-2',
     name: 'Community Garden',
     href: '/space/community-garden',
-    avatarUrl: spaceAvatar('1'),
+    tagline: 'Growing together — urban agriculture for everyone',
+    isPrivate: false,
+    roles: ['member'],
     initials: 'CG',
-    roles: ['Member'],
+    color: pickColorFromId('mp-2'),
+    image:
+      'https://images.unsplash.com/photo-1768776179834-93e6cafc6d97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080',
     children: [
       {
-        id: 'mt-2-1',
+        id: 'mp-2-1',
         name: 'Urban Farming',
         href: '/space/community-garden/urban-farming',
-        avatarUrl: spaceAvatar('c'),
+        isPrivate: false,
+        roles: ['member'],
         initials: 'UF',
-        roles: ['Member'],
-        children: [],
+        color: pickColorFromId('mp-2-1'),
+        image: SUBSPACE_AVATARS[1],
       },
     ],
   },
+  // ── Digital Transformation (no subspaces, no image — tests gradient fallback) ──
   {
-    id: 'mt-3',
+    id: 'mp-3',
     name: 'Digital Transformation',
     href: '/space/digital-trans',
-    avatarUrl: spaceAvatar('2'),
+    tagline: 'Reimagining work through technology',
+    isPrivate: true,
+    roles: ['admin'],
     initials: 'DT',
-    roles: ['Admin'],
-    children: [],
+    color: pickColorFromId('mp-3'),
   },
+  // ── Innovation Lab ──
   {
-    id: 'mt-4',
+    id: 'mp-4',
     name: 'Innovation Lab',
     href: '/space/innovation-lab',
-    avatarUrl: spaceAvatar('custom'),
+    tagline: 'Experimental ground for breakthrough ideas',
+    isPrivate: false,
+    roles: ['lead'],
     initials: 'IL',
-    roles: ['Lead', 'Member'],
+    color: pickColorFromId('mp-4'),
+    image: CUSTOM_BANNER_URL,
     children: [
       {
-        id: 'mt-4-1',
+        id: 'mp-4-1',
         name: 'AI Research Collective',
         href: '/space/innovation-lab/ai-research',
-        avatarUrl: spaceAvatar('d'),
+        isPrivate: true,
+        roles: ['member'],
         initials: 'AI',
-        roles: ['Member'],
-        children: [],
+        color: pickColorFromId('mp-4-1'),
+        image: SUBSPACE_AVATARS[2],
       },
       {
-        id: 'mt-4-2',
+        id: 'mp-4-2',
         name: 'Design Thinking Practice',
         href: '/space/innovation-lab/design-thinking',
-        avatarUrl: spaceAvatar('e'),
+        isPrivate: false,
+        roles: ['member'],
         initials: 'DT',
-        roles: ['Member'],
-        children: [],
+        color: pickColorFromId('mp-4-2'),
+        // No image — tests initials fallback with color
       },
     ],
   },

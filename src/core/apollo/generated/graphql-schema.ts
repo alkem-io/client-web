@@ -43746,6 +43746,7 @@ export type MyMembershipsQuery = {
           | undefined;
         about: {
           __typename?: 'SpaceAbout';
+          isContentPublic: boolean;
           id: string;
           membership: {
             __typename?: 'SpaceAboutMembership';
@@ -43805,6 +43806,7 @@ export type MyMembershipsQuery = {
             | undefined;
           about: {
             __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
             id: string;
             membership: {
               __typename?: 'SpaceAboutMembership';
@@ -43864,6 +43866,7 @@ export type MyMembershipsQuery = {
               | undefined;
             about: {
               __typename?: 'SpaceAbout';
+              isContentPublic: boolean;
               id: string;
               membership: {
                 __typename?: 'SpaceAboutMembership';
@@ -43926,6 +43929,7 @@ export type SpaceMembershipFragment = {
     | undefined;
   about: {
     __typename?: 'SpaceAbout';
+    isContentPublic: boolean;
     id: string;
     membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
     profile: {

@@ -16,5 +16,9 @@
   "member": "Lid",
   "leads": "Leiders",
   "loadMore": "Meer laden",
-  "pinned": "Vastgezet"
+  "pinned": "Vastgezet",
+  "leadType": {
+    "person": "Persoon",
+    "org": "Organisatie"
+  }
 }
