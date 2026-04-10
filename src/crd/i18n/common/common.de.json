@@ -15,5 +15,9 @@
   "public": "Öffentlich",
   "member": "Mitglied",
   "leads": "Leiter",
+  "leadType": {
+    "person": "Person",
+    "org": "Organisation"
+  },
   "loadMore": "Mehr laden"
 }

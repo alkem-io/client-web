@@ -46,13 +46,48 @@
     "tipsAndTricks": "Tipps & Tricks",
     "myActivity": "Meine letzte Aktivität",
     "mySpaceActivity": "Letzte Aktivität in meinen Spaces",
-    "memberships": "Meine Mitgliedschaften",
     "findMore": "Mehr Tipps & Tricks entdecken",
-    "findMoreUrl": "https://welcome.alkem.io/blog/",
-    "seeMoreSpaces": "Mehr Spaces anzeigen",
-    "createSpace": "Space erstellen",
-    "expandNode": "{{name}} aufklappen",
-    "collapseNode": "{{name}} zuklappen"
+    "findMoreUrl": "https://welcome.alkem.io/blog/"
+  },
+  "myMembershipsPanel": {
+    "title": "Meine Spaces",
+    "subtitle_one": "{{count}} Space, in dem du Mitglied bist",
+    "subtitle_other": "{{count}} Spaces, in denen du Mitglied bist",
+    "close": "Schließen",
+    "searchPlaceholder": "Durchsuche deine Spaces...",
+    "clearSearch": "Suche löschen",
+    "loading": "Deine Spaces werden geladen",
+    "privacy": {
+      "public": "Öffentlich",
+      "private": "Privat"
+    },
+    "expand": "{{name}} aufklappen",
+    "collapse": "{{name}} zuklappen",
+    "subspaces_one": "{{count}} Unterraum",
+    "subspaces_other": "{{count}} Unterräume",
+    "filter": {
+      "role": {
+        "label": "Nach Rolle filtern",
+        "all": "Alle Rollen"
+      },
+      "visibility": {
+        "label": "Nach Sichtbarkeit filtern",
+        "all": "Alle",
+        "public": "Öffentlich",
+        "private": "Privat"
+      }
+    },
+    "role": {
+      "admin": "Administrator",
+      "lead": "Leiter",
+      "member": "Mitglied"
+    },
+    "empty": {
+      "noSpaces": "Du bist noch in keinem Space Mitglied.",
+      "browseAll": "Alle Spaces durchsuchen",
+      "noMatches": "Keine Spaces entsprechen deiner Suche.",
+      "clearFilters": "Filter löschen"
+    }
   },
   "tips": {
     "items": [
@@ -118,6 +153,7 @@
     "title": "Ausstehende Mitgliedschaften",
     "empty": "Du hast keine offenen Einladungen oder Bewerbungen.",
     "loading": "Ausstehende Mitgliedschaften werden geladen",
+    "loadingInvitation": "Einladung wird geladen",
     "close": "Schließen",
     "closeDialog": "Dialog schließen",
     "invitationsSection": "Einladungen",
@@ -131,6 +167,7 @@
       "acceptAriaLabel": "Einladung zu {{spaceName}} annehmen",
       "join": "Beitreten",
       "joinAriaLabel": "{{spaceName}} beitreten"
-    }
+    },
+    "applicationAriaLabel": "Ausstehende Bewerbung für {{spaceName}} anzeigen"
   }
 }

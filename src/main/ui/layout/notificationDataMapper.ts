@@ -10,16 +10,9 @@ import type { TFunction } from 'i18next';
 import type { ForumDiscussionCategory, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
+import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
-
-export function getInitials(displayName: string): string {
-  const words = displayName.trim().split(/\s+/);
-  if (words.length >= 2) {
-    return (words[0][0] + words[1][0]).toUpperCase();
-  }
-  return (words[0]?.[0] ?? '').toUpperCase();
-}
 
 /**
  * Builds the interpolation values for notification i18n keys.
