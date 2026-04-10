@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next';
 import type { PendingApplicationCardData } from '@/crd/components/dashboard/PendingApplicationCard';
 import type { PendingInvitationCardData } from '@/crd/components/dashboard/PendingInvitationCard';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { ApplicationWithMeta, InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 
@@ -12,6 +13,7 @@ type InvitationDetailData = {
   spaceHref: string;
   senderName: string;
   timeElapsed: string;
+  color: string;
 };
 
 const truncate = (text: string, maxLength: number): string =>
@@ -29,6 +31,7 @@ export const mapHydratedInvitationToCardData = (
     ? truncate(hydrated.invitation.welcomeMessage, 100)
     : undefined,
   timeElapsed: formatTimeElapsed(hydrated.invitation.createdDate, t),
+  color: pickColorFromId(hydrated.space.id),
 });
 
 export const mapHydratedApplicationToCardData = (hydrated: ApplicationWithMeta): PendingApplicationCardData => ({
@@ -37,6 +40,7 @@ export const mapHydratedApplicationToCardData = (hydrated: ApplicationWithMeta):
   spaceAvatarUrl: hydrated.space.about.profile.cardBanner?.uri,
   tagline: hydrated.space.about.profile.tagline,
   spaceHref: hydrated.space.about.profile.url,
+  color: pickColorFromId(hydrated.space.id),
 });
 
 export const mapHydratedInvitationToDetailData = (
@@ -50,6 +54,7 @@ export const mapHydratedInvitationToDetailData = (
   spaceHref: hydrated.space.about.profile.url,
   senderName: hydrated.userDisplayName ?? '',
   timeElapsed: formatTimeElapsed(hydrated.invitation.createdDate, t),
+  color: pickColorFromId(hydrated.space.id),
 });
 
 export type { InvitationDetailData };

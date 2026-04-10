@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -8,6 +10,9 @@ type PendingApplicationCardData = {
   spaceAvatarUrl?: string;
   tagline?: string;
   spaceHref: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type PendingApplicationCardProps = {
@@ -16,14 +21,9 @@ type PendingApplicationCardProps = {
   className?: string;
 };
 
-const getInitials = (name: string): string =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
-
 function PendingApplicationCard({ application, onClick, className }: PendingApplicationCardProps) {
+  const { t } = useTranslation('crd-dashboard');
+
   return (
     <a
       href={application.spaceHref}
@@ -33,6 +33,7 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
           onClick();
         }
       }}
+      aria-label={t('pendingMemberships.applicationAriaLabel', { spaceName: application.spaceName })}
       className={cn(
         'block w-full min-h-11 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         'flex items-center gap-3',
@@ -47,7 +48,12 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
             className="rounded-lg object-cover"
           />
         ) : null}
-        <AvatarFallback className="rounded-lg text-xs">{getInitials(application.spaceName)}</AvatarFallback>
+        <AvatarFallback
+          className={cn('rounded-lg text-xs', application.color && 'text-white')}
+          color={application.color}
+        >
+          {getInitials(application.spaceName)}
+        </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">

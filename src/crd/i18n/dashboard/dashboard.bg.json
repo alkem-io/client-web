@@ -46,13 +46,48 @@
     "tipsAndTricks": "Съвети и трикове",
     "myActivity": "Моята последна активност",
     "mySpaceActivity": "Последна активност в моите пространства",
-    "memberships": "Моите членства",
     "findMore": "Открий повече съвети и трикове",
-    "findMoreUrl": "https://welcome.alkem.io/blog/",
-    "seeMoreSpaces": "Виж повече пространства",
-    "createSpace": "Създай пространство",
-    "expandNode": "Разгъни {{name}}",
-    "collapseNode": "Свий {{name}}"
+    "findMoreUrl": "https://welcome.alkem.io/blog/"
+  },
+  "myMembershipsPanel": {
+    "title": "Моите пространства",
+    "subtitle_one": "{{count}} пространство, в което участваш",
+    "subtitle_other": "{{count}} пространства, в които участваш",
+    "close": "Затвори",
+    "searchPlaceholder": "Търси в твоите пространства...",
+    "clearSearch": "Изчисти търсенето",
+    "loading": "Зареждане на твоите пространства",
+    "privacy": {
+      "public": "Публично",
+      "private": "Частно"
+    },
+    "expand": "Разгъни {{name}}",
+    "collapse": "Свий {{name}}",
+    "subspaces_one": "{{count}} подпространство",
+    "subspaces_other": "{{count}} подпространства",
+    "filter": {
+      "role": {
+        "label": "Филтриране по роля",
+        "all": "Всички роли"
+      },
+      "visibility": {
+        "label": "Филтриране по видимост",
+        "all": "Всички",
+        "public": "Публични",
+        "private": "Частни"
+      }
+    },
+    "role": {
+      "admin": "Администратор",
+      "lead": "Лидер",
+      "member": "Член"
+    },
+    "empty": {
+      "noSpaces": "Все още не участваш в никакви пространства.",
+      "browseAll": "Разгледай всички пространства",
+      "noMatches": "Няма пространства, съответстващи на твоето търсене.",
+      "clearFilters": "Изчисти филтрите"
+    }
   },
   "tips": {
     "items": [
@@ -118,6 +153,7 @@
     "title": "Чакащи членства",
     "empty": "Нямаш отворени покани или заявления.",
     "loading": "Зареждане на чакащи членства",
+    "loadingInvitation": "Зареждане на покана",
     "close": "Затвори",
     "closeDialog": "Затвори диалога",
     "invitationsSection": "Покани",
@@ -131,6 +167,7 @@
       "acceptAriaLabel": "Приеми поканата за {{spaceName}}",
       "join": "Присъедини се",
       "joinAriaLabel": "Присъедини се към {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}"
   }
 }
