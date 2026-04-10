@@ -3,6 +3,7 @@ import type { TFunction } from 'i18next';
 import { ChevronRight, Globe, Layers, Lock, Search, SearchX, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -43,7 +44,7 @@ type MyMembershipsPanelProps = {
   items: MembershipItem[];
   loading?: boolean;
   onNavigate?: (href: string) => void;
-  browseAllHref?: string;
+  browseAllHref: string;
 };
 
 // ── Helpers ──
@@ -151,21 +152,16 @@ function BannerThumbnail({ image, color }: { image?: string; color: string }) {
     return <img src={image} alt="" className="w-16 h-10 rounded-md object-cover shrink-0" />;
   }
 
-  const darkerColor = `color-mix(in srgb, ${color} 70%, black)`;
-  return (
-    <div
-      className="w-16 h-10 rounded-md shrink-0"
-      style={{ background: `linear-gradient(135deg, ${color}, ${darkerColor})` }}
-      aria-hidden="true"
-    />
-  );
+  return <div className="w-16 h-10 rounded-md shrink-0" style={backgroundGradient(color)} aria-hidden="true" />;
 }
 
 function NodeAvatar({ item }: { item: MembershipItem }) {
   return (
     <Avatar className="w-8 h-8 shrink-0 rounded-md">
       {item.image ? <AvatarImage src={item.image} alt="" className="rounded-md" /> : null}
-      <AvatarFallback className="rounded-md text-[10px]">{item.initials}</AvatarFallback>
+      <AvatarFallback className="rounded-md text-[10px]" color={item.color}>
+        {item.initials}
+      </AvatarFallback>
     </Avatar>
   );
 }
@@ -311,7 +307,7 @@ export function MyMembershipsPanel({
   items,
   loading = false,
   onNavigate,
-  browseAllHref = '/spaces',
+  browseAllHref,
 }: MyMembershipsPanelProps) {
   const { t } = useTranslation('crd-dashboard');
   const [search, setSearch] = useState('');
@@ -400,7 +396,6 @@ export function MyMembershipsPanel({
               <DialogClose
                 className="rounded-sm opacity-70 hover:opacity-100 transition-opacity focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none p-1"
                 aria-label={t('myMembershipsPanel.close')}
-                aria-hidden="true"
               >
                 <X className="w-5 h-5" />
               </DialogClose>

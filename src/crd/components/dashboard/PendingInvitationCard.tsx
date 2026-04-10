@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -64,9 +65,10 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
 }
 
 function PendingInvitationCardSkeleton() {
+  const { t } = useTranslation('crd-dashboard');
   return (
     <output
-      aria-label="Loading invitation"
+      aria-label={t('pendingMemberships.loadingInvitation')}
       className="block rounded-lg border border-border bg-card p-4 flex items-center gap-3"
     >
       <Skeleton className="size-10 rounded-lg shrink-0" />

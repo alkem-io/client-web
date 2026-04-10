@@ -154,6 +154,7 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
         items={MOCK_MEMBERSHIPS_PANEL}
         // biome-ignore lint/suspicious/noConsole: preview app mock handler
         onNavigate={href => console.log('Navigate to', href)}
+        browseAllHref="/spaces"
       />
     </>
   );

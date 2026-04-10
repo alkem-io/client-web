@@ -151,6 +151,7 @@
     "title": "Membresías Pendientes",
     "empty": "No tienes invitaciones o solicitudes abiertas.",
     "loading": "Cargando membresías pendientes",
+    "loadingInvitation": "Cargando invitación",
     "close": "Cerrar",
     "closeDialog": "Cerrar diálogo",
     "invitationsSection": "Invitaciones",

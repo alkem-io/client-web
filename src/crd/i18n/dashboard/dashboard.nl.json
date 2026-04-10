@@ -151,6 +151,7 @@
     "title": "Openstaande Lidmaatschappen",
     "empty": "Je hebt geen openstaande uitnodigingen of aanvragen.",
     "loading": "Openstaande lidmaatschappen laden",
+    "loadingInvitation": "Uitnodiging laden",
     "close": "Sluiten",
     "closeDialog": "Dialoog sluiten",
     "invitationsSection": "Uitnodigingen",

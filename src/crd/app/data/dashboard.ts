@@ -1,3 +1,4 @@
+import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
 // Banner images for recent spaces — all 4 have real images, matching the prototype.
@@ -370,8 +371,6 @@ export const MOCK_NOTIFICATION_FILTERS = [
 ];
 
 // ─── Memberships Panel Mock Data ──────────────────────────────────────────────
-
-import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
 
 // Subspace avatar images — small crop from the prototype's placeholder pool.
 const SUBSPACE_AVATARS = [

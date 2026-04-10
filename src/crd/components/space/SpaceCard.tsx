@@ -1,6 +1,7 @@
 import { Globe, Lock, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { StackedAvatars } from '@/crd/components/common/StackedAvatars';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -77,13 +78,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
-              <div
-                className="w-full h-full"
-                style={{
-                  background: `linear-gradient(135deg, ${space.avatarColor}, color-mix(in srgb, ${space.avatarColor} 70%, black))`,
-                }}
-                aria-hidden="true"
-              />
+              <div className="w-full h-full" style={backgroundGradient(space.avatarColor)} aria-hidden="true" />
             )}
             <div
               className="absolute inset-0"

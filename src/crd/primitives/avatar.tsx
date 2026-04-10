@@ -2,6 +2,7 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import type * as React from 'react';
 
 import { cn } from '@/crd/lib/utils';
+import { backgroundGradient } from '../lib/backgroundGradient';
 
 function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
   return (
@@ -20,11 +21,16 @@ function AvatarImage({ className, ...props }: React.ComponentProps<typeof Avatar
 }
 
 function AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  const background = props.color ? backgroundGradient(props.color) : undefined;
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
-      className={cn('bg-muted flex size-full items-center justify-center rounded-full', className)}
+      className={cn(
+        `flex size-full items-center justify-center rounded-full ${background ? '' : 'bg-muted'}`,
+        className
+      )}
       {...props}
+      style={background ? background : undefined}
     />
   );
 }

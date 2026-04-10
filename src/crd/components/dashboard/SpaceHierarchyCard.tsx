@@ -1,5 +1,6 @@
 import { Lock, Pin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 
 export type SubspaceCardData = {
@@ -31,9 +32,6 @@ type SpaceHierarchyCardProps = SpaceHierarchyCardData & {
   visibleSubspaces?: number;
   className?: string;
 };
-
-const gradientStyle = (color?: string): React.CSSProperties | undefined =>
-  color ? { background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` } : undefined;
 
 export function SpaceHierarchyCard({
   name,
@@ -71,7 +69,7 @@ export function SpaceHierarchyCard({
               ) : (
                 <div
                   className={cn('size-full', !color && 'bg-gradient-to-br from-muted to-accent')}
-                  style={gradientStyle(color)}
+                  style={color ? backgroundGradient(color) : undefined}
                   aria-hidden="true"
                 />
               )}
@@ -115,7 +113,7 @@ export function SpaceHierarchyCard({
                 ) : (
                   <div
                     className={cn('size-full', !subspace.color && 'bg-gradient-to-br from-muted to-accent')}
-                    style={gradientStyle(subspace.color)}
+                    style={color ? backgroundGradient(color) : undefined}
                     aria-hidden="true"
                   />
                 )}

@@ -151,6 +151,7 @@
     "title": "Adhésions en Attente",
     "empty": "Vous n'avez aucune invitation ou candidature en cours.",
     "loading": "Chargement des adhésions en attente",
+    "loadingInvitation": "Chargement de l'invitation",
     "close": "Fermer",
     "closeDialog": "Fermer le dialogue",
     "invitationsSection": "Invitations",

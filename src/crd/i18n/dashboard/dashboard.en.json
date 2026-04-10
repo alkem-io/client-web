@@ -151,6 +151,7 @@
     "title": "Pending Memberships",
     "empty": "You don't have any open invitations or applications.",
     "loading": "Loading pending memberships",
+    "loadingInvitation": "Loading invitation",
     "close": "Close",
     "closeDialog": "Close dialog",
     "invitationsSection": "Invitations",

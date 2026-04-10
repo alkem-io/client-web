@@ -24,6 +24,7 @@ import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
+import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import {
   mapActivityToFeedItems,
@@ -147,7 +148,7 @@ export default function DashboardWithMemberships({
   const personalActivityItems = mapActivityToFeedItems(personalActivityData?.activityFeed?.activityFeed ?? [], tMain);
 
   // Memberships panel
-  const { data: myMembershipsData } = useMyMembershipsQuery({
+  const { data: myMembershipsData, loading } = useMyMembershipsQuery({
     skip: dialogState.openDialog !== 'memberships',
   });
   const membershipsItems = mapMembershipsToPanelItems(myMembershipsData?.me?.spaceMembershipsHierarchical ?? []);
@@ -281,8 +282,9 @@ export default function DashboardWithMemberships({
         open={dialogState.openDialog === 'memberships'}
         onClose={dialogState.closeDialog}
         items={membershipsItems}
+        loading={loading}
         onNavigate={navigate}
-        browseAllHref="/spaces"
+        browseAllHref={URL_SPACE_EXPLORER}
       />
     </>
   );

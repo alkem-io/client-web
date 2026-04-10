@@ -1,5 +1,6 @@
 import { Lock, Pin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -34,9 +35,7 @@ export function CompactSpaceCard({
 }: CompactSpaceCardProps) {
   const { t } = useTranslation('crd-dashboard');
 
-  const fallbackBannerStyle = color
-    ? { background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` }
-    : undefined;
+  const fallbackBannerStyle = color ? backgroundGradient(color) : undefined;
 
   return (
     <a
