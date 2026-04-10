@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
+import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -96,7 +96,7 @@ export const mapRecentSpacesToCompactCards = (
     // Leave undefined when the space has no real card banner — the component will
     // render the deterministic gradient from `color` instead of a stock default.
     bannerUrl: space.about.profile.cardBanner?.uri || undefined,
-    isPrivate: space.about.isContentPublic === false,
+    isPrivate: !space.about.isContentPublic,
     isHomeSpace: space.id === homeSpaceId,
     initials: getInitials(space.about.profile.displayName),
     color: pickColorFromId(space.id),
@@ -275,9 +275,7 @@ const extractPanelRoles = (rawRoles: string[]): PanelRole[] => {
 const mapEntryToPanelItem = (entry: MembershipEntry, depth = 0): MembershipItem => {
   const { space } = entry;
   const profile = space.about.profile;
-  // Default to public when `isContentPublic` is absent (e.g. before codegen picks up
-  // the new field). Spaces are public by default on the platform.
-  const isPrivate = space.about.isContentPublic === false;
+  const isPrivate = !space.about.isContentPublic;
   const childEntries = entry.childMemberships ?? [];
 
   // Root spaces (L0) show a banner thumbnail → prefer cardBanner, default to card visual.
@@ -382,7 +380,7 @@ export const mapDashboardSpaces = (
         name: child.space.about.profile.displayName,
         href: child.space.about.profile.url,
         bannerUrl: child.space.about.profile.cardBanner?.uri || undefined,
-        isPrivate: child.space.about.isContentPublic === false,
+        isPrivate: !child.space.about.isContentPublic,
         color: pickColorFromId(child.space.id),
       })),
     };

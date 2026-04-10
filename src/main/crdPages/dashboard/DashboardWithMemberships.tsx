@@ -19,7 +19,7 @@ import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
-import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMembershipsPanel';
+import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -283,7 +283,10 @@ export default function DashboardWithMemberships({
         onClose={dialogState.closeDialog}
         items={membershipsItems}
         loading={loading}
-        onNavigate={navigate}
+        onNavigate={href => {
+          dialogState.closeDialog();
+          navigate(href);
+        }}
         browseAllHref={URL_SPACE_EXPLORER}
       />
     </>

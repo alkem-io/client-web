@@ -1,4 +1,4 @@
-import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
+import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
 // Banner images for recent spaces — all 4 have real images, matching the prototype.

@@ -37,10 +37,7 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
         {invitation.spaceAvatarUrl ? (
           <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} className="rounded-lg object-cover" />
         ) : null}
-        <AvatarFallback
-          className={cn('rounded-lg text-xs', invitation.color && 'text-white')}
-          style={invitation.color ? { backgroundColor: invitation.color } : undefined}
-        >
+        <AvatarFallback className={cn('rounded-lg text-xs', invitation.color && 'text-white')} color={invitation.color}>
           {getInitials(invitation.spaceName)}
         </AvatarFallback>
       </Avatar>

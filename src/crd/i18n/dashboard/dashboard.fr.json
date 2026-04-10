@@ -167,6 +167,7 @@
       "acceptAriaLabel": "Accepter l'invitation à {{spaceName}}",
       "join": "Rejoindre",
       "joinAriaLabel": "Rejoindre {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "Voir la candidature en attente pour {{spaceName}}"
   }
 }

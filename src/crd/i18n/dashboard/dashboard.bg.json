@@ -167,6 +167,7 @@
       "acceptAriaLabel": "Приеми поканата за {{spaceName}}",
       "join": "Присъедини се",
       "joinAriaLabel": "Присъедини се към {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}"
   }
 }

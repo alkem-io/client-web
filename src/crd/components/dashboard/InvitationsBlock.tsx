@@ -65,7 +65,7 @@ export function InvitationsBlock({
                   {avatarSrc ? <AvatarImage src={avatarSrc} alt={invitation.spaceName} /> : null}
                   <AvatarFallback
                     className={cn('rounded-lg text-xs', invitation.color && 'text-white')}
-                    style={invitation.color ? { backgroundColor: invitation.color } : undefined}
+                    color={invitation.color}
                   >
                     {getInitials(invitation.spaceName)}
                   </AvatarFallback>

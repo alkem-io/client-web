@@ -5,7 +5,7 @@ import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
-import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMembershipsPanel';
+import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import {
@@ -152,8 +152,11 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
         open={showMembershipsDialog}
         onClose={() => setShowMembershipsDialog(false)}
         items={MOCK_MEMBERSHIPS_PANEL}
-        // biome-ignore lint/suspicious/noConsole: preview app mock handler
-        onNavigate={href => console.log('Navigate to', href)}
+        onNavigate={href => {
+          setShowMembershipsDialog(false);
+          // biome-ignore lint/suspicious/noConsole: preview app mock handler
+          console.log('Navigate to', href);
+        }}
         browseAllHref="/spaces"
       />
     </>

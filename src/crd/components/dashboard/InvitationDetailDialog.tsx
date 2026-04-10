@@ -104,7 +104,7 @@ function InvitationDetailDialog({
                 ) : null}
                 <AvatarFallback
                   className={cn('rounded-lg text-lg', invitation.color && 'text-white')}
-                  style={invitation.color ? { backgroundColor: invitation.color } : undefined}
+                  color={invitation.color}
                 >
                   {getInitials(invitation.spaceName)}
                 </AvatarFallback>

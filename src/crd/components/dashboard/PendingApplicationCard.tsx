@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -21,6 +22,8 @@ type PendingApplicationCardProps = {
 };
 
 function PendingApplicationCard({ application, onClick, className }: PendingApplicationCardProps) {
+  const { t } = useTranslation('crd-dashboard');
+
   return (
     <a
       href={application.spaceHref}
@@ -30,6 +33,7 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
           onClick();
         }
       }}
+      aria-label={t('pendingMemberships.applicationAriaLabel', { spaceName: application.spaceName })}
       className={cn(
         'block w-full min-h-11 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
         'flex items-center gap-3',
@@ -46,7 +50,7 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
         ) : null}
         <AvatarFallback
           className={cn('rounded-lg text-xs', application.color && 'text-white')}
-          style={application.color ? { backgroundColor: application.color } : undefined}
+          color={application.color}
         >
           {getInitials(application.spaceName)}
         </AvatarFallback>

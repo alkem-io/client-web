@@ -167,6 +167,7 @@
       "acceptAriaLabel": "Uitnodiging voor {{spaceName}} accepteren",
       "join": "Toetreden",
       "joinAriaLabel": "Toetreden tot {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "Openstaande aanvraag voor {{spaceName}} bekijken"
   }
 }

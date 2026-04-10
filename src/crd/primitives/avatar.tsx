@@ -20,17 +20,14 @@ function AvatarImage({ className, ...props }: React.ComponentProps<typeof Avatar
   );
 }
 
-function AvatarFallback({ className, color, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+function AvatarFallback({ className, color, style, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
   const background = color ? backgroundGradient(color) : undefined;
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
-      className={cn(
-        `flex size-full items-center justify-center rounded-full ${background ? '' : 'bg-muted'}`,
-        className
-      )}
+      className={cn('flex size-full items-center justify-center rounded-full', !background && 'bg-muted', className)}
       {...props}
-      style={background ? background : undefined}
+      style={{ ...style, ...background }}
     />
   );
 }
