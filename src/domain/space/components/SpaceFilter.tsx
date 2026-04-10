@@ -8,7 +8,7 @@ import filterFn, { getAllValues, type MatchInformation, type ValueType } from '@
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { SearchTagsInputProps } from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
+import { MAX_TERMS_SEARCH } from '@/main/search/searchTypes';
 
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
   data: T[];

@@ -1,0 +1,53 @@
+{
+  "search": {
+    "placeholder": "Rechercher\u2026",
+    "emptyTitle": "Saisissez un terme de recherche et appuyez sur Entrée",
+    "emptyDescription": "Recherchez dans les Espaces, Publications, Réponses, Utilisateurs et Organisations.",
+    "noResultsTitle": "Aucun résultat trouvé pour {{terms}}",
+    "noResultsSuggestion": "Essayez d'autres mots-clés ou élargissez votre recherche.",
+    "searchAllSpaces": "Rechercher dans tous les Espaces",
+    "loading": "Recherche\u2026",
+    "disclaimer": "Ces résultats peuvent ne pas refléter l'état actuel de la plateforme. Les résultats de recherche sont mis à jour périodiquement.",
+    "loadMore": "Charger plus",
+    "scopeAll": "Tous les Espaces",
+    "categories": {
+      "spaces": "Espaces",
+      "posts": "Publications",
+      "responses": "Réponses",
+      "users": "Utilisateurs",
+      "organizations": "Organisations"
+    },
+    "filters": {
+      "all": "Tout",
+      "spacesOnly": "Espaces uniquement",
+      "subspacesOnly": "Sous-espaces uniquement",
+      "whiteboards": "Tableaux blancs",
+      "memos": "Mémos",
+      "posts": "Publications"
+    },
+    "postTypes": {
+      "post": "Publication",
+      "whiteboard": "Tableau blanc",
+      "memo": "Mémo"
+    },
+    "responseTo": "Réponse à : {{title}}",
+    "spaceContext": "dans : {{spaceName}}",
+    "fallback": {
+      "unknown": "Inconnu",
+      "organization": "Organisation"
+    },
+    "a11y": {
+      "searchInput": "Champ de recherche",
+      "closeSearch": "Fermer la recherche",
+      "removeTag": "Supprimer le terme de recherche : {{term}}",
+      "activeTags": "Termes de recherche actifs",
+      "resultCategories": "Catégories de résultats",
+      "searchResults": "Résultats de recherche",
+      "categoryResults": "Résultats {{category}}",
+      "platformSearch": "Recherche de plateforme",
+      "filterBy": "Filtrer {{category}}",
+      "resultsFound": "{{count}} résultats trouvés",
+      "noResultsFound": "Aucun résultat trouvé"
+    }
+  }
+}

@@ -125,6 +125,7 @@
   },
   "invitations": {
     "title": "Openstaande Uitnodigingen",
+    "loading": "Uitnodigingen laden",
     "accept": "Accepteren",
     "decline": "Weigeren",
     "noInvitations": "Geen openstaande uitnodigingen"
@@ -154,6 +155,7 @@
     "empty": "Je hebt geen openstaande uitnodigingen of aanvragen.",
     "loading": "Openstaande lidmaatschappen laden",
     "loadingInvitation": "Uitnodiging laden",
+    "loadingApplication": "Aanvraag laden",
     "close": "Sluiten",
     "closeDialog": "Dialoog sluiten",
     "invitationsSection": "Uitnodigingen",

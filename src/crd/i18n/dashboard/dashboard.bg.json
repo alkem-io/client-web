@@ -125,6 +125,7 @@
   },
   "invitations": {
     "title": "Чакащи покани",
+    "loading": "Зареждане на покани",
     "accept": "Приеми",
     "decline": "Откажи",
     "noInvitations": "Няма чакащи покани"
@@ -154,6 +155,7 @@
     "empty": "Нямаш отворени покани или заявления.",
     "loading": "Зареждане на чакащи членства",
     "loadingInvitation": "Зареждане на покана",
+    "loadingApplication": "Зареждане на заявление",
     "close": "Затвори",
     "closeDialog": "Затвори диалога",
     "invitationsSection": "Покани",

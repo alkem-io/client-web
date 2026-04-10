@@ -16,7 +16,7 @@ import {
   type SpaceExplorerSubspacesQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import type { TypedSearchResult } from '@/main/search/SearchView';
+import type { TypedSearchResult } from '@/main/search/searchTypes';
 import type { SpaceWithParent } from './SpaceExplorerPage';
 
 export type SpacesFilterValue = 'all' | 'member' | 'public';

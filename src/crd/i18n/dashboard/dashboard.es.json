@@ -125,6 +125,7 @@
   },
   "invitations": {
     "title": "Invitaciones Pendientes",
+    "loading": "Cargando invitaciones",
     "accept": "Aceptar",
     "decline": "Rechazar",
     "noInvitations": "Sin invitaciones pendientes"
@@ -154,6 +155,7 @@
     "empty": "No tienes invitaciones o solicitudes abiertas.",
     "loading": "Cargando membresías pendientes",
     "loadingInvitation": "Cargando invitación",
+    "loadingApplication": "Cargando solicitud",
     "close": "Cerrar",
     "closeDialog": "Cerrar diálogo",
     "invitationsSection": "Invitaciones",
