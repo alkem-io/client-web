@@ -82,7 +82,7 @@ export function CompactSpaceCard({
             }}
             aria-label={t('recentSpaces.homeSpaceSettings')}
           >
-            <Pin size={12} className="text-primary-foreground" />
+            <Pin size={12} className="text-primary-foreground" aria-hidden="true" />
           </button>
         )}
       </div>

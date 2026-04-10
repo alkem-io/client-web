@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -26,13 +27,6 @@ type InvitationsBlockProps = {
   getDefaultAvatarUrl?: (spaceId: string) => string;
   className?: string;
 };
-
-const getInitials = (name: string): string =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
 
 export function InvitationsBlock({
   invitations,

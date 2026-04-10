@@ -113,7 +113,7 @@ export function SpaceHierarchyCard({
                 ) : (
                   <div
                     className={cn('size-full', !subspace.color && 'bg-gradient-to-br from-muted to-accent')}
-                    style={color ? backgroundGradient(color) : undefined}
+                    style={subspace.color ? backgroundGradient(subspace.color) : undefined}
                     aria-hidden="true"
                   />
                 )}

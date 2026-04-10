@@ -20,8 +20,8 @@ function AvatarImage({ className, ...props }: React.ComponentProps<typeof Avatar
   );
 }
 
-function AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
-  const background = props.color ? backgroundGradient(props.color) : undefined;
+function AvatarFallback({ className, color, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  const background = color ? backgroundGradient(color) : undefined;
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"

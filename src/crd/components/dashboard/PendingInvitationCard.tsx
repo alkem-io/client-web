@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -20,13 +21,6 @@ type PendingInvitationCardProps = {
   onClick?: () => void;
   className?: string;
 };
-
-const getInitials = (name: string): string =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
 
 function PendingInvitationCard({ invitation, onClick, className }: PendingInvitationCardProps) {
   return (
@@ -69,7 +63,7 @@ function PendingInvitationCardSkeleton() {
   return (
     <output
       aria-label={t('pendingMemberships.loadingInvitation')}
-      className="block rounded-lg border border-border bg-card p-4 flex items-center gap-3"
+      className="flex rounded-lg border border-border bg-card p-4 items-center gap-3"
     >
       <Skeleton className="size-10 rounded-lg shrink-0" />
       <div className="flex-1 space-y-1.5">

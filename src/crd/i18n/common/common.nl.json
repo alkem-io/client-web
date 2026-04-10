@@ -15,5 +15,9 @@
   "public": "Openbaar",
   "member": "Lid",
   "leads": "Leiders",
+  "leadType": {
+    "person": "Persoon",
+    "org": "Organisatie"
+  },
   "loadMore": "Meer laden"
 }

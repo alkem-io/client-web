@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMembershipsPanel';
+import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
@@ -68,15 +69,6 @@ export type InvitationCardData = {
   spaceAvatarUrl?: string;
   role: string;
   color: string;
-};
-
-// Extracts up to 2 initials from a display name (first letter of first two words).
-const getInitials = (name: string): string => {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(word => word.charAt(0).toUpperCase())
-    .join('');
 };
 
 type RecentSpaceEntry = {
@@ -390,7 +382,7 @@ export const mapDashboardSpaces = (
         name: child.space.about.profile.displayName,
         href: child.space.about.profile.url,
         bannerUrl: child.space.about.profile.cardBanner?.uri || undefined,
-        isPrivate: !child.space.about.isContentPublic,
+        isPrivate: child.space.about.isContentPublic === false,
         color: pickColorFromId(child.space.id),
       })),
     };

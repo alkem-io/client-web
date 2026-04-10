@@ -67,9 +67,11 @@
     "subspaces_other": "{{count}} subspaces",
     "filter": {
       "role": {
+        "label": "Filteren op rol",
         "all": "Alle rollen"
       },
       "visibility": {
+        "label": "Filteren op zichtbaarheid",
         "all": "Alle",
         "public": "Openbaar",
         "private": "Privé"

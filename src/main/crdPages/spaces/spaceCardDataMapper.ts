@@ -1,17 +1,7 @@
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
+import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { SpaceWithParent } from './SpaceExplorerPage';
-
-export function getInitials(displayName: string): string {
-  const words = displayName.trim().split(/\s+/);
-  if (words.length === 1) {
-    return words[0].charAt(0).toUpperCase();
-  }
-  return words
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
-}
 
 export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolean): SpaceCardData {
   const { about } = space;

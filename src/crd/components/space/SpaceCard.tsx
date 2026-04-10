@@ -92,7 +92,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Member badge */}
           {space.isMember && (
             <div className="absolute top-3 left-4 z-[3]">
-              <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-[#1d384a] text-[10px] font-semibold">
+              <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-primary text-[10px] font-semibold">
                 <UserCheck aria-hidden="true" className="size-2.5" />
                 <span>{t('crd-common:member')}</span>
               </output>
@@ -147,7 +147,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
               {t('spaces.in')}:{' '}
               <button
                 type="button"
-                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px]"
+                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -194,7 +194,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                   <Avatar
                     key={lead.name}
                     className="size-[26px] border-2 border-card"
-                    aria-label={`${lead.name} (${lead.type})`}
+                    aria-label={`${lead.name} (${t(`crd-common:leadType.${lead.type}`)})`}
                   >
                     <AvatarImage src={lead.avatarUrl} alt="" />
                     <AvatarFallback

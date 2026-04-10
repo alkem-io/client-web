@@ -67,9 +67,11 @@
     "subspaces_other": "{{count}} sous-espaces",
     "filter": {
       "role": {
+        "label": "Filtrer par rôle",
         "all": "Tous les rôles"
       },
       "visibility": {
+        "label": "Filtrer par visibilité",
         "all": "Tous",
         "public": "Public",
         "private": "Privé"

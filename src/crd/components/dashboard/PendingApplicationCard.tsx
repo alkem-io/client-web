@@ -1,3 +1,4 @@
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -18,13 +19,6 @@ type PendingApplicationCardProps = {
   onClick?: () => void;
   className?: string;
 };
-
-const getInitials = (name: string): string =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
 
 function PendingApplicationCard({ application, onClick, className }: PendingApplicationCardProps) {
   return (

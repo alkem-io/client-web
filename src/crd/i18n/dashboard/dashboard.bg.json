@@ -67,9 +67,11 @@
     "subspaces_other": "{{count}} подпространства",
     "filter": {
       "role": {
+        "label": "Филтриране по роля",
         "all": "Всички роли"
       },
       "visibility": {
+        "label": "Филтриране по видимост",
         "all": "Всички",
         "public": "Публични",
         "private": "Частни"

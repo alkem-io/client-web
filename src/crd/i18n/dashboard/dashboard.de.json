@@ -67,9 +67,11 @@
     "subspaces_other": "{{count}} Unterräume",
     "filter": {
       "role": {
+        "label": "Nach Rolle filtern",
         "all": "Alle Rollen"
       },
       "visibility": {
+        "label": "Nach Sichtbarkeit filtern",
         "all": "Alle",
         "public": "Öffentlich",
         "private": "Privat"
