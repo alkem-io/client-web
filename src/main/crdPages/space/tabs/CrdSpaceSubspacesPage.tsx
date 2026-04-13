@@ -7,6 +7,7 @@ import { CreateSubspace } from '@/domain/space/components/CreateSpace/SubspaceCr
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
@@ -44,6 +45,7 @@ export default function CrdSpaceSubspacesPage() {
   }));
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [createCalloutOpen, setCreateCalloutOpen] = useState(false);
   const canCreate = permissions.canCreateSubspaces;
   const handleCreateClick = canCreate ? () => setIsCreateDialogOpen(true) : undefined;
 
@@ -68,9 +70,12 @@ export default function CrdSpaceSubspacesPage() {
           callouts={callouts}
           calloutsSetId={calloutsSetId}
           canCreate={canCreateCallout}
+          onCreateClick={() => setCreateCalloutOpen(true)}
           loading={calloutsLoading}
         />
       </div>
+
+      {canCreateCallout && <CalloutFormConnector open={createCalloutOpen} onOpenChange={setCreateCalloutOpen} />}
 
       {canCreate && (
         <CreateSubspace

@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
@@ -11,6 +13,7 @@ export default function CrdSpaceDashboardPage() {
   const { space } = useSpace();
   const { callouts, calloutsSetId, canCreateCallout, tabDescription, dashboardNavigation, loading } =
     useCrdSpaceDashboard();
+  const [createOpen, setCreateOpen] = useState(false);
 
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
@@ -39,8 +42,11 @@ export default function CrdSpaceDashboardPage() {
         callouts={callouts}
         calloutsSetId={calloutsSetId}
         canCreate={canCreateCallout}
+        onCreateClick={() => setCreateOpen(true)}
         loading={loading}
       />
+
+      {canCreateCallout && <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} />}
     </>
   );
 }

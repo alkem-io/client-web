@@ -6,6 +6,7 @@ import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 
@@ -16,6 +17,7 @@ type CrdSpaceCustomTabPageProps = {
 export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTabPageProps) {
   const { space } = useSpace();
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const { callouts, calloutsSetId, classificationTagsets, canCreateCallout, tabDescription, loading } =
     useCrdCalloutList({
@@ -92,9 +94,12 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           callouts={callouts}
           calloutsSetId={calloutsSetId}
           canCreate={canCreateCallout}
+          onCreateClick={() => setCreateOpen(true)}
           loading={loading}
         />
       </div>
+
+      {canCreateCallout && <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} />}
     </>
   );
 }

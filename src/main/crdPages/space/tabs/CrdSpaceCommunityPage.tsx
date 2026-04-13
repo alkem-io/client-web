@@ -12,6 +12,7 @@ import {
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import InviteContributorsDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 
@@ -37,6 +38,7 @@ export default function CrdSpaceCommunityPage() {
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const handleInvite = canInvite ? () => setInviteOpen(true) : undefined;
   const handleContactLead = () => setContactOpen(true);
@@ -88,9 +90,12 @@ export default function CrdSpaceCommunityPage() {
           callouts={callouts}
           calloutsSetId={calloutsSetId}
           canCreate={canCreateCallout}
+          onCreateClick={() => setCreateOpen(true)}
           loading={loading}
         />
       </div>
+
+      {canCreateCallout && <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} />}
 
       {canInvite && (
         <InviteContributorsDialog type={ActorType.User} open={inviteOpen} onClose={() => setInviteOpen(false)} />

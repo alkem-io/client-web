@@ -3,9 +3,9 @@ import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
-import { remarkVerifyIframe } from '@/core/ui/markdown/embed/remarkVerifyIframe';
 import { useMarkdownConfig } from '@/crd/lib/markdownConfig';
 import { rehypeSanitizeStyles } from '@/crd/lib/rehypeSanitizeStyles';
+import { remarkVerifyIframe } from '@/crd/lib/remarkVerifyIframe';
 import { cn } from '@/crd/lib/utils';
 
 const IFRAME_ALLOWED_ATTRIBUTES = [
