@@ -185,6 +185,8 @@
     "more": "Още опции",
     "discussion": "Дискусия",
     "reactions": "Реагирай",
+    "reactionCount": "{{count}} реакции",
+    "reactionCount_one": "1 реакция",
     "contributions": "Приноси"
   },
   "comments": {
@@ -203,8 +205,71 @@
       "add": "Добавяне на реакция",
       "overflow": "+{{count}} още"
     },
+    "count": "{{count}} коментара",
+    "count_one": "1 коментар",
     "loading": "Зареждане на коментари...",
     "empty": "Още без коментари"
+  },
+  "dialogs": {
+    "cancel": "Отказ"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Подготовка на гласуването...",
+      "submitting": "Изпращане...",
+      "addingOption": "Добавяне на опция...",
+      "voted": "Гласувано",
+      "removeMyVote": "Премахни моя глас",
+      "closed": "Тази анкета е затворена",
+      "anonymous": "Анонимна анкета"
+    },
+    "vote": {
+      "maxReached": "Достигнат е максимумът от {{max}} избора",
+      "minRequired": "Изберете поне {{min}} опции"
+    },
+    "results": {
+      "totalVotes": "{{count}} гласа общо",
+      "noVotes": "Все още няма гласове",
+      "votersMore": "+{{count}} още"
+    },
+    "removeVoteConfirm": {
+      "title": "Премахване на вашия глас?",
+      "description": "Вашият глас ще бъде премахнат от тази анкета. Можете да гласувате отново по всяко време.",
+      "confirm": "Премахни глас"
+    },
+    "customOption": {
+      "placeholder": "Добавете собствена опция..."
+    },
+    "error": {
+      "voteFailed": "Неуспешно изпращане на вашия глас. Моля, опитайте отново."
+    },
+    "subscription": {
+      "voteRevoked": "Вашият глас беше премахнат."
+    }
+  },
+  "pollForm": {
+    "settings": "Настройки",
+    "settings.title": "Настройки на анкетата",
+    "settings.votingOptions": "Опции за гласуване",
+    "settings.allowMultiple": "Разрешаване на множество отговори",
+    "settings.allowCustomOptions": "Разрешаване на сътрудниците да добавят опции",
+    "settings.displayOptions": "Опции за показване",
+    "settings.hideResultsUntilVoted": "Скриване на резултатите до гласуване",
+    "settings.showVoterAvatars": "Показване на аватарите на гласувалите",
+    "settings.close": "Затвори",
+    "openPoll": "Анкетата е отворена",
+    "closePoll": "Анкетата е затворена",
+    "closePollConfirm": {
+      "title": "Затваряне на тази анкета?",
+      "description": "Затварянето на анкетата ще предотврати нови гласове и ще заключи редактирането. Можете да я отворите отново по-късно.",
+      "confirm": "Затвори анкетата"
+    },
+    "reopenPollConfirm": {
+      "title": "Отваряне отново на тази анкета?",
+      "description": "Отварянето отново на анкетата ще позволи нови гласове и редактиране.",
+      "confirm": "Отвори отново анкетата"
+    },
+    "dragHandle": "Плъзнете за пренареждане"
   },
   "a11y": {
     "spaceBanner": "Банер на пространството за {{name}}",

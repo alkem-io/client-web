@@ -1,4 +1,5 @@
 import { MessageSquare } from 'lucide-react';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -44,7 +45,9 @@ export function ContributionPostCard({
           {createdDate && <span className="text-xs text-muted-foreground">• {createdDate}</span>}
         </div>
       )}
-      {description && <p className="text-xs text-muted-foreground line-clamp-2 mt-1.5">{description}</p>}
+      {description && (
+        <MarkdownContent content={description} className="text-xs text-muted-foreground line-clamp-2 mt-1.5" />
+      )}
       <div className="flex items-center gap-2 mt-2">
         {tags?.slice(0, 3).map(tag => (
           <Badge key={tag} variant="secondary" className="text-[9px] px-1 h-4">

@@ -185,6 +185,8 @@
     "more": "Weitere Optionen",
     "discussion": "Diskussion",
     "reactions": "Reagieren",
+    "reactionCount": "{{count}} Reaktionen",
+    "reactionCount_one": "1 Reaktion",
     "contributions": "Beiträge"
   },
   "comments": {
@@ -203,8 +205,71 @@
       "add": "Reaktion hinzufügen",
       "overflow": "+{{count}} weitere"
     },
+    "count": "{{count}} Kommentare",
+    "count_one": "1 Kommentar",
     "loading": "Kommentare werden geladen...",
     "empty": "Noch keine Kommentare"
+  },
+  "dialogs": {
+    "cancel": "Abbrechen"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Abstimmung wird vorbereitet...",
+      "submitting": "Wird gesendet...",
+      "addingOption": "Option wird hinzugefügt...",
+      "voted": "Abgestimmt",
+      "removeMyVote": "Meine Stimme entfernen",
+      "closed": "Diese Umfrage ist geschlossen",
+      "anonymous": "Anonyme Umfrage"
+    },
+    "vote": {
+      "maxReached": "Maximum von {{max}} Auswahlen erreicht",
+      "minRequired": "Wählen Sie mindestens {{min}} Optionen"
+    },
+    "results": {
+      "totalVotes": "{{count}} Stimmen insgesamt",
+      "noVotes": "Noch keine Stimmen",
+      "votersMore": "+{{count}} weitere"
+    },
+    "removeVoteConfirm": {
+      "title": "Ihre Stimme entfernen?",
+      "description": "Ihre Stimme wird aus dieser Umfrage entfernt. Sie können jederzeit erneut abstimmen.",
+      "confirm": "Stimme entfernen"
+    },
+    "customOption": {
+      "placeholder": "Eigene Option hinzufügen..."
+    },
+    "error": {
+      "voteFailed": "Ihre Stimme konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+    },
+    "subscription": {
+      "voteRevoked": "Ihre Stimme wurde entfernt."
+    }
+  },
+  "pollForm": {
+    "settings": "Einstellungen",
+    "settings.title": "Umfrageeinstellungen",
+    "settings.votingOptions": "Abstimmungsoptionen",
+    "settings.allowMultiple": "Mehrfachantworten zulassen",
+    "settings.allowCustomOptions": "Mitwirkenden erlauben, Optionen hinzuzufügen",
+    "settings.displayOptions": "Anzeigeoptionen",
+    "settings.hideResultsUntilVoted": "Ergebnisse bis zur Abstimmung ausblenden",
+    "settings.showVoterAvatars": "Avatare der Abstimmenden anzeigen",
+    "settings.close": "Schließen",
+    "openPoll": "Umfrage ist offen",
+    "closePoll": "Umfrage ist geschlossen",
+    "closePollConfirm": {
+      "title": "Diese Umfrage schließen?",
+      "description": "Das Schließen der Umfrage verhindert neue Stimmen und sperrt die Bearbeitung. Sie können sie später wieder öffnen.",
+      "confirm": "Umfrage schließen"
+    },
+    "reopenPollConfirm": {
+      "title": "Diese Umfrage wieder öffnen?",
+      "description": "Das Wiedereröffnen der Umfrage ermöglicht neue Stimmen und Bearbeitung.",
+      "confirm": "Umfrage wieder öffnen"
+    },
+    "dragHandle": "Zum Neuordnen ziehen"
   },
   "a11y": {
     "spaceBanner": "Bereichsbanner für {{name}}",

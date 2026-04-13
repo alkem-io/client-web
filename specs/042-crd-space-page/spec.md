@@ -313,6 +313,14 @@ A user views any tab and sees callout content blocks rendered in the CRD design 
 4. **Given** a Link callout, **When** it renders, **Then** a call-to-action button displays with the link name; clicking opens the URL (external links in a new tab with security attributes)
 5. **Given** a Media Gallery callout, **When** it renders, **Then** images display in a grid; authorized users see an add-image action
 6. **Given** a Poll callout, **When** it renders, **Then** poll questions and options display; members with contribute access can vote and see results
+6a. **Given** a single-choice Poll, **When** a user selects an option, **Then** the vote is submitted immediately and results update in real-time
+6b. **Given** a multi-choice Poll, **When** a user toggles options, **Then** a 2-second debounce with visual progress fires before submitting the vote
+6c. **Given** a Poll with `resultsVisibility: HIDDEN`, **When** a user has not voted, **Then** results (counts/percentages/bars) are hidden
+6d. **Given** a Poll with `resultsDetail: FULL`, **When** results are visible, **Then** voter avatars display stacked per option
+6e. **Given** a user has voted, **When** they click "Remove my vote", **Then** a confirmation dialog appears; confirming removes the vote and clears the selection
+6f. **Given** a Poll with `allowContributorsAddOptions`, **When** a user types a custom option and submits, **Then** the option is added and the user's vote is cast for it
+6g. **Given** a Poll with `status: CLOSED`, **When** it renders, **Then** voting controls are disabled and a "Closed" label is shown
+6h. **Given** a user votes in one tab, **When** another tab has the same poll open, **Then** the other tab updates in real-time via subscriptions
 7. **Given** many callouts on a tab, **When** the user scrolls, **Then** additional callouts load progressively (lazy loading)
 8. **Given** a callout is in Draft state, **When** an authorized user views the tab, **Then** the callout shows a "Draft" badge; unauthorized users do not see it
 9. **Given** a callout has long description or content, **When** it renders, **Then** content is truncated with an expand/collapse control
@@ -669,6 +677,17 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-055**: Link framing MUST render as a call-to-action button with the link display name; the URL MUST be validated for http/https; external links MUST open in a new tab with `noopener, noreferrer`; internal links MUST use client navigation
 - **FR-056**: Media Gallery framing MUST render images in a grid layout; authorized users MUST be able to add images; empty galleries MUST show an upload placeholder for editors
 - **FR-057**: Poll framing MUST render questions with votable options; users with contribute access MUST be able to cast votes; results MUST display with vote counts and percentages
+- **FR-057a**: Poll framing MUST support both single-choice (radio) and multi-choice (checkbox) voting modes, determined by `maxResponses` setting (1 = single, >1 or 0/unlimited = multi)
+- **FR-057b**: Multi-choice voting MUST use a 2-second debounce with a visual progress indicator before submitting, to batch user interactions; single-choice MUST submit immediately on selection
+- **FR-057c**: Poll framing MUST support three results visibility modes: HIDDEN (results shown only after user votes), TOTAL_ONLY (only total vote count before voting), VISIBLE (full results always visible)
+- **FR-057d**: Poll framing MUST support three results detail modes: FULL (vote counts + voter avatar list per option), COUNT (vote counts only), PERCENTAGE (percentages only)
+- **FR-057e**: When `resultsDetail` is FULL, each option MUST display voter avatars in a stacked row (max 10 visible) with a "+N" overflow indicator; avatars expand spacing on hover
+- **FR-057f**: Poll framing MUST allow users to remove their vote via a "Remove my vote" link with a confirmation dialog
+- **FR-057g**: Poll framing MUST support a "custom option" input when `allowContributorsAddOptions` is enabled — users can type a new option and vote for it in one action
+- **FR-057h**: Poll framing MUST display appropriate status messages during async operations: "Preparing vote" (debounce), "Submitting" (mutation in flight), "Adding option" (custom option creation)
+- **FR-057i**: Poll framing MUST display a "Closed" label when `status === CLOSED` and disable all voting controls
+- **FR-057j**: Poll framing MUST enforce min/max response constraints with helper text ("Select at least N", "Maximum N reached") and disable additional checkboxes when max is reached
+- **FR-057k**: Poll framing MUST handle subscription-driven vote revocation (another tab removes the user's vote) by clearing local selection and showing a warning message
 - **FR-058**: Poll framing MUST support real-time updates (subscriptions) for vote changes
 
 #### Callout Management
@@ -686,6 +705,9 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-066**: Selecting a framing type MUST display the corresponding content editor: markdown editor (Memo), whiteboard setup (Whiteboard), URL + display name fields (Link), image upload area (Media Gallery), or question/options builder (Poll)
 - **FR-067**: Link framing MUST validate that the URL is a valid http/https address and that a display name is provided
 - **FR-068**: Poll framing MUST support a title, 2-10 option fields, and min/max response count settings with validation (min <= max, both <= option count)
+- **FR-068a**: Poll option fields MUST support drag-and-drop reordering via @dnd-kit
+- **FR-068b**: Poll creation/editing form MUST include a settings dialog with: single/multi-choice toggle, allow custom options toggle, hide results until voted toggle, show voter avatars toggle
+- **FR-068c**: Poll editing form MUST include an Open/Close poll status toggle with confirmation dialog; closed polls MUST lock all editing controls
 - **FR-069**: The creation form MUST include contribution settings: allowed response type (None, Post, Memo, Whiteboard, Link), comments toggle, and per-type defaults (default name, description template, whiteboard template)
 - **FR-070**: The creation form MUST include a visibility selector (Published or Draft) and a "Send Notification" toggle (enabled only when form is valid)
 - **FR-071**: The creation form MUST support template import via a "Find Template" action that opens a template browser

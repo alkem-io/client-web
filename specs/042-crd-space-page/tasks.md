@@ -205,7 +205,7 @@
 ### i18n
 
 - [X] T078a [P] Extend `src/crd/i18n/space/space.en.json` with `comments` keys: `title`, `showMore`, `showLess`, `sortNewest`, `sortOldest`, `reply`, `delete`, `deleted` (placeholder for deleted parent), `addComment` (placeholder text), `send`, `charCount` (with `{{count}}` / `{{max}}` interpolation), `reactions.add`, `reactions.overflow` (with `{{count}}`), `loading`, `empty` (no comments yet)
-- [ ] T078c [P] Extend `src/crd/i18n/space/space.en.json` with `calloutDialog` keys: `close` (sr-only close button label), `share` (share button label), `more` (more-options button label), `discussion` ("Discussion" section heading), `reactions` ("React" button label), `contributions` ("Contributions" section heading); mirror to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
+- [X] T078c [P] Extend `src/crd/i18n/space/space.en.json` with `calloutDialog` keys: `close` (sr-only close button label), `share` (share button label), `more` (more-options button label), `discussion` ("Discussion" section heading), `reactions` ("React" button label), `contributions` ("Contributions" section heading); mirror to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
 - [X] T078b Mirror T078a key changes to all 5 other language files: `space.{nl,es,bg,de,fr}.json`
 
 ### CRD presentational layer — comment components
@@ -215,13 +215,13 @@
 - [X] T081 [P] Create `src/crd/components/comment/CommentInput.tsx` — user avatar (left) + auto-expanding `<textarea>` (starts 1 line, expands up to 5, then scrolls internally) + toolbar (emoji button via `CommentEmojiPicker`, disabled send button `Send` icon); emoji inserts at cursor position; Enter submits (when non-empty), Ctrl+Enter also submits; max 2000 chars with visible counter when approaching limit; placeholder via `t('comments.addComment')`; toolbar reserves space for future @ button (empty slot); props: `currentUser?: CommentAuthor`, `onSubmit: (content: string) => void`, `disabled?: boolean`, `maxLength?: number` (default 2000)
 - [X] T082 [P] Create `src/crd/components/comment/CommentItem.tsx` — avatar (8x8) + author name (font-medium) + timestamp (text-xs, muted) + content (text-sm) + action row: Reply button + delete button (visible when `canDelete`); `CommentReactions` below content; clicking Reply renders an inline `CommentInput` directly below this comment (local `isReplying` visual state); `isReply` prop controls left indentation (`ml-10`); `isDeleted` renders placeholder text instead of content; props: `comment: CommentData`, `onReply: (parentId: string, content: string) => void`, `onDelete: (commentId: string) => void`, `onAddReaction: (commentId: string, emoji: string) => void`, `onRemoveReaction: (commentId: string, emoji: string) => void`, `currentUser?: CommentAuthor`
 - [X] T083 [P] Create `src/crd/components/comment/CommentThread.tsx` — top-level orchestrator: header with comment count + sort toggle (newest/oldest first, default newest); groups comments into flat threads (top-level + their replies sorted chronologically); renders `CommentItem` per message with replies indented below parent; scrollable comment list area (flex-1 overflow-y-auto); does NOT include its own sticky input — the input is owned by `CalloutDetailDialog` and passed as a prop slot; supports `mode: 'full-height'` only (collapsible mode removed; was only needed in the below-card context which no longer exists); loading state shows spinner; empty state shows `t('comments.empty')`; props: `CommentsContainerData` (from data-model.md) minus `mode`
-- [ ] T083a [P] Update `src/crd/components/comment/CommentThread.tsx` — remove `mode` prop and `CollapsibleComments` wrapper; the component is always rendered inside the dialog's scrollable content area which controls height; the `CommentInput` sticky footer is now rendered outside `CommentThread` by `CalloutDetailDialog` (pass `canComment` + comment callbacks via the dialog instead)
+- [X] T083a [P] Update `src/crd/components/comment/CommentThread.tsx` — remove `mode` prop and `CollapsibleComments` wrapper; the component is always rendered inside the dialog's scrollable content area which controls height; the `CommentInput` sticky footer is now rendered outside `CommentThread` by `CalloutDetailDialog` (pass `canComment` + comment callbacks via the dialog instead)
 - [X] T084 [P] Create `src/crd/components/comment/CollapsibleComments.tsx` — ~~wrapper component for `mode='collapsible'`~~ **this component is now unused** (collapsible-below-card mode was removed; the dialog always shows full-height); keep the file but mark it `@deprecated` with a comment until T085 clean-up
-- [ ] T084a [P] Delete `src/crd/components/comment/CollapsibleComments.tsx` (deprecated since T083a removed the collapsible mode); update any remaining imports
+- [X] T084a [P] Delete `src/crd/components/comment/CollapsibleComments.tsx` (deprecated since T083a removed the collapsible mode); update any remaining imports
 
 ### CRD presentational layer — callout detail dialog
 
-- [ ] T085a [P] Create `src/crd/components/callout/CalloutDetailDialog.tsx` — full-screen dialog (matches `PostDetailDialog` layout from prototype) built on `src/crd/primitives/dialog.tsx`:
+- [X] T085a [P] Create `src/crd/components/callout/CalloutDetailDialog.tsx` — full-screen dialog (matches `PostDetailDialog` layout from prototype) built on `src/crd/primitives/dialog.tsx`:
   - **Layout**: `flex flex-col h-[95vh] max-w-5xl overflow-hidden` — three zones: sticky header, scrollable body, sticky footer
   - **Sticky header** (`shrink-0 border-b`): close button (X, `DialogClose`), callout title (`DialogTitle`), breadcrumb subtitle (space name), share icon button, more-options icon button (MoreHorizontal)
   - **Scrollable body** (`flex-1 overflow-y-auto`):
@@ -239,12 +239,12 @@
 
 ### Delete stubs
 
-- [ ] T085 Delete `src/crd/components/callout/CalloutCommentItem.tsx` and `src/crd/components/callout/CalloutComments.tsx` — replaced by `src/crd/components/comment/` components; update any existing imports (search for `CalloutCommentItem` and `CalloutComments` in `src/`)
+- [X] T085 Delete `src/crd/components/callout/CalloutCommentItem.tsx` and `src/crd/components/callout/CalloutComments.tsx` — replaced by `src/crd/components/comment/` components; update any existing imports (search for `CalloutCommentItem` and `CalloutComments` in `src/`)
 
 ### Integration layer
 
 - [X] T086 Create `src/main/crdPages/space/dataMappers/commentDataMapper.ts` — `mapRoomToCommentData(room: CommentsMessagesFragment, currentUserId: string): CommentData[]` — maps Room messages to `CommentData[]` with flat threading (parentId from threadID), derives `canDelete` from message author match or admin privilege, maps reactions from `ReactionDetails[]` to `CommentReaction[]` (groups by emoji, checks `createdBy` against currentUserId for `hasReacted`), handles deleted parent placeholders via the existing `useRestoredMessages` pattern
-- [ ] T086a Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add `mapCalloutDetailsToDialogData(callout: CalloutDetailsModelExtended): CalloutDetailDialogData` mapper; extracts title, author, description, imageUrl (whiteboard preview or first media image), timestamp, commentCount, reactionCount
+- [X] T086a Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add `mapCalloutDetailsToDialogData(callout: CalloutDetailsModelExtended): CalloutDetailDialogData` mapper; extracts title, author, description, imageUrl (whiteboard preview or first media image), timestamp, commentCount, reactionCount
 - [X] T087 Create `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx` — integration connector that:
   - Accepts `roomId: string`, `calloutId?: string`, `contributionId?: string`, `mode: 'collapsible' | 'full-height'`
   - **Remove `mode` prop** — now always full-height inside dialog
@@ -256,7 +256,7 @@
   - Derives `canComment` from Room authorization (`AuthorizationPrivilege.CreateMessage`)
   - Passes `currentUser` from auth context (name + avatar)
   - Renders `<CommentThread>` (thread only) + exposes `canComment`, `currentUser`, and comment callbacks so `CalloutDetailDialog` can render the sticky `CommentInput` footer
-- [ ] T087a Create `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` — wraps `CalloutDetailDialog` (CRD) with all integration wiring:
+- [X] T087a Create `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` — wraps `CalloutDetailDialog` (CRD) with all integration wiring:
   - Accepts `calloutId: string`, `calloutsSetId: string | undefined`, `open: boolean`, `onOpenChange`
   - Reuses the `callout` data already loaded by `LazyCalloutItem` (passed as prop, not re-fetched)
   - Maps to `CalloutDetailDialogData` via `mapCalloutDetailsToDialogData`
@@ -266,14 +266,14 @@
 
 ### Wiring
 
-- [ ] T088a Revert / update `LazyCalloutItem.tsx` — **remove** the `CalloutCommentsConnector` rendered below PostCard (that was T088, now superseded); instead add a local `dialogOpen` `useState`; pass `onClick` and footer comments-button click handler both pointing to `() => setDialogOpen(true)`; render `<CalloutDetailDialogConnector>` controlled by `dialogOpen`
-- [ ] T088b Update `PostCard.tsx` — make the "X comments" footer `<Button>` call `onClick` when provided (currently it has no handler); add `onCommentsClick?` prop; the callout feed wires `onCommentsClick` to open the dialog (same as title click)
-- [ ] T089 Wire `CalloutCommentsConnector` into the contribution preview area (`ContributionGridConnector` or equivalent) — when a Post contribution is selected, render contribution-level comments in `mode='full-height'` inside the dialog; pass contribution's Room ID; hide when `commentsEnabled` is false
+- [X] T088a Revert / update `LazyCalloutItem.tsx` — **remove** the `CalloutCommentsConnector` rendered below PostCard (that was T088, now superseded); instead add a local `dialogOpen` `useState`; pass `onClick` and footer comments-button click handler both pointing to `() => setDialogOpen(true)`; render `<CalloutDetailDialogConnector>` controlled by `dialogOpen`
+- [X] T088b Update `PostCard.tsx` — make the "X comments" footer `<Button>` call `onClick` when provided (currently it has no handler); add `onCommentsClick?` prop; the callout feed wires `onCommentsClick` to open the dialog (same as title click)
+- [X] T089 Wire `CalloutCommentsConnector` into the contribution preview area (`ContributionGridConnector` or equivalent) — when a Post contribution is selected, render contribution-level comments in `mode='full-height'` inside the dialog; pass contribution's Room ID; hide when `commentsEnabled` is false
 
 ### Standalone preview
 
 - [X] T090 Add mock comment data to `src/crd/app/data/space.ts` — sample `CommentData[]` with top-level comments, replies, reactions, and a deleted parent placeholder; update SpacePage preview to render `CommentThread` in both collapsible and full-height modes
-- [ ] T090a Update `src/crd/app/pages/SpacePage.tsx` standalone preview — replace direct `CommentThread` render with a `CalloutDetailDialog` open via a "View Callout" button; use mock `CalloutDetailDialogData` from `space.ts`
+- [X] T090a Update `src/crd/app/pages/SpacePage.tsx` standalone preview — replace direct `CommentThread` render with a `CalloutDetailDialog` open via a "View Callout" button; use mock `CalloutDetailDialogData` from `space.ts`
 
 **Checkpoint**: Clicking a callout title or "X comments" button opens the `CalloutDetailDialog`. The dialog shows the full callout: sticky top header (title + close/share), scrollable body (author, description, reactions bar, Discussion section with CommentThread), sticky bottom CommentInput (when authorized). Comments are NOT visible below the callout card on the feed. Real-time updates, emoji reactions, reply threading, sort toggle, lazy loading all work inside the dialog.
 
@@ -461,6 +461,148 @@
 
 ---
 
+## Phase 19: Full Poll Feature Parity (US4 — FR-057a through FR-057k, FR-068a through FR-068c)
+
+**Goal**: Replace the skeletal `CalloutPoll` and basic `PollOptionsEditor` with full-featured CRD components matching every capability of the MUI poll implementation — single/multi-choice voting, debounced submit, custom options, vote removal, results visibility/detail modes, voter avatars, poll settings dialog, drag-and-drop option reordering, open/close status management, and real-time subscription wiring.
+
+**MUI reference files** (read these to understand every feature):
+- `src/domain/collaboration/poll/PollView.tsx` — orchestrator with debounce, status messages, vote revocation
+- `src/domain/collaboration/poll/PollVotingControls.tsx` — radio/checkbox rendering, option labels with progress bars, custom option row
+- `src/domain/collaboration/poll/PollVoterAvatars.tsx` — stacked voter avatar row with hover expand + overflow
+- `src/domain/collaboration/poll/PollFormFields.tsx` — drag-and-drop option editing, open/close toggle
+- `src/domain/collaboration/poll/PollFormSettingsSection.tsx` — settings modal (single/multi, custom options, visibility, voter avatars)
+- `src/domain/collaboration/poll/models/PollModels.ts` — all poll model types
+- `src/domain/collaboration/poll/hooks/usePollVote.ts` — voting mutations with optimistic updates
+- `src/domain/collaboration/poll/hooks/usePollSubscriptions.ts` — real-time subscription hook
+- `src/domain/collaboration/poll/hooks/usePollOptionManagement.ts` — option CRUD mutations
+- `src/domain/collaboration/callout/CalloutFramings/CalloutFramingPoll.tsx` — callout-to-poll bridge
+
+### Sub-phase 19a: Primitives (no dependencies, all parallel)
+
+- [X] T125 [P] Install Radix packages: `pnpm add @radix-ui/react-alert-dialog @radix-ui/react-tooltip @radix-ui/react-radio-group @radix-ui/react-checkbox @radix-ui/react-progress`
+- [X] T126 [P] Port `src/crd/primitives/alert-dialog.tsx` from `prototype/src/app/components/ui/alert-dialog.tsx` — update import paths to `@/crd/lib/utils` and `@/crd/primitives/button`; remove `"use client"` directive; exports: `AlertDialog`, `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogHeader`, `AlertDialogFooter`, `AlertDialogTitle`, `AlertDialogDescription`, `AlertDialogAction`, `AlertDialogCancel`, `AlertDialogPortal`, `AlertDialogOverlay`
+- [X] T127 [P] Port `src/crd/primitives/tooltip.tsx` from `prototype/src/app/components/ui/tooltip.tsx` — update imports; remove `"use client"`; exports: `Tooltip`, `TooltipTrigger`, `TooltipContent`, `TooltipProvider`
+- [X] T128 [P] Port `src/crd/primitives/radio-group.tsx` from `prototype/src/app/components/ui/radio-group.tsx` — update imports; remove `"use client"`; exports: `RadioGroup`, `RadioGroupItem`
+- [X] T129 [P] Port `src/crd/primitives/checkbox.tsx` from `prototype/src/app/components/ui/checkbox.tsx` — update imports; remove `"use client"`; exports: `Checkbox`
+- [X] T130 [P] Port `src/crd/primitives/progress.tsx` from `prototype/src/app/components/ui/progress.tsx` — update imports; remove `"use client"`; exports: `Progress`
+
+### Sub-phase 19b: Common CRD components (depends on 19a)
+
+- [X] T131 [P] Create `src/crd/components/dialogs/ConfirmationDialog.tsx` — generic confirmation dialog built on AlertDialog primitive; accepts `open`, `onOpenChange`, `title: string`, `description: string`, `confirmLabel: string`, `cancelLabel?: string`, `onConfirm`, `onCancel?`, `variant?: 'default' | 'destructive'` (destructive makes confirm button red), `loading?: boolean` (disables buttons + shows aria-busy); uses `useTranslation('crd-space')` for default cancel label; fully accessible (focus trapped, ESC to cancel)
+- [X] T132 [P] Create `src/crd/components/common/PollVoterAvatars.tsx` — stacked voter avatar row; accepts `voters: { id: string; name: string; avatarUrl?: string }[]`, `maxVisible?: number` (default 10), `className?`; shows up to `maxVisible` Avatar primitives in a `-space-x-2` row with `hover:space-x-1` expand transition; overflow renders a `+N` circle with Tooltip showing the count; all avatars use `size-5` (20px); `aria-label` on the group ("N voters")
+
+### Sub-phase 19c: Poll display — rewrite CalloutPoll (depends on 19a + 19b)
+
+- [X] T133 Add i18n keys to `src/crd/i18n/space/space.en.json` under `poll.*`: `status.preparingVote`, `status.submitting`, `status.addingOption`, `status.voted`, `status.removeMyVote`, `status.closed`, `status.anonymous`, `vote.maxReached` (with `{{max}}`), `vote.minRequired` (with `{{min}}`), `results.totalVotes` (with `{{count}}`), `results.noVotes`, `results.votersMore` (with `{{count}}`), `removeVoteConfirm.title`, `removeVoteConfirm.description`, `removeVoteConfirm.confirm`, `customOption.placeholder`, `error.voteFailed`, `subscription.voteRevoked`; mirror to `space.{bg,de,es,fr,nl}.json`
+- [X] T134 Rewrite `src/crd/components/callout/CalloutPoll.tsx` — full-featured poll display component. **Props** (plain TypeScript, no GraphQL types):
+  ```
+  PollOptionData: { id, text, sortOrder, voteCount?, votePercentage?, isSelected, voters?: { id, name, avatarUrl? }[] }
+  CalloutPollProps: {
+    title?: string;
+    options: PollOptionData[];
+    selectedOptionIds: string[];
+    isSingleChoice: boolean;
+    isClosed: boolean;
+    canVote: boolean;
+    showResults: boolean;
+    showTotalOnly: boolean;
+    resultsDetail: 'full' | 'count' | 'percentage';
+    totalVotes?: number;
+    hasVoted: boolean;
+    isAnonymous: boolean;
+    // Custom option
+    showAddCustomOption: boolean;
+    isAddingCustomOption: boolean;
+    onSubmitCustomOption?: (text: string) => void;
+    // Voting
+    onChange: (selectedIds: string[]) => void;
+    onRemoveVote?: () => void;
+    // Status
+    statusMessage?: string;
+    statusProgress?: number; // 0-100 for debounce progress
+    errorMessage?: string;
+    warningMessage?: string;
+    className?: string;
+  }
+  ```
+  **Internal structure**:
+  - `PollVotingControls` sub-component: renders RadioGroup (single) or Checkbox group (multi) with option labels; each option label shows text + optional results overlay (progress bar background via inline `width` style + count/percentage text + PollVoterAvatars when detail='full'); disabled states for closed polls and max-reached; min/max helper text
+  - `CustomOptionRow` sub-component: inactive state shows placeholder text; active state shows text input with check/close icon buttons; Enter submits, Escape deactivates; max 512 chars
+  - Footer area: status message with Progress indicator (debounce) or spinner (mutation), "Voted — Remove my vote" link (triggers `onRemoveVote`), "Closed" label, "Anonymous" label
+  - All text via `useTranslation('crd-space')` with `poll.*` keys
+  - Uses RadioGroup + RadioGroupItem primitives for single-choice; Checkbox primitive for multi-choice; Progress primitive for debounce indicator; Button, Avatar, Tooltip, Separator primitives as needed
+  - NO business logic — all voting state management (debounce, optimistic updates) happens in the connector
+
+### Sub-phase 19d: Poll form — rewrite PollOptionsEditor + new PollSettingsDialog (depends on 19a)
+
+- [X] T135 Add i18n keys to `src/crd/i18n/space/space.en.json` under `pollForm.*`: `settings`, `settings.title`, `settings.votingOptions`, `settings.allowMultiple`, `settings.allowCustomOptions`, `settings.displayOptions`, `settings.hideResultsUntilVoted`, `settings.showVoterAvatars`, `settings.close`, `openPoll`, `closePoll`, `closePollConfirm.title`, `closePollConfirm.description`, `closePollConfirm.confirm`, `reopenPollConfirm.title`, `reopenPollConfirm.description`, `reopenPollConfirm.confirm`, `dragHandle` (sr-only); mirror to `space.{bg,de,es,fr,nl}.json`
+- [X] T136 [P] Create `src/crd/forms/callout/PollSettingsDialog.tsx` — settings modal for poll configuration; built on Dialog primitive (not AlertDialog — this is a form, not a confirmation). **Props**:
+  ```
+  PollSettingsDialogProps: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    allowMultiple: boolean;
+    onAllowMultipleChange: (value: boolean) => void;
+    allowCustomOptions: boolean;
+    onAllowCustomOptionsChange: (value: boolean) => void;
+    hideResultsUntilVoted: boolean;
+    onHideResultsUntilVotedChange: (value: boolean) => void;
+    showVoterAvatars: boolean;
+    onShowVoterAvatarsChange: (value: boolean) => void;
+    readOnly?: boolean;
+  }
+  ```
+  Uses Switch primitive for each toggle; grouped into "Voting Options" and "Display Options" sections; disabled when `readOnly`; close button in header
+- [X] T137 Rewrite `src/crd/forms/callout/PollOptionsEditor.tsx` — enhanced poll form with drag-and-drop reordering and settings. Replace existing basic implementation with:
+  - @dnd-kit integration: `DndContext` + `SortableContext` + `useSortable` per option row; each row has a drag handle (GripVertical icon), text input, and delete button; `onDragEnd` reorders and calls `onOptionsChange`
+  - Settings button opens PollSettingsDialog (via `settingsSlot: ReactNode` prop — the dialog itself is rendered by the consumer/connector to keep form state wiring outside CRD)
+  - Open/Close poll toggle: renders when `pollStatus` prop is provided; shows Switch + label; triggers `onStatusChange` callback; consumer shows confirmation dialog before toggling
+  - Disabled state when `isClosed` is true (all inputs + drag handles + add button disabled)
+  - Existing props preserved (`question`, `onQuestionChange`, `questionError`, `options`, `onOptionsChange`); new props: `settingsSlot?: ReactNode`, `pollStatus?: 'open' | 'closed'`, `onStatusChange?: (status: 'open' | 'closed') => void`, `isClosed?: boolean`
+  - Accessibility: drag handle has sr-only label, option inputs have `aria-label`, reorder announced via `@dnd-kit/accessibility`
+
+### Sub-phase 19e: Integration — connector + data mapper (depends on 19c + 19d)
+
+- [X] T138 Create `src/main/crdPages/space/callout/CalloutPollConnector.tsx` — wires CRD `CalloutPoll` to domain hooks. **Responsibilities**:
+  - Receives `callout: CalloutDetailsModelExtended` prop
+  - Extracts `poll` from `callout.framing.poll`; derives `canVote` from `AuthorizationPrivilege.Contribute`
+  - Calls `usePollVote({ pollId, poll })` for `castVote` / `removeVote`
+  - Calls `usePollSubscriptions({ pollId })` for real-time updates
+  - Calls `usePollOptionManagement({ pollId })` for `addOption`
+  - Implements `useDebouncedSubmit(2000)` hook (copy logic from MUI `PollView.tsx`) for multi-choice debounce with progress tracking
+  - Manages local `selectedOptionIds` state synced with server via `useEffect` on `poll.myVote`
+  - Handles custom option flow: `addOption` → find new option → `castVote` with new option included
+  - Maps `PollDetailsModel` fields to `CalloutPollProps`: `isSingleChoice` from `maxResponses === 1`, `showResults` from `canSeeDetailedResults`, `resultsDetail` from settings enum → `'full' | 'count' | 'percentage'`, `isAnonymous` from `resultsDetail !== Full`, `showAddCustomOption` from settings + authorization + not closed + options < 10
+  - Maps `statusMessage` from loading/debounce state
+  - Renders `ConfirmationDialog` for vote removal (controlled by local `confirmRemoveOpen` state)
+  - Handles subscription-driven vote revocation (myVote goes non-null → null)
+- [X] T139 Update `src/main/crdPages/space/callout/LazyCalloutItem.tsx` — when `callout.framing.type === CalloutFramingType.Poll`, render `CalloutPollConnector` instead of / in addition to the PostCard content area. The poll renders inline within the callout block, below the description
+- [X] T140 Update `src/main/crdPages/space/callout/FramingEditorConnector.tsx` — when `framingType === 'poll'`, render the enhanced `PollOptionsEditor` with settings slot wired to `PollSettingsDialog`; wire `onStatusChange` to show confirmation dialog before toggling; pass poll status and closed state
+- [X] T141 Update `src/main/crdPages/space/hooks/useCrdCalloutForm.ts` — add poll settings fields to form state: `pollAllowMultiple`, `pollAllowCustomOptions`, `pollHideResultsUntilVoted`, `pollShowVoterAvatars`; map these to `PollFormFieldSubmittedValues.settings` on submit
+- [X] T142 Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add poll data to `CalloutDetailDialogData` when framing type is Poll; map `poll.title`, `poll.options`, `poll.settings`, `poll.myVote`, `poll.totalVotes`, `poll.status`, `poll.canSeeDetailedResults`
+
+### Sub-phase 19f: Callout detail dialog poll rendering (depends on 19e)
+
+- [X] T143 Update `src/crd/components/callout/CalloutDetailDialog.tsx` — add optional `pollSlot?: ReactNode` prop; render it between the description and the reactions bar when provided; the slot receives the fully-wired `CalloutPollConnector` from the integration layer
+- [X] T144 Update `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` — when the callout has a poll framing, render `CalloutPollConnector` and pass it as `pollSlot` to `CalloutDetailDialog`
+
+### Sub-phase 19g: Polish & verification (depends on all above)
+
+- [X] T145 [P] Accessibility audit of all new poll components — verify: radio/checkbox groups have `aria-label` on the fieldset, icon-only buttons have `aria-label`, progress indicators use `role="progressbar"` with `aria-valuenow`/`aria-valuemin`/`aria-valuemax`, voter avatars group has descriptive `aria-label`, custom option input has `aria-label`, confirmation dialogs trap focus, status messages use `role="status"`, drag handles have sr-only instructions
+- [X] T146 [P] Verify zero MUI imports in all new/modified `src/crd/` files — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`
+- [X] T147 [P] Update `src/crd/components/index.md` component inventory with new components: `CalloutPoll` (rewritten), `PollVoterAvatars`, `ConfirmationDialog`, and new primitives
+- [X] T148 [P] Update `src/crd/app/pages/SpacePage.tsx` mock data — add a poll callout with sample options, votes, and voter avatars to the standalone preview app
+- [X] T149 [P] Add i18n keys for ConfirmationDialog default cancel label to `src/crd/i18n/space/space.en.json` (`dialogs.cancel`) and mirror to other languages
+
+**Checkpoint**: Poll callouts render with full feature parity to MUI version — single/multi-choice voting, debounced multi-choice, custom options, vote removal with confirmation, results visibility/detail modes, voter avatars with hover expand, real-time subscription updates, status messages, closed poll state. Poll creation form has drag-and-drop reordering, settings dialog, and open/close toggle. All components pass CRD golden rules (no MUI, no business logic in `src/crd/`, plain TS props, Tailwind only). Standalone preview app shows a sample poll.
+
+**Out of scope for this phase**:
+- Min/max response number inputs in settings dialog (behind `SHOW_MIN_MAX_SETTINGS = false` flag in MUI — disabled for now)
+- ContributorTooltip on voter avatars (hover-fetches contributor data — would require a CRD tooltip + connector with lazy GraphQL query; deferred to a future phase)
+- Poll status change mutations from the form (Open/Close toggle calls a callback; the actual `updatePollStatus` mutation is wired in the connector, not in the CRD layer)
+
+---
+
 ## Dependencies & Execution Order
 
 ```
@@ -481,6 +623,7 @@ Phase 1 (setup + primitives)
   Phase 5 complete → Phase 16 (callout lazy loading)
   Phase 6 complete → Phase 17 (community + subspaces top-section revision)
   Phase 17 complete → Phase 18 (community sidebar + subspace filter refinement)
+  Phase 5 complete → Phase 19 (full poll feature parity — depends on integration layer being in place)
   All desired → Phase 14 (mobile) + Phase 15 (polish)
 ```
 

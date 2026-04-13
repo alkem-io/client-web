@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/crd/primitives/button';
 import { CommentItem } from './CommentItem';
@@ -24,43 +24,39 @@ export function CommentThread({
   const { t } = useTranslation('crd-space');
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
 
-  const threaded = useMemo(() => {
-    const topLevel = comments.filter(comment => !comment.parentId);
-    const repliesByParent = new Map<string, CommentData[]>();
+  const topLevel = comments.filter(comment => !comment.parentId);
+  const repliesByParent = new Map<string, CommentData[]>();
 
-    for (const comment of comments) {
-      if (!comment.parentId) continue;
+  for (const comment of comments) {
+    if (!comment.parentId) continue;
 
-      const existing = repliesByParent.get(comment.parentId) ?? [];
-      repliesByParent.set(comment.parentId, [...existing, comment]);
-    }
+    const existing = repliesByParent.get(comment.parentId) ?? [];
+    repliesByParent.set(comment.parentId, [...existing, comment]);
+  }
 
-    const sortedTopLevel = [...topLevel].sort((a, b) => {
-      const aTime = new Date(a.timestamp).getTime();
-      const bTime = new Date(b.timestamp).getTime();
-      return sortOrder === 'newest' ? bTime - aTime : aTime - bTime;
-    });
+  const sortedTopLevel = [...topLevel].sort((a, b) => {
+    const aTime = new Date(a.timestamp).getTime();
+    const bTime = new Date(b.timestamp).getTime();
+    return sortOrder === 'newest' ? bTime - aTime : aTime - bTime;
+  });
 
-    for (const [parentId, replies] of repliesByParent.entries()) {
-      repliesByParent.set(
-        parentId,
-        [...replies].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
-      );
-    }
+  for (const [parentId, replies] of repliesByParent.entries()) {
+    repliesByParent.set(
+      parentId,
+      [...replies].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    );
+  }
 
-    return {
-      topLevel: sortedTopLevel,
-      repliesByParent,
-    };
-  }, [comments, sortOrder]);
+  const threaded = {
+    topLevel: sortedTopLevel,
+    repliesByParent,
+  };
 
   return (
     <div className="space-y-4">
       {/* Sort toggle header */}
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm text-muted-foreground">
-          {comments.length === 1 ? '1 comment' : `${comments.length} comments`}
-        </p>
+        <p className="text-sm text-muted-foreground">{t('comments.count', { count: comments.length })}</p>
         <Button
           variant="ghost"
           size="sm"

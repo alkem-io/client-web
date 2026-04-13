@@ -1,5 +1,7 @@
 import { FileText, LayoutGrid, Maximize2, MessageSquare, MoreHorizontal, Presentation } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -38,6 +40,8 @@ type PostCardProps = {
   onCommentsClick?: () => void;
   onSettingsClick?: () => void;
   onExpandClick?: () => void;
+  /** Content injected after the description/preview area, before the footer (e.g. poll) */
+  children?: ReactNode;
   className?: string;
 };
 
@@ -55,7 +59,15 @@ const typeLabels = {
   'call-for-whiteboards': 'callout.callForWhiteboards',
 } as const;
 
-export function PostCard({ post, onClick, onCommentsClick, onSettingsClick, onExpandClick, className }: PostCardProps) {
+export function PostCard({
+  post,
+  onClick,
+  onCommentsClick,
+  onSettingsClick,
+  onExpandClick,
+  children,
+  className,
+}: PostCardProps) {
   const { t } = useTranslation('crd-space');
   const TypeIcon = typeIcons[post.type];
 
@@ -135,7 +147,7 @@ export function PostCard({ post, onClick, onCommentsClick, onSettingsClick, onEx
             {post.title}
           </button>
         </h3>
-        {post.snippet && <p className="text-muted-foreground text-sm line-clamp-3 mb-4">{post.snippet}</p>}
+        {post.snippet && <MarkdownContent content={post.snippet} className="text-muted-foreground line-clamp-3 mb-4" />}
 
         {/* Whiteboard preview */}
         {post.type === 'whiteboard' && post.contentPreview?.imageUrl && (
@@ -205,6 +217,8 @@ export function PostCard({ post, onClick, onCommentsClick, onSettingsClick, onEx
           </div>
         )}
       </CardContent>
+
+      {children && <div className="px-6 pb-4">{children}</div>}
 
       <CardFooter className="px-6 py-3 border-t bg-muted/5 flex items-center gap-4">
         <Button

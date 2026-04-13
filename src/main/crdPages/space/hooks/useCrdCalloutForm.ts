@@ -17,6 +17,10 @@ type CalloutFormValues = {
   linkDisplayName: string;
   pollQuestion: string;
   pollOptions: PollOptionValue[];
+  pollAllowMultiple: boolean;
+  pollAllowCustomOptions: boolean;
+  pollHideResultsUntilVoted: boolean;
+  pollShowVoterAvatars: boolean;
   notifyMembers: boolean;
 };
 
@@ -35,6 +39,10 @@ const initialValues: CalloutFormValues = {
   linkDisplayName: '',
   pollQuestion: '',
   pollOptions: createInitialPollOptions(),
+  pollAllowMultiple: false,
+  pollAllowCustomOptions: false,
+  pollHideResultsUntilVoted: false,
+  pollShowVoterAvatars: true,
   notifyMembers: false,
 };
 

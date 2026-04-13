@@ -59,6 +59,14 @@ export function CalloutFormConnector({ open, onOpenChange, onSubmit, onFindTempl
           pollQuestionError={errors.pollQuestion}
           pollOptions={values.pollOptions}
           onPollOptionsChange={v => setField('pollOptions', v)}
+          pollAllowMultiple={values.pollAllowMultiple}
+          onPollAllowMultipleChange={v => setField('pollAllowMultiple', v)}
+          pollAllowCustomOptions={values.pollAllowCustomOptions}
+          onPollAllowCustomOptionsChange={v => setField('pollAllowCustomOptions', v)}
+          pollHideResultsUntilVoted={values.pollHideResultsUntilVoted}
+          onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
+          pollShowVoterAvatars={values.pollShowVoterAvatars}
+          onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
         />
       }
       activeAttachment={activeAttachment}

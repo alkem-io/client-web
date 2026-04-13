@@ -188,6 +188,8 @@
     "more": "More options",
     "discussion": "Discussion",
     "reactions": "React",
+    "reactionCount": "{{count}} reactions",
+    "reactionCount_one": "1 reaction",
     "contributions": "Contributions"
   },
   "comments": {
@@ -206,8 +208,71 @@
       "add": "Add reaction",
       "overflow": "+{{count}} more"
     },
+    "count": "{{count}} comments",
+    "count_one": "1 comment",
     "loading": "Loading comments...",
     "empty": "No comments yet"
+  },
+  "dialogs": {
+    "cancel": "Cancel"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Preparing vote...",
+      "submitting": "Submitting...",
+      "addingOption": "Adding option...",
+      "voted": "Voted",
+      "removeMyVote": "Remove my vote",
+      "closed": "This poll is closed",
+      "anonymous": "Anonymous poll"
+    },
+    "vote": {
+      "maxReached": "Maximum of {{max}} selections reached",
+      "minRequired": "Select at least {{min}} options"
+    },
+    "results": {
+      "totalVotes": "{{count}} total votes",
+      "noVotes": "No votes yet",
+      "votersMore": "+{{count}} more"
+    },
+    "removeVoteConfirm": {
+      "title": "Remove your vote?",
+      "description": "Your vote will be removed from this poll. You can vote again at any time.",
+      "confirm": "Remove vote"
+    },
+    "customOption": {
+      "placeholder": "Add your own option..."
+    },
+    "error": {
+      "voteFailed": "Failed to submit your vote. Please try again."
+    },
+    "subscription": {
+      "voteRevoked": "Your vote was removed."
+    }
+  },
+  "pollForm": {
+    "settings": "Settings",
+    "settings.title": "Poll Settings",
+    "settings.votingOptions": "Voting Options",
+    "settings.allowMultiple": "Allow multiple responses",
+    "settings.allowCustomOptions": "Allow contributors to add options",
+    "settings.displayOptions": "Display Options",
+    "settings.hideResultsUntilVoted": "Hide results until user votes",
+    "settings.showVoterAvatars": "Show voter avatars",
+    "settings.close": "Close",
+    "openPoll": "Poll is open",
+    "closePoll": "Poll is closed",
+    "closePollConfirm": {
+      "title": "Close this poll?",
+      "description": "Closing the poll will prevent new votes and lock editing. You can reopen it later.",
+      "confirm": "Close poll"
+    },
+    "reopenPollConfirm": {
+      "title": "Reopen this poll?",
+      "description": "Reopening the poll will allow new votes and editing.",
+      "confirm": "Reopen poll"
+    },
+    "dragHandle": "Drag to reorder"
   },
   "a11y": {
     "spaceBanner": "Space banner for {{name}}",

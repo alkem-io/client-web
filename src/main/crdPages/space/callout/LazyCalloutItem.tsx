@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+import { CalloutPollConnector } from './CalloutPollConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -44,7 +46,9 @@ export function LazyCalloutItem({
             }}
             onSettingsClick={onSettingsClick}
             onExpandClick={onExpandClick}
-          />
+          >
+            {callout.framing.type === CalloutFramingType.Poll && <CalloutPollConnector callout={callout} />}
+          </PostCard>
 
           <CalloutDetailDialogConnector open={dialogOpen} onOpenChange={setDialogOpen} callout={callout} />
         </>

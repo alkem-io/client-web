@@ -185,6 +185,8 @@
     "more": "Meer opties",
     "discussion": "Discussie",
     "reactions": "Reageren",
+    "reactionCount": "{{count}} reacties",
+    "reactionCount_one": "1 reactie",
     "contributions": "Bijdragen"
   },
   "comments": {
@@ -203,8 +205,71 @@
       "add": "Reactie toevoegen",
       "overflow": "+{{count}} meer"
     },
+    "count": "{{count}} opmerkingen",
+    "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
     "empty": "Nog geen opmerkingen"
+  },
+  "dialogs": {
+    "cancel": "Annuleren"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Stem voorbereiden...",
+      "submitting": "Verzenden...",
+      "addingOption": "Optie toevoegen...",
+      "voted": "Gestemd",
+      "removeMyVote": "Mijn stem verwijderen",
+      "closed": "Deze peiling is gesloten",
+      "anonymous": "Anonieme peiling"
+    },
+    "vote": {
+      "maxReached": "Maximum van {{max}} selecties bereikt",
+      "minRequired": "Selecteer ten minste {{min}} opties"
+    },
+    "results": {
+      "totalVotes": "{{count}} stemmen totaal",
+      "noVotes": "Nog geen stemmen",
+      "votersMore": "+{{count}} meer"
+    },
+    "removeVoteConfirm": {
+      "title": "Je stem verwijderen?",
+      "description": "Je stem wordt verwijderd uit deze peiling. Je kunt op elk moment opnieuw stemmen.",
+      "confirm": "Stem verwijderen"
+    },
+    "customOption": {
+      "placeholder": "Voeg je eigen optie toe..."
+    },
+    "error": {
+      "voteFailed": "Het verzenden van je stem is mislukt. Probeer het opnieuw."
+    },
+    "subscription": {
+      "voteRevoked": "Je stem is verwijderd."
+    }
+  },
+  "pollForm": {
+    "settings": "Instellingen",
+    "settings.title": "Peilinginstellingen",
+    "settings.votingOptions": "Stemopties",
+    "settings.allowMultiple": "Meerdere antwoorden toestaan",
+    "settings.allowCustomOptions": "Bijdragers toestaan opties toe te voegen",
+    "settings.displayOptions": "Weergaveopties",
+    "settings.hideResultsUntilVoted": "Resultaten verbergen tot gebruiker heeft gestemd",
+    "settings.showVoterAvatars": "Avatars van stemmers tonen",
+    "settings.close": "Sluiten",
+    "openPoll": "Peiling is open",
+    "closePoll": "Peiling is gesloten",
+    "closePollConfirm": {
+      "title": "Deze peiling sluiten?",
+      "description": "Het sluiten van de peiling voorkomt nieuwe stemmen en vergrendelt bewerking. Je kunt deze later heropenen.",
+      "confirm": "Peiling sluiten"
+    },
+    "reopenPollConfirm": {
+      "title": "Deze peiling heropenen?",
+      "description": "Het heropenen van de peiling staat nieuwe stemmen en bewerking weer toe.",
+      "confirm": "Peiling heropenen"
+    },
+    "dragHandle": "Slepen om te herordenen"
   },
   "a11y": {
     "spaceBanner": "Space-banner voor {{name}}",

@@ -1,3 +1,4 @@
+import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
 import type { PostCardData } from '@/crd/components/space/PostCard';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import type { MemberCardData } from '@/crd/components/space/SpaceMembers';
@@ -355,6 +356,23 @@ export const MOCK_COMMENTS: CommentData[] = [
     canDelete: false,
   },
 ];
+
+// ── Callout Detail Dialog Mock ──────────────────────
+
+export const MOCK_CALLOUT_DIALOG: CalloutDetailDialogData = {
+  id: 'callout-1',
+  title: 'Community Solar Installation Project — Phase 2 Planning',
+  author: {
+    name: 'Sarah Chen',
+    avatarUrl: AVATARS.sarah,
+    role: 'Space Lead',
+  },
+  description:
+    'We are entering Phase 2 of our community solar installation project. This phase focuses on site selection, permitting, and community engagement. Please review the updated timeline and share your feedback on the proposed locations.\n\nKey milestones:\n- Site assessment completion by end of Q2\n- Permitting applications submitted by July\n- Community workshops scheduled for August',
+  timestamp: '2 days ago',
+  commentCount: 4,
+  reactionCount: 7,
+};
 
 // ── Sidebar ──────────────────────────────────────────
 

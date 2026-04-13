@@ -63,3 +63,125 @@ export function mapContributionToCardData(
     linkDescription: contribution.link?.profile?.description ?? undefined,
   };
 }
+
+/**
+ * Maps a contribution from the CalloutContributions query (union of post/whiteboard/memo/link)
+ * to ContributionCardData. Extracts the correct sub-object from the union.
+ */
+type ContributionProfileBase = {
+  id?: string;
+  url?: string;
+  displayName: string;
+  description?: string | null;
+  tagset?: { tags: string[] } | null;
+  visual?: { uri: string } | null;
+};
+
+type ContributionAuthorBase = {
+  id?: string;
+  profile?: {
+    displayName: string;
+    avatar?: { uri: string } | null;
+  } | null;
+};
+
+type AnyContributionItem = {
+  id: string;
+  sortOrder?: number;
+  post?: {
+    id: string;
+    createdDate?: Date | string;
+    createdBy?: ContributionAuthorBase | null;
+    profile: ContributionProfileBase;
+    comments?: { id: string; messagesCount: number };
+  } | null;
+  whiteboard?: {
+    id: string;
+    createdDate?: Date | string;
+    createdBy?: ContributionAuthorBase | null;
+    profile: ContributionProfileBase;
+  } | null;
+  memo?: {
+    id: string;
+    createdDate?: Date | string;
+    createdBy?: ContributionAuthorBase | null;
+    profile: { id?: string; url?: string; displayName: string };
+    markdown?: string;
+  } | null;
+  link?: {
+    id: string;
+    uri: string;
+    profile: { id?: string; displayName: string; description?: string | null };
+    authorization?: { myPrivileges?: string[] };
+  } | null;
+};
+
+function toDateString(date: Date | string | undefined): string | undefined {
+  if (!date) return undefined;
+  return date instanceof Date ? date.toISOString() : date;
+}
+
+function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {
+  if (!createdBy?.profile) return undefined;
+  return {
+    name: createdBy.profile.displayName,
+    avatarUrl: createdBy.profile.avatar?.uri,
+  };
+}
+
+export function mapAnyContributionToCardData(item: AnyContributionItem): ContributionCardData | undefined {
+  if (item.post) {
+    const post = item.post;
+    return {
+      id: post.id,
+      type: 'post',
+      title: post.profile.displayName,
+      description: post.profile.description ?? undefined,
+      href: post.profile.url,
+      tags: post.profile.tagset?.tags ?? [],
+      previewUrl: post.profile.visual?.uri,
+      author: extractAuthor(post.createdBy),
+      createdDate: toDateString(post.createdDate),
+      commentCount: post.comments?.messagesCount,
+    };
+  }
+
+  if (item.whiteboard) {
+    const wb = item.whiteboard;
+    return {
+      id: wb.id,
+      type: 'whiteboard',
+      title: wb.profile.displayName,
+      href: wb.profile.url,
+      previewUrl: wb.profile.visual?.uri,
+      author: extractAuthor(wb.createdBy),
+      createdDate: toDateString(wb.createdDate),
+    };
+  }
+
+  if (item.memo) {
+    const memo = item.memo;
+    return {
+      id: memo.id,
+      type: 'memo',
+      title: memo.profile.displayName,
+      href: memo.profile.url,
+      markdownContent: memo.markdown,
+      author: extractAuthor(memo.createdBy),
+      createdDate: toDateString(memo.createdDate),
+    };
+  }
+
+  if (item.link) {
+    const link = item.link;
+    return {
+      id: link.id,
+      type: 'link',
+      title: link.profile.displayName,
+      linkUrl: link.uri,
+      linkDescription: link.profile.description ?? undefined,
+    };
+  }
+
+  return undefined;
+}

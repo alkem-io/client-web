@@ -185,6 +185,8 @@
     "more": "Más opciones",
     "discussion": "Discusión",
     "reactions": "Reaccionar",
+    "reactionCount": "{{count}} reacciones",
+    "reactionCount_one": "1 reacción",
     "contributions": "Contribuciones"
   },
   "comments": {
@@ -203,8 +205,71 @@
       "add": "Añadir reacción",
       "overflow": "+{{count}} más"
     },
+    "count": "{{count}} comentarios",
+    "count_one": "1 comentario",
     "loading": "Cargando comentarios...",
     "empty": "Sin comentarios aún"
+  },
+  "dialogs": {
+    "cancel": "Cancelar"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Preparando voto...",
+      "submitting": "Enviando...",
+      "addingOption": "Añadiendo opción...",
+      "voted": "Votado",
+      "removeMyVote": "Eliminar mi voto",
+      "closed": "Esta encuesta está cerrada",
+      "anonymous": "Encuesta anónima"
+    },
+    "vote": {
+      "maxReached": "Máximo de {{max}} selecciones alcanzado",
+      "minRequired": "Selecciona al menos {{min}} opciones"
+    },
+    "results": {
+      "totalVotes": "{{count}} votos en total",
+      "noVotes": "Aún no hay votos",
+      "votersMore": "+{{count}} más"
+    },
+    "removeVoteConfirm": {
+      "title": "¿Eliminar tu voto?",
+      "description": "Tu voto será eliminado de esta encuesta. Puedes volver a votar en cualquier momento.",
+      "confirm": "Eliminar voto"
+    },
+    "customOption": {
+      "placeholder": "Añade tu propia opción..."
+    },
+    "error": {
+      "voteFailed": "No se pudo enviar tu voto. Inténtalo de nuevo."
+    },
+    "subscription": {
+      "voteRevoked": "Tu voto fue eliminado."
+    }
+  },
+  "pollForm": {
+    "settings": "Configuración",
+    "settings.title": "Configuración de la encuesta",
+    "settings.votingOptions": "Opciones de votación",
+    "settings.allowMultiple": "Permitir múltiples respuestas",
+    "settings.allowCustomOptions": "Permitir a los colaboradores añadir opciones",
+    "settings.displayOptions": "Opciones de visualización",
+    "settings.hideResultsUntilVoted": "Ocultar resultados hasta que el usuario vote",
+    "settings.showVoterAvatars": "Mostrar avatares de los votantes",
+    "settings.close": "Cerrar",
+    "openPoll": "La encuesta está abierta",
+    "closePoll": "La encuesta está cerrada",
+    "closePollConfirm": {
+      "title": "¿Cerrar esta encuesta?",
+      "description": "Cerrar la encuesta impedirá nuevos votos y bloqueará la edición. Puedes reabrirla más tarde.",
+      "confirm": "Cerrar encuesta"
+    },
+    "reopenPollConfirm": {
+      "title": "¿Reabrir esta encuesta?",
+      "description": "Reabrir la encuesta permitirá nuevos votos y edición.",
+      "confirm": "Reabrir encuesta"
+    },
+    "dragHandle": "Arrastra para reordenar"
   },
   "a11y": {
     "spaceBanner": "Banner del espacio para {{name}}",

@@ -185,6 +185,8 @@
     "more": "Plus d'options",
     "discussion": "Discussion",
     "reactions": "Réagir",
+    "reactionCount": "{{count}} réactions",
+    "reactionCount_one": "1 réaction",
     "contributions": "Contributions"
   },
   "comments": {
@@ -203,8 +205,71 @@
       "add": "Ajouter une réaction",
       "overflow": "+{{count}} plus"
     },
+    "count": "{{count}} commentaires",
+    "count_one": "1 commentaire",
     "loading": "Chargement des commentaires...",
     "empty": "Pas encore de commentaires"
+  },
+  "dialogs": {
+    "cancel": "Annuler"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Préparation du vote...",
+      "submitting": "Envoi en cours...",
+      "addingOption": "Ajout de l'option...",
+      "voted": "Voté",
+      "removeMyVote": "Retirer mon vote",
+      "closed": "Ce sondage est fermé",
+      "anonymous": "Sondage anonyme"
+    },
+    "vote": {
+      "maxReached": "Maximum de {{max}} sélections atteint",
+      "minRequired": "Sélectionnez au moins {{min}} options"
+    },
+    "results": {
+      "totalVotes": "{{count}} votes au total",
+      "noVotes": "Pas encore de votes",
+      "votersMore": "+{{count}} de plus"
+    },
+    "removeVoteConfirm": {
+      "title": "Retirer votre vote ?",
+      "description": "Votre vote sera retiré de ce sondage. Vous pouvez voter à nouveau à tout moment.",
+      "confirm": "Retirer le vote"
+    },
+    "customOption": {
+      "placeholder": "Ajoutez votre propre option..."
+    },
+    "error": {
+      "voteFailed": "Échec de l'envoi de votre vote. Veuillez réessayer."
+    },
+    "subscription": {
+      "voteRevoked": "Votre vote a été retiré."
+    }
+  },
+  "pollForm": {
+    "settings": "Paramètres",
+    "settings.title": "Paramètres du sondage",
+    "settings.votingOptions": "Options de vote",
+    "settings.allowMultiple": "Autoriser les réponses multiples",
+    "settings.allowCustomOptions": "Autoriser les contributeurs à ajouter des options",
+    "settings.displayOptions": "Options d'affichage",
+    "settings.hideResultsUntilVoted": "Masquer les résultats jusqu'au vote",
+    "settings.showVoterAvatars": "Afficher les avatars des votants",
+    "settings.close": "Fermer",
+    "openPoll": "Le sondage est ouvert",
+    "closePoll": "Le sondage est fermé",
+    "closePollConfirm": {
+      "title": "Fermer ce sondage ?",
+      "description": "La fermeture du sondage empêchera de nouveaux votes et verrouillera l'édition. Vous pourrez le rouvrir plus tard.",
+      "confirm": "Fermer le sondage"
+    },
+    "reopenPollConfirm": {
+      "title": "Rouvrir ce sondage ?",
+      "description": "La réouverture du sondage permettra de nouveaux votes et l'édition.",
+      "confirm": "Rouvrir le sondage"
+    },
+    "dragHandle": "Glisser pour réorganiser"
   },
   "a11y": {
     "spaceBanner": "Bannière de l'espace pour {{name}}",

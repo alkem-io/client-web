@@ -80,12 +80,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
 
   return (
     <>
-      <div
-        className={cn(
-          'grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6 max-w-[1600px] mx-auto px-4 sm:px-6 py-6',
-          className
-        )}
-      >
+      <div className={cn('grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6 w-full px-4 sm:px-6 py-6', className)}>
         {/* Desktop sidebar */}
         <nav aria-label="Dashboard navigation" className="hidden md:block">
           {sidebar}

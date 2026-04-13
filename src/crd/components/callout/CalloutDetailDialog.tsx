@@ -1,6 +1,7 @@
 import { MoreHorizontal, Share2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
@@ -33,6 +34,8 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /** Poll rendered between description and reactions bar */
+  pollSlot?: ReactNode;
 };
 
 export function CalloutDetailDialog({
@@ -44,6 +47,7 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  pollSlot,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -56,16 +60,6 @@ export function CalloutDetailDialog({
         {/* Sticky header */}
         <div className="h-16 shrink-0 bg-background flex items-center justify-between px-6 shadow-sm border-b border-border z-20">
           <div className="flex items-center gap-4 min-w-0">
-            <DialogClose asChild={true}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full shrink-0"
-                aria-label={t('calloutDialog.close')}
-              >
-                <X className="w-5 h-5" aria-hidden="true" />
-              </Button>
-            </DialogClose>
             <div className="min-w-0">
               <DialogTitle className="text-base font-semibold leading-tight text-foreground truncate">
                 {callout.title}
@@ -76,7 +70,7 @@ export function CalloutDetailDialog({
             </div>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -93,6 +87,17 @@ export function CalloutDetailDialog({
             >
               <MoreHorizontal className="w-5 h-5" aria-hidden="true" />
             </Button>
+            <div className="w-px h-6 bg-border mx-2" aria-hidden="true" />
+            <DialogClose asChild={true}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
+                aria-label={t('calloutDialog.close')}
+              >
+                <X className="w-5 h-5" aria-hidden="true" />
+              </Button>
+            </DialogClose>
           </div>
         </div>
 
@@ -121,9 +126,7 @@ export function CalloutDetailDialog({
                 </div>
               )}
 
-              {callout.description && (
-                <p className="text-foreground/90 leading-relaxed text-sm">{callout.description}</p>
-              )}
+              {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
 
               {callout.imageUrl && (
                 <img
@@ -132,12 +135,16 @@ export function CalloutDetailDialog({
                   className="rounded-xl w-full max-h-[400px] object-cover shadow-sm"
                 />
               )}
+
+              {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
             {/* Reactions + share bar */}
             <div className="flex items-center gap-4 py-4 border-y border-border">
               {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
-                <span className="text-sm text-muted-foreground font-medium">{callout.reactionCount} reactions</span>
+                <span className="text-sm text-muted-foreground font-medium">
+                  {t('calloutDialog.reactionCount', { count: callout.reactionCount })}
+                </span>
               )}
               <div className="flex-1" />
               <Button variant="outline" size="sm" className="gap-2 rounded-full">

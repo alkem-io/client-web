@@ -95,7 +95,10 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 | `crd/components/space/SpaceAboutView.tsx` | `domain/space/about/SpaceAboutPage.tsx` | *(not in prototype — about is spec-only)* |
 | **Callout-specific** (non-PostCard framing) | | |
 | `crd/components/callout/CalloutWhiteboardPreview.tsx` | `domain/collaboration/whiteboard/WhiteboardPreview.tsx` | `PostCard.tsx` (whiteboard type) |
-| `crd/components/callout/CalloutPoll.tsx` | `domain/collaboration/callout/poll/` components | *(not in prototype)* |
+| `crd/components/callout/CalloutPoll.tsx` | `domain/collaboration/poll/PollView.tsx` + `PollVotingControls.tsx` + `PollVoterAvatars.tsx` | *(not in prototype — designed from MUI equivalent)* |
+| `crd/components/common/PollVoterAvatars.tsx` | `domain/collaboration/poll/PollVoterAvatars.tsx` | *(not in prototype)* |
+| `crd/components/dialogs/ConfirmationDialog.tsx` | `core/ui/dialogs/ConfirmationDialog.tsx` | *(not in prototype — generic AlertDialog wrapper)* |
+| `crd/forms/callout/PollSettingsDialog.tsx` | `domain/collaboration/poll/PollFormSettingsSection.tsx` | *(not in prototype)* |
 | `crd/components/callout/CalloutMediaGallery.tsx` | `domain/collaboration/callout/media/` components | *(not in prototype)* |
 | `crd/components/callout/CalloutLinkAction.tsx` | `domain/collaboration/callout/link/` components | *(not in prototype)* |
 | `crd/components/callout/CalloutContextMenu.tsx` | `domain/collaboration/callout/edit/` CalloutSettingsMenu | *(not in prototype)* |
@@ -157,7 +160,7 @@ src/crd/
 │   ├── callout/
 │   │   ├── CalloutDetailDialog.tsx       # Full-screen dialog: sticky header+footer, scrollable body with Discussion
 │   │   ├── CalloutWhiteboardPreview.tsx  # Whiteboard framing: img + "Open" button
-│   │   ├── CalloutPoll.tsx               # Poll framing: votable options
+│   │   ├── CalloutPoll.tsx               # Poll framing: full-featured (single/multi-choice, results modes, custom options, voter avatars)
 │   │   ├── CalloutMediaGallery.tsx       # Media framing: image grid
 │   │   ├── CalloutLinkAction.tsx         # Link framing: CTA button
 │   │   ├── CalloutSidebarList.tsx        # Sidebar searchable callout list
@@ -170,13 +173,18 @@ src/crd/
 │   │   ├── CommentReactions.tsx         # Emoji reaction pills + overflow
 │   │   ├── CollapsibleComments.tsx      # (deprecated — collapsible-below-card mode removed)
 │   │   └── CommentEmojiPicker.tsx       # Popover wrapping emoji-picker-react
-│   └── common/
-│       ├── ExpandableDescription.tsx
-│       ├── MarkdownContent.tsx
-│       └── ContentBlock.tsx
+│   ├── common/
+│   │   ├── ExpandableDescription.tsx
+│   │   ├── MarkdownContent.tsx
+│   │   ├── ContentBlock.tsx
+│   │   └── PollVoterAvatars.tsx         # Stacked voter avatars with hover expand + overflow
+│   └── dialogs/
+│       └── ConfirmationDialog.tsx       # Generic confirm/cancel dialog (AlertDialog wrapper)
 ├── forms/
 │   └── callout/
 │       ├── AddPostModal.tsx         # Rich post composition (matches prototype AddPostModal)
+│       ├── PollOptionsEditor.tsx    # Drag-and-drop options + settings slot + status toggle
+│       ├── PollSettingsDialog.tsx   # Poll settings modal (single/multi, custom, visibility, avatars)
 │       └── (other form components as needed)
 ├── i18n/
 │   └── space/
@@ -324,6 +332,20 @@ The prototype shows a single "SPACE LEAD(S)" card containing every lead rather t
 
 The Virtual Contributors section requires BOTH an entitlement check (`LicenseEntitlementType.SpaceFlagVirtualContributorAccess` in `useSpace().entitlements`) AND at least one visible VC (hidden-search VCs filtered out). `SpaceSidebar` exposes a `showVirtualContributors?: boolean` prop (default true) so the integration layer can pass the entitlement flag explicitly; the VC sub-component already hides itself when the list is empty. Both conditions must be true for the section to render.
 
+### D22: Full poll feature parity — CRD CalloutPoll replaces skeleton with MUI-equivalent functionality
+
+The initial `CalloutPoll.tsx` was a placeholder: single-choice only, simple button-based voting, no results modes, no custom options, no debounce, no voter avatars. D22 rewrites it to match every feature of the MUI `PollView` + `PollVotingControls` + `PollVoterAvatars` stack:
+
+**CRD component** (`src/crd/components/callout/CalloutPoll.tsx`): Pure presentational, receives all state as props. Renders RadioGroup (single-choice) or Checkbox group (multi-choice). Each option row shows text + optional results overlay (progress bar + counts/percentages + stacked voter avatars). Custom option input row with inline text field + submit/cancel. Footer with status messages (Progress primitive for debounce, spinner for mutations), "Voted — Remove my vote" link, "Closed" label, "Anonymous" label, helper text for min/max constraints. No business logic — debounce, optimistic updates, and subscription handling all live in the connector.
+
+**Connector** (`src/main/crdPages/space/callout/CalloutPollConnector.tsx`): Orchestration layer that mirrors MUI `PollView.tsx` logic — `usePollVote` for mutations with optimistic responses, `usePollSubscriptions` for real-time sync, `usePollOptionManagement` for custom option CRUD, `useDebouncedSubmit(2000)` for multi-choice debounce with progress tracking, local `selectedOptionIds` state synced with server via `useEffect`, `ConfirmationDialog` for vote removal, subscription-driven vote revocation handling.
+
+**Form enhancements** (`src/crd/forms/callout/PollOptionsEditor.tsx` + new `PollSettingsDialog.tsx`): Drag-and-drop via @dnd-kit (UI library, acceptable in CRD), settings dialog with toggles for single/multi, custom options, results visibility, voter avatars. Open/Close poll status toggle with confirmation. All form state managed by the connector; CRD components receive values + callbacks as props.
+
+**New primitives**: AlertDialog, Tooltip, RadioGroup, Checkbox, Progress — ported from prototype. Radix packages installed.
+
+**Voter avatars**: Simple `PollVoterAvatars` component shows stacked Avatar primitives from data already in the poll response (name + avatarUrl). No hover-fetch — `ContributorTooltip` with lazy GraphQL is deferred to a future phase.
+
 ### D20: Subspace filter — search + tag chips + Show More, not status pills
 The earlier iteration shipped a placeholder All/Active/Archived pill row, but neither the API nor the prototype distinguishes archived subspaces — real data always maps to "active", so the filter was non-functional. D20 replaces it with the MUI `SpaceFilter` pattern adapted to CRD:
 
@@ -348,3 +370,4 @@ The `deriveUserRolesList(roles)` helper in `communityDataMapper.ts` walks the ro
 | P1 | US2, US3, US4 | Tab content + callout blocks: Dashboard, Subspaces, all 5 framing types | High |
 | P2 | US5, US6, US7, US8, US9, US10 | Community, Custom tabs, callout forms/management, contributions | High |
 | P3 | US11, US12, US13, US14 | Templates, comments, About page, mobile polish | Medium |
+| P4 | US4 (poll parity) | Full poll feature parity: single/multi-choice, debounce, custom options, vote removal, results modes, voter avatars, settings dialog, drag-and-drop reordering, open/close toggle, subscriptions | High |

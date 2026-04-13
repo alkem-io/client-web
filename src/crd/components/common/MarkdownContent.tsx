@@ -1,8 +1,36 @@
+import { defaultSchema } from 'hast-util-sanitize';
 import Markdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
+import { remarkVerifyIframe } from '@/core/ui/markdown/embed/remarkVerifyIframe';
+import { useMarkdownConfig } from '@/crd/lib/markdownConfig';
+import { rehypeSanitizeStyles } from '@/crd/lib/rehypeSanitizeStyles';
 import { cn } from '@/crd/lib/utils';
+
+const IFRAME_ALLOWED_ATTRIBUTES = [
+  'src',
+  'width',
+  'height',
+  'title',
+  'allow',
+  'loading',
+  'frameborder',
+  'referrerpolicy',
+  'allowfullscreen',
+  'webkitallowfullscreen',
+  'mozallowfullscreen',
+];
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), 'iframe'],
+  attributes: {
+    ...defaultSchema.attributes,
+    '*': [...(defaultSchema.attributes?.['*'] ?? []), 'style'],
+    iframe: IFRAME_ALLOWED_ATTRIBUTES,
+  },
+};
 
 export type MarkdownContentProps = {
   /** Raw markdown string — rendered via react-markdown, not dangerouslySetInnerHTML */
@@ -16,10 +44,16 @@ export type MarkdownContentProps = {
  * Mirrors the rendering stack of the MUI WrapperMarkdown (react-markdown + rehype-raw + remark-gfm)
  * but without MUI dependencies — styled entirely with Tailwind descendant selectors.
  *
+ * Iframes are supported when a MarkdownConfigProvider is present in the tree.
+ * The provider carries a whitelist of allowed iframe origins; iframes from
+ * non-whitelisted origins are stripped. Without a provider, all iframes are stripped.
+ *
  * Does NOT depend on @tailwindcss/typography (prose classes). Typography is applied
  * via Tailwind's `[&_element]` descendant selector pattern.
  */
 export function MarkdownContent({ content, className }: MarkdownContentProps) {
+  const { iframeAllowedUrls } = useMarkdownConfig();
+
   return (
     <div
       className={cn(
@@ -55,10 +89,19 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_hr]:border-border [&_hr]:my-4',
         // Images
         '[&_img]:rounded-lg [&_img]:max-w-full',
+        // Iframes (embedded videos etc.)
+        '[&_iframe]:max-w-full [&_iframe]:rounded-lg [&_iframe]:border-0',
         className
       )}
     >
-      <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>
+      <Markdown
+        remarkPlugins={[remarkGfm, [remarkVerifyIframe, { allowedIFrameOrigins: iframeAllowedUrls }]]}
+        rehypePlugins={[
+          [rehypeRaw, { passThrough: ['iframe'] }],
+          [rehypeSanitize, sanitizeSchema],
+          rehypeSanitizeStyles,
+        ]}
+      >
         {content}
       </Markdown>
     </div>
