@@ -20,7 +20,6 @@ import CalloutContributionsBlock from '../../calloutContributions/CalloutContrib
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
 import CalloutContributionDialogCollaboraDocument from '../../calloutContributions/collaboraDocument/CalloutContributionDialogCollaboraDocument';
-import CalloutContributionPreviewCollaboraDocument from '../../calloutContributions/collaboraDocument/CalloutContributionPreviewCollaboraDocument';
 import CollaboraDocumentCard from '../../calloutContributions/collaboraDocument/CollaboraDocumentCard';
 import CreateContributionButtonCollaboraDocument from '../../calloutContributions/collaboraDocument/CreateContributionButtonCollaboraDocument';
 import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
@@ -380,7 +379,9 @@ const CalloutView = ({
               <CalloutContributionDialogCollaboraDocument
                 calloutsSetId={callout.calloutsSetId}
                 calloutId={callout.id}
-                contribution={selectedCollaboraContribution as unknown as import('../../calloutContributions/CalloutContributionModel').default}
+                contribution={
+                  selectedCollaboraContribution as unknown as import('../../calloutContributions/CalloutContributionModel').default
+                }
                 open={true}
                 onClose={() => setSelectedCollaboraContribution(undefined)}
                 onCalloutUpdate={onCalloutUpdate}
