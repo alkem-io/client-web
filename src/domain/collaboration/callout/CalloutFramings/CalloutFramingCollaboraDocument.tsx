@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
@@ -34,9 +34,7 @@ const CalloutFramingCollaboraDocument = ({ callout }: CalloutFramingCollaboraDoc
         onClick={() => setEditorOpen(true)}
       >
         <DocumentIcon color="primary" fontSize="large" />
-        <Box flex={1}>
-          <Typography variant="subtitle1">{collaboraDocument.profile?.displayName}</Typography>
-        </Box>
+        <Box flex={1} />
         <Button variant="outlined" size="small" onClick={e => { e.stopPropagation(); setEditorOpen(true); }}>
           {t('buttons.open')}
         </Button>
