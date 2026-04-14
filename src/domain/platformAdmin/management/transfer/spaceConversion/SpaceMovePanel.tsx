@@ -12,8 +12,8 @@ import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useConvertSpaceL1ToSpaceL0Mutation,
-  useConvertSpaceL1ToSpaceL2Mutation,
+  useConvertSpaceL1ToL0Mutation,
+  useConvertSpaceL1ToL2Mutation,
   useSpaceMoveSourceSubspacesQuery,
   useSpaceMoveTargetL0SpacesQuery,
   useSpaceMoveTargetL1SubspacesQuery,
@@ -58,8 +58,8 @@ const SpaceMovePanel = ({ resolvedSpaceId, levelZeroSpaceId, spaceName }: SpaceM
 
   const hasChildren = (sourceData?.lookup.space?.subspaces?.length ?? 0) > 0;
 
-  const [moveL1ToL0, { loading: moveL0Loading }] = useConvertSpaceL1ToSpaceL0Mutation();
-  const [moveL1ToL2, { loading: moveL2Loading }] = useConvertSpaceL1ToSpaceL2Mutation();
+  const [moveL1ToL0, { loading: moveL0Loading }] = useConvertSpaceL1ToL0Mutation();
+  const [moveL1ToL2, { loading: moveL2Loading }] = useConvertSpaceL1ToL2Mutation();
   const mutationLoading = moveL0Loading || moveL2Loading;
 
   const targetL0Spaces = (l0Data?.spacesPaginated?.spaces ?? [])

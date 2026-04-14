@@ -138,29 +138,3 @@ query SpaceMoveSourceSubspaces($spaceId: UUID!) {
     }
   }
 }
-
-mutation ConvertSpaceL1ToSpaceL0(
-  $spaceL1ID: UUID!
-) {
-  convertSpaceL1ToSpaceL0(
-    convertData: {
-      spaceL1ID: $spaceL1ID
-    }
-  ) {
-    id
-  }
-}
-
-mutation ConvertSpaceL1ToSpaceL2(
-  $spaceL1ID: UUID!
-  $parentSpaceL1ID: UUID!
-) {
-  convertSpaceL1ToSpaceL2(
-    convertData: {
-      spaceL1ID: $spaceL1ID
-      parentSpaceL1ID: $parentSpaceL1ID
-    }
-  ) {
-    id
-  }
-}

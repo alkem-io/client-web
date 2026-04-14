@@ -24987,6 +24987,180 @@ export type AccountSearchOrganizationsQuery = {
   };
 };
 
+export type SpaceConversionUrlResolveQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+export type SpaceConversionUrlResolveQuery = {
+  __typename?: 'Query';
+  urlResolver: {
+    __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
+    type: UrlType;
+    space?:
+      | { __typename?: 'UrlResolverQueryResultSpace'; id: string; level: SpaceLevel; levelZeroSpaceID: string }
+      | undefined;
+  };
+};
+
+export type SpaceConversionLookupQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceConversionLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }
+              | undefined;
+          };
+          community: {
+            __typename?: 'Community';
+            roleSet: {
+              __typename?: 'RoleSet';
+              memberUsers: Array<{ __typename?: 'User'; id: string }>;
+              leadUsers: Array<{ __typename?: 'User'; id: string }>;
+              memberOrganizations: Array<{ __typename?: 'Organization'; id: string }>;
+              leadOrganizations: Array<{ __typename?: 'Organization'; id: string }>;
+              virtualContributorsInRole: Array<{ __typename?: 'VirtualContributor'; id: string }>;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceConversionSiblingSubspacesQueryVariables = Exact<{
+  levelZeroSpaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceConversionSiblingSubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subspaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type ConvertSpaceL1ToL0MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertSpaceL1ToL0Mutation = {
+  __typename?: 'Mutation';
+  convertSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+};
+
+export type ConvertSpaceL1ToL2MutationVariables = Exact<{
+  spaceL1ID: Scalars['UUID']['input'];
+  parentSpaceL1ID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertSpaceL1ToL2Mutation = {
+  __typename?: 'Mutation';
+  convertSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
+};
+
+export type ConvertSpaceL2ToL1MutationVariables = Exact<{
+  spaceL2ID: Scalars['UUID']['input'];
+}>;
+
+export type ConvertSpaceL2ToL1Mutation = {
+  __typename?: 'Mutation';
+  convertSpaceL2ToSpaceL1: { __typename?: 'Space'; id: string };
+};
+
+export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+}>;
+
+export type SpaceMoveTargetL0SpacesQuery = {
+  __typename?: 'Query';
+  spacesPaginated: {
+    __typename?: 'PaginatedSpaces';
+    spaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      about: {
+        __typename?: 'SpaceAbout';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      };
+    }>;
+  };
+};
+
+export type SpaceMoveTargetL1SubspacesQueryVariables = Exact<{
+  targetL0SpaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceMoveTargetL1SubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subspaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceMoveSourceSubspacesQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceMoveSourceSubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?: { __typename?: 'Space'; id: string; subspaces: Array<{ __typename?: 'Space'; id: string }> } | undefined;
+  };
+};
+
 export type CalloutUrlResolveQueryVariables = Exact<{
   url: Scalars['String']['input'];
 }>;

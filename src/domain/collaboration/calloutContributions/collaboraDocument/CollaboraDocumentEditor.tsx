@@ -1,9 +1,9 @@
+import { useApolloClient } from '@apollo/client';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
 import type { CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables } from '@/core/apollo/generated/graphql-schema';
-import { useApolloClient } from '@apollo/client';
 
 interface CollaboraDocumentEditorProps {
   collaboraDocumentId: string;
@@ -70,9 +70,19 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId }: CollaboraDocumentEdito
 
   if (errorMessage && !editorUrl) {
     return (
-      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100%" p={4} gap={2}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+        p={4}
+        gap={2}
+      >
         <Typography color="error">{t('collaboraDocument.editor.error.unavailable')}</Typography>
-        <Typography variant="body2" color="text.secondary">{errorMessage}</Typography>
+        <Typography variant="body2" color="text.secondary">
+          {errorMessage}
+        </Typography>
       </Box>
     );
   }
@@ -87,7 +97,7 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId }: CollaboraDocumentEdito
       title={t('collaboraDocument.editor.title')}
       style={{ width: '100%', flex: 1, border: 'none', minHeight: 0 }}
       allow="clipboard-read; clipboard-write; microphone; camera"
-      allowFullScreen
+      allowFullScreen={true}
     />
   );
 };

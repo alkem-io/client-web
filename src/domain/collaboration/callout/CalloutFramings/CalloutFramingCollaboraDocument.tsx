@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
-import { getCollaboraDocumentIcon } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraDocumentIcons';
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
+import { getCollaboraDocumentIcon } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraDocumentIcons';
 import type { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingCollaboraDocumentProps {
@@ -35,12 +35,19 @@ const CalloutFramingCollaboraDocument = ({ callout }: CalloutFramingCollaboraDoc
       >
         <DocumentIcon color="primary" fontSize="large" />
         <Box flex={1} />
-        <Button variant="outlined" size="small" onClick={e => { e.stopPropagation(); setEditorOpen(true); }}>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={e => {
+            e.stopPropagation();
+            setEditorOpen(true);
+          }}
+        >
           {t('buttons.open')}
         </Button>
       </Box>
       {editorOpen && (
-        <Dialog open onClose={() => setEditorOpen(false)} fullScreen>
+        <Dialog open={true} onClose={() => setEditorOpen(false)} fullScreen={true}>
           <Box display="flex" justifyContent="flex-end" px={2} py={1}>
             <Button variant="text" onClick={() => setEditorOpen(false)}>
               {t('buttons.close')}
