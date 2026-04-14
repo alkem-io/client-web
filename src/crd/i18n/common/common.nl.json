@@ -15,9 +15,10 @@
   "public": "Openbaar",
   "member": "Lid",
   "leads": "Leiders",
+  "loadMore": "Meer laden",
+  "pinned": "Vastgezet",
   "leadType": {
     "person": "Persoon",
     "org": "Organisatie"
-  },
-  "loadMore": "Meer laden"
+  }
 }

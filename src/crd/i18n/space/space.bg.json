@@ -1,0 +1,288 @@
+{
+  "banner": { "homeSpace": "Начално пространство", "homeSpaceSettings": "Настройки на началното пространство" },
+  "tabs": {
+    "dashboard": "Табло",
+    "community": "Общност",
+    "subspaces": "Подпространства",
+    "knowledgeBase": "База знания"
+  },
+  "visibility": {
+    "archived": "Това пространство е архивирано и е само за четене.",
+    "archivedContact": "Свържете се с ръководителя на пространството за повече информация.",
+    "demo": "Това е демонстрационно пространство за тестови цели.",
+    "inactive": "Това пространство е неактивно в момента."
+  },
+  "sidebar": {
+    "aboutSpace": "За това пространство",
+    "subspaces": "Подпространства",
+    "showAll": "Покажи всички",
+    "events": "Събития",
+    "noEvents": "Няма предстоящи събития",
+    "showCalendar": "Покажи календар",
+    "spaceLead": "Ръководител на пространството",
+    "spaceLeads": "Ръководители на пространството",
+    "contactLead": "Свържи се с ръководителите",
+    "invite": "Покани",
+    "virtualContributors": "Виртуални сътрудници",
+    "communityGuidelines": "Насоки на общността",
+    "postIndex": "Индекс на публикациите",
+    "readMore": "Прочети повече",
+    "addEvent": "Добави събитие"
+  },
+  "feed": {
+    "addPost": "Добави публикация",
+    "showMore": "Покажи повече",
+    "activity": "Активност",
+    "noCallouts": "Все още няма съдържание",
+    "loading": "Зареждане на съдържание..."
+  },
+  "callout": {
+    "draft": "Чернова",
+    "expand": "Покажи повече",
+    "collapse": "Покажи по-малко",
+    "openWhiteboard": "Отвори дъска",
+    "comments": "{{count}} коментара",
+    "commentsZero": "0 коментара",
+    "post": "Публикация",
+    "whiteboard": "Дъска",
+    "collection": "Колекция",
+    "callForWhiteboards": "Покана за дъски",
+    "poll": "Анкета",
+    "link": "Връзка",
+    "mediaGallery": "Медийна галерия",
+    "memo": "Бележка",
+    "moreWhiteboards": "+{{count}} още",
+    "vote": "Гласувай",
+    "votes": "{{count}} гласа",
+    "totalVotes": "{{count}} гласа общо",
+    "resultsCount": "{{count}} резултата",
+    "clearFilters": "Изчисти филтрите",
+    "sendComment": "Изпрати коментар"
+  },
+  "contribution": {
+    "edit": "Редактирай",
+    "share": "Сподели",
+    "close": "Затвори",
+    "previous": "Предишен",
+    "next": "Следващ"
+  },
+  "framing": {
+    "newWhiteboard": "Нова дъска",
+    "readyToCreate": "Готово за създаване",
+    "configure": "Конфигурирай",
+    "memo": "Бележка",
+    "richTextEditor": "Редактор за форматиран текст"
+  },
+  "members": {
+    "title": "Общност",
+    "subtitle": "{{users}} членове и {{organizations}} организации в това пространство.",
+    "inviteMember": "Покани член",
+    "search": "Търсене на членове или организации...",
+    "filterAll": "Всички",
+    "filterAdmin": "Администратор",
+    "filterLead": "Ръководител",
+    "filterMember": "Член",
+    "filterOrganization": "Организация",
+    "noMembers": "Не са намерени членове",
+    "previousPage": "Предишна",
+    "nextPage": "Следваща",
+    "pageOf": "Страница {{current}} от {{total}}",
+    "empty": {
+      "title": "Няма намерени резултати",
+      "description": "Опитайте да промените търсенето или филтрите.",
+      "clearFilters": "Изчисти филтрите"
+    },
+    "role": {
+      "admin": "Администратор",
+      "lead": "Ръководител",
+      "member": "Член",
+      "organization": "Организация"
+    }
+  },
+  "subspaces": {
+    "title": "Подпространства",
+    "subtitle": "Разгледайте целеви работни направления и предизвикателства в това пространство.",
+    "createSubspace": "Създай подпространство",
+    "search": "Търсене на подпространства...",
+    "showMore": "Покажи още {{count}}",
+    "showLess": "Покажи по-малко",
+    "empty": {
+      "title": "Няма намерени подпространства",
+      "description": "Няма подпространства, съответстващи на текущото търсене или филтър.",
+      "clearFilters": "Изчисти филтрите"
+    }
+  },
+  "about": {
+    "title": "Относно",
+    "location": "Местоположение",
+    "metrics": "Ключови показатели",
+    "who": "Кой",
+    "why": "Защо",
+    "host": "Домакин",
+    "leadUsers": "Водещи потребители",
+    "leadOrganizations": "Водещи организации",
+    "guidelines": "Насоки на общността",
+    "references": "Референции"
+  },
+  "mobile": {
+    "more": "Още",
+    "activity": "Активност",
+    "videoCall": "Видеоразговор",
+    "share": "Сподели",
+    "settings": "Настройки"
+  },
+  "contextMenu": {
+    "edit": "Редактирай",
+    "publish": "Публикувай",
+    "unpublish": "Оттегли публикация",
+    "share": "Сподели",
+    "sortContributions": "Сортирай приносите",
+    "saveAsTemplate": "Запази като шаблон",
+    "moveToTop": "Премести най-горе",
+    "moveUp": "Премести нагоре",
+    "moveDown": "Премести надолу",
+    "moveToBottom": "Премести най-долу",
+    "delete": "Изтрий"
+  },
+  "dates": {
+    "today": "Днес",
+    "yesterday": "Вчера",
+    "daysAgo": "преди {{count}}д",
+    "weeksAgo": "преди {{count}}сед"
+  },
+  "validation": {
+    "titleRequired": "Заглавието е задължително",
+    "urlRequired": "URL адресът е задължителен",
+    "urlInvalid": "URL адресът трябва да започва с http:// или https://",
+    "displayNameRequired": "Показваното име е задължително",
+    "questionRequired": "Въпросът е задължителен"
+  },
+  "forms": {
+    "titleLabel": "Заглавие",
+    "titlePlaceholder": "Дайте заглавие на публикацията си...",
+    "descriptionLabel": "Описание",
+    "descriptionPlaceholder": "Напишете нещо...",
+    "tagsLabel": "Етикети",
+    "framingType": "Тип съдържание",
+    "visibility": "Видимост",
+    "publishedLabel": "Публикувано",
+    "draftLabel": "Чернова",
+    "notifyMembers": "Уведоми членовете на пространството",
+    "saveDraft": "Запази чернова",
+    "publish": "Публикувай",
+    "findTemplate": "Намери шаблон",
+    "contributionTypes": "Разрешени приноси",
+    "commentsEnabled": "Активирай коментари",
+    "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkDisplayName": "Показвано име",
+    "pollQuestion": "Въпрос",
+    "pollOption": "Опция {{number}}",
+    "addOption": "Добави опция",
+    "removeOption": "Премахни опция"
+  },
+  "calloutDialog": {
+    "close": "Затвори диалога",
+    "share": "Сподели",
+    "more": "Още опции",
+    "discussion": "Дискусия",
+    "reactions": "Реагирай",
+    "reactionCount": "{{count}} реакции",
+    "reactionCount_one": "1 реакция",
+    "contributions": "Приноси"
+  },
+  "comments": {
+    "title": "Дискусия",
+    "showMore": "Показване на повече",
+    "showLess": "Показване на по-малко",
+    "sortNewest": "Най-ново първо",
+    "sortOldest": "Най-старо първо",
+    "reply": "Отговор",
+    "delete": "Изтриване",
+    "deleted": "Този коментар беше изтрит",
+    "addComment": "Добавете коментар...",
+    "send": "Изпращане",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Добавяне на реакция",
+      "overflow": "+{{count}} още"
+    },
+    "count": "{{count}} коментара",
+    "count_one": "1 коментар",
+    "loading": "Зареждане на коментари...",
+    "empty": "Още без коментари"
+  },
+  "dialogs": {
+    "cancel": "Отказ"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Подготовка на гласуването...",
+      "submitting": "Изпращане...",
+      "addingOption": "Добавяне на опция...",
+      "voted": "Гласувано",
+      "removeMyVote": "Премахни моя глас",
+      "closed": "Тази анкета е затворена",
+      "anonymous": "Анонимна анкета"
+    },
+    "vote": {
+      "maxReached": "Достигнат е максимумът от {{max}} избора",
+      "minRequired": "Изберете поне {{min}} опции"
+    },
+    "results": {
+      "totalVotes": "{{count}} гласа общо",
+      "noVotes": "Все още няма гласове",
+      "votersMore": "+{{count}} още"
+    },
+    "removeVoteConfirm": {
+      "title": "Премахване на вашия глас?",
+      "description": "Вашият глас ще бъде премахнат от тази анкета. Можете да гласувате отново по всяко време.",
+      "confirm": "Премахни глас"
+    },
+    "customOption": {
+      "placeholder": "Добавете собствена опция..."
+    },
+    "error": {
+      "voteFailed": "Неуспешно изпращане на вашия глас. Моля, опитайте отново."
+    },
+    "subscription": {
+      "voteRevoked": "Вашият глас беше премахнат."
+    }
+  },
+  "pollForm": {
+    "settings": "Настройки",
+    "settings.title": "Настройки на анкетата",
+    "settings.votingOptions": "Опции за гласуване",
+    "settings.allowMultiple": "Разрешаване на множество отговори",
+    "settings.allowCustomOptions": "Разрешаване на сътрудниците да добавят опции",
+    "settings.displayOptions": "Опции за показване",
+    "settings.hideResultsUntilVoted": "Скриване на резултатите до гласуване",
+    "settings.showVoterAvatars": "Показване на аватарите на гласувалите",
+    "settings.close": "Затвори",
+    "openPoll": "Анкетата е отворена",
+    "closePoll": "Анкетата е затворена",
+    "closePollConfirm": {
+      "title": "Затваряне на тази анкета?",
+      "description": "Затварянето на анкетата ще предотврати нови гласове и ще заключи редактирането. Можете да я отворите отново по-късно.",
+      "confirm": "Затвори анкетата"
+    },
+    "reopenPollConfirm": {
+      "title": "Отваряне отново на тази анкета?",
+      "description": "Отварянето отново на анкетата ще позволи нови гласове и редактиране.",
+      "confirm": "Отвори отново анкетата"
+    },
+    "dragHandle": "Плъзнете за пренареждане"
+  },
+  "a11y": {
+    "spaceBanner": "Банер на пространството за {{name}}",
+    "tabNavigation": "Навигационни табове на пространството",
+    "sidebarNavigation": "Странична лента на пространството",
+    "feedRegion": "Поток със съдържание на пространството",
+    "membersGrid": "Решетка с членове на общността",
+    "subspacesGrid": "Решетка с подпространства",
+    "visibilityNotice": "Известие за видимост на пространството",
+    "mobileTabBar": "Навигация с табове",
+    "moreActionsDrawer": "Допълнителни действия",
+    "close": "Затвори"
+  }
+}

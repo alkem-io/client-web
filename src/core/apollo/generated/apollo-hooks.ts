@@ -2257,6 +2257,9 @@ export const SubspaceVisualsFragmentDoc = gql`
   cardBanner: visual(type: CARD) {
     ...VisualModel
   }
+  banner: visual(type: BANNER) {
+    ...VisualModel
+  }
 }
     ${VisualModelFragmentDoc}`;
 export const SpaceAboutLightFragmentDoc = gql`

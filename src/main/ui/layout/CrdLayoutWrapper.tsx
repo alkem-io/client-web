@@ -4,11 +4,13 @@ import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
+import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
@@ -24,6 +26,7 @@ const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPage
 
 function CrdLayoutConnector() {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
+  const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
   const {
     navigationHrefs,
     footerLinks,
@@ -64,7 +67,7 @@ function CrdLayoutConnector() {
   }, [openSearch]);
 
   return (
-    <>
+    <MarkdownConfigProvider iframeAllowedUrls={iframeAllowedUrls}>
       <CrdLayout
         user={user}
         authenticated={isAuthenticated}
@@ -98,7 +101,7 @@ function CrdLayoutConnector() {
       <Suspense fallback={null}>
         <CrdSearchOverlay />
       </Suspense>
-    </>
+    </MarkdownConfigProvider>
   );
 }
 

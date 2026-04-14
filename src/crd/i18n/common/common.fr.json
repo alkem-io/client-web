@@ -15,9 +15,10 @@
   "public": "Public",
   "member": "Membre",
   "leads": "Responsables",
+  "loadMore": "Charger plus",
+  "pinned": "Épinglé",
   "leadType": {
     "person": "Personne",
     "org": "Organisation"
-  },
-  "loadMore": "Charger plus"
+  }
 }
