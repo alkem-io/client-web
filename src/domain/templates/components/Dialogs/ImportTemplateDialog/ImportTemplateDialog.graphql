@@ -46,7 +46,7 @@ query ImportTemplateDialogAccountTemplates(
   lookup {
     account(ID: $accountId) {
       id
-      innovationPacks(searchVisibility: [ACCOUNT, PUBLIC]) {
+      innovationPacks {
         id
         profile {
           id

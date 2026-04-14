@@ -139,36 +139,26 @@ query SpaceMoveSourceSubspaces($spaceId: UUID!) {
   }
 }
 
-mutation MoveSpaceL1ToSpaceL0(
+mutation ConvertSpaceL1ToSpaceL0(
   $spaceL1ID: UUID!
-  $targetSpaceL0ID: UUID!
-  $autoInvite: Boolean
-  $invitationMessage: String
 ) {
-  moveSpaceL1ToSpaceL0(
-    moveData: {
+  convertSpaceL1ToSpaceL0(
+    convertData: {
       spaceL1ID: $spaceL1ID
-      targetSpaceL0ID: $targetSpaceL0ID
-      autoInvite: $autoInvite
-      invitationMessage: $invitationMessage
     }
   ) {
     id
   }
 }
 
-mutation MoveSpaceL1ToSpaceL2(
+mutation ConvertSpaceL1ToSpaceL2(
   $spaceL1ID: UUID!
-  $targetSpaceL1ID: UUID!
-  $autoInvite: Boolean
-  $invitationMessage: String
+  $parentSpaceL1ID: UUID!
 ) {
-  moveSpaceL1ToSpaceL2(
-    moveData: {
+  convertSpaceL1ToSpaceL2(
+    convertData: {
       spaceL1ID: $spaceL1ID
-      targetSpaceL1ID: $targetSpaceL1ID
-      autoInvite: $autoInvite
-      invitationMessage: $invitationMessage
+      parentSpaceL1ID: $parentSpaceL1ID
     }
   ) {
     id
