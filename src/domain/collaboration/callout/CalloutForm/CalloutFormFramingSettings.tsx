@@ -2,6 +2,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import { Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { Suspense } from 'react';
@@ -141,6 +142,17 @@ const CalloutFormFramingSettings = ({
           mediaGallery: undefined,
         };
         break;
+      case CalloutFramingType.CollaboraDocument:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: undefined,
+          memo: undefined,
+          link: undefined,
+          mediaGallery: undefined,
+          poll: undefined,
+        };
+        break;
       default:
         newFraming = {
           ...framing,
@@ -210,6 +222,12 @@ const CalloutFormFramingSettings = ({
           label: t('callout.create.framingSettings.poll.title'),
           tooltip: t('callout.create.framingSettings.poll.tooltip'),
           disabled: calloutRestrictions?.disablePolls,
+        },
+        {
+          icon: DescriptionOutlined,
+          value: CalloutFramingType.CollaboraDocument,
+          label: t('callout.create.framingSettings.collaboraDocument.title'),
+          tooltip: t('callout.create.framingSettings.collaboraDocument.tooltip'),
         },
       ]}
       onChange={handleFramingTypeChange}

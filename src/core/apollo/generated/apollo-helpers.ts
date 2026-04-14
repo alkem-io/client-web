@@ -784,6 +784,7 @@ export type CalloutContributionsCountOutputFieldPolicy = {
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
+  | 'collaboraDocument'
   | 'createdDate'
   | 'id'
   | 'link'
@@ -798,6 +799,7 @@ export type CalloutFramingKeySpecifier = (
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1302,6 +1304,7 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'poll'
@@ -1312,6 +1315,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
   | CreateCalloutFramingDataKeySpecifier
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;

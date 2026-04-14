@@ -1,44 +1,65 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCollaboraEditorUrlQuery } from '@/core/apollo/generated/apollo-hooks';
+import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
+import type { CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { useApolloClient } from '@apollo/client';
 
 interface CollaboraDocumentEditorProps {
   collaboraDocumentId: string;
 }
 
-const REFRESH_BUFFER_MS = 60_000; // Refresh 1 minute before token expires
-
 const CollaboraDocumentEditor = ({ collaboraDocumentId }: CollaboraDocumentEditorProps) => {
   const { t } = useTranslation();
+  const client = useApolloClient();
+  const [editorUrl, setEditorUrl] = useState<string>();
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const mountedRef = useRef(true);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const { data, loading, error, refetch } = useCollaboraEditorUrlQuery({
-    variables: { collaboraDocumentId },
-    fetchPolicy: 'network-only',
-  });
-
-  const editorUrl = data?.collaboraEditorUrl.editorUrl;
-  const accessTokenTTL = data?.collaboraEditorUrl.accessTokenTTL;
-
-  // Silent token auto-refresh
   useEffect(() => {
-    if (!accessTokenTTL || accessTokenTTL <= REFRESH_BUFFER_MS) {
-      return;
-    }
+    mountedRef.current = true;
 
-    timerRef.current = setTimeout(() => {
-      refetch();
-    }, accessTokenTTL - REFRESH_BUFFER_MS);
+    const fetchUrl = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await client.query<CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables>({
+          query: CollaboraEditorUrlDocument,
+          variables: { collaboraDocumentId },
+          fetchPolicy: 'network-only',
+        });
+
+        if (!mountedRef.current) return;
+
+        if (error) {
+          setErrorMessage(error.message);
+          setLoading(false);
+          return;
+        }
+
+        if (data?.collaboraEditorUrl) {
+          setEditorUrl(prev => prev ?? data.collaboraEditorUrl.editorUrl);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (!mountedRef.current) return;
+        setErrorMessage(err instanceof Error ? err.message : 'Unknown error');
+        setLoading(false);
+      }
+    };
+
+    fetchUrl();
 
     return () => {
+      mountedRef.current = false;
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
     };
-  }, [accessTokenTTL, refetch]);
+  }, [collaboraDocumentId, client]);
 
-  if (loading) {
+  if (loading && !editorUrl) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <CircularProgress />
@@ -47,20 +68,26 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId }: CollaboraDocumentEdito
     );
   }
 
-  if (error || !editorUrl) {
+  if (errorMessage && !editorUrl) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%" p={4}>
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100%" p={4} gap={2}>
         <Typography color="error">{t('collaboraDocument.editor.error.unavailable')}</Typography>
+        <Typography variant="body2" color="text.secondary">{errorMessage}</Typography>
       </Box>
     );
+  }
+
+  if (!editorUrl) {
+    return null;
   }
 
   return (
     <iframe
       src={editorUrl}
       title={t('collaboraDocument.editor.title')}
-      style={{ width: '100%', height: '100%', border: 'none' }}
-      allow="clipboard-read; clipboard-write"
+      style={{ width: '100%', flex: 1, border: 'none', minHeight: 0 }}
+      allow="clipboard-read; clipboard-write; microphone; camera"
+      allowFullScreen
     />
   );
 };

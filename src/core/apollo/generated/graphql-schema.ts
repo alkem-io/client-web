@@ -1152,6 +1152,8 @@ export type CalloutFraming = {
   __typename?: 'CalloutFraming';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Collabora document attached to this Callout Framing, if any. Present when framing.type = COLLABORA_DOCUMENT. */
+  collaboraDocument?: Maybe<CollaboraDocument>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1175,6 +1177,7 @@ export type CalloutFraming = {
 };
 
 export enum CalloutFramingType {
+  CollaboraDocument = 'COLLABORA_DOCUMENT',
   Link = 'LINK',
   MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
@@ -1857,6 +1860,8 @@ export type CreateCalloutData = {
 
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
+  /** Collabora document input. Required when type = COLLABORA_DOCUMENT. */
+  collaboraDocument?: Maybe<CreateCollaboraDocumentData>;
   link?: Maybe<CreateLinkData>;
   memo?: Maybe<CreateMemoData>;
   /** Poll definition to attach to this Callout Framing. Required when type = POLL. Ignored for all other framing types. */
@@ -1869,6 +1874,8 @@ export type CreateCalloutFramingData = {
 };
 
 export type CreateCalloutFramingInput = {
+  /** Collabora document input. Required when type = COLLABORA_DOCUMENT. */
+  collaboraDocument?: InputMaybe<CreateCollaboraDocumentInput>;
   link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   /** Poll definition to attach to this Callout Framing. Required when type = POLL. Ignored for all other framing types. */
@@ -24930,199 +24937,6 @@ export type AccountSearchOrganizationsQuery = {
       pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean };
     };
   };
-};
-
-export type SpaceConversionUrlResolveQueryVariables = Exact<{
-  url: Scalars['String']['input'];
-}>;
-
-export type SpaceConversionUrlResolveQuery = {
-  __typename?: 'Query';
-  urlResolver: {
-    __typename?: 'UrlResolverQueryResults';
-    state: UrlResolverResultState;
-    type: UrlType;
-    space?:
-      | { __typename?: 'UrlResolverQueryResultSpace'; id: string; level: SpaceLevel; levelZeroSpaceID: string }
-      | undefined;
-  };
-};
-
-export type SpaceConversionLookupQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-}>;
-
-export type SpaceConversionLookupQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          };
-          account: {
-            __typename?: 'Account';
-            id: string;
-            host?:
-              | {
-                  __typename?: 'Actor';
-                  id: string;
-                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-                }
-              | undefined;
-          };
-          community: {
-            __typename?: 'Community';
-            roleSet: {
-              __typename?: 'RoleSet';
-              memberUsers: Array<{ __typename?: 'User'; id: string }>;
-              leadUsers: Array<{ __typename?: 'User'; id: string }>;
-              memberOrganizations: Array<{ __typename?: 'Organization'; id: string }>;
-              leadOrganizations: Array<{ __typename?: 'Organization'; id: string }>;
-              virtualContributorsInRole: Array<{ __typename?: 'VirtualContributor'; id: string }>;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type SpaceConversionSiblingSubspacesQueryVariables = Exact<{
-  levelZeroSpaceId: Scalars['UUID']['input'];
-}>;
-
-export type SpaceConversionSiblingSubspacesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          subspaces: Array<{
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type ConvertSpaceL1ToL0MutationVariables = Exact<{
-  spaceL1ID: Scalars['UUID']['input'];
-}>;
-
-export type ConvertSpaceL1ToL0Mutation = {
-  __typename?: 'Mutation';
-  convertSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
-};
-
-export type ConvertSpaceL1ToL2MutationVariables = Exact<{
-  spaceL1ID: Scalars['UUID']['input'];
-  parentSpaceL1ID: Scalars['UUID']['input'];
-}>;
-
-export type ConvertSpaceL1ToL2Mutation = {
-  __typename?: 'Mutation';
-  convertSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
-};
-
-export type ConvertSpaceL2ToL1MutationVariables = Exact<{
-  spaceL2ID: Scalars['UUID']['input'];
-}>;
-
-export type ConvertSpaceL2ToL1Mutation = {
-  __typename?: 'Mutation';
-  convertSpaceL2ToSpaceL1: { __typename?: 'Space'; id: string };
-};
-
-export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-}>;
-
-export type SpaceMoveTargetL0SpacesQuery = {
-  __typename?: 'Query';
-  spacesPaginated: {
-    __typename?: 'PaginatedSpaces';
-    spaces: Array<{
-      __typename?: 'Space';
-      id: string;
-      about: {
-        __typename?: 'SpaceAbout';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      };
-    }>;
-  };
-};
-
-export type SpaceMoveTargetL1SubspacesQueryVariables = Exact<{
-  targetL0SpaceId: Scalars['UUID']['input'];
-}>;
-
-export type SpaceMoveTargetL1SubspacesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          subspaces: Array<{
-            __typename?: 'Space';
-            id: string;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type SpaceMoveSourceSubspacesQueryVariables = Exact<{
-  spaceId: Scalars['UUID']['input'];
-}>;
-
-export type SpaceMoveSourceSubspacesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?: { __typename?: 'Space'; id: string; subspaces: Array<{ __typename?: 'Space'; id: string }> } | undefined;
-  };
-};
-
-export type ConvertSpaceL1ToSpaceL0MutationVariables = Exact<{
-  spaceL1ID: Scalars['UUID']['input'];
-}>;
-
-export type ConvertSpaceL1ToSpaceL0Mutation = {
-  __typename?: 'Mutation';
-  convertSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
-};
-
-export type ConvertSpaceL1ToSpaceL2MutationVariables = Exact<{
-  spaceL1ID: Scalars['UUID']['input'];
-  parentSpaceL1ID: Scalars['UUID']['input'];
-}>;
-
-export type ConvertSpaceL1ToSpaceL2Mutation = {
-  __typename?: 'Mutation';
-  convertSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
 };
 
 export type CalloutUrlResolveQueryVariables = Exact<{

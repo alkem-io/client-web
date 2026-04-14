@@ -60,7 +60,7 @@ const CalloutContributionDialogCollaboraDocument = ({
             </IconButton>
           </Tooltip>
         </Box>
-        <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           {collaboraDocumentId ? <CollaboraDocumentEditor collaboraDocumentId={collaboraDocumentId} /> : null}
         </DialogContent>
       </Dialog>
@@ -75,6 +75,7 @@ const CalloutContributionDialogCollaboraDocument = ({
         entities={{
           confirmButtonTextId: 'buttons.delete',
           title: t('collaboraDocument.delete.confirm'),
+          content: t('collaboraDocument.delete.confirm'),
         }}
       />
     </>

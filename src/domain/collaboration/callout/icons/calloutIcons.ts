@@ -21,6 +21,7 @@ export const calloutFramingIcons: Record<CalloutFramingType, ComponentType<SvgIc
   [CalloutFramingType.Link]: CtaIcon,
   [CalloutFramingType.MediaGallery]: PermMediaIcon,
   [CalloutFramingType.Poll]: ChecklistRtlIcon,
+  [CalloutFramingType.CollaboraDocument]: DescriptionOutlined,
 };
 
 export const contributionIcons: Record<CalloutContributionType, ComponentType<SvgIconProps>> = {

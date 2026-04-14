@@ -108,6 +108,7 @@ const CalloutView = ({
   const isContributionCommentsLoading = Boolean(contributionForComments && contributionComments.loading);
 
   const [commentsCollapsed, setCommentsCollapsed] = useState(true);
+  const [selectedCollaboraContribution, setSelectedCollaboraContribution] = useState<AnyContribution | undefined>();
 
   useEffect(() => {
     setCommentsCollapsed(true);
@@ -354,40 +355,34 @@ const CalloutView = ({
             calloutRestrictions={calloutRestrictions}
             onCalloutContributionsUpdate={onCalloutUpdate}
           >
-            {contributionId && (
-              <CalloutContributionsHorizontalPager
-                callout={callout}
-                loading={loading}
-                contributionType={CalloutContributionType.CollaboraDocument}
-                contributionSelectedId={contributionId}
-                cardComponent={CollaboraDocumentCard}
-                onClickOnContribution={handleClickOnContribution}
-              />
-            )}
-            {contributionId && (
-              <CalloutContributionPreview
-                key={contributionId}
-                ref={contributionPreviewRef}
-                callout={callout}
-                contributionId={contributionId}
-                previewComponent={CalloutContributionPreviewCollaboraDocument}
-                dialogComponent={CalloutContributionDialogCollaboraDocument}
-                openContributionDialogOnLoad={true}
+            <ContributionsCardsExpandable
+              callout={callout}
+              loading={loading}
+              contributionType={CalloutContributionType.CollaboraDocument}
+              expanded={expanded}
+              onExpand={onExpand}
+              onCollapse={onCollapse}
+              onCalloutUpdate={onCalloutUpdate}
+              contributionCardComponent={CollaboraDocumentCard}
+              onClickOnContribution={contribution => {
+                if (contribution.collaboraDocument?.id) {
+                  setSelectedCollaboraContribution(contribution);
+                }
+              }}
+            />
+            {selectedCollaboraContribution && (
+              <CalloutContributionDialogCollaboraDocument
+                calloutsSetId={callout.calloutsSetId}
+                calloutId={callout.id}
+                contribution={selectedCollaboraContribution as unknown as import('../../calloutContributions/CalloutContributionModel').default}
+                open={true}
+                onClose={() => setSelectedCollaboraContribution(undefined)}
+                onCalloutUpdate={onCalloutUpdate}
+                onContributionDeleted={() => {
+                  setSelectedCollaboraContribution(undefined);
+                  onCalloutUpdate?.();
+                }}
                 calloutRestrictions={calloutRestrictions}
-                onCalloutUpdate={onCalloutUpdate}
-              />
-            )}
-            {!contributionId && (
-              <ContributionsCardsExpandable
-                callout={callout}
-                loading={loading}
-                contributionType={CalloutContributionType.CollaboraDocument}
-                expanded={expanded}
-                onExpand={onExpand}
-                onCollapse={onCollapse}
-                onCalloutUpdate={onCalloutUpdate}
-                contributionCardComponent={CollaboraDocumentCard}
-                onClickOnContribution={handleClickOnContribution}
               />
             )}
           </CalloutContributionsBlock>
