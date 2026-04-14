@@ -19,6 +19,10 @@ import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
+import CalloutContributionDialogCollaboraDocument from '../../calloutContributions/collaboraDocument/CalloutContributionDialogCollaboraDocument';
+import CalloutContributionPreviewCollaboraDocument from '../../calloutContributions/collaboraDocument/CalloutContributionPreviewCollaboraDocument';
+import CollaboraDocumentCard from '../../calloutContributions/collaboraDocument/CollaboraDocumentCard';
+import CreateContributionButtonCollaboraDocument from '../../calloutContributions/collaboraDocument/CreateContributionButtonCollaboraDocument';
 import useCalloutContributionComments from '../../calloutContributions/commentsToContribution/useCalloutContributionComments';
 import ContributionsCardsExpandable from '../../calloutContributions/contributionsCardsExpandable/ContributionsCardsExpandable';
 import type { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
@@ -139,7 +143,10 @@ const CalloutView = ({
     };
     // TODO: When contribution.type is available, use it to decide which url to use
     const url =
-      contribution.whiteboard?.profile.url ?? contribution.post?.profile.url ?? contribution.memo?.profile.url;
+      contribution.whiteboard?.profile.url ??
+      contribution.post?.profile.url ??
+      contribution.memo?.profile.url ??
+      contribution.collaboraDocument?.profile?.url;
     if (url) {
       navigate(url, { state });
     }
@@ -332,6 +339,54 @@ const CalloutView = ({
                 onCollapse={onCollapse}
                 onCalloutUpdate={onCalloutUpdate}
                 contributionCardComponent={MemoCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+          </CalloutContributionsBlock>
+        )}
+
+        {/* Collaborate with Collabora Documents */}
+        {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.CollaboraDocument) && (
+          <CalloutContributionsBlock
+            callout={callout}
+            contributionType={CalloutContributionType.CollaboraDocument}
+            createContributionButtonComponent={CreateContributionButtonCollaboraDocument}
+            calloutRestrictions={calloutRestrictions}
+            onCalloutContributionsUpdate={onCalloutUpdate}
+          >
+            {contributionId && (
+              <CalloutContributionsHorizontalPager
+                callout={callout}
+                loading={loading}
+                contributionType={CalloutContributionType.CollaboraDocument}
+                contributionSelectedId={contributionId}
+                cardComponent={CollaboraDocumentCard}
+                onClickOnContribution={handleClickOnContribution}
+              />
+            )}
+            {contributionId && (
+              <CalloutContributionPreview
+                key={contributionId}
+                ref={contributionPreviewRef}
+                callout={callout}
+                contributionId={contributionId}
+                previewComponent={CalloutContributionPreviewCollaboraDocument}
+                dialogComponent={CalloutContributionDialogCollaboraDocument}
+                openContributionDialogOnLoad={true}
+                calloutRestrictions={calloutRestrictions}
+                onCalloutUpdate={onCalloutUpdate}
+              />
+            )}
+            {!contributionId && (
+              <ContributionsCardsExpandable
+                callout={callout}
+                loading={loading}
+                contributionType={CalloutContributionType.CollaboraDocument}
+                expanded={expanded}
+                onExpand={onExpand}
+                onCollapse={onCollapse}
+                onCalloutUpdate={onCalloutUpdate}
+                contributionCardComponent={CollaboraDocumentCard}
                 onClickOnContribution={handleClickOnContribution}
               />
             )}

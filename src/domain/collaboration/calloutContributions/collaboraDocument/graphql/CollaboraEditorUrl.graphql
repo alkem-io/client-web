@@ -1,0 +1,6 @@
+query CollaboraEditorUrl($collaboraDocumentId: UUID!) {
+  collaboraEditorUrl(collaboraDocumentID: $collaboraDocumentId) {
+    editorUrl
+    accessTokenTTL
+  }
+}

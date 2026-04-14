@@ -578,7 +578,8 @@
         "LINK": "$t(common.Link)",
         "POST": "$t(common.Post)",
         "WHITEBOARD": "$t(common.Whiteboard)",
-        "MEMO": "$t(common.Memo)"
+        "MEMO": "$t(common.Memo)",
+        "COLLABORA_DOCUMENT": "Document"
       },
       "invitationStatus": {
         "invited": "Invited",
@@ -665,8 +666,10 @@
       "WHITEBOARD": "$t(common.Whiteboard)",
       "MEMO": "$t(common.Memo)",
       "NONE": "$t(common.Post)",
-      "POLL": "$t(common.Poll)"
-    }
+      "POLL": "$t(common.Poll)",
+      "COLLABORA_DOCUMENT": "Document"
+    },
+    "collaboraDocument": "Document"
   },
   "community": {
     "memberUsers": "$t(common.Member) Users ({{count}})",
@@ -943,7 +946,15 @@
               "explanation": "Edit the default $t(common.whiteboard)."
             }
           },
-          "tooltipDisabled": "Please create a new $t(common.post) if you want a different $t(common.collection) option."
+          "tooltipDisabled": "Please create a new $t(common.post) if you want a different $t(common.collection) option.",
+          "collaboraDocument": {
+            "title": "Documents",
+            "tooltip": "Enable responding with collaborative documents",
+            "settings": {
+              "label": "Default document:",
+              "explanation": "Edit the default document."
+            }
+          }
         }
       },
       "importTemplate": {
@@ -1336,7 +1347,7 @@
       "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
     "shareSettings": {
-      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
+      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users  at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "guestAccessWarning": "Note: If you make this $t(common.whiteboard) public, everyone in the $t(common.space) will be able to edit the $t(common.whiteboard).",
       "ownedBy": {
@@ -2260,8 +2271,8 @@
           "description": "{{spaceName}}"
         },
         "USER_SIGN_UP_WELCOME": {
-          "subject": "Welcome to Alkemio! \uD83C\uDF89",
-          "description": "You’re now part of a community that grows through collaboration \uD83E\uDD1D Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
+          "subject": "Welcome to Alkemio! 🎉",
+          "description": "You’re now part of a community that grows through collaboration 🤝 Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
         },
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
           "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
@@ -2340,8 +2351,8 @@
       "discardChanges": "Discard"
     },
     "spaceWelcomeDialog": {
-      "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
-      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>\uD83D\uDCDD <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "title": "🎉 Your $t(common.space) is Ready!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
     },
     "spaceCard": {
@@ -4678,6 +4689,28 @@
     "onlineStatus": {
       "offline": "You are currently offline. Please save any pending work locally as unsaved data may be lost.",
       "restored": "Your connection has been restored."
+    }
+  },
+  "collaboraDocument": {
+    "create": {
+      "title": "New Document",
+      "documentType": {
+        "label": "Document type",
+        "SPREADSHEET": "Spreadsheet",
+        "PRESENTATION": "Presentation",
+        "TEXT_DOCUMENT": "Text Document"
+      }
+    },
+    "editor": {
+      "title": "Document Editor",
+      "loading": "Loading document editor...",
+      "error": {
+        "unavailable": "The document editor is temporarily unavailable. Please try again later.",
+        "notFound": "This document could not be found. It may have been deleted."
+      }
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete this document? This action cannot be undone."
     }
   }
 }

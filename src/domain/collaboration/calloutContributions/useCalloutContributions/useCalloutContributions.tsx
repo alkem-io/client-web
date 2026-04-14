@@ -93,6 +93,7 @@ const useCalloutContributions = ({
       includeWhiteboard: contributionType === CalloutContributionType.Whiteboard,
       includeMemo: contributionType === CalloutContributionType.Memo,
       includePost: contributionType === CalloutContributionType.Post,
+      includeCollaboraDocument: contributionType === CalloutContributionType.CollaboraDocument,
       limit: fetchAllEnabled ? undefined : pageSize,
     },
     skip: !inView || !callout?.id || skip,
@@ -133,6 +134,10 @@ const useCalloutContributions = ({
           return (effectiveData ?? data)?.lookup.callout?.contributionsCount.post;
         case CalloutContributionType.Memo:
           return (effectiveData ?? data)?.lookup.callout?.contributionsCount.memo;
+        case CalloutContributionType.CollaboraDocument:
+          // Server does not expose a dedicated count field for collabora documents;
+          // fall back to the fetched contributions array length.
+          return (effectiveData ?? data)?.lookup.callout?.contributions.length;
       }
     })() ?? 0;
 

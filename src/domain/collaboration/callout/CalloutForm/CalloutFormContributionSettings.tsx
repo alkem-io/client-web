@@ -50,6 +50,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
         return ContributionsSettingsWhiteboard;
       case CalloutContributionType.Memo:
         return ContributionsSettingsPost; // Memo uses same settings as Post
+      case CalloutContributionType.CollaboraDocument:
+        return ContributionsSettingsPost; // Collabora documents use same settings as Post
       default:
         return undefined;
     }
@@ -64,7 +66,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
     switch (allowedTypesField.value) {
       case CalloutContributionType.Link:
       case CalloutContributionType.Whiteboard:
-      case CalloutContributionType.Memo: {
+      case CalloutContributionType.Memo:
+      case CalloutContributionType.CollaboraDocument: {
         result.commentsEnabled = false;
       }
     }
@@ -143,6 +146,14 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                   ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
                 disabled: calloutRestrictions?.disableWhiteboards,
+              },
+              {
+                icon: contributionIcons[CalloutContributionType.CollaboraDocument],
+                value: CalloutContributionType.CollaboraDocument,
+                label: t('callout.create.contributionSettings.contributionTypes.collaboraDocument.title'),
+                tooltip: calloutRestrictions?.readOnlyAllowedTypes
+                  ? disabledTooltip
+                  : t('callout.create.contributionSettings.contributionTypes.collaboraDocument.tooltip'),
               },
             ]}
             name="settings.contribution.allowedTypes"

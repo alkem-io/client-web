@@ -1,5 +1,6 @@
 import { LibraryBooksOutlined } from '@mui/icons-material';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import { type SvgIconProps, Tooltip } from '@mui/material';
 import React, { type ComponentType } from 'react';
@@ -27,6 +28,7 @@ export const contributionIcons: Record<CalloutContributionType, ComponentType<Sv
   [CalloutContributionType.Post]: LibraryBooksOutlined,
   [CalloutContributionType.Memo]: MemoIcon,
   [CalloutContributionType.Whiteboard]: WhiteboardIcon,
+  [CalloutContributionType.CollaboraDocument]: DescriptionOutlined,
 };
 
 export const getCalloutIconBasedOnType = (

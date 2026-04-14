@@ -27,7 +27,8 @@ export interface ShareComponentProps extends PropsWithChildren {
     | 'post'
     | 'whiteboard'
     | 'link'
-    | 'memo';
+    | 'memo'
+    | 'collaboraDocument';
   loading?: boolean;
   onClose?: () => void;
   showShareOnAlkemio?: boolean;

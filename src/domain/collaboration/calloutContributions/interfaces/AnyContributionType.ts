@@ -67,4 +67,18 @@ export type AnyContribution = Identifiable & {
     };
     comments: { id: string; messagesCount: number };
   };
+  collaboraDocument?: {
+    id: string;
+    documentType: string;
+    createdDate: Date;
+    createdBy?: {
+      id: string;
+      profile?: { displayName: string };
+    };
+    profile?: {
+      id: string;
+      url: string;
+      displayName: string;
+    };
+  };
 };
