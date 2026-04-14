@@ -32,6 +32,15 @@ export type CalloutDetailsModel = CalloutModelLight & {
     link?: LinkDetails;
     mediaGallery?: MediaGalleryModel;
     poll?: PollDetailsModel;
+    collaboraDocument?: {
+      id: string;
+      documentType: string;
+      profile?: {
+        id: string;
+        displayName: string;
+        url: string;
+      };
+    };
   };
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;

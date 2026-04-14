@@ -97,6 +97,15 @@ fragment CalloutDetails on Callout {
     poll {
       ...PollDetails
     }
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        displayName
+        url
+      }
+    }
   }
   contributionDefaults {
     id

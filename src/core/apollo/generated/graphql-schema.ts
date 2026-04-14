@@ -13568,6 +13568,14 @@ export type CalloutContentQuery = {
                     | undefined;
                 }
               | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  documentType: CollaboraDocumentType;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -13873,6 +13881,14 @@ export type UpdateCalloutContentMutation = {
                   selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
                 }
               | undefined;
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            documentType: CollaboraDocumentType;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
           }
         | undefined;
     };
@@ -14277,6 +14293,14 @@ export type UpdateCalloutVisibilityMutation = {
                   selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
                 }
               | undefined;
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            documentType: CollaboraDocumentType;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
           }
         | undefined;
     };
@@ -15952,6 +15976,14 @@ export type CreateCalloutMutation = {
               | undefined;
           }
         | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            documentType: CollaboraDocumentType;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -16468,6 +16500,14 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  documentType: CollaboraDocumentType;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -16915,6 +16955,14 @@ export type CalloutDetailsFragment = {
                 selectedOptions: Array<{ __typename?: 'PollOption'; id: string }>;
               }
             | undefined;
+        }
+      | undefined;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          documentType: CollaboraDocumentType;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
         }
       | undefined;
   };

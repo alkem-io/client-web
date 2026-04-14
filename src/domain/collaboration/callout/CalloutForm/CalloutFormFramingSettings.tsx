@@ -2,7 +2,10 @@ import BlockIcon from '@mui/icons-material/Block';
 import BurstModeOutlinedIcon from '@mui/icons-material/BurstModeOutlined';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import SlideshowOutlined from '@mui/icons-material/SlideshowOutlined';
+import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
 import { Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import { Suspense } from 'react';
@@ -148,7 +151,7 @@ const CalloutFormFramingSettings = ({
           ...framing,
           type: newType,
           collaboraDocument: {
-            displayName: t('collaboraDocument.create.title'),
+            displayName: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
             documentType: CollaboraDocumentType.TextDocument,
           },
           whiteboard: undefined,
@@ -330,16 +333,27 @@ const CalloutFormFramingSettings = ({
           <PageContentBlockHeader title={t('collaboraDocument.create.documentType.label')} />
           <FormikRadioButtonsGroup
             name="framing.collaboraDocument.documentType"
+            onChange={(newType: CollaboraDocumentType) => {
+              const typeLabels: Record<CollaboraDocumentType, string> = {
+                [CollaboraDocumentType.TextDocument]: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
+                [CollaboraDocumentType.Spreadsheet]: t('collaboraDocument.create.documentType.SPREADSHEET'),
+                [CollaboraDocumentType.Presentation]: t('collaboraDocument.create.documentType.PRESENTATION'),
+              };
+              setFieldValue('framing.collaboraDocument.displayName', typeLabels[newType]);
+            }}
             options={[
               {
+                icon: ArticleOutlined,
                 value: CollaboraDocumentType.TextDocument,
                 label: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
               },
               {
+                icon: TableChartOutlined,
                 value: CollaboraDocumentType.Spreadsheet,
                 label: t('collaboraDocument.create.documentType.SPREADSHEET'),
               },
               {
+                icon: SlideshowOutlined,
                 value: CollaboraDocumentType.Presentation,
                 label: t('collaboraDocument.create.documentType.PRESENTATION'),
               },

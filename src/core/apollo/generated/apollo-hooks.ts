@@ -1062,6 +1062,15 @@ export const CalloutDetailsFragmentDoc = gql`
     poll {
       ...PollDetails
     }
+    collaboraDocument {
+      id
+      documentType
+      profile {
+        id
+        displayName
+        url
+      }
+    }
   }
   contributionDefaults {
     id
@@ -7608,6 +7617,15 @@ export const CalloutContentDocument = gql`
         }
         poll {
           ...PollDetails
+        }
+        collaboraDocument {
+          id
+          documentType
+          profile {
+            id
+            displayName
+            url
+          }
         }
       }
       contributionDefaults {

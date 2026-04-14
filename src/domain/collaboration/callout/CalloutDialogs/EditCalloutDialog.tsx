@@ -102,6 +102,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           previewImages: [],
         },
         link: framingData.link,
+        collaboraDocument: framingData.collaboraDocument
+          ? {
+              displayName: framingData.collaboraDocument.profile?.displayName ?? '',
+              documentType: framingData.collaboraDocument.documentType,
+            }
+          : undefined,
         poll: pollFormValues,
         mediaGallery: {
           ...mediaGallery,

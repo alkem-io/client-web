@@ -39,6 +39,7 @@ import CalloutContributionDialogWhiteboard from '../../calloutContributions/whit
 import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
 import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
 import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
+import CalloutFramingCollaboraDocument from '../CalloutFramings/CalloutFramingCollaboraDocument';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import CalloutFramingMediaGallery from '../CalloutFramings/CalloutFramingMediaGallery';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
@@ -186,6 +187,11 @@ const CalloutView = ({
 
         {/* Poll framing */}
         {callout.framing.type === CalloutFramingType.Poll && <CalloutFramingPoll callout={callout} />}
+
+        {/* Collabora Document framing */}
+        {callout.framing.type === CalloutFramingType.CollaboraDocument && (
+          <CalloutFramingCollaboraDocument callout={callout} />
+        )}
 
         {/* Collaborate with links */}
         {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
