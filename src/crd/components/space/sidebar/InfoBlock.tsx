@@ -1,6 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
+const lineClampClasses: Record<number, string> = {
+  1: 'line-clamp-1',
+  2: 'line-clamp-2',
+  3: 'line-clamp-3',
+  4: 'line-clamp-4',
+  5: 'line-clamp-5',
+  6: 'line-clamp-6',
+};
+
 type InfoBlockProps = {
   description: string;
   maxLines?: number;
@@ -13,17 +22,7 @@ export function InfoBlock({ description, maxLines = 4, onReadMore, className }: 
 
   return (
     <div className={cn('bg-primary text-primary-foreground rounded-lg p-5', className)}>
-      <p
-        className="text-sm leading-relaxed opacity-90 mb-3"
-        style={{
-          display: '-webkit-box',
-          WebkitLineClamp: maxLines,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}
-      >
-        {description}
-      </p>
+      <p className={cn('text-sm leading-relaxed opacity-90 mb-3', lineClampClasses[maxLines])}>{description}</p>
       {onReadMore && (
         <button
           type="button"

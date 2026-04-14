@@ -67,7 +67,8 @@ export function SpaceHeader({
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to top, rgba(29,56,74,0.4), rgba(102,102,102,0.08))',
+            background:
+              'linear-gradient(to top, color-mix(in srgb, var(--foreground) 40%, transparent), color-mix(in srgb, var(--foreground) 8%, transparent))',
           }}
         />
 

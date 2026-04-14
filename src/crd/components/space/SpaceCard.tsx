@@ -35,6 +35,8 @@ export type SpaceCardData = {
   href: string;
   matchedTerms?: boolean;
   parent?: SpaceCardParent;
+  /** Lifecycle status used for filter pills (e.g. 'active', 'archived'). */
+  status?: string;
 };
 
 export type SpaceCardProps = {

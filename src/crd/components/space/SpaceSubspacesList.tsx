@@ -1,9 +1,11 @@
 import { Folder, Plus, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
+
+type StatusFilter = 'all' | 'active' | 'archived';
 
 type SpaceSubspacesListProps = {
   subspaces: SpaceCardData[];
@@ -58,12 +60,22 @@ export function SpaceSubspacesList({
   const { t } = useTranslation('crd-space');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showAll, setShowAll] = useState(false);
 
   const allTags = collectTags(subspaces);
 
-  // Apply search + tag filter.
+  // Show status filter pills only when subspaces carry status data and at least
+  // one subspace has a non-active status (otherwise the pills add no value).
+  const hasStatusVariety = useMemo(() => subspaces.some(s => s.status && s.status !== 'active'), [subspaces]);
+
+  const STATUS_OPTIONS: StatusFilter[] = ['all', 'active', 'archived'];
+
+  // Apply status + search + tag filters.
   let filtered = subspaces;
+  if (statusFilter !== 'all') {
+    filtered = filtered.filter(s => s.status === statusFilter);
+  }
   if (searchQuery) {
     const query = searchQuery.toLowerCase();
     filtered = filtered.filter(
@@ -82,10 +94,11 @@ export function SpaceSubspacesList({
   const resetFilters = () => {
     setSearchQuery('');
     setSelectedTags([]);
+    setStatusFilter('all');
     setShowAll(false);
   };
 
-  const hasActiveFilter = searchQuery.length > 0 || selectedTags.length > 0;
+  const hasActiveFilter = searchQuery.length > 0 || selectedTags.length > 0 || statusFilter !== 'all';
   const visibleSubspaces = showAll ? filtered : filtered.slice(0, initialVisibleCount);
   const hiddenCount = filtered.length - visibleSubspaces.length;
 
@@ -120,6 +133,35 @@ export function SpaceSubspacesList({
           className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-sm text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
         />
       </div>
+
+      {/* Status filter pills — only shown when subspaces have mixed statuses */}
+      {hasStatusVariety && (
+        <fieldset className="flex items-center gap-2 border-0 p-0 m-0" aria-label={t('a11y.statusFilter')}>
+          <legend className="sr-only">{t('a11y.statusFilter')}</legend>
+          {STATUS_OPTIONS.map(status => {
+            const isSelected = statusFilter === status;
+            return (
+              <button
+                key={status}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => {
+                  setStatusFilter(status);
+                  setShowAll(false);
+                }}
+                className={cn(
+                  'px-3 py-1.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  isSelected
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
+                )}
+              >
+                {t(`subspaces.filter.${status}`)}
+              </button>
+            );
+          })}
+        </fieldset>
+      )}
 
       {/* Tag filter chips — wrap onto multiple rows */}
       {allTags.length > 0 && (

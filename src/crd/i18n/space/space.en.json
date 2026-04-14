@@ -109,6 +109,11 @@
     "search": "Search subspaces...",
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
+    "filter": {
+      "all": "All",
+      "active": "Active",
+      "archived": "Archived"
+    },
     "empty": {
       "title": "No subspaces found",
       "description": "No subspaces match your current search or filter.",
@@ -283,6 +288,7 @@
     "feedRegion": "Space content feed",
     "membersGrid": "Community members grid",
     "subspacesGrid": "Subspaces grid",
+    "statusFilter": "Filter subspaces by status",
     "visibilityNotice": "Space visibility notice",
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",

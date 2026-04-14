@@ -2,8 +2,6 @@ import { Suspense } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
 const CrdSpaceDashboardPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceDashboardPage'));
 const CrdSpaceCommunityPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceCommunityPage'));
@@ -12,14 +10,11 @@ const CrdSpaceCustomTabPage = lazyWithGlobalErrorHandler(() => import('./CrdSpac
 
 type OutletContext = {
   activeTabIndex: number;
+  totalTabs: number;
 };
 
 export default function CrdSpaceTabbedPages() {
-  const { activeTabIndex } = useOutletContext<OutletContext>();
-  const { spaceId } = useUrlResolver();
-  const { tabs } = useCrdSpaceTabs({ spaceId });
-
-  const totalTabs = tabs.length;
+  const { activeTabIndex, totalTabs } = useOutletContext<OutletContext>();
 
   return (
     <Suspense fallback={<LoadingSpinner />}>

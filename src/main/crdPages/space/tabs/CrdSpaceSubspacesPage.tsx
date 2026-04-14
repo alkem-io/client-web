@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { CreateSubspace } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
@@ -40,7 +41,7 @@ export default function CrdSpaceSubspacesPage() {
   const sidebarSubspaces = subspaces.map(s => ({
     name: s.name,
     initials: getInitials(s.name),
-    color: 'var(--chart-1)',
+    color: pickColorFromId(s.id),
     href: s.href,
   }));
 

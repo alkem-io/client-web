@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -19,7 +20,7 @@ export default function CrdSpaceDashboardPage() {
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
       initials: getInitials(child.displayName),
-      color: 'var(--chart-1)',
+      color: pickColorFromId(child.id),
       href: child.url,
     })) ?? [];
 

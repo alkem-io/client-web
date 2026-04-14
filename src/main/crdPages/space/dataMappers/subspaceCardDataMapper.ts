@@ -1,30 +1,17 @@
-import { CommunityMembershipStatus, SpaceSortMode, VisualType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  SpaceSortMode,
+  SpaceVisibility,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { getInitials } from './spacePageDataMapper';
 
-// Avatar color palette — mirrors the prototype's subspace color set.
-const SUBSPACE_AVATAR_COLORS = [
-  '#2563eb', // blue
-  '#7c3aed', // purple
-  '#059669', // emerald
-  '#d97706', // amber
-  '#dc2626', // red
-  '#0891b2', // cyan
-];
-
-/** Deterministic color pick from the avatar palette based on entity id. */
-export function getAvatarColorFromId(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash * 31 + id.charCodeAt(i)) | 0;
-  }
-  const index = Math.abs(hash) % SUBSPACE_AVATAR_COLORS.length;
-  return SUBSPACE_AVATAR_COLORS[index];
-}
-
 type SubspaceQueryData = {
   id: string;
+  visibility?: SpaceVisibility;
   about: {
     profile: {
       displayName: string;
@@ -83,14 +70,33 @@ function mapSubspaceToCardData(subspace: SubspaceQueryData, showPinIndicator: bo
     description: profile.tagline ?? '',
     bannerImageUrl: profile.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, subspace.id),
     initials: getInitials(profile.displayName),
-    avatarColor: getAvatarColorFromId(subspace.id),
+    avatarColor: pickColorFromId(subspace.id),
     isPrivate: !subspace.about.isContentPublic,
     isMember: membership?.myMembershipStatus === CommunityMembershipStatus.Member,
     isPinned: showPinIndicator && (subspace.pinned ?? false),
     tags: profile.tagset?.tags ?? [],
     leads,
     href: profile.url,
+    status: mapVisibilityToStatus(subspace.visibility),
   };
+}
+
+/**
+ * Translate the GraphQL SpaceVisibility enum to the plain status string
+ * consumed by CRD filter pills.
+ */
+function mapVisibilityToStatus(visibility?: SpaceVisibility): string {
+  switch (visibility) {
+    case SpaceVisibility.Archived:
+      return 'archived';
+    case SpaceVisibility.Inactive:
+      return 'inactive';
+    case SpaceVisibility.Demo:
+      return 'demo';
+    case SpaceVisibility.Active:
+    default:
+      return 'active';
+  }
 }
 
 /**

@@ -1,7 +1,7 @@
 import { History, Settings, Share2 } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
@@ -36,27 +36,19 @@ export default function CrdSpacePageLayout() {
     skip: !isLevelZero || !permissions.canRead,
   });
 
-  // Permission guard: redirect unauthorized users to the About page
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
   }
 
-  if (!permissions.canRead) {
-    const aboutPath = space.about.profile.url ? `${space.about.profile.url}/about` : 'about';
-    // Avoid infinite redirect when already on the About page
-    if (!window.location.pathname.endsWith('/about')) {
-      return <Navigate to={aboutPath} replace={true} />;
-    }
-  }
-
-  // Parse section index from URL
+  // Parse section index from URL (1-indexed) and clamp to valid tab range
   const sectionParam = searchParams.get(TabbedLayoutParams.Section);
+  const maxTabIndex = Math.max(tabs.length - 1, 0);
   let activeTabIndex = 0;
   if (sectionParam) {
     const parsed = parseInt(sectionParam, 10);
-    activeTabIndex = Number.isNaN(parsed) ? 0 : parsed - 1; // URL is 1-indexed
+    activeTabIndex = Number.isNaN(parsed) ? 0 : Math.max(0, Math.min(parsed - 1, maxTabIndex));
   } else if (defaultTabIndex >= 0) {
-    activeTabIndex = defaultTabIndex;
+    activeTabIndex = Math.min(defaultTabIndex, maxTabIndex);
   }
 
   const handleTabChange = (index: number) => {
@@ -95,7 +87,7 @@ export default function CrdSpacePageLayout() {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
       <Suspense fallback={<LoadingSpinner />}>
-        <Outlet context={{ activeTabIndex }} />
+        <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
       </Suspense>
     );
   }
@@ -130,7 +122,7 @@ export default function CrdSpacePageLayout() {
         }
       >
         <Suspense fallback={<LoadingSpinner />}>
-          <Outlet context={{ activeTabIndex }} />
+          <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
         </Suspense>
       </SpaceShell>
     </StorageConfigContextProvider>

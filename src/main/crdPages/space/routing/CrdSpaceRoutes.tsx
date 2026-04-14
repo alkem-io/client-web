@@ -8,6 +8,7 @@ import SubspaceContextProvider from '@/domain/space/context/SubspaceContext';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import CrdSpacePageLayout from '../layout/CrdSpacePageLayout';
+import CrdSpaceProtectedRoutes from './CrdSpaceProtectedRoutes';
 
 const CrdSpaceTabbedPages = lazyWithGlobalErrorHandler(() => import('../tabs/CrdSpaceTabbedPages'));
 const CrdSpaceAboutPage = lazyWithGlobalErrorHandler(() => import('../about/CrdSpaceAboutPage'));
@@ -20,6 +21,7 @@ export default function CrdSpaceRoutes() {
     <SpaceContextProvider>
       <Routes>
         <Route path="/" element={<CrdSpacePageLayout />}>
+          {/* About is accessible without canRead permission */}
           <Route
             path={EntityPageSection.About}
             element={
@@ -29,54 +31,56 @@ export default function CrdSpaceRoutes() {
             }
           />
 
-          {/* Protected routes — permission check happens in CrdSpacePageLayout */}
-          <Route
-            index={true}
-            element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <CrdSpaceTabbedPages />
-              </Suspense>
-            }
-          />
-
-          <Route
-            path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
-            element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <SpaceCalloutPage />
-              </Suspense>
-            }
-          />
-
-          <Route
-            path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-            element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <SpaceCalloutPage />
-              </Suspense>
-            }
-          />
-
-          <Route
-            path={`${EntityPageSection.Settings}/*`}
-            element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <SpaceAdminL0Route />
-              </Suspense>
-            }
-          />
-
-          {/* Subspace routes have their own layout */}
-          <Route
-            path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
-            element={
-              <SubspaceContextProvider>
+          {/* Protected routes — require canRead permission */}
+          <Route element={<CrdSpaceProtectedRoutes />}>
+            <Route
+              index={true}
+              element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SubspaceRoutes />
+                  <CrdSpaceTabbedPages />
                 </Suspense>
-              </SubspaceContextProvider>
-            }
-          />
+              }
+            />
+
+            <Route
+              path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SpaceCalloutPage />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SpaceCalloutPage />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path={`${EntityPageSection.Settings}/*`}
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SpaceAdminL0Route />
+                </Suspense>
+              }
+            />
+
+            {/* Subspace routes have their own layout */}
+            <Route
+              path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
+              element={
+                <SubspaceContextProvider>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <SubspaceRoutes />
+                  </Suspense>
+                </SubspaceContextProvider>
+              }
+            />
+          </Route>
           {/* Legacy route redirects — old bookmarks/links use path-based sections */}
           <Route
             path={EntityPageSection.Dashboard}
