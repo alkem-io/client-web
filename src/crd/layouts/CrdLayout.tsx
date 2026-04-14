@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { GridOverlayProvider } from '@/crd/hooks/useGridOverlay';
+import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
 import type {
@@ -53,34 +55,37 @@ export function CrdLayout({
   children,
 }: CrdLayoutProps) {
   return (
-    <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
-      <Header
-        user={user}
-        authenticated={authenticated}
-        navigationHrefs={navigationHrefs}
-        isAdmin={isAdmin}
-        pendingInvitationsCount={pendingInvitationsCount}
-        platformNavigationItems={platformNavigationItems}
-        currentPath={currentPath}
-        unreadNotificationsCount={unreadNotificationsCount}
-        languages={languages}
-        currentLanguage={currentLanguage}
-        onLanguageChange={onLanguageChange}
-        onLogout={onLogout}
-        onMessagesClick={onMessagesClick}
-        onNotificationsClick={onNotificationsClick}
-        onSearchClick={onSearchClick}
-        onPendingMembershipsClick={onPendingMembershipsClick}
-        onHelpClick={onHelpClick}
-      />
-      <main className="flex-1 flex flex-col">{children}</main>
-      <Footer
-        links={footerLinks}
-        languages={languages}
-        currentLanguage={currentLanguage}
-        onLanguageChange={onLanguageChange}
-        onSupportClick={onHelpClick}
-      />
-    </div>
+    <GridOverlayProvider>
+      <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
+        <Header
+          user={user}
+          authenticated={authenticated}
+          navigationHrefs={navigationHrefs}
+          isAdmin={isAdmin}
+          pendingInvitationsCount={pendingInvitationsCount}
+          platformNavigationItems={platformNavigationItems}
+          currentPath={currentPath}
+          unreadNotificationsCount={unreadNotificationsCount}
+          languages={languages}
+          currentLanguage={currentLanguage}
+          onLanguageChange={onLanguageChange}
+          onLogout={onLogout}
+          onMessagesClick={onMessagesClick}
+          onNotificationsClick={onNotificationsClick}
+          onSearchClick={onSearchClick}
+          onPendingMembershipsClick={onPendingMembershipsClick}
+          onHelpClick={onHelpClick}
+        />
+        <main className="flex-1 flex flex-col">{children}</main>
+        <Footer
+          links={footerLinks}
+          languages={languages}
+          currentLanguage={currentLanguage}
+          onLanguageChange={onLanguageChange}
+          onSupportClick={onHelpClick}
+        />
+        <GridOverlay />
+      </div>
+    </GridOverlayProvider>
   );
 }
