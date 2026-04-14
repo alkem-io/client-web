@@ -30,6 +30,7 @@ fragment SpaceMembership on Space {
   }
   about {
     ...SpaceAboutCardBanner
+    isContentPublic
     membership {
       myMembershipStatus
     }

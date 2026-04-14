@@ -1,0 +1,288 @@
+{
+  "banner": { "homeSpace": "Hoofdruimte", "homeSpaceSettings": "Instellingen hoofdruimte" },
+  "tabs": {
+    "dashboard": "Dashboard",
+    "community": "Community",
+    "subspaces": "Subspaces",
+    "knowledgeBase": "Kennisbank"
+  },
+  "visibility": {
+    "archived": "Deze Space is gearchiveerd en alleen-lezen.",
+    "archivedContact": "Neem contact op met de Space-leider voor meer informatie.",
+    "demo": "Dit is een demo-Space voor testdoeleinden.",
+    "inactive": "Deze Space is momenteel inactief."
+  },
+  "sidebar": {
+    "aboutSpace": "Over deze Space",
+    "subspaces": "Subspaces",
+    "showAll": "Alles tonen",
+    "events": "Evenementen",
+    "noEvents": "Geen aankomende evenementen",
+    "showCalendar": "Kalender tonen",
+    "spaceLead": "Space-leider",
+    "spaceLeads": "Space-leiders",
+    "contactLead": "Leiders contacteren",
+    "invite": "Uitnodigen",
+    "virtualContributors": "Virtuele bijdragers",
+    "communityGuidelines": "Communityrichtlijnen",
+    "postIndex": "Berichtenindex",
+    "readMore": "Lees meer",
+    "addEvent": "Evenement toevoegen"
+  },
+  "feed": {
+    "addPost": "Bericht toevoegen",
+    "showMore": "Meer tonen",
+    "activity": "Activiteit",
+    "noCallouts": "Nog geen inhoud",
+    "loading": "Inhoud laden..."
+  },
+  "callout": {
+    "draft": "Concept",
+    "expand": "Meer tonen",
+    "collapse": "Minder tonen",
+    "openWhiteboard": "Whiteboard openen",
+    "comments": "{{count}} reacties",
+    "commentsZero": "0 reacties",
+    "post": "Bericht",
+    "whiteboard": "Whiteboard",
+    "collection": "Collectie",
+    "callForWhiteboards": "Oproep voor whiteboards",
+    "poll": "Peiling",
+    "link": "Link",
+    "mediaGallery": "Mediagalerij",
+    "memo": "Memo",
+    "moreWhiteboards": "+{{count}} meer",
+    "vote": "Stemmen",
+    "votes": "{{count}} stemmen",
+    "totalVotes": "{{count}} stemmen totaal",
+    "resultsCount": "{{count}} resultaten",
+    "clearFilters": "Filters wissen",
+    "sendComment": "Reactie verzenden"
+  },
+  "contribution": {
+    "edit": "Bewerken",
+    "share": "Delen",
+    "close": "Sluiten",
+    "previous": "Vorige",
+    "next": "Volgende"
+  },
+  "framing": {
+    "newWhiteboard": "Nieuw whiteboard",
+    "readyToCreate": "Klaar om aan te maken",
+    "configure": "Configureren",
+    "memo": "Memo",
+    "richTextEditor": "Teksteditor met opmaak"
+  },
+  "members": {
+    "title": "Community",
+    "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
+    "inviteMember": "Lid uitnodigen",
+    "search": "Zoek leden of organisaties...",
+    "filterAll": "Alle",
+    "filterAdmin": "Beheerder",
+    "filterLead": "Leider",
+    "filterMember": "Lid",
+    "filterOrganization": "Organisatie",
+    "noMembers": "Geen leden gevonden",
+    "previousPage": "Vorige",
+    "nextPage": "Volgende",
+    "pageOf": "Pagina {{current}} van {{total}}",
+    "empty": {
+      "title": "Geen resultaten gevonden",
+      "description": "Pas je zoekopdracht of filters aan.",
+      "clearFilters": "Filters wissen"
+    },
+    "role": {
+      "admin": "Beheerder",
+      "lead": "Leider",
+      "member": "Lid",
+      "organization": "Organisatie"
+    }
+  },
+  "subspaces": {
+    "title": "Subspaces",
+    "subtitle": "Ontdek gerichte werkstromen en uitdagingen binnen deze space.",
+    "createSubspace": "Subspace aanmaken",
+    "search": "Subspaces zoeken...",
+    "showMore": "Toon {{count}} meer",
+    "showLess": "Minder tonen",
+    "empty": {
+      "title": "Geen subspaces gevonden",
+      "description": "Geen subspaces komen overeen met je huidige zoekopdracht of filter.",
+      "clearFilters": "Filters wissen"
+    }
+  },
+  "about": {
+    "title": "Over",
+    "location": "Locatie",
+    "metrics": "Belangrijke cijfers",
+    "who": "Wie",
+    "why": "Waarom",
+    "host": "Host",
+    "leadUsers": "Leidende gebruikers",
+    "leadOrganizations": "Leidende organisaties",
+    "guidelines": "Communityrichtlijnen",
+    "references": "Referenties"
+  },
+  "mobile": {
+    "more": "Meer",
+    "activity": "Activiteit",
+    "videoCall": "Videogesprek",
+    "share": "Delen",
+    "settings": "Instellingen"
+  },
+  "contextMenu": {
+    "edit": "Bewerken",
+    "publish": "Publiceren",
+    "unpublish": "Depubliceren",
+    "share": "Delen",
+    "sortContributions": "Bijdragen sorteren",
+    "saveAsTemplate": "Opslaan als sjabloon",
+    "moveToTop": "Naar boven verplaatsen",
+    "moveUp": "Omhoog verplaatsen",
+    "moveDown": "Omlaag verplaatsen",
+    "moveToBottom": "Naar onder verplaatsen",
+    "delete": "Verwijderen"
+  },
+  "dates": {
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "daysAgo": "{{count}}d geleden",
+    "weeksAgo": "{{count}}w geleden"
+  },
+  "validation": {
+    "titleRequired": "Titel is verplicht",
+    "urlRequired": "URL is verplicht",
+    "urlInvalid": "URL moet beginnen met http:// of https://",
+    "displayNameRequired": "Weergavenaam is verplicht",
+    "questionRequired": "Vraag is verplicht"
+  },
+  "forms": {
+    "titleLabel": "Titel",
+    "titlePlaceholder": "Geef je bericht een titel...",
+    "descriptionLabel": "Beschrijving",
+    "descriptionPlaceholder": "Schrijf iets...",
+    "tagsLabel": "Tags",
+    "framingType": "Inhoudstype",
+    "visibility": "Zichtbaarheid",
+    "publishedLabel": "Gepubliceerd",
+    "draftLabel": "Concept",
+    "notifyMembers": "Space-leden informeren",
+    "saveDraft": "Concept opslaan",
+    "publish": "Publiceren",
+    "findTemplate": "Sjabloon zoeken",
+    "contributionTypes": "Toegestane bijdragen",
+    "commentsEnabled": "Reacties inschakelen",
+    "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkDisplayName": "Weergavenaam",
+    "pollQuestion": "Vraag",
+    "pollOption": "Optie {{number}}",
+    "addOption": "Optie toevoegen",
+    "removeOption": "Optie verwijderen"
+  },
+  "calloutDialog": {
+    "close": "Dialoog sluiten",
+    "share": "Delen",
+    "more": "Meer opties",
+    "discussion": "Discussie",
+    "reactions": "Reageren",
+    "reactionCount": "{{count}} reacties",
+    "reactionCount_one": "1 reactie",
+    "contributions": "Bijdragen"
+  },
+  "comments": {
+    "title": "Discussie",
+    "showMore": "Meer tonen",
+    "showLess": "Minder tonen",
+    "sortNewest": "Nieuwste eerst",
+    "sortOldest": "Oudste eerst",
+    "reply": "Antwoorden",
+    "delete": "Verwijderen",
+    "deleted": "Deze opmerking is verwijderd",
+    "addComment": "Voeg een opmerking toe...",
+    "send": "Verzenden",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Reactie toevoegen",
+      "overflow": "+{{count}} meer"
+    },
+    "count": "{{count}} opmerkingen",
+    "count_one": "1 opmerking",
+    "loading": "Opmerkingen laden...",
+    "empty": "Nog geen opmerkingen"
+  },
+  "dialogs": {
+    "cancel": "Annuleren"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Stem voorbereiden...",
+      "submitting": "Verzenden...",
+      "addingOption": "Optie toevoegen...",
+      "voted": "Gestemd",
+      "removeMyVote": "Mijn stem verwijderen",
+      "closed": "Deze peiling is gesloten",
+      "anonymous": "Anonieme peiling"
+    },
+    "vote": {
+      "maxReached": "Maximum van {{max}} selecties bereikt",
+      "minRequired": "Selecteer ten minste {{min}} opties"
+    },
+    "results": {
+      "totalVotes": "{{count}} stemmen totaal",
+      "noVotes": "Nog geen stemmen",
+      "votersMore": "+{{count}} meer"
+    },
+    "removeVoteConfirm": {
+      "title": "Je stem verwijderen?",
+      "description": "Je stem wordt verwijderd uit deze peiling. Je kunt op elk moment opnieuw stemmen.",
+      "confirm": "Stem verwijderen"
+    },
+    "customOption": {
+      "placeholder": "Voeg je eigen optie toe..."
+    },
+    "error": {
+      "voteFailed": "Het verzenden van je stem is mislukt. Probeer het opnieuw."
+    },
+    "subscription": {
+      "voteRevoked": "Je stem is verwijderd."
+    }
+  },
+  "pollForm": {
+    "settings": "Instellingen",
+    "settings.title": "Peilinginstellingen",
+    "settings.votingOptions": "Stemopties",
+    "settings.allowMultiple": "Meerdere antwoorden toestaan",
+    "settings.allowCustomOptions": "Bijdragers toestaan opties toe te voegen",
+    "settings.displayOptions": "Weergaveopties",
+    "settings.hideResultsUntilVoted": "Resultaten verbergen tot gebruiker heeft gestemd",
+    "settings.showVoterAvatars": "Avatars van stemmers tonen",
+    "settings.close": "Sluiten",
+    "openPoll": "Peiling is open",
+    "closePoll": "Peiling is gesloten",
+    "closePollConfirm": {
+      "title": "Deze peiling sluiten?",
+      "description": "Het sluiten van de peiling voorkomt nieuwe stemmen en vergrendelt bewerking. Je kunt deze later heropenen.",
+      "confirm": "Peiling sluiten"
+    },
+    "reopenPollConfirm": {
+      "title": "Deze peiling heropenen?",
+      "description": "Het heropenen van de peiling staat nieuwe stemmen en bewerking weer toe.",
+      "confirm": "Peiling heropenen"
+    },
+    "dragHandle": "Slepen om te herordenen"
+  },
+  "a11y": {
+    "spaceBanner": "Space-banner voor {{name}}",
+    "tabNavigation": "Navigatietabbladen van de space",
+    "sidebarNavigation": "Zijbalk van de space",
+    "feedRegion": "Inhoudsfeed van de space",
+    "membersGrid": "Ledenraster van de community",
+    "subspacesGrid": "Subspace-raster",
+    "visibilityNotice": "Zichtbaarheidsmelding van de space",
+    "mobileTabBar": "Tabbladnavigatie",
+    "moreActionsDrawer": "Extra acties",
+    "close": "Sluiten"
+  }
+}

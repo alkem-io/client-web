@@ -1,0 +1,53 @@
+{
+  "search": {
+    "placeholder": "Search\u2026",
+    "emptyTitle": "Type a search term and press Enter",
+    "emptyDescription": "Search across Spaces, Posts, Responses, Users, and Organizations.",
+    "noResultsTitle": "No results found for {{terms}}",
+    "noResultsSuggestion": "Try different keywords or broaden your search.",
+    "searchAllSpaces": "Search all Spaces instead",
+    "loading": "Searching\u2026",
+    "disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
+    "loadMore": "Load more",
+    "scopeAll": "All Spaces",
+    "categories": {
+      "spaces": "Spaces",
+      "posts": "Posts",
+      "responses": "Responses",
+      "users": "Users",
+      "organizations": "Organizations"
+    },
+    "filters": {
+      "all": "All",
+      "spacesOnly": "Spaces only",
+      "subspacesOnly": "Subspaces only",
+      "whiteboards": "Whiteboards",
+      "memos": "Memos",
+      "posts": "Posts"
+    },
+    "postTypes": {
+      "post": "Post",
+      "whiteboard": "Whiteboard",
+      "memo": "Memo"
+    },
+    "responseTo": "Response to: {{title}}",
+    "spaceContext": "in: {{spaceName}}",
+    "fallback": {
+      "unknown": "Unknown",
+      "organization": "Organization"
+    },
+    "a11y": {
+      "searchInput": "Search input",
+      "closeSearch": "Close search",
+      "removeTag": "Remove search term: {{term}}",
+      "activeTags": "Active search terms",
+      "resultCategories": "Result categories",
+      "searchResults": "Search results",
+      "categoryResults": "{{category}} results",
+      "platformSearch": "Platform Search",
+      "filterBy": "Filter {{category}}",
+      "resultsFound": "{{count}} results found",
+      "noResultsFound": "No results found"
+    }
+  }
+}

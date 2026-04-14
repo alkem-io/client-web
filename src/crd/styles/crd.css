@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './theme.css';
+@import '../forms/markdown/styles.css';
 
 @source "../primitives/**/*.{ts,tsx}";
 @source "../components/**/*.{ts,tsx}";
