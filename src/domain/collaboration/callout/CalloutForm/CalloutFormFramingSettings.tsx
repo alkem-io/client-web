@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutFramingType,
+  CollaboraDocumentType,
   PollResultsDetail,
   PollResultsVisibility,
   type PollStatus,
@@ -146,6 +147,10 @@ const CalloutFormFramingSettings = ({
         newFraming = {
           ...framing,
           type: newType,
+          collaboraDocument: {
+            displayName: t('collaboraDocument.create.title'),
+            documentType: CollaboraDocumentType.TextDocument,
+          },
           whiteboard: undefined,
           memo: undefined,
           link: undefined,
@@ -317,6 +322,29 @@ const CalloutFormFramingSettings = ({
       {framing.poll && framing.type === CalloutFramingType.Poll && (
         <PageContentBlock sx={{ marginBottom: gutters() }}>
           <PollFormFields readOnlySettings={edit} pollId={pollId} pollStatus={pollStatus} />
+        </PageContentBlock>
+      )}
+
+      {framing.type === CalloutFramingType.CollaboraDocument && (
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('collaboraDocument.create.documentType.label')} />
+          <FormikRadioButtonsGroup
+            name="framing.collaboraDocument.documentType"
+            options={[
+              {
+                value: CollaboraDocumentType.TextDocument,
+                label: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
+              },
+              {
+                value: CollaboraDocumentType.Spreadsheet,
+                label: t('collaboraDocument.create.documentType.SPREADSHEET'),
+              },
+              {
+                value: CollaboraDocumentType.Presentation,
+                label: t('collaboraDocument.create.documentType.PRESENTATION'),
+              },
+            ]}
+          />
         </PageContentBlock>
       )}
     </>
