@@ -1,0 +1,33 @@
+{
+  "spaces": {
+    "title": "Разгледай пространствата",
+    "subtitle": "Открий пространства за сътрудничество и иновации",
+    "searchPlaceholder": "Търси пространства...",
+    "sortBy": "Сортирай по",
+    "sortRecent": "Най-нови",
+    "sortAlpha": "Азбучен ред",
+    "sortActive": "Най-активни",
+    "filters": "Филтри",
+    "filterMembership": "Членство",
+    "filterAll": "Всички",
+    "filterMember": "Моите пространства",
+    "filterPublic": "Публични",
+    "filterPrivacy": "Поверителност",
+    "filterPublicOnly": "Само публични",
+    "filterPrivateOnly": "Само частни",
+    "filterType": "Тип",
+    "filterAllTypes": "Всички типове",
+    "filterSpacesOnly": "Само пространства",
+    "filterSubspacesOnly": "Само подпространства",
+    "clearFilters": "Изчисти всички филтри",
+    "showing": "Показва",
+    "of": "от",
+    "spacesLabel": "пространства",
+    "emptyTitle": "Не са намерени пространства",
+    "emptyMessage": "Опитай да промениш търсенето или филтрите, за да намериш това, което търсиш.",
+    "in": "в",
+    "loading": "Зареждане на пространства",
+    "moreLeads": "още {{count}} лидери",
+    "removeFilter": "премахни филтър"
+  }
+}

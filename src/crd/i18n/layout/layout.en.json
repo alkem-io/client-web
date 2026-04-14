@@ -1,0 +1,31 @@
+{
+  "header": {
+    "menu": "Menu",
+    "home": "Home",
+    "search": "Search",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "unreadNotifications": "{{count}} unread notifications",
+    "spaces": "Spaces",
+    "platformNavigation": "Platform navigation",
+    "myAccount": "My Account",
+    "dashboard": "My Dashboard",
+    "profile": "My Profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "login": "Log in",
+    "beta": "Beta",
+    "pendingMemberships": "Pending Memberships",
+    "administration": "Administration",
+    "changeLanguage": "Change Language",
+    "getHelp": "Get Help"
+  },
+  "footer": {
+    "copyright": "© 2026 Alkemio B.V.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "security": "Security",
+    "support": "Support",
+    "about": "About"
+  }
+}

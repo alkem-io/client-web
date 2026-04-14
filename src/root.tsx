@@ -26,6 +26,7 @@ import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { Error40X } from './core/pages/Errors/Error40X';
+import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
@@ -37,6 +38,20 @@ const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
   () => import('./main/inAppNotifications/InAppNotificationsDialog')
 );
 const UserMessagingDialog = lazyWithGlobalErrorHandler(() => import('./main/userMessaging/UserMessagingDialog'));
+
+const CrdNotificationsPanelConnector = lazyWithGlobalErrorHandler(
+  () => import('./main/ui/layout/CrdNotificationsPanelConnector')
+);
+
+/** Renders either the CRD or MUI notifications dialog based on the design toggle. */
+function NotificationsGate() {
+  const crdEnabled = useCrdEnabled();
+  return (
+    <Suspense fallback={null}>
+      {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
+    </Suspense>
+  );
+}
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -139,9 +154,7 @@ const Root: FC = () => {
                                         <NavigationHistoryTracker />
                                         <ApmUserSetter />
                                         <ScrollToTop />
-                                        <Suspense fallback={null}>
-                                          <InAppNotificationsDialog />
-                                        </Suspense>
+                                        <NotificationsGate />
                                         <InAppNotificationCountSubscriber />
                                         <Suspense fallback={null}>
                                           <UserMessagingDialog />

@@ -1,0 +1,19 @@
+{
+  "space": "Space",
+  "spaces": "Spaces",
+  "subspace": "Subspace",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "loading": "Loading",
+  "error": "Error",
+  "noResults": "No results found",
+  "private": "Private",
+  "public": "Public",
+  "member": "Member",
+  "leads": "Leads",
+  "loadMore": "Load More"
+}

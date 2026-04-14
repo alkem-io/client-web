@@ -1,0 +1,33 @@
+{
+  "spaces": {
+    "title": "Explore Spaces",
+    "subtitle": "Discover spaces to collaborate and innovate",
+    "searchPlaceholder": "Search spaces...",
+    "sortBy": "Sort by",
+    "sortRecent": "Most Recent",
+    "sortAlpha": "Alphabetical",
+    "sortActive": "Most Active",
+    "filters": "Filters",
+    "filterMembership": "Membership",
+    "filterAll": "All",
+    "filterMember": "My Spaces",
+    "filterPublic": "Public",
+    "filterPrivacy": "Privacy",
+    "filterPublicOnly": "Public only",
+    "filterPrivateOnly": "Private only",
+    "filterType": "Type",
+    "filterAllTypes": "All types",
+    "filterSpacesOnly": "Spaces only",
+    "filterSubspacesOnly": "Subspaces only",
+    "clearFilters": "Clear all filters",
+    "showing": "Showing",
+    "of": "of",
+    "spacesLabel": "spaces",
+    "emptyTitle": "No spaces found",
+    "emptyMessage": "Try adjusting your search or filters to find what you're looking for.",
+    "in": "in",
+    "loading": "Loading spaces",
+    "moreLeads": "{{count}} more leads",
+    "removeFilter": "remove filter"
+  }
+}
