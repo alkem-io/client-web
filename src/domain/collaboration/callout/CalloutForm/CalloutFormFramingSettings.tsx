@@ -151,7 +151,7 @@ const CalloutFormFramingSettings = ({
           ...framing,
           type: newType,
           collaboraDocument: {
-            displayName: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
+            displayName: framing.profile.displayName || t('common.collaboraDocument'),
             documentType: CollaboraDocumentType.TextDocument,
           },
           whiteboard: undefined,
@@ -333,14 +333,6 @@ const CalloutFormFramingSettings = ({
           <PageContentBlockHeader title={t('collaboraDocument.create.documentType.label')} />
           <FormikRadioButtonsGroup
             name="framing.collaboraDocument.documentType"
-            onChange={(newType: CollaboraDocumentType) => {
-              const typeLabels: Record<CollaboraDocumentType, string> = {
-                [CollaboraDocumentType.TextDocument]: t('collaboraDocument.create.documentType.TEXT_DOCUMENT'),
-                [CollaboraDocumentType.Spreadsheet]: t('collaboraDocument.create.documentType.SPREADSHEET'),
-                [CollaboraDocumentType.Presentation]: t('collaboraDocument.create.documentType.PRESENTATION'),
-              };
-              setFieldValue('framing.collaboraDocument.displayName', typeLabels[newType]);
-            }}
             options={[
               {
                 icon: ArticleOutlined,
