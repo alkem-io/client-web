@@ -69,10 +69,13 @@ export function CommentThread({
 
       {/* Comment list */}
       {loading ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
+        <output
+          className="flex items-center gap-2 text-sm text-muted-foreground py-4"
+          aria-label={t('comments.loading')}
+        >
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-          {t('comments.loading')}
-        </div>
+          <span>{t('comments.loading')}</span>
+        </output>
       ) : comments.length === 0 ? (
         <p className="text-sm text-muted-foreground py-4">{t('comments.empty')}</p>
       ) : (

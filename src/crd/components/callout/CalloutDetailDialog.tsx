@@ -1,4 +1,4 @@
-import { MoreHorizontal, Share2, X } from 'lucide-react';
+import { MoreHorizontal, Share2, Smile, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -36,6 +36,8 @@ type CalloutDetailDialogProps = {
   contributionsCount?: number;
   /** Poll rendered between description and reactions bar */
   pollSlot?: ReactNode;
+  onReactionsClick?: () => void;
+  onShareClick?: () => void;
 };
 
 export function CalloutDetailDialog({
@@ -48,6 +50,8 @@ export function CalloutDetailDialog({
   hasContributions,
   contributionsCount,
   pollSlot,
+  onReactionsClick,
+  onShareClick,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -147,11 +151,11 @@ export function CalloutDetailDialog({
                 </span>
               )}
               <div className="flex-1" />
-              <Button variant="outline" size="sm" className="gap-2 rounded-full">
-                <span aria-hidden="true">😊</span>
+              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onReactionsClick}>
+                <Smile className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                 {t('calloutDialog.reactions')}
               </Button>
-              <Button variant="outline" size="sm" className="gap-2 rounded-full">
+              <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={onShareClick}>
                 <Share2 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                 {t('calloutDialog.share')}
               </Button>

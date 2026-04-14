@@ -95,7 +95,9 @@ export default function CrdSpaceCommunityPage() {
         />
       </div>
 
-      {canCreateCallout && <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} />}
+      {canCreateCallout && (
+        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+      )}
 
       {canInvite && (
         <InviteContributorsDialog type={ActorType.User} open={inviteOpen} onClose={() => setInviteOpen(false)} />

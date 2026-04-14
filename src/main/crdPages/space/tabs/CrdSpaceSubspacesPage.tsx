@@ -75,7 +75,13 @@ export default function CrdSpaceSubspacesPage() {
         />
       </div>
 
-      {canCreateCallout && <CalloutFormConnector open={createCalloutOpen} onOpenChange={setCreateCalloutOpen} />}
+      {canCreateCallout && (
+        <CalloutFormConnector
+          open={createCalloutOpen}
+          onOpenChange={setCreateCalloutOpen}
+          calloutsSetId={calloutsSetId}
+        />
+      )}
 
       {canCreate && (
         <CreateSubspace

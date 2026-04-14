@@ -29,7 +29,8 @@
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
     "postIndex": "Post Index",
-    "readMore": "Read more"
+    "readMore": "Read more",
+    "addEvent": "Add event"
   },
   "feed": {
     "addPost": "Add Post",
@@ -176,6 +177,7 @@
     "contributionTypes": "Allowed Contributions",
     "commentsEnabled": "Enable comments",
     "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
     "linkDisplayName": "Display Name",
     "pollQuestion": "Question",
     "pollOption": "Option {{number}}",

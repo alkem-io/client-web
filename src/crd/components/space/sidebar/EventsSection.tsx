@@ -35,7 +35,7 @@ export function EventsSection({ events, onShowCalendar, onAddEvent, className }:
               background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
             }}
             onClick={onAddEvent}
-            aria-label={t('sidebar.events')}
+            aria-label={t('sidebar.addEvent')}
           >
             <Plus className="w-3 h-3" aria-hidden="true" />
           </Button>

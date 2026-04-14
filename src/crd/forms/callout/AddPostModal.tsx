@@ -20,6 +20,7 @@ type AddPostModalProps = {
   title: { value: string; onChange: (v: string) => void; error?: string };
   tags: { value: string; onChange: (v: string) => void };
   // Slots
+  descriptionSlot?: ReactNode;
   framingEditorSlot?: ReactNode;
   settingsSlot?: ReactNode;
   // Attachment buttons
@@ -30,6 +31,7 @@ type AddPostModalProps = {
   onSubmit: () => void;
   onSaveDraft: () => void;
   onFindTemplate?: () => void;
+  loading?: boolean;
   submitLabel?: string;
   className?: string;
 };
@@ -39,6 +41,7 @@ export function AddPostModal({
   onOpenChange,
   title,
   tags,
+  descriptionSlot,
   framingEditorSlot,
   settingsSlot,
   activeAttachment,
@@ -47,6 +50,7 @@ export function AddPostModal({
   onSubmit,
   onSaveDraft,
   onFindTemplate,
+  loading,
   submitLabel,
   className,
 }: AddPostModalProps) {
@@ -120,7 +124,10 @@ export function AddPostModal({
             {title.error && <p className="text-xs text-destructive">{title.error}</p>}
           </div>
 
-          {/* Framing editor slot (markdown editor, etc.) */}
+          {/* Description editor */}
+          {descriptionSlot}
+
+          {/* Framing editor slot (attachment-specific: poll options, link fields, etc.) */}
           {framingEditorSlot}
 
           {/* Attachment buttons */}
@@ -208,10 +215,10 @@ export function AddPostModal({
               {t('forms.findTemplate')}
             </Button>
           )}
-          <Button variant="ghost" onClick={onSaveDraft}>
+          <Button variant="ghost" onClick={onSaveDraft} disabled={loading} aria-busy={loading}>
             {t('forms.saveDraft')}
           </Button>
-          <Button onClick={onSubmit} className="px-8">
+          <Button onClick={onSubmit} className="px-8" disabled={loading} aria-busy={loading}>
             {submitLabel ?? t('forms.publish')}
           </Button>
         </DialogFooter>

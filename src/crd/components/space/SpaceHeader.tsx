@@ -148,10 +148,10 @@ export function SpaceHeader({
                       {title}
                     </h1>
                     {isHomeSpace && (
-                      <Home
-                        className="h-5 w-5 text-primary-foreground/80 shrink-0"
-                        aria-label={t('banner.homeSpace')}
-                      />
+                      <>
+                        <Home className="h-5 w-5 text-primary-foreground/80 shrink-0" aria-hidden="true" />
+                        <span className="sr-only">{t('banner.homeSpace')}</span>
+                      </>
                     )}
                   </div>
                   {tagline && (

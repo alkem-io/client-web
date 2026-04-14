@@ -639,6 +639,27 @@ Phase 1 (setup + primitives)
 
 ---
 
+## Phase 20: Callout Creation Mutation Wiring (Post-MVP)
+
+**Goal**: Wire the callout creation form to the GraphQL mutation so clicking "Post" or "Save Draft" actually creates a callout on the server.
+
+- [X] T150 Update `src/main/crdPages/space/callout/CalloutFormConnector.tsx` — remove `onSubmit` prop; add `calloutsSetId?: string` prop; call `useCalloutCreation({ calloutsSetId })` internally; map form values to `CalloutCreationType` (framing type, profile, poll settings, link references, tags, visibility, sendNotification); call `handleCreateCallout` on submit/save-draft; Apollo cache update is handled by `useCalloutCreation`
+- [X] T151 [P] Update all 4 tab pages (`CrdSpaceDashboardPage`, `CrdSpaceCommunityPage`, `CrdSpaceSubspacesPage`, `CrdSpaceCustomTabPage`) — pass `calloutsSetId` to `<CalloutFormConnector>`
+- [X] T152 [P] Update `src/main/crdPages/space/callout/CalloutEditConnector.tsx` — remove stale `onSubmit` prop; pass `calloutsSetId` through
+
+**Checkpoint**: Clicking "Post" in the callout creation form sends the GraphQL `createCalloutOnCalloutsSet` mutation with correct field mapping. The new callout appears in the feed via Apollo cache update. "Save Draft" creates with `CalloutVisibility.Draft`.
+
+---
+
+## Sub-Specification Tasks
+
+The following areas have their own task lists in dedicated sub-spec documents:
+
+- **[Iframe Whitelist Context](./iframe-whitelist/tasks.md)** — 4 tasks (T1–T4): context provider, MarkdownContent update, main app wiring, demo app wiring
+- **[CRD Markdown Editor](./markdown-editor/tasks.md)** — 16 tasks (T1–T16): converter, extensions, editor state, toolbar, link dialog, styles, main component, i18n, AddPostModal slot, connector wiring, preview, verification
+
+---
+
 ## Notes
 
 - **Prototype = visual reference** — `prototype/src/app/components/space/` defines the visual design. CRD components match the look but use our own prop types and CRD conventions.

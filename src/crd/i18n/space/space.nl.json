@@ -26,7 +26,8 @@
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
     "postIndex": "Berichtenindex",
-    "readMore": "Lees meer"
+    "readMore": "Lees meer",
+    "addEvent": "Evenement toevoegen"
   },
   "feed": {
     "addPost": "Bericht toevoegen",
@@ -173,6 +174,7 @@
     "contributionTypes": "Toegestane bijdragen",
     "commentsEnabled": "Reacties inschakelen",
     "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
     "linkDisplayName": "Weergavenaam",
     "pollQuestion": "Vraag",
     "pollOption": "Optie {{number}}",

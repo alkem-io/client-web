@@ -4,8 +4,7 @@ type CalloutEditConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   calloutId: string;
-  // Pre-filled data would come from a query
-  onSubmit?: (values: Record<string, unknown>) => void;
+  calloutsSetId?: string;
 };
 
 /**
@@ -17,11 +16,11 @@ export function CalloutEditConnector({
   open,
   onOpenChange,
   calloutId: _calloutId,
-  onSubmit,
+  calloutsSetId,
 }: CalloutEditConnectorProps) {
   // In the full implementation, this would:
   // 1. Fetch callout details by ID
   // 2. Map to form values
   // 3. Pass to CalloutFormConnector with locked fields
-  return <CalloutFormConnector open={open} onOpenChange={onOpenChange} onSubmit={onSubmit} />;
+  return <CalloutFormConnector open={open} onOpenChange={onOpenChange} calloutsSetId={calloutsSetId} />;
 }

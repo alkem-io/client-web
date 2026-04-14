@@ -99,7 +99,9 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
         />
       </div>
 
-      {canCreateCallout && <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} />}
+      {canCreateCallout && (
+        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+      )}
     </>
   );
 }

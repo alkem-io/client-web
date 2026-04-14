@@ -26,7 +26,8 @@
     "virtualContributors": "Colaboradores virtuales",
     "communityGuidelines": "Directrices de la comunidad",
     "postIndex": "Índice de publicaciones",
-    "readMore": "Leer más"
+    "readMore": "Leer más",
+    "addEvent": "Añadir evento"
   },
   "feed": {
     "addPost": "Añadir publicación",
@@ -173,6 +174,7 @@
     "contributionTypes": "Contribuciones permitidas",
     "commentsEnabled": "Habilitar comentarios",
     "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
     "linkDisplayName": "Nombre para mostrar",
     "pollQuestion": "Pregunta",
     "pollOption": "Opción {{number}}",

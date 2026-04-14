@@ -143,7 +143,11 @@ export function PostCard({
 
       <CardContent className="px-6 pb-3">
         <h3 className="text-lg font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
-          <button type="button" className="text-left cursor-pointer hover:underline" onClick={onClick}>
+          <button
+            type="button"
+            className="text-left cursor-pointer hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            onClick={onClick}
+          >
             {post.title}
           </button>
         </h3>

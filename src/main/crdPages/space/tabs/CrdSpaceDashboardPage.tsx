@@ -46,7 +46,9 @@ export default function CrdSpaceDashboardPage() {
         loading={loading}
       />
 
-      {canCreateCallout && <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} />}
+      {canCreateCallout && (
+        <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
+      )}
     </>
   );
 }

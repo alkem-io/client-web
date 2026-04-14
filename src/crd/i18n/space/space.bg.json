@@ -26,7 +26,8 @@
     "virtualContributors": "Виртуални сътрудници",
     "communityGuidelines": "Насоки на общността",
     "postIndex": "Индекс на публикациите",
-    "readMore": "Прочети повече"
+    "readMore": "Прочети повече",
+    "addEvent": "Добави събитие"
   },
   "feed": {
     "addPost": "Добави публикация",
@@ -173,6 +174,7 @@
     "contributionTypes": "Разрешени приноси",
     "commentsEnabled": "Активирай коментари",
     "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
     "linkDisplayName": "Показвано име",
     "pollQuestion": "Въпрос",
     "pollOption": "Опция {{number}}",

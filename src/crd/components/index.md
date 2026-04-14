@@ -76,3 +76,15 @@ Full-page space listing with tag-based search, sort dropdown (recent/alpha/activ
 multi-section filters (membership: server-side; privacy and type: client-side), active
 filter chips, responsive card grid, "Load More" pagination, and empty state. Receives
 space data and callbacks from the consumer; all data fetching is external.
+
+---
+
+## forms/markdown/
+
+### MarkdownEditor (`forms/markdown/MarkdownEditor.tsx`)
+
+Tiptap-based rich text editor with markdown in/out. Bundles markdown ↔ HTML conversion
+via the unified pipeline. CRD toolbar with lucide-react icons (bold, italic, headings,
+lists, blockquote, code block, horizontal rule, table operations, link, emoji). Accepts
+`value` (markdown string), `onChange`, `placeholder`, `maxLength`, `disabled`. Used as
+the callout description field via `descriptionSlot` on `AddPostModal`.

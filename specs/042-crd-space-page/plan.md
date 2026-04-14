@@ -261,7 +261,7 @@ WhiteboardDialog (+ entire collaboration stack: Collab, Portal, file management,
 Callout creation/editing forms use Formik for state management (validation, dirty tracking, field-level errors). Formik is NOT imported in `src/crd/`. CRD form components (`AddPostModal`, `CalloutFramingSelector`, etc.) are pure UI: inputs, selectors, radio groups. The integration layer (`CalloutFormConnector`) wraps them in Formik context, passes `value`/`onChange`/`error` props, and handles submission via GraphQL mutations.
 
 ### D8: Tiptap wrapped by integration layer
-For read-only markdown display (callout descriptions, memo previews): CRD `MarkdownContent` component renders sanitized HTML — no Tiptap needed. For editing (callout creation forms): `FramingEditorConnector` in the integration layer renders the existing Tiptap-based markdown editor component, passing content up via Formik field binding. The Tiptap component itself is unchanged.
+For read-only markdown display (callout descriptions, memo previews): CRD `MarkdownContent` component renders sanitized HTML — no Tiptap needed. For editing (callout creation forms): a **new CRD markdown editor** (`src/crd/forms/markdown/MarkdownEditor.tsx`) wraps Tiptap with a fresh CRD toolbar (lucide-react + Tailwind) and bundles the markdown ↔ HTML conversion. It is used as the callout description field via a `descriptionSlot` on `AddPostModal`. The `FramingEditorConnector` handles framing-type-specific editors (poll options, link fields, etc.) separately. See **[CRD Markdown Editor sub-spec](./markdown-editor/spec.md)** for full design.
 
 ### D9: Whiteboard preview as simple CRD component
 `CalloutFramingWhiteboard` in CRD is just: `<img>` (preview URI) + `<button>` ("Open"). When clicked, the integration layer opens WhiteboardDialog (MUI portal). The entire collaboration stack (1200+ lines of Collab/Portal/FileManager) is invoked by the dialog — none enters `src/crd/`. Same for whiteboard contribution cards: just `<img>` + title.
@@ -371,3 +371,11 @@ The `deriveUserRolesList(roles)` helper in `communityDataMapper.ts` walks the ro
 | P2 | US5, US6, US7, US8, US9, US10 | Community, Custom tabs, callout forms/management, contributions | High |
 | P3 | US11, US12, US13, US14 | Templates, comments, About page, mobile polish | Medium |
 | P4 | US4 (poll parity) | Full poll feature parity: single/multi-choice, debounce, custom options, vote removal, results modes, voter avatars, settings dialog, drag-and-drop reordering, open/close toggle, subscriptions | High |
+| P5 | US7 (markdown editor) | CRD markdown editor for callout description field: Tiptap-based, fresh toolbar, bundled converter, `descriptionSlot` on AddPostModal | Medium |
+
+## Sub-Specifications
+
+Detailed design for cross-cutting concerns that span multiple components:
+
+- **[Iframe Whitelist Context](./iframe-whitelist/plan.md)** — `MarkdownConfigProvider` context + `useMarkdownConfig` hook to deliver iframe whitelist into `MarkdownContent` without domain imports.
+- **[CRD Markdown Editor](./markdown-editor/plan.md)** — 8 new files in `src/crd/forms/markdown/`: converter, extension config, editor state hook, toolbar, link dialog, styles, and main component. Wired via `CalloutFormConnector` → `descriptionSlot`.

@@ -864,3 +864,10 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **SC-013**: Every CRD component passes the component checklist from `src/crd/CLAUDE.md`
 - **SC-014**: The migration pattern is documented and reproducible for future Space L1/L2 page migrations
 - **SC-015**: Performance is equal to or better than the MUI version (no additional network requests, no slower initial render)
+
+## Sub-Specifications
+
+The following areas are complex enough to warrant their own spec/plan/tasks documents:
+
+- **[Iframe Whitelist Context](./iframe-whitelist/spec.md)** — Delivers the iframe whitelist from the server config into the CRD `MarkdownContent` renderer via a React context, allowing embedded iframes (YouTube, Vimeo, etc.) to render in callout descriptions without violating the CRD no-domain-imports rule.
+- **[CRD Markdown Editor](./markdown-editor/spec.md)** — A self-contained Tiptap-based markdown editor for `src/crd/forms/markdown/`, used as the callout description field. Fresh CRD toolbar (lucide-react + Tailwind), bundled markdown ↔ HTML conversion, no MUI. Image upload and iframe embed designed for but deferred.

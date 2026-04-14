@@ -83,7 +83,7 @@ export function ContributionFormLayout({
               type="url"
               value={linkUrl.value}
               onChange={e => linkUrl.onChange(e.target.value)}
-              placeholder="https://"
+              placeholder={t('forms.linkUrlPlaceholder')}
               className={cn(
                 'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
                 linkUrl.error ? 'border-destructive' : 'border-border'
