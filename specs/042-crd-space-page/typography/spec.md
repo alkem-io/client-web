@@ -210,6 +210,33 @@ Because these are standard Tailwind utilities, they compose naturally:
 
 ---
 
+## Tooling: Figma Make
+
+### Problem
+
+We use Figma Make for code generation. Figma Make always outputs raw Tailwind utility classes (`text-xl font-bold leading-tight`) — there is no mechanism to configure it to emit custom semantic classes like `text-page-title`. As of 2026, Figma Make does not support:
+- Custom Tailwind config or `@theme` token imports
+- Mapping Figma text styles to custom utility classes
+- Tailwind v4 `@theme` tokens in generated output
+
+Naming Figma text styles to match our tokens (e.g., `page-title`) does not change Make's output — it still decomposes styles into constituent utilities.
+
+### Workflow
+
+Since Figma Make output will always use raw classes, the workflow for new CRD components is:
+
+1. **Generate** — Use Figma Make for layout/structure scaffolding (JSX skeleton, layout classes)
+2. **Replace** — Swap raw Tailwind class combos with semantic tokens using the Migration Reference table in this spec
+3. **Review** — Verify semantic HTML elements match the token intent (`text-page-title` on `<h1>`, etc.)
+
+This replacement step is mechanical — the Migration Reference table maps every raw class combo to its semantic token. A codemod script can automate this if the volume of Figma Make output justifies it.
+
+### Recommendation for Figma
+
+Name Figma text styles to match our token names (`page-title`, `section-title`, `body`, `caption`, `label`, `badge`). This won't change Make's output, but it makes the mapping obvious when a developer reads the Figma design and knows which token to apply.
+
+---
+
 ## Migration Strategy
 
 ### Phase 1: Add `@theme` tokens (non-breaking)
