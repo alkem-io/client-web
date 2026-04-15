@@ -91,6 +91,7 @@ export function CrdApp() {
         onPendingMembershipsClick={() => setShowPendingDialog(true)}
         onHelpClick={() => console.log('Help clicked')}
         footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about' }}
+        showGridToggle={true}
       >
         <Routes>
           <Route path="/" element={<DashboardPage onPendingMembershipsClick={() => setShowPendingDialog(true)} />} />

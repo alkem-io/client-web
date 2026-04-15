@@ -30,6 +30,7 @@ type CrdLayoutProps = {
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   footerLinks?: CrdFooterLinks;
+  showGridToggle?: boolean;
   children: ReactNode;
 };
 
@@ -52,40 +53,46 @@ export function CrdLayout({
   onPendingMembershipsClick,
   onHelpClick,
   footerLinks,
+  showGridToggle,
   children,
 }: CrdLayoutProps) {
-  return (
-    <GridOverlayProvider>
-      <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
-        <Header
-          user={user}
-          authenticated={authenticated}
-          navigationHrefs={navigationHrefs}
-          isAdmin={isAdmin}
-          pendingInvitationsCount={pendingInvitationsCount}
-          platformNavigationItems={platformNavigationItems}
-          currentPath={currentPath}
-          unreadNotificationsCount={unreadNotificationsCount}
-          languages={languages}
-          currentLanguage={currentLanguage}
-          onLanguageChange={onLanguageChange}
-          onLogout={onLogout}
-          onMessagesClick={onMessagesClick}
-          onNotificationsClick={onNotificationsClick}
-          onSearchClick={onSearchClick}
-          onPendingMembershipsClick={onPendingMembershipsClick}
-          onHelpClick={onHelpClick}
-        />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer
-          links={footerLinks}
-          languages={languages}
-          currentLanguage={currentLanguage}
-          onLanguageChange={onLanguageChange}
-          onSupportClick={onHelpClick}
-        />
-        <GridOverlay />
-      </div>
-    </GridOverlayProvider>
+  const content = (
+    <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
+      <Header
+        user={user}
+        authenticated={authenticated}
+        navigationHrefs={navigationHrefs}
+        isAdmin={isAdmin}
+        pendingInvitationsCount={pendingInvitationsCount}
+        platformNavigationItems={platformNavigationItems}
+        currentPath={currentPath}
+        unreadNotificationsCount={unreadNotificationsCount}
+        languages={languages}
+        currentLanguage={currentLanguage}
+        onLanguageChange={onLanguageChange}
+        onLogout={onLogout}
+        onMessagesClick={onMessagesClick}
+        onNotificationsClick={onNotificationsClick}
+        onSearchClick={onSearchClick}
+        onPendingMembershipsClick={onPendingMembershipsClick}
+        onHelpClick={onHelpClick}
+        showGridToggle={showGridToggle}
+      />
+      <main className="flex-1 flex flex-col">{children}</main>
+      <Footer
+        links={footerLinks}
+        languages={languages}
+        currentLanguage={currentLanguage}
+        onLanguageChange={onLanguageChange}
+        onSupportClick={onHelpClick}
+      />
+      {showGridToggle && <GridOverlay />}
+    </div>
   );
+
+  if (showGridToggle) {
+    return <GridOverlayProvider>{content}</GridOverlayProvider>;
+  }
+
+  return content;
 }
