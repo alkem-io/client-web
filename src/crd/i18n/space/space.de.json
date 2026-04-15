@@ -283,6 +283,7 @@
     "visibilityNotice": "Sichtbarkeitshinweis des Bereichs",
     "mobileTabBar": "Reiternavigation",
     "moreActionsDrawer": "Weitere Aktionen",
-    "close": "Schließen"
+    "close": "Schließen",
+    "loadingPost": "Beitrag wird geladen"
   }
 }

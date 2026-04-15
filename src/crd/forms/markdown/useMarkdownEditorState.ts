@@ -17,6 +17,7 @@ export function useMarkdownEditorState({ value, onChange, editorOptions }: UseMa
   onChangeRef.current = onChange;
   const valueRef = useRef(value);
   valueRef.current = value;
+  const updateVersionRef = useRef(0);
 
   // Convert inbound markdown to HTML on mount
   useEffect(() => {
@@ -38,8 +39,11 @@ export function useMarkdownEditorState({ value, onChange, editorOptions }: UseMa
       ...editorOptions,
       content: htmlContent,
       onUpdate: ({ editor: ed }) => {
+        const version = ++updateVersionRef.current;
         htmlToMarkdown(ed.getHTML()).then(md => {
-          onChangeRef.current(md);
+          if (version === updateVersionRef.current) {
+            onChangeRef.current(md);
+          }
         });
       },
       onFocus: () => {

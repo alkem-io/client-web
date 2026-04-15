@@ -1,6 +1,6 @@
 import type { ChainedCommands, Editor } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 
 type ToolbarButtonProps = {
@@ -25,7 +25,13 @@ export function ToolbarButton({
   const [, setTick] = useState(0);
 
   // Refresh state on every editor transaction
-  editor.on('transaction', () => setTick(t => t + 1));
+  useEffect(() => {
+    const handler = () => setTick(t => t + 1);
+    editor.on('transaction', handler);
+    return () => {
+      editor.off('transaction', handler);
+    };
+  }, [editor]);
 
   const active = activeSpec
     ? Array.isArray(activeSpec)
