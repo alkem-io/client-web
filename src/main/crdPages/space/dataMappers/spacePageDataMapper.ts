@@ -1,6 +1,7 @@
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 
 type MemberAvatar = {
+  id: string;
   url?: string;
   initials: string;
 };
@@ -64,12 +65,13 @@ export function mapSpaceVisibility(visibility: SpaceVisibility | undefined): Spa
 }
 
 export function mapMemberAvatars(
-  leadUsers: Array<{ profile?: { displayName: string; avatar?: { uri: string } } }> | undefined
+  leadUsers: Array<{ id: string; profile?: { displayName: string; avatar?: { uri: string } } }> | undefined
 ): MemberAvatar[] {
   if (!leadUsers) return [];
   return leadUsers
     .filter((user): user is typeof user & { profile: NonNullable<typeof user.profile> } => !!user.profile)
     .map(user => ({
+      id: user.id,
       url: user.profile.avatar?.uri,
       initials: getInitials(user.profile.displayName),
     }));

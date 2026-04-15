@@ -70,6 +70,7 @@ type HeaderProps = {
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
+  showGridToggle?: boolean;
   className?: string;
 };
 
@@ -92,6 +93,7 @@ export function Header({
   onPendingMembershipsClick,
   onHelpClick,
   onLanguageChange,
+  showGridToggle,
   className,
 }: HeaderProps) {
   const { t } = useTranslation('crd-layout');
@@ -170,6 +172,7 @@ export function Header({
           onPendingMembershipsClick={onPendingMembershipsClick}
           onHelpClick={onHelpClick}
           onLanguageChange={onLanguageChange}
+          showGridToggle={showGridToggle}
         />
       </nav>
     </header>

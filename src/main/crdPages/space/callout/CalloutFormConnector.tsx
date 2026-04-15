@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
   PollResultsDetail,
@@ -20,6 +21,13 @@ type CalloutFormConnectorProps = {
   onOpenChange: (open: boolean) => void;
   calloutsSetId?: string;
   onFindTemplate?: () => void;
+};
+
+const CONTRIBUTION_TYPE_MAP: Record<string, CalloutContributionType> = {
+  post: CalloutContributionType.Post,
+  memo: CalloutContributionType.Memo,
+  whiteboard: CalloutContributionType.Whiteboard,
+  link: CalloutContributionType.Link,
 };
 
 const ATTACHMENT_TO_FRAMING_TYPE: Record<string, CalloutFramingType> = {
@@ -59,6 +67,9 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
         visibility,
         framing: {
           commentsEnabled: values.commentsEnabled,
+        },
+        contribution: {
+          allowedTypes: values.allowedContributionTypes.map(t => CONTRIBUTION_TYPE_MAP[t]).filter(Boolean),
         },
       },
       sendNotification: values.notifyMembers && visibility === CalloutVisibility.Published,

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 
 type MemberAvatar = {
+  id: string;
   url?: string;
   initials: string;
 };
@@ -110,26 +111,30 @@ export function SpaceHeader({
                     <Share2 className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 )}
-                {actions.showSettings && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
-                    onClick={actions.onSettingsClick}
-                    aria-label={t('mobile.settings')}
-                    asChild={!!actions.settingsHref}
-                  >
-                    {actions.settingsHref ? (
+                {actions.showSettings &&
+                  (actions.settingsHref ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      aria-label={t('mobile.settings')}
+                      asChild={true}
+                    >
                       <a href={actions.settingsHref}>
                         <Settings className="h-4 w-4" aria-hidden="true" />
                       </a>
-                    ) : (
-                      <span>
-                        <Settings className="h-4 w-4" aria-hidden="true" />
-                      </span>
-                    )}
-                  </Button>
-                )}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded text-white hover:text-white/80 hover:bg-white/10"
+                      onClick={actions.onSettingsClick}
+                      aria-label={t('mobile.settings')}
+                    >
+                      <Settings className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  ))}
               </div>
             </div>
           </div>
@@ -170,7 +175,7 @@ export function SpaceHeader({
                   <div className="flex -space-x-2">
                     {displayedAvatars.map(avatar => (
                       <Avatar
-                        key={avatar.initials}
+                        key={avatar.id}
                         className="w-10 h-10 border-2 border-background transition-transform hover:z-10 hover:scale-110"
                       >
                         {avatar.url && <AvatarImage src={avatar.url} alt={avatar.initials} />}

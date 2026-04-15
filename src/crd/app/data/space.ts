@@ -35,11 +35,11 @@ export const MOCK_SPACE_BANNER = {
   bannerUrl: BANNER_URL,
   isHomeSpace: false,
   memberAvatars: [
-    { url: AVATARS.sarah, initials: 'SC' },
-    { url: AVATARS.david, initials: 'DM' },
-    { url: AVATARS.elena, initials: 'ER' },
-    { url: AVATARS.alex, initials: 'AC' },
-    { url: AVATARS.maya, initials: 'MR' },
+    { id: 'u1', url: AVATARS.sarah, initials: 'SC' },
+    { id: 'u2', url: AVATARS.david, initials: 'DM' },
+    { id: 'u3', url: AVATARS.elena, initials: 'ER' },
+    { id: 'u4', url: AVATARS.alex, initials: 'AC' },
+    { id: 'u5', url: AVATARS.maya, initials: 'MR' },
   ],
   memberCount: 29,
 };
