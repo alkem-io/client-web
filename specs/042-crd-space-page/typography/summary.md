@@ -28,9 +28,9 @@ Instead of developers writing something like "14 pixels, semi-bold, tight line s
 
 These named styles work with Tailwind (the CSS framework the new UI is built on), so they can be combined with other styling — for example, making a caption red for an error, or making a title larger on wide screens.
 
-### One intentional exception
+### Intentional exceptions
 
-The Space header (the large hero banner at the top of a Space page) uses a fluid font size that scales smoothly between 28px and 48px depending on screen width. This is a unique design treatment that doesn't fit into a fixed scale, so it stays as a one-off — it's the only place in the app that does this.
+The Space header (the large hero banner at the top of a Space page) uses a fluid font size that scales smoothly between 28px and 48px depending on screen width. This is a unique design treatment that doesn't fit into a fixed scale, so it stays as a one-off — it's the only place in the app that does this for now.
 
 ### How we'll roll it out
 

@@ -76,26 +76,29 @@ The current theme defines raw CSS variables (`--text-4xl` through `--text-sm`) a
 
 ---
 
-## Decision: Hybrid approach (E + C)
+## Decision: Approach E — `@theme` tokens only
 
 ### Rationale
 
-The inconsistency isn't because we lack components — it's because **there's no defined scale**. Developers are eyeballing sizes. The primary fix is defining the scale as Tailwind utilities (approach E). A thin `<Text>` component (approach C) is an optional convenience layer on top.
+The inconsistency isn't because we lack components — it's because **there's no defined scale**. Developers are eyeballing sizes. The fix is defining the scale as Tailwind utilities via `@theme` tokens. No wrapper components.
 
-### Why not just components (approach A)?
+### Why not components (approach A or C)?
 
-- CRD components already use Tailwind classes everywhere — adding wrapper components for every heading/paragraph creates friction
+- CRD components already use Tailwind classes everywhere — wrapper components add indirection and friction
 - Typography needs to compose with other utilities (`text-page-title md:text-section-title`, `text-body text-destructive`)
 - Wrapper components can't anticipate every context (inline text in a flex row, text inside a button, etc.)
+- The token names already encode intent (`text-page-title` implies `<h1>`) — a component doesn't add meaningful enforcement
 
 ### Why not just raw classes (approach B)?
 
 - It's what we have now, and it drifted. The problem is there's no named scale to enforce.
 
-### Why the hybrid?
+### Why `@theme` tokens?
 
-- **`@theme` tokens** solve the enforcement problem — `text-page-title` is greppable, lintable, and bundles size+weight+leading
-- **`<Text>` component** (optional) adds semantic HTML mapping — ensures page titles render as `<h1>`, not `<div>`
+- `text-page-title` is greppable, lintable, and bundles size+weight+leading in a single utility
+- Zero JS overhead — pure CSS
+- Composes naturally with Tailwind responsive modifiers, color overrides, etc.
+- When the design scale changes, updating one token fixes all components
 
 ---
 
@@ -256,7 +259,8 @@ This table maps current inconsistent usage to the standardized token:
 
 | File | Action |
 |------|--------|
-| `src/crd/styles/theme.css` | Add `@theme inline` typography tokens |
+| `src/crd/styles/typography.css` | New file — `@theme inline` typography tokens |
+| `src/crd/styles/crd.css` | Add `@import './typography.css'` |
 | 50+ component files | Replace ad-hoc classes with semantic tokens (Phase 2) |
 
 ---
@@ -322,5 +326,10 @@ The prototype (`prototype/src/app/components/`) is the design source of truth. T
 
 **Decision:** No `<Text>` wrapper component. Use `@theme` tokens as Tailwind utility classes directly on semantic HTML elements.
 
-**Rationale:** The tokens already encode intent (`text-page-title` implies `<h1>`). A wrapper component adds indirection and friction — developers would need to learn a new API instead of just writing HTML with classes. The CRD design system favors composition via Tailwind classes over component abstractions. Phase 3 from the migration strategy is dropped.
+**Rationale:** A `<Text>` component's only value would be automatic HTML element mapping (e.g., `<Text variant="pageTitle">` always renders `<h1>`). This is insufficient justification because:
+
+1. **Token names already encode the element.** `text-page-title` → `<h1>`, `text-section-title` → `<h2>`, `text-caption` → `<p>` or `<span>`. Any developer reading the class knows what element to use.
+2. **Code review catches semantic errors.** Putting `text-page-title` on a `<div>` is the same category of mistake as using the wrong heading level — a component wrapper wouldn't prevent it if the developer doesn't care about semantics.
+3. **Tailwind classes compose, components don't.** `<h2 className="text-section-title text-destructive truncate">` works naturally. A `<Text>` component would need to expose every possible prop (`color`, `truncate`, `className`) and becomes a pass-through wrapper for no reason.
+4. **`@theme` tokens already bundle everything.** `text-body` sets size + weight + line-height in one class — that's the consistency a component would have provided, without React overhead.
 
