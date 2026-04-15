@@ -283,6 +283,7 @@
     "visibilityNotice": "Zichtbaarheidsmelding van de space",
     "mobileTabBar": "Tabbladnavigatie",
     "moreActionsDrawer": "Extra acties",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "loadingPost": "Bericht laden"
   }
 }

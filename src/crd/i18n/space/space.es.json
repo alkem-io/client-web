@@ -283,6 +283,7 @@
     "visibilityNotice": "Aviso de visibilidad del espacio",
     "mobileTabBar": "Navegación por pestañas",
     "moreActionsDrawer": "Acciones adicionales",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "loadingPost": "Cargando publicación"
   }
 }

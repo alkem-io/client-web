@@ -112,7 +112,7 @@ function MobileTabBar({
 }) {
   const { t } = useTranslation('crd-space');
   const visibleTabs = tabs.slice(0, 4);
-  const hasMore = mobileActions && mobileActions.length > 0;
+  const hasMore = tabs.length > 4 || (mobileActions && mobileActions.length > 0);
 
   return (
     <>

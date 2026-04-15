@@ -71,7 +71,7 @@ function buildContentPreview(callout: CalloutDetailsModelExtended): PostCardData
 }
 
 export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t: DateFormatter): PostCardData[] {
-  return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(callout => mapCalloutLightToPostCard(callout, t));
+  return [...callouts].sort((a, b) => a.sortOrder - b.sortOrder).map(callout => mapCalloutLightToPostCard(callout, t));
 }
 
 export type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
