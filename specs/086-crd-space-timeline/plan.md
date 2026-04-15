@@ -17,7 +17,7 @@ Migrate the Space Timeline (calendar dialog + event list + create/edit form + de
 **Project Type**: Web SPA — established three-layer CRD architecture (CRD → crdPages connector → routing)
 **Performance Goals**: Equal or better than MUI `CalendarDialog`. Sidebar adds zero extra network requests (Apollo dedupes the `useSpaceCalendarEventsQuery` between sidebar hook and dialog connector). External-calendar URL query is lazy-loaded on first dropdown open. No additional initial-paint cost vs. legacy.
 **Constraints**: Zero `@mui/*` / `@emotion/*` / `@apollo/client` / `@/domain/*` / `@/core/apollo/*` / `react-router-dom` / `formik` imports inside `src/crd/`. WCAG 2.1 AA compliant. React Compiler compatible (no `useMemo` / `useCallback` / `React.memo`). `.crd-root` CSS scoping unchanged. Form state lives in connector layer (`useState` + standalone `yup`, no Formik). Date-lib boundary: CRD components use `date-fns`; connectors and existing domain hooks use `dayjs`; mappers normalise to plain JS `Date` at the boundary.
-**Scale/Scope**: ~10 new CRD presentational components + 1 primitive + 3 form-field composites + 7 connectors + 2 hooks + 1 data mapper. ~60 i18n keys across 6 languages. 43 functional requirements across 7 user stories. Tested with up to 100 events per space (per SC-004).
+**Scale/Scope**: ~10 new CRD presentational components + 1 primitive + 3 form-field composites + 5 connectors + 4 hooks (`useCrdCalendarUrlState`, `useCrdEventForm`, `useCrdCalendarSidebar`, `useCrdRoomComments`) + 1 data mapper. ~60 i18n keys across 6 languages. 48 functional requirements across 7 user stories. Tested with up to 100 events per space (per SC-004).
 
 ## Constitution Check
 
@@ -36,7 +36,7 @@ Migrate the Space Timeline (calendar dialog + event list + create/edit form + de
 | Arch 3 | i18n pipeline | PASS | New keys added to existing `crd-space` namespace (`src/crd/i18n/space/space.{en,nl,es,bg,de,fr}.json`). EN edited directly; other languages manually managed (CRD convention, not Crowdin). |
 | Arch 4 | Build determinism | PASS | No Vite config changes. New deps (`react-day-picker`, `date-fns`) are pure ESM and tree-shakeable. |
 | Arch 5 | Import transparency | PASS | No barrel exports introduced. All imports use explicit file paths. |
-| Arch 6 | SOLID / DRY | PASS | Comments connector reuses the existing `mapRoomToCommentData` and `usePostMessageMutations` patterns from `CalloutCommentsConnector`. Form follows `useCrdCalloutForm` shape. Date formatting centralised in CRD components, not duplicated per consumer. |
+| Arch 6 | SOLID / DRY | PASS | Comments boilerplate (subscribe / post / react / delete + render) extracted into shared `useCrdRoomComments` hook (T023a) consumed by BOTH `CalloutCommentsConnector` (existing) and the new `CalendarCommentsConnector`; resolves the DRY concern previously tracked as research.md R4. Form follows `useCrdCalloutForm` shape. Date formatting centralised in CRD components, not duplicated per consumer. **DIP improvement**: `EventDetailView` depends on the abstraction `(id) => string` (resolveColor callback prop), not on the concrete `pickColorFromId`. |
 | Eng 5 | Root cause analysis | PASS | No workarounds. The single known visual deviation from MUI (multi-day-event highlighting via RDP modifiers) is documented and accepted in `research.md`. |
 
 ### Complexity Tracking
@@ -64,7 +64,7 @@ specs/086-crd-space-timeline/
 │   └── data-mappers.ts
 ├── checklists/
 │   └── requirements.md  # Spec quality checklist (already created)
-└── tasks.md             # Phase 2 output (/speckit.tasks — not produced here)
+└── tasks.md             # Phase 2 output (/speckit.tasks)
 ```
 
 ### Source code (repository root)
@@ -104,7 +104,8 @@ src/main/crdPages/space/                          # Integration / connector laye
 │   ├── useCrdCalendarUrlState.ts
 │   └── useCrdEventForm.ts
 ├── hooks/
-│   └── useCrdCalendarSidebar.ts                  # NEW — shares Apollo cache with dialog connector
+│   ├── useCrdCalendarSidebar.ts                  # NEW — shares Apollo cache with dialog connector
+│   └── useCrdRoomComments.ts                     # NEW (T023a) — extracted from CalloutCommentsConnector; consumed by both callout + calendar comments connectors
 ├── dataMappers/
 │   └── calendarEventDataMapper.ts                # NEW — fragment → CRD prop types
 ├── tabs/

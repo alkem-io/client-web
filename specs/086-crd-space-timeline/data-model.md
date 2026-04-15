@@ -54,7 +54,7 @@ Used by `EventDetailView.tsx`.
 | `id` | `string` | |
 | `title` | `string` | `profile.displayName` |
 | `description` | `string` | Markdown source; rendered via `MarkdownContent` |
-| `bannerUrl` | `string \| undefined` | `profile.banner.uri`; absent → gradient fallback (FR-015) |
+| `bannerUrl` | `string \| undefined` | `profile.banner.uri`. When undefined, the `EventDetailView` renders a deterministic gradient using `resolveColor(event.id)` (callback prop on `EventDetailViewProps`) — see FR-015. |
 | `tags` | `string[]` | `profile.tagset.tags` |
 | `references` | `EventReference[]` | `profile.references` mapped to `{ id, name, uri, description? }` |
 | `startDate` | `Date \| undefined` | UTC `Date` |
@@ -63,7 +63,7 @@ Used by `EventDetailView.tsx`.
 | `wholeDay` | `boolean` | |
 | `type` | `string \| undefined` | Enum string |
 | `subspaceName` | `string \| undefined` | When detail is reached from parent calendar |
-| `author` | `EventAuthor` | `{ name, avatarUrl?, color }` derived from `createdBy.profile`; `color` from `pickColorFromId(createdBy.id)` for avatar fallback (FR-014a) |
+| `author` | `EventAuthor` | Derived from `createdBy.profile` (see `EventAuthor` table below). Avatar fallback colour is NOT carried on this shape — the `EventDetailView` derives it via `resolveColor(author.id)` when `author.avatarUrl` is undefined (FR-014a). |
 | `createdDate` | `Date \| undefined` | For attribution caption |
 | `loading` | `boolean` | True while detail query in flight; component shows skeleton (FR-013a) |
 | `notFound` | `boolean` | When the event id resolves to `null` (deleted / wrong id); component shows "not found" state |

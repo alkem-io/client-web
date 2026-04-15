@@ -70,7 +70,8 @@ export type UseCrdEventForm = (initialValues?: Partial<EventFormValues>) => {
    *  as a side effect for the form to render. */
   validate: () => boolean;
   reset: () => void;
-  /** Repopulate from a CalendarEventDetailsFragment (mapped to EventFormValues by the connector). */
+  /** Repopulate from a pre-mapped EventFormValues snapshot. The connector calls
+   *  mapCalendarEventDetailsToFormValues first to convert the GraphQL fragment. */
   prefill: (data: Partial<EventFormValues>) => void;
 };
 
@@ -132,6 +133,28 @@ export type CalendarCommentsConnectorProps = {
     commentInput: ReactNode | null;
     commentCount: number;
   }) => ReactNode;
+};
+
+// -----------------------------------------------------------------------------
+// Shared room-comments hook (extracted by T023a; consumed by CalloutCommentsConnector
+// AND CalendarCommentsConnector to satisfy DRY)
+// -----------------------------------------------------------------------------
+
+/** `src/main/crdPages/space/hooks/useCrdRoomComments.ts` */
+export type UseCrdRoomComments = (params: {
+  roomId: string;
+  /** Pre-loaded room object. Either fetched lazily by the consumer
+   *  (CalloutCommentsConnector with useInView gating) or eagerly available
+   *  (CalendarCommentsConnector — already loaded by useCalendarEventDetail). */
+  room: CommentsWithMessagesModel | undefined;
+  /** When true, do not subscribe to live room events. CalloutCommentsConnector
+   *  forwards `!inView` here for lazy subscription; CalendarCommentsConnector
+   *  omits to default to false (always subscribe). */
+  skipSubscription?: boolean;
+}) => {
+  thread: ReactNode;
+  commentInput: ReactNode | null;
+  commentCount: number;
 };
 
 // -----------------------------------------------------------------------------
