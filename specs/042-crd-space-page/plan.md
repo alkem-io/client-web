@@ -124,6 +124,19 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 | `main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` | `domain/space/.../SpaceCommunityPage.tsx` | `pages/SpaceCommunity.tsx` |
 | `main/crdPages/space/tabs/CrdSpaceSubspacesPage.tsx` | `domain/space/.../SpaceSubspacesPage.tsx` | `pages/SpaceSubspaces.tsx` |
 | `main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx` | `domain/space/.../SpaceCustomTabPage.tsx` | `pages/SpaceKnowledgeBase.tsx` |
+| **Whiteboard** (see [whiteboard/plan.md](./whiteboard/plan.md)) | | |
+| `crd/components/whiteboard/WhiteboardEditorShell` | `WhiteboardDialog` + `SingleUserWhiteboardDialog` (chrome) | — |
+| `crd/components/whiteboard/WhiteboardDisplayName` | `WhiteboardDialog/WhiteboardDisplayName` | — |
+| `crd/components/whiteboard/WhiteboardCollabFooter` | `WhiteboardDialog/WhiteboardDialogFooter` | — |
+| `crd/components/whiteboard/WhiteboardSaveFooter` | `SingleUserWhiteboardDialog` footer (Save+Delete) | — |
+| `crd/components/whiteboard/PreviewSettingsDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog` | — |
+| `crd/components/whiteboard/PreviewCropDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewCustomSelectionDialog` | — |
+| `crd/components/whiteboard/JoinWhiteboardDialog` | `main/public/whiteboard/JoinWhiteboardDialog` | — |
+| `crd/components/whiteboard/WhiteboardErrorState` | `main/public/whiteboard/PublicWhiteboardError` | — |
+| `main/crdPages/whiteboard/CrdWhiteboardDialog` | `WhiteboardDialog` (multi-user, full wiring) | — |
+| `main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog` | `SingleUserWhiteboardDialog` (single-user, full wiring) | — |
+| `main/crdPages/whiteboard/CrdWhiteboardView` | `WhiteboardsManagement/WhiteboardView` | — |
+| `main/crdPages/whiteboard/CrdPublicWhiteboardPage` | `main/public/whiteboard/PublicWhiteboardPage` | — |
 
 **Design Decisions from prototype review:**
 - **D-proto-1**: 12-col grid layout (prototype grid) instead of flex sidebar+content

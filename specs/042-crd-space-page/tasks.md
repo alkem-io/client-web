@@ -657,6 +657,7 @@ The following areas have their own task lists in dedicated sub-spec documents:
 
 - **[Iframe Whitelist Context](./iframe-whitelist/tasks.md)** — 4 tasks (T1–T4): context provider, MarkdownContent update, main app wiring, demo app wiring
 - **[CRD Markdown Editor](./markdown-editor/tasks.md)** — 16 tasks (T1–T16): converter, extensions, editor state, toolbar, link dialog, styles, main component, i18n, AddPostModal slot, connector wiring, preview, verification
+- **[CRD Whiteboard Migration](./whiteboard/tasks.md)** — 25 tasks (T1–T25) across 8 phases: i18n namespace, JoinWhiteboardDialog, WhiteboardErrorState, CrdPublicWhiteboardPage, route wiring, WhiteboardEditorShell, WhiteboardDisplayName, WhiteboardCollabFooter, WhiteboardSaveFooter, CrdWhiteboardDialog (multi-user), CrdSingleUserWhiteboardDialog (single-user), CrdWhiteboardView, PreviewSettingsDialog, PreviewCropDialog, demo app page, verification
 
 ---
 

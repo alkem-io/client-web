@@ -221,7 +221,7 @@ Quick reference mapping new CRD components to their MUI and prototype counterpar
 
 ### Out of Scope
 
-- **Whiteboard collaboration system**: The entire real-time collaboration stack remains untouched -- CollaborativeExcalidrawWrapper, Collab class (scene sync, mode management, element reconciliation), Portal class (WebSocket with binary encoding), file management pipeline (FileUploader/FileDownloader/WhiteboardFileCache), preview generation (Auto/Custom/Fixed modes with canvas export), and guest session management. These render inside WhiteboardDialog which portals outside `.crd-root`. Only the inline WhiteboardPreview thumbnail and WhiteboardCard (contribution) are CRD components.
+- **Whiteboard collaboration infrastructure**: The Excalidraw engine, real-time collaboration stack (Collab, Portal, WebSocket, Y.js), file management pipeline, and preview generation stay unchanged. The whiteboard **user-facing chrome** (editor shell, public page, join dialog) is being migrated to CRD in a dedicated sub-spec — see [whiteboard/spec.md](./whiteboard/spec.md).
 - **Memo editing dialog**: MemoDialog (Tiptap-based full editing experience) remains MUI, portals outside `.crd-root`. Only the inline MemoPreview (rendered markdown display) is a CRD component.
 - **Rich text editor internals**: The Tiptap editor engine used for callout descriptions and contributions; the integration layer wraps it for creation/editing forms
 - **Subspace pages (L1/L2)**: Different layout, migrated in a future spec
