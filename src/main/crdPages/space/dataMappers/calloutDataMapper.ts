@@ -28,7 +28,7 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
     isDraft: callout.draft,
     timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
     author: callout.createdBy?.profile
-      ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
+      ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
       : undefined,
     commentCount: callout.activity ?? 0,
     contentPreview: undefined, // Not available in list query
@@ -52,7 +52,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
     isDraft: callout.draft,
     timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
     author: callout.createdBy?.profile
-      ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
+      ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
       : undefined,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     contentPreview,
@@ -71,7 +71,7 @@ function buildContentPreview(callout: CalloutDetailsModelExtended): PostCardData
 }
 
 export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t: DateFormatter): PostCardData[] {
-  return callouts.sort((a, b) => a.sortOrder - b.sortOrder).map(callout => mapCalloutLightToPostCard(callout, t));
+  return [...callouts].sort((a, b) => a.sortOrder - b.sortOrder).map(callout => mapCalloutLightToPostCard(callout, t));
 }
 
 export type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
@@ -105,7 +105,7 @@ export function mapCalloutDetailsToDialogData(
         : undefined,
     timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
     author: callout.createdBy?.profile
-      ? { name: callout.createdBy.profile.displayName, avatarUrl: undefined }
+      ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
       : undefined,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
     reactionCount: 0,

@@ -19,7 +19,7 @@ import {
   Trash2,
   Undo2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentEmojiPicker } from '@/crd/components/comment/CommentEmojiPicker';
 import { cn } from '@/crd/lib/utils';
@@ -37,9 +37,14 @@ export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
   const [, setTick] = useState(0);
 
   // Refresh table context on transactions
-  if (editor) {
-    editor.on('transaction', () => setTick(tick => tick + 1));
-  }
+  useEffect(() => {
+    if (!editor) return;
+    const handler = () => setTick(tick => tick + 1);
+    editor.on('transaction', handler);
+    return () => {
+      editor.off('transaction', handler);
+    };
+  }, [editor]);
 
   if (!editor) return null;
 

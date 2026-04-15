@@ -1,5 +1,6 @@
-import { Check, CircleEllipsis, Globe, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
+import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
 import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -29,6 +30,7 @@ type UserMenuProps = {
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
+  showGridToggle?: boolean;
 };
 
 export function UserMenu({
@@ -43,8 +45,10 @@ export function UserMenu({
   onPendingMembershipsClick,
   onHelpClick,
   onLanguageChange,
+  showGridToggle,
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
+  const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
@@ -154,6 +158,14 @@ export function UserMenu({
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
+        )}
+
+        {/* Grid overlay toggle — only in standalone demo app */}
+        {showGridToggle && (
+          <DropdownMenuItem onClick={toggleGrid} className="cursor-pointer">
+            <Grid3X3 aria-hidden="true" className="mr-2 h-4 w-4" />
+            <span>{isGridVisible ? t('header.hideGrid') : t('header.showGrid')}</span>
+          </DropdownMenuItem>
         )}
 
         {/* Help */}

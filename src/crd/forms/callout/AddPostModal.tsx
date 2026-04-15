@@ -120,8 +120,14 @@ export function AddPostModal({
                 title.error && 'text-destructive'
               )}
               aria-label={t('forms.titleLabel')}
+              aria-invalid={!!title.error}
+              aria-describedby={title.error ? 'title-error' : undefined}
             />
-            {title.error && <p className="text-xs text-destructive">{title.error}</p>}
+            {title.error && (
+              <p id="title-error" className="text-xs text-destructive">
+                {title.error}
+              </p>
+            )}
           </div>
 
           {/* Description editor */}

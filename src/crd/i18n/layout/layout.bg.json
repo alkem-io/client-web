@@ -18,7 +18,9 @@
     "pendingMemberships": "Чакащи членства",
     "administration": "Администрация",
     "changeLanguage": "Смяна на езика",
-    "getHelp": "Помощ"
+    "getHelp": "Помощ",
+    "showGrid": "Покажи мрежа",
+    "hideGrid": "Скрий мрежа"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",
