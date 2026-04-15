@@ -7,14 +7,34 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
+import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
+import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
+import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
 export default function CrdSpaceDashboardPage() {
   const { t } = useTranslation('crd-space');
   const { space } = useSpace();
   const { callouts, calloutsSetId, canCreateCallout, tabDescription, dashboardNavigation, loading } =
     useCrdSpaceDashboard();
+  const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar();
+  const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
   const [createOpen, setCreateOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const openCalendar = () => {
+    setCalendarOpen(true);
+    navigateToList();
+  };
+  const openCreateEvent = () => {
+    setCalendarOpen(true);
+    navigateToCreate();
+  };
+  const openEventDetail = (event: { url?: string }) => {
+    if (!event.url) return;
+    setCalendarOpen(true);
+    navigateToEvent(event.url);
+  };
 
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
@@ -34,6 +54,10 @@ export default function CrdSpaceDashboardPage() {
             variant="home"
             description={tabDescription || space.about.profile.description || ''}
             subspaces={subspaces}
+            events={sidebarEvents}
+            onShowCalendar={openCalendar}
+            onAddEvent={canCreateEvents ? openCreateEvent : undefined}
+            onEventClick={openEventDetail}
           />,
           sidebarContainer
         )}
@@ -50,6 +74,8 @@ export default function CrdSpaceDashboardPage() {
       {canCreateCallout && (
         <CalloutFormConnector open={createOpen} onOpenChange={setCreateOpen} calloutsSetId={calloutsSetId} />
       )}
+
+      <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />
     </>
   );
 }

@@ -27,8 +27,10 @@ type VirtualContributorItem = {
 };
 
 type EventItem = {
+  id: string;
   title: string;
-  date: string;
+  startDate: Date | undefined;
+  url?: string;
 };
 
 type KnowledgeEntry = {
@@ -48,6 +50,7 @@ type SpaceSidebarProps = {
   events?: EventItem[];
   onShowCalendar?: () => void;
   onAddEvent?: () => void;
+  onEventClick?: (event: EventItem) => void;
   // Knowledge
   knowledgeEntries?: KnowledgeEntry[];
   onKnowledgeEntryClick?: (id: string) => void;
@@ -77,6 +80,7 @@ export function SpaceSidebar({
   events = [],
   onShowCalendar,
   onAddEvent,
+  onEventClick,
   knowledgeEntries = [],
   onKnowledgeEntryClick,
   leads = [],
@@ -120,7 +124,12 @@ export function SpaceSidebar({
             <KnowledgeIndexSection entries={knowledgeEntries} onEntryClick={onKnowledgeEntryClick} />
           )}
 
-          <EventsSection events={events} onShowCalendar={onShowCalendar} onAddEvent={onAddEvent} />
+          <EventsSection
+            events={events}
+            onShowCalendar={onShowCalendar}
+            onAddEvent={onAddEvent}
+            onEventClick={onEventClick}
+          />
         </>
       )}
 

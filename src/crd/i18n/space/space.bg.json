@@ -27,7 +27,93 @@
     "communityGuidelines": "Насоки на общността",
     "postIndex": "Индекс на публикациите",
     "readMore": "Прочети повече",
-    "addEvent": "Добави събитие"
+    "addEvent": "Добави събитие",
+    "eventDateRelative": {
+      "today": "Днес",
+      "tomorrow": "Утре",
+      "in_days_one": "след 1 ден",
+      "in_days_other": "след {{count}} дни"
+    }
+  },
+  "calendar": {
+    "title": "Събития",
+    "addEvent": "Добавяне на събитие",
+    "editEvent": "Редактиране на събитие",
+    "eventDetail": "Събитие: {{title}}",
+    "noUpcomingEvents": "Няма предстоящи събития",
+    "pastEvents": "Минали събития",
+    "back": "Назад",
+    "save": "Запази",
+    "cancel": "Отказ",
+    "edit": "Редактирай",
+    "deleteConfirm": {
+      "title": "Изтриване на събитие",
+      "body": "Сигурни ли сте, че искате да изтриете „{{title}}“ от това {{entity}}?",
+      "confirm": "Изтрий",
+      "cancel": "Отказ"
+    },
+    "fields": {
+      "displayName": "Заглавие",
+      "type": "Тип",
+      "date": "Дата",
+      "startTime": "Начален час",
+      "endTime": "Краен час",
+      "duration": "Продължителност (минути)",
+      "wholeDay": "Цял ден",
+      "description": "Описание",
+      "location": "Местоположение",
+      "tags": "Етикети",
+      "visibleOnParentCalendar": "Видимо в родителския календар",
+      "endsAt": "завършва в {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Заглавието е задължително",
+      "typeRequired": "Типът е задължителен",
+      "invalidDuration": "Невалидна продължителност",
+      "endBeforeStart": "Краят трябва да е след началото",
+      "descriptionTooLong": "Описанието е твърде дълго"
+    },
+    "type": {
+      "DEADLINE": "Краен срок",
+      "EVENT": "Събитие",
+      "MEETING": "Среща",
+      "MILESTONE": "Етап",
+      "OTHER": "Друго",
+      "TRAINING": "Обучение"
+    },
+    "addToCalendar": {
+      "trigger": "Добави в календара",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "ics": "Изтегли ICS",
+      "exportAll": "Експортиране на предстоящи събития в ICS",
+      "loading": "Зареждане…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Предишен месец",
+      "nextMonth": "Следващ месец",
+      "pickDate": "Избери дата"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Цял ден"
+    },
+    "details": {
+      "comments": "Коментари",
+      "references": "Препратки",
+      "tags": "Етикети",
+      "loadingEvent": "Зареждане на събитие…",
+      "subspaceLabel": "в {{name}}",
+      "createdBy": "от {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Пространство",
+      "subspace": "Подпространство"
+    },
+    "notFound": {
+      "title": "Събитието не е намерено",
+      "body": "Това събитие вече не съществува или е премахнато.",
+      "backToList": "Обратно към събитията"
+    }
   },
   "feed": {
     "addPost": "Добави публикация",

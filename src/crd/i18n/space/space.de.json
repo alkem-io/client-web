@@ -27,7 +27,93 @@
     "communityGuidelines": "Gemeinschaftsrichtlinien",
     "postIndex": "Beitragsverzeichnis",
     "readMore": "Mehr lesen",
-    "addEvent": "Ereignis hinzufügen"
+    "addEvent": "Ereignis hinzufügen",
+    "eventDateRelative": {
+      "today": "Heute",
+      "tomorrow": "Morgen",
+      "in_days_one": "in 1 Tag",
+      "in_days_other": "in {{count}} Tagen"
+    }
+  },
+  "calendar": {
+    "title": "Veranstaltungen",
+    "addEvent": "Veranstaltung hinzufügen",
+    "editEvent": "Veranstaltung bearbeiten",
+    "eventDetail": "Veranstaltung: {{title}}",
+    "noUpcomingEvents": "Keine anstehenden Veranstaltungen",
+    "pastEvents": "Vergangene Veranstaltungen",
+    "back": "Zurück",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "deleteConfirm": {
+      "title": "Veranstaltung löschen",
+      "body": "Möchtest du „{{title}}“ wirklich aus diesem {{entity}} löschen?",
+      "confirm": "Löschen",
+      "cancel": "Abbrechen"
+    },
+    "fields": {
+      "displayName": "Titel",
+      "type": "Typ",
+      "date": "Datum",
+      "startTime": "Startzeit",
+      "endTime": "Endzeit",
+      "duration": "Dauer (Minuten)",
+      "wholeDay": "Ganztägig",
+      "description": "Beschreibung",
+      "location": "Ort",
+      "tags": "Tags",
+      "visibleOnParentCalendar": "Im übergeordneten Kalender sichtbar",
+      "endsAt": "endet um {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Titel ist erforderlich",
+      "typeRequired": "Typ ist erforderlich",
+      "invalidDuration": "Ungültige Dauer",
+      "endBeforeStart": "Ende muss nach Beginn liegen",
+      "descriptionTooLong": "Beschreibung ist zu lang"
+    },
+    "type": {
+      "DEADLINE": "Frist",
+      "EVENT": "Veranstaltung",
+      "MEETING": "Besprechung",
+      "MILESTONE": "Meilenstein",
+      "OTHER": "Sonstiges",
+      "TRAINING": "Schulung"
+    },
+    "addToCalendar": {
+      "trigger": "Zum Kalender hinzufügen",
+      "google": "Google Kalender",
+      "outlook": "Outlook Kalender",
+      "ics": "ICS herunterladen",
+      "exportAll": "Bevorstehende Veranstaltungen als ICS exportieren",
+      "loading": "Laden…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Vorheriger Monat",
+      "nextMonth": "Nächster Monat",
+      "pickDate": "Datum wählen"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Ganztägig"
+    },
+    "details": {
+      "comments": "Kommentare",
+      "references": "Referenzen",
+      "tags": "Tags",
+      "loadingEvent": "Veranstaltung wird geladen…",
+      "subspaceLabel": "in {{name}}",
+      "createdBy": "von {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Bereich",
+      "subspace": "Unterbereich"
+    },
+    "notFound": {
+      "title": "Veranstaltung nicht gefunden",
+      "body": "Diese Veranstaltung existiert nicht mehr oder wurde entfernt.",
+      "backToList": "Zurück zu den Veranstaltungen"
+    }
   },
   "feed": {
     "addPost": "Beitrag hinzufügen",

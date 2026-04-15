@@ -82,6 +82,16 @@ export type AddToCalendarLinks = {
   icsFilename: string;
 };
 
+/**
+ * Permission set for the calendar (returned by useCalendarEvents domain hook).
+ * Drives button visibility throughout the dialog.
+ */
+export type EventListPermissions = {
+  canCreateEvents: boolean;
+  canEditEvents: boolean;
+  canDeleteEvents: boolean;
+};
+
 // -----------------------------------------------------------------------------
 // Sidebar widget (existing CRD component — props evolved by this feature)
 // -----------------------------------------------------------------------------
