@@ -38,6 +38,15 @@ There were no outstanding `NEEDS CLARIFICATION` markers in the Technical Context
   - Inlining the check in each site — rejected: duplication, drift risk.
   - A higher-order HOC — rejected: React 19 + hooks idioms prefer composition over HOC patterns.
 
+### Decision 4b: Learn from the callout-transfer site, but keep it out of scope
+
+- **Decision**: Treat `src/domain/platformAdmin/management/transfer/transferCallout/` as reference material only. Its privilege-reading approach — deriving button enablement from `authorization.myPrivileges` (checking `AuthorizationPrivilege.TransferResourceOffer` on the source callout and `AuthorizationPrivilege.TransferResourceAccept` on the target calloutsSet) — and its error-toast wiring via `useNotification()` inform the design of `useHasPrivilege` and the mutation `onError` contract. The transfer site itself is **not migrated** by this feature; it is a different use case (resource transfer, not membership assignment), and the user has explicitly scoped it out.
+- **Rationale**: The transfer site has different semantics (two privilege checks against two different entities for a transactional action), different prerequisites (source and target selection), and a different information architecture (caption text instead of a tooltip). Retrofitting it onto the same wrapper risks regressing a working, production feature for no user-facing gain on its primary flow. Lessons are extracted; code is not.
+- **Optional nice-to-have**: If the new `DisabledWithTooltipButton` wrapper turns out to be a drop-in substitute for the transfer site's disabled button, adopting it there to get consistent hover/focus feedback is a welcome cleanup. This is **not a requirement** and should not be pursued if it causes any churn or behavioral change on that site.
+- **Alternatives considered**:
+  - Migrate the transfer site as part of this feature — rejected by user: different use case; don't conflate.
+  - Ignore the transfer site entirely — rejected: its existing implementation is the best in-repo prior art for reading `myPrivileges` and wiring error toasts; worth studying and citing even if not modifying.
+
 ### Decision 5: Error-toast via existing `useNotification()`
 
 - **Decision**: Handle Apollo mutation `onError` in the role-set/role-assignment mutation hooks (e.g., `useRoleSetManagerRolesAssignment.ts`) and call `useNotification()` with severity `error`. Detect permission errors (GraphQL error code or message) to produce a distinct, permission-specific message (spec FR-007).

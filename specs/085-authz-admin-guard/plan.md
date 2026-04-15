@@ -5,7 +5,9 @@
 
 ## Summary
 
-Every "Add user" (and equivalent role/user-assignment) control across the app must be (a) rendered disabled with a tooltip when the current user lacks the `GRANT` privilege on the target entity's role-set (or equivalent authorization boundary), and (b) fall back to a visible error notification if a backend mutation fails for any reason instead of silently no-op-ing. The technical approach is a shared UI pattern built on the existing `Authorization.myPrivileges` field already returned by GraphQL and the existing `useNotification()` toast helper — no new backend capability is required. The change is a retrofit: introduce a small shared hook + disabled-button composable, then apply it uniformly to each known site.
+Every "Add user" (and equivalent role/user-assignment) control across the app must be (a) rendered disabled with a tooltip when the current user lacks the `GRANT` privilege on the target entity's role-set (or equivalent authorization boundary), and (b) fall back to a visible error notification if a backend mutation fails for any reason instead of silently no-op-ing. The technical approach is a shared UI pattern built on the existing `Authorization.myPrivileges` field already returned by GraphQL and the existing `useNotification()` toast helper — no new backend capability is required.
+
+**Reference (not in scope)**: the Platform Admin "Conversions & Transfer" tab's callout-transfer feature (`src/domain/platformAdmin/management/transfer/transferCallout/`) already reads `authorization.myPrivileges` to gate its action button (using `TransferResourceOffer` / `TransferResourceAccept`) and pipes mutation errors through `useNotification()`. It is a different use case and is not being migrated by this feature; treat it as reference material only. If the new `DisabledWithTooltipButton` wrapper turns out to be a drop-in for that site, adopting it there is a nice-to-have — not a requirement, and not something to pursue if it causes churn.
 
 ## Technical Context
 
@@ -89,9 +91,12 @@ src/
 │       ├── CommunityUsers.tsx                                              # TOUCH (already gated; align privilege source + error handling)
 │       ├── CommunityOrganizations.tsx                                      # TOUCH (same)
 │       └── CommunityVirtualContributors.tsx                                # TOUCH (same)
-└── domain/access/RoleSetManager/
-    ├── useRoleSetManager.ts                                                # TOUCH — add onError to assign/remove mutations
-    └── useRoleSetManagerRolesAssignment.ts                                 # TOUCH — add onError
+├── domain/access/RoleSetManager/
+│   ├── useRoleSetManager.ts                                                # TOUCH — add onError to assign/remove mutations
+│   └── useRoleSetManagerRolesAssignment.ts                                 # TOUCH — add onError
+└── domain/platformAdmin/management/transfer/transferCallout/
+    ├── TransferCalloutSection.tsx                                          # READ — reference only; out of scope (different use case). Optional nice-to-have alignment to DisabledWithTooltipButton if cheap.
+    └── useTransferCallout.ts                                               # READ — reference for privilege-reading and error-toast wiring; not modified.
 
 src/core/i18n/en/translation.en.json                                        # TOUCH — add tooltip + error-toast keys
 ```

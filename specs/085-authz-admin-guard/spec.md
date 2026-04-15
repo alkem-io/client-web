@@ -11,6 +11,7 @@
 
 - Q: Which privilege must the current user hold on the entity for the "Add user" action to be enabled? → A: GRANT (correction of the initial input, which said UPDATE)
 - Q: What is the scope of pages this change should cover? → A: Every page in the app where an "Add user" control exists — treat silent failure as a global bug and apply the disable+tooltip+error pattern consistently wherever role/user assignment controls appear.
+- Q: Is there existing prior art in the codebase for this pattern? → A: The Platform Admin "Conversions & Transfer" tab's callout-transfer feature (`src/domain/platformAdmin/management/transfer/transferCallout/`) already reads `authorization.myPrivileges` to gate its action button (using `TransferResourceOffer` on the source and `TransferResourceAccept` on the target) and pipes mutation errors through `useNotification()`. It is a **different use case** and is **out of scope** for this feature — it is NOT to be migrated onto the shared pattern. It should be treated as reference material only: lessons on reading privileges from GraphQL and wiring error toasts inform this feature's design. If — and only if — aligning it to the same hover/focus tooltip feedback pattern is cheap and non-disruptive, it MAY be updated as a nice-to-have; otherwise it is left alone.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -70,6 +71,7 @@ When the current user does not hold the `GRANT` privilege on the entity shown on
 - **FR-010**: Privilege evaluation for UI enablement MUST use the same privilege semantics the backend uses to authorize the action, so that the UI state and backend decision agree in the common case.
 - **FR-011**: The disable-with-tooltip + error-on-failure pattern MUST be applied to every page in the app where an "Add user" (or equivalent role/user assignment) control exists, not only to a single admin page. An inventory of such surfaces MUST be produced during planning and each surface MUST be covered.
 - **FR-012**: When the privilege required for a given assignment control differs from `GRANT` on a particular surface, that surface MUST check the privilege the backend actually enforces for its action; the pattern (disable + tooltip + error fallback) is the same even if the specific privilege token differs.
+- **FR-013**: The callout-transfer feature on the Platform Admin "Conversions & Transfer" tab is **out of scope** — its control and behavior MUST NOT be modified by this feature. It MAY serve as a reference implementation for reading `authorization.myPrivileges` and wiring `useNotification()` error toasts. Optionally (nice-to-have, not required), if aligning its disabled-button feedback to the new hover/focus tooltip pattern can be done without altering its different use case and without disruptive rework, it MAY be updated to match; otherwise it stays as-is.
 
 ### Key Entities *(include if feature involves data)*
 
