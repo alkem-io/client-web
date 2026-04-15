@@ -1,4 +1,4 @@
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { ExcalidrawTextElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
   BinaryFiles,
@@ -9,7 +9,7 @@ import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
-import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
+import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -33,6 +33,21 @@ import type { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
+
+// Emoji insert picker constants — must match the values in @alkemio/excalidraw's EmojiPicker
+const EMOJI_INSERT_FONT_SIZE = 48;
+const INSERT_EMOJIS = new Set([
+  '\u{1F44D}', // 👍
+  '\u2B50', // ⭐
+  '\u2705', // ✅
+  '\u{1F4A1}', // 💡
+  '\u2753', // ❓
+  '\u{1F4AC}', // 💬
+  '\u{1F3AF}', // 🎯
+  '\u{1F44F}', // 👏
+  '\u{1F4CC}', // 📌
+  '\u{1F680}', // 🚀
+]);
 
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
@@ -218,7 +233,77 @@ const CollaborativeExcalidrawWrapper = ({
     return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
   };
 
+  // --- Emoji insert placement mode ---
+  // Intercepts emoji elements that the picker places at center and lets the user click to place them instead.
+  const [pendingEmoji, setPendingEmoji] = useState<string | null>(null);
+  const [emojiCursorPos, setEmojiCursorPos] = useState<{ x: number; y: number } | null>(null);
+  const knownElementIdsRef = useRef<Set<string>>(new Set());
+
+  const handleEmojiPlacementClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!pendingEmoji || !excalidrawApi) return;
+    import('@alkemio/excalidraw').then(({ convertToExcalidrawElements, viewportCoordsToSceneCoords }) => {
+      const appState = excalidrawApi.getAppState();
+      const { x, y } = viewportCoordsToSceneCoords({ clientX: e.clientX, clientY: e.clientY }, appState);
+      const elements = convertToExcalidrawElements([
+        { type: 'text', text: pendingEmoji, x, y, fontSize: EMOJI_INSERT_FONT_SIZE },
+      ]);
+      // Track the new element IDs so onChange doesn't intercept them again
+      for (const el of elements) {
+        knownElementIdsRef.current.add(el.id);
+      }
+      excalidrawApi.updateScene({
+        elements: [...excalidrawApi.getSceneElements(), ...elements],
+      });
+      setPendingEmoji(null);
+      setEmojiCursorPos(null);
+    });
+  };
+
+  const handleEmojiOverlayMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    setEmojiCursorPos({ x: e.clientX, y: e.clientY });
+  };
+
+  useEffect(() => {
+    if (!pendingEmoji) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setPendingEmoji(null);
+        setEmojiCursorPos(null);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [pendingEmoji]);
+
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    // Detect emoji elements freshly inserted by the picker and intercept them
+    if (excalidrawApi && !pendingEmoji) {
+      const knownIds = knownElementIdsRef.current;
+      for (const el of elements) {
+        if (
+          !knownIds.has(el.id) &&
+          el.type === 'text' &&
+          (el as ExcalidrawTextElement).fontSize === EMOJI_INSERT_FONT_SIZE &&
+          INSERT_EMOJIS.has((el as ExcalidrawTextElement).text)
+        ) {
+          // This is a newly inserted emoji from the picker — remove it and enter placement mode
+          const filtered = elements.filter(e => e.id !== el.id);
+          excalidrawApi.updateScene({ elements: filtered });
+          setPendingEmoji((el as ExcalidrawTextElement).text);
+          // Update known IDs with all current elements (minus the removed one)
+          knownIds.clear();
+          for (const e of filtered) {
+            knownIds.add(e.id);
+          }
+          return; // Skip syncing this change
+        }
+      }
+      // Update known IDs
+      knownIds.clear();
+      for (const e of elements) {
+        knownIds.add(e.id);
+      }
+    }
     if (isReadOnly) {
       collabApi?.syncScene(elements, files);
       return;
@@ -287,6 +372,35 @@ const CollaborativeExcalidrawWrapper = ({
           />
         )}
       </Suspense>
+      {pendingEmoji && (
+        <Box
+          onClick={handleEmojiPlacementClick}
+          onMouseMove={handleEmojiOverlayMouseMove}
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1000,
+            cursor: 'none',
+          }}
+        >
+          {emojiCursorPos && (
+            <Box
+              sx={{
+                position: 'fixed',
+                left: emojiCursorPos.x,
+                top: emojiCursorPos.y,
+                transform: 'translate(-50%, -50%)',
+                fontSize: '48px',
+                lineHeight: 1,
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            >
+              {pendingEmoji}
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 
