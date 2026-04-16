@@ -12,7 +12,9 @@ import CrdSpaceProtectedRoutes from './CrdSpaceProtectedRoutes';
 
 const CrdSpaceTabbedPages = lazyWithGlobalErrorHandler(() => import('../tabs/CrdSpaceTabbedPages'));
 const CrdSpaceAboutPage = lazyWithGlobalErrorHandler(() => import('../about/CrdSpaceAboutPage'));
-const SpaceAdminL0Route = lazyWithGlobalErrorHandler(() => import('@/domain/spaceAdmin/routing/SpaceAdminRouteL0'));
+const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
+);
 const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoutes'));
 const SpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('@/domain/space/pages/SpaceCalloutPage'));
 
@@ -64,7 +66,7 @@ export default function CrdSpaceRoutes() {
               path={`${EntityPageSection.Settings}/*`}
               element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SpaceAdminL0Route />
+                  <CrdSpaceSettingsPage />
                 </Suspense>
               }
             />

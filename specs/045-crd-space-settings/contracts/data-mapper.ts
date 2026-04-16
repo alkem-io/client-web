@@ -10,7 +10,7 @@
  */
 
 import type { AboutViewProps } from './tab-about';
-import type { LayoutViewProps, DeferredColumnMenuActions } from './tab-layout';
+import type { LayoutViewProps, ColumnMenuActions } from './tab-layout';
 import type { CommunityViewProps } from './tab-community';
 import type { SubspacesViewProps } from './tab-subspaces';
 import type { TemplatesViewProps } from './tab-templates';
@@ -63,14 +63,11 @@ export type UseSettingsTabData = (spaceId: string) => UseImmediateTabDataResult<
 export type UseAccountTabData = (spaceId: string) => UseImmediateTabDataResult<AccountViewProps>;
 
 /**
- * Deferred per-**column** (innovation-flow step) menu wiring (Layout tab).
- * Fully implemented and tested now; the UI surface is gated by
- * `isDeferredMenuVisible` (hard-coded false this iteration) until the
- * designer specifies CTA placement on the column header.
+ * Per-**column** (innovation-flow step) overflow menu wiring (Layout tab).
+ * Rendered in the top-right of each column header (FR-010). Not deferred.
  */
-export type UseDeferredColumnMenu = (spaceId: string) => {
-  actions: DeferredColumnMenuActions;
-  isDeferredMenuVisible: boolean;
+export type UseColumnMenu = (spaceId: string) => {
+  actions: ColumnMenuActions;
 };
 
 /**

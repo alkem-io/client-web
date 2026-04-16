@@ -11,7 +11,7 @@ Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD 
 - **Layout** — local dirty buffer with a sticky Save Changes / Reset action bar. Reset reverts to the last backend-known state. Zero mutations before Save is clicked.
 - **Community / Subspaces / Templates / Storage / Settings / Account** — per-action commit (no tab-wide save bar).
 
-Layout specifics: items are **callouts/posts** (never "pages"); they can only be moved between columns, never created or deleted here; **column** titles and descriptions are inline-editable (callout title / description are read-only — edited from the post's own page); a per-**column** (innovation-flow step) overflow menu with "Active phase" and "Default post template" is **implemented but not surfaced** (deferred behind `isDeferredMenuVisible`) until the designer specifies where it opens from on each column header. Layout also includes the Post description display toggle (`calloutDescriptionDisplayMode`) moved back from Settings. Gated behind the existing `alkemio-crd-enabled` localStorage toggle.
+Layout specifics: items are **callouts/posts** (never "pages"); they can only be moved between columns, never created or deleted here; **column** titles and descriptions are inline-editable with a hover-reveal pencil pattern (callout title / description are read-only — edited from the post's own page); each column header shows only title + description + a top-right three-dot overflow menu with "Active phase" and "Default post template" (no icon, no count badge, no collapse arrow). Layout also includes the Post description display toggle (`calloutDescriptionDisplayMode`) moved back from Settings. Gated behind the existing `alkemio-crd-enabled` localStorage toggle.
 
 ## Technical Context
 
@@ -34,7 +34,7 @@ Layout specifics: items are **callouts/posts** (never "pages"); they can only be
 | I. Domain-Driven Frontend Boundaries | PASS | CRD components purely presentational. All business logic stays in existing `src/domain/spaceAdmin/*` hooks; data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. |
 | II. React 19 Concurrent UX Discipline | PASS | CRD components pure and concurrency-safe. Mutations wrapped in `useTransition` per Constitution Principle II. Skeletons + ARIA live regions for async state (FR-028, FR-032). |
 | III. GraphQL Contract Fidelity | PASS | No GraphQL changes (FR-031). All Apollo operations go through generated hooks. CRD components never import generated GraphQL types. |
-| IV. State & Side-Effect Isolation | PASS | CRD components hold only visual state (open/close, grab-mode, inline-edit mode, active tab). Dirty-state buffers, navigation blocking, deferred-menu gating, and mutation wiring all live in `src/main/crdPages/topLevelPages/spaceSettings/`. |
+| IV. State & Side-Effect Isolation | PASS | CRD components hold only visual state (open/close, grab-mode, inline-edit mode, active tab). Dirty-state buffers, navigation blocking, and mutation wiring all live in `src/main/crdPages/topLevelPages/spaceSettings/`. |
 | V. Experience Quality & Safeguards | PASS | FR-011 / FR-032 codify WCAG 2.1 AA including a fully specified keyboard alternative to drag-and-drop. Per-card loading / error states covered by FR-028. |
 | Arch #1: Feature directories map to domain contexts | PASS | CRD composites under `src/crd/components/space/settings/`, integration under `src/main/crdPages/topLevelPages/spaceSettings/`. |
 | Arch #2: Styling standardizes on MUI theming | **JUSTIFIED VIOLATION** | Same intentional, constitution-acknowledged violation as 039/041/042/043. CRD is the announced successor design system. See Complexity Tracking. |
@@ -120,7 +120,7 @@ src/
 │               │   └── aboutMapper.ts
 │               ├── layout/
 │               │   ├── useLayoutTabData.ts       # Dirty buffer + mutation batch on Save
-│               │   ├── useDeferredColumnMenu.ts  # Wires per-COLUMN Active-phase + Default-post-template mutations behind isDeferredMenuVisible
+│               │   ├── useColumnMenu.ts          # Wires per-COLUMN Active-phase + Default-post-template mutations (FR-010)
 │               │   └── layoutMapper.ts
 │               ├── community/
 │               │   ├── useCommunityTabData.ts
@@ -143,7 +143,7 @@ src/
 └── domain/spaceAdmin/                            # UNCHANGED — existing MUI implementation stays for toggle-off
 ```
 
-**Structure Decision**: Presentational CRD components live under `src/crd/components/space/settings/`. The route entry, tab routing, dirty-state guard, deferred-menu wiring, and per-tab data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. Every tab has its own mapper pair (`use<Tab>TabData.ts` + `<tab>Mapper.ts`). Existing `src/domain/spaceAdmin/*` stays intact and continues to serve the MUI variant when `useCrdEnabled()` returns `false`.
+**Structure Decision**: Presentational CRD components live under `src/crd/components/space/settings/`. The route entry, tab routing, dirty-state guard, per-column menu wiring, and per-tab data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. Every tab has its own mapper pair (`use<Tab>TabData.ts` + `<tab>Mapper.ts`). Existing `src/domain/spaceAdmin/*` stays intact and continues to serve the MUI variant when `useCrdEnabled()` returns `false`.
 
 **CRD asset reuse (per `src/crd/CLAUDE.md`)**: the plan explicitly reuses existing CRD assets instead of creating parallels:
 - `src/crd/components/dialogs/ConfirmationDialog.tsx` — extended in place, not duplicated, to cover both delete and discard variants (FR-026, FR-027).
@@ -156,11 +156,11 @@ src/
 
 New primitives ported once, then shared: `tabs.tsx`, `textarea.tsx`, `table.tsx`. New composite primitive: `InlineEditText.tsx` (shared between the Layout column title and column description — two use sites; individual callouts are read-only on this tab).
 
-**Layout tab — deferred per-column menu**: `useDeferredColumnMenu.ts` returns the API the column-header overflow will eventually call (`onChangeActivePhase(columnId, phaseId)`, `onSetAsDefaultPostTemplate(columnId, templateId)`). The Layout view composes these callbacks into a `deferredColumnMenuActions` prop which the column header ignores when the visible `isDeferredMenuVisible` flag is `false` (the default in this iteration). Active phase and Default post template are column-level (innovation-flow-step-level) concerns, NOT per-callout. Unit tests exercise both actions end-to-end so surfacing the overflow CTA later on the column header is a one-line component change (SC-009).
+**Layout tab — per-column overflow menu**: `useColumnMenu.ts` returns the API the column-header three-dot button calls (`onChangeActivePhase(columnId, phaseId)`, `onSetAsDefaultPostTemplate(columnId, templateId)`, plus `availablePhases` and `availablePostTemplates`). The Layout view passes these callbacks via `columnMenuActions` to each `LayoutPoolColumn`. Active phase and Default post template are column-level (innovation-flow-step-level) concerns, NOT per-callout. Unit tests exercise both actions end-to-end (SC-009).
 
 ## Complexity Tracking
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | Arch #2 (parallel CRD design system) | CRD is the announced successor design system; all new pages adopt it per 039/041/042/043 precedent | Continuing MUI-only would block the CRD migration mandate; this intentional parallel-systems phase is tracked and bounded |
-| Layout deferred per-column menu behind `isDeferredMenuVisible` flag | Designer has not specified the CTA placement for per-COLUMN "Active phase" / "Default post template"; implementing the mutations now avoids a later round-trip | Waiting until the designer lands their spec before implementing would stretch the overall migration by another release cycle |
+| Shared space-card component (About Preview + future Explore) | User instruction — About's live Preview is the same visual as the Explore Spaces card; ship the primitive once and reuse | Forking the card for About now and again for Explore later would duplicate it and risk drift |

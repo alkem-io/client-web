@@ -155,13 +155,12 @@ type LayoutColumnId = 'home' | 'community' | 'subspaces' | 'knowledge';
 | `onViewPost` | `(calloutId: string) => void` | Visible kebab — navigates (blocked by discard-confirm when buffer dirty) |
 | `onRemoveFromTab` | `(calloutId: string) => void` | Visible kebab — sets `pendingRemoval: true` on the callout in the buffer; no mutation fires |
 | `onUndoRemoveFromTab` | `(calloutId: string) => void` | Clears `pendingRemoval` in the buffer |
-| `deferredColumnMenuActions` | `DeferredColumnMenuActions` | **Per-column** (not per-callout). Separate from the visible per-callout kebab. Surfaced only when `isDeferredMenuVisible` is true |
-| `isDeferredMenuVisible` | `boolean` | **Hard-coded false** this iteration |
+| `columnMenuActions` | `ColumnMenuActions` | **Per-column** (not per-callout). Rendered via a three-dot button in the top-right of each column header. Separate from the visible per-callout kebab. |
 
-### `DeferredColumnMenuActions`
+### `ColumnMenuActions`
 
 ```
-type DeferredColumnMenuActions = {
+type ColumnMenuActions = {
   onChangeActivePhase: (columnId: LayoutColumnId, phaseId: string) => void;
   onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string) => void;
   availablePhases: { id: string; label: string }[];
@@ -169,7 +168,7 @@ type DeferredColumnMenuActions = {
 };
 ```
 
-Consumed by `LayoutPoolColumn.tsx` (the column header), NOT by `LayoutCalloutRow.tsx`. When `isDeferredMenuVisible === false`, the column header renders no overflow trigger. These are innovation-flow-step-level concerns.
+Consumed by `LayoutPoolColumn.tsx` (the column header's top-right three-dot button), NOT by `LayoutCalloutRow.tsx`. These are innovation-flow-step-level concerns.
 
 **Validation**: `onReorder` is rejected in the mapper if the source `kind === 'system'` (defense in depth — UI also disables grab handles on system rows).
 

@@ -73,7 +73,7 @@ All eight tabs are P1 and ship together. You may implement them in any order aft
 1. Implement `LayoutCalloutRow.tsx` — callout title and description are **read-only** on this tab. Render the visible three-dot kebab on every movable row (not pinned) with exactly three entries: **Move to** (submenu with the other three columns), **View Post** (navigate), **Remove from Tab** (destructive-styled; buffers a pending removal, NOT a deletion). When `pendingRemoval === true` the row stays visible with reduced opacity + strikethrough / badge, and its kebab swaps Remove for **Undo removal**. Implement `LayoutPoolColumn.tsx` using `InlineEditText` for the column title and column description (these are the only inline-editable fields on the Layout tab).
 2. Implement `SpaceSettingsLayoutView.tsx` with a `DndContext` + `KeyboardSensor`; configure dnd-kit's `Announcements` API for FR-011 grab-mode messages.
 3. Implement `layout/useLayoutTabData.ts` with the **local buffer + Reset** model. Save flushes in one `useTransition` block (reorder → move → rename → unassign-from-tab → settings toggle). `onMoveToColumn` reuses the `onReorder` pipeline; `onRemoveFromTab` buffers an unassignment against the existing tabset-assignment / callouts-set membership mutation.
-4. Implement `layout/useDeferredColumnMenu.ts` and wire `deferredColumnMenuActions` + `isDeferredMenuVisible: false` on the view. The deferred actions are **per-column** (Active phase / Default post template are column-level, NOT per-callout) and live on the column header, not on callout rows. They render nothing this iteration. Cover both actions with unit tests (SC-009).
+4. Implement `layout/useColumnMenu.ts` and wire `columnMenuActions` on the view. The per-column overflow menu lives on the column header (top-right three-dot button) and exposes "Active phase" + "Default post template". Cover both actions with unit tests (SC-009).
 5. Include the Post description display toggle (`calloutDescriptionDisplayMode`) in the buffer.
 
 ### Step 4 — Community tab (US3)
@@ -124,7 +124,7 @@ pnpm vitest run src/crd/components/space/settings
 - Mapper unit tests per tab.
 - Component tests for tab strip arrow-nav, Layout grab-mode, save-bar state transitions (Layout), About per-field autosave indicator transitions (`pending` → `saving` → `saved` → `idle`), and inline-edit flow on column headers.
 - Integration test: `useDirtyTabGuard` blocks tab switch while dirty on About or Layout; no-op on other tabs.
-- Integration test: `useDeferredColumnMenu` exercises both per-column `onChangeActivePhase(columnId, phaseId)` and `onSetAsDefaultPostTemplate(columnId, templateId)` with `isDeferredMenuVisible` both `false` and `true` so the follow-up flip requires no additional test work.
+- Integration test: `useColumnMenu` exercises both per-column `onChangeActivePhase(columnId, phaseId)` and `onSetAsDefaultPostTemplate(columnId, templateId)` against mocked Apollo responses.
 
 ### Step 11 — Lint & type-check
 

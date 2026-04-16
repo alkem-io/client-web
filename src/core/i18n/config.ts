@@ -115,6 +115,9 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/search/search.de.json'),
     fr: () => import('@/crd/i18n/search/search.fr.json'),
   },
+  'crd-spaceSettings': {
+    en: () => import('@/crd/i18n/spaceSettings/spaceSettings.en.json'),
+  },
 };
 
 // Cache for loaded translations

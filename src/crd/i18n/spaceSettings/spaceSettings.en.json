@@ -1,0 +1,33 @@
+{
+  "tabs": {
+    "about": "About",
+    "layout": "Layout",
+    "community": "Community",
+    "subspaces": "Subspaces",
+    "templates": "Templates",
+    "storage": "Storage",
+    "settings": "Settings",
+    "account": "Account"
+  },
+  "dirtyGuard": {
+    "save": "Save",
+    "discard": "Discard & leave",
+    "cancel": "Cancel",
+    "tabSwitch": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes on this tab. Save them, discard them, or stay on this tab?"
+    },
+    "navAway": {
+      "title": "Unsaved changes",
+      "description": "Leaving this page will discard your unsaved changes."
+    }
+  },
+  "saveBar": {
+    "save": "Save Changes",
+    "reset": "Reset",
+    "saving": "Saving…"
+  },
+  "stubs": {
+    "placeholder": "Tab content coming soon: {{tab}}"
+  }
+}

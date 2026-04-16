@@ -34,16 +34,13 @@ export type LayoutReorderTarget = {
 };
 
 /**
- * Deferred per-**column** (innovation-flow step) menu (FR-010 / SC-009).
+ * Per-**column** (innovation-flow step) overflow menu (FR-010 / SC-009).
  *
- * Implemented and tested now; not surfaced in the UI until the designer
- * specifies CTA placement on the column header. `isDeferredMenuVisible`
- * is hard-coded `false` in this iteration.
- *
- * Not per-callout — Active phase and Default post template are both
- * column-level concerns.
+ * Rendered as a three-dot button in the top-right of each column header.
+ * Contains two entries: Active phase and Default post template. These are
+ * column-level (innovation-flow-step-level) concerns, not per-callout.
  */
-export type DeferredColumnMenuActions = {
+export type ColumnMenuActions = {
   onChangeActivePhase: (columnId: LayoutColumnId, phaseId: string) => void;
   onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string) => void;
   availablePhases: ReadonlyArray<{ id: string; label: string }>;
@@ -79,10 +76,9 @@ export type LayoutViewProps = {
   onUndoRemoveFromTab: (calloutId: string) => void;
 
   /**
-   * Deferred **per-column** (innovation-flow step) actions — wired but
-   * not surfaced until the designer specifies CTA placement on the
-   * column header. Separate from the visible per-callout kebab above.
+   * Per-**column** (innovation-flow step) overflow menu — rendered in the
+   * top-right of each column header. Separate from the visible per-callout
+   * kebab above (the two attach to different surfaces).
    */
-  deferredColumnMenuActions: DeferredColumnMenuActions;
-  isDeferredMenuVisible: boolean;
+  columnMenuActions: ColumnMenuActions;
 };

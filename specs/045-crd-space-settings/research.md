@@ -103,20 +103,36 @@ If any mutation errors, the hook marks `saveBarState = { kind: 'saveError', mess
 
 ---
 
-## Decision 5 — Layout deferred **per-column** menu
+## Decision 5 — Layout per-**column** overflow menu
 
-**Decision**: Implement the two **per-column** (innovation-flow step) actions the current MUI exposes — **Active phase** and **Default post template** — as a first-class part of the Layout feature **now**, but hide their UI trigger until the designer specifies placement on the column header. These are column-level (innovation-flow-step-level) concerns, NOT per-callout.
+**Decision**: Render a three-dot overflow button in the top-right of each column header card. Clicking it opens a dropdown with the two per-**column** (innovation-flow step) actions the current MUI exposes — **Active phase** and **Default post template**. These are column-level concerns, NOT per-callout.
 
 Implementation:
 
-- `src/main/crdPages/topLevelPages/spaceSettings/layout/useDeferredColumnMenu.ts` exposes: `onChangeActivePhase(columnId, phaseId): void`, `onSetAsDefaultPostTemplate(columnId, templateId): void`, and the supporting query/mutation wiring.
-- The hook returns `isDeferredMenuVisible: false` (hard-coded) so the Layout view renders **no** visible overflow trigger on column headers.
+- `src/main/crdPages/topLevelPages/spaceSettings/layout/useColumnMenu.ts` exposes: `onChangeActivePhase(columnId, phaseId): void`, `onSetAsDefaultPostTemplate(columnId, templateId): void`, and the supporting query/mutation wiring (`availablePhases`, `availablePostTemplates`).
+- **Concrete mutations** (already in the codebase — reused unchanged):
+  - Active phase → `useUpdateInnovationFlowCurrentStateMutation` (GraphQL: `updateInnovationFlowCurrentState`); reference implementation in `src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx`.
+  - Default post template (set) → `useSetDefaultCalloutTemplateOnInnovationFlowStateMutation` (GraphQL: `setDefaultCalloutTemplateOnInnovationFlowState`).
+  - Default post template (clear) → `useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation` (GraphQL: `removeDefaultCalloutTemplateOnInnovationFlowState`).
+  - All three are wrapped in `useTransition` per Constitution Principle II.
+- `LayoutPoolColumn.tsx` renders the three-dot button and the dropdown; the column header contains **only** the inline-editable title, the inline-editable description, and this menu — no icon, no count badge, no collapse arrow.
 - Both callbacks are covered by unit tests that exercise the mutation paths end-to-end against mocked Apollo responses for each column.
-- When the designer provides the CTA location on the column header, a follow-up patch flips `isDeferredMenuVisible` to `true` and places the overflow trigger on whichever column-header subsurface the designer chooses — no other code changes required.
 
 **Rationale**: The user explicitly wants the mutations ready so surfacing the menu later is a one-line component change. This matches SC-009.
 
 **Alternatives considered**: waiting for the designer before implementing (adds a release cycle delay); shipping the CTA in an unapproved location (designer review blocks merge).
+
+---
+
+## Decision 4a — Inline-edit hover pattern
+
+**Decision**: `InlineEditText` (shared primitive used by Layout column title, Layout column description, and any About-tab field the designer places as plain-text-with-edit) MUST render its value as plain text by default. On hover it MUST show a subtle underline on the text and a small trailing pencil icon. Clicking the text OR the pencil enters edit mode. Matches the prototype's Home-tab title affordance (the one shown with the pencil on hover).
+
+**Rationale**: FR-006a pins this as the canonical inline-edit affordance. A single shared primitive keeps all call sites visually identical.
+
+**Alternatives considered**:
+- Always-visible pencil button: rejected — visually noisy on forms with many fields; doesn't match the prototype.
+- Click-to-edit with NO pencil hint: rejected — poor discoverability; screen-reader users need the pencil as a keyboard-focusable affordance.
 
 ---
 
@@ -128,7 +144,7 @@ Implementation:
 2. **View Post** — navigates to the post's existing route. Immediate; blocked by the FR-026 discard-confirm dialog if the Layout buffer is dirty.
 3. **Remove from Tab** — **unassigns** the callout from its current column (by updating the existing tabset-assignment / callouts-set membership). It does NOT delete the callout. Buffered like any other layout change; flushed via Save Changes.
 
-This visible kebab is **per-callout** and is **separate** from the deferred **per-column** "Active phase" / "Default post template" actions in Decision 5. The two menus attach to different surfaces (callout row vs column header). Flipping `isDeferredMenuVisible` surfaces the column menu without touching the per-callout kebab.
+This visible kebab is **per-callout** and is **separate** from the per-**column** "Active phase" / "Default post template" menu in Decision 5. The two menus attach to different surfaces — the per-callout kebab lives on each row; the per-column overflow menu lives in the top-right of each column header.
 
 **Pending-removal state.** "Remove from Tab" does NOT immediately hide the row. It sets `pendingRemoval: true` on the callout in the buffer. The row stays visible with reduced opacity + strikethrough (or a small "will be removed" badge — designer's final pick) and the kebab swaps its Remove entry for an **Undo removal** entry. Save Changes flushes the pending unassignment; Reset clears the flag; navigating away discards it. This matches the FR-008a zero-mutations-until-Save invariant and keeps the intermediate state legible and reversible.
 
@@ -212,13 +228,32 @@ Each table gets its own mutations but shares search / filter / kebab / row primi
 
 1. **Pure-function unit tests** for each `<tab>Mapper.ts` using Vitest and plain-object fixtures (no generated-type imports in tests — fixtures are shaped by hand).
 2. **Component tests** for CRD `*View` components via Vitest + `@testing-library/react` to verify keyboard navigation (tab strip arrows, Layout grab-mode), dirty-state emission (Layout only), save / reset callbacks (Layout), per-field autosave-state rendering (About), and the absence of Save / Reset buttons on About.
-3. **Integration smoke tests** for `useDirtyTabGuard` (blocked tab-switch while dirty) and `useDeferredColumnMenu` (both per-column Active-phase and Default-post-template actions exercised end-to-end with the flag both off and on, so flipping the flag in a follow-up requires no additional test work).
+3. **Integration smoke tests** for `useDirtyTabGuard` (blocked tab-switch while dirty) and `useColumnMenu` (both per-column Active-phase and Default-post-template actions exercised end-to-end).
 
 End-to-end tests (Playwright / Cypress) are out of scope — not a project convention.
 
-**Rationale**: Matches 043's testing footprint. Focus on high-risk logic (mapping, keyboard DnD, dirty buffer, deferred menu) without redoing Apollo mock plumbing already covered by MUI tests.
+**Rationale**: Matches 043's testing footprint. Focus on high-risk logic (mapping, keyboard DnD, dirty buffer, per-column menu wiring) without redoing Apollo mock plumbing already covered by MUI tests.
 
 **Alternatives considered**: full E2E (disproportionate cost); snapshot tests only (brittle).
+
+---
+
+## Decision 12a — Shared Explore-Spaces card component
+
+**Decision**: The About tab's live Preview card uses the SAME CRD component that will power the CRD Explore Spaces page when it is built. The component is introduced as shared infrastructure in this feature (About is the first consumer) so a future Explore Spaces migration consumes the same primitive instead of forking a near-duplicate.
+
+Behavior:
+- Visual: banner image (with deterministic `pickColorFromId` fallback), space avatar overlaid on the banner, public / private badge, name, description, tags (truncated to ~3 visible), LEADS row with small avatars, member count with icon.
+- Props are plain TypeScript (per CRD CLAUDE.md) — no GraphQL types. The About mapper and any future Explore mapper each produce the component's prop shape.
+- File location: `src/crd/components/space/SpaceCard.tsx`. If a component with the same name already exists, it is extended BC-safely rather than duplicated (DRY per Arch #6.f).
+
+**Audit outcome (existing component vs target)**: The current `src/crd/components/space/SpaceCard.tsx` already renders the full target visual — banner + gradient fallback, stacked avatar overlay, public/private badge, name, parent-indicator (optional), description line-clamp, tags (≤3 + `+N`), LEADS row with stacked avatars. Only delta: it surfaces membership status via a "Member" badge but does not render a **numeric member count** next to a users icon. Resolution: extend `SpaceCardData` with an optional `memberCount?: number` field; the card renders the count + users icon in the footer-right only when the prop is provided. All 8 existing call sites (`src/crd/app/data/space.ts`, `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts`, `src/main/crdPages/spaces/spaceCardDataMapper.ts`, `src/main/crdPages/search/searchDataMapper.ts`, `src/main/crdPages/search/CrdSearchOverlay.tsx`, `src/crd/app/data/spaces.ts`, `src/crd/components/space/SpaceExplorer.tsx`, and the spec 043 contract) continue to work unchanged — no prop is removed, no default shifts.
+
+**Rationale**: User instruction — the About Preview shows a card that matches Explore exactly. Shipping it once here avoids a second port later.
+
+**Alternatives considered**:
+- About-only Preview built inline: rejected — when Explore is migrated, it would either duplicate the card or retrofit a shared primitive.
+- Defer the shared component until Explore is spec'd: rejected — About needs a faithful Preview today.
 
 ---
 
