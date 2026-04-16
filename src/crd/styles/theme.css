@@ -45,9 +45,9 @@
   --destructive-foreground: rgba(255, 255, 255, 1.00);
   /* The default border color for elements such as inputs, buttons, and other containers. */
   --border: rgba(226, 232, 240, 1.00);
-  /* The default background color for input fields once the text has been filled. Should be either transparent or match the input-background. */
-  --input: rgba(255, 255, 255, 1.00);
-  /* The default background color for input fields, text areas, and other input elements. */
+  /* Border color for input fields (Tailwind utility `border-input`). Matching --border keeps Input/Select/TimeField visually consistent with outlined buttons. */
+  --input: rgba(226, 232, 240, 1.00);
+  /* Fill color for input fields (Tailwind utility `bg-input-background`). */
   --input-background: rgba(255, 255, 255, 1.00);
   /* The default font weight for medium text. */
   --font-weight-medium: 500;
@@ -112,7 +112,7 @@
   --destructive: rgba(220, 38, 38, 1.00);
   --destructive-foreground: rgba(255, 255, 255, 1.00);
   --border: rgba(51, 65, 85, 1.00);
-  --input: rgba(30, 41, 59, 1.00);
+  --input: rgba(51, 65, 85, 1.00);
   --input-background: rgba(30, 41, 59, 1.00);
   --ring: rgba(226, 232, 240, 0.5);
   --font-weight-medium: 500;
