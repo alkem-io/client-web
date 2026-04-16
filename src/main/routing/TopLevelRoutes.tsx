@@ -49,6 +49,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
 );
 const HubRoute = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/routing/HubRoute'));
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
+const CrdSpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/space/routing/CrdSpaceRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -286,16 +287,32 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
-                  <Route
-                    path={`:${nameOfUrl.spaceNameId}/*`}
-                    element={
-                      <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                        <Suspense fallback={<Loading />}>
-                          <SpaceRoutes />
-                        </Suspense>
-                      </WithApmTransaction>
-                    }
-                  />
+                  {/* Space page — toggleable between CRD (new) and MUI (old) via localStorage */}
+                  {crdEnabled ? (
+                    <Route element={<CrdLayoutWrapper />}>
+                      <Route
+                        path={`:${nameOfUrl.spaceNameId}/*`}
+                        element={
+                          <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                            <Suspense fallback={<Loading />}>
+                              <CrdSpaceRoutes />
+                            </Suspense>
+                          </WithApmTransaction>
+                        }
+                      />
+                    </Route>
+                  ) : (
+                    <Route
+                      path={`:${nameOfUrl.spaceNameId}/*`}
+                      element={
+                        <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                          <Suspense fallback={<Loading />}>
+                            <SpaceRoutes />
+                          </Suspense>
+                        </WithApmTransaction>
+                      }
+                    />
+                  )}
                   {/* Redirects */}
                   <Route path={`/${TopLevelRoutePath.Help}`} element={<Navigate to={`/${TopLevelRoutePath.Docs}`} />} />
                   <Route

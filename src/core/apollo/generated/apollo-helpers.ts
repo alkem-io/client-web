@@ -2650,6 +2650,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationMigrateOrphanedConversations'
   | 'adminCommunicationRemoveOrphanedRoom'
+  | 'adminCommunicationSyncSpaceHierarchy'
   | 'adminCommunicationUpdateRoomState'
   | 'adminIdentityDeleteKratosIdentity'
   | 'adminInAppNotificationsPrune'
@@ -2752,6 +2753,8 @@ export type MutationKeySpecifier = (
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
   | 'moveContributionToCallout'
+  | 'moveSpaceL1ToSpaceL0'
+  | 'moveSpaceL1ToSpaceL2'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -2859,6 +2862,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMigrateOrphanedConversations?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationSyncSpaceHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
   adminInAppNotificationsPrune?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2961,6 +2965,8 @@ export type MutationFieldPolicy = {
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3306,6 +3312,7 @@ export type PlatformAdminIdentityQueryResultsFieldPolicy = {
   identities?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAdminQueryResultsKeySpecifier = (
+  | 'accounts'
   | 'communication'
   | 'identity'
   | 'innovationHubs'
@@ -3317,6 +3324,7 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | PlatformAdminQueryResultsKeySpecifier
 )[];
 export type PlatformAdminQueryResultsFieldPolicy = {
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   identity?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3754,7 +3762,6 @@ export type PushSubscriptionFieldPolicy = {
   userAgent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
-  | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
@@ -3794,7 +3801,6 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
-  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;

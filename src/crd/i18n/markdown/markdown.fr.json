@@ -1,0 +1,31 @@
+{
+  "editor": {
+    "toolbar": "Barre d'outils de mise en forme",
+    "undo": "Annuler",
+    "redo": "Rétablir",
+    "bold": "Gras",
+    "italic": "Italique",
+    "heading1": "Titre 1",
+    "heading2": "Titre 2",
+    "heading3": "Titre 3",
+    "bulletList": "Liste à puces",
+    "orderedList": "Liste numérotée",
+    "blockquote": "Citation",
+    "codeBlock": "Bloc de code",
+    "horizontalRule": "Ligne horizontale",
+    "insertTable": "Insérer un tableau",
+    "deleteTable": "Supprimer le tableau",
+    "addColumn": "Ajouter une colonne",
+    "addRow": "Ajouter une ligne",
+    "deleteColumn": "Supprimer la colonne",
+    "deleteRow": "Supprimer la ligne",
+    "link": "Lien",
+    "emoji": "Insérer un emoji",
+    "charCount": "{{count}}/{{max}} caractères",
+    "link.url": "URL",
+    "link.apply": "Appliquer",
+    "link.remove": "Supprimer le lien",
+    "link.placeholder": "https://...",
+    "link.invalid": "L'URL doit commencer par http:// ou https://"
+  }
+}

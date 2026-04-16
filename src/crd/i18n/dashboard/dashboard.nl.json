@@ -46,13 +46,48 @@
     "tipsAndTricks": "Tips & Trucs",
     "myActivity": "Mijn laatste activiteit",
     "mySpaceActivity": "Laatste activiteit in mijn Spaces",
-    "memberships": "Mijn Lidmaatschappen",
     "findMore": "Meer tips & trucs ontdekken",
-    "findMoreUrl": "https://welcome.alkem.io/blog/",
-    "seeMoreSpaces": "Meer spaces bekijken",
-    "createSpace": "Space Aanmaken",
-    "expandNode": "{{name}} uitvouwen",
-    "collapseNode": "{{name}} invouwen"
+    "findMoreUrl": "https://welcome.alkem.io/blog/"
+  },
+  "myMembershipsPanel": {
+    "title": "Mijn Spaces",
+    "subtitle_one": "{{count}} space waarvan je deel uitmaakt",
+    "subtitle_other": "{{count}} spaces waarvan je deel uitmaakt",
+    "close": "Sluiten",
+    "searchPlaceholder": "Zoek in je spaces...",
+    "clearSearch": "Zoekopdracht wissen",
+    "loading": "Je spaces laden",
+    "privacy": {
+      "public": "Openbaar",
+      "private": "Privé"
+    },
+    "expand": "{{name}} uitvouwen",
+    "collapse": "{{name}} invouwen",
+    "subspaces_one": "{{count}} subspace",
+    "subspaces_other": "{{count}} subspaces",
+    "filter": {
+      "role": {
+        "label": "Filteren op rol",
+        "all": "Alle rollen"
+      },
+      "visibility": {
+        "label": "Filteren op zichtbaarheid",
+        "all": "Alle",
+        "public": "Openbaar",
+        "private": "Privé"
+      }
+    },
+    "role": {
+      "admin": "Beheerder",
+      "lead": "Leider",
+      "member": "Lid"
+    },
+    "empty": {
+      "noSpaces": "Je maakt nog geen deel uit van spaces.",
+      "browseAll": "Alle spaces bekijken",
+      "noMatches": "Geen spaces komen overeen met je zoekopdracht.",
+      "clearFilters": "Filters wissen"
+    }
   },
   "tips": {
     "items": [
@@ -90,6 +125,7 @@
   },
   "invitations": {
     "title": "Openstaande Uitnodigingen",
+    "loading": "Uitnodigingen laden",
     "accept": "Accepteren",
     "decline": "Weigeren",
     "noInvitations": "Geen openstaande uitnodigingen"
@@ -113,5 +149,27 @@
   "withoutMemberships": {
     "createSpace": "Maak je eigen Space",
     "createSpaceDescription": "Begin met samenwerken door je eerste space te maken"
+  },
+  "pendingMemberships": {
+    "title": "Openstaande Lidmaatschappen",
+    "empty": "Je hebt geen openstaande uitnodigingen of aanvragen.",
+    "loading": "Openstaande lidmaatschappen laden",
+    "loadingInvitation": "Uitnodiging laden",
+    "loadingApplication": "Aanvraag laden",
+    "close": "Sluiten",
+    "closeDialog": "Dialoog sluiten",
+    "invitationsSection": "Uitnodigingen",
+    "vcInvitationsSection": "Virtuele Bijdrager Uitnodigingen",
+    "applicationsSection": "Openstaande Aanvragen",
+    "detail": {
+      "back": "Terug naar lijst",
+      "reject": "Weigeren",
+      "rejectAriaLabel": "Uitnodiging voor {{spaceName}} weigeren",
+      "accept": "Accepteren",
+      "acceptAriaLabel": "Uitnodiging voor {{spaceName}} accepteren",
+      "join": "Toetreden",
+      "joinAriaLabel": "Toetreden tot {{spaceName}}"
+    },
+    "applicationAriaLabel": "Openstaande aanvraag voor {{spaceName}} bekijken"
   }
 }

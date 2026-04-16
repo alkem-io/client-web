@@ -23,6 +23,7 @@ interface SpaceContextProps {
     nameID: string;
     about: SpaceAboutLightModel;
     level: SpaceLevel;
+    accountId: string;
   };
   permissions: SpacePermissions;
   entitlements: LicenseEntitlementType[];
@@ -51,6 +52,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
       },
     },
     level: SpaceLevel.L0,
+    accountId: '',
   },
   entitlements: [],
   permissions: {
@@ -68,6 +70,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
   const spaceId = levelZeroSpaceId ?? '';
 
   const { data: spaceAboutData, loading: loadingSpaceQuery } = useSpaceAboutBaseQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
@@ -81,6 +84,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
 
   const { data: spaceEntitlementsData, loading: loadingSpaceEntitlementsQuery } = useSpaceEntitlementsQuery({
     variables: {
+      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
       spaceId: spaceId!,
     },
     skip: !spaceId || !canRead,
@@ -111,6 +115,12 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       profile: {
         displayName: spaceData?.about.profile.displayName ?? '',
         url: spaceData?.about.profile.url ?? '',
+        tagline: spaceData?.about.profile.tagline,
+        description: spaceData?.about.profile.description,
+        tagset: spaceData?.about.profile.tagset,
+        avatar: spaceData?.about.profile.avatar,
+        cardBanner: spaceData?.about.profile.cardBanner,
+        banner: spaceData?.about.profile.banner,
       },
       guidelines: {
         id: spaceData?.about.guidelines?.id ?? '',
@@ -123,6 +133,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       nameID: spaceNameId,
       about: aboutModel,
       level: SpaceLevel.L0,
+      accountId: spaceData?.account?.id ?? '',
     };
   })();
 

@@ -193,6 +193,45 @@ See [translations.md](./translations.md) for the full guide. Short version:
 
 Tailwind is loaded globally but scoped via `.crd-root` — MUI pages outside this scope are unaffected. CRD pages must never import MUI, ensuring no MUI CSS is loaded for CRD routes.
 
+### Visual Fallbacks: Avatars & Banners (`pickColorFromId`)
+
+When migrating a page that displays spaces (or any entity with an avatar / card banner), do **not** wire `getDefaultSpaceVisualUrl` into the data mapper as a fallback for missing images. CRD has its own deterministic colour fallback that gives every space a stable accent colour derived from its id.
+
+The single shared helper lives at `@/crd/lib/pickColorFromId`. Use it in your mapper:
+
+```typescript
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
+export const mapMyEntityToCardData = (entity): MyCardData => ({
+  id: entity.id,
+  name: entity.profile.displayName,
+  href: entity.profile.url,
+  avatarUrl: entity.profile.avatar?.uri,
+  // Leave undefined when no real banner exists — the component will render
+  // the deterministic gradient from `color`, not a stock placeholder.
+  bannerUrl: entity.profile.cardBanner?.uri || undefined,
+  color: pickColorFromId(entity.id),
+});
+```
+
+The CRD component receives `color` as a plain string prop and:
+
+- Renders an **avatar fallback** as a solid coloured `AvatarFallback` (`style={{ backgroundColor: color }}` + `text-white`) when `avatarUrl` is missing.
+- Renders a **banner fallback** as a `135deg` linear gradient (`color → color-mix(in srgb, color 70%, black)`) when `bannerUrl` is missing.
+
+A real image always wins — the colour is purely a fallback.
+
+**Where to apply the colour vs. where to leave the muted treatment:**
+
+| Use the deterministic colour | Stick to the muted / prototype treatment |
+|---|---|
+| Display avatars (size-8+, e.g. invitation cards, dialogs, panel rows) | Sidebar resource items (`size-6` list rows) |
+| Card banners and banner fallback areas | Initials label tiles inside compact cards (CompactSpaceCard's name-row tile uses `bg-primary`) |
+
+The rule of thumb: prominent display avatars and banner areas get the colour; small list rows and label tiles stay muted so the layout doesn't feel busy.
+
+See `src/crd/CLAUDE.md` (section "Deterministic Accent Colors") for the full data flow and the list of components currently consuming `color`.
+
 ### Global Dialogs (Messages, Notifications)
 
 **Messages**: The MUI Messages dialog is rendered in `root.tsx` and shared across all routes. CRD pages trigger it via `onMessagesClick` callback prop.

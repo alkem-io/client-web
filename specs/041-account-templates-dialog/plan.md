@@ -1,0 +1,89 @@
+# Implementation Plan: Account Templates in Template Picker Dialog
+
+**Branch**: `041-account-templates-dialog` | **Date**: 2026-04-03 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/041-account-templates-dialog/spec.md`
+
+## Summary
+
+Add an "Account templates" section to the template picker dialog (`ImportTemplatesDialog`) so facilitators can see and select templates from their account's innovation packs. The section loads eagerly when the dialog opens. Section order is context-dependent: during **Space creation**, Account templates appear first (above Platform templates); **within a Space** (Post, Callout, Whiteboard, etc.), Space templates appear first, then Account templates, then Platform templates. Implementation requires a new GraphQL query for account-level templates, a new section in the dialog component, and an `accountId` prop plumbed from the Space's owning account (via `SpaceContext` for in-Space callers, or `useCurrentUserContext()` for Space creation).
+
+## Technical Context
+
+**Language/Version**: TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned)
+**Primary Dependencies**: Apollo Client, MUI (existing dialog), react-i18next, lodash-es
+**Storage**: Apollo Client cache (GraphQL responses)
+**Testing**: Vitest (jsdom)
+**Target Platform**: Web SPA (all modern browsers)
+**Project Type**: Web application (frontend only — this feature requires no backend changes if the schema already supports account innovation pack template queries)
+**Performance Goals**: Account templates must load within the same timeframe as existing Space templates (eager, not lazy)
+**Constraints**: No new dependencies; reuse existing `ImportTemplatesDialogGallery`, `TemplateCard`, and `AnyTemplateWithInnovationPack` patterns
+**Scale/Scope**: Affects 9 invocation points of `ImportTemplatesDialog` across Space creation, Post creation, Whiteboard, Callout, Innovation Flow, Community Guidelines, and Admin pages
+
+## Constitution Check
+
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+
+| Principle | Status | Notes |
+|-----------|--------|-------|
+| **I. Domain-Driven Boundaries** | PASS | New query hook lives in `src/domain/templates/`. Account context obtained via `SpaceContext` (for in-Space callers) or `useCurrentUserContext()` (for Space creation). No ad-hoc state shapes — reuses `AnyTemplateWithInnovationPack`. |
+| **II. React 19 Concurrent UX** | PASS | Rendering remains pure. Loading state uses existing `loading` boolean pattern. No blocking operations — query runs in parallel with Space template query. |
+| **III. GraphQL Contract Fidelity** | PASS | New `.graphql` query file added, codegen regenerated. Uses generated hooks only. Props use `AnyTemplateWithInnovationPack`, not raw GraphQL types. |
+| **IV. State & Side-Effect Isolation** | PASS | State lives in Apollo cache. Component state limited to `useState` for loading UI. No direct DOM manipulation. |
+| **V. Experience Quality** | PASS | Reuses existing accessible components (`ImportTemplatesDialogGallery`, `TemplateCard`). Loading skeleton already handled by gallery. Section header follows existing `BlockTitle` pattern. |
+| **Arch 1: Feature directories** | PASS | Query and logic stay in `src/domain/templates/components/Dialogs/ImportTemplateDialog/`. |
+| **Arch 5: No barrel exports** | PASS | All imports use explicit file paths. |
+| **Arch 6: SOLID / DRY** | PASS | SRP: query hook separate from rendering. OCP: new section composed alongside existing sections without modifying gallery. DRY: reuses `ImportTemplatesDialogGallery` for all three section types. |
+| **Workflow 5: Root Cause Analysis** | N/A | No bug fix — new feature. |
+
+**Gate result**: PASS — no violations.
+
+### Post-Design Re-check (after Phase 1)
+
+All gates remain PASS after design artifacts are complete:
+- **Principle III** confirmed: New GraphQL query (`ImportTemplateDialogAccountTemplates`) uses `TemplateProfileInfo` fragment and `@include` directives consistent with existing queries. `SpaceAboutBase` query extended with `account { id }`. Codegen regeneration required.
+- **Arch 6 DRY** confirmed: Flattening logic (`flatMap` over innovation packs) is specific to account templates and doesn't duplicate existing code. The gallery component is reused without modification.
+- **No new dependencies** introduced. No new directories created. `SpaceContext` extended with `accountId` field. Existing component APIs extended with optional fields only.
+
+## Project Structure
+
+### Documentation (this feature)
+
+```text
+specs/041-account-templates-dialog/
+├── spec.md              # Feature specification
+├── plan.md              # This file
+├── research.md          # Phase 0: Research findings
+├── data-model.md        # Phase 1: Entity model
+├── quickstart.md        # Phase 1: Implementation quickstart
+├── contracts/           # Phase 1: GraphQL query contract
+│   └── ImportTemplateDialogAccountTemplates.graphql
+└── tasks.md             # Phase 2: Generated by /speckit.tasks
+```
+
+### Source Code (files to modify/create)
+
+```text
+src/
+├── domain/space/
+│   ├── about/graphql/SpaceAboutQueries.graphql  # MODIFY: add account { id } to SpaceAboutBase query
+│   └── context/SpaceContext.tsx                  # MODIFY: expose accountId in SpaceContextProps
+├── domain/templates/components/Dialogs/ImportTemplateDialog/
+│   ├── ImportTemplatesDialog.tsx         # MODIFY: add account templates section + accountId prop
+│   ├── ImportTemplateDialog.graphql      # MODIFY: add account templates query
+│   └── ImportTemplatesDialogGallery.tsx  # NO CHANGE: reused as-is
+├── core/apollo/generated/
+│   ├── apollo-hooks.ts                  # REGENERATE: new query hook + modified SpaceAboutBase
+│   └── graphql-schema.ts               # REGENERATE: if schema changes
+└── core/i18n/en/
+    └── translation.en.json              # MODIFY: add "accountTemplates" i18n key
+```
+
+**Structure Decision**: Pure frontend feature within existing `src/domain/templates/` structure. No new directories needed. The only new file is the GraphQL contract in the spec's `contracts/` directory.
+
+## Complexity Tracking
+
+> No Constitution Check violations — this section is empty.
+
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| *(none)*  | —          | —                                   |

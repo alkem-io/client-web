@@ -4,6 +4,7 @@ export interface SpaceCreationForm {
   isSubmitting: boolean;
   onValidChanged: (valid: boolean) => void;
   onChange: (value: SpaceFormValues) => void;
+  accountId?: string;
 }
 
 // All form fields are here for both space and subspace creation, each of the forms Pick the fields they need

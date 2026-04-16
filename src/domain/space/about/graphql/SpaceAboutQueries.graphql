@@ -5,6 +5,9 @@ query SpaceAboutBase($spaceId: UUID!) {
       id
       level
       nameID # Used for search in space
+      account {
+        id
+      }
       about {
         ...SpaceAboutLight
       }
