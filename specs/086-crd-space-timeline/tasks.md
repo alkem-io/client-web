@@ -217,6 +217,25 @@
 
 ---
 
+## Phase 12: Date-library consolidation (post-review polish)
+
+**Purpose**: Tighten the date-library boundary so CRD + crdPages use a single library (`date-fns`), eliminating the previous mixed-mode where connectors imported `dayjs` and CRD components imported `date-fns`. Also DRY up the per-component locale helper that had drifted into 7 copies.
+
+- [X] T062 Create `src/crd/lib/dateFnsLocale.ts` with the `LOCALE_BY_LANG` map and `resolveDateFnsLocale(langCode)` helper. Single source of truth for the supported-language → date-fns Locale mapping.
+- [X] T063 Migrate every CRD form/component (`DateField`, `DurationField`, `EventsSection`, `EventDateBadge`, `EventCardHeader`, `EventDetailView`, `EventsCalendarView`) to import `resolveDateFnsLocale` from the shared helper instead of re-declaring its own copy. ~90 lines of duplication removed.
+- [X] T064 Replace all `dayjs` calls in the new connector layer with `date-fns` equivalents:
+  - `src/main/crdPages/space/hooks/useCrdCalendarSidebar.ts` — `dayjs(...).isAfter()` → `isAfter`, `dayjs().startOf('day')` → `startOfDay(new Date())`, `.valueOf()` → `Date.getTime()`
+  - `src/main/crdPages/space/timeline/useCrdCalendarUrlState.ts` — `dayjs(str).isValid()` → `parse('yyyy-MM-dd', ...)` + `isValid()`; format token changed from moment-style `'YYYY-MM-DD'` to date-fns `'yyyy-MM-dd'` (wire format unchanged)
+  - `src/main/crdPages/space/timeline/CrdCalendarDialogConnector.tsx` — same `startOfDay` / `isAfter` swap
+  - `src/main/crdPages/space/timeline/ExportEventsToIcsConnector.tsx` — inlined a JS-Date-typed `formatDateTimeUtc(date: Date)` (instead of importing the dayjs-typed one from `src/domain/timeline/calendar/utils/icsUtils.ts`); replaced `dayjs().format('YYYY-MM-DD')` with `format(new Date(), 'yyyy-MM-dd')`. The legacy MUI `ExportEventsToIcsButton` continues to use the dayjs-typed domain helper, untouched.
+- [X] T065 Update `src/crd/CLAUDE.md` to add Golden Rule #7 ("Use `date-fns`, not `dayjs`") with rationale + good/bad examples + locale-helper usage + cross-layer boundary guidance.
+- [X] T066 Update `specs/086-crd-space-timeline/research.md` R2 (Date-library boundary) with the post-implementation decision (single library across CRD + crdPages) and rationale.
+- [X] T067 Static checks: `npx tsc --noEmit` clean; `npx biome ci` clean across all 12 touched files; `pnpm vitest run` 592 passed / 3 skipped (no regressions); `grep -r "from 'dayjs" src/crd src/main/crdPages/space/{timeline,hooks}` returns zero matches.
+
+**Checkpoint**: The CRD + crdPages timeline code uses a single date library. The domain layer's existing dayjs usage is unchanged.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

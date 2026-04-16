@@ -1,11 +1,10 @@
-import type { Locale } from 'date-fns';
 import { format } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { ExternalLink } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -63,13 +62,6 @@ type EventDetailViewProps = {
 };
 
 const DESKTOP_BREAKPOINT = '(min-width: 768px)';
-const LOCALE_BY_LANG: Record<string, Locale> = { en: enUS, nl, es, bg, de, fr };
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
 
 function authorInitial(name: string): string {
   return name.trim().charAt(0).toUpperCase() || '?';
@@ -85,7 +77,7 @@ export function EventDetailView({
   resolveColor,
 }: EventDetailViewProps) {
   const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  const locale = resolveDateFnsLocale(i18n.language);
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
   if (event.notFound) {

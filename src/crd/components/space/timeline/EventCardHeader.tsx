@@ -1,7 +1,6 @@
-import type { Locale } from 'date-fns';
 import { addMinutes, format, isSameDay } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Badge } from '@/crd/primitives/badge';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { EventDateBadge } from './EventDateBadge';
@@ -23,25 +22,10 @@ type EventCardHeaderProps = {
   size?: 'sm' | 'md';
 };
 
-const LOCALE_BY_LANG: Record<string, Locale> = {
-  en: enUS,
-  nl,
-  es,
-  bg,
-  de,
-  fr,
-};
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
-
 /** Badge + title + meta row (date, time / duration, type, subspace chip). */
 export function EventCardHeader({ event, loading, size = 'sm' }: EventCardHeaderProps) {
   const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  const locale = resolveDateFnsLocale(i18n.language);
 
   if (loading) {
     return (

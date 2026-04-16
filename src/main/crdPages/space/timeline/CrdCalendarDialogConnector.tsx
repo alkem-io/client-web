@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { isAfter, startOfDay } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteEventConfirmation } from '@/crd/components/space/timeline/DeleteEventConfirmation';
@@ -56,8 +56,8 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
 
   // Future events only — drives the batch ICS export button visibility and
   // payload (FR-032).
-  const startOfToday = dayjs().startOf('day');
-  const futureListItems = listItems.filter(item => item.startDate && dayjs(item.startDate).isAfter(startOfToday));
+  const startOfToday = startOfDay(new Date());
+  const futureListItems = listItems.filter(item => item.startDate && isAfter(item.startDate, startOfToday));
 
   const [editingEventId, setEditingEventId] = useState<string | undefined>(undefined);
 

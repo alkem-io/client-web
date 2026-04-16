@@ -1,9 +1,9 @@
-import dayjs from 'dayjs';
+import { addMinutes, format } from 'date-fns';
 import { Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { Button } from '@/crd/primitives/button';
-import { escapeIcsText, foldLine, formatDateTimeUtc } from '@/domain/timeline/calendar/utils/icsUtils';
+import { escapeIcsText, foldLine } from '@/domain/timeline/calendar/utils/icsUtils';
 
 type ExportableEvent = {
   id: string;
@@ -28,8 +28,25 @@ const ICS_HEADER = [
   'METHOD:PUBLISH',
 ];
 
+/**
+ * RFC 5545 timestamp formatter for a JS Date.
+ *
+ * Inlined here (instead of using `formatDateTimeUtc` from
+ * `@/domain/timeline/calendar/utils/icsUtils`) because that utility takes a
+ * `dayjs.Dayjs`, and this connector deliberately avoids dayjs to keep the
+ * CRD/connector layer on a single date library (date-fns). The legacy MUI
+ * `ExportEventsToIcsButton` continues to use the dayjs-typed helper.
+ */
+function formatDateTimeUtc(date: Date): string {
+  return date
+    .toISOString()
+    .replace(/[-:]/g, '')
+    .replace(/\.\d{3}/, '');
+}
+
 function buildIcsContent(events: ExportableEvent[]): string {
   const lines: string[] = [...ICS_HEADER];
+  const now = new Date();
 
   for (const event of events) {
     if (!event.startDate) {
@@ -39,14 +56,13 @@ function buildIcsContent(events: ExportableEvent[]): string {
       console.warn('[ExportEventsToIcs] skipping event without startDate', event.id);
       continue;
     }
-    const startDate = dayjs(event.startDate);
-    const endDate = startDate.add(event.durationMinutes ?? 60, 'minute');
+    const endDate = addMinutes(event.startDate, event.durationMinutes ?? 60);
 
     lines.push(
       'BEGIN:VEVENT',
       `UID:${event.id}@alkemio.org`,
-      `DTSTAMP:${formatDateTimeUtc(dayjs())}`,
-      `DTSTART:${formatDateTimeUtc(startDate)}`,
+      `DTSTAMP:${formatDateTimeUtc(now)}`,
+      `DTSTART:${formatDateTimeUtc(event.startDate)}`,
       `DTEND:${formatDateTimeUtc(endDate)}`,
       `SUMMARY:${escapeIcsText(event.title)}`
     );
@@ -78,7 +94,7 @@ export function ExportEventsToIcsConnector({ events }: ExportEventsToIcsConnecto
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `alkemio-events-${dayjs().format('YYYY-MM-DD')}.ics`;
+    link.download = `alkemio-events-${format(new Date(), 'yyyy-MM-dd')}.ics`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

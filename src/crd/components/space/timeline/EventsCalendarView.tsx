@@ -1,10 +1,10 @@
 import type { Locale } from 'date-fns';
 import { addDays, addMinutes, format, isBefore, isSameDay, startOfDay } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Calendar } from '@/crd/primitives/calendar';
@@ -39,13 +39,6 @@ type EventsCalendarViewProps = {
 };
 
 const DESKTOP_BREAKPOINT = '(min-width: 768px)';
-const LOCALE_BY_LANG: Record<string, Locale> = { en: enUS, nl, es, bg, de, fr };
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
 
 type EventBuckets = {
   /** Events keyed by YYYY-MM-DD of their start date. */
@@ -162,7 +155,7 @@ export function EventsCalendarView({
   exportSlot,
 }: EventsCalendarViewProps) {
   const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  const locale = resolveDateFnsLocale(i18n.language);
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
 

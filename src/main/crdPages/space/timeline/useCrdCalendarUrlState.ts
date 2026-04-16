@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { format, isValid, parse, startOfDay } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -15,7 +15,10 @@ export const HIGHLIGHT_PARAM_NAME = 'highlight';
 export const INIT_CREATING_EVENT_PARAM = 'new';
 export const CALENDAR_PATH_SEGMENT = 'calendar';
 
-const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
+// date-fns uses Unicode tokens — yyyy/MM/dd, NOT moment-style YYYY/DD which
+// dayjs accepts. The string 'yyyy-MM-dd' is the wire format for the
+// ?highlight= deeplink param.
+const INTERNAL_DATE_FORMAT = 'yyyy-MM-dd';
 const CALENDAR_PATH_MARKER = `/${CALENDAR_PATH_SEGMENT}`;
 
 /**
@@ -84,10 +87,11 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
   const params = useQueryParams();
 
   const highlightedDayParam = params.get(HIGHLIGHT_PARAM_NAME);
-  const highlightedDay =
-    highlightedDayParam && dayjs(highlightedDayParam).isValid()
-      ? dayjs(highlightedDayParam).startOf('day').toDate()
-      : null;
+  const highlightedDay = (() => {
+    if (!highlightedDayParam) return null;
+    const parsed = parse(highlightedDayParam, INTERNAL_DATE_FORMAT, new Date());
+    return isValid(parsed) ? startOfDay(parsed) : null;
+  })();
 
   const isCreatingFromUrl = params.get(INIT_CREATING_EVENT_PARAM) === '1';
   const isAnyCalendarRoute = pathname.includes(CALENDAR_PATH_MARKER);
@@ -101,7 +105,7 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
 
     navigateToHighlight: (date: Date) => {
       const next = new URLSearchParams(params.toString());
-      next.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+      next.set(HIGHLIGHT_PARAM_NAME, format(date, INTERNAL_DATE_FORMAT));
       next.delete(INIT_CREATING_EVENT_PARAM);
       navigate(`${calendarPath}?${next.toString()}`, { replace: true });
     },

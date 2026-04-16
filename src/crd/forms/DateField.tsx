@@ -1,9 +1,8 @@
-import type { Locale } from 'date-fns';
 import { format } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Calendar } from '@/crd/primitives/calendar';
@@ -24,14 +23,6 @@ type DateFieldProps = {
   ariaLabel?: string;
 };
 
-const LOCALE_BY_LANG: Record<string, Locale> = { en: enUS, nl, es, bg, de, fr };
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
-
 /** Popover-based date picker. Controlled via `value`/`onChange`. */
 export function DateField({
   label,
@@ -47,7 +38,7 @@ export function DateField({
   ariaLabel,
 }: DateFieldProps) {
   const { i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  const locale = resolveDateFnsLocale(i18n.language);
   const [open, setOpen] = useState(false);
   const id = useId();
 

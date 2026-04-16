@@ -10,13 +10,13 @@ Migrate the Space Timeline (calendar dialog + event list + create/edit form + de
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned)
-**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), `react-day-picker@^8`, `date-fns` (peer of RDP, new), `class-variance-authority`, `lucide-react`, Apollo Client, Vite, `dayjs` (existing in domain hooks), `yup` (existing — used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
+**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), `react-day-picker@^8`, `date-fns@^3` (peer of RDP, new — used as the single date library across the CRD + crdPages layers), `class-variance-authority`, `lucide-react`, Apollo Client, Vite, `dayjs` (existing in `src/domain/` only — NOT used in CRD or crdPages), `yup` (existing — referenced for the validation schema source of truth, but the new form uses hand-written checks), React Compiler (`babel-plugin-react-compiler`)
 **Storage**: N/A (frontend SPA; data via existing GraphQL queries — no schema changes)
 **Testing**: Vitest with jsdom; manual end-to-end verification per `quickstart.md`
 **Target Platform**: Web SPA — Vite dev server at `localhost:3001`, backend at `localhost:3000`. Modern evergreen browsers; mobile breakpoint at <768px (full-screen Sheet) and ≥768px (centred modal Dialog)
 **Project Type**: Web SPA — established three-layer CRD architecture (CRD → crdPages connector → routing)
 **Performance Goals**: Equal or better than MUI `CalendarDialog`. Sidebar adds zero extra network requests (Apollo dedupes the `useSpaceCalendarEventsQuery` between sidebar hook and dialog connector). External-calendar URL query is lazy-loaded on first dropdown open. No additional initial-paint cost vs. legacy.
-**Constraints**: Zero `@mui/*` / `@emotion/*` / `@apollo/client` / `@/domain/*` / `@/core/apollo/*` / `react-router-dom` / `formik` imports inside `src/crd/`. WCAG 2.1 AA compliant. React Compiler compatible (no `useMemo` / `useCallback` / `React.memo`). `.crd-root` CSS scoping unchanged. Form state lives in connector layer (`useState` + standalone `yup`, no Formik). Date-lib boundary: CRD components use `date-fns`; connectors and existing domain hooks use `dayjs`; mappers normalise to plain JS `Date` at the boundary.
+**Constraints**: Zero `@mui/*` / `@emotion/*` / `@apollo/client` / `@/domain/*` / `@/core/apollo/*` / `react-router-dom` / `formik` imports inside `src/crd/`. WCAG 2.1 AA compliant. React Compiler compatible (no `useMemo` / `useCallback` / `React.memo`). `.crd-root` CSS scoping unchanged. Form state lives in connector layer (`useState` + hand-written validation checks, no Formik / no yup runtime). Date-lib boundary: **CRD components AND connectors use `date-fns` exclusively**; the legacy `src/domain/` layer continues to use `dayjs`; mappers normalise to plain JS `Date` at the boundary. The locale-resolver helper at `src/crd/lib/dateFnsLocale.ts` is the single source of truth for the language → date-fns Locale mapping.
 **Scale/Scope**: ~10 new CRD presentational components + 1 primitive + 3 form-field composites + 5 connectors + 5 hooks (`useCrdCalendarUrlState`, `useCrdEventForm`, `useCrdEventFormDialog`, `useCrdCalendarSidebar`, `useCrdRoomComments`) + 1 data mapper. ~60 i18n keys across 6 languages. 48 functional requirements across 7 user stories. Tested with up to 100 events per space (per SC-004).
 
 ## Constitution Check
@@ -71,6 +71,8 @@ specs/086-crd-space-timeline/
 
 ```text
 src/crd/                                          # Pure presentational layer
+├── lib/
+│   └── dateFnsLocale.ts                          # NEW — shared LOCALE_BY_LANG + resolveDateFnsLocale helper
 ├── primitives/
 │   └── calendar.tsx                              # NEW — port of prototype DayPicker primitive
 ├── forms/

@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { isAfter, startOfDay } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import useCalendarEvents from '@/domain/timeline/calendar/useCalendarEvents';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -27,10 +27,10 @@ export function useCrdCalendarSidebar(): CrdCalendarSidebar {
   // (FR-033/035). Apollo dedupes against the dialog connector's identical call.
   const { entities, state } = useCalendarEvents({ spaceId, parentSpaceId });
 
-  const startOfToday = dayjs().startOf('day');
+  const startOfToday = startOfDay(new Date());
   const futureSorted = sortBy(
-    entities.events.filter(event => event.startDate && dayjs(event.startDate).isAfter(startOfToday)),
-    event => dayjs(event.startDate).valueOf()
+    entities.events.filter(event => event.startDate && isAfter(new Date(event.startDate), startOfToday)),
+    event => (event.startDate ? new Date(event.startDate).getTime() : 0)
   );
 
   return {

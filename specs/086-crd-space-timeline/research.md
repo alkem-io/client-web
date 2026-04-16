@@ -19,16 +19,23 @@ All spec-level ambiguities were resolved during `/speckit.clarify`. The decision
 
 ## R2 — Date-library boundary
 
-**Decision**: CRD components and the data mappers use `date-fns`. Connectors and the existing domain hooks use `dayjs`. The boundary is the data mapper, which produces plain JS `Date` objects.
+**Decision** (revised post-implementation): CRD components, connectors, and data mappers use **`date-fns` exclusively**. Only the legacy domain code under `src/domain/` continues to use `dayjs`. The boundary is the data mapper, which produces plain JS `Date` objects.
 
 **Rationale**:
-- `date-fns` is the implicit ecosystem date library for `react-day-picker` and shadcn-style components.
-- `dayjs` is already pervasive in `src/domain/` and uprooting it is out of scope.
-- Plain `Date` is the lingua franca that crosses the boundary cleanly without dragging either library across the layer line.
+- `date-fns` is the implicit ecosystem date library for `react-day-picker` and shadcn-style components — RDP requires it as a peer dependency, so it's already in the bundle.
+- `dayjs.locale()` mutates global state, which is unsafe under React 19 concurrent rendering when two components want different locales simultaneously. `date-fns` accepts `locale` as a per-call option.
+- Mixing both libraries inside the new layers doubled the bundle for no functional benefit. Picking one (date-fns) tightens the architecture.
+- `dayjs` is still pervasive in `src/domain/` and uprooting it is out of scope; the domain layer is migrated piece-by-piece.
+- Plain `Date` is the lingua franca that crosses the layer boundary cleanly without dragging either library across.
+
+**Implementation detail**: the locale-resolver helper lives at `src/crd/lib/dateFnsLocale.ts` (`resolveDateFnsLocale(i18n.language)`) and is the single source of truth for the supported-language → date-fns Locale mapping (en, nl, es, bg, de, fr).
+
+**Cross-layer note**: where a CRD page connector needs functionality that the domain layer exposes only as a dayjs-typed helper (e.g. `formatDateTimeUtc(dayjs.Dayjs)` in `src/domain/timeline/calendar/utils/icsUtils.ts`), the connector inlines a JS-Date equivalent locally rather than importing dayjs. See `ExportEventsToIcsConnector.tsx` for the precedent.
 
 **Alternatives considered**:
-- *Use `dayjs` everywhere* — possible but loses RDP's locale-aware formatting story; would require manual locale plumbing.
-- *Use `date-fns` everywhere* — too invasive given the size of the existing domain layer.
+- *Original mixed approach* (CRD = date-fns, connectors = dayjs) — rejected post-implementation because the connector layer's dayjs usage was minor (~10 calls across 4 files) and removing it eliminated the need to mentally context-switch between two libraries when working in adjacent files.
+- *Use `dayjs` everywhere* — possible but loses RDP's locale-aware formatting story (RDP requires a `date-fns` Locale type); would also require manual `dayjs.locale()` global-state plumbing under concurrent rendering.
+- *Use `date-fns` everywhere project-wide* — too invasive given the size of the existing domain layer; deferred until the broader CRD migration retires the affected MUI files.
 
 ## R3 — Form-state pattern
 
@@ -205,5 +212,5 @@ The dashboard tab continues to be selected via `?section=N` (verified from `useC
 
 - **Multi-day visual deviation from MUI** (R6) — accepted; can be revisited via overlay layer if stakeholders object.
 - **`react-day-picker` v8 vs v9 drift** — bounded by pinning to `^8` in `package.json`; v9 adoption tracked separately.
-- **Dual date libraries (`date-fns` + `dayjs`)** — bounded by the mapper boundary; not a long-term concern.
+- **Dual date libraries** (`date-fns` in CRD/crdPages + `dayjs` in legacy `src/domain/`) — bounded by the mapper boundary; the new code is single-library (date-fns) post-implementation. Long-term, the dayjs usage in the domain layer retires as those files migrate.
 - **Last-write-wins on concurrent edits** — matches MUI behaviour today; no conflict-resolution UX in v1.

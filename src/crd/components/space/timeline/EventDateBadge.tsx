@@ -1,7 +1,6 @@
-import type { Locale } from 'date-fns';
 import { addMinutes, format, isBefore, startOfDay } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 
 type EventDateBadgeProps = {
@@ -13,21 +12,6 @@ type EventDateBadgeProps = {
   size?: 'sm' | 'md';
   className?: string;
 };
-
-const LOCALE_BY_LANG: Record<string, Locale> = {
-  en: enUS,
-  nl,
-  es,
-  bg,
-  de,
-  fr,
-};
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
 
 /**
  * Stacked month / day badge. Past events render in muted colour. When the
@@ -42,7 +26,7 @@ export function EventDateBadge({
   className,
 }: EventDateBadgeProps) {
   const { i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  const locale = resolveDateFnsLocale(i18n.language);
 
   if (!startDate) {
     return null;

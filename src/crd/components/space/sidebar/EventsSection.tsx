@@ -1,8 +1,7 @@
-import type { Locale } from 'date-fns';
 import { differenceInCalendarDays, format, startOfDay } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { ChevronDown, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
 
 type SidebarEventItem = {
@@ -21,30 +20,12 @@ type EventsSectionProps = {
   className?: string;
 };
 
-/**
- * date-fns locale map keyed by the i18next language code. Falls back to en-US
- * for any unknown code. Reading i18n.language (not mutating it) is acceptable
- * here: the CRD rule forbids changeLanguage() side effects, not reading
- * language state for formatting.
- */
-const LOCALE_BY_LANG: Record<string, Locale> = {
-  en: enUS,
-  nl,
-  es,
-  bg,
-  de,
-  fr,
-};
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
-
 export function EventsSection({ events, onShowCalendar, onAddEvent, onEventClick, className }: EventsSectionProps) {
   const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  // Reading i18n.language (not mutating it) is acceptable here per CRD rules
+  // — the rule forbids changeLanguage() side effects, not reading language
+  // state for formatting.
+  const locale = resolveDateFnsLocale(i18n.language);
   const now = new Date();
 
   const formatRelativeDate = (date: Date): string => {

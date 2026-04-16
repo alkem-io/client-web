@@ -1,8 +1,7 @@
-import type { Locale } from 'date-fns';
 import { addMinutes, format } from 'date-fns';
-import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
@@ -23,14 +22,6 @@ type DurationFieldProps = {
 
 const DEFAULT_OPTIONS_MINUTES = [15, 30, 45, 60, 90, 120, 180, 240, 480];
 
-const LOCALE_BY_LANG: Record<string, Locale> = { en: enUS, nl, es, bg, de, fr };
-
-function resolveLocale(langCode: string | undefined): Locale {
-  if (!langCode) return enUS;
-  const base = langCode.split('-')[0];
-  return LOCALE_BY_LANG[base] ?? enUS;
-}
-
 /** Select dropdown of preset durations + a derived "ends at HH:mm" caption.
  *  Replaced the earlier free-form numeric input because:
  *    - HTML `<input type="number" min={1} step={15}>` validates against
@@ -49,7 +40,7 @@ export function DurationField({
   ariaLabel,
 }: DurationFieldProps) {
   const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveLocale(i18n.language);
+  const locale = resolveDateFnsLocale(i18n.language);
   const id = useId();
   const hasError = Boolean(error);
 
