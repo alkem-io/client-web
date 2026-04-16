@@ -8,9 +8,8 @@
  */
 
 import type { ReactNode } from 'react';
+import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import type {
-  AddToCalendarLinks,
-  EventDetailData,
   EventFormErrors,
   EventFormValues,
   EventListItem,
@@ -61,7 +60,12 @@ export type UseCrdCalendarUrlState = () => {
 // Form hook (controlled, useState + standalone yup)
 // -----------------------------------------------------------------------------
 
-/** `src/main/crdPages/space/timeline/useCrdEventForm.ts` */
+/** `src/main/crdPages/space/timeline/useCrdEventForm.ts`
+ *
+ * `initialValues` seeds state once at mount via the lazy-init form of useState,
+ * so subsequent renders do not stomp user edits. To reseed for a different
+ * event, remount the consumer (e.g. pass a `key` prop tied to the event id) —
+ * see useCrdEventFormDialog below for the orchestration pattern. */
 export type UseCrdEventForm = (initialValues?: Partial<EventFormValues>) => {
   values: EventFormValues;
   errors: EventFormErrors;
@@ -69,10 +73,56 @@ export type UseCrdEventForm = (initialValues?: Partial<EventFormValues>) => {
   /** Returns true when the current values pass yup validation. Sets `errors`
    *  as a side effect for the form to render. */
   validate: () => boolean;
-  reset: () => void;
-  /** Repopulate from a pre-mapped EventFormValues snapshot. The connector calls
-   *  mapCalendarEventDetailsToFormValues first to convert the GraphQL fragment. */
-  prefill: (data: Partial<EventFormValues>) => void;
+  /** Resets values to the defaults (NOT initialValues) and clears errors. */
+  clearForm: () => void;
+};
+
+// -----------------------------------------------------------------------------
+// Form-dialog orchestrator (owns create/edit/delete slice of the dialog)
+// -----------------------------------------------------------------------------
+
+/** `src/main/crdPages/space/timeline/useCrdEventFormDialog.ts`
+ *
+ * Composes useCrdEventForm + delete state + submit handlers into a single hook
+ * the dialog wrapper consumes. The wrapper is mounted with
+ * `key={editingEventId ?? 'create'}` so React remounts the hook per event id,
+ * which seeds initialValues declaratively (no manual ref gating). */
+export type UseCrdEventFormDialog = (params: {
+  mode: 'create' | 'edit';
+  /** Required when mode === 'edit'; ignored otherwise. */
+  editingEventId: string | undefined;
+  // The shape of `events` and `actions` mirrors useCalendarEvents' return; the
+  // hook is generic over the domain types so the contract stays plain TS.
+  events: ReadonlyArray<{ id: string; profile: { displayName: string; tagset?: unknown } }>;
+  actions: {
+    createEvent: (...args: unknown[]) => Promise<string | undefined>;
+    updateEvent: (...args: unknown[]) => Promise<string | undefined>;
+    deleteEvent: (eventId: string) => Promise<void>;
+  };
+  urlState: ReturnType<UseCrdCalendarUrlState>;
+  parentSpaceId: string | undefined;
+  isCreating: boolean;
+  isUpdating: boolean;
+  /** Called when the user cancels an edit OR a save/delete completes. */
+  onExitEdit: () => void;
+}) => {
+  values: EventFormValues;
+  errors: EventFormErrors;
+  setField: <K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) => void;
+
+  isSubmitting: boolean;
+  handleSubmit: () => Promise<void>;
+  handleCancel: () => void;
+
+  isDeleteOpen: boolean;
+  openDelete: () => void;
+  closeDelete: () => void;
+  isDeleting: boolean;
+  handleConfirmDelete: () => Promise<void>;
+
+  isSubspace: boolean;
+  editingEvent: { id: string; profile: { displayName: string } } | undefined;
+  typeOptions: { value: string; label: string }[];
 };
 
 // -----------------------------------------------------------------------------
@@ -97,31 +147,16 @@ export type UseCrdCalendarSidebar = () => {
 export type EventDetailConnectorProps = {
   eventId: string;
   /**
-   * Wired into the EventDetailView's not-found back button AND optionally
-   * re-exposed through the slots render-prop for the consumer's header Back
-   * action. The parent connector typically passes navigateToList here.
+   * Wired into the EventDetailView's not-found back button AND the dialog
+   * header's Back action so closing from either surface routes through one
+   * path. The parent connector typically passes urlState.navigateToList here.
    */
   onBack: () => void;
-  /**
-   * Optional render override — when provided, the connector calls back with the
-   * built `event`/`commentsSlot`/`commentInputSlot` so the parent can wrap them
-   * in a custom layout. When omitted, the connector renders <EventDetailView />
-   * directly.
-   */
-  children?: (slots: {
-    event: EventDetailData;
-    showComments: boolean;
-    commentCount: number;
-    commentsSlot: ReactNode;
-    commentInputSlot: ReactNode | null;
-  }) => ReactNode;
 };
 
 // -----------------------------------------------------------------------------
 // Comments connector (mirrors CalloutCommentsConnector pattern)
 // -----------------------------------------------------------------------------
-
-import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 
 /** `src/main/crdPages/space/timeline/CalendarCommentsConnector.tsx` */
 export type CalendarCommentsConnectorProps = {

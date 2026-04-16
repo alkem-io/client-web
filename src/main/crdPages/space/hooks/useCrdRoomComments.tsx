@@ -21,9 +21,6 @@ type UseCrdRoomCommentsParams = {
    *  forwards `!inView` here for lazy subscription; CalendarCommentsConnector
    *  omits to default to false (always subscribe). */
   skipSubscription?: boolean;
-  /** Additional loading flag OR-combined with internal mutation states. Used
-   *  by consumers with their own async state (e.g. lazy query loading). */
-  externalLoading?: boolean;
 };
 
 export type CrdRoomCommentsSlots = {
@@ -44,7 +41,6 @@ export function useCrdRoomComments({
   roomId,
   room,
   skipSubscription = false,
-  externalLoading = false,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { userModel, isAuthenticated } = useCurrentUserContext();
 
@@ -77,7 +73,12 @@ export function useCrdRoomComments({
 
   const messagesLookup = new Map(room?.messages.map(message => [message.id, message]) ?? []);
 
-  const loading = externalLoading || postingMessage || postingReply || deletingMessage;
+  // Mutation in-flight states for the inner CommentThread/CommentInput.
+  // External loading (e.g. the lazy contribution-comments query in
+  // CalloutCommentsConnector) is intentionally NOT folded in here — that
+  // window is invisible to the user (the connector is gated by useInView,
+  // so the user only sees the slot once the query has resolved).
+  const loading = postingMessage || postingReply || deletingMessage;
 
   const handleDelete = async (commentId: string) => {
     await deleteMessage({

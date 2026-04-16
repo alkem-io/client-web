@@ -26,6 +26,11 @@ export function EventDetailConnector({ eventId, onBack }: EventDetailConnectorPr
   const commentsRoom = event?.comments;
   const canReadComments = commentsRoom?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
+  // Optimisation: skip mounting <CalendarCommentsConnector> entirely when the
+  // user has no Read permission on the room. This avoids the room subscription
+  // and post/react/delete mutation hooks being wired up for a UI surface they
+  // can't see. useCrdRoomComments does NOT also gate on Read internally — its
+  // inner gate is canComment (CreateMessage permission), not Read.
   if (!commentsRoom || !canReadComments) {
     return <EventDetailView event={detailData} showComments={false} onBack={onBack} resolveColor={pickColorFromId} />;
   }

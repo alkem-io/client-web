@@ -27,7 +27,7 @@ export function CalloutCommentsConnector({
 }: CalloutCommentsConnectorProps) {
   const { ref, inView } = useInView({ triggerOnce: true, delay: 200 });
 
-  const { data, loading } = useCalloutContributionCommentsQuery({
+  const { data } = useCalloutContributionCommentsQuery({
     variables: {
       contributionId: contributionId ?? '',
       includePost: true,
@@ -37,11 +37,14 @@ export function CalloutCommentsConnector({
 
   const room = roomData ?? data?.lookup.contribution?.post?.comments;
 
+  // The lazy contribution-query loading state is intentionally not surfaced
+  // here: useInView keeps this connector unmounted until the slot scrolls
+  // into view, so the in-flight window is invisible to the user. The shared
+  // hook surfaces in-flight mutation state via the inner CommentThread/Input.
   const { thread, commentInput, commentCount } = useCrdRoomComments({
     roomId,
     room,
     skipSubscription: !inView,
-    externalLoading: loading,
   });
 
   if (children) {

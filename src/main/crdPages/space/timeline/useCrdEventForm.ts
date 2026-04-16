@@ -25,8 +25,9 @@ export type UseCrdEventFormResult = {
   setField: <K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) => void;
   /** Validates current state; sets `errors` as a side-effect and returns true when clean. */
   validate: () => boolean;
-  reset: () => void;
-  prefill: (partial: Partial<EventFormValues>) => void;
+  /** Resets values to the defaults (NOT the initialValues passed at mount) and clears errors.
+   *  Use it after a successful create / cancel to wipe the form for a fresh cycle. */
+  clearForm: () => void;
 };
 
 /**
@@ -34,10 +35,14 @@ export type UseCrdEventFormResult = {
  * pattern established by `useCrdCalloutForm.ts` — useState + direct checks
  * (not Formik). Validation rules match the MUI CalendarEventForm schema
  * (src/domain/timeline/calendar/views/CalendarEventForm.tsx:109-136).
+ *
+ * `initialValues` seeds state once at mount via the lazy-init form of useState,
+ * so subsequent renders do not stomp user edits. To reseed for a different
+ * event, remount the consumer (e.g. pass a `key` prop tied to the event id).
  */
 export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCrdEventFormResult {
   const { t } = useTranslation('crd-space');
-  const [values, setValues] = useState<EventFormValues>({ ...defaultValues, ...initialValues });
+  const [values, setValues] = useState<EventFormValues>(() => ({ ...defaultValues, ...initialValues }));
   const [errors, setErrors] = useState<EventFormErrors>({});
 
   const setField = <K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) => {
@@ -81,15 +86,10 @@ export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCr
     return Object.keys(nextErrors).length === 0;
   };
 
-  const reset = () => {
+  const clearForm = () => {
     setValues(defaultValues);
     setErrors({});
   };
 
-  const prefill = (partial: Partial<EventFormValues>) => {
-    setValues(prev => ({ ...prev, ...partial }));
-    setErrors({});
-  };
-
-  return { values, errors, setField, validate, reset, prefill };
+  return { values, errors, setField, validate, clearForm };
 }

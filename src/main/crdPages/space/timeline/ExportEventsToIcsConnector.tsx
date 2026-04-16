@@ -32,7 +32,13 @@ function buildIcsContent(events: ExportableEvent[]): string {
   const lines: string[] = [...ICS_HEADER];
 
   for (const event of events) {
-    if (!event.startDate) continue;
+    if (!event.startDate) {
+      // Should never fire in practice — the connector receives a pre-filtered
+      // future-events list. Logged so a regression upstream is observable.
+      // biome-ignore lint/suspicious/noConsole: defensive observability for an invariant violation
+      console.warn('[ExportEventsToIcs] skipping event without startDate', event.id);
+      continue;
+    }
     const startDate = dayjs(event.startDate);
     const endDate = startDate.add(event.durationMinutes ?? 60, 'minute');
 

@@ -16,6 +16,38 @@ export const INIT_CREATING_EVENT_PARAM = 'new';
 export const CALENDAR_PATH_SEGMENT = 'calendar';
 
 const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
+const CALENDAR_PATH_MARKER = `/${CALENDAR_PATH_SEGMENT}`;
+
+/**
+ * Splits a pathname around the `/calendar` segment into its two anchors.
+ *
+ * Examples:
+ *   `/spaces/foo`                          → { basePath: '/spaces/foo',     calendarPath: '/spaces/foo/calendar' }
+ *   `/spaces/foo/`                         → { basePath: '/spaces/foo',     calendarPath: '/spaces/foo/calendar' }
+ *   `/spaces/foo/calendar`                 → { basePath: '/spaces/foo',     calendarPath: '/spaces/foo/calendar' }
+ *   `/spaces/foo/calendar/event-bar`       → { basePath: '/spaces/foo',     calendarPath: '/spaces/foo/calendar' }
+ *   `/calendar/event-bar` (root-level)     → { basePath: '/',               calendarPath: '/calendar' }
+ *
+ * `basePath` is the dashboard URL (used to navigate away from the dialog);
+ * `calendarPath` is the bare list-view URL (used to strip the event tail).
+ */
+function splitCalendarPath(pathname: string): { basePath: string; calendarPath: string } {
+  const idx = pathname.lastIndexOf(CALENDAR_PATH_MARKER);
+
+  if (idx === -1) {
+    // No /calendar segment yet — the dashboard IS the basePath, and the
+    // calendar list-view URL is one segment deeper.
+    const trimmed = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+    return {
+      basePath: pathname,
+      calendarPath: `${trimmed}${CALENDAR_PATH_MARKER}`,
+    };
+  }
+
+  const basePath = pathname.substring(0, idx) || '/';
+  const calendarPath = pathname.substring(0, idx + CALENDAR_PATH_MARKER.length);
+  return { basePath, calendarPath };
+}
 
 export type CrdCalendarUrlState = {
   /** Parsed `?highlight=YYYY-MM-DD` value at start-of-day local. Null if absent or invalid. */
@@ -58,28 +90,9 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
       : null;
 
   const isCreatingFromUrl = params.get(INIT_CREATING_EVENT_PARAM) === '1';
-  const isAnyCalendarRoute = pathname.includes(`/${CALENDAR_PATH_SEGMENT}`);
+  const isAnyCalendarRoute = pathname.includes(CALENDAR_PATH_MARKER);
 
-  /**
-   * Resolves the bare `/<space>/calendar` path from the current location:
-   *   - If the path includes `/calendar/...`, truncate everything after `/calendar`.
-   *   - If the path ends in `/calendar`, return as-is.
-   *   - Otherwise, append `/calendar` to the current path.
-   */
-  const calendarBasePath = (() => {
-    const idx = pathname.lastIndexOf(`/${CALENDAR_PATH_SEGMENT}`);
-    if (idx === -1) {
-      return pathname.endsWith('/') ? `${pathname}${CALENDAR_PATH_SEGMENT}` : `${pathname}/${CALENDAR_PATH_SEGMENT}`;
-    }
-    return pathname.substring(0, idx + `/${CALENDAR_PATH_SEGMENT}`.length);
-  })();
-
-  /** The URL one level above the calendar tail (used by navigateAwayFromCalendar). */
-  const dashboardBasePath = (() => {
-    const idx = pathname.lastIndexOf(`/${CALENDAR_PATH_SEGMENT}`);
-    if (idx === -1) return pathname;
-    return pathname.substring(0, idx) || '/';
-  })();
+  const { basePath, calendarPath } = splitCalendarPath(pathname);
 
   return {
     highlightedDay,
@@ -90,17 +103,17 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
       const next = new URLSearchParams(params.toString());
       next.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
       next.delete(INIT_CREATING_EVENT_PARAM);
-      navigate(`${calendarBasePath}?${next.toString()}`, { replace: true });
+      navigate(`${calendarPath}?${next.toString()}`, { replace: true });
     },
 
     navigateToCreate: () => {
       const next = new URLSearchParams();
       next.set(INIT_CREATING_EVENT_PARAM, '1');
-      navigate(`${calendarBasePath}?${next.toString()}`);
+      navigate(`${calendarPath}?${next.toString()}`);
     },
 
     navigateToList: () => {
-      navigate(calendarBasePath);
+      navigate(calendarPath);
     },
 
     navigateToEvent: (eventUrl: string) => {
@@ -108,7 +121,7 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
     },
 
     navigateAwayFromCalendar: () => {
-      navigate(dashboardBasePath);
+      navigate(basePath);
     },
   };
 }

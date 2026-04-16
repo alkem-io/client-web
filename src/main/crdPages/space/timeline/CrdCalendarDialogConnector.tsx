@@ -1,14 +1,11 @@
-import { isSameDay } from 'date-fns';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalendarEventType } from '@/core/apollo/generated/graphql-schema';
 import { DeleteEventConfirmation } from '@/crd/components/space/timeline/DeleteEventConfirmation';
 import { EventForm } from '@/crd/components/space/timeline/EventForm';
 import { EventsCalendarView } from '@/crd/components/space/timeline/EventsCalendarView';
 import { TimelineDialog } from '@/crd/components/space/timeline/TimelineDialog';
 import { Button } from '@/crd/primitives/button';
-import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalendarEvents';
 import useCalendarEvents from '@/domain/timeline/calendar/useCalendarEvents';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapCalendarEventInfoToListItem } from '../dataMappers/calendarEventDataMapper';
@@ -16,7 +13,7 @@ import { AddToCalendarMenuConnector } from './AddToCalendarMenuConnector';
 import { EventDetailConnector } from './EventDetailConnector';
 import { ExportEventsToIcsConnector } from './ExportEventsToIcsConnector';
 import { useCrdCalendarUrlState } from './useCrdCalendarUrlState';
-import { useCrdEventForm } from './useCrdEventForm';
+import { useCrdEventFormDialog } from './useCrdEventFormDialog';
 
 type CrdCalendarDialogConnectorProps = {
   /** Owned by the page; mirrors the dialog's open state. The connector also
@@ -31,13 +28,17 @@ type CrdCalendarDialogConnectorProps = {
 type View = 'list' | 'detail' | 'create' | 'edit';
 
 /**
- * Top-level state machine for the calendar dialog. Mirrors the MUI
- * CalendarDialogInner pattern: derives `view` from URL state + local state and
- * renders the appropriate body inside <TimelineDialog>.
+ * Top-level orchestrator for the calendar dialog. Composes:
+ *   - useUrlResolver — spaceId / parentSpaceId / calendarEventId from the URL
+ *   - useCalendarEvents — events + privileges + create/update/delete actions
+ *   - useCrdCalendarUrlState — URL deeplink reads/writes
+ *   - local editingEventId state — drives the create vs edit path
  *
- * SKELETON (T009): all view bodies are placeholders. US1 wires the sidebar to
- * open this dialog; US2 fills the list view; US3 fills the detail view; US4
- * fills create/edit; US5 fills delete; US6 fills external-calendar export.
+ * The create/edit/delete slice (form state, submit/delete handlers, payload
+ * normalisation) lives in useCrdEventFormDialog and is hosted by the
+ * <EventFormDialogBody> sub-component below. That sub-component is mounted
+ * with `key={editingEventId ?? 'create'}` so React remounts a fresh instance
+ * per event id — eliminating any need for manual refs to gate prefill.
  */
 export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
@@ -59,150 +60,6 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
   const futureListItems = listItems.filter(item => item.startDate && dayjs(item.startDate).isAfter(startOfToday));
 
   const [editingEventId, setEditingEventId] = useState<string | undefined>(undefined);
-  const [deleting, setDeleting] = useState<boolean>(false);
-  const [isDeletingInFlight, setIsDeletingInFlight] = useState<boolean>(false);
-
-  const form = useCrdEventForm();
-  /** Tracks the last event we prefilled from, so flipping between create/edit
-   *  doesn't repeatedly reset the form mid-typing. */
-  const prefilledEventIdRef = useRef<string | undefined>(undefined);
-
-  const isSubspace = Boolean(parentSpaceId);
-  const typeOptions = Object.values(CalendarEventType).map(value => ({
-    value,
-    label: t(`calendar.type.${value}`),
-  }));
-
-  // Prefill the form when entering edit mode with a new event.
-  useEffect(() => {
-    if (editingEventId && editingEventId !== prefilledEventIdRef.current) {
-      const event = events.find(e => e.id === editingEventId);
-      if (event) {
-        const startDate = event.startDate ? new Date(event.startDate) : undefined;
-        const endDate = startDate ? new Date(startDate.getTime() + event.durationMinutes * 60_000) : undefined;
-        form.prefill({
-          displayName: event.profile.displayName,
-          type: event.type,
-          startDate,
-          endDate,
-          wholeDay: event.wholeDay,
-          durationMinutes: event.durationMinutes,
-          description: event.profile.description ?? '',
-          locationCity: event.profile.location?.city ?? '',
-          tags: event.profile.tagset?.tags ?? [],
-          visibleOnParentCalendar: event.visibleOnParentCalendar,
-        });
-        prefilledEventIdRef.current = editingEventId;
-      }
-    } else if (!editingEventId && prefilledEventIdRef.current) {
-      // Exited edit mode — reset for the next create/edit cycle.
-      form.reset();
-      prefilledEventIdRef.current = undefined;
-    }
-  }, [editingEventId, events, form]);
-
-  /** Convert CRD EventFormValues to domain CalendarEventFormData, computing
-   *  durationMinutes/durationDays/multipleDays the same way as MUI
-   *  useCalendarEvents.createEvent (lines 103-115). */
-  const toDomainPayload = (): CalendarEventFormData | undefined => {
-    const {
-      displayName,
-      type,
-      startDate,
-      endDate,
-      wholeDay,
-      description,
-      locationCity,
-      tags,
-      visibleOnParentCalendar,
-    } = form.values;
-    if (!startDate || !endDate || !type) return undefined;
-
-    let durationMinutes = form.values.durationMinutes ?? 0;
-    let durationDays = 0;
-    let multipleDays = false;
-
-    if (!isSameDay(startDate, endDate)) {
-      durationMinutes = Math.floor((endDate.getTime() - startDate.getTime()) / 60_000);
-      durationDays = Math.floor(durationMinutes / (24 * 60));
-      multipleDays = durationDays > 0;
-    }
-
-    return {
-      displayName,
-      description,
-      type: type as CalendarEventType,
-      startDate,
-      endDate,
-      wholeDay,
-      durationMinutes,
-      durationDays,
-      multipleDays,
-      visibleOnParentCalendar,
-      tags,
-      references: [],
-      location: { id: '', city: locationCity },
-    };
-  };
-
-  const handleCreateSubmit = async () => {
-    if (!form.validate()) return;
-    const payload = toDomainPayload();
-    if (!payload) return;
-    const eventUrl = await actions.createEvent(payload);
-    form.reset();
-    if (eventUrl) {
-      urlState.navigateToEvent(eventUrl);
-    } else {
-      urlState.navigateToList();
-    }
-  };
-
-  const handleEditSubmit = async () => {
-    if (!form.validate() || !editingEventId) return;
-    const payload = toDomainPayload();
-    if (!payload) return;
-
-    const event = events.find(e => e.id === editingEventId);
-    if (!event?.profile.tagset) return;
-
-    await actions.updateEvent(editingEventId, payload, event.profile.tagset);
-    setEditingEventId(undefined);
-    prefilledEventIdRef.current = undefined;
-    // Return to detail view — navigateToEvent uses the existing event URL.
-    urlState.navigateToEvent(event.profile.url);
-  };
-
-  const handleCancelForm = () => {
-    if (editingEventId) {
-      setEditingEventId(undefined);
-    } else {
-      // Cancel create — clear ?new=1 and return to list.
-      urlState.navigateToList();
-    }
-    form.reset();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!editingEventId) return;
-    setIsDeletingInFlight(true);
-    try {
-      await actions.deleteEvent(editingEventId);
-      // Reset all dialog state after a successful delete (FR-029).
-      setEditingEventId(undefined);
-      setDeleting(false);
-      prefilledEventIdRef.current = undefined;
-      form.reset();
-      urlState.navigateToList();
-    } finally {
-      setIsDeletingInFlight(false);
-    }
-  };
-
-  // Snapshot of the event being edited (used for the delete confirmation copy
-  // and to look up the tagset for an update). Computed every render — bounded
-  // by the existing event list size.
-  const editingEvent = editingEventId ? events.find(e => e.id === editingEventId) : undefined;
 
   /** Force-open the dialog when the URL is anywhere in the calendar tree
    *  (deep links). The page's local "open" state is the user-driven channel. */
@@ -214,8 +71,8 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
 
   const view: View = (() => {
     // Edit takes precedence over the URL-driven create/detail views; the
-    // delete confirmation is an overlay on top of edit (handled below by
-    // <DeleteEventConfirmation>), not a separate view.
+    // delete confirmation is an overlay on top of edit (handled inside
+    // <EventFormDialogBody>), not a separate view.
     if (editingEventId) return 'edit';
     if (urlState.isCreatingFromUrl) return 'create';
     if (calendarEventId) return 'detail';
@@ -227,7 +84,6 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
     if (!next) {
       // Clear local state; clear URL params/path so reopening is bookmark-fresh.
       setEditingEventId(undefined);
-      setDeleting(false);
       urlState.navigateAwayFromCalendar();
     }
   };
@@ -264,6 +120,8 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
     return null;
   })();
 
+  const showFormBody = view === 'create' || view === 'edit';
+
   return (
     <TimelineDialog
       open={open}
@@ -285,60 +143,103 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
       {view === 'detail' && calendarEventId && (
         <EventDetailConnector eventId={calendarEventId} onBack={urlState.navigateToList} />
       )}
-      {view === 'create' && (
-        <EventForm
-          values={form.values}
-          errors={form.errors}
-          onChange={form.setField}
-          onSubmit={handleCreateSubmit}
-          isSubmitting={creatingCalendarEvent}
-          isSubspace={isSubspace}
-          typeOptions={typeOptions}
-          footerActionsLeft={
-            <Button variant="ghost" onClick={handleCancelForm} type="button">
-              {t('calendar.cancel')}
-            </Button>
-          }
+      {showFormBody && (
+        <EventFormDialogBody
+          // Remount per event id so the form state is freshly seeded from the
+          // right initialValues without manual ref gating.
+          key={editingEventId ?? 'create'}
+          mode={view === 'edit' ? 'edit' : 'create'}
+          editingEventId={editingEventId}
+          events={events}
+          actions={actions}
+          urlState={urlState}
+          parentSpaceId={parentSpaceId}
+          isCreating={creatingCalendarEvent}
+          isUpdating={updatingCalendarEvent}
+          canDeleteEvents={privileges.canDeleteEvents}
+          onExitEdit={() => setEditingEventId(undefined)}
         />
       )}
-      {view === 'edit' && (
-        <EventForm
-          values={form.values}
-          errors={form.errors}
-          onChange={form.setField}
-          onSubmit={handleEditSubmit}
-          isSubmitting={updatingCalendarEvent}
-          isSubspace={isSubspace}
-          typeOptions={typeOptions}
-          footerActionsLeft={
-            <>
-              {privileges.canDeleteEvents && editingEventId && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => setDeleting(true)}
-                  disabled={updatingCalendarEvent || isDeletingInFlight}
-                >
-                  {t('calendar.deleteConfirm.title')}
-                </Button>
-              )}
-              <Button variant="ghost" onClick={handleCancelForm} type="button">
-                {t('calendar.back')}
-              </Button>
-            </>
-          }
-        />
-      )}
-      <DeleteEventConfirmation
-        open={deleting}
-        onOpenChange={next => {
-          if (!isDeletingInFlight) setDeleting(next);
-        }}
-        eventTitle={editingEvent?.profile.displayName ?? ''}
-        entityLabel={t(isSubspace ? 'calendar.entity.subspace' : 'calendar.entity.space')}
-        onConfirm={handleConfirmDelete}
-        loading={isDeletingInFlight}
-      />
     </TimelineDialog>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// EventFormDialogBody — co-located sub-component. Hosts useCrdEventFormDialog
+// so the parent can remount it via `key` to reseed form state per event.
+// -----------------------------------------------------------------------------
+
+type EventFormDialogBodyProps = Omit<Parameters<typeof useCrdEventFormDialog>[0], 'isCreating' | 'isUpdating'> & {
+  isCreating: boolean;
+  isUpdating: boolean;
+  canDeleteEvents: boolean;
+};
+
+function EventFormDialogBody({
+  mode,
+  editingEventId,
+  events,
+  actions,
+  urlState,
+  parentSpaceId,
+  isCreating,
+  isUpdating,
+  canDeleteEvents,
+  onExitEdit,
+}: EventFormDialogBodyProps) {
+  const { t } = useTranslation('crd-space');
+  const dialog = useCrdEventFormDialog({
+    mode,
+    editingEventId,
+    events,
+    actions,
+    urlState,
+    parentSpaceId,
+    isCreating,
+    isUpdating,
+    onExitEdit,
+  });
+
+  const cancelLabel = mode === 'edit' ? t('calendar.back') : t('calendar.cancel');
+
+  return (
+    <>
+      <EventForm
+        values={dialog.values}
+        errors={dialog.errors}
+        onChange={dialog.setField}
+        onSubmit={dialog.handleSubmit}
+        isSubmitting={dialog.isSubmitting}
+        isSubspace={dialog.isSubspace}
+        typeOptions={dialog.typeOptions}
+        footerActionsLeft={
+          <>
+            {mode === 'edit' && canDeleteEvents && (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={dialog.openDelete}
+                disabled={dialog.isSubmitting || dialog.isDeleting}
+              >
+                {t('calendar.deleteConfirm.title')}
+              </Button>
+            )}
+            <Button type="button" variant="ghost" onClick={dialog.handleCancel}>
+              {cancelLabel}
+            </Button>
+          </>
+        }
+      />
+      <DeleteEventConfirmation
+        open={dialog.isDeleteOpen}
+        onOpenChange={next => {
+          if (!next) dialog.closeDelete();
+        }}
+        eventTitle={dialog.editingEvent?.profile.displayName ?? ''}
+        entityLabel={t(dialog.isSubspace ? 'calendar.entity.subspace' : 'calendar.entity.space')}
+        onConfirm={dialog.handleConfirmDelete}
+        loading={dialog.isDeleting}
+      />
+    </>
   );
 }
