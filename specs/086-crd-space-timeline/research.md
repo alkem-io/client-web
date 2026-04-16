@@ -182,14 +182,16 @@ The dashboard tab continues to be selected via `?section=N` (verified from `useC
 
 ## R13 — Brand SVGs for "Add to calendar"
 
-**Decision**: Reuse the raw `.svg` files from `src/domain/timeline/calendar/components/icons/{google,outlook,download-calendar}.svg` via Vite's `?react` plugin import. Wrap each in a plain `<span>` with Tailwind sizing inside `src/crd/components/space/timeline/icons/CrdAddToCalendarIcons.tsx`. For the ICS calendar trigger icon, use `lucide-react`'s `CalendarDays`.
+**Decision**: Colocate `google.svg` and `outlook.svg` inside `src/crd/components/space/timeline/icons/` (alongside the wrapper) so the CRD layer stays self-contained — no `@/domain/` import. Both files set `fill="currentColor"` on their `<path>`, and the wrapper applies no explicit `text-*` class so the parent decides the colour. Inside a `DropdownMenuItem` the primitive auto-applies `text-muted-foreground` to any descendant `<svg>` without an explicit `text-*` class, so the brand icons match the lucide `Download` icon used for the ICS row. The legacy MUI version had `<svg fill="none">` + no path-level fill and relied on the wrapper injecting `theme.palette.primary.main`; the CRD wrapper cannot depend on a theme provider. For the ICS download trigger and the dropdown trigger we use `lucide-react`'s `Download` and `CalendarDays`.
 
 **Rationale**:
-- Raw SVG files are framework-agnostic and reusable; only the existing MUI wrapper component (`AddToCalendarIcons.tsx`) is forbidden in CRD.
-- Avoids re-licensing or re-tracing the brand glyphs.
+- Keeps `src/crd/` free of `@/domain/` imports (Golden Rule #2 in `src/crd/CLAUDE.md`).
+- `currentColor` lets the wrapper drive icon colour through Tailwind text utilities, so the icon stays visible across themes without needing a theme provider.
+- Avoids re-licensing or re-tracing the brand glyphs (the path data is the same as the legacy domain SVGs; only `fill` differs).
 
 **Alternatives considered**:
-- *Inline the SVGs in the CRD file* — works but duplicates the asset and risks drift.
+- *Reuse the SVGs in `src/domain/timeline/calendar/components/icons/`* — keeps a single source of truth but forces a `@/domain/` import from CRD, which violates the layering rule. The legacy domain SVGs also use `fill="none"` and rely on the MUI wrapper to inject a colour, which the CRD wrapper cannot do.
+- *Inline the SVGs in the CRD file* — works but bloats the wrapper file with path data and breaks the SVG/component separation.
 
 ## R14 — ICS export utilities
 

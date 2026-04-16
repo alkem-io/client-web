@@ -1,14 +1,20 @@
 import { cn } from '@/crd/lib/utils';
-import GoogleSvg from '@/domain/timeline/calendar/components/icons/google.svg?react';
-import OutlookSvg from '@/domain/timeline/calendar/components/icons/outlook.svg?react';
+import GoogleSvg from './google.svg?react';
+import OutlookSvg from './outlook.svg?react';
 
 /**
- * Brand icons for the AddToCalendarMenu. The raw SVG source files live in the
- * domain layer (they predate the CRD migration). CRD components are allowed
- * to import asset files (.svg) directly — this is not a forbidden domain
- * import; the consumed module is a static asset, not domain logic.
+ * Brand glyphs for the AddToCalendarMenu. The raw SVG sources are colocated
+ * with this wrapper so the CRD layer is self-contained — no `@/domain/` import
+ * required.
  *
- * For the ICS download trigger we use lucide's CalendarDays elsewhere — no
+ * Both SVGs use `fill="currentColor"` on their `<path>`, so the icon takes
+ * its colour from the surrounding text. The wrapper deliberately does NOT
+ * set its own `text-*` class so the parent's colour wins — inside a
+ * `DropdownMenuItem` that means `text-muted-foreground` (the primitive
+ * applies it to any descendant `<svg>` lacking an explicit `text-*`), which
+ * matches the lucide `Download` icon used for the ICS row.
+ *
+ * For the ICS download trigger we use lucide's `Download` icon elsewhere — no
  * brand glyph required.
  */
 

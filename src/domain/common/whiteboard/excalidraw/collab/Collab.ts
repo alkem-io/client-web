@@ -1,4 +1,5 @@
 import type {
+  getVisibleSceneBounds as ExcalidrawGetVisibleSceneBounds,
   reconcileElements as ExcalidrawReconcileElements,
   restoreElements as ExcalidrawRestoreElements,
 } from '@alkemio/excalidraw';
@@ -9,6 +10,7 @@ import type {
   newElementWith as ExcalidrawNewElementWith,
 } from '@alkemio/excalidraw/dist/types/element/src';
 import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { zoomToFitBounds as ExcalidrawZoomToFitBounds } from '@alkemio/excalidraw/dist/types/excalidraw/actions/actionCanvas';
 import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
@@ -17,6 +19,7 @@ import type {
   Collaborator,
   ExcalidrawImperativeAPI,
   Gesture,
+  OnUserFollowedPayload,
   SocketId,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { throttle } from 'lodash-es';
@@ -33,6 +36,7 @@ import {
   IDLE_THRESHOLD,
   SCENE_SYNC_TIMEOUT,
   SYNC_FULL_SCENE_INTERVAL_MS,
+  VIEWPORT_SYNC_TIMEOUT,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
 import Portal from './Portal';
@@ -79,6 +83,8 @@ type ExcalidrawUtils = {
   restoreElements: typeof ExcalidrawRestoreElements;
   CaptureUpdateAction: typeof ExcalidrawCaptureUpdateAction;
   newElementWith: typeof ExcalidrawNewElementWith;
+  getVisibleSceneBounds: typeof ExcalidrawGetVisibleSceneBounds;
+  zoomToFitBounds: typeof ExcalidrawZoomToFitBounds;
 };
 
 class Collab {
@@ -98,6 +104,8 @@ class Collab {
   private onIncomingCountdownTimer?: OnIncomingCountdownTimerCallback;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
   private collaborationMode: CollaboratorMode | undefined = undefined;
+  private unsubOnUserFollow: (() => void) | null = null;
+  private unsubOnScrollChange: (() => void) | null = null;
 
   constructor(props: CollabProps) {
     this.state = {
@@ -143,6 +151,11 @@ class Collab {
     window.removeEventListener(EVENT.POINTER_MOVE, this.onPointerMove);
     window.removeEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
 
+    this.unsubOnUserFollow?.();
+    this.unsubOnUserFollow = null;
+    this.unsubOnScrollChange?.();
+    this.unsubOnScrollChange = null;
+
     if (this.activeIntervalId) {
       window.clearInterval(this.activeIntervalId);
       this.activeIntervalId = null;
@@ -167,6 +180,11 @@ class Collab {
 
   stopCollaboration = async () => {
     const { CaptureUpdateAction, newElementWith } = await this.excalidrawUtils;
+
+    this.unsubOnUserFollow?.();
+    this.unsubOnUserFollow = null;
+    this.unsubOnScrollChange?.();
+    this.unsubOnScrollChange = null;
 
     this.queueBroadcastAllElements.cancel();
     this.destroySocketClient();
@@ -345,6 +363,14 @@ class Collab {
                 } catch (_e) {}
                 return;
               }
+              if (isUserFollowPayload(data)) {
+                this.handleIncomingUserFollow(data.payload);
+                return;
+              }
+              if (isSceneBoundsPayload(data)) {
+                this.handleIncomingSceneBounds(data.payload);
+                return;
+              }
             },
             'collaborator-mode': event => {
               resolve();
@@ -371,6 +397,7 @@ class Collab {
       }
 
       this.initializeIdleDetector();
+      this.initializeFollowSubscriptions();
 
       this.state.activeRoomLink = window.location.href;
     });
@@ -490,6 +517,87 @@ class Collab {
     document.addEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
   };
 
+  private initializeFollowSubscriptions = () => {
+    this.unsubOnUserFollow?.();
+    this.unsubOnScrollChange?.();
+
+    this.unsubOnUserFollow = this.excalidrawAPI.onUserFollow((payload: OnUserFollowedPayload) => {
+      if (this.portal.socket) {
+        this.portal.broadcastUserFollowed({
+          userToFollow: payload.userToFollow,
+          action: payload.action,
+        });
+      }
+    });
+
+    const throttledRelayBounds = throttle(() => this.relayVisibleSceneBounds(), VIEWPORT_SYNC_TIMEOUT);
+    this.unsubOnScrollChange = this.excalidrawAPI.onScrollChange(() => {
+      throttledRelayBounds();
+    });
+  };
+
+  private relayVisibleSceneBounds = async (opts?: { force: boolean }) => {
+    const appState = this.excalidrawAPI.getAppState();
+    if (this.portal.socket && (appState.followedBy.size > 0 || opts?.force)) {
+      const { getVisibleSceneBounds } = await this.excalidrawUtils;
+      const sceneBounds = getVisibleSceneBounds(appState);
+      this.portal.broadcastVisibleSceneBounds(sceneBounds);
+    }
+  };
+
+  private handleIncomingUserFollow = (payload: {
+    socketId: SocketId;
+    userToFollow: { socketId: SocketId; username: string };
+    action: 'FOLLOW' | 'UNFOLLOW';
+  }) => {
+    const mySocketId = this.portal.socket?.id as SocketId | undefined;
+    if (!mySocketId) {
+      return;
+    }
+    // Only process if I am the one being followed/unfollowed
+    if (payload.userToFollow.socketId !== mySocketId) {
+      return;
+    }
+    const currentFollowedBy = new Set(this.excalidrawAPI.getAppState().followedBy);
+    if (payload.action === 'FOLLOW') {
+      currentFollowedBy.add(payload.socketId);
+    } else {
+      currentFollowedBy.delete(payload.socketId);
+    }
+    this.excalidrawAPI.updateScene({
+      appState: { followedBy: currentFollowedBy },
+    });
+    // Send initial viewport so the follower immediately syncs
+    if (payload.action === 'FOLLOW') {
+      this.relayVisibleSceneBounds({ force: true });
+    }
+  };
+
+  private handleIncomingSceneBounds = async (payload: {
+    socketId: SocketId;
+    sceneBounds: readonly [number, number, number, number];
+  }) => {
+    const appState = this.excalidrawAPI.getAppState();
+    // Only apply if we are currently following this user
+    if (!appState.userToFollow || appState.userToFollow.socketId !== payload.socketId) {
+      return;
+    }
+    const { zoomToFitBounds } = await this.excalidrawUtils;
+    const { appState: newAppState } = zoomToFitBounds({
+      bounds: payload.sceneBounds,
+      appState,
+      fitToViewport: true,
+      viewportZoomFactor: 1,
+    });
+    this.excalidrawAPI.updateScene({
+      appState: {
+        scrollX: newAppState.scrollX,
+        scrollY: newAppState.scrollY,
+        zoom: newAppState.zoom,
+      },
+    });
+  };
+
   private setCollaborators = (sockets: SocketId[]) => {
     const collaborators = new Map<SocketId, Collaborator>();
 
@@ -503,6 +611,41 @@ class Collab {
 
     this.collaborators = collaborators;
     this.excalidrawAPI.updateScene({ collaborators });
+
+    // Clean up follow state for disconnected users
+    const socketSet = new Set(sockets);
+    const appState = this.excalidrawAPI.getAppState();
+
+    // Clear userToFollow if the followed user disconnected
+    const userToFollowGone = appState.userToFollow && !socketSet.has(appState.userToFollow.socketId);
+
+    // Prune followedBy for disconnected users
+    let cleanedFollowedBy: Set<SocketId> | null = null;
+    if (appState.followedBy.size > 0) {
+      const cleaned = new Set<SocketId>();
+      for (const id of appState.followedBy) {
+        if (socketSet.has(id)) {
+          cleaned.add(id);
+        }
+      }
+      if (cleaned.size !== appState.followedBy.size) {
+        cleanedFollowedBy = cleaned;
+      }
+    }
+
+    if (userToFollowGone && cleanedFollowedBy) {
+      this.excalidrawAPI.updateScene({
+        appState: { userToFollow: null, followedBy: cleanedFollowedBy },
+      });
+    } else if (userToFollowGone) {
+      this.excalidrawAPI.updateScene({
+        appState: { userToFollow: null },
+      });
+    } else if (cleanedFollowedBy) {
+      this.excalidrawAPI.updateScene({
+        appState: { followedBy: cleanedFollowedBy },
+      });
+    }
   };
 
   private getSceneElementsIncludingDeleted = () => {
@@ -575,3 +718,7 @@ const isEmojiReactionPayload = (data: IncomingClientBroadcastData): data is Sock
 const isCountdownTimerPayload = (
   data: IncomingClientBroadcastData
 ): data is SocketUpdateDataSource['COUNTDOWN_TIMER'] => data.type === WS_SCENE_EVENT_TYPES.COUNTDOWN_TIMER;
+const isUserFollowPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['USER_FOLLOW'] =>
+  data.type === WS_SCENE_EVENT_TYPES.USER_FOLLOW;
+const isSceneBoundsPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_BOUNDS'] =>
+  data.type === WS_SCENE_EVENT_TYPES.SCENE_BOUNDS;
