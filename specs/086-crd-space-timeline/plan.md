@@ -90,7 +90,9 @@ src/crd/                                          # Pure presentational layer
 │   ├── AddToCalendarMenu.tsx                     # Dropdown (Google/Outlook/ICS)
 │   ├── DeleteEventConfirmation.tsx               # AlertDialog wrapper
 │   └── icons/
-│       └── CrdAddToCalendarIcons.tsx             # Wraps raw .svg?react brand icons
+│       ├── CrdAddToCalendarIcons.tsx             # Wraps colocated .svg?react brand icons
+│       ├── google.svg                            # currentColor — visible in any theme
+│       └── outlook.svg                           # currentColor — visible in any theme
 ├── components/space/sidebar/
 │   └── EventsSection.tsx                         # MODIFY — props evolved (raw Date + url)
 ├── i18n/space/
