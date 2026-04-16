@@ -4,7 +4,7 @@ import { bg, de, enUS, es, fr, nl } from 'date-fns/locale';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Input } from '@/crd/primitives/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
 type DurationFieldProps = {
   label?: string;
@@ -13,12 +13,15 @@ type DurationFieldProps = {
   /** Duration in minutes. */
   value: number | undefined;
   onChange: (value: number | undefined) => void;
-  step?: number;
+  /** Override the preset list of duration options (in minutes). */
+  options?: number[];
   disabled?: boolean;
   error?: string;
   className?: string;
   ariaLabel?: string;
 };
+
+const DEFAULT_OPTIONS_MINUTES = [15, 30, 45, 60, 90, 120, 180, 240, 480];
 
 const LOCALE_BY_LANG: Record<string, Locale> = { en: enUS, nl, es, bg, de, fr };
 
@@ -28,13 +31,18 @@ function resolveLocale(langCode: string | undefined): Locale {
   return LOCALE_BY_LANG[base] ?? enUS;
 }
 
-/** Numeric minutes input with a derived "ends at HH:mm" caption. */
+/** Select dropdown of preset durations + a derived "ends at HH:mm" caption.
+ *  Replaced the earlier free-form numeric input because:
+ *    - HTML `<input type="number" min={1} step={15}>` validates against
+ *      `1 + 15n` so common values like 30 were rejected by the browser.
+ *    - A bounded preset list matches the calendar-app convention and removes
+ *      the chance of the user typing implausible values (e.g. 7 minutes). */
 export function DurationField({
   label,
   startDate,
   value,
   onChange,
-  step = 15,
+  options = DEFAULT_OPTIONS_MINUTES,
   disabled,
   error,
   className,
@@ -44,6 +52,25 @@ export function DurationField({
   const locale = resolveLocale(i18n.language);
   const id = useId();
   const hasError = Boolean(error);
+
+  const formatDuration = (minutes: number): string => {
+    if (minutes < 60) {
+      return t('calendar.fields.durationOption.minutes', { count: minutes });
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    if (remainingMinutes === 0) {
+      return t('calendar.fields.durationOption.hours', { count: hours });
+    }
+    return t('calendar.fields.durationOption.hoursMinutes', { hours, minutes: remainingMinutes });
+  };
+
+  // Ensure the current value appears in the dropdown even if it isn't in the
+  // preset list (edit mode may load arbitrary historical durations).
+  const optionsIncludingValue =
+    typeof value === 'number' && value > 0 && !options.includes(value)
+      ? [...options, value].sort((a, b) => a - b)
+      : options;
 
   const endsAtCaption =
     startDate && typeof value === 'number' && value > 0
@@ -57,21 +84,27 @@ export function DurationField({
           {label}
         </label>
       )}
-      <Input
-        id={id}
-        type="number"
-        min={1}
-        step={step}
+      <Select
+        value={typeof value === 'number' ? String(value) : undefined}
+        onValueChange={next => onChange(next ? Number(next) : undefined)}
         disabled={disabled}
-        value={typeof value === 'number' ? value : ''}
-        onChange={event => {
-          const raw = event.target.value;
-          onChange(raw === '' ? undefined : Number(raw));
-        }}
-        aria-label={label ?? ariaLabel}
-        aria-invalid={hasError || undefined}
-        className={cn(hasError && 'border-destructive')}
-      />
+      >
+        <SelectTrigger
+          id={id}
+          aria-label={label ?? ariaLabel}
+          aria-invalid={hasError || undefined}
+          className={cn(hasError && 'border-destructive')}
+        >
+          <SelectValue placeholder={label ?? ''} />
+        </SelectTrigger>
+        <SelectContent>
+          {optionsIncludingValue.map(minutes => (
+            <SelectItem key={minutes} value={String(minutes)}>
+              {formatDuration(minutes)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {endsAtCaption && !hasError && <span className="text-xs text-muted-foreground">{endsAtCaption}</span>}
       {hasError && <span className="text-xs text-destructive">{error}</span>}
     </div>

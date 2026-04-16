@@ -45,8 +45,12 @@ export function TimelineDialog({
   const { t } = useTranslation('crd-space');
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
+  // pr-10 reserves space for the close-X button rendered absolutely at
+  // top-4 right-4 by DialogContent / SheetContent. Without it, anything in
+  // the headerActions slot (Edit/Back/AddToCalendar) sits directly under
+  // the X and either overlaps or is occluded.
   const header = (
-    <div className="flex items-start justify-between gap-3">
+    <div className="flex items-start justify-between gap-3 pr-10">
       <div className="min-w-0 flex-1">
         {isDesktop ? (
           <DialogTitle className="text-lg font-semibold leading-tight">{title}</DialogTitle>

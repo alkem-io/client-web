@@ -58,7 +58,15 @@
       "date": "Datum",
       "startTime": "Startzeit",
       "endTime": "Endzeit",
-      "duration": "Dauer (Minuten)",
+      "duration": "Dauer",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "durationOption": {
+        "minutes": "{{count}} Min.",
+        "hours_one": "{{count}} Stunde",
+        "hours_other": "{{count}} Stunden",
+        "hoursMinutes": "{{hours}} Std. {{minutes}} Min."
+      },
       "wholeDay": "Ganztägig",
       "description": "Beschreibung",
       "location": "Ort",

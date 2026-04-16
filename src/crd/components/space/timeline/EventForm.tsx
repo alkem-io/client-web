@@ -119,65 +119,64 @@ export function EventForm({
         </div>
       </div>
 
-      {/* Row 2: start + end (date/time) + whole-day toggle */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-2 gap-3">
-            <DateField
-              label={t('calendar.fields.date')}
-              value={values.startDate}
-              onChange={next => onChange('startDate', next)}
-              disabled={isSubmitting}
-            />
-            <TimeField
-              label={t('calendar.fields.startTime')}
-              value={values.startDate}
-              onChange={next => onChange('startDate', next)}
-              disabled={timeFieldsDisabled}
-            />
-          </div>
-          <div className="flex items-center justify-between rounded-md border border-border p-3">
-            <label htmlFor={wholeDayId} className="text-sm font-medium">
-              {t('calendar.fields.wholeDay')}
-            </label>
-            <Switch
-              id={wholeDayId}
-              checked={values.wholeDay}
-              onCheckedChange={next => onChange('wholeDay', next)}
-              disabled={isSubmitting}
-              aria-label={t('calendar.fields.wholeDay')}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <DateField
-            label={t('calendar.fields.date')}
+      {/* Row 2: start date | start time | end date | end time-or-duration.
+          Symmetric 4-column grid on desktop so the matching pickers align
+          horizontally; stacks vertically on mobile. */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <DateField
+          label={t('calendar.fields.startDate')}
+          value={values.startDate}
+          onChange={next => onChange('startDate', next)}
+          disabled={isSubmitting}
+        />
+        <TimeField
+          label={t('calendar.fields.startTime')}
+          value={values.startDate}
+          onChange={next => onChange('startDate', next)}
+          disabled={timeFieldsDisabled}
+        />
+        <DateField
+          label={t('calendar.fields.endDate')}
+          value={values.endDate}
+          onChange={next => onChange('endDate', next)}
+          minDate={values.startDate}
+          disabled={isSubmitting}
+          error={errors.endDate}
+        />
+        {sameDay ? (
+          <DurationField
+            label={t('calendar.fields.duration')}
+            startDate={values.startDate}
+            value={values.durationMinutes}
+            onChange={next => onChange('durationMinutes', next)}
+            disabled={timeFieldsDisabled}
+            error={errors.durationMinutes}
+          />
+        ) : (
+          <TimeField
+            label={t('calendar.fields.endTime')}
             value={values.endDate}
             onChange={next => onChange('endDate', next)}
-            minDate={values.startDate}
-            disabled={isSubmitting}
+            minTime={values.startDate}
+            disabled={timeFieldsDisabled}
             error={errors.endDate}
           />
-          {sameDay ? (
-            <DurationField
-              label={t('calendar.fields.duration')}
-              startDate={values.startDate}
-              value={values.durationMinutes}
-              onChange={next => onChange('durationMinutes', next)}
-              disabled={timeFieldsDisabled}
-              error={errors.durationMinutes}
-            />
-          ) : (
-            <TimeField
-              label={t('calendar.fields.endTime')}
-              value={values.endDate}
-              onChange={next => onChange('endDate', next)}
-              minTime={values.startDate}
-              disabled={timeFieldsDisabled}
-              error={errors.endDate}
-            />
-          )}
-        </div>
+        )}
+      </div>
+
+      {/* Row 2b: whole-day toggle on its own row, full width — keeps row 2's
+          field heights symmetric (no toggle box throwing off alignment). */}
+      <div className="flex items-center justify-between rounded-md border border-border p-3">
+        <label htmlFor={wholeDayId} className="text-sm font-medium">
+          {t('calendar.fields.wholeDay')}
+        </label>
+        <Switch
+          id={wholeDayId}
+          checked={values.wholeDay}
+          onCheckedChange={next => onChange('wholeDay', next)}
+          disabled={isSubmitting}
+          aria-label={t('calendar.fields.wholeDay')}
+        />
       </div>
 
       {/* Row 3: description (markdown) */}

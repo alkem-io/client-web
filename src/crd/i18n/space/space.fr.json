@@ -58,7 +58,15 @@
       "date": "Date",
       "startTime": "Heure de début",
       "endTime": "Heure de fin",
-      "duration": "Durée (minutes)",
+      "duration": "Durée",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} heure",
+        "hours_other": "{{count}} heures",
+        "hoursMinutes": "{{hours}}h {{minutes}}min"
+      },
       "wholeDay": "Toute la journée",
       "description": "Description",
       "location": "Lieu",

@@ -58,7 +58,15 @@
       "date": "Datum",
       "startTime": "Starttijd",
       "endTime": "Eindtijd",
-      "duration": "Duur (minuten)",
+      "duration": "Duur",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} uur",
+        "hours_other": "{{count}} uur",
+        "hoursMinutes": "{{hours}}u {{minutes}}min"
+      },
       "wholeDay": "Hele dag",
       "description": "Beschrijving",
       "location": "Locatie",

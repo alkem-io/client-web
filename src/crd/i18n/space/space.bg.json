@@ -58,7 +58,15 @@
       "date": "Дата",
       "startTime": "Начален час",
       "endTime": "Краен час",
-      "duration": "Продължителност (минути)",
+      "duration": "Продължителност",
+      "startDate": "Начална дата",
+      "endDate": "Крайна дата",
+      "durationOption": {
+        "minutes": "{{count}} мин",
+        "hours_one": "{{count}} час",
+        "hours_other": "{{count}} часа",
+        "hoursMinutes": "{{hours}}ч {{minutes}}мин"
+      },
       "wholeDay": "Цял ден",
       "description": "Описание",
       "location": "Местоположение",
