@@ -5,19 +5,25 @@
 
 ## Summary
 
-Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD design system (shadcn/ui + Tailwind), following the same parallel-design-system pattern used by 039 (spaces), 041 (dashboard), 042 (space page), and 043 (search). The CRD Space Settings page reuses the existing `SpaceHeader` hero (from spec 042), places a horizontal icon tab strip below, and renders each of the 8 tabs (About, Layout, Community, Subspaces, Templates, Storage, Settings, Account) inside CRD cards with a sticky Save Changes / Reset action bar. Destructive actions use CRD confirmation dialogs. Apollo queries and mutations are completely untouched — data mappers in `src/main/crdPages/topLevelPages/spaceSettings/` bridge the generated hooks to presentational CRD component props. All 8 tabs ship together; there is no mixed-shell fallback. Gated behind the existing `alkemio-crd-enabled` localStorage toggle.
+Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD design system (shadcn/ui + Tailwind), following the same parallel-design-system pattern used by 039 (spaces), 041 (dashboard), 042 (space page), and 043 (search). The CRD Space Settings page reuses the existing `SpaceHeader` hero (from spec 042), places a horizontal icon tab strip below, and renders 8 tabs in this order: **About, Layout, Community, Subspaces, Templates, Storage, Settings, Account**. Every tab is P1 and ships together. Apollo queries and mutations are completely untouched — data mappers in `src/main/crdPages/topLevelPages/spaceSettings/` bridge the generated hooks to presentational CRD component props. Per-tab save semantics:
+
+- **About** — per-field autosave. 2-second idle debounce on text fields; file uploads autosave immediately. Per-field spinner / "Saved!" / error indicator next to each field label. No Save button, no Reset button.
+- **Layout** — local dirty buffer with a sticky Save Changes / Reset action bar. Reset reverts to the last backend-known state. Zero mutations before Save is clicked.
+- **Community / Subspaces / Templates / Storage / Settings / Account** — per-action commit (no tab-wide save bar).
+
+Layout specifics: items are **callouts/posts** (never "pages"); they can only be moved between columns, never created or deleted here; **column** titles and descriptions are inline-editable (callout title / description are read-only — edited from the post's own page); a per-**column** (innovation-flow step) overflow menu with "Active phase" and "Default post template" is **implemented but not surfaced** (deferred behind `isDeferredMenuVisible`) until the designer specifies where it opens from on each column header. Layout also includes the Post description display toggle (`calloutDescriptionDisplayMode`) moved back from Settings. Gated behind the existing `alkemio-crd-enabled` localStorage toggle.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, React 19, Node 24.14.0 (Volta-pinned)
-**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged), dnd-kit (new — for accessible drag-and-drop on Layout tab)
+**Primary Dependencies**: shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client, `@dnd-kit/core` + `@dnd-kit/sortable` (all existing — no new runtime dependencies introduced)
 **Storage**: localStorage (`alkemio-crd-enabled`) for CRD toggle (existing); GraphQL data layer unchanged
 **Testing**: Vitest with jsdom (`pnpm vitest run`)
 **Target Platform**: Web SPA (Vite dev server on localhost:3001)
 **Project Type**: Web application (frontend only — no backend changes)
-**Performance Goals**: About-tab save round-trip under 60s (SC-001); tab switch under 200ms; Layout tab drag response under 100ms
+**Performance Goals**: Layout Save Changes round-trip under 60s; About per-field autosave (last keystroke → "Saved!" indicator) under 3s (both SC-001); tab switch under 200ms; Layout drag response under 100ms
 **Constraints**: Zero MUI / Emotion imports in `src/crd/` and `src/main/crdPages/`; parity with MUI Space Admin for every action (SC-004); all 8 tabs must ship together
-**Scale/Scope**: 1 settings shell, 8 tabs, ~25 new CRD components (tab strip, save bar, per-tab compositions, card primitives), 8 data mappers, 1 new i18n namespace (`crd-spaceSettings`), ~20 existing Apollo mutations/queries reused
+**Scale/Scope**: 1 settings shell, 8 tabs (each its own P1 user story), ~30 new CRD components, 8 data mappers, 1 new i18n namespace (`crd-spaceSettings`), ~25 existing Apollo mutations/queries reused
 
 ## Constitution Check
 
@@ -25,19 +31,19 @@ Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD 
 
 | Principle | Status | Notes |
 | --- | --- | --- |
-| I. Domain-Driven Frontend Boundaries | PASS | CRD components are purely presentational. Business logic remains in existing `src/domain/spaceAdmin/*` hooks; data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. |
-| II. React 19 Concurrent UX Discipline | PASS | CRD components are pure and concurrency-safe. Mutations use `useTransition` in the data mapper to keep the UI responsive during save. Skeleton + Suspense-ready loading states per card. |
-| III. GraphQL Contract Fidelity | PASS | No GraphQL schema changes (FR-019). All Apollo operations go through generated hooks. CRD components never import generated GraphQL types. |
-| IV. State & Side-Effect Isolation | PASS | CRD components hold only visual state (open/close, grab-mode, active tab). Dirty-state scope, navigation blocking, and mutation wiring live in `src/main/crdPages/topLevelPages/spaceSettings/`. |
-| V. Experience Quality & Safeguards | PASS | FR-020 / FR-021 codify WCAG 2.1 AA including a fully specified keyboard alternative to drag-and-drop on the Layout tab. Per-card loading/error states covered by FR-016. |
+| I. Domain-Driven Frontend Boundaries | PASS | CRD components purely presentational. All business logic stays in existing `src/domain/spaceAdmin/*` hooks; data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. |
+| II. React 19 Concurrent UX Discipline | PASS | CRD components pure and concurrency-safe. Mutations wrapped in `useTransition` per Constitution Principle II. Skeletons + ARIA live regions for async state (FR-028, FR-032). |
+| III. GraphQL Contract Fidelity | PASS | No GraphQL changes (FR-031). All Apollo operations go through generated hooks. CRD components never import generated GraphQL types. |
+| IV. State & Side-Effect Isolation | PASS | CRD components hold only visual state (open/close, grab-mode, inline-edit mode, active tab). Dirty-state buffers, navigation blocking, deferred-menu gating, and mutation wiring all live in `src/main/crdPages/topLevelPages/spaceSettings/`. |
+| V. Experience Quality & Safeguards | PASS | FR-011 / FR-032 codify WCAG 2.1 AA including a fully specified keyboard alternative to drag-and-drop. Per-card loading / error states covered by FR-028. |
 | Arch #1: Feature directories map to domain contexts | PASS | CRD composites under `src/crd/components/space/settings/`, integration under `src/main/crdPages/topLevelPages/spaceSettings/`. |
 | Arch #2: Styling standardizes on MUI theming | **JUSTIFIED VIOLATION** | Same intentional, constitution-acknowledged violation as 039/041/042/043. CRD is the announced successor design system. See Complexity Tracking. |
 | Arch #3: i18n via react-i18next | PASS | New namespace `crd-spaceSettings`; English source only; lazy-loaded following 043 pattern. No hard-coded strings. |
-| Arch #4: Build artifacts deterministic | PASS | No Vite config changes. `dnd-kit` is a runtime dependency only. |
+| Arch #4: Build artifacts deterministic | PASS | No Vite config changes. No new runtime dependencies — `@dnd-kit/core` / `@dnd-kit/sortable` already in `package.json`. |
 | Arch #5: No barrel exports | PASS | All imports use explicit file paths. |
-| Arch #6: SOLID | PASS | SRP: view vs. data mapper vs. hook. OCP: per-tab compositions are independent. LSP: Save bar and confirm dialog contracts honored across tabs. ISP: each tab's props interface is minimal and tab-specific. DIP: CRD components consume plain props injected by mappers. DRY: shared `SpaceSettingsCard`, `SaveBar`, `ConfirmDeleteDialog` primitives. |
+| Arch #6: SOLID + DRY | PASS | SRP: view vs. mapper vs. hook per tab. OCP: per-tab compositions independent. LSP: Save bar, confirm dialog, inline-edit primitive contracts honored across tabs. ISP: each tab's props interface is minimal and tab-specific. DIP: CRD components consume plain props injected by mappers. DRY: shared `SpaceSettingsCard`, `SaveBar`, `InlineEditText`, reused `ConfirmationDialog` from 084-era work, shared `MemberRow` primitive across Community users / orgs / VC tables. |
 
-**Post-Phase 1 re-check**: All gates pass; the Arch #2 violation is identical to prior CRD migrations.
+**Post-Phase 1 re-check**: All gates pass. The Arch #2 violation is identical to prior CRD migrations.
 
 ## Project Structure
 
@@ -46,7 +52,7 @@ Migrate the Space Settings area from MUI (`src/domain/spaceAdmin/*`) to the CRD 
 ```text
 specs/045-crd-space-settings/
 ├── plan.md              # This file
-├── spec.md              # Feature specification
+├── spec.md              # Feature specification (8 per-tab user stories)
 ├── research.md          # Phase 0: research findings
 ├── data-model.md        # Phase 1: entities + mapping notes
 ├── quickstart.md        # Phase 1: setup and implementation guide
@@ -70,32 +76,35 @@ specs/045-crd-space-settings/
 ```text
 src/
 ├── crd/
-│   ├── primitives/                               # Existing + three newly ported from prototype
+│   ├── primitives/                               # Existing + newly ported from prototype
 │   │   ├── tabs.tsx                              # NEW — ported from prototype/src/app/components/ui/tabs.tsx
 │   │   ├── textarea.tsx                          # NEW — ported from prototype
-│   │   └── table.tsx                             # NEW — ported from prototype
+│   │   └── table.tsx                             # NEW — ported from prototype (used by Community users/orgs/VC tables, Storage tree, Account entitlements)
 │   ├── components/
 │   │   ├── dialogs/
-│   │   │   └── ConfirmationDialog.tsx            # EXISTING — extended (not duplicated) to cover both delete and discard variants
+│   │   │   └── ConfirmationDialog.tsx            # EXISTING — extended, not duplicated, to cover delete + discard variants
 │   │   ├── common/
-│   │   │   └── MarkdownContent.tsx               # EXISTING — reused for read-only guideline rendering
+│   │   │   ├── InlineEditText.tsx                # NEW — shared inline-edit primitive used by Layout column titles and column descriptions only (callouts are read-only here)
+│   │   │   └── MarkdownContent.tsx               # EXISTING — reused for read-only guidelines
 │   │   └── space/
-│   │       └── settings/                         # NEW
+│   │       └── settings/                         # NEW — per-tab presentational components
 │   │           ├── SpaceSettingsShell.tsx        # Hero reuse + horizontal tab strip + outlet
-│   │           ├── SpaceSettingsTabStrip.tsx     # ARIA tablist; keyboard arrow nav; scroll on mobile
-│   │           ├── SpaceSettingsCard.tsx         # Card primitive (title + description + body)
-│   │           ├── SpaceSettingsSaveBar.tsx      # Sticky Save Changes / Reset action bar
-│   │           ├── SpaceSettingsAboutView.tsx    # About tab: two-column layout (form + Preview)
-│   │           ├── SpaceSettingsLayoutView.tsx   # Layout tab: 4 pool column cards
-│   │           ├── LayoutPoolColumn.tsx          # Single pool column (Home/Community/Subspaces/Knowledge)
-│   │           ├── LayoutPageRow.tsx             # Draggable/pinned row with grab handle
-│   │           ├── SpaceSettingsCommunityView.tsx# Community tab: member & lead lists, invitation form
-│   │           ├── SpaceSettingsSubspacesView.tsx# Subspaces tab: grid of subspace cards
-│   │           ├── SpaceSettingsTemplatesView.tsx# Templates tab: template library grid
-│   │           ├── SpaceSettingsStorageView.tsx  # Storage tab: upload dropzone + document table
-│   │           ├── SpaceSettingsSettingsView.tsx # Settings tab: privacy/visibility toggles
-│   │           └── SpaceSettingsAccountView.tsx  # Account tab: plan + entitlements (read-only)
-│   ├── primitives/                               # Reused (Dialog, DropdownMenu, Input, Switch, Radio, ...)
+│   │           ├── SpaceSettingsTabStrip.tsx     # Radix-Tabs-based tab strip
+│   │           ├── SpaceSettingsCard.tsx         # Title + description + body primitive
+│   │           ├── SpaceSettingsSaveBar.tsx      # Sticky Save Changes / Reset — Layout tab only
+│   │           ├── SpaceSettingsAboutView.tsx
+│   │           ├── SpaceSettingsLayoutView.tsx
+│   │           ├── LayoutPoolColumn.tsx
+│   │           ├── LayoutCalloutRow.tsx
+│   │           ├── SpaceSettingsCommunityView.tsx
+│   │           ├── CommunityUsersTable.tsx       # Main users table
+│   │           ├── CommunityOrgsTable.tsx        # Inside Organizations collapsible
+│   │           ├── CommunityVirtualContributorsTable.tsx  # Inside VC collapsible
+│   │           ├── SpaceSettingsSubspacesView.tsx
+│   │           ├── SpaceSettingsTemplatesView.tsx
+│   │           ├── SpaceSettingsStorageView.tsx
+│   │           ├── SpaceSettingsSettingsView.tsx
+│   │           └── SpaceSettingsAccountView.tsx
 │   └── i18n/
 │       └── spaceSettings/                        # NEW
 │           └── spaceSettings.en.json
@@ -103,14 +112,15 @@ src/
 │   └── crdPages/
 │       └── topLevelPages/
 │           └── spaceSettings/                    # NEW — integration layer
-│               ├── CrdSpaceSettingsPage.tsx      # Route entry; picks active tab from URL
-│               ├── useSpaceSettingsTab.ts        # URL <-> active tab sync + dirty-state gate
-│               ├── useDirtyTabGuard.ts           # Blocks tab switch + page nav while dirty
+│               ├── CrdSpaceSettingsPage.tsx      # Route entry
+│               ├── useSpaceSettingsTab.ts        # URL <-> active tab sync
+│               ├── useDirtyTabGuard.ts           # Blocks tab switch + page nav while Layout is dirty; also flushes About's pending debounced autosaves on tab switch
 │               ├── about/
-│               │   ├── useAboutTabData.ts        # Fetch + mutation wiring (existing hooks)
-│               │   └── aboutMapper.ts            # Apollo -> AboutView props
+│               │   ├── useAboutTabData.ts        # Form buffer + mutations
+│               │   └── aboutMapper.ts
 │               ├── layout/
-│               │   ├── useLayoutTabData.ts
+│               │   ├── useLayoutTabData.ts       # Dirty buffer + mutation batch on Save
+│               │   ├── useDeferredColumnMenu.ts  # Wires per-COLUMN Active-phase + Default-post-template mutations behind isDeferredMenuVisible
 │               │   └── layoutMapper.ts
 │               ├── community/
 │               │   ├── useCommunityTabData.ts
@@ -130,25 +140,27 @@ src/
 │               └── account/
 │                   ├── useAccountTabData.ts
 │                   └── accountMapper.ts
-└── domain/spaceAdmin/                            # UNCHANGED — existing MUI implementation remains for toggle-off
+└── domain/spaceAdmin/                            # UNCHANGED — existing MUI implementation stays for toggle-off
 ```
 
-**Structure Decision**: Presentational CRD components live under `src/crd/components/space/settings/`. The route entry, tab routing, dirty-state guard, and per-tab data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. This mirrors the structure used by 041/042/043 and preserves the constitutional boundary between pure UI and domain/data orchestration. Existing `src/domain/spaceAdmin/*` stays intact and continues to serve the MUI variant when `useCrdEnabled()` returns `false`.
+**Structure Decision**: Presentational CRD components live under `src/crd/components/space/settings/`. The route entry, tab routing, dirty-state guard, deferred-menu wiring, and per-tab data mappers live under `src/main/crdPages/topLevelPages/spaceSettings/`. Every tab has its own mapper pair (`use<Tab>TabData.ts` + `<tab>Mapper.ts`). Existing `src/domain/spaceAdmin/*` stays intact and continues to serve the MUI variant when `useCrdEnabled()` returns `false`.
 
 **CRD asset reuse (per `src/crd/CLAUDE.md`)**: the plan explicitly reuses existing CRD assets instead of creating parallels:
-- `src/crd/components/dialogs/ConfirmationDialog.tsx` — extended, not duplicated, to cover both delete and discard variants used by FR-014 and FR-015.
-- `src/crd/forms/markdown/MarkdownEditor.tsx` — reused for About (vision / mission / impact / who) and Community guidelines editing.
+- `src/crd/components/dialogs/ConfirmationDialog.tsx` — extended in place, not duplicated, to cover both delete and discard variants (FR-026, FR-027).
+- `src/crd/forms/markdown/MarkdownEditor.tsx` — reused for About (What / Why / Who) and Community guidelines editing.
 - `src/crd/components/common/MarkdownContent.tsx` — reused for any read-only markdown rendering.
 - `src/crd/forms/tags-input.tsx` — reused for About tags.
-- `src/crd/components/space/SpaceHeader.tsx` — reused verbatim for the settings hero (same as CRD Space page).
+- `src/crd/components/space/SpaceHeader.tsx` — reused verbatim for the settings hero (same as CRD Space Page, SC-008).
 - `src/crd/components/space/SpaceCard.tsx` — reused for the About tab's live Preview card.
-- `src/crd/lib/pickColorFromId.ts` — called by `aboutMapper.ts` to produce the deterministic accent color used by the Preview when banner/avatar are missing.
+- `src/crd/lib/pickColorFromId.ts` — called by `aboutMapper.ts` to produce the deterministic accent color used when banner/avatar are missing.
 
-New primitives ported once, then shared: `tabs.tsx`, `textarea.tsx`, `table.tsx` (see T004a–T004c).
+New primitives ported once, then shared: `tabs.tsx`, `textarea.tsx`, `table.tsx`. New composite primitive: `InlineEditText.tsx` (shared between the Layout column title and column description — two use sites; individual callouts are read-only on this tab).
+
+**Layout tab — deferred per-column menu**: `useDeferredColumnMenu.ts` returns the API the column-header overflow will eventually call (`onChangeActivePhase(columnId, phaseId)`, `onSetAsDefaultPostTemplate(columnId, templateId)`). The Layout view composes these callbacks into a `deferredColumnMenuActions` prop which the column header ignores when the visible `isDeferredMenuVisible` flag is `false` (the default in this iteration). Active phase and Default post template are column-level (innovation-flow-step-level) concerns, NOT per-callout. Unit tests exercise both actions end-to-end so surfacing the overflow CTA later on the column header is a one-line component change (SC-009).
 
 ## Complexity Tracking
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | Arch #2 (parallel CRD design system) | CRD is the announced successor design system; all new pages adopt it per 039/041/042/043 precedent | Continuing MUI-only would block the CRD migration mandate; this intentional parallel-systems phase is tracked and bounded |
-| New `dnd-kit` dependency | Required for WCAG 2.1 AA keyboard drag alternative specified in FR-021 (grab-mode with Arrow/Enter/Escape) | MUI's current Layout editor uses non-accessible drag via a different lib; rebuilding accessible DnD from scratch would reinvent existing audited wheels |
+| Layout deferred per-column menu behind `isDeferredMenuVisible` flag | Designer has not specified the CTA placement for per-COLUMN "Active phase" / "Default post template"; implementing the mutations now avoids a later round-trip | Waiting until the designer lands their spec before implementing would stretch the overall migration by another release cycle |

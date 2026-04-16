@@ -4,44 +4,85 @@
  * Each `use<Tab>TabData()` hook is the sole integration point between Apollo
  * (generated hooks from `src/core/apollo/generated/apollo-hooks.ts`) and the
  * CRD presentational components. The hook returns props for the matching CRD
- * view, enriched with callbacks that fire the correct mutation.
+ * view, with every mutation call wrapped in `useTransition`.
  *
  * Implementations MUST live under `src/main/crdPages/topLevelPages/spaceSettings/<tab>/`.
  */
 
 import type { AboutViewProps } from './tab-about';
-import type { LayoutViewProps } from './tab-layout';
+import type { LayoutViewProps, DeferredColumnMenuActions } from './tab-layout';
 import type { CommunityViewProps } from './tab-community';
 import type { SubspacesViewProps } from './tab-subspaces';
 import type { TemplatesViewProps } from './tab-templates';
 import type { StorageViewProps } from './tab-storage';
 import type { SettingsViewProps } from './tab-settings';
 import type { AccountViewProps } from './tab-account';
+import type { TabId } from './shell';
 
-export type UseTabDataResult<Props> = {
-  props: Props | null; // null while the initial query is loading
+/**
+ * Result shape for tabs that have a tab-wide save bar (About, Layout).
+ */
+export type UseBufferedTabDataResult<Props> = {
+  props: Props | null;
   loading: boolean;
   error: Error | null;
   isDirty: boolean;
   reset: () => void;
 };
 
-export type UseAboutTabData = (spaceId: string) => UseTabDataResult<AboutViewProps>;
-export type UseLayoutTabData = (spaceId: string) => UseTabDataResult<LayoutViewProps>;
-export type UseCommunityTabData = (spaceId: string) => UseTabDataResult<CommunityViewProps>;
-export type UseSubspacesTabData = (spaceId: string) => UseTabDataResult<SubspacesViewProps>;
-export type UseTemplatesTabData = (spaceId: string) => UseTabDataResult<TemplatesViewProps>;
-export type UseStorageTabData = (spaceId: string) => UseTabDataResult<StorageViewProps>;
-export type UseSettingsTabData = (spaceId: string) => UseTabDataResult<SettingsViewProps>;
-export type UseAccountTabData = (spaceId: string) => UseTabDataResult<AccountViewProps>;
+/**
+ * Result shape for tabs that commit per-action (no save bar).
+ */
+export type UseImmediateTabDataResult<Props> = {
+  props: Props | null;
+  loading: boolean;
+  error: Error | null;
+};
 
 /**
- * Dirty-state guard. Single instance per settings page.
- * Enforces the "only one dirty tab at a time" invariant (Clarification Q2).
+ * About tab uses per-field autosave (FR-005a).
+ * No buffer, no isDirty, no Save / Reset — `flushPending()` is exposed so
+ * `useDirtyTabGuard` can flush any in-flight debounce when the admin
+ * navigates away.
+ */
+export type UseAboutTabDataResult = {
+  props: AboutViewProps | null;
+  loading: boolean;
+  error: Error | null;
+  /** Fire any pending debounced autosaves immediately (tab switch / navigation). */
+  flushPending: () => Promise<void>;
+};
+
+export type UseAboutTabData = (spaceId: string) => UseAboutTabDataResult;
+export type UseLayoutTabData = (spaceId: string) => UseBufferedTabDataResult<LayoutViewProps>;
+export type UseCommunityTabData = (spaceId: string) => UseImmediateTabDataResult<CommunityViewProps>;
+export type UseSubspacesTabData = (spaceId: string) => UseImmediateTabDataResult<SubspacesViewProps>;
+export type UseTemplatesTabData = (spaceId: string) => UseImmediateTabDataResult<TemplatesViewProps>;
+export type UseStorageTabData = (spaceId: string) => UseImmediateTabDataResult<StorageViewProps>;
+export type UseSettingsTabData = (spaceId: string) => UseImmediateTabDataResult<SettingsViewProps>;
+export type UseAccountTabData = (spaceId: string) => UseImmediateTabDataResult<AccountViewProps>;
+
+/**
+ * Deferred per-**column** (innovation-flow step) menu wiring (Layout tab).
+ * Fully implemented and tested now; the UI surface is gated by
+ * `isDeferredMenuVisible` (hard-coded false this iteration) until the
+ * designer specifies CTA placement on the column header.
+ */
+export type UseDeferredColumnMenu = (spaceId: string) => {
+  actions: DeferredColumnMenuActions;
+  isDeferredMenuVisible: boolean;
+};
+
+/**
+ * Dirty-state guard — single instance per settings page.
+ * Enforces the "at most one dirty tab" invariant (Clarification Q2).
+ * Only the Layout tab can enter a dirty state. About uses per-field autosave
+ * (Decision 3a) — when the admin leaves the About tab the guard instead calls
+ * `useAboutTabData().flushPending()` to commit any in-flight debounce.
  */
 export type UseDirtyTabGuard = () => {
   isDirty: boolean;
   markDirty: () => void;
   clearDirty: () => void;
-  confirmSwitch: (next: import('./shell').TabId) => Promise<boolean>;
+  confirmSwitch: (next: TabId) => Promise<boolean>;
 };

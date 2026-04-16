@@ -1,13 +1,46 @@
-import type { SaveBarState } from './shell';
+export type MemberRole =
+  | 'host'
+  | 'admin'
+  | 'lead'
+  | 'member'
+  | 'virtualContributor';
 
-export type InvitationPolicy = 'open' | 'invite-only' | 'application';
+export type MemberStatus = 'active' | 'pending' | 'invited' | 'inactive';
 
+export type MemberKind = 'user' | 'organization' | 'virtualContributor';
+
+/**
+ * Shared row template — used by the Community main users table,
+ * the Organizations collapsible table, and the Virtual Contributors
+ * collapsible table.
+ */
 export type MemberRow = {
   id: string;
+  kind: MemberKind;
   displayName: string;
+  secondaryText: string | null;
   avatarUrl: string | null;
-  isLead: boolean;
+  role: MemberRole;
+  status: MemberStatus;
+  joinedAt: string | null;
 };
+
+export type MemberTableFilter = {
+  role?: MemberRole;
+  status?: MemberStatus;
+};
+
+export type MemberTableState<TPageSize extends 10 | 5> = {
+  rows: MemberRow[];
+  totalCount: number;
+  pageSize: TPageSize;
+  page: number;
+};
+
+export type CollapsibleMemberTableState<TPageSize extends 10 | 5> =
+  MemberTableState<TPageSize> & {
+    collapsed: boolean;
+  };
 
 export type ApplicationQuestion = {
   id: string;
@@ -15,19 +48,33 @@ export type ApplicationQuestion = {
   required: boolean;
 };
 
+export type MemberRowAction =
+  | 'viewProfile'
+  | 'changeRole'
+  | 'resend'
+  | 'revoke'
+  | 'approve'
+  | 'reject'
+  | 'remove'
+  | 'edit'
+  | 'toggleActive';
+
 export type CommunityViewProps = {
-  members: MemberRow[];
-  leads: MemberRow[];
-  invitationPolicy: InvitationPolicy;
-  membershipApplicationForm: ApplicationQuestion[];
+  users: MemberTableState<10>;
+  organizations: CollapsibleMemberTableState<5>;
+  virtualContributors: CollapsibleMemberTableState<5>;
+  applicationForm: ApplicationQuestion[];
   communityGuidelines: string;
-  saveBar: SaveBarState;
-  onRemoveMember: (userId: string) => void;
-  onPromoteToLead: (userId: string) => void;
-  onDemoteFromLead: (userId: string) => void;
-  onInvitationPolicyChange: (next: InvitationPolicy) => void;
+  onUsersPageChange: (page: number) => void;
+  onUsersSearch: (query: string) => void;
+  onUsersFilter: (filter: MemberTableFilter) => void;
+  onOrgsPageChange: (page: number) => void;
+  onVcsPageChange: (page: number) => void;
+  onToggleOrganizations: () => void;
+  onToggleVirtualContributors: () => void;
+  onRowAction: (kind: MemberKind, id: string, action: MemberRowAction) => void;
+  onInvite: () => void;
   onApplicationFormChange: (questions: ApplicationQuestion[]) => void;
   onGuidelinesChange: (markdown: string) => void;
-  onSave: () => void;
-  onReset: () => void;
+  onSaveGuidelinesAsTemplate: () => void;
 };

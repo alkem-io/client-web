@@ -23,66 +23,98 @@ pnpm start
 # open http://localhost:3001
 ```
 
-Navigate to a space you administer → `Settings` in the space menu. The CRD Space Settings page should render with:
+Navigate to a space you administer → Settings. The CRD Space Settings page should render with:
 
-- The CRD space hero on top (same as the CRD Space page from spec 042)
-- A horizontal tab strip below the hero with 8 tabs
+- The CRD space hero on top (same as the CRD Space Page from spec 042)
+- A horizontal tab strip below the hero: **About → Layout → Community → Subspaces → Templates → Storage → Settings → Account** in that order
 - The About tab active by default
 - The Preview card on the right showing your space card
 
+## Per-tab save semantics
+
+| Tab | Save bar? | Commit model |
+|---|---|---|
+| About | No | **Per-field autosave** — 2s debounce on text fields, immediate on file uploads. Spinner / "Saved!" / error indicator next to each field label. |
+| Layout | **Yes** | Local buffer + Save Changes / Reset. Zero mutations before Save. |
+| Community | No | Per action (confirm → mutation) |
+| Subspaces | No | Per action (confirm → mutation) |
+| Templates | No | Per action (confirm → mutation) |
+| Storage | No | Per action (confirm → mutation) |
+| Settings | No | Per toggle (immediate mutation) |
+| Account | No | Read-only + single destructive action |
+
 ## Implementation walkthrough
 
-Follow the order below; each step is independently runnable.
+All eight tabs are P1 and ship together. You may implement them in any order after foundational (Phase 2). Suggested developer split is in `tasks.md`.
 
-### Step 1 — Shell
+### Step 1 — Foundational shell
 
-1. Create `src/crd/components/space/settings/SpaceSettingsShell.tsx` consuming `SpaceSettingsShellProps` from `contracts/shell.ts`.
-2. Create `SpaceSettingsTabStrip.tsx` — render a `role="tablist"`, arrow-key navigation, horizontally scrollable on narrow viewports.
-3. Create `SpaceSettingsSaveBar.tsx` — sticky at `bottom-right`, only visible when `state.kind !== 'clean'`.
-4. Create `SpaceSettingsCard.tsx` — title + description + body slot; this is the card primitive every tab composes.
-5. Create `src/crd/primitives/ConfirmDiscardDialog.tsx` if not present; reuse `ConfirmDeleteDialog` from 084.
-6. Create the page controller `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`; wire it to `TopLevelRoutes.tsx` gated by `useCrdEnabled()`.
-7. Create `useSpaceSettingsTab.ts` — syncs active tab with the URL.
-8. Create `useDirtyTabGuard.ts` — centralizes the tab-switch / navigate-away confirmation.
+1. `@dnd-kit/core` and `@dnd-kit/sortable` are already installed in the repo. No additional `pnpm add` is needed — the `Announcements` API from `@dnd-kit/core` covers FR-011's live-region requirements.
+2. Port the three missing primitives from the prototype:
+   - `src/crd/primitives/tabs.tsx` (Radix Tabs)
+   - `src/crd/primitives/textarea.tsx`
+   - `src/crd/primitives/table.tsx`
+3. Extend (don't duplicate) `src/crd/components/dialogs/ConfirmationDialog.tsx` so it covers both delete and discard variants.
+4. Create `src/crd/components/common/InlineEditText.tsx` — the shared inline-edit primitive used by Layout column titles and column descriptions only. Individual callouts are read-only on the Layout tab.
+5. Create the Settings shell primitives: `SpaceSettingsShell.tsx`, `SpaceSettingsTabStrip.tsx` (Radix-Tabs-based), `SpaceSettingsCard.tsx`, `SpaceSettingsSaveBar.tsx`.
+6. Create the integration layer: `CrdSpaceSettingsPage.tsx`, `useSpaceSettingsTab.ts`, `useDirtyTabGuard.ts`.
+7. Wire `TopLevelRoutes.tsx` to branch on `useCrdEnabled()`.
+8. Seed `src/crd/i18n/spaceSettings/spaceSettings.en.json` with tab labels and the generic Save / Reset / Cancel / confirmation strings.
 
-### Step 2 — About tab (P1)
+### Step 2 — About tab (US1)
 
-1. Implement `SpaceSettingsAboutView.tsx` against `AboutViewProps`.
-2. Implement `about/useAboutTabData.ts` and `about/aboutMapper.ts` wiring the existing space profile mutations.
-3. Verify: editing the name updates the Preview card live; Save persists; Reset reverts.
+1. Implement `SpaceSettingsAboutView.tsx` composing: `input` (name / tagline / email / pronouns / country / city), `MarkdownEditor` (What / Why / Who), `tags-input` (tags), references list, avatar + banner + visuals uploads, `SpaceCard` Preview on the right. Each field gets its own CRD card — no umbrella groupings. Render per-field spinner / "Saved!" / error indicator next to each field label driven by `autosaveState[field]`. **Render NO Save Changes or Reset button.**
+2. Implement `about/useAboutTabData.ts` + `aboutMapper.ts`. The hook maintains local form state + per-field debounce timer map; text fields autosave after 2s idle, file uploads / references / visuals fire immediately. Expose `flushPending()`. Call `pickColorFromId(space.id)` in the mapper for the Preview color. Wrap every mutation in `useTransition`.
+3. Wire `flushPending` into `useDirtyTabGuard` so tab-away flushes any pending autosave immediately — no confirm dialog on About.
+4. Render per-card skeletons while the initial query loads and an inline error banner for fetch errors (FR-028).
 
-### Step 3 — Layout tab (P1)
+### Step 3 — Layout tab (US2)
 
-1. Add dependencies:
-   ```bash
-   pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/accessibility
-   ```
-2. Implement `LayoutPageRow.tsx` and `LayoutPoolColumn.tsx`.
-3. Implement `SpaceSettingsLayoutView.tsx` using dnd-kit with a `KeyboardSensor` configured for the FR-021 keybindings.
-4. Implement `layout/useLayoutTabData.ts` and `layoutMapper.ts`. Mark system pages with `kind: 'system'`.
-5. Verify: drag-and-drop reorder + cross-column move; keyboard grab-mode (Space/Enter/Arrow/Enter/Escape); pinned rows are not draggable.
+1. Implement `LayoutCalloutRow.tsx` — callout title and description are **read-only** on this tab. Render the visible three-dot kebab on every movable row (not pinned) with exactly three entries: **Move to** (submenu with the other three columns), **View Post** (navigate), **Remove from Tab** (destructive-styled; buffers a pending removal, NOT a deletion). When `pendingRemoval === true` the row stays visible with reduced opacity + strikethrough / badge, and its kebab swaps Remove for **Undo removal**. Implement `LayoutPoolColumn.tsx` using `InlineEditText` for the column title and column description (these are the only inline-editable fields on the Layout tab).
+2. Implement `SpaceSettingsLayoutView.tsx` with a `DndContext` + `KeyboardSensor`; configure dnd-kit's `Announcements` API for FR-011 grab-mode messages.
+3. Implement `layout/useLayoutTabData.ts` with the **local buffer + Reset** model. Save flushes in one `useTransition` block (reorder → move → rename → unassign-from-tab → settings toggle). `onMoveToColumn` reuses the `onReorder` pipeline; `onRemoveFromTab` buffers an unassignment against the existing tabset-assignment / callouts-set membership mutation.
+4. Implement `layout/useDeferredColumnMenu.ts` and wire `deferredColumnMenuActions` + `isDeferredMenuVisible: false` on the view. The deferred actions are **per-column** (Active phase / Default post template are column-level, NOT per-callout) and live on the column header, not on callout rows. They render nothing this iteration. Cover both actions with unit tests (SC-009).
+5. Include the Post description display toggle (`calloutDescriptionDisplayMode`) in the buffer.
 
-### Step 4 — Subspaces / Templates / Storage (P2)
+### Step 4 — Community tab (US3)
 
-1. Implement each `*View.tsx` against its props contract.
-2. Implement each tab's `use*TabData.ts` and mapper.
-3. All destructive actions route through `ConfirmDeleteDialog`.
+1. Implement the shared `MemberRow` template in a single component reused by `CommunityUsersTable.tsx`, `CommunityOrgsTable.tsx`, `CommunityVirtualContributorsTable.tsx` — all built on `table.tsx`.
+2. Users table: 10 rows visible + pagination + search + role/status filters + Invite button.
+3. Organizations and Virtual Contributors: each inside its own collapsible card, each with its own 5-rows-visible table.
+4. Implement `community/useCommunityTabData.ts` dispatching `onRowAction(kind, id, action)` to the correct existing mutation. Wrap every mutation in `useTransition`.
 
-### Step 5 — Community / Settings / Account (P3)
+### Step 5 — Subspaces tab (US4)
 
-1. Implement `SpaceSettingsCommunityView.tsx` reusing the `MemberRow` shape from 084's Pending Memberships dialog.
-2. Implement `SpaceSettingsSettingsView.tsx` and `SpaceSettingsAccountView.tsx`.
-3. Account tab is read-only — no save bar, no onChange.
+1. Implement `SpaceSettingsSubspacesView.tsx` with the Default Subspace Template selector, Create Subspace button, and subspace grid/list.
+2. Kebab menu per subspace — exactly three entries: **Pin/Unpin** (alphabetical mode), **Save as Template**, **Delete**. No Edit Details. No Archive. No View.
+3. Add search input, filter (All / Active / Archived via `SpaceVisibility.Archived`), Grid/List toggle. Client-side.
+4. Title click → navigate to the subspace (existing route).
+5. Implement `subspaces/useSubspacesTabData.ts` reusing existing mutations. Wrap in `useTransition`.
 
-### Step 6 — i18n
+### Step 6 — Templates tab (US5)
 
-1. Create `src/crd/i18n/spaceSettings/spaceSettings.en.json`.
-2. Register the namespace following the pattern in `src/core/i18n/i18n.ts` (lazy load).
-3. All CRD text uses `useTranslation('crd-spaceSettings')`.
+1. Implement `SpaceSettingsTemplatesView.tsx` with five collapsible categories in order: Space, Collaboration Tool, Whiteboard, Post, Community Guidelines.
+2. Global search filters across all categories.
+3. Per-card kebab: Preview / Duplicate as Custom / Edit (custom only) / Delete (custom only, confirm dialog).
+4. Implement `templates/useTemplatesTabData.ts`. Wrap in `useTransition`.
 
-### Step 7 — Testing
+### Step 7 — Storage tab (US6)
 
-Following `research.md` Decision 9:
+1. Implement `SpaceSettingsStorageView.tsx` using `table.tsx` + custom expand/collapse for folders. Columns: name / size / uploader / uploaded-at. Actions: open-in-new-tab / delete.
+2. Delete → `ConfirmationDialog` → `deleteDocument` mutation wrapped in `useTransition`.
+3. Skeletons while loading; inline error banner above the tree on fetch error.
+
+### Step 8 — Settings tab (US7)
+
+1. Implement `SpaceSettingsSettingsView.tsx` with accordion sections: Visibility / Membership / Applicable Organizations / Allowed Actions / Danger Zone.
+2. Every toggle fires `updateSpaceSettings` immediately (wrapped in `useTransition`). Danger Zone Delete opens `ConfirmationDialog` (destructive variant).
+
+### Step 9 — Account tab (US8)
+
+1. Implement `SpaceSettingsAccountView.tsx` with URL (Copy button), License card, Visibility Status badge, Host Information card (NO Change Host CTA), Support footer, optional Delete Space button.
+2. Read-only content + three action buttons. No save bar.
+
+### Step 10 — Testing
 
 ```bash
 pnpm vitest run src/main/crdPages/topLevelPages/spaceSettings
@@ -90,10 +122,11 @@ pnpm vitest run src/crd/components/space/settings
 ```
 
 - Mapper unit tests per tab.
-- Component tests for tab strip arrow-nav, Layout grab-mode, and save-bar state transitions.
-- One integration test for `useDirtyTabGuard` proving tab switch is blocked while dirty.
+- Component tests for tab strip arrow-nav, Layout grab-mode, save-bar state transitions (Layout), About per-field autosave indicator transitions (`pending` → `saving` → `saved` → `idle`), and inline-edit flow on column headers.
+- Integration test: `useDirtyTabGuard` blocks tab switch while dirty on About or Layout; no-op on other tabs.
+- Integration test: `useDeferredColumnMenu` exercises both per-column `onChangeActivePhase(columnId, phaseId)` and `onSetAsDefaultPostTemplate(columnId, templateId)` with `isDeferredMenuVisible` both `false` and `true` so the follow-up flip requires no additional test work.
 
-### Step 8 — Lint & type-check
+### Step 11 — Lint & type-check
 
 ```bash
 pnpm lint
@@ -102,16 +135,21 @@ pnpm vitest run
 
 ### Manual test checklist
 
-- [ ] CRD toggle on → CRD Space Settings renders with hero + tab strip.
-- [ ] All 8 tabs are reachable; each tab deep-links via URL.
-- [ ] About → edit name → Preview updates live; Save persists.
-- [ ] Layout → drag a callout across columns; pinned system pages refuse to move.
-- [ ] Layout → keyboard: Tab to handle → Space → arrows → Enter → persists.
-- [ ] Subspaces / Templates / Storage → delete → confirm dialog → item gone.
-- [ ] Any dirty tab → try switching tab → confirm dialog blocks; Cancel keeps state.
+- [ ] Tab strip renders all 8 tabs in the correct order; icons match the design.
+- [ ] About: edit name → Preview updates live → wait 2 seconds → spinner next to Name label → "Saved!" after mutation returns. Banner / avatar uploads fire autosave immediately on upload completion. **Verify there is NO Save Changes or Reset button anywhere on this tab.** Edit a field then switch to another tab inside the 2s window → pending autosave flushes immediately; nothing is lost.
+- [ ] Layout: drag a callout Home → Community. Don't save. Reset reverts. Drag again, rename a **column** title inline (not a callout — callouts are read-only on this tab), flip Post description display, click Save Changes — all persist together.
+- [ ] Layout per-callout kebab: Move to → pick another column → callout moves in the buffer. View Post → if clean, navigate; if dirty, discard-confirm dialog blocks. Remove from Tab → row **stays visible** with pending-removal styling and Undo removal available in its kebab; NO mutation fires. Click Reset → row returns to normal. Mark for removal again and click Save Changes — the callout is then unassigned on the server.
+- [ ] Layout zero-mutations invariant: open Network devtools, make moves and removals, Reset. Confirm zero GraphQL mutation requests left the client before the Save Changes click.
+- [ ] Layout: keyboard-only grab mode (Tab → Space → arrows → Enter) works across columns; ARIA live region announces transitions.
+- [ ] Community: users table paginates. Expand Organizations — a 5-row table appears. Expand Virtual Contributors — another 5-row table appears. Add / remove rows with confirmation.
+- [ ] Subspaces: Default Subspace Template selector works. Pin / Save as Template / Delete via kebab. No Edit Details / Archive / View entries visible. Title click navigates. Search / Filter / Grid-List toggle work.
+- [ ] Templates: five categories collapsible. Global search filters. Preview / Duplicate / Edit / Delete per card.
+- [ ] Storage: hierarchical tree renders. Open-in-new-tab works. Delete with confirm.
+- [ ] Settings: every toggle fires immediately. Danger Zone Delete Space shows confirmation listing what will be deleted.
+- [ ] Account: URL Copy works. No Change Host button. Support link opens. Delete Space (if permitted) runs existing flow.
+- [ ] Dirty tab (About or Layout) + tab switch → confirm dialog blocks. Cancel keeps state.
 - [ ] CRD toggle off → old MUI Space Settings renders unchanged.
-- [ ] Narrow viewport → tab strip scrolls horizontally; Layout columns stack.
-- [ ] Keyboard-only walk-through across all tabs.
+- [ ] Narrow viewport → tab strip scrolls horizontally; Layout columns stack; About two-column stacks.
 
 ## Rollback
 

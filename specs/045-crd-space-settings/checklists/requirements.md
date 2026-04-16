@@ -31,5 +31,5 @@
 
 ## Notes
 
-- Tech terms such as "MUI", "CRD design system", "shadcn/ui", "Tailwind", "GraphQL", "Apollo", and localStorage key names appear in the spec because they are part of the business constraint (this is a migration gated by an existing toggle, not a greenfield feature). They are kept in the spec for traceability with the sibling spec 084 and the predecessor specs 039 / 041 / 042 / 043, which follow the same convention.
-- Cross-reference to spec `084-crd-pending-memberships-dialog` is explicit in the Related Specifications section and called out in FR-007, User Story 4, and SC-008.
+- Tech terms such as "MUI", "CRD design system", "shadcn/ui", "Tailwind", "GraphQL", "Apollo", and localStorage key names appear in the spec because they are part of the business constraint (this is a migration gated by an existing toggle, not a greenfield feature). They are kept in the spec for traceability with the sibling spec 042 and the predecessor specs 039 / 041 / 043, which follow the same convention.
+- Cross-reference to spec `042-crd-space-page` is explicit in the Related Specifications section and called out for the reused CRD space hero and the shared space-level visual language.

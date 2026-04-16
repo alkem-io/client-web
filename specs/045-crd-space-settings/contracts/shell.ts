@@ -1,18 +1,32 @@
 /**
  * CRD Space Settings — shell contracts
  *
- * These interfaces describe the props of the shell components (tab strip, save bar,
- * confirm-discard dialog) and are imported by `src/crd/components/space/settings/`
- * and by `src/main/crdPages/topLevelPages/spaceSettings/`.
+ * Presentational contracts ONLY. They MUST NOT import GraphQL-generated types
+ * and MUST NOT import from `src/**` — contracts describe the shape the
+ * implementation must conform to, not the implementation itself.
  *
- * Presentational contracts ONLY. They MUST NOT import GraphQL-generated types.
- *
- * Every CRD view prop interface declared below MAY also accept an optional
- * `className?: string` for composition (CRD CLAUDE.md Checklist → "Accepts
- * `className` for composition"). Omitted from individual types for brevity.
+ * Every CRD view prop interface MAY also accept an optional `className?: string`
+ * for composition (CRD CLAUDE.md Checklist). Omitted from individual types for brevity.
  */
 
-import type { SpaceHeroProps } from '@/crd/components/space/SpaceHeader';
+import type { ReactNode } from 'react';
+
+/**
+ * Shape passed into the shell's hero slot. Must match (by duck-typing) the
+ * props exported by `src/crd/components/space/SpaceHeader.tsx` at implementation
+ * time. Declared here as a standalone contract so the spec is self-contained.
+ */
+export type SpaceHeroProps = {
+  spaceName: string;
+  tagline: string;
+  bannerUrl: string | null;
+  memberAvatars: ReadonlyArray<{
+    id: string;
+    displayName: string;
+    avatarUrl: string | null;
+  }>;
+  memberCount: number;
+};
 
 export type TabId =
   | 'about'
@@ -24,6 +38,22 @@ export type TabId =
   | 'settings'
   | 'account';
 
+export const TAB_ORDER: readonly TabId[] = [
+  'about',
+  'layout',
+  'community',
+  'subspaces',
+  'templates',
+  'storage',
+  'settings',
+  'account',
+] as const;
+
+/**
+ * SaveBarState — used ONLY by the Layout tab.
+ * About uses per-field autosave (FR-005a).
+ * All other tabs commit per action.
+ */
 export type SaveBarState =
   | { kind: 'clean' }
   | { kind: 'dirty'; canSave: boolean }
@@ -34,7 +64,7 @@ export type SpaceSettingsShellProps = {
   hero: SpaceHeroProps;
   activeTab: TabId;
   onTabChange: (next: TabId) => void;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export type SpaceSettingsTabStripProps = {
@@ -53,9 +83,26 @@ export type SpaceSettingsSaveBarProps = {
   onReset: () => void;
 };
 
-export type ConfirmDiscardDialogProps = {
-  open: boolean;
-  onSave: () => void;
-  onDiscard: () => void;
-  onCancel: () => void;
-};
+/**
+ * Single confirmation primitive (delete + discard variants) — reused, not duplicated.
+ * Backed by src/crd/components/dialogs/ConfirmationDialog.tsx.
+ */
+export type ConfirmationDialogProps =
+  | {
+      open: boolean;
+      variant: 'delete';
+      title: string;
+      description: string;
+      confirmLabel: string;
+      onConfirm: () => void;
+      onCancel: () => void;
+    }
+  | {
+      open: boolean;
+      variant: 'discard';
+      title: string;
+      description: string;
+      onSave: () => void;
+      onDiscard: () => void;
+      onCancel: () => void;
+    };

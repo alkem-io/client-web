@@ -3,7 +3,7 @@
 **Feature**: 045-crd-space-settings
 **Date**: 2026-04-15
 
-This feature introduces no new backend entities. It defines the shape of data mapped from existing GraphQL `SpaceSettingsQuery` responses into plain TypeScript props consumed by CRD components. All types below are authored by `src/main/crdPages/topLevelPages/spaceSettings/**` and passed as props to `src/crd/components/space/settings/**`.
+No new backend entities are introduced. This document defines the **view-model shapes** produced by the per-tab data mappers and consumed by the CRD presentational components. All types below are authored by `src/main/crdPages/topLevelPages/spaceSettings/**` and passed as props to `src/crd/components/space/settings/**`. Every view prop interface MAY accept an optional `className?: string` (CRD convention) — omitted below for brevity.
 
 ---
 
@@ -11,25 +11,25 @@ This feature introduces no new backend entities. It defines the shape of data ma
 
 ### `SpaceHeroProps`
 
-Reused from spec 042 (`src/crd/components/space/SpaceHeader.tsx`). Re-imported by the settings shell unchanged.
+Reused verbatim from spec 042 (`src/crd/components/space/SpaceHeader.tsx`).
 
-**Note**: `SpaceHeroProps.bannerUrl` and `AboutFormValues.pageBannerUrl` refer to the **same underlying asset** — the page banner visible at the top of the Space page. The About form owns the source of truth (`pageBannerUrl`); the hero's `bannerUrl` is derived from the live About form state when editing. `cardBannerUrl` is a distinct, smaller banner used only in space cards and the Preview.
-
-| Field | Type | Source |
-|---|---|---|
-| `spaceName` | `string` | `Space.profile.displayName` |
-| `tagline` | `string` | `Space.profile.tagline` |
-| `bannerUrl` | `string \| null` | `Space.profile.visuals[type=banner].uri` |
-| `memberAvatars` | `{ id: string; displayName: string; avatarUrl: string \| null }[]` | `Space.community.memberUsers` (limit 5) |
-| `memberCount` | `number` | `Space.community.memberUsers.length` |
+**Note**: `SpaceHeroProps.bannerUrl` and `AboutFormValues.pageBannerUrl` reference the **same underlying asset** (the page banner at the top of the Space page). The About form owns the source of truth (`pageBannerUrl`); the hero's `bannerUrl` derives from live About form state when editing. `cardBannerUrl` is a distinct, smaller banner used only in space cards and the Preview.
 
 ### `TabId`
 
 ```
-type TabId = 'about' | 'layout' | 'community' | 'subspaces' | 'templates' | 'storage' | 'settings' | 'account';
+type TabId =
+  | 'about'
+  | 'layout'
+  | 'community'
+  | 'subspaces'
+  | 'templates'
+  | 'storage'
+  | 'settings'
+  | 'account';
 ```
 
-Used by the tab strip and URL sync hook. Any other string routes to `'about'` and the URL is normalized.
+Tab render order matches this declaration order. Any other URL segment normalizes to `'about'`.
 
 ### `SaveBarState`
 
@@ -41,73 +41,135 @@ type SaveBarState =
   | { kind: 'saveError'; message: string };
 ```
 
-Emitted by each tab's data hook. `canSave = false` when validation fails (e.g., empty page name on Layout tab).
+**Used only by the Layout tab.** About uses per-field autosave (FR-005a); every other tab commits per action.
 
 ---
 
 ## About tab
 
-### `AboutViewProps`
+### `AboutFormValues` (full field set retained from current MUI + prototype additions)
 
 | Field | Type | Notes |
 |---|---|---|
-| `name` | `string` | Required, min length 1 |
-| `tagline` | `string` | Optional |
-| `pageBannerUrl` | `string \| null` | Uploaded banner |
-| `cardBannerUrl` | `string \| null` | Smaller banner used in space cards |
-| `avatarUrl` | `string \| null` | Logo / avatar |
-| `tags` | `string[]` | Tags for discovery |
-| `vision` | `string` | Rich text allowed |
-| `mission` | `string` | Rich text allowed |
-| `impact` | `string` | Rich text allowed |
-| `who` | `string` | Rich text allowed |
-| `previewCard` | `SpaceCardPreview` | Derived live from form state |
-| `saveBar` | `SaveBarState` | — |
-| `onChange` | `(patch: Partial<AboutFormValues>) => void` | — |
-| `onSave` | `() => void` | — |
-| `onReset` | `() => void` | — |
-| `onUploadPageBanner` | `(file: File) => void` | — |
-| `onUploadCardBanner` | `(file: File) => void` | — |
-| `onUploadAvatar` | `(file: File) => void` | — |
+| `name` | `string` | Required |
+| `tagline` | `string` | Retained from current MUI |
+| `email` | `string` | Retained from current MUI |
+| `pronouns` | `string` | Retained from current MUI |
+| `country` | `string` | Retained from current MUI |
+| `city` | `string` | Retained from current MUI |
+| `avatarUrl` | `string \| null` | Retained from current MUI |
+| `pageBannerUrl` | `string \| null` | Source of truth for the hero banner |
+| `cardBannerUrl` | `string \| null` | Used in space cards / Preview |
+| `visualsGallery` | `{ id: string; url: string; alt: string }[]` | Retained from current MUI |
+| `tags` | `string[]` | Prototype addition |
+| `references` | `{ id: string; title: string; url: string }[]` | Prototype addition |
+| `what` | `string` (markdown) | Prototype addition — renamed from current MUI `description` |
+| `why` | `string` (markdown) | Retained from current MUI |
+| `who` | `string` (markdown) | Retained from current MUI |
 
 ### `SpaceCardPreview`
 
-Plain mirror of the CRD `SpaceCard` props (name, tagline, banner, avatar, tags) but built from the About tab's **live** form state, not from Apollo.
+Plain mirror of CRD `SpaceCard` props (name, tagline, banner, avatar, tags, color) built from the live About form state, not from Apollo. Includes `color = pickColorFromId(space.id)` for the deterministic accent fallback.
+
+### `FieldAutosaveState` + `AboutAutosaveStateMap`
+
+```
+type FieldAutosaveState =
+  | { kind: 'idle' }
+  | { kind: 'pending' }
+  | { kind: 'saving' }
+  | { kind: 'saved'; at: number }
+  | { kind: 'error'; message: string };
+
+type AboutFieldKey = keyof AboutFormValues;
+type AboutAutosaveStateMap = Partial<Record<AboutFieldKey, FieldAutosaveState>>;
+```
+
+The view reads this map and renders per-field indicators next to each field label:
+- `saving` → spinner.
+- `saved` → grayed "Saved!" indicator.
+- `error` → inline error message.
+
+### `AboutViewProps`
+
+`AboutFormValues` &
+
+| Field | Type | Notes |
+|---|---|---|
+| `previewCard` | `SpaceCardPreview` | Derived live from form state |
+| `autosaveState` | `AboutAutosaveStateMap` | Per-field indicator state |
+| `onChange` | `(patch: Partial<AboutFormValues>) => void` | Any field edit; the hook debounces, then fires the autosave mutation |
+| `onUploadPageBanner` | `(file: File) => void` | Upload delegate; autosave fires immediately on upload completion (no debounce) |
+| `onUploadCardBanner` | `(file: File) => void` | Upload delegate; immediate autosave |
+| `onUploadAvatar` | `(file: File) => void` | Upload delegate; immediate autosave |
+| `onAddReference` | `() => void` | Append empty reference; autosave fires immediately after the empty row is committed |
+| `onRemoveReference` | `(id: string) => void` | Remove reference; immediate autosave |
+| `onUploadVisual` | `(file: File) => void` | Append visual; immediate autosave |
+| `onRemoveVisual` | `(id: string) => void` | Remove visual; immediate autosave |
+
+About has **no** `saveBar`, `onSave`, `onReset` — FR-005a prohibits them.
 
 ---
 
 ## Layout tab
 
+### `LayoutColumnId`
+
+```
+type LayoutColumnId = 'home' | 'community' | 'subspaces' | 'knowledge';
+```
+
+### `LayoutCallout`
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | `string` | Stable across renders |
+| `title` | `string` | **Read-only** on the Layout tab. Post title is edited from the post's own page. |
+| `description` | `string` | **Read-only** on the Layout tab. Post description is edited from the post's own page. |
+| `kind` | `'system' \| 'callout'` | Pinned vs movable |
+| `icon` | `string` | Lucide key |
+| `pendingRemoval` | `boolean` | Local-buffer-only flag. `true` when the callout has been marked via Remove from Tab but the buffer has not yet been saved. The row stays visible with pending-removal styling; NO mutation has fired (FR-008a). |
+
 ### `LayoutPoolColumn`
 
 | Field | Type | Notes |
 |---|---|---|
-| `id` | `'home' \| 'community' \| 'subspaces' \| 'knowledge'` | Pool identifier |
-| `title` | `string` | i18n-resolved column title |
-| `description` | `string` | Short help text |
-| `pages` | `LayoutPageRow[]` | Ordered list |
-
-### `LayoutPageRow`
-
-| Field | Type | Notes |
-|---|---|---|
-| `id` | `string` | Stable ID across renders |
-| `name` | `string` | Editable inline (when movable) |
-| `kind` | `'system' \| 'callout'` | `'system'` = pinned, no grab handle; `'callout'` = movable |
-| `icon` | `string` | Lucide icon key |
+| `id` | `LayoutColumnId` | Pool ID |
+| `title` | `string` | Inline-editable column title |
+| `description` | `string` | Inline-editable column description |
+| `callouts` | `LayoutCallout[]` | Ordered list |
 
 ### `LayoutViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `columns` | `LayoutPoolColumn[]` (length 4) | Fixed order: home / community / subspaces / knowledge |
+| `columns` | `[LayoutPoolColumn, LayoutPoolColumn, LayoutPoolColumn, LayoutPoolColumn]` | Fixed order: home / community / subspaces / knowledge |
+| `postDescriptionDisplay` | `'collapsed' \| 'expanded'` | `calloutDescriptionDisplayMode` value, part of the dirty buffer |
 | `saveBar` | `SaveBarState` | — |
-| `onReorder` | `(pageId: string, target: { columnId: LayoutPoolColumn['id']; index: number }) => void` | Fires on drop and on keyboard commit (Enter) |
-| `onRename` | `(pageId: string, newName: string) => void` | — |
-| `onAdd` | `(columnId: LayoutPoolColumn['id'], name: string) => void` | — |
-| `onRemove` | `(pageId: string) => void` | Preceded by `ConfirmDeleteDialog` |
-| `onSave` | `() => void` | — |
-| `onReset` | `() => void` | — |
+| `onReorder` | `(calloutId: string, target: { columnId: LayoutColumnId; index: number }) => void` | Buffered; fires on drag-drop and on keyboard Enter commit |
+| `onRenameColumn` | `(columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void` | Buffered — the only inline-edit on Layout |
+| `onPostDescriptionDisplayChange` | `(next: 'collapsed' \| 'expanded') => void` | Buffered |
+| `onSave` | `() => void` | Flushes entire buffer in `useTransition` block |
+| `onReset` | `() => void` | Reverts buffer to last backend snapshot |
+| `onMoveToColumn` | `(calloutId: string, target: LayoutColumnId) => void` | Visible kebab — Move to submenu; buffered |
+| `onViewPost` | `(calloutId: string) => void` | Visible kebab — navigates (blocked by discard-confirm when buffer dirty) |
+| `onRemoveFromTab` | `(calloutId: string) => void` | Visible kebab — sets `pendingRemoval: true` on the callout in the buffer; no mutation fires |
+| `onUndoRemoveFromTab` | `(calloutId: string) => void` | Clears `pendingRemoval` in the buffer |
+| `deferredColumnMenuActions` | `DeferredColumnMenuActions` | **Per-column** (not per-callout). Separate from the visible per-callout kebab. Surfaced only when `isDeferredMenuVisible` is true |
+| `isDeferredMenuVisible` | `boolean` | **Hard-coded false** this iteration |
+
+### `DeferredColumnMenuActions`
+
+```
+type DeferredColumnMenuActions = {
+  onChangeActivePhase: (columnId: LayoutColumnId, phaseId: string) => void;
+  onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string) => void;
+  availablePhases: { id: string; label: string }[];
+  availablePostTemplates: { id: string; label: string }[];
+};
+```
+
+Consumed by `LayoutPoolColumn.tsx` (the column header), NOT by `LayoutCalloutRow.tsx`. When `isDeferredMenuVisible === false`, the column header renders no overflow trigger. These are innovation-flow-step-level concerns.
 
 **Validation**: `onReorder` is rejected in the mapper if the source `kind === 'system'` (defense in depth — UI also disables grab handles on system rows).
 
@@ -115,104 +177,248 @@ Plain mirror of the CRD `SpaceCard` props (name, tagline, banner, avatar, tags) 
 
 ## Community tab
 
+### `MemberRow` (shared row template across users / orgs / VC tables)
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | `string` | — |
+| `kind` | `'user' \| 'organization' \| 'virtualContributor'` | Discriminator for kebab labels + icons |
+| `displayName` | `string` | — |
+| `secondaryText` | `string \| null` | Email (users) / domain (orgs) / status (VCs) |
+| `avatarUrl` | `string \| null` | — |
+| `role` | `'host' \| 'admin' \| 'lead' \| 'member' \| 'virtualContributor'` | — |
+| `status` | `'active' \| 'pending' \| 'invited' \| 'inactive'` | — |
+| `joinedAt` | `string \| null` | ISO-8601 |
+
 ### `CommunityViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `members` | `MemberRow[]` | Shape matches member cards from spec 084 |
-| `leads` | `MemberRow[]` | Separate list |
-| `invitationPolicy` | `'open' \| 'invite-only' \| 'application'` | — |
-| `membershipApplicationForm` | `ApplicationQuestion[]` | Question text + required flag |
-| `communityGuidelines` | `string` | Markdown body |
-| `saveBar` | `SaveBarState` | — |
-| `onRemoveMember` | `(userId: string) => void` | Preceded by `ConfirmDeleteDialog` |
-| `onPromoteToLead` | `(userId: string) => void` | — |
-| `onInvitationPolicyChange` | `(next: CommunityViewProps['invitationPolicy']) => void` | — |
+| `users` | `{ rows: MemberRow[]; totalCount: number; pageSize: 10; page: number }` | Main top table, paginated |
+| `organizations` | `{ rows: MemberRow[]; totalCount: number; pageSize: 5; page: number; collapsed: boolean }` | Inside collapsible; 5 rows visible |
+| `virtualContributors` | `{ rows: MemberRow[]; totalCount: number; pageSize: 5; page: number; collapsed: boolean }` | Inside collapsible; 5 rows visible |
+| `invitationPolicy` | `'open' \| 'invite-only' \| 'application'` | Mirror of Settings value for display only |
+| `applicationForm` | `ApplicationQuestion[]` | — |
+| `communityGuidelines` | `string` (markdown) | — |
+| `onUsersPageChange` | `(page: number) => void` | — |
+| `onUsersSearch` | `(query: string) => void` | — |
+| `onUsersFilter` | `(filter: { role?: MemberRow['role']; status?: MemberRow['status'] }) => void` | — |
+| `onRowAction` | `(kind: 'user' \| 'organization' \| 'virtualContributor', id: string, action: 'viewProfile' \| 'changeRole' \| 'resend' \| 'revoke' \| 'approve' \| 'reject' \| 'remove' \| 'edit' \| 'toggleActive') => void` | Single entry point; the hook dispatches to the right mutation |
+| `onInvite` | `() => void` | Opens existing invite flow |
+| `onToggleOrganizations` | `() => void` | — |
+| `onToggleVirtualContributors` | `() => void` | — |
 | `onApplicationFormChange` | `(questions: ApplicationQuestion[]) => void` | — |
 | `onGuidelinesChange` | `(markdown: string) => void` | — |
-| `onSave` | `() => void` | — |
-| `onReset` | `() => void` | — |
+| `onSaveGuidelinesAsTemplate` | `() => void` | Fires existing `createTemplate` mutation |
 
-`MemberRow` must be identical to the shape used by `src/crd/components/dialogs/PendingMembershipsDialog/*` (spec 084) — SC-008 requires zero visual divergence.
+### `ApplicationQuestion`
+
+```
+type ApplicationQuestion = { id: string; question: string; required: boolean };
+```
+
+No `SaveBarState` on Community — every action commits on confirm.
 
 ---
 
-## Subspaces / Templates / Storage tabs
+## Subspaces tab
+
+### `SubspaceTile`
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | `string` | — |
+| `name` | `string` | — |
+| `description` | `string` | — |
+| `href` | `string` | Click target — existing subspace route |
+| `avatarUrl` | `string \| null` | — |
+| `bannerUrl` | `string \| null` | For card banner in grid view |
+| `memberCount` | `number` | — |
+| `lastActiveAt` | `string \| null` | ISO-8601 |
+| `visibility` | `'active' \| 'archived'` | Mapped from `SpaceVisibility` |
+| `isPinned` | `boolean` | Relevant in alphabetical sort mode |
 
 ### `SubspacesViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `subspaces` | `SubspaceTile[]` | name, avatar, memberCount, id |
-| `onCreate` | `() => void` | Opens CRD create-subspace dialog |
-| `onRename` | `(id: string, name: string) => void` | — |
-| `onMove` | `(id: string, targetParentSpaceId: string) => void` | — |
-| `onDelete` | `(id: string) => void` | Preceded by `ConfirmDeleteDialog` |
+| `subspaces` | `SubspaceTile[]` | Filtered + searched server-agnostic list |
+| `defaultTemplate` | `{ id: string; name: string; description: string; features: string[]; thumbnailUrl: string \| null }` | Current default subspace template |
+| `sortMode` | `'alphabetical' \| 'manual'` | Retained toggle |
+| `searchQuery` | `string` | Local state held in view |
+| `filter` | `'all' \| 'active' \| 'archived'` | Client-side filter |
+| `viewMode` | `'grid' \| 'list'` | — |
+| `onSortModeChange` | `(next: 'alphabetical' \| 'manual') => void` | Retained |
+| `onSearchChange` | `(next: string) => void` | — |
+| `onFilterChange` | `(next: 'all' \| 'active' \| 'archived') => void` | — |
+| `onViewModeChange` | `(next: 'grid' \| 'list') => void` | — |
+| `onCreate` | `() => void` | Opens existing subspace-creation flow (may be wrapped in a CRD dialog) |
+| `onChangeDefaultTemplate` | `() => void` | Opens template-pick dialog |
+| `onKebabAction` | `(id: string, action: 'pinToggle' \| 'saveAsTemplate' \| 'delete') => void` | Only three actions — no Edit Details, no Archive, no View |
+
+No `SaveBarState`. Every action commits on confirm.
+
+---
+
+## Templates tab
+
+### `TemplateCategory`
+
+```
+type TemplateCategory =
+  | 'space'
+  | 'collaborationTool'
+  | 'whiteboard'
+  | 'post'
+  | 'communityGuidelines';
+```
+
+### `TemplateTile`
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | `string` | — |
+| `category` | `TemplateCategory` | — |
+| `name` | `string` | — |
+| `description` | `string` | — |
+| `thumbnailUrl` | `string \| null` | — |
+| `isCustom` | `boolean` | Space-owned |
 
 ### `TemplatesViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `templates` | `TemplateTile[]` | category, name, description, id |
-| `onCreate` | `(category: TemplateCategory) => void` | — |
-| `onEdit` | `(id: string) => void` | — |
-| `onDelete` | `(id: string) => void` | Preceded by `ConfirmDeleteDialog` |
+| `categories` | `{ category: TemplateCategory; templates: TemplateTile[]; collapsed: boolean }[]` | Five entries in declared order |
+| `searchQuery` | `string` | — |
+| `onSearchChange` | `(q: string) => void` | — |
+| `onToggleCategory` | `(c: TemplateCategory) => void` | — |
+| `onCreateTemplate` | `(c: TemplateCategory) => void` | "Create a new template" |
+| `onSelectFromLibrary` | `(c: TemplateCategory) => void` | "Select from the platform library" |
+| `onTemplateAction` | `(id: string, action: 'preview' \| 'duplicate' \| 'edit' \| 'delete') => void` | Edit / Delete only on `isCustom === true` |
+
+No `SaveBarState`.
+
+---
+
+## Storage tab
+
+### `DocumentNode`
+
+```
+type DocumentNode =
+  | { id: string; kind: 'folder'; name: string; children: DocumentNode[] }
+  | {
+      id: string;
+      kind: 'file';
+      name: string;
+      sizeBytes: number;
+      mimeType: string;
+      uploaderName: string;
+      uploaderHref: string;
+      uploadedAt: string;
+      openInNewTabHref: string;
+    };
+```
 
 ### `StorageViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `documents` | `DocumentRow[]` | name, type, sizeBytes, uploaderName, uploadedAt, id |
-| `onUpload` | `(file: File) => void` | — |
-| `onDelete` | `(id: string) => void` | Preceded by `ConfirmDeleteDialog` |
+| `tree` | `DocumentNode[]` | Hierarchical |
+| `expandedFolderIds` | `Set<string>` | View-managed state |
+| `onToggleFolder` | `(id: string) => void` | — |
+| `onDelete` | `(id: string) => void` | Preceded by `ConfirmationDialog` |
 
-These three tabs have no tab-level save bar because actions commit immediately — each action is individually scoped and confirmed via dialog when destructive.
+No `SaveBarState`.
 
 ---
 
 ## Settings tab
 
+### `SpacePrivacy`
+
+```
+type SpacePrivacy = 'public' | 'private';
+type MembershipPolicy = 'open' | 'application' | 'invitation';
+```
+
+### `AllowedActionToggle`
+
+Each toggle is `{ key: AllowedActionKey; enabled: boolean }` where `AllowedActionKey` covers every current MUI key:
+
+```
+type AllowedActionKey =
+  | 'subspaceAdminInvitations'
+  | 'memberCreatePosts'
+  | 'videoCalls'
+  | 'guestContributions'
+  | 'memberCreateSubspaces'
+  | 'subspaceEvents'
+  | 'alkemioSupportAccess'
+  | 'trustHostOrganization'
+  | 'inheritMemberRightsFromParent';
+```
+
+### `ApplicableOrganization`
+
+`{ id: string; name: string; domain: string; automaticAccess: boolean }`
+
 ### `SettingsViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `privacy` | `'public' \| 'private'` | — |
-| `hostOrganizationName` | `string \| null` | Read-only display |
-| `allowGuestVisitors` | `boolean` | — |
-| `allowMemberCreatedSubspaces` | `boolean` | — |
-| `showOnExplorer` | `boolean` | — |
-| `saveBar` | `SaveBarState` | — |
-| `onPrivacyChange` | `(next: SettingsViewProps['privacy']) => void` | — |
-| `onToggle` | `(key: 'allowGuestVisitors' \| 'allowMemberCreatedSubspaces' \| 'showOnExplorer', next: boolean) => void` | — |
-| `onSave` | `() => void` | — |
-| `onReset` | `() => void` | — |
+| `privacy` | `SpacePrivacy` | — |
+| `membershipPolicy` | `MembershipPolicy` | — |
+| `applicableOrganizations` | `ApplicableOrganization[]` | — |
+| `allowedActions` | `AllowedActionToggle[]` | Every current MUI toggle |
+| `onPrivacyChange` | `(next: SpacePrivacy) => void` | Immediate commit |
+| `onMembershipPolicyChange` | `(next: MembershipPolicy) => void` | Immediate commit |
+| `onAddOrganization` | `() => void` | Opens existing org-picker |
+| `onRemoveOrganization` | `(id: string) => void` | Immediate commit (with confirm) |
+| `onToggleAutomaticAccess` | `(id: string, next: boolean) => void` | Immediate commit |
+| `onToggleAllowedAction` | `(key: AllowedActionKey, next: boolean) => void` | Immediate commit |
+| `onDeleteSpace` | `() => void` | Opens Danger Zone confirm dialog |
+
+No `SaveBarState`.
 
 ---
 
 ## Account tab
 
+### `EntitlementRow`
+
+`{ feature: string; limit: number | 'unlimited'; usage: number }`
+
 ### `AccountViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `plan` | `{ name: string; description: string }` | — |
-| `entitlements` | `EntitlementRow[]` | feature, limit, usage |
-| `contactAdminHref` | `string \| null` | Mailto / support link if available |
+| `url` | `string` | Read-only space URL |
+| `plan` | `{ name: string; description: string; features: string[] }` | — |
+| `entitlements` | `EntitlementRow[]` | Rendered as progress bars |
+| `visibilityStatus` | `{ label: string; tone: 'active' \| 'inactive' }` | — |
+| `host` | `{ displayName: string; avatarUrl: string \| null; organizationName: string }` | NO change-host CTA |
+| `contactSupportHref` | `string` | — |
+| `canDeleteSpace` | `boolean` | Gates the Delete button |
+| `onCopyUrl` | `() => void` | — |
+| `onChangeLicenseHref` | `string \| null` | Conditional external link |
+| `onContactSupport` | `() => void` | — |
+| `onDeleteSpace` | `() => void` | Opens confirm dialog |
 
-Read-only — no save bar, no onChange callbacks.
+Read-only content + 3 action buttons. No `SaveBarState`.
 
 ---
 
-## Dirty-state model (controller only, not passed to CRD)
+## Dirty-state controller (not a CRD prop)
 
 ### `DirtyTabState`
 
 ```
 type DirtyTabState = {
   activeTab: TabId;
-  dirtyTab: TabId | null; // at most one at a time (Clarification Q2)
-  pendingSwitch: TabId | null; // tab the user tried to switch to while dirty
+  dirtyTab: 'layout' | null; // Only Layout can be dirty — About autosaves per field
+  pendingSwitch: TabId | null;
 };
 ```
 
-Produced by `useDirtyTabGuard`. Consumed only by the page controller (`CrdSpaceSettingsPage`) — never exposed to CRD components.
+Produced by `useDirtyTabGuard`. Consumed only by `CrdSpaceSettingsPage`.
