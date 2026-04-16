@@ -172,7 +172,7 @@ A user scanning the About dialog sees a truncated preview of the Community Guide
 - **SC-004**: A user can complete the apply flow (open dialog → activate Apply → submit form → confirmation) in fewer than 90 seconds on a Space with up to 5 application questions.
 - **SC-005**: An unauthenticated visitor can move from "About dialog open" to "signed in and back at the apply call-to-action" without losing their place in the application path.
 - **SC-006**: All interactive elements meet WCAG 2.1 AA: visible focus indicators, accessible names, logical tab order, focus management on open/close.
-- **SC-007**: All user-visible strings render in each of the six supported languages with no missing keys and no English fallback occurrences in non-English runs.
+- **SC-007**: All user-visible strings have a key present in each of the six supported language files with no runtime missing-key fallback errors. Non-English locale files MAY contain English placeholder values until translated by the translation team; these placeholders are acceptable interim state and do not violate this criterion.
 - **SC-008**: Toggling the CRD setting on, reloading, then toggling off and reloading consistently produces the corresponding dialog version, with no client-side errors or stale rendering.
 - **SC-009**: Edit affordances appear for users with edit privileges and never appear for users without — measured at zero false positives across role-permission permutations covered by smoke testing.
 - **SC-010**: For Spaces with community guidelines, the truncated preview is readable on a 360px-wide viewport without horizontal scroll, and the full-content surface remains usable on the same viewport.
