@@ -518,6 +518,9 @@ class Collab {
   };
 
   private initializeFollowSubscriptions = () => {
+    this.unsubOnUserFollow?.();
+    this.unsubOnScrollChange?.();
+
     this.unsubOnUserFollow = this.excalidrawAPI.onUserFollow((payload: OnUserFollowedPayload) => {
       if (this.portal.socket) {
         this.portal.broadcastUserFollowed({
@@ -609,21 +612,39 @@ class Collab {
     this.collaborators = collaborators;
     this.excalidrawAPI.updateScene({ collaborators });
 
-    // Clean up followedBy for disconnected users
+    // Clean up follow state for disconnected users
     const socketSet = new Set(sockets);
-    const currentFollowedBy = this.excalidrawAPI.getAppState().followedBy;
-    if (currentFollowedBy.size > 0) {
+    const appState = this.excalidrawAPI.getAppState();
+
+    // Clear userToFollow if the followed user disconnected
+    const userToFollowGone = appState.userToFollow && !socketSet.has(appState.userToFollow.socketId);
+
+    // Prune followedBy for disconnected users
+    let cleanedFollowedBy: Set<SocketId> | null = null;
+    if (appState.followedBy.size > 0) {
       const cleaned = new Set<SocketId>();
-      for (const id of currentFollowedBy) {
+      for (const id of appState.followedBy) {
         if (socketSet.has(id)) {
           cleaned.add(id);
         }
       }
-      if (cleaned.size !== currentFollowedBy.size) {
-        this.excalidrawAPI.updateScene({
-          appState: { followedBy: cleaned },
-        });
+      if (cleaned.size !== appState.followedBy.size) {
+        cleanedFollowedBy = cleaned;
       }
+    }
+
+    if (userToFollowGone && cleanedFollowedBy) {
+      this.excalidrawAPI.updateScene({
+        appState: { userToFollow: null, followedBy: cleanedFollowedBy },
+      });
+    } else if (userToFollowGone) {
+      this.excalidrawAPI.updateScene({
+        appState: { userToFollow: null },
+      });
+    } else if (cleanedFollowedBy) {
+      this.excalidrawAPI.updateScene({
+        appState: { followedBy: cleanedFollowedBy },
+      });
     }
   };
 
