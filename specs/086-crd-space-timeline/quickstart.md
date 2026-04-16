@@ -32,7 +32,7 @@ For full coverage, use a space (or create one) that has:
 - At least 5 future events (multiple types: at least one Meeting, one Deadline)
 - At least 1 multi-day event
 - At least 1 past event
-- At least 1 event with a banner image
+- At least 1 legacy event with a banner image (only seeded by the old MUI form — the CRD form no longer uploads banners)
 - At least 1 event with comments
 - At least 1 subspace with its own events, including one marked `visibleOnParentCalendar=true`
 
@@ -64,7 +64,7 @@ Each story corresponds to a numbered story in `spec.md`. Stories 1–4 are P1; s
 ### Story 3 — Event detail + comments (P1)
 
 1. Open an event detail (from list or via deeplink).
-2. **Verify**: banner image renders when present; otherwise the deterministic gradient fallback (verify by reloading — same colour each time).
+2. **Verify**: when the event has a `bannerUrl` (legacy data), the banner image renders at the top; otherwise no banner area is rendered — the detail view starts at the title/meta row.
 3. **Verify**: title; author avatar + name + creation date caption near the title; tags; references; markdown description renders correctly.
 4. With `canReadComments`, **verify**: comments column appears with thread + count.
 5. With `canPostComments`, post a comment, then a reply, then a reaction. **Verify**: each appears immediately in the thread.
@@ -127,7 +127,7 @@ In Chrome DevTools, switch to a phone preset (e.g., iPhone 14 Pro, 393×852).
 1. Reload a CRD-enabled space dashboard.
 2. Click sidebar **Show calendar**. **Verify**: timeline opens as a full-screen Sheet.
 3. **Verify**: in list view, the calendar is collapsed behind a "Pick a date" trigger above the list. Tap to expand the calendar; pick a date; calendar collapses; list scrolls.
-4. Open an event detail. **Verify**: banner + body stack vertically followed by comments below.
+4. Open an event detail. **Verify**: the body (banner if present, then title/meta and description) and comments stack vertically.
 5. Open the create form. **Verify**: every row stacks vertically.
 6. Verify the **Add to calendar** dropdown still works inside the Sheet (no double-modal stacking issues).
 

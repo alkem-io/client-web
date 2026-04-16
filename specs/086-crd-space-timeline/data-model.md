@@ -54,7 +54,7 @@ Used by `EventDetailView.tsx`.
 | `id` | `string` | |
 | `title` | `string` | `profile.displayName` |
 | `description` | `string` | Markdown source; rendered via `MarkdownContent` |
-| `bannerUrl` | `string \| undefined` | `profile.banner.uri`. When undefined, the `EventDetailView` renders a deterministic gradient using `resolveColor(event.id)` (callback prop on `EventDetailViewProps`) — see FR-015. |
+| `bannerUrl` | `string \| undefined` | `profile.banner.uri`. When undefined, the `EventDetailView` renders no banner area at all (FR-015). Only populated for legacy events — the CRD create/edit form does not expose a banner upload. |
 | `tags` | `string[]` | `profile.tagset.tags` |
 | `references` | `EventReference[]` | `profile.references` mapped to `{ id, name, uri, description? }` |
 | `startDate` | `Date \| undefined` | UTC `Date` |
@@ -86,7 +86,7 @@ Used by `EventDetailView.tsx`.
 | `avatarUrl` | `string \| undefined` | `profile.visual(AVATAR).uri` |
 | `profileUrl` | `string \| undefined` | `profile.url`, optional link target |
 
-The avatar fallback colour is **not** carried on this shape. The `EventDetailView` derives it on demand by invoking `resolveColor(author.id)`, where `resolveColor` is a callback prop wired by the `EventDetailConnector` (which imports `pickColorFromId` from `@/crd/lib/pickColorFromId`). Same pattern applies to the banner fallback (`resolveColor(event.id)`).
+The avatar fallback colour is **not** carried on this shape. The `EventDetailView` derives it on demand by invoking `resolveColor(author.id)`, where `resolveColor` is a callback prop wired by the `EventDetailConnector` (which imports `pickColorFromId` from `@/crd/lib/pickColorFromId`). `resolveColor` exists solely for the author-avatar fallback — events no longer use a gradient fallback for missing banners.
 
 ### `EventFormValues`
 

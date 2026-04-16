@@ -63,7 +63,7 @@ A space member opens an event from the list (or via a shared link) and sees the 
 
 **Acceptance Scenarios**:
 
-1. **Given** an event has a banner image, **When** the detail view opens, **Then** the banner appears at the top of the page; **And** when the event has no banner image, a deterministic colour gradient derived from the event's identity is shown instead.
+1. **Given** an event has a banner image, **When** the detail view opens, **Then** the banner appears at the top of the page; **And** when the event has no banner image, no banner area is rendered (the detail view begins with the title/meta row). Banner uploads are not supported by the CRD form; `bannerUrl` is only populated for legacy events carried over from the MUI version.
 2. **Given** the event description contains markdown, **When** the detail view loads, **Then** the description renders with formatting and any links are clickable.
 3. **Given** the user has comments-read permission, **When** the detail view loads, **Then** the comments column shows the thread and the comment count; **And** when the user has comments-post permission, an input is visible at the bottom.
 4. **Given** the user has comments-post permission, **When** they post a comment, reply to a comment, react to a comment, or remove a reaction, **Then** the change appears in the thread.
@@ -181,13 +181,13 @@ A user editing an event inside a subspace can mark it as visible on the parent s
 - **FR-011**: Each event in the list MUST be clickable and MUST navigate to the event detail view with a deeplinkable URL of the form `<space>/calendar/<event-name-id>`.
 - **FR-012**: Each event card MUST display the event's date badge, title, key meta (date / time / duration / type / subspace name when applicable), and a truncated preview of the description.
 - **FR-013**: When the timeline opens directly from a deeplink containing `?highlight=`, `?new=1`, or `/<event-name-id>`, the corresponding view (highlighted day, create form, or detail) MUST be rendered without any additional user action.
-- **FR-013a**: While the events query is still in flight after the dialog opens, the timeline MUST render the calendar shell (month grid with current-month navigation) and 3–5 skeleton placeholders in the event-list pane. Calendar markers MUST appear once event data arrives. The detail view, when reached during loading, MUST show a banner placeholder, a title placeholder, and a description skeleton until the event detail query resolves.
+- **FR-013a**: While the events query is still in flight after the dialog opens, the timeline MUST render the calendar shell (month grid with current-month navigation) and 3–5 skeleton placeholders in the event-list pane. Calendar markers MUST appear once event data arrives. The detail view, when reached during loading, MUST show a title placeholder and a description skeleton until the event detail query resolves.
 
 #### Event detail view
 
-- **FR-014**: The event detail view MUST show banner image, title, start date, start time (or "Whole day"), end date or end time, duration, type, subspace name (when the event belongs to a subspace), location, tags, references and the markdown-rendered description.
+- **FR-014**: The event detail view MUST show the banner image (when present), title, start date, start time (or "Whole day"), end date or end time, duration, type, subspace name (when the event belongs to a subspace), location, tags, references and the markdown-rendered description.
 - **FR-014a**: The event detail view MUST display attribution near the title, consisting of the author's avatar, the author's display name, and the event's creation date in the viewer's local time zone (formatted in the user's currently selected language). When the author has no avatar, the avatar fallback MUST follow the same deterministic-colour rule used elsewhere in the design system.
-- **FR-015**: When no banner image is available, a deterministic colour gradient derived from the event's identity MUST be shown so the same event always presents the same fallback colour.
+- **FR-015**: When no banner image is available, the detail view MUST omit the banner area entirely (no placeholder, no gradient). Banner uploads are not exposed by the CRD create/edit form; a `bannerUrl` is only present on legacy events created via the MUI form.
 - **FR-016**: Comments MUST be displayed in a side column when the user has read access to the comments room, with the message count visible in the section title.
 - **FR-017**: When the user has post-message permission, a comment input MUST be shown and the user MUST be able to post comments, post replies to existing comments, react to comments with emoji and remove their own reactions.
 - **FR-018**: When the user has delete permission for a given message (their own message or platform-level delete), they MUST be able to delete that message.
@@ -241,8 +241,8 @@ A user editing an event inside a subspace can mark it as visible on the parent s
 
 #### Responsive layout
 
-- **FR-042a**: On tablet and desktop viewports (≥768px), the timeline MUST render as a centred modal dialog with the calendar and event list shown side-by-side in list view, and the event banner/body and comments shown side-by-side in detail view.
-- **FR-042b**: On phone-sized viewports (<768px), the timeline MUST render as a full-screen sheet. In list view, the calendar MUST be collapsed behind a date-picker trigger above the event list; opening the trigger reveals the calendar in a popover or expanded panel and selecting a date collapses it again. In detail view, the banner/body and comments MUST stack vertically. The create/edit form MUST stack all rows vertically.
+- **FR-042a**: On tablet and desktop viewports (≥768px), the timeline MUST render as a centred modal dialog with the calendar and event list shown side-by-side in list view, and the event body and comments shown side-by-side in detail view.
+- **FR-042b**: On phone-sized viewports (<768px), the timeline MUST render as a full-screen sheet. In list view, the calendar MUST be collapsed behind a date-picker trigger above the event list; opening the trigger reveals the calendar in a popover or expanded panel and selecting a date collapses it again. In detail view, the body and comments MUST stack vertically. The create/edit form MUST stack all rows vertically.
 
 #### Compatibility
 

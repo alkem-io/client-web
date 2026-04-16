@@ -201,7 +201,7 @@ The dashboard tab continues to be selected via `?section=N` (verified from `useC
 
 ## R15 — Skeleton loading state
 
-**Decision** (from spec FR-013a): On dialog open, render the calendar shell (month grid + month-nav arrows) immediately. Right pane shows 3–5 `Skeleton` rows from `src/crd/primitives/skeleton.tsx` until events arrive. Calendar markers fade in when `useCalendarEvents` resolves. The detail-view connector renders banner/title/description skeletons until `useCalendarEventDetail` resolves.
+**Decision** (from spec FR-013a): On dialog open, render the calendar shell (month grid + month-nav arrows) immediately. Right pane shows 3–5 `Skeleton` rows from `src/crd/primitives/skeleton.tsx` until events arrive. Calendar markers fade in when `useCalendarEvents` resolves. The detail-view connector renders title/description skeletons until `useCalendarEventDetail` resolves (no banner skeleton — the banner area is only shown for legacy events that actually carry a `bannerUrl`, and is hidden entirely otherwise).
 
 **Rationale**:
 - Established CRD pattern — `Skeleton` primitive already in place.

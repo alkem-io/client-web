@@ -56,9 +56,9 @@ type EventDetailViewProps = {
    *  callback the parent wires to the dialog header's Back action. */
   onBack: () => void;
   /** Resolves an entity id to a deterministic colour. Invoked by the component
-   *  lazily for fallback colours (banner when bannerUrl is undefined, author
-   *  avatar when avatarUrl is undefined). The connector wires `pickColorFromId`
-   *  to keep this component free of the business helper import. */
+   *  lazily for the author avatar fallback when `avatarUrl` is undefined. The
+   *  connector wires `pickColorFromId` to keep this component free of the
+   *  business helper import. */
   resolveColor: (id: string) => string;
   /** date-fns Locale for the createdDate caption + nested EventCardHeader.
    *  Resolved by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
@@ -96,23 +96,17 @@ export function EventDetailView({
     );
   }
 
-  const bannerBackground = event.bannerUrl
-    ? `url("${event.bannerUrl}") center/cover`
-    : `linear-gradient(135deg, ${resolveColor(event.id)}, color-mix(in srgb, ${resolveColor(event.id)} 70%, black))`;
-
   const avatarFallbackColor = event.author.id ? resolveColor(event.author.id) : undefined;
 
   const body = (
     <div className="flex flex-col gap-4">
-      {event.bannerUrl ? (
+      {event.bannerUrl && (
         <div
           className="h-32 w-full rounded-md sm:h-40"
-          style={{ background: bannerBackground }}
+          style={{ background: `url("${event.bannerUrl}") center/cover` }}
           role="img"
           aria-label={t('a11y.spaceBanner', { name: event.title })}
         />
-      ) : (
-        <div className="h-32 w-full rounded-md sm:h-40" style={{ background: bannerBackground }} aria-hidden={true} />
       )}
       {event.loading ? (
         <div className="space-y-3">

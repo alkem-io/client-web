@@ -50,7 +50,7 @@ export type EventAuthor = {
   name: string;
   avatarUrl?: string;
   // No color — the EventDetailView resolves the avatar fallback colour from
-  // author.id via the resolveColor callback prop (same pattern as the banner).
+  // author.id via the resolveColor callback prop.
   profileUrl?: string;
 };
 
@@ -58,9 +58,10 @@ export type EventDetailData = {
   id: string;
   title: string;
   description: string;
+  // Optional and not settable through the CRD form — only populated for
+  // legacy events seeded by the old MUI dialog. When undefined the detail
+  // view renders no banner area at all (no gradient, no placeholder).
   bannerUrl?: string;
-  // No bannerColor — the EventDetailView resolves its own fallback colour
-  // from event.id via the resolveColor callback prop.
   tags: string[];
   references: EventReference[];
   startDate: Date | undefined;
@@ -204,11 +205,11 @@ export type EventDetailViewProps = {
   /**
    * Pure helper that maps an entity id to a deterministic colour. Defined at a
    * high level (the EventDetailConnector imports pickColorFromId from
-   * @/crd/lib/pickColorFromId) and passed down as a callback. The component
-   * invokes it lazily for every fallback colour it needs:
-   *   - banner background gradient when event.bannerUrl is undefined
-   *   - author avatar background when event.author.avatarUrl is undefined
-   * Keeps the leaf component free of business helper imports.
+   * @/crd/lib/pickColorFromId) and passed down as a callback. Invoked lazily
+   * only for the author-avatar fallback background when
+   * `event.author.avatarUrl` is undefined. Events no longer use a gradient
+   * fallback for missing banners, so the component does not call this helper
+   * for the banner. Keeps the leaf component free of business helper imports.
    */
   resolveColor: (id: string) => string;
 };
