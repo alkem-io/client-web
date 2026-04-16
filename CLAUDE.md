@@ -360,11 +360,11 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 085-authz-admin-guard: Added TypeScript 5.x / React 19 (React Compiler enabled) / Node 24.14.0 (Volta-pinned) + Apollo Client (generated hooks from `src/core/apollo/generated/apollo-hooks.ts`), react-i18next, MUI v5 (for legacy admin pages still on MUI), `src/crd/` shadcn/Tailwind primitives (for any CRD-path sites), existing `useNotification()` helper at `src/core/ui/notifications/useNotification.ts`
 - 042-crd-space-page: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 - 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
-- 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged) (042-crd-space-page)
-- N/A (frontend SPA; data via existing GraphQL queries, no new backend APIs) (042-crd-space-page)
+- TypeScript 5.x / React 19 (React Compiler enabled) / Node 24.14.0 (Volta-pinned) + Apollo Client (generated hooks from `src/core/apollo/generated/apollo-hooks.ts`), react-i18next, MUI v5 (for legacy admin pages still on MUI), `src/crd/` shadcn/Tailwind primitives (for any CRD-path sites), existing `useNotification()` helper at `src/core/ui/notifications/useNotification.ts` (085-authz-admin-guard)
+- N/A (client-side only; privileges read from GraphQL responses) (085-authz-admin-guard)
