@@ -1,7 +1,8 @@
-import { addMinutes, format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
+import { endDateFromDuration } from '@/crd/lib/eventDuration';
 import { Button } from '@/crd/primitives/button';
 import { escapeIcsText, foldLine } from '@/domain/timeline/calendar/utils/icsUtils';
 
@@ -11,6 +12,8 @@ type ExportableEvent = {
   description?: string;
   startDate: Date | undefined;
   durationMinutes: number;
+  durationDays?: number;
+  wholeDay?: boolean;
   url: string;
 };
 
@@ -29,7 +32,7 @@ const ICS_HEADER = [
 ];
 
 /**
- * RFC 5545 timestamp formatter for a JS Date.
+ * RFC 5545 timestamp formatter for a JS Date — produces e.g. "20260415T180000Z".
  *
  * Inlined here (instead of using `formatDateTimeUtc` from
  * `@/domain/timeline/calendar/utils/icsUtils`) because that utility takes a
@@ -44,6 +47,14 @@ function formatDateTimeUtc(date: Date): string {
     .replace(/\.\d{3}/, '');
 }
 
+/**
+ * RFC 5545 DATE formatter (no time component) — produces e.g. "20260415".
+ * Used for whole-day events where DTSTART/DTEND must use the VALUE=DATE form.
+ */
+function formatDateOnly(date: Date): string {
+  return format(date, 'yyyyMMdd');
+}
+
 function buildIcsContent(events: ExportableEvent[]): string {
   const lines: string[] = [...ICS_HEADER];
   const now = new Date();
@@ -56,16 +67,26 @@ function buildIcsContent(events: ExportableEvent[]): string {
       console.warn('[ExportEventsToIcs] skipping event without startDate', event.id);
       continue;
     }
-    const endDate = addMinutes(event.startDate, event.durationMinutes ?? 60);
 
-    lines.push(
-      'BEGIN:VEVENT',
-      `UID:${event.id}@alkemio.org`,
-      `DTSTAMP:${formatDateTimeUtc(now)}`,
-      `DTSTART:${formatDateTimeUtc(event.startDate)}`,
-      `DTEND:${formatDateTimeUtc(endDate)}`,
-      `SUMMARY:${escapeIcsText(event.title)}`
-    );
+    lines.push('BEGIN:VEVENT', `UID:${event.id}@alkemio.org`, `DTSTAMP:${formatDateTimeUtc(now)}`);
+
+    if (event.wholeDay) {
+      // RFC 5545 §3.6.1: whole-day events use VALUE=DATE for DTSTART and an
+      // EXCLUSIVE DTEND set to the day AFTER the last covered day. A
+      // single-day all-day event has DTEND = DTSTART + 1 day; a 3-day all-day
+      // event has DTEND = DTSTART + 3 days. Without this branch a same-day
+      // all-day event collapsed to a zero-length VEVENT.
+      const days = Math.max(event.durationDays ?? 0, 1);
+      const dtEnd = addDays(event.startDate, days);
+      lines.push(`DTSTART;VALUE=DATE:${formatDateOnly(event.startDate)}`, `DTEND;VALUE=DATE:${formatDateOnly(dtEnd)}`);
+    } else {
+      // Timed event — DTEND combines durationDays + durationMinutes via the
+      // shared helper so multi-day timed events export the correct end.
+      const endDate = endDateFromDuration(event.startDate, event.durationMinutes ?? 60, event.durationDays);
+      lines.push(`DTSTART:${formatDateTimeUtc(event.startDate)}`, `DTEND:${formatDateTimeUtc(endDate)}`);
+    }
+
+    lines.push(`SUMMARY:${escapeIcsText(event.title)}`);
 
     if (event.description) {
       lines.push(`DESCRIPTION:${escapeIcsText(markdownToPlainText(event.description))}`);

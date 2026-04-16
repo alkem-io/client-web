@@ -90,7 +90,8 @@
       "MEETING": "Meeting",
       "MILESTONE": "Milestone",
       "OTHER": "Other",
-      "TRAINING": "Training"
+      "TRAINING": "Training",
+      "unknown": "Event"
     },
     "addToCalendar": {
       "trigger": "Add to calendar",
@@ -103,7 +104,9 @@
     "calendarA11y": {
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
-      "pickDate": "Pick a date"
+      "pickDate": "Pick a date",
+      "dayWithEvents_one": "{{date}}, 1 event",
+      "dayWithEvents_other": "{{date}}, {{count}} events"
     },
     "tooltip": {
       "wholeDayPrefix": "Whole day"
@@ -312,7 +315,8 @@
     "count": "{{count}} comments",
     "count_one": "1 comment",
     "loading": "Loading comments...",
-    "empty": "No comments yet"
+    "empty": "No comments yet",
+    "unknownUser": "Unknown user"
   },
   "dialogs": {
     "cancel": "Cancel"

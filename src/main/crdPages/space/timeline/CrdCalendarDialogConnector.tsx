@@ -9,6 +9,7 @@ import { Button } from '@/crd/primitives/button';
 import useCalendarEvents from '@/domain/timeline/calendar/useCalendarEvents';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapCalendarEventInfoToListItem } from '../dataMappers/calendarEventDataMapper';
+import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { AddToCalendarMenuConnector } from './AddToCalendarMenuConnector';
 import { EventDetailConnector } from './EventDetailConnector';
 import { ExportEventsToIcsConnector } from './ExportEventsToIcsConnector';
@@ -44,6 +45,7 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
   const { t } = useTranslation('crd-space');
   const { spaceId, parentSpaceId, calendarEventId } = useUrlResolver();
   const urlState = useCrdCalendarUrlState();
+  const locale = useCrdSpaceLocale();
 
   // useCalendarEvents internally sets includeSubspace=!parentSpaceId, so at L0
   // we receive parent events PLUS subspace events with visibleOnParentCalendar=true
@@ -138,6 +140,7 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
           onEventClick={event => urlState.navigateToEvent(event.url)}
           loading={loading}
           exportSlot={<ExportEventsToIcsConnector events={futureListItems} />}
+          locale={locale}
         />
       )}
       {view === 'detail' && calendarEventId && (
@@ -158,6 +161,7 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
           isUpdating={updatingCalendarEvent}
           canDeleteEvents={privileges.canDeleteEvents}
           onExitEdit={() => setEditingEventId(undefined)}
+          locale={locale}
         />
       )}
     </TimelineDialog>
@@ -173,6 +177,7 @@ type EventFormDialogBodyProps = Omit<Parameters<typeof useCrdEventFormDialog>[0]
   isCreating: boolean;
   isUpdating: boolean;
   canDeleteEvents: boolean;
+  locale: ReturnType<typeof useCrdSpaceLocale>;
 };
 
 function EventFormDialogBody({
@@ -186,6 +191,7 @@ function EventFormDialogBody({
   isUpdating,
   canDeleteEvents,
   onExitEdit,
+  locale,
 }: EventFormDialogBodyProps) {
   const { t } = useTranslation('crd-space');
   const dialog = useCrdEventFormDialog({
@@ -212,6 +218,7 @@ function EventFormDialogBody({
         isSubmitting={dialog.isSubmitting}
         isSubspace={dialog.isSubspace}
         typeOptions={dialog.typeOptions}
+        locale={locale}
         footerActionsLeft={
           <>
             {mode === 'edit' && canDeleteEvents && (

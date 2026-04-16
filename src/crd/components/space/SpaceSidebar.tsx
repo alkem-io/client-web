@@ -1,3 +1,4 @@
+import type { Locale } from 'date-fns';
 import { Info, Mail, UserPlus } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,6 +69,9 @@ type SpaceSidebarProps = {
   // Extra
   children?: ReactNode;
   className?: string;
+  /** date-fns Locale forwarded to nested EventsSection. Resolved by the
+   *  consumer via `useCrdSpaceLocale()`. Defaults to enUS inside EventsSection. */
+  locale?: Locale;
 };
 
 export function SpaceSidebar({
@@ -94,6 +98,7 @@ export function SpaceSidebar({
   guidelines = [],
   children,
   className,
+  locale,
 }: SpaceSidebarProps) {
   const { t } = useTranslation('crd-space');
 
@@ -129,6 +134,7 @@ export function SpaceSidebar({
             onShowCalendar={onShowCalendar}
             onAddEvent={onAddEvent}
             onEventClick={onEventClick}
+            locale={locale}
           />
         </>
       )}

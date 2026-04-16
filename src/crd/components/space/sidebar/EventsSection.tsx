@@ -1,7 +1,8 @@
+import type { Locale } from 'date-fns';
 import { differenceInCalendarDays, format, startOfDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { ChevronDown, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Button } from '@/crd/primitives/button';
 
 type SidebarEventItem = {
@@ -18,14 +19,20 @@ type EventsSectionProps = {
   /** Optional — when set, each row becomes interactive. */
   onEventClick?: (event: SidebarEventItem) => void;
   className?: string;
+  /** date-fns Locale for the relative-date formatter. Resolved by the
+   *  connector via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
 };
 
-export function EventsSection({ events, onShowCalendar, onAddEvent, onEventClick, className }: EventsSectionProps) {
-  const { t, i18n } = useTranslation('crd-space');
-  // Reading i18n.language (not mutating it) is acceptable here per CRD rules
-  // — the rule forbids changeLanguage() side effects, not reading language
-  // state for formatting.
-  const locale = resolveDateFnsLocale(i18n.language);
+export function EventsSection({
+  events,
+  onShowCalendar,
+  onAddEvent,
+  onEventClick,
+  className,
+  locale = enUS,
+}: EventsSectionProps) {
+  const { t } = useTranslation('crd-space');
   const now = new Date();
 
   const formatRelativeDate = (date: Date): string => {

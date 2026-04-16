@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Начално пространство", "homeSpaceSettings": "Настройки на началното пространство" },
+  "banner": {
+    "homeSpace": "Начално пространство",
+    "homeSpaceSettings": "Настройки на началното пространство"
+  },
   "tabs": {
     "dashboard": "Табло",
     "community": "Общност",
@@ -87,7 +90,8 @@
       "MEETING": "Среща",
       "MILESTONE": "Етап",
       "OTHER": "Друго",
-      "TRAINING": "Обучение"
+      "TRAINING": "Обучение",
+      "unknown": "Събитие"
     },
     "addToCalendar": {
       "trigger": "Добави в календара",
@@ -100,7 +104,9 @@
     "calendarA11y": {
       "previousMonth": "Предишен месец",
       "nextMonth": "Следващ месец",
-      "pickDate": "Избери дата"
+      "pickDate": "Избери дата",
+      "dayWithEvents_one": "{{date}}, 1 събитие",
+      "dayWithEvents_other": "{{date}}, {{count}} събития"
     },
     "tooltip": {
       "wholeDayPrefix": "Цял ден"
@@ -304,7 +310,8 @@
     "count": "{{count}} коментара",
     "count_one": "1 коментар",
     "loading": "Зареждане на коментари...",
-    "empty": "Още без коментари"
+    "empty": "Още без коментари",
+    "unknownUser": "Непознат потребител"
   },
   "dialogs": {
     "cancel": "Отказ"

@@ -1,10 +1,11 @@
+import type { Locale } from 'date-fns';
 import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { ExternalLink } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -59,6 +60,9 @@ type EventDetailViewProps = {
    *  avatar when avatarUrl is undefined). The connector wires `pickColorFromId`
    *  to keep this component free of the business helper import. */
   resolveColor: (id: string) => string;
+  /** date-fns Locale for the createdDate caption + nested EventCardHeader.
+   *  Resolved by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
 };
 
 const DESKTOP_BREAKPOINT = '(min-width: 768px)';
@@ -75,9 +79,9 @@ export function EventDetailView({
   commentInputSlot,
   onBack,
   resolveColor,
+  locale = enUS,
 }: EventDetailViewProps) {
-  const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveDateFnsLocale(i18n.language);
+  const { t } = useTranslation('crd-space');
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
   if (event.notFound) {
@@ -120,7 +124,7 @@ export function EventDetailView({
         </div>
       ) : (
         <>
-          <EventCardHeader event={event} size="md" />
+          <EventCardHeader event={event} size="md" locale={locale} />
           {event.author.name && event.createdDate && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Avatar className="h-5 w-5 shrink-0">

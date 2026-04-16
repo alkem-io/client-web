@@ -3,6 +3,7 @@ import { EventDetailView } from '@/crd/components/space/timeline/EventDetailView
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useCalendarEventDetail from '@/domain/timeline/calendar/useCalendarEventDetail';
 import { mapCalendarEventDetailsToDetailData } from '../dataMappers/calendarEventDataMapper';
+import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { CalendarCommentsConnector } from './CalendarCommentsConnector';
 
 type EventDetailConnectorProps = {
@@ -19,6 +20,7 @@ type EventDetailConnectorProps = {
  */
 export function EventDetailConnector({ eventId, onBack }: EventDetailConnectorProps) {
   const { event, loading } = useCalendarEventDetail({ eventId });
+  const locale = useCrdSpaceLocale();
 
   const notFound = !loading && !event;
   const detailData = mapCalendarEventDetailsToDetailData(event, { loading, notFound });
@@ -32,7 +34,15 @@ export function EventDetailConnector({ eventId, onBack }: EventDetailConnectorPr
   // can't see. useCrdRoomComments does NOT also gate on Read internally — its
   // inner gate is canComment (CreateMessage permission), not Read.
   if (!commentsRoom || !canReadComments) {
-    return <EventDetailView event={detailData} showComments={false} onBack={onBack} resolveColor={pickColorFromId} />;
+    return (
+      <EventDetailView
+        event={detailData}
+        showComments={false}
+        onBack={onBack}
+        resolveColor={pickColorFromId}
+        locale={locale}
+      />
+    );
   }
 
   return (
@@ -46,6 +56,7 @@ export function EventDetailConnector({ eventId, onBack }: EventDetailConnectorPr
           commentInputSlot={commentInput}
           onBack={onBack}
           resolveColor={pickColorFromId}
+          locale={locale}
         />
       )}
     </CalendarCommentsConnector>

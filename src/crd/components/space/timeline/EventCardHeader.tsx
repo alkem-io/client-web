@@ -1,6 +1,8 @@
-import { addMinutes, format, isSameDay } from 'date-fns';
+import type { Locale } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { endDateFromDuration } from '@/crd/lib/eventDuration';
 import { Badge } from '@/crd/primitives/badge';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { EventDateBadge } from './EventDateBadge';
@@ -20,12 +22,14 @@ type EventCardHeaderProps = {
   loading?: boolean;
   /** "sm" for list rows, "md" for detail header. Defaults to "sm". */
   size?: 'sm' | 'md';
+  /** date-fns Locale for the meta row's time formatting + the EventDateBadge.
+   *  Resolved by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
 };
 
 /** Badge + title + meta row (date, time / duration, type, subspace chip). */
-export function EventCardHeader({ event, loading, size = 'sm' }: EventCardHeaderProps) {
-  const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveDateFnsLocale(i18n.language);
+export function EventCardHeader({ event, loading, size = 'sm', locale = enUS }: EventCardHeaderProps) {
+  const { t } = useTranslation('crd-space');
 
   if (loading) {
     return (
@@ -44,7 +48,7 @@ export function EventCardHeader({ event, loading, size = 'sm' }: EventCardHeader
     if (event.wholeDay) {
       meta.push(t('calendar.tooltip.wholeDayPrefix'));
     } else {
-      const endDate = addMinutes(event.startDate, event.durationMinutes);
+      const endDate = endDateFromDuration(event.startDate, event.durationMinutes, event.durationDays);
       const sameDay = isSameDay(event.startDate, endDate);
       if (sameDay) {
         meta.push(`${format(event.startDate, 'p', { locale })} – ${format(endDate, 'p', { locale })}`);
@@ -54,13 +58,13 @@ export function EventCardHeader({ event, loading, size = 'sm' }: EventCardHeader
     }
   }
 
-  // Event type label via calendar.type.<ENUM_VALUE>; fall back to the raw value
-  // if the enum value is unknown. Typed i18next rejects fully-dynamic keys,
-  // so we compose via a template string and defer to runtime resolution.
+  // Event type label via calendar.type.<ENUM_VALUE>. If the backend ever
+  // ships a new enum value we don't know about, fall back to the localized
+  // 'unknown' label rather than leaking a raw enum string into the UI.
   if (event.type) {
     const typeKey = `calendar.type.${event.type}`;
-    const translated = t(typeKey, { defaultValue: event.type });
-    meta.push(translated);
+    const fallback = t('calendar.type.unknown');
+    meta.push(t(typeKey, { defaultValue: fallback }));
   }
 
   const titleClass = size === 'md' ? 'text-lg font-semibold leading-tight' : 'text-sm font-semibold leading-snug';
@@ -73,6 +77,7 @@ export function EventCardHeader({ event, loading, size = 'sm' }: EventCardHeader
         durationDays={event.durationDays}
         wholeDay={event.wholeDay}
         size={size}
+        locale={locale}
       />
       <div className="min-w-0 flex-1">
         <h3 className={titleClass}>{event.title}</h3>

@@ -6,18 +6,27 @@ import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 
 export type EventFormErrors = Partial<Record<keyof EventFormValues, string>>;
 
-const defaultValues: EventFormValues = {
-  displayName: '',
-  type: undefined,
-  startDate: new Date(),
-  endDate: new Date(),
-  wholeDay: false,
-  durationMinutes: 30,
-  description: '',
-  locationCity: '',
-  tags: [],
-  visibleOnParentCalendar: false,
-};
+/**
+ * Builds a fresh defaults snapshot. Must be a factory rather than a
+ * module-scope constant: otherwise startDate/endDate freeze to whenever the
+ * module first loaded (page-load time). In a long-lived tab, opening the
+ * dialog later would show a stale "now". The factory returns a new Date()
+ * for each call so opening the form always reflects the current moment.
+ */
+function getDefaultValues(): EventFormValues {
+  return {
+    displayName: '',
+    type: undefined,
+    startDate: new Date(),
+    endDate: new Date(),
+    wholeDay: false,
+    durationMinutes: 30,
+    description: '',
+    locationCity: '',
+    tags: [],
+    visibleOnParentCalendar: false,
+  };
+}
 
 export type UseCrdEventFormResult = {
   values: EventFormValues;
@@ -42,14 +51,31 @@ export type UseCrdEventFormResult = {
  */
 export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCrdEventFormResult {
   const { t } = useTranslation('crd-space');
-  const [values, setValues] = useState<EventFormValues>(() => ({ ...defaultValues, ...initialValues }));
+  const [values, setValues] = useState<EventFormValues>(() => ({ ...getDefaultValues(), ...initialValues }));
   const [errors, setErrors] = useState<EventFormErrors>({});
+
+  // Date-related fields share the validateDuration rule (wholeDay, startDate,
+  // endDate, durationMinutes), so editing one of them must also clear stale
+  // errors on the others — otherwise toggling "Whole day" leaves the previous
+  // "duration must be > 0" error visible until the user submits again.
+  const DURATION_FIELDS: ReadonlyArray<keyof EventFormValues> = ['wholeDay', 'startDate', 'endDate', 'durationMinutes'];
 
   const setField = <K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) => {
     setValues(prev => ({ ...prev, [key]: value }));
-    if (errors[key]) {
-      setErrors(prev => ({ ...prev, [key]: undefined }));
-    }
+    setErrors(prev => {
+      const next = { ...prev };
+      // Always clear the edited field's own error.
+      if (next[key]) next[key] = undefined;
+      // If the edited field participates in the cross-field duration rule,
+      // also clear errors on its siblings so the form doesn't carry stale
+      // duration/end-before-start messages from a previous validate() pass.
+      if (DURATION_FIELDS.includes(key)) {
+        for (const sibling of DURATION_FIELDS) {
+          if (sibling !== key && next[sibling]) next[sibling] = undefined;
+        }
+      }
+      return next;
+    });
   };
 
   const validate = (): boolean => {
@@ -87,7 +113,7 @@ export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCr
   };
 
   const clearForm = () => {
-    setValues(defaultValues);
+    setValues(getDefaultValues());
     setErrors({});
   };
 

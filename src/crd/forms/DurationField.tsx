@@ -1,7 +1,8 @@
+import type { Locale } from 'date-fns';
 import { addMinutes, format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
@@ -18,6 +19,9 @@ type DurationFieldProps = {
   error?: string;
   className?: string;
   ariaLabel?: string;
+  /** date-fns Locale used to format the "ends at HH:mm" caption. Resolved
+   *  by the connector via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
 };
 
 const DEFAULT_OPTIONS_MINUTES = [15, 30, 45, 60, 90, 120, 180, 240, 480];
@@ -38,9 +42,9 @@ export function DurationField({
   error,
   className,
   ariaLabel,
+  locale = enUS,
 }: DurationFieldProps) {
-  const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveDateFnsLocale(i18n.language);
+  const { t } = useTranslation('crd-space');
   const id = useId();
   const hasError = Boolean(error);
 

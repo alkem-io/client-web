@@ -1,4 +1,6 @@
+import type { Locale } from 'date-fns';
 import { isSameDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { Loader2 } from 'lucide-react';
 import { type ReactNode, useId } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +43,9 @@ type EventFormProps = {
   typeOptions: EventTypeOption[];
   /** Optional left-of-Save footer actions (e.g., Back, Delete, Cancel). */
   footerActionsLeft?: ReactNode;
+  /** date-fns Locale forwarded to nested DateField + DurationField. Resolved
+   *  by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
 };
 
 /** Controlled presentational form. Layout matches spec FR-020; responsive
@@ -54,13 +59,12 @@ export function EventForm({
   isSubspace,
   typeOptions,
   footerActionsLeft,
+  locale = enUS,
 }: EventFormProps) {
   const { t } = useTranslation('crd-space');
   const displayNameId = useId();
   const typeId = useId();
-  const descriptionId = useId();
   const locationId = useId();
-  const tagsId = useId();
   const wholeDayId = useId();
   const visibleOnParentId = useId();
 
@@ -128,6 +132,7 @@ export function EventForm({
           value={values.startDate}
           onChange={next => onChange('startDate', next)}
           disabled={isSubmitting}
+          locale={locale}
         />
         <TimeField
           label={t('calendar.fields.startTime')}
@@ -142,6 +147,7 @@ export function EventForm({
           minDate={values.startDate}
           disabled={isSubmitting}
           error={errors.endDate}
+          locale={locale}
         />
         {sameDay ? (
           <DurationField
@@ -151,13 +157,18 @@ export function EventForm({
             onChange={next => onChange('durationMinutes', next)}
             disabled={timeFieldsDisabled}
             error={errors.durationMinutes}
+            locale={locale}
           />
         ) : (
           <TimeField
             label={t('calendar.fields.endTime')}
             value={values.endDate}
             onChange={next => onChange('endDate', next)}
-            minTime={values.startDate}
+            // Native <input type="time"> only enforces `min` against HH:mm —
+            // it has no calendar-day awareness. Applying minTime when the
+            // dates differ would (incorrectly) reject valid overnight ranges
+            // like 18:00 → 09:00 next-day. Only constrain the end time when
+            // both fields point at the same calendar day.
             disabled={timeFieldsDisabled}
             error={errors.endDate}
           />
@@ -179,18 +190,20 @@ export function EventForm({
         />
       </div>
 
-      {/* Row 3: description (markdown) */}
+      {/* Row 3: description (markdown).
+          MarkdownEditor wraps a TipTap editor whose actual focusable element
+          isn't a vanilla <input>, so htmlFor on a sibling <label> wouldn't
+          associate with it. Use the visible heading + the editor's own
+          `placeholder` (which it forwards as the inner `aria-label`) to give
+          assistive tech a stable accessible name. */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={descriptionId} className="text-sm font-medium">
-          {t('calendar.fields.description')}
-        </label>
-        <div id={descriptionId}>
-          <MarkdownEditor
-            value={values.description}
-            onChange={next => onChange('description', next)}
-            disabled={isSubmitting}
-          />
-        </div>
+        <span className="text-sm font-medium">{t('calendar.fields.description')}</span>
+        <MarkdownEditor
+          value={values.description}
+          onChange={next => onChange('description', next)}
+          disabled={isSubmitting}
+          placeholder={t('calendar.fields.description')}
+        />
         {errors.description && <span className="text-xs text-destructive">{errors.description}</span>}
       </div>
 
@@ -208,13 +221,17 @@ export function EventForm({
             aria-label={t('calendar.fields.location')}
           />
         </div>
+        {/* TagsInput renders its <input> through a click-to-focus wrapper, so
+            (like MarkdownEditor) the <label htmlFor=...> link wouldn't reach
+            the actual control. Pass the label text via `placeholder` — the
+            component forwards it as the inner input's persistent aria-label. */}
         <div className="flex flex-col gap-1.5">
-          <label htmlFor={tagsId} className="text-sm font-medium">
-            {t('calendar.fields.tags')}
-          </label>
-          <div id={tagsId}>
-            <TagsInput value={values.tags} onChange={next => onChange('tags', next)} />
-          </div>
+          <span className="text-sm font-medium">{t('calendar.fields.tags')}</span>
+          <TagsInput
+            value={values.tags}
+            onChange={next => onChange('tags', next)}
+            placeholder={t('calendar.fields.tags')}
+          />
         </div>
       </div>
 

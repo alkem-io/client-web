@@ -1,10 +1,11 @@
 import type { Locale } from 'date-fns';
-import { addDays, addMinutes, format, isBefore, isSameDay, startOfDay } from 'date-fns';
+import { addDays, format, isBefore, isSameDay, startOfDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { endDateFromDuration } from '@/crd/lib/eventDuration';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Calendar } from '@/crd/primitives/calendar';
@@ -36,6 +37,9 @@ type EventsCalendarViewProps = {
   emptyMessage?: string;
   /** Right-pane top bar slot (typically the ICS export button). */
   exportSlot?: ReactNode;
+  /** date-fns Locale for the calendar grid + tooltip + list rows. Resolved
+   *  by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
 };
 
 const DESKTOP_BREAKPOINT = '(min-width: 768px)';
@@ -62,7 +66,10 @@ function buildBuckets(events: EventListItem[]): EventBuckets {
   for (const event of events) {
     if (!event.startDate) continue;
     const startDay = startOfDay(event.startDate);
-    const endInstant = addMinutes(event.startDate, event.durationMinutes);
+    // endDateFromDuration accounts for both durationDays AND durationMinutes;
+    // multi-day all-day events (durationDays > 0, durationMinutes = 0) and
+    // multi-day timed events both expand correctly into the calendar grid.
+    const endInstant = endDateFromDuration(event.startDate, event.durationMinutes, event.durationDays);
     const endDay = startOfDay(endInstant);
 
     const startKey = toDayKey(startDay);
@@ -153,9 +160,9 @@ export function EventsCalendarView({
   loading,
   emptyMessage,
   exportSlot,
+  locale = enUS,
 }: EventsCalendarViewProps) {
-  const { t, i18n } = useTranslation('crd-space');
-  const locale = resolveDateFnsLocale(i18n.language);
+  const { t } = useTranslation('crd-space');
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
   const [mobileCalendarOpen, setMobileCalendarOpen] = useState(false);
 
@@ -216,6 +223,22 @@ export function EventsCalendarView({
       labels={{
         labelNext: () => t('calendar.calendarA11y.nextMonth'),
         labelPrevious: () => t('calendar.calendarA11y.previousMonth'),
+        // Augment the day button's accessible name with the count of events
+        // on that day. Sighted-hover users get the full event list via the
+        // Tooltip; keyboard / screen-reader users get the count + count of
+        // events in the day's accessible name without needing the visual
+        // tooltip to fire on focus (which Radix Tooltip doesn't do for a
+        // wrapper-span trigger nested inside RDP's own day button).
+        labelDay: (day, _modifiers, options) => {
+          const base = format(day, 'PPPP', { locale: options?.locale ?? locale });
+          const dayKey = toDayKey(day);
+          const dayEvents = buckets.startByDay.get(dayKey) ?? [];
+          if (dayEvents.length === 0) return base;
+          return t('calendar.calendarA11y.dayWithEvents', {
+            date: base,
+            count: dayEvents.length,
+          });
+        },
       }}
     />
   );
@@ -242,6 +265,7 @@ export function EventsCalendarView({
                   event={event}
                   highlighted={highlightedDay ? isSameDay(event.startDate ?? new Date(0), highlightedDay) : false}
                   onClick={() => onEventClick(event)}
+                  locale={locale}
                   ref={node => {
                     if (node) cardRefs.current.set(event.id, node);
                     else cardRefs.current.delete(event.id);
@@ -259,6 +283,7 @@ export function EventsCalendarView({
                   event={event}
                   highlighted={highlightedDay ? isSameDay(event.startDate ?? new Date(0), highlightedDay) : false}
                   onClick={() => onEventClick(event)}
+                  locale={locale}
                   ref={node => {
                     if (node) cardRefs.current.set(event.id, node);
                     else cardRefs.current.delete(event.id);

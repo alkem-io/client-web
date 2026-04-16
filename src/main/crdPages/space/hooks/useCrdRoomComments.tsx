@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
@@ -42,6 +43,7 @@ export function useCrdRoomComments({
   room,
   skipSubscription = false,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
+  const { t } = useTranslation('crd-space');
   const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const isSubscribed = useSubscribeOnRoomEvents(roomId, skipSubscription);
@@ -66,7 +68,7 @@ export function useCrdRoomComments({
   const currentUser = userModel
     ? {
         id: userModel.id,
-        name: userModel.profile?.displayName ?? 'Unknown user',
+        name: userModel.profile?.displayName ?? t('comments.unknownUser'),
         avatarUrl: userModel.profile?.avatar?.uri,
       }
     : undefined;

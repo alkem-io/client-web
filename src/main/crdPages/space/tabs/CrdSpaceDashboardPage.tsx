@@ -9,6 +9,7 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
+import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
@@ -19,6 +20,7 @@ export default function CrdSpaceDashboardPage() {
     useCrdSpaceDashboard();
   const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar();
   const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
+  const locale = useCrdSpaceLocale();
   const [createOpen, setCreateOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
@@ -58,6 +60,7 @@ export default function CrdSpaceDashboardPage() {
             onShowCalendar={openCalendar}
             onAddEvent={canCreateEvents ? openCreateEvent : undefined}
             onEventClick={openEventDetail}
+            locale={locale}
           />,
           sidebarContainer
         )}

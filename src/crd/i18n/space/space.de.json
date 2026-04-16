@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Hauptbereich", "homeSpaceSettings": "Einstellungen des Hauptbereichs" },
+  "banner": {
+    "homeSpace": "Hauptbereich",
+    "homeSpaceSettings": "Einstellungen des Hauptbereichs"
+  },
   "tabs": {
     "dashboard": "Übersicht",
     "community": "Gemeinschaft",
@@ -87,7 +90,8 @@
       "MEETING": "Besprechung",
       "MILESTONE": "Meilenstein",
       "OTHER": "Sonstiges",
-      "TRAINING": "Schulung"
+      "TRAINING": "Schulung",
+      "unknown": "Veranstaltung"
     },
     "addToCalendar": {
       "trigger": "Zum Kalender hinzufügen",
@@ -100,7 +104,9 @@
     "calendarA11y": {
       "previousMonth": "Vorheriger Monat",
       "nextMonth": "Nächster Monat",
-      "pickDate": "Datum wählen"
+      "pickDate": "Datum wählen",
+      "dayWithEvents_one": "{{date}}, 1 Veranstaltung",
+      "dayWithEvents_other": "{{date}}, {{count}} Veranstaltungen"
     },
     "tooltip": {
       "wholeDayPrefix": "Ganztägig"
@@ -304,7 +310,8 @@
     "count": "{{count}} Kommentare",
     "count_one": "1 Kommentar",
     "loading": "Kommentare werden geladen...",
-    "empty": "Noch keine Kommentare"
+    "empty": "Noch keine Kommentare",
+    "unknownUser": "Unbekannter Benutzer"
   },
   "dialogs": {
     "cancel": "Abbrechen"

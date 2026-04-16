@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Hoofdruimte", "homeSpaceSettings": "Instellingen hoofdruimte" },
+  "banner": {
+    "homeSpace": "Hoofdruimte",
+    "homeSpaceSettings": "Instellingen hoofdruimte"
+  },
   "tabs": {
     "dashboard": "Dashboard",
     "community": "Community",
@@ -87,7 +90,8 @@
       "MEETING": "Vergadering",
       "MILESTONE": "Mijlpaal",
       "OTHER": "Overig",
-      "TRAINING": "Training"
+      "TRAINING": "Training",
+      "unknown": "Evenement"
     },
     "addToCalendar": {
       "trigger": "Toevoegen aan kalender",
@@ -100,7 +104,9 @@
     "calendarA11y": {
       "previousMonth": "Vorige maand",
       "nextMonth": "Volgende maand",
-      "pickDate": "Kies een datum"
+      "pickDate": "Kies een datum",
+      "dayWithEvents_one": "{{date}}, 1 evenement",
+      "dayWithEvents_other": "{{date}}, {{count}} evenementen"
     },
     "tooltip": {
       "wholeDayPrefix": "Hele dag"
@@ -304,7 +310,8 @@
     "count": "{{count}} opmerkingen",
     "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
-    "empty": "Nog geen opmerkingen"
+    "empty": "Nog geen opmerkingen",
+    "unknownUser": "Onbekende gebruiker"
   },
   "dialogs": {
     "cancel": "Annuleren"

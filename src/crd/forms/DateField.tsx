@@ -1,8 +1,8 @@
+import type { Locale } from 'date-fns';
 import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { useId, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Calendar } from '@/crd/primitives/calendar';
@@ -21,6 +21,14 @@ type DateFieldProps = {
   className?: string;
   /** Shown as aria-label even when no visible label is provided. */
   ariaLabel?: string;
+  /**
+   * date-fns Locale used for formatting the trigger label and the calendar
+   * popover. The consumer (a connector) resolves it from the user's selected
+   * UI language via `useCrdSpaceLocale()`. CRD components must not read
+   * `i18n.language` themselves. Defaults to enUS to keep the standalone
+   * preview app and component tests working without explicit threading.
+   */
+  locale?: Locale;
 };
 
 /** Popover-based date picker. Controlled via `value`/`onChange`. */
@@ -36,9 +44,8 @@ export function DateField({
   required,
   className,
   ariaLabel,
+  locale = enUS,
 }: DateFieldProps) {
-  const { i18n } = useTranslation('crd-space');
-  const locale = resolveDateFnsLocale(i18n.language);
   const [open, setOpen] = useState(false);
   const id = useId();
 
