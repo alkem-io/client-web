@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Hoofdruimte", "homeSpaceSettings": "Instellingen hoofdruimte" },
+  "banner": {
+    "homeSpace": "Hoofdruimte",
+    "homeSpaceSettings": "Instellingen hoofdruimte"
+  },
   "tabs": {
     "dashboard": "Dashboard",
     "community": "Community",
@@ -27,7 +30,104 @@
     "communityGuidelines": "Communityrichtlijnen",
     "postIndex": "Berichtenindex",
     "readMore": "Lees meer",
-    "addEvent": "Evenement toevoegen"
+    "addEvent": "Evenement toevoegen",
+    "eventDateRelative": {
+      "today": "Vandaag",
+      "tomorrow": "Morgen",
+      "in_days_one": "over 1 dag",
+      "in_days_other": "over {{count}} dagen"
+    }
+  },
+  "calendar": {
+    "title": "Evenementen",
+    "addEvent": "Evenement toevoegen",
+    "editEvent": "Evenement bewerken",
+    "eventDetail": "Evenement: {{title}}",
+    "noUpcomingEvents": "Geen aankomende evenementen",
+    "pastEvents": "Eerdere evenementen",
+    "back": "Terug",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "edit": "Bewerken",
+    "deleteConfirm": {
+      "title": "Evenement verwijderen",
+      "body": "Weet je zeker dat je \"{{title}}\" uit deze {{entity}} wilt verwijderen?",
+      "confirm": "Verwijderen",
+      "cancel": "Annuleren"
+    },
+    "fields": {
+      "displayName": "Titel",
+      "type": "Type",
+      "date": "Datum",
+      "startTime": "Starttijd",
+      "endTime": "Eindtijd",
+      "duration": "Duur",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} uur",
+        "hours_other": "{{count}} uur",
+        "hoursMinutes": "{{hours}}u {{minutes}}min"
+      },
+      "wholeDay": "Hele dag",
+      "description": "Beschrijving",
+      "location": "Locatie",
+      "tags": "Labels",
+      "visibleOnParentCalendar": "Zichtbaar op bovenliggende kalender",
+      "endsAt": "eindigt om {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Titel is vereist",
+      "typeRequired": "Type is vereist",
+      "invalidDuration": "Ongeldige duur",
+      "endBeforeStart": "Einde moet na begin liggen",
+      "descriptionTooLong": "Beschrijving is te lang"
+    },
+    "type": {
+      "DEADLINE": "Deadline",
+      "EVENT": "Evenement",
+      "MEETING": "Vergadering",
+      "MILESTONE": "Mijlpaal",
+      "OTHER": "Overig",
+      "TRAINING": "Training",
+      "unknown": "Evenement"
+    },
+    "addToCalendar": {
+      "trigger": "Toevoegen aan kalender",
+      "google": "Google Agenda",
+      "outlook": "Outlook-agenda",
+      "ics": "ICS downloaden",
+      "exportAll": "Aankomende evenementen exporteren naar ICS",
+      "loading": "Laden…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Vorige maand",
+      "nextMonth": "Volgende maand",
+      "pickDate": "Kies een datum",
+      "dayWithEvents_one": "{{date}}, 1 evenement",
+      "dayWithEvents_other": "{{date}}, {{count}} evenementen"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Hele dag"
+    },
+    "details": {
+      "comments": "Reacties",
+      "references": "Referenties",
+      "tags": "Labels",
+      "loadingEvent": "Evenement laden…",
+      "subspaceLabel": "in {{name}}",
+      "createdBy": "door {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Space",
+      "subspace": "Subspace"
+    },
+    "notFound": {
+      "title": "Evenement niet gevonden",
+      "body": "Dit evenement bestaat niet meer of is verwijderd.",
+      "backToList": "Terug naar evenementen"
+    }
   },
   "feed": {
     "addPost": "Bericht toevoegen",
@@ -210,7 +310,8 @@
     "count": "{{count}} opmerkingen",
     "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
-    "empty": "Nog geen opmerkingen"
+    "empty": "Nog geen opmerkingen",
+    "unknownUser": "Onbekende gebruiker"
   },
   "dialogs": {
     "cancel": "Annuleren"
