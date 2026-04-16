@@ -8,8 +8,7 @@ import { Button } from '@/crd/primitives/button';
 import { Calendar } from '@/crd/primitives/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
 
-type DateFieldProps = {
-  label?: string;
+type DateFieldBaseProps = {
   value: Date | undefined;
   onChange: (value: Date | undefined) => void;
   minDate?: Date;
@@ -19,8 +18,6 @@ type DateFieldProps = {
   error?: string;
   required?: boolean;
   className?: string;
-  /** Shown as aria-label even when no visible label is provided. */
-  ariaLabel?: string;
   /**
    * date-fns Locale used for formatting the trigger label and the calendar
    * popover. The consumer (a connector) resolves it from the user's selected
@@ -30,6 +27,15 @@ type DateFieldProps = {
    */
   locale?: Locale;
 };
+
+/**
+ * Discriminated union: every DateField MUST receive either a visible `label`
+ * or an explicit `ariaLabel`, so the trigger always has a persistent
+ * accessible name (WCAG 2.1 AA — see CRD CLAUDE.md "Form inputs").
+ */
+type DateFieldProps =
+  | (DateFieldBaseProps & { label: string; ariaLabel?: string })
+  | (DateFieldBaseProps & { label?: undefined; ariaLabel: string });
 
 /** Popover-based date picker. Controlled via `value`/`onChange`. */
 export function DateField({
@@ -49,8 +55,9 @@ export function DateField({
   const [open, setOpen] = useState(false);
   const id = useId();
 
-  const labelText = label ?? ariaLabel;
+  const labelText = ariaLabel ?? label;
   const hasError = Boolean(error);
+  const errorId = hasError ? `${id}-error` : undefined;
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
@@ -69,6 +76,7 @@ export function DateField({
             disabled={disabled}
             aria-label={labelText}
             aria-invalid={hasError || undefined}
+            aria-describedby={errorId}
             className={cn(
               'w-full justify-start text-left font-normal',
               !value && 'text-muted-foreground',
@@ -93,7 +101,11 @@ export function DateField({
           />
         </PopoverContent>
       </Popover>
-      {hasError && <span className="text-xs text-destructive">{error}</span>}
+      {hasError && (
+        <span id={errorId} className="text-xs text-destructive">
+          {error}
+        </span>
+      )}
     </div>
   );
 }

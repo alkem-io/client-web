@@ -1,4 +1,4 @@
-import { isAfter, startOfDay } from 'date-fns';
+import { isBefore, startOfDay } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteEventConfirmation } from '@/crd/components/space/timeline/DeleteEventConfirmation';
@@ -57,9 +57,11 @@ export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDi
   const listItems = events.map(mapCalendarEventInfoToListItem);
 
   // Future events only — drives the batch ICS export button visibility and
-  // payload (FR-032).
+  // payload (FR-032). `!isBefore(item.startDate, startOfToday)` keeps events
+  // starting exactly at midnight today; `isAfter(..., startOfToday)` would
+  // drop them because it's strict.
   const startOfToday = startOfDay(new Date());
-  const futureListItems = listItems.filter(item => item.startDate && isAfter(item.startDate, startOfToday));
+  const futureListItems = listItems.filter(item => item.startDate && !isBefore(item.startDate, startOfToday));
 
   const [editingEventId, setEditingEventId] = useState<string | undefined>(undefined);
 

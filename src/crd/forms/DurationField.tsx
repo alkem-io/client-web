@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 
-type DurationFieldProps = {
-  label?: string;
+type DurationFieldBaseProps = {
   /** Anchor used to render the "ends at HH:mm" caption. */
   startDate: Date | undefined;
   /** Duration in minutes. */
@@ -18,11 +17,19 @@ type DurationFieldProps = {
   disabled?: boolean;
   error?: string;
   className?: string;
-  ariaLabel?: string;
   /** date-fns Locale used to format the "ends at HH:mm" caption. Resolved
    *  by the connector via `useCrdSpaceLocale()`. Defaults to enUS. */
   locale?: Locale;
 };
+
+/**
+ * Discriminated union: every DurationField MUST receive either a visible
+ * `label` or an explicit `ariaLabel`, so the trigger always has a persistent
+ * accessible name (WCAG 2.1 AA — see CRD CLAUDE.md "Form inputs").
+ */
+type DurationFieldProps =
+  | (DurationFieldBaseProps & { label: string; ariaLabel?: string })
+  | (DurationFieldBaseProps & { label?: undefined; ariaLabel: string });
 
 const DEFAULT_OPTIONS_MINUTES = [15, 30, 45, 60, 90, 120, 180, 240, 480];
 
@@ -47,6 +54,8 @@ export function DurationField({
   const { t } = useTranslation('crd-space');
   const id = useId();
   const hasError = Boolean(error);
+  const errorId = hasError ? `${id}-error` : undefined;
+  const accessibleName = ariaLabel ?? label;
 
   const formatDuration = (minutes: number): string => {
     if (minutes < 60) {
@@ -86,8 +95,9 @@ export function DurationField({
       >
         <SelectTrigger
           id={id}
-          aria-label={label ?? ariaLabel}
+          aria-label={accessibleName}
           aria-invalid={hasError || undefined}
+          aria-describedby={errorId}
           className={cn(hasError && 'border-destructive')}
         >
           <SelectValue placeholder={label ?? ''} />
@@ -101,7 +111,11 @@ export function DurationField({
         </SelectContent>
       </Select>
       {endsAtCaption && !hasError && <span className="text-xs text-muted-foreground">{endsAtCaption}</span>}
-      {hasError && <span className="text-xs text-destructive">{error}</span>}
+      {hasError && (
+        <span id={errorId} className="text-xs text-destructive">
+          {error}
+        </span>
+      )}
     </div>
   );
 }
