@@ -30,7 +30,104 @@
     "communityGuidelines": "Community Guidelines",
     "postIndex": "Post Index",
     "readMore": "Read more",
-    "addEvent": "Add event"
+    "addEvent": "Add event",
+    "eventDateRelative": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "in_days_one": "in 1 day",
+      "in_days_other": "in {{count}} days"
+    }
+  },
+  "calendar": {
+    "title": "Events",
+    "addEvent": "Add event",
+    "editEvent": "Edit event",
+    "eventDetail": "Event: {{title}}",
+    "noUpcomingEvents": "No upcoming events",
+    "pastEvents": "Past events",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "deleteConfirm": {
+      "title": "Delete event",
+      "body": "Are you sure you want to delete \"{{title}}\" from this {{entity}}?",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "fields": {
+      "displayName": "Title",
+      "type": "Type",
+      "date": "Date",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "duration": "Duration",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} hour",
+        "hours_other": "{{count}} hours",
+        "hoursMinutes": "{{hours}}h {{minutes}}min"
+      },
+      "wholeDay": "Whole day",
+      "description": "Description",
+      "location": "Location",
+      "tags": "Tags",
+      "visibleOnParentCalendar": "Visible on parent calendar",
+      "endsAt": "ends at {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Title is required",
+      "typeRequired": "Type is required",
+      "invalidDuration": "Invalid duration",
+      "endBeforeStart": "End must be after start",
+      "descriptionTooLong": "Description is too long"
+    },
+    "type": {
+      "DEADLINE": "Deadline",
+      "EVENT": "Event",
+      "MEETING": "Meeting",
+      "MILESTONE": "Milestone",
+      "OTHER": "Other",
+      "TRAINING": "Training",
+      "unknown": "Event"
+    },
+    "addToCalendar": {
+      "trigger": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook Calendar",
+      "ics": "Download ICS",
+      "exportAll": "Export upcoming events to ICS",
+      "loading": "Loading…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "pickDate": "Pick a date",
+      "dayWithEvents_one": "{{date}}, 1 event",
+      "dayWithEvents_other": "{{date}}, {{count}} events"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Whole day"
+    },
+    "details": {
+      "comments": "Comments",
+      "references": "References",
+      "tags": "Tags",
+      "loadingEvent": "Loading event…",
+      "subspaceLabel": "in {{name}}",
+      "createdBy": "by {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Space",
+      "subspace": "Subspace"
+    },
+    "notFound": {
+      "title": "Event not found",
+      "body": "This event no longer exists or has been removed.",
+      "backToList": "Back to events"
+    }
   },
   "feed": {
     "addPost": "Add Post",
@@ -218,7 +315,8 @@
     "count": "{{count}} comments",
     "count_one": "1 comment",
     "loading": "Loading comments...",
-    "empty": "No comments yet"
+    "empty": "No comments yet",
+    "unknownUser": "Unknown user"
   },
   "dialogs": {
     "cancel": "Cancel"
