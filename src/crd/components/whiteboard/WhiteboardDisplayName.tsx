@@ -50,7 +50,7 @@ export function WhiteboardDisplayName({
   };
 
   if (readOnly) {
-    return <h2 className="text-lg font-semibold truncate">{displayName}</h2>;
+    return <h2 className="text-subsection-title truncate">{displayName}</h2>;
   }
 
   if (editing) {
@@ -92,7 +92,7 @@ export function WhiteboardDisplayName({
 
   return (
     <div className="flex items-center gap-1 min-w-0">
-      <h2 className="text-lg font-semibold truncate">{displayName}</h2>
+      <h2 className="text-subsection-title truncate">{displayName}</h2>
       <Button
         variant="ghost"
         size="icon"

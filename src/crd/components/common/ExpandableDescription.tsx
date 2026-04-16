@@ -35,14 +35,12 @@ export function ExpandableDescription({
 
   return (
     <div className={cn('relative', className)}>
-      <p className={cn('text-sm text-muted-foreground leading-relaxed', !isExpanded && lineClampClasses[maxLines])}>
-        {description}
-      </p>
+      <p className={cn('text-body text-muted-foreground', !isExpanded && lineClampClasses[maxLines])}>{description}</p>
       <div className="flex items-center gap-2 mt-2">
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          className="text-body-emphasis text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           aria-expanded={isExpanded}
         >
           {isExpanded ? t('callout.collapse') : t('callout.expand')}
@@ -51,7 +49,7 @@ export function ExpandableDescription({
           (editHref ? (
             <a
               href={editHref}
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex items-center gap-1 text-body text-muted-foreground hover:text-foreground"
               aria-label={t('forms.descriptionLabel')}
             >
               <Pencil aria-hidden="true" className="size-3" />

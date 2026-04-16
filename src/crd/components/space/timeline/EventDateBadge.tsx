@@ -73,7 +73,7 @@ export function EventDateBadge({
         {dayLabel}
       </span>
       {showRangeLabel && (
-        <span className="mt-0.5 text-[10px] font-normal normal-case" aria-hidden={true}>
+        <span className="mt-0.5 text-badge font-normal normal-case" aria-hidden={true}>
           → {format(endDate, 'MMM d', { locale })}
         </span>
       )}

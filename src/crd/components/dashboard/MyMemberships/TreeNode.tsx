@@ -55,7 +55,7 @@ function NodeAvatar({ item }: { item: MembershipItem }) {
   return (
     <Avatar className="w-8 h-8 shrink-0 rounded-md">
       {item.image ? <AvatarImage src={item.image} alt="" className="rounded-md" /> : null}
-      <AvatarFallback className={cn('rounded-md text-[10px]', item.color && 'text-white')} color={item.color}>
+      <AvatarFallback className={cn('rounded-md text-badge', item.color && 'text-white')} color={item.color}>
         {item.initials}
       </AvatarFallback>
     </Avatar>

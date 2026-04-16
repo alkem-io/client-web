@@ -69,28 +69,28 @@ export function PostResultCard({ post, onClick }: PostResultCardProps) {
         <div className="flex items-center gap-2">
           <Avatar className="size-[22px]">
             <AvatarImage src={post.author.avatarUrl} alt="" />
-            <AvatarFallback className="text-[9px] font-semibold bg-secondary text-secondary-foreground">
+            <AvatarFallback className="text-badge bg-secondary text-secondary-foreground">
               {post.author.name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="text-[12px] font-medium text-card-foreground truncate">{post.author.name}</span>
+          <span className="text-caption font-medium text-card-foreground truncate">{post.author.name}</span>
         </div>
 
         {/* Title */}
-        <h4 className="line-clamp-2 text-sm font-semibold text-card-foreground group-hover:text-primary transition-colors duration-200">
+        <h4 className="line-clamp-2 text-card-title text-card-foreground group-hover:text-primary transition-colors duration-200">
           {post.title}
         </h4>
 
         {/* Snippet */}
-        <p className="line-clamp-2 text-[12px] text-muted-foreground flex-1">{post.snippet}</p>
+        <p className="line-clamp-2 text-caption text-muted-foreground flex-1">{post.snippet}</p>
 
         {/* Meta row */}
         <div className="border-t border-border pt-2 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
+          <span className="inline-flex items-center gap-1 text-badge bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
             <PostTypeIcon type={post.type} />
             {t(`search.postTypes.${post.type}`)}
           </span>
-          <span className="text-[10px] text-muted-foreground">{post.date}</span>
+          <span className="text-badge text-muted-foreground">{post.date}</span>
         </div>
 
         {/* Space context */}

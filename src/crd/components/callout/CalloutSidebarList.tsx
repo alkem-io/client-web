@@ -46,7 +46,7 @@ export function CalloutSidebarList({ items, onItemClick, className }: CalloutSid
             placeholder={t('members.search')}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full pl-9 pr-3 py-1.5 border border-border rounded-md bg-background text-body focus:outline-none focus:ring-2 focus:ring-primary/20"
             aria-label={t('members.search')}
           />
         </div>
@@ -64,7 +64,7 @@ export function CalloutSidebarList({ items, onItemClick, className }: CalloutSid
               onClick={() => onItemClick?.(item.id)}
             >
               <TypeIcon className="w-3.5 h-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
-              <span className="line-clamp-1 text-sm font-medium text-foreground">{item.title}</span>
+              <span className="line-clamp-1 text-body-emphasis text-foreground">{item.title}</span>
             </button>
           );
         })}

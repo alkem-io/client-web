@@ -36,7 +36,7 @@ export function ContributionFormLayout({
     <div className={cn('space-y-4 p-4 border border-border rounded-lg bg-card', className)}>
       {/* Title */}
       <div className="space-y-1">
-        <label htmlFor="contribution-title" className="text-xs text-muted-foreground">
+        <label htmlFor="contribution-title" className="text-caption text-muted-foreground">
           {t('forms.titleLabel')}
         </label>
         <input
@@ -50,13 +50,13 @@ export function ContributionFormLayout({
             title.error ? 'border-destructive' : 'border-border'
           )}
         />
-        {title.error && <p className="text-xs text-destructive">{title.error}</p>}
+        {title.error && <p className="text-caption text-destructive">{title.error}</p>}
       </div>
 
       {/* Description (Post, Memo) */}
       {(type === 'post' || type === 'memo') && description && (
         <div className="space-y-1">
-          <label htmlFor="contribution-description" className="text-xs text-muted-foreground">
+          <label htmlFor="contribution-description" className="text-caption text-muted-foreground">
             {t('forms.descriptionLabel')}
           </label>
           {editorSlot ?? (
@@ -75,7 +75,7 @@ export function ContributionFormLayout({
       {type === 'link' && linkUrl && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label htmlFor="contribution-link-url" className="text-xs text-muted-foreground">
+            <label htmlFor="contribution-link-url" className="text-caption text-muted-foreground">
               {t('forms.linkUrl')}
             </label>
             <input
@@ -89,11 +89,11 @@ export function ContributionFormLayout({
                 linkUrl.error ? 'border-destructive' : 'border-border'
               )}
             />
-            {linkUrl.error && <p className="text-xs text-destructive">{linkUrl.error}</p>}
+            {linkUrl.error && <p className="text-caption text-destructive">{linkUrl.error}</p>}
           </div>
           {linkDescription && (
             <div className="space-y-1">
-              <label htmlFor="contribution-link-description" className="text-xs text-muted-foreground">
+              <label htmlFor="contribution-link-description" className="text-caption text-muted-foreground">
                 {t('forms.descriptionLabel')}
               </label>
               <textarea
@@ -111,7 +111,7 @@ export function ContributionFormLayout({
       {/* Tags (Post) */}
       {type === 'post' && tags && (
         <div className="space-y-1">
-          <label htmlFor="contribution-tags" className="text-xs text-muted-foreground">
+          <label htmlFor="contribution-tags" className="text-caption text-muted-foreground">
             {t('forms.tagsLabel')}
           </label>
           <input

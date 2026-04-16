@@ -19,9 +19,7 @@ export function ContentBlock({ title, accent = false, actions, children, classNa
     >
       {(title || actions) && (
         <div className="flex items-center justify-between mb-3">
-          {title && (
-            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
-          )}
+          {title && <h3 className="text-label uppercase text-muted-foreground">{title}</h3>}
           {actions && <div className="flex items-center gap-1">{actions}</div>}
         </div>
       )}

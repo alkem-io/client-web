@@ -62,7 +62,7 @@ export function DateField({
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label && (
-        <label htmlFor={id} className="text-sm font-medium">
+        <label htmlFor={id} className="text-body-emphasis">
           {label}
           {required && <span className="ml-0.5 text-destructive">*</span>}
         </label>
@@ -102,7 +102,7 @@ export function DateField({
         </PopoverContent>
       </Popover>
       {hasError && (
-        <span id={errorId} className="text-xs text-destructive">
+        <span id={errorId} className="text-caption text-destructive">
           {error}
         </span>
       )}

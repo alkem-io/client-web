@@ -70,7 +70,7 @@ export function UserMenu({
           </Avatar>
           <Badge
             variant="secondary"
-            className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-[9px] font-bold leading-[14px]"
+            className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge leading-[14px]"
           >
             {t('header.beta')}
           </Badge>
@@ -80,10 +80,8 @@ export function UserMenu({
         {/* User identity */}
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-semibold">{user.name}</span>
-            {user.role && (
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{user.role}</span>
-            )}
+            <span className="text-card-title">{user.name}</span>
+            {user.role && <span className="text-label uppercase text-muted-foreground">{user.role}</span>}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -114,7 +112,7 @@ export function UserMenu({
             <CircleEllipsis aria-hidden="true" className="mr-2 h-4 w-4" />
             <span>{t('header.pendingMemberships')}</span>
             {typeof pendingInvitationsCount === 'number' && pendingInvitationsCount > 0 && (
-              <Badge className="ml-auto text-[10px] px-1.5 h-[18px] bg-primary text-primary-foreground rounded-full">
+              <Badge className="ml-auto text-badge px-1.5 h-[18px] bg-primary text-primary-foreground rounded-full">
                 {pendingInvitationsCount}
               </Badge>
             )}

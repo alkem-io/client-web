@@ -41,7 +41,7 @@ export function TimeField({ label, value, onChange, minTime, disabled, error, cl
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label && (
-        <label htmlFor={id} className="text-sm font-medium">
+        <label htmlFor={id} className="text-body-emphasis">
           {label}
         </label>
       )}
@@ -61,7 +61,7 @@ export function TimeField({ label, value, onChange, minTime, disabled, error, cl
           hasError && 'border-destructive'
         )}
       />
-      {hasError && <span className="text-xs text-destructive">{error}</span>}
+      {hasError && <span className="text-caption text-destructive">{error}</span>}
     </div>
   );
 }

@@ -26,9 +26,7 @@ export function CalloutFramingSelector({ value, onChange, disabled, className }:
 
   return (
     <div className={cn('space-y-2', className)}>
-      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-        {t('forms.framingType')}
-      </span>
+      <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2" role="radiogroup">
         {framingOptions.map(option => (
           <label

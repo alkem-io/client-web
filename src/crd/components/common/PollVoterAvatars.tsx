@@ -38,7 +38,7 @@ export function PollVoterAvatars({ voters, maxVisible = 10, className }: PollVot
           <TooltipTrigger asChild={true}>
             <Avatar className="size-5 border border-background cursor-default">
               {voter.avatarUrl && <AvatarImage src={voter.avatarUrl} alt={voter.name} />}
-              <AvatarFallback className="text-[9px]">{voter.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="text-badge">{voter.name.charAt(0)}</AvatarFallback>
             </Avatar>
           </TooltipTrigger>
           <TooltipContent>{voter.name}</TooltipContent>
@@ -47,7 +47,7 @@ export function PollVoterAvatars({ voters, maxVisible = 10, className }: PollVot
       {remaining > 0 && (
         <Tooltip>
           <TooltipTrigger asChild={true}>
-            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground border border-background cursor-default !ml-[5px]">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-badge text-muted-foreground border border-background cursor-default !ml-[5px]">
               +{remaining}
             </span>
           </TooltipTrigger>

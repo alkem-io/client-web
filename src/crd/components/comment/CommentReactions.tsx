@@ -26,7 +26,7 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           key={reaction.emoji}
           type="button"
           className={[
-            'inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs transition-colors',
+            'inline-flex items-center gap-1 rounded-full border px-2 py-1 text-caption transition-colors',
             reaction.hasReacted
               ? 'border-primary/50 bg-primary/10 text-primary'
               : 'border-border bg-background text-muted-foreground hover:bg-muted',
@@ -44,7 +44,7 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           <PopoverTrigger asChild={true}>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-border px-2 py-1 text-xs text-muted-foreground hover:bg-muted"
+              className="inline-flex items-center rounded-full border border-border px-2 py-1 text-caption text-muted-foreground hover:bg-muted"
               aria-label={t('comments.reactions.overflow', { count: hiddenReactions.length })}
             >
               {t('comments.reactions.overflow', { count: hiddenReactions.length })}
@@ -53,11 +53,11 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           <PopoverContent side="top" align="start" className="w-64 p-3">
             <div className="space-y-2">
               {hiddenReactions.map(reaction => (
-                <div key={reaction.emoji} className="rounded-md border border-border p-2 text-sm">
+                <div key={reaction.emoji} className="rounded-md border border-border p-2 text-body">
                   <div className="mb-1 font-medium">
                     {reaction.emoji} {reaction.count}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-caption text-muted-foreground">
                     {reaction.senders?.length
                       ? reaction.senders.map(sender => sender.name).join(', ')
                       : t('comments.reactions.add')}

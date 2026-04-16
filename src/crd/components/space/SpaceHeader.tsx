@@ -183,7 +183,7 @@ export function SpaceHeader({
                           style={{
                             background: 'color-mix(in srgb, var(--primary) 20%, transparent)',
                           }}
-                          className="text-xs text-primary-foreground"
+                          className="text-caption text-primary-foreground"
                         >
                           {avatar.initials}
                         </AvatarFallback>
@@ -191,7 +191,7 @@ export function SpaceHeader({
                     ))}
                     {extraCount > 0 && (
                       <div
-                        className="flex items-center justify-center w-10 h-10 rounded-full backdrop-blur-sm text-xs font-medium border-2 border-background text-primary-foreground"
+                        className="flex items-center justify-center w-10 h-10 rounded-full backdrop-blur-sm text-caption font-medium border-2 border-background text-primary-foreground"
                         style={{
                           background: 'color-mix(in srgb, var(--primary-foreground) 20%, transparent)',
                         }}

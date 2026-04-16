@@ -39,12 +39,12 @@ export function ActivityItem({
         </Avatar>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm leading-relaxed line-clamp-2">
+        <p className="text-body line-clamp-2">
           <span className="font-semibold">{userName}</span> <span className="text-muted-foreground">{actionText}</span>{' '}
           <span className="font-medium text-primary">{targetName}</span>
         </p>
         <div className="flex items-center gap-2 mt-1">
-          <time dateTime={rawDate} className="text-xs text-muted-foreground">
+          <time dateTime={rawDate} className="text-caption text-muted-foreground">
             {timestamp}
           </time>
         </div>

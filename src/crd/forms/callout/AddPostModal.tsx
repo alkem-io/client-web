@@ -94,9 +94,7 @@ export function AddPostModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b bg-background/50 backdrop-blur-sm z-10">
-          <DialogTitle className="text-lg font-semibold tracking-tight">
-            {submitLabel ?? t('forms.publish')}
-          </DialogTitle>
+          <DialogTitle className="text-subsection-title">{submitLabel ?? t('forms.publish')}</DialogTitle>
           <DialogClose
             className="rounded-full p-2 hover:bg-muted transition-colors"
             aria-label={t('contribution.close')}
@@ -124,7 +122,7 @@ export function AddPostModal({
               aria-describedby={title.error ? 'title-error' : undefined}
             />
             {title.error && (
-              <p id="title-error" className="text-xs text-destructive">
+              <p id="title-error" className="text-caption text-destructive">
                 {title.error}
               </p>
             )}
@@ -139,9 +137,7 @@ export function AddPostModal({
           {/* Attachment buttons */}
           {onAttachmentChange && (
             <div className="space-y-3">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                {t('forms.framingType')}
-              </span>
+              <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
               <div className="flex flex-wrap gap-2">
                 {attachmentOptions.map(item => (
                   <button
@@ -149,7 +145,7 @@ export function AddPostModal({
                     type="button"
                     onClick={() => onAttachmentChange(activeAttachment === item.id ? 'none' : item.id)}
                     className={cn(
-                      'flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                      'flex items-center gap-2 px-3 py-2 rounded-lg border text-body-emphasis transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                       activeAttachment === item.id
                         ? cn(item.color, 'ring-1 ring-offset-1')
                         : 'bg-background border-border text-foreground hover:bg-muted'
@@ -177,7 +173,7 @@ export function AddPostModal({
             >
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Settings className="w-4 h-4" aria-hidden="true" />
-                <span className="text-sm">{t('mobile.settings')}</span>
+                <span className="text-body">{t('mobile.settings')}</span>
               </div>
               <ChevronRight
                 className={cn('w-4 h-4 text-muted-foreground transition-transform', settingsOpen && 'rotate-90')}
@@ -189,7 +185,7 @@ export function AddPostModal({
               <div className="space-y-4 pt-2 px-2">
                 {/* Tags */}
                 <div className="space-y-1.5">
-                  <label htmlFor="add-post-tags" className="text-xs text-muted-foreground">
+                  <label htmlFor="add-post-tags" className="text-caption text-muted-foreground">
                     {t('forms.tagsLabel')}
                   </label>
                   <div className="relative">

@@ -95,7 +95,7 @@ export function CompactSpaceCard({
             {initials}
           </div>
         )}
-        <p className="min-w-0 truncate text-sm font-semibold">{name}</p>
+        <p className="min-w-0 truncate text-card-title">{name}</p>
       </div>
     </a>
   );

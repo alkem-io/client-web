@@ -34,28 +34,28 @@ export function ContributionPostCard({
       )}
       onClick={onClick}
     >
-      <p className="text-sm font-medium text-foreground truncate">{title}</p>
+      <p className="text-body-emphasis text-foreground truncate">{title}</p>
       {author && (
         <div className="flex items-center gap-2 mt-1.5">
           <Avatar className="w-5 h-5">
             {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt={author.name} />}
-            <AvatarFallback className="text-[8px]">{author.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className="text-badge">{author.name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <span className="text-xs text-muted-foreground">{author.name}</span>
-          {createdDate && <span className="text-xs text-muted-foreground">• {createdDate}</span>}
+          <span className="text-caption text-muted-foreground">{author.name}</span>
+          {createdDate && <span className="text-caption text-muted-foreground">• {createdDate}</span>}
         </div>
       )}
       {description && (
-        <MarkdownContent content={description} className="text-xs text-muted-foreground line-clamp-2 mt-1.5" />
+        <MarkdownContent content={description} className="text-caption text-muted-foreground line-clamp-2 mt-1.5" />
       )}
       <div className="flex items-center gap-2 mt-2">
         {tags?.slice(0, 3).map(tag => (
-          <Badge key={tag} variant="secondary" className="text-[9px] px-1 h-4">
+          <Badge key={tag} variant="secondary" className="text-badge px-1 h-4">
             {tag}
           </Badge>
         ))}
         {commentCount !== undefined && commentCount > 0 && (
-          <span className="flex items-center gap-1 text-xs text-muted-foreground ml-auto">
+          <span className="flex items-center gap-1 text-caption text-muted-foreground ml-auto">
             <MessageSquare className="w-3 h-3" aria-hidden="true" />
             {commentCount}
           </span>

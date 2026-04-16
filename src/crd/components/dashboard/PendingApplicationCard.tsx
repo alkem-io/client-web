@@ -57,9 +57,9 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold leading-tight truncate">{application.spaceName}</p>
+        <p className="text-card-title leading-tight truncate">{application.spaceName}</p>
         {application.tagline && (
-          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{application.tagline}</p>
+          <p className="text-caption text-muted-foreground mt-0.5 line-clamp-1">{application.tagline}</p>
         )}
       </div>
     </a>

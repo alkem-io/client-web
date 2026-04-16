@@ -43,14 +43,14 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold leading-tight truncate">{invitation.spaceName}</p>
-        <p className="text-xs text-muted-foreground mt-0.5 truncate">{invitation.senderName}</p>
+        <p className="text-card-title leading-tight truncate">{invitation.spaceName}</p>
+        <p className="text-caption text-muted-foreground mt-0.5 truncate">{invitation.senderName}</p>
         {invitation.welcomeMessageExcerpt && (
-          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{invitation.welcomeMessageExcerpt}</p>
+          <p className="text-caption text-muted-foreground mt-0.5 line-clamp-1">{invitation.welcomeMessageExcerpt}</p>
         )}
       </div>
 
-      <span className="text-xs text-muted-foreground shrink-0">{invitation.timeElapsed}</span>
+      <span className="text-caption text-muted-foreground shrink-0">{invitation.timeElapsed}</span>
     </button>
   );
 }

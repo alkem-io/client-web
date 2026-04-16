@@ -29,7 +29,7 @@ export function SpaceVisibilityNotice({ status, contactHref, className }: SpaceV
 
   return (
     <output
-      className={cn('flex items-center gap-2 px-4 py-3 border rounded-lg text-sm', colorMap[status], className)}
+      className={cn('flex items-center gap-2 px-4 py-3 border rounded-lg text-body', colorMap[status], className)}
       aria-label={t('a11y.visibilityNotice')}
     >
       <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />

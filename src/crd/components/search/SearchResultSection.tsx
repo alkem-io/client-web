@@ -51,7 +51,7 @@ export const SearchResultSection = ({
           <div className="flex items-center gap-2">
             <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
             <h3 className="text-base font-semibold text-foreground">{label}</h3>
-            <span className="rounded-full px-2 py-px text-[12px] font-semibold bg-muted text-muted-foreground">
+            <span className="rounded-full px-2 py-px text-caption font-semibold bg-muted text-muted-foreground">
               {count}
             </span>
           </div>

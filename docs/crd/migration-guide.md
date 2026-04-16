@@ -232,6 +232,48 @@ The rule of thumb: prominent display avatars and banner areas get the colour; sm
 
 See `src/crd/CLAUDE.md` (section "Deterministic Accent Colors") for the full data flow and the list of components currently consuming `color`.
 
+### Typography: Semantic Tokens, Not Raw Classes
+
+CRD uses semantic typography tokens defined in `src/crd/styles/typography.css`. Each token bundles font-size, line-height, font-weight, and letter-spacing into a single Tailwind utility. **Do not use raw Tailwind typography combos** — use these tokens instead.
+
+**Token reference:**
+
+| Token | Size | Weight | Use for |
+|-------|------|--------|---------|
+| `text-page-title` | 30px | 700 | Page headings (`<h1>`) |
+| `text-section-title` | 20px | 700 | Section headings (`<h2>`) |
+| `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles (`<h3>`) |
+| `text-card-title` | 14px | 600 | Card headings, list item names |
+| `text-body` | 14px | 400 | Body text, descriptions, form inputs |
+| `text-body-emphasis` | 14px | 500 | Emphasized body text, author names, links |
+| `text-caption` | 12px | 400 | Timestamps, metadata, secondary info |
+| `text-label` | 11px | 600 | Uppercase section labels (includes 0.05em tracking) |
+| `text-badge` | 10px | 500 | Badges, tags, avatar initials |
+
+**When porting from the prototype** (Figma Make output uses raw classes), apply these replacements:
+
+| Prototype / raw Tailwind | Replace with |
+|--------------------------|-------------|
+| `text-2xl font-bold` or `text-3xl font-bold` | `text-page-title` |
+| `text-xl font-bold` or `text-xl font-semibold` | `text-section-title` |
+| `text-lg font-semibold` or `text-lg font-medium` | `text-subsection-title` |
+| `text-lg font-bold` (e.g. PostCard title) | `text-subsection-title font-bold` |
+| `text-sm font-semibold` | `text-card-title` |
+| `text-sm font-medium` | `text-body-emphasis` |
+| `text-sm`, `text-sm leading-relaxed`, `text-sm leading-normal` | `text-body` |
+| `text-xs` | `text-caption` |
+| `text-[11px] font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold` and `tracking-wider`) |
+| `text-xs font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold` and `tracking-wider`) |
+| `text-[10px] font-medium` or `text-[10px] font-semibold` | `text-badge` |
+| `text-[9px]` (any weight) | `text-badge` |
+| `text-[12px]` (any weight) | `text-caption` (add weight override if needed) |
+
+Tokens compose with Tailwind modifiers: `text-section-title md:text-page-title`, `text-body text-destructive`, `text-subsection-title font-bold`.
+
+**One exception**: SpaceHeader's hero title uses `clamp(28px, 5vw, 48px)` as an inline style — this is a deliberate one-off for fluid sizing and should not be tokenised.
+
+Full specification: `specs/042-crd-space-page/typography/spec.md`
+
 ### Global Dialogs (Messages, Notifications)
 
 **Messages**: The MUI Messages dialog is rendered in `root.tsx` and shared across all routes. CRD pages trigger it via `onMessagesClick` callback prop.

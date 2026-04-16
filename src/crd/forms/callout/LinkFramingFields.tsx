@@ -27,11 +27,11 @@ export function LinkFramingFields({
     <div className={cn('space-y-3 p-4 border rounded-xl bg-muted/30', className)}>
       <div className="flex items-center gap-2 mb-2">
         <LinkIcon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <span className="text-sm font-medium">{t('callout.link')}</span>
+        <span className="text-body-emphasis">{t('callout.link')}</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1">
-          <label htmlFor="link-framing-url" className="text-xs text-muted-foreground">
+          <label htmlFor="link-framing-url" className="text-caption text-muted-foreground">
             {t('forms.linkUrl')}
           </label>
           <input
@@ -46,10 +46,10 @@ export function LinkFramingFields({
             )}
             aria-invalid={!!urlError}
           />
-          {urlError && <p className="text-xs text-destructive">{urlError}</p>}
+          {urlError && <p className="text-caption text-destructive">{urlError}</p>}
         </div>
         <div className="space-y-1">
-          <label htmlFor="link-framing-display-name" className="text-xs text-muted-foreground">
+          <label htmlFor="link-framing-display-name" className="text-caption text-muted-foreground">
             {t('forms.linkDisplayName')}
           </label>
           <input
@@ -64,7 +64,7 @@ export function LinkFramingFields({
             )}
             aria-invalid={!!displayNameError}
           />
-          {displayNameError && <p className="text-xs text-destructive">{displayNameError}</p>}
+          {displayNameError && <p className="text-caption text-destructive">{displayNameError}</p>}
         </div>
       </div>
     </div>

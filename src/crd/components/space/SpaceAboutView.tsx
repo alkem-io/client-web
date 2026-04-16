@@ -48,8 +48,8 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
     <div className={cn('max-w-3xl mx-auto space-y-8', className)}>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">{data.name}</h1>
-        {data.tagline && <p className="text-lg text-muted-foreground mt-2">{data.tagline}</p>}
+        <h1 className="text-page-title text-foreground">{data.name}</h1>
+        {data.tagline && <p className="text-subsection-title font-normal text-muted-foreground mt-2">{data.tagline}</p>}
         {joinAction && <div className="mt-4">{joinAction}</div>}
       </div>
 
@@ -62,7 +62,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
 
       {/* Location */}
       {data.location && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-body text-muted-foreground">
           <MapPin className="w-4 h-4" aria-hidden="true" />
           {data.location}
         </div>
@@ -71,12 +71,12 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Metrics */}
       {data.metrics.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">{t('about.metrics')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-4">{t('about.metrics')}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {data.metrics.map(metric => (
               <div key={metric.name} className="text-center p-4 border border-border rounded-lg">
-                <p className="text-2xl font-bold text-primary">{metric.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">{metric.name}</p>
+                <p className="text-page-title text-primary">{metric.value}</p>
+                <p className="text-caption text-muted-foreground mt-1">{metric.name}</p>
               </div>
             ))}
           </div>
@@ -88,7 +88,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Why */}
       {data.why && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.why')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.why')}</h2>
           <MarkdownContent content={data.why} />
         </section>
       )}
@@ -96,7 +96,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Who */}
       {data.who && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.who')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.who')}</h2>
           <MarkdownContent content={data.who} />
         </section>
       )}
@@ -104,7 +104,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Host / Provider */}
       {data.provider && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.host')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
           <LeadCard lead={data.provider} />
         </section>
       )}
@@ -112,7 +112,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Lead Users */}
       {data.leadUsers.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.leadUsers')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.leadUsers')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {data.leadUsers.map(lead => (
               <LeadCard key={lead.href} lead={lead} />
@@ -124,7 +124,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Lead Organizations */}
       {data.leadOrganizations.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.leadOrganizations')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.leadOrganizations')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {data.leadOrganizations.map(lead => (
               <LeadCard key={lead.href} lead={lead} />
@@ -136,7 +136,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* Guidelines */}
       {data.guidelines && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.guidelines')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.guidelines')}</h2>
           <MarkdownContent content={data.guidelines} />
         </section>
       )}
@@ -144,7 +144,7 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
       {/* References */}
       {data.references.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.references')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.references')}</h2>
           <div className="space-y-2">
             {data.references.map(ref => (
               <a
@@ -156,8 +156,8 @@ export function SpaceAboutView({ data, joinAction, className }: SpaceAboutViewPr
               >
                 <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">{ref.name}</p>
-                  {ref.description && <p className="text-xs text-muted-foreground">{ref.description}</p>}
+                  <p className="text-body-emphasis text-foreground">{ref.name}</p>
+                  {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
                 </div>
               </a>
             ))}
@@ -176,12 +176,12 @@ function LeadCard({ lead }: { lead: SpaceLeadData }) {
     >
       <Avatar className="w-10 h-10">
         {lead.avatarUrl && <AvatarImage src={lead.avatarUrl} alt={lead.name} />}
-        <AvatarFallback className="text-xs">{lead.name.charAt(0)}</AvatarFallback>
+        <AvatarFallback className="text-caption">{lead.name.charAt(0)}</AvatarFallback>
       </Avatar>
       <div>
-        <p className="text-sm font-medium text-foreground">{lead.name}</p>
+        <p className="text-body-emphasis text-foreground">{lead.name}</p>
         {lead.location && (
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+          <p className="flex items-center gap-1 text-caption text-muted-foreground">
             <MapPin className="w-3 h-3" aria-hidden="true" />
             {lead.location}
           </p>

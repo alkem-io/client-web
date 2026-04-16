@@ -67,7 +67,7 @@ export function EventCardHeader({ event, loading, size = 'sm', locale = enUS }: 
     meta.push(t(typeKey, { defaultValue: fallback }));
   }
 
-  const titleClass = size === 'md' ? 'text-lg font-semibold leading-tight' : 'text-sm font-semibold leading-snug';
+  const titleClass = size === 'md' ? 'text-subsection-title leading-tight' : 'text-card-title leading-snug';
 
   return (
     <div className="flex items-start gap-3">
@@ -82,7 +82,7 @@ export function EventCardHeader({ event, loading, size = 'sm', locale = enUS }: 
       <div className="min-w-0 flex-1">
         <h3 className={titleClass}>{event.title}</h3>
         {(meta.length > 0 || event.subspaceName) && (
-          <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="mt-1 flex flex-wrap items-center gap-1.5 text-caption text-muted-foreground">
             {meta.join(' • ')}
             {event.subspaceName && (
               <Badge variant="secondary" className="font-normal">

@@ -109,15 +109,15 @@ function InvitationDetailDialog({
                   {getInitials(invitation.spaceName)}
                 </AvatarFallback>
               </Avatar>
-              <p className="text-sm font-semibold leading-tight">{invitation.spaceName}</p>
+              <p className="text-card-title leading-tight">{invitation.spaceName}</p>
               {invitation.spaceTagline && (
-                <p className="text-xs text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
+                <p className="text-caption text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
               )}
               {invitation.spaceTags.length > 0 && (
                 <ul className="flex flex-wrap justify-center gap-1 mt-1">
                   {invitation.spaceTags.slice(0, 5).map(tag => (
                     <li key={tag}>
-                      <Badge variant="secondary" className="text-[10px]">
+                      <Badge variant="secondary" className="text-badge">
                         {tag}
                       </Badge>
                     </li>
@@ -128,9 +128,9 @@ function InvitationDetailDialog({
 
             {/* Content area */}
             <div className="flex-1 min-w-0 space-y-3">
-              {descriptionSlot && <div className="text-sm">{descriptionSlot}</div>}
-              {welcomeMessageSlot && <div className="text-sm">{welcomeMessageSlot}</div>}
-              {guidelinesSlot && <div className="text-sm">{guidelinesSlot}</div>}
+              {descriptionSlot && <div className="text-body">{descriptionSlot}</div>}
+              {welcomeMessageSlot && <div className="text-body">{welcomeMessageSlot}</div>}
+              {guidelinesSlot && <div className="text-body">{guidelinesSlot}</div>}
             </div>
           </div>
         </div>

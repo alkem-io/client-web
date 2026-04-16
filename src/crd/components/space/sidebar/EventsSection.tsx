@@ -49,9 +49,7 @@ export function EventsSection({
     <div className={className}>
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-1.5">
-          <h3 className="uppercase tracking-wider text-[11px] font-semibold text-muted-foreground">
-            {t('sidebar.events')}
-          </h3>
+          <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.events')}</h3>
           <ChevronDown className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
         </div>
         {onAddEvent && (

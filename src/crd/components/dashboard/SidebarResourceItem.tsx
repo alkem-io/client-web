@@ -32,7 +32,7 @@ export function SidebarResourceItem({
     >
       <Avatar className="size-6">
         {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
-        <AvatarFallback className="text-[10px]" style={avatarColor ? { backgroundColor: avatarColor } : undefined}>
+        <AvatarFallback className="text-badge" style={avatarColor ? { backgroundColor: avatarColor } : undefined}>
           {initials}
         </AvatarFallback>
       </Avatar>

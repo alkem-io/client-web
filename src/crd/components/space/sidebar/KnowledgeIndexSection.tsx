@@ -21,9 +21,7 @@ export function KnowledgeIndexSection({ entries, onEntryClick, className }: Know
     <div className={className}>
       <div className="flex items-center gap-1.5 mb-3 px-1">
         <FolderOpen className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
-        <h3 className="uppercase tracking-wider text-[11px] font-semibold text-muted-foreground">
-          {t('sidebar.postIndex')}
-        </h3>
+        <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.postIndex')}</h3>
       </div>
       <div className="space-y-0.5">
         {entries.map(entry => (

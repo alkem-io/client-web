@@ -68,7 +68,7 @@ export function NotificationsPanel({
       >
         {/* Header */}
         <div className="flex items-center justify-between pl-4 pr-10 pt-[10px] pb-3 border-b border-border bg-muted/30">
-          <DialogTitle className="text-sm font-semibold">{t('notifications.title')}</DialogTitle>
+          <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
@@ -97,7 +97,10 @@ export function NotificationsPanel({
                 key={filter.key}
                 variant={selectedFilter === filter.key ? 'secondary' : 'ghost'}
                 size="sm"
-                className={cn('h-7 text-xs rounded-full shrink-0', selectedFilter === filter.key && 'font-semibold')}
+                className={cn(
+                  'h-7 text-caption rounded-full shrink-0',
+                  selectedFilter === filter.key && 'font-semibold'
+                )}
                 onClick={() => onFilterChange(filter.key)}
               >
                 {filter.label}
@@ -134,7 +137,7 @@ export function NotificationsPanel({
             <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
               <BellOff aria-hidden="true" className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
               <p className="text-base font-semibold mb-1 text-foreground">{t('notifications.emptyTitle')}</p>
-              <p className="text-sm text-muted-foreground max-w-[280px] leading-normal">
+              <p className="text-body text-muted-foreground max-w-[280px] leading-normal">
                 {t('notifications.emptyMessage')}
               </p>
             </div>
@@ -143,7 +146,7 @@ export function NotificationsPanel({
           {/* Load more */}
           {hasMore && items.length > 0 && !loading && (
             <div className="flex justify-center p-3 border-t border-border bg-muted/30">
-              <Button variant="ghost" size="sm" className="w-full h-8 text-xs" onClick={onLoadMore}>
+              <Button variant="ghost" size="sm" className="w-full h-8 text-caption" onClick={onLoadMore}>
                 {t('notifications.loadMore')}
               </Button>
             </div>
