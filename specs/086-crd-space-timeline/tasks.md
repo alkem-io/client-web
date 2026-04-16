@@ -199,6 +199,24 @@
 
 ---
 
+## Phase 11: Post-review refactor (code-review follow-up)
+
+**Purpose**: Apply the findings from the post-implementation code review (three-agent audit against CRD purity + SOLID + hooks-first). All tasks completed; see the plan file at `~/.claude/plans/hazy-twirling-kernighan.md` for the full review rationale and accepted/rejected findings.
+
+- [X] T053 Eliminate the `useRef`-gated prefill anti-pattern in `src/main/crdPages/space/timeline/CrdCalendarDialogConnector.tsx` by switching to a key-driven remount: the dialog now mounts `<EventFormDialogBody key={editingEventId ?? 'create'}>`, and `useCrdEventForm(initialValues)` seeds state via a lazy `useState` initializer. `prefill()` removed from the hook's public surface.
+- [X] T054 Extract `src/main/crdPages/space/timeline/useCrdEventFormDialog.ts` to own the create/edit/delete slice: form state, delete confirmation state, submit/delete handlers, and payload normalisation. The dialog connector shrank from ~344 lines to ~200 and becomes a thin orchestrator.
+- [X] T055 Drop the `externalLoading` parameter from `useCrdRoomComments` (ISP tightening). `CalloutCommentsConnector` no longer forwards the lazy contribution-query loading state; the `useInView` gate already hides the in-flight window from users.
+- [X] T056 Remove the unimplemented `children` render-prop override from `EventDetailConnectorProps` in `specs/086-crd-space-timeline/contracts/connector-hooks.ts` (spec/implementation drift cleanup).
+- [X] T057 Document the `canReadComments` gate in `src/main/crdPages/space/timeline/EventDetailConnector.tsx` as an optimisation (avoids mounting the comments connector when the user has no read permission); confirm `useCrdRoomComments` does not duplicate the check.
+- [X] T058 Refactor `src/main/crdPages/space/timeline/useCrdCalendarUrlState.ts` path resolution with a `splitCalendarPath(pathname)` helper at module scope; navigators now read declaratively.
+- [X] T059 Add defensive `console.warn` (with `biome-ignore lint/suspicious/noConsole` + rationale) in `src/main/crdPages/space/timeline/ExportEventsToIcsConnector.tsx` when an event is skipped for missing `startDate`. Caller-filtered list should prevent this firing in practice.
+- [X] T060 Rename `useCrdEventForm.reset()` → `clearForm()` (clearer intent) and update all call sites.
+- [X] T061 Static checks after refactor: `npx tsc --noEmit` clean; `npx biome ci` clean (0 warnings on 10 touched files); `pnpm vitest run` 592 passed / 3 skipped (unchanged).
+
+**Checkpoint**: All 7 user stories remain functionally complete with cleaner internals. The CRD purity layer, accessibility, i18n, and domain-hook reuse all continue to pass.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

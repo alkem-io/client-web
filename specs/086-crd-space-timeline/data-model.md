@@ -146,34 +146,38 @@ The sidebar mapper deliberately keeps `startDate` as a raw `Date` so the sidebar
 
 ## Validation rules
 
-Implemented in `useCrdEventForm.ts` via standalone `yup.object({ ... }).validate(values, { abortEarly: false })`. Mirrors `src/domain/timeline/calendar/views/CalendarEventForm.tsx:109-136`.
+Implemented in `useCrdEventForm.ts` as direct checks against the current `values` snapshot (no `yup` schema — the rule set is small enough that hand-written checks are clearer). Mirrors `src/domain/timeline/calendar/views/CalendarEventForm.tsx:109-136`.
 
 | Field | Rule | Error key (in `crd-space.calendar.validation.*`) |
 |---|---|---|
 | `displayName` | Required, non-empty after `.trim()` | `displayNameRequired` |
 | `type` | Required (one of 6 enum values) | `typeRequired` |
-| `description` | Markdown length ≤ MARKDOWN_TEXT_LENGTH (existing constant; reuse from `src/core/ui/forms/field-length.constants` — or duplicate the constant in connector layer if importing core constants is undesired) | `descriptionTooLong` |
+| `description` | Markdown length ≤ `MARKDOWN_TEXT_LENGTH` — imported from `@/core/ui/forms/field-length.constants` (single source of truth shared with the legacy MUI form) | `descriptionTooLong` |
 | `durationMinutes` | If `wholeDay === false` AND start+end share a day → must be `> 0` | `invalidDuration` |
 | `endDate` | If `wholeDay === false` AND end is on a later day → must be after start | `endBeforeStart` |
 | `wholeDay`-aware combo | The MUI `validateDuration` rule: `wholeDay || (sameDay && durationMinutes > 0) || endDate > startDate` | `invalidDuration` |
 
 ## State transitions
 
-The `CrdCalendarDialogConnector` is a state machine over `view ∈ {'list', 'detail', 'create', 'edit', 'delete'}` driven by URL state plus local state.
+The `CrdCalendarDialogConnector` is a state machine over `view ∈ {'list', 'detail', 'create', 'edit'}` driven by URL state plus local `editingEventId` state. The delete confirmation is **not** a separate view — it's a Radix `AlertDialog` overlay on top of `'edit'`, owned by `useCrdEventFormDialog` (isDeleteOpen flag). This keeps the edit form mounted behind the confirmation, which is better UX and avoids a view-level remount.
 
 | Trigger | From | To |
 |---|---|---|
 | URL contains `/calendar` (no event id, no `?new`) | any | `'list'` |
 | URL contains `/calendar/{eventId}` | any | `'detail'` |
 | URL contains `?new=1` | `'list'` | `'create'` |
-| User clicks "Edit" on detail | `'detail'` | `'edit'` |
-| User clicks "Delete" on edit form | `'edit'` | `'delete'` |
-| Delete confirmed | `'delete'` | `'list'` (after `navigateToList()` strips path back) |
-| Delete cancelled | `'delete'` | `'edit'` |
+| User clicks "Edit" on detail | `'detail'` | `'edit'` (sets `editingEventId`) |
+| User clicks "Delete" on edit form | `'edit'` | `'edit'` + AlertDialog open (`isDeleteOpen=true`) |
+| Delete confirmed | `'edit'` + AlertDialog | `'list'` (await delete → `onExitEdit()` + `navigateToList()`) |
+| Delete cancelled | `'edit'` + AlertDialog | `'edit'` (closes the AlertDialog only) |
 | Create submit success | `'create'` | `'detail'` (navigates to new event URL) |
-| Edit submit success | `'edit'` | `'detail'` (or `'list'` if user came from list) |
+| Edit submit success | `'edit'` | `'detail'` (navigates back via the existing event URL) |
 | Form cancel / close | `'create' \| 'edit'` | previous view |
 | Dialog `onOpenChange(false)` | any | dialog closes; URL stripped to dashboard |
+
+### Form state seeding (key-driven remount)
+
+`CrdCalendarDialogConnector` wraps the form body in an `<EventFormDialogBody key={editingEventId ?? 'create'}>` sub-component. React remounts this sub-component whenever `editingEventId` changes (switching between editing different events, or from edit back to create). The remount causes `useCrdEventFormDialog` — and the nested `useCrdEventForm(initialValues)` — to re-run, seeding fresh `initialValues` from the newly selected event without any imperative prefill or ref-based gating. This is the React 19 / React Compiler-friendly alternative to a `useEffect`-driven `form.prefill()` pattern.
 
 ## Permission-driven visibility
 

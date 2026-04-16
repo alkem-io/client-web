@@ -17,7 +17,7 @@ Migrate the Space Timeline (calendar dialog + event list + create/edit form + de
 **Project Type**: Web SPA — established three-layer CRD architecture (CRD → crdPages connector → routing)
 **Performance Goals**: Equal or better than MUI `CalendarDialog`. Sidebar adds zero extra network requests (Apollo dedupes the `useSpaceCalendarEventsQuery` between sidebar hook and dialog connector). External-calendar URL query is lazy-loaded on first dropdown open. No additional initial-paint cost vs. legacy.
 **Constraints**: Zero `@mui/*` / `@emotion/*` / `@apollo/client` / `@/domain/*` / `@/core/apollo/*` / `react-router-dom` / `formik` imports inside `src/crd/`. WCAG 2.1 AA compliant. React Compiler compatible (no `useMemo` / `useCallback` / `React.memo`). `.crd-root` CSS scoping unchanged. Form state lives in connector layer (`useState` + standalone `yup`, no Formik). Date-lib boundary: CRD components use `date-fns`; connectors and existing domain hooks use `dayjs`; mappers normalise to plain JS `Date` at the boundary.
-**Scale/Scope**: ~10 new CRD presentational components + 1 primitive + 3 form-field composites + 5 connectors + 4 hooks (`useCrdCalendarUrlState`, `useCrdEventForm`, `useCrdCalendarSidebar`, `useCrdRoomComments`) + 1 data mapper. ~60 i18n keys across 6 languages. 48 functional requirements across 7 user stories. Tested with up to 100 events per space (per SC-004).
+**Scale/Scope**: ~10 new CRD presentational components + 1 primitive + 3 form-field composites + 5 connectors + 5 hooks (`useCrdCalendarUrlState`, `useCrdEventForm`, `useCrdEventFormDialog`, `useCrdCalendarSidebar`, `useCrdRoomComments`) + 1 data mapper. ~60 i18n keys across 6 languages. 48 functional requirements across 7 user stories. Tested with up to 100 events per space (per SC-004).
 
 ## Constitution Check
 
@@ -96,16 +96,20 @@ src/crd/                                          # Pure presentational layer
 
 src/main/crdPages/space/                          # Integration / connector layer
 ├── timeline/                                     # NEW directory
-│   ├── CrdCalendarDialogConnector.tsx            # Top-level state machine
+│   ├── CrdCalendarDialogConnector.tsx            # Orchestrator — composes URL state, data hook,
+│   │                                             #   form-dialog hook; hosts EventFormDialogBody
+│   │                                             #   sub-component that remounts per event id
 │   ├── EventDetailConnector.tsx
 │   ├── CalendarCommentsConnector.tsx
 │   ├── AddToCalendarMenuConnector.tsx
 │   ├── ExportEventsToIcsConnector.tsx
-│   ├── useCrdCalendarUrlState.ts
-│   └── useCrdEventForm.ts
+│   ├── useCrdCalendarUrlState.ts                 # URL deeplink reads/writes; splitCalendarPath helper
+│   ├── useCrdEventForm.ts                        # Controlled form state (values + errors + validate)
+│   └── useCrdEventFormDialog.ts                  # Owns create/edit/delete slice: form + delete + submit
 ├── hooks/
 │   ├── useCrdCalendarSidebar.ts                  # NEW — shares Apollo cache with dialog connector
-│   └── useCrdRoomComments.ts                     # NEW (T023a) — extracted from CalloutCommentsConnector; consumed by both callout + calendar comments connectors
+│   └── useCrdRoomComments.tsx                    # NEW (T023a) — extracted from CalloutCommentsConnector;
+│                                                 #   consumed by both callout + calendar comments connectors
 ├── dataMappers/
 │   └── calendarEventDataMapper.ts                # NEW — fragment → CRD prop types
 ├── tabs/

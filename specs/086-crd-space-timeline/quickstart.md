@@ -95,6 +95,7 @@ Each story corresponds to a numbered story in `spec.md`. Stories 1–4 are P1; s
 1. Open an event detail and click **Edit**.
 2. Change one field, save. **Verify**: dialog returns to detail view (or list view if you reached edit from list); change is reflected.
 3. Open edit form again and click **Cancel** / **Back**. **Verify**: dialog closes (or returns) without saving.
+4. **Remount check (key-driven seeding)**: while editing event A, click **Back**, navigate to event B, click **Edit**. **Verify**: the form now shows B's values — not A's. The dialog connector mounts `<EventFormDialogBody key={editingEventId}>` so React remounts the form per event id, freshly seeding `initialValues` without imperative prefill logic.
 
 ### Story 5 — Delete (P2)
 

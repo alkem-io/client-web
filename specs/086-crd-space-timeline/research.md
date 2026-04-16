@@ -32,16 +32,21 @@ All spec-level ambiguities were resolved during `/speckit.clarify`. The decision
 
 ## R3 — Form-state pattern
 
-**Decision**: `useState` + standalone `yup` validation in `useCrdEventForm.ts`. No Formik in the CRD or connector layer for this feature.
+**Decision**: `useState` in `useCrdEventForm.ts`, with hand-written validation checks mirroring the MUI yup schema. No Formik in the CRD or connector layer.
 
 **Rationale**:
 - CRD purity rule forbids Formik in `src/crd/`.
 - The CRD callout migration already established the `useState`-driven pattern in `src/main/crdPages/space/hooks/useCrdCalloutForm.ts`. Following the same pattern keeps the codebase cohesive.
-- `yup` is already in `package.json`. We can lift the existing yup schema from `CalendarEventForm.tsx:109-136` largely verbatim and call `schema.validate(values, { abortEarly: false })` inside the controlled form's `validate()` callback. This preserves validation parity with MUI without adopting Formik.
+- The rule set (displayName required, type required, description length ≤ `MARKDOWN_TEXT_LENGTH`, duration/end combo per MUI `validateDuration`) is small enough that hand-written checks are clearer than a yup schema. Importing `yup` for ~20 lines of validation would add indirection without benefit; the error keys map directly to `calendar.validation.*` i18n entries.
 
 **Alternatives considered**:
+- *Use `yup` for the schema* — considered in the spec draft but the final implementation prefers direct checks for readability. The MUI schema at `CalendarEventForm.tsx:109-136` is the source of truth for *which* rules to enforce; the *how* (yup vs hand-written) is a style choice.
 - *Formik in the connector layer* — allowed by CRD rules (connectors may import anything) but inconsistent with the established `useCrdCalloutForm` pattern.
 - *react-hook-form* — not in the project; introducing it for one feature is needless dependency drift.
+
+### Form seeding (key-driven remount, post-review refactor)
+
+Initial values for an edit-mode form are seeded via `useCrdEventForm(initialValues)`'s lazy `useState` initializer. The dialog connector mounts the form subtree with `key={editingEventId ?? 'create'}` so React remounts it when the user switches to editing a different event; the hook re-seeds from the new `initialValues` on remount. This replaces an earlier `useRef`-gated `useEffect` that called an imperative `form.prefill()` helper — the remount approach is React 19 / React Compiler-friendly and eliminates the manual reconciliation logic.
 
 ## R4 — Comments connector reuse
 
