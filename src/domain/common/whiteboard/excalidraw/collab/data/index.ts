@@ -94,6 +94,24 @@ export type SocketUpdateDataSource = {
       startedBy: string;
     };
   };
+  USER_FOLLOW: {
+    type: WS_SCENE_EVENT_TYPES.USER_FOLLOW;
+    payload: {
+      socketId: SocketId;
+      userToFollow: {
+        socketId: SocketId;
+        username: string;
+      };
+      action: 'FOLLOW' | 'UNFOLLOW';
+    };
+  };
+  SCENE_BOUNDS: {
+    type: WS_SCENE_EVENT_TYPES.SCENE_BOUNDS;
+    payload: {
+      socketId: SocketId;
+      sceneBounds: readonly [number, number, number, number];
+    };
+  };
 };
 
 export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
