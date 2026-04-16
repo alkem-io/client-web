@@ -130,6 +130,20 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Admin pages go under `src/main/admin`
 - CRD page integration goes under `src/main/crdPages/<pageName>/`
 
+### Browser Compatibility
+
+Only use JavaScript/CSS features with **>90% global browser support** according to [caniuse.com](https://caniuse.com). This ensures broad compatibility without requiring polyfills.
+
+**Avoid** (insufficient browser coverage):
+- `Array.prototype.at()` — use `arr[arr.length - 1]` instead of `arr.at(-1)`
+- `Object.hasOwn()` — use `Object.prototype.hasOwnProperty.call(obj, key)` or the `in` operator
+- CSS `@container` queries — use media queries or JS-based responsive logic
+- `structuredClone()` — use `JSON.parse(JSON.stringify())` or lodash `cloneDeep`
+
+**Safe to use** (>95% support): `Array.prototype.flat/flatMap`, `Object.entries/fromEntries`, optional chaining (`?.`), nullish coalescing (`??`), `Promise.allSettled`, `globalThis`, `String.prototype.replaceAll`.
+
+When in doubt, check [caniuse.com](https://caniuse.com) before introducing a newer API.
+
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
