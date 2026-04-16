@@ -34,6 +34,7 @@ For full coverage, use a space (or create one) that has:
 - At least 1 past event
 - At least 1 legacy event with a banner image (only seeded by the old MUI form — the CRD form no longer uploads banners)
 - At least 1 event with comments
+- At least 1 event with a `location.city` set and at least 1 with no location, to exercise both branches of the detail-view location row
 - At least 1 subspace with its own events, including one marked `visibleOnParentCalendar=true`
 
 If your dev environment is sparse, create events via the legacy MUI dashboard first (the CRD feature still uses the same backend), then enable CRD to test the new UI.
@@ -66,6 +67,7 @@ Each story corresponds to a numbered story in `spec.md`. Stories 1–4 are P1; s
 1. Open an event detail (from list or via deeplink).
 2. **Verify**: when the event has a `bannerUrl` (legacy data), the banner image renders at the top; otherwise no banner area is rendered — the detail view starts at the title/meta row.
 3. **Verify**: title; author avatar + name + creation date caption near the title; tags; references; markdown description renders correctly.
+3a. **Verify**: when the event has a city set, the location appears under the description with a `MapPin` icon; when the city is empty/unset, the row is omitted entirely.
 4. With `canReadComments`, **verify**: comments column appears with thread + count.
 5. With `canPostComments`, post a comment, then a reply, then a reaction. **Verify**: each appears immediately in the thread.
 6. Delete your own comment. **Verify**: it disappears.

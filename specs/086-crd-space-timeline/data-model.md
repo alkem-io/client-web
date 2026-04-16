@@ -55,6 +55,7 @@ Used by `EventDetailView.tsx`.
 | `title` | `string` | `profile.displayName` |
 | `description` | `string` | Markdown source; rendered via `MarkdownContent` |
 | `bannerUrl` | `string \| undefined` | `profile.banner.uri`. When undefined, the `EventDetailView` renders no banner area at all (FR-015). Only populated for legacy events — the CRD create/edit form does not expose a banner upload. |
+| `location` | `string \| undefined` | `profile.location?.city` (free-text city). Mapper coerces empty / whitespace-only values to `undefined` so the detail view can omit the row entirely. Rendered under the description with a `MapPin` icon (FR-014). |
 | `tags` | `string[]` | `profile.tagset.tags` |
 | `references` | `EventReference[]` | `profile.references` mapped to `{ id, name, uri, description? }` |
 | `startDate` | `Date \| undefined` | UTC `Date` |

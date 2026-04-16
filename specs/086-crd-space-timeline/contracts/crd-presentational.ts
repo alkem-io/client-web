@@ -62,6 +62,10 @@ export type EventDetailData = {
   // legacy events seeded by the old MUI dialog. When undefined the detail
   // view renders no banner area at all (no gradient, no placeholder).
   bannerUrl?: string;
+  // Free-text city. The mapper coerces empty/whitespace-only values to
+  // undefined so the detail view can omit the location row entirely
+  // (FR-014). Rendered under the description with a MapPin icon.
+  location?: string;
   tags: string[];
   references: EventReference[];
   startDate: Date | undefined;

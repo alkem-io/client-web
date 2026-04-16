@@ -1,7 +1,7 @@
 import type { Locale } from 'date-fns';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, MapPin } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -32,6 +32,7 @@ type EventDetailData = {
   title: string;
   description: string;
   bannerUrl?: string;
+  location?: string;
   tags: string[];
   references: EventReference[];
   startDate: Date | undefined;
@@ -141,6 +142,12 @@ export function EventDetailView({
           {event.description && (
             <div className="text-sm">
               <MarkdownContent content={event.description} />
+            </div>
+          )}
+          {event.location && (
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4 shrink-0" aria-label={t('calendar.fields.location')} />
+              <span>{event.location}</span>
             </div>
           )}
           {event.tags.length > 0 && (

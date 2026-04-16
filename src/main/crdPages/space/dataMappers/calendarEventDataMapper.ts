@@ -66,6 +66,9 @@ export type EventDetailData = {
   title: string;
   description: string;
   bannerUrl?: string;
+  /** Free-text city. Undefined when the event has no location set so the
+   *  detail view can omit the row entirely (FR-014). */
+  location?: string;
   tags: string[];
   references: EventReference[];
   startDate: Date | undefined;
@@ -143,6 +146,7 @@ export function mapCalendarEventDetailsToDetailData(
       title: '',
       description: '',
       bannerUrl: undefined,
+      location: undefined,
       tags: [],
       references: [],
       startDate: undefined,
@@ -166,8 +170,9 @@ export function mapCalendarEventDetailsToDetailData(
     description: event.profile.description ?? '',
     // The EventProfile fragment does not expose a banner field (matches the
     // legacy MUI behaviour: banner was always undefined there too). The
-    // component's gradient fallback handles this by design.
+    // component renders no banner area when this is undefined.
     bannerUrl: undefined,
+    location: event.profile.location?.city?.trim() || undefined,
     tags: event.profile.tagset?.tags ?? [],
     references: (event.profile.references ?? []).map(ref => ({
       id: ref.id,
