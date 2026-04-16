@@ -1,0 +1,62 @@
+{
+  "join": {
+    "welcome": "Bienvenido a",
+    "title": "Unirse a la pizarra",
+    "description": "Introduce tu nombre para unirte a la sesión de pizarra. Los demás participantes verán este nombre.",
+    "placeholder": "Tu nombre",
+    "guestNameLabel": "Nombre de invitado",
+    "joinButton": "Unirse como invitado",
+    "joiningButton": "Uniéndose...",
+    "signInButton": "Iniciar sesión en Alkemio"
+  },
+  "error": {
+    "notFound": {
+      "title": "Pizarra no encontrada",
+      "message": "Esta pizarra no existe o ya no está disponible."
+    },
+    "serverError": {
+      "title": "Algo salió mal",
+      "message": "No pudimos cargar esta pizarra. Inténtalo de nuevo."
+    },
+    "retry": "Reintentar"
+  },
+  "editor": {
+    "editDisplayName": "Editar título",
+    "saveDisplayName": "Guardar título",
+    "cancelEdit": "Cancelar edición",
+    "delete": "Eliminar pizarra",
+    "save": "Guardar",
+    "restart": "Reiniciar colaboración",
+    "guestContributionsWarning": "Las contribuciones de invitados están habilitadas",
+    "closeWhiteboard": "Cerrar pizarra"
+  },
+  "footer": {
+    "guestContributionsWarning": "Cualquiera con el enlace puede editar"
+  },
+  "preview": {
+    "settings": {
+      "title": "Ajustes de vista previa",
+      "subtitle": "Elige cómo se ve la miniatura de la pizarra en tarjetas y vistas previas"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Automático",
+        "description": "Capturar automáticamente la vista completa del lienzo"
+      },
+      "CUSTOM": {
+        "title": "Personalizado",
+        "description": "Elige tu propia área de recorte"
+      },
+      "FIXED": {
+        "title": "Fijo",
+        "description": "Fijar a un área específica del lienzo"
+      }
+    },
+    "crop": {
+      "previewArea": "Área de vista previa de la pizarra",
+      "reset": "Restablecer",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    }
+  }
+}

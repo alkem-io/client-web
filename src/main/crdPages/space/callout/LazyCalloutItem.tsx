@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import { mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -23,9 +25,6 @@ export function LazyCalloutItem({
   onSettingsClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
   const { ref, inView, callout, loading } = useCalloutInView({
     calloutId,
     calloutsSetId,
@@ -34,27 +33,85 @@ export function LazyCalloutItem({
   return (
     <div ref={ref} id={calloutId}>
       {inView && !loading && callout ? (
-        <>
-          <PostCard
-            post={mapCalloutDetailsToPostCard(callout, formatDate)}
-            onClick={() => {
-              setDialogOpen(true);
-              onClick?.();
-            }}
-            onCommentsClick={() => {
-              setDialogOpen(true);
-            }}
-            onSettingsClick={onSettingsClick}
-            onExpandClick={onExpandClick}
-          >
-            {callout.framing.type === CalloutFramingType.Poll && <CalloutPollConnector callout={callout} />}
-          </PostCard>
-
-          <CalloutDetailDialogConnector open={dialogOpen} onOpenChange={setDialogOpen} callout={callout} />
-        </>
+        <LazyCalloutItemContent
+          callout={callout}
+          onClick={onClick}
+          onSettingsClick={onSettingsClick}
+          onExpandClick={onExpandClick}
+        />
       ) : (
         <PostCardSkeleton />
       )}
     </div>
+  );
+}
+
+/**
+ * Inner component rendered once the callout is loaded.
+ * Separated so hooks can be called unconditionally.
+ */
+function LazyCalloutItemContent({
+  callout,
+  onClick,
+  onSettingsClick,
+  onExpandClick,
+}: {
+  callout: CalloutDetailsModelExtended;
+  onClick?: () => void;
+  onSettingsClick?: () => void;
+  onExpandClick?: () => void;
+}) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [initialWhiteboardId, setInitialWhiteboardId] = useState<string | undefined>();
+  const { t } = useTranslation('crd-space');
+  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
+
+  const postData = mapCalloutDetailsToPostCard(callout, formatDate);
+
+  const openDialog = (whiteboardContributionId?: string) => {
+    setInitialWhiteboardId(whiteboardContributionId);
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      setInitialWhiteboardId(undefined);
+    }
+  };
+
+  const contributionsEnabled = callout.settings.contribution.enabled;
+
+  return (
+    <>
+      <PostCard
+        post={postData}
+        onClick={() => {
+          openDialog();
+          onClick?.();
+        }}
+        onCommentsClick={() => openDialog()}
+        onSettingsClick={onSettingsClick}
+        onExpandClick={onExpandClick}
+        contributionsPreview={
+          contributionsEnabled ? (
+            <ContributionsPreviewConnector
+              callout={callout}
+              onShowAll={() => openDialog()}
+              onContributionClick={contributionId => openDialog(contributionId)}
+            />
+          ) : undefined
+        }
+      >
+        {callout.framing.type === CalloutFramingType.Poll && <CalloutPollConnector callout={callout} />}
+      </PostCard>
+
+      <CalloutDetailDialogConnector
+        open={dialogOpen}
+        onOpenChange={handleDialogClose}
+        callout={callout}
+        initialWhiteboardContributionId={initialWhiteboardId}
+      />
+    </>
   );
 }

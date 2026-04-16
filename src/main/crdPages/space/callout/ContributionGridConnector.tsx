@@ -22,6 +22,7 @@ export function ContributionGridConnector({ contributions, onContributionClick }
                 key={contribution.id}
                 title={contribution.title}
                 previewUrl={contribution.previewUrl}
+                author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id)}
               />
             );

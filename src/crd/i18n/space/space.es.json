@@ -52,6 +52,7 @@
     "mediaGallery": "Galería multimedia",
     "memo": "Nota",
     "moreWhiteboards": "+{{count}} más",
+    "moreContributions": "+{{count}} más",
     "vote": "Votar",
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",

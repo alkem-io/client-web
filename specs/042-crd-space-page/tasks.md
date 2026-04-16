@@ -76,7 +76,7 @@
 
 **Visual reference**: `prototype/.../PostCard.tsx` (Card with author header, 4 content types), `SpaceFeed.tsx`, `SpaceMembers.tsx`, `SpaceSubspacesList.tsx`
 
-- [X] T029 Create `src/crd/components/space/PostCard.tsx` — Card matching prototype: author avatar + name + role Badge + timestamp header, title (text-lg font-bold), snippet (line-clamp-3), type-specific content preview (text → nothing, whiteboard → image + "Open Whiteboard" overlay, collection → 2x2 item grid, call-for-whiteboards → thumbnail grid + "+N" overlay), comments footer with MessageSquare; accepts `PostCardData` with `type: 'text' | 'whiteboard' | 'collection' | 'call-for-whiteboards'`, `onClick?`, `onSettingsClick?`, `onExpandClick?`; uses Card/CardHeader/CardContent/CardFooter primitives
+- [X] T029 Create `src/crd/components/space/PostCard.tsx` — Card matching prototype: author avatar + name + role Badge + timestamp header, title (text-lg font-bold), snippet (line-clamp-3), whiteboard framing preview (image + "Open Whiteboard" overlay when `type='whiteboard'`), `contributionsPreview?: ReactNode` slot for contribution cards rendered by integration layer, `children` slot for polls, comments footer with MessageSquare; accepts `PostCardData` with `type: 'text' | 'whiteboard'`, `onClick?`, `onSettingsClick?`, `onExpandClick?`, `contributionsPreview?`; uses Card/CardHeader/CardContent/CardFooter primitives. PostCard does NOT render contribution cards internally — all contribution rendering is delegated to the integration layer via the `contributionsPreview` slot
 - [X] T030 Create `src/crd/components/space/SpaceFeed.tsx` — vertical PostCard list matching prototype: title header + "Add Post" button, `space-y-6` card list, "Show More" button; accepts `title`, `posts: PostCardData[]`, `canCreate?`, `onCreateClick?`, `loading?`, `onShowMore?`, `hasMore?`; skeleton loading state; reusable across all tabs
 - [X] T031 Create `src/crd/components/space/SpaceMembers.tsx` — search + role filter pills + paginated grid matching prototype: search input, filter buttons (All/Host/Admin/Lead/Member/Organization), responsive grid (1/2/3 cols), UserCard and OrgCard sub-components, pagination (prev/next); accepts `members: MemberCardData[]`, `filters?`, `pageSize?`
 - [X] T032 Create `src/crd/components/space/SpaceSubspacesList.tsx` — status filter + SpaceCard grid matching prototype: header + "Create Subspace" button, filter buttons (All/Active/Archived), responsive grid, empty state (dashed border + FolderOpen icon); accepts `subspaces: SubspaceListCardData[]`, `canCreate?`, `onCreateClick?`; tag-based filtering (FR-030) reuses existing SpaceCard tag mechanism from 039 — pass `selectedTags?` and `onTagSelect?` props to enable filtering by tags displayed on cards
@@ -96,7 +96,7 @@
 
 **Purpose**: Wire prototype-guided CRD components to app data via hooks and data mappers
 
-- [X] T037 Create `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — maps `CalloutDetailsModelExtended` to `CalloutBlockData` and `PostCardData`; maps framing types: None/Memo → `'text'` PostCard, Whiteboard → `'whiteboard'` PostCard, MediaGallery → `'collection'` PostCard, Poll/Link → custom components
+- [X] T037 Create `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — maps `CalloutDetailsModelExtended` to `CalloutBlockData` and `PostCardData`; maps framing types: None/Memo → `'text'` PostCard, Whiteboard → `'whiteboard'` PostCard, all others → `'text'`. *(Note: `'collection'` and `'call-for-whiteboards'` PostTypes removed in T203 refactor — contributions now rendered via slot)*
 - [X] T038 Create `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts` — maps `SpaceSubspaceCardsQuery` to `SubspaceListCardData[]`
 - [X] T039 Create `src/main/crdPages/space/hooks/useCrdSpaceDashboard.ts` — composes `useSpaceTabProvider(0)`, `useSpacePageQuery`, `useApplicationButton()`, `useSpaceDashboardNavigation()`, `useCalendarEvents()`; returns mapped data for sidebar + feed
 - [X] T040 Create `src/main/crdPages/space/hooks/useCrdCalloutList.ts` — wraps `useCalloutsSet()` with classificationTagsets; returns mapped `PostCardData[]` via calloutDataMapper; supports lazy loading via `onVisible` callback triggering `fetchMore` from `useCalloutsSet` (FR-048, existing hook already supports this pattern)
@@ -177,7 +177,7 @@
 - [X] T072 Create `src/main/crdPages/space/dataMappers/contributionDataMapper.ts` — maps contributions to `ContributionCardData[]`
 - [X] T073 Create `src/main/crdPages/space/callout/ContributionGridConnector.tsx` — renders ContributionGrid; wires clicks to preview/detail
 - [X] T074 Create `src/main/crdPages/space/callout/ContributionCreateConnector.tsx` — creation forms + mutations
-- [X] T075 Wire ContributionGrid + ContributionCreate into PostCard content area (text/memo) and as section below callout-specific components (whiteboard/poll/media)
+- [X] T075 Create `src/main/crdPages/space/callout/ContributionsPreviewConnector.tsx` — integration connector that renders contribution previews into PostCard's `contributionsPreview` slot. Uses `useCalloutContributions` with `pageSize: 4`. Renders up to 4 items using the appropriate CRD contribution component per type: `ContributionWhiteboardCard` (image grid), `ContributionPostCard` (title+author card), `ContributionMemoCard` (markdown preview card), `ContributionLinkList` (link list). When `total > 4`, the 4th slot renders as a "+N more" button (where N = total - 3) that calls `onShowAll` callback (integration layer opens the callout detail dialog). Follows the same connector pattern as `CalloutPollConnector`. PostCard no longer renders contributions internally — all contribution type logic lives here
 
 ---
 
@@ -228,13 +228,12 @@
     - Title `<h1>` (text-3xl font-bold)
     - Author row: Avatar + name + timestamp + role
     - Prose description (MarkdownContent or plain `<p>`)
-    - Optional banner image (when `imageUrl` provided)
     - Reactions + share bar (`border-y`): emoji reaction stack (3 stacked circles), reaction count text, spacer, "React" button (Smile icon), "Share" button (Share2 icon)
     - **Contributions section** (when `hasContributions`): `contributionsSlot: ReactNode` prop — rendered by the connector; section heading `t('calloutDialog.contributions')` + badge count
     - **Discussion section**: `t('calloutDialog.discussion')` heading + comment count badge + `<CommentThread>` (scrolls with page body)
   - **Sticky footer** (`shrink-0 border-t bg-background`): `CommentInput` rendered only when `canComment`; hidden when `!canComment`
   - **Props**: `open: boolean`, `onOpenChange: (open: boolean) => void`, `callout: CalloutDetailDialogData`, `commentsSlot: ReactNode`, `commentInputSlot?: ReactNode`, `contributionsSlot?: ReactNode`, `hasContributions?: boolean`, `contributionsCount?: number`
-  - **`CalloutDetailDialogData`** type (pure CRD, no domain imports): `{ id, title, author?: { name, avatarUrl, role? }, description?, imageUrl?, timestamp?, commentCount?, reactionCount? }`
+  - **`CalloutDetailDialogData`** type (pure CRD, no domain imports): `{ id, title, author?: { name, avatarUrl, role? }, description?, timestamp?, commentCount?, reactionCount? }`
   - Uses `Dialog`, `DialogContent`, `DialogTitle`, `DialogClose` from `@/crd/primitives/dialog`
 
 ### Delete stubs
@@ -244,7 +243,7 @@
 ### Integration layer
 
 - [X] T086 Create `src/main/crdPages/space/dataMappers/commentDataMapper.ts` — `mapRoomToCommentData(room: CommentsMessagesFragment, currentUserId: string): CommentData[]` — maps Room messages to `CommentData[]` with flat threading (parentId from threadID), derives `canDelete` from message author match or admin privilege, maps reactions from `ReactionDetails[]` to `CommentReaction[]` (groups by emoji, checks `createdBy` against currentUserId for `hasReacted`), handles deleted parent placeholders via the existing `useRestoredMessages` pattern
-- [X] T086a Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add `mapCalloutDetailsToDialogData(callout: CalloutDetailsModelExtended): CalloutDetailDialogData` mapper; extracts title, author, description, imageUrl (whiteboard preview or first media image), timestamp, commentCount, reactionCount
+- [X] T086a Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — add `mapCalloutDetailsToDialogData(callout: CalloutDetailsModelExtended): CalloutDetailDialogData` mapper; extracts title, author, description, timestamp, commentCount, reactionCount
 - [X] T087 Create `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx` — integration connector that:
   - Accepts `roomId: string`, `calloutId?: string`, `contributionId?: string`, `mode: 'collapsible' | 'full-height'`
   - **Remove `mode` prop** — now always full-height inside dialog
@@ -300,6 +299,55 @@
 - [X] T091g [P] Accessibility audit — all CRD Space components pass `src/crd/CLAUDE.md` checklist
 - [X] T091h [P] Verify zero MUI imports in `src/crd/` — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`
 - [X] T091i Update `src/crd/components/index.md` component inventory
+
+---
+
+## Phase 15b: PostCard Contributions Refactor
+
+**Goal**: Remove contribution rendering logic from PostCard. Contributions are rendered by a new `ContributionsPreviewConnector` in the integration layer, passed to PostCard via a `contributionsPreview` slot. This makes PostCard generic and contribution-type-agnostic.
+
+- [ ] T200 Refactor `src/crd/components/space/PostCard.tsx`:
+  - Remove `PostType` values `'collection'` and `'call-for-whiteboards'` — simplify to `'text' | 'whiteboard'`
+  - Remove `contentPreview.items` and `contentPreview.whiteboards` from `PostCardData` — replace `contentPreview` with `framingImageUrl?: string` (whiteboard framing preview only)
+  - Remove the "Collection preview" and "Call-for-whiteboards preview" rendering blocks (lines ~175-239)
+  - Add `contributionsPreview?: ReactNode` prop — rendered after the description/framing area, before `children`
+  - Keep whiteboard framing preview (single image with "Open Whiteboard" overlay) — this is framing, not contributions
+  - Remove `onContributionPreviewClick` prop (no longer needed — contribution click handling is in the connector)
+  - Update `typeIcons` and `typeLabels` to only have `'text'` and `'whiteboard'`
+  - **Acceptance**: PostCard has zero knowledge of contribution types; `contributionsPreview` slot renders whatever the integration layer provides; whiteboard framing preview still works
+  - **Dependencies**: none
+
+- [ ] T201 Create `src/main/crdPages/space/callout/ContributionsPreviewConnector.tsx`:
+  - Integration connector rendered by `LazyCalloutItem` into PostCard's `contributionsPreview` slot
+  - Calls `useCalloutContributions` with `pageSize: 4` and the callout's primary contribution type
+  - Maps contributions to `ContributionCardData[]` via `mapAnyContributionToCardData`
+  - Renders up to 4 items using the appropriate CRD contribution component per type:
+    - `CalloutContributionType.Whiteboard` → grid of `ContributionWhiteboardCard` (image + title)
+    - `CalloutContributionType.Post` → grid of `ContributionPostCard` (title + author + date)
+    - `CalloutContributionType.Memo` → grid of `ContributionMemoCard` (markdown preview + title)
+    - `CalloutContributionType.Link` → `ContributionLinkList` (vertical link list, not cards)
+  - When `total > 4`: renders only the first 3 contributions + a "+N more" button (where N = total - 3) as the 4th slot. The "+N more" button calls `onShowAll` callback (which opens the callout detail dialog)
+  - Layout: responsive grid (2 cols on sm+, 1 col on mobile) for card-type contributions; vertical stack for links
+  - Props: `callout: CalloutDetailsModelExtended`, `onShowAll: () => void`
+  - Follows the same pattern as `CalloutPollConnector` (integration connector rendered into a PostCard slot)
+  - **Acceptance**: Contributions render inside PostCard via slot; 1-4 items shown inline; "+N more" opens dialog; link contributions render as list; zero contribution logic in PostCard
+  - **Dependencies**: T200
+
+- [ ] T202 Update `src/main/crdPages/space/callout/LazyCalloutItem.tsx`:
+  - Remove `enrichPostDataWithContributions` function entirely
+  - Remove direct `useCalloutContributions` call (it moves into `ContributionsPreviewConnector`)
+  - Render `<ContributionsPreviewConnector>` into PostCard's `contributionsPreview` prop when the callout has contributions enabled
+  - Pass `onShowAll={() => openDialog()}` so "+N more" opens the callout detail dialog
+  - Simplify `PostCardData` construction — no more `contentPreview.items` or `contentPreview.whiteboards`
+  - **Acceptance**: LazyCalloutItem is simpler; contribution data flow is fully in the connector; dialog opens on "+N more" click
+  - **Dependencies**: T200, T201
+
+- [ ] T203 Update `src/main/crdPages/space/dataMappers/calloutDataMapper.ts`:
+  - Simplify `mapFramingTypeToPostType` — remove `'collection'` and `'call-for-whiteboards'` cases; return `'whiteboard'` for whiteboard framing, `'text'` for everything else
+  - Update `PostCardData` type import to match the simplified version
+  - Remove `buildContentPreview` — replace with direct `framingImageUrl` extraction from whiteboard framing
+  - **Acceptance**: Mapper produces simplified PostCardData with `framingImageUrl` instead of `contentPreview`
+  - **Dependencies**: T200
 
 ---
 

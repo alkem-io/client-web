@@ -79,6 +79,40 @@ space data and callbacks from the consumer; all data fetching is external.
 
 ---
 
+## whiteboard/
+
+### WhiteboardEditorShell (`whiteboard/WhiteboardEditorShell.tsx`)
+
+Full-screen dialog shell for the whiteboard editor. Accepts `title`, `titleExtra`, `headerActions`, `children` (canvas slot), and `footer` as ReactNode props. Used by both multi-user (collaborative) and single-user (save mode) whiteboard contexts.
+
+### WhiteboardDisplayName (`whiteboard/WhiteboardDisplayName.tsx`)
+
+Inline-editable title with three modes: read-only (plain text), view (text + edit button), edit (input + save/cancel). Supports save loading state.
+
+### WhiteboardCollabFooter (`whiteboard/WhiteboardCollabFooter.tsx`)
+
+Multi-user editor footer with delete button, readonly reason message slot, restart collaboration button, guest contributions warning badge, and guest access badge slot.
+
+### WhiteboardSaveFooter (`whiteboard/WhiteboardSaveFooter.tsx`)
+
+Single-user editor footer with Delete (left) and Save (right, primary variant with loading spinner) buttons. Used for template editing and callout creation.
+
+### PreviewSettingsDialog (`whiteboard/PreviewSettingsDialog.tsx`)
+
+Preview mode selector dialog with 3 mode buttons (Auto, Custom, Fixed). Each rendered as a bordered card with lucide-react icon, title, and description. Selected mode highlighted with primary border.
+
+### PreviewCropDialog (`whiteboard/PreviewCropDialog.tsx`)
+
+Image crop/zoom/pan dialog using react-image-crop. Renders a canvas-exported Blob as an img, with aspect-ratio-constrained crop overlay, scroll-wheel zoom (1x-8x), and pointer-drag pan. Reset/Cancel/Confirm actions.
+
+### JoinWhiteboardDialog (`whiteboard/JoinWhiteboardDialog.tsx`)
+
+Guest name prompt dialog for public whiteboard access. Welcome text, name input with validation, "Join as Guest" primary button, "Sign In to Alkemio" outline button.
+
+### WhiteboardErrorState (`whiteboard/WhiteboardErrorState.tsx`)
+
+Centered error display with AlertCircle icon, title, message, and optional retry button. Used for 404 and 500 states on the public whiteboard page.
+
 ## forms/markdown/
 
 ### MarkdownEditor (`forms/markdown/MarkdownEditor.tsx`)

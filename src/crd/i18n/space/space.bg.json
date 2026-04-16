@@ -52,6 +52,7 @@
     "mediaGallery": "Медийна галерия",
     "memo": "Бележка",
     "moreWhiteboards": "+{{count}} още",
+    "moreContributions": "+{{count}} още",
     "vote": "Гласувай",
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",

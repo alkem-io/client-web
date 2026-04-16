@@ -130,10 +130,12 @@ function extractAuthor(createdBy: ContributionAuthorBase | null | undefined) {
 }
 
 export function mapAnyContributionToCardData(item: AnyContributionItem): ContributionCardData | undefined {
+  // Use `item.id` (contribution wrapper ID) — this is the ID the backend uses
+  // to look up a contribution inside a callout (e.g. WhiteboardFromCallout query).
   if (item.post) {
     const post = item.post;
     return {
-      id: post.id,
+      id: item.id,
       type: 'post',
       title: post.profile.displayName,
       description: post.profile.description ?? undefined,
@@ -149,7 +151,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
   if (item.whiteboard) {
     const wb = item.whiteboard;
     return {
-      id: wb.id,
+      id: item.id,
       type: 'whiteboard',
       title: wb.profile.displayName,
       href: wb.profile.url,
@@ -162,7 +164,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
   if (item.memo) {
     const memo = item.memo;
     return {
-      id: memo.id,
+      id: item.id,
       type: 'memo',
       title: memo.profile.displayName,
       href: memo.profile.url,
@@ -175,7 +177,7 @@ export function mapAnyContributionToCardData(item: AnyContributionItem): Contrib
   if (item.link) {
     const link = item.link;
     return {
-      id: link.id,
+      id: item.id,
       type: 'link',
       title: link.profile.displayName,
       linkUrl: link.uri,

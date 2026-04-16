@@ -8,7 +8,7 @@
 
 **Goal**: CRD components for the public whiteboard page: join dialog, error state. Plus the i18n namespace.
 
-- [ ] T1 [P] Create `src/crd/i18n/whiteboard/whiteboard.en.json` with keys:
+- [X] T1 [P] Create `src/crd/i18n/whiteboard/whiteboard.en.json` with keys:
   - `join.welcome` ("Welcome to"), `join.title` ("Join Whiteboard"), `join.description` ("Enter your name to join..."), `join.placeholder` ("Your name"), `join.guestNameLabel` ("Guest display name"), `join.joinButton` ("Join as Guest"), `join.joiningButton` ("Joining..."), `join.signInButton` ("Sign In to Alkemio")
   - `error.notFound.title` ("Whiteboard Not Found"), `error.notFound.message` ("This whiteboard doesn't exist or is no longer available."), `error.serverError.title` ("Something Went Wrong"), `error.serverError.message` ("We couldn't load this whiteboard. Please try again."), `error.retry` ("Try Again")
   - `editor.editDisplayName` ("Edit title"), `editor.saveDisplayName` ("Save title"), `editor.cancelEdit` ("Cancel editing"), `editor.delete` ("Delete whiteboard"), `editor.restart` ("Restart collaboration"), `editor.guestContributionsWarning` ("Guest contributions are enabled"), `editor.closeWhiteboard` ("Close whiteboard")
@@ -17,24 +17,24 @@
   - **Acceptance**: JSON is valid, all keys present with English values
   - **Dependencies**: none
 
-- [ ] T2 [P] Create translation files for remaining languages: `src/crd/i18n/whiteboard/whiteboard.{bg,de,es,fr,nl}.json` — mirror structure of T1 with AI-assisted translations
+- [X] T2 [P] Create translation files for remaining languages: `src/crd/i18n/whiteboard/whiteboard.{bg,de,es,fr,nl}.json` — mirror structure of T1 with AI-assisted translations
   - **Files**: 5 new files
   - **Acceptance**: All 5 files have identical key structure to English version
   - **Dependencies**: T1
 
-- [ ] T3 Register `crd-whiteboard` namespace in `src/core/i18n/config.ts` under `crdNamespaceImports` with lazy imports for all 6 languages; add type declaration in `@types/i18next.d.ts`
+- [X] T3 Register `crd-whiteboard` namespace in `src/core/i18n/config.ts` under `crdNamespaceImports` with lazy imports for all 6 languages; add type declaration in `@types/i18next.d.ts`
   - **File**: modified (2 files)
   - **Acceptance**: `useTranslation('crd-whiteboard')` works in CRD components; lazy loading triggers on first use
   - **Dependencies**: T1
 
-- [ ] T4 [P] Create `src/crd/components/whiteboard/JoinWhiteboardDialog.tsx`
+- [X] T4 [P] Create `src/crd/components/whiteboard/JoinWhiteboardDialog.tsx`
   - **File**: new
   - **Description**: Guest name prompt dialog using CRD Dialog primitive. Layout: welcome subtitle (text-muted-foreground), large title (text-3xl font-medium text-primary), description text, name input, "Join as Guest" primary button, "Sign In" outline button. Internal `useState` for name value and validation error. Validates on change (non-empty after trim). Submit calls `onSubmit(trimmedName)`. Sign-in calls `onSignIn`. Join button disabled while `submitting || empty || hasError`. Uses `useTranslation('crd-whiteboard')` for all text. `aria-labelledby` on dialog pointing to title. `aria-label` on input. `aria-busy` + `disabled` on submit button while submitting.
   - **Props**: `open: boolean`, `onSubmit: (name: string) => void`, `onSignIn: () => void`, `submitting?: boolean`, `validate?: (name: string) => string | undefined`
   - **Acceptance**: Dialog renders with CRD styling; name validation works; submit/sign-in callbacks fire; loading state disables button; zero MUI imports; all text via `t()`; accessible (aria-labelledby, aria-label on input, aria-busy on button)
   - **Dependencies**: T3
 
-- [ ] T5 [P] Create `src/crd/components/whiteboard/WhiteboardErrorState.tsx`
+- [X] T5 [P] Create `src/crd/components/whiteboard/WhiteboardErrorState.tsx`
   - **File**: new
   - **Description**: Centered error display. Layout: `flex flex-col items-center justify-center min-h-screen p-6 text-center`. `AlertCircle` icon from lucide-react (64px, `text-destructive`). Title (`text-2xl font-bold`). Message (`text-muted-foreground max-w-[600px]`). Retry button (CRD Button, hidden if `onRetry` not provided).
   - **Props**: `title: string`, `message: string`, `onRetry?: () => void`
@@ -49,7 +49,7 @@
 
 **Goal**: Wire CRD components into the public whiteboard route with feature toggle.
 
-- [ ] T6 Create `src/main/crdPages/whiteboard/CrdPublicWhiteboardPage.tsx`
+- [X] T6 Create `src/main/crdPages/whiteboard/CrdPublicWhiteboardPage.tsx`
   - **File**: new
   - **Description**: Integration component replacing `src/main/public/whiteboard/PublicWhiteboardPage.tsx`. Same logic structure: `GuestSessionProvider` wrapper, inner `CrdPublicWhiteboardPageContent` component. Uses `useGuestSession`, `useGuestWhiteboardAccess`, `useGuestAnalytics`, `useCurrentUserLightQuery` (all reused unchanged). Renders:
     - Loading: `<div class="w-screen h-screen overflow-hidden relative"><Loading /></div>` (reuse existing `Loading` component)
@@ -62,7 +62,7 @@
   - **Acceptance**: Public whiteboard page works end-to-end: join dialog → whiteboard editor. Guest name persists in sessionStorage (`alkemio_guest_name`). Derived anonymized names work for authenticated users (e.g., "John Doe" → "John D."). Analytics events fire (`trackWhiteboardLoadSuccess`, `trackGuestNameSubmitted`, `trackDerivedNameUsed`). Error states display correctly. Sign-in redirects to login URL with return path preserved.
   - **Dependencies**: T4, T5
 
-- [ ] T7 Update `src/main/routing/TopLevelRoutes.tsx` — add CRD toggle for the public whiteboard route:
+- [X] T7 Update `src/main/routing/TopLevelRoutes.tsx` — add CRD toggle for the public whiteboard route:
   - Lazy import: `const CrdPublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/whiteboard/CrdPublicWhiteboardPage'))`
   - Route: `{crdEnabled ? <CrdPublicWhiteboardPage /> : <PublicWhiteboardPage />}` (NOT inside CrdLayoutWrapper — immersive full-screen experience)
   - **File**: modified
@@ -77,7 +77,7 @@
 
 **Goal**: CRD replacement for the WhiteboardDialog chrome. The Excalidraw canvas and all collaboration infrastructure stay unchanged.
 
-- [ ] T8 [P] Create `src/crd/components/whiteboard/WhiteboardDisplayName.tsx`
+- [X] T8 [P] Create `src/crd/components/whiteboard/WhiteboardDisplayName.tsx`
   - **File**: new
   - **Description**: Inline-editable title with three modes:
     - `readOnly`: `<h2 class="text-lg font-semibold truncate">{displayName}</h2>`
@@ -88,7 +88,7 @@
   - **Acceptance**: Three modes render correctly; edit input auto-focuses; Enter saves; Escape cancels; loading state on save; zero MUI imports
   - **Dependencies**: T3
 
-- [ ] T9 [P] Create `src/crd/components/whiteboard/WhiteboardCollabFooter.tsx`
+- [X] T9 [P] Create `src/crd/components/whiteboard/WhiteboardCollabFooter.tsx`
   - **File**: new
   - **Description**: Footer bar. Layout: `flex items-center justify-between px-4 py-2 border-t border-border flex-wrap gap-2`.
     - Left: optional delete button (`<Button variant="ghost" size="sm" className="text-destructive">` with `Trash2` icon), optional `readonlyMessage` (ReactNode), optional restart button (`<Button variant="outline" size="sm">`)
@@ -97,7 +97,7 @@
   - **Acceptance**: All slots render conditionally; delete button disabled when `deleteDisabled`; guest warning styled as bordered badge; zero MUI imports; all visible text via `useTranslation('crd-whiteboard')`
   - **Dependencies**: T3
 
-- [ ] T10 [P] Create `src/crd/components/whiteboard/WhiteboardEditorShell.tsx`
+- [X] T10 [P] Create `src/crd/components/whiteboard/WhiteboardEditorShell.tsx`
   - **File**: new
   - **Description**: Full-screen dialog shell using CRD Dialog primitive. Layout:
     - Dialog overlay: `bg-background/80 backdrop-blur-sm`
@@ -112,7 +112,7 @@
   - **Acceptance**: Dialog opens full-screen and windowed modes; Excalidraw canvas renders in content area; header shows title + actions; footer renders; close works via button and Escape; focus trapping works (Radix Dialog default); verify no conflict with Excalidraw internal focus by testing canvas click after dialog open; zero MUI imports
   - **Dependencies**: T3
 
-- [ ] T11 Create `src/main/crdPages/whiteboard/whiteboardFooterMapper.ts`
+- [X] T11 Create `src/main/crdPages/whiteboard/whiteboardFooterMapper.ts`
   - **File**: new
   - **Description**: Pure mapper function `mapWhiteboardFooterProps(params) => Partial<WhiteboardFooterProps>`. Resolves:
     - `canDelete`: from authorization privileges + `preventWhiteboardDeletion` flag
@@ -123,7 +123,7 @@
   - **Acceptance**: Pure function, no React imports needed, maps domain state to flat props correctly
   - **Dependencies**: none
 
-- [ ] T12 Create `src/main/crdPages/whiteboard/CrdWhiteboardDialog.tsx`
+- [X] T12 Create `src/main/crdPages/whiteboard/CrdWhiteboardDialog.tsx`
   - **File**: new
   - **Description**: Integration component replacing MUI `WhiteboardDialog`. Same interface (`WhiteboardDialogProps` shape). Renders:
     1. `CollaborativeExcalidrawWrapper` with same entities/actions/options (unchanged)
@@ -142,7 +142,7 @@
   - **Acceptance**: Whiteboard opens and collaborates identically to MUI version. CRD shell renders around Excalidraw. All actions work: save on close, delete, display name edit, template import, share, fullscreen, preview settings. Real-time collaboration unaffected.
   - **Dependencies**: T10, T11
 
-- [ ] T13 Create `src/main/crdPages/whiteboard/CrdWhiteboardView.tsx`
+- [X] T13 Create `src/main/crdPages/whiteboard/CrdWhiteboardView.tsx`
   - **File**: new
   - **Description**: Integration component replacing MUI `WhiteboardView`. Same interface (`WhiteboardViewProps` shape). Maps authorization to `CrdWhiteboardDialog` props:
     - Calls `useWhiteboardViewState` (reused, unchanged) for privileges, guest access, actions
@@ -159,14 +159,14 @@
 
 **Goal**: CRD support for single-user whiteboards (template editing, callout creation with whiteboard framing).
 
-- [ ] T15 [P] Create `src/crd/components/whiteboard/WhiteboardSaveFooter.tsx`
+- [X] T15 [P] Create `src/crd/components/whiteboard/WhiteboardSaveFooter.tsx`
   - **File**: new
   - **Description**: Single-user footer bar. Layout: `flex items-center justify-between px-4 py-2 border-t border-border`. Left: Delete button (`<Button variant="ghost" size="sm" className="text-destructive">` with `Trash2` icon, hidden if `onDelete` not provided). Right: Save button (`<Button variant="default">` with `Save` icon from lucide-react, `saving` prop shows spinner, `saveDisabled` prop disables). Uses `useTranslation('crd-whiteboard')` for button labels.
   - **Props**: `onDelete?: () => void`, `onSave: () => void`, `saving?: boolean`, `saveDisabled?: boolean`
   - **Acceptance**: Delete appears conditionally; Save shows loading state; zero MUI imports; all text via `t()`
   - **Dependencies**: T3
 
-- [ ] T16 Create `src/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog.tsx`
+- [X] T16 Create `src/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog.tsx`
   - **File**: new
   - **Description**: Integration component replacing MUI `SingleUserWhiteboardDialog`. Same interface. Renders:
     1. `ExcalidrawWrapper` (NOT Collaborative) with whiteboard content + file manager
@@ -189,26 +189,26 @@
 
 **Goal**: CRD preview mode selector and crop dialog.
 
-- [ ] T17 [P] Create `src/crd/components/whiteboard/PreviewSettingsDialog.tsx`
+- [X] T17 [P] Create `src/crd/components/whiteboard/PreviewSettingsDialog.tsx`
   - **File**: new
   - **Description**: Preview mode selector dialog. CRD Dialog primitive. Renders 3 mode buttons as bordered cards: each with lucide-react icon (`Wand2`/`Crop`/`Lock`), title, description. Selected mode has `border-primary`. Loading spinner replaces icon when saving. Close button in header. Uses `useTranslation('crd-whiteboard')` for all text.
   - **Props**: `open`, `onClose`, `selectedMode: 'auto' | 'custom' | 'fixed'`, `onSelectAuto`, `onSelectCustom`, `onSelectFixed`, `loadingAuto?`, `loadingCrop?`
   - **Acceptance**: 3 modes render with correct icons; selected state highlighted; loading states work; zero MUI imports
   - **Dependencies**: T3
 
-- [ ] T18 [P] Create `src/crd/components/whiteboard/PreviewCropDialog.tsx`
+- [X] T18 [P] Create `src/crd/components/whiteboard/PreviewCropDialog.tsx`
   - **File**: new
   - **Description**: Image crop/zoom/pan dialog. CRD Dialog primitive. Content area: `react-image-crop` (`ReactCrop`) component wrapping an `<img>` rendered from a `Blob` prop (via `URL.createObjectURL`). Zoom: CRD Slider primitive (or `<input type="range">`) with 1x-8x range. Pan: pointer events on image container (pointerdown/move/up for drag). Buttons: Reset (`RotateCcw` icon), Cancel, Confirm (primary). Aspect ratio constraint from props. Internal state for crop region, zoom scale, pan offset.
   - **Props**: `open`, `onClose`, `title?`, `previewImage?: Blob`, `initialCrop?`, `aspectRatio: number`, `onCropSave: (crop) => void`
   - **Acceptance**: Image renders from Blob; crop overlay enforces aspect ratio; zoom and pan work; Reset restores default crop; Confirm passes coordinates to callback; zero MUI imports; no Excalidraw imports
   - **Dependencies**: T3
 
-- [ ] T19 Add i18n keys to `src/crd/i18n/whiteboard/whiteboard.en.json` under `preview.*`: `settings.title`, `settings.subtitle`, `modes.auto.title`, `modes.auto.description`, `modes.custom.title`, `modes.custom.description`, `modes.fixed.title`, `modes.fixed.description`, `crop.previewArea`, `crop.reset`, `crop.cancel`, `crop.confirm`; mirror to `whiteboard.{bg,de,es,fr,nl}.json`
+- [X] T19 Add i18n keys to `src/crd/i18n/whiteboard/whiteboard.en.json` under `preview.*`: `settings.title`, `settings.subtitle`, `modes.auto.title`, `modes.auto.description`, `modes.custom.title`, `modes.custom.description`, `modes.fixed.title`, `modes.fixed.description`, `crop.previewArea`, `crop.reset`, `crop.cancel`, `crop.confirm`; mirror to `whiteboard.{bg,de,es,fr,nl}.json`
   - **Files**: modified (6 files)
   - **Acceptance**: All preview-related i18n keys present in all 6 languages
   - **Dependencies**: T1
 
-- [ ] T14 Update `src/main/crdPages/whiteboard/CrdWhiteboardDialog.tsx` — replace the MUI `WhiteboardPreviewSettingsDialog` import with CRD `PreviewSettingsDialog` + `PreviewCropDialog`. Wire: `onSelectAuto` calls `updateWhiteboardPreviewSettings({ mode: Auto })`, `onSelectCustom`/`onSelectFixed` opens the crop dialog. Crop dialog receives preview image Blob from `getWhiteboardPreviewImage(excalidrawAPI)` (integration layer call), passes crop coordinates back via `onCropSave`.
+- [X] T14 Update `src/main/crdPages/whiteboard/CrdWhiteboardDialog.tsx` — replace the MUI `WhiteboardPreviewSettingsDialog` import with CRD `PreviewSettingsDialog` + `PreviewCropDialog`. Wire: `onSelectAuto` calls `updateWhiteboardPreviewSettings({ mode: Auto })`, `onSelectCustom`/`onSelectFixed` opens the crop dialog. Crop dialog receives preview image Blob from `getWhiteboardPreviewImage(excalidrawAPI)` (integration layer call), passes crop coordinates back via `onCropSave`.
   - **File**: modified
   - **Acceptance**: Preview settings in the multi-user editor use CRD dialogs. Auto/Custom/Fixed modes work. Crop dialog shows canvas export. Zero MUI preview settings imports remaining.
   - **Dependencies**: T12, T17, T18
@@ -221,12 +221,12 @@
 
 **Goal**: Complete the public page migration and add demo app preview.
 
-- [ ] T20 Update `src/main/crdPages/whiteboard/CrdPublicWhiteboardPage.tsx` — replace the temporary MUI `WhiteboardDialog` import with `CrdWhiteboardDialog`. Map the same props. Remove the MUI import comment.
+- [X] T20 Update `src/main/crdPages/whiteboard/CrdPublicWhiteboardPage.tsx` — replace the temporary MUI `WhiteboardDialog` import with `CrdWhiteboardDialog`. Map the same props. Remove the MUI import comment.
   - **File**: modified
   - **Acceptance**: Public whiteboard page is fully CRD end-to-end (join dialog, error state, editor shell). Zero MUI imports in the file.
   - **Dependencies**: T12
 
-- [ ] T21 [P] Create `src/crd/app/pages/WhiteboardPage.tsx` — demo page rendering `WhiteboardEditorShell` with:
+- [X] T21 [P] Create `src/crd/app/pages/WhiteboardPage.tsx` — demo page rendering `WhiteboardEditorShell` with:
   - A static PNG screenshot as `children`. Export a real whiteboard canvas screenshot and save as `src/crd/app/data/whiteboard-screenshot.png`. Render as `<img src={screenshotUrl} className="w-full h-full object-contain" alt="Whiteboard preview" />`.
   - `WhiteboardDisplayName` in read-only mode with mock title "Design Workshop"
   - Mock header action buttons (placeholder icons using lucide-react)
@@ -237,7 +237,7 @@
   - **Acceptance**: Demo page renders at `/whiteboard` in `pnpm crd:dev`. Shows realistic whiteboard editor layout with screenshot. No `@alkemio/excalidraw` in the demo app bundle.
   - **Dependencies**: T10, T15
 
-- [ ] T22 Update `src/crd/app/CrdApp.tsx` — add route for `WhiteboardPage`
+- [X] T22 Update `src/crd/app/CrdApp.tsx` — add route for `WhiteboardPage`
   - **File**: modified
   - **Dependencies**: T21
 
@@ -247,15 +247,15 @@
 
 ## Phase 7: Verification + Cleanup
 
-- [ ] T23 [P] Verify zero forbidden imports in all new `src/crd/components/whiteboard/` files — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`, `@alkemio/excalidraw`
+- [X] T23 [P] Verify zero forbidden imports in all new `src/crd/components/whiteboard/` files — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`, `@alkemio/excalidraw`
   - **Acceptance**: Zero matches
   - **Dependencies**: T18
 
-- [ ] T24 [P] Update `src/crd/components/index.md` component inventory — add all whiteboard components: `WhiteboardEditorShell`, `WhiteboardDisplayName`, `WhiteboardCollabFooter`, `WhiteboardSaveFooter`, `PreviewSettingsDialog`, `PreviewCropDialog`, `JoinWhiteboardDialog`, `WhiteboardErrorState`
+- [X] T24 [P] Update `src/crd/components/index.md` component inventory — add all whiteboard components: `WhiteboardEditorShell`, `WhiteboardDisplayName`, `WhiteboardCollabFooter`, `WhiteboardSaveFooter`, `PreviewSettingsDialog`, `PreviewCropDialog`, `JoinWhiteboardDialog`, `WhiteboardErrorState`
   - **Acceptance**: Inventory reflects all new components
   - **Dependencies**: T18
 
-- [ ] T25 [P] Run `pnpm biome check --write` on all new/modified files; run `pnpm vitest run` — all tests must pass
+- [X] T25 [P] Run `pnpm biome check --write` on all new/modified files; run `pnpm vitest run` — all tests must pass
   - **Acceptance**: No lint errors; all existing tests pass
   - **Dependencies**: T22
 

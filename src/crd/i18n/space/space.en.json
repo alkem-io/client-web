@@ -55,6 +55,7 @@
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} more",
+    "moreContributions": "+{{count}} more",
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",

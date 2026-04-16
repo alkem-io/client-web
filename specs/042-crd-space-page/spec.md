@@ -110,8 +110,9 @@ Callouts use a two-phase loading strategy that mirrors the existing MUI implemen
 **CRD integration pattern:**
 - `CalloutListConnector` receives light callout data and renders a `LazyCalloutItem` per callout
 - `LazyCalloutItem` (integration layer) calls `useCalloutInView`, renders `PostCardSkeleton` while loading, then maps detail data to `PostCardData` via `mapCalloutDetailsToPostCard` and renders `PostCard`
+- `LazyCalloutItem` renders a `ContributionsPreviewConnector` into PostCard's `contributionsPreview` slot — this connector decides how to render contribution previews using the appropriate CRD contribution components (`ContributionGrid`, `ContributionWhiteboardCard`, `ContributionPostCard`, `ContributionMemoCard`, `ContributionLinkList`)
 - `SpaceFeed` (CRD component) accepts a `children` slot for lazy-rendered items, keeping it unaware of the loading mechanism
-- The CRD `PostCard` component is pure — it receives complete props and renders, no loading state awareness needed
+- The CRD `PostCard` component is pure — it receives complete props and renders, no loading state awareness needed. Contribution rendering is entirely handled by the integration layer via slots.
 
 This approach avoids fetching detailed content for callouts the user never scrolls to, matching the performance characteristics of the MUI implementation.
 
@@ -430,7 +431,7 @@ The tab navigation bar includes action buttons for Activity (contribution histor
 
 ### User Story 10 - Callout Contributions (Priority: P2)
 
-Within a callout block, users see contribution cards displayed in an expandable grid. Contributions come in 4 types: Post (title, author, date, comment count), Whiteboard (preview thumbnail), Memo (markdown preview), and Link (URL with name). The grid shows up to 2 rows (10 cards) collapsed, with an expand button for more. Users with contribute access can create new contributions via type-specific forms. Selecting a contribution shows its preview inline or in an expanded view with navigation between contributions.
+Within a callout block, users see contribution previews rendered by the integration layer into a PostCard slot. Contributions come in 4 types: Post (title, author, date, comment count), Whiteboard (preview thumbnail), Memo (markdown preview), and Link (URL with name). Up to 4 contributions are shown inline; when there are more, the last slot shows a "+N more" button that opens the callout detail dialog where all contributions are displayed. Users with contribute access can create new contributions via type-specific forms. PostCard itself has zero knowledge of contribution types — all contribution rendering is handled by `ContributionsPreviewConnector` in the integration layer.
 
 **Why this priority**: Contributions are the interactive content within callouts. Displaying and creating them completes the core callout experience.
 
@@ -442,9 +443,9 @@ Within a callout block, users see contribution cards displayed in an expandable 
 2. **Given** a callout with Whiteboard contributions, **When** it renders, **Then** whiteboard cards show a preview thumbnail and title
 3. **Given** a callout with Memo contributions, **When** it renders, **Then** memo cards show a markdown preview and title
 4. **Given** a callout with Link contributions, **When** it renders, **Then** links display with name, URL, and optional description
-5. **Given** more than 10 contributions, **When** the grid renders collapsed, **Then** 2 rows of cards are visible with an "Expand" button showing the total count
+5. **Given** more than 4 contributions, **When** the preview renders, **Then** 3 contribution cards are visible plus a "+N more" button (N = total - 3) that opens the callout detail dialog showing all contributions
 6. **Given** a user with contribute access, **When** clicking the create button, **Then** a type-specific creation form opens (title, description, tags for posts; name for whiteboards)
-7. **Given** a user clicks a contribution card, **When** the preview loads, **Then** the contribution content displays inline with author info, creation date, and navigation controls to adjacent contributions
+7. **Given** a user clicks a contribution card, **When** the preview loads, **Then** the callout detail dialog opens showing the contribution with author info, creation date, and navigation controls to adjacent contributions
 8. **Given** a callout allows link contributions, **When** the link section renders, **Then** a list of link contributions displays with add capability for authorized users
 
 ---
@@ -716,14 +717,14 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 
 #### Callout Contributions
 
-- **FR-074**: Contributions MUST render as cards in an expandable grid: up to 2 rows (10 cards at 5 per row on desktop) when collapsed, with an expand button showing the remaining count
+- **FR-074**: Contributions MUST render via the integration layer's `ContributionsPreviewConnector` into PostCard's `contributionsPreview` slot — PostCard has zero knowledge of contribution types. Up to 4 contributions are shown inline; when there are more than 4, the 4th slot renders as a "+N more" button (N = total - 3) that opens the callout detail dialog where all contributions are shown
 - **FR-075**: Post contribution cards MUST show title, author avatar, creation date, description preview, tags, and comment count
 - **FR-076**: Whiteboard contribution cards MUST show a preview thumbnail (with fallback icon if unavailable) and title
 - **FR-077**: Memo contribution cards MUST show a markdown preview and title
 - **FR-078**: Link contributions MUST display as a list with link name, URL, and optional description; authorized users MUST be able to add new links
 - **FR-079**: Selecting a contribution card MUST display its content in a preview area with author info, timestamp, edit/share actions, and navigation controls to adjacent contributions
 - **FR-080**: Authorized users MUST be able to create contributions via type-specific forms: title + description + tags (Post/Memo), name (Whiteboard), or URL + name + description (Link)
-- **FR-081**: The contribution grid MUST be responsive: 5 columns on desktop, 3 on tablet, 1 on mobile
+- **FR-081**: The contribution preview MUST be responsive: 2 columns on sm+ screens, 1 column on mobile; up to 4 items shown (3 items + "+N more" button when total > 4)
 
 #### Callout Templates
 

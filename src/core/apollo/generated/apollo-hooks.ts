@@ -1075,6 +1075,10 @@ export const CalloutDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
     }
   }
 }

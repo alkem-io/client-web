@@ -186,7 +186,7 @@ Note: `WhiteboardDetails`, `WhiteboardPreviewImage`, `CollabState`, `Identifiabl
 ### PreviewSettingsDialog
 
 ```typescript
-type PreviewMode = 'auto' | 'custom' | 'fixed';
+type PreviewMode = 'AUTO' | 'CUSTOM' | 'FIXED';
 
 type PreviewSettingsDialogProps = {
   open: boolean;
