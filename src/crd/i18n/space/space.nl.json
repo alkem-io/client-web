@@ -52,6 +52,7 @@
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
+    "moreContributions": "+{{count}} meer",
     "vote": "Stemmen",
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",

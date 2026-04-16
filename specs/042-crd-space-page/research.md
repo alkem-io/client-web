@@ -24,6 +24,8 @@
 - Iframe embedding: Unnecessary complexity, current portal pattern works
 - Wrapping WhiteboardPreview in MUI: Would bring MUI inline into `.crd-root` (preflight conflict)
 
+**Update (2026-04-15)**: This decision has been **revised** in [whiteboard/research.md](./whiteboard/research.md) (R-WB-1). The dialog **chrome** (header, footer, display name) is being migrated to CRD via a slot pattern, while the Excalidraw collaboration infrastructure stays unchanged. The inline previews remain CRD as originally decided.
+
 ## R3: Rich Text Rendering vs Editing
 
 **Decision**: Read-only markdown → CRD `MarkdownContent` component. Tiptap editor → integration layer wraps existing component.

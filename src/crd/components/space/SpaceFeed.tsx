@@ -40,7 +40,7 @@ export function SpaceFeed({
 }: SpaceFeedProps) {
   const { t } = useTranslation('crd-space');
 
-  const hasContent = children || posts.length > 0;
+  const hasContent = Boolean(children) || posts.length > 0;
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.feedRegion')}>
@@ -71,7 +71,7 @@ export function SpaceFeed({
         <p className="text-sm text-muted-foreground py-8 text-center">{t('feed.noCallouts')}</p>
       )}
 
-      {/* Content: children (lazy items) or posts (pre-mapped) */}
+      {/* Content: children (lazy items) or posts (pre-mapped in the demo app) */}
       {children ??
         posts.map(post => (
           <PostCard
