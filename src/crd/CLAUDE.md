@@ -129,6 +129,33 @@ import { PostCard } from '@/crd/components/space/PostCard';
 import { Button } from '@/crd/primitives';
 ```
 
+### 7. Use `date-fns`, not `dayjs`
+
+Inside `src/crd/` and inside CRD-feature integration code under `src/main/crdPages/`, **use `date-fns` exclusively** for date formatting, parsing, arithmetic, and comparators. Do NOT import `dayjs` in these layers — it is reserved for the legacy domain code under `src/domain/` (which we are progressively migrating away from).
+
+**Why:**
+- `react-day-picker` (the calendar primitive) requires `date-fns` as a peer dependency, so it's already in the bundle.
+- `date-fns` accepts `locale` as a per-call option, which is concurrency-safe under React 19. `dayjs.locale()` mutates global state and is unsafe across simultaneously-rendering components in different languages.
+- Mixing both in the same layer doubles the bundle for no functional benefit.
+
+```typescript
+// GOOD
+import { addMinutes, format, isAfter, isSameDay, startOfDay } from 'date-fns';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+
+const locale = resolveDateFnsLocale(i18n.language);
+const startOfToday = startOfDay(new Date());
+const endsAt = format(addMinutes(start, 30), 'p', { locale });
+
+// BAD — dayjs anywhere in CRD or crdPages
+import dayjs from 'dayjs';
+const startOfToday = dayjs().startOf('day');
+```
+
+**Locale helper.** Always resolve `date-fns` locales via `resolveDateFnsLocale(i18n.language)` from `@/crd/lib/dateFnsLocale.ts` rather than re-declaring a `LOCALE_BY_LANG` map in each component. The shared helper is the single source of truth for the supported-language → date-fns Locale mapping.
+
+**Cross-layer boundary.** When a CRD page consumer needs to call into a domain hook that returns dayjs values (e.g., `src/domain/timeline/calendar/utils/icsUtils.ts`'s `formatDateTimeUtc(dayjs.Dayjs)`), wrap or inline a JS Date equivalent locally instead of importing dayjs into the CRD/crdPages layer. The domain code itself stays on dayjs until that file is itself migrated.
+
 ---
 
 ## Accessibility (WCAG 2.1 AA)

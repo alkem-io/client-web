@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Espacio principal", "homeSpaceSettings": "Configuración del espacio principal" },
+  "banner": {
+    "homeSpace": "Espacio principal",
+    "homeSpaceSettings": "Configuración del espacio principal"
+  },
   "tabs": {
     "dashboard": "Panel",
     "community": "Comunidad",
@@ -27,7 +30,104 @@
     "communityGuidelines": "Directrices de la comunidad",
     "postIndex": "Índice de publicaciones",
     "readMore": "Leer más",
-    "addEvent": "Añadir evento"
+    "addEvent": "Añadir evento",
+    "eventDateRelative": {
+      "today": "Hoy",
+      "tomorrow": "Mañana",
+      "in_days_one": "en 1 día",
+      "in_days_other": "en {{count}} días"
+    }
+  },
+  "calendar": {
+    "title": "Eventos",
+    "addEvent": "Añadir evento",
+    "editEvent": "Editar evento",
+    "eventDetail": "Evento: {{title}}",
+    "noUpcomingEvents": "No hay eventos próximos",
+    "pastEvents": "Eventos pasados",
+    "back": "Atrás",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "deleteConfirm": {
+      "title": "Eliminar evento",
+      "body": "¿Estás seguro de que quieres eliminar \"{{title}}\" de este {{entity}}?",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "fields": {
+      "displayName": "Título",
+      "type": "Tipo",
+      "date": "Fecha",
+      "startTime": "Hora de inicio",
+      "endTime": "Hora de fin",
+      "duration": "Duración",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} hora",
+        "hours_other": "{{count}} horas",
+        "hoursMinutes": "{{hours}}h {{minutes}}min"
+      },
+      "wholeDay": "Día completo",
+      "description": "Descripción",
+      "location": "Ubicación",
+      "tags": "Etiquetas",
+      "visibleOnParentCalendar": "Visible en el calendario principal",
+      "endsAt": "termina a las {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "El título es obligatorio",
+      "typeRequired": "El tipo es obligatorio",
+      "invalidDuration": "Duración no válida",
+      "endBeforeStart": "El fin debe ser posterior al inicio",
+      "descriptionTooLong": "La descripción es demasiado larga"
+    },
+    "type": {
+      "DEADLINE": "Plazo",
+      "EVENT": "Evento",
+      "MEETING": "Reunión",
+      "MILESTONE": "Hito",
+      "OTHER": "Otro",
+      "TRAINING": "Capacitación",
+      "unknown": "Evento"
+    },
+    "addToCalendar": {
+      "trigger": "Añadir al calendario",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "ics": "Descargar ICS",
+      "exportAll": "Exportar próximos eventos a ICS",
+      "loading": "Cargando…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Mes anterior",
+      "nextMonth": "Mes siguiente",
+      "pickDate": "Elegir una fecha",
+      "dayWithEvents_one": "{{date}}, 1 evento",
+      "dayWithEvents_other": "{{date}}, {{count}} eventos"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Día completo"
+    },
+    "details": {
+      "comments": "Comentarios",
+      "references": "Referencias",
+      "tags": "Etiquetas",
+      "loadingEvent": "Cargando evento…",
+      "subspaceLabel": "en {{name}}",
+      "createdBy": "por {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Espacio",
+      "subspace": "Subespacio"
+    },
+    "notFound": {
+      "title": "Evento no encontrado",
+      "body": "Este evento ya no existe o ha sido eliminado.",
+      "backToList": "Volver a eventos"
+    }
   },
   "feed": {
     "addPost": "Añadir publicación",
@@ -211,7 +311,8 @@
     "count": "{{count}} comentarios",
     "count_one": "1 comentario",
     "loading": "Cargando comentarios...",
-    "empty": "Sin comentarios aún"
+    "empty": "Sin comentarios aún",
+    "unknownUser": "Usuario desconocido"
   },
   "dialogs": {
     "cancel": "Cancelar"
