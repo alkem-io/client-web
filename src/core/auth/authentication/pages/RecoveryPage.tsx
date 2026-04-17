@@ -68,6 +68,11 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
   const hasEmailSentNotice = recoveryFlow?.ui.messages?.some(message => message.type === 'info') ?? false;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    // Cooldown only applies to the email-request stage. The code stage must be
+    // free to submit the recovery code immediately, even if the cooldown is active.
+    if (!isEmailStage) {
+      return;
+    }
     if (cooldownRemaining > 0) {
       event.preventDefault();
       return;
