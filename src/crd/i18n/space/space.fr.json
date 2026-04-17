@@ -170,7 +170,9 @@
   "framing": {
     "newWhiteboard": "Nouveau tableau blanc",
     "readyToCreate": "Prêt à être créé",
+    "configured": "Configuré",
     "configure": "Configurer",
+    "edit": "Modifier",
     "memo": "Mémo",
     "richTextEditor": "Éditeur de texte enrichi"
   },

@@ -170,7 +170,9 @@
   "framing": {
     "newWhiteboard": "Nueva pizarra",
     "readyToCreate": "Listo para crear",
+    "configured": "Configurado",
     "configure": "Configurar",
+    "edit": "Editar",
     "memo": "Nota",
     "richTextEditor": "Editor de texto enriquecido"
   },
