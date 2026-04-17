@@ -20,7 +20,7 @@ description: "Task list for CRD Space About Dialog"
 
 ## Path Conventions
 
-Paths are absolute, rooted at the repository: `/Users/borislavkolev/WebstormProjects/client-web/`. References to `src/...` below are relative to that root.
+Paths are relative to the repository root. References to `src/...` below follow this convention.
 
 ---
 

@@ -50,7 +50,6 @@ export function SpaceAboutDialog({
       <DialogContent
         className="w-full sm:max-w-4xl h-[95vh] p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl rounded-xl"
         aria-describedby="space-about-dialog-description"
-
       >
         {/* Sticky header */}
         <div className="shrink-0 bg-background flex items-start justify-between gap-3 px-6 py-4 border-b border-border z-20">

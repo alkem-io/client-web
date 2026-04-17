@@ -125,8 +125,8 @@ export default function CrdSpaceAboutPage() {
     })),
   };
 
-  const whyTitle = t(`context.${space.level}.why.title` as const);
-  const whoTitle = t(`context.${space.level}.who.title` as const);
+  const whyTitle = t(`about.context.${space.level}.why` as const, { ns: 'crd-space' });
+  const whoTitle = t(`about.context.${space.level}.who` as const, { ns: 'crd-space' });
 
   const lockTooltipSlot = !permissions.canRead ? (
     <Tooltip>

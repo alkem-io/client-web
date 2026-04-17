@@ -153,22 +153,26 @@ export function SpaceAboutView({
           {data.leadUsers.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.leadUsers')}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {data.leadUsers.map(lead => (
-                  <LeadCard key={lead.href} lead={lead} />
+                  <li key={lead.href}>
+                    <LeadCard lead={lead} />
+                  </li>
                 ))}
-              </div>
+              </ul>
             </section>
           )}
 
           {data.leadOrganizations.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.leadOrganizations')}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {data.leadOrganizations.map(lead => (
-                  <LeadCard key={lead.href} lead={lead} />
+                  <li key={lead.href}>
+                    <LeadCard lead={lead} />
+                  </li>
                 ))}
-              </div>
+              </ul>
             </section>
           )}
         </>

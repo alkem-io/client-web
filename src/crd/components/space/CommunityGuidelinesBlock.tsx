@@ -142,7 +142,7 @@ function Header({
           variant="ghost"
           size="icon"
           onClick={onEditClick}
-          aria-label={editLabel ?? 'Edit'}
+          aria-label={editLabel}
           className="-mr-2"
         >
           <Pencil className="w-4 h-4" aria-hidden="true" />
