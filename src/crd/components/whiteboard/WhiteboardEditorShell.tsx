@@ -1,9 +1,8 @@
-import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { type ReactNode, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Dialog, DialogOverlay, DialogPortal } from '@/crd/primitives/dialog';
+import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal } from '@/crd/primitives/dialog';
 
 type WhiteboardEditorShellProps = {
   open: boolean;
@@ -29,6 +28,7 @@ export function WhiteboardEditorShell({
   className,
 }: WhiteboardEditorShellProps) {
   const { t } = useTranslation('crd-whiteboard');
+  const titleId = useId();
 
   return (
     <Dialog
@@ -39,8 +39,8 @@ export function WhiteboardEditorShell({
     >
       <DialogPortal>
         <DialogOverlay className="bg-background/80 backdrop-blur-sm" />
-        <DialogPrimitive.Content
-          aria-label={t('editor.closeWhiteboard')}
+        <DialogContentRaw
+          aria-labelledby={titleId}
           onInteractOutside={e => e.preventDefault()}
           onPointerDownOutside={e => e.preventDefault()}
           onEscapeKeyDown={e => {
@@ -57,7 +57,7 @@ export function WhiteboardEditorShell({
         >
           {/* Header */}
           <div className="flex items-center gap-2 px-4 py-2 border-b border-border shrink-0">
-            <div className="flex-1 min-w-0 flex items-center gap-2">
+            <div id={titleId} className="flex-1 min-w-0 flex items-center gap-2">
               {title}
               {titleExtra}
             </div>
@@ -79,7 +79,7 @@ export function WhiteboardEditorShell({
 
           {/* Footer */}
           {footer && <div className="shrink-0">{footer}</div>}
-        </DialogPrimitive.Content>
+        </DialogContentRaw>
       </DialogPortal>
     </Dialog>
   );

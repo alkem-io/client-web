@@ -217,9 +217,9 @@ const CrdWhiteboardDialog = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
     if (whiteboard) {
+      await actions.onDelete(whiteboard);
       setDeleteDialogOpen(false);
       actions.onCancel();
-      await actions.onDelete(whiteboard);
     }
   });
 
@@ -283,42 +283,49 @@ const CrdWhiteboardDialog = ({
               onSubmit={() => {}}
               validationSchema={whiteboardValidationSchema}
             >
-              <WhiteboardEditorShell
-                open={options.show}
-                fullscreen={options.fullscreen}
-                onClose={onClose}
-                title={
-                  <WhiteboardDisplayName
-                    displayName={whiteboard.profile.displayName}
-                    readOnly={options.readOnlyDisplayName}
-                    editing={isEditingName}
-                    onEdit={() => setIsEditingName(true)}
-                    onSave={async newName => {
-                      await actions.onChangeDisplayName(whiteboard.id, newName);
-                      setIsEditingName(false);
-                    }}
-                    onCancel={() => setIsEditingName(false)}
-                  />
-                }
-                titleExtra={
-                  <WhiteboardDialogTemplatesLibrary
-                    editModeEnabled={!!editModeEnabled && mode === 'write'}
-                    disabled={!isSceneInitialized}
-                    onImportTemplate={handleImportTemplate}
-                  />
-                }
-                headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
-                footer={
-                  <WhiteboardCollabFooter
-                    {...footerProps}
-                    onDelete={() => setDeleteDialogOpen(true)}
-                    onRestart={restartCollaboration}
-                    guestAccessBadge={undefined}
-                  />
-                }
-              >
-                {children}
-              </WhiteboardEditorShell>
+              {({ values, setFieldValue }) => (
+                <WhiteboardEditorShell
+                  open={options.show}
+                  fullscreen={options.fullscreen}
+                  onClose={onClose}
+                  title={
+                    <WhiteboardDisplayName
+                      displayName={whiteboard.profile.displayName}
+                      value={values.profile.displayName}
+                      onChange={name => setFieldValue('profile.displayName', name)}
+                      readOnly={options.readOnlyDisplayName}
+                      editing={isEditingName}
+                      onEdit={() => setIsEditingName(true)}
+                      onSave={async () => {
+                        await actions.onChangeDisplayName(whiteboard.id, values.profile.displayName);
+                        setIsEditingName(false);
+                      }}
+                      onCancel={() => {
+                        setFieldValue('profile.displayName', whiteboard.profile.displayName);
+                        setIsEditingName(false);
+                      }}
+                    />
+                  }
+                  titleExtra={
+                    <WhiteboardDialogTemplatesLibrary
+                      editModeEnabled={!!editModeEnabled && mode === 'write'}
+                      disabled={!isSceneInitialized}
+                      onImportTemplate={handleImportTemplate}
+                    />
+                  }
+                  headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
+                  footer={
+                    <WhiteboardCollabFooter
+                      {...footerProps}
+                      onDelete={() => setDeleteDialogOpen(true)}
+                      onRestart={restartCollaboration}
+                      guestAccessBadge={undefined}
+                    />
+                  }
+                >
+                  {children}
+                </WhiteboardEditorShell>
+              )}
             </Formik>
           );
         }}

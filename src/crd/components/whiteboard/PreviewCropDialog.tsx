@@ -76,11 +76,6 @@ export function PreviewCropDialog({
   const [isPanning, setIsPanning] = useState(false);
   const panPointerRef = useRef<number | null>(null);
   const panOriginRef = useRef<{ x: number; y: number } | null>(null);
-  const imgPanRef = useRef(imgPan);
-
-  useEffect(() => {
-    imgPanRef.current = imgPan;
-  }, [imgPan]);
 
   const [imageObjectUrl, setImageObjectUrl] = useState<string>();
 
@@ -211,7 +206,7 @@ export function PreviewCropDialog({
                   crossOrigin="anonymous"
                   alt={t('preview.crop.previewArea')}
                   style={{
-                    transform: `translate(${imgPanRef.current.x}px, ${imgPanRef.current.y}px) scale(${imgScale})`,
+                    transform: `translate(${imgPan.x}px, ${imgPan.y}px) scale(${imgScale})`,
                   }}
                   onLoad={event => onLoad(event.target as HTMLImageElement)}
                 />

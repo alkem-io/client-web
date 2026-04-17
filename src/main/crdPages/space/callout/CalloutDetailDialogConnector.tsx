@@ -66,11 +66,10 @@ export function CalloutDetailDialogConnector({
     initialWhiteboardContributionId
   );
 
-  // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
+  // Sync with the parent's initial contribution ID (e.g. feed thumbnail click).
+  // Unconditional so that a reset to undefined also clears the overlay state.
   useEffect(() => {
-    if (initialWhiteboardContributionId) {
-      setWhiteboardContributionId(initialWhiteboardContributionId);
-    }
+    setWhiteboardContributionId(initialWhiteboardContributionId);
   }, [initialWhiteboardContributionId]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;

@@ -244,9 +244,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
                   },
                 }}
                 actions={{
-                  onUpdate: excState => {
-                    handleUpdate(whiteboard, excState);
-                  },
+                  onUpdate: excState => handleUpdate(whiteboard, excState),
                   onInitApi: setExcalidrawAPI,
                 }}
               />

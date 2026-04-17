@@ -1,8 +1,9 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, Suspense, useState } from 'react';
 import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { Separator } from '@/crd/primitives/separator';
 import CollaborationSettings from '@/domain/collaboration/realTimeCollaboration/CollaborationSettings/CollaborationSettings';
@@ -69,63 +70,65 @@ const CrdWhiteboardView = ({
   };
 
   return (
-    <CrdWhiteboardDialog
-      entities={{ whiteboard }}
-      lastSuccessfulSavedDate={lastSuccessfulSavedDate}
-      actions={{
-        onCancel: handleCancel,
-        setConsecutiveSaveErrors,
-        onUpdate: actions.onUpdate,
-        onDelete: async () => {
-          if (!whiteboard) return;
-          await actions.onDelete(whiteboard);
-          onWhiteboardDeleted?.();
-        },
-        setLastSuccessfulSavedDate,
-        onChangeDisplayName: actions.onChangeDisplayName,
-        onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
-      }}
-      options={{
-        canEdit: hasUpdateContentPrivileges,
-        canDelete: hasDeletePrivileges,
-        show: Boolean(whiteboardId),
-        dialogTitle: displayName,
-        readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
-        fullscreen: isFullscreen,
-        previewSettingsDialogOpen,
-        headerActions: (collabState: CollabState) => (
-          <>
-            <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>
-              <WhiteboardGuestAccessControls whiteboard={whiteboard}>
-                <WhiteboardGuestAccessSection guestAccess={guestAccess} />
-              </WhiteboardGuestAccessControls>
-              {hasUpdatePrivileges && (
-                <>
-                  {hasPublicSharePrivilege && <Separator />}
-                  <CollaborationSettings
-                    element={whiteboard}
-                    elementType="whiteboard"
-                    guestAccessEnabled={guestAccess.enabled}
-                  />
-                </>
+    <Suspense fallback={<Loading />}>
+      <CrdWhiteboardDialog
+        entities={{ whiteboard }}
+        lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+        actions={{
+          onCancel: handleCancel,
+          setConsecutiveSaveErrors,
+          onUpdate: actions.onUpdate,
+          onDelete: async () => {
+            if (!whiteboard) return;
+            await actions.onDelete(whiteboard);
+            onWhiteboardDeleted?.();
+          },
+          setLastSuccessfulSavedDate,
+          onChangeDisplayName: actions.onChangeDisplayName,
+          onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
+        }}
+        options={{
+          canEdit: hasUpdateContentPrivileges,
+          canDelete: hasDeletePrivileges,
+          show: Boolean(whiteboardId),
+          dialogTitle: displayName,
+          readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
+          fullscreen: isFullscreen,
+          previewSettingsDialogOpen,
+          headerActions: (collabState: CollabState) => (
+            <>
+              <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>
+                <WhiteboardGuestAccessControls whiteboard={whiteboard}>
+                  <WhiteboardGuestAccessSection guestAccess={guestAccess} />
+                </WhiteboardGuestAccessControls>
+                {hasUpdatePrivileges && (
+                  <>
+                    {hasPublicSharePrivilege && <Separator />}
+                    <CollaborationSettings
+                      element={whiteboard}
+                      elementType="whiteboard"
+                      guestAccessEnabled={guestAccess.enabled}
+                    />
+                  </>
+                )}
+              </ShareButton>
+
+              {!isSmallScreen && <FullscreenButton />}
+
+              <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+
+              {hasUpdatePrivileges && collabState.mode === 'write' && (
+                <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
               )}
-            </ShareButton>
-
-            {!isSmallScreen && <FullscreenButton />}
-
-            <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
-
-            {hasUpdatePrivileges && collabState.mode === 'write' && (
-              <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
-            )}
-          </>
-        ),
-      }}
-      state={{
-        loadingWhiteboardValue: loadingWhiteboards,
-        ...actionsState,
-      }}
-    />
+            </>
+          ),
+        }}
+        state={{
+          loadingWhiteboardValue: loadingWhiteboards,
+          ...actionsState,
+        }}
+      />
+    </Suspense>
   );
 };
 
