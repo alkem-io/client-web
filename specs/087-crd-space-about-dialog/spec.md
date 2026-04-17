@@ -25,11 +25,11 @@ This feature brings the CRD About experience to feature-parity with the MUI vers
 
 ### User Story 1 - Visitor explores a Space they may want to join (Priority: P1)
 
-A visitor (anonymous or authenticated non-member) navigates to a Space's About URL and needs to learn enough about the Space — its purpose, focus, leaders, host, community guidelines, and key metrics — to decide whether to apply or join. They open the About dialog, scan the sections, and either dismiss it (returning to where they came from) or proceed to apply.
+A visitor (anonymous or authenticated non-member) navigates to a Space's About URL — either directly or via the "About this Space" button in the sidebar — and needs to learn enough about the Space — its purpose, focus, leaders, host, community guidelines, and key metrics — to decide whether to apply or join. They open the About dialog, scan the sections, and either dismiss it (returning to where they came from) or proceed to apply.
 
 **Why this priority**: This is the foundational journey. Without it, there is no About dialog at all. Every other journey builds on this presentation surface.
 
-**Independent Test**: Open `/:spaceId/about` on a Space the user does not belong to. Confirm the About content (name, tagline, description, location, metrics, leaders, host, why, who, guidelines, references) is displayed in a dialog, the dialog can be closed (X button, Esc, backdrop click) returning the user to the previous page, and the previously visible Space content remains intact behind the overlay.
+**Independent Test**: Open `/:spaceId/about` on a Space the user does not belong to (via direct URL or the sidebar button). Confirm the About content (name, tagline, description, location, metrics, leaders, host, why, who, guidelines, references) is displayed in a dialog, the dialog can be closed (X button, Esc, backdrop click) returning the user to the previous page, and the previously visible Space content remains intact behind the overlay.
 
 **Acceptance Scenarios**:
 
@@ -37,6 +37,7 @@ A visitor (anonymous or authenticated non-member) navigates to a Space's About U
 2. **Given** the About dialog is open, **When** the user clicks the close button, presses Esc, or clicks outside the dialog, **Then** the dialog closes and the user returns to the page they came from (or to the Space home page if they entered the About URL directly).
 3. **Given** a Space with sparse data (some sections missing), **When** the dialog renders, **Then** missing sections are omitted entirely without leaving empty placeholders.
 4. **Given** the user has no read privilege on the Space, **When** the dialog opens, **Then** a lock icon with explanatory tooltip appears next to the title; the tooltip contains a "Learn how to apply" link that, when activated, focuses or triggers the apply call-to-action.
+5. **Given** the user is on the Space's Dashboard (Home) tab or a Knowledge Base / custom tab, **When** they click the "About this Space" button in the left sidebar, **Then** the About dialog opens. The button is not shown on the Community or Subspaces tabs.
 
 ---
 
@@ -148,7 +149,8 @@ A user scanning the About dialog sees a truncated preview of the Community Guide
 - **FR-022**: The dialog MUST work on mobile viewports: content scrolls within the dialog, dismiss controls remain accessible, and no element overlaps the dismiss area.
 - **FR-023**: Toggling the CRD design system on or off and reloading the page MUST swap which version of the dialog renders without requiring further configuration.
 - **FR-024**: This feature applies to top-level Spaces (Level 0) only in this iteration. With the CRD toggle on, navigating to a subspace About URL (e.g., `/:spaceId/challenges/:subspaceNameId/about`) MUST continue to render the legacy MUI subspace About dialog. The CRD dialog's level-aware behavior MUST nonetheless support all three Space levels in its data so that future subspace migration requires no further work in this layer.
-- **FR-025**: When any user-initiated mutation triggered from the About dialog (apply submission, direct join, invitation acceptance/rejection, host message send) fails, the system MUST surface the failure via the platform's existing toast/notification mechanism. The originating flow surface MUST remain open so the user can retry without re-entering data. No partial state change MUST be reflected in the About dialog until the mutation succeeds.
+- **FR-025**: When any user-initiated mutation triggered from the About dialog (apply submission, direct join, invitation acceptance/rejection) fails, the system MUST surface the failure via the platform's existing toast/notification mechanism. The originating flow surface MUST remain open so the user can retry without re-entering data. No partial state change MUST be reflected in the About dialog until the mutation succeeds.
+- **FR-026**: The Space sidebar on the Dashboard (Home) tab and Knowledge Base / custom tabs MUST display an "About this Space" button below the description block. Clicking the button MUST navigate to the Space's About URL (`/:spaceId/about`) and open the About dialog. The button MUST NOT appear on the Community or Subspaces tabs (matching the prototype design).
 
 ### Key Entities *(include if feature involves data)*
 
