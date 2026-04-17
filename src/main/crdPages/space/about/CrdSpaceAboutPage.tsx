@@ -1,20 +1,90 @@
-import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Lock, Mail } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { useCommunityGuidelinesQuery, useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
+import useNavigate from '@/core/routing/useNavigate';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
-import { SpaceAboutView } from '@/crd/components/space/SpaceAboutView';
+import { ApplicationSubmittedDialog } from '@/crd/components/community/ApplicationSubmittedDialog';
+import { PreApplicationDialog } from '@/crd/components/community/PreApplicationDialog';
+import { PreJoinParentDialog } from '@/crd/components/community/PreJoinParentDialog';
+import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
+import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
+import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
+import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
+import { Button } from '@/crd/primitives/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
+import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import isApplicationPending from '@/domain/community/applicationButton/isApplicationPending';
+import { getMessageType } from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { buildLoginUrl, buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { ApplyDialogConnector } from './ApplyDialogConnector';
+import { InvitationDetailConnector } from './InvitationDetailConnector';
 
 export default function CrdSpaceAboutPage() {
-  const { space } = useSpace();
+  const { space, permissions } = useSpace();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const { data, loading } = useSpaceAboutDetailsQuery({
     variables: { spaceId: space.id },
     skip: !space.id,
   });
 
-  if (loading) return <LoadingSpinner />;
+  const backToParentPage = useBackWithDefaultUrl(
+    permissions.canRead ? space.about.profile.url : undefined,
+    permissions.canRead ? undefined : 2
+  );
+
+  // Apply flow state — must be declared unconditionally (React hooks rule)
+  const applyButtonRef = useRef<HTMLButtonElement>(null);
+  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
+  const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
+  const [isPreAppDialogOpen, setIsPreAppDialogOpen] = useState(false);
+  const [isPreJoinDialogOpen, setIsPreJoinDialogOpen] = useState(false);
+  const [isSubmittedDialogOpen, setIsSubmittedDialogOpen] = useState(false);
+
+  // L0-only iteration (FR-024) → parentSpaceId is undefined.
+  // Subspace migration will derive this from useSubspace().subspace.parentSpaceId.
+  const parentSpaceId: string | undefined = undefined;
+
+  const profileUrl = data?.lookup.space?.about.profile.url;
+
+  const { applicationButtonProps, loading: applyLoading } = useApplicationButton({
+    spaceId: space.id,
+    parentSpaceId,
+    onJoin: () => {
+      if (profileUrl) {
+        navigate(profileUrl);
+      }
+    },
+  });
+
+  // Direct message dialog (reused MUI portal — single permitted MUI element in this layer per plan.md Complexity Tracking)
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  // Guidelines hydration
+  const guidelinesId = data?.lookup.space?.about.guidelines.id;
+  const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
+    variables: { communityGuidelinesId: guidelinesId ?? '' },
+    skip: !guidelinesId,
+  });
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   const about = data?.lookup.space?.about;
-  if (!about) return null;
+  if (!about) {
+    return null;
+  }
 
   const profile = about.profile;
 
@@ -51,7 +121,7 @@ export default function CrdSpaceAboutPage() {
       }
     : undefined;
 
-  const aboutData = {
+  const aboutData: SpaceAboutData = {
     name: profile.displayName,
     tagline: profile.tagline ?? undefined,
     description: profile.description ?? undefined,
@@ -62,7 +132,6 @@ export default function CrdSpaceAboutPage() {
     provider,
     leadUsers,
     leadOrganizations: leadOrgs,
-    guidelines: undefined, // Guidelines only has id in the query, no text content
     references: (profile.references ?? []).map(r => ({
       name: r.name,
       uri: r.uri,
@@ -70,5 +139,179 @@ export default function CrdSpaceAboutPage() {
     })),
   };
 
-  return <SpaceAboutView data={aboutData} />;
+  const whyTitle = t(`context.${space.level}.why.title` as const);
+  const whoTitle = t(`context.${space.level}.who.title` as const);
+
+  // Lock-tooltip slot (FR-006); "Learn how to apply" link programmatically clicks the apply button.
+  const lockTooltipSlot = !permissions.canRead ? (
+    <Tooltip>
+      <TooltipTrigger asChild={true}>
+        <button
+          type="button"
+          className="inline-flex items-center justify-center text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          aria-label={t('about.lockTooltip', { ns: 'crd-space' })}
+        >
+          <Lock className="w-4 h-4" aria-hidden="true" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <Trans
+          i18nKey="components.spaceUnauthorizedDialog.message"
+          components={{
+            apply: (
+              <button
+                type="button"
+                className="underline text-primary-foreground bg-transparent border-0 cursor-pointer p-0"
+                onClick={() => {
+                  applyButtonRef.current?.click();
+                }}
+              />
+            ),
+          }}
+        />
+      </TooltipContent>
+    </Tooltip>
+  ) : undefined;
+
+  // Apply / join button (FR-007)
+  const showApplyButton = !applicationButtonProps.isMember && !applyLoading;
+  const joinSlot = showApplyButton ? (
+    <SpaceAboutApplyButton
+      ref={applyButtonRef}
+      isAuthenticated={applicationButtonProps.isAuthenticated}
+      isMember={applicationButtonProps.isMember}
+      isParentMember={applicationButtonProps.isParentMember}
+      applicationState={applicationButtonProps.applicationState}
+      userInvitation={applicationButtonProps.userInvitation}
+      parentApplicationState={applicationButtonProps.parentApplicationState}
+      canJoinCommunity={applicationButtonProps.canJoinCommunity}
+      canAcceptInvitation={applicationButtonProps.canAcceptInvitation}
+      canApplyToCommunity={applicationButtonProps.canApplyToCommunity}
+      canJoinParentCommunity={applicationButtonProps.canJoinParentCommunity}
+      canApplyToParentCommunity={applicationButtonProps.canApplyToParentCommunity}
+      loading={applicationButtonProps.loading || applyLoading}
+      onLoginClick={() => navigate(buildLoginUrl(applicationButtonProps.applyUrl))}
+      onApplyClick={() => setIsApplyDialogOpen(true)}
+      onJoinClick={() => setIsApplyDialogOpen(true)}
+      onAcceptInvitationClick={() => setIsInvitationDialogOpen(true)}
+      onApplyParentClick={() => setIsPreAppDialogOpen(true)}
+      onJoinParentClick={() => setIsPreJoinDialogOpen(true)}
+    />
+  ) : undefined;
+
+  // Contact host (FR-013); host is rendered only when there's a provider.
+  const aboutProvider = about.provider;
+  const contactHostSlot = aboutProvider ? (
+    <Button
+      type="button"
+      variant="link"
+      className="px-0 h-auto"
+      onClick={() => {
+        if (!isAuthenticated) {
+          navigate(buildSignUpUrl(globalThis.location.pathname, globalThis.location.search));
+          return;
+        }
+        const receiver = {
+          id: aboutProvider.id,
+          displayName: aboutProvider.profile?.displayName ?? '',
+          avatarUri: aboutProvider.profile?.avatar?.uri,
+          country: aboutProvider.profile?.location?.country,
+          city: aboutProvider.profile?.location?.city,
+        };
+        sendMessage(getMessageType(aboutProvider.profile?.type), receiver);
+      }}
+    >
+      <Mail className="w-4 h-4" aria-hidden="true" />
+      {t('about.contactHost', { ns: 'crd-space' })}
+    </Button>
+  ) : undefined;
+
+  // Community guidelines slot (FR-016 / FR-017)
+  const guidelines = guidelinesData?.lookup.communityGuidelines?.profile;
+  const guidelinesSlot = guidelinesId ? (
+    <CommunityGuidelinesBlock
+      displayName={guidelines?.displayName}
+      description={guidelines?.description ?? undefined}
+      references={guidelines?.references?.map(r => ({
+        name: r.name,
+        uri: r.uri,
+        description: r.description ?? undefined,
+      }))}
+      loading={guidelinesLoading}
+      canEdit={permissions.canUpdate}
+      onEditClick={() => navigate(`${buildSettingsUrl(profileUrl ?? '')}/community`)}
+    />
+  ) : undefined;
+
+  // Pre-application / Pre-join derived props
+  const preAppDialogVariant = isApplicationPending(applicationButtonProps.parentApplicationState)
+    ? 'dialog-parent-app-pending'
+    : 'dialog-apply-parent';
+
+  return (
+    <StorageConfigContextProvider locationType="space" spaceId={space.id}>
+      <SpaceAboutDialog
+        open={true}
+        onOpenChange={open => {
+          if (!open) {
+            backToParentPage();
+          }
+        }}
+        data={aboutData}
+        hasEditPrivilege={permissions.canUpdate}
+        whyTitle={whyTitle}
+        whoTitle={whoTitle}
+        lockTooltipSlot={lockTooltipSlot}
+        joinSlot={joinSlot}
+        guidelinesSlot={guidelinesSlot}
+        contactHostSlot={contactHostSlot}
+        onEditDescription={() => navigate(`${buildSettingsUrl(profileUrl ?? '')}/about#description`)}
+        onEditWhy={() => navigate(`${buildSettingsUrl(profileUrl ?? '')}/about#why`)}
+        onEditWho={() => navigate(`${buildSettingsUrl(profileUrl ?? '')}/about#who`)}
+        onEditReferences={() => navigate(`${buildSettingsUrl(profileUrl ?? '')}/about`)}
+      />
+
+      {/* Apply / join flow dialogs (CRD) */}
+      <ApplyDialogConnector
+        open={isApplyDialogOpen}
+        onOpenChange={setIsApplyDialogOpen}
+        spaceId={space.id}
+        canJoinCommunity={applicationButtonProps.canJoinCommunity}
+        onJoin={() => applicationButtonProps.onJoin()}
+        onApplied={() => setIsSubmittedDialogOpen(true)}
+      />
+      <ApplicationSubmittedDialog
+        open={isSubmittedDialogOpen}
+        onOpenChange={setIsSubmittedDialogOpen}
+        communityName={aboutData.name}
+      />
+      <InvitationDetailConnector
+        open={isInvitationDialogOpen}
+        onOpenChange={setIsInvitationDialogOpen}
+        invitation={applicationButtonProps.userInvitation}
+      />
+      <PreApplicationDialog
+        open={isPreAppDialogOpen}
+        onOpenChange={setIsPreAppDialogOpen}
+        dialogVariant={preAppDialogVariant}
+        parentCommunitySpaceLevel={applicationButtonProps.parentCommunitySpaceLevel as 'L0' | 'L1' | 'L2' | undefined}
+        parentCommunityName={applicationButtonProps.parentCommunityName}
+        subspaceName={applicationButtonProps.subspaceName}
+        parentApplicationState={applicationButtonProps.parentApplicationState}
+        applyUrl={applicationButtonProps.applyUrl}
+        parentApplyUrl={applicationButtonProps.parentUrl}
+      />
+      <PreJoinParentDialog
+        open={isPreJoinDialogOpen}
+        onOpenChange={setIsPreJoinDialogOpen}
+        parentCommunityName={applicationButtonProps.parentCommunityName}
+        parentCommunitySpaceLevel={applicationButtonProps.parentCommunitySpaceLevel as 'L0' | 'L1' | 'L2' | undefined}
+        subspaceName={applicationButtonProps.subspaceName}
+        parentApplyUrl={applicationButtonProps.parentUrl}
+      />
+
+      {/* Reused MUI direct-message dialog — rendered in portal outside .crd-root */}
+      {directMessageDialog}
+    </StorageConfigContextProvider>
+  );
 }
