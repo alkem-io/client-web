@@ -152,12 +152,17 @@
     "mediaGallery": "Медийна галерия",
     "memo": "Бележка",
     "moreWhiteboards": "+{{count}} още",
+    "moreContributions": "+{{count}} още",
     "vote": "Гласувай",
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
     "resultsCount": "{{count}} резултата",
     "clearFilters": "Изчисти филтрите",
-    "sendComment": "Изпрати коментар"
+    "sendComment": "Изпрати коментар",
+    "addResponse": "Добави отговор",
+    "createWhiteboard": "Създаване на нова бяла дъска",
+    "defaultWhiteboardName": "Нова бяла дъска",
+    "whiteboardNameLabel": "Заглавие на бялата дъска"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -169,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Нова дъска",
     "readyToCreate": "Готово за създаване",
+    "configured": "Конфигурирано",
     "configure": "Конфигурирай",
+    "edit": "Редактиране",
     "memo": "Бележка",
     "richTextEditor": "Редактор за форматиран текст"
   },
@@ -222,7 +229,54 @@
     "leadUsers": "Водещи потребители",
     "leadOrganizations": "Водещи организации",
     "guidelines": "Насоки на общността",
-    "references": "Референции"
+    "references": "Референции",
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
+    }
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted."
+    }
   },
   "mobile": {
     "more": "Още",
@@ -314,7 +368,8 @@
     "unknownUser": "Непознат потребител"
   },
   "dialogs": {
-    "cancel": "Отказ"
+    "cancel": "Отказ",
+    "create": "Създай"
   },
   "poll": {
     "status": {

@@ -63,7 +63,7 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 | `SpaceHeader.tsx` | 320px hero banner with gradient, member avatars, action icons |
 | `SpaceNavigationTabs.tsx` | Text-only horizontal scroll tabs, border-bottom active indicator |
 | `SpaceSidebar.tsx` | Variant-based sidebar (home/community/subspaces/knowledge) with sub-sections |
-| `PostCard.tsx` | Card with author+role header, 4 content types (text/whiteboard/collection/call-for-whiteboards) |
+| `PostCard.tsx` | Card with author+role header, framing preview (whiteboard image), contribution slot, children slot (polls) |
 | `SpaceFeed.tsx` | Vertical list of PostCards + "Add Post" button |
 | `SpaceMembers.tsx` | Search + role filters + paginated UserCard/OrgCard grid |
 | `SpaceSubspacesList.tsx` | Status filters + SpaceCard grid + "Create Subspace" |
@@ -124,12 +124,25 @@ CRD components use `prototype/src/app/components/space/` as the **visual design 
 | `main/crdPages/space/tabs/CrdSpaceCommunityPage.tsx` | `domain/space/.../SpaceCommunityPage.tsx` | `pages/SpaceCommunity.tsx` |
 | `main/crdPages/space/tabs/CrdSpaceSubspacesPage.tsx` | `domain/space/.../SpaceSubspacesPage.tsx` | `pages/SpaceSubspaces.tsx` |
 | `main/crdPages/space/tabs/CrdSpaceCustomTabPage.tsx` | `domain/space/.../SpaceCustomTabPage.tsx` | `pages/SpaceKnowledgeBase.tsx` |
+| **Whiteboard** (see [whiteboard/plan.md](./whiteboard/plan.md)) | | |
+| `crd/components/whiteboard/WhiteboardEditorShell` | `WhiteboardDialog` + `SingleUserWhiteboardDialog` (chrome) | — |
+| `crd/components/whiteboard/WhiteboardDisplayName` | `WhiteboardDialog/WhiteboardDisplayName` | — |
+| `crd/components/whiteboard/WhiteboardCollabFooter` | `WhiteboardDialog/WhiteboardDialogFooter` | — |
+| `crd/components/whiteboard/WhiteboardSaveFooter` | `SingleUserWhiteboardDialog` footer (Save+Delete) | — |
+| `crd/components/whiteboard/PreviewSettingsDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog` | — |
+| `crd/components/whiteboard/PreviewCropDialog` | `WhiteboardPreviewSettings/WhiteboardPreviewCustomSelectionDialog` | — |
+| `crd/components/whiteboard/JoinWhiteboardDialog` | `main/public/whiteboard/JoinWhiteboardDialog` | — |
+| `crd/components/whiteboard/WhiteboardErrorState` | `main/public/whiteboard/PublicWhiteboardError` | — |
+| `main/crdPages/whiteboard/CrdWhiteboardDialog` | `WhiteboardDialog` (multi-user, full wiring) | — |
+| `main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog` | `SingleUserWhiteboardDialog` (single-user, full wiring) | — |
+| `main/crdPages/whiteboard/CrdWhiteboardView` | `WhiteboardsManagement/WhiteboardView` | — |
+| `main/crdPages/whiteboard/CrdPublicWhiteboardPage` | `main/public/whiteboard/PublicWhiteboardPage` | — |
 
 **Design Decisions from prototype review:**
 - **D-proto-1**: 12-col grid layout (prototype grid) instead of flex sidebar+content
 - **D-proto-2**: Desktop tabs are text-only links inside the content column (no icons), matching prototype
 - **D-proto-3**: Mobile tabs use spec bottom bar with overflow drawer (not prototype's simple scroll — better mobile UX)
-- **D-proto-4**: Callouts with text/memo framing render as PostCard (prototype style); whiteboard/poll/media use custom callout components (hybrid approach)
+- **D-proto-4**: All callouts render as PostCard with slots for type-specific content: whiteboard framing shows a preview image; contributions are rendered by the integration layer via a `contributionsPreview` slot using the appropriate CRD contribution components; polls use the existing `children` slot
 - **D-proto-5**: Sidebar is a single variant-based component with extracted sub-components, matching prototype architecture
 
 ### Source Code (repository root)
@@ -144,7 +157,7 @@ src/crd/
 │   │   ├── SpaceNavigationTabs.tsx  # Desktop: text tabs with scroll. Mobile: bottom bar + drawer
 │   │   ├── SpaceSidebar.tsx         # Variant-based sidebar (home/community/subspaces/knowledge)
 │   │   ├── SpaceVisibilityNotice.tsx # Archived/Demo/Inactive notice bar
-│   │   ├── PostCard.tsx             # Callout card (author header, type badge, content preview)
+│   │   ├── PostCard.tsx             # Callout card (author header, type badge, framing preview, contribution slot, children slot)
 │   │   ├── SpaceFeed.tsx            # Vertical PostCard list + "Add Post" button
 │   │   ├── SpaceMembers.tsx         # Search + role filters + paginated member grid
 │   │   ├── SpaceSubspacesList.tsx   # Status filters + SpaceCard grid + "Create Subspace"
@@ -278,8 +291,19 @@ Tablet (600-960px): tabs above, narrower sidebar.
 Mobile (<600px): bottom tab bar with overflow drawer, single column, sidebar hidden or stacked above content.
 All via Tailwind responsive classes (`sm:`, `md:`, `lg:`), no MUI breakpoint system.
 
-### D13: Contribution grid responsive columns
-Desktop: 5 cards/row (matching current MUI). Tablet: 3 cards/row. Mobile: 1 card/row. Uses Tailwind grid with `grid-cols-[repeat(auto-fill,minmax(200px,1fr))]` or explicit breakpoints. Expand/collapse controlled by CRD component visual state.
+### D13: Contributions rendered via slot, not baked into PostCard
+PostCard does NOT know about contribution types. It provides a `contributionsPreview?: ReactNode` slot that the integration layer fills with the appropriate CRD contribution components. This separation means:
+- PostCard stays generic — it renders framing content (whiteboard preview image) and delegates everything else to slots
+- The integration layer (`ContributionsPreviewConnector`) decides which contribution components to use based on the callout's allowed contribution types: `ContributionWhiteboardCard` for whiteboards (image grid), `ContributionPostCard` for posts, `ContributionMemoCard` for memos, `ContributionLinkList` for links (rendered as a list, not cards)
+- `PostType` is simplified to `'text' | 'whiteboard'` — only the framing type matters for PostCard's internal rendering
+- The old `enrichPostDataWithContributions` function is removed; contribution data flows through the connector, not through PostCardData
+
+**Contribution preview behavior**: The connector shows up to 4 contributions inline. If there are more than 4, the last (4th) slot renders as a "+N more" button that opens the callout detail dialog. The `useCalloutContributions` hook already supports this — it's called with `pageSize: 4` and provides `total` for the "+N more" count. Full contributions are shown inside the callout detail dialog (where `setFetchAll(true)` loads everything).
+
+This follows the same pattern as polls (rendered via `children` slot by `CalloutPollConnector`) and avoids leaking GraphQL types or contribution-type logic into `src/crd/`.
+
+### D14: Contribution preview layout
+The inline contribution preview (inside PostCard) shows up to 4 items in a 2-column grid (sm+) or single column (mobile). When total > 4, the 4th slot becomes a "+N more" button. Full contributions are shown in the callout detail dialog where ContributionGrid provides the full expandable grid (5/3/1 cols, 2-row collapsed + expand button). This keeps the PostCard compact while still showing meaningful previews.
 
 ### D14: Lazy loading via IntersectionObserver
 Callout blocks load progressively as user scrolls, matching current behavior. CRD component accepts `onVisible` callback; integration layer triggers data fetch. The `useCalloutsSet` hook already supports this via `fetchMore`.

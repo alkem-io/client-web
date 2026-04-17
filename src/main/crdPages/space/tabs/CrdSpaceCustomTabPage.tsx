@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
 import { CalloutTagCloud } from '@/crd/components/callout/CalloutTagCloud';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -16,6 +18,7 @@ type CrdSpaceCustomTabPageProps = {
 
 export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTabPageProps) {
   const { space } = useSpace();
+  const navigate = useNavigate();
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -69,6 +72,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           <SpaceSidebar
             variant="knowledge"
             description={tabDescription || space.about.profile.description || ''}
+            onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
             knowledgeEntries={sidebarItems.map(item => ({
               ...item,
               type: item.type === 'whiteboard' ? ('collection' as const) : item.type,

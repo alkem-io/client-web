@@ -3,6 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
+import {
+  DefaultWhiteboardPreviewSettings,
+  type WhiteboardPreviewSettings,
+} from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 
 type CalloutFormValues = {
   title: string;
@@ -21,6 +27,12 @@ type CalloutFormValues = {
   pollAllowCustomOptions: boolean;
   pollHideResultsUntilVoted: boolean;
   pollShowVoterAvatars: boolean;
+  // Whiteboard framing — only submitted when framingType is Whiteboard
+  whiteboardContent: string;
+  whiteboardPreviewImages: WhiteboardPreviewImage[];
+  whiteboardPreviewSettings: WhiteboardPreviewSettings;
+  // Tracks whether the whiteboard has been edited at least once (vs. still the empty template)
+  whiteboardConfigured: boolean;
   notifyMembers: boolean;
 };
 
@@ -43,6 +55,10 @@ const initialValues: CalloutFormValues = {
   pollAllowCustomOptions: false,
   pollHideResultsUntilVoted: false,
   pollShowVoterAvatars: true,
+  whiteboardContent: EmptyWhiteboardString,
+  whiteboardPreviewImages: [],
+  whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
+  whiteboardConfigured: false,
   notifyMembers: false,
 };
 
