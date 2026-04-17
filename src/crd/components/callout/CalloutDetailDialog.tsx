@@ -16,7 +16,6 @@ export type CalloutDetailDialogData = {
     role?: string;
   };
   description?: string;
-  imageUrl?: string;
   timestamp?: string;
   commentCount?: number;
   reactionCount?: number;
@@ -36,6 +35,8 @@ type CalloutDetailDialogProps = {
   contributionsCount?: number;
   /** Poll rendered between description and reactions bar */
   pollSlot?: ReactNode;
+  /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
+  whiteboardFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
 };
@@ -50,6 +51,7 @@ export function CalloutDetailDialog({
   hasContributions,
   contributionsCount,
   pollSlot,
+  whiteboardFramingSlot,
   onReactionsClick,
   onShareClick,
 }: CalloutDetailDialogProps) {
@@ -132,14 +134,7 @@ export function CalloutDetailDialog({
 
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
 
-              {callout.imageUrl && (
-                <img
-                  src={callout.imageUrl}
-                  alt={callout.title}
-                  className="rounded-xl w-full max-h-[400px] object-cover shadow-sm"
-                />
-              )}
-
+              {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 

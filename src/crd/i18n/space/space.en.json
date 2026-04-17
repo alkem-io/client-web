@@ -152,12 +152,17 @@
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} more",
+    "moreContributions": "+{{count}} more",
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
     "resultsCount": "{{count}} results",
     "clearFilters": "Clear filters",
-    "sendComment": "Send comment"
+    "sendComment": "Send comment",
+    "addResponse": "Add Response",
+    "createWhiteboard": "Create new whiteboard",
+    "defaultWhiteboardName": "New Whiteboard",
+    "whiteboardNameLabel": "Whiteboard title"
   },
   "contribution": {
     "edit": "Edit",
@@ -169,7 +174,9 @@
   "framing": {
     "newWhiteboard": "New Whiteboard",
     "readyToCreate": "Ready to be created",
+    "configured": "Configured",
     "configure": "Configure",
+    "edit": "Edit",
     "memo": "Memo",
     "richTextEditor": "Rich text content editor"
   },
@@ -357,7 +364,8 @@
     "unknownUser": "Unknown user"
   },
   "dialogs": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create": "Create"
   },
   "poll": {
     "status": {

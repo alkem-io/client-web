@@ -152,12 +152,17 @@
     "mediaGallery": "Mediengalerie",
     "memo": "Notiz",
     "moreWhiteboards": "+{{count}} weitere",
+    "moreContributions": "+{{count}} mehr",
     "vote": "Abstimmen",
     "votes": "{{count}} Stimmen",
     "totalVotes": "{{count}} Stimmen insgesamt",
     "resultsCount": "{{count}} Ergebnisse",
     "clearFilters": "Filter zurücksetzen",
-    "sendComment": "Kommentar senden"
+    "sendComment": "Kommentar senden",
+    "addResponse": "Antwort hinzufügen",
+    "createWhiteboard": "Neues Whiteboard erstellen",
+    "defaultWhiteboardName": "Neues Whiteboard",
+    "whiteboardNameLabel": "Whiteboard-Titel"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -169,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Neues Whiteboard",
     "readyToCreate": "Bereit zur Erstellung",
+    "configured": "Konfiguriert",
     "configure": "Konfigurieren",
+    "edit": "Bearbeiten",
     "memo": "Notiz",
     "richTextEditor": "Rich-Text-Editor"
   },
@@ -361,7 +368,8 @@
     "unknownUser": "Unbekannter Benutzer"
   },
   "dialogs": {
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "create": "Erstellen"
   },
   "poll": {
     "status": {

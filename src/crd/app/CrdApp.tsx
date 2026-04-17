@@ -21,6 +21,7 @@ import {
 import { DashboardPage } from './pages/DashboardPage';
 import { SpacePage } from './pages/SpacePage';
 import { SpacesPage } from './pages/SpacesPage';
+import { WhiteboardPage } from './pages/WhiteboardPage';
 
 const MOCK_USER = {
   name: 'Alex Rivera',
@@ -97,6 +98,7 @@ export function CrdApp() {
           <Route path="/" element={<DashboardPage onPendingMembershipsClick={() => setShowPendingDialog(true)} />} />
           <Route path="/spaces" element={<SpacesPage />} />
           <Route path="/space/:spaceSlug" element={<SpacePage />} />
+          <Route path="/whiteboard" element={<WhiteboardPage />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>

@@ -202,6 +202,50 @@ Callout data is loaded in two phases. CRD components receive `PostCardData` whic
 - **Detail mapper** (`mapCalloutDetailsToPostCard`): produces a complete `PostCardData` with description, content previews, author, comment count
 - **Source types**: `CalloutModelLightExtended` (light, from `useCalloutsSet`) and `CalloutDetailsModelExtended` (detail, from `useCalloutDetails`)
 
+### PostCardData (exported from `src/crd/components/space/PostCard.tsx`)
+```typescript
+type PostType = 'text' | 'whiteboard';
+
+type PostCardData = {
+  id: string;
+  type: PostType;
+  author?: {
+    name: string;
+    avatarUrl?: string;
+    role?: string;
+  };
+  title: string;
+  snippet?: string;
+  timestamp?: string;
+  isDraft?: boolean;
+  /** Framing-level preview image (whiteboard framing only) */
+  framingImageUrl?: string;
+  commentCount?: number;
+};
+```
+
+`PostType` describes the callout's **framing type**, not its contribution type:
+- `'text'` — Memo/None/Link/Media/Poll framing (content is in the description or a dedicated slot like polls)
+- `'whiteboard'` — Whiteboard framing (shows a preview image with "Open Whiteboard" overlay)
+
+Contribution previews are **not part of PostCardData**. They are rendered by the integration layer into a `ReactNode` slot on PostCard (see `contributionsPreview` prop below). This keeps PostCard unaware of contribution types and lets the integration layer use the appropriate CRD contribution components (`ContributionGrid`, `ContributionWhiteboardCard`, `ContributionPostCard`, `ContributionMemoCard`, `ContributionLinkList`).
+
+PostCard accepts these additional props (not part of PostCardData):
+```typescript
+type PostCardProps = {
+  post: PostCardData;
+  onClick?: () => void;
+  onCommentsClick?: () => void;
+  onSettingsClick?: () => void;
+  onExpandClick?: () => void;
+  /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
+  contributionsPreview?: ReactNode;
+  /** Content injected after the description/preview area (e.g. poll via CalloutPollConnector) */
+  children?: ReactNode;
+  className?: string;
+};
+```
+
 ### CalloutBlockData
 ```typescript
 type CalloutBlockData = {

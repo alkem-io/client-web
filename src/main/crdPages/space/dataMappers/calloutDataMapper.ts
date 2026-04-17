@@ -1,16 +1,12 @@
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { type CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
-  switch (framingType) {
-    case CalloutFramingType.Whiteboard:
-      return 'whiteboard';
-    default:
-      return 'text';
-  }
+  if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
+  return 'text';
 }
 
 /**
@@ -31,7 +27,6 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
       ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
       : undefined,
     commentCount: callout.activity ?? 0,
-    contentPreview: undefined, // Not available in list query
   };
 }
 
@@ -41,8 +36,6 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
  */
 export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: DateFormatter): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
-
-  const contentPreview = buildContentPreview(callout);
 
   return {
     id: callout.id,
@@ -55,19 +48,11 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
       ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }
       : undefined,
     commentCount: callout.comments?.messagesCount ?? callout.activity ?? 0,
-    contentPreview,
+    framingImageUrl:
+      callout.framing.type === CalloutFramingType.Whiteboard
+        ? callout.framing.whiteboard?.profile.preview?.uri
+        : undefined,
   };
-}
-
-function buildContentPreview(callout: CalloutDetailsModelExtended): PostCardData['contentPreview'] {
-  switch (callout.framing.type) {
-    case CalloutFramingType.Whiteboard:
-      return callout.framing.whiteboard?.profile.preview?.uri
-        ? { imageUrl: callout.framing.whiteboard.profile.preview.uri }
-        : undefined;
-    default:
-      return undefined;
-  }
 }
 
 export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t: DateFormatter): PostCardData[] {
@@ -75,6 +60,11 @@ export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t:
 }
 
 export type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
+
+export function getCalloutContributionType(callout: CalloutDetailsModelExtended): CalloutContributionType | undefined {
+  const allowedTypes = callout.settings.contribution.allowedTypes;
+  return allowedTypes.length > 0 ? allowedTypes[0] : undefined;
+}
 
 export function formatRelativeDate(date: Date, t: DateFormatter): string {
   const now = new Date();
@@ -99,10 +89,6 @@ export function mapCalloutDetailsToDialogData(
     id: callout.id,
     title: callout.framing.profile.displayName,
     description: callout.framing.profile.description ?? undefined,
-    imageUrl:
-      callout.framing.type === CalloutFramingType.Whiteboard
-        ? (callout.framing.whiteboard?.profile.preview?.uri ?? undefined)
-        : undefined,
     timestamp: callout.publishedDate ? formatRelativeDate(callout.publishedDate, t) : undefined,
     author: callout.createdBy?.profile
       ? { name: callout.createdBy.profile.displayName, avatarUrl: callout.createdBy.profile.avatar?.uri }

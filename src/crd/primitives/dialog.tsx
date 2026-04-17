@@ -36,6 +36,20 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+/**
+ * Raw Radix Dialog.Content wrapper without default styling or close button.
+ * Use when a composite needs full control over header/footer layout and keyboard/outside-click handlers
+ * (e.g. blocking modals, fullscreen editor shells). Consumers must render their own close control and
+ * wrap the trigger in `Dialog` + `DialogPortal` + `DialogOverlay`.
+ */
+const DialogContentRaw = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Content ref={ref} data-slot="dialog-content-raw" className={className} {...props} />
+));
+DialogContentRaw.displayName = 'DialogContentRaw';
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { closeLabel?: string }
@@ -113,6 +127,7 @@ export {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogContentRaw,
   DialogDescription,
   DialogFooter,
   DialogHeader,
