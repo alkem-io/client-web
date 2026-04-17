@@ -130,6 +130,20 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Admin pages go under `src/main/admin`
 - CRD page integration goes under `src/main/crdPages/<pageName>/`
 
+### Browser Compatibility
+
+Only use JavaScript/CSS features with **>90% global browser support** according to [caniuse.com](https://caniuse.com). This ensures broad compatibility without requiring polyfills.
+
+**Avoid** (insufficient browser coverage):
+- `Array.prototype.at()` — use `arr[arr.length - 1]` instead of `arr.at(-1)`
+- `Object.hasOwn()` — use `Object.prototype.hasOwnProperty.call(obj, key)` or the `in` operator
+- CSS `@container` queries — use media queries or JS-based responsive logic
+- `structuredClone()` — use `JSON.parse(JSON.stringify())` or lodash `cloneDeep`
+
+**Safe to use** (>95% support): `Array.prototype.flat/flatMap`, `Object.entries/fromEntries`, optional chaining (`?.`), nullish coalescing (`??`), `Promise.allSettled`, `globalThis`, `String.prototype.replaceAll`.
+
+When in doubt, check [caniuse.com](https://caniuse.com) before introducing a newer API.
+
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
@@ -346,9 +360,11 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 084-crd-pending-memberships-dialog: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
+- 086-crd-space-timeline: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `react-day-picker@^8`, `date-fns` (peer of RDP, new), `class-variance-authority`, `lucide-react`, Apollo Client, Vite, `dayjs` (existing in domain hooks), `yup` (existing — used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
+- 042-crd-space-page: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 - 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
-- 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 
 
 ## Active Technologies
+- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `react-day-picker@^8`, `date-fns` (peer of RDP, new), `class-variance-authority`, `lucide-react`, Apollo Client, Vite, `dayjs` (existing in domain hooks), `yup` (existing — used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`) (086-crd-space-timeline)
+- N/A (frontend SPA; data via existing GraphQL queries — no schema changes) (086-crd-space-timeline)

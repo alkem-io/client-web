@@ -16,7 +16,7 @@ import {
   type SpaceExplorerSubspacesQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import type { TypedSearchResult } from '@/main/search/SearchView';
+import type { TypedSearchResult } from '@/main/search/searchTypes';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, type SpaceWithParent } from './SpaceExplorerView';
 
 export interface SpacesExplorerContainerEntities {

@@ -18,7 +18,9 @@
     "pendingMemberships": "Ausstehende Mitgliedschaften",
     "administration": "Verwaltung",
     "changeLanguage": "Sprache ändern",
-    "getHelp": "Hilfe erhalten"
+    "getHelp": "Hilfe erhalten",
+    "showGrid": "Raster anzeigen",
+    "hideGrid": "Raster ausblenden"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

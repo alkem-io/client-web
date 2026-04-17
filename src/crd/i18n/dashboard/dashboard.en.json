@@ -46,13 +46,48 @@
     "tipsAndTricks": "Tips & Tricks",
     "myActivity": "My Latest Activity",
     "mySpaceActivity": "Latest Activity in my Spaces",
-    "memberships": "My Memberships",
     "findMore": "Find more tips & tricks",
-    "findMoreUrl": "https://welcome.alkem.io/blog/",
-    "seeMoreSpaces": "See more spaces",
-    "createSpace": "Create Space",
-    "expandNode": "Expand {{name}}",
-    "collapseNode": "Collapse {{name}}"
+    "findMoreUrl": "https://welcome.alkem.io/blog/"
+  },
+  "myMembershipsPanel": {
+    "title": "My Spaces",
+    "subtitle_one": "{{count}} space you're part of",
+    "subtitle_other": "{{count}} spaces you're part of",
+    "close": "Close",
+    "searchPlaceholder": "Search your spaces...",
+    "clearSearch": "Clear search",
+    "loading": "Loading your spaces",
+    "privacy": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "expand": "Expand {{name}}",
+    "collapse": "Collapse {{name}}",
+    "subspaces_one": "{{count}} subspace",
+    "subspaces_other": "{{count}} subspaces",
+    "filter": {
+      "role": {
+        "label": "Filter by role",
+        "all": "All Roles"
+      },
+      "visibility": {
+        "label": "Filter by visibility",
+        "all": "All",
+        "public": "Public",
+        "private": "Private"
+      }
+    },
+    "role": {
+      "admin": "Admin",
+      "lead": "Lead",
+      "member": "Member"
+    },
+    "empty": {
+      "noSpaces": "You're not part of any spaces yet.",
+      "browseAll": "Browse all spaces",
+      "noMatches": "No spaces match your search.",
+      "clearFilters": "Clear filters"
+    }
   },
   "tips": {
     "items": [
@@ -90,6 +125,7 @@
   },
   "invitations": {
     "title": "Pending Invitations",
+    "loading": "Loading invitations",
     "accept": "Accept",
     "decline": "Decline",
     "noInvitations": "No pending invitations"
@@ -118,6 +154,8 @@
     "title": "Pending Memberships",
     "empty": "You don't have any open invitations or applications.",
     "loading": "Loading pending memberships",
+    "loadingInvitation": "Loading invitation",
+    "loadingApplication": "Loading application",
     "close": "Close",
     "closeDialog": "Close dialog",
     "invitationsSection": "Invitations",
@@ -131,6 +169,7 @@
       "acceptAriaLabel": "Accept invitation to {{spaceName}}",
       "join": "Join",
       "joinAriaLabel": "Join {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "View pending application for {{spaceName}}"
   }
 }
