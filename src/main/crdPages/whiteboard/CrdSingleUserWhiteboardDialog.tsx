@@ -6,23 +6,27 @@ import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
+import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { WhiteboardSaveFooter } from '@/crd/components/whiteboard/WhiteboardSaveFooter';
 import isWhiteboardContentEqual from '@/domain/collaboration/whiteboard/utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema from '@/domain/collaboration/whiteboard/validation/whiteboardFormSchema';
-// MUI preview settings — replaced with CRD version when Phase 5 ships
-import WhiteboardPreviewSettingsDialog from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import {
   DefaultWhiteboardPreviewSettings,
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import createFallbackWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardVisuals/createFallbackWhiteboardPreview';
+import getWhiteboardPreviewImage from '@/domain/collaboration/whiteboard/WhiteboardVisuals/getWhiteboardPreviewImage';
 import useGenerateWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import type {
   PreviewImageDimensions,
@@ -103,6 +107,26 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const [pendingClose, setPendingClose] = useState<{ resolve: (discard: boolean) => void } | null>(null);
+  const [selectedPreviewMode, setSelectedPreviewMode] = useState<WhiteboardPreviewMode>(
+    whiteboard.previewSettings.mode ?? WhiteboardPreviewMode.Auto
+  );
+  const [loadingPreviewAuto, setLoadingPreviewAuto] = useState(false);
+  const [loadingPreviewCrop, setLoadingPreviewCrop] = useState(false);
+  const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const [previewImageBlob, setPreviewImageBlob] = useState<Blob | undefined>();
+
+  const openCropDialogWithPreview = async () => {
+    if (!excalidrawAPI) return;
+    setCropDialogOpen(true);
+    const { image, error: imgErr } = await getWhiteboardPreviewImage(excalidrawAPI);
+    if (imgErr) {
+      logError(new Error('Error generating whiteboard preview image.'), {
+        category: TagCategoryValues.WHITEBOARD,
+      });
+    }
+    const blob = await toBlobPromise(image).catch(async () => toBlobPromise(await createFallbackWhiteboardPreview()));
+    setPreviewImageBlob(blob);
+  };
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -278,14 +302,62 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
       />
 
       {actions.onUpdatePreviewSettings && (
-        <WhiteboardPreviewSettingsDialog
-          open={options.previewSettingsDialogOpen}
-          onClose={() => actions.onClosePreviewSettingsDialog?.()}
-          onUpdate={actions.onUpdatePreviewSettings}
-          previewImageConstraints={options.previewImagesSettings?.[0]?.dimensions}
-          whiteboard={whiteboard}
-          excalidrawAPI={excalidrawAPI}
-        />
+        <>
+          <PreviewSettingsDialog
+            open={!!options.previewSettingsDialogOpen}
+            onClose={() => actions.onClosePreviewSettingsDialog?.()}
+            selectedMode={selectedPreviewMode}
+            loadingAuto={loadingPreviewAuto}
+            loadingCrop={loadingPreviewCrop}
+            onSelectAuto={async () => {
+              setSelectedPreviewMode(WhiteboardPreviewMode.Auto);
+              if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto) {
+                setLoadingPreviewAuto(true);
+                try {
+                  await actions.onUpdatePreviewSettings?.({ mode: WhiteboardPreviewMode.Auto });
+                } finally {
+                  setLoadingPreviewAuto(false);
+                }
+              }
+              actions.onClosePreviewSettingsDialog?.();
+            }}
+            onSelectCustom={async () => {
+              setSelectedPreviewMode(WhiteboardPreviewMode.Custom);
+              await openCropDialogWithPreview();
+            }}
+            onSelectFixed={async () => {
+              setSelectedPreviewMode(WhiteboardPreviewMode.Fixed);
+              await openCropDialogWithPreview();
+            }}
+          />
+
+          <PreviewCropDialog
+            open={cropDialogOpen}
+            onClose={() => {
+              setCropDialogOpen(false);
+              setPreviewImageBlob(undefined);
+              setSelectedPreviewMode(whiteboard.previewSettings.mode ?? WhiteboardPreviewMode.Auto);
+            }}
+            title={tWb(`preview.modes.${selectedPreviewMode}.title`)}
+            previewImage={previewImageBlob}
+            initialCrop={whiteboard.previewSettings.coordinates ?? undefined}
+            aspectRatio={options.previewImagesSettings?.[0]?.dimensions.aspectRatio ?? 16 / 9}
+            onCropSave={async crop => {
+              setCropDialogOpen(false);
+              setLoadingPreviewCrop(true);
+              try {
+                await actions.onUpdatePreviewSettings?.({
+                  mode: selectedPreviewMode,
+                  coordinates: crop,
+                });
+              } finally {
+                setLoadingPreviewCrop(false);
+                setPreviewImageBlob(undefined);
+              }
+              actions.onClosePreviewSettingsDialog?.();
+            }}
+          />
+        </>
       )}
     </>
   );

@@ -158,7 +158,11 @@
     "totalVotes": "{{count}} stemmen totaal",
     "resultsCount": "{{count}} resultaten",
     "clearFilters": "Filters wissen",
-    "sendComment": "Reactie verzenden"
+    "sendComment": "Reactie verzenden",
+    "addResponse": "Reactie toevoegen",
+    "createWhiteboard": "Nieuw whiteboard maken",
+    "defaultWhiteboardName": "Nieuw whiteboard",
+    "whiteboardNameLabel": "Whiteboardtitel"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -317,7 +321,8 @@
     "unknownUser": "Onbekende gebruiker"
   },
   "dialogs": {
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "create": "Maken"
   },
   "poll": {
     "status": {

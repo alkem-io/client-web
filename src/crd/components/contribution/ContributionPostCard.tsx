@@ -30,6 +30,7 @@ export function ContributionPostCard({
       type="button"
       className={cn(
         'w-full text-left p-3 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'min-h-[180px] flex flex-col',
         className
       )}
       onClick={onClick}

@@ -216,11 +216,15 @@ const CrdWhiteboardDialog = ({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
-    if (whiteboard) {
-      await actions.onDelete(whiteboard);
-      setDeleteDialogOpen(false);
-      actions.onCancel();
-    }
+    if (!whiteboard) return;
+    // Close both dialogs BEFORE awaiting the delete: the mutation evicts the whiteboard from the
+    // Apollo cache, which triggers re-renders in ancestors (e.g. WhiteboardContributionConnector)
+    // whose queries now resolve to `undefined`. Letting those re-renders happen while this dialog
+    // is still mounted crashes child hooks that read `whiteboard.profile.*`. Unmounting first
+    // avoids that race; if the mutation fails, the global Apollo error handler surfaces it.
+    setDeleteDialogOpen(false);
+    actions.onCancel();
+    await actions.onDelete(whiteboard);
   });
 
   const formikRef = useRef<FormikProps<WhiteboardFormSchema>>(null);
@@ -269,6 +273,7 @@ const CrdWhiteboardDialog = ({
           const footerProps = mapWhiteboardFooterProps({
             myPrivileges: whiteboard.authorization?.myPrivileges,
             canEdit: !!options.canEdit,
+            preventWhiteboardDeletion: !options.canDelete,
             collaboratorMode: mode,
             collaboratorModeReason: modeReason,
             guestContributionsAllowed: whiteboard.guestContributionsAllowed,

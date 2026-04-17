@@ -158,7 +158,11 @@
     "totalVotes": "{{count}} гласа общо",
     "resultsCount": "{{count}} резултата",
     "clearFilters": "Изчисти филтрите",
-    "sendComment": "Изпрати коментар"
+    "sendComment": "Изпрати коментар",
+    "addResponse": "Добави отговор",
+    "createWhiteboard": "Създаване на нова бяла дъска",
+    "defaultWhiteboardName": "Нова бяла дъска",
+    "whiteboardNameLabel": "Заглавие на бялата дъска"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -317,7 +321,8 @@
     "unknownUser": "Непознат потребител"
   },
   "dialogs": {
-    "cancel": "Отказ"
+    "cancel": "Отказ",
+    "create": "Създай"
   },
   "poll": {
     "status": {

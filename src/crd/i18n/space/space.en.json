@@ -158,7 +158,11 @@
     "totalVotes": "{{count}} total votes",
     "resultsCount": "{{count}} results",
     "clearFilters": "Clear filters",
-    "sendComment": "Send comment"
+    "sendComment": "Send comment",
+    "addResponse": "Add Response",
+    "createWhiteboard": "Create new whiteboard",
+    "defaultWhiteboardName": "New Whiteboard",
+    "whiteboardNameLabel": "Whiteboard title"
   },
   "contribution": {
     "edit": "Edit",
@@ -322,7 +326,8 @@
     "unknownUser": "Unknown user"
   },
   "dialogs": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create": "Create"
   },
   "poll": {
     "status": {

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { ContributionGrid } from '@/crd/components/contribution/ContributionGrid';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
@@ -7,13 +8,19 @@ import type { ContributionCardData } from '../dataMappers/contributionDataMapper
 type ContributionGridConnectorProps = {
   contributions: ContributionCardData[];
   onContributionClick?: (id: string) => void;
+  /** Rendered at the end of the grid — used for the "Add Response" card */
+  trailingSlot?: ReactNode;
 };
 
-export function ContributionGridConnector({ contributions, onContributionClick }: ContributionGridConnectorProps) {
-  if (contributions.length === 0) return null;
+export function ContributionGridConnector({
+  contributions,
+  onContributionClick,
+  trailingSlot,
+}: ContributionGridConnectorProps) {
+  if (contributions.length === 0 && !trailingSlot) return null;
 
   return (
-    <ContributionGrid totalCount={contributions.length}>
+    <ContributionGrid totalCount={contributions.length + (trailingSlot ? 1 : 0)}>
       {contributions.map(contribution => {
         switch (contribution.type) {
           case 'whiteboard':
@@ -50,6 +57,7 @@ export function ContributionGridConnector({ contributions, onContributionClick }
             );
         }
       })}
+      {trailingSlot}
     </ContributionGrid>
   );
 }
