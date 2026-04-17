@@ -5,6 +5,8 @@ import { MarkdownToolbar } from './MarkdownToolbar';
 import { useEditorExtensions } from './useEditorExtensions';
 import { useMarkdownEditorState } from './useMarkdownEditorState';
 import './styles.css';
+import { Suspense } from 'react';
+import { Loading } from '@/crd/components/common/Loading';
 
 type MarkdownEditorProps = {
   value: string;
@@ -15,7 +17,16 @@ type MarkdownEditorProps = {
   className?: string;
 };
 
-export function MarkdownEditor({ value, onChange, placeholder, maxLength, disabled, className }: MarkdownEditorProps) {
+export function MarkdownEditor(props: MarkdownEditorProps) {
+  // crd-markdown translation is lazy loaded, to avoid a loading state in a higher component use always this lazy loaded wrapper
+  return (
+    <Suspense fallback={<Loading />}>
+      <MarkdownEditorLazy {...props} />
+    </Suspense>
+  );
+}
+
+function MarkdownEditorLazy({ value, onChange, placeholder, maxLength, disabled, className }: MarkdownEditorProps) {
   const { t } = useTranslation('crd-markdown');
 
   const editorOptions = useEditorExtensions({

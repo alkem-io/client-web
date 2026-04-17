@@ -13941,7 +13941,14 @@ export type UpdateCalloutContentMutation = {
       | {
           __typename?: 'User';
           id: string;
-          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -14345,7 +14352,14 @@ export type UpdateCalloutVisibilityMutation = {
       | {
           __typename?: 'User';
           id: string;
-          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -15863,7 +15877,14 @@ export type CreateCalloutMutation = {
       | {
           __typename?: 'User';
           id: string;
-          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -16392,7 +16413,14 @@ export type CalloutDetailsQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    }
+                  | undefined;
               }
             | undefined;
           classification?:
@@ -16828,7 +16856,14 @@ export type CalloutDetailsFragment = {
     | {
         __typename?: 'User';
         id: string;
-        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            }
+          | undefined;
       }
     | undefined;
 };

@@ -152,12 +152,17 @@
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
+    "moreContributions": "+{{count}} meer",
     "vote": "Stemmen",
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
     "resultsCount": "{{count}} resultaten",
     "clearFilters": "Filters wissen",
-    "sendComment": "Reactie verzenden"
+    "sendComment": "Reactie verzenden",
+    "addResponse": "Reactie toevoegen",
+    "createWhiteboard": "Nieuw whiteboard maken",
+    "defaultWhiteboardName": "Nieuw whiteboard",
+    "whiteboardNameLabel": "Whiteboardtitel"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -169,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Nieuw whiteboard",
     "readyToCreate": "Klaar om aan te maken",
+    "configured": "Geconfigureerd",
     "configure": "Configureren",
+    "edit": "Bewerken",
     "memo": "Memo",
     "richTextEditor": "Teksteditor met opmaak"
   },
@@ -314,7 +321,8 @@
     "unknownUser": "Onbekende gebruiker"
   },
   "dialogs": {
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "create": "Maken"
   },
   "poll": {
     "status": {
