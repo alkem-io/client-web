@@ -53,6 +53,8 @@ interface KratosUIProps extends PropsWithChildren {
   flowType?: 'login' | 'registration' | 'settings' | 'recovery' | 'verification';
   onInputChange?: (node: UiNode, value: string) => void;
   submitDisabled?: boolean;
+  beforeInputs?: ReactNode;
+  submitLabelOverride?: (originalLabel: string | undefined) => ReactNode;
 }
 
 const toAlertVariant = (type: string) => {
@@ -100,6 +102,8 @@ export const KratosUI: FC<KratosUIProps> = ({
   flowType,
   onInputChange,
   submitDisabled = false,
+  beforeInputs,
+  submitLabelOverride,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -279,6 +283,7 @@ export const KratosUI: FC<KratosUIProps> = ({
             key={key}
             node={node}
             disabled={disableInputs || submitDisabled}
+            labelOverride={submitLabelOverride}
           />
         );
       case 'checkbox':
@@ -318,6 +323,7 @@ export const KratosUI: FC<KratosUIProps> = ({
         minWidth={theme => ({ sm: theme.spacing(36) })}
       >
         <KratosMessages messages={ui.messages} />
+        {beforeInputs}
         {nodesByGroup.default.map(toUiControl)}
         {nodesByGroup.password.map(toUiControl)}
         {resetPasswordElement}

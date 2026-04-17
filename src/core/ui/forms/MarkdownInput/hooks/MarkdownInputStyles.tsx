@@ -8,6 +8,16 @@ export const MarkdownInputStyles = (
         '& :first-child': {
           marginTop: 0,
         },
+        // Restore browser-default list rendering that Tailwind v4 preflight strips globally.
+        'ul, ol': {
+          paddingInlineStart: '2rem',
+          marginBlock: '0.5rem',
+        },
+        ul: { listStyleType: 'disc' },
+        ol: { listStyleType: 'decimal' },
+        'ul ul, ol ul': { listStyleType: 'circle' },
+        'ul ul ul, ol ol ul': { listStyleType: 'square' },
+        li: { display: 'list-item' },
         blockquote: {
           borderLeft: '3px solid gray',
           margin: '1.5rem 0',
