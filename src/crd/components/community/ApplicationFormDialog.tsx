@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -75,24 +75,18 @@ export function ApplicationFormDialog({
     }
   }, [open, questions]);
 
-  const schema = useMemo(
-    () => buildSchema(questions, t('apply.required'), n => t('apply.maxLength', { count: n })),
-    [questions, t]
-  );
+  const schema = buildSchema(questions, t('apply.required'), n => t('apply.maxLength', { count: n }));
 
-  const errors = useMemo(() => {
-    const errs: Record<string, string> = {};
-    for (const q of questions) {
-      try {
-        schema.validateSyncAt(q.question, answers);
-      } catch (err) {
-        if (err instanceof yup.ValidationError) {
-          errs[q.question] = err.message;
-        }
+  const errors: Record<string, string> = {};
+  for (const q of questions) {
+    try {
+      schema.validateSyncAt(q.question, answers);
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        errors[q.question] = err.message;
       }
     }
-    return errs;
-  }, [questions, schema, answers]);
+  }
 
   const isValid = Object.keys(errors).length === 0;
   const isJoinMode = mode === 'join';

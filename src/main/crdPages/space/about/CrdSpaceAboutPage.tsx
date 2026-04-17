@@ -12,16 +12,12 @@ import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidel
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
-import { Button } from '@/crd/primitives/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import isApplicationPending from '@/domain/community/applicationButton/isApplicationPending';
-import { getMessageType } from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { buildLoginUrl, buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { ApplyDialogConnector } from './ApplyDialogConnector';
 import { InvitationDetailConnector } from './InvitationDetailConnector';
 
@@ -29,7 +25,6 @@ export default function CrdSpaceAboutPage() {
   const { space, permissions } = useSpace();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuthenticated } = useCurrentUserContext();
 
   const { data, loading } = useSpaceAboutDetailsQuery({
     variables: { spaceId: space.id },
@@ -41,7 +36,6 @@ export default function CrdSpaceAboutPage() {
     permissions.canRead ? undefined : 2
   );
 
-  // Apply flow state — must be declared unconditionally (React hooks rule)
   const applyButtonRef = useRef<HTMLButtonElement>(null);
   const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
   const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
@@ -49,8 +43,6 @@ export default function CrdSpaceAboutPage() {
   const [isPreJoinDialogOpen, setIsPreJoinDialogOpen] = useState(false);
   const [isSubmittedDialogOpen, setIsSubmittedDialogOpen] = useState(false);
 
-  // L0-only iteration (FR-024) → parentSpaceId is undefined.
-  // Subspace migration will derive this from useSubspace().subspace.parentSpaceId.
   const parentSpaceId: string | undefined = undefined;
 
   const profileUrl = data?.lookup.space?.about.profile.url;
@@ -65,12 +57,6 @@ export default function CrdSpaceAboutPage() {
     },
   });
 
-  // Direct message dialog (reused MUI portal — single permitted MUI element in this layer per plan.md Complexity Tracking)
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-    dialogTitle: t('send-message-dialog.direct-message-title'),
-  });
-
-  // Guidelines hydration
   const guidelinesId = data?.lookup.space?.about.guidelines.id;
   const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
     variables: { communityGuidelinesId: guidelinesId ?? '' },
@@ -142,7 +128,6 @@ export default function CrdSpaceAboutPage() {
   const whyTitle = t(`context.${space.level}.why.title` as const);
   const whoTitle = t(`context.${space.level}.who.title` as const);
 
-  // Lock-tooltip slot (FR-006); "Learn how to apply" link programmatically clicks the apply button.
   const lockTooltipSlot = !permissions.canRead ? (
     <Tooltip>
       <TooltipTrigger asChild={true}>
@@ -173,7 +158,6 @@ export default function CrdSpaceAboutPage() {
     </Tooltip>
   ) : undefined;
 
-  // Apply / join button (FR-007)
   const showApplyButton = !applicationButtonProps.isMember && !applyLoading;
   const joinSlot = showApplyButton ? (
     <SpaceAboutApplyButton
@@ -199,34 +183,18 @@ export default function CrdSpaceAboutPage() {
     />
   ) : undefined;
 
-  // Contact host (FR-013); host is rendered only when there's a provider.
-  const aboutProvider = about.provider;
-  const contactHostSlot = aboutProvider ? (
-    <Button
-      type="button"
-      variant="link"
-      className="px-0 h-auto"
-      onClick={() => {
-        if (!isAuthenticated) {
-          navigate(buildSignUpUrl(globalThis.location.pathname, globalThis.location.search));
-          return;
-        }
-        const receiver = {
-          id: aboutProvider.id,
-          displayName: aboutProvider.profile?.displayName ?? '',
-          avatarUri: aboutProvider.profile?.avatar?.uri,
-          country: aboutProvider.profile?.location?.country,
-          city: aboutProvider.profile?.location?.city,
-        };
-        sendMessage(getMessageType(aboutProvider.profile?.type), receiver);
-      }}
+  // Contact host — simple link to the host's profile page (FR-013).
+  // The profile page handles authorization and has its own messaging UI.
+  const contactHostSlot = provider ? (
+    <a
+      href={provider.href}
+      className="inline-flex items-center gap-2 text-sm text-primary hover:underline underline-offset-4"
     >
-      <Mail className="w-4 h-4" aria-hidden="true" />
+      <Mail className="w-4 h-4 shrink-0" aria-hidden="true" />
       {t('about.contactHost', { ns: 'crd-space' })}
-    </Button>
+    </a>
   ) : undefined;
 
-  // Community guidelines slot (FR-016 / FR-017)
   const guidelines = guidelinesData?.lookup.communityGuidelines?.profile;
   const guidelinesSlot = guidelinesId ? (
     <CommunityGuidelinesBlock
@@ -243,7 +211,6 @@ export default function CrdSpaceAboutPage() {
     />
   ) : undefined;
 
-  // Pre-application / Pre-join derived props
   const preAppDialogVariant = isApplicationPending(applicationButtonProps.parentApplicationState)
     ? 'dialog-parent-app-pending'
     : 'dialog-apply-parent';
@@ -271,7 +238,6 @@ export default function CrdSpaceAboutPage() {
         onEditReferences={() => navigate(`${buildSettingsUrl(profileUrl ?? '')}/about`)}
       />
 
-      {/* Apply / join flow dialogs (CRD) */}
       <ApplyDialogConnector
         open={isApplyDialogOpen}
         onOpenChange={setIsApplyDialogOpen}
@@ -309,9 +275,6 @@ export default function CrdSpaceAboutPage() {
         subspaceName={applicationButtonProps.subspaceName}
         parentApplyUrl={applicationButtonProps.parentUrl}
       />
-
-      {/* Reused MUI direct-message dialog — rendered in portal outside .crd-root */}
-      {directMessageDialog}
     </StorageConfigContextProvider>
   );
 }

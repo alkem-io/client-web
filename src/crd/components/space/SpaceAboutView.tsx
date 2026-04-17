@@ -73,7 +73,7 @@ export function SpaceAboutView({
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">{data.name}</h1>
-        {data.tagline && <p className="text-lg text-muted-foreground mt-2">{data.tagline}</p>}
+        {data.tagline && <p className="text-base text-muted-foreground mt-2">{data.tagline}</p>}
         {joinSlot && <div className="mt-4">{joinSlot}</div>}
       </div>
 
@@ -105,7 +105,10 @@ export function SpaceAboutView({
           <h2 className="text-lg font-semibold text-foreground mb-4">{t('about.metrics')}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {data.metrics.map(metric => (
-              <div key={metric.name} className="text-center p-4 border border-border rounded-lg">
+              <div
+                key={metric.name}
+                className="text-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+              >
                 <p className="text-2xl font-bold text-primary">{metric.value}</p>
                 <p className="text-xs text-muted-foreground mt-1">{metric.name}</p>
               </div>

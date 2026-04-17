@@ -79,7 +79,7 @@ export function CommunityGuidelinesBlock({
       />
 
       {description && (
-        <div className="relative max-h-32 overflow-hidden [mask-image:linear-gradient(to_bottom,black_60%,transparent)]">
+        <div className="relative max-h-32 overflow-hidden [mask-image:linear-gradient(to_bottom,black_70%,transparent)]">
           <MarkdownContent content={description} />
         </div>
       )}
