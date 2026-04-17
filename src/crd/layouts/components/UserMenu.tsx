@@ -66,7 +66,7 @@ export function UserMenu({
         <div className="relative p-1.5 rounded-full hover:bg-accent/50 transition-colors cursor-pointer">
           <Avatar className="h-8 w-8 border border-border">
             <AvatarImage src={user.avatarUrl} alt={user.name} />
-            <AvatarFallback className="bg-primary/10 text-primary text-xs">{user.initials}</AvatarFallback>
+            <AvatarFallback className="bg-primary/10 text-primary text-caption">{user.initials}</AvatarFallback>
           </Avatar>
           <Badge
             variant="secondary"
@@ -138,7 +138,7 @@ export function UserMenu({
               <Globe aria-hidden="true" className="mr-2 h-4 w-4" />
               <span>{t('header.changeLanguage')}</span>
               {currentLanguageLabel && (
-                <span className="ml-auto text-xs text-muted-foreground">{currentLanguageLabel}</span>
+                <span className="ml-auto text-caption text-muted-foreground">{currentLanguageLabel}</span>
               )}
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
@@ -148,7 +148,7 @@ export function UserMenu({
                   onClick={() => onLanguageChange(lang.code)}
                   className={cn('cursor-pointer', currentLanguage?.startsWith(lang.code) && 'bg-accent')}
                 >
-                  <span className="text-sm">{lang.label}</span>
+                  <span className="text-control">{lang.label}</span>
                   {currentLanguage?.startsWith(lang.code) && (
                     <Check aria-hidden="true" className="ml-auto h-4 w-4 shrink-0 text-primary" />
                   )}

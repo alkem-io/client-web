@@ -42,6 +42,13 @@
   --text-body--line-height: 1.625;
   --text-body--font-weight: 400;
 
+  /* Control — UI-chrome text in single-line interactive controls
+     (menu items, dropdown rows, select triggers, inputs, button labels).
+     Same size/weight as body, tighter leading so rows don't gain vertical space. */
+  --text-control: 14px;
+  --text-control--line-height: 1.25;
+  --text-control--font-weight: 400;
+
   /* Body emphasis — emphasized body text, links (p/span) */
   --text-body-emphasis: 14px;
   --text-body-emphasis--line-height: 1.625;

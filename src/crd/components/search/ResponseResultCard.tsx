@@ -72,7 +72,7 @@ export function ResponseResultCard({ response, onClick }: ResponseResultCardProp
         {/* Parent context */}
         <div className="border-t border-border pt-2 flex items-center gap-1.5">
           <MessageSquare aria-hidden="true" className="size-[11px] text-muted-foreground shrink-0" />
-          <span className="text-[11px] text-muted-foreground truncate">
+          <span className="text-caption text-muted-foreground truncate">
             {t('search.responseTo', { title: response.parentPostTitle })}
           </span>
         </div>
@@ -83,7 +83,7 @@ export function ResponseResultCard({ response, onClick }: ResponseResultCardProp
             <PostTypeIcon type={response.type} />
             {t(`search.postTypes.${response.type}`)}
           </span>
-          <span className="text-[11px] text-muted-foreground truncate">
+          <span className="text-caption text-muted-foreground truncate">
             {t('search.spaceContext', { spaceName: response.spaceName })}
           </span>
         </div>

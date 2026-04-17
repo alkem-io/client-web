@@ -36,7 +36,7 @@ export function SidebarResourceItem({
           {initials}
         </AvatarFallback>
       </Avatar>
-      <span className="truncate text-sm">{name}</span>
+      <span className="truncate text-body">{name}</span>
     </a>
   );
 }

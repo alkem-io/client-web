@@ -63,7 +63,7 @@ function MarkdownEditorLazy({ value, onChange, placeholder, maxLength, disabled,
 
       {maxLength != null && (
         <div className="flex justify-end px-3 pb-2">
-          <span className={cn('text-xs', isOverLimit ? 'text-destructive' : 'text-muted-foreground')}>
+          <span className={cn('text-caption', isOverLimit ? 'text-destructive' : 'text-muted-foreground')}>
             {t('editor.charCount', { count: charCount, max: maxLength })}
           </span>
         </div>

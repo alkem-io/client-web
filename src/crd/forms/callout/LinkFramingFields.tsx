@@ -41,7 +41,7 @@ export function LinkFramingFields({
             onChange={e => onUrlChange(e.target.value)}
             placeholder={t('forms.linkUrlPlaceholder')}
             className={cn(
-              'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
+              'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20',
               urlError ? 'border-destructive' : 'border-border'
             )}
             aria-invalid={!!urlError}
@@ -59,7 +59,7 @@ export function LinkFramingFields({
             onChange={e => onDisplayNameChange(e.target.value)}
             placeholder={t('forms.linkDisplayName')}
             className={cn(
-              'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
+              'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20',
               displayNameError ? 'border-destructive' : 'border-border'
             )}
             aria-invalid={!!displayNameError}

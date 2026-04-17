@@ -114,7 +114,7 @@ export function AddPostModal({
               value={title.value}
               onChange={e => title.onChange(e.target.value)}
               className={cn(
-                'w-full text-xl md:text-2xl font-semibold border-none px-0 bg-transparent focus:outline-none placeholder:text-muted-foreground/60',
+                'w-full text-section-title md:text-page-title border-none px-0 bg-transparent focus:outline-none placeholder:text-muted-foreground/60',
                 title.error && 'text-destructive'
               )}
               aria-label={t('forms.titleLabel')}
@@ -199,7 +199,7 @@ export function AddPostModal({
                       value={tags.value}
                       onChange={e => tags.onChange(e.target.value)}
                       placeholder={t('forms.tagsLabel')}
-                      className="w-full pl-8 h-9 px-3 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      className="w-full pl-8 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>

@@ -31,7 +31,7 @@ export function SubspacesSection({
       <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.subspaces')}</h3>
         {!showAll && showAllHref && (
-          <a href={showAllHref} className="text-xs text-primary font-medium hover:underline">
+          <a href={showAllHref} className="text-caption text-primary font-medium hover:underline">
             {t('sidebar.showAll')}
           </a>
         )}
@@ -61,7 +61,7 @@ export function SubspacesSection({
                   {subspace.initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium text-foreground">{subspace.name}</span>
+              <span className="text-body-emphasis text-foreground">{subspace.name}</span>
             </div>
             <ChevronRight
               className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"

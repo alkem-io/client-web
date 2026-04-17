@@ -38,7 +38,7 @@ export function TipsAndTricksDialog({ open, onClose, tips, findMoreHref, findMor
                     {tip.imageUrl ? (
                       <AvatarImage src={tip.imageUrl} alt="" className="rounded-lg object-cover" />
                     ) : null}
-                    <AvatarFallback className="rounded-lg text-sm">{tip.title.charAt(0)}</AvatarFallback>
+                    <AvatarFallback className="rounded-lg text-body-emphasis">{tip.title.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <p className="text-card-title leading-tight">{tip.title}</p>

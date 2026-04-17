@@ -150,11 +150,11 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
 
           {/* Parent indicator for subspaces */}
           {space.parent && (
-            <p className="truncate text-[11px] text-muted-foreground mt-0.5">
+            <p className="truncate text-caption text-muted-foreground mt-0.5">
               {t('spaces.in')}:{' '}
               <button
                 type="button"
-                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-caption focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();

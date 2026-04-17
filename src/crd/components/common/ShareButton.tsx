@@ -103,7 +103,7 @@ export function ShareButton({
                 value={fullUrl}
                 readOnly={true}
                 aria-label={t('share.url')}
-                className="flex-1 font-mono text-xs"
+                className="flex-1 font-mono text-caption"
                 onFocus={e => e.target.select()}
                 onClick={e => (e.target as HTMLInputElement).select()}
               />

@@ -53,9 +53,9 @@ export function VirtualContributorsSection({
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground">{vc.name}</p>
+              <p className="text-body-emphasis text-foreground">{vc.name}</p>
               {vc.description && (
-                <p className="line-clamp-2 text-xs text-muted-foreground leading-snug mt-0.5">{vc.description}</p>
+                <p className="line-clamp-2 text-caption text-muted-foreground mt-0.5">{vc.description}</p>
               )}
             </div>
           </button>

@@ -38,7 +38,7 @@ export function KnowledgeIndexSection({ entries, onEntryClick, className }: Know
               )}
               aria-hidden="true"
             />
-            <span className="line-clamp-1 text-sm font-medium text-foreground">{entry.title}</span>
+            <span className="line-clamp-1 text-body-emphasis text-foreground">{entry.title}</span>
           </button>
         ))}
       </div>

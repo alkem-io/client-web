@@ -46,7 +46,7 @@ export function ContributionFormLayout({
           onChange={e => title.onChange(e.target.value)}
           placeholder={t('forms.titlePlaceholder')}
           className={cn(
-            'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
+            'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20',
             title.error ? 'border-destructive' : 'border-border'
           )}
         />
@@ -65,7 +65,7 @@ export function ContributionFormLayout({
               value={description.value}
               onChange={e => description.onChange(e.target.value)}
               placeholder={t('forms.descriptionPlaceholder')}
-              className="w-full min-h-[100px] px-3 py-2 border border-border rounded-md bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full min-h-[100px] px-3 py-2 border border-border rounded-md bg-background text-control resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           )}
         </div>
@@ -85,7 +85,7 @@ export function ContributionFormLayout({
               onChange={e => linkUrl.onChange(e.target.value)}
               placeholder={t('forms.linkUrlPlaceholder')}
               className={cn(
-                'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20',
+                'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20',
                 linkUrl.error ? 'border-destructive' : 'border-border'
               )}
             />
@@ -101,7 +101,7 @@ export function ContributionFormLayout({
                 value={linkDescription.value}
                 onChange={e => linkDescription.onChange(e.target.value)}
                 placeholder={t('forms.descriptionPlaceholder')}
-                className="w-full min-h-[60px] px-3 py-2 border border-border rounded-md bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full min-h-[60px] px-3 py-2 border border-border rounded-md bg-background text-control resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
           )}
@@ -120,7 +120,7 @@ export function ContributionFormLayout({
             value={tags.value}
             onChange={e => tags.onChange(e.target.value)}
             placeholder={t('forms.tagsLabel')}
-            className="w-full h-9 px-3 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
       )}

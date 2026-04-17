@@ -116,6 +116,7 @@ These will be registered in `@theme inline` in `theme.css`. Tailwind v4 auto-gen
 | `text-card-title` | 14px | 600 | 1.4 | — | h3 | Card headings, list item titles |
 | `text-body` | 14px | 400 | 1.625 | — | p | Body text, descriptions |
 | `text-body-emphasis` | 14px | 500 | 1.625 | — | p/span | Emphasized body text, links |
+| `text-control` | 14px | 400 | 1.25 | — | span/inline | UI-chrome in single-line controls (menu items, dropdown rows, select triggers, inputs, button labels). Same size/weight as body but tighter leading so rows don't grow vertically. |
 | `text-caption` | 12px | 400 | 1.5 | — | p/span | Timestamps, metadata, secondary text |
 | `text-label` | 11px | 600 | 1.4 | 0.05em | span | Uppercase section headers, sidebar labels |
 | `text-badge` | 10px | 500 | 1.4 | — | span | Badge text, tag labels |
@@ -151,6 +152,10 @@ These will be registered in `@theme inline` in `theme.css`. Tailwind v4 auto-gen
   --text-body-emphasis: 14px;
   --text-body-emphasis--line-height: 1.625;
   --text-body-emphasis--font-weight: 500;
+
+  --text-control: 14px;
+  --text-control--line-height: 1.25;
+  --text-control--font-weight: 400;
 
   --text-caption: 12px;
   --text-caption--line-height: 1.5;
@@ -264,6 +269,8 @@ This table maps current inconsistent usage to the standardized token:
 | `text-lg font-medium` | `text-subsection-title` | SpaceSubspacesList (empty state) |
 | `text-lg font-bold` (PostCard title) | `text-subsection-title font-bold` | PostCard (feed-tier card, intentionally larger — see Prototype Reference) |
 | `text-sm font-semibold` | `text-card-title` | SpaceCard, SearchResults, CompactSpaceCard (compact-tier cards) |
+| `text-sm` on UI-chrome (menu/dropdown/select rows, inputs, buttons, calendar day cells) | `text-control` | shadcn primitives: dropdown-menu, select, calendar, button, input |
+| `text-sm font-medium` on button base label | `text-control font-medium` | button.tsx primitive |
 | `text-sm text-muted-foreground leading-relaxed` | `text-body text-muted-foreground` | InfoBlock, ExpandableDescription, SpaceCard |
 | `text-sm text-muted-foreground leading-normal` | `text-body text-muted-foreground` | SpaceExplorer, ActivityItem |
 | `text-xs text-muted-foreground` | `text-caption text-muted-foreground` | PostCard timestamp, CommentItem, ActivityItem |

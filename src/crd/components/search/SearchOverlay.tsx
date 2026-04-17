@@ -240,7 +240,7 @@ export function SearchOverlay({
                   <div className="inline-flex items-center justify-center rounded-full bg-secondary size-12 mb-3">
                     <Search aria-hidden="true" className="size-[22px] text-muted-foreground" />
                   </div>
-                  <p className="text-base font-medium mb-1.5 text-foreground">{t('search.emptyTitle')}</p>
+                  <p className="text-subsection-title mb-1.5 text-foreground">{t('search.emptyTitle')}</p>
                   <p className="text-body text-muted-foreground">{t('search.emptyDescription')}</p>
                 </div>
               </div>
@@ -259,7 +259,7 @@ export function SearchOverlay({
                   <div className="inline-flex items-center justify-center rounded-full bg-secondary size-12 mb-3">
                     <Search aria-hidden="true" className="size-[22px] text-muted-foreground" />
                   </div>
-                  <p className="text-base font-medium mb-1.5 text-foreground">
+                  <p className="text-subsection-title mb-1.5 text-foreground">
                     {t('search.noResultsTitle', { terms: noResultsTerms })}
                   </p>
                   <p className="text-body text-muted-foreground mb-4">{t('search.noResultsSuggestion')}</p>

@@ -40,7 +40,7 @@ export function SearchCategorySidebar({ categories, activeCategoryId, onCategory
               title={isDisabled ? category.label : undefined}
               onClick={() => onCategoryClick(category.id)}
               className={cn(
-                'flex items-center gap-2.5 px-5 py-2.5 text-left text-sm transition-colors border-l-2',
+                'flex items-center gap-2.5 px-5 py-2.5 text-left text-control transition-colors border-l-2',
                 'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
                 isDisabled
                   ? 'text-muted-foreground/50 cursor-not-allowed border-transparent'
@@ -91,7 +91,7 @@ export function SearchCategorySidebar({ categories, activeCategoryId, onCategory
               title={isDisabled ? category.label : undefined}
               onClick={() => onCategoryClick(category.id)}
               className={cn(
-                'flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-full text-sm shrink-0 transition-colors',
+                'flex items-center gap-1.5 whitespace-nowrap px-3 py-2 rounded-full text-control shrink-0 transition-colors',
                 'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 isDisabled
                   ? 'text-muted-foreground/50 bg-secondary/50 cursor-not-allowed'

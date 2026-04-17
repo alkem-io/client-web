@@ -32,7 +32,7 @@ export function CalloutFramingSelector({ value, onChange, disabled, className }:
           <label
             key={option.type}
             className={cn(
-              'flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
+              'flex flex-col items-center gap-1.5 p-3 rounded-lg border text-caption font-medium transition-all cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
               value === option.type
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-background hover:bg-muted border-border text-foreground',

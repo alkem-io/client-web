@@ -52,8 +52,8 @@ export function EventDateBadge({
   const endLong = format(endDate, 'PPP', { locale });
   const ariaLabel = isMultiDay || (durationDays ?? 0) > 0 ? `${startLong} – ${endLong}` : startLong;
 
-  const sizeClasses = size === 'md' ? 'min-w-14 px-2 py-1.5 text-xs' : 'min-w-12 px-1.5 py-1 text-[11px]';
-  const dayTextSize = size === 'md' ? 'text-xl leading-tight' : 'text-base leading-tight';
+  const sizeClasses = size === 'md' ? 'min-w-14 px-2 py-1.5 text-label' : 'min-w-12 px-1.5 py-1 text-label';
+  const dayTextSize = size === 'md' ? 'text-section-title leading-tight' : 'text-subsection-title leading-tight';
 
   return (
     <div

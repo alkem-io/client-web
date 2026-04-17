@@ -64,7 +64,7 @@ export function InvitationsBlock({
                 <Avatar className="size-10 rounded-lg">
                   {avatarSrc ? <AvatarImage src={avatarSrc} alt={invitation.spaceName} /> : null}
                   <AvatarFallback
-                    className={cn('rounded-lg text-xs', invitation.color && 'text-white')}
+                    className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
                     color={invitation.color}
                   >
                     {getInitials(invitation.spaceName)}

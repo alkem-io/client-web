@@ -170,6 +170,7 @@ const startOfToday = dayjs().startOf('day');
 | `text-card-title` | 14px | 600 | Card headings, list item titles | `<h3>` |
 | `text-body` | 14px | 400 | Body text, descriptions | `<p>` |
 | `text-body-emphasis` | 14px | 500 | Emphasized body text, links | `<p>`/`<span>` |
+| `text-control` | 14px | 400 | UI-chrome in single-line interactive controls (menu items, dropdown rows, select triggers, inputs, button labels). Same size as body but tighter leading (1.25) so rows don't gain vertical space. | `<span>`/inline |
 | `text-caption` | 12px | 400 | Timestamps, metadata, secondary text | `<p>`/`<span>` |
 | `text-label` | 11px | 600 | Uppercase section headers, sidebar labels (includes 0.05em tracking) | `<span>` |
 | `text-badge` | 10px | 500 | Badge text, tag labels, avatar fallback initials | `<span>` |
@@ -184,7 +185,9 @@ const startOfToday = dayjs().startOf('day');
 | `text-lg font-bold` (PostCard title) | `text-subsection-title font-bold` |
 | `text-sm font-semibold` | `text-card-title` |
 | `text-sm font-medium` | `text-body-emphasis` |
-| `text-sm` / `text-sm leading-relaxed` / `text-sm leading-normal` | `text-body` |
+| `text-sm` / `text-sm leading-relaxed` / `text-sm leading-normal` (prose) | `text-body` |
+| `text-sm` (UI-chrome: menu/dropdown/select rows, inputs, buttons, calendar day cells) | `text-control` |
+| `text-sm font-medium` (button base label) | `text-control font-medium` |
 | `text-xs` | `text-caption` |
 | `text-[11px] font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `tracking-wider` — token includes tracking) |
 | `text-xs font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold`, `tracking-wider`) |

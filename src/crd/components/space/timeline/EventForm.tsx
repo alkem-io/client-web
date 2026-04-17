@@ -82,7 +82,7 @@ export function EventForm({
       {/* Row 1: displayName + type */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor={displayNameId} className="text-sm font-medium">
+          <label htmlFor={displayNameId} className="text-body-emphasis">
             {t('calendar.fields.displayName')}
             <span className="ml-0.5 text-destructive">*</span>
           </label>
@@ -95,10 +95,10 @@ export function EventForm({
             aria-invalid={Boolean(errors.displayName) || undefined}
             className={cn(errors.displayName && 'border-destructive')}
           />
-          {errors.displayName && <span className="text-xs text-destructive">{errors.displayName}</span>}
+          {errors.displayName && <span className="text-caption text-destructive">{errors.displayName}</span>}
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor={typeId} className="text-sm font-medium">
+          <label htmlFor={typeId} className="text-body-emphasis">
             {t('calendar.fields.type')}
             <span className="ml-0.5 text-destructive">*</span>
           </label>
@@ -119,7 +119,7 @@ export function EventForm({
               ))}
             </SelectContent>
           </Select>
-          {errors.type && <span className="text-xs text-destructive">{errors.type}</span>}
+          {errors.type && <span className="text-caption text-destructive">{errors.type}</span>}
         </div>
       </div>
 
@@ -178,7 +178,7 @@ export function EventForm({
       {/* Row 2b: whole-day toggle on its own row, full width — keeps row 2's
           field heights symmetric (no toggle box throwing off alignment). */}
       <div className="flex items-center justify-between rounded-md border border-border p-3">
-        <label htmlFor={wholeDayId} className="text-sm font-medium">
+        <label htmlFor={wholeDayId} className="text-body-emphasis">
           {t('calendar.fields.wholeDay')}
         </label>
         <Switch
@@ -197,20 +197,20 @@ export function EventForm({
           `placeholder` (which it forwards as the inner `aria-label`) to give
           assistive tech a stable accessible name. */}
       <div className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium">{t('calendar.fields.description')}</span>
+        <span className="text-body-emphasis">{t('calendar.fields.description')}</span>
         <MarkdownEditor
           value={values.description}
           onChange={next => onChange('description', next)}
           disabled={isSubmitting}
           placeholder={t('calendar.fields.description')}
         />
-        {errors.description && <span className="text-xs text-destructive">{errors.description}</span>}
+        {errors.description && <span className="text-caption text-destructive">{errors.description}</span>}
       </div>
 
       {/* Row 4: location + tags */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor={locationId} className="text-sm font-medium">
+          <label htmlFor={locationId} className="text-body-emphasis">
             {t('calendar.fields.location')}
           </label>
           <Input
@@ -226,7 +226,7 @@ export function EventForm({
             the actual control. Pass the label text via `placeholder` — the
             component forwards it as the inner input's persistent aria-label. */}
         <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium">{t('calendar.fields.tags')}</span>
+          <span className="text-body-emphasis">{t('calendar.fields.tags')}</span>
           <TagsInput
             value={values.tags}
             onChange={next => onChange('tags', next)}
@@ -238,7 +238,7 @@ export function EventForm({
       {/* Row 5 (subspace only): visibleOnParentCalendar */}
       {isSubspace && (
         <div className="flex items-center justify-between rounded-md border border-border p-3">
-          <label htmlFor={visibleOnParentId} className="text-sm font-medium">
+          <label htmlFor={visibleOnParentId} className="text-body-emphasis">
             {t('calendar.fields.visibleOnParentCalendar')}
           </label>
           <Switch

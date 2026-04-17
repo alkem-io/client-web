@@ -244,8 +244,9 @@ CRD uses semantic typography tokens defined in `src/crd/styles/typography.css`. 
 | `text-section-title` | 20px | 700 | Section headings (`<h2>`) |
 | `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles (`<h3>`) |
 | `text-card-title` | 14px | 600 | Card headings, list item names |
-| `text-body` | 14px | 400 | Body text, descriptions, form inputs |
+| `text-body` | 14px | 400 | Body text, descriptions |
 | `text-body-emphasis` | 14px | 500 | Emphasized body text, author names, links |
+| `text-control` | 14px | 400 | UI-chrome in single-line controls: menu items, dropdown rows, select triggers, inputs, buttons. Tighter leading (1.25) than body so rows stay compact. |
 | `text-caption` | 12px | 400 | Timestamps, metadata, secondary info |
 | `text-label` | 11px | 600 | Uppercase section labels (includes 0.05em tracking) |
 | `text-badge` | 10px | 500 | Badges, tags, avatar initials |
@@ -260,7 +261,9 @@ CRD uses semantic typography tokens defined in `src/crd/styles/typography.css`. 
 | `text-lg font-bold` (e.g. PostCard title) | `text-subsection-title font-bold` |
 | `text-sm font-semibold` | `text-card-title` |
 | `text-sm font-medium` | `text-body-emphasis` |
-| `text-sm`, `text-sm leading-relaxed`, `text-sm leading-normal` | `text-body` |
+| `text-sm`, `text-sm leading-relaxed`, `text-sm leading-normal` (prose) | `text-body` |
+| `text-sm` on UI-chrome (menu/dropdown/select rows, inputs, buttons, calendar cells) | `text-control` |
+| `text-sm font-medium` on button base label | `text-control font-medium` |
 | `text-xs` | `text-caption` |
 | `text-[11px] font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold` and `tracking-wider`) |
 | `text-xs font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold` and `tracking-wider`) |

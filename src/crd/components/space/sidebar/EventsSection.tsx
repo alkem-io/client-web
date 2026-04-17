@@ -68,7 +68,7 @@ export function EventsSection({
         )}
       </div>
       {events.length === 0 ? (
-        <p className="px-3 text-sm text-muted-foreground">{t('sidebar.noEvents')}</p>
+        <p className="px-3 text-body text-muted-foreground">{t('sidebar.noEvents')}</p>
       ) : (
         <ul className="space-y-2 px-3">
           {events.map(event => {
@@ -81,7 +81,7 @@ export function EventsSection({
             );
 
             return (
-              <li key={event.id} className="text-sm">
+              <li key={event.id} className="text-body">
                 {onEventClick ? (
                   <button
                     type="button"
@@ -101,7 +101,7 @@ export function EventsSection({
       {onShowCalendar && (
         <button
           type="button"
-          className="px-3 mt-2 text-sm font-medium text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="px-3 mt-2 text-body-emphasis text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={onShowCalendar}
         >
           {t('sidebar.showCalendar')}

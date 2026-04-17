@@ -49,7 +49,7 @@ function PendingApplicationCard({ application, onClick, className }: PendingAppl
           />
         ) : null}
         <AvatarFallback
-          className={cn('rounded-lg text-xs', application.color && 'text-white')}
+          className={cn('rounded-lg text-caption', application.color && 'text-white')}
           color={application.color}
         >
           {getInitials(application.spaceName)}

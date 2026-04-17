@@ -50,7 +50,7 @@ export const SearchResultSection = ({
         <div className="flex items-center justify-between mb-4 gap-3">
           <div className="flex items-center gap-2">
             <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
-            <h3 className="text-base font-semibold text-foreground">{label}</h3>
+            <h3 className="text-subsection-title text-foreground">{label}</h3>
             <span className="rounded-full px-2 py-px text-caption font-semibold bg-muted text-muted-foreground">
               {count}
             </span>
@@ -63,7 +63,7 @@ export const SearchResultSection = ({
                   type="button"
                   aria-label={t('search.a11y.filterBy', { category: label })}
                   className={cn(
-                    'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-medium border border-border',
+                    'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-control font-medium border border-border',
                     'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isFilterActive ? 'text-primary bg-primary/10' : 'text-muted-foreground'
                   )}

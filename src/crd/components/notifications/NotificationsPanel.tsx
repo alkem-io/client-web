@@ -136,7 +136,7 @@ export function NotificationsPanel({
           {showEmpty && (
             <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
               <BellOff aria-hidden="true" className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
-              <p className="text-base font-semibold mb-1 text-foreground">{t('notifications.emptyTitle')}</p>
+              <p className="text-subsection-title mb-1 text-foreground">{t('notifications.emptyTitle')}</p>
               <p className="text-body text-muted-foreground max-w-[280px] leading-normal">
                 {t('notifications.emptyMessage')}
               </p>

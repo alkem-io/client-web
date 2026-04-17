@@ -160,9 +160,7 @@ export function SpaceHeader({
                       </>
                     )}
                   </div>
-                  {tagline && (
-                    <p className="max-w-xl text-base text-primary-foreground/90 leading-relaxed">{tagline}</p>
-                  )}
+                  {tagline && <p className="max-w-xl text-body text-primary-foreground/90">{tagline}</p>}
                 </div>
 
                 {/* Member avatars */}

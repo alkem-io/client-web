@@ -94,7 +94,7 @@ export function PostResultCard({ post, onClick }: PostResultCardProps) {
         </div>
 
         {/* Space context */}
-        <p className="text-[11px] text-muted-foreground truncate">
+        <p className="text-caption text-muted-foreground truncate">
           {t('search.spaceContext', { spaceName: post.spaceName })}
         </p>
       </div>

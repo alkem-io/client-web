@@ -67,7 +67,7 @@ function LeadRow({ lead }: { lead: LeadItem }) {
       <div className="min-w-0">
         <p className="text-card-title text-foreground truncate">{lead.name}</p>
         {lead.location && (
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+          <p className="flex items-center gap-1 text-caption text-muted-foreground">
             <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
             <span className="truncate">{lead.location}</span>
           </p>

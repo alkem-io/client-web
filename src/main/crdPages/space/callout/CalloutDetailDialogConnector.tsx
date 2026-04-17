@@ -125,7 +125,7 @@ export function CalloutDetailDialogConnector({
           open={open}
           onOpenChange={onOpenChange}
           callout={mapCalloutDetailsToDialogData(callout, formatDate)}
-          commentsSlot={<p className="text-sm text-muted-foreground">{t('comments.empty')}</p>}
+          commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           hasContributions={hasContributionType}

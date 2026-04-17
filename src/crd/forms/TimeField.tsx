@@ -55,7 +55,7 @@ export function TimeField({ label, value, onChange, minTime, disabled, error, cl
         aria-label={label ?? ariaLabel}
         aria-invalid={hasError || undefined}
         className={cn(
-          'h-9 w-full rounded-md border px-3 py-1 text-sm bg-input-background transition-[color,box-shadow] outline-none',
+          'h-9 w-full rounded-md border px-3 py-1 text-control bg-input-background transition-[color,box-shadow] outline-none',
           'border-input focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
           'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
           hasError && 'border-destructive'

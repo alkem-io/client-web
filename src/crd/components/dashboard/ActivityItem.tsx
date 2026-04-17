@@ -35,7 +35,7 @@ export function ActivityItem({
       <div className="shrink-0">
         <Avatar className="size-10 border border-border">
           {avatarUrl && <AvatarImage src={avatarUrl} alt={userName} />}
-          <AvatarFallback className="text-xs">{avatarInitials}</AvatarFallback>
+          <AvatarFallback className="text-caption">{avatarInitials}</AvatarFallback>
         </Avatar>
       </div>
       <div className="flex-1 min-w-0">

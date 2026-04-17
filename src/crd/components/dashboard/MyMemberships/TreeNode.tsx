@@ -27,7 +27,7 @@ function RoleBadges({ roles, t }: { roles: MembershipRole[]; t: TFunction<'crd-d
   return (
     <div className="flex gap-1 shrink-0">
       {visibleRoles.map(role => (
-        <Badge key={role} variant={ROLE_VARIANT[role]} className="text-[11px] font-normal">
+        <Badge key={role} variant={ROLE_VARIANT[role]} className="text-caption font-normal">
           {t(`myMembershipsPanel.role.${role}`)}
         </Badge>
       ))}
@@ -130,12 +130,14 @@ export function TreeNode({
           {isRoot ? <BannerThumbnail image={item.image} color={item.color} /> : <NodeAvatar item={item} />}
 
           <div className="flex-1 min-w-0 text-left">
-            <div className="text-sm font-medium truncate">{item.name}</div>
-            {isRoot && item.tagline && <div className="text-xs text-muted-foreground truncate">{item.tagline}</div>}
+            <div className="text-body-emphasis truncate">{item.name}</div>
+            {isRoot && item.tagline && (
+              <div className="text-caption text-muted-foreground truncate">{item.tagline}</div>
+            )}
           </div>
 
           {hasChildren && (
-            <Badge variant="outline" className="text-[11px] font-normal shrink-0">
+            <Badge variant="outline" className="text-caption font-normal shrink-0">
               {t('myMembershipsPanel.subspaces', { count: children.length })}
             </Badge>
           )}

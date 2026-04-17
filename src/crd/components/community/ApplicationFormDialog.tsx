@@ -123,8 +123,8 @@ export function ApplicationFormDialog({
         )}
       >
         <div className="px-6 py-4 border-b border-border shrink-0">
-          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
-          {subheader && <DialogDescription className="mt-1 text-sm">{subheader}</DialogDescription>}
+          <DialogTitle>{title}</DialogTitle>
+          {subheader && <DialogDescription className="mt-1">{subheader}</DialogDescription>}
           {!subheader && (
             <DialogDescription className="sr-only">
               {t('apply.applyTitle', { name: communityName ?? '' })}
@@ -141,7 +141,7 @@ export function ApplicationFormDialog({
               const showError = errors[q.question] && (submitAttempted || touched[q.question]);
               return (
                 <div key={q.question} className="space-y-1.5">
-                  <label htmlFor={fieldId} className="block text-sm font-medium text-foreground">
+                  <label htmlFor={fieldId} className="block text-body-emphasis text-foreground">
                     {q.question}
                     {q.required && (
                       <span aria-hidden="true" className="text-destructive ml-1">
@@ -160,12 +160,12 @@ export function ApplicationFormDialog({
                     onChange={e => setAnswers(prev => ({ ...prev, [q.question]: e.target.value }))}
                     onBlur={() => setTouched(prev => ({ ...prev, [q.question]: true }))}
                     className={cn(
-                      'w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-y',
+                      'w-full rounded-md border border-input bg-transparent px-3 py-2 text-control shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-y',
                       showError && 'border-destructive focus-visible:ring-destructive'
                     )}
                   />
                   {showError && (
-                    <p id={`${fieldId}-error`} role="alert" className="text-xs text-destructive">
+                    <p id={`${fieldId}-error`} role="alert" className="text-caption text-destructive">
                       {errors[q.question]}
                     </p>
                   )}
@@ -175,9 +175,7 @@ export function ApplicationFormDialog({
 
           {guidelines?.description && (
             <div className="border-t border-border pt-6 space-y-3">
-              {guidelines.displayName && (
-                <h3 className="text-sm font-semibold text-foreground">{guidelines.displayName}</h3>
-              )}
+              {guidelines.displayName && <h3 className="text-card-title text-foreground">{guidelines.displayName}</h3>}
               <MarkdownContent content={guidelines.description} />
               {guidelines.references && guidelines.references.length > 0 && (
                 <ul className="space-y-1">
@@ -187,11 +185,13 @@ export function ApplicationFormDialog({
                         href={ref.uri}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-primary underline-offset-4 hover:underline"
+                        className="text-body text-primary underline-offset-4 hover:underline"
                       >
                         {ref.name}
                       </a>
-                      {ref.description && <span className="ml-2 text-xs text-muted-foreground">{ref.description}</span>}
+                      {ref.description && (
+                        <span className="ml-2 text-caption text-muted-foreground">{ref.description}</span>
+                      )}
                     </li>
                   ))}
                 </ul>

@@ -245,7 +245,7 @@ function EmptyState({ hasActiveFilter, onClear }: { hasActiveFilter: boolean; on
       <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-muted">
         <User className="w-6 h-6 text-muted-foreground" aria-hidden="true" />
       </div>
-      <h3 className="text-base font-medium text-foreground">{t('members.empty.title')}</h3>
+      <h3 className="text-subsection-title text-foreground">{t('members.empty.title')}</h3>
       <p className="mt-1 text-body text-muted-foreground">{t('members.empty.description')}</p>
       {hasActiveFilter && (
         <Button variant="link" className="mt-2 text-primary" onClick={onClear}>
