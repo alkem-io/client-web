@@ -28,7 +28,15 @@
     "save": "Enregistrer",
     "restart": "Redémarrer la collaboration",
     "guestContributionsWarning": "Les contributions des invités sont activées",
-    "closeWhiteboard": "Fermer le tableau blanc"
+    "closeWhiteboard": "Fermer le tableau blanc",
+    "loadingWhiteboard": "Chargement du tableau blanc",
+    "untitled": "Tableau blanc",
+    "unsavedChanges": {
+      "title": "Annuler les modifications non enregistrées ?",
+      "description": "Vous avez des modifications non enregistrées qui seront perdues. Êtes-vous sûr de vouloir continuer ?",
+      "confirm": "Abandonner",
+      "cancel": "Continuer l'édition"
+    }
   },
   "footer": {
     "guestContributionsWarning": "Toute personne disposant du lien peut modifier"
@@ -56,7 +64,9 @@
       "previewArea": "Zone d'aperçu du tableau blanc",
       "reset": "Réinitialiser",
       "cancel": "Annuler",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "loading": "Chargement",
+      "zoom": "Zoom"
     }
   }
 }

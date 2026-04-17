@@ -28,7 +28,15 @@
     "save": "Opslaan",
     "restart": "Samenwerking herstarten",
     "guestContributionsWarning": "Gastbijdragen zijn ingeschakeld",
-    "closeWhiteboard": "Whiteboard sluiten"
+    "closeWhiteboard": "Whiteboard sluiten",
+    "loadingWhiteboard": "Whiteboard laden",
+    "untitled": "Whiteboard",
+    "unsavedChanges": {
+      "title": "Niet-opgeslagen wijzigingen verwerpen?",
+      "description": "Je hebt niet-opgeslagen wijzigingen die verloren zullen gaan. Weet je zeker dat je wilt doorgaan?",
+      "confirm": "Verwerpen",
+      "cancel": "Doorgaan met bewerken"
+    }
   },
   "footer": {
     "guestContributionsWarning": "Iedereen met de link kan bewerken"
@@ -56,7 +64,9 @@
       "previewArea": "Whiteboard voorbeeldgebied",
       "reset": "Herstellen",
       "cancel": "Annuleren",
-      "confirm": "Bevestigen"
+      "confirm": "Bevestigen",
+      "loading": "Laden",
+      "zoom": "Zoom"
     }
   }
 }

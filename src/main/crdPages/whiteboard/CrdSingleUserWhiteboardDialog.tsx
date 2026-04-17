@@ -8,9 +8,10 @@ import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { Loading } from '@/crd/components/common/Loading';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { WhiteboardSaveFooter } from '@/crd/components/whiteboard/WhiteboardSaveFooter';
 import isWhiteboardContentEqual from '@/domain/collaboration/whiteboard/utils/isWhiteboardContentEqual';
@@ -96,10 +97,12 @@ type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' |
 
 const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: CrdSingleUserWhiteboardDialogProps) => {
   const { t } = useTranslation();
+  const { t: tWb } = useTranslation('crd-whiteboard');
   const notify = useNotification();
   const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
+  const [pendingClose, setPendingClose] = useState<{ resolve: (discard: boolean) => void } | null>(null);
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -156,7 +159,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     await handleUpdate(whiteboard, excState);
   };
 
-  const onClose = async (event?: React.MouseEvent) => {
+  const onClose = async () => {
     if (excalidrawAPI && options.canEdit) {
       const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
         () => import('@alkemio/excalidraw')
@@ -167,13 +170,10 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
       const content = serializeAsJSON(elements, appState, files, 'local');
 
       if (!isWhiteboardContentEqual(whiteboard.content, content) || formikRef.current?.dirty) {
-        if (
-          !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
-        ) {
-          event?.stopPropagation();
-          event?.preventDefault();
-          return;
-        }
+        const discard = await new Promise<boolean>(resolve => {
+          setPendingClose({ resolve });
+        });
+        if (!discard) return;
       }
     }
     actions.onCancel();
@@ -251,10 +251,33 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
                 }}
               />
             )}
-            {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
+            {state?.loadingWhiteboardContent && <Loading text={tWb('editor.loadingWhiteboard')} />}
           </WhiteboardEditorShell>
         )}
       </Formik>
+
+      <ConfirmationDialog
+        open={pendingClose !== null}
+        onOpenChange={open => {
+          if (!open && pendingClose) {
+            pendingClose.resolve(false);
+            setPendingClose(null);
+          }
+        }}
+        title={tWb('editor.unsavedChanges.title')}
+        description={tWb('editor.unsavedChanges.description')}
+        confirmLabel={tWb('editor.unsavedChanges.confirm')}
+        cancelLabel={tWb('editor.unsavedChanges.cancel')}
+        variant="destructive"
+        onConfirm={() => {
+          pendingClose?.resolve(true);
+          setPendingClose(null);
+        }}
+        onCancel={() => {
+          pendingClose?.resolve(false);
+          setPendingClose(null);
+        }}
+      />
 
       {actions.onUpdatePreviewSettings && (
         <WhiteboardPreviewSettingsDialog

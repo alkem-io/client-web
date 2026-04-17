@@ -3,6 +3,7 @@ import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-sch
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { ShareButton } from '@/crd/components/common/ShareButton';
 import { Separator } from '@/crd/primitives/separator';
 import CollaborationSettings from '@/domain/collaboration/realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
@@ -11,7 +12,6 @@ import WhiteboardGuestAccessControls from '@/domain/collaboration/whiteboard/Whi
 import WhiteboardGuestAccessSection from '@/domain/collaboration/whiteboard/WhiteboardShareDialog/WhiteboardGuestAccessSection';
 import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
 import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import type { WhiteboardDetails } from './CrdWhiteboardDialog';
 import CrdWhiteboardDialog from './CrdWhiteboardDialog';
 
@@ -95,7 +95,7 @@ const CrdWhiteboardView = ({
         previewSettingsDialogOpen,
         headerActions: (collabState: CollabState) => (
           <>
-            <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
+            <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>
               <WhiteboardGuestAccessControls whiteboard={whiteboard}>
                 <WhiteboardGuestAccessSection guestAccess={guestAccess} />
               </WhiteboardGuestAccessControls>

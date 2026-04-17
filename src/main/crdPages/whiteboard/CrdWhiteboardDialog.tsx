@@ -8,10 +8,10 @@ import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
-import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
+import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
@@ -122,6 +122,7 @@ const CrdWhiteboardDialog = ({
   lastSuccessfulSavedDate,
 }: CrdWhiteboardDialogProps) => {
   const { t } = useTranslation();
+  const { t: tWb } = useTranslation('crd-whiteboard');
   const notify = useNotification();
   const { evictFromCache } = useApolloCache();
   const { whiteboard } = entities;
@@ -234,7 +235,7 @@ const CrdWhiteboardDialog = ({
   }, [whiteboard?.id]);
 
   if (state?.loadingWhiteboardValue) {
-    return <Loading text="Loading whiteboard..." />;
+    return <Loading text={tWb('editor.loadingWhiteboard')} />;
   }
 
   if (!whiteboard) {
