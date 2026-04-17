@@ -41,21 +41,21 @@ export function UserResultCard({ user, onClick }: UserResultCardProps) {
         {/* Avatar */}
         <Avatar className="size-14 border-2 border-border mb-3">
           <AvatarImage src={user.avatarUrl} alt="" />
-          <AvatarFallback className="bg-primary text-primary-foreground text-base font-semibold">
+          <AvatarFallback className="bg-primary text-primary-foreground text-subsection-title">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
 
         {/* Name */}
-        <h4 className="text-sm font-semibold text-card-foreground group-hover:text-primary transition-colors duration-200">
+        <h4 className="text-card-title text-card-foreground group-hover:text-primary transition-colors duration-200">
           {user.name}
         </h4>
 
         {/* Role */}
-        {user.role && <p className="mt-1 text-[12px] text-muted-foreground truncate w-full">{user.role}</p>}
+        {user.role && <p className="mt-1 text-caption text-muted-foreground truncate w-full">{user.role}</p>}
 
         {/* Email */}
-        {user.email && <p className="mt-0.5 text-[11px] text-muted-foreground truncate w-full">{user.email}</p>}
+        {user.email && <p className="mt-0.5 text-caption text-muted-foreground truncate w-full">{user.email}</p>}
       </div>
     </button>
   );

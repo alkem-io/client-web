@@ -50,10 +50,10 @@ export function InvitationsBlock({
 
   return (
     <section className={cn('space-y-3', className)}>
-      <h3 className="text-lg font-semibold">{t('invitations.title')}</h3>
+      <h3 className="text-subsection-title">{t('invitations.title')}</h3>
 
       {invitations.length === 0 ? (
-        <output className="block text-sm text-muted-foreground">{t('invitations.noInvitations')}</output>
+        <output className="block text-body text-muted-foreground">{t('invitations.noInvitations')}</output>
       ) : (
         <ul className="space-y-2">
           {invitations.map(invitation => {
@@ -64,7 +64,7 @@ export function InvitationsBlock({
                 <Avatar className="size-10 rounded-lg">
                   {avatarSrc ? <AvatarImage src={avatarSrc} alt={invitation.spaceName} /> : null}
                   <AvatarFallback
-                    className={cn('rounded-lg text-xs', invitation.color && 'text-white')}
+                    className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
                     color={invitation.color}
                   >
                     {getInitials(invitation.spaceName)}
@@ -74,7 +74,7 @@ export function InvitationsBlock({
                 <div className="flex-1 min-w-0">
                   <a
                     href={invitation.spaceHref}
-                    className="font-semibold text-sm hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                    className="text-card-title hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                   >
                     {invitation.spaceName}
                   </a>

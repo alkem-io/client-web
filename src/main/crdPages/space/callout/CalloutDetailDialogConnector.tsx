@@ -10,7 +10,9 @@ import { type ContributionCardData, mapAnyContributionToCardData } from '../data
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
+
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
+
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
 
@@ -85,10 +87,11 @@ export function CalloutDetailDialogConnector({
     initialWhiteboardContributionId
   );
 
-  // Sync with the parent's initial contribution ID (e.g. feed thumbnail click).
-  // Unconditional so that a reset to undefined also clears the overlay state.
+  // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {
-    setWhiteboardContributionId(initialWhiteboardContributionId);
+    if (initialWhiteboardContributionId) {
+      setWhiteboardContributionId(initialWhiteboardContributionId);
+    }
   }, [initialWhiteboardContributionId]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
@@ -122,7 +125,7 @@ export function CalloutDetailDialogConnector({
           open={open}
           onOpenChange={onOpenChange}
           callout={mapCalloutDetailsToDialogData(callout, formatDate)}
-          commentsSlot={<p className="text-sm text-muted-foreground">{t('comments.empty')}</p>}
+          commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           hasContributions={hasContributionType}

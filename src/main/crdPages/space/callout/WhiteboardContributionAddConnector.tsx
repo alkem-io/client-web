@@ -69,7 +69,7 @@ export function WhiteboardContributionAddConnector({
             <DialogTitle>{t('callout.createWhiteboard')}</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-2">
-            <label htmlFor="crd-create-whiteboard-name" className="text-xs text-muted-foreground">
+            <label htmlFor="crd-create-whiteboard-name" className="text-caption text-muted-foreground">
               {t('callout.whiteboardNameLabel')}
             </label>
             <Input

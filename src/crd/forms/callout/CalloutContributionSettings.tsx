@@ -42,7 +42,7 @@ export function CalloutContributionSettings({
     <div className={cn('space-y-4', className)}>
       {/* Allowed contribution types */}
       <div className="space-y-2">
-        <span className="text-sm font-medium">{t('forms.contributionTypes')}</span>
+        <span className="text-body-emphasis">{t('forms.contributionTypes')}</span>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {CONTRIBUTION_TYPES.map(type => (
             <button
@@ -50,7 +50,7 @@ export function CalloutContributionSettings({
               type="button"
               aria-pressed={allowedTypes.includes(type)}
               className={cn(
-                'px-3 py-2 rounded-md border text-xs font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'px-3 py-2 rounded-md border text-caption font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 allowedTypes.includes(type)
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-background hover:bg-muted border-border'
@@ -66,7 +66,7 @@ export function CalloutContributionSettings({
       {/* Comments toggle */}
       <div className="flex items-center justify-between py-2">
         <div className="space-y-0.5">
-          <label htmlFor="comments-enabled" className="text-sm font-medium">
+          <label htmlFor="comments-enabled" className="text-body-emphasis">
             {t('forms.commentsEnabled')}
           </label>
         </div>

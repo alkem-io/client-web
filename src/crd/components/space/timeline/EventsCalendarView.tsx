@@ -257,7 +257,7 @@ export function EventsCalendarView({
           ) : (
             <>
               {future.length === 0 && !loading && (
-                <p className="text-sm text-muted-foreground">{emptyMessage ?? t('calendar.noUpcomingEvents')}</p>
+                <p className="text-body text-muted-foreground">{emptyMessage ?? t('calendar.noUpcomingEvents')}</p>
               )}
               {future.map(event => (
                 <EventCard
@@ -273,9 +273,7 @@ export function EventsCalendarView({
                 />
               ))}
               {past.length > 0 && (
-                <h4 className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t('calendar.pastEvents')}
-                </h4>
+                <h4 className="mt-4 text-label uppercase text-muted-foreground">{t('calendar.pastEvents')}</h4>
               )}
               {past.map(event => (
                 <EventCard

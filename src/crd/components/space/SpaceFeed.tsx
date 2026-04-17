@@ -47,7 +47,7 @@ export function SpaceFeed({
       {/* Header */}
       {(title || canCreate) && (
         <div className="flex items-center justify-between">
-          {title && <h2 className="text-lg font-semibold text-foreground">{title}</h2>}
+          {title && <h2 className="text-subsection-title text-foreground">{title}</h2>}
           {canCreate && (
             <Button size="sm" className="gap-2" onClick={onCreateClick}>
               <Plus className="w-4 h-4" aria-hidden="true" />
@@ -68,7 +68,7 @@ export function SpaceFeed({
 
       {/* Empty state */}
       {!hasContent && !loading && (
-        <p className="text-sm text-muted-foreground py-8 text-center">{t('feed.noCallouts')}</p>
+        <p className="text-body text-muted-foreground py-8 text-center">{t('feed.noCallouts')}</p>
       )}
 
       {/* Content: children (lazy items) or posts (pre-mapped in the demo app) */}

@@ -63,7 +63,7 @@ export function CommunityGuidelinesBlock({
           onEditClick={onEditClick}
           editLabel={t('about.edit')}
         />
-        <p className="text-sm text-muted-foreground">{t('about.guidelinesAdminsOnly')}</p>
+        <p className="text-body text-muted-foreground">{t('about.guidelinesAdminsOnly')}</p>
       </section>
     );
   }
@@ -90,7 +90,7 @@ export function CommunityGuidelinesBlock({
 
       <Dialog open={readMoreOpen} onOpenChange={setReadMoreOpen}>
         <DialogContent className="w-full sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           {description && <MarkdownContent content={description} />}
           {references && references.length > 0 && (
             <div className="space-y-2 mt-4">
@@ -104,8 +104,8 @@ export function CommunityGuidelinesBlock({
                 >
                   <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
                   <div>
-                    <p className="text-sm font-medium text-foreground">{ref.name}</p>
-                    {ref.description && <p className="text-xs text-muted-foreground">{ref.description}</p>}
+                    <p className="text-body-emphasis text-foreground">{ref.name}</p>
+                    {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
                   </div>
                 </a>
               ))}
@@ -132,7 +132,7 @@ function Header({
 }) {
   return (
     <div className="flex items-center justify-between">
-      <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+      <h2 className="text-subsection-title text-foreground flex items-center gap-2">
         {icon}
         {title}
       </h2>

@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/cr
 type TabItem = {
   label: string;
   index: number;
+  href?: string;
 };
 
 type MobileAction = {
@@ -76,22 +77,25 @@ function DesktopTabs({
         {tabs.map(tab => {
           const active = tab.index === activeIndex;
           return (
-            <button
+            <a
               key={tab.index}
-              type="button"
+              href={tab.href ?? '#'}
               role="tab"
               aria-selected={active}
               data-active={active}
               className={cn(
-                'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 active
-                  ? 'border-primary text-primary font-semibold'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
+                  ? 'border-primary text-primary text-card-title'
+                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted text-body-emphasis'
               )}
-              onClick={() => onTabChange(tab.index)}
+              onClick={e => {
+                e.preventDefault();
+                onTabChange(tab.index);
+              }}
             >
               {tab.label}
-            </button>
+            </a>
           );
         })}
       </div>
@@ -131,7 +135,7 @@ function MobileTabBar({
                 role="tab"
                 aria-selected={active}
                 className={cn(
-                  'flex flex-col items-center justify-center flex-1 h-full text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'flex flex-col items-center justify-center flex-1 h-full text-caption transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   active ? 'text-primary font-semibold' : 'text-muted-foreground'
                 )}
                 onClick={() => onTabChange(tab.index)}
@@ -145,7 +149,7 @@ function MobileTabBar({
               <SheetTrigger asChild={true}>
                 <button
                   type="button"
-                  className="flex flex-col items-center justify-center flex-1 h-full text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex flex-col items-center justify-center flex-1 h-full text-caption text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   aria-label={t('mobile.more')}
                 >
                   <MoreHorizontal className="h-5 w-5" aria-hidden="true" />

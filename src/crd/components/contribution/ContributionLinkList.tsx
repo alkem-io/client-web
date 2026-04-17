@@ -32,8 +32,8 @@ export function ContributionLinkList({ links, canAdd, onAdd, className }: Contri
         >
           <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
           <div className="min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">{link.displayName}</p>
-            {link.description && <p className="text-xs text-muted-foreground truncate">{link.description}</p>}
+            <p className="text-body-emphasis text-foreground truncate">{link.displayName}</p>
+            {link.description && <p className="text-caption text-muted-foreground truncate">{link.description}</p>}
           </div>
         </a>
       ))}

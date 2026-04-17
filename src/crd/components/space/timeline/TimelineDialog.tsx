@@ -53,9 +53,9 @@ export function TimelineDialog({
     <div className="flex items-start justify-between gap-3 pr-10">
       <div className="min-w-0 flex-1">
         {isDesktop ? (
-          <DialogTitle className="text-lg font-semibold leading-tight">{title}</DialogTitle>
+          <DialogTitle className="text-subsection-title leading-tight">{title}</DialogTitle>
         ) : (
-          <SheetTitle className="text-lg font-semibold leading-tight">{title}</SheetTitle>
+          <SheetTitle className="text-subsection-title leading-tight">{title}</SheetTitle>
         )}
         {subtitle ? (
           isDesktop ? (

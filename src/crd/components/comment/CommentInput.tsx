@@ -81,7 +81,7 @@ export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000
     <div className="flex gap-3">
       <Avatar className="h-8 w-8 shrink-0">
         {currentUser?.avatarUrl && <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />}
-        <AvatarFallback className="text-xs">{currentUser?.name?.charAt(0) ?? '?'}</AvatarFallback>
+        <AvatarFallback className="text-caption">{currentUser?.name?.charAt(0) ?? '?'}</AvatarFallback>
       </Avatar>
 
       <div className="min-w-0 flex-1 space-y-2">
@@ -93,7 +93,7 @@ export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000
           onChange={event => setContent(event.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={t('comments.addComment')}
-          className="min-h-9 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm outline-hidden focus:border-primary/50"
+          className="min-h-9 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-body outline-hidden focus:border-primary/50"
           rows={1}
           aria-label={t('comments.addComment')}
         />
@@ -119,7 +119,7 @@ export function CommentInput({ currentUser, onSubmit, disabled, maxLength = 2000
 
           <div className="flex items-center gap-2">
             {showCharCount && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-caption text-muted-foreground">
                 {t('comments.charCount', { count: content.length, max: maxLength })}
               </span>
             )}

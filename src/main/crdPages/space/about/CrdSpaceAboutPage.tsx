@@ -188,7 +188,7 @@ export default function CrdSpaceAboutPage() {
   const contactHostSlot = provider ? (
     <a
       href={provider.href}
-      className="inline-flex items-center gap-2 text-sm text-primary hover:underline underline-offset-4"
+      className="inline-flex items-center gap-2 text-body-emphasis text-primary hover:underline underline-offset-4"
     >
       <Mail className="w-4 h-4 shrink-0" aria-hidden="true" />
       {t('about.contactHost', { ns: 'crd-space' })}

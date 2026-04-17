@@ -32,10 +32,10 @@ export function WhiteboardPage() {
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto py-8">
-      <h1 className="text-2xl font-bold">Whiteboard Components</h1>
+      <h1 className="text-page-title">Whiteboard Components</h1>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Dialogs</h2>
+        <h2 className="text-subsection-title">Dialogs</h2>
         <div className="flex gap-3">
           <Button onClick={() => setShellOpen(true)}>Open Multi-User Editor</Button>
           <Button variant="outline" onClick={() => setSingleUserOpen(true)}>Open Single-User Editor</Button>
@@ -44,7 +44,7 @@ export function WhiteboardPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Error State</h2>
+        <h2 className="text-subsection-title">Error State</h2>
         <div className="border rounded-lg overflow-hidden min-h-[300px] relative">
           <WhiteboardErrorState
             title="Whiteboard Not Found"
@@ -55,9 +55,9 @@ export function WhiteboardPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Footer Variants</h2>
+        <h2 className="text-subsection-title">Footer Variants</h2>
         <div className="border rounded-lg overflow-hidden">
-          <p className="px-4 py-2 text-sm text-muted-foreground">Multi-user (collaborative):</p>
+          <p className="px-4 py-2 text-body text-muted-foreground">Multi-user (collaborative):</p>
           <WhiteboardCollabFooter
             canDelete={true}
             onDelete={() => {}}
@@ -68,7 +68,7 @@ export function WhiteboardPage() {
           />
         </div>
         <div className="border rounded-lg overflow-hidden">
-          <p className="px-4 py-2 text-sm text-muted-foreground">Single-user (save mode):</p>
+          <p className="px-4 py-2 text-body text-muted-foreground">Single-user (save mode):</p>
           <WhiteboardSaveFooter
             onDelete={() => {}}
             onSave={() => {}}
@@ -105,8 +105,8 @@ export function WhiteboardPage() {
         {/* Placeholder for Excalidraw canvas — static grid pattern */}
         <div className="w-full h-full bg-white flex items-center justify-center" style={{ backgroundImage: 'radial-gradient(circle, #e5e7eb 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
           <div className="text-center text-muted-foreground">
-            <p className="text-lg font-medium">Excalidraw Canvas Area</p>
-            <p className="text-sm">In the real app, the Excalidraw editor renders here</p>
+            <p className="text-subsection-title">Excalidraw Canvas Area</p>
+            <p className="text-body">In the real app, the Excalidraw editor renders here</p>
           </div>
         </div>
       </WhiteboardEditorShell>
@@ -126,8 +126,8 @@ export function WhiteboardPage() {
       >
         <div className="w-full h-full bg-white flex items-center justify-center" style={{ backgroundImage: 'radial-gradient(circle, #e5e7eb 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
           <div className="text-center text-muted-foreground">
-            <p className="text-lg font-medium">Single-User Excalidraw Canvas</p>
-            <p className="text-sm">No real-time collaboration — explicit Save required</p>
+            <p className="text-subsection-title">Single-User Excalidraw Canvas</p>
+            <p className="text-body">No real-time collaboration — explicit Save required</p>
           </div>
         </div>
       </WhiteboardEditorShell>
