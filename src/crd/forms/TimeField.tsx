@@ -41,7 +41,7 @@ export function TimeField({ label, value, onChange, minTime, disabled, error, cl
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label && (
-        <label htmlFor={id} className="text-sm font-medium">
+        <label htmlFor={id} className="text-body-emphasis">
           {label}
         </label>
       )}
@@ -55,13 +55,13 @@ export function TimeField({ label, value, onChange, minTime, disabled, error, cl
         aria-label={label ?? ariaLabel}
         aria-invalid={hasError || undefined}
         className={cn(
-          'h-9 w-full rounded-md border px-3 py-1 text-sm bg-input-background transition-[color,box-shadow] outline-none',
+          'h-9 w-full rounded-md border px-3 py-1 text-control bg-input-background transition-[color,box-shadow] outline-none',
           'border-input focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
           'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
           hasError && 'border-destructive'
         )}
       />
-      {hasError && <span className="text-xs text-destructive">{error}</span>}
+      {hasError && <span className="text-caption text-destructive">{error}</span>}
     </div>
   );
 }

@@ -47,7 +47,7 @@ export function WhiteboardCollabFooter({
             {t('editor.delete')}
           </Button>
         )}
-        {readonlyMessage && <span className="text-xs text-muted-foreground">{readonlyMessage}</span>}
+        {readonlyMessage && <span className="text-caption text-muted-foreground">{readonlyMessage}</span>}
         {canRestart && (
           <Button variant="outline" size="sm" onClick={onRestart}>
             <RotateCcw className="size-3 mr-1" aria-hidden="true" />
@@ -60,7 +60,7 @@ export function WhiteboardCollabFooter({
         {guestWarningVisible && (
           <div className="flex items-center gap-1 border border-destructive rounded px-2 py-1 text-destructive">
             <Globe className="size-3.5" aria-hidden="true" />
-            <span className="text-xs">{t('footer.guestContributionsWarning')}</span>
+            <span className="text-caption">{t('footer.guestContributionsWarning')}</span>
           </div>
         )}
         {guestAccessBadge}

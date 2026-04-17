@@ -59,7 +59,7 @@ export function DashboardSidebar({
               {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />}
               <span className="truncate">{item.label}</span>
               {item.badgeCount !== undefined && item.badgeCount > 0 && (
-                <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0">
+                <Badge variant="secondary" className="ml-auto text-badge px-1.5 py-0">
                   {item.badgeCount}
                 </Badge>
               )}
@@ -71,7 +71,7 @@ export function DashboardSidebar({
               <a
                 key={item.id}
                 href={item.href}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                className="flex items-center gap-2 px-2 py-1.5 rounded-md text-body hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 aria-label={
                   item.badgeCount
                     ? `${item.label}, ${t('sidebar.pendingCount', { count: item.badgeCount })}`
@@ -88,7 +88,7 @@ export function DashboardSidebar({
               key={item.id}
               type="button"
               onClick={item.onClick}
-              className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none w-full text-left"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-md text-body hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none w-full text-left"
               aria-label={
                 item.badgeCount ? `${item.label}, ${t('sidebar.pendingCount', { count: item.badgeCount })}` : undefined
               }
@@ -102,7 +102,7 @@ export function DashboardSidebar({
       {showActivityToggle && onActivityToggle && (
         <div className="flex items-center gap-2 px-2">
           <Switch id="activity-view-toggle" checked={activityEnabled} onCheckedChange={onActivityToggle} />
-          <label htmlFor="activity-view-toggle" className="text-sm cursor-pointer">
+          <label htmlFor="activity-view-toggle" className="text-body cursor-pointer">
             {t('sidebar.activityView')}
           </label>
         </div>
@@ -110,7 +110,7 @@ export function DashboardSidebar({
 
       {resourceSections.map(section => (
         <section key={section.title} aria-label={section.title} className="space-y-1">
-          <h4 className="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{section.title}</h4>
+          <h4 className="px-2 text-label uppercase text-muted-foreground">{section.title}</h4>
           <ul className="space-y-0.5">
             {section.items.map(item => (
               <li key={item.id}>

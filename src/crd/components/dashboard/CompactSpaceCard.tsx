@@ -89,13 +89,13 @@ export function CompactSpaceCard({
       <div className="flex items-center gap-3 p-4">
         {initials && (
           <div
-            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground"
+            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-body-emphasis font-bold text-primary-foreground"
             aria-hidden="true"
           >
             {initials}
           </div>
         )}
-        <p className="min-w-0 truncate text-sm font-semibold">{name}</p>
+        <p className="min-w-0 truncate text-card-title">{name}</p>
       </div>
     </a>
   );

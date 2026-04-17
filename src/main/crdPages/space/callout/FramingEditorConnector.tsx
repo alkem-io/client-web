@@ -119,8 +119,8 @@ export function FramingEditorConnector({
                 <Presentation className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-medium text-sm">{t('framing.newWhiteboard')}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-body-emphasis">{t('framing.newWhiteboard')}</p>
+                <p className="text-caption text-muted-foreground">
                   {whiteboardConfigured ? t('framing.configured') : t('framing.readyToCreate')}
                 </p>
               </div>
@@ -164,8 +164,8 @@ export function FramingEditorConnector({
               <StickyNote className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-medium text-sm">{t('framing.memo')}</p>
-              <p className="text-xs text-muted-foreground">{t('framing.richTextEditor')}</p>
+              <p className="text-body-emphasis">{t('framing.memo')}</p>
+              <p className="text-caption text-muted-foreground">{t('framing.richTextEditor')}</p>
             </div>
           </div>
           {/* Tiptap editor will be rendered here by the integration layer */}

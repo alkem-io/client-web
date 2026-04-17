@@ -82,7 +82,7 @@ export function SearchTagInput({
               <button
                 type="button"
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap shrink-0 border border-border',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control font-medium whitespace-nowrap shrink-0 border border-border',
                   'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isScoped ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
                 )}
@@ -118,7 +118,7 @@ export function SearchTagInput({
           {tags.map((tag, index) => (
             <li
               key={`tag-${tag}-${index}`}
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-sm font-medium bg-primary text-primary-foreground"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-control font-medium bg-primary text-primary-foreground"
             >
               {tag}
               <button

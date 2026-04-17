@@ -165,7 +165,7 @@ export const SpaceAboutApplyButton = forwardRef<HTMLButtonElement, SpaceAboutApp
       <div className={cn('w-full', className)}>
         {button}
         {!isAuthenticated && !loading && (
-          <p className="text-xs text-muted-foreground mt-2 text-center">{t('about.signInHelper')}</p>
+          <p className="text-caption text-muted-foreground mt-2 text-center">{t('about.signInHelper')}</p>
         )}
       </div>
     );

@@ -28,7 +28,7 @@ export function ContributionAddCard({ label, icon: Icon, onClick, disabled, clas
       <div className="size-12 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
         <Icon className="size-6" aria-hidden="true" />
       </div>
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-body-emphasis">{label}</span>
     </button>
   );
 }

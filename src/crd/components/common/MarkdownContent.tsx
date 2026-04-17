@@ -57,12 +57,12 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
   return (
     <div
       className={cn(
-        'max-w-none text-sm leading-relaxed text-foreground',
+        'max-w-none text-body text-foreground',
         // Headings
-        '[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:text-foreground',
-        '[&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-foreground',
-        '[&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:text-foreground',
-        '[&_h4]:text-base [&_h4]:font-medium [&_h4]:mt-3 [&_h4]:mb-1 [&_h4]:text-foreground',
+        '[&_h1]:text-page-title [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:text-foreground',
+        '[&_h2]:text-section-title [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-foreground',
+        '[&_h3]:text-subsection-title [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:text-foreground',
+        '[&_h4]:text-card-title [&_h4]:mt-3 [&_h4]:mb-1 [&_h4]:text-foreground',
         // Paragraphs
         '[&_p]:mb-3 [&_p]:leading-relaxed [&_p]:text-muted-foreground',
         '[&_p:last-child]:mb-0',
@@ -73,7 +73,7 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         '[&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3',
         '[&_li]:mb-1 [&_li]:text-muted-foreground',
         // Code
-        '[&_code]:text-foreground [&_code]:bg-muted [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs',
+        '[&_code]:text-foreground [&_code]:bg-muted [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-caption',
         '[&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:p-3 [&_pre]:mb-3 [&_pre]:overflow-x-auto',
         '[&_pre_code]:bg-transparent [&_pre_code]:p-0',
         // Inline formatting

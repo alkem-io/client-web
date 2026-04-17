@@ -41,7 +41,7 @@ export function CalloutTagCloud({
               type="button"
               aria-pressed={isSelected}
               className={cn(
-                'inline-flex items-center select-none gap-1.5 px-2.5 py-1 text-xs rounded-full border font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                'inline-flex items-center select-none gap-1.5 px-2.5 py-1 text-caption rounded-full border font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 isSelected
                   ? 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80'
                   : 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80'
@@ -57,9 +57,9 @@ export function CalloutTagCloud({
       </div>
 
       {hasSelection && (
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-body">
           <span className="text-muted-foreground">{t('callout.resultsCount', { count: resultsCount })}</span>
-          <Button variant="ghost" size="sm" className="text-xs h-7" onClick={onClear}>
+          <Button variant="ghost" size="sm" className="text-caption h-7" onClick={onClear}>
             {t('callout.clearFilters')}
           </Button>
         </div>

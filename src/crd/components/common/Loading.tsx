@@ -17,7 +17,7 @@ export function Loading({ text, className }: LoadingProps) {
       aria-label={label}
     >
       <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
-      <span className="text-sm font-medium uppercase text-primary">{label}</span>
+      <span className="text-body-emphasis uppercase text-primary">{label}</span>
     </output>
   );
 }

@@ -40,7 +40,7 @@ export type SpaceExplorerProps = {
 
 const SKELETON_COUNT = 6;
 
-const filterLabelClassName = 'text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground';
+const filterLabelClassName = 'text-badge uppercase tracking-[0.08em] text-muted-foreground';
 
 export function SpaceExplorer({
   spaces,
@@ -103,8 +103,8 @@ export function SpaceExplorer({
     <div className={cn('w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-8', className)}>
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{t('spaces.title')}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t('spaces.subtitle')}</p>
+        <h1 className="text-page-title text-foreground">{t('spaces.title')}</h1>
+        <p className="mt-1 text-body text-muted-foreground">{t('spaces.subtitle')}</p>
       </div>
 
       {/* Search + Sort + Filters */}
@@ -124,14 +124,14 @@ export function SpaceExplorer({
             <Button
               variant="outline"
               className={cn(
-                'gap-2 h-10 text-sm rounded-lg',
+                'gap-2 h-10 rounded-lg',
                 activeFilterCount > 0 ? 'text-primary border-primary' : 'text-foreground border-border'
               )}
             >
               <SlidersHorizontal className="size-3.5" />
               {t('spaces.filters')}
               {activeFilterCount > 0 && (
-                <Badge className="text-[10px] px-[5px] h-[18px] bg-primary text-primary-foreground rounded-full ml-0.5">
+                <Badge className="text-badge px-[5px] h-[18px] bg-primary text-primary-foreground rounded-full ml-0.5">
                   {activeFilterCount}
                 </Badge>
               )}
@@ -206,7 +206,7 @@ export function SpaceExplorer({
                     variant="ghost"
                     size="sm"
                     onClick={clearFilters}
-                    className="w-full justify-start gap-2 text-sm text-destructive h-8"
+                    className="w-full justify-start gap-2 text-destructive h-8"
                   >
                     <X className="size-3" />
                     {t('spaces.clearFilters')}
@@ -225,7 +225,7 @@ export function SpaceExplorer({
             <button
               type="button"
               onClick={() => setPrivacyFilter('all')}
-              className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[11px] px-2.5 py-1"
+              className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1"
             >
               {privacyFilter === 'public' ? t('spaces.filterPublicOnly') : t('spaces.filterPrivateOnly')}
               <X aria-hidden="true" className="size-2.5" />
@@ -236,7 +236,7 @@ export function SpaceExplorer({
             <button
               type="button"
               onClick={() => setTypeFilter('all')}
-              className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[11px] px-2.5 py-1"
+              className="inline-flex items-center gap-1 cursor-pointer rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-caption px-2.5 py-1"
             >
               {typeFilter === 'spaces' ? t('spaces.filterSpacesOnly') : t('spaces.filterSubspacesOnly')}
               <X aria-hidden="true" className="size-2.5" />
@@ -249,8 +249,8 @@ export function SpaceExplorer({
       {/* Results count */}
       {!showSkeletons && displayedSpaces.length > 0 && (
         <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-muted-foreground">
-            {t('spaces.showing')} <span className="font-semibold text-foreground">{displayedSpaces.length}</span>{' '}
+          <p className="text-body text-muted-foreground">
+            {t('spaces.showing')} <span className="text-body-emphasis text-foreground">{displayedSpaces.length}</span>{' '}
             {t('spaces.spacesLabel')}
           </p>
         </div>
@@ -285,10 +285,10 @@ export function SpaceExplorer({
       {showEmpty && (
         <div className="flex flex-col items-center justify-center text-center py-16 px-6 border border-dashed border-border rounded-xl bg-muted">
           <FolderOpen aria-hidden="true" className="size-10 text-muted-foreground opacity-50 mb-3" />
-          <h3 className="text-base font-semibold mb-1 text-foreground">{t('spaces.emptyTitle')}</h3>
-          <p className="text-sm text-muted-foreground max-w-[360px] leading-normal mb-4">{t('spaces.emptyMessage')}</p>
+          <h3 className="text-subsection-title mb-1 text-foreground">{t('spaces.emptyTitle')}</h3>
+          <p className="text-body text-muted-foreground max-w-[360px] mb-4">{t('spaces.emptyMessage')}</p>
           {activeFilterCount > 0 && (
-            <Button variant="outline" onClick={clearFilters} className="gap-2 text-sm">
+            <Button variant="outline" onClick={clearFilters} className="gap-2">
               <X className="size-3.5" />
               {t('spaces.clearFilters')}
             </Button>

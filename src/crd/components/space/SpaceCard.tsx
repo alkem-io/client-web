@@ -95,7 +95,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Member badge */}
           {space.isMember && (
             <div className="absolute top-3 left-4 z-[3]">
-              <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-primary text-[10px] font-semibold">
+              <output className="flex items-center gap-1 px-2 py-1 rounded-full bg-white text-primary text-badge">
                 <UserCheck aria-hidden="true" className="size-2.5" />
                 <span>{t('crd-common:member')}</span>
               </output>
@@ -105,14 +105,14 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           {/* Privacy + pin badges */}
           <div className="absolute top-3 right-3 z-[3] flex items-center gap-1">
             {space.isPinned && (
-              <span className="flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-[10px] font-semibold bg-background/85 text-foreground">
+              <span className="flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-badge bg-background/85 text-foreground">
                 <Pin aria-hidden="true" className="size-2.5" />
                 <span className="sr-only">{t('crd-common:pinned')}</span>
               </span>
             )}
             <div
               className={cn(
-                'flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-[10px] font-semibold',
+                'flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-badge',
                 space.isPrivate ? 'bg-foreground/50 text-primary-foreground' : 'bg-background/85 text-foreground'
               )}
             >
@@ -146,17 +146,15 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
         {/* Card Body */}
         <div className="flex flex-col flex-1 px-4 pt-6">
           {/* Name */}
-          <h3 className="truncate text-sm font-semibold text-card-foreground leading-[1.3] transition-colors duration-200">
-            {space.name}
-          </h3>
+          <h3 className="truncate text-card-title text-card-foreground transition-colors duration-200">{space.name}</h3>
 
           {/* Parent indicator for subspaces */}
           {space.parent && (
-            <p className="truncate text-[11px] text-muted-foreground mt-0.5">
+            <p className="truncate text-caption text-muted-foreground mt-0.5">
               {t('spaces.in')}:{' '}
               <button
                 type="button"
-                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-[11px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                className="text-muted-foreground hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-caption focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                 onClick={e => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -169,21 +167,18 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
           )}
 
           {/* Description */}
-          <p className="line-clamp-2 text-sm text-muted-foreground mt-2 leading-normal">{space.description}</p>
+          <p className="line-clamp-2 text-body text-muted-foreground mt-2">{space.description}</p>
 
           {/* Tags */}
           {space.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2.5">
               {space.tags.slice(0, 3).map(tag => (
-                <Badge key={tag} variant="secondary" className="text-[10px] font-medium px-2 py-0 rounded-full">
+                <Badge key={tag} variant="secondary" className="text-badge px-2 py-0 rounded-full">
                   {tag}
                 </Badge>
               ))}
               {space.tags.length > 3 && (
-                <Badge
-                  variant="outline"
-                  className="text-[10px] font-medium px-2 py-0 rounded-full text-muted-foreground"
-                >
+                <Badge variant="outline" className="text-badge px-2 py-0 rounded-full text-muted-foreground">
                   +{space.tags.length - 3}
                 </Badge>
               )}
@@ -195,9 +190,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
         {space.leads.length > 0 && (
           <div className="flex items-center mt-3 px-4 py-3 border-t border-border">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.04em]">
-                {t('crd-common:leads')}
-              </span>
+              <span className="text-label text-muted-foreground uppercase">{t('crd-common:leads')}</span>
               <div className="flex -space-x-2">
                 {visibleLeads.map(lead => (
                   <Avatar
@@ -208,7 +201,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                     <AvatarImage src={lead.avatarUrl} alt="" />
                     <AvatarFallback
                       className={cn(
-                        'text-[9px] font-semibold',
+                        'text-badge',
                         lead.type === 'org'
                           ? 'bg-accent text-accent-foreground'
                           : 'bg-secondary text-secondary-foreground'
@@ -219,7 +212,7 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
                   </Avatar>
                 ))}
                 {overflowCount > 0 && (
-                  <span className="flex items-center justify-center size-[26px] border-2 border-card rounded-full bg-muted text-[9px] font-semibold text-muted-foreground">
+                  <span className="flex items-center justify-center size-[26px] border-2 border-card rounded-full bg-muted text-badge text-muted-foreground">
                     <span aria-hidden="true">+{overflowCount}</span>
                     <span className="sr-only">{t('spaces.moreLeads', { count: overflowCount })}</span>
                   </span>

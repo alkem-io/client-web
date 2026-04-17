@@ -56,14 +56,14 @@ export function JoinWhiteboardDialog({
         >
           <form onSubmit={handleSubmit} noValidate={true} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">
-              <p className="text-sm text-muted-foreground">{t('join.welcome')}</p>
-              <h1 id={titleId} className="text-3xl font-medium text-primary">
+              <p className="text-body text-muted-foreground">{t('join.welcome')}</p>
+              <h1 id={titleId} className="text-page-title font-medium text-primary">
                 {t('join.title')}
               </h1>
             </div>
 
             <div className="flex flex-col gap-4">
-              <p className="text-sm text-muted-foreground">{t('join.description')}</p>
+              <p className="text-body text-muted-foreground">{t('join.description')}</p>
 
               <div className="flex flex-col gap-1">
                 <Input
@@ -75,7 +75,7 @@ export function JoinWhiteboardDialog({
                   aria-invalid={showError}
                   autoComplete="off"
                 />
-                {showError && <p className="text-sm text-destructive">{error}</p>}
+                {showError && <p className="text-caption text-destructive">{error}</p>}
               </div>
 
               <Button type="submit" className="w-full py-2.5" disabled={isDisabled} aria-busy={submitting}>

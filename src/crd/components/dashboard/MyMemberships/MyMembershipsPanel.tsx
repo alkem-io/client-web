@@ -41,7 +41,7 @@ function EmptyState({ icon, message, action }: { icon: ReactNode; message: strin
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
       <div className="text-muted-foreground">{icon}</div>
-      <p className="text-sm text-muted-foreground">{message}</p>
+      <p className="text-body text-muted-foreground">{message}</p>
       {action}
     </div>
   );
@@ -114,8 +114,8 @@ export function MyMembershipsPanel({
 
         {/* Header */}
         <div className="px-6 pt-6 pb-4">
-          <DialogTitle className="text-xl font-semibold">{t('myMembershipsPanel.title')}</DialogTitle>
-          <p className="text-sm text-muted-foreground mt-1">
+          <DialogTitle className="text-section-title">{t('myMembershipsPanel.title')}</DialogTitle>
+          <p className="text-body text-muted-foreground mt-1">
             {loading ? '\u00A0' : t('myMembershipsPanel.subtitle', { count: filteredCount })}
           </p>
         </div>
@@ -195,7 +195,7 @@ export function MyMembershipsPanel({
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="text-sm text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                  className="text-body text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                 >
                   {t('myMembershipsPanel.empty.clearFilters')}
                 </button>

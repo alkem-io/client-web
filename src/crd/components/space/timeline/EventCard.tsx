@@ -50,7 +50,7 @@ export function EventCard({ event, highlighted, onClick, ref, locale = enUS }: E
     >
       <EventCardHeader event={event} locale={locale} />
       {event.description && (
-        <div className="pl-[3.75rem] text-xs text-muted-foreground">
+        <div className="pl-[3.75rem] text-caption text-muted-foreground">
           {/* line-clamp must sit on MarkdownContent's own root, not a wrapper —
               otherwise block-level markdown elements (paragraphs, lists, etc.)
               escape the clamp and the preview shows full content. */}
@@ -58,7 +58,7 @@ export function EventCard({ event, highlighted, onClick, ref, locale = enUS }: E
         </div>
       )}
       <div className="pl-[3.75rem]">
-        <span className="text-xs font-medium text-primary">{t('sidebar.readMore')} →</span>
+        <span className="text-caption font-medium text-primary">{t('sidebar.readMore')} →</span>
       </div>
     </button>
   );

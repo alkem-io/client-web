@@ -113,7 +113,7 @@ export function SpaceSidebar({
           {onAboutClick && (
             <Button
               variant="outline"
-              className="w-full uppercase tracking-wider gap-2 text-sm font-medium"
+              className="w-full uppercase tracking-wider gap-2 text-body-emphasis"
               onClick={onAboutClick}
             >
               <Info className="w-4 h-4" aria-hidden="true" />
@@ -146,13 +146,13 @@ export function SpaceSidebar({
           {(canContactLeads || (canInvite && onInvite)) && (
             <div className="flex gap-2">
               {canContactLeads && onContactLead && (
-                <Button variant="outline" className="flex-1 gap-2 text-sm font-medium" onClick={onContactLead}>
+                <Button variant="outline" className="flex-1 gap-2 text-body-emphasis" onClick={onContactLead}>
                   <Mail className="w-4 h-4" aria-hidden="true" />
                   {t('sidebar.contactLead')}
                 </Button>
               )}
               {canInvite && onInvite && (
-                <Button className="flex-1 gap-2 text-sm font-medium" onClick={onInvite}>
+                <Button className="flex-1 gap-2 text-body-emphasis" onClick={onInvite}>
                   <UserPlus className="w-4 h-4" aria-hidden="true" />
                   {t('sidebar.invite')}
                 </Button>

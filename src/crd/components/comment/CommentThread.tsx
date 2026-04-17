@@ -56,11 +56,11 @@ export function CommentThread({
     <div className="space-y-4">
       {/* Sort toggle header */}
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm text-muted-foreground">{t('comments.count', { count: comments.length })}</p>
+        <p className="text-body text-muted-foreground">{t('comments.count', { count: comments.length })}</p>
         <Button
           variant="ghost"
           size="sm"
-          className="h-7 px-2 text-xs"
+          className="h-7 px-2 text-caption"
           onClick={() => setSortOrder(current => (current === 'newest' ? 'oldest' : 'newest'))}
         >
           {sortOrder === 'newest' ? t('comments.sortNewest') : t('comments.sortOldest')}
@@ -70,14 +70,14 @@ export function CommentThread({
       {/* Comment list */}
       {loading ? (
         <output
-          className="flex items-center gap-2 text-sm text-muted-foreground py-4"
+          className="flex items-center gap-2 text-body text-muted-foreground py-4"
           aria-label={t('comments.loading')}
         >
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           <span>{t('comments.loading')}</span>
         </output>
       ) : comments.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-4">{t('comments.empty')}</p>
+        <p className="text-body text-muted-foreground py-4">{t('comments.empty')}</p>
       ) : (
         <div className="space-y-4">
           {threaded.topLevel.map(comment => (
