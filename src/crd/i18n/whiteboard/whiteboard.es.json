@@ -28,7 +28,15 @@
     "save": "Guardar",
     "restart": "Reiniciar colaboración",
     "guestContributionsWarning": "Las contribuciones de invitados están habilitadas",
-    "closeWhiteboard": "Cerrar pizarra"
+    "closeWhiteboard": "Cerrar pizarra",
+    "loadingWhiteboard": "Cargando pizarra",
+    "untitled": "Pizarra",
+    "unsavedChanges": {
+      "title": "¿Descartar cambios no guardados?",
+      "description": "Tienes cambios sin guardar que se perderán. ¿Seguro que quieres continuar?",
+      "confirm": "Descartar",
+      "cancel": "Seguir editando"
+    }
   },
   "footer": {
     "guestContributionsWarning": "Cualquiera con el enlace puede editar"
@@ -56,7 +64,9 @@
       "previewArea": "Área de vista previa de la pizarra",
       "reset": "Restablecer",
       "cancel": "Cancelar",
-      "confirm": "Confirmar"
+      "confirm": "Confirmar",
+      "loading": "Cargando",
+      "zoom": "Zoom"
     }
   }
 }

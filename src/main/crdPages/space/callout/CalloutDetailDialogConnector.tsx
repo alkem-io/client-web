@@ -3,12 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../dataMappers/calloutDataMapper';
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
+
+import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
+
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
 
@@ -24,12 +28,18 @@ function ContributionsSlot({
   callout,
   open,
   onContributionClick,
+  onContributionCreated,
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
   onContributionClick?: (id: string) => void;
+  onContributionCreated?: () => void;
 }) {
   const contributionType = getCalloutContributionType(callout);
+  const { canCreateContribution } = useCalloutCollaborationPermissions({
+    callout,
+    contributionType: contributionType ?? CalloutContributionType.Post,
+  });
 
   const {
     inViewRef,
@@ -47,9 +57,20 @@ function ContributionsSlot({
 
   const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
 
+  const trailingSlot =
+    canCreateContribution && contributionType === CalloutContributionType.Whiteboard ? (
+      <WhiteboardContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+    ) : null;
+
   return (
     <div ref={inViewRef}>
-      {!loading && <ContributionGridConnector contributions={mapped} onContributionClick={onContributionClick} />}
+      {!loading && (
+        <ContributionGridConnector
+          contributions={mapped}
+          onContributionClick={onContributionClick}
+          trailingSlot={trailingSlot}
+        />
+      )}
     </div>
   );
 }

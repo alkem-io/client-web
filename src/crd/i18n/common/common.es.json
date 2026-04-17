@@ -20,5 +20,13 @@
   "leadType": {
     "person": "Persona",
     "org": "Organización"
+  },
+  "share": {
+    "title": "Compartir",
+    "button": "Compartir",
+    "url": "URL para compartir",
+    "copy": "Copiar enlace",
+    "copied": "Copiado",
+    "shareOnAlkemio": "Compartir en Alkemio"
   }
 }

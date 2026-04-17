@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Children, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -40,7 +40,7 @@ export function SpaceFeed({
 }: SpaceFeedProps) {
   const { t } = useTranslation('crd-space');
 
-  const hasContent = Boolean(children) || posts.length > 0;
+  const hasContent = Children.count(children) > 0 || posts.length > 0;
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.feedRegion')}>

@@ -245,6 +245,53 @@
 
 ---
 
+## Phase 7a: Add Whiteboard Contribution (US-WB5)
+
+**Goal**: Community members can create a new whiteboard contribution from the callout detail dialog. The prototype's "Add Response" dashed-border card is rendered at the end of the contributions grid; clicking it opens a CRD dialog with a single title input.
+
+- [X] TP7a-1 [P] Add translation keys to `src/crd/i18n/space/space.{en,es,nl,bg,de,fr}.json`
+  - `callout.addResponse` ("Add Response" / localized)
+  - `callout.createWhiteboard` ("Create new whiteboard" / localized)
+  - `callout.defaultWhiteboardName` ("New Whiteboard" / localized)
+  - `callout.whiteboardNameLabel` ("Whiteboard title" / localized)
+  - `dialogs.create` ("Create" / localized)
+  - **Acceptance**: All 6 files have identical key structure; JSON valid
+  - **Dependencies**: none
+
+- [X] TP7a-2 [P] Create `src/crd/components/contribution/ContributionAddCard.tsx`
+  - **File**: new
+  - **Description**: Presentational dashed-border card matching prototype "Add Response" tile. `<button type="button">` with `border-2 border-dashed`, rounded-xl, `min-h-[180px]`, centered icon-in-circle + label. Hover: `border-primary/50 bg-muted/5 text-primary`. Focus ring. Disabled state with opacity + non-interactive hover.
+  - **Props**: `{ label: string; icon: LucideIcon; onClick?: () => void; disabled?: boolean; className?: string }`
+  - **Acceptance**: Zero forbidden imports (no MUI, no domain, no routing); `lucide-react` icon prop; `cn()` for classes; keyboard accessible
+  - **Dependencies**: none
+
+- [X] TP7a-3 Create `src/main/crdPages/space/callout/WhiteboardContributionAddConnector.tsx`
+  - **File**: new
+  - **Description**: Integration connector. Renders `ContributionAddCard` with `PenTool` icon + `t('callout.addResponse')`. On click, opens a CRD `Dialog` containing a labelled `Input` for the whiteboard title (autofocus, pre-filled with default name) and Cancel/Create buttons. Calls `useCreateWhiteboardOnCalloutMutation` with `refetchQueries: ['CalloutContributions'], awaitRefetchQueries: true`. Uses `useLoadingState` for the create action — disables Create button and sets `aria-busy` during mutation. Empty content is `EmptyWhiteboardString` from `@/domain/common/whiteboard/EmptyWhiteboard`.
+  - **Props**: `{ calloutId: string; defaultDisplayName?: string; defaultContent?: string; onCreated?: () => void }`
+  - **Acceptance**: Clicking the card opens the dialog; submitting with empty name is blocked; successful create refetches + closes; failed create leaves dialog open with loading cleared; global Apollo error handler surfaces failures
+  - **Dependencies**: TP7a-1, TP7a-2
+
+- [X] TP7a-4 Extend `src/main/crdPages/space/callout/ContributionGridConnector.tsx` with an optional `trailingSlot: ReactNode` prop
+  - **File**: modified
+  - **Description**: Append `trailingSlot` at the end of the grid children and include it in the `totalCount` passed to `ContributionGrid` so the collapse-threshold math still works. Early return on empty contributions only if there's no `trailingSlot`.
+  - **Acceptance**: Passing `trailingSlot` renders it after cards; omitting it preserves existing behavior
+  - **Dependencies**: TP7a-2
+
+- [X] TP7a-5 Wire into `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx`
+  - **File**: modified
+  - **Description**: In `ContributionsSlot`, call `useCalloutCollaborationPermissions({ callout, contributionType })`. When `canCreateContribution && contributionType === CalloutContributionType.Whiteboard`, build `trailingSlot = <WhiteboardContributionAddConnector calloutId={callout.id} />` and pass to `ContributionGridConnector`. Omit for other types (follow-up iterations handle Post/Memo/Link).
+  - **Acceptance**: Whiteboard-type callouts with the right privileges show the card; other types / insufficient privileges don't; grid renders correctly when contributions list is empty and only the add card is shown
+  - **Dependencies**: TP7a-3, TP7a-4
+
+- [ ] TP7a-6 [future] Same pattern for Post / Memo / Link contribution types
+  - Mirror `WhiteboardContributionAddConnector` for each. Separate connectors (one per type) keep each one simple and preserve the CRD presentational boundary.
+  - Not in this iteration — called out here so it's tracked.
+
+**Checkpoint**: Opening a callout whose allowed contribution type is Whiteboard shows an "Add Response" dashed card at the end of the contributions grid. Clicking it lets the user name and create a new whiteboard contribution. The grid refreshes to include the new card. User can then click the new card to open the whiteboard editor.
+
+---
+
 ## Phase 7: Verification + Cleanup
 
 - [X] T23 [P] Verify zero forbidden imports in all new `src/crd/components/whiteboard/` files — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`, `@alkemio/excalidraw`
@@ -297,10 +344,17 @@ Phase 6 — Public Page + Demo:
   T10, T15 ──> T21 (demo page)
   T21 ──> T22 (demo route)
 
+Phase 7a — Add Response (after Phase 3 lands CalloutDetailDialogConnector contributions grid):
+  TP7a-1 (translations, no deps)
+  TP7a-2 (ContributionAddCard, no deps)
+  TP7a-1, TP7a-2 ──> TP7a-3 (WhiteboardContributionAddConnector)
+  TP7a-2 ──> TP7a-4 (ContributionGridConnector trailingSlot)
+  TP7a-3, TP7a-4 ──> TP7a-5 (wire in CalloutDetailDialogConnector)
+
 Phase 7 — Verification (parallel):
   T18 ──> T23 (import verification)
   T18 ──> T24 (inventory)
-  T22 ──> T25 (final lint + tests)
+  T22, TP7a-5 ──> T25 (final lint + tests)
 ```
 
 **Critical path**: T1 → T3 → T4 → T6 → T7 (Phase 1+2, delivers public page)

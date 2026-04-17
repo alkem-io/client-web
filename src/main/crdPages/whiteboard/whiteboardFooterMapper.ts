@@ -76,7 +76,9 @@ export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): Whi
 
   return {
     canDelete: hasDeletePrivilege && !params.preventWhiteboardDeletion,
-    deleteDisabled: !params.canEdit || !!params.updating,
+    // Delete permission is independent from edit permission: a user may have Delete without UpdateContent
+    // (e.g. the creator of a whiteboard contribution who isn't a space editor). Only block while a save is in flight.
+    deleteDisabled: !!params.updating,
     canRestart,
     guestWarningVisible: params.guestContributionsAllowed === true,
   };

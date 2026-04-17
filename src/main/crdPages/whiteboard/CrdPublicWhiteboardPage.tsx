@@ -1,11 +1,12 @@
-import { type FC, useEffect, useState } from 'react';
+import { type FC, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import Loading from '@/core/ui/loading/Loading';
+import { Loading } from '@/crd/components/common/Loading';
+import { ShareButton } from '@/crd/components/common/ShareButton';
 import { JoinWhiteboardDialog } from '@/crd/components/whiteboard/JoinWhiteboardDialog';
 import { WhiteboardErrorState } from '@/crd/components/whiteboard/WhiteboardErrorState';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
@@ -17,7 +18,6 @@ import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess
 import { setGuestWhiteboardUrl } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { buildLoginUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import CrdWhiteboardDialog from './CrdWhiteboardDialog';
 
@@ -35,16 +35,49 @@ const CrdPublicWhiteboardPageContent: FC = () => {
   const isAuthenticated = !!currentUser?.me?.user;
 
   const { whiteboard, loading, error, refetch, needsGuestName } = useGuestWhiteboardAccess(
-    whiteboardId!,
+    whiteboardId,
     isAuthenticated
   );
   const { trackWhiteboardLoadSuccess, trackWhiteboardLoadFailure, trackDerivedNameUsed } = useGuestAnalytics();
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState(false);
+  const [guestNameInput, setGuestNameInput] = useState('');
+  const [guestNameError, setGuestNameError] = useState<string | undefined>();
+  const [guestNameTouched, setGuestNameTouched] = useState(false);
   const { isSmallScreen } = useScreenSize();
   const { fullscreen, setFullscreen } = useFullscreen();
   const isFullscreen = fullscreen || isSmallScreen;
+
+  const runGuestNameValidation = (name: string): string | undefined => {
+    const result = validateGuestName(name);
+    return result.valid ? undefined : result.error;
+  };
+
+  const handleGuestNameChange = (next: string) => {
+    setGuestNameInput(next);
+    if (guestNameTouched) {
+      setGuestNameError(runGuestNameValidation(next.trim()));
+    }
+  };
+
+  const handleGuestNameBlur = () => {
+    setGuestNameTouched(true);
+    setGuestNameError(runGuestNameValidation(guestNameInput.trim()));
+  };
+
+  const handleGuestNameSubmit = () => {
+    setGuestNameTouched(true);
+    const trimmed = guestNameInput.trim();
+    const err = runGuestNameValidation(trimmed);
+    if (err) {
+      setGuestNameError(err);
+      return;
+    }
+    if (trimmed.length > 0) {
+      setGuestName(trimmed);
+    }
+  };
 
   const whiteboardDetails = (() => {
     if (!whiteboard) return undefined;
@@ -54,7 +87,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
       guestContributionsAllowed: whiteboard.guestContributionsAllowed,
       profile: {
         id: whiteboard.profile?.id ?? '',
-        displayName: whiteboard.profile?.displayName ?? 'Whiteboard',
+        displayName: whiteboard.profile?.displayName ?? t('editor.untitled'),
         storageBucket: whiteboard.profile?.storageBucket ?? { id: '' },
         url: whiteboard.profile?.url,
       },
@@ -88,10 +121,6 @@ const CrdPublicWhiteboardPageContent: FC = () => {
       trackWhiteboardLoadFailure(whiteboardId, error.message || 'Unknown error');
     }
   }, [error, whiteboardId, trackWhiteboardLoadFailure]);
-
-  const handleGuestNameSubmit = (name: string) => {
-    setGuestName(name);
-  };
 
   const handleSignIn = () => {
     navigate(buildLoginUrl(location.pathname));
@@ -145,12 +174,13 @@ const CrdPublicWhiteboardPageContent: FC = () => {
       <div className="w-screen h-screen overflow-hidden relative">
         <JoinWhiteboardDialog
           open={true}
+          value={guestNameInput}
+          error={guestNameError}
+          touched={guestNameTouched}
+          onChange={handleGuestNameChange}
+          onBlur={handleGuestNameBlur}
           onSubmit={handleGuestNameSubmit}
           onSignIn={handleSignIn}
-          validate={name => {
-            const v = validateGuestName(name);
-            return v.valid ? undefined : v.error;
-          }}
         />
       </div>
     );
@@ -166,40 +196,37 @@ const CrdPublicWhiteboardPageContent: FC = () => {
 
   if (whiteboard && whiteboardDetails) {
     return (
-      <CrdWhiteboardDialog
-        entities={{ whiteboard: whiteboardDetails }}
-        lastSuccessfulSavedDate={lastSuccessfulSavedDate}
-        actions={{
-          onCancel: handleCloseWhiteboard,
-          onUpdate: async () => ({ success: true }),
-          onChangeDisplayName: async () => {},
-          onDelete: async () => {},
-          setLastSuccessfulSavedDate,
-          setConsecutiveSaveErrors,
-          onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
-        }}
-        options={{
-          show: true,
-          canEdit: true,
-          canDelete: false,
-          dialogTitle: whiteboard.profile?.displayName || 'Whiteboard',
-          fullscreen: isFullscreen,
-          previewSettingsDialogOpen,
-          readOnlyDisplayName: true,
-          headerActions: () => (
-            <>
-              <ShareButton
-                url={computedGuestShareUrl}
-                entityTypeName="whiteboard"
-                disabled={!computedGuestShareUrl}
-                showShareOnAlkemio={false}
-              />
-              {!isSmallScreen && <FullscreenButton />}
-              <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
-            </>
-          ),
-        }}
-      />
+      <Suspense fallback={<Loading />}>
+        <CrdWhiteboardDialog
+          entities={{ whiteboard: whiteboardDetails }}
+          lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+          actions={{
+            onCancel: handleCloseWhiteboard,
+            onUpdate: async () => ({ success: true }),
+            onChangeDisplayName: async () => {},
+            onDelete: async () => {},
+            setLastSuccessfulSavedDate,
+            setConsecutiveSaveErrors,
+            onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
+          }}
+          options={{
+            show: true,
+            canEdit: true,
+            canDelete: false,
+            dialogTitle: whiteboard.profile?.displayName || t('editor.untitled'),
+            fullscreen: isFullscreen,
+            previewSettingsDialogOpen,
+            readOnlyDisplayName: true,
+            headerActions: () => (
+              <>
+                <ShareButton url={computedGuestShareUrl} disabled={!computedGuestShareUrl} showShareOnAlkemio={false} />
+                {!isSmallScreen && <FullscreenButton />}
+                <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+              </>
+            ),
+          }}
+        />
+      </Suspense>
     );
   }
 

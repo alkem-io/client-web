@@ -76,11 +76,6 @@ export function PreviewCropDialog({
   const [isPanning, setIsPanning] = useState(false);
   const panPointerRef = useRef<number | null>(null);
   const panOriginRef = useRef<{ x: number; y: number } | null>(null);
-  const imgPanRef = useRef(imgPan);
-
-  useEffect(() => {
-    imgPanRef.current = imgPan;
-  }, [imgPan]);
 
   const [imageObjectUrl, setImageObjectUrl] = useState<string>();
 
@@ -195,7 +190,9 @@ export function PreviewCropDialog({
             onPointerCancel={endPan}
           >
             {!previewImage || !imageObjectUrl ? (
-              <div className="flex items-center justify-center h-48 text-muted-foreground">Loading...</div>
+              <div className="flex items-center justify-center h-48 text-muted-foreground">
+                {t('preview.crop.loading')}
+              </div>
             ) : (
               <ReactCrop
                 aspect={aspectRatio}
@@ -209,7 +206,7 @@ export function PreviewCropDialog({
                   crossOrigin="anonymous"
                   alt={t('preview.crop.previewArea')}
                   style={{
-                    transform: `translate(${imgPanRef.current.x}px, ${imgPanRef.current.y}px) scale(${imgScale})`,
+                    transform: `translate(${imgPan.x}px, ${imgPan.y}px) scale(${imgScale})`,
                   }}
                   onLoad={event => onLoad(event.target as HTMLImageElement)}
                 />
@@ -231,7 +228,7 @@ export function PreviewCropDialog({
                 setImgPan(current => clampPan(current, imgRef.current, next));
               }}
               className="w-full accent-primary h-2 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
-              aria-label="Zoom"
+              aria-label={t('preview.crop.zoom')}
             />
           </div>
         </div>

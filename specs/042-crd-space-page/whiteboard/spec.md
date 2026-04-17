@@ -98,9 +98,11 @@ These stay MUI until their respective domains are migrated. They render as porta
 - CRD public whiteboard page (`/public/whiteboard/:id` route)
 - CRD guest join dialog (name input + sign-in button)
 - CRD error state for public whiteboard page
+- CRD "Add Response" card for creating a new whiteboard contribution from inside the callout detail dialog (dashed-border card with pen icon, matches prototype `PostDetailDialog`)
 - Integration layer for multi-user mode (`CrdWhiteboardDialog` replacing `WhiteboardDialog`)
 - Integration layer for single-user mode (`CrdSingleUserWhiteboardDialog` replacing `SingleUserWhiteboardDialog`)
 - Integration layer for public page (`CrdPublicWhiteboardPage`)
+- Integration layer for whiteboard contribution creation (`WhiteboardContributionAddConnector` replacing `CreateContributionButtonWhiteboard`)
 - Route toggle for `/public/whiteboard/:id` (CRD vs MUI based on feature flag)
 - i18n namespace `crd-whiteboard` for whiteboard-specific CRD translations
 - Demo app preview page with static screenshot (no Excalidraw dependency)
@@ -140,11 +142,14 @@ These stay MUI until their respective domains are migrated. They render as porta
 | **Public Page** | | |
 | `crd/components/whiteboard/JoinWhiteboardDialog` | `main/public/whiteboard/JoinWhiteboardDialog` | -- |
 | `crd/components/whiteboard/WhiteboardErrorState` | `main/public/whiteboard/PublicWhiteboardError` | -- |
+| **Contribution creation** | | |
+| `crd/components/contribution/ContributionAddCard` | `calloutContributions/CreateContributionButton` (the card variant in prototype) | `PostDetailDialog` "Add Response" card (dashed border + icon + label) |
 | **Integration Layer** | | |
 | `main/crdPages/whiteboard/CrdWhiteboardDialog` | `WhiteboardDialog` (multi-user, full wiring) | -- |
 | `main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog` | `SingleUserWhiteboardDialog` (single-user, full wiring) | -- |
 | `main/crdPages/whiteboard/CrdWhiteboardView` | `WhiteboardsManagement/WhiteboardView` | -- |
 | `main/crdPages/whiteboard/CrdPublicWhiteboardPage` | `main/public/whiteboard/PublicWhiteboardPage` | -- |
+| `main/crdPages/space/callout/WhiteboardContributionAddConnector` | `calloutContributions/whiteboard/CreateContributionButtonWhiteboard` | -- |
 
 ## User Stories
 
@@ -191,6 +196,19 @@ A space admin opens the preview settings for a whiteboard to control how the thu
 1. **Given** CRD is enabled and a user clicks the preview settings button in the editor header, **When** the dialog opens, **Then** it renders with CRD styling (3 mode buttons: Auto, Custom, Fixed)
 2. **Given** the user selects Custom or Fixed mode, **When** the crop dialog opens, **Then** the canvas preview image is shown with an interactive crop region, zoom slider, and reset/cancel/confirm buttons
 3. **Given** the user confirms a crop selection, **When** the settings save, **Then** the preview thumbnail updates to reflect the new crop
+
+### US-WB5: Add Whiteboard Contribution from Callout Detail (Priority: P2)
+
+A community member with `Contribute` + `CreateWhiteboard` privilege opens a callout that accepts whiteboard contributions. Inside the contributions grid they see an "Add Response" card — a dashed-border tile with a pen icon — rendered after the existing contribution cards. Clicking it opens a lightweight CRD dialog with a single "Whiteboard title" input and Create/Cancel buttons. Creating the whiteboard refreshes the grid to include the new card.
+
+**Acceptance Scenarios**:
+
+1. **Given** CRD is enabled, the user has the required privileges, and `settings.contribution.allowedTypes` contains `Whiteboard`, **When** the callout detail dialog opens, **Then** the contributions grid shows an "Add Response" card at the end of the list (dashed border, pen icon, "Add Response" label).
+2. **Given** the user does NOT have `Contribute` + `CreateWhiteboard` privileges, **When** the grid renders, **Then** the "Add Response" card is not shown.
+3. **Given** the allowed contribution type is NOT Whiteboard (e.g., Post or Memo), **When** the grid renders, **Then** the "Add Response" card is not shown (this iteration ships whiteboard only; other types follow the same pattern in later iterations).
+4. **Given** the user clicks the "Add Response" card, **When** the dialog opens, **Then** the whiteboard title input is pre-filled with the localized default name (`callout.defaultWhiteboardName`), focused, and submit is disabled while the name is empty.
+5. **Given** the user confirms, **When** the mutation completes, **Then** the `CalloutContributions` query refetches, the new whiteboard card appears in the grid, and the create dialog closes.
+6. **Given** the mutation fails, **When** the error returns, **Then** the dialog stays open, the loading state clears, and the global Apollo error handler surfaces the failure.
 
 ## Functional Requirements
 
@@ -260,3 +278,13 @@ A space admin opens the preview settings for a whiteboard to control how the thu
 
 - **FR-WB-045**: All user-visible strings in CRD whiteboard components must use `useTranslation('crd-whiteboard')` -- no hardcoded text
 - **FR-WB-046**: Translation files must cover all 6 languages (en, nl, es, bg, de, fr)
+
+### Add Whiteboard Contribution (US-WB5)
+
+- **FR-WB-047**: `ContributionAddCard` is a presentational CRD component that renders a dashed-border card with a lucide icon, a label, and a click handler — matches the prototype "Add Response" tile shape. Props: `{ label: string; icon: LucideIcon; onClick?: () => void; disabled?: boolean; className?: string }`. No business logic, no GraphQL, no routing.
+- **FR-WB-048**: `WhiteboardContributionAddConnector` lives in `src/main/crdPages/space/callout/`. It owns the dialog state (open/closed, draft name), calls `useCreateWhiteboardOnCalloutMutation`, and refetches `CalloutContributions` after success. Props: `{ calloutId: string; defaultDisplayName?: string; defaultContent?: string; onCreated?: () => void }`.
+- **FR-WB-049**: The create dialog is a CRD `Dialog` with a single `Input` for the whiteboard title (aria-labelled, autofocus), a Cancel button, and a Create button. Create is disabled when the trimmed name is empty or while the mutation is in flight; `aria-busy` reflects the loading state.
+- **FR-WB-050**: The default whiteboard name is sourced from `callout.contributionDefaults?.defaultDisplayName` when available, otherwise the localized `callout.defaultWhiteboardName` key. Empty whiteboard content uses `EmptyWhiteboardString` from `@/domain/common/whiteboard/EmptyWhiteboard`.
+- **FR-WB-051**: `ContributionGridConnector` gains an optional `trailingSlot: ReactNode` prop, appended after the contribution cards inside `ContributionGrid`. The grid's `totalCount` accounts for the trailing slot so the collapse-threshold logic remains accurate.
+- **FR-WB-052**: The "Add Response" card is only rendered when `useCalloutCollaborationPermissions({ callout, contributionType })` returns `canCreateContribution === true` AND the callout's allowed contribution type is `Whiteboard`. Other contribution types follow the same pattern in later iterations and must not render this card yet.
+- **FR-WB-053**: Translation keys added to the `crd-space` namespace (all 6 languages): `callout.addResponse`, `callout.createWhiteboard`, `callout.defaultWhiteboardName`, `callout.whiteboardNameLabel`, `dialogs.create`.

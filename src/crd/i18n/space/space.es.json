@@ -158,7 +158,11 @@
     "totalVotes": "{{count}} votos en total",
     "resultsCount": "{{count}} resultados",
     "clearFilters": "Limpiar filtros",
-    "sendComment": "Enviar comentario"
+    "sendComment": "Enviar comentario",
+    "addResponse": "Añadir respuesta",
+    "createWhiteboard": "Crear nueva pizarra",
+    "defaultWhiteboardName": "Nueva pizarra",
+    "whiteboardNameLabel": "Título de la pizarra"
   },
   "contribution": {
     "edit": "Editar",
@@ -170,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Nueva pizarra",
     "readyToCreate": "Listo para crear",
+    "configured": "Configurado",
     "configure": "Configurar",
+    "edit": "Editar",
     "memo": "Nota",
     "richTextEditor": "Editor de texto enriquecido"
   },
@@ -223,7 +229,54 @@
     "leadUsers": "Usuarios líderes",
     "leadOrganizations": "Organizaciones líderes",
     "guidelines": "Directrices de la comunidad",
-    "references": "Referencias"
+    "references": "Referencias",
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
+    }
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted."
+    }
   },
   "mobile": {
     "more": "Más",
@@ -315,7 +368,8 @@
     "unknownUser": "Usuario desconocido"
   },
   "dialogs": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "create": "Crear"
   },
   "poll": {
     "status": {

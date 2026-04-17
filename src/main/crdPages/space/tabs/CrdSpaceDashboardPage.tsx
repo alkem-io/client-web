@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import useNavigate from '@/core/routing/useNavigate';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
@@ -16,6 +18,7 @@ import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 export default function CrdSpaceDashboardPage() {
   const { t } = useTranslation('crd-space');
   const { space } = useSpace();
+  const navigate = useNavigate();
   const { callouts, calloutsSetId, canCreateCallout, tabDescription, dashboardNavigation, loading } =
     useCrdSpaceDashboard();
   const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar();
@@ -55,6 +58,7 @@ export default function CrdSpaceDashboardPage() {
           <SpaceSidebar
             variant="home"
             description={tabDescription || space.about.profile.description || ''}
+            onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
             subspaces={subspaces}
             events={sidebarEvents}
             onShowCalendar={openCalendar}

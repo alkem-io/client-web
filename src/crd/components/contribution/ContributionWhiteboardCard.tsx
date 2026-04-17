@@ -23,7 +23,7 @@ export function ContributionWhiteboardCard({
     <button
       type="button"
       className={cn(
-        'group/wb relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 aspect-[4/3] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'group/wb relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 min-h-[180px] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         className
       )}
       onClick={onClick}
@@ -42,15 +42,15 @@ export function ContributionWhiteboardCard({
 
       {/* Hover "Open Whiteboard" button overlay */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/wb:opacity-100 transition-opacity duration-200 bg-primary/40">
-        <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-lg h-8 px-3 text-caption font-semibold">
+        <span className="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-lg h-8 px-3 text-xs font-semibold">
           {t('callout.openWhiteboard')}
         </span>
       </div>
 
       {/* Title/author gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent p-3 flex flex-col justify-end pointer-events-none">
-        <p className="text-white text-caption font-semibold truncate">{title}</p>
-        {author && <p className="text-white/70 text-badge truncate">{author}</p>}
+        <p className="text-white text-xs font-semibold truncate">{title}</p>
+        {author && <p className="text-white/70 text-[10px] truncate">{author}</p>}
       </div>
     </button>
   );

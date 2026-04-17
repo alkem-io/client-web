@@ -16,6 +16,19 @@ export function WhiteboardPage() {
   const [shellOpen, setShellOpen] = useState(false);
   const [singleUserOpen, setSingleUserOpen] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
+  const [guestName, setGuestName] = useState('');
+  const [guestTouched, setGuestTouched] = useState(false);
+
+  const guestError = guestTouched && guestName.trim().length === 0 ? 'Name is required' : undefined;
+
+  const handleJoinSubmit = () => {
+    setGuestTouched(true);
+    if (guestName.trim().length === 0) return;
+    alert(`Joining as: ${guestName.trim()}`);
+    setJoinOpen(false);
+    setGuestName('');
+    setGuestTouched(false);
+  };
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto py-8">
@@ -122,10 +135,12 @@ export function WhiteboardPage() {
       {/* Join dialog */}
       <JoinWhiteboardDialog
         open={joinOpen}
-        onSubmit={name => {
-          alert(`Joining as: ${name}`);
-          setJoinOpen(false);
-        }}
+        value={guestName}
+        error={guestError}
+        touched={guestTouched}
+        onChange={setGuestName}
+        onBlur={() => setGuestTouched(true)}
+        onSubmit={handleJoinSubmit}
         onSignIn={() => alert('Sign in clicked')}
       />
     </div>

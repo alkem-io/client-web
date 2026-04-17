@@ -8,10 +8,10 @@ import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
-import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
+import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
@@ -122,6 +122,7 @@ const CrdWhiteboardDialog = ({
   lastSuccessfulSavedDate,
 }: CrdWhiteboardDialogProps) => {
   const { t } = useTranslation();
+  const { t: tWb } = useTranslation('crd-whiteboard');
   const notify = useNotification();
   const { evictFromCache } = useApolloCache();
   const { whiteboard } = entities;
@@ -215,11 +216,15 @@ const CrdWhiteboardDialog = ({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
-    if (whiteboard) {
-      setDeleteDialogOpen(false);
-      actions.onCancel();
-      await actions.onDelete(whiteboard);
-    }
+    if (!whiteboard) return;
+    // Close both dialogs BEFORE awaiting the delete: the mutation evicts the whiteboard from the
+    // Apollo cache, which triggers re-renders in ancestors (e.g. WhiteboardContributionConnector)
+    // whose queries now resolve to `undefined`. Letting those re-renders happen while this dialog
+    // is still mounted crashes child hooks that read `whiteboard.profile.*`. Unmounting first
+    // avoids that race; if the mutation fails, the global Apollo error handler surfaces it.
+    setDeleteDialogOpen(false);
+    actions.onCancel();
+    await actions.onDelete(whiteboard);
   });
 
   const formikRef = useRef<FormikProps<WhiteboardFormSchema>>(null);
@@ -234,7 +239,7 @@ const CrdWhiteboardDialog = ({
   }, [whiteboard?.id]);
 
   if (state?.loadingWhiteboardValue) {
-    return <Loading text="Loading whiteboard..." />;
+    return <Loading text={tWb('editor.loadingWhiteboard')} />;
   }
 
   if (!whiteboard) {
@@ -268,6 +273,7 @@ const CrdWhiteboardDialog = ({
           const footerProps = mapWhiteboardFooterProps({
             myPrivileges: whiteboard.authorization?.myPrivileges,
             canEdit: !!options.canEdit,
+            preventWhiteboardDeletion: !options.canDelete,
             collaboratorMode: mode,
             collaboratorModeReason: modeReason,
             guestContributionsAllowed: whiteboard.guestContributionsAllowed,
@@ -282,42 +288,49 @@ const CrdWhiteboardDialog = ({
               onSubmit={() => {}}
               validationSchema={whiteboardValidationSchema}
             >
-              <WhiteboardEditorShell
-                open={options.show}
-                fullscreen={options.fullscreen}
-                onClose={onClose}
-                title={
-                  <WhiteboardDisplayName
-                    displayName={whiteboard.profile.displayName}
-                    readOnly={options.readOnlyDisplayName}
-                    editing={isEditingName}
-                    onEdit={() => setIsEditingName(true)}
-                    onSave={async newName => {
-                      await actions.onChangeDisplayName(whiteboard.id, newName);
-                      setIsEditingName(false);
-                    }}
-                    onCancel={() => setIsEditingName(false)}
-                  />
-                }
-                titleExtra={
-                  <WhiteboardDialogTemplatesLibrary
-                    editModeEnabled={!!editModeEnabled && mode === 'write'}
-                    disabled={!isSceneInitialized}
-                    onImportTemplate={handleImportTemplate}
-                  />
-                }
-                headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
-                footer={
-                  <WhiteboardCollabFooter
-                    {...footerProps}
-                    onDelete={() => setDeleteDialogOpen(true)}
-                    onRestart={restartCollaboration}
-                    guestAccessBadge={undefined}
-                  />
-                }
-              >
-                {children}
-              </WhiteboardEditorShell>
+              {({ values, setFieldValue }) => (
+                <WhiteboardEditorShell
+                  open={options.show}
+                  fullscreen={options.fullscreen}
+                  onClose={onClose}
+                  title={
+                    <WhiteboardDisplayName
+                      displayName={whiteboard.profile.displayName}
+                      value={values.profile.displayName}
+                      onChange={name => setFieldValue('profile.displayName', name)}
+                      readOnly={options.readOnlyDisplayName}
+                      editing={isEditingName}
+                      onEdit={() => setIsEditingName(true)}
+                      onSave={async () => {
+                        await actions.onChangeDisplayName(whiteboard.id, values.profile.displayName);
+                        setIsEditingName(false);
+                      }}
+                      onCancel={() => {
+                        setFieldValue('profile.displayName', whiteboard.profile.displayName);
+                        setIsEditingName(false);
+                      }}
+                    />
+                  }
+                  titleExtra={
+                    <WhiteboardDialogTemplatesLibrary
+                      editModeEnabled={!!editModeEnabled && mode === 'write'}
+                      disabled={!isSceneInitialized}
+                      onImportTemplate={handleImportTemplate}
+                    />
+                  }
+                  headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
+                  footer={
+                    <WhiteboardCollabFooter
+                      {...footerProps}
+                      onDelete={() => setDeleteDialogOpen(true)}
+                      onRestart={restartCollaboration}
+                      guestAccessBadge={undefined}
+                    />
+                  }
+                >
+                  {children}
+                </WhiteboardEditorShell>
+              )}
             </Formik>
           );
         }}

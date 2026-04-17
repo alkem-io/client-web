@@ -16,7 +16,7 @@ export function WhiteboardErrorState({ title, message, onRetry, className }: Whi
   return (
     <div className={cn('flex flex-col items-center justify-center min-h-screen p-6 text-center', className)}>
       <AlertCircle className="size-16 text-destructive mb-4" aria-hidden="true" />
-      <h1 className="text-page-title mb-2">{title}</h1>
+      <h1 className="text-2xl font-bold mb-2">{title}</h1>
       <p className="text-muted-foreground max-w-[600px] mb-6">{message}</p>
       {onRetry && (
         <Button variant="default" onClick={onRetry}>
