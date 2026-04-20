@@ -58,7 +58,7 @@ export function PreviewSettingsDialog({
       <DialogContent className="sm:max-w-md" closeLabel={t('preview.crop.cancel')}>
         <DialogHeader>
           <DialogTitle>{t('preview.settings.title')}</DialogTitle>
-          <p className="text-sm text-muted-foreground">{t('preview.settings.subtitle')}</p>
+          <p className="text-body text-muted-foreground">{t('preview.settings.subtitle')}</p>
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
@@ -88,8 +88,8 @@ export function PreviewSettingsDialog({
                   )}
                 </div>
                 <div>
-                  <span className="font-medium text-sm">{t(config.titleKey)}</span>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t(config.descKey)}</p>
+                  <span className="text-body-emphasis">{t(config.titleKey)}</span>
+                  <p className="text-caption text-muted-foreground mt-0.5">{t(config.descKey)}</p>
                 </div>
               </button>
             );

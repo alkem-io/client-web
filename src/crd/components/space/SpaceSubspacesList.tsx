@@ -107,8 +107,8 @@ export function SpaceSubspacesList({
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">{title ?? t('subspaces.title')}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{subtitle ?? t('subspaces.subtitle')}</p>
+          <h2 className="text-page-title text-foreground">{title ?? t('subspaces.title')}</h2>
+          <p className="mt-1 text-body text-muted-foreground">{subtitle ?? t('subspaces.subtitle')}</p>
         </div>
         {canCreate && onCreateClick && (
           <Button className="shrink-0 gap-2" onClick={onCreateClick}>
@@ -130,7 +130,7 @@ export function SpaceSubspacesList({
             setShowAll(false);
           }}
           aria-label={t('subspaces.search')}
-          className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-sm text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+          className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
         />
       </div>
 
@@ -150,7 +150,7 @@ export function SpaceSubspacesList({
                   setShowAll(false);
                 }}
                 className={cn(
-                  'px-3 py-1.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'px-3 py-1.5 text-body-emphasis rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isSelected
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -175,7 +175,7 @@ export function SpaceSubspacesList({
                 onClick={() => toggleTag(tag)}
                 aria-pressed={isSelected}
                 className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'px-3 py-1.5 text-caption font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isSelected
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -220,8 +220,8 @@ function EmptyState({ hasActiveFilter, onClear }: { hasActiveFilter: boolean; on
   return (
     <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-border rounded-lg">
       <Folder className="w-10 h-10 text-muted-foreground opacity-50 mb-3" aria-hidden="true" />
-      <h3 className="text-lg font-medium text-foreground">{t('subspaces.empty.title')}</h3>
-      <p className="text-sm text-muted-foreground mt-1">{t('subspaces.empty.description')}</p>
+      <h3 className="text-subsection-title text-foreground">{t('subspaces.empty.title')}</h3>
+      <p className="text-body text-muted-foreground mt-1">{t('subspaces.empty.description')}</p>
       {hasActiveFilter && (
         <Button variant="link" className="mt-2 text-primary" onClick={onClear}>
           {t('subspaces.empty.clearFilters')}

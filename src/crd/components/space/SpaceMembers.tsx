@@ -130,8 +130,8 @@ export function SpaceMembers({
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">{title ?? t('members.title')}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h2 className="text-page-title text-foreground">{title ?? t('members.title')}</h2>
+          <p className="mt-1 text-body text-muted-foreground">
             {subtitle ?? t('members.subtitle', { users: totalUsers, organizations: totalOrgs })}
           </p>
         </div>
@@ -159,7 +159,7 @@ export function SpaceMembers({
               setCurrentPage(0);
             }}
             aria-label={t('members.search')}
-            className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-sm text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+            className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
           />
         </div>
 
@@ -176,7 +176,7 @@ export function SpaceMembers({
                 }}
                 aria-pressed={isActive}
                 className={cn(
-                  'px-3 py-2 text-sm font-medium rounded-lg border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'px-3 py-2 text-body-emphasis rounded-lg border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isActive
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -219,7 +219,7 @@ export function SpaceMembers({
           >
             <ChevronLeft className="w-4 h-4" aria-hidden="true" />
           </Button>
-          <span className="mx-2 text-sm text-muted-foreground">
+          <span className="mx-2 text-body text-muted-foreground">
             {t('members.pageOf', { current: safePage + 1, total: totalPages })}
           </span>
           <Button
@@ -245,8 +245,8 @@ function EmptyState({ hasActiveFilter, onClear }: { hasActiveFilter: boolean; on
       <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-muted">
         <User className="w-6 h-6 text-muted-foreground" aria-hidden="true" />
       </div>
-      <h3 className="text-base font-medium text-foreground">{t('members.empty.title')}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{t('members.empty.description')}</p>
+      <h3 className="text-subsection-title text-foreground">{t('members.empty.title')}</h3>
+      <p className="mt-1 text-body text-muted-foreground">{t('members.empty.description')}</p>
       {hasActiveFilter && (
         <Button variant="link" className="mt-2 text-primary" onClick={onClear}>
           {t('members.empty.clearFilters')}
@@ -299,21 +299,21 @@ function UserCard({ member, roleLabels, onMemberClick }: UserCardProps) {
           >
             <Avatar className="w-12 h-12 border border-border">
               {member.avatarUrl && <AvatarImage src={member.avatarUrl} alt={member.name} />}
-              <AvatarFallback className="text-sm font-semibold">{member.name.charAt(0).toUpperCase()}</AvatarFallback>
+              <AvatarFallback className="text-card-title">{member.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
           </a>
           <div className="min-w-0 flex-1">
             <a
               href={member.href}
               onClick={handleClick}
-              className="block text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
+              className="block text-card-title text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
             >
               {member.name}
             </a>
             {roleLabel && (
               <span
                 className={cn(
-                  'inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium border',
+                  'inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-caption font-medium border',
                   getRoleBadgeClasses(member.roleType)
                 )}
               >
@@ -321,7 +321,7 @@ function UserCard({ member, roleLabels, onMemberClick }: UserCardProps) {
                 {roleLabel}
               </span>
             )}
-            {member.tagline && <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{member.tagline}</p>}
+            {member.tagline && <p className="mt-2 text-body text-muted-foreground line-clamp-2">{member.tagline}</p>}
           </div>
         </div>
       </CardContent>
@@ -354,24 +354,22 @@ function OrganizationCard({ org, orgLabel, onMemberClick }: OrgCardProps) {
           >
             <Avatar className="w-12 h-12 rounded-md border border-border">
               {org.avatarUrl && <AvatarImage src={org.avatarUrl} alt={org.name} className="rounded-md" />}
-              <AvatarFallback className="rounded-md text-sm font-semibold">
-                {org.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
+              <AvatarFallback className="rounded-md text-card-title">{org.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
           </a>
           <div className="min-w-0 flex-1">
             <a
               href={org.href}
               onClick={handleClick}
-              className="block text-sm font-semibold text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
+              className="block text-card-title text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
             >
               {org.name}
             </a>
-            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[11px] font-medium border border-border bg-muted text-muted-foreground">
+            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-label border border-border bg-muted text-muted-foreground">
               <Building2 className="w-3 h-3" aria-hidden="true" />
               {orgLabel}
             </span>
-            {org.tagline && <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{org.tagline}</p>}
+            {org.tagline && <p className="mt-2 text-body text-muted-foreground line-clamp-2">{org.tagline}</p>}
           </div>
         </div>
       </CardContent>

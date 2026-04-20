@@ -29,6 +29,8 @@ export type PostCardData = {
 
 type PostCardProps = {
   post: PostCardData;
+  /** URL for the callout title link. Falls back to onClick when omitted. */
+  href?: string;
   onClick?: () => void;
   onCommentsClick?: () => void;
   onSettingsClick?: () => void;
@@ -52,6 +54,7 @@ const typeLabels = {
 
 export function PostCard({
   post,
+  href,
   onClick,
   onCommentsClick,
   onSettingsClick,
@@ -80,21 +83,21 @@ export function PostCard({
           )}
           <div>
             <div className="flex items-center gap-2">
-              {post.author && <span className="font-semibold text-sm text-foreground">{post.author.name}</span>}
-              {post.timestamp && <span className="text-xs text-muted-foreground">• {post.timestamp}</span>}
+              {post.author && <span className="text-card-title text-foreground">{post.author.name}</span>}
+              {post.timestamp && <span className="text-caption text-muted-foreground">• {post.timestamp}</span>}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               {post.author?.role && (
-                <Badge variant="secondary" className="text-[10px] h-5 px-1.5 font-normal">
+                <Badge variant="secondary" className="text-badge h-5 px-1.5 font-normal">
                   {post.author.role}
                 </Badge>
               )}
               {post.isDraft && (
-                <Badge variant="outline" className="text-[10px] h-5 px-1.5 font-normal text-amber-600 border-amber-300">
+                <Badge variant="outline" className="text-badge h-5 px-1.5 font-normal text-amber-600 border-amber-300">
                   {t('callout.draft')}
                 </Badge>
               )}
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="text-caption text-muted-foreground flex items-center gap-1">
                 <TypeIcon className="w-4 h-4" aria-hidden="true" />
                 {t(typeLabels[post.type])}
               </span>
@@ -134,14 +137,21 @@ export function PostCard({
       </CardHeader>
 
       <CardContent className="px-6 pb-3">
-        <h3 className="text-lg font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
-          <button
-            type="button"
-            className="text-left cursor-pointer hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-            onClick={onClick}
+        <h3 className="text-subsection-title font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+          <a
+            href={href ?? '#'}
+            className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            onClick={
+              onClick
+                ? e => {
+                    e.preventDefault();
+                    onClick();
+                  }
+                : undefined
+            }
           >
             {post.title}
-          </button>
+          </a>
         </h3>
         {post.snippet && <MarkdownContent content={post.snippet} className="text-muted-foreground line-clamp-3 mb-4" />}
 
@@ -178,7 +188,7 @@ export function PostCard({
           }}
         >
           <MessageSquare className="w-4 h-4" aria-hidden="true" />
-          <span className="text-xs">
+          <span className="text-caption">
             {post.commentCount ? t('callout.comments', { count: post.commentCount }) : t('callout.commentsZero')}
           </span>
         </Button>

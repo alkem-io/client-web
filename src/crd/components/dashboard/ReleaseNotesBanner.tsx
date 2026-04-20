@@ -26,11 +26,11 @@ export function ReleaseNotesBanner({ title, content, href, onDismiss, className 
         <X size={16} aria-hidden="true" />
       </Button>
       <h3 className="font-semibold pr-8">{title}</h3>
-      <p className="text-sm text-muted-foreground mt-1">{content}</p>
+      <p className="text-body text-muted-foreground mt-1">{content}</p>
       {href && (
         <a
           href={href}
-          className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+          className="text-body-emphasis text-primary hover:underline mt-2 inline-flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
         >
           {t('releaseNotes.readMore')}
           <ArrowRight size={14} aria-hidden="true" />

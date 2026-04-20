@@ -29,11 +29,9 @@ export function SubspacesSection({
   return (
     <div className={className}>
       <div className="flex items-center justify-between mb-3 px-1">
-        <h3 className="uppercase tracking-wider text-[11px] font-semibold text-muted-foreground">
-          {t('sidebar.subspaces')}
-        </h3>
+        <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.subspaces')}</h3>
         {!showAll && showAllHref && (
-          <a href={showAllHref} className="text-xs text-primary font-medium hover:underline">
+          <a href={showAllHref} className="text-caption text-primary font-medium hover:underline">
             {t('sidebar.showAll')}
           </a>
         )}
@@ -58,12 +56,12 @@ export function SubspacesSection({
                     background: `color-mix(in srgb, ${subspace.color} 15%, transparent)`,
                     color: subspace.color,
                   }}
-                  className="text-[9px] font-bold"
+                  className="text-badge"
                 >
                   {subspace.initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium text-foreground">{subspace.name}</span>
+              <span className="text-body-emphasis text-foreground">{subspace.name}</span>
             </div>
             <ChevronRight
               className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"

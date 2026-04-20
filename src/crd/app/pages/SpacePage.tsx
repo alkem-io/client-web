@@ -169,7 +169,7 @@ export function SpacePage() {
             />
 
             <div className="border rounded-xl p-6 bg-card">
-              <h3 className="text-lg font-bold mb-4">What should we prioritize next?</h3>
+              <h3 className="text-subsection-title font-bold mb-4">What should we prioritize next?</h3>
               <CalloutPoll
                 title="Vote for the next initiative"
                 options={MOCK_POLL_OPTIONS}
@@ -194,7 +194,7 @@ export function SpacePage() {
             <div className="flex justify-center">
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-control font-medium hover:bg-primary/90 transition-colors"
                 onClick={() => setDialogOpen(true)}
               >
                 View Callout Detail Dialog
@@ -273,8 +273,8 @@ export function SpacePage() {
           }}
         >
           <div className="text-center text-muted-foreground">
-            <p className="text-lg font-medium">Excalidraw Canvas Area</p>
-            <p className="text-sm">In the real app, the collaborative Excalidraw editor renders here</p>
+            <p className="text-subsection-title">Excalidraw Canvas Area</p>
+            <p className="text-body">In the real app, the collaborative Excalidraw editor renders here</p>
           </div>
         </div>
       </WhiteboardEditorShell>

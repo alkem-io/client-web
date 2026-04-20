@@ -88,8 +88,8 @@ export function EventDetailView({
   if (event.notFound) {
     return (
       <div className="flex min-h-[16rem] flex-col items-center justify-center gap-3 p-8 text-center">
-        <h2 className="text-lg font-semibold">{t('calendar.notFound.title')}</h2>
-        <p className="text-sm text-muted-foreground">{t('calendar.notFound.body')}</p>
+        <h2 className="text-subsection-title">{t('calendar.notFound.title')}</h2>
+        <p className="text-body text-muted-foreground">{t('calendar.notFound.body')}</p>
         <Button variant="outline" onClick={onBack}>
           {t('calendar.notFound.backToList')}
         </Button>
@@ -121,11 +121,11 @@ export function EventDetailView({
         <>
           <EventCardHeader event={event} size="md" locale={locale} />
           {event.author.name && event.createdDate && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 text-caption text-muted-foreground">
               <Avatar className="h-5 w-5 shrink-0">
                 {event.author.avatarUrl && <AvatarImage src={event.author.avatarUrl} alt={event.author.name} />}
                 <AvatarFallback
-                  className="text-[10px] text-white"
+                  className="text-badge text-white"
                   style={avatarFallbackColor ? { backgroundColor: avatarFallbackColor } : undefined}
                 >
                   {authorInitial(event.author.name)}
@@ -140,12 +140,12 @@ export function EventDetailView({
             </div>
           )}
           {event.description && (
-            <div className="text-sm">
+            <div className="text-body">
               <MarkdownContent content={event.description} />
             </div>
           )}
           {event.location && (
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-body text-muted-foreground">
               <MapPin className="h-4 w-4 shrink-0" aria-label={t('calendar.fields.location')} />
               <span>{event.location}</span>
             </div>
@@ -161,10 +161,8 @@ export function EventDetailView({
           )}
           {event.references.length > 0 && (
             <div>
-              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {t('calendar.details.references')}
-              </h4>
-              <ul className="space-y-1 text-sm">
+              <h4 className="mb-2 text-label uppercase text-muted-foreground">{t('calendar.details.references')}</h4>
+              <ul className="space-y-1 text-body">
                 {event.references.map(ref => (
                   <li key={ref.id}>
                     <a
@@ -179,7 +177,7 @@ export function EventDetailView({
                       {ref.name}
                       <ExternalLink className="h-3 w-3" aria-hidden="true" />
                     </a>
-                    {ref.description && <p className="text-xs text-muted-foreground">{ref.description}</p>}
+                    {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
                   </li>
                 ))}
               </ul>
@@ -192,7 +190,7 @@ export function EventDetailView({
 
   const commentsColumn = showComments ? (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <h4 className="text-label uppercase text-muted-foreground">
         {t('calendar.details.comments')}
         {typeof commentCount === 'number' && <span className="ml-1 font-normal">({commentCount})</span>}
       </h4>

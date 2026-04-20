@@ -33,7 +33,7 @@ export function PlatformNavigationMenu({ items, currentPath }: PlatformNavigatio
               key={item.href}
               href={item.href}
               className={cn(
-                'flex flex-col items-center gap-1.5 rounded-md px-2 py-3 text-center text-sm transition-colors cursor-pointer',
+                'flex flex-col items-center gap-1.5 rounded-md px-2 py-3 text-center text-control transition-colors cursor-pointer',
                 isActive ? 'bg-accent text-primary' : 'text-foreground hover:bg-accent'
               )}
             >
@@ -44,7 +44,10 @@ export function PlatformNavigationMenu({ items, currentPath }: PlatformNavigatio
                 {item.icon}
               </span>
               <span
-                className={cn('text-xs leading-tight', isActive ? 'text-primary font-medium' : 'text-muted-foreground')}
+                className={cn(
+                  'text-caption leading-tight',
+                  isActive ? 'text-primary font-medium' : 'text-muted-foreground'
+                )}
               >
                 {item.label}
               </span>

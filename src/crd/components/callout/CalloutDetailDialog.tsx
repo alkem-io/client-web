@@ -67,10 +67,13 @@ export function CalloutDetailDialog({
         <div className="h-16 shrink-0 bg-background flex items-center justify-between px-6 shadow-sm border-b border-border z-20">
           <div className="flex items-center gap-4 min-w-0">
             <div className="min-w-0">
-              <DialogTitle className="text-base font-semibold leading-tight text-foreground truncate">
+              <DialogTitle className="text-body-emphasis leading-tight text-foreground truncate">
                 {callout.title}
               </DialogTitle>
-              <DialogDescription id="callout-dialog-description" className="text-xs text-muted-foreground truncate">
+              <DialogDescription
+                id="callout-dialog-description"
+                className="text-caption text-muted-foreground truncate"
+              >
                 {callout.author?.name}
               </DialogDescription>
             </div>
@@ -112,7 +115,7 @@ export function CalloutDetailDialog({
           <div className="mx-auto w-full px-6 md:px-10 pb-6">
             {/* Title + author */}
             <div className="py-8 space-y-5">
-              <h1 className="text-3xl font-bold text-foreground leading-tight">{callout.title}</h1>
+              <h1 className="text-page-title text-foreground">{callout.title}</h1>
 
               {callout.author && (
                 <div className="flex items-center gap-3">
@@ -123,8 +126,8 @@ export function CalloutDetailDialog({
                     <AvatarFallback>{callout.author.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{callout.author.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-card-title text-foreground">{callout.author.name}</p>
+                    <p className="text-caption text-muted-foreground">
                       {callout.timestamp}
                       {callout.author.role && ` • ${callout.author.role}`}
                     </p>
@@ -141,7 +144,7 @@ export function CalloutDetailDialog({
             {/* Reactions + share bar */}
             <div className="flex items-center gap-4 py-4 border-y border-border">
               {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
-                <span className="text-sm text-muted-foreground font-medium">
+                <span className="text-body-emphasis text-muted-foreground">
                   {t('calloutDialog.reactionCount', { count: callout.reactionCount })}
                 </span>
               )}
@@ -160,7 +163,7 @@ export function CalloutDetailDialog({
             {hasContributions && contributionsSlot && (
               <div className="py-8 border-b border-border">
                 <div className="flex items-center gap-2 mb-6">
-                  <h2 className="text-xl font-bold text-foreground">{t('calloutDialog.contributions')}</h2>
+                  <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
                   {contributionsCount !== undefined && (
                     <Badge variant="secondary" className="rounded-full px-2">
                       {contributionsCount}
@@ -174,7 +177,7 @@ export function CalloutDetailDialog({
             {/* Discussion section */}
             <div className="pt-8">
               <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-xl font-bold text-foreground">{t('calloutDialog.discussion')}</h2>
+                <h2 className="text-section-title text-foreground">{t('calloutDialog.discussion')}</h2>
                 {callout.commentCount !== undefined && (
                   <Badge variant="secondary" className="rounded-full px-2">
                     {callout.commentCount}

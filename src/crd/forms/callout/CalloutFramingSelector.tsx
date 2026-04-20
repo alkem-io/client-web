@@ -26,15 +26,13 @@ export function CalloutFramingSelector({ value, onChange, disabled, className }:
 
   return (
     <div className={cn('space-y-2', className)}>
-      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-        {t('forms.framingType')}
-      </span>
+      <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2" role="radiogroup">
         {framingOptions.map(option => (
           <label
             key={option.type}
             className={cn(
-              'flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
+              'flex flex-col items-center gap-1.5 p-3 rounded-lg border text-caption font-medium transition-all cursor-pointer has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2',
               value === option.type
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-background hover:bg-muted border-border text-foreground',

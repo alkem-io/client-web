@@ -94,7 +94,9 @@ export function ContributionsPreviewConnector({
             <img src={lastContribution.previewUrl} alt="" className="w-full h-full object-cover" />
           )}
           <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
-            <span className="text-white font-bold text-lg">{t('callout.moreContributions', { count: moreCount })}</span>
+            <span className="text-white font-bold text-subsection-title">
+              {t('callout.moreContributions', { count: moreCount })}
+            </span>
           </div>
         </button>
       </div>
@@ -114,7 +116,7 @@ export function ContributionsPreviewConnector({
       {hasMore && (
         <button
           type="button"
-          className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground font-semibold text-sm min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer text-muted-foreground text-card-title min-h-[100px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onClick={onShowAll}
         >
           {t('callout.moreContributions', { count: moreCount })}

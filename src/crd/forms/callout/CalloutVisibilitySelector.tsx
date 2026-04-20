@@ -22,7 +22,7 @@ export function CalloutVisibilitySelector({
 
   return (
     <div className={cn('space-y-3', className)}>
-      <span className="text-sm font-medium">{t('forms.visibility')}</span>
+      <span className="text-body-emphasis">{t('forms.visibility')}</span>
       <div className="flex gap-2">
         {(['draft', 'published'] as const).map(vis => (
           <button
@@ -30,7 +30,7 @@ export function CalloutVisibilitySelector({
             type="button"
             aria-pressed={value === vis}
             className={cn(
-              'px-4 py-2 rounded-md border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              'px-4 py-2 rounded-md border text-body-emphasis transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               value === vis
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-background hover:bg-muted border-border'
@@ -43,7 +43,7 @@ export function CalloutVisibilitySelector({
       </div>
 
       {value === 'published' && onNotifyMembersChange && (
-        <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+        <label className="flex items-center gap-2 text-body text-muted-foreground cursor-pointer">
           <input
             type="checkbox"
             checked={notifyMembers}

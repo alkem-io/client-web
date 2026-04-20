@@ -74,7 +74,7 @@ export function ToolbarLinkDialog({ editor }: ToolbarLinkDialogProps) {
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-3 space-y-2" align="start">
-        <label className="text-xs font-medium text-foreground" htmlFor="toolbar-link-url">
+        <label className="text-caption font-medium text-foreground" htmlFor="toolbar-link-url">
           {t('editor.link.url')}
         </label>
         <input
@@ -87,10 +87,10 @@ export function ToolbarLinkDialog({ editor }: ToolbarLinkDialogProps) {
           }}
           onKeyDown={handleKeyDown}
           placeholder={t('editor.link.placeholder')}
-          className="w-full h-9 px-3 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20"
           aria-label={t('editor.link.url')}
         />
-        {error && <p className="text-xs text-destructive">{error}</p>}
+        {error && <p className="text-caption text-destructive">{error}</p>}
         <div className="flex items-center gap-2 justify-end">
           {isLinkActive && (
             <Button variant="ghost" size="sm" onClick={handleRemove} className="text-destructive">

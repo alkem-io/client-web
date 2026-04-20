@@ -80,7 +80,7 @@ function SortableOptionRow({
         placeholder={t('forms.pollOption', { number: index + 1 })}
         disabled={disabled}
         maxLength={512}
-        className="flex-1 h-9 px-3 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={t('forms.pollOption', { number: index + 1 })}
       />
       {canRemove && (
@@ -155,11 +155,11 @@ export function PollOptionsEditor({
     <div className={cn('space-y-3 p-4 border rounded-xl bg-muted/30', className)}>
       <div className="flex items-center gap-2 mb-2">
         <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <span className="text-sm font-medium">{t('callout.poll')}</span>
+        <span className="text-body-emphasis">{t('callout.poll')}</span>
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="poll-question" className="text-xs text-muted-foreground">
+        <label htmlFor="poll-question" className="text-caption text-muted-foreground">
           {t('forms.pollQuestion')}
         </label>
         <input
@@ -170,11 +170,11 @@ export function PollOptionsEditor({
           placeholder={t('forms.pollQuestion')}
           disabled={isClosed}
           className={cn(
-            'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed',
+            'w-full h-9 px-3 border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed',
             questionError ? 'border-destructive' : 'border-border'
           )}
         />
-        {questionError && <p className="text-xs text-destructive">{questionError}</p>}
+        {questionError && <p className="text-caption text-destructive">{questionError}</p>}
       </div>
 
       <div className="space-y-2">
@@ -204,12 +204,12 @@ export function PollOptionsEditor({
               {t('forms.addOption')}
             </Button>
           )}
-          {isClosed && <span className="text-xs text-muted-foreground">{t('poll.status.closed')}</span>}
+          {isClosed && <span className="text-caption text-muted-foreground">{t('poll.status.closed')}</span>}
         </div>
 
         <div className="flex items-center gap-2">
           {pollStatus && onStatusChange && (
-            <div className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 cursor-pointer text-caption text-muted-foreground">
               <Switch
                 checked={pollStatus === 'open'}
                 onCheckedChange={checked => onStatusChange(checked ? 'open' : 'closed')}

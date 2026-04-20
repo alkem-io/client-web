@@ -72,8 +72,8 @@ export function SpaceAboutView({
     <div className={cn('max-w-3xl mx-auto space-y-8', className)}>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">{data.name}</h1>
-        {data.tagline && <p className="text-base text-muted-foreground mt-2">{data.tagline}</p>}
+        <h1 className="text-page-title text-foreground">{data.name}</h1>
+        {data.tagline && <p className="text-body text-muted-foreground mt-2">{data.tagline}</p>}
         {joinSlot && <div className="mt-4">{joinSlot}</div>}
       </div>
 
@@ -93,7 +93,7 @@ export function SpaceAboutView({
 
       {/* Location */}
       {data.location && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-body text-muted-foreground">
           <MapPin className="w-4 h-4" aria-hidden="true" />
           {data.location}
         </div>
@@ -102,15 +102,15 @@ export function SpaceAboutView({
       {/* Metrics */}
       {data.metrics.length > 0 && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">{t('about.metrics')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-4">{t('about.metrics')}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {data.metrics.map(metric => (
               <div
                 key={metric.name}
                 className="text-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
               >
-                <p className="text-2xl font-bold text-primary">{metric.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">{metric.name}</p>
+                <p className="text-page-title text-primary">{metric.value}</p>
+                <p className="text-caption text-muted-foreground mt-1">{metric.name}</p>
               </div>
             ))}
           </div>
@@ -152,7 +152,7 @@ export function SpaceAboutView({
         <>
           {data.leadUsers.length > 0 && (
             <section>
-              <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.leadUsers')}</h2>
+              <h2 className="text-subsection-title text-foreground mb-3">{t('about.leadUsers')}</h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {data.leadUsers.map(lead => (
                   <li key={lead.href}>
@@ -165,7 +165,7 @@ export function SpaceAboutView({
 
           {data.leadOrganizations.length > 0 && (
             <section>
-              <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.leadOrganizations')}</h2>
+              <h2 className="text-subsection-title text-foreground mb-3">{t('about.leadOrganizations')}</h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {data.leadOrganizations.map(lead => (
                   <li key={lead.href}>
@@ -179,7 +179,7 @@ export function SpaceAboutView({
       ) : (
         data.provider && (
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.host')}</h2>
+            <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
             <LeadCard lead={data.provider} />
             {contactHostSlot && <div className="mt-3">{contactHostSlot}</div>}
           </section>
@@ -209,8 +209,8 @@ export function SpaceAboutView({
               >
                 <ExternalLink className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">{ref.name}</p>
-                  {ref.description && <p className="text-xs text-muted-foreground">{ref.description}</p>}
+                  <p className="text-body-emphasis text-foreground">{ref.name}</p>
+                  {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
                 </div>
               </a>
             ))}
@@ -221,7 +221,7 @@ export function SpaceAboutView({
       {/* Host below references (when leads occupy the dedicated leads area above) */}
       {hasLeads && data.provider && (
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">{t('about.host')}</h2>
+          <h2 className="text-subsection-title text-foreground mb-3">{t('about.host')}</h2>
           <LeadCard lead={data.provider} />
           {contactHostSlot && <div className="mt-3">{contactHostSlot}</div>}
         </section>
@@ -247,7 +247,7 @@ function SectionHeader({
 }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <h2 className={cn('text-lg font-semibold text-foreground flex items-center gap-2', srOnlyTitle && 'sr-only')}>
+      <h2 className={cn('text-subsection-title text-foreground flex items-center gap-2', srOnlyTitle && 'sr-only')}>
         {icon}
         {title}
       </h2>
@@ -275,12 +275,12 @@ function LeadCard({ lead }: { lead: SpaceLeadData }) {
     >
       <Avatar className="w-10 h-10">
         {lead.avatarUrl && <AvatarImage src={lead.avatarUrl} alt={lead.name} />}
-        <AvatarFallback className="text-xs">{lead.name.charAt(0)}</AvatarFallback>
+        <AvatarFallback className="text-caption">{lead.name.charAt(0)}</AvatarFallback>
       </Avatar>
       <div>
-        <p className="text-sm font-medium text-foreground">{lead.name}</p>
+        <p className="text-body-emphasis text-foreground">{lead.name}</p>
         {lead.location && (
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+          <p className="flex items-center gap-1 text-caption text-muted-foreground">
             <MapPin className="w-3 h-3" aria-hidden="true" />
             {lead.location}
           </p>

@@ -36,7 +36,7 @@ export function LeadBlock({ leads, className }: LeadBlockProps) {
 
   return (
     <div className={cn('bg-card border border-border rounded-lg p-4', className)}>
-      <p className="uppercase tracking-wider text-[11px] font-semibold text-muted-foreground mb-3">{heading}</p>
+      <p className="uppercase text-label text-muted-foreground mb-3">{heading}</p>
       <ul className="space-y-3">
         {leads.map(lead => (
           <li key={lead.id}>
@@ -59,15 +59,15 @@ function LeadRow({ lead }: { lead: LeadItem }) {
           style={{
             background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
           }}
-          className={cn('text-[10px] font-bold text-primary', lead.type === 'org' && 'rounded-md')}
+          className={cn('text-badge font-bold text-primary', lead.type === 'org' && 'rounded-md')}
         >
           {lead.initials}
         </AvatarFallback>
       </Avatar>
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-foreground truncate">{lead.name}</p>
+        <p className="text-card-title text-foreground truncate">{lead.name}</p>
         {lead.location && (
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+          <p className="flex items-center gap-1 text-caption text-muted-foreground">
             <MapPin className="w-3 h-3 shrink-0" aria-hidden="true" />
             <span className="truncate">{lead.location}</span>
           </p>

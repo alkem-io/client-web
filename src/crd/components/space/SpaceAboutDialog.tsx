@@ -56,14 +56,9 @@ export function SpaceAboutDialog({
           <div className="flex items-start gap-2 min-w-0">
             {lockTooltipSlot && <div className="mt-1 shrink-0">{lockTooltipSlot}</div>}
             <div className="min-w-0">
-              <DialogTitle className="text-base font-semibold leading-tight text-foreground truncate">
-                {data.name}
-              </DialogTitle>
+              <DialogTitle className="leading-tight text-foreground truncate">{data.name}</DialogTitle>
               {data.tagline && (
-                <DialogDescription
-                  id="space-about-dialog-description"
-                  className="text-xs text-muted-foreground truncate"
-                >
+                <DialogDescription id="space-about-dialog-description" className="text-caption truncate">
                   {data.tagline}
                 </DialogDescription>
               )}

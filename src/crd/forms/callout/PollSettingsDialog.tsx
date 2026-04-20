@@ -37,7 +37,7 @@ export function PollSettingsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <div className="flex items-center justify-between">
-          <DialogTitle className="text-lg font-semibold">{t('pollForm.settings.title')}</DialogTitle>
+          <DialogTitle className="text-subsection-title">{t('pollForm.settings.title')}</DialogTitle>
           <DialogClose asChild={true}>
             <Button variant="ghost" size="sm" aria-label={t('pollForm.settings.close')}>
               {t('pollForm.settings.close')}
@@ -49,7 +49,7 @@ export function PollSettingsDialog({
 
         <div className="space-y-5">
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-foreground">{t('pollForm.settings.votingOptions')}</h3>
+            <h3 className="text-body-emphasis text-foreground">{t('pollForm.settings.votingOptions')}</h3>
             <SettingRow
               label={t('pollForm.settings.allowMultiple')}
               checked={allowMultiple}
@@ -67,7 +67,7 @@ export function PollSettingsDialog({
           <Separator />
 
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-foreground">{t('pollForm.settings.displayOptions')}</h3>
+            <h3 className="text-body-emphasis text-foreground">{t('pollForm.settings.displayOptions')}</h3>
             <SettingRow
               label={t('pollForm.settings.hideResultsUntilVoted')}
               checked={hideResultsUntilVoted}
@@ -100,7 +100,7 @@ function SettingRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 cursor-pointer">
-      <span className="text-sm text-foreground">{label}</span>
+      <span className="text-body text-foreground">{label}</span>
       <Switch checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} aria-label={label} />
     </div>
   );

@@ -68,7 +68,7 @@ export function ActivityFeed({
     >
       {title && (
         <div className="mb-4 flex items-center justify-between shrink-0">
-          <h3 className="text-base font-bold">{title}</h3>
+          <h3 className="text-subsection-title font-bold">{title}</h3>
         </div>
       )}
 
@@ -81,7 +81,7 @@ export function ActivityFeed({
             <SelectTrigger
               id={`${idPrefix}-space-filter`}
               aria-label={t('activity.filter.space.label')}
-              className="h-8 w-auto min-w-[140px] text-sm"
+              className="h-8 w-auto min-w-[140px]"
             >
               <SelectValue />
             </SelectTrigger>
@@ -104,7 +104,7 @@ export function ActivityFeed({
               <SelectTrigger
                 id={`${idPrefix}-role-filter`}
                 aria-label={t('activity.filter.role.label')}
-                className="h-8 w-auto min-w-[130px] text-sm"
+                className="h-8 w-auto min-w-[130px]"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -135,7 +135,7 @@ export function ActivityFeed({
             ))}
           </div>
         ) : visibleItems.length === 0 ? (
-          <output className="block py-8 text-center text-sm text-muted-foreground">{t('activity.noActivity')}</output>
+          <output className="block py-8 text-center text-body text-muted-foreground">{t('activity.noActivity')}</output>
         ) : (
           <div className="space-y-6 overflow-hidden">
             {visibleItems.map(item => (
@@ -150,7 +150,7 @@ export function ActivityFeed({
           <button
             type="button"
             onClick={onShowMore}
-            className="w-full py-2 text-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+            className="w-full py-2 text-center text-body-emphasis text-muted-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           >
             {t('activity.showMore')}
           </button>

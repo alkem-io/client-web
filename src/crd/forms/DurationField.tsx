@@ -84,7 +84,7 @@ export function DurationField({
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label && (
-        <label htmlFor={id} className="text-sm font-medium">
+        <label htmlFor={id} className="text-body-emphasis">
           {label}
         </label>
       )}
@@ -110,9 +110,9 @@ export function DurationField({
           ))}
         </SelectContent>
       </Select>
-      {endsAtCaption && !hasError && <span className="text-xs text-muted-foreground">{endsAtCaption}</span>}
+      {endsAtCaption && !hasError && <span className="text-caption text-muted-foreground">{endsAtCaption}</span>}
       {hasError && (
-        <span id={errorId} className="text-xs text-destructive">
+        <span id={errorId} className="text-caption text-destructive">
           {error}
         </span>
       )}
