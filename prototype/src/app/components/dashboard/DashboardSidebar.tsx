@@ -42,9 +42,9 @@ export function DashboardSidebar() {
   ];
 
   const spaces = [
-    { name: "Green Energy Space", initials: "GE", href: "/space/green-energy" },
-    { name: "Community Garden", initials: "CG", href: "/space/community-garden" },
-    { name: "Digital Transformation", initials: "DT", href: "/space/digital-trans" },
+    { name: "Green Energy Space", initials: "GE", href: "/space/green-energy", bannerImage: "https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+    { name: "Community Garden", initials: "CG", href: "/space/community-garden", bannerImage: "https://images.unsplash.com/photo-1768659347532-74d3b1efb0ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+    { name: "Digital Transformation", initials: "DT", href: "/space/digital-trans", bannerImage: "https://images.unsplash.com/photo-1676276376052-dc9c9c0b6917?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
   ];
 
   const virtualContributors = [
@@ -107,9 +107,15 @@ export function DashboardSidebar() {
               to={space.href}
               className="flex items-center gap-2.5 rounded-md transition-colors h-9 px-2 text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-foreground"
             >
-              <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0 bg-primary/10 text-primary text-[10px] font-bold">
-                {space.initials}
-              </div>
+              {space.bannerImage ? (
+                <div className="w-6 h-6 rounded-md shrink-0 overflow-hidden">
+                  <img src={space.bannerImage} alt={space.name} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0 bg-primary/10 text-primary text-[10px] font-bold">
+                  {space.initials}
+                </div>
+              )}
               <span className="truncate">{space.name}</span>
             </Link>
           ))}

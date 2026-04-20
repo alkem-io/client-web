@@ -80,7 +80,7 @@ export function Header({
       )}
     >
       <div className="grid grid-cols-12 gap-6 h-full items-center">
-        <div className="col-span-12 lg:col-span-12 flex items-center justify-between">
+        <div className="col-span-12 lg:col-start-2 lg:col-span-10 flex items-center justify-between">
       {/* ─── Left: Logo + mobile menu ─── */}
       <div className="flex items-center gap-4">
         <button
