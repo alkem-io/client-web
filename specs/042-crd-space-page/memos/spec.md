@@ -34,6 +34,11 @@ Key facts verified in the MUI layer:
 
 This sub-spec is **full-stack**: framing preview, contribution card (with visual parity and the generic "+N more" rule), dialog chrome in CRD, and a new CRD collaborative markdown editor. The Hocuspocus/Yjs provider and WebSocket plumbing stay in the integration layer and are passed into the CRD editor as opaque props — mirroring how Excalidraw is handled for whiteboards. No single-user memo mode exists (for non-collaborative authoring we already ship the CRD `MarkdownEditor`).
 
+The **full contribution lifecycle** is in scope, mirroring the whiteboard contribution connectors (`WhiteboardContributionAddConnector`, `WhiteboardContributionConnector`):
+- **Create**: on a callout configured for memo contributions, members see an "Add memo" card in the contribution grid trailing slot. Clicking it opens a small dialog asking for a display name, calls `useCreateMemoOnCalloutMutation`, and immediately opens the newly-created memo in `CrdMemoDialog` for real-time editing. (MUI navigates to a memo URL after create; CRD opens the dialog in place — consistent with how the whiteboard add flow works today in CRD.)
+- **Edit**: clicking an existing memo contribution card (from the feed preview OR from inside the detail dialog's contribution grid) opens `CrdMemoDialog` for real-time collaborative editing. The callout dialog stays mounted behind (two-layer stacking, same rule as whiteboards).
+- **Delete**: `CrdMemoDialog` in contribution mode exposes a Delete action in the footer (gated by `AuthorizationPrivilege.Delete`). Deletion uses `useDeleteContributionMutation` and refetches `CalloutDetails` + `CalloutContributions`.
+
 ### Visual treatments
 
 **Framing preview on `PostCard`** (new CRD `CalloutMemoPreview`, mirrors `CalloutWhiteboardPreview`):
@@ -41,6 +46,13 @@ This sub-spec is **full-stack**: framing preview, contribution card (with visual
 - Renders the memo's markdown via a new CRD `CroppedMarkdown` primitive (masked-fade, bounded max-height, Tailwind gradient).
 - Explicit "Open memo" button inside the preview (same visual language as whiteboard: button overlays/sits beside the content, not seamless inline prose).
 - Click target: opens `CalloutDetailDialog`; then the memo dialog opens on top. The callout dialog remains mounted behind. Same two-layer stacking rule as whiteboards.
+
+**Feed-level preview inside `PostCard`** (mirrors the whiteboard thumbnail on the feed):
+- When a callout is framed by a memo, the feed-level `PostCard` renders a compact memo preview inside its body (between the description snippet and the contributions preview), mirroring how whiteboard-framed callouts show a thumbnail + "Open whiteboard" hover overlay today.
+- Uses the same `CroppedMarkdown` primitive at a smaller `maxHeight` (e.g. `10rem`) so the feed row stays compact.
+- Hover surfaces an "Open memo" button overlay (analogous to the whiteboard hover button).
+- Click target: opens `CalloutDetailDialog` (same as clicking the card title / whiteboard thumbnail). The in-dialog memo preview + memo dialog stacking then applies as described above. Two clicks to reach the editor: feed preview → callout dialog → memo editor, matching the whiteboard flow exactly.
+- `PostCard` itself remains a pure CRD component with plain TypeScript props: the markdown string is mapped in from `callout.framing.memo.markdown` by `mapCalloutDetailsToPostCard`; `PostCard` does not know about GraphQL.
 
 **Contribution card** (refined CRD `ContributionMemoCard`):
 - Visual parity with `ContributionWhiteboardCard`: same aspect ratio, same hover scale, same title/author gradient footer, same "Open memo" hover button.
@@ -77,15 +89,24 @@ Critically, **it reuses the existing `MarkdownToolbar` component** from the CRD 
 
 The toolbar's undo/redo buttons become no-ops (hidden or disabled) when the editor is in collaborative mode — driven by a `collaborative?: boolean` flag the toolbar already needs to accept. No text-input-specific business logic lives in the editor.
 
+Collaboration caret/cursor styles (`.collaboration-carets__caret` and `.collaboration-carets__label`) must be ported from the MUI `CollaborativeMarkdownInputStyles` into the CRD editor's CSS (`styles.css`), scoped under `.crd-markdown-editor`. Without these, remote user cursors render as full-width blocks instead of narrow inline carets with name labels.
+
 Alkemio-specific concerns — WebSocket URL, auth headers, guest session handling, reconnect policy — stay entirely in the integration layer.
 
 ### Integration layer
 
-New files under `src/main/crdPages/memo/`:
-- `CrdMemoDialog.tsx` — instantiates Hocuspocus provider (using `VITE_APP_COLLAB_DOC_URL`, auth, guest name), creates the `Y.Doc`, renders `MemoEditorShell` with `CollaborativeMarkdownEditor` as the editor slot. Wires `useMemoManager` for load/save and display-name updates.
-- `memoFooterMapper.ts` — pure mapper: resolves readonly reason, member/guest state → props for a footer component (symmetric with `whiteboardFooterMapper.ts`).
-- Updates to `CalloutListConnector`: when callout framing type is Memo, render `CalloutMemoPreview` in the PostCard framing slot; wire `onOpen` to open the callout detail dialog and then the memo dialog on top.
+New files under `src/main/crdPages/memo/` and `src/main/crdPages/space/callout/`:
+- `src/main/crdPages/memo/CrdMemoDialog.tsx` — instantiates Hocuspocus provider (using `VITE_APP_COLLAB_DOC_URL`, auth, guest name), creates the `Y.Doc`, renders `MemoEditorShell` with `CollaborativeMarkdownEditor` as the editor slot. Wires `useMemoManager` for load/save and display-name updates. Accepts `isContribution` + `onDelete` so the footer can expose a Delete action when in contribution mode.
+- `src/main/crdPages/memo/memoFooterMapper.ts` — pure mapper: resolves readonly reason, member/guest state → props for a footer component (symmetric with `whiteboardFooterMapper.ts`).
+- `src/main/crdPages/space/callout/MemoFramingConnector.tsx` — mirrors `WhiteboardFramingConnector`; renders `CalloutMemoPreview` + opens `CrdMemoDialog` for the framing path.
+- `src/main/crdPages/space/callout/MemoContributionAddConnector.tsx` — mirrors `WhiteboardContributionAddConnector`; renders the "Add memo" card, asks for a display name, calls `useCreateMemoOnCalloutMutation`, and opens `CrdMemoDialog` on the new contribution for immediate editing.
+- `src/main/crdPages/space/callout/MemoContributionConnector.tsx` — mirrors `WhiteboardContributionConnector`; wraps `CrdMemoDialog` in contribution mode with delete plumbing (`useDeleteContributionMutation`). Used by `CalloutDetailDialogConnector` as the overlay when a memo contribution is opened.
+- Updates to `CalloutDetailDialogConnector`:
+  - Route memo framing via `memoFramingSlot` (mirrors `whiteboardFramingSlot`).
+  - Rename `initialWhiteboardContributionId` → `initialContributionId` (type-agnostic) so feed-level thumbnail clicks can open either whiteboard or memo contributions based on the callout's contribution type.
+  - Render `<MemoContributionConnector>` as the memo overlay (for clicks) and pass `<MemoContributionAddConnector>` as the `trailingSlot` when contribution type is memo.
 - Updates to `ContributionsPreviewConnector`: extract a single `renderPreviewGrid(items, type, total, onShowAll)` function; use the overlay-on-last-visible-card treatment for image-like types (whiteboard, memo), dashed card for text-like types (post, link).
+- Updates to `LazyCalloutItem`: rename `initialWhiteboardId` state / prop to type-agnostic `initialContributionId` and pass it to `CalloutDetailDialogConnector`.
 
 ### Out of scope
 
@@ -96,8 +117,11 @@ New files under `src/main/crdPages/memo/`:
 
 ## Open questions
 
-- **Provider prop shape**: should `CollabProviderLike` be defined in CRD (and the integration layer conform), or imported from a shared type file in `src/core/`? Leaning toward CRD-defined, since the CRD editor defines its own contract.
-- **Toolbar behavior for undo/redo in collab mode**: hide the buttons, or leave visible and disabled? MUI today leaves them out of the extension set entirely so they never render. We can match that (cleaner) or show disabled buttons for visual consistency with the non-collab editor (less cognitive jump when switching contexts). **Leaning hide**.
+All resolved during planning — see `plan.md`:
+
+- **Provider prop shape**: CRD-defined (`CollabProviderLike`, `YDocLike`). Resolved in plan §M1.
+- **Toolbar behaviour for undo/redo in collab mode**: hidden. Resolved in plan §M2.
+- **i18n namespace**: reuse `crd-space`; split to `crd-memo` only if key count exceeds ~15. Resolved in plan §M7.
 
 ## Acceptance
 

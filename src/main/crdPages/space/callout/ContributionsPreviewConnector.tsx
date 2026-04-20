@@ -16,7 +16,7 @@ const ITEMS_BEFORE_MORE = 3;
 type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
   onShowAll: () => void;
-  onContributionClick?: (contributionId: string) => void;
+  onContributionClick?: (contributionId: string, memoId?: string) => void;
 };
 
 export function ContributionsPreviewConnector({
@@ -70,35 +70,30 @@ export function ContributionsPreviewConnector({
     );
   }
 
-  // Whiteboards use the "+N more" overlay on the last thumbnail (matching prototype)
-  if (contributionType === CalloutContributionType.Whiteboard && hasMore) {
+  // Image-like contribution types (Whiteboard, Memo) use the "+N more" overlay on the last visible card.
+  // Text-like types (Post) use a dashed "+N more" card.
+  const usesOverlayPattern =
+    contributionType === CalloutContributionType.Whiteboard || contributionType === CalloutContributionType.Memo;
+
+  if (usesOverlayPattern && hasMore) {
     const lastContribution = contributions[ITEMS_BEFORE_MORE];
     return (
       <div ref={inViewRef} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
         {visibleItems.map(contribution => (
-          <ContributionWhiteboardCard
+          <ContributionCard
             key={contribution.id}
-            title={contribution.title}
-            previewUrl={contribution.previewUrl}
-            author={contribution.author?.name}
-            onClick={() => onContributionClick?.(contribution.id)}
+            contribution={contribution}
+            contributionType={contributionType}
+            onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
           />
         ))}
-        {/* "+N more" overlay on the 4th thumbnail */}
-        <button
-          type="button"
-          className="relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 aspect-[4/3] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        <OverlayMoreCard
+          lastContribution={lastContribution}
+          contributionType={contributionType}
+          moreCount={moreCount}
+          label={t('callout.moreContributions', { count: moreCount })}
           onClick={onShowAll}
-        >
-          {lastContribution?.previewUrl && (
-            <img src={lastContribution.previewUrl} alt="" className="w-full h-full object-cover" />
-          )}
-          <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
-            <span className="text-white font-bold text-subsection-title">
-              {t('callout.moreContributions', { count: moreCount })}
-            </span>
-          </div>
-        </button>
+        />
       </div>
     );
   }
@@ -110,7 +105,7 @@ export function ContributionsPreviewConnector({
           key={contribution.id}
           contribution={contribution}
           contributionType={contributionType}
-          onClick={() => onContributionClick?.(contribution.id)}
+          onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
         />
       ))}
       {hasMore && (
@@ -123,6 +118,42 @@ export function ContributionsPreviewConnector({
         </button>
       )}
     </div>
+  );
+}
+
+function OverlayMoreCard({
+  lastContribution,
+  contributionType,
+  label,
+  onClick,
+}: {
+  lastContribution: ContributionCardData | undefined;
+  contributionType: CalloutContributionType;
+  moreCount: number;
+  label: string;
+  onClick: () => void;
+}) {
+  const showImage = contributionType === CalloutContributionType.Whiteboard && lastContribution?.previewUrl;
+  const showMemoPreview = contributionType === CalloutContributionType.Memo && lastContribution?.markdownContent;
+
+  return (
+    <button
+      type="button"
+      className={
+        'relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 min-h-[180px] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+      }
+      onClick={onClick}
+    >
+      {showImage && <img src={lastContribution.previewUrl} alt="" className="w-full h-full object-cover" />}
+      {showMemoPreview && lastContribution.markdownContent && (
+        <div className="p-4 h-full">
+          <div className="text-caption text-muted-foreground line-clamp-6">{lastContribution.markdownContent}</div>
+        </div>
+      )}
+      <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
+        <span className="text-white font-bold text-subsection-title">{label}</span>
+      </div>
+    </button>
   );
 }
 
@@ -162,6 +193,7 @@ function ContributionCard({
         <ContributionMemoCard
           title={contribution.title}
           markdownContent={contribution.markdownContent}
+          author={contribution.author?.name}
           onClick={onClick}
         />
       );

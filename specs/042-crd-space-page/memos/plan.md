@@ -21,24 +21,34 @@ Migrate the full memo experience to CRD: inline framing preview, contribution ca
 
 Refinements to existing CRD files:
 - `components/contribution/ContributionMemoCard.tsx` — rework to match `ContributionWhiteboardCard`'s layout (aspect ratio, gradient title overlay, hover button). Replace icon with `CroppedMarkdown`.
+- `components/space/PostCard.tsx` — add memo branch alongside the existing whiteboard thumbnail branch: when `post.type === 'memo'` and `post.framingMemoMarkdown` is set, render a compact `CroppedMarkdown` preview with a hover "Open memo" overlay button. Keeps the feed-level visual parity with whiteboard.
 - `forms/markdown/MarkdownToolbar.tsx` — add `collaborative?: boolean` prop; hide undo/redo buttons when true.
 
-### New in `src/main/crdPages/memo/`
+### New in `src/main/crdPages/memo/` + `src/main/crdPages/space/callout/`
 
 | Path | Role |
 |---|---|
-| `CrdMemoDialog.tsx` | Creates Hocuspocus provider + Y.Doc; renders `MemoEditorShell` with `CollaborativeMarkdownEditor` as slot; wires `useMemoManager` for load/save |
-| `memoFooterMapper.ts` | Pure mapper: domain state → `MemoCollabFooter` props |
-| `useCrdMemoProvider.ts` | Hook encapsulating provider lifecycle (auth, guest, reconnect) — keeps `CrdMemoDialog` thin |
+| `src/main/crdPages/memo/CrdMemoDialog.tsx` | Creates Hocuspocus provider + Y.Doc; renders `MemoEditorShell` with `CollaborativeMarkdownEditor` as slot; wires `useMemoManager`, display-name mutation, and optional delete |
+| `src/main/crdPages/memo/memoFooterMapper.ts` | Pure mapper: domain state → `MemoCollabFooter` props |
+| `src/main/crdPages/memo/useCrdMemoProvider.ts` | Hook encapsulating provider lifecycle (auth, guest, reconnect) — keeps `CrdMemoDialog` thin |
+| `src/main/crdPages/space/callout/MemoFramingConnector.tsx` | Mirrors `WhiteboardFramingConnector`: `CalloutMemoPreview` + `CrdMemoDialog` (framing mode) |
+| `src/main/crdPages/space/callout/MemoContributionAddConnector.tsx` | Mirrors `WhiteboardContributionAddConnector`: "Add memo" card + create dialog + opens `CrdMemoDialog` on the new memo |
+| `src/main/crdPages/space/callout/MemoContributionConnector.tsx` | Mirrors `WhiteboardContributionConnector`: renders `CrdMemoDialog` (contribution mode) with delete plumbing for an existing memo contribution |
 
 Refinements to existing integration:
-- `src/main/crdPages/space/callout/CalloutListConnector.tsx` — when `framing.type === Memo`, render `CalloutMemoPreview` inside `PostCard`; wire `onOpen` → open callout detail dialog → memo dialog on top.
+- `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` — add `memoFramingSlot`; rename `initialWhiteboardContributionId` → `initialContributionId` (type-agnostic, routed by `callout.settings.contribution.type`); render `<MemoContributionConnector>` as the memo overlay; wire `<MemoContributionAddConnector>` into the memo-type trailing slot.
+- `src/main/crdPages/space/callout/LazyCalloutItem.tsx` — rename local `initialWhiteboardId` state to type-agnostic `initialContributionId`.
 - `src/main/crdPages/space/callout/ContributionsPreviewConnector.tsx` — extract `renderPreviewGrid(...)`; use overlay-on-last-visible-card for `Whiteboard` and `Memo`; keep dashed card for `Post`; continue `Link` as list.
+- `src/main/crdPages/space/dataMappers/calloutDataMapper.ts` — `mapFramingTypeToPostType` returns `'memo'` for `CalloutFramingType.Memo`; `mapCalloutDetailsToPostCard` populates `framingMemoMarkdown = callout.framing.memo?.markdown` so the feed-level preview renders.
 
 ## Design Decisions
 
 ### M1: Collab infrastructure stays out of `src/crd/`
-Hocuspocus provider, WebSocket URL, auth headers, guest handling all live in `src/main/crdPages/memo/`. The CRD editor accepts a minimal `CollabProviderLike` shape (awareness, status, destroy) and a `Y.Doc`. This matches whiteboard pattern (Excalidraw stays out of the CRD shell) and preserves the design-system rule that components must be reusable by any consumer.
+Hocuspocus provider, WebSocket URL, auth headers, guest handling all live in `src/main/crdPages/memo/`. The CRD editor accepts two opaque shapes defined in CRD:
+- `CollabProviderLike` — `{ awareness, status, on, off, destroy }`. `on`/`off` are required because the editor subscribes to `status` and `synced` events for UI feedback.
+- `YDocLike` — a branded opaque handle (`{ readonly __ydocBrand: unique symbol } & Record<string, unknown>`). The integration layer creates a real `Y.Doc` and casts once at the boundary (`ydoc as unknown as YDocLike`). No `yjs` import (runtime or `import type`) appears under `src/crd/`.
+
+This matches the whiteboard pattern (Excalidraw stays out of the CRD shell) and preserves the design-system rule that components must be reusable by any consumer.
 
 ### M2: Shared toolbar between CRD editors
 `MarkdownToolbar` is the single source of truth for both `MarkdownEditor` (non-collab) and `CollaborativeMarkdownEditor`. A `collaborative?: boolean` prop hides undo/redo in collab mode. This mirrors the MUI arrangement where `MarkdownInput` and `CollaborativeMarkdownInput` share `MarkdownInputControls`.
@@ -70,7 +80,9 @@ GraphQL queries, mutations, and the memo content refresh loop are reused as-is. 
 |---|---|---|
 | P0 | `CroppedMarkdown` primitive + `CalloutMemoPreview` + `CalloutListConnector` wiring | S |
 | P1 | `ContributionMemoCard` rework + generalized "+N more" in `ContributionsPreviewConnector` | S |
-| P2 | `CollaborativeMarkdownEditor` (CRD) + toolbar `collaborative` prop + extension config | M |
+| P2 | `CollaborativeMarkdownEditor` (CRD) + extension config | M |
+
+> Note: the toolbar `collaborative` prop is actually added in Foundational (before P0), since both US1 isolation and the shared-extensions refactor depend on it. See tasks.md T005.
 | P3 | `MemoEditorShell` + `MemoDisplayName` + `MemoCollabFooter` + `memoFooterMapper` | M |
 | P4 | `CrdMemoDialog` integration (Hocuspocus provider, useMemoManager wiring) + dialog-stacking | M |
 | P5 | i18n keys, a11y pass, parity QA with MUI version, remove MUI memo dialog usages from CRD pages | S |

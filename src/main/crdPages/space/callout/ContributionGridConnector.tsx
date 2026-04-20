@@ -7,7 +7,7 @@ import type { ContributionCardData } from '../dataMappers/contributionDataMapper
 
 type ContributionGridConnectorProps = {
   contributions: ContributionCardData[];
-  onContributionClick?: (id: string) => void;
+  onContributionClick?: (id: string, memoId?: string) => void;
   /** Rendered at the end of the grid — used for the "Add Response" card */
   trailingSlot?: ReactNode;
 };
@@ -39,7 +39,8 @@ export function ContributionGridConnector({
                 key={contribution.id}
                 title={contribution.title}
                 markdownContent={contribution.markdownContent}
-                onClick={() => onContributionClick?.(contribution.id)}
+                author={contribution.author?.name}
+                onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
               />
             );
           default:
