@@ -20,7 +20,7 @@ No `ref`, no render-prop, no `children`. The connector is terminal.
 ## Responsibilities
 
 1. Call `useApplicationButton({ spaceId, onJoin: () => navigate(spaceProfileUrl) })`.
-2. Render `null` whenever `applicationButtonProps.isMember === true` OR `applicationButtonProps.loading === true`. The ambient hook's `loading` flag is authoritative.
+2. Render `null` whenever `applicationButtonProps.isMember === true` OR the `loading` value returned alongside `applicationButtonProps` from `useApplicationButton` is `true`. The hook's top-level `loading` flag (not the per-props `applicationButtonProps.loading`) is authoritative for this guard.
 3. Render the presentational `SpaceAboutApplyButton` with props mapped from `applicationButtonProps` plus the five click callbacks.
 4. Render five dialog subtrees as siblings of the button, each open/closed by local `useState<boolean>` flags. Dialogs that are closed are lightweight; Apollo queries inside them are gated by the dialog's `open` prop (this behavior is inherited from 087 and is not re-implemented here).
 5. Pull the Space display name from `useSpace()` for the `ApplicationSubmittedDialog.communityName` prop.
@@ -47,7 +47,7 @@ The mapping from `applicationButtonProps` (domain) to `SpaceAboutApplyButton` pr
 | `canJoinParentCommunity` | `applicationButtonProps.canJoinParentCommunity` |
 | `canApplyToParentCommunity` | `applicationButtonProps.canApplyToParentCommunity` |
 | `loading` | `applicationButtonProps.loading` (always `false` when rendered, because the outer visibility guard already excludes loading) |
-| `onLoginClick` | `() => navigate(buildLoginUrl(applicationButtonProps.applyUrl))` |
+| `onLoginClick` | `() => navigate(buildLoginUrl(applicationButtonProps.applyUrl ?? spaceProfileUrl))` |
 | `onApplyClick` | `() => setIsApplyDialogOpen(true)` |
 | `onJoinClick` | `() => setIsApplyDialogOpen(true)` (`ApplyDialogConnector` opens in `join` mode when `canJoinCommunity`) |
 | `onAcceptInvitationClick` | `() => setIsInvitationDialogOpen(true)` |

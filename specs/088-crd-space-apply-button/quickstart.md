@@ -40,7 +40,7 @@ location.reload();
 
 ## 3. Manual verification matrix
 
-Run each scenario on the CRD Dashboard of a Space at `https://localhost:3001/<space-nameid>` (which defaults to the Dashboard tab). Fixtures below assume standard seed data; adjust to your local environment.
+Run each scenario on the CRD Dashboard of a Space at `http://localhost:3001/<space-nameid>` (which defaults to the Dashboard tab). Fixtures below assume standard seed data; adjust to your local environment.
 
 ### Scenario 1 — Anonymous guest on a public Space (FR-008, US1 scenario 1)
 

@@ -40,6 +40,8 @@ export function SpaceApplyButtonConnector({ spaceId, spaceProfileUrl, className 
     ? 'dialog-parent-app-pending'
     : 'dialog-apply-parent';
 
+  const parentCommunitySpaceLevel = applicationButtonProps.parentCommunitySpaceLevel as 'L0' | 'L1' | 'L2' | undefined;
+
   return (
     <div className={className}>
       <SpaceAboutApplyButton
@@ -55,7 +57,7 @@ export function SpaceApplyButtonConnector({ spaceId, spaceProfileUrl, className 
         canJoinParentCommunity={applicationButtonProps.canJoinParentCommunity}
         canApplyToParentCommunity={applicationButtonProps.canApplyToParentCommunity}
         loading={applicationButtonProps.loading}
-        onLoginClick={() => navigate(buildLoginUrl(applicationButtonProps.applyUrl))}
+        onLoginClick={() => navigate(buildLoginUrl(applicationButtonProps.applyUrl ?? spaceProfileUrl))}
         onApplyClick={() => setIsApplyDialogOpen(true)}
         onJoinClick={() => setIsApplyDialogOpen(true)}
         onAcceptInvitationClick={() => setIsInvitationDialogOpen(true)}
@@ -85,7 +87,7 @@ export function SpaceApplyButtonConnector({ spaceId, spaceProfileUrl, className 
         open={isPreAppDialogOpen}
         onOpenChange={setIsPreAppDialogOpen}
         dialogVariant={preAppDialogVariant}
-        parentCommunitySpaceLevel={applicationButtonProps.parentCommunitySpaceLevel as 'L0' | 'L1' | 'L2' | undefined}
+        parentCommunitySpaceLevel={parentCommunitySpaceLevel}
         parentCommunityName={applicationButtonProps.parentCommunityName}
         subspaceName={applicationButtonProps.subspaceName}
         parentApplicationState={applicationButtonProps.parentApplicationState}
@@ -96,7 +98,7 @@ export function SpaceApplyButtonConnector({ spaceId, spaceProfileUrl, className 
         open={isPreJoinDialogOpen}
         onOpenChange={setIsPreJoinDialogOpen}
         parentCommunityName={applicationButtonProps.parentCommunityName}
-        parentCommunitySpaceLevel={applicationButtonProps.parentCommunitySpaceLevel as 'L0' | 'L1' | 'L2' | undefined}
+        parentCommunitySpaceLevel={parentCommunitySpaceLevel}
         subspaceName={applicationButtonProps.subspaceName}
         parentApplyUrl={applicationButtonProps.parentUrl}
       />
