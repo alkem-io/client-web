@@ -46,13 +46,48 @@
     "tipsAndTricks": "Consejos y Trucos",
     "myActivity": "Mi última actividad",
     "mySpaceActivity": "Última actividad en mis Espacios",
-    "memberships": "Mis Membresías",
     "findMore": "Descubrir más consejos y trucos",
-    "findMoreUrl": "https://welcome.alkem.io/blog/",
-    "seeMoreSpaces": "Ver más espacios",
-    "createSpace": "Crear Espacio",
-    "expandNode": "Expandir {{name}}",
-    "collapseNode": "Contraer {{name}}"
+    "findMoreUrl": "https://welcome.alkem.io/blog/"
+  },
+  "myMembershipsPanel": {
+    "title": "Mis Espacios",
+    "subtitle_one": "{{count}} espacio del que formas parte",
+    "subtitle_other": "{{count}} espacios de los que formas parte",
+    "close": "Cerrar",
+    "searchPlaceholder": "Busca tus espacios...",
+    "clearSearch": "Borrar búsqueda",
+    "loading": "Cargando tus espacios",
+    "privacy": {
+      "public": "Público",
+      "private": "Privado"
+    },
+    "expand": "Expandir {{name}}",
+    "collapse": "Contraer {{name}}",
+    "subspaces_one": "{{count}} subespacio",
+    "subspaces_other": "{{count}} subespacios",
+    "filter": {
+      "role": {
+        "label": "Filtrar por rol",
+        "all": "Todos los roles"
+      },
+      "visibility": {
+        "label": "Filtrar por visibilidad",
+        "all": "Todos",
+        "public": "Público",
+        "private": "Privado"
+      }
+    },
+    "role": {
+      "admin": "Administrador",
+      "lead": "Líder",
+      "member": "Miembro"
+    },
+    "empty": {
+      "noSpaces": "Aún no formas parte de ningún espacio.",
+      "browseAll": "Explorar todos los espacios",
+      "noMatches": "Ningún espacio coincide con tu búsqueda.",
+      "clearFilters": "Borrar filtros"
+    }
   },
   "tips": {
     "items": [
@@ -90,6 +125,7 @@
   },
   "invitations": {
     "title": "Invitaciones Pendientes",
+    "loading": "Cargando invitaciones",
     "accept": "Aceptar",
     "decline": "Rechazar",
     "noInvitations": "Sin invitaciones pendientes"
@@ -118,6 +154,8 @@
     "title": "Membresías Pendientes",
     "empty": "No tienes invitaciones o solicitudes abiertas.",
     "loading": "Cargando membresías pendientes",
+    "loadingInvitation": "Cargando invitación",
+    "loadingApplication": "Cargando solicitud",
     "close": "Cerrar",
     "closeDialog": "Cerrar diálogo",
     "invitationsSection": "Invitaciones",
@@ -131,6 +169,7 @@
       "acceptAriaLabel": "Aceptar invitación a {{spaceName}}",
       "join": "Unirse",
       "joinAriaLabel": "Unirse a {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "Ver solicitud pendiente para {{spaceName}}"
   }
 }

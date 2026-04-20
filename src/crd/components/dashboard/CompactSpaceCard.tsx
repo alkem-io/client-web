@@ -1,5 +1,6 @@
 import { Lock, Pin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -11,6 +12,9 @@ export type CompactSpaceCardData = {
   isPrivate: boolean;
   isHomeSpace: boolean;
   initials?: string;
+  /** Deterministic accent colour, used for the initials tile and as the banner
+   * fallback when no `bannerUrl` is provided. */
+  color?: string;
 };
 
 type CompactSpaceCardProps = CompactSpaceCardData & {
@@ -25,10 +29,13 @@ export function CompactSpaceCard({
   isPrivate,
   isHomeSpace,
   initials,
+  color,
   onPinClick,
   className,
 }: CompactSpaceCardProps) {
   const { t } = useTranslation('crd-dashboard');
+
+  const fallbackBannerStyle = color ? backgroundGradient(color) : undefined;
 
   return (
     <a
@@ -47,7 +54,11 @@ export function CompactSpaceCard({
             aria-hidden="true"
           />
         ) : (
-          <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
+          <div
+            className={cn('size-full', !color && 'bg-gradient-to-br from-muted to-accent')}
+            style={fallbackBannerStyle}
+            aria-hidden="true"
+          />
         )}
         {isPrivate && (
           <div
@@ -71,20 +82,20 @@ export function CompactSpaceCard({
             }}
             aria-label={t('recentSpaces.homeSpaceSettings')}
           >
-            <Pin size={12} className="text-primary-foreground" />
+            <Pin size={12} className="text-primary-foreground" aria-hidden="true" />
           </button>
         )}
       </div>
       <div className="flex items-center gap-3 p-4">
         {initials && (
           <div
-            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground"
+            className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-body-emphasis font-bold text-primary-foreground"
             aria-hidden="true"
           >
             {initials}
           </div>
         )}
-        <p className="min-w-0 truncate text-sm font-semibold">{name}</p>
+        <p className="min-w-0 truncate text-card-title">{name}</p>
       </div>
     </a>
   );

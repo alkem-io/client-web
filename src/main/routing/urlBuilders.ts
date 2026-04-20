@@ -4,6 +4,7 @@ import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { DIALOG_PARAM_VALUES } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
+export const URL_SPACE_EXPLORER = '/spaces';
 
 // Keep these in sync with the consts in TabbedLayoutPage.tsx and don't import,
 // tests fail to import because they are in different modules

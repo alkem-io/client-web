@@ -15,5 +15,18 @@
   "public": "Public",
   "member": "Membre",
   "leads": "Responsables",
-  "loadMore": "Charger plus"
+  "loadMore": "Charger plus",
+  "pinned": "Épinglé",
+  "leadType": {
+    "person": "Personne",
+    "org": "Organisation"
+  },
+  "share": {
+    "title": "Partager",
+    "button": "Partager",
+    "url": "URL de partage",
+    "copy": "Copier le lien",
+    "copied": "Copié",
+    "shareOnAlkemio": "Partager sur Alkemio"
+  }
 }

@@ -1,5 +1,6 @@
 import { Lock, Pin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 
 export type SubspaceCardData = {
@@ -8,6 +9,9 @@ export type SubspaceCardData = {
   href: string;
   bannerUrl?: string;
   isPrivate: boolean;
+  /** Deterministic accent colour, used for the banner gradient when no
+   * `bannerUrl` is provided. */
+  color?: string;
 };
 
 export type SpaceHierarchyCardData = {
@@ -18,6 +22,9 @@ export type SpaceHierarchyCardData = {
   bannerUrl?: string;
   isHomeSpace: boolean;
   subspaces: SubspaceCardData[];
+  /** Deterministic accent colour, used for the banner gradient when no
+   * `bannerUrl` is provided. */
+  color?: string;
 };
 
 type SpaceHierarchyCardProps = SpaceHierarchyCardData & {
@@ -31,6 +38,7 @@ export function SpaceHierarchyCard({
   href,
   tagline,
   bannerUrl,
+  color,
   isHomeSpace,
   subspaces,
   onSeeMoreSubspaces,
@@ -59,7 +67,11 @@ export function SpaceHierarchyCard({
                   aria-hidden="true"
                 />
               ) : (
-                <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
+                <div
+                  className={cn('size-full', !color && 'bg-gradient-to-br from-muted to-accent')}
+                  style={color ? backgroundGradient(color) : undefined}
+                  aria-hidden="true"
+                />
               )}
             </div>
             {isHomeSpace && (
@@ -72,11 +84,11 @@ export function SpaceHierarchyCard({
           <div className="flex-1 p-4 flex flex-col justify-center min-w-0">
             <a
               href={href}
-              className="font-semibold text-base hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+              className="text-subsection-title hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
             >
               {name}
             </a>
-            {tagline && <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{tagline}</p>}
+            {tagline && <p className="text-body text-muted-foreground mt-0.5 line-clamp-2">{tagline}</p>}
           </div>
         </div>
       </div>
@@ -99,7 +111,11 @@ export function SpaceHierarchyCard({
                     aria-hidden="true"
                   />
                 ) : (
-                  <div className="size-full bg-gradient-to-br from-muted to-accent" aria-hidden="true" />
+                  <div
+                    className={cn('size-full', !subspace.color && 'bg-gradient-to-br from-muted to-accent')}
+                    style={subspace.color ? backgroundGradient(subspace.color) : undefined}
+                    aria-hidden="true"
+                  />
                 )}
                 {subspace.isPrivate && (
                   <div
@@ -113,7 +129,7 @@ export function SpaceHierarchyCard({
                 )}
               </div>
               <div className="p-2">
-                <p className="truncate text-xs font-medium">{subspace.name}</p>
+                <p className="truncate text-caption font-medium">{subspace.name}</p>
               </div>
             </a>
           ))}
@@ -126,7 +142,7 @@ export function SpaceHierarchyCard({
           <button
             type="button"
             onClick={onSeeMoreSubspaces}
-            className="text-xs text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+            className="text-caption text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           >
             {t('spaces.seeMoreSubspaces')}
           </button>

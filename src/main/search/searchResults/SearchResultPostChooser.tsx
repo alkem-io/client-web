@@ -1,6 +1,6 @@
 import Skeleton from '@mui/material/Skeleton';
 import { SearchResultType } from '@/core/apollo/generated/graphql-schema';
-import type { SearchResultMetaType } from '../SearchView';
+import type { SearchResultMetaType } from '../searchTypes';
 import { useHydrateCard } from './useHydratedCard';
 
 const SearchResultPostChooser = ({ result }: { result: SearchResultMetaType | undefined }) => {

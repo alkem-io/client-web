@@ -104,7 +104,8 @@
       "!**/public/env-config.js",
       "!**/public/meta.json",
       "!**/*.min.js",
-      "!**/prototype/**"
+      "!**/prototype",
+      "!**/src/crd/app"
     ]
   },
   "overrides": [

@@ -1,0 +1,156 @@
+/* ProseMirror editor content styles — scoped to .crd-markdown-editor */
+
+.crd-markdown-editor .ProseMirror {
+  outline: none;
+  min-height: 120px;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: var(--foreground);
+}
+
+/* Placeholder */
+.crd-markdown-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted-foreground);
+  opacity: 0.6;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Headings */
+.crd-markdown-editor .ProseMirror h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.crd-markdown-editor .ProseMirror h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.crd-markdown-editor .ProseMirror h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Paragraphs */
+.crd-markdown-editor .ProseMirror p {
+  margin-bottom: 0.5rem;
+}
+
+/* Lists */
+.crd-markdown-editor .ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.crd-markdown-editor .ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.crd-markdown-editor .ProseMirror li {
+  margin-bottom: 0.25rem;
+}
+
+/* Blockquote */
+.crd-markdown-editor .ProseMirror blockquote {
+  border-left: 4px solid var(--border);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+/* Code blocks */
+.crd-markdown-editor .ProseMirror pre {
+  background-color: var(--muted);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+  overflow-x: auto;
+}
+
+.crd-markdown-editor .ProseMirror pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* Inline code */
+.crd-markdown-editor .ProseMirror code {
+  background-color: var(--muted);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+/* Horizontal rule */
+.crd-markdown-editor .ProseMirror hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+/* Links */
+.crd-markdown-editor .ProseMirror a {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Tables */
+.crd-markdown-editor .ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  table-layout: fixed;
+  overflow: hidden;
+}
+
+.crd-markdown-editor .ProseMirror th,
+.crd-markdown-editor .ProseMirror td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  min-width: 80px;
+}
+
+.crd-markdown-editor .ProseMirror th {
+  background-color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Images */
+.crd-markdown-editor .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+/* Highlight (used for overflow) */
+.crd-markdown-editor .ProseMirror mark {
+  background-color: var(--destructive);
+  color: white;
+  border-radius: 0.125rem;
+}

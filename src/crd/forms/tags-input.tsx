@@ -50,7 +50,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
       {value.map(tag => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border border-primary text-primary"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary"
           style={{
             background: 'color-mix(in srgb, var(--primary) 10%, transparent)',
           }}
@@ -79,7 +79,7 @@ export function TagsInput({ value, onChange, placeholder, className, icon }: Tag
         onKeyDown={handleKeyDown}
         placeholder={value.length === 0 ? placeholder : ''}
         aria-label={placeholder}
-        className="flex-1 min-w-[120px] border-0 bg-transparent text-sm outline-none text-foreground"
+        className="flex-1 min-w-[120px] border-0 bg-transparent text-control outline-none text-foreground"
       />
     </div>
   );

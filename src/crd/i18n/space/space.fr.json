@@ -1,0 +1,445 @@
+{
+  "banner": {
+    "homeSpace": "Espace principal",
+    "homeSpaceSettings": "Paramètres de l'espace principal"
+  },
+  "tabs": {
+    "dashboard": "Tableau de bord",
+    "community": "Communauté",
+    "subspaces": "Sous-espaces",
+    "knowledgeBase": "Base de connaissances"
+  },
+  "visibility": {
+    "archived": "Cet Espace est archivé et en lecture seule.",
+    "archivedContact": "Contactez le responsable de l'Espace pour plus d'informations.",
+    "demo": "Ceci est un Espace de démonstration à des fins de test.",
+    "inactive": "Cet Espace est actuellement inactif."
+  },
+  "sidebar": {
+    "aboutSpace": "À propos de cet Espace",
+    "subspaces": "Sous-espaces",
+    "showAll": "Tout afficher",
+    "events": "Événements",
+    "noEvents": "Aucun événement à venir",
+    "showCalendar": "Afficher le calendrier",
+    "spaceLead": "Responsable de l'Espace",
+    "spaceLeads": "Responsables de l'Espace",
+    "contactLead": "Contacter les responsables",
+    "invite": "Inviter",
+    "virtualContributors": "Contributeurs virtuels",
+    "communityGuidelines": "Directives de la communauté",
+    "postIndex": "Index des publications",
+    "readMore": "Lire la suite",
+    "addEvent": "Ajouter un événement",
+    "eventDateRelative": {
+      "today": "Aujourd'hui",
+      "tomorrow": "Demain",
+      "in_days_one": "dans 1 jour",
+      "in_days_other": "dans {{count}} jours"
+    }
+  },
+  "calendar": {
+    "title": "Événements",
+    "addEvent": "Ajouter un événement",
+    "editEvent": "Modifier l'événement",
+    "eventDetail": "Événement : {{title}}",
+    "noUpcomingEvents": "Aucun événement à venir",
+    "pastEvents": "Événements passés",
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "deleteConfirm": {
+      "title": "Supprimer l'événement",
+      "body": "Voulez-vous vraiment supprimer « {{title}} » de ce {{entity}} ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    },
+    "fields": {
+      "displayName": "Titre",
+      "type": "Type",
+      "date": "Date",
+      "startTime": "Heure de début",
+      "endTime": "Heure de fin",
+      "duration": "Durée",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} heure",
+        "hours_other": "{{count}} heures",
+        "hoursMinutes": "{{hours}}h {{minutes}}min"
+      },
+      "wholeDay": "Toute la journée",
+      "description": "Description",
+      "location": "Lieu",
+      "tags": "Étiquettes",
+      "visibleOnParentCalendar": "Visible sur le calendrier parent",
+      "endsAt": "se termine à {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Le titre est requis",
+      "typeRequired": "Le type est requis",
+      "invalidDuration": "Durée invalide",
+      "endBeforeStart": "La fin doit être après le début",
+      "descriptionTooLong": "La description est trop longue"
+    },
+    "type": {
+      "DEADLINE": "Échéance",
+      "EVENT": "Événement",
+      "MEETING": "Réunion",
+      "MILESTONE": "Jalon",
+      "OTHER": "Autre",
+      "TRAINING": "Formation",
+      "unknown": "Événement"
+    },
+    "addToCalendar": {
+      "trigger": "Ajouter au calendrier",
+      "google": "Google Agenda",
+      "outlook": "Outlook",
+      "ics": "Télécharger ICS",
+      "exportAll": "Exporter les événements à venir en ICS",
+      "loading": "Chargement…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Mois précédent",
+      "nextMonth": "Mois suivant",
+      "pickDate": "Choisir une date",
+      "dayWithEvents_one": "{{date}}, 1 événement",
+      "dayWithEvents_other": "{{date}}, {{count}} événements"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Toute la journée"
+    },
+    "details": {
+      "comments": "Commentaires",
+      "references": "Références",
+      "tags": "Étiquettes",
+      "loadingEvent": "Chargement de l'événement…",
+      "subspaceLabel": "dans {{name}}",
+      "createdBy": "par {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Espace",
+      "subspace": "Sous-espace"
+    },
+    "notFound": {
+      "title": "Événement introuvable",
+      "body": "Cet événement n'existe plus ou a été supprimé.",
+      "backToList": "Retour aux événements"
+    }
+  },
+  "feed": {
+    "addPost": "Ajouter une publication",
+    "showMore": "Afficher plus",
+    "activity": "Activité",
+    "noCallouts": "Pas encore de contenu",
+    "loading": "Chargement du contenu..."
+  },
+  "callout": {
+    "draft": "Brouillon",
+    "expand": "Afficher plus",
+    "collapse": "Afficher moins",
+    "openWhiteboard": "Ouvrir le tableau blanc",
+    "comments": "{{count}} commentaires",
+    "commentsZero": "0 commentaires",
+    "post": "Publication",
+    "whiteboard": "Tableau blanc",
+    "collection": "Collection",
+    "callForWhiteboards": "Appel à tableaux blancs",
+    "poll": "Sondage",
+    "link": "Lien",
+    "mediaGallery": "Galerie multimédia",
+    "memo": "Mémo",
+    "moreWhiteboards": "+{{count}} de plus",
+    "moreContributions": "+{{count}} de plus",
+    "vote": "Voter",
+    "votes": "{{count}} votes",
+    "totalVotes": "{{count}} votes au total",
+    "resultsCount": "{{count}} résultats",
+    "clearFilters": "Effacer les filtres",
+    "sendComment": "Envoyer le commentaire",
+    "addResponse": "Ajouter une réponse",
+    "createWhiteboard": "Créer un nouveau tableau blanc",
+    "defaultWhiteboardName": "Nouveau tableau blanc",
+    "whiteboardNameLabel": "Titre du tableau blanc"
+  },
+  "contribution": {
+    "edit": "Modifier",
+    "share": "Partager",
+    "close": "Fermer",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "framing": {
+    "newWhiteboard": "Nouveau tableau blanc",
+    "readyToCreate": "Prêt à être créé",
+    "configured": "Configuré",
+    "configure": "Configurer",
+    "edit": "Modifier",
+    "memo": "Mémo",
+    "richTextEditor": "Éditeur de texte enrichi"
+  },
+  "members": {
+    "title": "Communauté",
+    "subtitle": "{{users}} membres et {{organizations}} organisations dans cet espace.",
+    "inviteMember": "Inviter un membre",
+    "search": "Rechercher des membres ou organisations...",
+    "filterAll": "Tous",
+    "filterAdmin": "Administrateur",
+    "filterLead": "Responsable",
+    "filterMember": "Membre",
+    "filterOrganization": "Organisation",
+    "noMembers": "Aucun membre trouvé",
+    "previousPage": "Précédent",
+    "nextPage": "Suivant",
+    "pageOf": "Page {{current}} sur {{total}}",
+    "empty": {
+      "title": "Aucun résultat trouvé",
+      "description": "Essayez d'ajuster votre recherche ou vos filtres.",
+      "clearFilters": "Effacer les filtres"
+    },
+    "role": {
+      "admin": "Administrateur",
+      "lead": "Responsable",
+      "member": "Membre",
+      "organization": "Organisation"
+    }
+  },
+  "subspaces": {
+    "title": "Sous-espaces",
+    "subtitle": "Explorez des flux de travail et des défis ciblés au sein de cet espace.",
+    "createSubspace": "Créer un sous-espace",
+    "search": "Rechercher des sous-espaces...",
+    "showMore": "Afficher {{count}} de plus",
+    "showLess": "Afficher moins",
+    "empty": {
+      "title": "Aucun sous-espace trouvé",
+      "description": "Aucun sous-espace ne correspond à votre recherche ou filtre actuel.",
+      "clearFilters": "Effacer les filtres"
+    }
+  },
+  "about": {
+    "title": "À propos",
+    "location": "Emplacement",
+    "metrics": "Indicateurs clés",
+    "who": "Qui",
+    "why": "Pourquoi",
+    "host": "Hôte",
+    "leadUsers": "Utilisateurs responsables",
+    "leadOrganizations": "Organisations responsables",
+    "guidelines": "Directives de la communauté",
+    "references": "Références",
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
+    }
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted."
+    }
+  },
+  "mobile": {
+    "more": "Plus",
+    "activity": "Activité",
+    "videoCall": "Appel vidéo",
+    "share": "Partager",
+    "settings": "Paramètres"
+  },
+  "contextMenu": {
+    "edit": "Modifier",
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "share": "Partager",
+    "sortContributions": "Trier les contributions",
+    "saveAsTemplate": "Enregistrer comme modèle",
+    "moveToTop": "Déplacer en haut",
+    "moveUp": "Déplacer vers le haut",
+    "moveDown": "Déplacer vers le bas",
+    "moveToBottom": "Déplacer en bas",
+    "delete": "Supprimer"
+  },
+  "dates": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "daysAgo": "il y a {{count}}j",
+    "weeksAgo": "il y a {{count}}sem"
+  },
+  "validation": {
+    "titleRequired": "Le titre est obligatoire",
+    "urlRequired": "L'URL est obligatoire",
+    "urlInvalid": "L'URL doit commencer par http:// ou https://",
+    "displayNameRequired": "Le nom d'affichage est obligatoire",
+    "questionRequired": "La question est obligatoire"
+  },
+  "forms": {
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Donnez un titre à votre publication...",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Écrivez quelque chose...",
+    "tagsLabel": "Étiquettes",
+    "framingType": "Type de contenu",
+    "visibility": "Visibilité",
+    "publishedLabel": "Publié",
+    "draftLabel": "Brouillon",
+    "notifyMembers": "Notifier les membres de l'espace",
+    "saveDraft": "Enregistrer le brouillon",
+    "publish": "Publier",
+    "findTemplate": "Chercher un modèle",
+    "contributionTypes": "Contributions autorisées",
+    "commentsEnabled": "Activer les commentaires",
+    "linkUrl": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkDisplayName": "Nom d'affichage",
+    "pollQuestion": "Question",
+    "pollOption": "Option {{number}}",
+    "addOption": "Ajouter une option",
+    "removeOption": "Supprimer l'option"
+  },
+  "calloutDialog": {
+    "close": "Fermer la boîte de dialogue",
+    "share": "Partager",
+    "more": "Plus d'options",
+    "discussion": "Discussion",
+    "reactions": "Réagir",
+    "reactionCount": "{{count}} réactions",
+    "reactionCount_one": "1 réaction",
+    "contributions": "Contributions"
+  },
+  "comments": {
+    "title": "Discussion",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
+    "sortNewest": "Plus récent en premier",
+    "sortOldest": "Plus ancien en premier",
+    "reply": "Répondre",
+    "delete": "Supprimer",
+    "deleted": "Ce commentaire a été supprimé",
+    "addComment": "Ajouter un commentaire...",
+    "send": "Envoyer",
+    "charCount": "{{count}}/{{max}}",
+    "reactions": {
+      "add": "Ajouter une réaction",
+      "overflow": "+{{count}} plus"
+    },
+    "count": "{{count}} commentaires",
+    "count_one": "1 commentaire",
+    "loading": "Chargement des commentaires...",
+    "empty": "Pas encore de commentaires",
+    "unknownUser": "Utilisateur inconnu"
+  },
+  "dialogs": {
+    "cancel": "Annuler",
+    "create": "Créer"
+  },
+  "poll": {
+    "status": {
+      "preparingVote": "Préparation du vote...",
+      "submitting": "Envoi en cours...",
+      "addingOption": "Ajout de l'option...",
+      "voted": "Voté",
+      "removeMyVote": "Retirer mon vote",
+      "closed": "Ce sondage est fermé",
+      "anonymous": "Sondage anonyme"
+    },
+    "vote": {
+      "maxReached": "Maximum de {{max}} sélections atteint",
+      "minRequired": "Sélectionnez au moins {{min}} options"
+    },
+    "results": {
+      "totalVotes": "{{count}} votes au total",
+      "noVotes": "Pas encore de votes",
+      "votersMore": "+{{count}} de plus"
+    },
+    "removeVoteConfirm": {
+      "title": "Retirer votre vote ?",
+      "description": "Votre vote sera retiré de ce sondage. Vous pouvez voter à nouveau à tout moment.",
+      "confirm": "Retirer le vote"
+    },
+    "customOption": {
+      "placeholder": "Ajoutez votre propre option..."
+    },
+    "error": {
+      "voteFailed": "Échec de l'envoi de votre vote. Veuillez réessayer."
+    },
+    "subscription": {
+      "voteRevoked": "Votre vote a été retiré."
+    }
+  },
+  "pollForm": {
+    "settings": "Paramètres",
+    "settings.title": "Paramètres du sondage",
+    "settings.votingOptions": "Options de vote",
+    "settings.allowMultiple": "Autoriser les réponses multiples",
+    "settings.allowCustomOptions": "Autoriser les contributeurs à ajouter des options",
+    "settings.displayOptions": "Options d'affichage",
+    "settings.hideResultsUntilVoted": "Masquer les résultats jusqu'au vote",
+    "settings.showVoterAvatars": "Afficher les avatars des votants",
+    "settings.close": "Fermer",
+    "openPoll": "Le sondage est ouvert",
+    "closePoll": "Le sondage est fermé",
+    "closePollConfirm": {
+      "title": "Fermer ce sondage ?",
+      "description": "La fermeture du sondage empêchera de nouveaux votes et verrouillera l'édition. Vous pourrez le rouvrir plus tard.",
+      "confirm": "Fermer le sondage"
+    },
+    "reopenPollConfirm": {
+      "title": "Rouvrir ce sondage ?",
+      "description": "La réouverture du sondage permettra de nouveaux votes et l'édition.",
+      "confirm": "Rouvrir le sondage"
+    },
+    "dragHandle": "Glisser pour réorganiser"
+  },
+  "a11y": {
+    "spaceBanner": "Bannière de l'espace pour {{name}}",
+    "tabNavigation": "Onglets de navigation de l'espace",
+    "sidebarNavigation": "Barre latérale de l'espace",
+    "feedRegion": "Flux de contenu de l'espace",
+    "membersGrid": "Grille des membres de la communauté",
+    "subspacesGrid": "Grille des sous-espaces",
+    "visibilityNotice": "Avis de visibilité de l'espace",
+    "mobileTabBar": "Navigation par onglets",
+    "moreActionsDrawer": "Actions supplémentaires",
+    "close": "Fermer",
+    "loadingPost": "Chargement de la publication"
+  }
+}

@@ -46,13 +46,48 @@
     "tipsAndTricks": "Astuces et Conseils",
     "myActivity": "Ma dernière activité",
     "mySpaceActivity": "Dernière activité dans mes Espaces",
-    "memberships": "Mes Adhésions",
     "findMore": "Découvrir plus d'astuces et conseils",
-    "findMoreUrl": "https://welcome.alkem.io/blog/",
-    "seeMoreSpaces": "Voir plus d'espaces",
-    "createSpace": "Créer un Espace",
-    "expandNode": "Développer {{name}}",
-    "collapseNode": "Réduire {{name}}"
+    "findMoreUrl": "https://welcome.alkem.io/blog/"
+  },
+  "myMembershipsPanel": {
+    "title": "Mes Espaces",
+    "subtitle_one": "{{count}} espace dont vous faites partie",
+    "subtitle_other": "{{count}} espaces dont vous faites partie",
+    "close": "Fermer",
+    "searchPlaceholder": "Rechercher vos espaces...",
+    "clearSearch": "Effacer la recherche",
+    "loading": "Chargement de vos espaces",
+    "privacy": {
+      "public": "Public",
+      "private": "Privé"
+    },
+    "expand": "Développer {{name}}",
+    "collapse": "Réduire {{name}}",
+    "subspaces_one": "{{count}} sous-espace",
+    "subspaces_other": "{{count}} sous-espaces",
+    "filter": {
+      "role": {
+        "label": "Filtrer par rôle",
+        "all": "Tous les rôles"
+      },
+      "visibility": {
+        "label": "Filtrer par visibilité",
+        "all": "Tous",
+        "public": "Public",
+        "private": "Privé"
+      }
+    },
+    "role": {
+      "admin": "Administrateur",
+      "lead": "Responsable",
+      "member": "Membre"
+    },
+    "empty": {
+      "noSpaces": "Vous ne faites encore partie d'aucun espace.",
+      "browseAll": "Parcourir tous les espaces",
+      "noMatches": "Aucun espace ne correspond à votre recherche.",
+      "clearFilters": "Effacer les filtres"
+    }
   },
   "tips": {
     "items": [
@@ -90,6 +125,7 @@
   },
   "invitations": {
     "title": "Invitations en Attente",
+    "loading": "Chargement des invitations",
     "accept": "Accepter",
     "decline": "Refuser",
     "noInvitations": "Aucune invitation en attente"
@@ -118,6 +154,8 @@
     "title": "Adhésions en Attente",
     "empty": "Vous n'avez aucune invitation ou candidature en cours.",
     "loading": "Chargement des adhésions en attente",
+    "loadingInvitation": "Chargement de l'invitation",
+    "loadingApplication": "Chargement de la candidature",
     "close": "Fermer",
     "closeDialog": "Fermer le dialogue",
     "invitationsSection": "Invitations",
@@ -131,6 +169,7 @@
       "acceptAriaLabel": "Accepter l'invitation à {{spaceName}}",
       "join": "Rejoindre",
       "joinAriaLabel": "Rejoindre {{spaceName}}"
-    }
+    },
+    "applicationAriaLabel": "Voir la candidature en attente pour {{spaceName}}"
   }
 }

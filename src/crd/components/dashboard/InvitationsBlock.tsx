@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -12,6 +13,9 @@ type InvitationCardData = {
   spaceHref: string;
   spaceAvatarUrl?: string;
   role: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type InvitationsBlockProps = {
@@ -23,13 +27,6 @@ type InvitationsBlockProps = {
   getDefaultAvatarUrl?: (spaceId: string) => string;
   className?: string;
 };
-
-const getInitials = (name: string): string =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
 
 export function InvitationsBlock({
   invitations,
@@ -43,20 +40,20 @@ export function InvitationsBlock({
 
   if (loading) {
     return (
-      <section className={cn('space-y-3', className)}>
+      <output aria-label={t('invitations.loading')} className={cn('space-y-3 block', className)}>
         <Skeleton className="h-6 w-40" />
         <Skeleton className="h-20 w-full" />
         <Skeleton className="h-20 w-full" />
-      </section>
+      </output>
     );
   }
 
   return (
     <section className={cn('space-y-3', className)}>
-      <h3 className="text-lg font-semibold">{t('invitations.title')}</h3>
+      <h3 className="text-subsection-title">{t('invitations.title')}</h3>
 
       {invitations.length === 0 ? (
-        <output className="block text-sm text-muted-foreground">{t('invitations.noInvitations')}</output>
+        <output className="block text-body text-muted-foreground">{t('invitations.noInvitations')}</output>
       ) : (
         <ul className="space-y-2">
           {invitations.map(invitation => {
@@ -66,13 +63,18 @@ export function InvitationsBlock({
               <li key={invitation.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
                 <Avatar className="size-10 rounded-lg">
                   {avatarSrc ? <AvatarImage src={avatarSrc} alt={invitation.spaceName} /> : null}
-                  <AvatarFallback className="rounded-lg text-xs">{getInitials(invitation.spaceName)}</AvatarFallback>
+                  <AvatarFallback
+                    className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
+                    color={invitation.color}
+                  >
+                    {getInitials(invitation.spaceName)}
+                  </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1 min-w-0">
                   <a
                     href={invitation.spaceHref}
-                    className="font-semibold text-sm hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                    className="text-card-title hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
                   >
                     {invitation.spaceName}
                   </a>

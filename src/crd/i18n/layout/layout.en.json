@@ -18,7 +18,9 @@
     "pendingMemberships": "Pending Memberships",
     "administration": "Administration",
     "changeLanguage": "Change Language",
-    "getHelp": "Get Help"
+    "getHelp": "Get Help",
+    "showGrid": "Show Grid",
+    "hideGrid": "Hide Grid"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

@@ -38,7 +38,7 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
         <div className="shrink-0 mt-0.5 relative">
           <Avatar className="h-8 w-8 md:h-10 md:w-10 border border-border">
             <AvatarImage src={notification.avatarUrl} alt="" />
-            <AvatarFallback className="bg-primary/10 text-primary text-xs">
+            <AvatarFallback className="bg-primary/10 text-primary text-caption">
               {notification.avatarFallback}
             </AvatarFallback>
           </Avatar>
@@ -51,17 +51,17 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
 
         {/* Content */}
         <div className="flex-1 min-w-0 space-y-1">
-          <p className="text-sm leading-snug text-foreground">
+          <p className="text-body text-foreground">
             {notification.isUnread && (
               <span className="inline-block w-2 h-2 rounded-full bg-primary mr-1.5 align-middle" aria-hidden="true" />
             )}
             <span className={cn(notification.isUnread && 'font-semibold')}>{notification.title}</span>
           </p>
           {notification.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">{notification.description}</p>
+            <p className="text-body text-muted-foreground line-clamp-2">{notification.description}</p>
           )}
           {notification.comment && (
-            <p className="text-sm text-muted-foreground line-clamp-2 italic">{notification.comment}</p>
+            <p className="text-body text-muted-foreground line-clamp-2 italic">{notification.comment}</p>
           )}
         </div>
       </button>
@@ -103,7 +103,7 @@ export function NotificationItem({ notification, onClick, onRead, onUnread, onAr
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-        <span className="text-[11px] text-muted-foreground whitespace-nowrap">{notification.timestamp}</span>
+        <span className="text-caption text-muted-foreground whitespace-nowrap">{notification.timestamp}</span>
       </div>
     </div>
   );
