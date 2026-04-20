@@ -84,11 +84,11 @@ export function SpaceHierarchyCard({
           <div className="flex-1 p-4 flex flex-col justify-center min-w-0">
             <a
               href={href}
-              className="font-semibold text-base hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+              className="text-subsection-title hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
             >
               {name}
             </a>
-            {tagline && <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{tagline}</p>}
+            {tagline && <p className="text-body text-muted-foreground mt-0.5 line-clamp-2">{tagline}</p>}
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ export function SpaceHierarchyCard({
                 )}
               </div>
               <div className="p-2">
-                <p className="truncate text-xs font-medium">{subspace.name}</p>
+                <p className="truncate text-caption font-medium">{subspace.name}</p>
               </div>
             </a>
           ))}
@@ -142,7 +142,7 @@ export function SpaceHierarchyCard({
           <button
             type="button"
             onClick={onSeeMoreSubspaces}
-            className="text-xs text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+            className="text-caption text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           >
             {t('spaces.seeMoreSubspaces')}
           </button>

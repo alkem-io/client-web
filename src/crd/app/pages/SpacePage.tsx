@@ -1,5 +1,9 @@
 import { useState } from 'react';
+import { CalloutWhiteboardPreview } from '@/crd/components/callout/CalloutWhiteboardPreview';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
+import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
+import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
+import { WhiteboardCollabFooter } from '@/crd/components/whiteboard/WhiteboardCollabFooter';
 import { CalloutPoll } from '@/crd/components/callout/CalloutPoll';
 import type { PollOptionData } from '@/crd/components/callout/CalloutPoll';
 import { CalloutSidebarList } from '@/crd/components/callout/CalloutSidebarList';
@@ -65,6 +69,7 @@ export function SpacePage() {
   const [activeTab, setActiveTab] = useState(0);
   const [pollSelected, setPollSelected] = useState<string[]>(['opt-1']);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [whiteboardOpen, setWhiteboardOpen] = useState(false);
 
   const sidebarVariant = (() => {
     switch (activeTab) {
@@ -120,118 +125,159 @@ export function SpacePage() {
   );
 
   return (
-    <SpaceShell
-      header={
-        <SpaceHeader
-          title={MOCK_SPACE_BANNER.title}
-          tagline={MOCK_SPACE_BANNER.tagline}
-          bannerUrl={MOCK_SPACE_BANNER.bannerUrl}
-          isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
-          memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
-          memberCount={MOCK_SPACE_BANNER.memberCount}
-          actions={{
-            showDocuments: true,
-            showVideoCall: false,
-            showShare: true,
-            showSettings: true,
-            settingsHref: '/space/green-energy/settings',
-            onDocumentsClick: () => {},
-            onShareClick: () => {},
-          }}
-          onMemberClick={() => setActiveTab(1)}
-        />
-      }
-      sidebar={sidebar}
-      tabs={<SpaceNavigationTabs tabs={MOCK_TABS} activeIndex={activeTab} onTabChange={setActiveTab} />}
-    >
-      {/* Tab content */}
-      {activeTab === 0 && (
-        <div className="space-y-8">
-          <SpaceFeed
-            title="Activity"
-            posts={MOCK_POSTS}
-            canCreate={true}
-            onCreateClick={() => {}}
-            hasMore={true}
-            onShowMore={() => {}}
+    <>
+      <SpaceShell
+        header={
+          <SpaceHeader
+            title={MOCK_SPACE_BANNER.title}
+            tagline={MOCK_SPACE_BANNER.tagline}
+            bannerUrl={MOCK_SPACE_BANNER.bannerUrl}
+            isHomeSpace={MOCK_SPACE_BANNER.isHomeSpace}
+            memberAvatars={MOCK_SPACE_BANNER.memberAvatars}
+            memberCount={MOCK_SPACE_BANNER.memberCount}
+            actions={{
+              showDocuments: true,
+              showVideoCall: false,
+              showShare: true,
+              showSettings: true,
+              settingsHref: '/space/green-energy/settings',
+              onDocumentsClick: () => {},
+              onShareClick: () => {},
+            }}
+            onMemberClick={() => setActiveTab(1)}
           />
+        }
+        sidebar={sidebar}
+        tabs={<SpaceNavigationTabs tabs={MOCK_TABS} activeIndex={activeTab} onTabChange={setActiveTab} />}
+      >
+        {/* Tab content */}
+        {activeTab === 0 && (
+          <div className="space-y-8">
+            <SpaceFeed
+              title="Activity"
+              posts={MOCK_POSTS}
+              canCreate={true}
+              onCreateClick={() => {}}
+              hasMore={true}
+              onShowMore={() => {}}
+              onPostClick={id => {
+                const post = MOCK_POSTS.find(p => p.id === id);
+                if (post?.type === 'whiteboard') {
+                  setWhiteboardOpen(true);
+                }
+              }}
+            />
 
-          <div className="border rounded-xl p-6 bg-card">
-            <h3 className="text-lg font-bold mb-4">What should we prioritize next?</h3>
-            <CalloutPoll
-              title="Vote for the next initiative"
-              options={MOCK_POLL_OPTIONS}
-              selectedOptionIds={pollSelected}
-              isSingleChoice={true}
-              isClosed={false}
-              canVote={true}
-              showResults={true}
-              showTotalOnly={false}
-              resultsDetail="full"
-              totalVotes={25}
-              hasVoted={true}
-              isAnonymous={false}
-              showAddCustomOption={true}
-              isAddingCustomOption={false}
-              onSubmitCustomOption={() => {}}
-              onChange={setPollSelected}
-              onRemoveVote={() => setPollSelected([])}
+            <div className="border rounded-xl p-6 bg-card">
+              <h3 className="text-subsection-title font-bold mb-4">What should we prioritize next?</h3>
+              <CalloutPoll
+                title="Vote for the next initiative"
+                options={MOCK_POLL_OPTIONS}
+                selectedOptionIds={pollSelected}
+                isSingleChoice={true}
+                isClosed={false}
+                canVote={true}
+                showResults={true}
+                showTotalOnly={false}
+                resultsDetail="full"
+                totalVotes={25}
+                hasVoted={true}
+                isAnonymous={false}
+                showAddCustomOption={true}
+                isAddingCustomOption={false}
+                onSubmitCustomOption={() => {}}
+                onChange={setPollSelected}
+                onRemoveVote={() => setPollSelected([])}
+              />
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-control font-medium hover:bg-primary/90 transition-colors"
+                onClick={() => setDialogOpen(true)}
+              >
+                View Callout Detail Dialog
+              </button>
+            </div>
+
+            <CalloutDetailDialog
+              open={dialogOpen}
+              onOpenChange={setDialogOpen}
+              callout={MOCK_CALLOUT_DIALOG}
+              commentsSlot={
+                <CommentThread
+                  comments={MOCK_COMMENTS}
+                  canComment={true}
+                  currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
+                  onAddComment={() => {}}
+                  onReply={() => {}}
+                  onDelete={() => {}}
+                  onAddReaction={() => {}}
+                  onRemoveReaction={() => {}}
+                />
+              }
+              commentInputSlot={
+                <CommentInput
+                  currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
+                  onSubmit={() => {}}
+                />
+              }
             />
           </div>
+        )}
 
-          <div className="flex justify-center">
-            <button
-              type="button"
-              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
-              onClick={() => setDialogOpen(true)}
-            >
-              View Callout Detail Dialog
-            </button>
+        {activeTab === 1 && (
+          <div className="space-y-8">
+            <SpaceMembers members={[...MOCK_MEMBERS, ...MOCK_ORGANIZATIONS]} />
+            <SpaceFeed posts={MOCK_POSTS.slice(0, 2)} />
           </div>
+        )}
 
-          <CalloutDetailDialog
-            open={dialogOpen}
-            onOpenChange={setDialogOpen}
-            callout={MOCK_CALLOUT_DIALOG}
-            commentsSlot={
-              <CommentThread
-                comments={MOCK_COMMENTS}
-                canComment={true}
-                currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
-                onAddComment={() => {}}
-                onReply={() => {}}
-                onDelete={() => {}}
-                onAddReaction={() => {}}
-                onRemoveReaction={() => {}}
-              />
-            }
-            commentInputSlot={
-              <CommentInput
-                currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
-                onSubmit={() => {}}
-              />
-            }
+        {activeTab === 2 && (
+          <div className="space-y-8">
+            <SpaceSubspacesList subspaces={MOCK_SUBSPACES} canCreate={true} onCreateClick={() => {}} />
+            <SpaceFeed posts={MOCK_POSTS.slice(2)} />
+          </div>
+        )}
+
+        {activeTab === 3 && (
+          <SpaceFeed title="Knowledge Base" posts={MOCK_POSTS} canCreate={true} onCreateClick={() => {}} />
+        )}
+      </SpaceShell>
+
+      {/* Whiteboard editor shell — opens when clicking a whiteboard-type post */}
+      <WhiteboardEditorShell
+        open={whiteboardOpen}
+        fullscreen={true}
+        onClose={() => setWhiteboardOpen(false)}
+        title={<WhiteboardDisplayName displayName="Brainstorming: Municipal Infrastructure Upgrades" readOnly={true} />}
+        headerActions={
+          <div className="flex items-center gap-1">
+            <div className="size-2 rounded-full bg-green-500 mx-1" title="Saved" />
+          </div>
+        }
+        footer={
+          <WhiteboardCollabFooter
+            canDelete={false}
+            readonlyMessage="Collaborative editing active"
+            guestWarningVisible={false}
           />
+        }
+      >
+        <div
+          className="w-full h-full bg-white flex items-center justify-center"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #e5e7eb 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }}
+        >
+          <div className="text-center text-muted-foreground">
+            <p className="text-subsection-title">Excalidraw Canvas Area</p>
+            <p className="text-body">In the real app, the collaborative Excalidraw editor renders here</p>
+          </div>
         </div>
-      )}
-
-      {activeTab === 1 && (
-        <div className="space-y-8">
-          <SpaceMembers members={[...MOCK_MEMBERS, ...MOCK_ORGANIZATIONS]} />
-          <SpaceFeed posts={MOCK_POSTS.slice(0, 2)} />
-        </div>
-      )}
-
-      {activeTab === 2 && (
-        <div className="space-y-8">
-          <SpaceSubspacesList subspaces={MOCK_SUBSPACES} canCreate={true} onCreateClick={() => {}} />
-          <SpaceFeed posts={MOCK_POSTS.slice(2)} />
-        </div>
-      )}
-
-      {activeTab === 3 && (
-        <SpaceFeed title="Knowledge Base" posts={MOCK_POSTS} canCreate={true} onCreateClick={() => {}} />
-      )}
-    </SpaceShell>
+      </WhiteboardEditorShell>
+    </>
   );
 }

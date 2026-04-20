@@ -118,6 +118,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
   'crd-spaceSettings': {
     en: () => import('@/crd/i18n/spaceSettings/spaceSettings.en.json'),
   },
+  'crd-whiteboard': {
+    en: () => import('@/crd/i18n/whiteboard/whiteboard.en.json'),
+    es: () => import('@/crd/i18n/whiteboard/whiteboard.es.json'),
+    nl: () => import('@/crd/i18n/whiteboard/whiteboard.nl.json'),
+    bg: () => import('@/crd/i18n/whiteboard/whiteboard.bg.json'),
+    de: () => import('@/crd/i18n/whiteboard/whiteboard.de.json'),
+    fr: () => import('@/crd/i18n/whiteboard/whiteboard.fr.json'),
+  },
 };
 
 // Cache for loaded translations

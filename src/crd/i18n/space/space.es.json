@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Espacio principal", "homeSpaceSettings": "Configuración del espacio principal" },
+  "banner": {
+    "homeSpace": "Espacio principal",
+    "homeSpaceSettings": "Configuración del espacio principal"
+  },
   "tabs": {
     "dashboard": "Panel",
     "community": "Comunidad",
@@ -27,7 +30,104 @@
     "communityGuidelines": "Directrices de la comunidad",
     "postIndex": "Índice de publicaciones",
     "readMore": "Leer más",
-    "addEvent": "Añadir evento"
+    "addEvent": "Añadir evento",
+    "eventDateRelative": {
+      "today": "Hoy",
+      "tomorrow": "Mañana",
+      "in_days_one": "en 1 día",
+      "in_days_other": "en {{count}} días"
+    }
+  },
+  "calendar": {
+    "title": "Eventos",
+    "addEvent": "Añadir evento",
+    "editEvent": "Editar evento",
+    "eventDetail": "Evento: {{title}}",
+    "noUpcomingEvents": "No hay eventos próximos",
+    "pastEvents": "Eventos pasados",
+    "back": "Atrás",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "deleteConfirm": {
+      "title": "Eliminar evento",
+      "body": "¿Estás seguro de que quieres eliminar \"{{title}}\" de este {{entity}}?",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "fields": {
+      "displayName": "Título",
+      "type": "Tipo",
+      "date": "Fecha",
+      "startTime": "Hora de inicio",
+      "endTime": "Hora de fin",
+      "duration": "Duración",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} hora",
+        "hours_other": "{{count}} horas",
+        "hoursMinutes": "{{hours}}h {{minutes}}min"
+      },
+      "wholeDay": "Día completo",
+      "description": "Descripción",
+      "location": "Ubicación",
+      "tags": "Etiquetas",
+      "visibleOnParentCalendar": "Visible en el calendario principal",
+      "endsAt": "termina a las {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "El título es obligatorio",
+      "typeRequired": "El tipo es obligatorio",
+      "invalidDuration": "Duración no válida",
+      "endBeforeStart": "El fin debe ser posterior al inicio",
+      "descriptionTooLong": "La descripción es demasiado larga"
+    },
+    "type": {
+      "DEADLINE": "Plazo",
+      "EVENT": "Evento",
+      "MEETING": "Reunión",
+      "MILESTONE": "Hito",
+      "OTHER": "Otro",
+      "TRAINING": "Capacitación",
+      "unknown": "Evento"
+    },
+    "addToCalendar": {
+      "trigger": "Añadir al calendario",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "ics": "Descargar ICS",
+      "exportAll": "Exportar próximos eventos a ICS",
+      "loading": "Cargando…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Mes anterior",
+      "nextMonth": "Mes siguiente",
+      "pickDate": "Elegir una fecha",
+      "dayWithEvents_one": "{{date}}, 1 evento",
+      "dayWithEvents_other": "{{date}}, {{count}} eventos"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Día completo"
+    },
+    "details": {
+      "comments": "Comentarios",
+      "references": "Referencias",
+      "tags": "Etiquetas",
+      "loadingEvent": "Cargando evento…",
+      "subspaceLabel": "en {{name}}",
+      "createdBy": "por {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Espacio",
+      "subspace": "Subespacio"
+    },
+    "notFound": {
+      "title": "Evento no encontrado",
+      "body": "Este evento ya no existe o ha sido eliminado.",
+      "backToList": "Volver a eventos"
+    }
   },
   "feed": {
     "addPost": "Añadir publicación",
@@ -52,12 +152,17 @@
     "mediaGallery": "Galería multimedia",
     "memo": "Nota",
     "moreWhiteboards": "+{{count}} más",
+    "moreContributions": "+{{count}} más",
     "vote": "Votar",
     "votes": "{{count}} votos",
     "totalVotes": "{{count}} votos en total",
     "resultsCount": "{{count}} resultados",
     "clearFilters": "Limpiar filtros",
-    "sendComment": "Enviar comentario"
+    "sendComment": "Enviar comentario",
+    "addResponse": "Añadir respuesta",
+    "createWhiteboard": "Crear nueva pizarra",
+    "defaultWhiteboardName": "Nueva pizarra",
+    "whiteboardNameLabel": "Título de la pizarra"
   },
   "contribution": {
     "edit": "Editar",
@@ -69,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Nueva pizarra",
     "readyToCreate": "Listo para crear",
+    "configured": "Configurado",
     "configure": "Configurar",
+    "edit": "Editar",
     "memo": "Nota",
     "richTextEditor": "Editor de texto enriquecido"
   },
@@ -122,7 +229,54 @@
     "leadUsers": "Usuarios líderes",
     "leadOrganizations": "Organizaciones líderes",
     "guidelines": "Directrices de la comunidad",
-    "references": "Referencias"
+    "references": "Referencias",
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
+    }
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted."
+    }
   },
   "mobile": {
     "more": "Más",
@@ -210,10 +364,12 @@
     "count": "{{count}} comentarios",
     "count_one": "1 comentario",
     "loading": "Cargando comentarios...",
-    "empty": "Sin comentarios aún"
+    "empty": "Sin comentarios aún",
+    "unknownUser": "Usuario desconocido"
   },
   "dialogs": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "create": "Crear"
   },
   "poll": {
     "status": {

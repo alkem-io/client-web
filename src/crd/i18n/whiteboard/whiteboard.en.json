@@ -1,0 +1,72 @@
+{
+  "join": {
+    "welcome": "Welcome to",
+    "title": "Join Whiteboard",
+    "description": "Enter your name to join the whiteboard session. Other participants will see this name.",
+    "placeholder": "Your name",
+    "guestNameLabel": "Guest display name",
+    "joinButton": "Join as Guest",
+    "joiningButton": "Joining...",
+    "signInButton": "Sign In to Alkemio"
+  },
+  "error": {
+    "notFound": {
+      "title": "Whiteboard Not Found",
+      "message": "This whiteboard doesn't exist or is no longer available."
+    },
+    "serverError": {
+      "title": "Something Went Wrong",
+      "message": "We couldn't load this whiteboard. Please try again."
+    },
+    "retry": "Try Again"
+  },
+  "editor": {
+    "editDisplayName": "Edit title",
+    "saveDisplayName": "Save title",
+    "cancelEdit": "Cancel editing",
+    "delete": "Delete whiteboard",
+    "save": "Save",
+    "restart": "Restart collaboration",
+    "guestContributionsWarning": "Guest contributions are enabled",
+    "closeWhiteboard": "Close whiteboard",
+    "loadingWhiteboard": "Loading whiteboard",
+    "untitled": "Whiteboard",
+    "unsavedChanges": {
+      "title": "Discard unsaved changes?",
+      "description": "You have unsaved changes that will be lost. Are you sure you want to continue?",
+      "confirm": "Discard",
+      "cancel": "Keep editing"
+    }
+  },
+  "footer": {
+    "guestContributionsWarning": "Anyone with the link can edit"
+  },
+  "preview": {
+    "settings": {
+      "title": "Preview Settings",
+      "subtitle": "Choose how the whiteboard thumbnail looks in cards and previews"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Auto",
+        "description": "Automatically capture the full canvas view"
+      },
+      "CUSTOM": {
+        "title": "Custom",
+        "description": "Choose your own crop area"
+      },
+      "FIXED": {
+        "title": "Fixed",
+        "description": "Lock to a specific area of the canvas"
+      }
+    },
+    "crop": {
+      "previewArea": "Whiteboard preview area",
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "loading": "Loading",
+      "zoom": "Zoom"
+    }
+  }
+}

@@ -45,6 +45,7 @@ export const SYNC_BROWSER_TABS_TIMEOUT = 50;
 export const SYNC_FULL_SCENE_INTERVAL_MS = 10000;
 export const CURSOR_SYNC_TIMEOUT = 100; // 10fps - no default
 export const SCENE_SYNC_TIMEOUT = 10; // 5ms is the default behaviour
+export const VIEWPORT_SYNC_TIMEOUT = 100; // 10fps – throttle viewport broadcasts when being followed
 
 export const DELETED_ELEMENT_TIMEOUT = 24 * 60 * 60 * 1000; // 1 day
 
@@ -62,6 +63,8 @@ export enum WS_SCENE_EVENT_TYPES {
   MOUSE_LOCATION = 'MOUSE_LOCATION',
   EMOJI_REACTION = 'EMOJI_REACTION',
   COUNTDOWN_TIMER = 'COUNTDOWN_TIMER',
+  USER_FOLLOW = 'USER_FOLLOW',
+  SCENE_BOUNDS = 'SCENE_BOUNDS',
 }
 
 export enum CollaboratorModeReasons {

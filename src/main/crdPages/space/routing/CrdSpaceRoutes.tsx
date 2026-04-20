@@ -44,6 +44,26 @@ export default function CrdSpaceRoutes() {
               }
             />
 
+            {/* Calendar dialog routes — render the dashboard tab so the URL
+                resolver populates calendarEventId; the dialog opens on top via
+                CrdCalendarDialogConnector inside CrdSpaceDashboardPage. */}
+            <Route
+              path="calendar"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CrdSpaceTabbedPages />
+                </Suspense>
+              }
+            />
+            <Route
+              path={`calendar/:${nameOfUrl.calendarEventNameId}`}
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CrdSpaceTabbedPages />
+                </Suspense>
+              }
+            />
+
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
               element={

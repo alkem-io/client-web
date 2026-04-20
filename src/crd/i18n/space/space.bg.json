@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Начално пространство", "homeSpaceSettings": "Настройки на началното пространство" },
+  "banner": {
+    "homeSpace": "Начално пространство",
+    "homeSpaceSettings": "Настройки на началното пространство"
+  },
   "tabs": {
     "dashboard": "Табло",
     "community": "Общност",
@@ -27,7 +30,104 @@
     "communityGuidelines": "Насоки на общността",
     "postIndex": "Индекс на публикациите",
     "readMore": "Прочети повече",
-    "addEvent": "Добави събитие"
+    "addEvent": "Добави събитие",
+    "eventDateRelative": {
+      "today": "Днес",
+      "tomorrow": "Утре",
+      "in_days_one": "след 1 ден",
+      "in_days_other": "след {{count}} дни"
+    }
+  },
+  "calendar": {
+    "title": "Събития",
+    "addEvent": "Добавяне на събитие",
+    "editEvent": "Редактиране на събитие",
+    "eventDetail": "Събитие: {{title}}",
+    "noUpcomingEvents": "Няма предстоящи събития",
+    "pastEvents": "Минали събития",
+    "back": "Назад",
+    "save": "Запази",
+    "cancel": "Отказ",
+    "edit": "Редактирай",
+    "deleteConfirm": {
+      "title": "Изтриване на събитие",
+      "body": "Сигурни ли сте, че искате да изтриете „{{title}}“ от това {{entity}}?",
+      "confirm": "Изтрий",
+      "cancel": "Отказ"
+    },
+    "fields": {
+      "displayName": "Заглавие",
+      "type": "Тип",
+      "date": "Дата",
+      "startTime": "Начален час",
+      "endTime": "Краен час",
+      "duration": "Продължителност",
+      "startDate": "Начална дата",
+      "endDate": "Крайна дата",
+      "durationOption": {
+        "minutes": "{{count}} мин",
+        "hours_one": "{{count}} час",
+        "hours_other": "{{count}} часа",
+        "hoursMinutes": "{{hours}}ч {{minutes}}мин"
+      },
+      "wholeDay": "Цял ден",
+      "description": "Описание",
+      "location": "Местоположение",
+      "tags": "Етикети",
+      "visibleOnParentCalendar": "Видимо в родителския календар",
+      "endsAt": "завършва в {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Заглавието е задължително",
+      "typeRequired": "Типът е задължителен",
+      "invalidDuration": "Невалидна продължителност",
+      "endBeforeStart": "Краят трябва да е след началото",
+      "descriptionTooLong": "Описанието е твърде дълго"
+    },
+    "type": {
+      "DEADLINE": "Краен срок",
+      "EVENT": "Събитие",
+      "MEETING": "Среща",
+      "MILESTONE": "Етап",
+      "OTHER": "Друго",
+      "TRAINING": "Обучение",
+      "unknown": "Събитие"
+    },
+    "addToCalendar": {
+      "trigger": "Добави в календара",
+      "google": "Google Calendar",
+      "outlook": "Outlook",
+      "ics": "Изтегли ICS",
+      "exportAll": "Експортиране на предстоящи събития в ICS",
+      "loading": "Зареждане…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Предишен месец",
+      "nextMonth": "Следващ месец",
+      "pickDate": "Избери дата",
+      "dayWithEvents_one": "{{date}}, 1 събитие",
+      "dayWithEvents_other": "{{date}}, {{count}} събития"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Цял ден"
+    },
+    "details": {
+      "comments": "Коментари",
+      "references": "Препратки",
+      "tags": "Етикети",
+      "loadingEvent": "Зареждане на събитие…",
+      "subspaceLabel": "в {{name}}",
+      "createdBy": "от {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Пространство",
+      "subspace": "Подпространство"
+    },
+    "notFound": {
+      "title": "Събитието не е намерено",
+      "body": "Това събитие вече не съществува или е премахнато.",
+      "backToList": "Обратно към събитията"
+    }
   },
   "feed": {
     "addPost": "Добави публикация",
@@ -52,12 +152,17 @@
     "mediaGallery": "Медийна галерия",
     "memo": "Бележка",
     "moreWhiteboards": "+{{count}} още",
+    "moreContributions": "+{{count}} още",
     "vote": "Гласувай",
     "votes": "{{count}} гласа",
     "totalVotes": "{{count}} гласа общо",
     "resultsCount": "{{count}} резултата",
     "clearFilters": "Изчисти филтрите",
-    "sendComment": "Изпрати коментар"
+    "sendComment": "Изпрати коментар",
+    "addResponse": "Добави отговор",
+    "createWhiteboard": "Създаване на нова бяла дъска",
+    "defaultWhiteboardName": "Нова бяла дъска",
+    "whiteboardNameLabel": "Заглавие на бялата дъска"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -69,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Нова дъска",
     "readyToCreate": "Готово за създаване",
+    "configured": "Конфигурирано",
     "configure": "Конфигурирай",
+    "edit": "Редактиране",
     "memo": "Бележка",
     "richTextEditor": "Редактор за форматиран текст"
   },
@@ -122,7 +229,54 @@
     "leadUsers": "Водещи потребители",
     "leadOrganizations": "Водещи организации",
     "guidelines": "Насоки на общността",
-    "references": "Референции"
+    "references": "Референции",
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
+    }
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted."
+    }
   },
   "mobile": {
     "more": "Още",
@@ -210,10 +364,12 @@
     "count": "{{count}} коментара",
     "count_one": "1 коментар",
     "loading": "Зареждане на коментари...",
-    "empty": "Още без коментари"
+    "empty": "Още без коментари",
+    "unknownUser": "Непознат потребител"
   },
   "dialogs": {
-    "cancel": "Отказ"
+    "cancel": "Отказ",
+    "create": "Създай"
   },
   "poll": {
     "status": {

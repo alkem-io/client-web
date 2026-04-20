@@ -1,4 +1,4 @@
-import { FileText, LayoutGrid, Maximize2, MessageSquare, MoreHorizontal, Presentation } from 'lucide-react';
+import { FileText, Maximize2, MessageSquare, MoreHorizontal, Presentation } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -8,11 +8,7 @@ import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card';
 
-export type PostType = 'text' | 'whiteboard' | 'collection' | 'call-for-whiteboards';
-
-const MAX_COLLECTION_PREVIEW_ITEMS = 4;
-const MAX_WHITEBOARD_PREVIEW_ITEMS = 4;
-const MAX_VISIBLE_WHITEBOARDS_BEFORE_MORE = 3;
+export type PostType = 'text' | 'whiteboard';
 
 export type PostCardData = {
   id: string;
@@ -26,20 +22,21 @@ export type PostCardData = {
   snippet?: string;
   timestamp?: string;
   isDraft?: boolean;
-  contentPreview?: {
-    imageUrl?: string;
-    items?: Array<{ title: string; type: string }>;
-    whiteboards?: Array<{ title: string; imageUrl: string; author: string }>;
-  };
+  /** Framing-level preview image (whiteboard framing only) */
+  framingImageUrl?: string;
   commentCount?: number;
 };
 
 type PostCardProps = {
   post: PostCardData;
+  /** URL for the callout title link. Falls back to onClick when omitted. */
+  href?: string;
   onClick?: () => void;
   onCommentsClick?: () => void;
   onSettingsClick?: () => void;
   onExpandClick?: () => void;
+  /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
+  contributionsPreview?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
   children?: ReactNode;
   className?: string;
@@ -47,24 +44,22 @@ type PostCardProps = {
 
 const typeIcons: Record<PostType, typeof FileText> = {
   text: FileText,
-  whiteboard: LayoutGrid,
-  collection: LayoutGrid,
-  'call-for-whiteboards': Presentation,
+  whiteboard: Presentation,
 };
 
 const typeLabels = {
   text: 'callout.post',
   whiteboard: 'callout.whiteboard',
-  collection: 'callout.collection',
-  'call-for-whiteboards': 'callout.callForWhiteboards',
 } as const;
 
 export function PostCard({
   post,
+  href,
   onClick,
   onCommentsClick,
   onSettingsClick,
   onExpandClick,
+  contributionsPreview,
   children,
   className,
 }: PostCardProps) {
@@ -88,21 +83,21 @@ export function PostCard({
           )}
           <div>
             <div className="flex items-center gap-2">
-              {post.author && <span className="font-semibold text-sm text-foreground">{post.author.name}</span>}
-              {post.timestamp && <span className="text-xs text-muted-foreground">• {post.timestamp}</span>}
+              {post.author && <span className="text-card-title text-foreground">{post.author.name}</span>}
+              {post.timestamp && <span className="text-caption text-muted-foreground">• {post.timestamp}</span>}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               {post.author?.role && (
-                <Badge variant="secondary" className="text-[10px] h-5 px-1.5 font-normal">
+                <Badge variant="secondary" className="text-badge h-5 px-1.5 font-normal">
                   {post.author.role}
                 </Badge>
               )}
               {post.isDraft && (
-                <Badge variant="outline" className="text-[10px] h-5 px-1.5 font-normal text-amber-600 border-amber-300">
+                <Badge variant="outline" className="text-badge h-5 px-1.5 font-normal text-amber-600 border-amber-300">
                   {t('callout.draft')}
                 </Badge>
               )}
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="text-caption text-muted-foreground flex items-center gap-1">
                 <TypeIcon className="w-4 h-4" aria-hidden="true" />
                 {t(typeLabels[post.type])}
               </span>
@@ -142,22 +137,29 @@ export function PostCard({
       </CardHeader>
 
       <CardContent className="px-6 pb-3">
-        <h3 className="text-lg font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
-          <button
-            type="button"
-            className="text-left cursor-pointer hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-            onClick={onClick}
+        <h3 className="text-subsection-title font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+          <a
+            href={href ?? '#'}
+            className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            onClick={
+              onClick
+                ? e => {
+                    e.preventDefault();
+                    onClick();
+                  }
+                : undefined
+            }
           >
             {post.title}
-          </button>
+          </a>
         </h3>
         {post.snippet && <MarkdownContent content={post.snippet} className="text-muted-foreground line-clamp-3 mb-4" />}
 
-        {/* Whiteboard preview */}
-        {post.type === 'whiteboard' && post.contentPreview?.imageUrl && (
+        {/* Whiteboard framing preview */}
+        {post.type === 'whiteboard' && post.framingImageUrl && (
           <div className="rounded-lg overflow-hidden border border-border bg-muted/30 relative aspect-video">
             <img
-              src={post.contentPreview.imageUrl}
+              src={post.framingImageUrl}
               alt={t('callout.whiteboard')}
               className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
             />
@@ -169,57 +171,8 @@ export function PostCard({
           </div>
         )}
 
-        {/* Collection preview */}
-        {post.type === 'collection' && post.contentPreview?.items && (
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {post.contentPreview.items.slice(0, MAX_COLLECTION_PREVIEW_ITEMS).map(item => (
-              <div key={item.title} className="bg-muted/30 rounded-md p-3 border border-border flex items-center gap-2">
-                <div className="w-8 h-8 bg-background rounded flex items-center justify-center border border-border shrink-0">
-                  <FileText className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-                </div>
-                <span className="text-xs font-medium truncate">{item.title}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Call-for-whiteboards preview */}
-        {post.type === 'call-for-whiteboards' && post.contentPreview?.whiteboards && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-            {post.contentPreview.whiteboards.slice(0, MAX_WHITEBOARD_PREVIEW_ITEMS).map((wb, idx) => {
-              const total = post.contentPreview?.whiteboards?.length ?? 0;
-              const remaining = total - MAX_VISIBLE_WHITEBOARDS_BEFORE_MORE;
-              const isLast = idx === MAX_VISIBLE_WHITEBOARDS_BEFORE_MORE;
-              const showMore = isLast && remaining > 0;
-
-              return (
-                <div
-                  key={wb.title}
-                  className="group/wb relative rounded-lg overflow-hidden border border-border bg-muted/30 aspect-[4/3]"
-                >
-                  <img
-                    src={wb.imageUrl}
-                    alt={wb.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/wb:scale-105"
-                  />
-                  {!showMore && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent p-3 flex flex-col justify-end pointer-events-none">
-                      <p className="text-white text-xs font-semibold truncate">{wb.title}</p>
-                      <p className="text-white/70 text-[10px] truncate">{wb.author}</p>
-                    </div>
-                  )}
-                  {showMore && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
-                      <span className="text-white font-bold text-lg">
-                        {t('callout.moreWhiteboards', { count: remaining })}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+        {/* Contribution previews — rendered by integration layer */}
+        {contributionsPreview}
       </CardContent>
 
       {children && <div className="px-6 pb-4">{children}</div>}
@@ -235,7 +188,7 @@ export function PostCard({
           }}
         >
           <MessageSquare className="w-4 h-4" aria-hidden="true" />
-          <span className="text-xs">
+          <span className="text-caption">
             {post.commentCount ? t('callout.comments', { count: post.commentCount }) : t('callout.commentsZero')}
           </span>
         </Button>

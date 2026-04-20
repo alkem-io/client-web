@@ -68,22 +68,12 @@ export const MOCK_POSTS: PostCardData[] = [
   },
   {
     id: 'p2',
-    type: 'call-for-whiteboards',
+    type: 'text',
     author: { name: 'Alex Contributor', avatarUrl: AVATARS.alex, role: 'Member' },
     title: 'Call for Ideas: Community Solar Projects',
     snippet:
       'We need innovative concepts for integrating solar into existing municipal infrastructure. Please sketch out your ideas for public buildings, parking lots, and open spaces.',
     timestamp: '3 hours ago',
-    contentPreview: {
-      whiteboards: [
-        { title: 'Public Library Solar Roof', imageUrl: WB1, author: 'Sarah Chen' },
-        { title: 'Parking Lot Canopies', imageUrl: WB2, author: 'David Miller' },
-        { title: 'School Microgrids', imageUrl: WB3, author: 'Elena Rodriguez' },
-        { title: 'Bus Stop Solar Stations', imageUrl: WB4, author: 'Marc Johnson' },
-        { title: 'Town Hall Retrofit', imageUrl: WB1, author: 'John Smith' },
-        { title: 'Park Lighting', imageUrl: WB2, author: 'Emily Davis' },
-      ],
-    },
     commentCount: 8,
   },
   {
@@ -94,25 +84,17 @@ export const MOCK_POSTS: PostCardData[] = [
     snippet:
       'Outputs from our session on grid modernization. Key clusters include smart metering, battery storage integration, and EV charging networks.',
     timestamp: '5 hours ago',
-    contentPreview: { imageUrl: WB3 },
+    framingImageUrl: WB3,
     commentCount: 3,
   },
   {
     id: 'p4',
-    type: 'collection',
+    type: 'text',
     author: { name: 'Elena Rodriguez', avatarUrl: AVATARS.elena, role: 'Lead' },
     title: 'Transition Case Studies & Policy Docs',
     snippet:
       'A collection of successful case studies from similar sized municipalities reaching 100% renewables. Essential reading for the strategy team.',
     timestamp: '1 day ago',
-    contentPreview: {
-      items: [
-        { title: 'Burlington, VT Case Study', type: 'pdf' },
-        { title: 'Aspen, CO Transition Plan', type: 'pdf' },
-        { title: 'Grid Integration Analysis', type: 'doc' },
-        { title: '2030 Policy Framework', type: 'pdf' },
-      ],
-    },
     commentCount: 12,
   },
 ];

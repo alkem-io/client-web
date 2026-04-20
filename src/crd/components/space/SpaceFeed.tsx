@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Children, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -40,14 +40,14 @@ export function SpaceFeed({
 }: SpaceFeedProps) {
   const { t } = useTranslation('crd-space');
 
-  const hasContent = children || posts.length > 0;
+  const hasContent = Children.count(children) > 0 || posts.length > 0;
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.feedRegion')}>
       {/* Header */}
       {(title || canCreate) && (
         <div className="flex items-center justify-between">
-          {title && <h2 className="text-lg font-semibold text-foreground">{title}</h2>}
+          {title && <h2 className="text-subsection-title text-foreground">{title}</h2>}
           {canCreate && (
             <Button size="sm" className="gap-2" onClick={onCreateClick}>
               <Plus className="w-4 h-4" aria-hidden="true" />
@@ -68,10 +68,10 @@ export function SpaceFeed({
 
       {/* Empty state */}
       {!hasContent && !loading && (
-        <p className="text-sm text-muted-foreground py-8 text-center">{t('feed.noCallouts')}</p>
+        <p className="text-body text-muted-foreground py-8 text-center">{t('feed.noCallouts')}</p>
       )}
 
-      {/* Content: children (lazy items) or posts (pre-mapped) */}
+      {/* Content: children (lazy items) or posts (pre-mapped in the demo app) */}
       {children ??
         posts.map(post => (
           <PostCard

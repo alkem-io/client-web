@@ -41,12 +41,12 @@ export function ContributionPreview({
           {author && (
             <Avatar className="w-8 h-8 shrink-0">
               {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt={author.name} />}
-              <AvatarFallback className="text-xs">{author.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="text-caption">{author.name.charAt(0)}</AvatarFallback>
             </Avatar>
           )}
           <div className="min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">{title}</p>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <p className="text-body-emphasis text-foreground truncate">{title}</p>
+            <div className="flex items-center gap-2 text-caption text-muted-foreground">
               {author && <span>{author.name}</span>}
               {timestamp && <span>• {timestamp}</span>}
             </div>

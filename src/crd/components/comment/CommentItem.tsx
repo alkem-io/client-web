@@ -34,19 +34,19 @@ export function CommentItem({
       <div className="flex gap-3">
         <Avatar className="h-8 w-8 shrink-0">
           {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
-          <AvatarFallback className="text-xs">{comment.author.name.charAt(0)}</AvatarFallback>
+          <AvatarFallback className="text-caption">{comment.author.name.charAt(0)}</AvatarFallback>
         </Avatar>
 
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground">{comment.author.name}</span>
-            <span className="text-xs text-muted-foreground">{new Date(comment.timestamp).toLocaleString()}</span>
+            <span className="text-body-emphasis text-foreground">{comment.author.name}</span>
+            <span className="text-caption text-muted-foreground">{new Date(comment.timestamp).toLocaleString()}</span>
           </div>
 
           {comment.isDeleted ? (
-            <p className="text-sm italic text-muted-foreground">{t('comments.deleted')}</p>
+            <p className="text-body italic text-muted-foreground">{t('comments.deleted')}</p>
           ) : (
-            <p className="whitespace-pre-wrap text-sm text-foreground">{comment.content}</p>
+            <p className="whitespace-pre-wrap text-body text-foreground">{comment.content}</p>
           )}
 
           <div className="flex items-center gap-2">
@@ -54,14 +54,14 @@ export function CommentItem({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-caption"
                 onClick={() => setIsReplying(current => !current)}
               >
                 {t('comments.reply')}
               </Button>
             )}
             {comment.canDelete && !comment.isDeleted && (
-              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onDelete(comment.id)}>
+              <Button variant="ghost" size="sm" className="h-7 px-2 text-caption" onClick={() => onDelete(comment.id)}>
                 {t('comments.delete')}
               </Button>
             )}

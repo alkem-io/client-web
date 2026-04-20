@@ -1,5 +1,8 @@
 {
-  "banner": { "homeSpace": "Hoofdruimte", "homeSpaceSettings": "Instellingen hoofdruimte" },
+  "banner": {
+    "homeSpace": "Hoofdruimte",
+    "homeSpaceSettings": "Instellingen hoofdruimte"
+  },
   "tabs": {
     "dashboard": "Dashboard",
     "community": "Community",
@@ -27,7 +30,104 @@
     "communityGuidelines": "Communityrichtlijnen",
     "postIndex": "Berichtenindex",
     "readMore": "Lees meer",
-    "addEvent": "Evenement toevoegen"
+    "addEvent": "Evenement toevoegen",
+    "eventDateRelative": {
+      "today": "Vandaag",
+      "tomorrow": "Morgen",
+      "in_days_one": "over 1 dag",
+      "in_days_other": "over {{count}} dagen"
+    }
+  },
+  "calendar": {
+    "title": "Evenementen",
+    "addEvent": "Evenement toevoegen",
+    "editEvent": "Evenement bewerken",
+    "eventDetail": "Evenement: {{title}}",
+    "noUpcomingEvents": "Geen aankomende evenementen",
+    "pastEvents": "Eerdere evenementen",
+    "back": "Terug",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "edit": "Bewerken",
+    "deleteConfirm": {
+      "title": "Evenement verwijderen",
+      "body": "Weet je zeker dat je \"{{title}}\" uit deze {{entity}} wilt verwijderen?",
+      "confirm": "Verwijderen",
+      "cancel": "Annuleren"
+    },
+    "fields": {
+      "displayName": "Titel",
+      "type": "Type",
+      "date": "Datum",
+      "startTime": "Starttijd",
+      "endTime": "Eindtijd",
+      "duration": "Duur",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} uur",
+        "hours_other": "{{count}} uur",
+        "hoursMinutes": "{{hours}}u {{minutes}}min"
+      },
+      "wholeDay": "Hele dag",
+      "description": "Beschrijving",
+      "location": "Locatie",
+      "tags": "Labels",
+      "visibleOnParentCalendar": "Zichtbaar op bovenliggende kalender",
+      "endsAt": "eindigt om {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Titel is vereist",
+      "typeRequired": "Type is vereist",
+      "invalidDuration": "Ongeldige duur",
+      "endBeforeStart": "Einde moet na begin liggen",
+      "descriptionTooLong": "Beschrijving is te lang"
+    },
+    "type": {
+      "DEADLINE": "Deadline",
+      "EVENT": "Evenement",
+      "MEETING": "Vergadering",
+      "MILESTONE": "Mijlpaal",
+      "OTHER": "Overig",
+      "TRAINING": "Training",
+      "unknown": "Evenement"
+    },
+    "addToCalendar": {
+      "trigger": "Toevoegen aan kalender",
+      "google": "Google Agenda",
+      "outlook": "Outlook-agenda",
+      "ics": "ICS downloaden",
+      "exportAll": "Aankomende evenementen exporteren naar ICS",
+      "loading": "Laden…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Vorige maand",
+      "nextMonth": "Volgende maand",
+      "pickDate": "Kies een datum",
+      "dayWithEvents_one": "{{date}}, 1 evenement",
+      "dayWithEvents_other": "{{date}}, {{count}} evenementen"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Hele dag"
+    },
+    "details": {
+      "comments": "Reacties",
+      "references": "Referenties",
+      "tags": "Labels",
+      "loadingEvent": "Evenement laden…",
+      "subspaceLabel": "in {{name}}",
+      "createdBy": "door {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Space",
+      "subspace": "Subspace"
+    },
+    "notFound": {
+      "title": "Evenement niet gevonden",
+      "body": "Dit evenement bestaat niet meer of is verwijderd.",
+      "backToList": "Terug naar evenementen"
+    }
   },
   "feed": {
     "addPost": "Bericht toevoegen",
@@ -52,12 +152,17 @@
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
+    "moreContributions": "+{{count}} meer",
     "vote": "Stemmen",
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
     "resultsCount": "{{count}} resultaten",
     "clearFilters": "Filters wissen",
-    "sendComment": "Reactie verzenden"
+    "sendComment": "Reactie verzenden",
+    "addResponse": "Reactie toevoegen",
+    "createWhiteboard": "Nieuw whiteboard maken",
+    "defaultWhiteboardName": "Nieuw whiteboard",
+    "whiteboardNameLabel": "Whiteboardtitel"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -69,7 +174,9 @@
   "framing": {
     "newWhiteboard": "Nieuw whiteboard",
     "readyToCreate": "Klaar om aan te maken",
+    "configured": "Geconfigureerd",
     "configure": "Configureren",
+    "edit": "Bewerken",
     "memo": "Memo",
     "richTextEditor": "Teksteditor met opmaak"
   },
@@ -122,7 +229,45 @@
     "leadUsers": "Leidende gebruikers",
     "leadOrganizations": "Leidende organisaties",
     "guidelines": "Communityrichtlijnen",
-    "references": "Referenties"
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Referenties",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": { "why": "Why are we here?", "who": "Who is involved?" },
+      "L1": { "why": "Why this subspace?", "who": "Who is involved?" },
+      "L2": { "why": "Why this subspace?", "who": "Who is involved?" }
+    }
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted."
+    }
   },
   "mobile": {
     "more": "Meer",
@@ -210,10 +355,12 @@
     "count": "{{count}} opmerkingen",
     "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
-    "empty": "Nog geen opmerkingen"
+    "empty": "Nog geen opmerkingen",
+    "unknownUser": "Onbekende gebruiker"
   },
   "dialogs": {
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "create": "Maken"
   },
   "poll": {
     "status": {
