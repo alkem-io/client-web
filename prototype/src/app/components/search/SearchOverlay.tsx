@@ -339,7 +339,7 @@ export function SearchOverlay() {
           >
             <div
             className={cn(
-              "col-span-12 lg:col-start-2 lg:col-span-10 max-md:col-start-1 max-md:col-span-12",
+              "col-span-12 lg:col-start-3 lg:col-span-8 max-md:col-start-1 max-md:col-span-12",
               "flex flex-col overflow-hidden pointer-events-auto",
             )}
             style={{
