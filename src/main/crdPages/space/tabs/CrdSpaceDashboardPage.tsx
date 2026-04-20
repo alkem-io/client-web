@@ -12,6 +12,7 @@ import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
+import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
@@ -68,6 +69,8 @@ export default function CrdSpaceDashboardPage() {
           />,
           sidebarContainer
         )}
+
+      <SpaceApplyButtonConnector spaceId={space.id} spaceProfileUrl={space.about.profile.url} className="mb-6" />
 
       <CalloutListConnector
         title={t('feed.activity')}
