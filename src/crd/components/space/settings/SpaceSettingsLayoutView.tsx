@@ -32,7 +32,7 @@ export type SpaceSettingsLayoutViewProps = {
   onViewPost: (calloutId: string) => void;
   onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
   onSave: () => void;
-  onReset: () => void;
+  onDiscardChanges: () => void;
   columnMenuActions: ColumnMenuActions;
   className?: string;
 };
@@ -47,7 +47,7 @@ export type SpaceSettingsLayoutViewProps = {
  *  - Three-dot per-column menu: Active phase + Default post template.
  *  - Per-callout kebab (two entries: Move to + View Post).
  *  - Post description display toggle at the top (collapsed / expanded).
- *  - Save Changes / Reset action bar at the bottom-right.
+ *  - Save Changes / Discard Changes action bar at the bottom-right.
  */
 export function SpaceSettingsLayoutView({
   columns,
@@ -59,7 +59,7 @@ export function SpaceSettingsLayoutView({
   onViewPost,
   onPostDescriptionDisplayChange,
   onSave,
-  onReset,
+  onDiscardChanges,
   columnMenuActions,
   className,
 }: SpaceSettingsLayoutViewProps) {
@@ -119,9 +119,9 @@ export function SpaceSettingsLayoutView({
         <SpaceSettingsSaveBar
           state={saveBar}
           onSave={onSave}
-          onReset={onReset}
+          onDiscard={onDiscardChanges}
           saveLabel={t('saveBar.save', { defaultValue: 'Save Changes' })}
-          resetLabel={t('saveBar.reset', { defaultValue: 'Reset' })}
+          discardLabel={t('saveBar.discard', { defaultValue: 'Discard Changes' })}
           savingLabel={t('saveBar.saving', { defaultValue: 'Saving…' })}
         />
       </div>

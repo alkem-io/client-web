@@ -7,23 +7,25 @@ import {
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateSpaceInput } from '@/core/apollo/generated/graphql-schema';
-import type { AboutFormValues, AboutReference } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
+import type {
+  AboutFormValues,
+  AboutReference,
+  AboutSectionKey,
+  AboutSectionSaveStatus,
+} from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
 
 export type { AboutFormValues };
 
-export type AboutSaveBarState =
-  | { kind: 'clean' }
-  | { kind: 'dirty'; canSave: boolean }
-  | { kind: 'saving' }
-  | { kind: 'saveError'; message: string };
-
 export type UseAboutTabDataResult = {
   values: AboutFormValues | null;
   previewCard: ReturnType<typeof buildPreviewCard> | null;
-  saveBar: AboutSaveBarState;
   loading: boolean;
   error: Error | null;
+  /** Which sections differ from the server-saved value. */
+  dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
+  /** Per-section ephemeral save status (saving / saved / error). */
+  saveStatusByField: Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>;
   onChange: (patch: Partial<AboutFormValues>) => void;
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
@@ -33,10 +35,14 @@ export type UseAboutTabDataResult = {
   onCropCancel: () => void;
   onAddReference: () => void;
   onUpdateReference: (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => void;
-  onRemoveReference: (id: string) => void;
-  onSave: () => Promise<void>;
-  onReset: () => void;
-  isDirty: boolean;
+  /** Opens the removal confirmation dialog — consumer renders the dialog. */
+  onRequestRemoveReference: (id: string) => void;
+  /** The reference queued for removal, if the confirmation is open. */
+  pendingReferenceDelete: { id: string; title: string } | null;
+  onConfirmRemoveReference: () => void;
+  onCancelRemoveReference: () => void;
+  /** Save a single section — only that section's fields are persisted. */
+  onSaveSection: (section: AboutSectionKey) => Promise<void>;
 };
 
 const TEMP_PREFIX = 'temp-';
@@ -44,13 +50,20 @@ function isTempId(id: string) {
   return id.startsWith(TEMP_PREFIX);
 }
 
+/** How long the "Saved" confirmation lingers next to a section's Save button. */
+const SAVED_FLASH_MS = 1800;
+
 /**
- * CRD About tab data hook — buffer + Save Changes model.
+ * CRD About tab data hook — per-section save model.
  *
- * All text/scalar field changes are local-only until Save Changes.
- * Image uploads fire immediately (the file picker IS the commit).
- * References: "Add" creates a local row; "Save" persists new refs
- * via createReferenceOnProfile, patches existing ones, and deletes removed ones.
+ * Each editable section (name, tagline, what, why, who, location, tags,
+ * references) exposes its own Save handler. The handler sends ONLY that
+ * section's patch via updateSpace. Branding uploads remain immediate
+ * (the file picker IS the commit).
+ *
+ * There is intentionally NO global reset — dirty is derived from the Apollo
+ * cache and each section clears itself when saved. If the admin leaves the
+ * tab with unsaved edits, the local buffer is discarded by a hard reload.
  */
 export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabDataResult {
   const {
@@ -61,44 +74,55 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
   } = useSpaceAboutDetailsQuery({ variables: { spaceId }, skip: !spaceId });
 
   const space = data?.lookup.space;
+  /** Server-saved view of the form — recomputed on every render from the cache. */
+  const saved: AboutFormValues | null = space ? mapSpaceToAboutFormValues(space) : null;
 
   const [values, setValues] = useState<AboutFormValues | null>(null);
-  const [saveBar, setSaveBar] = useState<AboutSaveBarState>({ kind: 'clean' });
-  const [, startTransition] = useTransition();
   const valuesRef = useRef<AboutFormValues | null>(null);
-  const snapshotRef = useRef<AboutFormValues | null>(null);
-  /** IDs of references that existed in the snapshot but were removed locally. */
-  const deletedRefIdsRef = useRef<Set<string>>(new Set());
+  const [, startTransition] = useTransition();
+
+  const [saveStatusByField, setSaveStatusByField] = useState<Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>>(
+    {}
+  );
+  const savedFlashTimers = useRef<Partial<Record<AboutSectionKey, ReturnType<typeof setTimeout>>>>({});
 
   const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
-  // Seed once.
+  // Seed once when the query first resolves. Subsequent cache updates are
+  // picked up via `saved` (for dirty detection) without overwriting user edits.
   useEffect(() => {
-    if (space && snapshotRef.current === null) {
-      const seeded = mapSpaceToAboutFormValues(space);
-      snapshotRef.current = seeded;
-      valuesRef.current = seeded;
-      setValues(seeded);
+    if (saved && valuesRef.current === null) {
+      valuesRef.current = saved;
+      setValues(saved);
     }
-  }, [space]);
-
-  // Dirty check.
-  const isDirty = (() => {
-    if (!values || !snapshotRef.current) return false;
-    return JSON.stringify(values) !== JSON.stringify(snapshotRef.current) || deletedRefIdsRef.current.size > 0;
-  })();
+  }, [saved]);
 
   useEffect(() => {
-    setSaveBar(prev => {
-      if (prev.kind === 'saving' || prev.kind === 'saveError') return prev;
-      return isDirty ? { kind: 'dirty', canSave: true } : { kind: 'clean' };
-    });
-  }, [isDirty]);
+    return () => {
+      for (const timer of Object.values(savedFlashTimers.current)) {
+        if (timer) clearTimeout(timer);
+      }
+    };
+  }, []);
 
-  const readLatest = (): AboutFormValues | null => valuesRef.current;
+  // ────────────────── Dirty map (per section) ──────────────────
+
+  const dirtyByField: Partial<Record<AboutSectionKey, boolean>> = (() => {
+    if (!values || !saved) return {};
+    return {
+      name: values.name !== saved.name,
+      tagline: values.tagline !== saved.tagline,
+      what: values.what !== saved.what,
+      why: values.why !== saved.why,
+      who: values.who !== saved.who,
+      location: values.city !== saved.city || values.country !== saved.country,
+      tags: JSON.stringify(values.tags) !== JSON.stringify(saved.tags),
+      references: JSON.stringify(values.references) !== JSON.stringify(saved.references),
+    };
+  })();
 
   // ────────────────── Local changes ──────────────────
 
@@ -141,23 +165,34 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     });
   };
 
-  const onRemoveReference = (id: string) => {
-    if (!isTempId(id)) {
-      deletedRefIdsRef.current.add(id);
-    }
+  const [pendingReferenceDelete, setPendingReferenceDelete] = useState<{ id: string; title: string } | null>(null);
+
+  const onRequestRemoveReference = (id: string) => {
+    const base = valuesRef.current;
+    const ref = base?.references.find(r => r.id === id);
+    if (!ref) return;
+    setPendingReferenceDelete({ id, title: ref.title });
+  };
+
+  const onConfirmRemoveReference = () => {
+    const pending = pendingReferenceDelete;
+    if (!pending) return;
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next: AboutFormValues = { ...base, references: base.references.filter(r => r.id !== id) };
+      const next: AboutFormValues = { ...base, references: base.references.filter(r => r.id !== pending.id) };
       valuesRef.current = next;
       return next;
     });
+    setPendingReferenceDelete(null);
   };
+
+  const onCancelRemoveReference = () => setPendingReferenceDelete(null);
 
   // ────────────────── Image uploads (immediate) ──────────────────
 
   const uploadVisualForField = async (key: 'avatar' | 'pageBanner' | 'cardBanner', file: File) => {
-    const current = readLatest();
+    const current = valuesRef.current;
     const visual = current?.[key];
     if (!visual?.id) return;
     startTransition(() => {
@@ -174,20 +209,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
               [key]: { ...base[key], uri: uploaded.uri, altText: uploaded.alternativeText ?? null },
             };
             valuesRef.current = next;
-            // Also update snapshot so this doesn't count as dirty.
-            if (snapshotRef.current) {
-              snapshotRef.current = { ...snapshotRef.current, [key]: next[key] };
-            }
             return next;
           });
         }
       });
     });
   };
-
-  const _onUploadAvatar = (file: File) => void uploadVisualForField('avatar', file);
-  const _onUploadPageBanner = (file: File) => void uploadVisualForField('pageBanner', file);
-  const _onUploadCardBanner = (file: File) => void uploadVisualForField('cardBanner', file);
 
   // ────────────────── Crop dialog integration ──────────────────
 
@@ -229,75 +256,140 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
 
   const onCropCancel = () => setPendingCrop(null);
 
-  // ────────────────── Save / Reset ──────────────────
+  // ────────────────── Per-section save ──────────────────
 
-  const onSave = async () => {
-    const current = readLatest();
-    if (!current) return;
-    setSaveBar({ kind: 'saving' });
+  const setSectionStatus = (section: AboutSectionKey, status: AboutSectionSaveStatus) => {
+    setSaveStatusByField(prev => ({ ...prev, [section]: status }));
+  };
 
-    try {
-      // 1) Scalar profile fields.
-      const profilePatch: UpdateSpaceInput = {
-        ID: spaceId,
-        about: {
-          profile: {
-            displayName: current.name,
-            tagline: current.tagline,
-            description: current.what,
-            location: { country: current.country, city: current.city },
-            tagsets: current.tagsetId ? [{ ID: current.tagsetId, tags: current.tags }] : undefined,
-            references: current.references
-              .filter(r => !isTempId(r.id))
-              .map(r => ({ ID: r.id, name: r.title, uri: r.uri, description: r.description })),
-          },
-          why: current.why,
-          who: current.who,
-        },
-      };
-      await updateSpace({ variables: { input: profilePatch } });
+  const flashSaved = (section: AboutSectionKey) => {
+    setSectionStatus(section, { kind: 'saved', at: Date.now() });
+    const existing = savedFlashTimers.current[section];
+    if (existing) clearTimeout(existing);
+    savedFlashTimers.current[section] = setTimeout(() => {
+      setSaveStatusByField(prev => {
+        const next = { ...prev };
+        delete next[section];
+        return next;
+      });
+      delete savedFlashTimers.current[section];
+    }, SAVED_FLASH_MS);
+  };
 
-      // 2) Create new references (temp IDs).
-      for (const ref of current.references) {
-        if (isTempId(ref.id) && ref.title.trim()) {
-          // eslint-disable-next-line no-await-in-loop
-          await createReference({
-            variables: {
-              input: { profileID: current.profileId, name: ref.title, uri: ref.uri, description: ref.description },
-            },
-          });
-        }
-      }
-
-      // 3) Delete removed references.
-      for (const refId of deletedRefIdsRef.current) {
-        // eslint-disable-next-line no-await-in-loop
-        await deleteReference({ variables: { input: { ID: refId } } });
-      }
-      deletedRefIdsRef.current.clear();
-
-      // Refetch + reseed snapshot.
-      const fresh = await refetch();
-      const freshSpace = fresh.data?.lookup.space;
-      if (freshSpace) {
-        const newSnapshot = mapSpaceToAboutFormValues(freshSpace);
-        snapshotRef.current = newSnapshot;
-        valuesRef.current = newSnapshot;
-        setValues(newSnapshot);
-      }
-      setSaveBar({ kind: 'clean' });
-    } catch (err) {
-      setSaveBar({ kind: 'saveError', message: err instanceof Error ? err.message : 'Save failed' });
+  /** Build a narrow UpdateSpaceInput that carries only the fields for a single section. */
+  const buildSectionPatch = (section: AboutSectionKey, current: AboutFormValues): UpdateSpaceInput | null => {
+    switch (section) {
+      case 'name':
+        return { ID: spaceId, about: { profile: { displayName: current.name } } };
+      case 'tagline':
+        return { ID: spaceId, about: { profile: { tagline: current.tagline } } };
+      case 'what':
+        return { ID: spaceId, about: { profile: { description: current.what } } };
+      case 'why':
+        return { ID: spaceId, about: { why: current.why } };
+      case 'who':
+        return { ID: spaceId, about: { who: current.who } };
+      case 'location':
+        return {
+          ID: spaceId,
+          about: { profile: { location: { country: current.country, city: current.city } } },
+        };
+      case 'tags':
+        if (!current.tagsetId) return null;
+        return {
+          ID: spaceId,
+          about: { profile: { tagsets: [{ ID: current.tagsetId, tags: current.tags }] } },
+        };
+      case 'references':
+        return null; // handled via dedicated create/delete/patch flow below
     }
   };
 
-  const onReset = () => {
-    const snap = snapshotRef.current;
-    if (!snap) return;
-    valuesRef.current = snap;
-    setValues(snap);
-    deletedRefIdsRef.current.clear();
-    setSaveBar({ kind: 'clean' });
+  const saveReferencesSection = async (current: AboutFormValues, savedRefs: AboutReference[]) => {
+    // 1) Patch existing (non-temp) references.
+    const existing = current.references.filter(r => !isTempId(r.id));
+    if (existing.length) {
+      await updateSpace({
+        variables: {
+          input: {
+            ID: spaceId,
+            about: {
+              profile: {
+                references: existing.map(r => ({
+                  ID: r.id,
+                  name: r.title,
+                  uri: r.uri,
+                  description: r.description,
+                })),
+              },
+            },
+          },
+        },
+      });
+    }
+
+    // 2) Create new references (temp IDs with a title).
+    for (const ref of current.references) {
+      if (isTempId(ref.id) && ref.title.trim()) {
+        // eslint-disable-next-line no-await-in-loop
+        await createReference({
+          variables: {
+            input: { profileID: current.profileId, name: ref.title, uri: ref.uri, description: ref.description },
+          },
+        });
+      }
+    }
+
+    // 3) Delete removed references (present in saved snapshot but missing now).
+    const currentIds = new Set(current.references.map(r => r.id));
+    const removed = savedRefs.filter(r => !isTempId(r.id) && !currentIds.has(r.id));
+    for (const ref of removed) {
+      // eslint-disable-next-line no-await-in-loop
+      await deleteReference({ variables: { input: { ID: ref.id } } });
+    }
+  };
+
+  const onSaveSection = async (section: AboutSectionKey) => {
+    const current = valuesRef.current;
+    const savedNow = saved;
+    if (!current || !savedNow) return;
+
+    setSectionStatus(section, { kind: 'saving' });
+
+    try {
+      if (section === 'references') {
+        await saveReferencesSection(current, savedNow.references);
+      } else {
+        const patch = buildSectionPatch(section, current);
+        if (patch) {
+          await updateSpace({ variables: { input: patch } });
+        }
+      }
+
+      // Sync local buffer with the server. Refetch so the cache has the
+      // canonical state (and so newly-created references get their real IDs
+      // in place of temp ones).
+      const fresh = await refetch();
+      const freshSpace = fresh.data?.lookup.space;
+      if (freshSpace) {
+        const freshValues = mapSpaceToAboutFormValues(freshSpace);
+        setValues(prev => {
+          const base = prev ?? valuesRef.current;
+          if (!base) return freshValues;
+          // Keep edits on OTHER sections, overwrite just the section we saved.
+          const next = mergeSavedSection(base, freshValues, section);
+          valuesRef.current = next;
+          return next;
+        });
+      }
+
+      flashSaved(section);
+    } catch (err) {
+      setSectionStatus(section, {
+        kind: 'error',
+        message: err instanceof Error ? err.message : 'Save failed',
+      });
+    }
   };
 
   const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl) : null;
@@ -305,9 +397,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
   return {
     values,
     previewCard,
-    saveBar,
     loading: queryLoading,
     error: queryError ?? null,
+    dirtyByField,
+    saveStatusByField,
     onChange,
     onUploadAvatar: onUploadAvatarWithCrop,
     onUploadPageBanner: onUploadPageBannerWithCrop,
@@ -317,11 +410,37 @@ export function useAboutTabData(spaceId: string, spaceUrl: string): UseAboutTabD
     onCropCancel,
     onAddReference,
     onUpdateReference,
-    onRemoveReference,
-    onSave,
-    onReset,
-    isDirty,
+    onRequestRemoveReference,
+    pendingReferenceDelete,
+    onConfirmRemoveReference,
+    onCancelRemoveReference,
+    onSaveSection,
   };
+}
+
+/**
+ * Overlay the freshly-saved section's values onto the current buffer, so the
+ * user's unsaved edits in other sections are preserved after a per-section save.
+ */
+function mergeSavedSection(buffer: AboutFormValues, fresh: AboutFormValues, section: AboutSectionKey): AboutFormValues {
+  switch (section) {
+    case 'name':
+      return { ...buffer, name: fresh.name };
+    case 'tagline':
+      return { ...buffer, tagline: fresh.tagline };
+    case 'what':
+      return { ...buffer, what: fresh.what };
+    case 'why':
+      return { ...buffer, why: fresh.why };
+    case 'who':
+      return { ...buffer, who: fresh.who };
+    case 'location':
+      return { ...buffer, city: fresh.city, country: fresh.country };
+    case 'tags':
+      return { ...buffer, tags: fresh.tags, tagsetId: fresh.tagsetId };
+    case 'references':
+      return { ...buffer, references: fresh.references };
+  }
 }
 
 export type CropConfig = {

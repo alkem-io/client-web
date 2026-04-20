@@ -8,7 +8,7 @@ import {
   UserCircle,
   Users,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
@@ -90,22 +90,18 @@ export default function CrdSpaceSettingsPage() {
     },
   });
 
-  // Sync dirty flag from About + Layout + Application Form to the guard so tab-switching shows confirm.
+  // About uses per-section inline Save, so it does NOT participate in the
+  // tab-switch guard. Only Layout and the Application Form can enter a
+  // buffered-dirty state that needs protection.
   useEffect(() => {
-    if (layout.isDirty || about.isDirty || applicationForm.isDirty) {
+    if (layout.isDirty || applicationForm.isDirty) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, layout.isDirty, about.isDirty, applicationForm.isDirty]);
+  }, [guard, layout.isDirty, applicationForm.isDirty]);
 
-  // No-op cleanup — autosave was removed.
-  useEffect(() => {
-    const previous = activeTab;
-    return () => {
-      void previous;
-    };
-  }, [activeTab, about]);
+  const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
 
   const onTabChange = async (next: SpaceSettingsTabId) => {
     const allowed = await guard.requestSwitch(next);
@@ -115,7 +111,6 @@ export default function CrdSpaceSettingsPage() {
   };
 
   const handleConfirmSwitchSave = async () => {
-    if (about.isDirty) await about.onSave();
     if (layout.isDirty) await layout.onSave();
     if (applicationForm.isDirty) applicationForm.onSave();
     guard.clearDirty();
@@ -126,7 +121,6 @@ export default function CrdSpaceSettingsPage() {
     }
   };
   const handleConfirmSwitchDiscard = () => {
-    about.onReset();
     layout.onReset();
     guard.clearDirty();
     const target = guard.pendingSwitch;
@@ -137,6 +131,11 @@ export default function CrdSpaceSettingsPage() {
   };
   const handleConfirmSwitchCancel = () => {
     guard.resolvePendingSwitch(false);
+  };
+
+  const handleLayoutDiscardConfirm = () => {
+    layout.onReset();
+    setLayoutDiscardOpen(false);
   };
 
   const bootstrapping = resolvingUrl || loadingSpace || !spaceId;
@@ -154,17 +153,17 @@ export default function CrdSpaceSettingsPage() {
                 <SpaceSettingsAboutView
                   {...about.values}
                   previewCard={about.previewCard}
-                  saveBar={about.saveBar}
                   countries={COUNTRIES}
+                  dirtyByField={about.dirtyByField}
+                  saveStatusByField={about.saveStatusByField}
                   onChange={about.onChange}
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
                   onAddReference={about.onAddReference}
                   onUpdateReference={about.onUpdateReference}
-                  onRemoveReference={about.onRemoveReference}
-                  onSave={() => void about.onSave()}
-                  onReset={about.onReset}
+                  onRemoveReference={about.onRequestRemoveReference}
+                  onSaveSection={section => void about.onSaveSection(section)}
                 />
               ) : (
                 <LoadingSpinner />
@@ -184,7 +183,7 @@ export default function CrdSpaceSettingsPage() {
                 }}
                 onPostDescriptionDisplayChange={layout.onPostDescriptionDisplayChange}
                 onSave={layout.onSave}
-                onReset={layout.onReset}
+                onDiscardChanges={() => setLayoutDiscardOpen(true)}
                 columnMenuActions={columnMenu}
               />
             )}
@@ -249,7 +248,6 @@ export default function CrdSpaceSettingsPage() {
                 allowedActions={settingsTab.allowedActions}
                 hostOrganizationTrusted={settingsTab.hostOrganizationTrusted}
                 providerDisplayName={settingsTab.providerDisplayName}
-                canDeleteSpace={settingsTab.canDeleteSpace}
                 loading={settingsTab.loading}
                 updatingKeys={settingsTab.updatingKeys}
                 applicationFormSlot={
@@ -274,7 +272,6 @@ export default function CrdSpaceSettingsPage() {
                 onMembershipPolicyChange={settingsTab.onMembershipPolicyChange}
                 onToggleAllowedAction={settingsTab.onToggleAllowedAction}
                 onHostOrgTrustChange={settingsTab.onHostOrgTrustChange}
-                onDeleteSpace={settingsTab.onDeleteSpace}
               />
             )}
             {activeTab === 'account' && (
@@ -377,20 +374,38 @@ export default function CrdSpaceSettingsPage() {
       />
 
       <ConfirmationDialog
-        open={settingsTab.pendingDeleteSpace}
+        open={about.pendingReferenceDelete !== null}
         onOpenChange={open => {
-          if (!open) settingsTab.cancelDeleteSpace();
+          if (!open) about.onCancelRemoveReference();
         }}
         variant="destructive"
-        title={t('settings.dangerZone.deleteDialog.title', { defaultValue: 'Delete Space' })}
-        description={t('settings.dangerZone.deleteDialog.description', {
-          defaultValue:
-            'This will permanently delete this space, all subspaces, posts, documents, and community members. This action cannot be undone.',
+        title={t('about.references.deleteDialog.title', { defaultValue: 'Remove reference' })}
+        description={t('about.references.deleteDialog.description', {
+          defaultValue: 'Are you sure you want to remove "{{name}}"? This cannot be undone once you Save.',
+          name:
+            about.pendingReferenceDelete?.title ||
+            t('about.references.deleteDialog.untitled', {
+              defaultValue: 'this reference',
+            }),
         })}
-        confirmLabel={t('settings.dangerZone.deleteDialog.confirm', { defaultValue: 'Delete Space' })}
+        confirmLabel={t('about.references.deleteDialog.confirm', { defaultValue: 'Remove' })}
         cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
-        onConfirm={settingsTab.confirmDeleteSpace}
-        onCancel={settingsTab.cancelDeleteSpace}
+        onConfirm={about.onConfirmRemoveReference}
+        onCancel={about.onCancelRemoveReference}
+      />
+
+      <ConfirmationDialog
+        open={layoutDiscardOpen}
+        onOpenChange={setLayoutDiscardOpen}
+        variant="destructive"
+        title={t('layout.discardChangesDialog.title', { defaultValue: 'Discard changes?' })}
+        description={t('layout.discardChangesDialog.description', {
+          defaultValue: 'Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.',
+        })}
+        confirmLabel={t('layout.discardChangesDialog.confirm', { defaultValue: 'Discard Changes' })}
+        cancelLabel={t('dirtyGuard.cancel', { defaultValue: 'Cancel' })}
+        onConfirm={handleLayoutDiscardConfirm}
+        onCancel={() => setLayoutDiscardOpen(false)}
       />
 
       <ConfirmationDialog

@@ -1,21 +1,7 @@
-import {
-  AlertTriangle,
-  Calendar,
-  Edit3,
-  Globe,
-  Layout,
-  Loader2,
-  Lock,
-  Mail,
-  Share2,
-  Shield,
-  UserPlus,
-  Video,
-} from 'lucide-react';
+import { Calendar, Edit3, Globe, Layout, Loader2, Lock, Mail, Share2, Shield, UserPlus, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/crd/primitives/accordion';
-import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
 import { Separator } from '@/crd/primitives/separator';
@@ -45,7 +31,6 @@ export type SpaceSettingsSettingsViewProps = {
   allowedActions: AllowedActionToggle[];
   hostOrganizationTrusted: boolean;
   providerDisplayName: string;
-  canDeleteSpace: boolean;
   loading?: boolean;
   updatingKeys: ReadonlySet<string>;
   /** Slot for the Application Form editor (MUI component passed from integration layer). */
@@ -54,7 +39,6 @@ export type SpaceSettingsSettingsViewProps = {
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
   onHostOrgTrustChange: (next: boolean) => void;
-  onDeleteSpace: () => void;
   className?: string;
 };
 
@@ -103,14 +87,12 @@ export function SpaceSettingsSettingsView({
   allowedActions,
   hostOrganizationTrusted,
   providerDisplayName,
-  canDeleteSpace,
   updatingKeys,
   applicationFormSlot,
   onPrivacyChange,
   onMembershipPolicyChange,
   onToggleAllowedAction,
   onHostOrgTrustChange,
-  onDeleteSpace,
   className,
 }: SpaceSettingsSettingsViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -432,41 +414,6 @@ export function SpaceSettingsSettingsView({
             </div>
           </AccordionContent>
         </AccordionItem>
-
-        {/* Danger Zone */}
-        {canDeleteSpace && (
-          <AccordionItem value="danger" className="border border-destructive/20 rounded-lg bg-destructive/5 px-6">
-            <AccordionTrigger className="hover:no-underline py-6">
-              <div className="flex flex-col items-start gap-1">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-destructive">
-                  <AlertTriangle className="size-5" />
-                  {t('settings.dangerZone.title', { defaultValue: 'Danger Zone' })}
-                </h3>
-                <p className="text-sm text-destructive/80 font-normal text-left">
-                  {t('settings.dangerZone.subtitle', { defaultValue: 'Irreversible actions for this space' })}
-                </p>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="pb-6 pt-0">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border border-destructive/20 rounded-md bg-background">
-                <div>
-                  <h4 className="font-semibold text-foreground">
-                    {t('settings.dangerZone.deleteTitle', { defaultValue: 'Delete this Space' })}
-                  </h4>
-                  <p className="text-sm text-muted-foreground mt-1 max-w-xl">
-                    {t('settings.dangerZone.description', {
-                      defaultValue:
-                        'Deleting this Space is permanent. All posts, content, and membership data will be permanently removed.',
-                    })}
-                  </p>
-                </div>
-                <Button variant="destructive" onClick={onDeleteSpace}>
-                  {t('settings.dangerZone.delete', { defaultValue: 'Delete Space' })}
-                </Button>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        )}
       </Accordion>
     </div>
   );

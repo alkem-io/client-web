@@ -24,13 +24,18 @@
   },
   "saveBar": {
     "save": "Save Changes",
-    "reset": "Reset",
+    "discard": "Discard Changes",
     "saving": "Saving…"
   },
   "layout": {
     "pageHeader": {
       "title": "Layout",
       "subtitle": "Customize your Space's navigation tabs. Rename, reorder, and manage post assignments."
+    },
+    "discardChangesDialog": {
+      "title": "Discard changes?",
+      "description": "Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.",
+      "confirm": "Discard Changes"
     },
     "postDescriptionDisplay": {
       "title": "Post description display",
@@ -242,18 +247,6 @@
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organization"
-    },
-    "dangerZone": {
-      "title": "Danger Zone",
-      "subtitle": "Irreversible actions for this space",
-      "deleteTitle": "Delete this Space",
-      "description": "Deleting this Space is permanent. All posts, content, and membership data will be permanently removed.",
-      "delete": "Delete Space",
-      "deleteDialog": {
-        "title": "Delete Space",
-        "description": "This will permanently delete this space, all subspaces, posts, documents, and community members. This action cannot be undone.",
-        "confirm": "Delete Space"
-      }
     }
   },
   "storage": {
@@ -280,24 +273,34 @@
   "account": {
     "pageHeader": {
       "title": "Account",
-      "subtitle": "Space URL, license plan, host info, and support."
+      "subtitle": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team."
     },
     "url": {
-      "title": "Space URL"
+      "title": "URL",
+      "hint": "The unique URL for this space. Contact Alkemio to change this.",
+      "copy": "Copy URL",
+      "copied": "URL copied"
     },
     "visibility": {
-      "title": "Visibility"
+      "title": "Visibility Status",
+      "prefix": "This Space is currently in",
+      "suffix": "mode",
+      "contact": "For status changes, contact the Alkemio team."
     },
     "host": {
-      "title": "Host"
+      "title": "Host Information",
+      "description": "The host is the person or organization that owns this space."
     },
     "plan": {
-      "title": "License Plan",
+      "title": "License",
+      "description": "Your current space subscription details",
+      "featuresHeading": "Included Features",
       "daysLeft": "{{count}} days remaining",
       "changeLicense": "Change License"
     },
     "support": {
       "title": "Support",
+      "message": "If you want to change any of these settings, please contact the Alkemio team.",
       "contact": "Contact Alkemio Support"
     },
     "dangerZone": {
@@ -370,7 +373,7 @@
       "title": "References & Links",
       "description": "External links shown on this space page.",
       "empty": "No references added yet.",
-      "add": "Add reference",
+      "add": "Add",
       "row": {
         "title": "Reference title",
         "titlePlaceholder": "Title",
@@ -379,18 +382,22 @@
         "description": "Reference description",
         "descriptionPlaceholder": "Description (optional)",
         "remove": "Remove reference"
+      },
+      "deleteDialog": {
+        "title": "Remove reference",
+        "description": "Are you sure you want to remove \"{{name}}\"? This cannot be undone once you Save.",
+        "untitled": "this reference",
+        "confirm": "Remove"
       }
     },
     "preview": {
       "title": "PREVIEW"
     },
-    "saveStatus": {
-      "idle": "{{field}}: idle",
-      "saving": "{{field}}: saving…",
-      "savingShort": "Saving…",
-      "saved": "{{field}}: saved",
-      "savedShort": "Saved!",
-      "error": "{{field}}: save failed — {{message}}"
+    "inlineSave": {
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "retry": "Retry"
     }
   }
 }

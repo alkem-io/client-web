@@ -1,10 +1,10 @@
-import { AlertCircle, Loader2, RotateCcw } from 'lucide-react';
+import { AlertCircle, Loader2, Save, Undo2 } from 'lucide-react';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
 /**
  * SaveBarState mirrors the contract in specs/045-crd-space-settings/contracts/shell.ts.
- * Used ONLY by the Layout tab — About uses per-field autosave (FR-005a).
+ * Used ONLY by the Layout tab — About uses per-section inline Save buttons (FR-005a).
  */
 export type SaveBarState =
   | { kind: 'clean' }
@@ -15,27 +15,25 @@ export type SaveBarState =
 type SpaceSettingsSaveBarProps = {
   state: SaveBarState;
   onSave: () => void;
-  onReset: () => void;
+  onDiscard: () => void;
   saveLabel: string;
-  resetLabel: string;
+  discardLabel: string;
   savingLabel: string;
-  savedLabel?: string;
   className?: string;
 };
 
 /**
- * Sticky Save Changes / Reset action bar (Layout tab only).
+ * Save Changes / Discard Changes action row for the Layout tab.
  *
- * Hidden when `state.kind === 'clean'`. While `state.kind === 'saving'`, both
- * buttons are disabled. On `state.kind === 'saveError'`, both buttons are
- * re-enabled and the error message renders inline (FR-008 save-error retry).
+ * The Discard button is wired to a consumer-owned confirmation dialog — the
+ * view never reverts state directly.
  */
 export function SpaceSettingsSaveBar({
   state,
   onSave,
-  onReset,
+  onDiscard,
   saveLabel,
-  resetLabel,
+  discardLabel,
   savingLabel,
   className,
 }: SpaceSettingsSaveBarProps) {
@@ -61,14 +59,15 @@ export function SpaceSettingsSaveBar({
       <Button
         type="button"
         variant="ghost"
-        onClick={onReset}
+        onClick={onDiscard}
         disabled={saving || isClean}
-        className="hover:text-destructive hover:bg-destructive/10"
+        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
       >
-        <RotateCcw aria-hidden="true" className="mr-1.5 size-4" />
-        {resetLabel}
+        <Undo2 aria-hidden="true" className="mr-1.5 size-4" />
+        {discardLabel}
       </Button>
       <Button type="button" onClick={onSave} disabled={!canSave || saving}>
+        <Save aria-hidden="true" className="mr-1.5 size-4" />
         {saveLabel}
       </Button>
     </section>

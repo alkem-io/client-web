@@ -33,7 +33,9 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   const plan = space && platform ? mapAccountPlan(space, platform) : null;
   const host = space ? mapAccountHost(space) : null;
   const contactSupportHref = platform?.configuration.locations.support ?? '';
-  const changeLicenseHref = platform?.configuration.locations.switchplan ?? null;
+  // "Change License" routes users to the Alkemio contact page so the team can
+  // walk them through plan changes — not a self-service plans list.
+  const changeLicenseHref = platform?.configuration.locations.support ?? null;
 
   const privileges = space?.authorization?.myPrivileges ?? [];
   const canDeleteSpace = privileges.includes(AuthorizationPrivilege.Delete);

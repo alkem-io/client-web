@@ -1,4 +1,4 @@
-import { ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { Check, ImageIcon, Loader2, Plus, Trash2 } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
@@ -9,13 +9,22 @@ import { TagsInput } from '@/crd/forms/tags-input';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
-import type { AboutFormValues, AboutReference, AboutVisual, SpaceCardPreview } from './SpaceSettingsAboutView.types';
-import { type SaveBarState, SpaceSettingsSaveBar } from './SpaceSettingsSaveBar';
+import type {
+  AboutFormValues,
+  AboutReference,
+  AboutSectionKey,
+  AboutSectionSaveStatus,
+  AboutVisual,
+  SpaceCardPreview,
+} from './SpaceSettingsAboutView.types';
 
 export type SpaceSettingsAboutViewProps = AboutFormValues & {
   previewCard: SpaceCardPreview;
-  saveBar: SaveBarState;
   countries: ReadonlyArray<{ name: string; code: string }>;
+  /** Which sections differ from the server value. */
+  dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
+  /** Per-section save status (idle / saving / saved / error). */
+  saveStatusByField: Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>;
   onChange: (patch: Partial<AboutFormValues>) => void;
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
@@ -23,8 +32,7 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onAddReference: () => void;
   onUpdateReference: (id: string, patch: Partial<Omit<AboutReference, 'id'>>) => void;
   onRemoveReference: (id: string) => void;
-  onSave: () => void;
-  onReset: () => void;
+  onSaveSection: (section: AboutSectionKey) => void;
   className?: string;
 };
 
@@ -43,15 +51,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     why,
     who,
     previewCard,
-    saveBar,
+    dirtyByField,
+    saveStatusByField,
     onChange,
     onUploadPageBanner,
     onUploadCardBanner,
     onAddReference,
     onUpdateReference,
     onRemoveReference,
-    onSave,
-    onReset,
+    onSaveSection,
     className,
   } = props;
 
@@ -79,7 +87,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               placeholder="Space Name"
               className="mt-2 text-base"
             />
-            <FieldHint>{t('about.name.description', { defaultValue: 'The public name of your space.' })}</FieldHint>
+            <FieldFooter
+              hint={t('about.name.description', { defaultValue: 'The public name of your space.' })}
+              dirty={!!dirtyByField.name}
+              status={saveStatusByField.name ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('name')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
@@ -95,9 +109,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               placeholder="Tagline"
               className="mt-2 text-base"
             />
-            <FieldHint>
-              {t('about.tagline.description', { defaultValue: 'A short subtitle shown next to the space name.' })}
-            </FieldHint>
+            <FieldFooter
+              hint={t('about.tagline.description', {
+                defaultValue: 'A short subtitle shown next to the space name.',
+              })}
+              dirty={!!dirtyByField.tagline}
+              status={saveStatusByField.tagline ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('tagline')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
@@ -146,11 +166,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               placeholder="What's this space about…"
               className="mt-2"
             />
-            <FieldHint>
-              {t('about.what.description', {
+            <FieldFooter
+              hint={t('about.what.description', {
                 defaultValue: "A clear description of the space's focus or subject matter.",
               })}
-            </FieldHint>
+              dirty={!!dirtyByField.what}
+              status={saveStatusByField.what ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('what')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
@@ -164,9 +188,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               placeholder="Why does this space exist…"
               className="mt-2"
             />
-            <FieldHint>
-              {t('about.why.description', { defaultValue: 'Explain the motivation or value of this space.' })}
-            </FieldHint>
+            <FieldFooter
+              hint={t('about.why.description', { defaultValue: 'Explain the motivation or value of this space.' })}
+              dirty={!!dirtyByField.why}
+              status={saveStatusByField.why ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('why')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
@@ -180,9 +208,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               placeholder="Who is this space for…"
               className="mt-2"
             />
-            <FieldHint>
-              {t('about.who.description', { defaultValue: 'Describe the target audience or ideal members.' })}
-            </FieldHint>
+            <FieldFooter
+              hint={t('about.who.description', { defaultValue: 'Describe the target audience or ideal members.' })}
+              dirty={!!dirtyByField.who}
+              status={saveStatusByField.who ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('who')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
@@ -206,9 +238,13 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 className="w-full"
               />
             </div>
-            <FieldHint>
-              {t('about.location.description', { defaultValue: 'The city and country of this space.' })}
-            </FieldHint>
+            <FieldFooter
+              hint={t('about.location.description', { defaultValue: 'The city and country of this space.' })}
+              dirty={!!dirtyByField.location}
+              status={saveStatusByField.location ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('location')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
@@ -222,18 +258,32 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               placeholder="Add a tag and press Enter"
               className="mt-2"
             />
-            <FieldHint>
-              {t('about.tags.description', { defaultValue: 'Tags help members discover your space.' })}
-            </FieldHint>
+            <FieldFooter
+              hint={t('about.tags.description', { defaultValue: 'Tags help members discover your space.' })}
+              dirty={!!dirtyByField.tags}
+              status={saveStatusByField.tags ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('tags')}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
 
           {/* References */}
           <FieldSection>
-            <FieldLabel>{t('about.references.title', { defaultValue: 'References & Links' })}</FieldLabel>
-            <div className="flex flex-col gap-3 mt-2">
-              {references.length === 0 && <p className="text-sm text-muted-foreground">No references added yet.</p>}
+            <div className="flex items-center justify-between">
+              <FieldLabel>{t('about.references.title', { defaultValue: 'References & Links' })}</FieldLabel>
+              <Button type="button" variant="outline" size="sm" onClick={onAddReference}>
+                <Plus aria-hidden="true" className="mr-1.5 size-3.5" />
+                {t('about.references.add', { defaultValue: 'Add' })}
+              </Button>
+            </div>
+            <div className="flex flex-col gap-3 mt-3">
+              {references.length === 0 && (
+                <p className="text-sm text-muted-foreground italic">
+                  {t('about.references.empty', { defaultValue: 'No references added yet.' })}
+                </p>
+              )}
               {references.map(ref => (
                 <ReferenceRow
                   key={ref.id}
@@ -242,22 +292,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   onRemove={() => onRemoveReference(ref.id)}
                 />
               ))}
-              <Button type="button" variant="outline" onClick={onAddReference} className="self-start">
-                <Plus aria-hidden="true" className="mr-2 size-4" />
-                Add reference
-              </Button>
             </div>
+            <FieldFooter
+              hint={t('about.references.description', { defaultValue: 'External links shown on this space page.' })}
+              dirty={!!dirtyByField.references}
+              status={saveStatusByField.references ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('references')}
+              t={t}
+            />
           </FieldSection>
-
-          {/* Save / Reset */}
-          <SpaceSettingsSaveBar
-            state={saveBar}
-            onSave={onSave}
-            onReset={onReset}
-            saveLabel={t('saveBar.save', { defaultValue: 'Save Changes' })}
-            resetLabel={t('saveBar.reset', { defaultValue: 'Reset' })}
-            savingLabel={t('saveBar.saving', { defaultValue: 'Saving…' })}
-          />
         </div>
 
         {/* Preview */}
@@ -309,6 +352,75 @@ function FieldHint({ children }: { children: React.ReactNode }) {
   return <p className="mt-1.5 text-xs text-muted-foreground">{children}</p>;
 }
 
+type TFn = ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
+
+function FieldFooter({
+  hint,
+  dirty,
+  status,
+  onSave,
+  t,
+}: {
+  hint: string;
+  dirty: boolean;
+  status: AboutSectionSaveStatus;
+  onSave: () => void;
+  t: TFn;
+}) {
+  return (
+    <div className="mt-1.5 flex items-start justify-between gap-3">
+      <p className="text-xs text-muted-foreground">{hint}</p>
+      <InlineSaveButton dirty={dirty} status={status} onSave={onSave} t={t} />
+    </div>
+  );
+}
+
+function InlineSaveButton({
+  dirty,
+  status,
+  onSave,
+  t,
+}: {
+  dirty: boolean;
+  status: AboutSectionSaveStatus;
+  onSave: () => void;
+  t: TFn;
+}) {
+  if (status.kind === 'saving') {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+        <Loader2 aria-hidden="true" className="size-3 animate-spin" />
+        {t('about.inlineSave.saving', { defaultValue: 'Saving…' })}
+      </span>
+    );
+  }
+  if (status.kind === 'saved') {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
+        <Check aria-hidden="true" className="size-3" />
+        {t('about.inlineSave.saved', { defaultValue: 'Saved' })}
+      </span>
+    );
+  }
+  if (status.kind === 'error') {
+    return (
+      <button type="button" onClick={onSave} className="text-xs font-semibold text-destructive hover:underline">
+        {t('about.inlineSave.retry', { defaultValue: 'Retry' })}
+      </button>
+    );
+  }
+  if (!dirty) return null;
+  return (
+    <button
+      type="button"
+      onClick={onSave}
+      className="text-xs font-semibold text-foreground px-2 py-0.5 rounded hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      {t('about.inlineSave.save', { defaultValue: 'Save' })}
+    </button>
+  );
+}
+
 function BannerUpload({
   visual,
   onUpload,
@@ -320,7 +432,7 @@ function BannerUpload({
   onUpload: (file: File) => void;
   aspect: string;
   widthClass?: string;
-  t: ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
+  t: TFn;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);

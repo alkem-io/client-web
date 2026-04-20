@@ -51,24 +51,14 @@ export type SpaceCardPreview = {
   isPrivate?: boolean;
 };
 
-export type FieldAutosaveState =
+/**
+ * Logical "sections" inside About that can be saved independently. Each maps
+ * to one visible field group in the UI and to one save handler in the hook.
+ */
+export type AboutSectionKey = 'name' | 'tagline' | 'location' | 'tags' | 'references' | 'what' | 'why' | 'who';
+
+export type AboutSectionSaveStatus =
   | { kind: 'idle' }
-  | { kind: 'pending' }
   | { kind: 'saving' }
   | { kind: 'saved'; at: number }
   | { kind: 'error'; message: string };
-
-export type AboutFieldKey =
-  | 'name'
-  | 'tagline'
-  | 'location'
-  | 'avatar'
-  | 'pageBanner'
-  | 'cardBanner'
-  | 'tags'
-  | 'references'
-  | 'what'
-  | 'why'
-  | 'who';
-
-export type AboutAutosaveStateMap = Partial<Record<AboutFieldKey, FieldAutosaveState>>;

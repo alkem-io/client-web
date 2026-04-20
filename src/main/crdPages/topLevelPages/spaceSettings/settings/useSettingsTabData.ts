@@ -1,15 +1,6 @@
 import { useState } from 'react';
-import {
-  useDeleteSpaceMutation,
-  useSpacePrivilegesQuery,
-  useSpaceSettingsQuery,
-  useUpdateSpaceSettingsMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  type CommunityMembershipPolicy,
-  type SpacePrivacyMode,
-} from '@/core/apollo/generated/graphql-schema';
+import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import type {
   AllowedActionKey,
   AllowedActionToggle,
@@ -32,26 +23,16 @@ export type UseSettingsTabDataResult = {
   hostOrganizationTrusted: boolean;
   providerDisplayName: string;
   roleSetId: string | undefined;
-  canDeleteSpace: boolean;
   loading: boolean;
   updatingKeys: ReadonlySet<string>;
   onPrivacyChange: (next: SpacePrivacy) => void;
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
   onHostOrgTrustChange: (next: boolean) => void;
-  onDeleteSpace: () => void;
-  pendingDeleteSpace: boolean;
-  confirmDeleteSpace: () => void;
-  cancelDeleteSpace: () => void;
 };
 
 export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
   const { data, loading } = useSpaceSettingsQuery({
-    variables: { spaceId },
-    skip: !spaceId,
-  });
-
-  const { data: privData } = useSpacePrivilegesQuery({
     variables: { spaceId },
     skip: !spaceId,
   });
@@ -64,12 +45,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
 
   const hostOrganizationTrusted = (!!hostId && settings?.membership?.trustedOrganizations?.includes(hostId)) ?? false;
 
-  const privileges = privData?.lookup.space?.authorization?.myPrivileges ?? [];
-  const canDeleteSpace = privileges.includes(AuthorizationPrivilege.Delete);
-
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
-  const [deleteSpace] = useDeleteSpaceMutation();
-  const [pendingDeleteSpace, setPendingDeleteSpace] = useState(false);
   const [updatingKeys, setUpdatingKeys] = useState<Set<string>>(new Set());
 
   const privacy = mapPrivacy(settings?.privacy);
@@ -227,13 +203,6 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     }).finally(() => removeKey(actionKey));
   };
 
-  const onDeleteSpace = () => setPendingDeleteSpace(true);
-  const confirmDeleteSpace = () => {
-    void deleteSpace({ variables: { spaceId } });
-    setPendingDeleteSpace(false);
-  };
-  const cancelDeleteSpace = () => setPendingDeleteSpace(false);
-
   return {
     privacy,
     membershipPolicy,
@@ -241,16 +210,11 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     hostOrganizationTrusted,
     providerDisplayName,
     roleSetId,
-    canDeleteSpace,
     loading,
     updatingKeys,
     onPrivacyChange,
     onMembershipPolicyChange,
     onToggleAllowedAction,
     onHostOrgTrustChange,
-    onDeleteSpace,
-    pendingDeleteSpace,
-    confirmDeleteSpace,
-    cancelDeleteSpace,
   };
 }
