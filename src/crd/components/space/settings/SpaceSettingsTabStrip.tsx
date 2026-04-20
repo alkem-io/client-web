@@ -1,6 +1,5 @@
 import type { ComponentType, SVGProps } from 'react';
 import { cn } from '@/crd/lib/utils';
-import { Tabs, TabsList, TabsTrigger } from '@/crd/primitives/tabs';
 
 export type SpaceSettingsTabDescriptor<TTabId extends string> = {
   id: TTabId;
@@ -16,12 +15,14 @@ type SpaceSettingsTabStripProps<TTabId extends string> = {
 };
 
 /**
- * Horizontal tab strip built on Radix Tabs. Scrolls horizontally on narrow
- * viewports. Accessibility (role=tablist, arrow-key navigation) is provided
- * by the Radix primitive — do not reimplement.
+ * Horizontal underlined tab strip matching the prototype's Settings header.
  *
- * Generic over `TTabId` so each tab group (Space Settings, future CRD pages)
- * can use its own string-literal union of tab ids.
+ * Each tab renders as a button with icon + label. The active tab has a bold
+ * label and a 2px bottom border in the primary color. Scrolls horizontally
+ * on narrow viewports. Accessibility: `role="tablist"` + `role="tab"` with
+ * `aria-selected` — arrow key navigation is NOT implemented here (Radix Tabs
+ * has it, but we use a custom strip because the Radix default pill style
+ * doesn't match the prototype's underlined aesthetic).
  */
 export function SpaceSettingsTabStrip<TTabId extends string>({
   activeTab,
@@ -30,22 +31,30 @@ export function SpaceSettingsTabStrip<TTabId extends string>({
   className,
 }: SpaceSettingsTabStripProps<TTabId>) {
   return (
-    <Tabs value={activeTab} onValueChange={value => onTabChange(value as TTabId)} className={cn('w-full', className)}>
-      <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
-        {tabs.map(({ id, label, icon: Icon }) => (
-          <TabsTrigger
+    <div role="tablist" className={cn('flex items-center gap-1 overflow-x-auto overflow-y-hidden border-b', className)}>
+      {tabs.map(({ id, label, icon: Icon }) => {
+        const isActive = id === activeTab;
+        return (
+          <button
             key={id}
-            value={id}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onTabChange(id)}
             className={cn(
-              'flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3',
-              'data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold'
+              'inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-sm transition-colors',
+              'border-b-2 -mb-px outline-none',
+              'focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1 rounded-t-sm',
+              isActive
+                ? 'border-primary text-foreground font-semibold'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
             )}
           >
-            <Icon aria-hidden="true" className="size-4" />
+            <Icon aria-hidden="true" className="size-4 shrink-0" />
             <span>{label}</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </Tabs>
+          </button>
+        );
+      })}
+    </div>
   );
 }

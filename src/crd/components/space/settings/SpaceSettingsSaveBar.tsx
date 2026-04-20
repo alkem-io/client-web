@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, RotateCcw } from 'lucide-react';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
@@ -39,22 +39,13 @@ export function SpaceSettingsSaveBar({
   savingLabel,
   className,
 }: SpaceSettingsSaveBarProps) {
-  if (state.kind === 'clean') {
-    return null;
-  }
-
+  const isClean = state.kind === 'clean';
   const saving = state.kind === 'saving';
   const isError = state.kind === 'saveError';
-  const canSave = state.kind === 'dirty' ? state.canSave : !saving;
+  const canSave = state.kind === 'dirty' ? state.canSave : !saving && !isClean;
 
   return (
-    <section
-      aria-live="polite"
-      className={cn(
-        'fixed bottom-6 right-6 z-40 flex items-center gap-3 rounded-xl border bg-card px-4 py-3 shadow-lg',
-        className
-      )}
-    >
+    <section aria-live="polite" className={cn('flex items-center justify-end gap-3 pt-4', className)}>
       {saving ? (
         <span className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 aria-hidden="true" className="size-4 animate-spin" />
@@ -67,12 +58,14 @@ export function SpaceSettingsSaveBar({
           {state.message}
         </span>
       ) : null}
-      {state.kind === 'dirty' ? (
-        <span className="flex items-center gap-2 text-sm text-muted-foreground">
-          <CheckCircle2 aria-hidden="true" className="size-4" />
-        </span>
-      ) : null}
-      <Button type="button" variant="ghost" onClick={onReset} disabled={saving}>
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={onReset}
+        disabled={saving || isClean}
+        className="hover:text-destructive hover:bg-destructive/10"
+      >
+        <RotateCcw aria-hidden="true" className="mr-1.5 size-4" />
         {resetLabel}
       </Button>
       <Button type="button" onClick={onSave} disabled={!canSave || saving}>

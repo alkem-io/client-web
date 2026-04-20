@@ -1,40 +1,40 @@
-import { Check, Pencil, X } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
-import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Textarea } from '@/crd/primitives/textarea';
 
 /**
- * InlineEditText — a single-line or multi-line inline editor.
+ * InlineEditText — inline editor with auto-save on blur or idle timeout.
  *
- * Visual-only state (idle / editing). Never talks to the backend — consumers
- * commit the new value via `onChange`. Used by the CRD Space Settings Layout
- * tab for column titles and column descriptions.
+ * **Idle state**: renders value as plain text. On hover, a dashed underline
+ * and a faded pencil icon appear (FR-006a). Clicking enters edit mode.
  *
- * **Hover-reveal affordance (spec 045 FR-006a)**:
- * In idle state the value renders as plain text. On hover, the text gains a
- * 1px underline in `text-muted-foreground` and a small `Pencil` icon at
- * `size-3` appears inline after the text with `ml-1`. The pencil button is
- * keyboard-focusable (Tab + Enter / Space). Clicking either the text or the
- * pencil enters edit mode.
+ * **Edit state**: renders an Input (single-line) or Textarea (multi-line).
+ * Commits automatically when:
+ *   - The user clicks outside (blur)
+ *   - The user stops typing for 2 seconds
+ *   - Escape reverts to the original value and exits edit mode
  *
- * In editing state: an Input (single-line) or Textarea (multi-line) pre-filled
- * with the value; Enter commits single-line; Ctrl/Cmd+Enter commits multi-line;
- * Escape cancels. Confirm / Cancel buttons are always visible in editing state.
+ * No ✓ / ✗ buttons — commit is implicit.
  */
+
+const IDLE_DEBOUNCE_MS = 2000;
 
 type InlineEditTextProps = {
   value: string;
   onChange: (next: string) => void;
   ariaLabel: string;
   editAriaLabel: string;
-  confirmAriaLabel: string;
-  cancelAriaLabel: string;
   placeholder?: string;
   multiline?: boolean;
   disabled?: boolean;
+  /** Validation error — renders below the field in destructive color. */
+  error?: string;
   className?: string;
+  /** Unused — kept for BC with existing call sites. */
+  confirmAriaLabel?: string;
+  cancelAriaLabel?: string;
 };
 
 export function InlineEditText({
@@ -42,16 +42,16 @@ export function InlineEditText({
   onChange,
   ariaLabel,
   editAriaLabel,
-  confirmAriaLabel,
-  cancelAriaLabel,
   placeholder,
   multiline = false,
   disabled = false,
+  error,
   className,
 }: InlineEditTextProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (!isEditing) {
@@ -66,7 +66,19 @@ export function InlineEditText({
     }
   }, [isEditing]);
 
+  // Clean up timer on unmount.
+  useEffect(
+    () => () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    },
+    []
+  );
+
   const commit = useCallback(() => {
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = undefined;
+    }
     const trimmed = draft.trim();
     if (trimmed !== value.trim()) {
       onChange(trimmed);
@@ -74,74 +86,90 @@ export function InlineEditText({
     setIsEditing(false);
   }, [draft, onChange, value]);
 
-  const cancel = useCallback(() => {
+  const revert = useCallback(() => {
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = undefined;
+    }
     setDraft(value);
     setIsEditing(false);
   }, [value]);
+
+  const scheduleIdleCommit = useCallback(() => {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => {
+      commit();
+    }, IDLE_DEBOUNCE_MS);
+  }, [commit]);
+
+  const handleChange = useCallback(
+    (next: string) => {
+      setDraft(next);
+      scheduleIdleCommit();
+    },
+    [scheduleIdleCommit]
+  );
 
   const onKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        cancel();
+        revert();
         return;
       }
-      if (event.key === 'Enter') {
-        if (multiline) {
-          if (event.ctrlKey || event.metaKey) {
-            event.preventDefault();
-            commit();
-          }
-          return;
+      // Enter commits single-line. Multi-line uses Shift+Enter for newline; Enter alone commits.
+      if (event.key === 'Enter' && !event.shiftKey) {
+        if (!multiline || !event.shiftKey) {
+          event.preventDefault();
+          commit();
         }
-        event.preventDefault();
-        commit();
       }
     },
-    [cancel, commit, multiline]
+    [commit, multiline, revert]
   );
 
   if (!isEditing) {
-    // Hover-reveal: underline + trailing pencil appear on group-hover.
-    // Clicking either the text or the pencil enters edit mode. Per FR-006a.
     return (
-      <button
-        type="button"
-        aria-label={editAriaLabel}
-        onClick={() => setIsEditing(true)}
-        disabled={disabled}
-        className={cn(
-          'group inline-flex items-baseline gap-1 bg-transparent p-0 text-left',
-          'cursor-text disabled:cursor-not-allowed disabled:opacity-50',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded-sm',
-          className
-        )}
-      >
-        <span
+      <div>
+        <button
+          type="button"
+          aria-label={editAriaLabel}
+          onClick={() => setIsEditing(true)}
+          disabled={disabled}
           className={cn(
-            'group-hover:underline group-hover:decoration-muted-foreground group-hover:decoration-solid',
-            !value && 'text-muted-foreground'
+            'group inline-flex items-center gap-1.5 bg-transparent p-0 text-left',
+            'cursor-text disabled:cursor-not-allowed disabled:opacity-50',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded-sm',
+            error && 'text-destructive',
+            className
           )}
         >
-          {value || placeholder || ''}
-        </span>
-        <Pencil
-          aria-hidden="true"
-          className="ml-1 size-3 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-        />
-      </button>
+          <span
+            className={cn(
+              'decoration-muted-foreground/50 decoration-dashed underline-offset-4',
+              'group-hover:underline',
+              !value && 'text-muted-foreground'
+            )}
+          >
+            {value || placeholder || ''}
+          </span>
+          <Pencil aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground/40" />
+        </button>
+        {error && <p className="mt-0.5 text-xs text-destructive">{error}</p>}
+      </div>
     );
   }
 
   return (
-    <div className={cn('flex items-start gap-2', className)}>
+    <div className={cn('flex items-start', className)}>
       {multiline ? (
         <Textarea
           ref={inputRef as React.Ref<HTMLTextAreaElement>}
           aria-label={ariaLabel}
           value={draft}
-          onChange={event => setDraft(event.target.value)}
+          onChange={event => handleChange(event.target.value)}
           onKeyDown={onKeyDown}
+          onBlur={commit}
           placeholder={placeholder}
           disabled={disabled}
           className="flex-1"
@@ -151,33 +179,14 @@ export function InlineEditText({
           ref={inputRef as React.Ref<HTMLInputElement>}
           aria-label={ariaLabel}
           value={draft}
-          onChange={event => setDraft(event.target.value)}
+          onChange={event => handleChange(event.target.value)}
           onKeyDown={onKeyDown}
+          onBlur={commit}
           placeholder={placeholder}
           disabled={disabled}
           className="flex-1"
         />
       )}
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={confirmAriaLabel}
-        onClick={commit}
-        disabled={disabled}
-      >
-        <Check aria-hidden="true" />
-      </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={cancelAriaLabel}
-        onClick={cancel}
-        disabled={disabled}
-      >
-        <X aria-hidden="true" />
-      </Button>
     </div>
   );
 }

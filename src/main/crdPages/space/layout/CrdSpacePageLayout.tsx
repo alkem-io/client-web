@@ -1,7 +1,7 @@
-import { History, Settings, Share2 } from 'lucide-react';
+import { ChevronRight, History, Layers, Settings, Share2 } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
@@ -25,6 +25,7 @@ export default function CrdSpacePageLayout() {
   const { isSmallScreen } = useScreenSize();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [_shareDialogOpen, setShareDialogOpen] = useState(false);
   const [_activityDialogOpen, setActivityDialogOpen] = useState(false);
 
@@ -94,12 +95,43 @@ export default function CrdSpacePageLayout() {
 
   const sidebarSlot = <div id="crd-space-sidebar" />;
 
+  // Hide space navigation tabs (Home/Community/Subspaces/Knowledge) on the
+  // Settings sub-routes — settings has its own tab strip (About/Layout/…).
+  const isOnSettings = pathname.includes('/settings');
+
+  // Extract the active settings tab name for the breadcrumb (e.g., "about" → "About").
+  const settingsTabSegment = isOnSettings ? (pathname.split('/settings/')[1]?.split('/')[0] ?? 'about') : '';
+  const settingsTabLabel = settingsTabSegment
+    ? settingsTabSegment.charAt(0).toUpperCase() + settingsTabSegment.slice(1)
+    : '';
+  const spaceHref = space.about.profile.url ?? '';
+
   return (
     <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       {visibilityData.status !== 'active' && (
         <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
       )}
       <SpaceShell
+        breadcrumbs={
+          isOnSettings ? (
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm">
+              <Layers aria-hidden="true" className="size-4 mr-1" />
+              <a href={spaceHref} className="text-muted-foreground hover:text-foreground hover:underline">
+                {space.about.profile.displayName}
+              </a>
+              <ChevronRight aria-hidden="true" className="size-3 text-muted-foreground" />
+              <a href={`${spaceHref}/settings`} className="text-muted-foreground hover:text-foreground hover:underline">
+                {t('crd-space:breadcrumbs.settings', { defaultValue: 'Settings' })}
+              </a>
+              {settingsTabLabel && (
+                <>
+                  <ChevronRight aria-hidden="true" className="size-3 text-muted-foreground" />
+                  <span className="text-foreground font-medium">{settingsTabLabel}</span>
+                </>
+              )}
+            </nav>
+          ) : undefined
+        }
         header={
           <SpaceHeader
             title={space.about.profile.displayName}
@@ -110,15 +142,17 @@ export default function CrdSpacePageLayout() {
             actions={headerActions}
           />
         }
-        sidebar={sidebarSlot}
+        sidebar={isOnSettings ? undefined : sidebarSlot}
         tabs={
-          <SpaceNavigationTabs
-            tabs={tabItems}
-            activeIndex={activeTabIndex}
-            onTabChange={handleTabChange}
-            isSmallScreen={isSmallScreen}
-            mobileActions={mobileActions}
-          />
+          isOnSettings ? undefined : (
+            <SpaceNavigationTabs
+              tabs={tabItems}
+              activeIndex={activeTabIndex}
+              onTabChange={handleTabChange}
+              isSmallScreen={isSmallScreen}
+              mobileActions={mobileActions}
+            />
+          )
         }
       >
         <Suspense fallback={<LoadingSpinner />}>

@@ -74,22 +74,19 @@ The hook exposes `flushPending()` so the page can force any in-flight debounce t
 
 ## Decision 4 — Layout save model: local dirty buffer + Reset
 
-**Decision**: The Layout tab uses a single in-memory buffer rooted at `useLayoutTabData.ts`. It shadows the backend `SpaceSettingsQuery` payload. Every user action — drag within column, drag across columns, Move-to, Remove from Tab, Undo removal, inline rename of column title, inline rename of column description, flip of the Post description display toggle — mutates the buffer **only**. Individual callout title and description are NOT editable here (edited from the post's own page); they're rendered read-only. The sticky Save Changes / Reset bar appears when the buffer diverges from the backend snapshot.
+**Decision**: The Layout tab uses a single in-memory buffer rooted at `useLayoutTabData.ts`. It shadows the backend `InnovationFlowSettingsQuery` + `SpaceSettingsQuery` payload. Every user action — drag within column, drag across columns, Move-to, inline rename of column title, inline rename of column description, flip of the Post description display toggle — mutates the buffer **only**. Individual callout title and description are NOT editable here (edited from the post's own page); they're rendered read-only. The sticky Save Changes / Reset bar appears when the buffer diverges from the backend snapshot.
 
-**Zero-mutations-until-Save invariant (FR-008a)**: The hook MUST NOT call any mutation, deletion query, or optimistic-update helper before Save Changes is clicked. Every intermediate state — including pending removals — lives exclusively in the in-memory buffer. If the admin resets, refreshes, closes the tab, or chooses Discard in the navigation-confirm dialog, the backend is bit-for-bit unchanged.
+**Zero-mutations-until-Save invariant (FR-008a)**: The hook MUST NOT call any buffered mutation before Save Changes is clicked. If the admin resets, refreshes, closes the tab, or chooses Discard in the navigation-confirm dialog, the backend is bit-for-bit unchanged. **Exception**: the per-column overflow menu's Active phase and Default post template actions (see Decision 5) are immediate — not buffered — because they are column-level metadata, not layout-reorder operations.
 
-Specifically:
+Specifically (buffered):
 
-- **Drag / keyboard move / Move to** edit the buffer's column assignment for the callout; the `callouts-set` membership on the server is untouched.
-- **Remove from Tab** sets `pendingRemoval: true` on the buffered callout. The row stays visible with pending-removal styling; the buffer continues to own the callout's position and metadata.
-- **Undo removal** clears `pendingRemoval`.
-- **Inline rename of a column** updates the buffer's column `title` / `description`; the backend is untouched. (Callouts themselves are not renamed here.)
-- **Post description display toggle** updates the buffered `calloutDescriptionDisplayMode`; the space's `settings.layout` is untouched.
+- **Drag / keyboard move / Move to** edit the buffer's column assignment for the callout.
+- **Inline rename of a column** updates the buffer's column `title` / `description`.
+- **Post description display toggle** updates the buffered `calloutDescriptionDisplayMode`.
 
-**Save Changes** flushes the buffer in a single `useTransition` block. The hook computes the minimum set of mutations needed to bring the backend into alignment with the buffer:
-- callouts whose column assignment differs from the backend snapshot → reorder / move mutations.
-- callouts with `pendingRemoval: true` → unassign against the existing tabset-assignment / callouts-set membership mutation (NO callout deletion).
-- columns whose title or description differs → column-rename mutations.
+**Save Changes** flushes the buffer in a single `useTransition` block. The hook computes the minimum set of mutations needed:
+- callouts whose column assignment or order differs from the backend snapshot → `updateCallout` (classification.flowState tagset rewrite) + `updateCalloutsSortOrder`.
+- columns whose title or description differs → `updateInnovationFlowState` mutation, PLUS cascading re-tag of every callout tagged with the old displayName (backend links callouts by state-name string, not FK — see `useInnovationFlowSettings` for the pattern).
 - Post description display differs → `updateSpaceSettings`.
 
 If any mutation errors, the hook marks `saveBarState = { kind: 'saveError', message }`, keeps the buffer dirty, and surfaces an inline error banner in the Layout view. Partial success is not stored — the whole buffer remains pending so the admin can Retry or Reset.
@@ -138,22 +135,21 @@ Implementation:
 
 ## Decision 5a — Visible per-callout kebab menu (Layout tab)
 
-**Decision**: The prototype specifies a three-entry kebab on every movable callout row:
+**Decision**: Each callout row exposes a two-entry kebab:
 
-1. **Move to** — submenu listing the other three columns (the current column is omitted). Buffered like drag-and-drop; re-uses the same `onReorder` pipeline under the hood with the target index appended to the destination column.
+1. **Move to** — submenu listing the other columns on the current board (dynamic count). Buffered; re-uses the same `onReorder` pipeline under the hood with the target index appended to the destination column.
 2. **View Post** — navigates to the post's existing route. Immediate; blocked by the FR-026 discard-confirm dialog if the Layout buffer is dirty.
-3. **Remove from Tab** — **unassigns** the callout from its current column (by updating the existing tabset-assignment / callouts-set membership). It does NOT delete the callout. Buffered like any other layout change; flushed via Save Changes.
+
+No "Remove from Tab" / "Undo removal" — the backend has no unassigned state for a callout, so there's nothing to unassign to. Deleting a callout happens from the post's own page.
 
 This visible kebab is **per-callout** and is **separate** from the per-**column** "Active phase" / "Default post template" menu in Decision 5. The two menus attach to different surfaces — the per-callout kebab lives on each row; the per-column overflow menu lives in the top-right of each column header.
 
-**Pending-removal state.** "Remove from Tab" does NOT immediately hide the row. It sets `pendingRemoval: true` on the callout in the buffer. The row stays visible with reduced opacity + strikethrough (or a small "will be removed" badge — designer's final pick) and the kebab swaps its Remove entry for an **Undo removal** entry. Save Changes flushes the pending unassignment; Reset clears the flag; navigating away discards it. This matches the FR-008a zero-mutations-until-Save invariant and keeps the intermediate state legible and reversible.
-
-**Rationale**: The prototype screenshot is the designer's source of truth for this kebab. Reusing the existing `onReorder` + unassign mutations keeps GraphQL changes at zero (FR-031). Keeping removed rows visible (instead of hiding them) mirrors what Save Changes will do with far less cognitive load than "where did my callout go?" invites.
+**Rationale**: The backend `classification.flowState` tagset requires at least one tag per callout; there is no null / unassigned state. Removing from a tab would require a backend schema change, which is explicitly out of scope (FR-031).
 
 **Alternatives considered**:
-- Only exposing drag-and-drop (no kebab): rejected — the designer specified this kebab; keyboard-first admins benefit from a menu alternative that doesn't require targeting a drop zone.
-- Adding a dedicated "delete callout" action here: rejected — callouts are created and deleted elsewhere in the product (FR-007). "Remove from Tab" is the correct unassign-only semantic.
-- Requiring a confirm dialog for Remove from Tab: rejected — equivalent to dragging a callout off the board; consistent with drag-and-drop which has no confirm.
+- Only exposing drag-and-drop (no kebab): rejected — keyboard-first admins benefit from a menu alternative that doesn't require targeting a drop zone.
+- Adding a "Remove from Tab" action: rejected — backend constraint (every callout must carry at least one flowState tag).
+- Adding a dedicated "delete callout" action here: rejected — callouts are created and deleted elsewhere in the product (FR-007).
 
 ---
 
@@ -170,9 +166,11 @@ This visible kebab is **per-callout** and is **separate** from the per-**column*
 
 ---
 
-## Decision 7 — Layout pool model and pinned-item detection
+## Decision 7 — Layout column model (dynamic, no pinned items)
 
-**Decision**: The Layout tab's four columns (Home / Community / Subspaces / Knowledge) correspond to the existing tabset definition returned by `SpaceSettingsQuery`. Each entry is typed as either **system** (pinned) or **callout** (movable). The mapper flags entries by inspecting `__typename === 'Callout'` (movable) versus any other shape (pinned). `layoutMapper.ts` is the single source of truth; if backend shapes diverge later, only the mapper changes.
+**Decision**: Columns on the Layout board are DYNAMIC — count and order come from `innovationFlow.states` returned by `useInnovationFlowSettingsQuery`. Each column's `id` is the state UUID; its `title` is the state `displayName`; its `description` is the state `description`. Callouts are grouped into columns by matching the callout's `classification.flowState.tags[0]` (a state displayName string) to the column's `title`. `layoutMapper.ts` is the single source of truth.
+
+**No pinned / system items.** The backend has no concept of a pinned or immovable callout — every callout can be dragged and moved freely. The earlier draft's "pinned system entries" language was removed after confirming with the audit.
 
 **Rationale**: Matches the user's "only callouts move" instruction. No backend change required.
 
@@ -247,7 +245,7 @@ Behavior:
 - Props are plain TypeScript (per CRD CLAUDE.md) — no GraphQL types. The About mapper and any future Explore mapper each produce the component's prop shape.
 - File location: `src/crd/components/space/SpaceCard.tsx`. If a component with the same name already exists, it is extended BC-safely rather than duplicated (DRY per Arch #6.f).
 
-**Audit outcome (existing component vs target)**: The current `src/crd/components/space/SpaceCard.tsx` already renders the full target visual — banner + gradient fallback, stacked avatar overlay, public/private badge, name, parent-indicator (optional), description line-clamp, tags (≤3 + `+N`), LEADS row with stacked avatars. Only delta: it surfaces membership status via a "Member" badge but does not render a **numeric member count** next to a users icon. Resolution: extend `SpaceCardData` with an optional `memberCount?: number` field; the card renders the count + users icon in the footer-right only when the prop is provided. All 8 existing call sites (`src/crd/app/data/space.ts`, `src/main/crdPages/space/dataMappers/subspaceCardDataMapper.ts`, `src/main/crdPages/spaces/spaceCardDataMapper.ts`, `src/main/crdPages/search/searchDataMapper.ts`, `src/main/crdPages/search/CrdSearchOverlay.tsx`, `src/crd/app/data/spaces.ts`, `src/crd/components/space/SpaceExplorer.tsx`, and the spec 043 contract) continue to work unchanged — no prop is removed, no default shifts.
+**Audit outcome (existing component vs target)**: The current `src/crd/components/space/SpaceCard.tsx` already renders the full target visual the About Preview needs — banner + gradient fallback, avatar, public/private badge, name, description line-clamp, tags (≤3 + `+N`). The card also supports LEADS rows + parent indicators + a membership badge, but those are not editable from About and therefore simply aren't populated by the About mapper (the SpaceCard already hides sections whose data is absent). **Conclusion: no changes needed to `SpaceCard.tsx` for the About Preview** — the About mapper simply constructs a minimal `SpaceCardData` from live form state, passes it to the existing component, and lets unset sections render empty. The component stays untouched; all 8 existing call sites are unaffected.
 
 **Rationale**: User instruction — the About Preview shows a card that matches Explore exactly. Shipping it once here avoids a second port later.
 

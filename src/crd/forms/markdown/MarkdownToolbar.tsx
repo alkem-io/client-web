@@ -46,7 +46,13 @@ export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
     };
   }, [editor]);
 
-  if (!editor) return null;
+  let editorReady = false;
+  try {
+    editorReady = !!editor?.view?.dom;
+  } catch {
+    // editor.view threw — not mounted yet
+  }
+  if (!editor || !editorReady) return null;
 
   const isInTable = editor.isActive('table');
 

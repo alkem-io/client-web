@@ -1,6 +1,12 @@
 import type { SaveBarState } from './shell';
 
-export type LayoutColumnId = 'home' | 'community' | 'subspaces' | 'knowledge';
+/**
+ * Innovation-flow state UUID. Columns on the Layout board are DYNAMIC — count
+ * and order are driven by `innovationFlow.states`. The spec's example labels
+ * "Home / Community / Subspaces / Knowledge" are prototype mock data, not
+ * fixed column IDs.
+ */
+export type LayoutColumnId = string;
 
 export type LayoutCallout = {
   id: string;
@@ -8,23 +14,16 @@ export type LayoutCallout = {
   title: string;
   /** Read-only on the Layout tab. Post text is edited from the post's own page. */
   description: string;
-  kind: 'system' | 'callout';
-  icon: string;
-  /**
-   * Local-buffer-only flag. When true, the row is flagged for removal from
-   * its current column but NO mutation has fired — the row stays visible
-   * with the pending-removal visual treatment until Save Changes commits
-   * the unassignment or Reset clears the flag.
-   *
-   * Populated by the view model only; never present in the backend payload.
-   */
-  pendingRemoval: boolean;
+  /** Tagset UUID (`classification.flowState`) — needed to issue `updateCallout` moves. */
+  flowStateTagsetId: string;
 };
 
 export type LayoutPoolColumn = {
   id: LayoutColumnId;
   title: string;
   description: string;
+  /** True when this state is the innovation flow's currently-active state. */
+  isCurrentPhase: boolean;
   callouts: LayoutCallout[];
 };
 
@@ -34,21 +33,21 @@ export type LayoutReorderTarget = {
 };
 
 /**
- * Per-**column** (innovation-flow step) overflow menu (FR-010 / SC-009).
- *
- * Rendered as a three-dot button in the top-right of each column header.
- * Contains two entries: Active phase and Default post template. These are
- * column-level (innovation-flow-step-level) concerns, not per-callout.
+ * Per-column overflow menu (top-right three-dot on each column header).
+ * Fires IMMEDIATELY — not buffered. Distinct from the rename / reorder /
+ * display-mode buffer that Save Changes flushes.
  */
 export type ColumnMenuActions = {
-  onChangeActivePhase: (columnId: LayoutColumnId, phaseId: string) => void;
-  onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string) => void;
-  availablePhases: ReadonlyArray<{ id: string; label: string }>;
+  /** Mark `columnId` as the innovation flow's current state. */
+  onChangeActivePhase: (columnId: LayoutColumnId) => void;
+  /** Set (or clear, if `templateId` is null) the default post template for `columnId`. */
+  onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string | null) => void;
   availablePostTemplates: ReadonlyArray<{ id: string; label: string }>;
 };
 
 export type LayoutViewProps = {
-  columns: [LayoutPoolColumn, LayoutPoolColumn, LayoutPoolColumn, LayoutPoolColumn];
+  /** Dynamic count and order — driven by backend `innovationFlow.states`. */
+  columns: LayoutPoolColumn[];
   postDescriptionDisplay: 'collapsed' | 'expanded';
   saveBar: SaveBarState;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
@@ -61,24 +60,14 @@ export type LayoutViewProps = {
   onReset: () => void;
 
   /**
-   * Visible per-callout menu — three entries specified by the prototype:
-   * Move to (submenu with other columns), View Post, Remove from Tab.
-   * Buffered like any other layout change; View Post is immediate navigation.
-   *
-   * `onRemoveFromTab` sets `pendingRemoval: true` on the callout in the
-   * buffer. The row stays visible and the kebab swaps its Remove entry for
-   * Undo removal (wired to `onUndoRemoveFromTab`). Nothing hits the server
-   * until Save Changes flushes the buffer (FR-008a).
+   * Visible per-callout menu — two entries specified by the prototype:
+   * Move to (submenu with other columns), View Post.
+   * "Remove from Tab" is NOT part of this menu — the backend has no
+   * unassigned state for a callout.
    */
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
-  onRemoveFromTab: (calloutId: string) => void;
-  onUndoRemoveFromTab: (calloutId: string) => void;
 
-  /**
-   * Per-**column** (innovation-flow step) overflow menu — rendered in the
-   * top-right of each column header. Separate from the visible per-callout
-   * kebab above (the two attach to different surfaces).
-   */
+  /** Per-column overflow menu (immediate, not buffered). */
   columnMenuActions: ColumnMenuActions;
 };

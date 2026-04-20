@@ -13,7 +13,7 @@ No new backend entities are introduced. This document defines the **view-model s
 
 Reused verbatim from spec 042 (`src/crd/components/space/SpaceHeader.tsx`).
 
-**Note**: `SpaceHeroProps.bannerUrl` and `AboutFormValues.pageBannerUrl` reference the **same underlying asset** (the page banner at the top of the Space page). The About form owns the source of truth (`pageBannerUrl`); the hero's `bannerUrl` derives from live About form state when editing. `cardBannerUrl` is a distinct, smaller banner used only in space cards and the Preview.
+**Note**: `SpaceHeroProps.bannerUrl` and `AboutFormValues.pageBanner.uri` reference the **same underlying asset** (the page banner at the top of the Space page). The About form owns the source of truth (`pageBanner`); the hero's `bannerUrl` derives from live About form state when editing. `cardBanner` is a distinct, smaller banner used only in space cards and the Preview.
 
 ### `TabId`
 
@@ -47,29 +47,49 @@ type SaveBarState =
 
 ## About tab
 
-### `AboutFormValues` (full field set retained from current MUI + prototype additions)
+### `AboutFormValues` (exact parity with current MUI — no phantom fields)
 
-| Field | Type | Notes |
+| Field | Type | Backend source |
 |---|---|---|
-| `name` | `string` | Required |
-| `tagline` | `string` | Retained from current MUI |
-| `email` | `string` | Retained from current MUI |
-| `pronouns` | `string` | Retained from current MUI |
-| `country` | `string` | Retained from current MUI |
-| `city` | `string` | Retained from current MUI |
-| `avatarUrl` | `string \| null` | Retained from current MUI |
-| `pageBannerUrl` | `string \| null` | Source of truth for the hero banner |
-| `cardBannerUrl` | `string \| null` | Used in space cards / Preview |
-| `visualsGallery` | `{ id: string; url: string; alt: string }[]` | Retained from current MUI |
-| `tags` | `string[]` | Prototype addition |
-| `references` | `{ id: string; title: string; url: string }[]` | Prototype addition |
-| `what` | `string` (markdown) | Prototype addition — renamed from current MUI `description` |
-| `why` | `string` (markdown) | Retained from current MUI |
-| `who` | `string` (markdown) | Retained from current MUI |
+| `name` | `string` | `profile.displayName` |
+| `tagline` | `string` | `profile.tagline` |
+| `country` | `string` (2-char ISO code) | `profile.location.country` |
+| `city` | `string` | `profile.location.city` |
+| `avatar` | `AboutVisual` | `profile.avatar` (Visual) |
+| `pageBanner` | `AboutVisual` | `profile.banner` (Visual, 1536×256) |
+| `cardBanner` | `AboutVisual` | `profile.cardBanner` (Visual, 416×256) |
+| `tagsetId` | `string` | `profile.tagset[0].id` (required by `UpdateTagsetInput`) |
+| `tags` | `string[]` | `profile.tagset[0].tags` |
+| `profileId` | `string` | `profile.id` (required by `useCreateReferenceOnProfileMutation`) |
+| `references` | `AboutReference[]` | `profile.references` — full CRUD (name + uri + description) |
+| `what` | `string` (markdown) | `profile.description` — renamed "What" in CRD |
+| `why` | `string` (markdown) | `about.why` |
+| `who` | `string` (markdown) | `about.who` |
+
+**Dropped** from any earlier draft: `email`, `pronouns`, `visualsGallery`. These are user-profile-only concepts and do not exist on Space profile in the current schema.
+
+### `AboutVisual`
+
+| Field | Type |
+|---|---|
+| `id` | `string` |
+| `uri` | `string \| null` |
+| `altText` | `string \| null` |
+
+### `AboutReference`
+
+Full CRUD parity with the current MUI About page — all three fields editable.
+
+| Field | Type | Backend source |
+|---|---|---|
+| `id` | `string` | `reference.id` (needed for patch + delete mutations) |
+| `title` | `string` | `reference.name` |
+| `uri` | `string` | `reference.uri` |
+| `description` | `string` | `reference.description` |
 
 ### `SpaceCardPreview`
 
-Plain mirror of CRD `SpaceCard` props (name, tagline, banner, avatar, tags, color) built from the live About form state, not from Apollo. Includes `color = pickColorFromId(space.id)` for the deterministic accent fallback.
+Plain subset of CRD `SpaceCard` props (name, tagline, banner, avatar, tags, color, initials, href) built from the live About form state, not from Apollo. Includes `color = pickColorFromId(space.id)` for the deterministic accent fallback. **Only editable About fields are included** — the SpaceCard's non-editable surfaces (LEADS, member count, privacy badge from Settings, pinned badge) are omitted; SpaceCard gracefully hides any section whose props aren't provided.
 
 ### `FieldAutosaveState` + `AboutAutosaveStateMap`
 
@@ -116,61 +136,56 @@ About has **no** `saveBar`, `onSave`, `onReset` — FR-005a prohibits them.
 ### `LayoutColumnId`
 
 ```
-type LayoutColumnId = 'home' | 'community' | 'subspaces' | 'knowledge';
+/** The innovation-flow state's UUID (dynamic). Columns are not fixed. */
+type LayoutColumnId = string;
 ```
 
 ### `LayoutCallout`
 
 | Field | Type | Notes |
 |---|---|---|
-| `id` | `string` | Stable across renders |
+| `id` | `string` | Callout UUID, stable across renders |
 | `title` | `string` | **Read-only** on the Layout tab. Post title is edited from the post's own page. |
 | `description` | `string` | **Read-only** on the Layout tab. Post description is edited from the post's own page. |
-| `kind` | `'system' \| 'callout'` | Pinned vs movable |
-| `icon` | `string` | Lucide key |
-| `pendingRemoval` | `boolean` | Local-buffer-only flag. `true` when the callout has been marked via Remove from Tab but the buffer has not yet been saved. The row stays visible with pending-removal styling; NO mutation has fired (FR-008a). |
+| `flowStateTagsetId` | `string` | Tagset UUID (the `classification.flowState` tagset). Needed to issue `updateCallout` moves. |
 
 ### `LayoutPoolColumn`
 
 | Field | Type | Notes |
 |---|---|---|
-| `id` | `LayoutColumnId` | Pool ID |
-| `title` | `string` | Inline-editable column title |
-| `description` | `string` | Inline-editable column description |
+| `id` | `LayoutColumnId` | Innovation-flow state UUID |
+| `title` | `string` | State `displayName` — inline-editable column title |
+| `description` | `string` | State `description` — inline-editable column description |
+| `isCurrentPhase` | `boolean` | `true` when this state is the innovation flow's currently-active state |
 | `callouts` | `LayoutCallout[]` | Ordered list |
 
 ### `LayoutViewProps`
 
 | Field | Type | Notes |
 |---|---|---|
-| `columns` | `[LayoutPoolColumn, LayoutPoolColumn, LayoutPoolColumn, LayoutPoolColumn]` | Fixed order: home / community / subspaces / knowledge |
+| `columns` | `LayoutPoolColumn[]` | Dynamic count and order — driven by backend `innovationFlow.states` |
 | `postDescriptionDisplay` | `'collapsed' \| 'expanded'` | `calloutDescriptionDisplayMode` value, part of the dirty buffer |
 | `saveBar` | `SaveBarState` | — |
 | `onReorder` | `(calloutId: string, target: { columnId: LayoutColumnId; index: number }) => void` | Buffered; fires on drag-drop and on keyboard Enter commit |
-| `onRenameColumn` | `(columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void` | Buffered — the only inline-edit on Layout |
+| `onRenameColumn` | `(columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void` | Buffered |
 | `onPostDescriptionDisplayChange` | `(next: 'collapsed' \| 'expanded') => void` | Buffered |
-| `onSave` | `() => void` | Flushes entire buffer in `useTransition` block |
+| `onSave` | `() => void` | Flushes entire buffer in `useTransition` block. If a column was renamed, also cascades the rename to every callout tagged with the old name. |
 | `onReset` | `() => void` | Reverts buffer to last backend snapshot |
 | `onMoveToColumn` | `(calloutId: string, target: LayoutColumnId) => void` | Visible kebab — Move to submenu; buffered |
 | `onViewPost` | `(calloutId: string) => void` | Visible kebab — navigates (blocked by discard-confirm when buffer dirty) |
-| `onRemoveFromTab` | `(calloutId: string) => void` | Visible kebab — sets `pendingRemoval: true` on the callout in the buffer; no mutation fires |
-| `onUndoRemoveFromTab` | `(calloutId: string) => void` | Clears `pendingRemoval` in the buffer |
-| `columnMenuActions` | `ColumnMenuActions` | **Per-column** (not per-callout). Rendered via a three-dot button in the top-right of each column header. Separate from the visible per-callout kebab. |
+| `columnMenuActions` | `ColumnMenuActions` | **Per-column** menu (top-right three-dot). Fires immediately (not buffered). |
 
 ### `ColumnMenuActions`
 
 ```
 type ColumnMenuActions = {
-  onChangeActivePhase: (columnId: LayoutColumnId, phaseId: string) => void;
+  onChangeActivePhase: (columnId: LayoutColumnId) => void;
   onSetAsDefaultPostTemplate: (columnId: LayoutColumnId, templateId: string) => void;
-  availablePhases: { id: string; label: string }[];
   availablePostTemplates: { id: string; label: string }[];
 };
 ```
 
-Consumed by `LayoutPoolColumn.tsx` (the column header's top-right three-dot button), NOT by `LayoutCalloutRow.tsx`. These are innovation-flow-step-level concerns.
-
-**Validation**: `onReorder` is rejected in the mapper if the source `kind === 'system'` (defense in depth — UI also disables grab handles on system rows).
+`onChangeActivePhase(columnId)` marks `columnId` as the innovation flow's current state. `onSetAsDefaultPostTemplate(columnId, templateId)` sets (or clears) the default callout template for that state. Consumed by `LayoutPoolColumn.tsx` (the column header's top-right three-dot button), NOT by `LayoutCalloutRow.tsx`.
 
 ---
 

@@ -24,14 +24,39 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [, setTick] = useState(0);
 
+  // Guard: editor.view getter throws if the editor isn't mounted yet.
+  let isEditorReady = false;
+  try {
+    isEditorReady = !!editor.view?.dom;
+  } catch {
+    // editor.view threw — editor not mounted yet
+  }
+
   // Refresh state on every editor transaction
   useEffect(() => {
+    if (!isEditorReady) return;
     const handler = () => setTick(t => t + 1);
     editor.on('transaction', handler);
     return () => {
       editor.off('transaction', handler);
     };
-  }, [editor]);
+  }, [editor, isEditorReady]);
+
+  if (!isEditorReady) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          'h-8 w-8 inline-flex items-center justify-center rounded-md opacity-40 pointer-events-none',
+          className
+        )}
+        disabled={true}
+        aria-label={label}
+      >
+        <Icon className="w-4 h-4" aria-hidden="true" />
+      </button>
+    );
+  }
 
   const active = activeSpec
     ? Array.isArray(activeSpec)
