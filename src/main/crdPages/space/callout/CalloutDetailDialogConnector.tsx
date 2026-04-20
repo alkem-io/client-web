@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -103,6 +104,20 @@ export function CalloutDetailDialogConnector({
   );
   const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
+  const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleFramingMemoClose = () => {
+    const fmId = callout.framing.memo?.id;
+    if (fmId) {
+      void fetchFramingMarkdown({ variables: { id: fmId } });
+      framingRefreshRef.current = setTimeout(() => {
+        void fetchFramingMarkdown({ variables: { id: fmId } });
+        framingRefreshRef.current = null;
+      }, 2500);
+    }
+    setFramingMemoOpen(false);
+  };
 
   // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {
@@ -169,7 +184,7 @@ export function CalloutDetailDialogConnector({
         open={true}
         memoId={framingMemoId}
         isContribution={false}
-        onClose={() => setFramingMemoOpen(false)}
+        onClose={() => handleFramingMemoClose()}
       />
     ) : null;
 
