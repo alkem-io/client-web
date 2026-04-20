@@ -213,7 +213,23 @@
     },
     "applicationForm": {
       "title": "Application Form",
-      "description": "This section allows you to modify the questions for users applying to the Space. Please note that these questions will only be shown when the membership options (in the block above) are set to \"Applications required\"."
+      "description": "This section allows you to modify the questions for users applying to the Space. Please note that these questions will only be shown when the membership options (in the block above) are set to \"Applications required\".",
+      "introductionLabel": "Introduction",
+      "questionsLabel": "Questions",
+      "addQuestion": "Add question",
+      "noQuestions": "No questions added yet.",
+      "questionPlaceholder": "Enter question…",
+      "required": "Required",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "questionRequired": "Question text is required",
+      "deleteQuestion": "Delete question",
+      "deleteConfirm": {
+        "title": "Delete question",
+        "description": "Are you sure you want to remove this question?",
+        "confirm": "Delete"
+      },
+      "save": "Save"
     },
     "allowedActions": {
       "title": "Allowed Actions",

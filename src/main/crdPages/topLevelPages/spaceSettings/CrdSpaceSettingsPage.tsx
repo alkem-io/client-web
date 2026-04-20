@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { ApplicationFormEditor } from '@/crd/components/space/settings/ApplicationFormEditor';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
 import { SpaceSettingsCommunityView } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
@@ -26,7 +27,6 @@ import {
 } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { SpaceSettingsTemplatesView } from '@/crd/components/space/settings/SpaceSettingsTemplatesView';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
-import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useAboutTabData } from './about/useAboutTabData';
@@ -34,6 +34,7 @@ import { useAccountTabData } from './account/useAccountTabData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useColumnMenu } from './layout/useColumnMenu';
 import { useLayoutTabData } from './layout/useLayoutTabData';
+import { useApplicationFormData } from './settings/useApplicationFormData';
 import { useSettingsTabData } from './settings/useSettingsTabData';
 import { useStorageTabData } from './storage/useStorageTabData';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
@@ -75,6 +76,7 @@ export default function CrdSpaceSettingsPage() {
   const templatesTab = useTemplatesTabData(spaceId ?? '');
   const storageTab = useStorageTabData(spaceId ?? '');
   const settingsTab = useSettingsTabData(spaceId ?? '');
+  const applicationForm = useApplicationFormData(settingsTab.roleSetId);
   const accountTab = useAccountTabData(spaceId ?? '');
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
@@ -88,14 +90,14 @@ export default function CrdSpaceSettingsPage() {
     },
   });
 
-  // Sync dirty flag from About + Layout to the guard so tab-switching shows confirm.
+  // Sync dirty flag from About + Layout + Application Form to the guard so tab-switching shows confirm.
   useEffect(() => {
-    if (layout.isDirty || about.isDirty) {
+    if (layout.isDirty || about.isDirty || applicationForm.isDirty) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, layout.isDirty, about.isDirty]);
+  }, [guard, layout.isDirty, about.isDirty, applicationForm.isDirty]);
 
   // No-op cleanup — autosave was removed.
   useEffect(() => {
@@ -115,6 +117,7 @@ export default function CrdSpaceSettingsPage() {
   const handleConfirmSwitchSave = async () => {
     if (about.isDirty) await about.onSave();
     if (layout.isDirty) await layout.onSave();
+    if (applicationForm.isDirty) applicationForm.onSave();
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
@@ -250,7 +253,22 @@ export default function CrdSpaceSettingsPage() {
                 loading={settingsTab.loading}
                 updatingKeys={settingsTab.updatingKeys}
                 applicationFormSlot={
-                  settingsTab.roleSetId ? <CommunityApplicationForm roleSetId={settingsTab.roleSetId} /> : undefined
+                  settingsTab.roleSetId ? (
+                    <ApplicationFormEditor
+                      description={applicationForm.description}
+                      questions={applicationForm.questions}
+                      loading={applicationForm.loading}
+                      canSave={applicationForm.canSave}
+                      onDescriptionChange={applicationForm.onDescriptionChange}
+                      onQuestionChange={applicationForm.onQuestionChange}
+                      onQuestionRequiredChange={applicationForm.onQuestionRequiredChange}
+                      onQuestionAdd={applicationForm.onQuestionAdd}
+                      onQuestionDelete={applicationForm.onQuestionDelete}
+                      onQuestionMoveUp={applicationForm.onQuestionMoveUp}
+                      onQuestionMoveDown={applicationForm.onQuestionMoveDown}
+                      onSave={applicationForm.onSave}
+                    />
+                  ) : undefined
                 }
                 onPrivacyChange={settingsTab.onPrivacyChange}
                 onMembershipPolicyChange={settingsTab.onMembershipPolicyChange}
