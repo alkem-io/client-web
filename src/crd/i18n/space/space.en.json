@@ -153,7 +153,6 @@
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} more",
-    "moreMemos": "+{{count}} more",
     "moreContributions": "+{{count}} more",
     "vote": "Vote",
     "votes": "{{count}} votes",
@@ -363,9 +362,15 @@
       "disconnected": "Disconnected",
       "membersOnline_one": "1 member online",
       "membersOnline_other": "{{count}} members online",
-      "membersOnline": "{{count}} members online",
       "guestWarning": "You are editing as a guest",
-      "delete": "Delete memo"
+      "delete": "Delete memo",
+      "readonlyReason": {
+        "connecting": "Connecting to the collaboration service…",
+        "notSynced": "Synchronizing… reopen the memo to resume editing.",
+        "unauthenticated": "Sign in to edit this memo.",
+        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner to change the share settings.",
+        "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
+      }
     },
     "errors": {
       "loading": "Loading memo…",

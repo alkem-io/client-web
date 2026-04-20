@@ -5,6 +5,7 @@ import { ContributionMemoCard } from '@/crd/components/contribution/Contribution
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
 import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
 import { Button } from '@/crd/primitives/button';
+import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { getCalloutContributionType } from '../dataMappers/calloutDataMapper';
@@ -90,7 +91,6 @@ export function ContributionsPreviewConnector({
         <OverlayMoreCard
           lastContribution={lastContribution}
           contributionType={contributionType}
-          moreCount={moreCount}
           label={t('callout.moreContributions', { count: moreCount })}
           onClick={onShowAll}
         />
@@ -129,7 +129,6 @@ function OverlayMoreCard({
 }: {
   lastContribution: ContributionCardData | undefined;
   contributionType: CalloutContributionType;
-  moreCount: number;
   label: string;
   onClick: () => void;
 }) {
@@ -146,8 +145,8 @@ function OverlayMoreCard({
     >
       {showImage && <img src={lastContribution.previewUrl} alt="" className="w-full h-full object-cover" />}
       {showMemoPreview && lastContribution.markdownContent && (
-        <div className="p-4 h-full">
-          <div className="text-caption text-muted-foreground line-clamp-6">{lastContribution.markdownContent}</div>
+        <div className="p-4 h-full text-left">
+          <CroppedMarkdown content={lastContribution.markdownContent} maxHeight="180px" />
         </div>
       )}
       <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">

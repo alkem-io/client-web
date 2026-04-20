@@ -9,8 +9,8 @@ import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
 import { TableRow } from '@tiptap/extension-table-row';
 import StarterKit from '@tiptap/starter-kit';
-import { Iframe } from '@/core/ui/forms/MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import type { CollabProviderLike, YDocLike } from './collabProviderTypes';
+import { Iframe } from './extensions/iframe/Iframe';
 
 type NonCollabConfig = {
   collaborative: false;

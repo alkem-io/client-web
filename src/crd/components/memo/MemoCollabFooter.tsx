@@ -1,17 +1,30 @@
 import { Globe, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
+export type ReadonlyReason =
+  | 'connecting'
+  | 'notSynced'
+  | 'unauthenticated'
+  | 'contentUpdatePolicy'
+  | 'noMembership'
+  | null;
+
 type MemoCollabFooterProps = {
   connectionStatus: CollabStatus;
   memberCount: number;
   isGuest?: boolean;
-  readonlyReason?: string;
+  readonlyReason: ReadonlyReason;
   onDelete?: () => void;
   className?: string;
 };
+
+// Matches the 500ms debounce in MUI MemoFooter — prevents the reason from flashing
+// through transient transitions (e.g. connecting → synced).
+const READONLY_REASON_DEBOUNCE_MS = 500;
 
 export function MemoCollabFooter({
   connectionStatus,
@@ -23,6 +36,16 @@ export function MemoCollabFooter({
 }: MemoCollabFooterProps) {
   const { t } = useTranslation('crd-space');
 
+  const [delayedReason, setDelayedReason] = useState<ReadonlyReason>(null);
+  useEffect(() => {
+    if (!readonlyReason) {
+      setDelayedReason(null);
+      return;
+    }
+    const timer = setTimeout(() => setDelayedReason(readonlyReason), READONLY_REASON_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [readonlyReason]);
+
   const statusLabel =
     connectionStatus === 'connected'
       ? t('memo.footer.connected')
@@ -31,6 +54,8 @@ export function MemoCollabFooter({
         : t('memo.footer.disconnected');
 
   const StatusIcon = connectionStatus === 'connected' ? Wifi : WifiOff;
+
+  const readonlyText = delayedReason ? t(`memo.footer.readonlyReason.${delayedReason}` as const) : undefined;
 
   return (
     <div
@@ -49,7 +74,7 @@ export function MemoCollabFooter({
             {t('memo.footer.delete')}
           </Button>
         )}
-        {readonlyReason && <span className="text-caption text-muted-foreground">{readonlyReason}</span>}
+        {readonlyText && <span className="text-caption text-muted-foreground">{readonlyText}</span>}
       </div>
 
       <div className="flex items-center gap-3">
