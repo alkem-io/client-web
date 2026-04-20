@@ -50,7 +50,7 @@ export function PostCard({ post }: { post: PostProps }) {
   };
 
   return (
-    <Card className="group hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 border-border/60">
+    <Card className="group hover:shadow-md transition-all duration-300 border-border/60">
       <CardHeader className="flex flex-row items-start justify-between pb-3 pt-5 px-6 space-y-0">
         <div className="flex gap-3">
           <Avatar className="w-10 h-10 border border-border">

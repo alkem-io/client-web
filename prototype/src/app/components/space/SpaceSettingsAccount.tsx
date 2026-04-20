@@ -44,7 +44,7 @@ export function SpaceSettingsAccount() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-4xl mx-auto">
+    <div className="space-y-6 animate-in fade-in duration-500">
       {/* 1. Page Title & Description */}
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Account</h2>

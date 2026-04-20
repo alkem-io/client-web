@@ -6,7 +6,7 @@ interface SearchContextValue {
   isOpen: boolean;
   /** The query term passed from the Header input when opening */
   initialQuery: string;
-  /** The scope passed from the Header when opening ("all" or a space slug) TODO: Not used yet */
+  /** The scope passed from the Header when opening ("all" or a space slug) */
   initialScope: SearchScope;
   /** Open with an initial search term and optional scope */
   openSearch: (query?: string, scope?: SearchScope) => void;
