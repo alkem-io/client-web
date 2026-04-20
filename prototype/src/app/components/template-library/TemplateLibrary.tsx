@@ -19,7 +19,7 @@ function PackCard({ pack, onClick }: { pack: typeof TEMPLATE_PACKS[0], onClick: 
   return (
     <div 
         onClick={onClick}
-        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer"
+        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
     >
       <div className="relative h-40 w-full overflow-hidden bg-muted">
         <img 
@@ -85,7 +85,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  <img 
                     src={content} 
                     alt="Space Banner" 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                  />
              ) : (
                  <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground/50">
@@ -117,7 +117,7 @@ function TemplatePreview({ type, content, structure }: { type: string, content?:
                  <img 
                     src={content} 
                     alt="Subspace Banner" 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                  />
              ) : (
                  <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground/50">
@@ -207,7 +207,7 @@ function TemplateCard({ template }: { template: typeof INDIVIDUAL_TEMPLATES[0] }
   return (
     <div 
         onClick={() => navigate(`/templates/${template.id}`)}
-        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer h-full"
+        className="group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer h-full"
     >
       {/* Preview Section - Expanded to match PackCard style */}
       <div className="relative h-44 w-full overflow-hidden bg-muted border-b border-border/50">

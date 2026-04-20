@@ -1,19 +1,35 @@
 import { useState, useMemo } from "react";
-import { useParams } from "react-router";
-import { Plus } from "lucide-react";
+import { useParams, useNavigate } from "react-router";
+import { Plus, Layout } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/app/components/ui/tooltip";
 import { Button } from "@/app/components/ui/button";
 import { SubspaceHeader } from "@/app/components/space/SubspaceHeader";
 import { SubspaceSidebar } from "@/app/components/space/SubspaceSidebar";
 import { CalloutTabs, type CalloutTab } from "@/app/components/space/ChannelTabs";
 import { PostCard, type PostProps } from "@/app/components/space/PostCard";
 import { AddPostModal } from "@/app/components/space/AddPostModal";
+import { SubspaceCommunityDialog } from "@/app/components/space/SubspaceCommunityDialog";
 
 /* ─── Mock subspace metadata ─── */
+
+// Parent space banner — subspaces always inherit their parent's banner
+const PARENT_SPACE_BANNER =
+  "https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ24lMjBjaGFsbGVuZ2UlMjBjcmVhdGl2ZSUyMHdvcmtzaG9wJTIwdGVhbSUyMGNvbGxhYm9yYXRpb24lMjBpbm5vdmF0aW9uJTIwc3ByaW50JTIwZGVzaWduJTIwc3ByaW50fGVufDF8fHx8MTc2OTA5NDMxMHww&ixlib=rb-4.1.0&q=80&w=1080";
+
 interface SubspaceInfo {
   title: string;
   description: string;
   parentName: string;
-  bannerImage: string;
+  initials: string;
+  avatarColor: string;
+  avatarImage?: string;
+  parentInitials: string;
+  parentAvatarColor: string;
   memberCount: number;
   callouts: CalloutTab[];
 }
@@ -24,15 +40,17 @@ const SUBSPACE_MAP: Record<string, SubspaceInfo> = {
     description:
       "Developing strategies for municipal energy transition to 100% renewables by 2030.",
     parentName: "Green Energy Space",
-    bannerImage:
-      "https://images.unsplash.com/photo-1665813122461-2fcb38ece4b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZW5ld2FibGUlMjBlbmVyZ3klMjB3aW5kJTIwdHVyYmluZXMlMjBzdW5zZXR8ZW58MXx8fHwxNzcyNDQ2MTM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    initials: "RE",
+    avatarColor: "#22c55e",
+    avatarImage: "https://images.unsplash.com/photo-1509391366360-2e959784a276?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
+    parentInitials: "GE",
+    parentAvatarColor: "#2563eb",
     memberCount: 24,
     callouts: [
-      { id: "all", label: "ALL ACTIVITY" },
-      { id: "strategy", label: "STRATEGY DOCS", count: 5 },
-      { id: "municipal", label: "MUNICIPAL DATA" },
-      { id: "policy", label: "POLICY DRAFTS", count: 2 },
-      { id: "stakeholders", label: "STAKEHOLDERS" },
+      { id: "strategy", label: "Strategy Docs", description: "Core strategy documents and roadmaps for the 2030 transition.", count: 5, linkedToNext: true },
+      { id: "municipal", label: "Municipal Data", description: "Data sets and reports from participating municipalities.", linkedToNext: true },
+      { id: "policy", label: "Policy Drafts", description: "Draft policy frameworks and regulatory proposals.", count: 2, linkedToNext: false },
+      { id: "stakeholders", label: "Stakeholders", description: "Stakeholder mapping, contacts, and engagement plans.", linkedToNext: false },
     ],
   },
   "urban-mobility-lab": {
@@ -40,14 +58,16 @@ const SUBSPACE_MAP: Record<string, SubspaceInfo> = {
     description:
       "Reimagining city transportation networks for better accessibility and reduced carbon footprint.",
     parentName: "Green Energy Space",
-    bannerImage:
-      "https://images.unsplash.com/photo-1743385779313-ac03bb0f997b?auto=format&fit=crop&w=1080&q=80",
+    initials: "UM",
+    avatarColor: "#0891b2",
+    avatarImage: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
+    parentInitials: "GE",
+    parentAvatarColor: "#2563eb",
     memberCount: 18,
     callouts: [
-      { id: "all", label: "ALL ACTIVITY" },
-      { id: "research", label: "RESEARCH", count: 3 },
-      { id: "prototypes", label: "PROTOTYPES" },
-      { id: "field-tests", label: "FIELD TESTS", count: 1 },
+      { id: "research", label: "Research", description: "Studies and literature on urban mobility patterns.", count: 3, linkedToNext: true },
+      { id: "prototypes", label: "Prototypes", description: "Prototype designs and pilot programme documentation.", linkedToNext: false },
+      { id: "field-tests", label: "Field Tests", description: "On-the-ground testing results and feedback.", count: 1, linkedToNext: false },
     ],
   },
   "green-infrastructure": {
@@ -55,13 +75,15 @@ const SUBSPACE_MAP: Record<string, SubspaceInfo> = {
     description:
       "Planning and implementation of urban green spaces, vertical gardens, and sustainable drainage.",
     parentName: "Green Energy Space",
-    bannerImage:
-      "https://images.unsplash.com/photo-1760611656007-f767a8082758?auto=format&fit=crop&w=1080&q=80",
+    initials: "GI",
+    avatarColor: "#16a34a",
+    avatarImage: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=200",
+    parentInitials: "GE",
+    parentAvatarColor: "#2563eb",
     memberCount: 12,
     callouts: [
-      { id: "all", label: "ALL ACTIVITY" },
-      { id: "planning", label: "PLANNING", count: 4 },
-      { id: "implementation", label: "IMPLEMENTATION" },
+      { id: "planning", label: "Planning", description: "Urban green space planning documents and proposals.", count: 4, linkedToNext: true },
+      { id: "implementation", label: "Implementation", description: "Progress updates and implementation guides.", linkedToNext: false },
     ],
   },
 };
@@ -71,12 +93,13 @@ const DEFAULT_SUBSPACE: SubspaceInfo = {
   title: "Subspace",
   description: "A focused collaboration area.",
   parentName: "Space",
-  bannerImage:
-    "https://images.unsplash.com/photo-1550483428-9facac419319?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
+  initials: "SS",
+  avatarColor: "#64748b",
+  parentInitials: "SP",
+  parentAvatarColor: "#475569",
   memberCount: 10,
   callouts: [
-    { id: "all", label: "ALL ACTIVITY" },
-    { id: "general", label: "GENERAL" },
+    { id: "general", label: "General", description: "General discussions and shared content." },
   ],
 };
 
@@ -217,10 +240,7 @@ export default function SubspacePage() {
     spaceSlug = "green-energy",
     subspaceSlug = "renewable-energy-transition",
   } = useParams();
-
-  const [activeCallout, setActiveCallout] = useState("all");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const info = SUBSPACE_MAP[subspaceSlug] || {
     ...DEFAULT_SUBSPACE,
@@ -229,12 +249,14 @@ export default function SubspacePage() {
       .replace(/\b\w/g, (c) => c.toUpperCase()),
   };
 
-  // Filter posts by callout
+  const [activeCallout, setActiveCallout] = useState(info.callouts[0]?.id ?? "");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isCommunityDialogOpen, setIsCommunityDialogOpen] = useState(false);
+
+  // Filter posts by active phase
   const filteredPosts = useMemo(
-    () =>
-      activeCallout === "all"
-        ? SUBSPACE_POSTS
-        : SUBSPACE_POSTS.filter((p) => p.callout === activeCallout),
+    () => SUBSPACE_POSTS.filter((p) => p.callout === activeCallout),
     [activeCallout]
   );
 
@@ -250,8 +272,15 @@ export default function SubspacePage() {
         title={info.title}
         description={info.description}
         parentSpaceName={info.parentName}
-        imageUrl={info.bannerImage}
+        imageUrl={PARENT_SPACE_BANNER}
+        initials={info.initials}
+        avatarColor={info.avatarColor}
+        avatarImage={info.avatarImage}
+        parentInitials={info.parentInitials}
+        parentAvatarColor={info.parentAvatarColor}
+        parentBannerImage={PARENT_SPACE_BANNER}
         memberCount={info.memberCount}
+        onCommunityClick={() => setIsCommunityDialogOpen(true)}
       />
 
       {/* ── Main Content Area ── */}
@@ -282,6 +311,26 @@ export default function SubspacePage() {
             }}
           >
             <div className="flex items-center justify-between gap-4">
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/space/${spaceSlug}/subspaces/${subspaceSlug}/settings/layout`
+                        )
+                      }
+                      className="shrink-0 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      aria-label="Edit innovation flow"
+                    >
+                      <Layout className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Edit innovation flow</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <CalloutTabs
                 tabs={info.callouts}
                 activeTab={activeCallout}
@@ -301,6 +350,20 @@ export default function SubspacePage() {
               </Button>
             </div>
           </div>
+
+          {/* Tab description */}
+          {info.callouts.find((c) => c.id === activeCallout)?.description && (
+            <p
+              className="mb-4"
+              style={{
+                fontSize: "var(--text-sm)",
+                color: "var(--muted-foreground)",
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              {info.callouts.find((c) => c.id === activeCallout)?.description}
+            </p>
+          )}
 
           {/* Feed */}
           <div className="space-y-6">
@@ -327,7 +390,7 @@ export default function SubspacePage() {
                     marginBottom: 4,
                   }}
                 >
-                  No posts in this callout yet
+                  No posts in this phase yet
                 </p>
                 <p
                   style={{
@@ -337,13 +400,6 @@ export default function SubspacePage() {
                 >
                   Be the first to share something here.
                 </p>
-                <Button
-                  variant="link"
-                  className="mt-2"
-                  onClick={() => setActiveCallout("all")}
-                >
-                  Show all activity
-                </Button>
               </div>
             )}
           </div>
@@ -355,6 +411,12 @@ export default function SubspacePage() {
       <AddPostModal
         open={isPostModalOpen}
         onOpenChange={setIsPostModalOpen}
+      />
+
+      {/* Community Dialog */}
+      <SubspaceCommunityDialog
+        open={isCommunityDialogOpen}
+        onOpenChange={setIsCommunityDialogOpen}
       />
     </div>
   );

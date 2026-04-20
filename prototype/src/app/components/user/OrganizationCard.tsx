@@ -12,7 +12,7 @@ interface OrganizationCardProps {
 
 export function OrganizationCard({ name, role, memberCount, imageUrl }: OrganizationCardProps) {
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow group cursor-pointer border-border/50">
+    <Card className="overflow-hidden hover:shadow-md transition-all duration-300 group cursor-pointer border-border/50">
       <CardContent className="p-4 flex items-center gap-4">
         <Avatar className="h-12 w-12 rounded-lg border border-border">
           <AvatarImage src={imageUrl} alt={name} className="object-cover" />
