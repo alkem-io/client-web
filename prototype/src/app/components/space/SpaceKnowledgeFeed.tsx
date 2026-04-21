@@ -126,19 +126,18 @@ export function SpaceKnowledgeFeed() {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-6">
-        <h2
+        <p
           style={{
-            fontSize: "var(--text-xl)",
-            fontWeight: 600,
-            color: "var(--foreground)",
+            fontSize: "var(--text-sm)",
+            color: "var(--muted-foreground)",
             fontFamily: "'Inter', sans-serif",
           }}
         >
-          Knowledge Base
-        </h2>
+          Wiki, documentation, and shared resources for members.
+        </p>
         <Button
           size="sm"
-          className="gap-2 shadow-sm"
+          className="shrink-0 gap-2 shadow-sm"
           onClick={() => setIsPostModalOpen(true)}
         >
           <Plus className="w-4 h-4" />

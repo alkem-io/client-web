@@ -94,10 +94,18 @@ export function SpaceFeed() {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-foreground">Activity</h2>
+        <p
+          style={{
+            fontSize: "var(--text-sm)",
+            color: "var(--muted-foreground)",
+            fontFamily: "'Inter', sans-serif",
+          }}
+        >
+          The main landing page for your space, showcasing highlights and pinned content.
+        </p>
         <Button 
           size="sm" 
-          className="gap-2 shadow-sm"
+          className="shrink-0 gap-2 shadow-sm"
           onClick={() => setIsPostModalOpen(true)}
         >
           <Plus className="w-4 h-4" />
