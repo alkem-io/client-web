@@ -6,6 +6,7 @@ import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/m
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
+  if (framingType === CalloutFramingType.Memo) return 'memo';
   return 'text';
 }
 
@@ -52,6 +53,7 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
       callout.framing.type === CalloutFramingType.Whiteboard
         ? callout.framing.whiteboard?.profile.preview?.uri
         : undefined,
+    framingMemoMarkdown: callout.framing.type === CalloutFramingType.Memo ? callout.framing.memo?.markdown : undefined,
   };
 }
 

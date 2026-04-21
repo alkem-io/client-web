@@ -403,3 +403,4 @@ Detailed design for cross-cutting concerns that span multiple components:
 
 - **[Iframe Whitelist Context](./iframe-whitelist/plan.md)** — `MarkdownConfigProvider` context + `useMarkdownConfig` hook to deliver iframe whitelist into `MarkdownContent` without domain imports.
 - **[CRD Markdown Editor](./markdown-editor/plan.md)** — 8 new files in `src/crd/forms/markdown/`: converter, extension config, editor state hook, toolbar, link dialog, styles, and main component. Wired via `CalloutFormConnector` → `descriptionSlot`.
+- **[CRD Memos](./memos/plan.md)** — Full memo migration: `CalloutMemoPreview` (framing), refined `ContributionMemoCard` + generalized "+N more" overlay, `MemoEditorShell` + `CollaborativeMarkdownEditor` (CRD, shares `MarkdownToolbar`). Hocuspocus + Yjs stay in `src/main/crdPages/memo/` as opaque provider props.

@@ -25,7 +25,7 @@ const BANNER_URL =
 const WB1 = 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1080';
 const WB2 = 'https://images.unsplash.com/photo-1574359219611-a3031f074b2c?auto=format&fit=crop&q=80&w=1080';
 const WB3 = 'https://images.unsplash.com/photo-1578401058525-35aaec0b4658?auto=format&fit=crop&q=80&w=1080';
-const WB4 = 'https://images.unsplash.com/photo-1596496050844-3613acf57a8e?auto=format&fit=crop&q=80&w=1080';
+const WB4 = 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1080';
 
 // ── Space Header ─────────────────────────────────────
 
@@ -54,6 +54,26 @@ export const MOCK_TABS = [
 ];
 
 // ── Posts / Callouts ─────────────────────────────────
+
+const MEMO_FRAMING_MARKDOWN = `## Q2 Strategy Review — Working Notes
+
+This memo tracks decisions and open questions from the Q2 strategy session. **Live-edit this document collaboratively.**
+
+### Priorities for next quarter
+1. Finalise the municipal partnership MoU with Amsterdam and Utrecht
+2. Scope the community-solar pilot for two residential districts
+3. Publish the Q1 sustainability report with supporting data
+
+### Open questions
+- Do we have capacity to lead the EU consortium application before August?
+- Is the proposed governance model compatible with existing member agreements?
+- Who owns storage-integration requirements for the grid modernisation track?
+
+### Next steps
+- [x] Circulate this memo for async review
+- [ ] Consolidate feedback by Friday
+- [ ] Present consolidated plan at the May all-hands
+`;
 
 export const MOCK_POSTS: PostCardData[] = [
   {
@@ -88,6 +108,27 @@ export const MOCK_POSTS: PostCardData[] = [
     commentCount: 3,
   },
   {
+    id: 'p-memo-framing',
+    type: 'memo',
+    author: { name: 'Elena Rodriguez', avatarUrl: AVATARS.elena, role: 'Lead' },
+    title: 'Q2 Strategy Review — Collaborative Memo',
+    snippet:
+      'A shared memo capturing decisions and open questions from our Q2 strategy session. Click to open the collaborative editor.',
+    timestamp: '6 hours ago',
+    framingMemoMarkdown: MEMO_FRAMING_MARKDOWN,
+    commentCount: 4,
+  },
+  {
+    id: 'p-memo-contribs',
+    type: 'text',
+    author: { name: 'Sarah Chen', avatarUrl: AVATARS.sarah, role: 'Lead' },
+    title: 'Share your municipal case study (memo contributions)',
+    snippet:
+      'We are collecting short memos from each partner municipality describing local constraints, wins, and lessons. Add your memo below or open an existing one to co-edit.',
+    timestamp: '8 hours ago',
+    commentCount: 9,
+  },
+  {
     id: 'p4',
     type: 'text',
     author: { name: 'Elena Rodriguez', avatarUrl: AVATARS.elena, role: 'Lead' },
@@ -96,6 +137,78 @@ export const MOCK_POSTS: PostCardData[] = [
       'A collection of successful case studies from similar sized municipalities reaching 100% renewables. Essential reading for the strategy team.',
     timestamp: '1 day ago',
     commentCount: 12,
+  },
+];
+
+// ── Whiteboard contributions (for "Call for Ideas: Community Solar Projects") ─────
+
+type WhiteboardContributionMock = {
+  id: string;
+  title: string;
+  previewUrl: string;
+  author: string;
+};
+
+export const MOCK_WHITEBOARD_CONTRIBUTIONS: WhiteboardContributionMock[] = [
+  { id: 'wb-c1', title: 'Public Library Solar Roof', previewUrl: WB1, author: 'Sarah Chen' },
+  { id: 'wb-c2', title: 'Parking Lot Canopies', previewUrl: WB2, author: 'David Miller' },
+  { id: 'wb-c3', title: 'School Microgrids', previewUrl: WB3, author: 'Elena Rodriguez' },
+  { id: 'wb-c4', title: 'Bus Stop Solar Stations', previewUrl: WB4, author: 'Marc Johnson' },
+  { id: 'wb-c5', title: 'Town Hall Retrofit', previewUrl: WB1, author: 'John Smith' },
+  { id: 'wb-c6', title: 'Park Lighting', previewUrl: WB2, author: 'Emily Davis' },
+];
+
+// ── Memo contributions (for the memo-contribution callout preview grid) ─────
+
+type MemoContributionMock = {
+  id: string;
+  title: string;
+  markdownContent: string;
+  author: string;
+};
+
+export const MOCK_MEMO_CONTRIBUTIONS: MemoContributionMock[] = [
+  {
+    id: 'memo-c1',
+    title: 'Amsterdam — District heating rollout',
+    author: 'David Miller',
+    markdownContent:
+      '### Amsterdam district heating\n\nRolled out across 3 neighbourhoods in 2025. Key learnings:\n- Street-by-street phasing reduced disruption significantly\n- Resident co-design sessions were essential for buy-in\n- Grid capacity proved the biggest bottleneck',
+  },
+  {
+    id: 'memo-c2',
+    title: 'Utrecht — Community solar co-ops',
+    author: 'Maya Ross',
+    markdownContent:
+      '### Utrecht solar co-ops\n\nTwo active co-ops with 840 households. **Governance note**: the rotating board model works well for decisions under €50k but struggles with strategic planning.',
+  },
+  {
+    id: 'memo-c3',
+    title: 'Rotterdam — Port electrification',
+    author: 'Alex Contributor',
+    markdownContent:
+      '### Rotterdam port electrification\n\nPhase 1 shore power deployed at 6 berths. Phase 2 blocked by grid capacity. Working with TenneT on expedited reinforcement.',
+  },
+  {
+    id: 'memo-c4',
+    title: 'Groningen — Geothermal pilot',
+    author: 'Elena Rodriguez',
+    markdownContent:
+      '### Groningen geothermal\n\nPilot well drilled to 2.1 km. Yields exceeded projections by ~18%. Next: connect to a 180-household district.',
+  },
+  {
+    id: 'memo-c5',
+    title: 'Eindhoven — Smart metering retrofit',
+    author: 'Robert Fox',
+    markdownContent:
+      '### Eindhoven smart metering\n\nRetrofit completed for 12k meters across 2 districts. Real-time consumption data has surfaced several unexpected load patterns worth investigating.',
+  },
+  {
+    id: 'memo-c6',
+    title: 'The Hague — Municipal building audit',
+    author: 'Sarah Chen',
+    markdownContent:
+      '### The Hague municipal audit\n\nEnergy audit of 42 public buildings revealed ~28% savings potential through envelope upgrades alone. Report attached as follow-up reference.',
   },
 ];
 

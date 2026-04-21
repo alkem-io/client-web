@@ -9,6 +9,9 @@ import type { PollOptionData } from '@/crd/components/callout/CalloutPoll';
 import { CalloutSidebarList } from '@/crd/components/callout/CalloutSidebarList';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
+import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
+import { ContributionWhiteboardCard } from '@/crd/components/contribution/ContributionWhiteboardCard';
+import { PostCard } from '@/crd/components/space/PostCard';
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
@@ -20,7 +23,9 @@ import {
   MOCK_CALLOUT_DIALOG,
   MOCK_MEMBERS,
   MOCK_COMMENTS,
+  MOCK_MEMO_CONTRIBUTIONS,
   MOCK_ORGANIZATIONS,
+  MOCK_WHITEBOARD_CONTRIBUTIONS,
   MOCK_POSTS,
   MOCK_SIDEBAR,
   MOCK_SPACE_BANNER,
@@ -155,18 +160,92 @@ export function SpacePage() {
           <div className="space-y-8">
             <SpaceFeed
               title="Activity"
-              posts={MOCK_POSTS}
               canCreate={true}
               onCreateClick={() => {}}
               hasMore={true}
               onShowMore={() => {}}
-              onPostClick={id => {
-                const post = MOCK_POSTS.find(p => p.id === id);
-                if (post?.type === 'whiteboard') {
-                  setWhiteboardOpen(true);
+            >
+              {MOCK_POSTS.map(post => {
+                let contributionsPreview: React.ReactNode;
+
+                // Memo-contribution callout: grid of memo cards with "+N more" overlay
+                if (post.id === 'p-memo-contribs') {
+                  const visible = MOCK_MEMO_CONTRIBUTIONS.slice(0, 3);
+                  const total = MOCK_MEMO_CONTRIBUTIONS.length;
+                  const overlayItem = MOCK_MEMO_CONTRIBUTIONS[3];
+                  contributionsPreview = (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                      {visible.map(memo => (
+                        <ContributionMemoCard
+                          key={memo.id}
+                          title={memo.title}
+                          markdownContent={memo.markdownContent}
+                          author={memo.author}
+                        />
+                      ))}
+                      {total > 4 && overlayItem && (
+                        <button
+                          type="button"
+                          className="relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 min-h-[180px] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <div className="p-4 h-full">
+                            <div className="text-caption text-muted-foreground line-clamp-6">
+                              {overlayItem.markdownContent}
+                            </div>
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
+                            <span className="text-white font-bold text-subsection-title">+{total - 3} more</span>
+                          </div>
+                        </button>
+                      )}
+                    </div>
+                  );
                 }
-              }}
-            />
+
+                // Call-for-ideas callout: grid of whiteboard cards with "+N more" overlay (mirrors prototype)
+                if (post.id === 'p2') {
+                  const visible = MOCK_WHITEBOARD_CONTRIBUTIONS.slice(0, 3);
+                  const total = MOCK_WHITEBOARD_CONTRIBUTIONS.length;
+                  const overlayItem = MOCK_WHITEBOARD_CONTRIBUTIONS[3];
+                  contributionsPreview = (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                      {visible.map(wb => (
+                        <ContributionWhiteboardCard
+                          key={wb.id}
+                          title={wb.title}
+                          previewUrl={wb.previewUrl}
+                          author={wb.author}
+                        />
+                      ))}
+                      {total > 4 && overlayItem && (
+                        <button
+                          type="button"
+                          className="relative w-full rounded-lg overflow-hidden border border-border bg-muted/30 min-h-[180px] cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <img src={overlayItem.previewUrl} alt="" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
+                            <span className="text-white font-bold text-subsection-title">+{total - 3} more</span>
+                          </div>
+                        </button>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onClick={() => {
+                      if (post.type === 'whiteboard') {
+                        setWhiteboardOpen(true);
+                      }
+                    }}
+                    contributionsPreview={contributionsPreview}
+                  />
+                );
+              })}
+            </SpaceFeed>
 
             <div className="border rounded-xl p-6 bg-card">
               <h3 className="text-subsection-title font-bold mb-4">What should we prioritize next?</h3>
