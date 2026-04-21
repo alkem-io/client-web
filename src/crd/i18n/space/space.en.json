@@ -405,6 +405,7 @@
     "deleteImage": "Delete image",
     "dismissError": "Dismiss error",
     "uploading": "Uploading…",
+    "downloadError": "Could not download the image.",
     "validation": {
       "type": "Unsupported file type",
       "tooSmall": "Image is too small",

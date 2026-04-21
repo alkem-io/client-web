@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
-export type MediaGalleryFeedThumbnail = { id: string; url: string };
+export type MediaGalleryFeedThumbnail = { id: string; url: string; alternativeText?: string };
 
 type MediaGalleryFeedGridProps = {
   thumbnails: MediaGalleryFeedThumbnail[];
@@ -38,7 +38,7 @@ export function MediaGalleryFeedGrid({ thumbnails, totalCount, onOpenAt, classNa
         >
           <img
             src={thumbnail.url}
-            alt=""
+            alt={thumbnail.alternativeText ?? ''}
             className="w-full h-full object-cover transition-transform duration-500 group-hover/mg:scale-105"
           />
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/mg:opacity-100 transition-opacity duration-200 bg-primary/40">

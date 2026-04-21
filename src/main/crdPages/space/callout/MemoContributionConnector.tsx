@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDeleteContributionMutation, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 
@@ -15,6 +15,15 @@ export function MemoContributionConnector({ open, contributionId, memoId, onClos
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isDeletingRef = useRef(false);
 
+  useEffect(() => {
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+        refreshTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
   const handleMemoDeleted = async () => {
     isDeletingRef.current = true;
     if (refreshTimeoutRef.current) {
@@ -26,7 +35,6 @@ export function MemoContributionConnector({ open, contributionId, memoId, onClos
       awaitRefetchQueries: true,
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],
     });
-    onClose();
   };
 
   // Mirrors MUI CalloutContributionDialogMemo: refresh markdown in the parent connector

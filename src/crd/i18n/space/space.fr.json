@@ -396,6 +396,7 @@
     "deleteImage": "Supprimer l'image",
     "dismissError": "Ignorer l'erreur",
     "uploading": "Téléchargement…",
+    "downloadError": "Impossible de télécharger l’image.",
     "validation": {
       "type": "Type de fichier non pris en charge",
       "tooSmall": "L'image est trop petite",

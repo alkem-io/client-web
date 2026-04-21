@@ -396,6 +396,7 @@
     "deleteImage": "Eliminar imagen",
     "dismissError": "Descartar error",
     "uploading": "Subiendo…",
+    "downloadError": "No se pudo descargar la imagen.",
     "validation": {
       "type": "Tipo de archivo no admitido",
       "tooSmall": "La imagen es demasiado pequeña",

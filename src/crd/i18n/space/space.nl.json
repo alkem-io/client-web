@@ -387,6 +387,7 @@
     "deleteImage": "Afbeelding verwijderen",
     "dismissError": "Fout sluiten",
     "uploading": "Uploaden…",
+    "downloadError": "De afbeelding kon niet worden gedownload.",
     "validation": {
       "type": "Niet-ondersteund bestandstype",
       "tooSmall": "Afbeelding is te klein",

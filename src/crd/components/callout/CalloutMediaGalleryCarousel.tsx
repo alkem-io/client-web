@@ -18,23 +18,12 @@ export type CalloutMediaGalleryCarouselItem = {
   alternativeText?: string;
 };
 
-/** Derive a filename from a URL path; falls back to 'image' when the URL has no useful basename. */
-const deriveDownloadName = (uri: string): string => {
-  try {
-    const { pathname } = new URL(uri, typeof window !== 'undefined' ? window.location.href : 'http://localhost');
-    const basename = pathname.split('/').filter(Boolean).pop();
-    return basename || 'image';
-  } catch {
-    return 'image';
-  }
-};
-
 type CalloutMediaGalleryCarouselProps = {
   items: CalloutMediaGalleryCarouselItem[];
   initialIndex?: number;
   canEdit?: boolean;
   onAddImages?: () => void;
-  onDownload?: (item: CalloutMediaGalleryCarouselItem) => void;
+  onDownload: (item: CalloutMediaGalleryCarouselItem) => void;
   className?: string;
 };
 
@@ -169,36 +158,6 @@ export function CalloutMediaGalleryCarousel({
     }
   };
 
-  // Fetches the image as a blob and triggers a real download. Using `<a href download>`
-  // directly is unreliable for cross-origin URLs — most browsers ignore `download` and
-  // just open the image in a new tab.
-  const handleDownload = async (item: CalloutMediaGalleryCarouselItem) => {
-    if (onDownload) {
-      onDownload(item);
-      return;
-    }
-    let objectUrl: string | undefined;
-    try {
-      const response = await fetch(item.uri);
-      if (!response.ok) {
-        throw new Error(`Failed to download media: ${response.status}`);
-      }
-      const blob = await response.blob();
-      objectUrl = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = objectUrl;
-      anchor.download = deriveDownloadName(item.uri);
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
-    } catch {
-      // Silent fail — the user sees no download, but surfacing an error here
-      // would need a toast/notification system, which the CRD layer doesn't own.
-    } finally {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    }
-  };
-
   if (items.length === 0) {
     if (!canEdit) return null;
     return (
@@ -239,7 +198,7 @@ export function CalloutMediaGalleryCarousel({
           className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
           aria-label={t('mediaGallery.download')}
           onClick={() => {
-            if (currentItem) void handleDownload(currentItem);
+            if (currentItem) onDownload(currentItem);
           }}
         >
           <Download className="size-4" aria-hidden="true" />

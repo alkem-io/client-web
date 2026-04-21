@@ -32,7 +32,7 @@ export function mapMediaGalleryToViewProps(model: MediaGalleryModel | undefined)
   });
 
   return {
-    feedThumbnails: sorted.slice(0, 4).map(v => ({ id: v.id, url: v.uri })),
+    feedThumbnails: sorted.slice(0, 4).map(v => ({ id: v.id, url: v.uri, alternativeText: v.alternativeText })),
     totalCount: sorted.length,
     carouselItems: sorted.map(v => ({
       id: v.id,

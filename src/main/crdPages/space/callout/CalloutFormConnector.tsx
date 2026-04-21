@@ -202,7 +202,7 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
           whiteboardContent={values.whiteboardContent}
           whiteboardPreviewSettings={values.whiteboardPreviewSettings}
           whiteboardConfigured={values.whiteboardConfigured}
-          whiteboardTitle={values.title || t('callout.whiteboard')}
+          whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
           onWhiteboardChange={(content, previewImages, previewSettings) => {
             setField('whiteboardContent', content);
             setField('whiteboardPreviewImages', previewImages ?? []);

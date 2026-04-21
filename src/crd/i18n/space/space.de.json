@@ -396,6 +396,7 @@
     "deleteImage": "Bild löschen",
     "dismissError": "Fehler schließen",
     "uploading": "Hochladen…",
+    "downloadError": "Das Bild konnte nicht heruntergeladen werden.",
     "validation": {
       "type": "Nicht unterstützter Dateityp",
       "tooSmall": "Bild ist zu klein",

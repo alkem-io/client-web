@@ -142,7 +142,9 @@ const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
 );
 CarouselItem.displayName = 'CarouselItem';
 
-const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
+type CarouselNavButtonProps = React.ComponentProps<typeof Button> & { 'aria-label': string };
+
+const CarouselPrevious = React.forwardRef<HTMLButtonElement, CarouselNavButtonProps>(
   ({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
     return (
@@ -168,7 +170,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
 );
 CarouselPrevious.displayName = 'CarouselPrevious';
 
-const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
+const CarouselNext = React.forwardRef<HTMLButtonElement, CarouselNavButtonProps>(
   ({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
     return (
