@@ -377,6 +377,31 @@
       "loadFailed": "Неуспешно зареждане на бележка"
     }
   },
+  "mediaGallery": {
+    "openImage": "Отвори изображение",
+    "more_one": "+{{count}} още",
+    "more_other": "+{{count}} още",
+    "previous": "Предишно изображение",
+    "next": "Следващо изображение",
+    "goToImage": "Премини към изображение {{index}}",
+    "thumbnailsLabel": "Миниатюри на изображения",
+    "download": "Изтегли изображение",
+    "fullscreen": "Цял екран",
+    "exitFullscreen": "Изход от цял екран",
+    "emptyState": {
+      "title": "Все още няма изображения",
+      "action": "Добави изображения"
+    },
+    "altTextLabel": "Алтернативен текст",
+    "deleteImage": "Изтрий изображение",
+    "dismissError": "Затвори грешката",
+    "uploading": "Качване…",
+    "validation": {
+      "type": "Неподдържан тип файл",
+      "tooSmall": "Изображението е твърде малко",
+      "tooLarge": "Изображението е твърде голямо"
+    }
+  },
   "comments": {
     "title": "Дискусия",
     "showMore": "Показване на повече",

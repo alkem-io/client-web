@@ -22,7 +22,7 @@ export function MediaGalleryFormFieldConnector({
   disabled,
   uploading,
 }: MediaGalleryFormFieldConnectorProps) {
-  const { data } = useDefaultVisualTypeConstraintsQuery({
+  const { data, loading } = useDefaultVisualTypeConstraintsQuery({
     variables: { visualType: VisualType.MediaGalleryImage },
   });
 
@@ -37,12 +37,16 @@ export function MediaGalleryFormFieldConnector({
       }
     : undefined;
 
+  // Block uploads until platform constraints arrive; otherwise the validator runs
+  // with no dimension limits and may accept a file the server would later reject.
+  const constraintsLoading = loading || !rawConstraints;
+
   return (
     <MediaGalleryField
       visuals={visuals}
       onVisualsChange={onVisualsChange}
       constraints={constraints}
-      disabled={disabled}
+      disabled={disabled || constraintsLoading}
       uploading={uploading}
     />
   );

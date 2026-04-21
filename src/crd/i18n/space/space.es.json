@@ -377,6 +377,31 @@
       "loadFailed": "No se pudo cargar la nota"
     }
   },
+  "mediaGallery": {
+    "openImage": "Abrir imagen",
+    "more_one": "+{{count}} más",
+    "more_other": "+{{count}} más",
+    "previous": "Imagen anterior",
+    "next": "Imagen siguiente",
+    "goToImage": "Ir a la imagen {{index}}",
+    "thumbnailsLabel": "Miniaturas de imágenes",
+    "download": "Descargar imagen",
+    "fullscreen": "Entrar en pantalla completa",
+    "exitFullscreen": "Salir de pantalla completa",
+    "emptyState": {
+      "title": "Aún no hay imágenes",
+      "action": "Añadir imágenes"
+    },
+    "altTextLabel": "Texto alternativo",
+    "deleteImage": "Eliminar imagen",
+    "dismissError": "Descartar error",
+    "uploading": "Subiendo…",
+    "validation": {
+      "type": "Tipo de archivo no admitido",
+      "tooSmall": "La imagen es demasiado pequeña",
+      "tooLarge": "La imagen es demasiado grande"
+    }
+  },
   "comments": {
     "title": "Discusión",
     "showMore": "Mostrar más",

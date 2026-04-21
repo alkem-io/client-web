@@ -377,6 +377,31 @@
       "loadFailed": "Notiz konnte nicht geladen werden"
     }
   },
+  "mediaGallery": {
+    "openImage": "Bild öffnen",
+    "more_one": "+{{count}} weiteres",
+    "more_other": "+{{count}} weitere",
+    "previous": "Vorheriges Bild",
+    "next": "Nächstes Bild",
+    "goToImage": "Zu Bild {{index}} gehen",
+    "thumbnailsLabel": "Bildvorschauen",
+    "download": "Bild herunterladen",
+    "fullscreen": "Vollbild aktivieren",
+    "exitFullscreen": "Vollbild verlassen",
+    "emptyState": {
+      "title": "Noch keine Bilder",
+      "action": "Bilder hinzufügen"
+    },
+    "altTextLabel": "Alternativtext",
+    "deleteImage": "Bild löschen",
+    "dismissError": "Fehler schließen",
+    "uploading": "Hochladen…",
+    "validation": {
+      "type": "Nicht unterstützter Dateityp",
+      "tooSmall": "Bild ist zu klein",
+      "tooLarge": "Bild ist zu groß"
+    }
+  },
   "comments": {
     "title": "Diskussion",
     "showMore": "Mehr anzeigen",

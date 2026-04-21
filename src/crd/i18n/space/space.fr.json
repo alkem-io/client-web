@@ -377,6 +377,31 @@
       "loadFailed": "Impossible de charger le mémo"
     }
   },
+  "mediaGallery": {
+    "openImage": "Ouvrir l'image",
+    "more_one": "+{{count}} de plus",
+    "more_other": "+{{count}} de plus",
+    "previous": "Image précédente",
+    "next": "Image suivante",
+    "goToImage": "Aller à l'image {{index}}",
+    "thumbnailsLabel": "Miniatures d'images",
+    "download": "Télécharger l'image",
+    "fullscreen": "Passer en plein écran",
+    "exitFullscreen": "Quitter le plein écran",
+    "emptyState": {
+      "title": "Aucune image pour l'instant",
+      "action": "Ajouter des images"
+    },
+    "altTextLabel": "Texte alternatif",
+    "deleteImage": "Supprimer l'image",
+    "dismissError": "Ignorer l'erreur",
+    "uploading": "Téléchargement…",
+    "validation": {
+      "type": "Type de fichier non pris en charge",
+      "tooSmall": "L'image est trop petite",
+      "tooLarge": "L'image est trop grande"
+    }
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",

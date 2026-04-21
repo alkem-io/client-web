@@ -3,16 +3,10 @@ import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { MediaGalleryModel } from '@/domain/collaboration/mediaGallery/MediaGalleryModel';
 import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
 
-const makeVisual = (overrides: {
-  id: string;
-  uri?: string;
-  sortOrder?: number;
-  alternativeText?: string;
-  name?: VisualType;
-}) => ({
+const makeVisual = (overrides: { id: string; uri?: string; sortOrder?: number; alternativeText?: string }) => ({
   id: overrides.id,
   uri: overrides.uri ?? `https://example.com/${overrides.id}.jpg`,
-  name: overrides.name ?? VisualType.MediaGalleryImage,
+  name: VisualType.MediaGalleryImage,
   alternativeText: overrides.alternativeText,
   sortOrder: overrides.sortOrder,
 });

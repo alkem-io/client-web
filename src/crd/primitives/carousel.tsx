@@ -46,32 +46,18 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);
     const [canScrollNext, setCanScrollNext] = React.useState(false);
 
-    const onSelect = React.useCallback((api: CarouselApi) => {
-      if (!api) return;
-      setCanScrollPrev(api.canScrollPrev());
-      setCanScrollNext(api.canScrollNext());
-    }, []);
+    const scrollPrev = () => api?.scrollPrev();
+    const scrollNext = () => api?.scrollNext();
 
-    const scrollPrev = React.useCallback(() => {
-      api?.scrollPrev();
-    }, [api]);
-
-    const scrollNext = React.useCallback(() => {
-      api?.scrollNext();
-    }, [api]);
-
-    const handleKeyDown = React.useCallback(
-      (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === 'ArrowLeft') {
-          event.preventDefault();
-          scrollPrev();
-        } else if (event.key === 'ArrowRight') {
-          event.preventDefault();
-          scrollNext();
-        }
-      },
-      [scrollPrev, scrollNext]
-    );
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        scrollPrev();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        scrollNext();
+      }
+    };
 
     React.useEffect(() => {
       if (!api || !setApi) return;
@@ -80,13 +66,18 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 
     React.useEffect(() => {
       if (!api) return;
+      const onSelect = (emblaApi: NonNullable<CarouselApi>) => {
+        setCanScrollPrev(emblaApi.canScrollPrev());
+        setCanScrollNext(emblaApi.canScrollNext());
+      };
       onSelect(api);
       api.on('reInit', onSelect);
       api.on('select', onSelect);
       return () => {
-        api?.off('select', onSelect);
+        api.off('reInit', onSelect);
+        api.off('select', onSelect);
       };
-    }, [api, onSelect]);
+    }, [api]);
 
     return (
       <CarouselContext.Provider
@@ -171,7 +162,6 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         {...props}
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        <span className="sr-only">Previous slide</span>
       </Button>
     );
   }
@@ -198,7 +188,6 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         {...props}
       >
         <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        <span className="sr-only">Next slide</span>
       </Button>
     );
   }

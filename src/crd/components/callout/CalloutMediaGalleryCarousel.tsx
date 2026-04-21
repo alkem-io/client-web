@@ -1,5 +1,5 @@
 import { Download, ImagePlus, Maximize2, Minimize2 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -16,7 +16,17 @@ export type CalloutMediaGalleryCarouselItem = {
   id: string;
   uri: string;
   alternativeText?: string;
-  name?: string;
+};
+
+/** Derive a filename from a URL path; falls back to 'image' when the URL has no useful basename. */
+const deriveDownloadName = (uri: string): string => {
+  try {
+    const { pathname } = new URL(uri, typeof window !== 'undefined' ? window.location.href : 'http://localhost');
+    const basename = pathname.split('/').filter(Boolean).pop();
+    return basename || 'image';
+  } catch {
+    return 'image';
+  }
 };
 
 type CalloutMediaGalleryCarouselProps = {
@@ -89,18 +99,19 @@ export function CalloutMediaGalleryCarousel({
       });
     };
 
+    // Named handlers so `off()` can detach the exact reference we attached.
+    const handleReInit = (emblaApi: NonNullable<CarouselApi>) => {
+      setTweenFactor(emblaApi);
+      tweenOpacity(emblaApi);
+    };
+    const handleScroll = (emblaApi: NonNullable<CarouselApi>) => tweenOpacity(emblaApi, 'scroll');
+
     setTweenFactor(api);
     tweenOpacity(api);
-    api
-      .on('reInit', emblaApi => {
-        setTweenFactor(emblaApi);
-        tweenOpacity(emblaApi);
-      })
-      .on('scroll', emblaApi => tweenOpacity(emblaApi, 'scroll'))
-      .on('slideFocus', tweenOpacity);
+    api.on('reInit', handleReInit).on('scroll', handleScroll).on('slideFocus', tweenOpacity);
 
     return () => {
-      api.off('reInit', tweenOpacity).off('scroll', tweenOpacity).off('slideFocus', tweenOpacity);
+      api.off('reInit', handleReInit).off('scroll', handleScroll).off('slideFocus', tweenOpacity);
     };
   }, [api]);
 
@@ -114,11 +125,11 @@ export function CalloutMediaGalleryCarousel({
 
   const fullscreenSupported =
     typeof document !== 'undefined' &&
-    (document.fullscreenEnabled ??
-      (document as unknown as { webkitFullscreenEnabled?: boolean }).webkitFullscreenEnabled ??
+    (document.fullscreenEnabled ||
+      (document as unknown as { webkitFullscreenEnabled?: boolean }).webkitFullscreenEnabled ||
       false);
 
-  const handleToggleFullscreen = useCallback(() => {
+  const handleToggleFullscreen = () => {
     const el = rootRef.current;
     if (!el) return;
     if (document.fullscreenElement) {
@@ -129,58 +140,63 @@ export function CalloutMediaGalleryCarousel({
         (el as unknown as { webkitRequestFullscreen?: () => Promise<void> }).webkitRequestFullscreen;
       void request?.call(el);
     }
-  }, []);
+  };
 
-  // Document-level arrow-key handling: so arrow keys work regardless of focus
-  // inside the callout detail dialog. Scoped to presence of multiple images.
-  useEffect(() => {
-    if (!api || items.length < 2) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Ignore when focus is inside an editable control (e.g. comment input).
-      const target = event.target as HTMLElement | null;
-      if (
-        target &&
-        (target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.tagName === 'SELECT' ||
-          target.isContentEditable)
-      ) {
-        return;
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        api.scrollPrev();
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        api.scrollNext();
-      } else if (event.key === 'Home') {
-        event.preventDefault();
-        api.scrollTo(0);
-      } else if (event.key === 'End') {
-        event.preventDefault();
-        api.scrollTo(items.length - 1);
-      } else if ((event.key === 'f' || event.key === 'F') && fullscreenSupported) {
-        event.preventDefault();
-        handleToggleFullscreen();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [api, items.length, fullscreenSupported, handleToggleFullscreen]);
+  // Keyboard handling scoped to the carousel root. The primitive already handles Arrow
+  // keys via onKeyDownCapture, so this only adds Home/End/F — preventDefault is explicit
+  // to avoid double-handling on Arrow keys if focus is inside the gallery.
+  const handleRootKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.defaultPrevented || !api) return;
+    const target = event.target as HTMLElement | null;
+    if (
+      target &&
+      (target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable)
+    ) {
+      return;
+    }
+    if (event.key === 'Home') {
+      event.preventDefault();
+      api.scrollTo(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      api.scrollTo(items.length - 1);
+    } else if ((event.key === 'f' || event.key === 'F') && fullscreenSupported) {
+      event.preventDefault();
+      handleToggleFullscreen();
+    }
+  };
 
-  const handleDownload = (item: CalloutMediaGalleryCarouselItem) => {
+  // Fetches the image as a blob and triggers a real download. Using `<a href download>`
+  // directly is unreliable for cross-origin URLs — most browsers ignore `download` and
+  // just open the image in a new tab.
+  const handleDownload = async (item: CalloutMediaGalleryCarouselItem) => {
     if (onDownload) {
       onDownload(item);
       return;
     }
-    const anchor = document.createElement('a');
-    anchor.href = item.uri;
-    anchor.download = item.name ?? '';
-    anchor.target = '_blank';
-    anchor.rel = 'noopener';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    let objectUrl: string | undefined;
+    try {
+      const response = await fetch(item.uri);
+      if (!response.ok) {
+        throw new Error(`Failed to download media: ${response.status}`);
+      }
+      const blob = await response.blob();
+      objectUrl = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = objectUrl;
+      anchor.download = deriveDownloadName(item.uri);
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    } catch {
+      // Silent fail — the user sees no download, but surfacing an error here
+      // would need a toast/notification system, which the CRD layer doesn't own.
+    } finally {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    }
   };
 
   if (items.length === 0) {
@@ -204,13 +220,16 @@ export function CalloutMediaGalleryCarousel({
   const currentItem = items[currentIndex];
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: WAI-ARIA Carousel pattern requires role="region" on a generic container (already set by the <Carousel> primitive inside). This outer wrapper hosts Home/End/F keyboard shortcuts; making it a button/link would break the landmark semantics.
     <div
       ref={rootRef}
       className={cn(
-        'relative rounded-lg overflow-hidden border border-border bg-muted/30 select-none',
+        'relative rounded-lg overflow-hidden border border-border bg-muted/30 select-none focus:outline-none',
         isFullscreen && 'bg-black border-none rounded-none flex flex-col',
         className
       )}
+      tabIndex={-1}
+      onKeyDown={handleRootKeyDown}
     >
       {/* Top-right action bar */}
       <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
@@ -219,7 +238,9 @@ export function CalloutMediaGalleryCarousel({
           size="icon"
           className="h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
           aria-label={t('mediaGallery.download')}
-          onClick={() => currentItem && handleDownload(currentItem)}
+          onClick={() => {
+            if (currentItem) void handleDownload(currentItem);
+          }}
         >
           <Download className="size-4" aria-hidden="true" />
         </Button>
@@ -243,14 +264,16 @@ export function CalloutMediaGalleryCarousel({
       <Carousel
         className={cn('w-full', isFullscreen && 'flex-1 min-h-0')}
         setApi={setApi}
-        opts={{ loop: false, startIndex: initialIndex, align: 'center', containScroll: 'trimSnaps' }}
+        opts={{
+          loop: true,
+          startIndex: initialIndex,
+          align: 'center',
+          containScroll: 'trimSnaps',
+        }}
       >
         <CarouselContent className={cn('-ml-4', isFullscreen && 'h-full')}>
           {items.map(item => (
-            <CarouselItem
-              key={item.id}
-              className={cn('flex items-center justify-center pl-4 basis-[88%] md:basis-[82%]')}
-            >
+            <CarouselItem key={item.id} className={cn('flex items-center justify-center pl-4 basis-[100%]')}>
               <img
                 src={item.uri}
                 alt={item.alternativeText ?? ''}
@@ -279,7 +302,7 @@ export function CalloutMediaGalleryCarousel({
             isFullscreen ? 'bg-black/50' : 'bg-background/60'
           )}
           role="tablist"
-          aria-label={t('mediaGallery.goToImage', { index: '' })}
+          aria-label={t('mediaGallery.thumbnailsLabel')}
         >
           {items.map((item, index) => (
             <button

@@ -5,7 +5,6 @@ export type MediaGalleryCarouselItem = {
   id: string;
   uri: string;
   alternativeText?: string;
-  name?: string;
 };
 
 export type MediaGalleryViewProps = {
@@ -39,7 +38,6 @@ export function mapMediaGalleryToViewProps(model: MediaGalleryModel | undefined)
       id: v.id,
       uri: v.uri,
       alternativeText: v.alternativeText,
-      name: v.name,
     })),
   };
 }

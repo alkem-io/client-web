@@ -140,9 +140,18 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
     if (!validate()) return;
     const callout = mapFormToCallout(visibility);
     const result = await handleCreateCallout(callout);
-    await uploadPendingMediaGallery(callout.framing.type, result);
-    reset();
-    onOpenChange(false);
+    // If the create mutation failed, keep the form open with its values so the user
+    // can retry without re-entering everything. The mutation surfaces its own error.
+    if (!result) return;
+    // Regardless of upload outcome, the callout exists on the server — closing the
+    // form after upload (even on rejection) prevents creating a duplicate callout
+    // on a second submit. Any upload failure is still surfaced via the hook's error.
+    try {
+      await uploadPendingMediaGallery(callout.framing.type, result);
+    } finally {
+      reset();
+      onOpenChange(false);
+    }
   };
 
   const handleSubmit = () => createAndUpload(CalloutVisibility.Published);

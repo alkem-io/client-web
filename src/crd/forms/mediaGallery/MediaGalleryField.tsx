@@ -1,5 +1,5 @@
 import { ImagePlus, X } from 'lucide-react';
-import { type ChangeEvent, useRef, useState } from 'react';
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -14,6 +14,9 @@ export type MediaGalleryFieldVisual = {
   /** Client-generated id for unsaved (file-only) entries so React keys stay stable before upload. */
   clientKey?: string;
 };
+
+const visualKey = (visual: MediaGalleryFieldVisual): string =>
+  visual.id ?? visual.clientKey ?? `${visual.sortOrder ?? 0}`;
 
 type MediaGalleryFieldProps = {
   visuals: MediaGalleryFieldVisual[];
@@ -40,6 +43,34 @@ export function MediaGalleryField({
   const { t } = useTranslation('crd-space');
   const inputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<FieldError[]>([]);
+
+  // Object URLs are created once per File and revoked when the file is removed or the
+  // component unmounts. Creating them in render would leak a fresh blob URL on every
+  // re-render. Keyed by the visual's stable client/server key.
+  const previewUrlsRef = useRef(new Map<string, string>());
+  useEffect(() => {
+    const cache = previewUrlsRef.current;
+    const liveKeys = new Set<string>();
+    for (const visual of visuals) {
+      if (!visual.file) continue;
+      const key = visualKey(visual);
+      liveKeys.add(key);
+      if (!cache.has(key)) cache.set(key, window.URL.createObjectURL(visual.file));
+    }
+    for (const [key, url] of cache) {
+      if (!liveKeys.has(key)) {
+        window.URL.revokeObjectURL(url);
+        cache.delete(key);
+      }
+    }
+  }, [visuals]);
+  useEffect(() => {
+    const cache = previewUrlsRef.current;
+    return () => {
+      for (const url of cache.values()) URL.revokeObjectURL(url);
+      cache.clear();
+    };
+  }, []);
 
   const sorted = [...visuals].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
@@ -85,6 +116,11 @@ export function MediaGalleryField({
     const key = visual.id ?? visual.clientKey;
     const next = visuals.filter(v => (v.id ?? v.clientKey) !== key);
     onVisualsChange(next);
+  };
+
+  const getPreviewUrl = (visual: MediaGalleryFieldVisual): string | undefined => {
+    if (visual.file) return previewUrlsRef.current.get(visualKey(visual));
+    return visual.uri;
   };
 
   const dismissError = (errorKey: string) => {
@@ -133,7 +169,7 @@ export function MediaGalleryField({
                 type="button"
                 className="text-destructive/80 hover:text-destructive"
                 onClick={() => dismissError(err.key)}
-                aria-label={t('mediaGallery.deleteImage')}
+                aria-label={t('mediaGallery.dismissError')}
               >
                 <X className="size-3.5" aria-hidden="true" />
               </button>
@@ -146,8 +182,8 @@ export function MediaGalleryField({
       {sorted.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
           {sorted.map(visual => {
-            const key = visual.id ?? visual.clientKey ?? `${visual.sortOrder}`;
-            const preview = visual.file ? URL.createObjectURL(visual.file) : visual.uri;
+            const key = visualKey(visual);
+            const preview = getPreviewUrl(visual);
             return (
               <div
                 key={key}

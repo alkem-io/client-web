@@ -59,7 +59,9 @@ export function MediaGalleryFeedGrid({ thumbnails, totalCount, onOpenAt, classNa
         >
           <img src={overflowThumbnail.url} alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 flex items-center justify-center bg-primary/60 backdrop-blur-[2px]">
-            <span className="text-white font-bold text-subsection-title">+{moreCount} more</span>
+            <span className="text-white font-bold text-subsection-title">
+              {t('mediaGallery.more', { count: moreCount })}
+            </span>
           </div>
         </button>
       )}

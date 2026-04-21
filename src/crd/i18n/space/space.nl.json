@@ -368,6 +368,31 @@
       "loadFailed": "Kan memo niet laden"
     }
   },
+  "mediaGallery": {
+    "openImage": "Afbeelding openen",
+    "more_one": "+{{count}} meer",
+    "more_other": "+{{count}} meer",
+    "previous": "Vorige afbeelding",
+    "next": "Volgende afbeelding",
+    "goToImage": "Ga naar afbeelding {{index}}",
+    "thumbnailsLabel": "Miniaturen",
+    "download": "Afbeelding downloaden",
+    "fullscreen": "Volledig scherm",
+    "exitFullscreen": "Volledig scherm verlaten",
+    "emptyState": {
+      "title": "Nog geen afbeeldingen",
+      "action": "Afbeeldingen toevoegen"
+    },
+    "altTextLabel": "Alternatieve tekst",
+    "deleteImage": "Afbeelding verwijderen",
+    "dismissError": "Fout sluiten",
+    "uploading": "Uploaden…",
+    "validation": {
+      "type": "Niet-ondersteund bestandstype",
+      "tooSmall": "Afbeelding is te klein",
+      "tooLarge": "Afbeelding is te groot"
+    }
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",
