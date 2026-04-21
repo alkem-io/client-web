@@ -377,6 +377,29 @@
       "loadFailed": "Unable to load memo"
     }
   },
+  "mediaGallery": {
+    "openImage": "Open image",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more",
+    "previous": "Previous image",
+    "next": "Next image",
+    "goToImage": "Go to image {{index}}",
+    "download": "Download image",
+    "fullscreen": "Enter fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "emptyState": {
+      "title": "No images yet",
+      "action": "Add images"
+    },
+    "altTextLabel": "Alt text",
+    "deleteImage": "Delete image",
+    "uploading": "Uploading…",
+    "validation": {
+      "type": "Unsupported file type",
+      "tooSmall": "Image is too small",
+      "tooLarge": "Image is too large"
+    }
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",
