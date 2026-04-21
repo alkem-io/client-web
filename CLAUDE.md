@@ -360,11 +360,11 @@ location.reload();
 Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 089-crd-comments-refinement: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies.
 - 088-crd-space-apply-button: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `react-i18next` (existing), React Compiler (`babel-plugin-react-compiler`). No new dependencies.
 - 087-crd-space-about-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `yup` (already in deps; used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
-- 086-crd-space-timeline: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `react-day-picker@^8`, `date-fns` (peer of RDP, new), `class-variance-authority`, `lucide-react`, Apollo Client, Vite, `dayjs` (existing in domain hooks), `yup` (existing — used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `react-i18next` (existing), React Compiler (`babel-plugin-react-compiler`). No new dependencies. (088-crd-space-apply-button)
-- N/A (frontend SPA; data via existing GraphQL queries — no schema changes and no new queries/mutations) (088-crd-space-apply-button)
+- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies. (089-crd-comments-refinement)
+- N/A (presentation-only refactor; GraphQL schema and cache semantics unchanged) (089-crd-comments-refinement)

@@ -29,10 +29,8 @@ export type CommentData = {
 
 export type CommentsContainerData = {
   comments: CommentData[];
-  canComment: boolean;
   currentUser?: CommentAuthor;
   loading?: boolean;
-  onAddComment: (content: string) => void;
   onReply: (parentId: string, content: string) => void;
   onDelete: (commentId: string) => void;
   onAddReaction: (commentId: string, emoji: string) => void;

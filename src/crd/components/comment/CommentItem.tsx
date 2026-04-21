@@ -50,7 +50,7 @@ export function CommentItem({
           )}
 
           <div className="flex items-center gap-2">
-            {!comment.isDeleted && (
+            {!comment.isDeleted && !isReply && (
               <Button
                 variant="ghost"
                 size="sm"
