@@ -345,6 +345,38 @@
     "reactionCount_one": "1 réaction",
     "contributions": "Contributions"
   },
+  "memo": {
+    "close": "Fermer",
+    "stubDialog": {
+      "message": "L'éditeur de mémo arrive bientôt — aperçu en texte brut affiché."
+    },
+    "displayName": {
+      "inputLabel": "Titre",
+      "edit": "Modifier le titre du mémo",
+      "save": "Enregistrer le titre du mémo",
+      "cancel": "Annuler la modification"
+    },
+    "footer": {
+      "connected": "Connecté",
+      "connecting": "Connexion…",
+      "disconnected": "Déconnecté",
+      "membersOnline_one": "1 membre en ligne",
+      "membersOnline_other": "{{count}} membres en ligne",
+      "guestWarning": "Vous éditez en tant qu'invité",
+      "delete": "Supprimer le mémo",
+      "readonlyReason": {
+        "connecting": "Connexion au service de collaboration…",
+        "notSynced": "Synchronisation… rouvrez le mémo pour reprendre l'édition.",
+        "unauthenticated": "Connectez-vous pour modifier ce mémo.",
+        "contentUpdatePolicy": "Vous n'avez pas la permission de modifier ce mémo. Demandez au propriétaire de modifier les paramètres de partage.",
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer."
+      }
+    },
+    "errors": {
+      "loading": "Chargement du mémo…",
+      "loadFailed": "Impossible de charger le mémo"
+    }
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",

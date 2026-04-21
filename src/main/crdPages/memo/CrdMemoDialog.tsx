@@ -71,7 +71,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       setEditingDisplayName(false);
       return;
     }
-    await updateMemoDisplayName({ variables: { memoId, displayName: displayNameDraft } });
+    await updateMemoDisplayName({ variables: { memoId, displayName: displayNameDraft.trim() } });
     setEditingDisplayName(false);
   };
 

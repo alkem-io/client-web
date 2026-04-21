@@ -26,6 +26,7 @@ export function MemoContributionConnector({ open, contributionId, memoId, onClos
       awaitRefetchQueries: true,
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],
     });
+    onClose();
   };
 
   // Mirrors MUI CalloutContributionDialogMemo: refresh markdown in the parent connector

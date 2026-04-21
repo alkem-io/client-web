@@ -345,6 +345,38 @@
     "reactionCount_one": "1 Reaktion",
     "contributions": "Beiträge"
   },
+  "memo": {
+    "close": "Schließen",
+    "stubDialog": {
+      "message": "Memo-Editor kommt bald — Klartextvorschau wird angezeigt."
+    },
+    "displayName": {
+      "inputLabel": "Titel",
+      "edit": "Memo-Titel bearbeiten",
+      "save": "Memo-Titel speichern",
+      "cancel": "Bearbeitung abbrechen"
+    },
+    "footer": {
+      "connected": "Verbunden",
+      "connecting": "Verbindung wird hergestellt…",
+      "disconnected": "Getrennt",
+      "membersOnline_one": "1 Mitglied online",
+      "membersOnline_other": "{{count}} Mitglieder online",
+      "guestWarning": "Du bearbeitest als Gast",
+      "delete": "Notiz löschen",
+      "readonlyReason": {
+        "connecting": "Verbindung zum Zusammenarbeitsdienst wird hergestellt…",
+        "notSynced": "Synchronisierung… öffne die Notiz erneut, um die Bearbeitung fortzusetzen.",
+        "unauthenticated": "Melde dich an, um diese Notiz zu bearbeiten.",
+        "contentUpdatePolicy": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
+        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen."
+      }
+    },
+    "errors": {
+      "loading": "Notiz wird geladen…",
+      "loadFailed": "Notiz konnte nicht geladen werden"
+    }
+  },
   "comments": {
     "title": "Diskussion",
     "showMore": "Mehr anzeigen",

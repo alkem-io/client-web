@@ -352,6 +352,7 @@
       "message": "Memo editor coming soon — showing plain-text preview."
     },
     "displayName": {
+      "inputLabel": "Title",
       "edit": "Edit memo title",
       "save": "Save memo title",
       "cancel": "Cancel edit"

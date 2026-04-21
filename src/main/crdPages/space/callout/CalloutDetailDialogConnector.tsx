@@ -108,8 +108,15 @@ export function CalloutDetailDialogConnector({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Mirrors CrdMemoDialog's cleanup pattern: clear any pending refresh before
+  // scheduling a new one (rapid open/close would otherwise stack timers and
+  // trigger extra network calls).
   const handleFramingMemoClose = () => {
     const fmId = callout.framing.memo?.id;
+    if (framingRefreshRef.current) {
+      clearTimeout(framingRefreshRef.current);
+      framingRefreshRef.current = null;
+    }
     if (fmId) {
       void fetchFramingMarkdown({ variables: { id: fmId } });
       framingRefreshRef.current = setTimeout(() => {
@@ -119,6 +126,18 @@ export function CalloutDetailDialogConnector({
     }
     setFramingMemoOpen(false);
   };
+
+  // Clear the pending refresh on unmount — otherwise an unmount during the
+  // 2.5s window still fires the delayed fetch (wasted request, possible cache
+  // population for a component that's gone).
+  useEffect(() => {
+    return () => {
+      if (framingRefreshRef.current) {
+        clearTimeout(framingRefreshRef.current);
+        framingRefreshRef.current = null;
+      }
+    };
+  }, []);
 
   // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {

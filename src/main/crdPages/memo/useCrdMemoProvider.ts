@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCollaboration } from '@/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration';
 import useUserCursor from '@/core/ui/forms/CollaborativeMarkdownInput/useUserCursor';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
@@ -38,7 +38,7 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
     };
   }, [collab.provider]);
 
-  const connectionStatus: CollabStatus = useMemo(() => {
+  const connectionStatus: CollabStatus = (() => {
     switch (collab.status) {
       case MemoStatus.CONNECTED:
         return 'connected';
@@ -47,7 +47,7 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
       default:
         return 'disconnected';
     }
-  }, [collab.status]);
+  })();
 
   return {
     ydoc: collab.ydoc,
