@@ -141,6 +141,7 @@
     "expand": "Mehr anzeigen",
     "collapse": "Weniger anzeigen",
     "openWhiteboard": "Whiteboard öffnen",
+    "openMemo": "Memo öffnen",
     "comments": "{{count}} Kommentare",
     "commentsZero": "0 Kommentare",
     "post": "Beitrag",
@@ -162,7 +163,11 @@
     "addResponse": "Antwort hinzufügen",
     "createWhiteboard": "Neues Whiteboard erstellen",
     "defaultWhiteboardName": "Neues Whiteboard",
-    "whiteboardNameLabel": "Whiteboard-Titel"
+    "whiteboardNameLabel": "Whiteboard-Titel",
+    "addMemo": "Memo hinzufügen",
+    "createMemo": "Neues Memo erstellen",
+    "defaultMemoName": "Neues Memo",
+    "memoNameLabel": "Memo-Titel"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -213,6 +218,11 @@
     "search": "Unterbereiche suchen...",
     "showMore": "{{count}} weitere anzeigen",
     "showLess": "Weniger anzeigen",
+    "filter": {
+      "all": "Alle",
+      "active": "Aktiv",
+      "archived": "Archiviert"
+    },
     "empty": {
       "title": "Keine Unterbereiche gefunden",
       "description": "Keine Unterbereiche entsprechen Ihrer aktuellen Suche oder Ihrem Filter.",
@@ -229,8 +239,8 @@
     "leadUsers": "Leitende Benutzer",
     "leadOrganizations": "Leitende Organisationen",
     "guidelines": "Gemeinschaftsrichtlinien",
-    "references": "Referenzen",
     "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "Referenzen",
     "close": "Close",
     "edit": "Edit",
     "readMore": "Read more",
@@ -362,6 +372,9 @@
       "disconnected": "Getrennt",
       "membersOnline_one": "1 Mitglied online",
       "membersOnline_other": "{{count}} Mitglieder online",
+      "connectedUsersLabel": "Verbundene Benutzer",
+      "moreConnectedUsers_one": "{{count}} weiterer verbundener Benutzer",
+      "moreConnectedUsers_other": "{{count}} weitere verbundene Benutzer",
       "guestWarning": "Du bearbeitest als Gast",
       "delete": "Notiz löschen",
       "readonlyReason": {
@@ -375,6 +388,11 @@
     "errors": {
       "loading": "Notiz wird geladen…",
       "loadFailed": "Notiz konnte nicht geladen werden"
+    },
+    "deleteConfirm": {
+      "title": "Memo löschen",
+      "body": "Möchten Sie dieses Memo wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Löschen"
     }
   },
   "mediaGallery": {
@@ -494,6 +512,7 @@
     "feedRegion": "Inhalts-Feed des Bereichs",
     "membersGrid": "Mitgliederübersicht der Gemeinschaft",
     "subspacesGrid": "Unterbereichsübersicht",
+    "statusFilter": "Unterräume nach Status filtern",
     "visibilityNotice": "Sichtbarkeitshinweis des Bereichs",
     "mobileTabBar": "Reiternavigation",
     "moreActionsDrawer": "Weitere Aktionen",

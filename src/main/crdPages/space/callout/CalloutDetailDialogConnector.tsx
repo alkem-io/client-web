@@ -108,9 +108,9 @@ export function CalloutDetailDialogConnector({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Mirrors CrdMemoDialog's cleanup pattern: clear any pending refresh before
-  // scheduling a new one (rapid open/close would otherwise stack timers and
-  // trigger extra network calls).
+  // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
+  // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
+  // once Hocuspocus has persisted (~2s lag).
   const handleFramingMemoClose = () => {
     const fmId = callout.framing.memo?.id;
     if (framingRefreshRef.current) {
@@ -118,7 +118,6 @@ export function CalloutDetailDialogConnector({
       framingRefreshRef.current = null;
     }
     if (fmId) {
-      void fetchFramingMarkdown({ variables: { id: fmId } });
       framingRefreshRef.current = setTimeout(() => {
         void fetchFramingMarkdown({ variables: { id: fmId } });
         framingRefreshRef.current = null;
