@@ -298,6 +298,35 @@ class Portal {
       return this._broadcastEvent(WS_EVENTS.SERVER_VOLATILE, data as SocketUpdateData);
     }
   };
+
+  broadcastUserFollowed = (payload: {
+    userToFollow: { socketId: SocketId; username: string };
+    action: 'FOLLOW' | 'UNFOLLOW';
+  }) => {
+    if (this.socket?.id) {
+      const data: SocketUpdateDataSource['USER_FOLLOW'] = {
+        type: WS_SCENE_EVENT_TYPES.USER_FOLLOW,
+        payload: {
+          socketId: this.socket.id as SocketId,
+          ...payload,
+        },
+      };
+      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
+    }
+  };
+
+  broadcastVisibleSceneBounds = (sceneBounds: readonly [number, number, number, number]) => {
+    if (this.socket?.id) {
+      const data: SocketUpdateDataSource['SCENE_BOUNDS'] = {
+        type: WS_SCENE_EVENT_TYPES.SCENE_BOUNDS,
+        payload: {
+          socketId: this.socket.id as SocketId,
+          sceneBounds,
+        },
+      };
+      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
+    }
+  };
 }
 
 export default Portal;

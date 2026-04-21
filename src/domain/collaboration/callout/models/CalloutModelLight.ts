@@ -50,6 +50,10 @@ export type CalloutModelExtension<T> = T & {
         id: string;
         profile?: {
           displayName: string;
+          avatar?: {
+            id: string;
+            uri: string;
+          };
         };
       }
     | undefined;

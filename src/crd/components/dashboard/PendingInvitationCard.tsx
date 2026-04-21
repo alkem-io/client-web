@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -9,6 +11,9 @@ type PendingInvitationCardData = {
   senderName: string;
   welcomeMessageExcerpt?: string;
   timeElapsed: string;
+  /** Deterministic accent colour, shown as the avatar fallback when
+   * `spaceAvatarUrl` is missing. */
+  color?: string;
 };
 
 type PendingInvitationCardProps = {
@@ -16,13 +21,6 @@ type PendingInvitationCardProps = {
   onClick?: () => void;
   className?: string;
 };
-
-const getInitials = (name: string): string =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w.charAt(0).toUpperCase())
-    .join('');
 
 function PendingInvitationCard({ invitation, onClick, className }: PendingInvitationCardProps) {
   return (
@@ -39,27 +37,33 @@ function PendingInvitationCard({ invitation, onClick, className }: PendingInvita
         {invitation.spaceAvatarUrl ? (
           <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} className="rounded-lg object-cover" />
         ) : null}
-        <AvatarFallback className="rounded-lg text-xs">{getInitials(invitation.spaceName)}</AvatarFallback>
+        <AvatarFallback
+          className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
+          color={invitation.color}
+        >
+          {getInitials(invitation.spaceName)}
+        </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold leading-tight truncate">{invitation.spaceName}</p>
-        <p className="text-xs text-muted-foreground mt-0.5 truncate">{invitation.senderName}</p>
+        <p className="text-card-title leading-tight truncate">{invitation.spaceName}</p>
+        <p className="text-caption text-muted-foreground mt-0.5 truncate">{invitation.senderName}</p>
         {invitation.welcomeMessageExcerpt && (
-          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{invitation.welcomeMessageExcerpt}</p>
+          <p className="text-caption text-muted-foreground mt-0.5 line-clamp-1">{invitation.welcomeMessageExcerpt}</p>
         )}
       </div>
 
-      <span className="text-xs text-muted-foreground shrink-0">{invitation.timeElapsed}</span>
+      <span className="text-caption text-muted-foreground shrink-0">{invitation.timeElapsed}</span>
     </button>
   );
 }
 
 function PendingInvitationCardSkeleton() {
+  const { t } = useTranslation('crd-dashboard');
   return (
     <output
-      aria-label="Loading invitation"
-      className="block rounded-lg border border-border bg-card p-4 flex items-center gap-3"
+      aria-label={t('pendingMemberships.loadingInvitation')}
+      className="flex rounded-lg border border-border bg-card p-4 items-center gap-3"
     >
       <Skeleton className="size-10 rounded-lg shrink-0" />
       <div className="flex-1 space-y-1.5">

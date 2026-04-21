@@ -41,7 +41,7 @@ const PublicWhiteboardPageContent: FC = () => {
   const isAuthenticated = !!currentUser?.me?.user;
 
   const { whiteboard, loading, error, refetch, needsGuestName } = useGuestWhiteboardAccess(
-    whiteboardId!,
+    whiteboardId,
     isAuthenticated
   );
   const { trackWhiteboardLoadSuccess, trackWhiteboardLoadFailure, trackDerivedNameUsed } = useGuestAnalytics();

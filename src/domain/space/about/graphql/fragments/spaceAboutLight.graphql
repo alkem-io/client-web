@@ -31,4 +31,7 @@ fragment SubspaceVisuals on Profile {
   cardBanner: visual(type: CARD) {
     ...VisualModel
   }
+  banner: visual(type: BANNER) {
+    ...VisualModel
+  }
 }

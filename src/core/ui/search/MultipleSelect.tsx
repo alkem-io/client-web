@@ -14,7 +14,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
+import { MAX_TERMS_SEARCH } from '@/main/search/searchTypes';
 import { useScreenSize } from '../grid/constants';
 import { gutters } from '../grid/utils';
 
@@ -52,8 +52,9 @@ const SelectedTerms = ({
   inlineTerms,
 }: SelectedTermsProps) => (
   <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} margin={gutters(0.5)} maxWidth={inlineTerms ? '40%' : '100%'}>
-    {selectedTerms.slice(0, maxTermsVisible).map((term, index) => (
-      <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
+    {selectedTerms.slice(0, maxTermsVisible).map(term => (
+      // Duplicate terms are not possible thanks to handleSelect function
+      <Chip key={term} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
     ))}
     {selectedTerms.length > maxTermsVisible && (
       <Tooltip title={selectedTerms.join(', ')} arrow={true}>
@@ -123,7 +124,7 @@ const MultipleSelect = ({
 
   const handleSelect = (term: string): void => {
     if (checkMaxTermsReached()) return;
-    // If it's already selected:
+    // Don't allow duplicates
     if (normalizedValue.find(el => el === term)) return;
     // If it's empty or whitespace
     if (!term.trim()) return;

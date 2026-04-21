@@ -1,0 +1,72 @@
+/**
+ * CRD Typography Scale
+ *
+ * Semantic tokens registered via @theme inline. Tailwind v4 auto-generates
+ * a utility class for each --text-* token that bundles font-size, line-height,
+ * font-weight, and letter-spacing.
+ *
+ * Usage:  <h1 className="text-page-title">...</h1>
+ * Compose: <h1 className="text-section-title md:text-page-title text-destructive">...</h1>
+ *
+ * See specs/042-crd-space-page/typography/spec.md for the full specification.
+ *
+ * IMPORTANT: When adding or updating tokens here, also update:
+ *   - src/crd/CLAUDE.md (Golden Rule #8 — token table + migration table)
+ *   - docs/crd/migration-guide.md (Typography section — token table + migration table)
+ */
+
+@theme inline {
+  /* Page title — main page headings (h1) */
+  --text-page-title: 30px;
+  --text-page-title--line-height: 1.2;
+  --text-page-title--font-weight: 700;
+  --text-page-title--letter-spacing: -0.025em;
+
+  /* Section title — section headings within a page (h2) */
+  --text-section-title: 20px;
+  --text-section-title--line-height: 1.3;
+  --text-section-title--font-weight: 700;
+
+  /* Subsection title — subsection headings, dialog titles (h3) */
+  --text-subsection-title: 18px;
+  --text-subsection-title--line-height: 1.3;
+  --text-subsection-title--font-weight: 600;
+
+  /* Card title — card headings, list item titles (h3) */
+  --text-card-title: 14px;
+  --text-card-title--line-height: 1.4;
+  --text-card-title--font-weight: 600;
+
+  /* Body — body text, descriptions (p) */
+  --text-body: 14px;
+  --text-body--line-height: 1.625;
+  --text-body--font-weight: 400;
+
+  /* Control — UI-chrome text in single-line interactive controls
+     (menu items, dropdown rows, select triggers, inputs, button labels).
+     Same size/weight as body, tighter leading so rows don't gain vertical space. */
+  --text-control: 14px;
+  --text-control--line-height: 1.25;
+  --text-control--font-weight: 400;
+
+  /* Body emphasis — emphasized body text, links (p/span) */
+  --text-body-emphasis: 14px;
+  --text-body-emphasis--line-height: 1.625;
+  --text-body-emphasis--font-weight: 500;
+
+  /* Caption — timestamps, metadata, secondary text (p/span) */
+  --text-caption: 12px;
+  --text-caption--line-height: 1.5;
+  --text-caption--font-weight: 400;
+
+  /* Label — uppercase section headers, sidebar labels (span) */
+  --text-label: 11px;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 600;
+  --text-label--letter-spacing: 0.05em;
+
+  /* Badge — badge text, tag labels (span) */
+  --text-badge: 10px;
+  --text-badge--line-height: 1.4;
+  --text-badge--font-weight: 500;
+}

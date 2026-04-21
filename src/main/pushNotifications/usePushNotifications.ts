@@ -91,11 +91,11 @@ export function usePushNotifications(): PushNotificationState {
       }
 
       const registration = await navigator.serviceWorker.ready;
-      const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+      const applicationServerKey = Uint8Array.from(urlBase64ToUint8Array(vapidPublicKey));
 
       browserSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey,
+        applicationServerKey: applicationServerKey as any,
       });
 
       const subscriptionJSON = browserSubscription.toJSON();

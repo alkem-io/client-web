@@ -193,6 +193,90 @@ See [translations.md](./translations.md) for the full guide. Short version:
 
 Tailwind is loaded globally but scoped via `.crd-root` — MUI pages outside this scope are unaffected. CRD pages must never import MUI, ensuring no MUI CSS is loaded for CRD routes.
 
+### Visual Fallbacks: Avatars & Banners (`pickColorFromId`)
+
+When migrating a page that displays spaces (or any entity with an avatar / card banner), do **not** wire `getDefaultSpaceVisualUrl` into the data mapper as a fallback for missing images. CRD has its own deterministic colour fallback that gives every space a stable accent colour derived from its id.
+
+The single shared helper lives at `@/crd/lib/pickColorFromId`. Use it in your mapper:
+
+```typescript
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
+export const mapMyEntityToCardData = (entity): MyCardData => ({
+  id: entity.id,
+  name: entity.profile.displayName,
+  href: entity.profile.url,
+  avatarUrl: entity.profile.avatar?.uri,
+  // Leave undefined when no real banner exists — the component will render
+  // the deterministic gradient from `color`, not a stock placeholder.
+  bannerUrl: entity.profile.cardBanner?.uri || undefined,
+  color: pickColorFromId(entity.id),
+});
+```
+
+The CRD component receives `color` as a plain string prop and:
+
+- Renders an **avatar fallback** as a solid coloured `AvatarFallback` (`style={{ backgroundColor: color }}` + `text-white`) when `avatarUrl` is missing.
+- Renders a **banner fallback** as a `135deg` linear gradient (`color → color-mix(in srgb, color 70%, black)`) when `bannerUrl` is missing.
+
+A real image always wins — the colour is purely a fallback.
+
+**Where to apply the colour vs. where to leave the muted treatment:**
+
+| Use the deterministic colour | Stick to the muted / prototype treatment |
+|---|---|
+| Display avatars (size-8+, e.g. invitation cards, dialogs, panel rows) | Sidebar resource items (`size-6` list rows) |
+| Card banners and banner fallback areas | Initials label tiles inside compact cards (CompactSpaceCard's name-row tile uses `bg-primary`) |
+
+The rule of thumb: prominent display avatars and banner areas get the colour; small list rows and label tiles stay muted so the layout doesn't feel busy.
+
+See `src/crd/CLAUDE.md` (section "Deterministic Accent Colors") for the full data flow and the list of components currently consuming `color`.
+
+### Typography: Semantic Tokens, Not Raw Classes
+
+CRD uses semantic typography tokens defined in `src/crd/styles/typography.css`. Each token bundles font-size, line-height, font-weight, and letter-spacing into a single Tailwind utility. **Do not use raw Tailwind typography combos** — use these tokens instead.
+
+**Token reference:**
+
+| Token | Size | Weight | Use for |
+|-------|------|--------|---------|
+| `text-page-title` | 30px | 700 | Page headings (`<h1>`) |
+| `text-section-title` | 20px | 700 | Section headings (`<h2>`) |
+| `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles (`<h3>`) |
+| `text-card-title` | 14px | 600 | Card headings, list item names |
+| `text-body` | 14px | 400 | Body text, descriptions |
+| `text-body-emphasis` | 14px | 500 | Emphasized body text, author names, links |
+| `text-control` | 14px | 400 | UI-chrome in single-line controls: menu items, dropdown rows, select triggers, inputs, buttons. Tighter leading (1.25) than body so rows stay compact. |
+| `text-caption` | 12px | 400 | Timestamps, metadata, secondary info |
+| `text-label` | 11px | 600 | Uppercase section labels (includes 0.05em tracking) |
+| `text-badge` | 10px | 500 | Badges, tags, avatar initials |
+
+**When porting from the prototype** (Figma Make output uses raw classes), apply these replacements:
+
+| Prototype / raw Tailwind | Replace with |
+|--------------------------|-------------|
+| `text-2xl font-bold` or `text-3xl font-bold` | `text-page-title` |
+| `text-xl font-bold` or `text-xl font-semibold` | `text-section-title` |
+| `text-lg font-semibold` or `text-lg font-medium` | `text-subsection-title` |
+| `text-lg font-bold` (e.g. PostCard title) | `text-subsection-title font-bold` |
+| `text-sm font-semibold` | `text-card-title` |
+| `text-sm font-medium` | `text-body-emphasis` |
+| `text-sm`, `text-sm leading-relaxed`, `text-sm leading-normal` (prose) | `text-body` |
+| `text-sm` on UI-chrome (menu/dropdown/select rows, inputs, buttons, calendar cells) | `text-control` |
+| `text-sm font-medium` on button base label | `text-control font-medium` |
+| `text-xs` | `text-caption` |
+| `text-[11px] font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold` and `tracking-wider`) |
+| `text-xs font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold` and `tracking-wider`) |
+| `text-[10px] font-medium` or `text-[10px] font-semibold` | `text-badge` |
+| `text-[9px]` (any weight) | `text-badge` |
+| `text-[12px]` (any weight) | `text-caption` (add weight override if needed) |
+
+Tokens compose with Tailwind modifiers: `text-section-title md:text-page-title`, `text-body text-destructive`, `text-subsection-title font-bold`.
+
+**One exception**: SpaceHeader's hero title uses `clamp(28px, 5vw, 48px)` as an inline style — this is a deliberate one-off for fluid sizing and should not be tokenised.
+
+Full specification: `specs/042-crd-space-page/typography/spec.md`
+
 ### Global Dialogs (Messages, Notifications)
 
 **Messages**: The MUI Messages dialog is rendered in `root.tsx` and shared across all routes. CRD pages trigger it via `onMessagesClick` callback prop.

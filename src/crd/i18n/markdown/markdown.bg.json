@@ -1,0 +1,31 @@
+{
+  "editor": {
+    "toolbar": "Лента с инструменти за форматиране",
+    "undo": "Отмяна",
+    "redo": "Повтори",
+    "bold": "Удебелен",
+    "italic": "Курсив",
+    "heading1": "Заглавие 1",
+    "heading2": "Заглавие 2",
+    "heading3": "Заглавие 3",
+    "bulletList": "Списък с точки",
+    "orderedList": "Номериран списък",
+    "blockquote": "Цитат",
+    "codeBlock": "Блок с код",
+    "horizontalRule": "Хоризонтална линия",
+    "insertTable": "Вмъкване на таблица",
+    "deleteTable": "Изтриване на таблица",
+    "addColumn": "Добавяне на колона",
+    "addRow": "Добавяне на ред",
+    "deleteColumn": "Изтриване на колона",
+    "deleteRow": "Изтриване на ред",
+    "link": "Връзка",
+    "emoji": "Вмъкване на емоджи",
+    "charCount": "{{count}}/{{max}} символа",
+    "link.url": "URL",
+    "link.apply": "Приложи",
+    "link.remove": "Премахване на връзка",
+    "link.placeholder": "https://...",
+    "link.invalid": "URL адресът трябва да започва с http:// или https://"
+  }
+}

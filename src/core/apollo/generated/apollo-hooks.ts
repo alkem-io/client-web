@@ -1075,6 +1075,10 @@ export const CalloutDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
     }
   }
 }
@@ -2255,6 +2259,9 @@ export const SubspaceVisualsFragmentDoc = gql`
     ...VisualModel
   }
   cardBanner: visual(type: CARD) {
+    ...VisualModel
+  }
+  banner: visual(type: BANNER) {
     ...VisualModel
   }
 }
@@ -4095,6 +4102,7 @@ export const SpaceMembershipFragmentDoc = gql`
   }
   about {
     ...SpaceAboutCardBanner
+    isContentPublic
     membership {
       myMembershipStatus
     }

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { getInitials } from '@/crd/lib/getInitials';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { getInitials } from '@/main/ui/layout/notificationDataMapper';
 
 export function useCrdUser() {
   const { isAuthenticated, userModel, platformPrivilegeWrapper, platformRoles } = useCurrentUserContext();

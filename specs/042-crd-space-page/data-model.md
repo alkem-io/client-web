@@ -1,0 +1,435 @@
+# Data Model: CRD Space L0 Page
+
+**Branch**: `042-crd-space-page` | **Date**: 2026-04-07
+
+These are the CRD component prop types — plain TypeScript, never GraphQL generated types. Data mappers in the integration layer transform GraphQL responses into these shapes.
+
+## Page Shell
+
+### SpaceBannerData
+```typescript
+type SpaceBannerData = {
+  title: string;
+  tagline?: string;
+  bannerUrl?: string;         // Falls back to default space visual
+  isHomeSpace: boolean;
+  homeSpaceSettingsHref?: string;
+};
+```
+
+### SpaceTabDefinition
+```typescript
+type SpaceTabDefinition = {
+  index: number;              // 0-based position
+  label: string;              // From Innovation Flow displayName or translated default
+  description?: string;       // From Innovation Flow state description
+  icon: ReactNode;            // lucide-react icon
+  isCustom: boolean;          // true for positions >= 4
+};
+```
+
+### SpaceVisibilityData
+```typescript
+type SpaceVisibilityStatus = 'active' | 'archived' | 'demo' | 'inactive';
+
+type SpaceVisibilityData = {
+  status: SpaceVisibilityStatus;
+  contactHref?: string;       // For archived notice
+};
+```
+
+### SpaceTabActionConfig
+```typescript
+type SpaceTabActionConfig = {
+  showActivity: boolean;
+  showVideoCall: boolean;
+  showShare: boolean;
+  showSettings: boolean;
+  shareUrl: string;
+  settingsHref?: string;
+};
+```
+
+## Dashboard Tab
+
+### SpaceWelcomeData
+```typescript
+type SpaceWelcomeData = {
+  description: string;        // Tab description (Innovation Flow state)
+  leads: SpaceLeadData[];     // Up to 2 users + 2 orgs
+  editHref?: string;          // Admin edit link
+};
+
+type SpaceLeadData = {
+  name: string;
+  avatarUrl?: string;
+  type: 'person' | 'organization';
+  location?: string;          // "City, Country"
+  href: string;
+};
+```
+
+### SpaceDashboardNavItem
+```typescript
+type SpaceDashboardNavItem = {
+  name: string;
+  href: string;
+  level: number;              // Nesting depth
+};
+```
+
+### CalendarEventData
+```typescript
+type CalendarEventData = {
+  id: string;
+  title: string;
+  startDate: string;          // ISO date
+  durationDays?: number;
+  durationMinutes?: number;
+  isWholeDay: boolean;
+};
+```
+
+## Community Tab
+
+### MemberCardData (exported from `src/crd/components/space/SpaceMembers.tsx`)
+```typescript
+type MemberRoleType = 'admin' | 'moderator' | 'member';
+type MemberRoleKey = 'admin' | 'lead' | 'member' | 'organization';
+
+type MemberCardData = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  type: 'user' | 'organization';
+  /**
+   * Primary role used for the displayed badge label. Derived from
+   * the user's full role list with precedence Admin > Lead > Member.
+   * For organizations this is always `'organization'`.
+   */
+  role?: MemberRoleKey;
+  /**
+   * Full list of roles the member holds. Used by the filter pills
+   * so a user who is both Admin and Lead appears under both filters.
+   * For organizations this is always `['organization']`.
+   */
+  roles?: MemberRoleKey[];
+  /** Drives the role badge colour — only set for users. */
+  roleType?: MemberRoleType;
+  location?: string;
+  tagline?: string;
+  tags: string[];
+  href: string;
+};
+```
+
+The integration layer derives `role` + `roleType` + `roles` from the user's full `RoleName[]`:
+- `role` + `roleType` follow precedence `Admin > Lead > Member` — they drive the single badge rendered on the card.
+- `roles` is the full inclusive list — filter pills match against it so overlapping sets (e.g. an Admin who is also a Lead) surface under every applicable filter.
+
+`SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: admin → primary, moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
+
+### VirtualContributorData
+```typescript
+type VirtualContributorData = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  href: string;
+};
+```
+
+## Subspaces Tab
+
+### SpaceCardData (reused from `src/crd/components/space/SpaceCard.tsx`, originally 039)
+
+The Subspaces tab does not define its own subspace card type — it reuses the `SpaceCardData` shape from the 039 explore-spaces `SpaceCard` component. This matches Assumption 7 in the spec and lets the same presentational component serve both the explore-spaces grid and the subspaces tab grid.
+
+```typescript
+type SpaceLead = {
+  name: string;
+  avatarUrl: string;            // '' when no avatar available
+  type: 'person' | 'org';
+};
+
+type SpaceCardParent = {
+  name: string;
+  href: string;
+  avatarUrl?: string;
+  initials: string;
+  avatarColor: string;
+};
+
+type SpaceCardData = {
+  id: string;
+  name: string;
+  description: string;          // For subspaces: derived from tagline
+  bannerImageUrl?: string;
+  initials: string;             // Derived via getInitials(displayName)
+  avatarColor: string;          // Derived deterministically from id (palette)
+  isPrivate: boolean;
+  isMember?: boolean;
+  /** Only rendered when the parent space uses alphabetical sorting (FR-031). */
+  isPinned?: boolean;
+  tags: string[];
+  leads: SpaceLead[];
+  href: string;
+  matchedTerms?: boolean;       // Used by explore-spaces search; unused for subspaces
+  parent?: SpaceCardParent;     // Unused for top-level subspaces; used for nested cards
+};
+```
+
+The `subspaceCardDataMapper` in the integration layer takes a `sortMode?: SpaceSortMode` argument and forces `isPinned: false` for any mode other than `SpaceSortMode.Alphabetical`, so the pin indicator only appears when it is semantically meaningful.
+
+## Callout System
+
+### Data Loading: Light vs Detail
+
+Callout data is loaded in two phases. CRD components receive `PostCardData` which is the same type regardless of source — the integration layer handles the mapping:
+
+| Field | Light query | Detail query |
+|-------|-----------|-------------|
+| `id`, `sortOrder`, `activity` | ✓ | ✓ |
+| `framing.profile.displayName` | ✓ | ✓ |
+| `framing.type` | ✓ | ✓ |
+| `framing.profile.description` | ✗ | ✓ |
+| `framing.profile.tags`, `references` | ✗ | ✓ |
+| Whiteboard/Memo/Link/Media/Poll content | ✗ | ✓ |
+| `comments`, `contributions` | ✗ | ✓ |
+| `createdBy`, `publishedDate` | ✗ | ✓ |
+
+- **Light mapper** (`mapCalloutLightToPostCard`): produces a `PostCardData` with title and type only — `snippet` is `undefined`
+- **Detail mapper** (`mapCalloutDetailsToPostCard`): produces a complete `PostCardData` with description, content previews, author, comment count
+- **Source types**: `CalloutModelLightExtended` (light, from `useCalloutsSet`) and `CalloutDetailsModelExtended` (detail, from `useCalloutDetails`)
+
+### PostCardData (exported from `src/crd/components/space/PostCard.tsx`)
+```typescript
+type PostType = 'text' | 'whiteboard';
+
+type PostCardData = {
+  id: string;
+  type: PostType;
+  author?: {
+    name: string;
+    avatarUrl?: string;
+    role?: string;
+  };
+  title: string;
+  snippet?: string;
+  timestamp?: string;
+  isDraft?: boolean;
+  /** Framing-level preview image (whiteboard framing only) */
+  framingImageUrl?: string;
+  commentCount?: number;
+};
+```
+
+`PostType` describes the callout's **framing type**, not its contribution type:
+- `'text'` — Memo/None/Link/Media/Poll framing (content is in the description or a dedicated slot like polls)
+- `'whiteboard'` — Whiteboard framing (shows a preview image with "Open Whiteboard" overlay)
+
+Contribution previews are **not part of PostCardData**. They are rendered by the integration layer into a `ReactNode` slot on PostCard (see `contributionsPreview` prop below). This keeps PostCard unaware of contribution types and lets the integration layer use the appropriate CRD contribution components (`ContributionGrid`, `ContributionWhiteboardCard`, `ContributionPostCard`, `ContributionMemoCard`, `ContributionLinkList`).
+
+PostCard accepts these additional props (not part of PostCardData):
+```typescript
+type PostCardProps = {
+  post: PostCardData;
+  onClick?: () => void;
+  onCommentsClick?: () => void;
+  onSettingsClick?: () => void;
+  onExpandClick?: () => void;
+  /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
+  contributionsPreview?: ReactNode;
+  /** Content injected after the description/preview area (e.g. poll via CalloutPollConnector) */
+  children?: ReactNode;
+  className?: string;
+};
+```
+
+### CalloutBlockData
+```typescript
+type CalloutBlockData = {
+  id: string;
+  title: string;
+  description?: string;       // Raw markdown — rendered via react-markdown in CRD
+  tags: string[];
+  references: CalloutReference[];
+  framingType: 'none' | 'memo' | 'whiteboard' | 'link' | 'media' | 'poll';
+  framing: CalloutFramingData;
+  visibility: 'draft' | 'published';
+  sortOrder: number;
+  author?: { name: string; avatarUrl?: string };
+  publishedDate?: string;
+  contributionCount: number;
+  allowedContributionTypes: ContributionType[];
+  commentsEnabled: boolean;
+  // Permissions
+  editable: boolean;
+  movable: boolean;
+  canSaveAsTemplate: boolean;
+};
+
+type CalloutReference = {
+  name: string;
+  uri: string;
+  description?: string;
+};
+
+type ContributionType = 'post' | 'memo' | 'whiteboard' | 'link';
+```
+
+### CalloutFramingData (union)
+```typescript
+type CalloutFramingData =
+  | { type: 'none' }
+  | { type: 'memo'; markdownContent: string; onExpand?: () => void }
+  | { type: 'whiteboard'; previewUrl?: string; onOpen: () => void }
+  | { type: 'link'; url: string; displayName: string; isExternal: boolean }
+  | { type: 'media'; images: MediaImage[]; canEdit: boolean; onAddImage?: () => void }
+  | { type: 'poll'; question: string; options: PollOption[]; canVote: boolean; onVote: (optionId: string) => void };
+
+type MediaImage = {
+  id: string;
+  url: string;
+  altText?: string;
+  sortOrder: number;
+};
+
+type PollOption = {
+  id: string;
+  text: string;
+  voteCount: number;
+  percentage: number;
+  isSelected: boolean;        // Current user's vote
+};
+```
+
+### ContributionCardData
+```typescript
+type ContributionCardData = {
+  id: string;
+  type: ContributionType;
+  title: string;
+  author?: { name: string; avatarUrl?: string };
+  createdDate?: string;
+  href?: string;
+  // Type-specific
+  description?: string;       // Posts/memos
+  commentCount?: number;      // Posts
+  tags?: string[];
+  previewUrl?: string;        // Whiteboards
+  htmlContent?: string;       // Memos (preview)
+  linkUrl?: string;           // Links
+  linkDescription?: string;   // Links
+};
+```
+
+### PollOptionValue (form-level — used in CRD form components)
+```typescript
+// Exported from src/crd/forms/callout/PollOptionsEditor.tsx
+// During creation, id is undefined; during editing, it's the server-assigned UUID.
+// This provides stable React keys for editing existing polls.
+
+type PollOptionValue = {
+  id?: string;               // Server UUID when editing; undefined for new options
+  text: string;
+};
+
+// Constants (also exported from PollOptionsEditor):
+// MIN_POLL_OPTIONS = 2
+// MAX_POLL_OPTIONS = 10
+```
+
+### CalloutFormValues (integration layer — NOT in src/crd/)
+```typescript
+// These types live in the integration layer, not in CRD components.
+// CRD form components receive individual field values via props.
+
+type CalloutFormFieldProps = {
+  title: { value: string; onChange: (v: string) => void; error?: string };
+  description: { value: string; onChange: (v: string) => void; error?: string };
+  tags: { value: string[]; onChange: (v: string[]) => void };
+  framingType: { value: string; onChange: (v: string) => void; disabled: boolean };
+  visibility: { value: 'draft' | 'published'; onChange: (v: string) => void };
+  pollOptions: { value: PollOptionValue[]; onChange: (v: PollOptionValue[]) => void };
+  // ... per-field binding pattern
+};
+```
+
+### CommentData
+```typescript
+type CommentAuthor = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+};
+
+type CommentReaction = {
+  emoji: string;              // Native emoji character (e.g., "👍")
+  count: number;
+  hasReacted: boolean;        // Whether the current user reacted with this emoji
+};
+
+type CommentData = {
+  id: string;
+  author: CommentAuthor;
+  content: string;
+  timestamp: string;          // ISO date string
+  parentId?: string;          // For threaded replies — undefined for top-level comments
+  isDeleted?: boolean;        // True for placeholder of deleted parent with remaining replies
+  reactions: CommentReaction[];
+  canDelete: boolean;         // True if current user authored or has admin privilege
+};
+```
+
+### CommentsContainerData
+```typescript
+/** Props shape for the reusable CommentThread component */
+type CommentsContainerData = {
+  comments: CommentData[];
+  canComment: boolean;        // User has contribute access
+  currentUser?: CommentAuthor; // For displaying avatar next to input
+  loading?: boolean;          // Comments are being fetched (lazy load)
+  mode: 'collapsible' | 'full-height';
+  // Callbacks
+  onAddComment: (content: string) => void;
+  onReply: (parentId: string, content: string) => void;
+  onDelete: (commentId: string) => void;
+  onAddReaction: (commentId: string, emoji: string) => void;
+  onRemoveReaction: (commentId: string, emoji: string) => void;
+};
+
+// Sort order is visual-only state managed inside CommentThread
+// (default: 'newest', togglable to 'oldest')
+// Top-level comments sorted by selected order; replies always chronological (oldest first)
+```
+
+### TemplateCardData
+```typescript
+type TemplateCardData = {
+  id: string;
+  name: string;
+  description?: string;
+  framingType: string;
+};
+```
+
+## About Page
+
+### SpaceAboutData
+```typescript
+type SpaceAboutData = {
+  name: string;
+  tagline?: string;
+  description?: string;       // Raw markdown
+  location?: string;
+  metrics: { name: string; value: string }[];
+  who?: string;               // Raw markdown
+  why?: string;               // Raw markdown
+  provider?: SpaceLeadData;
+  leadUsers: SpaceLeadData[];
+  leadOrganizations: SpaceLeadData[];
+  guidelines?: string;        // Raw markdown
+  references: CalloutReference[];
+};
+```

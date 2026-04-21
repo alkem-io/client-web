@@ -19,8 +19,8 @@ export function HomeSpacePlaceholder({ settingsHref, className }: HomeSpacePlace
       )}
     >
       <Home size={32} className="text-muted-foreground" aria-hidden="true" />
-      <p className="text-sm font-bold">{t('recentSpaces.homeSpacePlaceholder.title')}</p>
-      <p className="text-xs text-muted-foreground">{t('recentSpaces.homeSpacePlaceholder.subtitle')}</p>
+      <p className="text-card-title font-bold">{t('recentSpaces.homeSpacePlaceholder.title')}</p>
+      <p className="text-caption text-muted-foreground">{t('recentSpaces.homeSpacePlaceholder.subtitle')}</p>
     </a>
   );
 }

@@ -1,0 +1,72 @@
+{
+  "join": {
+    "welcome": "Bienvenue sur",
+    "title": "Rejoindre le tableau blanc",
+    "description": "Entrez votre nom pour rejoindre la session du tableau blanc. Les autres participants verront ce nom.",
+    "placeholder": "Votre nom",
+    "guestNameLabel": "Nom d'affichage de l'invité",
+    "joinButton": "Rejoindre en tant qu'invité",
+    "joiningButton": "Connexion...",
+    "signInButton": "Se connecter à Alkemio"
+  },
+  "error": {
+    "notFound": {
+      "title": "Tableau blanc introuvable",
+      "message": "Ce tableau blanc n'existe pas ou n'est plus disponible."
+    },
+    "serverError": {
+      "title": "Quelque chose s'est mal passé",
+      "message": "Nous n'avons pas pu charger ce tableau blanc. Veuillez réessayer."
+    },
+    "retry": "Réessayer"
+  },
+  "editor": {
+    "editDisplayName": "Modifier le titre",
+    "saveDisplayName": "Enregistrer le titre",
+    "cancelEdit": "Annuler la modification",
+    "delete": "Supprimer le tableau blanc",
+    "save": "Enregistrer",
+    "restart": "Redémarrer la collaboration",
+    "guestContributionsWarning": "Les contributions des invités sont activées",
+    "closeWhiteboard": "Fermer le tableau blanc",
+    "loadingWhiteboard": "Chargement du tableau blanc",
+    "untitled": "Tableau blanc",
+    "unsavedChanges": {
+      "title": "Annuler les modifications non enregistrées ?",
+      "description": "Vous avez des modifications non enregistrées qui seront perdues. Êtes-vous sûr de vouloir continuer ?",
+      "confirm": "Abandonner",
+      "cancel": "Continuer l'édition"
+    }
+  },
+  "footer": {
+    "guestContributionsWarning": "Toute personne disposant du lien peut modifier"
+  },
+  "preview": {
+    "settings": {
+      "title": "Paramètres d'aperçu",
+      "subtitle": "Choisissez comment la miniature du tableau blanc apparaît dans les cartes et les aperçus"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Automatique",
+        "description": "Capturer automatiquement la vue complète du canevas"
+      },
+      "CUSTOM": {
+        "title": "Personnalisé",
+        "description": "Choisissez votre propre zone de recadrage"
+      },
+      "FIXED": {
+        "title": "Fixe",
+        "description": "Verrouiller sur une zone spécifique du canevas"
+      }
+    },
+    "crop": {
+      "previewArea": "Zone d'aperçu du tableau blanc",
+      "reset": "Réinitialiser",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "loading": "Chargement",
+      "zoom": "Zoom"
+    }
+  }
+}

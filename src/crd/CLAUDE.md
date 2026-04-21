@@ -129,6 +129,89 @@ import { PostCard } from '@/crd/components/space/PostCard';
 import { Button } from '@/crd/primitives';
 ```
 
+### 7. Use `date-fns`, not `dayjs`
+
+Inside `src/crd/` and inside CRD-feature integration code under `src/main/crdPages/`, **use `date-fns` exclusively** for date formatting, parsing, arithmetic, and comparators. Do NOT import `dayjs` in these layers — it is reserved for the legacy domain code under `src/domain/` (which we are progressively migrating away from).
+
+**Why:**
+- `react-day-picker` (the calendar primitive) requires `date-fns` as a peer dependency, so it's already in the bundle.
+- `date-fns` accepts `locale` as a per-call option, which is concurrency-safe under React 19. `dayjs.locale()` mutates global state and is unsafe across simultaneously-rendering components in different languages.
+- Mixing both in the same layer doubles the bundle for no functional benefit.
+
+```typescript
+// GOOD
+import { addMinutes, format, isAfter, isSameDay, startOfDay } from 'date-fns';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+
+const locale = resolveDateFnsLocale(i18n.language);
+const startOfToday = startOfDay(new Date());
+const endsAt = format(addMinutes(start, 30), 'p', { locale });
+
+// BAD — dayjs anywhere in CRD or crdPages
+import dayjs from 'dayjs';
+const startOfToday = dayjs().startOf('day');
+```
+
+**Locale helper.** Always resolve `date-fns` locales via `resolveDateFnsLocale(i18n.language)` from `@/crd/lib/dateFnsLocale.ts` rather than re-declaring a `LOCALE_BY_LANG` map in each component. The shared helper is the single source of truth for the supported-language → date-fns Locale mapping.
+
+**Cross-layer boundary.** When a CRD page consumer needs to call into a domain hook that returns dayjs values (e.g., `src/domain/timeline/calendar/utils/icsUtils.ts`'s `formatDateTimeUtc(dayjs.Dayjs)`), wrap or inline a JS Date equivalent locally instead of importing dayjs into the CRD/crdPages layer. The domain code itself stays on dayjs until that file is itself migrated.
+
+### 8. Use Semantic Typography Tokens
+
+**Avoid raw Tailwind typography class combos** like `text-sm font-semibold` or `text-2xl font-bold`. Use the semantic tokens defined in `src/crd/styles/typography.css`. Each token bundles font-size, line-height, font-weight, and letter-spacing into a single Tailwind utility via `@theme inline`.
+
+**Tokens:**
+
+| Token | Size | Weight | Purpose | HTML |
+|-------|------|--------|---------|------|
+| `text-page-title` | 30px | 700 | Main page headings | `<h1>` |
+| `text-section-title` | 20px | 700 | Section headings within a page | `<h2>` |
+| `text-subsection-title` | 18px | 600 | Subsection headings, dialog titles | `<h3>` |
+| `text-card-title` | 14px | 600 | Card headings, list item titles | `<h3>` |
+| `text-body` | 14px | 400 | Body text, descriptions | `<p>` |
+| `text-body-emphasis` | 14px | 500 | Emphasized body text, links | `<p>`/`<span>` |
+| `text-control` | 14px | 400 | UI-chrome in single-line interactive controls (menu items, dropdown rows, select triggers, inputs, button labels). Same size as body but tighter leading (1.25) so rows don't gain vertical space. | `<span>`/inline |
+| `text-caption` | 12px | 400 | Timestamps, metadata, secondary text | `<p>`/`<span>` |
+| `text-label` | 11px | 600 | Uppercase section headers, sidebar labels (includes 0.05em tracking) | `<span>` |
+| `text-badge` | 10px | 500 | Badge text, tag labels, avatar fallback initials | `<span>` |
+
+**Migration from raw classes:**
+
+| Raw Tailwind (DO NOT USE) | Semantic token |
+|---------------------------|---------------|
+| `text-2xl font-bold` / `text-3xl font-bold` | `text-page-title` |
+| `text-xl font-bold` / `text-xl font-semibold` | `text-section-title` |
+| `text-lg font-semibold` / `text-lg font-medium` | `text-subsection-title` |
+| `text-lg font-bold` (PostCard title) | `text-subsection-title font-bold` |
+| `text-sm font-semibold` | `text-card-title` |
+| `text-sm font-medium` | `text-body-emphasis` |
+| `text-sm` / `text-sm leading-relaxed` / `text-sm leading-normal` (prose) | `text-body` |
+| `text-sm` (UI-chrome: menu/dropdown/select rows, inputs, buttons, calendar day cells) | `text-control` |
+| `text-sm font-medium` (button base label) | `text-control font-medium` |
+| `text-xs` | `text-caption` |
+| `text-[11px] font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `tracking-wider` — token includes tracking) |
+| `text-xs font-semibold uppercase tracking-wider` | `text-label uppercase` (drop `font-semibold`, `tracking-wider`) |
+| `text-[10px] font-medium` / `text-[10px] font-semibold` | `text-badge` |
+| `text-[9px]` (any weight) | `text-badge` |
+| `text-[12px]` (any weight) | `text-caption` (+ weight override if needed) |
+
+**Composability** — tokens compose naturally with other Tailwind utilities:
+
+```tsx
+// Responsive
+<h1 className="text-section-title md:text-page-title">Title</h1>
+
+// Color override
+<p className="text-body text-destructive">Error description</p>
+
+// Weight override
+<h3 className="text-subsection-title font-bold">Bolder heading</h3>
+```
+
+**Exception: SpaceHeader hero text** — the `clamp(28px, 5vw, 48px)` inline style in `SpaceHeader.tsx` is a one-off exception (fluid font sizing, no Tailwind equivalent). Do not create a token for it.
+
+**Figma Make workflow** — Figma Make always outputs raw Tailwind classes. After generating, replace raw class combos with semantic tokens using the table above. See `specs/042-crd-space-page/typography/spec.md` for the full specification.
+
 ---
 
 ## Accessibility (WCAG 2.1 AA)
@@ -490,6 +573,7 @@ CRD translations live in per-feature directories in `src/crd/i18n/` (e.g., `layo
 - [ ] No inline `style` props for values that have Tailwind equivalents
 - [ ] Icons from `lucide-react` only
 - [ ] Accepts `className` for composition
+- [ ] Typography uses semantic tokens (`text-page-title`, `text-body`, etc.) — no raw combos like `text-sm font-semibold`
 
 ### Accessibility (WCAG 2.1 AA)
 - [ ] Icon-only buttons have `aria-label` (not just `title`)
@@ -582,3 +666,64 @@ Layout-related types are defined once in `src/crd/layouts/types.ts` and imported
 1. Add the type to `types.ts`
 2. Import it in the layout component
 3. Update the contracts in `specs/039-crd-exploreSpaces-page/contracts/crd-layout.ts` to match
+
+### Deterministic Accent Colors (`pickColorFromId`)
+
+When a space (or any space-like entity) has no avatar or card banner image, the design system does **not** fall back to a generic muted gradient or a stock placeholder. Instead, every space gets a stable accent colour derived from its id, so the same entity is always recognisable by its colour across every component on the page.
+
+The single source of truth lives in `@/crd/lib/pickColorFromId.ts`:
+
+```typescript
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+const color = pickColorFromId(space.id); // → '#42a5f5' (one of 6 palette colours)
+```
+
+The function hashes the id's char codes and indexes into a 6-colour palette. It is **deterministic** — the same id always returns the same colour, in production data, mock data, and across reloads.
+
+#### Where the colour is applied
+
+The colour is used in two visual treatments, and **only** as a fallback when the corresponding image is missing:
+
+| Treatment | Trigger | Visual |
+|---|---|---|
+| **Avatar fallback** | `avatarUrl` is missing | `<AvatarFallback style={{ backgroundColor: color }} className="text-white">` |
+| **Banner / cardBanner fallback** | `bannerUrl` / `cardBanner` is missing | `<div style={{ background: \`linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))\` }}>` |
+
+The components that participate in these treatments today:
+
+- **Banners / cardBanners (gradient)**: `CompactSpaceCard` (recent spaces banner area), `SpaceCard` (explore spaces banner), `SpaceHierarchyCard` (parent + subspace banners), `MyMembershipsPanel` `BannerThumbnail`.
+- **Avatar fallbacks (solid colour)**: `MyMembershipsPanel` `NodeAvatar`, `InvitationsBlock` avatar, `PendingInvitationCard`, `PendingApplicationCard`, `InvitationDetailDialog`, `SpaceCard`'s `StackedAvatars`.
+
+#### Where the colour is NOT applied
+
+The accent colour is intentionally absent from a few spots — too many coloured tiles per row makes the layout feel noisy. These keep the muted prototype treatment:
+
+- **`SidebarResourceItem`** (small `size-6` rows in the sidebar's My Spaces / Innovation Hubs / Innovation Packs sections) — default grey `AvatarFallback`. Virtual Contributors get a single shared `var(--chart-2)` accent so they remain visually distinct from spaces, but they do not use `pickColorFromId`.
+- **`CompactSpaceCard`'s initials tile** (the small rectangle next to the space name in the card body, *not* the banner) — `bg-primary text-primary-foreground`.
+
+The rule of thumb: **prominent display avatars and banner areas use the colour; small list rows and label tiles use the prototype's muted/primary treatment.**
+
+#### Data flow
+
+1. The data mapper in `src/main/crdPages/<page>/` calls `pickColorFromId(entity.id)` and attaches the result to a `color` (or `avatarColor`) field on the CRD component's prop type.
+2. The CRD component receives the field as a plain string prop. It applies the colour **only** when the corresponding image (`bannerUrl`, `avatarUrl`, etc.) is `undefined` — a real image always wins.
+3. CRD components **never** call `pickColorFromId` themselves. Determining the colour is mapping logic; the component is purely visual.
+
+#### Adding it to a new mapper
+
+```typescript
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
+export const mapMyEntityToCardData = (entity: GraphQLEntity): MyCardData => ({
+  id: entity.id,
+  name: entity.profile.displayName,
+  href: entity.profile.url,
+  avatarUrl: entity.profile.avatar?.uri,
+  // No `getDefaultSpaceVisualUrl` fallback — leave undefined so the component
+  // renders the deterministic gradient from `color`.
+  bannerUrl: entity.profile.cardBanner?.uri || undefined,
+  color: pickColorFromId(entity.id),
+});
+```
+
+> **Naming note:** Some prop types use `color`, others use `avatarColor` for historical reasons (`SpaceCardData.avatarColor`, `SidebarResourceData.avatarColor`). When adding a new component, prefer `color` for the field name. Both are populated from the same `pickColorFromId` helper.
