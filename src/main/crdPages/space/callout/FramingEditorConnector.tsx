@@ -7,6 +7,7 @@ import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -17,6 +18,7 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import CrdSingleUserWhiteboardDialog, {
   type WhiteboardWithContent,
 } from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
+import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
 
 const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
 
@@ -57,6 +59,9 @@ type FramingEditorConnectorProps = {
     previewImages: WhiteboardPreviewImage[] | undefined,
     previewSettings: WhiteboardPreviewSettings
   ) => void;
+  // Media-gallery framing
+  mediaGalleryVisuals?: MediaGalleryFieldVisual[];
+  onMediaGalleryVisualsChange?: (next: MediaGalleryFieldVisual[]) => void;
 };
 
 export function FramingEditorConnector({
@@ -87,6 +92,8 @@ export function FramingEditorConnector({
   whiteboardConfigured,
   whiteboardTitle,
   onWhiteboardChange,
+  mediaGalleryVisuals,
+  onMediaGalleryVisualsChange,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -170,6 +177,14 @@ export function FramingEditorConnector({
           </div>
           {/* Tiptap editor will be rendered here by the integration layer */}
         </div>
+      );
+
+    case 'image':
+      return (
+        <MediaGalleryFormFieldConnector
+          visuals={mediaGalleryVisuals ?? []}
+          onVisualsChange={onMediaGalleryVisualsChange ?? (() => {})}
+        />
       );
 
     case 'cta':

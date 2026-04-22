@@ -287,9 +287,7 @@ export function SpacePage() {
               commentsSlot={
                 <CommentThread
                   comments={MOCK_COMMENTS}
-                  canComment={true}
                   currentUser={{ id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url }}
-                  onAddComment={() => {}}
                   onReply={() => {}}
                   onDelete={() => {}}
                   onAddReaction={() => {}}

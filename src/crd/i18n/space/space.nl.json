@@ -336,12 +336,68 @@
     "reactionCount_one": "1 reactie",
     "contributions": "Bijdragen"
   },
+  "memo": {
+    "close": "Sluiten",
+    "stubDialog": {
+      "message": "Memo-editor komt binnenkort — platte tekst-preview wordt getoond."
+    },
+    "displayName": {
+      "inputLabel": "Titel",
+      "edit": "Memotitel bewerken",
+      "save": "Memotitel opslaan",
+      "cancel": "Bewerking annuleren"
+    },
+    "footer": {
+      "connected": "Verbonden",
+      "connecting": "Verbinden…",
+      "disconnected": "Verbinding verbroken",
+      "membersOnline_one": "1 lid online",
+      "membersOnline_other": "{{count}} leden online",
+      "guestWarning": "Je bewerkt als gast",
+      "delete": "Memo verwijderen",
+      "readonlyReason": {
+        "connecting": "Verbinden met de samenwerkingsservice…",
+        "notSynced": "Synchroniseren… heropen de memo om verder te bewerken.",
+        "unauthenticated": "Meld je aan om deze memo te bewerken.",
+        "contentUpdatePolicy": "Je hebt geen toestemming om deze memo te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
+        "noMembership": "Alleen leden van deze space kunnen deze memo bewerken. Word lid om bij te dragen."
+      }
+    },
+    "errors": {
+      "loading": "Memo laden…",
+      "loadFailed": "Kan memo niet laden"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Afbeelding openen",
+    "more_one": "+{{count}} meer",
+    "more_other": "+{{count}} meer",
+    "previous": "Vorige afbeelding",
+    "next": "Volgende afbeelding",
+    "goToImage": "Ga naar afbeelding {{index}}",
+    "thumbnailsLabel": "Miniaturen",
+    "download": "Afbeelding downloaden",
+    "fullscreen": "Volledig scherm",
+    "exitFullscreen": "Volledig scherm verlaten",
+    "emptyState": {
+      "title": "Nog geen afbeeldingen",
+      "action": "Afbeeldingen toevoegen"
+    },
+    "altTextLabel": "Alternatieve tekst",
+    "deleteImage": "Afbeelding verwijderen",
+    "dismissError": "Fout sluiten",
+    "uploading": "Uploaden…",
+    "downloadError": "De afbeelding kon niet worden gedownload.",
+    "validation": {
+      "type": "Niet-ondersteund bestandstype",
+      "tooSmall": "Afbeelding is te klein",
+      "tooLarge": "Afbeelding is te groot"
+    }
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",
     "showLess": "Minder tonen",
-    "sortNewest": "Nieuwste eerst",
-    "sortOldest": "Oudste eerst",
     "reply": "Antwoorden",
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",

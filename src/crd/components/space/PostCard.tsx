@@ -1,7 +1,11 @@
-import { FileText, Maximize2, MessageSquare, MoreHorizontal, Presentation, StickyNote } from 'lucide-react';
+import { FileText, Images, Maximize2, MessageSquare, MoreHorizontal, Presentation, StickyNote } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import {
+  MediaGalleryFeedGrid,
+  type MediaGalleryFeedThumbnail,
+} from '@/crd/components/mediaGallery/MediaGalleryFeedGrid';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -9,7 +13,7 @@ import { Button } from '@/crd/primitives/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard' | 'memo';
+export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery';
 
 export type PostCardData = {
   id: string;
@@ -27,6 +31,13 @@ export type PostCardData = {
   framingImageUrl?: string;
   /** Framing-level memo markdown (memo framing only) — rendered as a compact cropped preview in the feed */
   framingMemoMarkdown?: string;
+  /**
+   * Framing-level media gallery preview (media gallery framing only) — up to 4 thumbnails
+   * as `{ id, url }` pairs; the feed grid shows a "+N more" overlay on the 4th cell when
+   * `totalCount > thumbnails.length`. Using `id` as the React key keeps rows stable across
+   * reorders / deletions even when image URLs change.
+   */
+  framingMediaGallery?: { thumbnails: MediaGalleryFeedThumbnail[]; totalCount: number };
   commentCount?: number;
 };
 
@@ -49,12 +60,14 @@ const typeIcons: Record<PostType, typeof FileText> = {
   text: FileText,
   whiteboard: Presentation,
   memo: StickyNote,
+  mediaGallery: Images,
 };
 
 const typeLabels = {
   text: 'callout.post',
   whiteboard: 'callout.whiteboard',
   memo: 'callout.memo',
+  mediaGallery: 'callout.mediaGallery',
 } as const;
 
 export function PostCard({
@@ -188,6 +201,15 @@ export function PostCard({
               </Button>
             </div>
           </div>
+        )}
+
+        {/* Media gallery framing preview — 4-tile grid matching whiteboard-contribution layout */}
+        {post.type === 'mediaGallery' && post.framingMediaGallery && post.framingMediaGallery.thumbnails.length > 0 && (
+          <MediaGalleryFeedGrid
+            thumbnails={post.framingMediaGallery.thumbnails}
+            totalCount={post.framingMediaGallery.totalCount}
+            onOpenAt={onClick}
+          />
         )}
 
         {/* Contribution previews — rendered by integration layer */}

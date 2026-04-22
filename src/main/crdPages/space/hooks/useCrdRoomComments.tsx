@@ -97,11 +97,7 @@ export function useCrdRoomComments({
     <CommentThread
       loading={loading}
       comments={comments}
-      canComment={canComment}
       currentUser={currentUser}
-      onAddComment={content => {
-        void postMessage(content);
-      }}
       onReply={(parentId, content) => {
         void postReply({ messageText: content, threadId: parentId });
       }}

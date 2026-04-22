@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
@@ -36,9 +37,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     spaceLevel === SpaceLevel.L0
       ? space.about.membership?.myMembershipStatus
       : subspace.about.membership?.myMembershipStatus;
-  const { ydoc, provider, connectionStatus, synced, isReadOnly, memberCount, user } = useCrdMemoProvider({
-    collaborationId: memoId,
-  });
+  const { ydoc, provider, connectionStatus, synced, isReadOnly, memberCount, connectedUsers, user } =
+    useCrdMemoProvider({
+      collaborationId: memoId,
+    });
 
   useEffect(() => {
     return () => {
@@ -52,6 +54,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [updateMemoDisplayName, { loading: savingDisplayName }] = useUpdateMemoDisplayNameMutation();
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [displayNameDraft, setDisplayNameDraft] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
@@ -71,7 +75,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       setEditingDisplayName(false);
       return;
     }
-    await updateMemoDisplayName({ variables: { memoId, displayName: displayNameDraft } });
+    await updateMemoDisplayName({ variables: { memoId, displayName: displayNameDraft.trim() } });
     setEditingDisplayName(false);
   };
 
@@ -94,15 +98,25 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     onClose();
   };
 
-  const handleDelete = onDelete
+  // The footer Delete button opens the confirmation; the actual delete runs from the
+  // confirmation's `onConfirm` so users can't remove a memo with a stray click.
+  const handleRequestDelete = onDelete ? () => setDeleteDialogOpen(true) : undefined;
+
+  const handleConfirmDelete = onDelete
     ? async () => {
         // Delete path: don't refresh the memo (it's about to be gone from the cache).
         if (refreshTimeoutRef.current) {
           clearTimeout(refreshTimeoutRef.current);
           refreshTimeoutRef.current = null;
         }
+        setIsDeleting(true);
+        setDeleteDialogOpen(false);
         onClose();
-        await onDelete();
+        try {
+          await onDelete();
+        } finally {
+          setIsDeleting(false);
+        }
       }
     : undefined;
 
@@ -112,9 +126,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     isAuthenticated,
     isReadOnly,
     memberCount,
+    connectedUsers,
     isContribution,
     hasDeletePrivileges,
-    onDelete: handleDelete,
+    onDelete: handleRequestDelete,
     contentUpdatePolicy: memo?.contentUpdatePolicy,
     myMembershipStatus,
   });
@@ -138,22 +153,36 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const showLoadingState = loading || !memo || !ydoc || !provider;
 
   return (
-    <MemoEditorShell open={open} onClose={handleClose} title={title} footer={<MemoCollabFooter {...footerProps} />}>
-      {showLoadingState ? (
-        <div className="flex items-center justify-center h-full text-muted-foreground text-body">
-          {t('memo.errors.loading')}
-        </div>
-      ) : (
-        <div className="h-full p-3">
-          <CollaborativeMarkdownEditor
-            ydoc={ydoc as unknown as YDocLike}
-            provider={provider as unknown as CollabProviderLike}
-            user={{ name: user.name, color: user.color }}
-            disabled={editorDisabled}
-            className="h-full"
-          />
-        </div>
+    <>
+      <MemoEditorShell open={open} onClose={handleClose} title={title} footer={<MemoCollabFooter {...footerProps} />}>
+        {showLoadingState ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground text-body">
+            {t('memo.errors.loading')}
+          </div>
+        ) : (
+          <div className="h-full p-3">
+            <CollaborativeMarkdownEditor
+              ydoc={ydoc as unknown as YDocLike}
+              provider={provider as unknown as CollabProviderLike}
+              user={{ name: user.name, color: user.color }}
+              disabled={editorDisabled}
+              className="h-full"
+            />
+          </div>
+        )}
+      </MemoEditorShell>
+      {handleConfirmDelete && (
+        <ConfirmationDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          title={t('memo.deleteConfirm.title')}
+          description={t('memo.deleteConfirm.body')}
+          confirmLabel={t('memo.deleteConfirm.confirm')}
+          onConfirm={handleConfirmDelete}
+          variant="destructive"
+          loading={isDeleting}
+        />
       )}
-    </MemoEditorShell>
+    </>
   );
 }

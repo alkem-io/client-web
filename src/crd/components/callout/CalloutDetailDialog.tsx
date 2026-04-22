@@ -27,7 +27,7 @@ type CalloutDetailDialogProps = {
   callout: CalloutDetailDialogData;
   /** CommentThread rendered here, inside the scrollable body */
   commentsSlot: ReactNode;
-  /** CommentInput rendered in sticky footer — omit when canComment is false */
+  /** CommentInput rendered above the thread, inside the scrollable body — omit when canComment is false */
   commentInputSlot?: ReactNode;
   /** Contributions grid rendered above the discussion section */
   contributionsSlot?: ReactNode;
@@ -39,6 +39,8 @@ type CalloutDetailDialogProps = {
   whiteboardFramingSlot?: ReactNode;
   /** Memo framing preview rendered below description (e.g. CalloutMemoPreview) */
   memoFramingSlot?: ReactNode;
+  /** Media gallery inline carousel rendered below description (e.g. CalloutMediaGalleryCarousel) */
+  mediaGalleryFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
 };
@@ -55,6 +57,7 @@ export function CalloutDetailDialog({
   pollSlot,
   whiteboardFramingSlot,
   memoFramingSlot,
+  mediaGalleryFramingSlot,
   onReactionsClick,
   onShareClick,
 }: CalloutDetailDialogProps) {
@@ -142,6 +145,7 @@ export function CalloutDetailDialog({
 
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
+              {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
@@ -188,17 +192,11 @@ export function CalloutDetailDialog({
                   </Badge>
                 )}
               </div>
+              {commentInputSlot && <div className="mb-4">{commentInputSlot}</div>}
               {commentsSlot}
             </div>
           </div>
         </div>
-
-        {/* Sticky footer — comment input */}
-        {commentInputSlot && (
-          <div className="shrink-0 p-4 bg-background border-t border-border z-20">
-            <div className="max-w-4xl mx-auto">{commentInputSlot}</div>
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );

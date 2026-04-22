@@ -1,5 +1,5 @@
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import type { ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
+import type { ConnectedUser, ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
 
 type MapMemoFooterParams = {
@@ -8,6 +8,7 @@ type MapMemoFooterParams = {
   isAuthenticated: boolean;
   isReadOnly: boolean;
   memberCount: number;
+  connectedUsers: ConnectedUser[];
   isContribution: boolean;
   hasDeletePrivileges: boolean;
   onDelete?: () => void;
@@ -19,6 +20,7 @@ type MapMemoFooterParams = {
 type MemoFooterMappedProps = {
   connectionStatus: CollabStatus;
   memberCount: number;
+  connectedUsers: ConnectedUser[];
   isGuest: boolean;
   readonlyReason: ReadonlyReason;
   onDelete?: () => void;
@@ -42,6 +44,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     isAuthenticated,
     isReadOnly,
     memberCount,
+    connectedUsers,
     isContribution,
     hasDeletePrivileges,
     onDelete,
@@ -54,6 +57,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
   return {
     connectionStatus,
     memberCount,
+    connectedUsers,
     isGuest: !isAuthenticated,
     readonlyReason: resolveReadonlyReason({
       connectionStatus,

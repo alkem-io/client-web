@@ -13,6 +13,7 @@ import { CalloutVisibilitySelector } from '@/crd/forms/callout/CalloutVisibility
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import type { CalloutCreationTypeWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { FramingEditorConnector } from './FramingEditorConnector';
 
@@ -45,6 +46,7 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
   const [activeAttachment, setActiveAttachment] = useState('none');
 
   const { handleCreateCallout, loading } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
 
   const mapFormToCallout = (visibility: CalloutVisibility): CalloutCreationTypeWithPreviewImages => {
     const framingType = ATTACHMENT_TO_FRAMING_TYPE[activeAttachment] ?? CalloutFramingType.None;
@@ -115,21 +117,45 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
     return callout;
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    const callout = mapFormToCallout(CalloutVisibility.Published);
-    await handleCreateCallout(callout);
-    reset();
-    onOpenChange(false);
+  // Media-gallery visuals must be uploaded AFTER the callout is saved: the create
+  // mutation creates the underlying MediaGallery row server-side when the framing
+  // type is MediaGallery and returns its id in the response. Mirrors the MUI
+  // CreateCalloutDialog flow (see useCalloutCreationWithPreviewImages for the
+  // matching whiteboard/memo preview-image handling).
+  const uploadPendingMediaGallery = async (
+    framingType: CalloutFramingType,
+    result: Awaited<ReturnType<typeof handleCreateCallout>>
+  ) => {
+    if (framingType !== CalloutFramingType.MediaGallery) return;
+    if (!result) return;
+    const mediaGalleryId = result.framing.mediaGallery?.id;
+    if (!mediaGalleryId || values.mediaGalleryVisuals.length === 0) return;
+    await uploadMediaGalleryVisuals({
+      mediaGalleryId,
+      visuals: values.mediaGalleryVisuals,
+    });
   };
 
-  const handleSaveDraft = async () => {
+  const createAndUpload = async (visibility: CalloutVisibility) => {
     if (!validate()) return;
-    const callout = mapFormToCallout(CalloutVisibility.Draft);
-    await handleCreateCallout(callout);
-    reset();
-    onOpenChange(false);
+    const callout = mapFormToCallout(visibility);
+    const result = await handleCreateCallout(callout);
+    // If the create mutation failed, keep the form open with its values so the user
+    // can retry without re-entering everything. The mutation surfaces its own error.
+    if (!result) return;
+    // Regardless of upload outcome, the callout exists on the server — closing the
+    // form after upload (even on rejection) prevents creating a duplicate callout
+    // on a second submit. Any upload failure is still surfaced via the hook's error.
+    try {
+      await uploadPendingMediaGallery(callout.framing.type, result);
+    } finally {
+      reset();
+      onOpenChange(false);
+    }
   };
+
+  const handleSubmit = () => createAndUpload(CalloutVisibility.Published);
+  const handleSaveDraft = () => createAndUpload(CalloutVisibility.Draft);
 
   return (
     <AddPostModal
@@ -176,13 +202,15 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
           whiteboardContent={values.whiteboardContent}
           whiteboardPreviewSettings={values.whiteboardPreviewSettings}
           whiteboardConfigured={values.whiteboardConfigured}
-          whiteboardTitle={values.title || t('callout.whiteboard')}
+          whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
           onWhiteboardChange={(content, previewImages, previewSettings) => {
             setField('whiteboardContent', content);
             setField('whiteboardPreviewImages', previewImages ?? []);
             setField('whiteboardPreviewSettings', previewSettings);
             setField('whiteboardConfigured', true);
           }}
+          mediaGalleryVisuals={values.mediaGalleryVisuals}
+          onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
         />
       }
       activeAttachment={activeAttachment}
@@ -206,7 +234,7 @@ export function CalloutFormConnector({ open, onOpenChange, calloutsSetId, onFind
       onSubmit={handleSubmit}
       onSaveDraft={handleSaveDraft}
       onFindTemplate={onFindTemplate}
-      loading={loading}
+      loading={loading || mediaGalleryUploading}
     />
   );
 }

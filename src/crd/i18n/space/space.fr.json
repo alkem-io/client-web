@@ -345,12 +345,68 @@
     "reactionCount_one": "1 réaction",
     "contributions": "Contributions"
   },
+  "memo": {
+    "close": "Fermer",
+    "stubDialog": {
+      "message": "L'éditeur de mémo arrive bientôt — aperçu en texte brut affiché."
+    },
+    "displayName": {
+      "inputLabel": "Titre",
+      "edit": "Modifier le titre du mémo",
+      "save": "Enregistrer le titre du mémo",
+      "cancel": "Annuler la modification"
+    },
+    "footer": {
+      "connected": "Connecté",
+      "connecting": "Connexion…",
+      "disconnected": "Déconnecté",
+      "membersOnline_one": "1 membre en ligne",
+      "membersOnline_other": "{{count}} membres en ligne",
+      "guestWarning": "Vous éditez en tant qu'invité",
+      "delete": "Supprimer le mémo",
+      "readonlyReason": {
+        "connecting": "Connexion au service de collaboration…",
+        "notSynced": "Synchronisation… rouvrez le mémo pour reprendre l'édition.",
+        "unauthenticated": "Connectez-vous pour modifier ce mémo.",
+        "contentUpdatePolicy": "Vous n'avez pas la permission de modifier ce mémo. Demandez au propriétaire de modifier les paramètres de partage.",
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer."
+      }
+    },
+    "errors": {
+      "loading": "Chargement du mémo…",
+      "loadFailed": "Impossible de charger le mémo"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Ouvrir l'image",
+    "more_one": "+{{count}} de plus",
+    "more_other": "+{{count}} de plus",
+    "previous": "Image précédente",
+    "next": "Image suivante",
+    "goToImage": "Aller à l'image {{index}}",
+    "thumbnailsLabel": "Miniatures d'images",
+    "download": "Télécharger l'image",
+    "fullscreen": "Passer en plein écran",
+    "exitFullscreen": "Quitter le plein écran",
+    "emptyState": {
+      "title": "Aucune image pour l'instant",
+      "action": "Ajouter des images"
+    },
+    "altTextLabel": "Texte alternatif",
+    "deleteImage": "Supprimer l'image",
+    "dismissError": "Ignorer l'erreur",
+    "uploading": "Téléchargement…",
+    "downloadError": "Impossible de télécharger l’image.",
+    "validation": {
+      "type": "Type de fichier non pris en charge",
+      "tooSmall": "L'image est trop petite",
+      "tooLarge": "L'image est trop grande"
+    }
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Afficher plus",
     "showLess": "Afficher moins",
-    "sortNewest": "Plus récent en premier",
-    "sortOldest": "Plus ancien en premier",
     "reply": "Répondre",
     "delete": "Supprimer",
     "deleted": "Ce commentaire a été supprimé",
