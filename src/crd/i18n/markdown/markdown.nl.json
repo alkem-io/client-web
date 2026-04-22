@@ -1,0 +1,31 @@
+{
+  "editor": {
+    "toolbar": "Opmaakwerkbalk",
+    "undo": "Ongedaan maken",
+    "redo": "Opnieuw",
+    "bold": "Vet",
+    "italic": "Cursief",
+    "heading1": "Kop 1",
+    "heading2": "Kop 2",
+    "heading3": "Kop 3",
+    "bulletList": "Opsommingslijst",
+    "orderedList": "Genummerde lijst",
+    "blockquote": "Citaat",
+    "codeBlock": "Codeblok",
+    "horizontalRule": "Horizontale lijn",
+    "insertTable": "Tabel invoegen",
+    "deleteTable": "Tabel verwijderen",
+    "addColumn": "Kolom toevoegen",
+    "addRow": "Rij toevoegen",
+    "deleteColumn": "Kolom verwijderen",
+    "deleteRow": "Rij verwijderen",
+    "link": "Link",
+    "emoji": "Emoji invoegen",
+    "charCount": "{{count}}/{{max}} tekens",
+    "link.url": "URL",
+    "link.apply": "Toepassen",
+    "link.remove": "Link verwijderen",
+    "link.placeholder": "https://...",
+    "link.invalid": "URL moet beginnen met http:// of https://"
+  }
+}

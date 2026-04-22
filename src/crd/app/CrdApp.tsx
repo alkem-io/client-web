@@ -9,6 +9,7 @@ import { PendingMembershipsListDialog } from '@/crd/components/dashboard/Pending
 import { PendingMembershipsSection } from '@/crd/components/dashboard/PendingMembershipsSection';
 import { NotificationsPanel } from '@/crd/components/notifications/NotificationsPanel';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
+import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
   MOCK_INVITATION_DETAIL,
   MOCK_NOTIFICATION_FILTERS,
@@ -18,7 +19,9 @@ import {
   MOCK_PENDING_VC_INVITATIONS,
 } from './data/dashboard';
 import { DashboardPage } from './pages/DashboardPage';
+import { SpacePage } from './pages/SpacePage';
 import { SpacesPage } from './pages/SpacesPage';
+import { WhiteboardPage } from './pages/WhiteboardPage';
 
 const MOCK_USER = {
   name: 'Alex Rivera',
@@ -64,7 +67,15 @@ export function CrdApp() {
   const totalPendingCount =
     MOCK_PENDING_INVITATIONS.length + MOCK_PENDING_VC_INVITATIONS.length + MOCK_PENDING_APPLICATIONS.length;
 
+  const demoIframeAllowedUrls = [
+    'https://www.youtube.com',
+    'https://www.youtube-nocookie.com',
+    'https://player.vimeo.com',
+    'https://embed.ted.com',
+  ];
+
   return (
+    <MarkdownConfigProvider iframeAllowedUrls={demoIframeAllowedUrls}>
     <BrowserRouter>
       <CrdLayout
         user={MOCK_USER}
@@ -81,10 +92,13 @@ export function CrdApp() {
         onPendingMembershipsClick={() => setShowPendingDialog(true)}
         onHelpClick={() => console.log('Help clicked')}
         footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about' }}
+        showGridToggle={true}
       >
         <Routes>
           <Route path="/" element={<DashboardPage onPendingMembershipsClick={() => setShowPendingDialog(true)} />} />
           <Route path="/spaces" element={<SpacesPage />} />
+          <Route path="/space/:spaceSlug" element={<SpacePage />} />
+          <Route path="/whiteboard" element={<WhiteboardPage />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>
@@ -185,5 +199,6 @@ export function CrdApp() {
         onArchive={id => console.log('Archive', id)}
       />
     </BrowserRouter>
+    </MarkdownConfigProvider>
   );
 }

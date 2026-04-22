@@ -1,0 +1,31 @@
+{
+  "editor": {
+    "toolbar": "Formatting toolbar",
+    "undo": "Undo",
+    "redo": "Redo",
+    "bold": "Bold",
+    "italic": "Italic",
+    "heading1": "Heading 1",
+    "heading2": "Heading 2",
+    "heading3": "Heading 3",
+    "bulletList": "Bullet list",
+    "orderedList": "Ordered list",
+    "blockquote": "Blockquote",
+    "codeBlock": "Code block",
+    "horizontalRule": "Horizontal rule",
+    "insertTable": "Insert table",
+    "deleteTable": "Delete table",
+    "addColumn": "Add column",
+    "addRow": "Add row",
+    "deleteColumn": "Delete column",
+    "deleteRow": "Delete row",
+    "link": "Link",
+    "emoji": "Insert emoji",
+    "charCount": "{{count}}/{{max}} characters",
+    "link.url": "URL",
+    "link.apply": "Apply",
+    "link.remove": "Remove link",
+    "link.placeholder": "https://...",
+    "link.invalid": "URL must start with http:// or https://"
+  }
+}

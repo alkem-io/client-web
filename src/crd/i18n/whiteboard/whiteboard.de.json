@@ -1,0 +1,72 @@
+{
+  "join": {
+    "welcome": "Willkommen bei",
+    "title": "Whiteboard beitreten",
+    "description": "Geben Sie Ihren Namen ein, um der Whiteboard-Sitzung beizutreten. Andere Teilnehmer sehen diesen Namen.",
+    "placeholder": "Ihr Name",
+    "guestNameLabel": "Anzeigename des Gastes",
+    "joinButton": "Als Gast beitreten",
+    "joiningButton": "Beitritt...",
+    "signInButton": "Bei Alkemio anmelden"
+  },
+  "error": {
+    "notFound": {
+      "title": "Whiteboard nicht gefunden",
+      "message": "Dieses Whiteboard existiert nicht oder ist nicht mehr verfügbar."
+    },
+    "serverError": {
+      "title": "Etwas ist schiefgelaufen",
+      "message": "Wir konnten dieses Whiteboard nicht laden. Bitte versuchen Sie es erneut."
+    },
+    "retry": "Erneut versuchen"
+  },
+  "editor": {
+    "editDisplayName": "Titel bearbeiten",
+    "saveDisplayName": "Titel speichern",
+    "cancelEdit": "Bearbeitung abbrechen",
+    "delete": "Whiteboard löschen",
+    "save": "Speichern",
+    "restart": "Zusammenarbeit neu starten",
+    "guestContributionsWarning": "Gastbeiträge sind aktiviert",
+    "closeWhiteboard": "Whiteboard schließen",
+    "loadingWhiteboard": "Whiteboard wird geladen",
+    "untitled": "Whiteboard",
+    "unsavedChanges": {
+      "title": "Ungespeicherte Änderungen verwerfen?",
+      "description": "Sie haben ungespeicherte Änderungen, die verloren gehen. Möchten Sie wirklich fortfahren?",
+      "confirm": "Verwerfen",
+      "cancel": "Weiter bearbeiten"
+    }
+  },
+  "footer": {
+    "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten"
+  },
+  "preview": {
+    "settings": {
+      "title": "Vorschau-Einstellungen",
+      "subtitle": "Wählen Sie, wie die Whiteboard-Miniaturansicht in Karten und Vorschauen aussieht"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Automatisch",
+        "description": "Automatisch die gesamte Leinwandansicht erfassen"
+      },
+      "CUSTOM": {
+        "title": "Benutzerdefiniert",
+        "description": "Wählen Sie Ihren eigenen Zuschneidebereich"
+      },
+      "FIXED": {
+        "title": "Fest",
+        "description": "Auf einen bestimmten Bereich der Leinwand fixieren"
+      }
+    },
+    "crop": {
+      "previewArea": "Whiteboard-Vorschaubereich",
+      "reset": "Zurücksetzen",
+      "cancel": "Abbrechen",
+      "confirm": "Bestätigen",
+      "loading": "Laden",
+      "zoom": "Zoom"
+    }
+  }
+}

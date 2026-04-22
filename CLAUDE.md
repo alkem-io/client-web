@@ -130,6 +130,20 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Admin pages go under `src/main/admin`
 - CRD page integration goes under `src/main/crdPages/<pageName>/`
 
+### Browser Compatibility
+
+Only use JavaScript/CSS features with **>90% global browser support** according to [caniuse.com](https://caniuse.com). This ensures broad compatibility without requiring polyfills.
+
+**Avoid** (insufficient browser coverage):
+- `Array.prototype.at()` — use `arr[arr.length - 1]` instead of `arr.at(-1)`
+- `Object.hasOwn()` — use `Object.prototype.hasOwnProperty.call(obj, key)` or the `in` operator
+- CSS `@container` queries — use media queries or JS-based responsive logic
+- `structuredClone()` — use `JSON.parse(JSON.stringify())` or lodash `cloneDeep`
+
+**Safe to use** (>95% support): `Array.prototype.flat/flatMap`, `Object.entries/fromEntries`, optional chaining (`?.`), nullish coalescing (`??`), `Promise.allSettled`, `globalThis`, `String.prototype.replaceAll`.
+
+When in doubt, check [caniuse.com](https://caniuse.com) before introducing a newer API.
+
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
@@ -142,9 +156,8 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- The project uses Crowdin for translations
-- Only edit English translation files; all other locale files are generated automatically via Crowdin and must never be edited manually
-- If you need to change a non-English translation file, do it from Crowdin, not in the codebase
+- **Crowdin scope** — the Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. There, only `src/core/i18n/en/translation.en.json` may be edited directly; non-English files under `src/core/i18n/` are generated via Crowdin and must never be edited manually.
+- **CRD scope** — translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. All supported languages (en, nl, es, bg, de, fr) are edited directly in the same PR that introduces or removes a key.
 
 ### Namespaces
 
@@ -349,8 +362,11 @@ Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing 
 - 085-collabora-callout: Added TypeScript 5.x, React 19, Node >= 22.0.0 + MUI (existing callout components), Apollo Client, react-i18next, lucide-react (for icons if MUI lacks appropriate ones)
 - 084-crd-pending-memberships-dialog: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
 - 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
+- 089-crd-comments-refinement: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing). No new dependencies.
+- 088-crd-space-apply-button: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `react-i18next` (existing), React Compiler (`babel-plugin-react-compiler`). No new dependencies.
+- 087-crd-space-about-dialog: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing, unchanged), `yup` (already in deps; used standalone for form validation, no Formik in CRD), React Compiler (`babel-plugin-react-compiler`)
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19, Node >= 22.0.0 + MUI (existing callout components), Apollo Client, react-i18next, lucide-react (for icons if MUI lacks appropriate ones) (085-collabora-callout)
-- N/A (all persistence is server-side via GraphQL) (085-collabora-callout)
+- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), `class-variance-authority`, `lucide-react`, Apollo Client (existing — unchanged), `react-i18next` (existing),lucide-react (for icons if MUI lacks appropriate ones) (085-collabora-callout) No new dependencies. (089-crd-comments-refinement)
+- N/A (presentation-only refactor; GraphQL schema and cache semantics unchanged) (089-crd-comments-refinement)

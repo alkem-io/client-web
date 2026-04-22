@@ -15,22 +15,24 @@ export interface BreadcrumbSegment {
 
 // ─── Mock data lookups ───
 
-const SPACE_MAP: Record<string, { name: string; avatar?: string; initials: string }> = {
-  "green-energy": { name: "Green Energy Space", initials: "GE" },
-  "sustainable-futures": { name: "Sustainable Futures", initials: "SF" },
-  "sustainability-lab": { name: "Sustainability Lab", initials: "SL" },
-  "urban-mobility": { name: "Urban Mobility Lab", initials: "UM" },
-  "community-garden": { name: "Community Garden", initials: "CG" },
+const SPACE_MAP: Record<string, { name: string; bannerImage?: string; initials: string }> = {
+  "green-energy": { name: "Green Energy Space", initials: "GE", bannerImage: "https://images.unsplash.com/photo-1690191863988-f685cddde463?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+  "sustainable-futures": { name: "Sustainable Futures", initials: "SF", bannerImage: "https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+  "sustainability-lab": { name: "Sustainability Lab", initials: "SL", bannerImage: "https://images.unsplash.com/photo-1623652554515-91c833e3080e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+  "urban-mobility": { name: "Urban Mobility Lab", initials: "UM", bannerImage: "https://images.unsplash.com/photo-1735639013995-086e648eaa38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+  "community-garden": { name: "Community Garden", initials: "CG", bannerImage: "https://images.unsplash.com/photo-1768659347532-74d3b1efb0ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
+  "innovation-lab": { name: "Innovation Lab", initials: "IL", bannerImage: "https://images.unsplash.com/photo-1676276376052-dc9c9c0b6917?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100" },
 };
 
-const SUBSPACE_MAP: Record<string, { name: string; initials: string; parentSlug: string }> = {
-  "renewable-energy-transition": { name: "Renewable Energy Transition", initials: "RE", parentSlug: "green-energy" },
-  "urban-mobility-lab": { name: "Urban Mobility Lab", initials: "UM", parentSlug: "green-energy" },
-  "green-infrastructure": { name: "Green Infrastructure", initials: "GI", parentSlug: "green-energy" },
+const SUBSPACE_MAP: Record<string, { name: string; initials: string; avatar?: string; parentSlug: string }> = {
+  "renewable-energy-transition": { name: "Renewable Energy Transition", initials: "RE", avatar: "https://images.unsplash.com/photo-1509391366360-2e959784a276?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100", parentSlug: "green-energy" },
+  "urban-mobility-lab": { name: "Urban Mobility Lab", initials: "UM", avatar: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100", parentSlug: "green-energy" },
+  "green-infrastructure": { name: "Green Infrastructure", initials: "GI", avatar: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=100", parentSlug: "green-energy" },
 };
 
 const SETTINGS_TAB_NAMES: Record<string, string> = {
   about: "About",
+  layout: "Layout",
   community: "Community",
   subspaces: "Subspaces",
   templates: "Templates",
@@ -38,6 +40,7 @@ const SETTINGS_TAB_NAMES: Record<string, string> = {
   settings: "Settings",
   account: "Account",
   profile: "Profile",
+  updates: "Updates",
 };
 
 function slugToName(slug: string): string {
@@ -47,9 +50,13 @@ function slugToName(slug: string): string {
 function spaceAvatar(slug: string): React.ReactNode {
   const space = SPACE_MAP[slug];
   const initials = space?.initials ?? slug.substring(0, 2).toUpperCase();
+  const bannerImage = space?.bannerImage;
   return React.createElement(
     Avatar,
     { className: "w-5 h-5", style: { border: "1px solid var(--border)" } },
+    bannerImage
+      ? React.createElement(AvatarImage, { src: bannerImage, alt: space?.name ?? slug, className: "object-cover" })
+      : null,
     React.createElement(AvatarFallback, {
       className: "text-[9px] font-semibold",
       style: { background: "color-mix(in srgb, var(--primary) 15%, transparent)", color: "var(--primary)" },
@@ -60,9 +67,13 @@ function spaceAvatar(slug: string): React.ReactNode {
 function subspaceAvatar(slug: string): React.ReactNode {
   const sub = SUBSPACE_MAP[slug];
   const initials = sub?.initials ?? slug.substring(0, 2).toUpperCase();
+  const avatarUrl = sub?.avatar;
   return React.createElement(
     Avatar,
     { className: "w-5 h-5", style: { border: "1px solid var(--border)" } },
+    avatarUrl
+      ? React.createElement(AvatarImage, { src: avatarUrl, alt: sub?.name ?? slug, className: "object-cover" })
+      : null,
     React.createElement(AvatarFallback, {
       className: "text-[9px] font-semibold",
       style: { background: "color-mix(in srgb, var(--primary) 15%, transparent)", color: "var(--primary)" },
@@ -262,8 +273,36 @@ export function useBreadcrumbs(): BreadcrumbSegment[] {
       ];
     }
 
-    // Subspace
+    // Subspace settings: /space/:spaceSlug/subspaces/:subspaceSlug/settings/:tab
     const subspaceSlug = params.subspaceSlug;
+    if (subspaceSlug && path.includes(`/subspaces/${subspaceSlug}/settings`)) {
+      const subInfo = SUBSPACE_MAP[subspaceSlug];
+      const subspaceName = subInfo?.name ?? subspaceSlug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const subspaceHref = `${spaceHref}/subspaces/${subspaceSlug}`;
+      const subspaceSegment: BreadcrumbSegment = {
+        label: subspaceName,
+        href: subspaceHref,
+        isCurrentPage: false,
+        icon: subspaceAvatar(subspaceSlug),
+      };
+      const tab = params.tab;
+      if (tab) {
+        const tabName = SETTINGS_TAB_NAMES[tab] ?? tab.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+        return [
+          spaceSegment,
+          subspaceSegment,
+          { label: "Settings", href: `${subspaceHref}/settings`, isCurrentPage: false },
+          { label: tabName, href: `${subspaceHref}/settings/${tab}`, isCurrentPage: true },
+        ];
+      }
+      return [
+        spaceSegment,
+        subspaceSegment,
+        { label: "Settings", href: `${subspaceHref}/settings`, isCurrentPage: true },
+      ];
+    }
+
+    // Subspace page: /space/:spaceSlug/subspaces/:subspaceSlug
     if (subspaceSlug) {
       const subInfo = SUBSPACE_MAP[subspaceSlug];
       const subspaceName = subInfo?.name ?? subspaceSlug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());

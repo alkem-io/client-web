@@ -18,7 +18,9 @@
     "pendingMemberships": "Openstaande lidmaatschappen",
     "administration": "Administratie",
     "changeLanguage": "Taal wijzigen",
-    "getHelp": "Hulp krijgen"
+    "getHelp": "Hulp krijgen",
+    "showGrid": "Raster tonen",
+    "hideGrid": "Raster verbergen"
   },
   "footer": {
     "copyright": "© 2026 Alkemio B.V.",

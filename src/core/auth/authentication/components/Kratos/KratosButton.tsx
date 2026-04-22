@@ -12,12 +12,22 @@ interface KratosButtonProps extends KratosProps {
   disabled?: boolean;
   sx?: SxProps<Theme>;
   startIcon?: ReactNode;
+  labelOverride?: (originalLabel: string | undefined) => ReactNode;
 }
 
-export const KratosButton: FC<KratosButtonProps> = ({ disabled, node, sx, variant = 'contained', startIcon }) => {
+export const KratosButton: FC<KratosButtonProps> = ({
+  disabled,
+  node,
+  sx,
+  variant = 'contained',
+  startIcon,
+  labelOverride,
+}) => {
   const attributes = node.attributes as UiNodeInputAttributes;
   const { onBeforeSubmit } = useContext(KratosUIContext);
   const { t } = useTranslation();
+
+  const originalLabel = getNodeTitle(node, t);
 
   return (
     <GridLegacy item={true} xs={12}>
@@ -39,7 +49,7 @@ export const KratosButton: FC<KratosButtonProps> = ({ disabled, node, sx, varian
             sx={sx}
             startIcon={startIcon}
           >
-            {getNodeTitle(node, t)}
+            {labelOverride ? labelOverride(originalLabel) : originalLabel}
           </AuthActionButton>
         </Box>
       </Tooltip>

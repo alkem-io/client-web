@@ -15,9 +15,18 @@
   "public": "Public",
   "member": "Member",
   "leads": "Leads",
+  "loadMore": "Load More",
+  "pinned": "Pinned",
   "leadType": {
     "person": "Person",
     "org": "Organization"
   },
-  "loadMore": "Load More"
+  "share": {
+    "title": "Share",
+    "button": "Share",
+    "url": "Share URL",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "shareOnAlkemio": "Share on Alkemio"
+  }
 }

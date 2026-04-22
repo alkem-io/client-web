@@ -485,7 +485,7 @@ export function SpaceSettingsCommunity() {
                 </TableRow>
               ) : (
                 paginatedMembers.map((member, index) => (
-                  <TableRow key={member.id} className={index % 2 === 0 ? "bg-background" : "bg-muted/30"}>
+                  <TableRow key={member.id} className={cn(index % 2 === 0 ? "bg-background" : "bg-muted/30", "hover:bg-accent/50 transition-colors")}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="w-8 h-8 border border-border">

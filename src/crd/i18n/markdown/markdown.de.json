@@ -1,0 +1,31 @@
+{
+  "editor": {
+    "toolbar": "Formatierungssymbolleiste",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "heading1": "Überschrift 1",
+    "heading2": "Überschrift 2",
+    "heading3": "Überschrift 3",
+    "bulletList": "Aufzählung",
+    "orderedList": "Nummerierte Liste",
+    "blockquote": "Zitat",
+    "codeBlock": "Codeblock",
+    "horizontalRule": "Horizontale Linie",
+    "insertTable": "Tabelle einfügen",
+    "deleteTable": "Tabelle löschen",
+    "addColumn": "Spalte hinzufügen",
+    "addRow": "Zeile hinzufügen",
+    "deleteColumn": "Spalte löschen",
+    "deleteRow": "Zeile löschen",
+    "link": "Link",
+    "emoji": "Emoji einfügen",
+    "charCount": "{{count}}/{{max}} Zeichen",
+    "link.url": "URL",
+    "link.apply": "Anwenden",
+    "link.remove": "Link entfernen",
+    "link.placeholder": "https://...",
+    "link.invalid": "URL muss mit http:// oder https:// beginnen"
+  }
+}

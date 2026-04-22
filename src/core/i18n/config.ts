@@ -91,6 +91,22 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/dashboard/dashboard.de.json'),
     fr: () => import('@/crd/i18n/dashboard/dashboard.fr.json'),
   },
+  'crd-space': {
+    en: () => import('@/crd/i18n/space/space.en.json'),
+    es: () => import('@/crd/i18n/space/space.es.json'),
+    nl: () => import('@/crd/i18n/space/space.nl.json'),
+    bg: () => import('@/crd/i18n/space/space.bg.json'),
+    de: () => import('@/crd/i18n/space/space.de.json'),
+    fr: () => import('@/crd/i18n/space/space.fr.json'),
+  },
+  'crd-markdown': {
+    en: () => import('@/crd/i18n/markdown/markdown.en.json'),
+    es: () => import('@/crd/i18n/markdown/markdown.es.json'),
+    nl: () => import('@/crd/i18n/markdown/markdown.nl.json'),
+    bg: () => import('@/crd/i18n/markdown/markdown.bg.json'),
+    de: () => import('@/crd/i18n/markdown/markdown.de.json'),
+    fr: () => import('@/crd/i18n/markdown/markdown.fr.json'),
+  },
   'crd-search': {
     en: () => import('@/crd/i18n/search/search.en.json'),
     es: () => import('@/crd/i18n/search/search.es.json'),
@@ -98,6 +114,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     bg: () => import('@/crd/i18n/search/search.bg.json'),
     de: () => import('@/crd/i18n/search/search.de.json'),
     fr: () => import('@/crd/i18n/search/search.fr.json'),
+  },
+  'crd-whiteboard': {
+    en: () => import('@/crd/i18n/whiteboard/whiteboard.en.json'),
+    es: () => import('@/crd/i18n/whiteboard/whiteboard.es.json'),
+    nl: () => import('@/crd/i18n/whiteboard/whiteboard.nl.json'),
+    bg: () => import('@/crd/i18n/whiteboard/whiteboard.bg.json'),
+    de: () => import('@/crd/i18n/whiteboard/whiteboard.de.json'),
+    fr: () => import('@/crd/i18n/whiteboard/whiteboard.fr.json'),
   },
 };
 

@@ -56,7 +56,13 @@ export const WrapperMarkdown = ({
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
 
   const mergedSx: SxProps<Theme> = {
-    li: { marginY: caption ? 0 : 1 },
+    // Restore browser-default list rendering that Tailwind v4 preflight strips globally.
+    'ul, ol': { paddingInlineStart: '2rem', marginBlock: 1 },
+    ul: { listStyleType: 'disc' },
+    ol: { listStyleType: 'decimal' },
+    'ul ul, ol ul': { listStyleType: 'circle' },
+    'ul ul ul, ol ol ul': { listStyleType: 'square' },
+    li: { display: 'list-item', marginY: caption ? 0 : 1 },
     display: plain ? 'inline' : undefined,
     table: theme => ({ borderCollapse: theme.palette.markdownTable.borderCollapse }),
     tr: theme => ({

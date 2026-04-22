@@ -23,6 +23,9 @@ import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 
 const HomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/HomePage'));
 const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
+const CrdPublicWhiteboardPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/whiteboard/CrdPublicWhiteboardPage')
+);
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const CrdSpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/spaces/SpaceExplorerPage'));
@@ -49,6 +52,7 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
 );
 const HubRoute = lazyWithGlobalErrorHandler(() => import('@/domain/innovationHub/routing/HubRoute'));
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
+const CrdSpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/space/routing/CrdSpaceRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
@@ -72,7 +76,7 @@ export const TopLevelRoutes = () => {
           element={
             <WithApmTransaction path={`${GUEST_SHARE_PATH}/:whiteboardId`}>
               <Suspense fallback={<Loading />}>
-                <PublicWhiteboardPage />
+                {crdEnabled ? <CrdPublicWhiteboardPage /> : <PublicWhiteboardPage />}
               </Suspense>
             </WithApmTransaction>
           }
@@ -286,16 +290,32 @@ export const TopLevelRoutes = () => {
                       </WithApmTransaction>
                     }
                   />
-                  <Route
-                    path={`:${nameOfUrl.spaceNameId}/*`}
-                    element={
-                      <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
-                        <Suspense fallback={<Loading />}>
-                          <SpaceRoutes />
-                        </Suspense>
-                      </WithApmTransaction>
-                    }
-                  />
+                  {/* Space page — toggleable between CRD (new) and MUI (old) via localStorage */}
+                  {crdEnabled ? (
+                    <Route element={<CrdLayoutWrapper />}>
+                      <Route
+                        path={`:${nameOfUrl.spaceNameId}/*`}
+                        element={
+                          <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                            <Suspense fallback={<Loading />}>
+                              <CrdSpaceRoutes />
+                            </Suspense>
+                          </WithApmTransaction>
+                        }
+                      />
+                    </Route>
+                  ) : (
+                    <Route
+                      path={`:${nameOfUrl.spaceNameId}/*`}
+                      element={
+                        <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
+                          <Suspense fallback={<Loading />}>
+                            <SpaceRoutes />
+                          </Suspense>
+                        </WithApmTransaction>
+                      }
+                    />
+                  )}
                   {/* Redirects */}
                   <Route path={`/${TopLevelRoutePath.Help}`} element={<Navigate to={`/${TopLevelRoutePath.Docs}`} />} />
                   <Route

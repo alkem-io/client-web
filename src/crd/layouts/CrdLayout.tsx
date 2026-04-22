@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { GridOverlayProvider } from '@/crd/hooks/useGridOverlay';
+import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
 import type {
@@ -28,6 +30,7 @@ type CrdLayoutProps = {
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   footerLinks?: CrdFooterLinks;
+  showGridToggle?: boolean;
   children: ReactNode;
 };
 
@@ -50,9 +53,10 @@ export function CrdLayout({
   onPendingMembershipsClick,
   onHelpClick,
   footerLinks,
+  showGridToggle,
   children,
 }: CrdLayoutProps) {
-  return (
+  const content = (
     <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
       <Header
         user={user}
@@ -72,6 +76,7 @@ export function CrdLayout({
         onSearchClick={onSearchClick}
         onPendingMembershipsClick={onPendingMembershipsClick}
         onHelpClick={onHelpClick}
+        showGridToggle={showGridToggle}
       />
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer
@@ -81,6 +86,13 @@ export function CrdLayout({
         onLanguageChange={onLanguageChange}
         onSupportClick={onHelpClick}
       />
+      {showGridToggle && <GridOverlay />}
     </div>
   );
+
+  if (showGridToggle) {
+    return <GridOverlayProvider>{content}</GridOverlayProvider>;
+  }
+
+  return content;
 }

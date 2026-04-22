@@ -138,6 +138,10 @@ fragment CalloutDetails on Callout {
     profile {
       id
       displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
     }
   }
 }

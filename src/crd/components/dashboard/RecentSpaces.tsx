@@ -29,12 +29,12 @@ export function RecentSpaces({
   return (
     <section className={cn('space-y-4', className)}>
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">{t('recentSpaces.title')}</h2>
+        <h2 className="text-section-title">{t('recentSpaces.title')}</h2>
         {onExploreAllClick && (
           <button
             type="button"
             onClick={onExploreAllClick}
-            className="flex items-center gap-1 text-sm font-medium text-primary hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+            className="flex items-center gap-1 text-body-emphasis text-primary hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           >
             {t('recentSpaces.exploreAll')} <ArrowRight className="size-4" aria-hidden="true" />
           </button>

@@ -3829,7 +3829,11 @@
     "recovery": {
       "header": "Password recovery",
       "message": {
-        "initial": "Please enter your email address below to receive a recovery link that will allow you to reset your password."
+        "initial": "Please enter your email address below to receive a recovery link that will allow you to reset your password.",
+        "resend": "<strong>Haven't received the email?</strong><br/>Check your spam folder, confirm the address below is correct, then request a new recovery email once the timer ends."
+      },
+      "cooldown": {
+        "button": "{{label}} in {{seconds}}s"
       }
     },
     "verification": {

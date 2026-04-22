@@ -171,7 +171,7 @@ function TemplateCard({ template, onAction }: {
 }) {
   return (
     <div className={cn(
-      "group relative flex flex-col border rounded-lg overflow-hidden bg-card hover:shadow-md transition-all duration-200"
+      "group relative flex flex-col border rounded-lg overflow-hidden bg-card hover:shadow-md transition-all duration-300"
     )}>
       {/* Thumbnail */}
       <div className="relative aspect-video bg-muted overflow-hidden">

@@ -1,0 +1,221 @@
+import type { Locale } from 'date-fns';
+import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+import { ExternalLink, MapPin } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { cn } from '@/crd/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Badge } from '@/crd/primitives/badge';
+import { Button } from '@/crd/primitives/button';
+import { Skeleton } from '@/crd/primitives/skeleton';
+import { EventCardHeader } from './EventCardHeader';
+
+type EventReference = {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string;
+};
+
+type EventAuthor = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  profileUrl?: string;
+};
+
+type EventDetailData = {
+  id: string;
+  title: string;
+  description: string;
+  bannerUrl?: string;
+  location?: string;
+  tags: string[];
+  references: EventReference[];
+  startDate: Date | undefined;
+  durationMinutes: number;
+  durationDays?: number;
+  wholeDay: boolean;
+  type?: string;
+  subspaceName?: string;
+  author: EventAuthor;
+  createdDate: Date | undefined;
+  loading: boolean;
+  notFound: boolean;
+};
+
+type EventDetailViewProps = {
+  event: EventDetailData;
+  showComments: boolean;
+  commentCount?: number;
+  commentsSlot?: ReactNode;
+  commentInputSlot?: ReactNode;
+  /** Required handler for the "not found" state's back button; also the same
+   *  callback the parent wires to the dialog header's Back action. */
+  onBack: () => void;
+  /** Resolves an entity id to a deterministic colour. Invoked by the component
+   *  lazily for the author avatar fallback when `avatarUrl` is undefined. The
+   *  connector wires `pickColorFromId` to keep this component free of the
+   *  business helper import. */
+  resolveColor: (id: string) => string;
+  /** date-fns Locale for the createdDate caption + nested EventCardHeader.
+   *  Resolved by the consumer via `useCrdSpaceLocale()`. Defaults to enUS. */
+  locale?: Locale;
+};
+
+const DESKTOP_BREAKPOINT = '(min-width: 768px)';
+
+function authorInitial(name: string): string {
+  return name.trim().charAt(0).toUpperCase() || '?';
+}
+
+export function EventDetailView({
+  event,
+  showComments,
+  commentCount,
+  commentsSlot,
+  commentInputSlot,
+  onBack,
+  resolveColor,
+  locale = enUS,
+}: EventDetailViewProps) {
+  const { t } = useTranslation('crd-space');
+  const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
+
+  if (event.notFound) {
+    return (
+      <div className="flex min-h-[16rem] flex-col items-center justify-center gap-3 p-8 text-center">
+        <h2 className="text-subsection-title">{t('calendar.notFound.title')}</h2>
+        <p className="text-body text-muted-foreground">{t('calendar.notFound.body')}</p>
+        <Button variant="outline" onClick={onBack}>
+          {t('calendar.notFound.backToList')}
+        </Button>
+      </div>
+    );
+  }
+
+  const avatarFallbackColor = event.author.id ? resolveColor(event.author.id) : undefined;
+
+  const body = (
+    <div className="flex flex-col gap-4">
+      {event.bannerUrl && (
+        <div
+          className="h-32 w-full rounded-md sm:h-40"
+          style={{ background: `url("${event.bannerUrl}") center/cover` }}
+          role="img"
+          aria-label={t('a11y.spaceBanner', { name: event.title })}
+        />
+      )}
+      {event.loading ? (
+        <div className="space-y-3">
+          <Skeleton className="h-6 w-2/3" />
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-5/6" />
+        </div>
+      ) : (
+        <>
+          <EventCardHeader event={event} size="md" locale={locale} />
+          {event.author.name && event.createdDate && (
+            <div className="flex items-center gap-2 text-caption text-muted-foreground">
+              <Avatar className="h-5 w-5 shrink-0">
+                {event.author.avatarUrl && <AvatarImage src={event.author.avatarUrl} alt={event.author.name} />}
+                <AvatarFallback
+                  className="text-badge text-white"
+                  style={avatarFallbackColor ? { backgroundColor: avatarFallbackColor } : undefined}
+                >
+                  {authorInitial(event.author.name)}
+                </AvatarFallback>
+              </Avatar>
+              <span>
+                {t('calendar.details.createdBy', {
+                  name: event.author.name,
+                  date: format(event.createdDate, 'PPP', { locale }),
+                })}
+              </span>
+            </div>
+          )}
+          {event.description && (
+            <div className="text-body">
+              <MarkdownContent content={event.description} />
+            </div>
+          )}
+          {event.location && (
+            <div className="flex items-center gap-1.5 text-body text-muted-foreground">
+              <MapPin className="h-4 w-4 shrink-0" aria-label={t('calendar.fields.location')} />
+              <span>{event.location}</span>
+            </div>
+          )}
+          {event.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {event.tags.map(tag => (
+                <Badge key={tag} variant="secondary" className="font-normal">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+          {event.references.length > 0 && (
+            <div>
+              <h4 className="mb-2 text-label uppercase text-muted-foreground">{t('calendar.details.references')}</h4>
+              <ul className="space-y-1 text-body">
+                {event.references.map(ref => (
+                  <li key={ref.id}>
+                    <a
+                      href={ref.uri}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        'inline-flex items-center gap-1 text-primary hover:underline',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded'
+                      )}
+                    >
+                      {ref.name}
+                      <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                    </a>
+                    {ref.description && <p className="text-caption text-muted-foreground">{ref.description}</p>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+
+  const commentsColumn = showComments ? (
+    <div className="flex flex-col gap-3">
+      <h4 className="text-label uppercase text-muted-foreground">
+        {t('calendar.details.comments')}
+        {typeof commentCount === 'number' && <span className="ml-1 font-normal">({commentCount})</span>}
+      </h4>
+      {commentInputSlot && <div>{commentInputSlot}</div>}
+      <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>
+    </div>
+  ) : null;
+
+  if (!isDesktop) {
+    return (
+      <div className="flex flex-col gap-6">
+        {body}
+        {commentsColumn && <div className="border-t border-border pt-4">{commentsColumn}</div>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-row gap-6">
+      <div className="min-w-0 flex-1">{body}</div>
+      {commentsColumn && (
+        <div className="flex min-w-[20rem] max-w-[28rem] flex-1 flex-col border-l border-border pl-6">
+          {commentsColumn}
+        </div>
+      )}
+    </div>
+  );
+}

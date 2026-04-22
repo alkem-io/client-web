@@ -511,7 +511,7 @@ export function SpaceSettingsSubspaces() {
                   <div 
                     key={subspace.id}
                     className={cn(
-                       "flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors",
+                       "flex items-center gap-4 p-4 hover:bg-accent/50 transition-colors",
                        i !== filteredSubspaces.length - 1 && "border-b border-border"
                     )}
                   >

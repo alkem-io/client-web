@@ -15,9 +15,18 @@
   "public": "Публично",
   "member": "Член",
   "leads": "Лидери",
+  "loadMore": "Зареди още",
+  "pinned": "Закрепено",
   "leadType": {
     "person": "Лице",
     "org": "Организация"
   },
-  "loadMore": "Зареди още"
+  "share": {
+    "title": "Споделяне",
+    "button": "Споделяне",
+    "url": "URL за споделяне",
+    "copy": "Копиране на линка",
+    "copied": "Копирано",
+    "shareOnAlkemio": "Споделяне в Alkemio"
+  }
 }

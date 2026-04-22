@@ -1,0 +1,72 @@
+{
+  "join": {
+    "welcome": "Welkom bij",
+    "title": "Deelnemen aan whiteboard",
+    "description": "Voer je naam in om deel te nemen aan de whiteboardsessie. Andere deelnemers zien deze naam.",
+    "placeholder": "Je naam",
+    "guestNameLabel": "Weergavenaam gast",
+    "joinButton": "Deelnemen als gast",
+    "joiningButton": "Deelnemen...",
+    "signInButton": "Inloggen bij Alkemio"
+  },
+  "error": {
+    "notFound": {
+      "title": "Whiteboard niet gevonden",
+      "message": "Dit whiteboard bestaat niet of is niet meer beschikbaar."
+    },
+    "serverError": {
+      "title": "Er ging iets mis",
+      "message": "We konden dit whiteboard niet laden. Probeer het opnieuw."
+    },
+    "retry": "Opnieuw proberen"
+  },
+  "editor": {
+    "editDisplayName": "Titel bewerken",
+    "saveDisplayName": "Titel opslaan",
+    "cancelEdit": "Bewerking annuleren",
+    "delete": "Whiteboard verwijderen",
+    "save": "Opslaan",
+    "restart": "Samenwerking herstarten",
+    "guestContributionsWarning": "Gastbijdragen zijn ingeschakeld",
+    "closeWhiteboard": "Whiteboard sluiten",
+    "loadingWhiteboard": "Whiteboard laden",
+    "untitled": "Whiteboard",
+    "unsavedChanges": {
+      "title": "Niet-opgeslagen wijzigingen verwerpen?",
+      "description": "Je hebt niet-opgeslagen wijzigingen die verloren zullen gaan. Weet je zeker dat je wilt doorgaan?",
+      "confirm": "Verwerpen",
+      "cancel": "Doorgaan met bewerken"
+    }
+  },
+  "footer": {
+    "guestContributionsWarning": "Iedereen met de link kan bewerken"
+  },
+  "preview": {
+    "settings": {
+      "title": "Voorbeeldinstellingen",
+      "subtitle": "Kies hoe de whiteboard-thumbnail eruitziet in kaarten en voorbeelden"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Automatisch",
+        "description": "Automatisch de volledige canvasweergave vastleggen"
+      },
+      "CUSTOM": {
+        "title": "Aangepast",
+        "description": "Kies je eigen bijsnijdgebied"
+      },
+      "FIXED": {
+        "title": "Vast",
+        "description": "Vergrendel op een specifiek deel van het canvas"
+      }
+    },
+    "crop": {
+      "previewArea": "Whiteboard voorbeeldgebied",
+      "reset": "Herstellen",
+      "cancel": "Annuleren",
+      "confirm": "Bevestigen",
+      "loading": "Laden",
+      "zoom": "Zoom"
+    }
+  }
+}

@@ -128,7 +128,7 @@ const useWhiteboardActions = () => {
     previewImages?: WhiteboardPreviewImage[]
   ) => {
     if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
-      uploadVisuals(
+      await uploadVisuals(
         previewImages,
         { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
         whiteboard.nameID

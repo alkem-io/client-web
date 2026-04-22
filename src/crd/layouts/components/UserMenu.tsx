@@ -1,5 +1,6 @@
-import { Check, CircleEllipsis, Globe, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
+import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
 import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -29,6 +30,7 @@ type UserMenuProps = {
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
+  showGridToggle?: boolean;
 };
 
 export function UserMenu({
@@ -43,8 +45,10 @@ export function UserMenu({
   onPendingMembershipsClick,
   onHelpClick,
   onLanguageChange,
+  showGridToggle,
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
+  const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
 
   const currentLanguageLabel = languages?.find(l => currentLanguage?.startsWith(l.code))?.label;
 
@@ -62,11 +66,11 @@ export function UserMenu({
         <div className="relative p-1.5 rounded-full hover:bg-accent/50 transition-colors cursor-pointer">
           <Avatar className="h-8 w-8 border border-border">
             <AvatarImage src={user.avatarUrl} alt={user.name} />
-            <AvatarFallback className="bg-primary/10 text-primary text-xs">{user.initials}</AvatarFallback>
+            <AvatarFallback className="bg-primary/10 text-primary text-caption">{user.initials}</AvatarFallback>
           </Avatar>
           <Badge
             variant="secondary"
-            className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-[9px] font-bold leading-[14px]"
+            className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge leading-[14px]"
           >
             {t('header.beta')}
           </Badge>
@@ -76,10 +80,8 @@ export function UserMenu({
         {/* User identity */}
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-semibold">{user.name}</span>
-            {user.role && (
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{user.role}</span>
-            )}
+            <span className="text-card-title">{user.name}</span>
+            {user.role && <span className="text-label uppercase text-muted-foreground">{user.role}</span>}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -110,7 +112,7 @@ export function UserMenu({
             <CircleEllipsis aria-hidden="true" className="mr-2 h-4 w-4" />
             <span>{t('header.pendingMemberships')}</span>
             {typeof pendingInvitationsCount === 'number' && pendingInvitationsCount > 0 && (
-              <Badge className="ml-auto text-[10px] px-1.5 h-[18px] bg-primary text-primary-foreground rounded-full">
+              <Badge className="ml-auto text-badge px-1.5 h-[18px] bg-primary text-primary-foreground rounded-full">
                 {pendingInvitationsCount}
               </Badge>
             )}
@@ -136,7 +138,7 @@ export function UserMenu({
               <Globe aria-hidden="true" className="mr-2 h-4 w-4" />
               <span>{t('header.changeLanguage')}</span>
               {currentLanguageLabel && (
-                <span className="ml-auto text-xs text-muted-foreground">{currentLanguageLabel}</span>
+                <span className="ml-auto text-caption text-muted-foreground">{currentLanguageLabel}</span>
               )}
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
@@ -146,7 +148,7 @@ export function UserMenu({
                   onClick={() => onLanguageChange(lang.code)}
                   className={cn('cursor-pointer', currentLanguage?.startsWith(lang.code) && 'bg-accent')}
                 >
-                  <span className="text-sm">{lang.label}</span>
+                  <span className="text-control">{lang.label}</span>
                   {currentLanguage?.startsWith(lang.code) && (
                     <Check aria-hidden="true" className="ml-auto h-4 w-4 shrink-0 text-primary" />
                   )}
@@ -154,6 +156,14 @@ export function UserMenu({
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
+        )}
+
+        {/* Grid overlay toggle — only in standalone demo app */}
+        {showGridToggle && (
+          <DropdownMenuItem onClick={toggleGrid} className="cursor-pointer">
+            <Grid3X3 aria-hidden="true" className="mr-2 h-4 w-4" />
+            <span>{isGridVisible ? t('header.hideGrid') : t('header.showGrid')}</span>
+          </DropdownMenuItem>
         )}
 
         {/* Help */}
