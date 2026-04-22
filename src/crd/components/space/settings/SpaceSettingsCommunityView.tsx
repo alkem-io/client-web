@@ -1,7 +1,6 @@
 import {
   Bot,
   Building,
-  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -13,11 +12,12 @@ import {
   Shield,
   Trash2,
   UserPlus,
-  X,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { PendingMembership } from '@/crd/components/space/settings/PendingMembershipsTable';
+import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -33,14 +33,8 @@ import { Input } from '@/crd/primitives/input';
 import { Separator } from '@/crd/primitives/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
 
-export type CommunityMemberStatus = 'active' | 'pending' | 'invited';
-
 export type CommunityMember = {
   id: string;
-  /** Discriminates rows: active member / pending application / invitation / platform invitation. */
-  source: 'user' | 'application' | 'invitation' | 'platformInvitation';
-  /** Status shown in the Status column. */
-  status: CommunityMemberStatus;
   displayName: string;
   email?: string;
   avatarUrl?: string;
@@ -49,7 +43,6 @@ export type CommunityMember = {
   roleLabel: string;
   /** ISO or already-formatted date string shown in the Joined column. Empty → "—". */
   joinedDate: string;
-  isPlatformInvitation?: boolean;
 };
 
 export type CommunityOrg = {
@@ -69,6 +62,7 @@ export type CommunityVC = {
 
 export type SpaceSettingsCommunityViewProps = {
   members: CommunityMember[];
+  pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
   applicationFormSlot?: ReactNode;
@@ -84,44 +78,18 @@ export type SpaceSettingsCommunityViewProps = {
   onVCAdd: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
-  onApplicationApprove: (id: string) => void;
-  onApplicationReject: (id: string) => void;
-  onInvitationDelete: (id: string) => void;
-  onPlatformInvitationDelete: (id: string) => void;
+  onPendingApprove: (id: string) => void;
+  onPendingReject: (id: string) => void;
+  onPendingDelete: (id: string) => void;
   onInviteUsers: () => void;
   className?: string;
 };
 
 const MEMBERS_PAGE_SIZE = 10;
-const MEMBER_FILTERS = ['all', 'active', 'pending', 'invited'] as const;
-type MemberFilter = (typeof MEMBER_FILTERS)[number];
-
-function StatusBadge({ status }: { status: CommunityMemberStatus }) {
-  const { t } = useTranslation('crd-spaceSettings');
-  switch (status) {
-    case 'pending':
-      return (
-        <Badge variant="outline" className="bg-muted text-muted-foreground border-border text-badge">
-          {t('community.members.status.pending', { defaultValue: 'Pending' })}
-        </Badge>
-      );
-    case 'invited':
-      return (
-        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-badge">
-          {t('community.members.status.invited', { defaultValue: 'Invited' })}
-        </Badge>
-      );
-    case 'active':
-      return (
-        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-badge">
-          {t('community.members.status.active', { defaultValue: 'Active' })}
-        </Badge>
-      );
-  }
-}
 
 export function SpaceSettingsCommunityView({
   members,
+  pendingMemberships,
   organizations,
   virtualContributors,
   applicationFormSlot,
@@ -133,27 +101,20 @@ export function SpaceSettingsCommunityView({
   onVCAdd,
   onVCAddExternal,
   onVCRemove,
-  onApplicationApprove,
-  onApplicationReject,
-  onInvitationDelete,
-  onPlatformInvitationDelete,
+  onPendingApprove,
+  onPendingReject,
+  onPendingDelete,
   onInviteUsers,
   className,
 }: SpaceSettingsCommunityViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [filter, setFilter] = useState<MemberFilter>('all');
 
   const filtered = members.filter(m => {
-    if (search) {
-      const needle = search.toLowerCase();
-      if (!m.displayName.toLowerCase().includes(needle) && !(m.email?.toLowerCase().includes(needle) ?? false)) {
-        return false;
-      }
-    }
-    if (filter !== 'all' && m.status !== filter) return false;
-    return true;
+    if (!search) return true;
+    const needle = search.toLowerCase();
+    return m.displayName.toLowerCase().includes(needle) || (m.email?.toLowerCase().includes(needle) ?? false);
   });
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / MEMBERS_PAGE_SIZE));
@@ -164,10 +125,6 @@ export function SpaceSettingsCommunityView({
 
   const handleSearchChange = (next: string) => {
     setSearch(next);
-    setPage(1);
-  };
-  const handleFilterChange = (next: MemberFilter) => {
-    setFilter(next);
     setPage(1);
   };
 
@@ -183,6 +140,15 @@ export function SpaceSettingsCommunityView({
           })}
         </p>
       </div>
+
+      <Separator />
+
+      <PendingMembershipsTable
+        items={pendingMemberships}
+        onApprove={onPendingApprove}
+        onReject={onPendingReject}
+        onDelete={onPendingDelete}
+      />
 
       <Separator />
 
@@ -208,24 +174,6 @@ export function SpaceSettingsCommunityView({
                 className="h-9 w-[220px] pl-9 text-sm"
               />
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild={true}>
-                <Button type="button" variant="outline" size="sm" className="gap-2">
-                  {t('community.members.filter.label', {
-                    defaultValue: 'Filter: {{value}}',
-                    value: t(`community.members.filter.${filter}`, { defaultValue: filter }),
-                  })}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {MEMBER_FILTERS.map(f => (
-                  <DropdownMenuItem key={f} onClick={() => handleFilterChange(f)}>
-                    {t(`community.members.filter.${f}`, { defaultValue: f })}
-                    {filter === f && <Check aria-hidden="true" className="ml-auto size-4" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
             {permissions.canAddUsers && (
               <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
                 <UserPlus aria-hidden="true" className="size-4" />
@@ -241,7 +189,6 @@ export function SpaceSettingsCommunityView({
                 <TableHead className="w-[320px]">{t('community.members.name', { defaultValue: 'Name' })}</TableHead>
                 <TableHead>{t('community.members.role', { defaultValue: 'Role' })}</TableHead>
                 <TableHead>{t('community.members.joined', { defaultValue: 'Joined' })}</TableHead>
-                <TableHead>{t('community.members.status.column', { defaultValue: 'Status' })}</TableHead>
                 <TableHead className="w-[140px] text-right">
                   {t('community.members.actions', { defaultValue: 'Actions' })}
                 </TableHead>
@@ -250,13 +197,13 @@ export function SpaceSettingsCommunityView({
             <TableBody>
               {paginated.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
                     {t('community.members.empty', { defaultValue: 'No members found.' })}
                   </TableCell>
                 </TableRow>
               )}
               {paginated.map((m, index) => (
-                <TableRow key={`${m.source}-${m.id}`} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                <TableRow key={m.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
                   <TableCell>
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar className="size-8 border border-border shrink-0">
@@ -283,95 +230,35 @@ export function SpaceSettingsCommunityView({
                     <span className="text-body-emphasis text-foreground">{m.roleLabel}</span>
                   </TableCell>
                   <TableCell className="text-caption text-muted-foreground">{m.joinedDate || '—'}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={m.status} />
-                  </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {m.status === 'pending' && (
-                        <>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="size-8 text-primary border-primary/30 hover:bg-primary/10"
-                            onClick={() => onApplicationApprove(m.id)}
-                            aria-label={t('community.applications.approve', { defaultValue: 'Approve' })}
-                          >
-                            <Check aria-hidden="true" className="size-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="size-8 text-destructive border-destructive/30 hover:bg-destructive/10"
-                            onClick={() => onApplicationReject(m.id)}
-                            aria-label={t('community.applications.reject', { defaultValue: 'Reject' })}
-                          >
-                            <X aria-hidden="true" className="size-4" />
-                          </Button>
-                        </>
-                      )}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild={true}>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                            aria-label={t('community.members.actions', { defaultValue: 'Actions' })}
-                          >
-                            <MoreHorizontal aria-hidden="true" className="size-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {m.url && (
-                            <DropdownMenuItem asChild={true}>
-                              <a href={m.url}>{t('community.members.viewProfile', { defaultValue: 'View Profile' })}</a>
-                            </DropdownMenuItem>
-                          )}
-                          {m.status === 'pending' && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => onApplicationApprove(m.id)}>
-                                {t('community.applications.approve', { defaultValue: 'Approve' })}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onClick={() => onApplicationReject(m.id)}
-                              >
-                                {t('community.applications.reject', { defaultValue: 'Reject' })}
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                          {m.status === 'invited' && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onClick={() =>
-                                  m.isPlatformInvitation ? onPlatformInvitationDelete(m.id) : onInvitationDelete(m.id)
-                                }
-                              >
-                                {t('community.invitations.revoke', { defaultValue: 'Revoke Invitation' })}
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                          {m.status === 'active' && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onClick={() => onUserRemove(m.id)}
-                              >
-                                <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                {t('community.members.remove', { defaultValue: 'Remove from Space' })}
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild={true}>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="size-8"
+                          aria-label={t('community.members.actions', { defaultValue: 'Actions' })}
+                        >
+                          <MoreHorizontal aria-hidden="true" className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {m.url && (
+                          <DropdownMenuItem asChild={true}>
+                            <a href={m.url}>{t('community.members.viewProfile', { defaultValue: 'View Profile' })}</a>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => onUserRemove(m.id)}
+                        >
+                          <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                          {t('community.members.remove', { defaultValue: 'Remove from Space' })}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}

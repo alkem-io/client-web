@@ -16,6 +16,7 @@ import {
   type AuthorizationPrivilege,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import type { ApplicationModel } from '../model/ApplicationModel';
 import type { InvitationModel } from '../model/InvitationModel';
 import type InvitationResultModel from '../model/InvitationResultModel';
@@ -160,6 +161,11 @@ const useRoleSetApplicationsAndInvitations = ({
           applicationID: applicationId,
           eventName: newState,
         },
+      },
+      update: cache => {
+        if (roleSetId) {
+          evictFromCache(cache, roleSetId, 'RoleSet');
+        }
       },
       onCompleted: () => refetch(),
     });

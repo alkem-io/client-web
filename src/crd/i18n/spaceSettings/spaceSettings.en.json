@@ -88,6 +88,33 @@
       "revoke": "Revoke invitation",
       "platformInvite": "Platform invite"
     },
+    "pendingMemberships": {
+      "title": "Pending Memberships",
+      "name": "Name",
+      "email": "Email",
+      "date": "Date",
+      "type": "Type",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject",
+      "delete": "Delete",
+      "empty": "No pending memberships.",
+      "status": {
+        "column": "Status",
+        "applicationReceived": "Application received",
+        "applicationApproved": "Application approved",
+        "applicationRejected": "Application rejected",
+        "invited": "Invited",
+        "invitationAccepted": "Invitation accepted",
+        "invitationRejected": "Invitation rejected",
+        "invitedExternal": "Invited (external)"
+      },
+      "contributorType": {
+        "user": "User",
+        "organization": "Organization",
+        "virtualContributor": "Virtual contributor"
+      }
+    },
     "members": {
       "title": "Space Members",
       "search": "Search members…",
@@ -147,6 +174,10 @@
       "applicationReject": {
         "title": "Reject application",
         "description": "Reject {{name}}'s application to join this space?"
+      },
+      "applicationDelete": {
+        "title": "Remove application",
+        "description": "Remove {{name}}'s application from the list?"
       }
     }
   },

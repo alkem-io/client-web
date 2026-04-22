@@ -5,6 +5,7 @@ import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import {
   DropdownMenu,
@@ -204,7 +205,9 @@ export function SpaceSettingsUpdatesView({
                         </span>
                       )}
                       {message.author?.roleLabel && (
-                        <span className="text-caption text-muted-foreground">{message.author.roleLabel}</span>
+                        <Badge variant="secondary" className="text-badge px-1.5 py-0">
+                          {message.author.roleLabel}
+                        </Badge>
                       )}
                     </div>
                     <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground mt-0.5">
@@ -237,7 +240,7 @@ export function SpaceSettingsUpdatesView({
                   </DropdownMenu>
                 )}
               </header>
-              <div className="text-body text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:text-foreground [&_strong]:font-semibold [&_p]:mb-2 [&_p:last-child]:mb-0">
+              <div className="text-body text-muted-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:text-foreground [&_strong]:font-semibold [&_p]:mb-2 [&_p:last-child]:mb-0">
                 <MarkdownContent content={message.body} />
               </div>
             </article>

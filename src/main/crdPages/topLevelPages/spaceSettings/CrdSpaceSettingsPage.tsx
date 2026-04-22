@@ -209,6 +209,7 @@ export default function CrdSpaceSettingsPage() {
             {activeTab === 'community' && (
               <SpaceSettingsCommunityView
                 members={community.members}
+                pendingMemberships={community.pendingMemberships}
                 organizations={community.organizations}
                 virtualContributors={community.virtualContributors}
                 applicationFormSlot={
@@ -248,10 +249,9 @@ export default function CrdSpaceSettingsPage() {
                 onVCAdd={addVCDialog.openDialog}
                 onVCAddExternal={addVCExternalDialog.openDialog}
                 onVCRemove={community.onVCRemove}
-                onApplicationApprove={community.onApplicationApprove}
-                onApplicationReject={community.onApplicationReject}
-                onInvitationDelete={community.onInvitationDelete}
-                onPlatformInvitationDelete={community.onPlatformInvitationDelete}
+                onPendingApprove={community.onPendingApprove}
+                onPendingReject={community.onPendingReject}
+                onPendingDelete={community.onPendingDelete}
                 onInviteUsers={inviteDialog.openDialog}
               />
             )}
@@ -512,14 +512,18 @@ export default function CrdSpaceSettingsPage() {
               return t('community.confirmRemove.virtualContributor.title', {
                 defaultValue: 'Remove virtual contributor',
               });
-            case 'invitation':
-            case 'platformInvitation':
-              return t('community.confirmRemove.invitation.title', {
-                defaultValue: 'Revoke invitation',
-              });
             case 'applicationReject':
               return t('community.confirmRemove.applicationReject.title', {
                 defaultValue: 'Reject application',
+              });
+            case 'pendingDelete':
+              if (community.pendingRemoval.membershipType === 'application') {
+                return t('community.confirmRemove.applicationDelete.title', {
+                  defaultValue: 'Remove application',
+                });
+              }
+              return t('community.confirmRemove.invitation.title', {
+                defaultValue: 'Revoke invitation',
               });
             default:
               return '';
@@ -543,15 +547,20 @@ export default function CrdSpaceSettingsPage() {
                 defaultValue: 'Remove {{name}} from this space?',
                 name,
               });
-            case 'invitation':
-            case 'platformInvitation':
-              return t('community.confirmRemove.invitation.description', {
-                defaultValue: 'Revoke the pending invitation for {{name}}?',
-                name,
-              });
             case 'applicationReject':
               return t('community.confirmRemove.applicationReject.description', {
                 defaultValue: "Reject {{name}}'s application to join this space?",
+                name,
+              });
+            case 'pendingDelete':
+              if (community.pendingRemoval.membershipType === 'application') {
+                return t('community.confirmRemove.applicationDelete.description', {
+                  defaultValue: "Remove {{name}}'s application from the list?",
+                  name,
+                });
+              }
+              return t('community.confirmRemove.invitation.description', {
+                defaultValue: 'Revoke the pending invitation for {{name}}?',
                 name,
               });
             default:
