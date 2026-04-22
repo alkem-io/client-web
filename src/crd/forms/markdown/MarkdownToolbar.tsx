@@ -30,9 +30,10 @@ import { ToolbarLinkDialog } from './ToolbarLinkDialog';
 type MarkdownToolbarProps = {
   editor: Editor | null;
   className?: string;
+  collaborative?: boolean;
 };
 
-export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
+export function MarkdownToolbar({ editor, className, collaborative = false }: MarkdownToolbarProps) {
   const { t } = useTranslation('crd-markdown');
   const [, setTick] = useState(0);
 
@@ -66,11 +67,14 @@ export function MarkdownToolbar({ editor, className }: MarkdownToolbarProps) {
       aria-label={t('editor.toolbar')}
       className={cn('flex items-center gap-0.5 px-2 py-1.5 overflow-x-auto', className)}
     >
-      {/* Undo / Redo */}
-      <ToolbarButton editor={editor} icon={Undo2} label={t('editor.undo')} command={c => c.undo()} />
-      <ToolbarButton editor={editor} icon={Redo2} label={t('editor.redo')} command={c => c.redo()} />
-
-      <Separator orientation="vertical" className="mx-1 h-5" />
+      {/* Undo / Redo — hidden in collaborative mode (Yjs owns history) */}
+      {!collaborative && (
+        <>
+          <ToolbarButton editor={editor} icon={Undo2} label={t('editor.undo')} command={c => c.undo()} />
+          <ToolbarButton editor={editor} icon={Redo2} label={t('editor.redo')} command={c => c.redo()} />
+          <Separator orientation="vertical" className="mx-1 h-5" />
+        </>
+      )}
 
       {/* Text formatting */}
       <ToolbarButton
