@@ -168,6 +168,7 @@ export function SpaceSettingsCommunityView({
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
               />
               <Input
+                aria-label={t('community.members.search', { defaultValue: 'Search members…' })}
                 placeholder={t('community.members.search', { defaultValue: 'Search members…' })}
                 value={search}
                 onChange={e => handleSearchChange(e.target.value)}
@@ -528,7 +529,7 @@ function SectionCard({
     <section className="rounded-xl border border-border bg-card p-6">
       <button
         type="button"
-        className="flex w-full items-start gap-4 text-left group"
+        className="flex w-full items-start gap-4 text-left group rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"
         onClick={() => setOpen(prev => !prev)}
         aria-expanded={open}
       >

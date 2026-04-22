@@ -20,6 +20,7 @@ export type UseApplicationFormDataResult = {
   onQuestionMoveUp: (index: number) => void;
   onQuestionMoveDown: (index: number) => void;
   onSave: () => void;
+  onReset: () => void;
 };
 
 export function useApplicationFormData(roleSetId: string | undefined): UseApplicationFormDataResult {
@@ -120,6 +121,11 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
     });
   };
 
+  const onReset = () => {
+    setLocalDescription(null);
+    setLocalQuestions(null);
+  };
+
   return {
     description,
     questions,
@@ -134,5 +140,6 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
     onQuestionMoveUp,
     onQuestionMoveDown,
     onSave,
+    onReset,
   };
 }

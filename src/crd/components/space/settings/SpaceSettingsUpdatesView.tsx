@@ -39,6 +39,8 @@ export type SpaceSettingsUpdatesViewProps = {
   removing: boolean;
   canEdit: boolean;
   canRemove: boolean;
+  /** BCP-47 language tag used for date formatting (e.g. `en`, `nl`). Injected by the consumer — CRD rule: no direct i18n API access. */
+  locale: string;
   onDraftChange: (next: string) => void;
   onSubmit: () => void;
   onRequestRemove: (messageId: string) => void;
@@ -63,12 +65,13 @@ export function SpaceSettingsUpdatesView({
   removing,
   canEdit,
   canRemove,
+  locale,
   onDraftChange,
   onSubmit,
   onRequestRemove,
   className,
 }: SpaceSettingsUpdatesViewProps) {
-  const { t, i18n } = useTranslation('crd-spaceSettings');
+  const { t } = useTranslation('crd-spaceSettings');
   const [composerOpen, setComposerOpen] = useState(false);
   const prevSubmittingRef = useRef(submitting);
 
@@ -85,7 +88,7 @@ export function SpaceSettingsUpdatesView({
   const formatDate = (timestamp: number) => {
     if (!timestamp || Number.isNaN(timestamp)) return '';
     try {
-      return new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium' }).format(new Date(timestamp));
+      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(timestamp));
     } catch {
       return new Date(timestamp).toLocaleDateString();
     }
@@ -167,9 +170,12 @@ export function SpaceSettingsUpdatesView({
       {/* Message list */}
       <section className="flex flex-col gap-4">
         {loading && messages.length === 0 ? (
-          <div className="flex items-center justify-center py-10 text-muted-foreground">
+          <output
+            aria-label={t('updates.loading', { defaultValue: 'Loading updates' })}
+            className="flex items-center justify-center py-10 text-muted-foreground"
+          >
             <Loader2 aria-hidden="true" className="size-5 animate-spin" />
-          </div>
+          </output>
         ) : messages.length === 0 ? (
           <p className="text-center text-body text-muted-foreground py-12">
             {t('updates.empty', { defaultValue: 'No updates yet.' })}

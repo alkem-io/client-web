@@ -56,7 +56,7 @@ import { useSpaceSettingsTab } from './useSpaceSettingsTab';
  * NOT render a second hero here.
  */
 export default function CrdSpaceSettingsPage() {
-  const { t } = useTranslation('crd-spaceSettings');
+  const { t, i18n } = useTranslation('crd-spaceSettings');
   const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
   const { space, loading: loadingSpace } = useSpace();
   const accountId = space?.accountId;
@@ -142,6 +142,7 @@ export default function CrdSpaceSettingsPage() {
   };
   const handleConfirmSwitchDiscard = () => {
     layout.onReset();
+    applicationForm.onReset();
     guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
@@ -285,6 +286,7 @@ export default function CrdSpaceSettingsPage() {
                 removing={updatesTab.removing}
                 canEdit={!!communityId}
                 canRemove={!!communityId}
+                locale={i18n.language}
                 onDraftChange={updatesTab.onDraftChange}
                 onSubmit={() => void updatesTab.onSubmit()}
                 onRequestRemove={updatesTab.onRequestRemove}

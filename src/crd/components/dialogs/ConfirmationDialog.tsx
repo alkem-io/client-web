@@ -81,7 +81,8 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
 
     return (
       <AlertDialog open={open} onOpenChange={onOpenChange}>
-        <AlertDialogContent>
+        {/* The z-[90] is necessary to ensure the dialog appears above other dialogs (memos, whiteboards) that have z-[60]. */}
+        <AlertDialogContent className="z-[90]">
           <AlertDialogHeader>
             <AlertDialogTitle>{title}</AlertDialogTitle>
             <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -98,7 +99,8 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
             >
               {discardLabel}
             </AlertDialogAction>
-            <AlertDialogAction onClick={onSave} disabled={loading} aria-busy={loading}>
+            {/* Save is the safe default action — rendered last and auto-focused so Enter triggers onSave, not onDiscard. */}
+            <AlertDialogAction onClick={onSave} disabled={loading} aria-busy={loading} autoFocus={true}>
               {saveLabel}
             </AlertDialogAction>
           </AlertDialogFooter>
