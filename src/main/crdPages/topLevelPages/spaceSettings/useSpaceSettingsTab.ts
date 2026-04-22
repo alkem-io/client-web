@@ -9,6 +9,7 @@ export const SPACE_SETTINGS_TAB_IDS = [
   'about',
   'layout',
   'community',
+  'updates',
   'subspaces',
   'templates',
   'storage',

@@ -57,11 +57,7 @@ export function LayoutPoolColumn({
   return (
     <>
       <Card
-        className={cn(
-          'flex min-w-[280px] max-w-[320px] flex-1 flex-col overflow-hidden',
-          isOver && 'ring-2 ring-primary/30',
-          className
-        )}
+        className={cn('flex min-w-0 flex-1 flex-col overflow-hidden', isOver && 'ring-2 ring-primary/30', className)}
       >
         <div className="bg-muted/40 px-4 pt-4 pb-3">
           <div className="flex items-center justify-between gap-2">

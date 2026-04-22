@@ -97,7 +97,7 @@ export function SpaceSettingsLayoutView({
       {/* Columns + Save bar inside a bordered container */}
       <div className="rounded-xl border p-4">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <div className="flex items-start gap-4 overflow-x-auto pb-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
             {columns.map(column => {
               const otherColumns = columns.filter(c => c.id !== column.id).map(c => ({ id: c.id, title: c.title }));
               return (

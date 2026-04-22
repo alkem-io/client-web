@@ -269,6 +269,16 @@ function SubspaceGridCard({
             aria-hidden="true"
           />
         )}
+        {subspace.isPinned && (
+          <div
+            className="absolute top-2 left-2 rounded-full bg-background/85 backdrop-blur-sm p-1 shadow-sm"
+            role="img"
+            aria-label="Pinned"
+            title="Pinned"
+          >
+            <Pin aria-hidden="true" className="size-3.5 text-amber-500" />
+          </div>
+        )}
         <div className="absolute top-2 right-2">
           <SubspaceKebab
             subspace={subspace}
@@ -333,6 +343,9 @@ function SubspaceListItem({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
+          {subspace.isPinned && (
+            <Pin aria-hidden="true" className="size-3.5 text-amber-500 shrink-0" aria-label="Pinned" />
+          )}
           <a href={subspace.href} className="font-medium text-sm text-foreground truncate hover:underline">
             {subspace.name}
           </a>

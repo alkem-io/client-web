@@ -5,6 +5,7 @@ import {
   Eye,
   FileText,
   LayoutTemplate,
+  Loader2,
   MoreHorizontal,
   Pencil,
   PenTool,
@@ -50,6 +51,8 @@ export type TemplateCategorySection = {
 export type SpaceSettingsTemplatesViewProps = {
   categories: TemplateCategorySection[];
   loading?: boolean;
+  /** Which category (if any) is currently mid-duplicate — shows a "Creating…" chip in that section header. */
+  duplicatingCategory?: TemplateCategory | null;
   onCreateTemplate: (c: TemplateCategory) => void;
   onImportTemplate: (c: TemplateCategory) => void;
   onTemplateAction: (id: string, action: TemplateAction) => void;
@@ -99,6 +102,7 @@ const SECTIONS: SectionMeta[] = [
 export function SpaceSettingsTemplatesView({
   categories,
   loading: _loading,
+  duplicatingCategory,
   onCreateTemplate,
   onImportTemplate,
   onTemplateAction,
@@ -187,6 +191,12 @@ export function SpaceSettingsTemplatesView({
                         <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-[1.5rem] flex justify-center">
                           {allTemplates.length}
                         </Badge>
+                        {duplicatingCategory === section.category && (
+                          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Loader2 aria-hidden="true" className="size-3 animate-spin" />
+                            {t('templates.duplicating', { defaultValue: 'Creating new template…' })}
+                          </span>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground hidden sm:block">{section.description}</p>
                     </div>

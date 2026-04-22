@@ -1,27 +1,29 @@
+import { useState } from 'react';
 import type {
   CommunityMember,
   CommunityOrg,
   CommunityVC,
-  PendingApplication,
-  PendingInvitation,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 
+export type CommunityPendingRemoval =
+  | { kind: 'user'; id: string; name: string }
+  | { kind: 'organization'; id: string; name: string }
+  | { kind: 'virtualContributor'; id: string; name: string }
+  | { kind: 'invitation'; id: string; name: string }
+  | { kind: 'platformInvitation'; id: string; name: string }
+  | { kind: 'applicationReject'; id: string; name: string };
+
 export type UseCommunityTabDataResult = {
-  users: CommunityMember[];
+  members: CommunityMember[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
-  applications: PendingApplication[];
-  invitations: PendingInvitation[];
   permissions: {
     canAddUsers: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
-  onUserLeadChange: (id: string, isLead: boolean) => void;
-  onUserAdminChange: (id: string, isAdmin: boolean) => void;
   onUserRemove: (id: string) => void;
-  onOrgLeadChange: (id: string, isLead: boolean) => void;
   onOrgRemove: (id: string) => void;
   onVCRemove: (id: string) => void;
   onApplicationApprove: (id: string) => void;
@@ -29,22 +31,81 @@ export type UseCommunityTabDataResult = {
   onInvitationDelete: (id: string) => void;
   onPlatformInvitationDelete: (id: string) => void;
   loading: boolean;
+  pendingRemoval: CommunityPendingRemoval | null;
+  confirmRemoval: () => Promise<void>;
+  cancelRemoval: () => void;
+  _adminRef: ReturnType<typeof useCommunityAdmin>;
+};
+
+const toDateString = (d: Date | string | undefined | null): string => {
+  if (!d) return '';
+  if (d instanceof Date) return d.toLocaleDateString();
+  return String(d);
 };
 
 export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResult {
   const community = useCommunityAdmin({ roleSetId });
+  const [pendingRemoval, setPendingRemoval] = useState<CommunityPendingRemoval | null>(null);
 
-  const users: CommunityMember[] = community.userAdmin.members.map(u => ({
-    id: u.id,
-    displayName: u.profile?.displayName ?? '',
-    email: u.email,
-    avatarUrl: u.profile?.avatar?.uri,
-    url: u.profile?.url,
-    isMember: u.isMember,
-    isLead: u.isLead,
-    isAdmin: u.isAdmin,
-    isContactable: u.isContactable,
-  }));
+  const activeMembers: CommunityMember[] = community.userAdmin.members.map(u => {
+    const roleLabel = u.isAdmin ? 'Admin' : u.isLead ? 'Lead' : 'Member';
+    return {
+      id: u.id,
+      source: 'user' as const,
+      status: 'active' as const,
+      displayName: u.profile?.displayName ?? '',
+      email: u.email,
+      avatarUrl: u.profile?.avatar?.uri,
+      url: u.profile?.url,
+      roleLabel,
+      joinedDate: '',
+    };
+  });
+
+  const applicationMembers: CommunityMember[] = community.membershipAdmin.applications
+    .filter(a => a.state === 'new')
+    .map(a => ({
+      id: a.id,
+      source: 'application' as const,
+      status: 'pending' as const,
+      displayName: a.actor.profile?.displayName ?? '',
+      email: a.actor.profile?.email,
+      avatarUrl: undefined,
+      url: a.actor.profile?.url,
+      roleLabel: 'Member',
+      joinedDate: toDateString(a.createdDate),
+    }));
+
+  const invitationMembers: CommunityMember[] = [
+    ...community.membershipAdmin.invitations
+      .filter(inv => inv.state === 'invited')
+      .map(inv => ({
+        id: inv.id,
+        source: 'invitation' as const,
+        status: 'invited' as const,
+        displayName: inv.actor.profile?.displayName ?? '',
+        email: inv.actor.profile?.email,
+        avatarUrl: undefined,
+        url: inv.actor.profile?.url,
+        roleLabel: 'Member',
+        joinedDate: toDateString(inv.createdDate),
+        isPlatformInvitation: false,
+      })),
+    ...community.membershipAdmin.platformInvitations.map(inv => ({
+      id: inv.id,
+      source: 'platformInvitation' as const,
+      status: 'invited' as const,
+      displayName: inv.email,
+      email: inv.email,
+      avatarUrl: undefined,
+      url: undefined,
+      roleLabel: 'Member',
+      joinedDate: toDateString(inv.createdDate),
+      isPlatformInvitation: true,
+    })),
+  ];
+
+  const members: CommunityMember[] = [...applicationMembers, ...invitationMembers, ...activeMembers];
 
   const organizations: CommunityOrg[] = community.organizationAdmin.members.map(o => ({
     id: o.id,
@@ -61,90 +122,65 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     url: vc.profile?.url,
   }));
 
-  const applications: PendingApplication[] = community.membershipAdmin.applications
-    .filter(a => a.state === 'new')
-    .map(a => ({
-      id: a.id,
-      displayName: a.actor.profile?.displayName ?? '',
-      email: a.actor.profile?.email,
-      createdDate: a.createdDate instanceof Date ? a.createdDate.toLocaleDateString() : String(a.createdDate),
-    }));
-
-  const invitations: PendingInvitation[] = [
-    ...community.membershipAdmin.invitations
-      .filter(inv => inv.state === 'invited')
-      .map(inv => ({
-        id: inv.id,
-        displayName: inv.actor.profile?.displayName ?? '',
-        email: inv.actor.profile?.email,
-        createdDate: inv.createdDate instanceof Date ? inv.createdDate.toLocaleDateString() : String(inv.createdDate),
-        isPlatformInvitation: false as const,
-      })),
-    ...community.membershipAdmin.platformInvitations.map(inv => ({
-      id: inv.id,
-      displayName: inv.email,
-      email: inv.email,
-      createdDate:
-        inv.createdDate instanceof Date
-          ? inv.createdDate?.toLocaleDateString()
-          : inv.createdDate
-            ? String(inv.createdDate)
-            : '',
-      isPlatformInvitation: true as const,
-    })),
-  ];
-
-  const onUserLeadChange = (id: string, isLead: boolean) => {
-    void community.userAdmin.onLeadChange(id, isLead);
-  };
-
-  const onUserAdminChange = (id: string, isAdmin: boolean) => {
-    void community.userAdmin.onAuthorizationChange(id, isAdmin);
-  };
+  const findName = (list: { id: string; displayName: string }[], id: string) =>
+    list.find(item => item.id === id)?.displayName ?? '';
 
   const onUserRemove = (id: string) => {
-    void community.userAdmin.onRemove(id);
+    setPendingRemoval({ kind: 'user', id, name: findName(members, id) });
   };
-
-  const onOrgLeadChange = (id: string, isLead: boolean) => {
-    void community.organizationAdmin.onLeadChange(id, isLead);
-  };
-
   const onOrgRemove = (id: string) => {
-    void community.organizationAdmin.onRemove(id);
+    setPendingRemoval({ kind: 'organization', id, name: findName(organizations, id) });
   };
-
   const onVCRemove = (id: string) => {
-    void community.virtualContributorAdmin.onRemove(id);
+    setPendingRemoval({ kind: 'virtualContributor', id, name: findName(virtualContributors, id) });
   };
-
   const onApplicationApprove = (id: string) => {
     void community.membershipAdmin.onApplicationStateChange(id, 'approve');
   };
-
   const onApplicationReject = (id: string) => {
-    void community.membershipAdmin.onApplicationStateChange(id, 'reject');
+    setPendingRemoval({ kind: 'applicationReject', id, name: findName(members, id) });
   };
-
   const onInvitationDelete = (id: string) => {
-    void community.membershipAdmin.onDeleteInvitation(id);
+    setPendingRemoval({ kind: 'invitation', id, name: findName(members, id) });
+  };
+  const onPlatformInvitationDelete = (id: string) => {
+    setPendingRemoval({ kind: 'platformInvitation', id, name: findName(members, id) });
   };
 
-  const onPlatformInvitationDelete = (id: string) => {
-    void community.membershipAdmin.onDeletePlatformInvitation(id);
+  const cancelRemoval = () => setPendingRemoval(null);
+
+  const confirmRemoval = async () => {
+    if (!pendingRemoval) return;
+    const target = pendingRemoval;
+    setPendingRemoval(null);
+    switch (target.kind) {
+      case 'user':
+        await community.userAdmin.onRemove(target.id);
+        return;
+      case 'organization':
+        await community.organizationAdmin.onRemove(target.id);
+        return;
+      case 'virtualContributor':
+        await community.virtualContributorAdmin.onRemove(target.id);
+        return;
+      case 'invitation':
+        await community.membershipAdmin.onDeleteInvitation(target.id);
+        return;
+      case 'platformInvitation':
+        await community.membershipAdmin.onDeletePlatformInvitation(target.id);
+        return;
+      case 'applicationReject':
+        await community.membershipAdmin.onApplicationStateChange(target.id, 'reject');
+        return;
+    }
   };
 
   return {
-    users,
+    members,
     organizations,
     virtualContributors,
-    applications,
-    invitations,
     permissions: community.permissions,
-    onUserLeadChange,
-    onUserAdminChange,
     onUserRemove,
-    onOrgLeadChange,
     onOrgRemove,
     onVCRemove,
     onApplicationApprove,
@@ -152,5 +188,9 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     onInvitationDelete,
     onPlatformInvitationDelete,
     loading: community.loading,
+    pendingRemoval,
+    confirmRemoval,
+    cancelRemoval,
+    _adminRef: community,
   };
 }

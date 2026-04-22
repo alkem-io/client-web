@@ -75,7 +75,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[2fr_1fr] lg:gap-8">
-        <div className="flex flex-col">
+        <div className="flex flex-col min-w-0">
           {/* Space Name */}
           <FieldSection>
             <FieldLabel>{t('about.name.title', { defaultValue: 'Space Name' })}</FieldLabel>
@@ -304,7 +304,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
         </div>
 
         {/* Preview */}
-        <div className="hidden lg:block">
+        <div className="hidden min-w-0 lg:block">
           <div className="sticky top-6">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">PREVIEW</p>
             <SpaceCard space={previewCardToSpaceCardData(previewCard)} />

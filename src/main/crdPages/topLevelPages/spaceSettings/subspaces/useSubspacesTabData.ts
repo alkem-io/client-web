@@ -4,6 +4,7 @@ import {
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
+  useSpaceContentTemplatesOnSpaceQuery,
   useSubspacesInSpaceQuery,
   useUpdateSubspacePinnedMutation,
   useUpdateSubspacesSortOrderMutation,
@@ -33,6 +34,10 @@ export type UseSubspacesTabDataResult = {
   closeSelectDefaultTemplate: () => void;
   onSelectDefaultTemplate: (templateId: string) => void;
   defaultTemplateId: string | undefined;
+  /** Subspace-level (Space) templates available in this space's library. */
+  subspaceTemplateChoices: { id: string; name: string }[];
+  subspaceTemplatesLoading: boolean;
+  subspaceTemplatesSaving: boolean;
 };
 
 export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult {
@@ -79,12 +84,25 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
     awaitRefetchQueries: true,
   });
 
-  const [updateSubspacePinned] = useUpdateSubspacePinnedMutation();
+  const [updateSubspacePinned] = useUpdateSubspacePinnedMutation({
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
+    awaitRefetchQueries: true,
+  });
   const [updateSubspacesSortOrder] = useUpdateSubspacesSortOrderMutation();
-  const [updateTemplateDefault] = useUpdateTemplateDefaultMutation({
+  const [updateTemplateDefault, { loading: updatingTemplateDefault }] = useUpdateTemplateDefaultMutation({
     refetchQueries: [refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery({ spaceId })],
     awaitRefetchQueries: true,
   });
+
+  const { data: templatesOnSpaceData, loading: loadingSubspaceTemplates } = useSpaceContentTemplatesOnSpaceQuery({
+    variables: { spaceId },
+    skip: !spaceId || !selectDefaultTemplateOpen,
+  });
+  const subspaceTemplateChoices =
+    templatesOnSpaceData?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(tmpl => ({
+      id: tmpl.id,
+      name: tmpl.profile.displayName,
+    })) ?? [];
 
   const onKebabAction = (id: string, action: SubspaceKebabAction) => {
     if (action === 'delete') {
@@ -153,5 +171,8 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
     closeSelectDefaultTemplate: () => setSelectDefaultTemplateOpen(false),
     onSelectDefaultTemplate,
     defaultTemplateId: defaultSubspaceTemplate?.template?.id,
+    subspaceTemplateChoices,
+    subspaceTemplatesLoading: loadingSubspaceTemplates,
+    subspaceTemplatesSaving: updatingTemplateDefault,
   };
 }

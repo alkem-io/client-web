@@ -11,6 +11,8 @@ import type {
   TemplateCategorySection,
 } from '@/crd/components/space/settings/SpaceSettingsTemplatesView';
 import { mapTemplatesToCategories } from './templatesMapper';
+import { type UseTemplateActionsResult, useTemplateActions } from './useTemplateActions';
+import { type UseTemplateLibraryResult, useTemplateLibrary } from './useTemplateLibrary';
 
 export type UseTemplatesTabDataResult = {
   categories: TemplateCategorySection[];
@@ -20,11 +22,19 @@ export type UseTemplatesTabDataResult = {
   onImportTemplate: (c: TemplateCategory) => void;
   onTemplateAction: (id: string, action: TemplateAction) => void;
   pendingDelete: { id: string; name: string } | null;
-  confirmDelete: () => void;
+  /** Whether a deletion is currently in flight (used to render a spinner + keep UI busy). */
+  deleting: boolean;
+  /** Id of the template optimistically being deleted so the list can hide it immediately. */
+  deletingTemplateId: string | null;
+  confirmDelete: () => Promise<void>;
   cancelDelete: () => void;
+  /** Template library (import-from-library) dialog state + actions. */
+  library: UseTemplateLibraryResult;
+  /** Preview / Edit / Duplicate dialog states + actions. */
+  actions: UseTemplateActionsResult;
 };
 
-export function useTemplatesTabData(spaceId: string): UseTemplatesTabDataResult {
+export function useTemplatesTabData(spaceId: string, accountId: string | undefined): UseTemplatesTabDataResult {
   const { data: managerData, loading: managerLoading } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId,
@@ -48,24 +58,52 @@ export function useTemplatesTabData(spaceId: string): UseTemplatesTabDataResult 
   );
 
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
+  const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null);
 
-  const [deleteTemplate] = useDeleteTemplateMutation({
+  const [deleteTemplate, { loading: deleting }] = useDeleteTemplateMutation({
     refetchQueries: templatesSetId ? [refetchAllTemplatesInTemplatesSetQuery({ templatesSetId })] : [],
     awaitRefetchQueries: true,
+    update: (cache, _result, { variables }) => {
+      // Optimistically evict the template from the Apollo cache so the list
+      // updates as soon as the mutation fires, without waiting for the refetch.
+      if (!variables?.templateId) return;
+      cache.evict({ id: cache.identify({ __typename: 'Template', id: variables.templateId }) });
+      cache.gc();
+    },
   });
 
+  const actions = useTemplateActions({ templatesSetId });
+
   const onTemplateAction = (id: string, action: TemplateAction) => {
-    if (action === 'delete') {
-      const tmpl = categories.flatMap(c => c.templates).find(t => t.id === id);
-      setPendingDelete({ id, name: tmpl?.name ?? '' });
+    const tmpl = categories.flatMap(c => c.templates).find(t => t.id === id);
+    if (!tmpl) return;
+    switch (action) {
+      case 'delete':
+        setPendingDelete({ id, name: tmpl.name });
+        return;
+      case 'preview':
+        actions.onRequestPreview(id, tmpl.category);
+        return;
+      case 'edit':
+        actions.onRequestEdit(id, tmpl.category);
+        return;
+      case 'duplicate':
+        void actions.onRequestDuplicate(id, tmpl.category);
+        return;
     }
-    // preview, duplicate, edit: TODO — wire to existing MUI dialogs or CRD replacements
   };
 
-  const confirmDelete = () => {
-    if (pendingDelete) {
-      void deleteTemplate({ variables: { templateId: pendingDelete.id } });
-      setPendingDelete(null);
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    const targetId = pendingDelete.id;
+    setDeletingTemplateId(targetId);
+    // Close the confirmation dialog immediately — the list row shows a
+    // per-item spinner while the mutation + refetch complete.
+    setPendingDelete(null);
+    try {
+      await deleteTemplate({ variables: { templateId: targetId } });
+    } finally {
+      setDeletingTemplateId(null);
     }
   };
 
@@ -73,12 +111,14 @@ export function useTemplatesTabData(spaceId: string): UseTemplatesTabDataResult 
     setPendingDelete(null);
   };
 
+  const library = useTemplateLibrary({ spaceId, templatesSetId, accountId });
+
   const onCreateTemplate = (_c: TemplateCategory) => {
     // TODO: open create template dialog
   };
 
-  const onImportTemplate = (_c: TemplateCategory) => {
-    // TODO: open import from library dialog
+  const onImportTemplate = (c: TemplateCategory) => {
+    library.openForCategory(c);
   };
 
   return {
@@ -89,7 +129,11 @@ export function useTemplatesTabData(spaceId: string): UseTemplatesTabDataResult 
     onImportTemplate,
     onTemplateAction,
     pendingDelete,
+    deleting,
+    deletingTemplateId,
     confirmDelete,
     cancelDelete,
+    library,
+    actions,
   };
 }

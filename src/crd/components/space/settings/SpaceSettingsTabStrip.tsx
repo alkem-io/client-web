@@ -31,7 +31,14 @@ export function SpaceSettingsTabStrip<TTabId extends string>({
   className,
 }: SpaceSettingsTabStripProps<TTabId>) {
   return (
-    <div role="tablist" className={cn('flex items-center gap-1 overflow-x-auto overflow-y-hidden border-b', className)}>
+    <div
+      role="tablist"
+      className={cn(
+        'flex items-center gap-x-1 overflow-x-auto overflow-y-hidden',
+        '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+        className
+      )}
+    >
       {tabs.map(({ id, label, icon: Icon }) => {
         const isActive = id === activeTab;
         return (
@@ -42,7 +49,7 @@ export function SpaceSettingsTabStrip<TTabId extends string>({
             aria-selected={isActive}
             onClick={() => onTabChange(id)}
             className={cn(
-              'inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-sm transition-colors',
+              'inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 text-sm transition-colors shrink-0',
               'border-b-2 -mb-px outline-none',
               'focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1 rounded-t-sm',
               isActive

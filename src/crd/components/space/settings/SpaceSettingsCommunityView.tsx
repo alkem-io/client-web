@@ -1,22 +1,55 @@
-import { Check, ChevronDown, ChevronRight, Clock, Mail, Trash2, UserPlus, X } from 'lucide-react';
+import {
+  Bot,
+  Building,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  FileText,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Shield,
+  Trash2,
+  UserPlus,
+  X,
+} from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
+import { Separator } from '@/crd/primitives/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
+
+export type CommunityMemberStatus = 'active' | 'pending' | 'invited';
 
 export type CommunityMember = {
   id: string;
+  /** Discriminates rows: active member / pending application / invitation / platform invitation. */
+  source: 'user' | 'application' | 'invitation' | 'platformInvitation';
+  /** Status shown in the Status column. */
+  status: CommunityMemberStatus;
   displayName: string;
   email?: string;
   avatarUrl?: string;
   url?: string;
-  isMember: boolean;
-  isLead: boolean;
-  isAdmin: boolean;
+  /** Plain-text role: `Host`, `Admin`, `Lead`, `Member`. */
+  roleLabel: string;
+  /** ISO or already-formatted date string shown in the Joined column. Empty → "—". */
+  joinedDate: string;
+  isPlatformInvitation?: boolean;
 };
 
 export type CommunityOrg = {
@@ -34,37 +67,22 @@ export type CommunityVC = {
   url?: string;
 };
 
-export type PendingApplication = {
-  id: string;
-  displayName: string;
-  email?: string;
-  createdDate: string;
-};
-
-export type PendingInvitation = {
-  id: string;
-  displayName: string;
-  email?: string;
-  createdDate: string;
-  isPlatformInvitation: boolean;
-};
-
 export type SpaceSettingsCommunityViewProps = {
-  users: CommunityMember[];
+  members: CommunityMember[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
-  applications: PendingApplication[];
-  invitations: PendingInvitation[];
+  applicationFormSlot?: ReactNode;
+  communityGuidelinesSlot?: ReactNode;
   permissions: {
     canAddUsers: boolean;
     canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
-  onUserLeadChange: (id: string, isLead: boolean) => void;
-  onUserAdminChange: (id: string, isAdmin: boolean) => void;
   onUserRemove: (id: string) => void;
-  onOrgLeadChange: (id: string, isLead: boolean) => void;
+  onOrgAdd: () => void;
   onOrgRemove: (id: string) => void;
+  onVCAdd: () => void;
+  onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
   onApplicationApprove: (id: string) => void;
   onApplicationReject: (id: string) => void;
@@ -74,18 +92,46 @@ export type SpaceSettingsCommunityViewProps = {
   className?: string;
 };
 
+const MEMBERS_PAGE_SIZE = 10;
+const MEMBER_FILTERS = ['all', 'active', 'pending', 'invited'] as const;
+type MemberFilter = (typeof MEMBER_FILTERS)[number];
+
+function StatusBadge({ status }: { status: CommunityMemberStatus }) {
+  const { t } = useTranslation('crd-spaceSettings');
+  switch (status) {
+    case 'pending':
+      return (
+        <Badge variant="outline" className="bg-muted text-muted-foreground border-border text-badge">
+          {t('community.members.status.pending', { defaultValue: 'Pending' })}
+        </Badge>
+      );
+    case 'invited':
+      return (
+        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-badge">
+          {t('community.members.status.invited', { defaultValue: 'Invited' })}
+        </Badge>
+      );
+    case 'active':
+      return (
+        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-badge">
+          {t('community.members.status.active', { defaultValue: 'Active' })}
+        </Badge>
+      );
+  }
+}
+
 export function SpaceSettingsCommunityView({
-  users,
+  members,
   organizations,
   virtualContributors,
-  applications,
-  invitations,
+  applicationFormSlot,
+  communityGuidelinesSlot,
   permissions,
-  onUserLeadChange: _onUserLeadChange,
-  onUserAdminChange: _onUserAdminChange,
   onUserRemove,
-  onOrgLeadChange: _onOrgLeadChange,
+  onOrgAdd,
   onOrgRemove,
+  onVCAdd,
+  onVCAddExternal,
   onVCRemove,
   onApplicationApprove,
   onApplicationReject,
@@ -95,349 +141,533 @@ export function SpaceSettingsCommunityView({
   className,
 }: SpaceSettingsCommunityViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
-  const [userSearch, setUserSearch] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState<MemberFilter>('all');
 
-  const filteredUsers = userSearch
-    ? users.filter(
-        u =>
-          u.displayName.toLowerCase().includes(userSearch.toLowerCase()) ||
-          (u.email?.toLowerCase().includes(userSearch.toLowerCase()) ?? false)
-      )
-    : users;
+  const filtered = members.filter(m => {
+    if (search) {
+      const needle = search.toLowerCase();
+      if (!m.displayName.toLowerCase().includes(needle) && !(m.email?.toLowerCase().includes(needle) ?? false)) {
+        return false;
+      }
+    }
+    if (filter !== 'all' && m.status !== filter) return false;
+    return true;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / MEMBERS_PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageStart = (safePage - 1) * MEMBERS_PAGE_SIZE;
+  const pageEnd = Math.min(pageStart + MEMBERS_PAGE_SIZE, filtered.length);
+  const paginated = filtered.slice(pageStart, pageEnd);
+
+  const handleSearchChange = (next: string) => {
+    setSearch(next);
+    setPage(1);
+  };
+  const handleFilterChange = (next: MemberFilter) => {
+    setFilter(next);
+    setPage(1);
+  };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)}>
+    <div className={cn('flex flex-col gap-8', className)}>
       <div>
-        <h2 className="text-lg font-semibold">{t('community.pageHeader.title', { defaultValue: 'Community' })}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h2 className="text-section-title tracking-tight">
+          {t('community.pageHeader.title', { defaultValue: 'Community' })}
+        </h2>
+        <p className="text-body text-muted-foreground mt-2">
           {t('community.pageHeader.subtitle', {
-            defaultValue: 'Manage members, organizations, and virtual contributors in this space.',
+            defaultValue: 'Manage your space members, review applications, and configure community settings.',
           })}
         </p>
       </div>
 
-      {/* Pending Applications */}
-      {applications.length > 0 && (
-        <section className="space-y-3">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            {t('community.applications.title', { defaultValue: 'Pending Applications' })}
-            <Badge variant="secondary" className="rounded-full">
-              {applications.length}
-            </Badge>
-          </h3>
-          <ul className="space-y-2">
-            {applications.map(app => (
-              <li key={app.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
-                <Avatar className="size-10 rounded-lg">
-                  <AvatarFallback className="rounded-lg text-xs bg-amber-100 text-amber-700">
-                    {app.displayName.substring(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <span className="font-semibold text-sm">{app.displayName}</span>
-                  {app.email && <span className="text-xs text-muted-foreground ml-2">{app.email}</span>}
-                  <div className="flex items-center gap-1 mt-0.5 text-xs text-muted-foreground">
-                    <Clock className="size-3" />
-                    {app.createdDate}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Button
-                    size="sm"
-                    onClick={() => onApplicationApprove(app.id)}
-                    aria-label={t('community.applications.approve', { defaultValue: 'Approve' })}
-                  >
-                    <Check className="size-4 mr-1" />
-                    {t('community.applications.approve', { defaultValue: 'Approve' })}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onApplicationReject(app.id)}
-                    aria-label={t('community.applications.reject', { defaultValue: 'Reject' })}
-                  >
-                    <X className="size-4 mr-1" />
-                    {t('community.applications.reject', { defaultValue: 'Reject' })}
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <Separator />
 
-      {/* Pending Invitations */}
-      {invitations.length > 0 && (
-        <section className="space-y-3">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            {t('community.invitations.title', { defaultValue: 'Pending Invitations' })}
-            <Badge variant="secondary" className="rounded-full">
-              {invitations.length}
-            </Badge>
-          </h3>
-          <ul className="space-y-2">
-            {invitations.map(inv => (
-              <li key={inv.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
-                <Avatar className="size-10 rounded-lg">
-                  <AvatarFallback className="rounded-lg text-xs bg-blue-100 text-blue-700">
-                    <Mail className="size-4" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <span className="font-semibold text-sm">{inv.displayName}</span>
-                  {inv.email && inv.email !== inv.displayName && (
-                    <span className="text-xs text-muted-foreground ml-2">{inv.email}</span>
-                  )}
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock className="size-3" />
-                      {inv.createdDate}
-                    </span>
-                    {inv.isPlatformInvitation && (
-                      <Badge variant="outline" className="text-[10px]">
-                        {t('community.invitations.platformInvite', { defaultValue: 'Platform invite' })}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                <div className="shrink-0">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 text-muted-foreground hover:text-destructive"
-                    onClick={() =>
-                      inv.isPlatformInvitation ? onPlatformInvitationDelete(inv.id) : onInvitationDelete(inv.id)
-                    }
-                    aria-label={t('community.invitations.revoke', { defaultValue: 'Revoke invitation' })}
-                  >
-                    <X className="size-4" />
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Users table */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold">
+      {/* Space Members table */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h3 className="text-subsection-title flex items-center gap-2">
             {t('community.members.title', { defaultValue: 'Space Members' })}
-            <Badge variant="secondary" className="ml-2">
-              {users.length}
+            <Badge variant="secondary" className="rounded-full">
+              {filtered.length}
             </Badge>
           </h3>
-          <div className="flex items-center gap-2">
-            <Input
-              placeholder={t('community.members.search', { defaultValue: 'Search members…' })}
-              value={userSearch}
-              onChange={e => setUserSearch(e.target.value)}
-              className="h-8 w-48 text-sm"
-            />
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative">
+              <Search
+                aria-hidden="true"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
+              />
+              <Input
+                placeholder={t('community.members.search', { defaultValue: 'Search members…' })}
+                value={search}
+                onChange={e => handleSearchChange(e.target.value)}
+                className="h-9 w-[220px] pl-9 text-sm"
+              />
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild={true}>
+                <Button type="button" variant="outline" size="sm" className="gap-2">
+                  {t('community.members.filter.label', {
+                    defaultValue: 'Filter: {{value}}',
+                    value: t(`community.members.filter.${filter}`, { defaultValue: filter }),
+                  })}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {MEMBER_FILTERS.map(f => (
+                  <DropdownMenuItem key={f} onClick={() => handleFilterChange(f)}>
+                    {t(`community.members.filter.${f}`, { defaultValue: f })}
+                    {filter === f && <Check aria-hidden="true" className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             {permissions.canAddUsers && (
-              <Button type="button" variant="outline" size="sm" onClick={onInviteUsers}>
-                <UserPlus aria-hidden="true" className="mr-1.5 size-3.5" />
+              <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
+                <UserPlus aria-hidden="true" className="size-4" />
                 {t('community.members.invite', { defaultValue: 'Invite' })}
               </Button>
             )}
           </div>
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('community.members.name', { defaultValue: 'Name' })}</TableHead>
-              <TableHead>{t('community.members.email', { defaultValue: 'Email' })}</TableHead>
-              <TableHead>{t('community.members.role', { defaultValue: 'Role' })}</TableHead>
-              <TableHead className="w-[80px]">{t('community.members.actions', { defaultValue: 'Actions' })}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.length === 0 && (
+        <div className="rounded-lg border bg-card overflow-hidden">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                  {t('community.members.empty', { defaultValue: 'No members found.' })}
-                </TableCell>
+                <TableHead className="w-[320px]">{t('community.members.name', { defaultValue: 'Name' })}</TableHead>
+                <TableHead>{t('community.members.role', { defaultValue: 'Role' })}</TableHead>
+                <TableHead>{t('community.members.joined', { defaultValue: 'Joined' })}</TableHead>
+                <TableHead>{t('community.members.status.column', { defaultValue: 'Status' })}</TableHead>
+                <TableHead className="w-[140px] text-right">
+                  {t('community.members.actions', { defaultValue: 'Actions' })}
+                </TableHead>
               </TableRow>
-            )}
-            {filteredUsers.map(user => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">
-                  {user.url ? (
-                    <a href={user.url} className="hover:underline">
-                      {user.displayName}
-                    </a>
-                  ) : (
-                    user.displayName
-                  )}
-                </TableCell>
-                <TableCell className="text-muted-foreground text-sm">{user.email ?? '—'}</TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    {user.isAdmin && (
-                      <Badge variant="default" className="text-[10px]">
-                        Admin
-                      </Badge>
-                    )}
-                    {user.isLead && (
-                      <Badge variant="secondary" className="text-[10px]">
-                        Lead
-                      </Badge>
-                    )}
-                    {user.isMember && !user.isLead && !user.isAdmin && (
-                      <Badge variant="outline" className="text-[10px]">
-                        Member
-                      </Badge>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onUserRemove(user.id)}
-                    aria-label={t('community.members.remove', { defaultValue: 'Remove member' })}
-                    className="size-7"
-                  >
-                    <Trash2 aria-hidden="true" className="size-3.5 text-destructive" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {paginated.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    {t('community.members.empty', { defaultValue: 'No members found.' })}
+                  </TableCell>
+                </TableRow>
+              )}
+              {paginated.map((m, index) => (
+                <TableRow key={`${m.source}-${m.id}`} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                  <TableCell>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar className="size-8 border border-border shrink-0">
+                        {m.avatarUrl ? <AvatarImage src={m.avatarUrl} alt="" /> : null}
+                        <AvatarFallback className="text-caption">
+                          {m.displayName.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        {m.url ? (
+                          <a href={m.url} className="block text-body-emphasis truncate hover:underline">
+                            {m.displayName}
+                          </a>
+                        ) : (
+                          <span className="block text-body-emphasis truncate">{m.displayName}</span>
+                        )}
+                        {m.email && (
+                          <span className="block text-caption text-muted-foreground truncate">{m.email}</span>
+                        )}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-body-emphasis text-foreground">{m.roleLabel}</span>
+                  </TableCell>
+                  <TableCell className="text-caption text-muted-foreground">{m.joinedDate || '—'}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={m.status} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {m.status === 'pending' && (
+                        <>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-8 text-primary border-primary/30 hover:bg-primary/10"
+                            onClick={() => onApplicationApprove(m.id)}
+                            aria-label={t('community.applications.approve', { defaultValue: 'Approve' })}
+                          >
+                            <Check aria-hidden="true" className="size-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-8 text-destructive border-destructive/30 hover:bg-destructive/10"
+                            onClick={() => onApplicationReject(m.id)}
+                            aria-label={t('community.applications.reject', { defaultValue: 'Reject' })}
+                          >
+                            <X aria-hidden="true" className="size-4" />
+                          </Button>
+                        </>
+                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild={true}>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            aria-label={t('community.members.actions', { defaultValue: 'Actions' })}
+                          >
+                            <MoreHorizontal aria-hidden="true" className="size-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {m.url && (
+                            <DropdownMenuItem asChild={true}>
+                              <a href={m.url}>{t('community.members.viewProfile', { defaultValue: 'View Profile' })}</a>
+                            </DropdownMenuItem>
+                          )}
+                          {m.status === 'pending' && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => onApplicationApprove(m.id)}>
+                                {t('community.applications.approve', { defaultValue: 'Approve' })}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => onApplicationReject(m.id)}
+                              >
+                                {t('community.applications.reject', { defaultValue: 'Reject' })}
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                          {m.status === 'invited' && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() =>
+                                  m.isPlatformInvitation ? onPlatformInvitationDelete(m.id) : onInvitationDelete(m.id)
+                                }
+                              >
+                                {t('community.invitations.revoke', { defaultValue: 'Revoke Invitation' })}
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                          {m.status === 'active' && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => onUserRemove(m.id)}
+                              >
+                                <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                {t('community.members.remove', { defaultValue: 'Remove from Space' })}
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {filtered.length > MEMBERS_PAGE_SIZE && (
+          <div className="flex items-center justify-between py-2">
+            <p className="text-caption text-muted-foreground">
+              {t('community.members.pagination.showing', {
+                defaultValue: 'Showing {{from}} to {{to}} of {{total}} members',
+                from: pageStart + 1,
+                to: pageEnd,
+                total: filtered.length,
+              })}
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="size-8"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+                aria-label={t('community.members.pagination.previous', { defaultValue: 'Previous page' })}
+              >
+                <ChevronLeft aria-hidden="true" className="size-4" />
+              </Button>
+              <span className="text-caption text-body-emphasis">
+                {t('community.members.pagination.page', {
+                  defaultValue: 'Page {{page}} of {{total}}',
+                  page: safePage,
+                  total: totalPages,
+                })}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="size-8"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+                aria-label={t('community.members.pagination.next', { defaultValue: 'Next page' })}
+              >
+                <ChevronRight aria-hidden="true" className="size-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Organizations (collapsible) */}
-      <CollapsibleSection
-        title={t('community.organizations.title', { defaultValue: 'Member Organizations' })}
-        count={organizations.length}
-        defaultOpen={false}
-      >
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('community.organizations.name', { defaultValue: 'Name' })}</TableHead>
-              <TableHead>{t('community.organizations.role', { defaultValue: 'Role' })}</TableHead>
-              <TableHead className="w-[80px]">
-                {t('community.organizations.actions', { defaultValue: 'Actions' })}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {organizations.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
-                  {t('community.organizations.empty', { defaultValue: 'No organizations.' })}
-                </TableCell>
-              </TableRow>
-            )}
-            {organizations.map(org => (
-              <TableRow key={org.id}>
-                <TableCell className="font-medium">{org.displayName}</TableCell>
-                <TableCell>
-                  {org.isLead ? (
-                    <Badge variant="secondary" className="text-[10px]">
-                      Lead
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-[10px]">
-                      Member
-                    </Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onOrgRemove(org.id)}
-                    aria-label={t('community.organizations.remove', { defaultValue: 'Remove organization' })}
-                    className="size-7"
-                  >
-                    <Trash2 aria-hidden="true" className="size-3.5 text-destructive" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CollapsibleSection>
+      <Separator />
 
-      {/* Virtual Contributors (collapsible) */}
-      <CollapsibleSection
-        title={t('community.virtualContributors.title', { defaultValue: 'Virtual Contributors' })}
-        count={virtualContributors.length}
-        defaultOpen={false}
+      {applicationFormSlot && (
+        <SectionCard
+          icon={FileText}
+          title={t('community.applicationForm.title', { defaultValue: 'Application Form' })}
+          description={t('community.applicationForm.description', {
+            defaultValue: 'Customize the questions users must answer when applying to join this space.',
+          })}
+        >
+          {applicationFormSlot}
+        </SectionCard>
+      )}
+
+      {communityGuidelinesSlot && (
+        <SectionCard
+          icon={Shield}
+          title={t('community.guidelines.title', { defaultValue: 'Community Guidelines' })}
+          description={t('community.guidelines.description', {
+            defaultValue: 'Establish rules and expectations for member behavior.',
+          })}
+        >
+          {communityGuidelinesSlot}
+        </SectionCard>
+      )}
+
+      <SectionCard
+        icon={Building}
+        title={t('community.organizations.title', { defaultValue: 'Member Organizations' })}
+        description={t('community.organizations.description', {
+          defaultValue: 'Allow members from specific organizations to join automatically.',
+        })}
+        count={organizations.length}
       >
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('community.virtualContributors.name', { defaultValue: 'Name' })}</TableHead>
-              <TableHead className="w-[80px]">
-                {t('community.virtualContributors.actions', { defaultValue: 'Actions' })}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {virtualContributors.length === 0 && (
+        <div className="rounded-lg border bg-card overflow-hidden">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
-                  {t('community.virtualContributors.empty', { defaultValue: 'No virtual contributors.' })}
-                </TableCell>
+                <TableHead className="w-[320px]">
+                  {t('community.organizations.name', { defaultValue: 'Name' })}
+                </TableHead>
+                <TableHead>{t('community.organizations.role', { defaultValue: 'Role' })}</TableHead>
+                <TableHead className="w-[100px] text-right">
+                  {t('community.organizations.actions', { defaultValue: 'Actions' })}
+                </TableHead>
               </TableRow>
+            </TableHeader>
+            <TableBody>
+              {organizations.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
+                    {t('community.organizations.empty', { defaultValue: 'No organizations yet.' })}
+                  </TableCell>
+                </TableRow>
+              )}
+              {organizations.map((org, index) => (
+                <TableRow key={org.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                  <TableCell>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar className="size-8 rounded-md border border-border shrink-0">
+                        {org.avatarUrl ? <AvatarImage src={org.avatarUrl} alt="" /> : null}
+                        <AvatarFallback className="rounded-md text-badge bg-muted text-muted-foreground">
+                          {org.displayName.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      {org.url ? (
+                        <a href={org.url} className="block text-body-emphasis truncate hover:underline">
+                          {org.displayName}
+                        </a>
+                      ) : (
+                        <span className="block text-body-emphasis truncate">{org.displayName}</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-body-emphasis text-foreground">
+                      {org.isLead
+                        ? t('community.members.role.lead', { defaultValue: 'Lead' })
+                        : t('community.members.role.member', { defaultValue: 'Member' })}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onOrgRemove(org.id)}
+                      aria-label={t('community.organizations.remove', { defaultValue: 'Remove organization' })}
+                      className="size-8"
+                    >
+                      <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {permissions.canAddOrganizations && (
+          <div className="mt-4">
+            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
+              <Plus aria-hidden="true" className="size-4" />
+              {t('community.organizations.add', { defaultValue: 'Add Organization' })}
+            </Button>
+            <p className="mt-2 text-caption text-muted-foreground">
+              {t('community.organizations.hint', {
+                defaultValue: 'Users from these organizations can join without admin approval.',
+              })}
+            </p>
+          </div>
+        )}
+      </SectionCard>
+
+      <SectionCard
+        icon={Bot}
+        title={t('community.virtualContributors.title', { defaultValue: 'Virtual Contributors' })}
+        description={t('community.virtualContributors.description', {
+          defaultValue: 'Manage AI agents and bots participating in this space.',
+        })}
+        count={virtualContributors.length}
+      >
+        <div className="rounded-lg border bg-card overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[320px]">
+                  {t('community.virtualContributors.name', { defaultValue: 'Name' })}
+                </TableHead>
+                <TableHead className="w-[100px] text-right">
+                  {t('community.virtualContributors.actions', { defaultValue: 'Actions' })}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {virtualContributors.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={2} className="text-center text-muted-foreground py-6">
+                    {t('community.virtualContributors.empty', { defaultValue: 'No virtual contributors yet.' })}
+                  </TableCell>
+                </TableRow>
+              )}
+              {virtualContributors.map((vc, index) => (
+                <TableRow key={vc.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                  <TableCell>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="size-8 rounded-md flex items-center justify-center bg-primary/10 text-primary shrink-0">
+                        <Bot aria-hidden="true" className="size-4" />
+                      </div>
+                      {vc.url ? (
+                        <a href={vc.url} className="block text-body-emphasis truncate hover:underline">
+                          {vc.displayName}
+                        </a>
+                      ) : (
+                        <span className="block text-body-emphasis truncate">{vc.displayName}</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onVCRemove(vc.id)}
+                      aria-label={t('community.virtualContributors.remove', {
+                        defaultValue: 'Remove virtual contributor',
+                      })}
+                      className="size-8"
+                    >
+                      <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {permissions.canAddVirtualContributors && (
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
+              <Plus aria-hidden="true" className="size-4" />
+              {t('community.virtualContributors.add', { defaultValue: 'Add Virtual Contributor' })}
+            </Button>
+            {onVCAddExternal && (
+              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
+                <Plus aria-hidden="true" className="size-4" />
+                {t('community.virtualContributors.addExternal', {
+                  defaultValue: 'Invite External Virtual Contributor',
+                })}
+              </Button>
             )}
-            {virtualContributors.map(vc => (
-              <TableRow key={vc.id}>
-                <TableCell className="font-medium">{vc.displayName}</TableCell>
-                <TableCell>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onVCRemove(vc.id)}
-                    aria-label={t('community.virtualContributors.remove', { defaultValue: 'Remove VC' })}
-                    className="size-7"
-                  >
-                    <Trash2 aria-hidden="true" className="size-3.5 text-destructive" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CollapsibleSection>
+          </div>
+        )}
+      </SectionCard>
     </div>
   );
 }
 
-function CollapsibleSection({
+function SectionCard({
+  icon: Icon,
   title,
+  description,
   count,
   defaultOpen = false,
   children,
 }: {
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
   title: string;
-  count: number;
+  description: string;
+  count?: number;
   defaultOpen?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="rounded-xl border">
+    <section className="rounded-xl border border-border bg-card p-6">
       <button
         type="button"
-        className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold hover:bg-muted/30 transition-colors"
+        className="flex w-full items-start gap-4 text-left group"
         onClick={() => setOpen(prev => !prev)}
+        aria-expanded={open}
       >
-        <span className="flex items-center gap-2">
-          {title}
-          <Badge variant="secondary">{count}</Badge>
-        </span>
-        {open ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
+        <div className="mt-1 p-2 bg-muted rounded-md shrink-0 group-hover:bg-muted/80 transition-colors">
+          <Icon aria-hidden="true" className="size-5 text-muted-foreground" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-subsection-title flex items-center gap-2">
+              {title}
+              {typeof count === 'number' && (
+                <Badge variant="secondary" className="rounded-full">
+                  {count}
+                </Badge>
+              )}
+            </h3>
+            {open ? (
+              <ChevronUp aria-hidden="true" className="size-4 shrink-0" />
+            ) : (
+              <ChevronDown aria-hidden="true" className="size-4 shrink-0" />
+            )}
+          </div>
+          <p className="mt-1 text-body text-muted-foreground pr-8">{description}</p>
+        </div>
       </button>
-      {open && <div className="px-4 pb-4">{children}</div>}
-    </div>
+      {open && <div className="mt-6 pl-[52px]">{children}</div>}
+    </section>
   );
 }

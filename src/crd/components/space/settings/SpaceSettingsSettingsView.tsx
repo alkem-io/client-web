@@ -33,8 +33,6 @@ export type SpaceSettingsSettingsViewProps = {
   providerDisplayName: string;
   loading?: boolean;
   updatingKeys: ReadonlySet<string>;
-  /** Slot for the Application Form editor (MUI component passed from integration layer). */
-  applicationFormSlot?: React.ReactNode;
   onPrivacyChange: (next: SpacePrivacy) => void;
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
@@ -88,7 +86,6 @@ export function SpaceSettingsSettingsView({
   hostOrganizationTrusted,
   providerDisplayName,
   updatingKeys,
-  applicationFormSlot,
   onPrivacyChange,
   onMembershipPolicyChange,
   onToggleAllowedAction,
@@ -337,25 +334,6 @@ export function SpaceSettingsSettingsView({
             )}
           </AccordionContent>
         </AccordionItem>
-
-        {/* Application Form */}
-        {applicationFormSlot && (
-          <AccordionItem value="applicationForm" className="border rounded-lg bg-card px-6">
-            <AccordionTrigger className="hover:no-underline py-6">
-              <div className="flex flex-col items-start gap-1">
-                <h3 className="text-lg font-semibold">
-                  {t('settings.applicationForm.title', { defaultValue: 'Application Form' })}
-                </h3>
-                <p className="text-sm text-muted-foreground font-normal text-left">
-                  {t('settings.applicationForm.description', {
-                    defaultValue: 'Configure the questions shown to users who apply to join this space.',
-                  })}
-                </p>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="pb-6 pt-0">{applicationFormSlot}</AccordionContent>
-          </AccordionItem>
-        )}
 
         {/* Allowed Actions */}
         <AccordionItem value="actions" className="border rounded-lg bg-card px-6">
