@@ -43,6 +43,7 @@ export type SpaceSettingsAccountViewProps = {
   canDeleteSpace: boolean;
   loading?: boolean;
   onDeleteSpace: () => void;
+  onCopyUrl: () => void | Promise<void>;
   className?: string;
 };
 
@@ -56,6 +57,7 @@ export function SpaceSettingsAccountView({
   canDeleteSpace,
   loading,
   onDeleteSpace,
+  onCopyUrl,
   className,
 }: SpaceSettingsAccountViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -88,7 +90,7 @@ export function SpaceSettingsAccountView({
         </Label>
         <div className="flex items-center gap-2 max-w-xl">
           <Input id="space-url" value={url} readOnly={true} className="bg-muted/20 font-mono text-sm flex-1" />
-          <CopyUrlButton url={url} />
+          <CopyUrlButton onCopyUrl={onCopyUrl} />
         </div>
         <p className="text-sm text-muted-foreground italic">
           {t('account.url.hint', {
@@ -250,16 +252,14 @@ export function SpaceSettingsAccountView({
   );
 }
 
-function CopyUrlButton({ url }: { url: string }) {
+function CopyUrlButton({ onCopyUrl }: { onCopyUrl: () => void | Promise<void> }) {
   const { t } = useTranslation('crd-spaceSettings');
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    if (!url) return;
-    void navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+  const handleCopy = async () => {
+    await onCopyUrl();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (

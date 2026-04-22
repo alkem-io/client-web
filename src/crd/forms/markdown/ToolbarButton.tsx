@@ -2,6 +2,7 @@ import type { ChainedCommands, Editor } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
+import { isEditorReady } from './isEditorReady';
 
 type ToolbarButtonProps = {
   editor: Editor;
@@ -24,25 +25,19 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [, setTick] = useState(0);
 
-  // Guard: editor.view getter throws if the editor isn't mounted yet.
-  let isEditorReady = false;
-  try {
-    isEditorReady = !!editor.view?.dom;
-  } catch {
-    // editor.view threw — editor not mounted yet
-  }
+  const ready = isEditorReady(editor);
 
   // Refresh state on every editor transaction
   useEffect(() => {
-    if (!isEditorReady) return;
+    if (!ready) return;
     const handler = () => setTick(t => t + 1);
     editor.on('transaction', handler);
     return () => {
       editor.off('transaction', handler);
     };
-  }, [editor, isEditorReady]);
+  }, [editor, ready]);
 
-  if (!isEditorReady) {
+  if (!ready) {
     return (
       <button
         type="button"

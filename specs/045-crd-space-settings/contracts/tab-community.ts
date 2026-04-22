@@ -30,14 +30,14 @@ export type MemberTableFilter = {
   status?: MemberStatus;
 };
 
-export type MemberTableState<TPageSize extends 10 | 5> = {
+export type MemberTableState<TPageSize extends number = number> = {
   rows: MemberRow[];
   totalCount: number;
   pageSize: TPageSize;
   page: number;
 };
 
-export type CollapsibleMemberTableState<TPageSize extends 10 | 5> =
+export type CollapsibleMemberTableState<TPageSize extends number = number> =
   MemberTableState<TPageSize> & {
     collapsed: boolean;
   };

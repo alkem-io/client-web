@@ -14,8 +14,8 @@ export type TemplateTile = {
   isCustom: boolean;
 };
 
-export type TemplateCategorySection = {
-  category: TemplateCategory;
+export type TemplateCategorySection<C extends TemplateCategory = TemplateCategory> = {
+  category: C;
   templates: TemplateTile[];
   collapsed: boolean;
 };
@@ -25,11 +25,11 @@ export type TemplateAction = 'preview' | 'duplicate' | 'edit' | 'delete';
 export type TemplatesViewProps = {
   /** Five entries in declared order: space, collaborationTool, whiteboard, post, communityGuidelines. */
   categories: [
-    TemplateCategorySection,
-    TemplateCategorySection,
-    TemplateCategorySection,
-    TemplateCategorySection,
-    TemplateCategorySection
+    TemplateCategorySection<'space'>,
+    TemplateCategorySection<'collaborationTool'>,
+    TemplateCategorySection<'whiteboard'>,
+    TemplateCategorySection<'post'>,
+    TemplateCategorySection<'communityGuidelines'>
   ];
   searchQuery: string;
   onSearchChange: (q: string) => void;

@@ -16,7 +16,7 @@ export function SpaceShell({ header, sidebar, tabs, breadcrumbs, children, class
 
   return (
     <div className={cn('flex flex-col bg-background', className)}>
-      {breadcrumbs && <div className="w-full px-6 md:px-8 py-2 text-sm text-muted-foreground">{breadcrumbs}</div>}
+      {breadcrumbs && <div className="w-full px-6 md:px-8 py-2 text-caption text-muted-foreground">{breadcrumbs}</div>}
       {header}
 
       <div className={cn('w-full px-6 md:px-8 pb-8', hasTabs ? 'pt-8' : 'pt-0')}>

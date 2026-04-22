@@ -32,7 +32,7 @@ export function mapCollaborationToLayoutColumns(collaboration: LayoutCollaborati
   const states = [...innovationFlow.states].sort((a, b) => a.sortOrder - b.sortOrder);
   const currentStateId = innovationFlow.currentState?.id ?? null;
 
-  const byStateName = new Map<string, LayoutCallout[]>();
+  const byStateName = new Map<string, Array<{ mapped: LayoutCallout; sortOrder: number }>>();
   for (const callout of calloutsSet.callouts) {
     const mapped = calloutToLayoutCallout(callout);
     if (!mapped) continue;
@@ -40,17 +40,17 @@ export function mapCollaborationToLayoutColumns(collaboration: LayoutCollaborati
     const stateName = raw?.tags[0];
     if (!stateName) continue;
     const arr = byStateName.get(stateName) ?? [];
-    arr.push(mapped);
+    arr.push({ mapped, sortOrder: callout.sortOrder });
     byStateName.set(stateName, arr);
   }
 
   // Sort callouts in each column by their backend sortOrder.
   const sortedByState = new Map<string, LayoutCallout[]>();
-  for (const [name, callouts] of byStateName) {
-    const sorted = [...callouts].sort(
-      (a, b) => sortOrderOf(a.id, calloutsSet.callouts) - sortOrderOf(b.id, calloutsSet.callouts)
+  for (const [name, entries] of byStateName) {
+    sortedByState.set(
+      name,
+      [...entries].sort((a, b) => a.sortOrder - b.sortOrder).map(e => e.mapped)
     );
-    sortedByState.set(name, sorted);
   }
 
   return states.map(state => mapStateToColumn(state, sortedByState.get(state.displayName) ?? [], currentStateId));
@@ -64,9 +64,4 @@ function mapStateToColumn(state: RawState, callouts: LayoutCallout[], currentSta
     isCurrentPhase: state.id === currentStateId,
     callouts,
   };
-}
-
-function sortOrderOf(calloutId: string, rawCallouts: ReadonlyArray<RawCallout>): number {
-  const match = rawCallouts.find(c => c.id === calloutId);
-  return match?.sortOrder ?? 0;
 }

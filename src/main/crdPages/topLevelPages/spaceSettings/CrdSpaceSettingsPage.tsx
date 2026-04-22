@@ -325,6 +325,7 @@ export default function CrdSpaceSettingsPage() {
                 canDeleteSpace={accountTab.canDeleteSpace}
                 loading={accountTab.loading}
                 onDeleteSpace={accountTab.onDeleteSpace}
+                onCopyUrl={accountTab.onCopyUrl}
               />
             )}
           </>

@@ -155,7 +155,7 @@ export function InlineEditText({
           </span>
           <Pencil aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground/40" />
         </button>
-        {error && <p className="mt-0.5 text-xs text-destructive">{error}</p>}
+        {error && <p className="mt-0.5 text-caption text-destructive">{error}</p>}
       </div>
     );
   }

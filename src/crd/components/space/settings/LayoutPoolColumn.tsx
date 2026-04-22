@@ -103,6 +103,7 @@ export function LayoutPoolColumn({
       </Card>
 
       <EditDetailsDialog
+        key={`${column.id}:${String(editDetailsOpen)}`}
         open={editDetailsOpen}
         title={column.title}
         description={column.description}
@@ -206,17 +207,6 @@ function EditDetailsDialog({
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
   const [saving, setSaving] = useState(false);
-
-  // Re-seed when the dialog opens with new values.
-  const [prevOpen, setPrevOpen] = useState(false);
-  if (open && !prevOpen) {
-    setTitle(initialTitle);
-    setDescription(initialDescription);
-    setSaving(false);
-  }
-  if (open !== prevOpen) {
-    setPrevOpen(open);
-  }
 
   const handleSave = async () => {
     setSaving(true);

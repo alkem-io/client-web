@@ -383,7 +383,7 @@ export function SaveSubspaceAsTemplateDialog({
                 onCheckedChange={next => onChange({ recursive: next === true })}
                 disabled={submitting}
               />
-              <Label htmlFor="save-template-recursive" className="text-sm font-normal cursor-pointer">
+              <Label htmlFor="save-template-recursive" className="text-body font-normal cursor-pointer">
                 {t('subspaces.saveAsTemplate.recursive', {
                   defaultValue: 'Also include subspaces of the selected space in the template',
                 })}
@@ -435,7 +435,7 @@ function Field({
         {required && <span className="ml-0.5 text-destructive">*</span>}
       </Label>
       {children}
-      {error ? <p className="text-xs text-destructive">{error}</p> : null}
+      {error ? <p className="text-caption text-destructive">{error}</p> : null}
     </div>
   );
 }

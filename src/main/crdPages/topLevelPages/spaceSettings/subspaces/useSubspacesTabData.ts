@@ -13,7 +13,7 @@ import {
 import { AuthorizationPrivilege, SpaceSortMode, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceKebabAction, SubspaceTile } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
-import { mapSubspaceToTile } from './subspacesMapper';
+import { mapSubspaceToTile } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/subspacesMapper';
 
 export type UseSubspacesTabDataResult = {
   subspaces: SubspaceTile[];

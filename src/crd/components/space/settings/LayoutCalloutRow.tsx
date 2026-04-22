@@ -64,9 +64,9 @@ export function LayoutCalloutRow({
         <GripVertical aria-hidden="true" className="size-4" />
       </button>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium">{callout.title}</div>
+        <div className="truncate text-body-emphasis">{callout.title}</div>
         {showDescription && callout.description ? (
-          <p className="mt-0.5 line-clamp-3 text-xs text-muted-foreground">{callout.description}</p>
+          <p className="mt-0.5 line-clamp-3 text-caption text-muted-foreground">{callout.description}</p>
         ) : null}
       </div>
       <DropdownMenu>
