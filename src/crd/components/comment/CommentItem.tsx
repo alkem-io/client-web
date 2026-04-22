@@ -28,6 +28,7 @@ export function CommentItem({
 }: CommentItemProps) {
   const { t } = useTranslation('crd-space');
   const [isReplying, setIsReplying] = useState(false);
+  const replyInputId = `comment-reply-input-${comment.id}`;
 
   return (
     <div className={cn('space-y-2', isReply && 'ml-10')}>
@@ -55,6 +56,8 @@ export function CommentItem({
                 variant="ghost"
                 size="sm"
                 className="h-7 px-2 text-caption"
+                aria-expanded={isReplying}
+                aria-controls={replyInputId}
                 onClick={() => setIsReplying(current => !current)}
               >
                 {t('comments.reply')}
@@ -76,7 +79,7 @@ export function CommentItem({
       </div>
 
       {isReplying && !comment.isDeleted && (
-        <div className="ml-10">
+        <div id={replyInputId} className="ml-10">
           <CommentInput
             currentUser={currentUser}
             onSubmit={content => {

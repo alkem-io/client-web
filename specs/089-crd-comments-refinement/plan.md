@@ -95,7 +95,7 @@ src/
     └── CommentsComponent.tsx                                     # UNCHANGED — parity reference
 ```
 
-**Structure Decision**: Single Web SPA, three-layer CRD architecture retained. Zero new files. Nine modified files (3 CRD comment leaves, 2 CRD composites, 1 integration hook, 6 CRD locale files, 1 integration contract note). No domain, routing, or Apollo changes.
+**Structure Decision**: Single Web SPA, three-layer CRD architecture retained. Zero new files. Twelve modified files (3 CRD comment leaves, 2 CRD composites, 1 integration hook, 6 CRD locale files). No domain, routing, or Apollo changes.
 
 ## Complexity Tracking
 

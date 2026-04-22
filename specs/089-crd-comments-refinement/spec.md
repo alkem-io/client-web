@@ -2,7 +2,7 @@
 
 **Feature Branch**: `089-crd-comments-refinement`
 **Created**: 2026-04-21
-**Status**: Draft
+**Status**: Ready
 **Input**: Refine the comments experience on CRD-migrated pages so it matches the behavior community members have been using in the legacy interface. The timeline event modal is the most visible pain point: long threads can stretch to consume the entire event dialog, pushing event details off-screen. Alongside that, the input position, sort order, and reply affordances diverge from the legacy pattern and create friction.
 
 ## User Scenarios & Testing *(mandatory)*
