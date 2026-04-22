@@ -9,7 +9,7 @@ import {
   Trash2, 
   Eye, 
   Edit,
-  LayoutTemplate,
+  Lightbulb,
   FileText,
   Users,
   PenTool
@@ -60,7 +60,7 @@ const SECTIONS: TemplateSection[] = [
     id: 'Space', 
     title: 'Space Templates', 
     description: 'Structure your space with predefined layouts and tools.',
-    icon: LayoutTemplate
+    icon: Lightbulb
   },
   { 
     id: 'Collaboration', 
@@ -352,7 +352,7 @@ export function SpaceSettingsTemplates() {
                        Create a new template
                      </DropdownMenuItem>
                      <DropdownMenuItem onClick={() => handleAction('select_library', section.id)}>
-                       <LayoutTemplate className="w-4 h-4 mr-2" />
+                       <Lightbulb className="w-4 h-4 mr-2" />
                        Select a template from the platform library
                      </DropdownMenuItem>
                    </DropdownMenuContent>
@@ -370,7 +370,7 @@ export function SpaceSettingsTemplates() {
                        Create a new template
                      </DropdownMenuItem>
                      <DropdownMenuItem onClick={() => handleAction('select_library', section.id)}>
-                       <LayoutTemplate className="w-4 h-4 mr-2" />
+                       <Lightbulb className="w-4 h-4 mr-2" />
                        Select a template from the platform library
                      </DropdownMenuItem>
                    </DropdownMenuContent>
