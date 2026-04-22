@@ -31,6 +31,12 @@ export interface CalloutCreationType {
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     tags?: string[];
+    link?: {
+      uri: string;
+      profile: {
+        displayName: string;
+      };
+    };
     mediaGallery?: {
       nameID?: string;
       visuals: {

@@ -26,6 +26,12 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     type: CalloutFramingType;
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
     memo?: MemoFieldSubmittedValues;
+    link?: {
+      uri: string;
+      profile: {
+        displayName: string;
+      };
+    };
     poll?: PollFormFieldSubmittedValues;
     tags?: string[];
   };

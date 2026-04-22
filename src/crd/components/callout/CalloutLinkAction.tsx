@@ -1,36 +1,61 @@
-import { ExternalLink, Link as LinkIcon } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
+import type { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 type CalloutLinkActionProps = {
   url: string;
   displayName: string;
   isExternal: boolean;
+  isValid: boolean;
   className?: string;
 };
 
-export function CalloutLinkAction({ url, displayName, isExternal, className }: CalloutLinkActionProps) {
-  const isValidUrl = url.startsWith('http://') || url.startsWith('https://');
+export function CalloutLinkAction({ url, displayName, isExternal, isValid, className }: CalloutLinkActionProps) {
+  const { t } = useTranslation('crd-space');
+
+  // Stop the click bubbling to any clickable ancestor (e.g. the surrounding
+  // PostCard opens the detail dialog on click — we don't want that when the
+  // user's intent is to follow the link).
+  const stopBubble = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.stopPropagation();
+  };
+
+  if (!isValid) {
+    return (
+      <Button
+        variant="outline"
+        disabled={true}
+        className={cn('w-full border-destructive text-destructive', className)}
+        aria-label={t('callToAction.validation.invalidUrl')}
+      >
+        {t('callToAction.validation.invalidUrl')}
+      </Button>
+    );
+  }
 
   return (
-    <div className={cn('flex items-center gap-2', className)}>
-      <Button variant="outline" className="gap-2" asChild={isValidUrl} disabled={!isValidUrl}>
-        {isValidUrl ? (
-          <a href={url} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
-            {isExternal ? (
-              <ExternalLink className="w-4 h-4" aria-hidden="true" />
-            ) : (
-              <LinkIcon className="w-4 h-4" aria-hidden="true" />
-            )}
-            {displayName}
+    <Tooltip>
+      <TooltipTrigger asChild={true}>
+        <Button variant="default" className={cn('w-full', className)} asChild={true}>
+          <a
+            href={url}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+            aria-label={t('callToAction.linkAriaLabel', { displayName, uri: url })}
+            onClick={stopBubble}
+          >
+            <span className="truncate">{displayName}</span>
+            {isExternal && <ExternalLink className="w-4 h-4" aria-hidden="true" />}
           </a>
-        ) : (
-          <>
-            <LinkIcon className="w-4 h-4" aria-hidden="true" />
-            {displayName}
-          </>
-        )}
-      </Button>
-    </div>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-xs" style={{ color: 'var(--primary-foreground)' }}>
+        {isExternal && <div className="text-caption mb-0.5">{t('callToAction.externalLinkDisclaimer')}</div>}
+        <div className="text-caption break-all">{url}</div>
+      </TooltipContent>
+    </Tooltip>
   );
 }

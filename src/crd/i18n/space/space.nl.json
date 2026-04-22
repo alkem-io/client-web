@@ -150,6 +150,7 @@
     "callForWhiteboards": "Oproep voor whiteboards",
     "poll": "Peiling",
     "link": "Link",
+    "callToAction": "Oproep tot actie",
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
@@ -393,6 +394,13 @@
       "title": "Memo verwijderen",
       "body": "Weet je zeker dat je dit memo wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
       "confirm": "Verwijderen"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Deze link opent een externe site in een nieuw tabblad.",
+    "linkAriaLabel": "{{displayName}} (opent {{uri}})",
+    "validation": {
+      "invalidUrl": "Ongeldige URL"
     }
   },
   "mediaGallery": {

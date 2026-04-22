@@ -150,6 +150,7 @@
     "callForWhiteboards": "Appel à tableaux blancs",
     "poll": "Sondage",
     "link": "Lien",
+    "callToAction": "Appel à l'action",
     "mediaGallery": "Galerie multimédia",
     "memo": "Mémo",
     "moreWhiteboards": "+{{count}} de plus",
@@ -393,6 +394,13 @@
       "title": "Supprimer le mémo",
       "body": "Êtes-vous sûr de vouloir supprimer ce mémo ? Cette action est irréversible.",
       "confirm": "Supprimer"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Ce lien ouvre un site externe dans un nouvel onglet.",
+    "linkAriaLabel": "{{displayName}} (ouvre {{uri}})",
+    "validation": {
+      "invalidUrl": "URL non valide"
     }
   },
   "mediaGallery": {

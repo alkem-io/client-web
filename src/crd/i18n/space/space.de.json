@@ -150,6 +150,7 @@
     "callForWhiteboards": "Aufruf für Whiteboards",
     "poll": "Umfrage",
     "link": "Link",
+    "callToAction": "Handlungsaufforderung",
     "mediaGallery": "Mediengalerie",
     "memo": "Notiz",
     "moreWhiteboards": "+{{count}} weitere",
@@ -393,6 +394,13 @@
       "title": "Memo löschen",
       "body": "Möchten Sie dieses Memo wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "confirm": "Löschen"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Dieser Link öffnet eine externe Seite in einem neuen Tab.",
+    "linkAriaLabel": "{{displayName}} (öffnet {{uri}})",
+    "validation": {
+      "invalidUrl": "Ungültige URL"
     }
   },
   "mediaGallery": {

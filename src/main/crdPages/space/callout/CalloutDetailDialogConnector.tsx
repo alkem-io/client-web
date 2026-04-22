@@ -11,6 +11,7 @@ import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../da
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CallToActionFramingConnector } from './CallToActionFramingConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
@@ -167,6 +168,9 @@ export function CalloutDetailDialogConnector({
     <MediaGalleryFramingConnector callout={callout} />
   ) : undefined;
 
+  const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
+  const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
+
   const handleContributionClick = (contributionId: string, clickedMemoId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
@@ -225,6 +229,7 @@ export function CalloutDetailDialogConnector({
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          callToActionFramingSlot={callToActionFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
@@ -256,6 +261,7 @@ export function CalloutDetailDialogConnector({
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            callToActionFramingSlot={callToActionFramingSlot}
           />
         )}
       </CalloutCommentsConnector>

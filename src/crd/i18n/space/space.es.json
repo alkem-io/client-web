@@ -150,6 +150,7 @@
     "callForWhiteboards": "Convocatoria de pizarras",
     "poll": "Encuesta",
     "link": "Enlace",
+    "callToAction": "Llamada a la acción",
     "mediaGallery": "Galería multimedia",
     "memo": "Nota",
     "moreWhiteboards": "+{{count}} más",
@@ -393,6 +394,13 @@
       "title": "Eliminar memo",
       "body": "¿Estás seguro de que quieres eliminar este memo? Esta acción no se puede deshacer.",
       "confirm": "Eliminar"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Este enlace abre un sitio externo en una pestaña nueva.",
+    "linkAriaLabel": "{{displayName}} (abre {{uri}})",
+    "validation": {
+      "invalidUrl": "URL no válida"
     }
   },
   "mediaGallery": {

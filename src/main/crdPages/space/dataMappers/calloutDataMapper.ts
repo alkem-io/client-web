@@ -3,12 +3,14 @@ import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDe
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import { mapLinkToCallToActionProps } from './callToActionDataMapper';
 import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
   if (framingType === CalloutFramingType.Memo) return 'memo';
   if (framingType === CalloutFramingType.MediaGallery) return 'mediaGallery';
+  if (framingType === CalloutFramingType.Link) return 'callToAction';
   return 'text';
 }
 
@@ -61,6 +63,20 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
         ? (() => {
             const mapped = mapMediaGalleryToViewProps(callout.framing.mediaGallery);
             return { thumbnails: mapped.feedThumbnails, totalCount: mapped.totalCount };
+          })()
+        : undefined,
+    framingCallToAction:
+      callout.framing.type === CalloutFramingType.Link
+        ? (() => {
+            const mapped = mapLinkToCallToActionProps(callout.framing.link);
+            return mapped
+              ? {
+                  uri: mapped.url,
+                  displayName: mapped.displayName,
+                  isExternal: mapped.isExternal,
+                  isValid: mapped.isValid,
+                }
+              : undefined;
           })()
         : undefined,
   };
