@@ -15,7 +15,7 @@ import { styled } from '@mui/material/styles';
 import type { Editor } from '@tiptap/react';
 import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InsertEmbedCodeButton } from '../../../../crd/forms/markdown/extensions/iframe/InsertEmbedCodeButton';
+import { InsertEmbedCodeButton } from '@/crd/forms/markdown/extensions/iframe/InsertEmbedCodeButton';
 import InsertEmojiButton from './InsertEmojiButton';
 import InsertImageButton from './InsertImageButton';
 import TableControls from './Tables/TableControls';

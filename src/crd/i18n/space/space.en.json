@@ -352,6 +352,7 @@
       "message": "Memo editor coming soon — showing plain-text preview."
     },
     "displayName": {
+      "inputLabel": "Title",
       "edit": "Edit memo title",
       "save": "Save memo title",
       "cancel": "Cancel edit"
@@ -362,6 +363,9 @@
       "disconnected": "Disconnected",
       "membersOnline_one": "1 member online",
       "membersOnline_other": "{{count}} members online",
+      "connectedUsersLabel": "Connected users",
+      "moreConnectedUsers_one": "{{count}} more connected user",
+      "moreConnectedUsers_other": "{{count}} more connected users",
       "guestWarning": "You are editing as a guest",
       "delete": "Delete memo",
       "readonlyReason": {
@@ -375,6 +379,37 @@
     "errors": {
       "loading": "Loading memo…",
       "loadFailed": "Unable to load memo"
+    },
+    "deleteConfirm": {
+      "title": "Delete memo",
+      "body": "Are you sure you want to delete this memo? This action cannot be undone.",
+      "confirm": "Delete"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Open image",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more",
+    "previous": "Previous image",
+    "next": "Next image",
+    "goToImage": "Go to image {{index}}",
+    "thumbnailsLabel": "Image thumbnails",
+    "download": "Download image",
+    "fullscreen": "Enter fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "emptyState": {
+      "title": "No images yet",
+      "action": "Add images"
+    },
+    "altTextLabel": "Alt text",
+    "deleteImage": "Delete image",
+    "dismissError": "Dismiss error",
+    "uploading": "Uploading…",
+    "downloadError": "Could not download the image.",
+    "validation": {
+      "type": "Unsupported file type",
+      "tooSmall": "Image is too small",
+      "tooLarge": "Image is too large"
     }
   },
   "comments": {

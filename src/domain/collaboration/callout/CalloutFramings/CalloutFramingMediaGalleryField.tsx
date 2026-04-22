@@ -405,6 +405,7 @@ const CalloutFramingMediaGalleryField = () => {
         <DialogContent>
           <List sx={{ pt: 0 }}>
             {validationErrors.map((error, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: Allow index as key since file names may not be unique and errors are not expected to change dynamically
               <Box key={`${error.fileName}-${index}`}>
                 <ListItem disableGutters={true}>
                   <ListItemText
@@ -412,6 +413,7 @@ const CalloutFramingMediaGalleryField = () => {
                     secondary={
                       <Stack component="ul" sx={{ pl: 2, m: 0 }}>
                         {error.errors.map((err, errIndex) => (
+                          // biome-ignore lint/suspicious/noArrayIndexKey: Error messages are static and won't change dynamically
                           <Box component="li" key={errIndex} sx={{ fontSize: '0.875rem' }}>
                             {err}
                           </Box>

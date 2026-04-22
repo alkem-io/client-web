@@ -345,6 +345,64 @@
     "reactionCount_one": "1 Reaktion",
     "contributions": "Beiträge"
   },
+  "memo": {
+    "close": "Schließen",
+    "stubDialog": {
+      "message": "Memo-Editor kommt bald — Klartextvorschau wird angezeigt."
+    },
+    "displayName": {
+      "inputLabel": "Titel",
+      "edit": "Memo-Titel bearbeiten",
+      "save": "Memo-Titel speichern",
+      "cancel": "Bearbeitung abbrechen"
+    },
+    "footer": {
+      "connected": "Verbunden",
+      "connecting": "Verbindung wird hergestellt…",
+      "disconnected": "Getrennt",
+      "membersOnline_one": "1 Mitglied online",
+      "membersOnline_other": "{{count}} Mitglieder online",
+      "guestWarning": "Du bearbeitest als Gast",
+      "delete": "Notiz löschen",
+      "readonlyReason": {
+        "connecting": "Verbindung zum Zusammenarbeitsdienst wird hergestellt…",
+        "notSynced": "Synchronisierung… öffne die Notiz erneut, um die Bearbeitung fortzusetzen.",
+        "unauthenticated": "Melde dich an, um diese Notiz zu bearbeiten.",
+        "contentUpdatePolicy": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
+        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen."
+      }
+    },
+    "errors": {
+      "loading": "Notiz wird geladen…",
+      "loadFailed": "Notiz konnte nicht geladen werden"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Bild öffnen",
+    "more_one": "+{{count}} weiteres",
+    "more_other": "+{{count}} weitere",
+    "previous": "Vorheriges Bild",
+    "next": "Nächstes Bild",
+    "goToImage": "Zu Bild {{index}} gehen",
+    "thumbnailsLabel": "Bildvorschauen",
+    "download": "Bild herunterladen",
+    "fullscreen": "Vollbild aktivieren",
+    "exitFullscreen": "Vollbild verlassen",
+    "emptyState": {
+      "title": "Noch keine Bilder",
+      "action": "Bilder hinzufügen"
+    },
+    "altTextLabel": "Alternativtext",
+    "deleteImage": "Bild löschen",
+    "dismissError": "Fehler schließen",
+    "uploading": "Hochladen…",
+    "downloadError": "Das Bild konnte nicht heruntergeladen werden.",
+    "validation": {
+      "type": "Nicht unterstützter Dateityp",
+      "tooSmall": "Bild ist zu klein",
+      "tooLarge": "Bild ist zu groß"
+    }
+  },
   "comments": {
     "title": "Diskussion",
     "showMore": "Mehr anzeigen",

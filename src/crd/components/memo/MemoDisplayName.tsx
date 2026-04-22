@@ -31,6 +31,10 @@ export function MemoDisplayName({
   const { t } = useTranslation('crd-space');
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    // Prevent saving/cancelling multiple times
+    if (saving) {
+      return;
+    }
     if (e.key === 'Enter') {
       e.preventDefault();
       onSave?.();
@@ -49,6 +53,7 @@ export function MemoDisplayName({
       <div className="flex items-center gap-1 min-w-0">
         <Input
           value={value ?? ''}
+          aria-label={t('memo.displayName.inputLabel')}
           onChange={e => onChange?.(e.target.value)}
           onKeyDown={handleKeyDown}
           autoFocus={true}

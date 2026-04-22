@@ -39,6 +39,8 @@ type CalloutDetailDialogProps = {
   whiteboardFramingSlot?: ReactNode;
   /** Memo framing preview rendered below description (e.g. CalloutMemoPreview) */
   memoFramingSlot?: ReactNode;
+  /** Media gallery inline carousel rendered below description (e.g. CalloutMediaGalleryCarousel) */
+  mediaGalleryFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
 };
@@ -55,6 +57,7 @@ export function CalloutDetailDialog({
   pollSlot,
   whiteboardFramingSlot,
   memoFramingSlot,
+  mediaGalleryFramingSlot,
   onReactionsClick,
   onShareClick,
 }: CalloutDetailDialogProps) {
@@ -142,6 +145,7 @@ export function CalloutDetailDialog({
 
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
               {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
+              {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 

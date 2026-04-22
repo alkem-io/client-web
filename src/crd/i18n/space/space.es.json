@@ -345,6 +345,64 @@
     "reactionCount_one": "1 reacción",
     "contributions": "Contribuciones"
   },
+  "memo": {
+    "close": "Cerrar",
+    "stubDialog": {
+      "message": "El editor de notas estará disponible pronto — se muestra una vista previa en texto plano."
+    },
+    "displayName": {
+      "inputLabel": "Título",
+      "edit": "Editar título de la nota",
+      "save": "Guardar título de la nota",
+      "cancel": "Cancelar edición"
+    },
+    "footer": {
+      "connected": "Conectado",
+      "connecting": "Conectando…",
+      "disconnected": "Desconectado",
+      "membersOnline_one": "1 miembro en línea",
+      "membersOnline_other": "{{count}} miembros en línea",
+      "guestWarning": "Estás editando como invitado",
+      "delete": "Eliminar nota",
+      "readonlyReason": {
+        "connecting": "Conectando al servicio de colaboración…",
+        "notSynced": "Sincronizando… vuelve a abrir la nota para continuar editando.",
+        "unauthenticated": "Inicia sesión para editar esta nota.",
+        "contentUpdatePolicy": "No tienes permiso para editar esta nota. Pide al propietario que cambie la configuración de uso compartido.",
+        "noMembership": "Solo los miembros de este espacio pueden editar esta nota. Únete al espacio para contribuir."
+      }
+    },
+    "errors": {
+      "loading": "Cargando nota…",
+      "loadFailed": "No se pudo cargar la nota"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Abrir imagen",
+    "more_one": "+{{count}} más",
+    "more_other": "+{{count}} más",
+    "previous": "Imagen anterior",
+    "next": "Imagen siguiente",
+    "goToImage": "Ir a la imagen {{index}}",
+    "thumbnailsLabel": "Miniaturas de imágenes",
+    "download": "Descargar imagen",
+    "fullscreen": "Entrar en pantalla completa",
+    "exitFullscreen": "Salir de pantalla completa",
+    "emptyState": {
+      "title": "Aún no hay imágenes",
+      "action": "Añadir imágenes"
+    },
+    "altTextLabel": "Texto alternativo",
+    "deleteImage": "Eliminar imagen",
+    "dismissError": "Descartar error",
+    "uploading": "Subiendo…",
+    "downloadError": "No se pudo descargar la imagen.",
+    "validation": {
+      "type": "Tipo de archivo no admitido",
+      "tooSmall": "La imagen es demasiado pequeña",
+      "tooLarge": "La imagen es demasiado grande"
+    }
+  },
   "comments": {
     "title": "Discusión",
     "showMore": "Mostrar más",
