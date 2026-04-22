@@ -29,6 +29,9 @@
     "virtualContributors": "Виртуални сътрудници",
     "communityGuidelines": "Насоки на общността",
     "postIndex": "Индекс на публикациите",
+    "searchPlaceholder": "Търсене...",
+    "searchLabel": "Търсене в публикациите",
+    "noResults": "Няма съвпадения",
     "readMore": "Прочети повече",
     "addEvent": "Добави събитие",
     "eventDateRelative": {
