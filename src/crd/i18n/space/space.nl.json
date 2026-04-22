@@ -29,6 +29,9 @@
     "virtualContributors": "Virtuele bijdragers",
     "communityGuidelines": "Communityrichtlijnen",
     "postIndex": "Berichtenindex",
+    "searchPlaceholder": "Zoeken...",
+    "searchLabel": "Berichten zoeken",
+    "noResults": "Geen resultaten",
     "readMore": "Lees meer",
     "addEvent": "Evenement toevoegen",
     "eventDateRelative": {

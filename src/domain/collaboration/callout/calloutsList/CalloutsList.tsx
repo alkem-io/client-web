@@ -26,9 +26,11 @@ const CalloutsList = <Callout extends CalloutModelLight>({
 
   const filterCalloutCallback = (callout: Callout) => {
     const lowerCaseFilter = filter.toLowerCase();
-
-    // If the Callout's name matches the filter
-    return callout.framing.profile.displayName.toLowerCase().includes(lowerCaseFilter);
+    const profile = callout.framing.profile;
+    const haystack = [profile.displayName, profile.description ?? '', ...(profile.tagset?.tags ?? [])]
+      .join(' ')
+      .toLowerCase();
+    return haystack.includes(lowerCaseFilter);
   };
 
   const filteredCallouts = callouts && filter.length > 0 ? callouts?.filter(filterCalloutCallback) : callouts;

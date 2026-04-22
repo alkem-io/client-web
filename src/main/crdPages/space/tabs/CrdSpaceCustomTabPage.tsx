@@ -40,11 +40,16 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const allTags = (tagsData?.lookup.calloutsSet?.tags ?? []).map(tag => ({ name: tag, count: 0 }));
 
   // Build sidebar list from light callout data (also used as knowledge entries)
-  const sidebarItems = callouts.map(callout => ({
-    id: callout.id,
-    title: callout.framing.profile.displayName,
-    type: callout.framing.type === CalloutFramingType.Whiteboard ? ('whiteboard' as const) : ('text' as const),
-  }));
+  const sidebarItems = callouts.map(callout => {
+    const profile = callout.framing.profile;
+    return {
+      id: callout.id,
+      title: profile.displayName,
+      type: callout.framing.type === CalloutFramingType.Whiteboard ? ('collection' as const) : ('text' as const),
+      description: profile.description,
+      tags: profile.tagset?.tags,
+    };
+  });
 
   const handleSelectTag = (tag: string) => {
     setTagsFilter(prev => [...prev, tag]);
@@ -73,10 +78,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
             variant="knowledge"
             description={tabDescription || space.about.profile.description || ''}
             onAboutClick={() => navigate(`${space.about.profile.url}/${EntityPageSection.About}`)}
-            knowledgeEntries={sidebarItems.map(item => ({
-              ...item,
-              type: item.type === 'whiteboard' ? ('collection' as const) : item.type,
-            }))}
+            knowledgeEntries={sidebarItems}
             onKnowledgeEntryClick={handleScrollToCallout}
           />,
           sidebarContainer

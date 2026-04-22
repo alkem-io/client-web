@@ -29,6 +29,9 @@
     "virtualContributors": "Contributeurs virtuels",
     "communityGuidelines": "Directives de la communauté",
     "postIndex": "Index des publications",
+    "searchPlaceholder": "Rechercher...",
+    "searchLabel": "Rechercher des publications",
+    "noResults": "Aucun résultat",
     "readMore": "Lire la suite",
     "addEvent": "Ajouter un événement",
     "eventDateRelative": {
