@@ -156,9 +156,8 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- The project uses Crowdin for translations
-- Only edit English translation files; all other locale files are generated automatically via Crowdin and must never be edited manually
-- If you need to change a non-English translation file, do it from Crowdin, not in the codebase
+- **Crowdin scope** — the Crowdin workflow applies ONLY to the main app translations under `src/core/i18n/`. There, only `src/core/i18n/en/translation.en.json` may be edited directly; non-English files under `src/core/i18n/` are generated via Crowdin and must never be edited manually.
+- **CRD scope** — translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`. All supported languages (en, nl, es, bg, de, fr) are edited directly in the same PR that introduces or removes a key.
 
 ### Namespaces
 
