@@ -65,9 +65,8 @@ function LazyCalloutItemContent({
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
 
-  const postData = mapCalloutDetailsToPostCard(callout, formatDate);
+  const postData = mapCalloutDetailsToPostCard(callout, t);
 
   const openDialog = (contributionId?: string, memoId?: string) => {
     setInitialContributionId(contributionId);

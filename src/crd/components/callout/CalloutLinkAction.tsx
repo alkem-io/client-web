@@ -52,7 +52,7 @@ export function CalloutLinkAction({ url, displayName, isExternal, isValid, class
           </a>
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="top" className="max-w-xs" style={{ color: 'var(--primary-foreground)' }}>
+      <TooltipContent side="top" className="max-w-xs text-primary-foreground">
         {isExternal && <div className="text-caption mb-0.5">{t('callToAction.externalLinkDisclaimer')}</div>}
         <div className="text-caption break-all">{url}</div>
       </TooltipContent>

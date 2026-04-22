@@ -94,7 +94,6 @@ export function CalloutDetailDialogConnector({
   initialMemoId,
 }: CalloutDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
 
@@ -223,7 +222,7 @@ export function CalloutDetailDialogConnector({
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
-          callout={mapCalloutDetailsToDialogData(callout, formatDate)}
+          callout={mapCalloutDetailsToDialogData(callout, t)}
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
@@ -249,7 +248,7 @@ export function CalloutDetailDialogConnector({
             open={open}
             onOpenChange={onOpenChange}
             callout={{
-              ...mapCalloutDetailsToDialogData(callout, formatDate),
+              ...mapCalloutDetailsToDialogData(callout, t),
               commentCount,
             }}
             commentsSlot={thread}
