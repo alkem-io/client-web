@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal } from '@/crd/primitives/dialog';
 
-type WhiteboardEditorShellProps = {
+type MemoEditorShellProps = {
   open: boolean;
   fullscreen?: boolean;
   onClose: () => void;
@@ -16,7 +16,7 @@ type WhiteboardEditorShellProps = {
   className?: string;
 };
 
-export function WhiteboardEditorShell({
+export function MemoEditorShell({
   open,
   fullscreen,
   onClose,
@@ -26,8 +26,8 @@ export function WhiteboardEditorShell({
   children,
   footer,
   className,
-}: WhiteboardEditorShellProps) {
-  const { t } = useTranslation('crd-whiteboard');
+}: MemoEditorShellProps) {
+  const { t } = useTranslation('crd-space');
   const titleId = useId();
 
   return (
@@ -67,14 +67,14 @@ export function WhiteboardEditorShell({
                 type="button"
                 onClick={onClose}
                 className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-1"
-                aria-label={t('editor.closeWhiteboard')}
+                aria-label={t('memo.close')}
               >
                 <X className="size-5" />
               </button>
             </div>
           </div>
 
-          {/* Content: Excalidraw canvas (or any children) */}
+          {/* Body: editor (children is the CollaborativeMarkdownEditor) */}
           <div className="flex-1 min-h-0 relative">{children}</div>
 
           {/* Footer */}

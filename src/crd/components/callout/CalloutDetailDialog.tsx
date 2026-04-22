@@ -37,6 +37,8 @@ type CalloutDetailDialogProps = {
   pollSlot?: ReactNode;
   /** Whiteboard framing preview rendered below description (e.g. CalloutWhiteboardPreview) */
   whiteboardFramingSlot?: ReactNode;
+  /** Memo framing preview rendered below description (e.g. CalloutMemoPreview) */
+  memoFramingSlot?: ReactNode;
   onReactionsClick?: () => void;
   onShareClick?: () => void;
 };
@@ -52,6 +54,7 @@ export function CalloutDetailDialog({
   contributionsCount,
   pollSlot,
   whiteboardFramingSlot,
+  memoFramingSlot,
   onReactionsClick,
   onShareClick,
 }: CalloutDetailDialogProps) {
@@ -138,6 +141,7 @@ export function CalloutDetailDialog({
               {callout.description && <MarkdownContent content={callout.description} className="text-foreground/90" />}
 
               {whiteboardFramingSlot && <div className="pt-2">{whiteboardFramingSlot}</div>}
+              {memoFramingSlot && <div className="pt-2">{memoFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 

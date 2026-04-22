@@ -217,7 +217,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
       const prepareWhiteboardResult = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
       if (prepareWhiteboardResult.success) {
         const { whiteboard: updatedWhiteboard, previewImages } = prepareWhiteboardResult;
-        actions.onUpdate(updatedWhiteboard, previewImages);
+        await actions.onUpdate(updatedWhiteboard, previewImages);
       } else {
         logError(new Error(`Error preparing whiteboard for update: '${prepareWhiteboardResult.error}'`), {
           category: TagCategoryValues.WHITEBOARD,

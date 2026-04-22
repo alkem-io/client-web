@@ -1,4 +1,4 @@
-import { FileText, Maximize2, MessageSquare, MoreHorizontal, Presentation } from 'lucide-react';
+import { FileText, Maximize2, MessageSquare, MoreHorizontal, Presentation, StickyNote } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -7,8 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card';
+import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard';
+export type PostType = 'text' | 'whiteboard' | 'memo';
 
 export type PostCardData = {
   id: string;
@@ -24,6 +25,8 @@ export type PostCardData = {
   isDraft?: boolean;
   /** Framing-level preview image (whiteboard framing only) */
   framingImageUrl?: string;
+  /** Framing-level memo markdown (memo framing only) — rendered as a compact cropped preview in the feed */
+  framingMemoMarkdown?: string;
   commentCount?: number;
 };
 
@@ -45,11 +48,13 @@ type PostCardProps = {
 const typeIcons: Record<PostType, typeof FileText> = {
   text: FileText,
   whiteboard: Presentation,
+  memo: StickyNote,
 };
 
 const typeLabels = {
   text: 'callout.post',
   whiteboard: 'callout.whiteboard',
+  memo: 'callout.memo',
 } as const;
 
 export function PostCard({
@@ -166,6 +171,20 @@ export function PostCard({
             <div className="absolute inset-0 flex items-center justify-center bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <Button variant="secondary" className="shadow-sm" onClick={onClick}>
                 {t('callout.openWhiteboard')}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Memo framing preview */}
+        {post.type === 'memo' && post.framingMemoMarkdown && (
+          <div className="relative rounded-lg overflow-hidden border border-border bg-muted/30">
+            <div className="p-3">
+              <CroppedMarkdown content={post.framingMemoMarkdown} maxHeight="12rem" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-primary/0 group-hover:bg-primary/20 transition-colors opacity-0 group-hover:opacity-100">
+              <Button variant="secondary" className="shadow-sm" onClick={onClick}>
+                {t('callout.openMemo')}
               </Button>
             </div>
           </div>

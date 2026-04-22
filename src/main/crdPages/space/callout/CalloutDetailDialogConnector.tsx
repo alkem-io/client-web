@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
+import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../dataMappers/calloutDataMapper';
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
-
+import { MemoContributionAddConnector } from './MemoContributionAddConnector';
+import { MemoContributionConnector } from './MemoContributionConnector';
+import { MemoFramingConnector } from './MemoFramingConnector';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
-
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
 
@@ -20,8 +23,11 @@ type CalloutDetailDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   callout: CalloutDetailsModelExtended;
-  /** If set, the whiteboard dialog opens immediately on top of the callout dialog */
-  initialWhiteboardContributionId?: string;
+  /** If set, the matching contribution dialog opens immediately on top of the callout dialog.
+   *  Routed to whiteboard or memo overlay based on `callout.settings.contribution.type`. */
+  initialContributionId?: string;
+  /** For memo contributions only: the underlying memo id (the contribution wrapper id goes into `initialContributionId`). */
+  initialMemoId?: string;
 };
 
 function ContributionsSlot({
@@ -32,7 +38,7 @@ function ContributionsSlot({
 }: {
   callout: CalloutDetailsModelExtended;
   open: boolean;
-  onContributionClick?: (id: string) => void;
+  onContributionClick?: (id: string, memoId?: string) => void;
   onContributionCreated?: () => void;
 }) {
   const contributionType = getCalloutContributionType(callout);
@@ -57,10 +63,13 @@ function ContributionsSlot({
 
   const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
 
-  const trailingSlot =
-    canCreateContribution && contributionType === CalloutContributionType.Whiteboard ? (
+  const trailingSlot = canCreateContribution ? (
+    contributionType === CalloutContributionType.Whiteboard ? (
       <WhiteboardContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
-    ) : null;
+    ) : contributionType === CalloutContributionType.Memo ? (
+      <MemoContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+    ) : null
+  ) : null;
 
   return (
     <div ref={inViewRef}>
@@ -79,20 +88,47 @@ export function CalloutDetailDialogConnector({
   open,
   onOpenChange,
   callout,
-  initialWhiteboardContributionId,
+  initialContributionId,
+  initialMemoId,
 }: CalloutDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
   const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
+  const contributionType = getCalloutContributionType(callout);
+  const initialIsMemo = contributionType === CalloutContributionType.Memo;
+
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
-    initialWhiteboardContributionId
+    initialIsMemo ? undefined : initialContributionId
   );
+  const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
+    initialIsMemo ? initialContributionId : undefined
+  );
+  const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
+  const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
+  const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleFramingMemoClose = () => {
+    const fmId = callout.framing.memo?.id;
+    if (fmId) {
+      void fetchFramingMarkdown({ variables: { id: fmId } });
+      framingRefreshRef.current = setTimeout(() => {
+        void fetchFramingMarkdown({ variables: { id: fmId } });
+        framingRefreshRef.current = null;
+      }, 2500);
+    }
+    setFramingMemoOpen(false);
+  };
 
   // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {
-    if (initialWhiteboardContributionId) {
-      setWhiteboardContributionId(initialWhiteboardContributionId);
+    if (!initialContributionId) return;
+    if (contributionType === CalloutContributionType.Memo) {
+      setMemoContributionId(initialContributionId);
+      setMemoId(initialMemoId);
+    } else {
+      setWhiteboardContributionId(initialContributionId);
     }
-  }, [initialWhiteboardContributionId]);
+  }, [initialContributionId, initialMemoId, contributionType]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
@@ -100,8 +136,19 @@ export function CalloutDetailDialogConnector({
   const hasWhiteboardFraming = callout.framing.type === CalloutFramingType.Whiteboard && !!callout.framing.whiteboard;
   const whiteboardFramingSlot = hasWhiteboardFraming ? <WhiteboardFramingConnector callout={callout} /> : undefined;
 
-  const handleContributionClick = (contributionId: string) => {
-    setWhiteboardContributionId(contributionId);
+  const hasMemoFraming = callout.framing.type === CalloutFramingType.Memo && !!callout.framing.memo;
+  const memoFramingSlot = hasMemoFraming ? (
+    <MemoFramingConnector callout={callout} onOpen={() => setFramingMemoOpen(true)} />
+  ) : undefined;
+  const framingMemoId = callout.framing.memo?.id;
+
+  const handleContributionClick = (contributionId: string, clickedMemoId?: string) => {
+    if (contributionType === CalloutContributionType.Memo) {
+      setMemoContributionId(contributionId);
+      setMemoId(clickedMemoId);
+    } else {
+      setWhiteboardContributionId(contributionId);
+    }
   };
 
   const hasContributionType = Boolean(getCalloutContributionType(callout)) && callout.settings.contribution.enabled;
@@ -118,6 +165,29 @@ export function CalloutDetailDialogConnector({
     />
   ) : null;
 
+  const memoOverlay =
+    memoContributionId && memoId ? (
+      <MemoContributionConnector
+        open={true}
+        contributionId={memoContributionId}
+        memoId={memoId}
+        onClose={() => {
+          setMemoContributionId(undefined);
+          setMemoId(undefined);
+        }}
+      />
+    ) : null;
+
+  const framingMemoOverlay =
+    framingMemoOpen && framingMemoId ? (
+      <CrdMemoDialog
+        open={true}
+        memoId={framingMemoId}
+        isContribution={false}
+        onClose={() => handleFramingMemoClose()}
+      />
+    ) : null;
+
   if (!callout.comments?.id) {
     return (
       <>
@@ -128,11 +198,14 @@ export function CalloutDetailDialogConnector({
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
+          memoFramingSlot={memoFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
         />
         {whiteboardOverlay}
+        {memoOverlay}
+        {framingMemoOverlay}
       </>
     );
   }
@@ -155,10 +228,13 @@ export function CalloutDetailDialogConnector({
             contributionsCount={callout.contributions.length}
             pollSlot={pollSlot}
             whiteboardFramingSlot={whiteboardFramingSlot}
+            memoFramingSlot={memoFramingSlot}
           />
         )}
       </CalloutCommentsConnector>
       {whiteboardOverlay}
+      {memoOverlay}
+      {framingMemoOverlay}
     </>
   );
 }

@@ -141,6 +141,7 @@
     "expand": "Show more",
     "collapse": "Show less",
     "openWhiteboard": "Open Whiteboard",
+    "openMemo": "Open Memo",
     "comments": "{{count}} Comments",
     "commentsZero": "0 Comments",
     "post": "Post",
@@ -162,7 +163,11 @@
     "addResponse": "Add Response",
     "createWhiteboard": "Create new whiteboard",
     "defaultWhiteboardName": "New Whiteboard",
-    "whiteboardNameLabel": "Whiteboard title"
+    "whiteboardNameLabel": "Whiteboard title",
+    "addMemo": "Add memo",
+    "createMemo": "Create new memo",
+    "defaultMemoName": "New Memo",
+    "memoNameLabel": "Memo title"
   },
   "contribution": {
     "edit": "Edit",
@@ -340,6 +345,37 @@
     "reactionCount": "{{count}} reactions",
     "reactionCount_one": "1 reaction",
     "contributions": "Contributions"
+  },
+  "memo": {
+    "close": "Close",
+    "stubDialog": {
+      "message": "Memo editor coming soon — showing plain-text preview."
+    },
+    "displayName": {
+      "edit": "Edit memo title",
+      "save": "Save memo title",
+      "cancel": "Cancel edit"
+    },
+    "footer": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "membersOnline_one": "1 member online",
+      "membersOnline_other": "{{count}} members online",
+      "guestWarning": "You are editing as a guest",
+      "delete": "Delete memo",
+      "readonlyReason": {
+        "connecting": "Connecting to the collaboration service…",
+        "notSynced": "Synchronizing… reopen the memo to resume editing.",
+        "unauthenticated": "Sign in to edit this memo.",
+        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner to change the share settings.",
+        "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
+      }
+    },
+    "errors": {
+      "loading": "Loading memo…",
+      "loadFailed": "Unable to load memo"
+    }
   },
   "comments": {
     "title": "Discussion",

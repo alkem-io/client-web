@@ -62,21 +62,24 @@ function LazyCalloutItemContent({
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [initialWhiteboardId, setInitialWhiteboardId] = useState<string | undefined>();
+  const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
+  const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const { t } = useTranslation('crd-space');
   const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
 
   const postData = mapCalloutDetailsToPostCard(callout, formatDate);
 
-  const openDialog = (whiteboardContributionId?: string) => {
-    setInitialWhiteboardId(whiteboardContributionId);
+  const openDialog = (contributionId?: string, memoId?: string) => {
+    setInitialContributionId(contributionId);
+    setInitialMemoId(memoId);
     setDialogOpen(true);
   };
 
   const handleDialogClose = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
-      setInitialWhiteboardId(undefined);
+      setInitialContributionId(undefined);
+      setInitialMemoId(undefined);
     }
   };
 
@@ -98,7 +101,7 @@ function LazyCalloutItemContent({
             <ContributionsPreviewConnector
               callout={callout}
               onShowAll={() => openDialog()}
-              onContributionClick={contributionId => openDialog(contributionId)}
+              onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
             />
           ) : undefined
         }
@@ -110,7 +113,8 @@ function LazyCalloutItemContent({
         open={dialogOpen}
         onOpenChange={handleDialogClose}
         callout={callout}
-        initialWhiteboardContributionId={initialWhiteboardId}
+        initialContributionId={initialContributionId}
+        initialMemoId={initialMemoId}
       />
     </>
   );
