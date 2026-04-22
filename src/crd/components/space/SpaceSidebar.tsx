@@ -38,6 +38,8 @@ type KnowledgeEntry = {
   id: string;
   title: string;
   type: 'text' | 'collection';
+  description?: string;
+  tags?: string[];
 };
 
 type SpaceSidebarProps = {

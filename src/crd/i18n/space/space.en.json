@@ -29,6 +29,9 @@
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
     "postIndex": "Post Index",
+    "searchPlaceholder": "Search...",
+    "searchLabel": "Search posts",
+    "noResults": "No matches",
     "readMore": "Read more",
     "addEvent": "Add event",
     "eventDateRelative": {
