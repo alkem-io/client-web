@@ -147,6 +147,8 @@
     "openMemo": "Отвори бележка",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
+    "expandComments": "Разгъни коментарите",
+    "collapseComments": "Сгъни коментарите",
     "post": "Публикация",
     "whiteboard": "Дъска",
     "collection": "Колекция",
@@ -441,6 +443,8 @@
     "delete": "Изтриване",
     "deleted": "Този коментар беше изтрит",
     "addComment": "Добавете коментар...",
+    "mention": "Споменаване на потребител",
+    "mentionVirtualContributor": "AI",
     "send": "Изпращане",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

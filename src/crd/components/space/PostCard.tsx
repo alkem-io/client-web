@@ -1,4 +1,5 @@
 import {
+  ChevronDown,
   FileText,
   Images,
   Maximize2,
@@ -8,7 +9,7 @@ import {
   Presentation,
   StickyNote,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutLinkAction } from '@/crd/components/callout/CalloutLinkAction';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
@@ -21,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
 export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'callToAction';
@@ -58,6 +60,12 @@ type PostCardProps = {
   /** URL for the callout title link. Falls back to onClick when omitted. */
   href?: string;
   onClick?: () => void;
+  /**
+   * Fallback handler for the footer when no `commentsSlot` is provided — e.g.
+   * the standalone preview app or future callers that want a dialog-only flow.
+   * When `commentsSlot` is supplied the footer becomes a collapsible and this
+   * prop is ignored.
+   */
   onCommentsClick?: () => void;
   onSettingsClick?: () => void;
   onExpandClick?: () => void;
@@ -65,6 +73,23 @@ type PostCardProps = {
   contributionsPreview?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
   children?: ReactNode;
+  /**
+   * Full comment thread rendered inside the expanded footer. When supplied the
+   * footer renders a `<Collapsible>` with a chevron-toggle trigger. The
+   * integration layer (`CalloutCommentsConnector`) provides the node.
+   */
+  commentsSlot?: ReactNode;
+  /**
+   * Comment input rendered above the thread inside the expanded footer.
+   * Consumer passes `null` when the viewer cannot post.
+   */
+  commentInputSlot?: ReactNode | null;
+  /**
+   * Emits on every open/close of the inline comments footer. The integration
+   * layer uses this to gate the live subscription (see
+   * `CalloutCommentsConnector.skipSubscription`).
+   */
+  onCommentsExpandedChange?: (expanded: boolean) => void;
   className?: string;
 };
 
@@ -93,10 +118,24 @@ export function PostCard({
   onExpandClick,
   contributionsPreview,
   children,
+  commentsSlot,
+  commentInputSlot,
+  onCommentsExpandedChange,
   className,
 }: PostCardProps) {
   const { t } = useTranslation('crd-space');
   const TypeIcon = typeIcons[post.type];
+  const hasCollapsibleComments = commentsSlot !== undefined;
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+
+  const handleCommentsOpenChange = (open: boolean) => {
+    setIsCommentsOpen(open);
+    onCommentsExpandedChange?.(open);
+  };
+
+  const commentLabel = post.commentCount
+    ? t('callout.comments', { count: post.commentCount })
+    : t('callout.commentsZero');
 
   return (
     <Card
@@ -243,22 +282,47 @@ export function PostCard({
 
       {children && <div className="px-6 pb-4">{children}</div>}
 
-      <CardFooter className="px-6 py-3 border-t bg-muted/5 flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 gap-2 text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
-          onClick={event => {
-            event.stopPropagation();
-            onCommentsClick?.();
-          }}
-        >
-          <MessageSquare className="w-4 h-4" aria-hidden="true" />
-          <span className="text-caption">
-            {post.commentCount ? t('callout.comments', { count: post.commentCount }) : t('callout.commentsZero')}
-          </span>
-        </Button>
-      </CardFooter>
+      {hasCollapsibleComments ? (
+        <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
+          <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
+            <CollapsibleTrigger asChild={true}>
+              <button
+                type="button"
+                className="group/comments flex w-full items-center gap-2 px-6 py-3 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
+              >
+                <ChevronDown
+                  className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
+                  aria-hidden="true"
+                />
+                <MessageSquare className="size-4" aria-hidden="true" />
+                <span>{commentLabel}</span>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-6 pb-4">
+              <div className="flex flex-col gap-3">
+                {commentInputSlot}
+                <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </CardFooter>
+      ) : (
+        <CardFooter className="!py-3 flex items-center gap-4 border-t bg-muted/5 px-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-2 text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
+            onClick={event => {
+              event.stopPropagation();
+              onCommentsClick?.();
+            }}
+          >
+            <MessageSquare className="w-4 h-4" aria-hidden="true" />
+            <span className="text-caption">{commentLabel}</span>
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }

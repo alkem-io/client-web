@@ -147,6 +147,8 @@
     "openMemo": "Memo openen",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
+    "expandComments": "Reacties uitvouwen",
+    "collapseComments": "Reacties inklappen",
     "post": "Bericht",
     "whiteboard": "Whiteboard",
     "collection": "Collectie",
@@ -441,6 +443,8 @@
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
     "addComment": "Voeg een opmerking toe...",
+    "mention": "Iemand noemen",
+    "mentionVirtualContributor": "AI",
     "send": "Verzenden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

@@ -147,6 +147,8 @@
     "openMemo": "Open Memo",
     "comments": "{{count}} Comments",
     "commentsZero": "0 Comments",
+    "expandComments": "Expand comments",
+    "collapseComments": "Collapse comments",
     "post": "Post",
     "whiteboard": "Whiteboard",
     "collection": "Collection",
@@ -432,6 +434,8 @@
     "delete": "Delete",
     "deleted": "This comment was deleted",
     "addComment": "Add a comment...",
+    "mention": "Mention someone",
+    "mentionVirtualContributor": "AI",
     "send": "Send",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

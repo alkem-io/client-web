@@ -173,6 +173,7 @@ Because US1 and US2 share priority P1 and overlap in the same JSX block (EventDe
 After the MVP:
 6. Add US3 (T005, T006, T007, T008) — newest-first + type cleanup + locale cleanup. Re-run T010/T011/T012.
 7. Add US4 (T009) — Reply affordance fix. Re-run T010/T011/T012.
+8. Add US5 (T013–T018) — inline collapsible comments on list-view callouts. Re-run T010/T011 + execute T018 manual QA.
 
 Each increment adds value without breaking previous stories.
 
@@ -182,11 +183,37 @@ With one developer the sequence above is natural. With multiple developers, afte
 
 ---
 
+## US5 tasks (branch `090-crd-callout-inline-comments`)
+
+- **T013** — Extend `CalloutCommentsConnector` with an optional `skipSubscription?: boolean` prop. Forward to `useCrdRoomComments` as `skipSubscription ?? !inView` so the dialog caller (which omits the prop) retains current behavior.
+  - File: `src/main/crdPages/space/callout/CalloutCommentsConnector.tsx`
+  - Dependencies: none
+
+- **T014** — Add the two new i18n keys (`callout.expandComments`, `callout.collapseComments`) to all six `crd-space` locale files. Keys are state-aware aria-labels for the Collapsible trigger button.
+  - Files: `src/crd/i18n/space/space.{en,nl,es,bg,de,fr}.json`
+  - Dependencies: none (can land in parallel with T013)
+
+- **T015** — Extend `PostCard` with optional slot props: `commentsSlot?: ReactNode`, `commentInputSlot?: ReactNode | null`, `onCommentsExpandedChange?: (expanded: boolean) => void`. When `commentsSlot !== undefined`, render the footer as a `<Collapsible>` with the chevron + count as the trigger and the input/thread as the content (input above, thread in a `max-h-[400px] overflow-y-auto pr-2` wrapper). When `commentsSlot` is undefined, keep the existing single-button footer for backward compatibility (used by the standalone preview app).
+  - File: `src/crd/components/space/PostCard.tsx`
+  - Dependencies: T014 (uses the new i18n keys)
+
+- **T016** — Wire `LazyCalloutItem` to mount `CalloutCommentsConnector` for each callout with a valid `comments.id`, lift the `commentsExpanded` state to the integration layer, and pass the connector's `thread` + `commentInput` into `PostCard` via the new slots. Remove the old `onCommentsClick={() => openDialog()}` binding (the footer now drives comments inline; title/expand button still open the dialog). Preserve a fallback path for the rare case where `callout.comments?.id` is undefined: render `PostCard` without the collapsible footer and keep the dialog-triggering `onCommentsClick`.
+  - File: `src/main/crdPages/space/callout/LazyCalloutItem.tsx`
+  - Dependencies: T013, T015
+
+- **T017** — Run `pnpm lint` + `pnpm vitest run`. Lint must be clean (no errors); the existing 620-test suite must continue to pass. No new unit tests required — the CRD layer does not have component-level test coverage for visual primitives, and the US5 work introduces no domain or data logic.
+  - Dependencies: T013–T016
+
+- **T018** — Execute the US5 section of `quickstart.md` (see Quickstart §E). Walk the expand/collapse flow on a space feed, confirm layout stability (subsequent callouts shift by ≤ ~400px), post/reply/react/delete inline, confirm dialog still opens from title + expand button, confirm keyboard operability (`Tab` + `Enter`/`Space` toggles, `aria-expanded` updates), confirm zero subscription requests on initial page load (DevTools Network), and confirm the CRD toggle OFF path renders the unchanged legacy MUI list.
+  - Dependencies: T017
+
+---
+
 ## Notes
 
 - **File overlap**: T002 and T003 both modify `EventDetailView.tsx`. Land T002 first, then T003 — avoid simultaneous edits to the same file.
-- **Locale files (T008)**: Per `src/crd/CLAUDE.md`, CRD translations are manual (not Crowdin). All six locale files MUST be edited in the same PR, not just English.
-- **No new tests**: Per plan.md Technical Context (Testing). The refinement is presentation-only; the existing test suite plus `quickstart.md`'s manual matrix are the testing strategy.
+- **Locale files (T008, T014)**: Per `src/crd/CLAUDE.md`, CRD translations are manual (not Crowdin). All six locale files MUST be edited in the same PR, not just English.
+- **No new tests**: Per plan.md Technical Context (Testing). The refinement is presentation-only; the existing test suite plus `quickstart.md`'s manual matrix are the testing strategy. US5 inherits this approach — the footer toggle is Radix Collapsible + Tailwind, with no new business logic to unit-test.
 - **Constitution alignment**: All 11 Constitution principles continue to pass per plan.md §Constitution Check. No new MUI imports, no new GraphQL, no new manual memoization, no new domain logic.
-- **Pre-commit**: Husky + lint-staged run on commit. `pnpm lint` in T010 catches most issues before commit.
+- **Pre-commit**: Husky + lint-staged run on commit. `pnpm lint` in T010/T017 catches most issues before commit.
 - **Commit granularity**: Commit after each task (or logically grouped task batch). Signed commits required per CLAUDE.md.

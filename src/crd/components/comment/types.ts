@@ -36,3 +36,23 @@ export type CommentsContainerData = {
   onAddReaction: (commentId: string, emoji: string) => void;
   onRemoveReaction: (commentId: string, emoji: string) => void;
 };
+
+/**
+ * Shape of a single @mention suggestion as rendered by the CRD comment input.
+ * The `id` doubles as the mention's stable link target — we use the contributor's
+ * profile URL so the resulting markdown `[@Name](url)` works as a real link.
+ */
+export type CrdMentionSuggestion = {
+  id: string;
+  displayName: string;
+  avatarUrl?: string;
+  city?: string;
+  country?: string;
+  virtualContributor?: boolean;
+};
+
+/**
+ * Async search callback supplied by the integration layer. Called by
+ * react-mentions each time the `@`-query changes; returns suggestions to render.
+ */
+export type CrdMentionSearch = (query: string) => Promise<CrdMentionSuggestion[]>;
