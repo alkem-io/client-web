@@ -54,6 +54,25 @@ export function SpaceFeed() {
     },
     {
       id: "2",
+      type: "document",
+      author: {
+        name: "David Miller",
+        role: "Member",
+        avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+      },
+      title: "2030 Renewable Transition Policy Proposal",
+      snippet: "The latest draft of our comprehensive policy proposal is ready for review. It covers the full strategic framework including grid modernization, community solar, building electrification, and fleet conversion — with updated budget projections and implementation timeline.",
+      timestamp: "4 hours ago",
+      contentPreview: {
+        documents: [
+          { title: "2030 Renewable Transition Policy Proposal.docx", docType: "word", size: "1.8 MB", lastEdited: "2 hours ago" }
+        ],
+        documentDisplayMode: 'scroll'
+      },
+      stats: { comments: 6 }
+    },
+    {
+      id: "5",
       type: "whiteboard",
       author: {
         name: "David Miller",
@@ -70,6 +89,27 @@ export function SpaceFeed() {
     },
     {
       id: "3",
+      type: "document",
+      author: {
+        name: "Elena Rodriguez",
+        role: "Lead",
+        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+      },
+      title: "2030 Renewable Transition — Working Documents",
+      snippet: "Sharing the latest drafts for the transition strategy. The policy proposal has been updated with feedback from last week's stakeholder session, and the budget model now includes the revised subsidy figures.",
+      timestamp: "1 day ago",
+      contentPreview: {
+        documents: [
+          { title: "2030 Renewable Transition Policy Proposal.docx", docType: "word", size: "1.8 MB", lastEdited: "6 hours ago" },
+          { title: "Municipal Budget Model FY2027–2030.xlsx", docType: "spreadsheet", size: "3.1 MB", lastEdited: "1 day ago" },
+          { title: "Stakeholder Presentation — April Update.pptx", docType: "presentation", size: "12.4 MB", lastEdited: "2 days ago" }
+        ],
+        documentDisplayMode: 'paginated'
+      },
+      stats: { comments: 9 }
+    },
+    {
+      id: "6",
       type: "collection",
       author: {
         name: "Elena Rodriguez",

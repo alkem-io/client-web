@@ -3,7 +3,7 @@ import {
   Search, 
   Plus, 
   MoreVertical, 
-  LayoutTemplate, 
+  Lightbulb, 
   Filter,
   Users,
   Calendar,
@@ -199,7 +199,7 @@ export function SpaceSettingsSubspaces() {
           <div className="space-y-4 flex-1">
              <div>
                <h3 className="font-semibold text-lg flex items-center gap-2">
-                 <LayoutTemplate className="w-5 h-5 text-primary" />
+                 <Lightbulb className="w-5 h-5 text-primary" />
                  Default Subspace Template
                </h3>
                <p className="text-muted-foreground text-sm mt-1">

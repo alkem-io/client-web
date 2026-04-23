@@ -11,7 +11,7 @@ import {
   Edit,
   Grid,
   List as ListIcon,
-  LayoutTemplate,
+  Lightbulb,
   Filter,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
