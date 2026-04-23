@@ -27,6 +27,12 @@ export type UseTemplateLibraryResult = {
   onLoadPlatform: () => void;
   onSelect: (template: { id: string }) => Promise<void>;
   loadingSelect: boolean;
+  /**
+   * Category whose import mutation is in flight. The dialog closes immediately on
+   * selection so the admin isn't blocked; the templates view shows a "Creating…"
+   * chip in the matching section header until the mutation + refetch complete.
+   */
+  importingCategory: TemplateCategory | null;
   openForCategory: (c: TemplateCategory) => void;
   close: () => void;
 };
@@ -52,7 +58,7 @@ export function useTemplateLibrary({
 }): UseTemplateLibraryResult {
   const [category, setCategory] = useState<TemplateCategory | null>(null);
   const [platformLoaded, setPlatformLoaded] = useState(false);
-  const [loadingSelect, setLoadingSelect] = useState(false);
+  const [importingCategory, setImportingCategory] = useState<TemplateCategory | null>(null);
 
   const open = category !== null;
   const templateType = category ? categoryToTemplateType(category) : null;
@@ -129,8 +135,12 @@ export function useTemplateLibrary({
   };
 
   const onSelect = async (template: { id: string }) => {
-    if (!templateType || !templatesSetId) return;
-    setLoadingSelect(true);
+    if (!templateType || !templatesSetId || !category) return;
+    const targetCategory = category;
+    // Close the dialog immediately — the target section shows a "Creating…"
+    // chip while the mutation + cache refetch complete.
+    setImportingCategory(targetCategory);
+    close();
     try {
       const { data } = await getTemplateContent({
         variables: {
@@ -154,9 +164,8 @@ export function useTemplateLibrary({
         const variables = toCreateTemplateMutationVariables(templatesSetId, templateType, fetched);
         await createTemplate({ variables });
       }
-      close();
     } finally {
-      setLoadingSelect(false);
+      setImportingCategory(null);
     }
   };
 
@@ -230,7 +239,8 @@ export function useTemplateLibrary({
     platformLoaded,
     onLoadPlatform: () => setPlatformLoaded(true),
     onSelect,
-    loadingSelect,
+    loadingSelect: false,
+    importingCategory,
     openForCategory,
     close,
   };

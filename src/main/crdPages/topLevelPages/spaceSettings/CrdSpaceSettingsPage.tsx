@@ -271,7 +271,7 @@ export default function CrdSpaceSettingsPage() {
               <SpaceSettingsTemplatesView
                 categories={templatesTab.categories}
                 loading={templatesTab.loading}
-                duplicatingCategory={templatesTab.actions.duplicatingCategory}
+                duplicatingCategory={templatesTab.actions.duplicatingCategory ?? templatesTab.library.importingCategory}
                 onCreateTemplate={templatesTab.onCreateTemplate}
                 onImportTemplate={templatesTab.onImportTemplate}
                 onTemplateAction={templatesTab.onTemplateAction}
