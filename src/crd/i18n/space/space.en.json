@@ -425,6 +425,8 @@
     "delete": "Delete",
     "deleted": "This comment was deleted",
     "addComment": "Add a comment...",
+    "mention": "Mention someone",
+    "mentionVirtualContributor": "AI",
     "send": "Send",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

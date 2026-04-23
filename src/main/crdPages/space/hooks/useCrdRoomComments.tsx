@@ -11,6 +11,7 @@ import usePostMessageMutations from '@/domain/communication/room/Comments/usePos
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
+import { useMentionableContributors } from './useMentionableContributors';
 
 type UseCrdRoomCommentsParams = {
   roomId: string;
@@ -45,6 +46,7 @@ export function useCrdRoomComments({
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { t } = useTranslation('crd-space');
   const { userModel, isAuthenticated } = useCurrentUserContext();
+  const mentionSearch = useMentionableContributors();
 
   const isSubscribed = useSubscribeOnRoomEvents(roomId, skipSubscription);
 
@@ -98,6 +100,7 @@ export function useCrdRoomComments({
       loading={loading}
       comments={comments}
       currentUser={currentUser}
+      mentionSearch={mentionSearch}
       onReply={(parentId, content) => {
         void postReply({ messageText: content, threadId: parentId });
       }}
@@ -123,6 +126,7 @@ export function useCrdRoomComments({
     <CommentInput
       currentUser={currentUser}
       disabled={loading}
+      mentionSearch={mentionSearch}
       onSubmit={content => {
         void postMessage(content);
       }}

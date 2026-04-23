@@ -266,7 +266,7 @@ export function PostCard({
       {children && <div className="px-6 pb-4">{children}</div>}
 
       {hasCollapsibleComments ? (
-        <CardFooter className="flex-col items-stretch gap-0 p-0 border-t bg-muted/5">
+        <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
           <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
             <CollapsibleTrigger asChild={true}>
               <button
@@ -283,7 +283,7 @@ export function PostCard({
               </button>
             </CollapsibleTrigger>
             <CollapsibleContent className="px-6 pb-4">
-              <div className="flex flex-col gap-3 border-t border-border pt-3">
+              <div className="flex flex-col gap-3">
                 {commentInputSlot}
                 <div className="max-h-[400px] overflow-y-auto pr-2">{commentsSlot}</div>
               </div>
@@ -291,7 +291,7 @@ export function PostCard({
           </Collapsible>
         </CardFooter>
       ) : (
-        <CardFooter className="px-6 py-3 border-t bg-muted/5 flex items-center gap-4">
+        <CardFooter className="!py-3 flex items-center gap-4 border-t bg-muted/5 px-6">
           <Button
             variant="ghost"
             size="sm"

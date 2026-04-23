@@ -407,6 +407,8 @@
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
     "addComment": "Voeg een opmerking toe...",
+    "mention": "Iemand noemen",
+    "mentionVirtualContributor": "AI",
     "send": "Verzenden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

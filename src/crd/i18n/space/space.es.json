@@ -416,6 +416,8 @@
     "delete": "Eliminar",
     "deleted": "Este comentario fue eliminado",
     "addComment": "Añade un comentario...",
+    "mention": "Mencionar a alguien",
+    "mentionVirtualContributor": "IA",
     "send": "Enviar",
     "charCount": "{{count}}/{{max}}",
     "reactions": {

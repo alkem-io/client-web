@@ -416,6 +416,8 @@
     "delete": "Löschen",
     "deleted": "Dieser Kommentar wurde gelöscht",
     "addComment": "Kommentar hinzufügen...",
+    "mention": "Jemanden erwähnen",
+    "mentionVirtualContributor": "KI",
     "send": "Senden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
