@@ -153,6 +153,7 @@
     "callForWhiteboards": "Call for Whiteboards",
     "poll": "Poll",
     "link": "Link",
+    "callToAction": "Call to Action",
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} more",
@@ -387,6 +388,14 @@
       "title": "Delete memo",
       "body": "Are you sure you want to delete this memo? This action cannot be undone.",
       "confirm": "Delete"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "This link opens an external site in a new tab.",
+    "linkAriaLabel": "{{displayName}} (opens {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opens {{url}} in a new tab)",
+    "validation": {
+      "invalidUrl": "Invalid URL"
     }
   },
   "mediaGallery": {

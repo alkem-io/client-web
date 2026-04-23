@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useApolloClient } from '@apollo/client';
+import type { Editor } from '@tiptap/react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -9,6 +11,7 @@ import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
 import { CollaborativeMarkdownEditor } from '@/crd/forms/markdown/CollaborativeMarkdownEditor';
 import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabProviderTypes';
+import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -27,8 +30,9 @@ type CrdMemoDialogProps = {
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
-  const { memo, loading, refreshMarkdown } = useMemoManager({ id: memoId });
-  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const client = useApolloClient();
+  const { memo, loading } = useMemoManager({ id: memoId });
+  const editorRef = useRef<Editor | null>(null);
   const { isAuthenticated } = useAuthenticationContext();
   const { spaceLevel = SpaceLevel.L0 } = useUrlResolver();
   const { space } = useSpace();
@@ -42,14 +46,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       collaborationId: memoId,
     });
 
-  useEffect(() => {
-    return () => {
-      if (refreshTimeoutRef.current) {
-        clearTimeout(refreshTimeoutRef.current);
-        refreshTimeoutRef.current = null;
-      }
-    };
-  }, []);
+  const handleEditorReady = (editor: Editor) => {
+    editorRef.current = editor;
+  };
 
   const [updateMemoDisplayName, { loading: savingDisplayName }] = useUpdateMemoDisplayNameMutation();
   const [editingDisplayName, setEditingDisplayName] = useState(false);
@@ -81,20 +80,28 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const handleCancelEdit = () => setEditingDisplayName(false);
 
-  // Refetch the memo markdown after close so the framing/contribution previews get updated content.
-  // Hocuspocus's final autosave to the GraphQL backend lags by up to a couple of seconds, so we
-  // fetch immediately AND again after 2.5s to catch the autosave. Mirrors the MUI pattern used by
-  // CalloutFramingMemo and CalloutContributionDialogMemo.
+  // Write the editor's current content directly to Apollo cache so previews update instantly.
+  // Hocuspocus's autosave lags by ~2s; fetching from the server immediately returns stale data.
+  // Instead, we grab the HTML from Tiptap, convert to markdown, and write it to the normalized
+  // cache entry. Connectors schedule a delayed server fetch as a safety net.
   const handleClose = () => {
-    if (refreshTimeoutRef.current) {
-      clearTimeout(refreshTimeoutRef.current);
-      refreshTimeoutRef.current = null;
+    if (editorRef.current) {
+      const html = editorRef.current.getHTML();
+      // Fire-and-forget: write to cache as soon as conversion completes.
+      // The dialog unmounts on close so we can't rely on timeouts; this runs
+      // outside React lifecycle as a plain promise. Swallow failures — the
+      // connector's delayed server refetch is the safety net.
+      void htmlToMarkdown(html)
+        .then(markdown => {
+          client.cache.modify({
+            id: client.cache.identify({ __typename: 'Memo', id: memoId }),
+            fields: {
+              markdown: () => markdown,
+            },
+          });
+        })
+        .catch(() => {});
     }
-    void refreshMarkdown();
-    refreshTimeoutRef.current = setTimeout(() => {
-      void refreshMarkdown();
-      refreshTimeoutRef.current = null;
-    }, 2500);
     onClose();
   };
 
@@ -104,11 +111,6 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const handleConfirmDelete = onDelete
     ? async () => {
-        // Delete path: don't refresh the memo (it's about to be gone from the cache).
-        if (refreshTimeoutRef.current) {
-          clearTimeout(refreshTimeoutRef.current);
-          refreshTimeoutRef.current = null;
-        }
         setIsDeleting(true);
         setDeleteDialogOpen(false);
         onClose();
@@ -166,6 +168,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
               provider={provider as unknown as CollabProviderLike}
               user={{ name: user.name, color: user.color }}
               disabled={editorDisabled}
+              onReady={handleEditorReady}
               className="h-full"
             />
           </div>

@@ -1,14 +1,25 @@
+import type { TFunction } from 'i18next';
 import { type CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDetailDialog';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import { mapLinkToCallToActionProps } from './callToActionDataMapper';
 import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
+
+/**
+ * `t` from `useTranslation('crd-space')`, strictly typed against the namespace
+ * via the i18next module augmentation in `@types/i18next.d.ts`. Only keys that
+ * exist in `space.en.json` type-check; no `as never` / `String(...)` laundering
+ * needed at the call site.
+ */
+export type CrdSpaceTranslator = TFunction<'crd-space'>;
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
   if (framingType === CalloutFramingType.Whiteboard) return 'whiteboard';
   if (framingType === CalloutFramingType.Memo) return 'memo';
   if (framingType === CalloutFramingType.MediaGallery) return 'mediaGallery';
+  if (framingType === CalloutFramingType.Link) return 'callToAction';
   return 'text';
 }
 
@@ -16,7 +27,7 @@ function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {
  * Maps a lightweight callout (from the list query) to PostCardData.
  * Only has title and type — no description, no content previews.
  */
-export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: DateFormatter): PostCardData {
+export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
 
   return {
@@ -37,7 +48,7 @@ export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t:
  * Maps a fully-loaded callout (from CalloutDetailsQuery) to PostCardData.
  * Has description, content previews, author details, contribution counts.
  */
-export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: DateFormatter): PostCardData {
+export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended, t: CrdSpaceTranslator): PostCardData {
   const postType = mapFramingTypeToPostType(callout.framing.type);
 
   return {
@@ -63,21 +74,33 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
             return { thumbnails: mapped.feedThumbnails, totalCount: mapped.totalCount };
           })()
         : undefined,
+    framingCallToAction:
+      callout.framing.type === CalloutFramingType.Link
+        ? (() => {
+            const mapped = mapLinkToCallToActionProps(callout.framing.link);
+            return mapped
+              ? {
+                  uri: mapped.url,
+                  displayName: mapped.displayName,
+                  isExternal: mapped.isExternal,
+                  isValid: mapped.isValid,
+                }
+              : undefined;
+          })()
+        : undefined,
   };
 }
 
-export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t: DateFormatter): PostCardData[] {
+export function mapCalloutsToPostCards(callouts: CalloutModelLightExtended[], t: CrdSpaceTranslator): PostCardData[] {
   return [...callouts].sort((a, b) => a.sortOrder - b.sortOrder).map(callout => mapCalloutLightToPostCard(callout, t));
 }
-
-export type DateFormatter = (key: string, options?: Record<string, unknown>) => string;
 
 export function getCalloutContributionType(callout: CalloutDetailsModelExtended): CalloutContributionType | undefined {
   const allowedTypes = callout.settings.contribution.allowedTypes;
   return allowedTypes.length > 0 ? allowedTypes[0] : undefined;
 }
 
-export function formatRelativeDate(date: Date, t: DateFormatter): string {
+export function formatRelativeDate(date: Date, t: CrdSpaceTranslator): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -94,7 +117,7 @@ export function formatRelativeDate(date: Date, t: DateFormatter): string {
  */
 export function mapCalloutDetailsToDialogData(
   callout: CalloutDetailsModelExtended,
-  t: DateFormatter
+  t: CrdSpaceTranslator
 ): CalloutDetailDialogData {
   return {
     id: callout.id,

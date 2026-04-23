@@ -11,6 +11,7 @@ import { getCalloutContributionType, mapCalloutDetailsToDialogData } from '../da
 import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CallToActionFramingConnector } from './CallToActionFramingConnector';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
@@ -93,7 +94,6 @@ export function CalloutDetailDialogConnector({
   initialMemoId,
 }: CalloutDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
 
@@ -108,9 +108,9 @@ export function CalloutDetailDialogConnector({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Mirrors CrdMemoDialog's cleanup pattern: clear any pending refresh before
-  // scheduling a new one (rapid open/close would otherwise stack timers and
-  // trigger extra network calls).
+  // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
+  // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
+  // once Hocuspocus has persisted (~2s lag).
   const handleFramingMemoClose = () => {
     const fmId = callout.framing.memo?.id;
     if (framingRefreshRef.current) {
@@ -118,7 +118,6 @@ export function CalloutDetailDialogConnector({
       framingRefreshRef.current = null;
     }
     if (fmId) {
-      void fetchFramingMarkdown({ variables: { id: fmId } });
       framingRefreshRef.current = setTimeout(() => {
         void fetchFramingMarkdown({ variables: { id: fmId } });
         framingRefreshRef.current = null;
@@ -167,6 +166,9 @@ export function CalloutDetailDialogConnector({
   const mediaGalleryFramingSlot = hasMediaGalleryFraming ? (
     <MediaGalleryFramingConnector callout={callout} />
   ) : undefined;
+
+  const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
+  const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
 
   const handleContributionClick = (contributionId: string, clickedMemoId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
@@ -220,12 +222,13 @@ export function CalloutDetailDialogConnector({
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
-          callout={mapCalloutDetailsToDialogData(callout, formatDate)}
+          callout={mapCalloutDetailsToDialogData(callout, t)}
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           pollSlot={pollSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          callToActionFramingSlot={callToActionFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
@@ -245,7 +248,7 @@ export function CalloutDetailDialogConnector({
             open={open}
             onOpenChange={onOpenChange}
             callout={{
-              ...mapCalloutDetailsToDialogData(callout, formatDate),
+              ...mapCalloutDetailsToDialogData(callout, t),
               commentCount,
             }}
             commentsSlot={thread}
@@ -257,6 +260,7 @@ export function CalloutDetailDialogConnector({
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            callToActionFramingSlot={callToActionFramingSlot}
           />
         )}
       </CalloutCommentsConnector>

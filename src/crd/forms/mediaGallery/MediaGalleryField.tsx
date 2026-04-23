@@ -114,6 +114,9 @@ export function MediaGalleryField({
 
   const handleDelete = (visual: MediaGalleryFieldVisual) => {
     const key = visual.id ?? visual.clientKey;
+    // Without a key the visual is not uniquely identifiable — bail out rather
+    // than risk deleting every other keyless entry that shares `undefined`.
+    if (!key) return;
     const next = visuals.filter(v => (v.id ?? v.clientKey) !== key);
     onVisualsChange(next);
   };
